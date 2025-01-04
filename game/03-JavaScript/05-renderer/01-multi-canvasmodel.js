@@ -130,6 +130,8 @@ class MultiCanvasModel {
 		this.animatingCanvas.redraw();
 	}
 }
+/** @type {string} */
+MultiCanvasModel.debugLastInit = "Unspecified";
 // @ts-ignore
 window.MultiCanvasModel = MultiCanvasModel;
 
@@ -143,8 +145,10 @@ Macro.add("setup-multi-canvas", {
 			Errors.report("MultiCanvasModel already exists: Likely due to two animateCombat uses in the same passage", {
 				key,
 				stack: Utils.GetStack(),
+				last: MultiCanvasModel.debugLastInit,
 			});
 		}
+		MultiCanvasModel.debugLastInit = Utils.GetStack();
 		const model = MultiCanvasModel.create(key, id, slot);
 		this.output.append(model.canvas.canvas);
 	},
