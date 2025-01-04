@@ -177,7 +177,7 @@ setup.colours = {
 			blend: setup.colours.getSkinRgb(options, tan / 100),
 			blendMode: options.blendMode,
 			desaturate: options.desaturate,
-			alpha: options.alpha ? options.alpha : 1,
+			...options.alpha && { alpha: options.alpha },
 		};
 	},
 	getSkinRgb(type, tan) {
