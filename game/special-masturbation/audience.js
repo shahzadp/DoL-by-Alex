@@ -266,7 +266,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			resultArray.push(`"C'mon, squeeze it harder."`);
 			if (V.masturbationAudience >= 4) {
 				resultArray.push(
-					`"Look how fast <<pshe>>'s stroking <<pherself>>."`,
+					`"Look how fast <<pshes>> stroking <<pherself>>."`,
 					`"Does it feel good? Touching your dick in front of everyone, I mean."`,
 					`"I think I can see some precum dripping."`,
 					`"That's it, show everyone how you masturbate."`
