@@ -1225,7 +1225,7 @@ function masturbationEffectsArms(
 					V.earSlime.vibration += handsOn * 2;
 					fragment.append(
 						span(
-							`You repeatly squeeze the parasite and your ${
+							`You repeatedly squeeze the parasite and your ${
 								V.player.virginity.penile === true ? "virgin penis" : "penis"
 							}, enjoying the limited attention you can give it.`
 						)
@@ -2104,7 +2104,7 @@ function masturbationEffectsArms(
 				wikifier("arousal", 200, "masturbationOral");
 				fragment.append(
 					span(
-						`You skilfully lick and tease the ${altText.toyDisplay} as you quickly bob your head back and forth along it, reveling in the lewd sensations it provides.`
+						`You skilfully lick and tease the ${altText.toyDisplay} as you quickly bob your head back and forth along it, revelling in the lewd sensations it provides.`
 					)
 				);
 			}
@@ -3414,7 +3414,7 @@ function masturbationEffectsMouth({
 					wikifier("arousal", 200, "masturbationOral");
 					fragment.append(
 						span(
-							`You skillfully wriggle your tongue along the ${altText.toyDisplay} in your mouth, occasionally adjusting your angle to reach as much of it as possible.`
+							`You skilfully wriggle your tongue along the ${altText.toyDisplay} in your mouth, occasionally adjusting your angle to reach as much of it as possible.`
 						)
 					);
 				}
@@ -3466,7 +3466,7 @@ function masturbationEffectsMouth({
 				} else {
 					altText.virginity = "pretending it's the real thing.";
 				}
-				fragment.append(span(`You skillfully suck on and tease the ${altText.toyDisplay}, ${altText.virginity}`));
+				fragment.append(span(`You skilfully suck on and tease the ${altText.toyDisplay}, ${altText.virginity}`));
 			}
 			break;
 		default:
