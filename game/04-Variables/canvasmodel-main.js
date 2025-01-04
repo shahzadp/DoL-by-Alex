@@ -1255,6 +1255,7 @@ Renderer.CanvasModels.main = {
 			},
 		},
 		"lashes": {
+			filters: ["tan"],
 			z: ZIndices.lashes,
 
 			srcfn(options) {
