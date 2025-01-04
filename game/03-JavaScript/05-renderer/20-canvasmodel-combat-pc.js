@@ -618,7 +618,7 @@ const combatMainPc = {
 		},
 		tentacleVaginaCum: {
 			srcfn(options) {
-				return `${options.src}body/vaginal/vaginalcum.png`;
+				return `${options.src}tentacles/vagina-sperm.png`;
 			},
 			showfn(options) {
 				return options.tentacles.vagina.show && V.vaginastate === "tentacledeep";

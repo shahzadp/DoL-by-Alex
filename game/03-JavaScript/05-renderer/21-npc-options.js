@@ -209,7 +209,23 @@ class NpcCombatMapper {
 			show: false,
 			amount: V.enemyarousal >= (V.enemyarousalmax / 5) * 3 ? 2 : 1,
 		};
-		options.tongue.show = typeof npc.mouth === "string" && ["mouth", "kiss", "kissentrance", "kissimminent", "anus", "anusentrance", "anusimminent", "vagina", "vaginaentrance", "vaginaimminent", "penis", "penisentrance", "penisimminent"].includes(npc.mouth);
+		options.tongue.show =
+			typeof npc.mouth === "string" &&
+			[
+				"mouth",
+				"kiss",
+				"kissentrance",
+				"kissimminent",
+				"anus",
+				"anusentrance",
+				"anusimminent",
+				"vagina",
+				"vaginaentrance",
+				"vaginaimminent",
+				"penis",
+				"penisentrance",
+				"penisimminent",
+			].includes(npc.mouth);
 		options.tongue.position = typeof npc.mouth === "string" ? npc.mouth : null;
 		options.penetrators = options.penetrators = [];
 
@@ -244,7 +260,6 @@ class NpcCombatMapper {
 			options.show = penetrator.position != null && ["vagina", "anus", "mouth"].includes(penetrator.position);
 
 			// Add exclusion for mouth-entrance.
-			console.log("Checking exclusion:", penetrator);
 			if (penetrator.position === "mouth" && penetrator.state === "entrance") {
 				options.show = false;
 				penetrator.show = false;

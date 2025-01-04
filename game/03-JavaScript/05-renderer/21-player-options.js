@@ -1,5 +1,5 @@
 // @ts-check
-/* global Partial, Dict, Record, CombatRenderer, Player, Bodywriting, ClothedSlots, SkinColours, ShaftTarget, isTransformationPartEnabled, isChimeraEnabled, TotalClothingStates, TransformationKeys, TransformationParts, CombatClothingTypes, AnimationSpeed, LegPositions, MachineState, CondomOptions */
+/* global Partial, Dict, Record, CombatRenderer, Player, Bodywriting, ClothedSlots, SkinColours, NpcCombatMapper, ShaftTarget, isTransformationPartEnabled, isChimeraEnabled, TotalClothingStates, TransformationKeys, TransformationParts, CombatClothingTypes, AnimationSpeed, LegPositions, MachineState, CondomOptions */
 
 /**
  * @typedef CombatPlayerOptions
@@ -1356,7 +1356,10 @@ class PlayerCombatMapper {
 			if (PlayerCombatMapper.getTentacleByShaft("rightleg") !== null && V.rightleg === "grappled") {
 				return "up";
 			}
-			if ((typeof V.vaginastate === "string" && ["othermouth", "othermouthentrance", "othermouthimminent"].includes(V.vaginastate)) || V.vaginause === "othermouth") {
+			if (
+				(typeof V.vaginastate === "string" && ["othermouth", "othermouthentrance", "othermouthimminent"].includes(V.vaginastate)) ||
+				V.vaginause === "othermouth"
+			) {
 				return "up";
 			}
 		}
@@ -1402,7 +1405,10 @@ class PlayerCombatMapper {
 			if (PlayerCombatMapper.getTentacleByShaft("leftleg") !== null && V.leftleg === "grappled") {
 				return "up";
 			}
-			if ((typeof V.vaginastate === "string" && ["othermouth", "othermouthentrance", "othermouthimminent"].includes(V.vaginastate)) || V.vaginause === "othermouth") {
+			if (
+				(typeof V.vaginastate === "string" && ["othermouth", "othermouthentrance", "othermouthimminent"].includes(V.vaginastate)) ||
+				V.vaginause === "othermouth"
+			) {
 				return "up";
 			}
 		}
@@ -1497,7 +1503,8 @@ class PlayerCombatMapper {
 		const hasPenetrator = pc.penisExist || playerHasStrapon();
 		const isExposed = PlayerCombatMapper.isPenisExposed(options);
 		const hasChastityBelt = ["chastitybeltfetish", "goldchastitybelt", "chastitybelt", "flatchastitycage"].includes(V.worn.genitals.variable);
-		const isEjaculating = V.orgasmdown > 0 &&
+		const isEjaculating =
+			V.orgasmdown > 0 &&
 			V.penisstate !== "penetrated" &&
 			V.orgasmcount < 25 &&
 			V.femaleclimax !== 1 &&
