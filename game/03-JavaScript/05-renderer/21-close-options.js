@@ -84,7 +84,7 @@ class CloseCombatMapper {
 		// @ts-ignore
 		CombatRenderer.generateBodyFilters(options);
 
-		options.pbhairColour = V.makeup.pbcolour || V.naturalhaircolour;
+		options.pbhairColour = (V.makeup.pbcolour || V.naturalhaircolour).replace(" ", "");
 		options.filters.pbhair = CombatRenderer.lookupColour(setup.colours.hair_map, options.pbhairColour, "pbhair", "pbhair_custom", "pbhair");
 		options.filters.hirsute = CombatRenderer.getTransformationFilter("wolf", "pubes");
 
