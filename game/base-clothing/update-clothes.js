@@ -301,8 +301,8 @@ function updateClothesItem(slot, item, debug) {
 			item.name_cap = "Foreign football shirt";
 			break;
 		case "football shorts":
-			item.name = "foreign football shorts";
-			item.name_cap = "Foreign football shorts";
+			item.name = item.index === 53 ? "foreign football shorts" : "football shorts";
+			item.name_cap = item.index === 53 ? "Foreign football shorts" : "Football shorts";
 			break;
 		case "football helmet":
 			item.name = "foreign football helmet";
