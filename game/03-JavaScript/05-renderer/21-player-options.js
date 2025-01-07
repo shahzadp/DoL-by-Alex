@@ -1946,12 +1946,13 @@ class PlayerCombatMapper {
 		}
 		switch (type) {
 			case "bird":
+			case "demon":
 				if (PlayerCombatMapper.isChimeraPartEnabled("demon", "bird", "demonharpy", "wings")) {
 					return {
-						show: true,
+						show: type === "bird",
 						type,
-						style: "demon",
-						inFront: true,
+						style: type === "bird" ? "demon" : "disabled",
+						inFront: type === "bird",
 					};
 				}
 				break;
