@@ -767,12 +767,13 @@ Renderer.CanvasModels.main = {
 
 			if (V.worn.under_upper.outfitPrimary == undefined) {
 				options.belly_hides_under_lower = true;
+				options.underLowerMask.push(`${bellyDir}/mask_clip_${options.belly}.png`);
 				options.underLowerShadowMask.push(`${bellyDir}/mask_clip_${options.belly}.png`);
 			}
 		}
 
 		const notMasc = ["curvy", "slender"].includes(options.body_type);
-		const soft = options.body_type === "soft";
+		const soft = options.body_type === "soft" && !(between(options.belly, 8, 24));
 		if (notMasc && options.breasts === "cleavage") {
 			const suffix = between(options.breast_size, 3, 4) ? "-mid.png" : ".png";
 			options.breasts_mask_src = `img/body/breasts/breasts-${options.body_type}${suffix}`
@@ -796,8 +797,8 @@ Renderer.CanvasModels.main = {
 			options.shirt_fitted_right_move_src = check ? "img/clothes/masks/formfitting_right_move.png" : null;
 			options.shirt_fitted_left_move_src = check ? "img/clothes/masks/formfitting_left_move.png" : null;
 		} else if (soft) {
-			const upperCheck = !options.worn.upper.setup.outfitPrimary && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
-			const underUpperCheck = !options.worn.under_upper.setup.outfitPrimary && !options.worn.under_lower.setup.type.includes("covered") && !options.belly_mask_clip_src;
+			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
+			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name)  && !options.worn.under_lower.setup.type.includes("covered") && !options.belly_mask_clip_src;
 			options.shirt_mask_clip_src = "img/clothes/masks/soft_clip.png";
 			options.shirt_fitted_right_move_src = "img/clothes/masks/soft_right_move.png";
 			options.shirt_fitted_left_move_src = "img/clothes/masks/soft_left_move.png";
