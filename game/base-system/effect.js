@@ -655,7 +655,7 @@ function effects() {
 			Object.entries(rebuyMessage).forEach(([location, items]) => {
 				element(
 					"span",
-					`Your ${formatList(items, "and", true)} signal${items.length > 1 ? "s" : ""} for a replacement${
+					`Your ${formatList(items, "and", true)} signal${items.length > 1 ? "" : "s"} for a replacement${
 						V.wardrobes[location]
 							? ` to the ${V.wardrobes[location].name}`
 							: `. (Likely One-off update error, no need to report unless seen multiple times in the same save) ${
@@ -673,7 +673,7 @@ function effects() {
 			element(
 				"span",
 				`Your ${formatList(V.rebuy_failure, "and", true)} signal${
-					V.rebuy_failure.length > 1 ? "s" : ""
+					V.rebuy_failure.length > 1 ? "" : "s"
 				} for a replacement, but you don't have enough money.`,
 				"purple"
 			);
