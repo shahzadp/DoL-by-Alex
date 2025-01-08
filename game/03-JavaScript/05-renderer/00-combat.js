@@ -568,6 +568,40 @@ class CombatSystem {
 		const state = wearingCondom(index);
 		return state && ["defective", "sabotaged"].includes(state);
 	}
+
+	isPcGenitalsVisible() {
+		if (!this.isPcGenitalsExposed()) {
+			return false;
+		}
+
+		if (V.lowerwetstage < 1) {
+			return false;
+		}
+
+		if (V.underlowerwetstage < 1) {
+			return false;
+		}
+
+		return true;
+	}
+
+	isPcGenitalsExposed() {
+		const lowerExposed = V.worn.lower.exposed || 0;
+		if (lowerExposed < 2) {
+			return false;
+		}
+
+		const underLowerExposed = V.worn.under_lower.exposed || 0;
+		if (underLowerExposed < 1) {
+			return false;
+		}
+
+		if (V.worn.legs.state === "waist") {
+			return false;
+		}
+
+		return true;
+	}
 }
 const combat = new CombatSystem();
 // @ts-ignore

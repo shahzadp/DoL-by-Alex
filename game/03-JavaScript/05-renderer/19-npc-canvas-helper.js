@@ -336,7 +336,7 @@ class NpcCanvasHelper {
 				if (penetrator.position === "leftarm") {
 					return 48; // Behind the Z index of PC's "backarm"
 				}
-				return 49;
+				return 55;
 			},
 		};
 		return Object.assign(defaults, overrideOptions);

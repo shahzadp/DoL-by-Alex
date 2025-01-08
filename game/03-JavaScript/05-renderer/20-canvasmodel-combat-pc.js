@@ -723,7 +723,7 @@ const combatMainPc = {
 		frontarm: {
 			srcfn(options) {
 				// Find target of hand if any, if bestial (pig) swap out sprite.
-				if (PlayerCanvasHelper.isBestialHandjob(options, "front")) {
+				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 					return `${options.src}body/arms/front-${options.armFrontPosition}-bestial.png`;
 				}
 				// Generic position.
@@ -1388,7 +1388,7 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.hands;
 				if (clothes?.name == null) return "";
-				if (PlayerCanvasHelper.isBestialHandjob(options, "front")) {
+				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 					return `${options.src}clothing/hands/${clothes.name}/front-handjob-bestial.png`;
 				}
 				return `${options.src}clothing/hands/${clothes.name}/front-${options.armFrontPosition}.png`;
@@ -1416,7 +1416,7 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.hands;
 				if (clothes?.name == null) return "";
-				if (PlayerCanvasHelper.isBestialHandjob(options, "front")) {
+				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 					return `${options.src}clothing/hands/${clothes.name}/front-handjob-bestial-acc.png`;
 				}
 				const path = `${options.src}clothing/hands/${clothes.name}/front-${options.armFrontPosition}-acc.png`;

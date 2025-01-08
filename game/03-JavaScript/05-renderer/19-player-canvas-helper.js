@@ -327,7 +327,7 @@ class PlayerCanvasHelper {
 			srcfn(options) {
 				const clothes = options.clothes[slot];
 				if (clothes?.name == null) return "";
-				if (layer === "front" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
+				if (layer === "front" && options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 					return `${options.src}clothing/${slot}/${clothes.name}/sleeves/front-stroke.png`;
 				}
 				const position = layer === "front" ? options.armFrontPosition : options.armBackPosition;
