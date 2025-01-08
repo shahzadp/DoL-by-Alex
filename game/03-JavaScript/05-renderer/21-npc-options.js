@@ -226,6 +226,11 @@ class NpcCombatMapper {
 				"penisentrance",
 				"penisimminent",
 			].includes(npc.mouth);
+
+		if (typeof npc.mouth === "string" && ["penis", "penisentrance", "penisimminent"].includes(npc.mouth) && !combat.isPcGenitalsExposed()) {
+			options.tongue.show = false;
+		}
+
 		options.tongue.position = typeof npc.mouth === "string" ? npc.mouth : null;
 		options.penetrators = options.penetrators = [];
 
