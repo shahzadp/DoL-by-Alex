@@ -798,7 +798,7 @@ Renderer.CanvasModels.main = {
 			options.shirt_fitted_left_move_src = check ? "img/clothes/masks/formfitting_left_move.png" : null;
 		} else if (soft) {
 			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
-			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name)  && !options.worn.under_lower.setup.type.includes("covered") && !options.belly_mask_clip_src;
+			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name)  && !options.belly_mask_clip_src;
 			options.shirt_mask_clip_src = "img/clothes/masks/soft_clip.png";
 			options.shirt_fitted_right_move_src = "img/clothes/masks/soft_right_move.png";
 			options.shirt_fitted_left_move_src = "img/clothes/masks/soft_left_move.png";
