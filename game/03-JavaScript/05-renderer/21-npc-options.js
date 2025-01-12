@@ -670,6 +670,12 @@ class NpcCombatMapper {
 						blendMode: "multiply",
 						desaturate: true,
 					};
+				case "dark red":
+					return {
+						blend: "#b50202",
+						blendMode: "multiply",
+						desaturate: true,
+					};
 			}
 		}
 		return NpcCombatMapper.getNpcSkinFilter(npc);

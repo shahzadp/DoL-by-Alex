@@ -384,7 +384,7 @@ class CombatRenderer {
 	 * @returns {Partial<CompositeLayerSpec>}
 	 */
 	static createHairColourGradient(hairPart, gradient, hairType, hairLength, prefilterName) {
-		const combatHair = CombatRenderer.getHairGradientType(hairType);
+		const combatHair = CombatRenderer.getHairGradientType(hairType, gradient);
 		const filterPrototypeLibrary = setup.colours.hairgradients_prototypes[hairPart][gradient.style];
 		const filterPrototype = filterPrototypeLibrary[combatHair] || filterPrototypeLibrary.all;
 		/** @type {Partial<CompositeLayerSpec>} */
@@ -656,13 +656,60 @@ class CombatRenderer {
 			return CombatRenderer.lookupColour(setup.colours.hair_map, V.haircolour, "hair", "hair_custom", "hair");
 		}
 		if (["wide flaps", "hime", "curtain", "mohawk"].includes(V.fringetype)) {
+			return this.getFringeFilter();
+		}
+		if (V.hairColourGradient.style === "split") {
+			const index = V.position === "missionary" ? 0 : 1;
+			return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[index], "hair", "hair_custom", "hair");
+		}
+		return CombatRenderer.createHairColourGradient(
+			"sides",
+			V.hairColourGradient,
+			CombatRenderer.getHairSideType(),
+			hairLengthStringToNumber(V.hairlengthstage),
+			"hair"
+		);
+	}
+
+	/** @returns {string} */
+	static getHairLength() {
+		if (["wide flaps", "hime", "curtain", "mohawk"].includes(V.fringetype)) {
+			return V.fringelengthstage;
+		}
+		return V.hairlengthstage;
+	}
+
+	/**
+	 * @param {TransformationParts} part
+	 * @returns {Partial<CompositeLayerSpec>}
+	 */
+	static getPartFilter(part) {
+		if (V.hairColourGradient.style === "split") {
+			if (["tail", "pubes"].includes(part) || (["wings", "ears"].includes(part) && CombatRenderer.getPosition(V.position) === "missionary")) {
+				return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[0], "hair", "hair_custom", "hair");
+			}
+			return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[1], "hair", "hair_custom", "hair");
+		}
+		if (V.hairColourGradient.style === "high-ombre") {
+			if (["tail", "pubes", "wings"].includes(part)) {
+				return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[0], "hair", "hair_custom", "hair");
+			}
+			return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[1], "hair", "hair_custom", "hair");
+		}
+		if (V.hairColourGradient.style === "low-ombre") {
+			if (["tail"].includes(part)) {
+				return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[0], "hair", "hair_custom", "hair");
+			}
 			return CombatRenderer.createHairColourGradient(
-				"fringe",
-				V.hairFringeColourGradient,
-				CombatRenderer.getHairFringeType(),
-				hairLengthStringToNumber(V.fringelengthstage),
+				"sides",
+				V.hairColourGradient,
+				CombatRenderer.getHairSideType(),
+				hairLengthStringToNumber(V.hairlengthstage),
 				"hair"
 			);
+		}
+		if (V.hairColourGradient.style === "face-frame") {
+			return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[1], "hair", "hair_custom", "hair");
 		}
 		return CombatRenderer.createHairColourGradient(
 			"sides",
@@ -680,19 +727,26 @@ class CombatRenderer {
 		if (V.hairFringeColourStyle === "simple") {
 			return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairfringecolour || V.haircolour, "hair_fringe", "hair_fringe_custom", "hair_fringe");
 		}
+		if (V.hairFringeColourGradient.style === "split" && this.getFringeType() !== "mohawk") {
+			const index = V.position === "missionary" ? 0 : 1;
+			return CombatRenderer.lookupColour(
+				setup.colours.hair_map,
+				V.hairFringeColourGradient.colours[index],
+				"hair_fringe",
+				"hair_fringe_custom",
+				"hair_fringe"
+			);
+		}
 		return CombatRenderer.createHairColourGradient(
 			"fringe",
 			V.hairFringeColourGradient || V.hairColourGradient,
 			CombatRenderer.getHairFringeType(),
 			hairLengthStringToNumber(V.fringelengthstage),
-			"fringe"
+			"hair"
 		);
 	}
 
 	static getFringeType() {
-		if (V.hairtype === "short") {
-			return "short";
-		}
 		if (V.fringetype === "wide flaps") {
 			return "wide-flaps";
 		}
@@ -711,17 +765,21 @@ class CombatRenderer {
 		if (V.hairtype === "layered bob") {
 			return "layered-bob";
 		}
+		if (["shaved", "short"].includes(V.hairtype) || (V.hairtype === "default" && V.hairlengthstage === "short")) {
+			return "short";
+		}
 		return "default";
 	}
 
 	/**
 	 * @param {string} hairType
+	 * @param {Gradient} gradient
 	 */
-	static getHairGradientType(hairType) {
+	static getHairGradientType(hairType, gradient) {
 		if (V.fringetype === "mohawk") {
 			return V.position === "missionary" ? "combatMohawk" : "combatMohawkDoggy";
 		}
-		return hairType;
+		return V.position === "missionary" ? "combatMissionary" : "combatDoggy";
 	}
 
 	/**
@@ -735,13 +793,13 @@ class CombatRenderer {
 			colour: { h: 0, s: 100, l: 30 },
 		};
 		if (transformation === "bird" && ["tail", "wings", "malar", "plumage", "pubes"].includes(part)) {
-			return CombatRenderer.getHairFilter();
+			return CombatRenderer.getPartFilter(part);
 		}
 		if (["cat", "wolf"].includes(transformation) && ["ears", "tail", "pubes", "pits"].includes(part)) {
-			return CombatRenderer.getHairFilter();
+			return CombatRenderer.getPartFilter(part);
 		}
 		if (transformation === "fox" && ["ears", "tail", "cheeks", "pubes"].includes(part)) {
-			return CombatRenderer.getHairFilter();
+			return CombatRenderer.getPartFilter(part);
 		}
 		// No filter possible as part(s) cannot be recoloured
 		if (
