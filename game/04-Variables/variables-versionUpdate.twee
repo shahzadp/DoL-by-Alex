@@ -2387,6 +2387,7 @@
 	<</if>>
 
 	<<if $index is undefined and $enemyno gte 1>>
+		<<set $index to 0>>
 		<<for _n to 0; _n lt $NPCList.length; _n++>>
 			<<if $NPCList[_n].desc is $description>>
 				<<set $index to _n>>
@@ -3561,17 +3562,11 @@
 
 	<<updateNewNamedNpcs>>
 
-	<!-- Jimmy: Reset NPC slots if necessary by checking .type === 0
+	<!-- Jimmy: Reset NPC slots if necessary
 			Old versions prior to 3.4.* did not have empty slots properly set to baseNPC. -->
-	<<for $_i = 0; $_i < $NPCList.length; $_i++>>
-		<<if $combat isnot 1>>
-			<<if $NPCList[$_i].type is 0>>
-				<<set $NPCList[$_i] to clone(setup.baseNPC)>>
-			<</if>>
-		<<elseif $NPCList[$_i].active is "active">>
-			<<set $NPCList[$_i].type to (typeof $NPCList[$_i].type isnot "string" ? "human" : $NPCList[$_i].type)>>
-		<</if>>
-	<</for>>
+	<<if $npcListVersion lt 3>>
+		<<npcList>>
+	<</if>>
 
 	<!-- Jimmy: Run updater for EventSystem.
 				Only runs if behind on schema, and if $event exists. -->
@@ -5301,7 +5296,9 @@
 			<<unset $frozenValues.skyHidden>>
 		<</if>>
 
+		<!-- Failsafe if changing options immediately after load -->
 		<<run Weather.WeatherGeneration.generate(Time.date)>>
+		<<run Weather.sky.initialize()>>
 	<</if>>
 
 	<<if $options.clothingCaption is undefined>>
