@@ -81,13 +81,13 @@
 					<<set _date to new DateTime($brothel_escortjob.date)>>
 					<li>You have an escort job scheduled. You're expected to be in front of the brothel
 					<<if Time.monthDay is _date.day>>
-						<span class="pink">today</span> 
+						<span class="pink">today</span>
 					<<elseif Time.date.dayDifference(_date) is 1>>
-						<span class="gold">tomorrow</span> 
+						<span class="gold">tomorrow</span>
 					<<elseif Time.date.dayDifference(_date) gte 7>>
-						next <span class="gold">_date.weekDayName</span> 
+						next <span class="gold">_date.weekDayName</span>
 					<<else>>
-						on <span class="gold">_date.weekDayName</span> 
+						on <span class="gold">_date.weekDayName</span>
 					<</if>>
 					at <span class="gold"><<ampm _date.hour>></span>.</li>
 				<</if>>
@@ -119,7 +119,7 @@
 					<<elseif $smuggler_timer is 1>>
 						<span class="gold">tomorrow</span>, before midnight.
 					<<else>>
-						in <span class="gold">$smuggler_timer</span> days.
+						<<nDays $smuggler_timer>>.
 					<</if>>
 					<<if $smuggler_location is "forest">>
 						They're bringing it through the forest.
@@ -137,10 +137,8 @@
 				<li>Remy will attack the farm
 					<<if $farm_attack_timer is 0>>
 						<span class="pink">tonight</span>.
-					<<elseif $farm_attack_timer is 1>>
-						<span class="gold">tomorrow</span>.
 					<<else>>
-						in <span class="gold">$farm_attack_timer</span> days.
+						<<nDays $farm_attack_timer>>.
 					<</if>>
 					<<nnpc_He Remy>>'ll arrive between <span class="gold"><<ampm 21 00>></span> and <span class="gold">midnight.</span>
 				</li>
@@ -153,7 +151,7 @@
 					<<elseif $temple_chastity_timer is 1>>
 						You have a chastity exam due <span class="purple">tomorrow.</span>
 					<<else>>
-						You have a chastity exam due in <span class="gold">$temple_chastity_timer</span> days.
+						You have a chastity exam due <<nDays $temple_chastity_timer>>.
 					<</if>>
 					You will receive an <span class="gold">allowance</span> when passing the exam.
 				</li>
@@ -316,9 +314,10 @@
 			<<elseif $chef_state is 7 and $chef_rework lte 0>>
 				<li>The renovations at the Ocean Breeze have finished.</li>
 			<<elseif $chef_state is 7 and $chef_rework lte 30>>
-				<li>The Ocean Breeze is closed for renovations. They will be done in <span class="gold">$chef_rework</span> days.</li>
+				<li>The Ocean Breeze is closed for renovations. They will be done <<nDays $chef_rework>>.</li>
 			<<elseif $chef_state is 7>>
-				<li>The Ocean Breeze will close for renovations in <span class="gold"><<print ($chef_rework - 30)>></span> days.</li>
+				<<set _timer to $chef_rework - 30>>
+				<li>The Ocean Breeze will close for renovations <<nDays _timer>>.</li>
 			<<elseif $chef_state is 8>>
 				<li>Sam wants you to attend the Ocean Breeze's grand reopening on any evening between <<ampm 18 00>> and <<ampm 21 00>>.</li>
 			<</if>>
@@ -420,11 +419,7 @@
 						<<case "nursery">>
 							A nursery is being built in the cottage.
 					<</switch>>
-					<<if $farm.build_timer is 1>>
-						It'll be finished <span class="gold">tomorrow.</span>
-					<<else>>
-						It'll be finished in <span class="gold"><<number $farm.build_timer>></span> days.
-					<</if>>
+					It'll be finished <<nDays $farm.build_timer>>.
 				</li>
 				<</if>>
 			<</if>>
@@ -542,7 +537,7 @@
 			The science fair is being held at the town hall on Cliff Street <span class="pink">today</span> from <<ampm 9 00>> until <<ampm 18 00>>.
 			<br>
 		<<else>>
-			The science fair will be held at the town hall on Cliff Street in <span class="gold">$scienceprojectdays</span> days.
+			The science fair will be held at the town hall on Cliff Street <<nDays $scienceprojectdays>>.
 			<br>
 		<</if>>
 		You have the following ongoing science projects. You'll choose one to present at the fair.
@@ -903,7 +898,7 @@
 				<summary class="journal">Seeds</summary>
 				<div class="itemCollectible">
 					<<for _i to 0; _i lt _plant_keys.length; _i++>>
-						<<set _tooltip to setup.plants[_plant_keys[_i]].plural[0].toUpperCase() + setup.plants[_plant_keys[_i]].plural.substring(1)>>
+						<<set _tooltip to setup.plants[_plant_keys[_i]].seed_name ? setup.plants[_plant_keys[_i]].seed_name.toUpperFirst() : (setup.plants[_plant_keys[_i]].plural[0].toUpperCase() + setup.plants[_plant_keys[_i]].plural.substring(1))>>
 						<<set _icon to setup.plants[_plant_keys[_i]].icon>>
 						<<if setup.plants[_plant_keys[_i]].type is "flower" or setup.plants[_plant_keys[_i]].type is "vegetable">>
 							<<if $plants_known.includes( setup.plants[_plant_keys[_i]].name)>>
@@ -1006,4 +1001,12 @@
 		<<set $journalNotes[_currentPage] to LZString.compress(_noteElement.value)>>
 		<<run updateMoment()>>
 	<</if>>
+<</widget>>
+
+<<widget "nDays">>
+	<<switch _args[0]>>
+		<<case 0>><span class="gold">today</span>
+		<<case 1>><span class="gold">tomorrow</span>
+		<<default>>in <span class="gold"><<= _args[0]>></span> days
+	<</switch>>
 <</widget>>
