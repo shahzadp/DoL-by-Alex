@@ -101,6 +101,7 @@ function updateClothingColours(item, itemRef) {
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
 			if (item.colour === 0) item.colour = itemRef.colour_options.random();
+
 			if (item.accessory_colour === 0) item.accessory_colour = itemRef.accessory_colour_options.random();
 	}
 }
@@ -195,7 +196,7 @@ function updateClothesItem(slot, item, debug) {
 	item.accessory_colour = remapColours[item.accessory_colour] || item.accessory_colour;
 	if (
 		((item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
-		(item.accessory_colour === 0 && itemRef.accessory_colour_options.length > 0)
+		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0)
 	)
 		updateClothingColours(item, itemRef);
 
