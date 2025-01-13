@@ -979,9 +979,11 @@ function clothesDataTrimmer(item) {
 		"oldVariable", // use `Setup example`, should never be added back on to clothing items due to being in `trimmerVersion`
 		"altDamage", // use `Setup example`
 		"hideUnderLower", // use `Setup example`, should never be added back on to clothing items due to being in `trimmerVersion`
+		"combat", // use `Setup example`, safe to remove from here as long as also removed from `trimmerVersion`
+		"shopGroup", // use `Setup example`, safe to remove from here as long as also removed from `trimmerVersion`
 	];
 	// To prevent it from running on variables multiple times, when updating toDelete, the last of the new additions should be added here
-	const trimmerVersion = ["shop", "short", "oldVariable", "hideUnderLower"];
+	const trimmerVersion = ["shop", "short", "oldVariable", "hideUnderLower", "combat", "shopGroup"];
 	let version = 0;
 	let indexToUpdateVersion = toDelete.indexOf(trimmerVersion[version]);
 	toDelete.forEach((v, index) => {
