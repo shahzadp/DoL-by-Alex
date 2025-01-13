@@ -311,7 +311,6 @@
 	<<set _robin to statusCheck("Robin")>>
 	<<storeon "Robin's Room" "check">>
 	<<set _anyItemsInRoom to _store_check is 1 and $store.upper.find(item => item.location is "Robin's Room") and $store.lower.find(item => item.location is "Robin's Room")>>
-	<<set _schoolItemsInRoom to _store_check is 1 and $store.upper.find(item => item.location is "Robin's Room" and item.type.includes("school")) and $store.lower.find(item => item.location is "Robin's Room" and item.type.includes("school"))>>
 	<<if Time.schoolDay and Time.hour is 8>>
 		<<if _robin.trauma gte 80>>
 			Robin looks at the clock on the wall. "It's school soon," <<he>> says. "I don't want to go."
@@ -326,17 +325,17 @@
 			<<if $robinromance and !$daily.robin.traumarequest and $rng gte 51>>
 				<<set $daily.robin.traumarequest to 1>>
 				<<set _robinrequest to 1>>
-				"D-do you think you could walk with me<<if $exposed gte 1 and _schoolItemsInRoom>> after you get changed<</if>>?" <<he>> asks, rubbing <<his>> arm.
+				"D-do you think you could walk with me<<if $exposed gte 1 and _anyItemsInRoom>> after you get changed<</if>>?" <<he>> asks, rubbing <<his>> arm.
 				<br><br>
 				<<if $exposed lte 0>>
 					<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
-				<<elseif _schoolItemsInRoom>>
+				<<elseif _anyItemsInRoom>>
 					<<schoolicon "building">><<link [[Get dressed and walk to school (0:45)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 45>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
 				<</if>>
 			<<else>>
 				<<if $exposed lte 0>>
 					<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<handheldon 1>><</link>>
-				<<elseif _schoolItemsInRoom>>
+				<<elseif _anyItemsInRoom>>
 					<<schoolicon "building">><<link [[Get dressed and walk to school (0:25)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 25>><<handheldon 1>><</link>>
 				<</if>>
 			<</if>>
@@ -352,15 +351,23 @@
 			<<if $exposed lte 0>>
 				<<schoolicon "building">><<link [[Walk to school (0:20)|Robin Walk School]]>><<pass 20>><<handheldon 1>><</link>>
 				<br>
-			<<elseif _schoolItemsInRoom>>
+			<<elseif _anyItemsInRoom>>
 				<<schoolicon "building">><<link [[Get dressed and walk to school (0:25)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 25>><<handheldon 1>><</link>>
 				<br>
 			<</if>>
 		<</if>>
 		<<if _robinrequest is 1>>
-			<<getouticon>><<link [[Leave|Orphanage]]>><<npcincr Robin trauma 1>><<npcincr Robin love -1>><<set $fromRobinRoom to true>><<endevent>><</link>><<grtrauma>><<llove>>
+			<<if _anyItemsInRoom>>
+				<<getouticon>><<link [[Get dressed and leave (0:05)|Orphanage]]>><<pass 5>><<storeon "Robin's Room">><<npcincr Robin trauma 1>><<npcincr Robin love -1>><<set $fromRobinRoom to true>><<endevent>><</link>><<grtrauma>><<llove>>
+			<<else>>
+				<<getouticon>><<link [[Leave|Orphanage]]>><<npcincr Robin trauma 1>><<npcincr Robin love -1>><<set $fromRobinRoom to true>><<endevent>><</link>><<grtrauma>><<llove>>
+			<</if>>
 		<<else>>
-			<<getouticon>><<link [[Leave|Orphanage]]>><<set $fromRobinRoom to true>><<endevent>><</link>>
+			<<if _anyItemsInRoom>>
+				<<getouticon>><<link [[Get dressed and leave (0:05)|Orphanage]]>><<pass 5>><<storeon "Robin's Room">><<set $fromRobinRoom to true>><<endevent>><</link>>
+			<<else>>
+				<<getouticon>><<link [[Leave|Orphanage]]>><<set $fromRobinRoom to true>><<endevent>><</link>>
+			<</if>>
 		<</if>>
 	<<elseif Time.hour gte 21 or Time.hour lte 5>>
 		Robin looks at the clock on the wall.
@@ -577,11 +584,11 @@
 		<<if Time.schoolDay and (Time.hour is 8 or Time.hour is 7)>>
 			<<set _schoolTime to 20>>
 			<<if _robin.trauma gte 80>><<set _schoolTime += 20>><</if>>
-			<<if $exposed gte 1 and _schoolItemsInRoom>><<set _schoolTime += 5>><</if>>
+			<<if $exposed gte 1 and _anyItemsInRoom>><<set _schoolTime += 5>><</if>>
 			<<if $exposed lte 0>>
 				<<schoolicon "building">><<link [["Walk to school (0:" + _schoolTime + ")"|Robin Walk School]]>><<run setRobinLocationOverride("school", 7)>><<pass _schoolTime>><<handheldon 1>><</link>>
 				<br>
-			<<elseif _schoolItemsInRoom>>
+			<<elseif _anyItemsInRoom>>
 				<<schoolicon "building">><<link [["Get dressed and walk to school (0:" + _schoolTime + ")"|Robin Walk School]]>><<storeon "Robin's Room">><<run setRobinLocationOverride("school", 7)>><<pass _schoolTime>><<handheldon 1>><</link>>
 				<br>
 			<</if>>
