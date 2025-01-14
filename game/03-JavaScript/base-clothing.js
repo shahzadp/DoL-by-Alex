@@ -23,7 +23,7 @@ window.getClothingCost = getClothingCost;
 
 // Returns the price of the clothing item passed.
 // If it's part of an outfit the price is 80% of the full outfit for the primary half
-// and 80% for the other halves.
+// and 20% for the other halves.
 function tailorClothingCost(item, slot) {
 	let cost = 0;
 	if (setup.clothes[slot][clothesIndex(slot, item)].outfitSecondary) {
