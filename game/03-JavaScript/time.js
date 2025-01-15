@@ -1176,7 +1176,8 @@ function dailyNPCEffects() {
 			if (V.sydneyLibraryEvent === 2) {
 				V.sydneyLeightonConfront = 1;
 				V.sydneyLeightonWhitneyGuilty = 1;
-			} else if (V.libraryMoneyStolen >= 100 || V.sydneyStolenKnown) {
+			}
+			if (V.libraryMoneyStolen >= 100 || V.sydneyStolenKnown) {
 				V.sydneyLeightonConfront = 1;
 				V.sydneyLeightonPlayerGuilty = 1;
 			}
