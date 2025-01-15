@@ -90,6 +90,15 @@ class MultiCanvasModel {
 	}
 
 	/**
+	 * @param {Renderer.RendererListener=} listener
+	 */
+	play(listener) {
+		this.animated = false;
+		if (listener != null) this.listener = listener;
+		this.redraw();
+	}
+
+	/**
 	 * Recompiles the canvas models' layers, and schedules them on the renderer system.
 	 */
 	redraw() {
@@ -181,6 +190,10 @@ Macro.add("start-multi-canvas-rendering", {
 			Errors.report("No MultiCanvasModel found with given key.", {
 				key,
 			});
+			return;
+		}
+		if (!V.options.combatAnimations) {
+			model.play();
 			return;
 		}
 		model.animate();
