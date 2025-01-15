@@ -684,6 +684,9 @@ class CombatRenderer {
 	 * @returns {Partial<CompositeLayerSpec>}
 	 */
 	static getPartFilter(part) {
+		if (V.hairColourStyle === "simple") {
+			return CombatRenderer.lookupColour(setup.colours.hair_map, V.haircolour, "hair", "hair_custom", "hair");
+		}
 		if (V.hairColourGradient.style === "split") {
 			if (["tail", "pubes"].includes(part) || (["wings", "ears"].includes(part) && CombatRenderer.getPosition(V.position) === "missionary")) {
 				return CombatRenderer.lookupColour(setup.colours.hair_map, V.hairColourGradient.colours[0], "hair", "hair_custom", "hair");
