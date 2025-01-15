@@ -2322,6 +2322,10 @@ function earSlimeCorruptionClothes() {
 		V.daily.corruptionSlimeClothes = Math.clamp(random(baseCorruption, baseCorruption * 5) - currentSkillValue("willpower"), 0, 1000);
 	}
 	const cap = ["prison", "asylum"].includes(V.location) ? 1000 : 500;
+
+	T.allowSchoolClothes =
+		!!Time.schoolDay || (V.location === "brothel" && Time.weekDay === 6 && V.brothelshowdata?.type === "gangbang" && !V.brothelshowdata?.done);
+
 	return Math.clamp(V.daily.corruptionSlimeClothes + (V.earSlime.growth >= 100 && V.earSlime.defyCooldown ? V.earSlime.defyCooldown * 25 : 0), 0, cap);
 }
 window.earSlimeCorruptionClothes = earSlimeCorruptionClothes;
