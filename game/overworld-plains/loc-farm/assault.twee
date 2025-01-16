@@ -476,7 +476,6 @@ You hear shouting outside.
 			/*Responding to hounds. */
 			<<if $farm_assault.teams[_assault_keys[_s]].state is "dogs_recover">>
 				<<if $farm_assault.teams[_assault_keys[_s]].type is "bailey">>
-					<<set $farm_assault.teams[_assault_keys[_s]].number -= 1>>
 					<<if $farm_assault.tower is "manned">>
 						<<set $farm_assault.no.push($farm_assault.teams[_assault_keys[_s]].location)>>/*Add their location back to the pool.*/
 						<<set $farm_assault.teams[_assault_keys[_s]].location to "tower">>
@@ -500,6 +499,9 @@ You hear shouting outside.
 			<</if>>
 			/*Intercepted by hounds. */
 			<<if $farm_assault.teams[_assault_keys[_s]].state is "dogs">>
+				<<if $farm_assault.teams[_assault_keys[_s]].type is "bailey">>
+					<<set $farm_assault.teams[_assault_keys[_s]].number -= 1>>
+				<</if>>
 				<<set $farm_assault.teams[_assault_keys[_s]].state to "dogs_recover">>
 			<</if>>
 			/*Entering. */
@@ -1024,7 +1026,9 @@ You hear shouting outside.
 						<</if>>
 					<</if>>
 					<<endevent>>
-					<<farm_assault_attack_options>>
+					<<if $_isBaileyTeam and $_team.number gte 2>> /* Don't show attack options if team was defeated */
+						<<farm_assault_attack_options>>
+					<</if>>
 				<<elseif $_team.state is "field">>
 					<<if $_isWraith>>
 						You see the <<farm_assault_thugs>> wandering in the field.
