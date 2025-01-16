@@ -219,7 +219,7 @@ A river runs through one corner. The cattle stay almost as far away from the chu
 			<br>
 		<</if>>
 		<<if Time.hour gte 12>>
-			<<animalicon "horse_pick">><<link [[Approach Remy's horses|Livestock Field Horse]]>><</link>>
+			<<animalicon "horse_pick">><<link [[Approach Remy's horses (0:01)|Livestock Field Horse]]>><<pass 1>><</link>>
 			<br>
 		<</if>>
 
@@ -984,23 +984,19 @@ You approach Remy's steeds.
 	<<else>>
 		<span class="green">They clop closer as you approach.</span>
 	<</if>>
-
 <<elseif $livestock_horse gte 1>>
 	<<if ($monsterchance gte 1 and $hallucinations gte 1) or ($monsterchance gte 1 and $monsterhallucinations is "f")>>
 		They watch as you approach. Some look amused.
 	<<else>>
 		They watch as you approach. They seem calm.
 	<</if>>
-
 <<else>>
 	<<beastNEWinit 1 horse>>
 	<<if $monster is 1>>
 		One of them, a particularly large, dark-haired specimen, faces you as you draw close. "Walk away, cattle," <<bhe>> says, holding <<bhis>> head higher. "This is our patch." The others watch you as well.
-
 	<<else>>
 		One of them, a particularly large, dark-haired specimen, unleashes a deep whinny as you approach. It sounds like a warning. The others look up. They're watching you.
 	<</if>>
-
 <</if>>
 <br><br>
 
@@ -1017,22 +1013,27 @@ You approach Remy's steeds.
 	<<getouticon>><<link [[Leave|Livestock Field]]>><<endevent>><</link>>
 	<br>
 <<else>>
-	<<ind>><<link [[Brush their hair (1:00)|Livestock Field Horse Brush]]>><<pass 60>><<tending 6>><<stress -6>><<endevent>><</link>><<gtending>><<lstress>>
-	<br>
+	<<rng>> /* I'm not sure this is nessesary, but I think there's a way to loop through these scenes without alterting RNG, so lets stop that */
+	<<if $daily.livestock and $daily.livestock.horses_satisfied is undefined>><<set $daily.livestock.horses_satisfied to 0>><</if>>
+	<<clearnpc>><<beastNEWinit 1 horse>>
 
 	<!-- Modified for Monster People -->
-	<<if $awareness gte 200 and $horsedisable is "f" and ($bestialitydisable is "f" or $monster is 1)>>
-		<br>
-		<<beastNEWinit 1 horse>>
-		One <<beasttype>> seems agitated in the back. <<bHe>> stomps at the others, and is
+	<<if random(1,2) is 1 and $awareness gte 200 and $daily.livestock.horses_satisfied lt 6 and $horsedisable is "f" and ($bestialitydisable is "f" or $monster is 1)>>
+		One <<beasttype>> in the back seems agitated. <<bHe>> stomps at the others, and is
 		<<if $monster is 1>>
-			rude and demanding.
+			being rude and demanding.
 		<<else>>
 			neighing in frustration.
 		<</if>>
-
+		<<set _agitated to 1>>
 		<br><br>
-		<<ind>><<link [[Look beneath <<bhim>>|Livestock Field Deviancy]]>><<set $phase to 1>><</link>><<deviant1>>
+	<</if>>
+
+	<<ind>><<link [[Brush their hair (1:00)|Livestock Field Horse Brush]]>><<pass 60>><<tending 6>><<stress -6>><</link>><<gtending>><<lstress>>
+	<br>
+
+	<<if _agitated is 1>>
+		<<animalicon "horse">><<link [[Look beneath the agitated <<beasttype>>|Livestock Field Deviancy]]>><<set $phase to 1>><<set $daily.livestock.horses_satisfied += 1>><</link>><<deviant1>>
 		<br>
 	<</if>>
 
@@ -1116,8 +1117,10 @@ You approach Remy's steeds.
 <br><br>
 
 <<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $danger gte (9900 - $allure)>>
+<<if $danger gte (9900 - ($allure / 2))>> /* Reduced allure effect since PC is always nude */
+	<<rng>>
 	<<if $rng gte 51>>
+		<<clearnpc>>
 		<<rng>>
 		<<if $rng gte 51>>
 			<<if $livestock_horse_rescued is undefined>>
@@ -1188,22 +1191,32 @@ You approach Remy's steeds.
 			<br>
 		<</if>>
 	<<else>>
-		<<beastNEWinit 1 horse>>
-
-		One <<beasttype>> seems frustrated. <<bHe>> stomps at the others, and <<if $monster is 1>>is rude and demanding<<else>>almost bites you<</if>>.
-
-		<br><br>
-
 		<!-- Modified for Monster People -->
-		<<if $bestialitydisable is "f" or $monster is 1>>
-			<<link [[Look beneath <<bhim>>|Livestock Field Deviancy]]>><<set $phase to 1>><</link>><<deviant1>>
+		<<if $daily.livestock.horses_satisfied lt 6 and $horsedisable is "f" and ($bestialitydisable is "f" or $monster is 1)>>
+			<<if $awareness gte 200>>
+				The <<beasttype>> from earlier still seems frustrated.
+			<<else>>
+				One <<beasttype>> seems frustrated. 
+			<</if>>
+			<<bHe>> stomps at the others, and is
+			<<if $monster is 1>>
+				being rude and demanding.
+			<<else>>
+				neighing in frustration.
+			<</if>>
+			<br><br>
+
+			<<animalicon "horse">><<link [[Look beneath the agitated <<beasttype>>|Livestock Field Deviancy]]>><<set $phase to 1>><<set $daily.livestock.horses_satisfied += 1>><</link>><<deviant1>>
+			<br>
+			<<getouticon>><<link [[Ignore|Livestock Field Horse]]>><<endevent>><</link>>
+			<br>
+		<<else>>
+			<<link [[Next|Livestock Field Horse]]>><<endevent>><</link>>
 			<br>
 		<</if>>
-		<<link [[Ignore|Livestock Field Horse]]>><<endevent>><</link>>
-		<br>
 	<</if>>
 <<else>>
-	<<link [[Next|Livestock Field Horse]]>><</link>>
+	<<link [[Next|Livestock Field Horse]]>><<endevent>><</link>>
 	<br>
 <</if>>
 
@@ -1373,7 +1386,6 @@ You approach Remy's steeds.
 	<<else>>
 		It's hard to look away from <<bhis>> <<horsegenitalsdesc>> <<npcVagina>>.
 	<</if>>
-	<br>
 	<<deviancy1>>
 	<<if hasSexStat("deviancy", 2)>>
 		<<link [[Touch it|Livestock Field Deviancy]]>><<set $phase += 1>><</link>><<deviant2>>
@@ -1416,7 +1428,7 @@ You approach Remy's steeds.
 	<</if>>
 
 	<<if hasSexStat("deviancy", 3)>>
-		<<link [[Use your hands|Livestock Field Deviancy Hand]]>><<handstat>><<set $phase to 1>><</link>><<deviant3>>
+		<<link [[Use your hands (0:05)|Livestock Field Deviancy Hand]]>><<handstat>><<pass 5>><<set $phase to 1>><</link>><<deviant3>>
 		<br>
 	<</if>>
 	<<if hasSexStat("deviancy", 5)>>
@@ -1431,9 +1443,10 @@ You approach Remy's steeds.
 	<<if $deviancy lt 15>>
 		The thought makes you blush.
 	<</if>>
+	The <<beasttype>> looks disappointed.
 	<br><br>
 
-	<<link [[Next|Livestock Field Horse]]>><<endevent>><</link>>
+	<<link [[Next (0:01)|Livestock Field Horse]]>><<pass 1>><<endevent>><</link>>
 	<br>
 <</if>>
 
@@ -1467,10 +1480,10 @@ You approach Remy's steeds.
 	The other <<beastsplural>> look on, intrigued.
 	<br><br>
 
-	<<link [[Keep going|Livestock Field Deviancy Hand]]>><<set $phase += 1>><</link>><<deviant3>>
+	<<link [[Keep going (0:10)|Livestock Field Deviancy Hand]]>><<pass 10>><<set $phase += 1>><</link>><<deviant3>>
 	<br>
 	<<if hasSexStat("deviancy", 4)>>
-		<<link [[Lick|Livestock Field Deviancy Mouth]]>><</link>><<deviant4>>
+		<<link [[Lick (0:05)|Livestock Field Deviancy Mouth]]>><<pass 5>><</link>><<deviant4>>
 		<br>
 	<</if>>
 
