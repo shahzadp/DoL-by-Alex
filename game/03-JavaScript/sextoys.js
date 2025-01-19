@@ -9,7 +9,7 @@ function playerPenisSize() {
 }
 window.playerPenisSize = playerPenisSize;
 
-function npcHasStrapon(index) {
+function npcHasStrapon(index = V.index) {
 	if (typeof index !== "number") {
 		if (V.options.debugdisable === "f" || V.debug === 1)
 			Errors.report(`[npcHasStrapon]: index must be a number, was ${typeof index}.`, {
