@@ -292,25 +292,20 @@
 			_increaseAllure.push(name);
 			_increaseAttractive.push(name);
 		}>>
-		<<if $beauty gte ($beautymax / 7)>>
-			<<run _increaseBoth("Cute")>>
-		<</if>>
-		<<if $beauty gte ($beautymax / 7) * 2>>
-			<<run _increaseBoth("Pretty")>>
-		<</if>>
-		<<if $beauty gte ($beautymax / 7) * 3>>
-			<<run _increaseBoth("Charming")>>
-		<</if>>
-		<<if $beauty gte ($beautymax / 7) * 4>>
-			<<run _increaseBoth("Beautiful")>>
-		<</if>>
-		<<if $beauty gte ($beautymax / 7) * 5>>
-			<<run _increaseBoth("Ravishing")>>
-		<</if>>
 		<<if $beauty gte ($beautymax / 7) * 6>>
-			<<run _increaseBoth("Divine")>>
+			<<run _increaseBoth("Beauty: Divine +++++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 5>>
+			<<run _increaseBoth("Beauty: Ravishing ++++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 4>>
+			<<run _increaseBoth("Beauty: Beautiful +++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 3>>
+			<<run _increaseBoth("Beauty: Charming ++")>>
+		<<elseif $beauty gte ($beautymax / 7) * 2>>
+			<<run _increaseBoth("Beauty: Pretty +")>>
+		<<elseif $beauty gte ($beautymax / 7)>>
+			<<run _increaseBoth("Beauty: Cute")>>
 		<</if>>
-			<<run _increaseBoth("Hair length")>>
+		<<run _increaseBoth(`Hair length ${$hairlength gte 333 ? "+".repeat($hairlength gte 666 ? 2 : 1) : ""}`)>>
 		<<if $worn.upper.type.includes("naked")>>
 			<<run _increaseBoth("Topless")>>
 		<<elseif $worn.upper.reveal gte 500>>
@@ -327,56 +322,61 @@
 			<<run _increaseBoth("Sexy underwear")>>
 		<</if>>
 		<<if $wolfgirl gte 6>>
-			<<run _increaseBoth("Wolfy")>>
+			<<run _increaseBoth(`Wolfy ${"+".repeat(2 - ["ears", "tail"].filter(p => $transformationParts.wolf[p] is "hidden").length)}`)>>
 		<</if>>
 		<<if $cat gte 6>>
-			<<run _increaseBoth("Catlike")>>
+			<<run _increaseBoth(`Catlike ${"+".repeat(2 - ["ears", "tail"].filter(p => $transformationParts.cat[p] is "hidden").length)}`)>>
 		<</if>>
 		<<if $cow gte 6>>
-			<<run _increaseBoth("Bovine")>>
+			<<run _increaseBoth(`Bovine ${"+".repeat(2 - Math.ceil(["ears", "tail", "horns"].filter(p => $transformationParts.cow[p] is "hidden").length / 2))}`)>>
 		<</if>>
 		<<if $harpy gte 6>>
-			<<run _increaseBoth("Harpy")>>
+			<<run _increaseBoth(`Harpy ${"+".repeat(2 - Math.ceil(["tail", "eyes", "malar", "plumage", "wings"].filter(p => $transformationParts.bird[p] is "hidden").length / 3))}`)>>
 		<</if>>
 		<<if $fox gte 6>>
-			<<run _increaseAttractive.push("Vulpine")>>
-			<<run _increaseAllure.push("Foxy")>>
+			<<run _increaseAttractive.push(`Vulpine ${"+".repeat(3 - ["ears", "tail"].filter(p => $transformationParts.fox[p] is "hidden").length)}`)>>
+			<<run _increaseAllure.push(`Foxy ${"+".repeat(3 - ["ears", "tail"].filter(p => $transformationParts.fox[p] is "hidden").length)}`)>>
 		<</if>>
 		<<if $angel gte 6>>
-			<<run _increaseBoth("Angel")>>
+			<<run _increaseBoth(`Angel ${"+".repeat(2 - ["halo", "wings"].filter(p => $transformationParts.angel[p] is "hidden").length)}`)>>
 		<</if>>
 		<<if $fallenangel gte 2>>
-			<<run _increaseBoth("Fallen angel")>>
+			<<run _increaseBoth(`Fallen angel ${"+".repeat(2 - ["halo", "wings"].filter(p => $transformationParts.fallenAngel[p] is "hidden").length)}`)>>
 		<</if>>
 		<<if $demon gte 6>>
-			<<run _increaseBoth("Demon")>>
+			<<run _increaseBoth(`Demon ${"+".repeat(2 - Math.ceil(["horns", "tail", "wings"].filter(p => $transformationParts.demon[p] is "hidden").length / 2))}`)>>
 		<</if>>
 		<<if $earSlime.growth gt 50>>
-			<<run _increaseAllure.push("Ear slime pheromones")>>
+			<<run _increaseAllure.push(`Ear slime pheromones${$earSlime.growth gt 75 ? " " + "+".repeat(Math.ceil(($earSlime.growth - 75) / 25)): ""}`)>>
 		<</if>>
 		<<if $makeup.lipstick != 0 or $makeup.eyeshadow != 0 or $makeup.mascara != 0 or $makeup.blusher != 0>>
 			<<run _increaseAllure.push("Alluring makeup")>>
 			<<run _increaseAttractive.push("Attractive makeup")>>
 		<</if>>
+		<<if $worn.upper.reveal + $worn.lower.reveal gte 50>>
+			<<set $_outfit to $worn.lower.name is "naked" or ($worn.upper.name is "naked" and $player.perceived_breastsize gt 2) ? '"outfit"' : 'outfit'>>
+			<<run _increaseAllure.push(`Alluring ${$_outfit} ${"+".repeat(Math.floor(($worn.upper.reveal + $worn.lower.reveal) / 400))}`)>>
+			<<run _increaseAttractive.push(`Attractive ${$_outfit} ${"+".repeat(Math.floor(($worn.upper.reveal + $worn.lower.reveal) / 400))}`)>>
+		<</if>>
 		<<if $worn.head.reveal gte 50>>
-			<<run _increaseAllure.push("Alluring headwear")>>
-			<<run _increaseAttractive.push("Attractive headwear")>>
+			<<run _increaseAllure.push(`Alluring headwear ${"+".repeat(Math.floor($worn.head.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive headwear ${"+".repeat(Math.floor($worn.head.reveal / 200))}`)>>
 		<</if>>
 		<<if $worn.face.reveal gte 50>>
-			<<run _increaseAllure.push("Alluring face accessory")>>
-			<<run _increaseAttractive.push("Attractive face accessory")>>
+			<<run _increaseAllure.push(`Alluring face accessory ${"+".repeat(Math.floor($worn.face.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive face accessory ${"+".repeat(Math.floor($worn.face.reveal / 200))}`)>>
 		<</if>>
 		<<if $worn.neck.reveal gte 50>>
-			<<run _increaseAllure.push("Alluring neck accessory")>>
-			<<run _increaseAttractive.push("Attractive neck accessory")>>
+			<<run _increaseAllure.push(`Alluring neck accessory ${"+".repeat(Math.floor($worn.neck.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive neck accessory ${"+".repeat(Math.floor($worn.neck.reveal / 200))}`)>>
 		<</if>>
 		<<if $worn.legs.reveal gte 50>>
-			<<run _increaseAllure.push("Alluring legwear")>>
-			<<run _increaseAttractive.push("Attractive legwear")>>
+			<<run _increaseAllure.push(`Alluring legwear ${"+".repeat(Math.floor($worn.legs.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive legwear ${"+".repeat(Math.floor($worn.legs.reveal / 200))}`)>>
 		<</if>>
 		<<if $worn.feet.reveal gte 50>>
-			<<run _increaseAllure.push("Alluring shoes")>>
-			<<run _increaseAttractive.push("Attractive shoes")>>
+			<<run _increaseAllure.push(`Alluring shoes ${"+".repeat(Math.floor($worn.feet.reveal / 200))}`)>>
+			<<run _increaseAttractive.push(`Attractive shoes ${"+".repeat(Math.floor($worn.feet.reveal / 200))}`)>>
 		<</if>>
 		<<if Weather.dayState is "night">>
 			<<run _increaseAllure.push("Night")>>
@@ -496,7 +496,7 @@
 				<<for _fame range _neg>>
 					<<set _famous = _negLabels.find(status => $fame[_fame.type] >= status.threshold)>>
 					<<if _famous>>
-						<span @class="_famous.class"><<= _famous.label>> <<= _fame.name>></span>
+						<span @class="_famous.class">Fame: <<= _famous.label>> <<= _fame.name>> <<= "+".repeat([30, 100, 200, 400, 600, 1000].indexOf(_famous.threshold))>></span>
 						<br>
 					<</if>>
 				<</for>>
@@ -510,7 +510,7 @@
 					<<for _fame range _pos>>
 						<<set _famous = _posLabels.find(status => $fame[_fame.type] >= status.threshold)>>
 						<<if _famous>>
-							<span @class="_famous.class"><<= _famous.label>> <<= _fame.name>></span>
+							<span @class="_famous.class">Fame: <<= _famous.label>> <<= _fame.name>> <<= "+".repeat([30, 100, 200, 400, 600, 1000].indexOf(_famous.threshold))>></span>
 							<br>
 						<</if>>
 					<</for>>
