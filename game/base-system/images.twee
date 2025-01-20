@@ -94,7 +94,7 @@
 
 <<widget "brothelicon">>
 	<<switch _args[0]>>
-		<<case "gloryhole">><<icon "gloryhole.png">>
+		<<case "gloryhole">><<icon "actions/gloryhole.png">>
 		<<case "stage">><<icon "stage.png">>
 		<<default>><<icon "brothel.gif">>
 	<</switch>>
@@ -156,6 +156,7 @@
 		<<case "ruins">><<icon "ruins.png">>
 		<<case "sculpture">><<icon "sculpture.png">>
 		<<case "scrap">><<icon "scrap.png">>
+		<<case "smuggler">><<icon "smuggler.png">>
 		<<case "waterfall">><<icon "waterfall.png">>
 		<<default>><<icon "sewer.png">>
 	<</switch>>
@@ -173,7 +174,7 @@
 
 <<widget "islandicon">>
 	<<switch _args[0]>>
-		<<case "explore">><<icon "explore.png">>
+		<<case "explore">><<icon "actions/explore.png">>
 		<<case "mask">><<icon "clothes/islander_mask.png">>
 		<<case "nuts">><<icon "nuts.png">>
 		<<default>><<icon "island.png">>
@@ -231,7 +232,11 @@
 <</widget>>
 
 <<widget "loveicon">>
-	<span class="icon-container"><img class="icon" src="img/ui/love_interest.png"></span>
+	<<switch _args[0]>>
+		<<case "kiss">><<icon "actions/kiss.png">>
+		<<case "hug">><<icon "actions/hug.png">>
+		<<default>><<iconUi "love_interest.png">>
+	<</switch>>
 <</widget>>
 
 <<widget "lockicon">>
@@ -248,6 +253,7 @@
 <<widget "templeicon">>
 	<<switch _args[0]>>
 		<<case "altar">><<icon "altar.gif">>
+		<<case "baton">><<icon "baton.png">>
 		<<case "confession">><<icon "confessional.png">>
 		<<case "garden">><<switch Weather.dayState>><<case "night">><<icon "temple_garden_night.png">><<default>><<icon "temple_garden.png">><</switch>>
 		<<case "pew">><<icon "pew.png">>
@@ -257,6 +263,7 @@
 		<<case "trial">><<icon "trial_of_purity.gif">>
 		<<case "trialcontinue">><<icon "trial_continue.gif">>
 		<<case "trialbail">><<icon "trial_jump.gif">>
+		<<case "whip">><<icon "whip.png">>
 		<<case "virginity">><<icon "virginity_test.png">>
 		<<default>><<wolficon>>
 	<</switch>>
@@ -301,7 +308,7 @@
 <</widget>>
 
 <<widget "couchicon">>
-	<<icon "couch_relax.png">>
+	<<icon "couch.png">>
 <</widget>>
 
 <<widget "mysteryicon">>
@@ -326,7 +333,7 @@
 <</widget>>
 
 <<widget "relaxicon">>
-	<<icon "relax.png">>
+	<<icon "actions/relax.png">>
 <</widget>>
 
 <<widget "farmicon">>
@@ -379,8 +386,8 @@
 		<<case "mark">><<icon "mark.gif">>
 		<<case "safe">><<icon "safe.gif">>
 		<<case "shackles">><<icon "shackles.png">>
-		<<case "plunder">><<icon "plunder.png">>
-		<<default>><<icon "crime.png">>
+		<<case "plunder">><<icon "actions/plunder.png">>
+		<<default>><<icon "actions/crime.png">>
 	<</switch>>
 <</widget>>
 
@@ -392,11 +399,11 @@
 	<<switch _args[0]>>
 		<<case "purity">><<tficon "angel">><<exit>>
 		<<case "corruption">><<tficon "demon">><<exit>>
-		<<case "promiscuity" "lust">><<set _symbol to "lust">>
-		<<case "trauma" "willpower" "fear">><<set _symbol to "trauma">>
-		<<default>><<set _symbol to _args[0]>>
+		<<case "promiscuity" "lust">><<set _symbol to "sym_lust.png">>
+		<<case "trauma" "willpower" "fear">><<set _symbol to "sym_trauma.png">>
+		<<default>><<set _symbol to `sym_${_args[0]}.png`>>
 	<</switch>>
-	<span class="icon-container"><img class="icon" @src='"img/ui/sym_" + _symbol + ".png"'></span>
+	<<iconUi _symbol>>
 <</widget>>
 
 <<widget "gifticon">>
@@ -469,7 +476,7 @@
 			<</if>>
 			<<set $_perchImg += ".png">>
 			<<icon $_perchImg>>
-		<<case "perch_up">><<icon "birdTower/perch_get_up.png">>
+		<<case "perch_up">><<icon "actions/perch_get_up.png">>
 		<<case "preen">>
 			<<set $_frontIcon = 'birdTower/preen_wing_debris.png'>>
 			<<if $daily.birdGroom is undefined>>
@@ -561,9 +568,9 @@
 				<<case 2>><<icon "birdTower/hawk_egg_two.png">>
 				<<default>><<icon "birdTower/hawk_egg_three.png">>
 			<</switch>>
-		<<case "kiss">><<if $monster is 1>><<icon "birdTower/kiss_greathawk_monster.png">><<else>><<icon "birdTower/kiss_greathawk_beast.png">><</if>>
+		<<case "kiss">><<if $monster is 1>><<icon "actions/kiss_greathawk_monster.png">><<else>><<icon "actions/kiss_greathawk_beast.png">><</if>>
 		<<case "ask">><<icon "birdTower/socialise_question.png">>
-		<<case "fly_down">><<icon "birdTower/flight_land.png">>
+		<<case "fly_down">><<icon "actions/flight_land.png">>
 		<<case "bracelet">><<icon "birdTower/bracelet.png">>
 		<<case "wallet">><<icon "birdTower/wallet.png">>
 		<<case "ring">><<icon "birdTower/ring.png">>
@@ -633,12 +640,8 @@
 
 <<widget "tficon">>
 	<<switch _args[0]>>
-		<<case "angel">>
-			<<set $_baseIcon to "tf_angel.png">>
-		<<case "fallenangel">>
-			<<set $_baseIcon to "tf_fallen.png">>
-		<<case "demon">>
-			<<set $_baseIcon to "tf_demon.png">>
+		<<case "angel" "fallenangel" "demon">>
+			<<iconUi `"tf_" + _args[0] + ".png"`>>
 		<<case "wolf">>
 			<<set $_hairIcon =  'tf_wolf.png'>>
 			<<set $_frontIcon = 'tf_wolf_acc.png'>>
@@ -650,7 +653,7 @@
 		<<case "fox">>
 			<<set $_hairIcon =  'tf_fox.png'>>
 			<<set $_frontIcon = 'tf_fox_acc.png'>>
-		<<case "harpy">>
+		<<case "bird" "harpy">>
 			<<set $_hairIcon =  'tf_harpy.png'>>
 	<</switch>>
 	<<if $_baseIcon>>
@@ -766,7 +769,7 @@
 	<<switch _args[0]>>
 		<<case "building">><span style="position:relative;bottom:5px"><<icon "schoolnew.png">></span>
 		<<case "computer">><<icon "computer.png">>
-		<<case "courtyard">><<icon "school_courtyard.png">>
+		<<case "courtyard">><<icon "actions/school_courtyard.png">>
 		<<case "headdesk">><<icon "headdesk.png">>
 		<<case "infirmary">><<icon "infirmary.png">>
 		<<case "library">>	<<icon "library.png">>
@@ -785,72 +788,72 @@
 <</widget>>
 
 <<widget "stairsicon">>
-    <<set _stairs = `stairs${_args[0] || "downup"}${_args[1] || ""}.png`>>
+    <<set _stairs = `actions/stairs${_args[0] || "downup"}${_args[1] || ""}.png`>>
 	<<icon _stairs>>
 <</widget>>
 
 <<widget "walkicon">>
 	<<set _direction to _args[0] is "west" ? "flip" : "">>
-	<<icon "walk.png" _direction>>
+	<<icon "actions/walk.png" _direction>>
 <</widget>>
 
 <<widget "runicon">>
 	<<set _direction to _args[0] is "west" ? "flip" : "">>
-	<<icon "run.png" _direction>>
+	<<icon "actions/run.png" _direction>>
 <</widget>>
 
 <<widget "glideicon">>
 	<<set _direction to _args[0] is "west" ? "flip" : "">>
-	<<icon "wing.png" _direction>>
+	<<icon "actions/wing.png" _direction>>
 <</widget>>
 
 <<widget "swimicon">>
 	<<switch _args[0]>>
-		<<case "back">><img class="icon flip" src="img/misc/icon/swim.png">
-		<<case "break">><<icon "breakice.png">>
-		<<case "dive">><<icon "dive.png">>
-		<<case "down">><<icon "swimdown.png">>
-		<<case "leave">><<icon "leavewater.png">>
-		<<case "up">><<icon "swimup.png">>
-		<<default>><<icon "swim.png">>
+		<<case "back">><<icon "actions/swim.png" "flip">>
+		<<case "break">><<icon "actions/breakice.png">>
+		<<case "dive">><<icon "actions/dive.png">>
+		<<case "down">><<icon "actions/swimdown.png">>
+		<<case "leave">><<icon "actions/leavewater.png">>
+		<<case "up">><<icon "actions/swimup.png">>
+		<<default>><<icon "actions/swim.png">>
 	<</switch>>
 <</widget>>
 
 <<widget "sneakicon">>
-	<<icon "sneak.png">>
+	<<icon "actions/sneak.png">>
 <</widget>>
 
 <<widget "caveicon">>
 	<<switch _args[0]>>
-		<<case "left">><<icon "caveleft.png">>
-		<<case "right">><<icon "caveright.png">>
-		<<case "north">><<icon "cavenorth.png">>
-		<<case "south">><<icon "cavesouth.png">>
-		<<case "west">><<icon "cavedeeper.png">>
-		<<case "east">><<icon "cavedeeper.png" "flip">>
-		<<case "sea">><<icon "cavesea.png">>
+		<<case "left">><<icon "actions/caveleft.png">>
+		<<case "right">><<icon "actions/caveright.png">>
+		<<case "north">><<icon "actions/cavenorth.png">>
+		<<case "south">><<icon "actions/cavesouth.png">>
+		<<case "west">><<icon "actions/cavedeeper.png">>
+		<<case "east">><<icon "actions/cavedeeper.png" "flip">>
+		<<case "sea">><<icon "actions/cavesea.png">>
 		<<case "torch">><<icon "torch.gif">>
 		<<case "treasure">><<icon "treasure_chest.png">>
-		<<default>><<icon "cavedeeper.png">>
+		<<default>><<icon "actions/cavedeeper.png">>
 	<</switch>>
 <</widget>>
 
 <<widget "tentacleicon">>
 	<<switch _args[0]>>
-		<<case "north">><<icon "tentanorth.png">>
-		<<case "south">><<icon "tentasouth.png">>
-		<<case "west">><<icon "tentadeeper.png">>
-		<<case "east">><<icon "tentadeeper.png" "flip">>
-		<<default>><<icon "tentadeeper.png">>
+		<<case "north">><<icon "actions/tentanorth.png">>
+		<<case "south">><<icon "actions/tentasouth.png">>
+		<<case "west">><<icon "actions/tentadeeper.png">>
+		<<case "east">><<icon "actions/tentadeeper.png" "flip">>
+		<<default>><<icon "actions/tentadeeper.png">>
 	<</switch>>
 <</widget>>
 
 <<widget "entranceicon">>
-	<<icon "entrance.png">>
+	<<icon "actions/entrance.png">>
 <</widget>>
 
 <<widget "exiticon">>
-	<<icon "exit.png">>
+	<<icon "actions/exit.png">>
 <</widget>>
 
 <<widget "lakeicon">>
@@ -860,7 +863,7 @@
 		<<case "field office">><<icon "field_office.png">>
 		<<case "fishing">><<icon "fishing.png">>
 		<<case "key">><<icon "bronze_key.png">>
-		<<case "meditate">><<icon "meditate.png">>
+		<<case "meditate">><<icon "actions/meditate.png">>
 		<<case "pond">><<icon "pond.png">>
 		<<case "pots">><<icon "pots.png">>
 		<<case "skate">><span class="clothes-tan"><<icon "clothes/ice_skates.png">></span>
@@ -1372,7 +1375,7 @@
 <</widget>>
 
 <<widget "hypnosisicon">>
-	<<icon "hypnosis.png">>
+	<<iconUi "hypnosis.png">>
 <</widget>>
 
 <<widget "dooricon">>

@@ -1,11 +1,11 @@
 /* Be careful when modifying the factors, as small changes can have big effects */
 setup.WeatherTemperature = {
 	thermometer: {
-		base: "img/misc/icon/weather/thermometer.png",
-		fill: "img/misc/icon/weather/thermo_filled.png",
-		upArrow: "img/misc/icon/weather/arrow_up.png",
-		downArrow: "img/misc/icon/weather/arrow_down.png",
-		constant: "img/misc/icon/weather/constant.png",
+		base: "img/ui/weather/thermometer.png",
+		fill: "img/ui/weather/thermo_filled.png",
+		upArrow: "img/ui/weather/arrow_up.png",
+		downArrow: "img/ui/weather/arrow_down.png",
+		constant: "img/ui/weather/constant.png",
 	},
 	dayMultiplier: 1.5, // Multiplier on day calculations
 	seasonMultiplier: 2, // Multiplier on season calculations

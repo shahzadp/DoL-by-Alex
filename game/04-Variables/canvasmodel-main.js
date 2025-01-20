@@ -1385,7 +1385,7 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.toast,
 
 			srcfn() {
-				return V.trauma > 4000 ? 'img/misc/toast_raw.png' : 'img/misc/toast_buttered.png';
+				return V.trauma > 4000 ? 'img/clothes/props/food/toast/toast_raw.png' : 'img/clothes/props/food/toast/toast_buttered.png';
 			},
 			showfn(options) {
 				return options.show_face && !!options.toast;
@@ -2872,7 +2872,7 @@ Renderer.CanvasModels.main = {
 				return 0;
 			},
 			brightnessfn(options) {
-				return options.shirt_move_left_src ? -0.3 : 0;
+				return options.shirt_move_left_src && options.shirt_mask_clip_src ? -0.3 : 0;
 			},
 		}),
 		"upper_belly_split_l": genlayer_clothing_belly_split("upper", {
@@ -2942,7 +2942,7 @@ Renderer.CanvasModels.main = {
 				return 0;
 			},
 			brightnessfn(options) {
-				return options.shirt_move_left_src ? -0.3 : 0;
+				return options.shirt_move_left2_src ? -0.3 : 0;
 			},
 		}),
 		"upper_belly_split_r": genlayer_clothing_belly_split("upper", {
@@ -3013,7 +3013,7 @@ Renderer.CanvasModels.main = {
 				return 0;
 			},
 			brightnessfn(options) {
-				return options.shirt_move_left_src ? -0.3 : 0;
+				return options.shirt_move_left_src && options.shirt_mask_clip_src ? -0.3 : 0;
 			},
 		}),
 		"upper_belly_split_acc_l": genlayer_clothing_belly_split_acc("upper", {
@@ -3233,6 +3233,9 @@ Renderer.CanvasModels.main = {
 				const integrity = options.worn.genitals.integrity;
 				return `img/clothes/genitals/${setupVar}/${integrity}${size}.png`;
 			},
+			masksrcfn(options) {
+				return options.body_type === "soft" ? "img/clothes/masks/soft_lower_clip.png" : null;
+			}
 		}),
 		/***
 		 *    ██       ██████  ██     ██ ███████ ██████
@@ -4547,10 +4550,11 @@ function genlayer_clothing_belly_shadow(slot, overrideOptions) {
 				&& options.worn[slot].setup.mainImage !== 0;
 		},
 		brightnessfn(options) {
-			return between(options.belly, 8, 24) ? -0.25 : options.body_type === "soft" ? -0.4 : 0;
+			const mask = ((slot === "lower" && options.lowerShadowMask) || (slot === "under_lower" && options.underLowerShadowMask && !playerHasStrapon()))
+			return between(options.belly, 8, 24) && mask ? -0.25 : options.body_type === "soft" && mask ? -0.4 : 0;
 		},
 		masksrcfn(options) {
-			return slot === "lower" ? options.lowerShadowMask : slot === "under_lower" ? options.underLowerShadowMask : ""
+			return slot === "lower" ? options.lowerShadowMask : slot === "under_lower" && !playerHasStrapon() ? options.underLowerShadowMask : ""
 		}
 	}, overrideOptions));
 }
