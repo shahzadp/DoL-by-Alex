@@ -1092,6 +1092,426 @@ function effects() {
 		}
 	}
 
+	if (Array.isArray(V.timeMessages) && V.timeMessages.length) {
+		/*
+			Calls to <<earnFeat "x">> here and within earnHourlyFeats are intended to show feats to the user.
+			Be aware that the earnFeat widget is also used in passages such as 'Forest Blood Lemon Pick' and feats earned this way should still be displayed on that very passage and not the next one.
+		*/
+		const errors = [];
+		V.timeMessages.forEach(messageKey => {
+			let display;
+			switch (messageKey) {
+				case "feats":
+					display = earnHourlyFeats();
+					if (display) fragment.append(display);
+					break;
+				// Transformations
+				case "fallenAngelFeathers":
+					element("span", "Your wings have grown some new feathers.", "gold");
+					break;
+				case "fallenAngelWings":
+					element("span", "The familiar feeling of soft feathers fills you with hope.", "gold");
+					break;
+				case "fallenAngelDescend":
+					element(
+						"span",
+						"Your blackened wings turn blacker still. Your shattered halo fades. Horns sprout from your scalp and a tail sprouts from your lower back. Your sense of loss is replaced with a desire for revenge.",
+						"gold"
+					);
+					fragment.append(wikifier("garousal"));
+					fragment.append(wikifier("earnFeat", "'Demon'"));
+					break;
+				case "angelUp1":
+					sWikifier(
+						'<span class="gold">Despite everything, you have managed to remain a pure <<if $NudeGenderDC lt 0>><<gender_posture>><<else>><<gender>><</if>>. The thought makes you happy.</span>'
+					);
+					break;
+				case "angelUp2":
+					element("span", "You are pure and feel determined to keep it that way.", "gold");
+					break;
+				case "angelUp3":
+					element("span", "You feel a weight lift from your shoulders.", "gold");
+					break;
+				case "angelUp4":
+					element("span", "A golden light shines down on you.", "gold");
+					break;
+				case "angelUp5":
+					element("span", "You feel a soothing warmth in your back.", "gold");
+					break;
+				case "angelUp6":
+					element("span", "You feel lighter. Your new wings caress your face.", "gold");
+					fragment.append(wikifier("earnFeat", "'Angel'"));
+					break;
+				case "angelDown0":
+					element("span", "You feel soiled.", "gold");
+					break;
+				case "angelDown1":
+					element("span", "You feel dirty.", "gold");
+					break;
+				case "angelDown2":
+					element("span", "You feel a weight bear down on you.", "gold");
+					break;
+				case "angelDown3":
+					element("span", "The light above you fades.", "gold");
+					break;
+				case "angelDown4":
+					element("span", "The soothing warmth in your back fades.", "gold");
+					break;
+				case "angelDown5":
+					element("span", "Your wings fade away.", "gold");
+					break;
+				case "demonUp1":
+					sWikifier('<span class="gold">Your scalp itches.</span><<garousal>>');
+					break;
+				case "demonUp2":
+					sWikifier('<span class="gold">Horns sprout from your scalp.</span><<garousal>>');
+					break;
+				case "demonUp3":
+					sWikifier('<span class="gold">Your <<bottom>> itches.</span><<garousal>>');
+					break;
+				case "demonUp4":
+					sWikifier('<span class="gold">A tail sprouts from your lower back.</span><<garousal>>');
+					break;
+				case "demonUp5":
+					sWikifier('<span class="gold">You feel a burning sensation in your back.</span><<garousal>>');
+					break;
+				case "demonUp6":
+					sWikifier('<span class="gold">You feel lighter. Your new wings caress your face.</span><<garousal>><<earnFeat "Demon">>');
+					break;
+				case "demonDown0":
+					element("span", "You feel an invisible light burn away your impurity.", "gold");
+					if (V.demonFeat) {
+						fragment.append(wikifier("earnFeat", "'The Path to Redemption'"));
+						delete V.demonFeat;
+					}
+					break;
+				case "demonDown1":
+					element("span", "Your horns recede.", "gold");
+					break;
+				case "demonDown2":
+					sWikifier('<span class="gold">The itching in your <<bottom>> stops.</span>');
+					break;
+				case "demonDown3":
+					element("span", "Your tail recedes.", "gold");
+					break;
+				case "demonDown4":
+					element("span", "The burning in your back ceases.", "gold");
+					break;
+				case "demonDown5":
+					element("span", "Your wings recede.", "gold");
+					break;
+				case "wolfUp1":
+					element("span", "You have a strange toothache.", "gold");
+					break;
+				case "wolfUp2":
+					element("span", "Your mouth feels different. You explore your mouth and wince as your tongue presses against your new fangs.", "gold");
+					break;
+				case "wolfUp3":
+					element("span", `Your scalp ${V.pbdisable === "f" ? "and pubic area itch" : "itches"}.`, "gold");
+					break;
+				case "wolfUp4":
+					element("span", "You feel something on your head. You reach up and tug, but it hurts. You have a new pair of wolf ears.", "gold");
+					if (V.pbdisable === "f") element("span", "You also notice long and fluffy hair has grown in your pubic area.");
+					break;
+				case "wolfUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "wolfUp6":
+					element("span", "Your bottom feels heavier than usual. You reach behind you and feel your new wolf tail.", "gold");
+					fragment.append(wikifier("earnFeat", "'Wolf'"));
+					break;
+				case "wolfDown0":
+					element("span", "Your toothache has stopped.", "gold");
+					break;
+				case "wolfDown1":
+					element("span", "Your fangs have turned into regular teeth.", "gold");
+					break;
+				case "wolfDown2":
+					element("span", `Your scalp ${V.pbdisable === "f" ? "and pubic area no longer itch" : "no longer itches"}.`, "gold");
+					break;
+				case "wolfDown3":
+					element("span", `Your wolf ears ${V.pbdisable === "f" ? "and extra body hair " : ""}have disappeared.`, "gold");
+					break;
+				case "wolfDown4":
+					element("span", "Your lower back has stopped itching.", "gold");
+					break;
+				case "wolfDown5":
+					element("span", "Your balance feels different. Your wolf tail has disappeared.", "gold");
+					break;
+				case "catUp1":
+					element("span", "You have a strange toothache. A beetle crawls by. You resist the urge to pounce.", "gold");
+					break;
+				case "catUp2":
+					element("span", "Your mouth feels different. You explore your mouth and wince as your tongue presses against your new fangs.", "gold");
+					break;
+				case "catUp3":
+					element("span", "Your scalp itches.", "gold");
+					break;
+				case "catUp4":
+					element("span", "Your scalp twitches. You reach up and feel your new pair of cat ears.", "gold");
+					break;
+				case "catUp5":
+					element("span", "Your lower back itches.", "gold");
+					break;
+				case "catUp6":
+					element("span", "Your bottom feels weighty, yet perfectly balanced. You reach behind and feel your new cat tail.", "gold");
+					fragment.append(wikifier("earnFeat", "'Neko'"));
+					break;
+				case "catUp7":
+					element("span", "Your eyes itch.", "gold");
+					break;
+				case "catUp8":
+					element("span", "Your eyes water from a burning sensation around the pupil.", "gold");
+					break;
+				case "catUp9":
+					element("span", "Your eyes burn, likely due to some sort of allergy, you can barely keep them open.", "gold");
+					break;
+				case "catUp10":
+					element(
+						"span",
+						"Your eyes no longer burn, and despite the darkness of the early morning, you are able to pick up every detail of the scenery around you.",
+						"gold"
+					);
+					break;
+				case "catDown0":
+					element("span", "Your toothache has stopped.", "gold");
+					break;
+				case "catDown1":
+					element("span", "Your fangs have turned into regular teeth.", "gold");
+					break;
+				case "catDown2":
+					element("span", "Your scalp no longer itches.", "gold");
+					break;
+				case "catDown3":
+					element("span", "Your cat ears have disappeared.", "gold");
+					break;
+				case "catDown4":
+					element("span", "The itching in your lower back stops.", "gold");
+					break;
+				case "catDown5":
+					element("span", "Your cat tail disappears.", "gold");
+					break;
+				case "catDown6":
+					element("span", "Your eyes no longer itch; it must have been an allergy.", "gold");
+					break;
+				case "catDown7":
+					element("span", "Your eyes sense less detail of your surroundings.", "gold");
+					break;
+				case "catDown9":
+					element("span", "Your surroundings appear darker than before.", "gold");
+					break;
+				case "cowUp1":
+					element("span", "You have a strange urge to munch grass.", "gold");
+					break;
+				case "cowUp2":
+					element("span", "Your scalp itches. You reach up, and find that a pair of small horns have sprouted.", "gold");
+					break;
+				case "cowUp3":
+					element("span", "Your ears tingle.", "gold");
+					break;
+				case "cowUp4":
+					element(
+						"span",
+						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of cow ears.",
+						"gold"
+					);
+					break;
+				case "cowUp5":
+					element("span", "Your lower back tingles.", "gold");
+					break;
+				case "cowUp6":
+					element(
+						"span",
+						"Your bottom feels heavier than usual. You reach behind you and feel your new cow tail. You suppress the urge to moo.",
+						"gold"
+					);
+					fragment.append(wikifier("earnFeat", "'Cattle'"));
+					break;
+				case "cowDown0":
+					element("span", "Grass no longer looks so tasty.", "gold");
+					break;
+				case "cowDown1":
+					element("span", "Your small horns have disappeared.", "gold");
+					break;
+				case "cowDown2":
+					element("span", "Your ears no longer tingle.", "gold");
+					break;
+				case "cowDown3":
+					element("span", "Your cow ears have disappeared.", "gold");
+					break;
+				case "cowDown4":
+					element("span", "Your lower back has stopped tingling.", "gold");
+					break;
+				case "cowDown5":
+					element("span", "Your balance feels different. Your cow tail has disappeared.", "gold");
+					break;
+				case "harpyUp1":
+					element("span", "Your vision feels sharper.", "gold");
+					break;
+				case "harpyUp2":
+					element("span", "Your eyes feel strange. Your vision has improved.", "gold");
+					break;
+				case "harpyUp3":
+					element(
+						"span",
+						`Your lower back and neck itch. ${
+							V.loveInterest.primary !== "None"
+								? `Your thoughts turn to ${
+										["Black Wolf", "Great Hawk"].includes(V.loveInterest.primary)
+											? `the ${V.loveInterest.primary},`
+											: `${V.loveInterest.primary},`
+								  } and you have a primal, almost animalistic, urge to be with ${C.npc[V.loveInterest.primary].pronouns.him}.`
+								: "You suddenly crave a true partner to be with."
+						}`,
+						"gold"
+					);
+					break;
+				case "harpyUp4":
+					element("span", "Your bottom feels lighter. You reach behind you, and grasp a feathered tail. Small feathers cover your neck.", "gold");
+					break;
+				case "harpyUp5":
+					element("span", `Your back ${V.pbdisable === "f" ? "and pubic area itch" : "itches"}.`, "gold");
+					break;
+				case "harpyUp6":
+					element(
+						"span",
+						`You feel light as a feather. Wings caress your face.${
+							V.pbdisable === "f" ? " You also notice that short, feathery hair has grown in your pubic area." : ""
+						}`,
+						"gold"
+					);
+					fragment.append(wikifier("earnFeat", "'Harpy'"));
+					break;
+				case "harpyDown0":
+					element("span", "Your vision has returned to normal.", "gold");
+					break;
+				case "harpyDown1":
+					element("span", "Your vision is no longer so sharp.", "gold");
+					break;
+				case "harpyDown2":
+					element("span", "The itching in your lower back and neck both stop, and you no longer crave a partner so feverishly.", "gold");
+					break;
+				case "harpyDown3":
+					element("span", "Your feathered tail has disappeared, along with the feathers on your neck.", "gold");
+					break;
+				case "harpyDown4":
+					element("span", `You feel heavier${V.pbdisable === "f" ? ", and your pubic area no longer itches" : ""}.`, "gold");
+					break;
+				case "harpyDown5":
+					element("span", `You feel heavier. Your feathered wings${V.pbdisable === "f" ? " and feathery pubes" : ""} have disappeared.`, "gold");
+					break;
+				case "foxUp1":
+					element("span", "You have a strange toothache, and your eyes feel a little sharper. You have the urge to steal something.", "gold");
+					break;
+				case "foxUp2":
+					element(
+						"span",
+						"Your mouth and eyes feel different. You explore your mouth and yip as your tongue presses against your new fangs.",
+						"gold"
+					);
+					break;
+				case "foxUp3":
+					element(
+						"span",
+						`Your scalp itches. ${
+							V.loveInterest.primary !== "None"
+								? `Your thoughts turn to ${
+										["Black Wolf", "Great Hawk"].includes(V.loveInterest.primary)
+											? `the ${V.loveInterest.primary},`
+											: `${V.loveInterest.primary},`
+								  } and you have a primal, almost animalistic, urge to be with ${C.npc[V.loveInterest.primary].pronouns.him}.`
+								: "You suddenly crave a true partner to be with."
+						}`,
+						"gold"
+					);
+					break;
+				case "foxUp4":
+					element("span", "You feel something on your head. You reach up and touch your new pair of fox ears, and they wiggle in response.", "gold");
+					break;
+				case "foxUp5":
+					element(
+						"span",
+						"Your lower back itches. You have the urge to let someone scratch it. You also notice strange discolouration around your eyes.",
+						"gold"
+					);
+					break;
+				case "foxUp6":
+					element(
+						"span",
+						"Your bottom feels heavier than usual. You give it a wiggle and feel your new fox tail. It's extremely comforting to touch.",
+						"gold"
+					);
+					fragment.append(wikifier("earnFeat", "'Fox'"));
+					break;
+				case "foxDown0":
+					element("span", "Your toothache has stopped.", "gold");
+					break;
+				case "foxDown1":
+					element("span", "Your fangs have turned into regular teeth, and your eyesight feels dull.", "gold");
+					break;
+				case "foxDown2":
+					element("span", "Your scalp no longer itches, and you no longer crave a partner so feverishly.", "gold");
+					break;
+				case "foxDown3":
+					element("span", "Your fox ears have disappeared.", "gold");
+					break;
+				case "foxDown4":
+					element("span", "Your lower back has stopped itching, and the discolouration around your eyes has vanished.", "gold");
+					break;
+				case "foxDown5":
+					element("span", "Your balance feels different. Your fox tail has disappeared.", "gold");
+					break;
+				// Clothes
+				case "bimboMessage1":
+					element(
+						"span",
+						`You feel different, but you're not sure how or why.${
+							V.worn.upper.type.includes("bimbo") || V.worn.lower.type.includes("bimbo") || V.worn.feet.type.includes("bimbo")
+								? " Your clothing seems to cling to you."
+								: ""
+						}`,
+						"lewd"
+					);
+					break;
+				case "bimboMessage2":
+					element(
+						"span",
+						`You feel different yet again, this time you're more sure about it, something is making you look more feminine. Your thoughts turn to the outfit you${
+							V.worn.upper.type.includes("bimbo") || V.worn.lower.type.includes("bimbo") || V.worn.feet.type.includes("bimbo")
+								? "'re wearing."
+								: " had on earlier."
+						}`,
+						"lewd"
+					);
+					break;
+				case "bimboMessage3":
+					element(
+						"span",
+						"You feel an odd sense of yearning grow within you, and you are filled with a deep desire. An unbearable lust soon takes hold.",
+						"lewd"
+					);
+					break;
+				// Feats
+				case "heroicVictory":
+					fragment.append(wikifier("earnFeat", "'Heroic Victory'"));
+					break;
+				case "dawnToDusk":
+					fragment.append(wikifier("earnFeat", "'Dawn to Dusk'"));
+					break;
+				case "adultShopContribution":
+					if (V.adultshopcontribution) fragment.append(wikifier("earnFeat", "'Opened Pandoras Box'"));
+					if (V.adultshopcontribution >= 12) fragment.append(wikifier("earnFeat", "'Opened Pandoras Cocks'"));
+					break;
+				default:
+					// Report error
+					errors.pushUnique(messageKey);
+					break;
+			}
+		});
+		if (errors.length) Errors.report("Not fully implemented or incorrect time message keys found", errors);
+		V.timeMessages = [];
+	}
+
 	sWikifier("<<integritycheck>><<exposure>>");
 
 	V.orgasmdown -= 1;
