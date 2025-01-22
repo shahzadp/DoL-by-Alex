@@ -62,9 +62,8 @@ function masturbationSlimeControl() {
 		fragment.append(" ");
 		V.mouthaction = "slime";
 	} else if (V.mouthaction === "mpenispullback") {
-		fragment.append(
-			Wikifier.wikifyEval('<span class="red">The slime prevents you from pulling back from sucking your <<penis>> as deep as you currently are.</span>')
-		);
+		fragment.append(Wikifier.wikifyEval('<span class="red">The slime prevents you from pulling back from sucking your <<penis>> as deep as you currently are.</span>'));
+		fragment.append(" ");
 		V.mouthaction = "slime";
 	} else if (V.mouthaction === "mvaginastop") {
 		fragment.append(redText("The slime prevents you from moving your mouth away from your vagina."));
