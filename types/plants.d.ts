@@ -37,6 +37,8 @@ declare global {
 		season: Season[];
 		ingredients: any[];
 		icon: string;
+		shop?: any[];
+		boughtInBulk?: number;
 	}
 
 	export interface Plot {

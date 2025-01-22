@@ -2465,3 +2465,171 @@ function canGiftFood(npc) {
 	return V.daily.giftedFood[npc] === undefined && amount > 0;
 }
 window.canGiftFood = canGiftFood;
+
+function ingredientIsAllowed(providedKey) {
+	const provided = T.ingredientsSupplied || [];
+	const exceptions = T.ingredientsExceptions;
+	const isAllowed = key => {
+		if (provided.includes(key) || !exceptions || exceptions.includes(key)) return true;
+
+		const setupObject = setup.plants[key];
+		if (Array.isArray(setupObject?.ingredients) && setupObject.ingredients.length) {
+			return setupObject.ingredients.every(ingredient => {
+				return isAllowed(ingredient);
+			});
+		}
+
+		return false;
+	};
+	return isAllowed(providedKey);
+}
+window.ingredientIsAllowed = ingredientIsAllowed;
+
+function ingredientAlternativesSetup(recipe) {
+	const alternatives = {
+		bottle_of_milk: [],
+		cream: [],
+		strange_flower: ["blood_lemon"],
+		chicken_egg: ["bird_egg"],
+		beef: [],
+	};
+	if (V.chef_state >= 3 && T.allowLewdIngredients && (!V.options.ingredientsAutoManage || V.options.ingredientsAutoManageLewd)) {
+		alternatives.bottle_of_milk.pushUnique("baby_bottle_of_breast_milk");
+		alternatives.cream.pushUnique("bottle_of_semen");
+	}
+	switch (recipe) {
+		case "lasagne":
+			alternatives.beef.pushUnique("chicken");
+			break;
+	}
+
+	return alternatives;
+}
+
+function ingredientsProvided(mainIngredient, recipe) {
+	if (!setup.plants[mainIngredient] || !setup.plants[recipe]) return false;
+	const alternatives = ingredientAlternativesSetup(recipe);
+	const options = [mainIngredient];
+
+	if (alternatives[mainIngredient]) alternatives[mainIngredient].forEach(ingredient => options.pushUnique(ingredient));
+	return options.find(ingredient => T.ingredientsSupplied?.includes(ingredient));
+}
+window.ingredientsProvided = ingredientsProvided;
+
+function ingredientUsed(mainIngredient, recipe) {
+	const alternatives = ingredientAlternativesSetup(recipe);
+
+	// When auto management has been disabled
+	if (!V.options.ingredientsAutoManage) {
+		if (Array.isArray(alternatives[mainIngredient]) && alternatives[mainIngredient].includes(V.plants[mainIngredient].alternative)) {
+			return V.plants[mainIngredient].alternative;
+		}
+		return mainIngredient;
+	}
+
+	// Check for any provided ingredients first
+	if (ingredientsProvided(mainIngredient)) return ingredientsProvided(mainIngredient);
+
+	// Check for alternatives if there is none of the normal ingredient
+	if (alternatives[mainIngredient]?.length && V.plants[mainIngredient]?.amount <= 0) {
+		const alternative = alternatives[mainIngredient].find(ingredient => V.plants[ingredient]?.amount > 0);
+		if (alternative) return alternative;
+	}
+	return mainIngredient;
+}
+window.ingredientUsed = ingredientUsed;
+
+function ingredientsTotal(mainIngredient, recipe, includeAlternatives) {
+	if (!setup.plants[mainIngredient]) return 0;
+	const alternatives = ingredientAlternativesSetup(recipe);
+	let count = V.plants[mainIngredient].amount;
+	if (includeAlternatives && alternatives[mainIngredient] && !T.ingredientsSupplied?.includes(mainIngredient)) {
+		alternatives[mainIngredient].forEach(ingredient => {
+			count += V.plants[ingredient]?.amount || 0;
+		});
+	}
+	return count;
+}
+window.ingredientsTotal = ingredientsTotal;
+
+function ingredientsOptions(mainIngredient, recipe) {
+	const alternatives = ingredientAlternativesSetup(recipe);
+	const result = [mainIngredient];
+	if (Array.isArray(alternatives[mainIngredient])) alternatives[mainIngredient].forEach(ingredient => result.pushUnique(ingredient));
+	return result;
+}
+window.ingredientsOptions = ingredientsOptions;
+
+function ingredientsNextAlternative(mainIngredient, recipe) {
+	if (!V.plants[mainIngredient]) return;
+	const options = ingredientsOptions(mainIngredient, recipe);
+	const currentAlt = V.plants[mainIngredient].alternative || mainIngredient;
+	const currentIndex = options.indexOf(currentAlt);
+	const nextIndex = currentIndex === -1 || currentIndex + 1 >= options.length ? 0 : currentIndex + 1;
+	V.plants[mainIngredient].alternative = options[nextIndex];
+}
+window.ingredientsNextAlternative = ingredientsNextAlternative;
+
+function kitchenFilter() {
+	T.recipesKeys = [];
+	T.recipesGroups = ["sweets", "drink", "ingredient", "savouries"];
+	const kitchenFilter = T.foodSearch ? T.foodSearch.split(/[_ ]/g) : false;
+
+	let missingIngredients = false;
+	let providedIngredients = false;
+	let knownRestrictions = false;
+
+	Object.keys(setup.plants).forEach(recipe => {
+		const item = setup.plants[recipe];
+
+		if (
+			kitchenFilter &&
+			!kitchenFilter.find(
+				term =>
+					(V.options.ingredientsSearch !== "ingredients" &&
+						(item.name.includes(term) || item.type.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))) ||
+					(V.options.ingredientsSearch !== "recipes" &&
+						item.ingredients.find(ingredient => ingredient.includes(term) || ingredientUsed(ingredient)?.includes(term)))
+			)
+		) {
+			return;
+		}
+
+		if (T.ingredientsSupplied?.includes(recipe)) {
+			providedIngredients = true;
+			if (!T.recipesKeys.find(recipe => recipe.key === recipe)) T.recipesKeys.push({ key: recipe, group: "Provided" });
+			return;
+		}
+		if (!V.plants[recipe].recipe || !item.ingredients) return;
+		let group;
+
+		if (item.special.includes("sweet")) {
+			group = "sweets";
+		} else if (item.special.includes("drink")) {
+			group = "drink";
+		} else if (item.type.includes("ingredient")) {
+			group = "ingredient";
+		} else {
+			group = "savouries";
+		}
+
+		let missingIngredientsFound = false;
+		item.ingredients.forEach(ingredient => {
+			if (ingredientsTotal(ingredient, recipe, true) <= 0 && !ingredientsProvided(ingredient, recipe)) missingIngredientsFound = true;
+		});
+
+		if (!ingredientIsAllowed(recipe)) {
+			group = "Restricted";
+			knownRestrictions = true;
+		} else if (missingIngredientsFound) {
+			group = "Missing ingredients";
+			missingIngredients = true;
+		}
+		if (!T.recipesKeys.find(recipe => recipe.key === recipe)) T.recipesKeys.push({ key: recipe, group });
+	});
+
+	if (missingIngredients) T.recipesGroups.push("Missing ingredients");
+	if (providedIngredients) T.recipesGroups.push("Provided");
+	if (knownRestrictions) T.recipesGroups.push("Restricted");
+}
+DefineMacro("kitchenFilter", kitchenFilter);
