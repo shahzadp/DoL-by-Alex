@@ -2078,26 +2078,8 @@ window.getTimeString = getTimeString;
 
 /* Determines and replenishes stock at supermarket */
 function supermarketWeekly() {
-	const foodKeys = Object.keys(setup.plants);
-	for (let i = 0; i < foodKeys.length; i++) {
-		const currentFood = foodKeys[i];
-		if (
-			setup.plants[currentFood].name === "cocoa_powder" ||
-			setup.plants[currentFood].name === "salt" ||
-			setup.plants[currentFood].name === "sugar" ||
-			setup.plants[currentFood].name === "vegetable_oil" ||
-			setup.plants[currentFood].type === "meat" ||
-			setup.plants[currentFood].type === "fish" ||
-			setup.plants[currentFood].name === "red_wine" ||
-			setup.plants[currentFood].name === "white_wine" ||
-			setup.plants[currentFood].name === "oats" ||
-			setup.plants[currentFood].name === "date" ||
-			setup.plants[currentFood].name === "cherry" ||
-			setup.plants[currentFood].name === "lime" ||
-			setup.plants[currentFood].name === "rice"
-		) {
-			V.plants[currentFood].supermarket = Math.trunc(3000 / setup.plants[currentFood].plant_cost);
-		}
-	}
+	Object.keys(setup.plants).forEach(key => {
+		if (setup.plants[key].shop?.includes("supermarket")) V.plants[key].supermarket = Math.trunc(3000 / setup.plants[key].plant_cost);
+	});
 }
 DefineMacro("supermarketWeekly", supermarketWeekly);

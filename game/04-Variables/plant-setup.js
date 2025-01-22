@@ -738,6 +738,8 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "salt.png",
+			shop: ["supermarket"],
+			boughtInBulk: 25,
 		},
 
 		vegetable_oil: {
@@ -756,6 +758,8 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "vegetable_oil.png",
+			shop: ["supermarket"],
+			boughtInBulk: 25,
 		},
 
 		pizza: {
@@ -1051,6 +1055,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "bacon.png",
+			shop: ["supermarket"],
 		},
 
 		mince_pie: {
@@ -1087,6 +1092,8 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "sugar.png",
+			shop: ["supermarket"],
+			boughtInBulk: 25,
 		},
 
 		sausage_roll: {
@@ -1124,6 +1131,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "sausage.png",
+			shop: ["supermarket"],
 		},
 
 		potato_pancake: {
@@ -1235,6 +1243,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "chicken.png",
+			shop: ["supermarket"],
 		},
 
 		pepper: {
@@ -1289,6 +1298,7 @@ function initPlants() {
 			season: ["spring", "summer", "autumn"],
 			ingredients: [],
 			icon: "rice.png",
+			shop: ["supermarket"],
 		},
 
 		haddock: {
@@ -1453,6 +1463,7 @@ function initPlants() {
 			season: ["spring", "summer", "autumn"],
 			ingredients: [],
 			icon: "salmon.png",
+			shop: ["supermarket"],
 		},
 
 		trout: {
@@ -1471,6 +1482,7 @@ function initPlants() {
 			season: ["autumn", "winter"],
 			ingredients: [],
 			icon: "trout.png",
+			shop: ["supermarket"],
 		},
 
 		spaghetti_bolognese: {
@@ -1658,6 +1670,8 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "cocoa_powder.png",
+			shop: ["supermarket"],
+			boughtInBulk: 5,
 		},
 
 		chocolate: {
@@ -1750,7 +1764,7 @@ function initPlants() {
 			multiplier: 1,
 			special: ["vegetarian", "sweet"],
 			season: [],
-			ingredients: ["chicken_egg", "bird_egg", "cream", "sugar", "butter", "flour", "lemon"],
+			ingredients: ["chicken_egg", "cream", "sugar", "butter", "flour", "lemon"],
 			icon: "soufflé.png",
 		},
 
@@ -1920,6 +1934,7 @@ function initPlants() {
 			season: ["spring", "summer", "autumn", "winter"],
 			ingredients: [],
 			icon: "date.png",
+			shop: ["supermarket"],
 		},
 
 		sticky_toffee_pudding: {
@@ -1994,6 +2009,7 @@ function initPlants() {
 			season: ["spring", "autumn", "winter"],
 			ingredients: [],
 			icon: "cherry.png",
+			shop: ["supermarket"],
 		},
 
 		belgian_bun: {
@@ -2031,6 +2047,7 @@ function initPlants() {
 			season: ["spring", "summer", "autumn", "winter"],
 			ingredients: [],
 			icon: "lime.png",
+			shop: ["supermarket"],
 		},
 
 		linguine: {
@@ -2141,6 +2158,7 @@ function initPlants() {
 			season: ["winter"],
 			ingredients: [],
 			icon: "cod.png",
+			shop: ["supermarket"],
 		},
 
 		fish_and_chips: {
@@ -2177,6 +2195,7 @@ function initPlants() {
 			season: ["spring", "autumn", "winter"],
 			ingredients: [],
 			icon: "clam.png",
+			shop: ["supermarket"],
 		},
 
 		clam_chowder: {
@@ -2389,6 +2408,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "red_wine.png",
+			shop: ["supermarket"],
 		},
 
 		white_wine: {
@@ -2407,6 +2427,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "white_wine.png",
+			shop: ["supermarket"],
 		},
 
 		poached_pear: {
@@ -2572,6 +2593,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "beef.png",
+			shop: ["supermarket"],
 		},
 
 		pork: {
@@ -2590,6 +2612,7 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "pork.png",
+			shop: ["supermarket"],
 		},
 
 		cauliflower: {
@@ -2626,6 +2649,8 @@ function initPlants() {
 			season: [],
 			ingredients: [],
 			icon: "oats.png",
+			shop: ["supermarket"],
+			boughtInBulk: 5,
 		},
 
 		prawn: {
@@ -2644,6 +2669,7 @@ function initPlants() {
 			season: ["summer", "autumn", "winter"],
 			ingredients: [],
 			icon: "prawn.png",
+			shop: ["supermarket"],
 		},
 
 		omelette: {
