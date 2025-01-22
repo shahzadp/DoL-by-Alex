@@ -67,18 +67,15 @@ const secondsMapper = {
  *
  * @param {number} time The interval of units of time
  * @param {'sec'|'min'|'hour'|'day'|'week'} type The spans of time to pass.
- * @returns {DocumentFragment} The fragment to render elements from.
  */
 function passTime(time = 0, type = "min") {
 	if (!Number.isInteger(time)) return Errors.report("Invalid time to pass: " + time, Utils.GetStack());
 	const multiplier = secondsMapper[type] || 1;
-	const fragment = Time.pass(time * multiplier);
-	return fragment;
+	Time.pass(time * multiplier);
 }
 Macro.add("pass", {
 	handler() {
-		const fragment = passTime(...this.args);
-		this.output.append(fragment);
+		passTime(...this.args);
 	},
 });
 
