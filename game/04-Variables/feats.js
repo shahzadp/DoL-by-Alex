@@ -1772,6 +1772,14 @@ setup.feats = {
 		filter: ["All", "Discoveries-Town"],
 		hint: "Hint: Convince Briar to do business.",
 	},
+	"Player of the Match": {
+		title: "Player of the Match",
+		desc: "Stole the cricket ball from Wren.",
+		difficulty: 2,
+		series: "",
+		filter: ["All", "Discoveries-Town"],
+		hint: "Hint: Double-cross your partner in crime.",
+	},
 	"Ear Slime Lover": {
 		title: "Ear Slime Lover",
 		desc: "It is your best friend.",

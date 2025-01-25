@@ -1175,6 +1175,21 @@ function dailyNPCEffects() {
 		}
 	}
 
+	// Wren
+	if (C.npc.Wren.state === "active") {
+		if (V.wrenHeistMonthly > 0) V.wrenHeistMonthly--;
+		else if (V.wrenHeistMonthly === 0) {
+			delete V.wrenHeist;
+			delete V.wrenHeistMonthly;
+		}
+
+		if (V.wrenHeist) {
+			V.wrenHeist = false;
+			if (V.wrenHeistDance.attended !== true) V.wrenHeistMissed = true;
+			delete V.wrenHeistDance;
+		}
+	}
+
 	// Wraith
 	if (V.wraith.state) {
 		if (V.wraithAngerCooldown) {
