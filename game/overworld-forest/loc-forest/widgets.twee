@@ -186,27 +186,7 @@
 		<</if>>
 	<</addinlineevent>>
 	<<addevent "forestwolfspy">>
-	<<addinlineevent "forest_wolf" 0.33>>
-		<<beastNEWinit 1 wolf>>
-
-		<!-- Modified for monster people -->
-		A lone <<beasttype>> emerges from between the trees, teeth bared.
-		<<if $monster is 1>>
-			"Found you," <<bhe>> barks. "Mine."
-		<</if>>
-		<br><br>
-
-		<<if $monster is 1 or $bestialitydisable is "f">>
-			<<link [[Next|Forest Wolf]]>><<set $molestationstart to 1>><</link>>
-			<br>
-		<<else>>
-			It chases you through the woods. You run until you can no longer hear it behind you. You're not sure if you outran it or it grew bored.
-			<<beastescape>><<gtiredness>><<tiredness 4>><<gathletics>><<athletics 2>><<silently>><<physique 1>><</silently>>
-			<br><br>
-
-			<<link [[Next (0:20)|Forest]]>><<pass 20>><<set $eventskip to 1>><<endevent>><</link>>
-		<</if>>
-	<</addinlineevent>>
+	<<addevent "forestwolf" 0.33>>
 	<<addinlineevent "forestoutskirts_safeperson">>
 		<<if Time.dayState is "night">>
 			<<generate1>><<person1>>
@@ -241,7 +221,7 @@
 		<</if>>
 	<</addinlineevent>>
 	<<addevent "forestrock" 0.33>>
-	<<addinlineevent>>
+	<<addinlineevent "forestoutskirts_treebranch">>
 		You squeeze through a thicket.
 		<<set $stripintegrity to 10>><<set $stripobject to "tree branch">><<stripobject>>
 		<br><br>
@@ -254,52 +234,23 @@
 <<widget "eventforest">>
 	<<if $foresthunt lte 0 and wraithCanHunt() and $wraith.state and ($wraith.hunt or $wraith.timer gte random(0, 40))>>
 		<<wHunt "forest">>
+	<<elseif $foresthunt lte 0 and random(1, 16) is 1>>
+		/* 1 in 12 gives a 5% trigger rate when searching at max allure (given the 60% chance of calling eventforest).
+		 * Not part of the eventpool, as having a fixed percent chance simplifies game balancing.
+		 * This way, adding new encounters to this event pool won't reduce the risk of being hunted.
+		 * Also, players don't get punished with an increased hunt rate if they disable some encounter types.
+		 */
+		<<foresthuntstart>>
+		<<addevent "foresthuntstart" 0.5>>
 	<<else>>
 		<<cleareventpool>>
 		<<outfitChecks>>
-		<<if $foresthunt lte 0>>
-			<<addinlineevent "forest_hunted" 0.5>>
-				A chill runs up your spine, a warning from some primal instinct. <span class="red">Something is hunting you.</span>
-				<<set $rng2 to random(1, 2)>>
-				<<if $rng2 is 1>>
-					<<set $edenforesthunt to 1>>
-					<<set $blackwolfhunt to 0>>
-				<<elseif $rng2 is 2>>
-					<<set $edenforesthunt to 0>>
-					<<set $blackwolfhunt to 1>>
-				<</if>>
-				<<set $foresthunt to 1>>
-				<<endevent>>
-				<br><br>
-
-				<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
-			<</addinlineevent>>
-		<</if>>
 		<<addevent "forestwolfspy" 0.25>>
 		<<addevent "forestboar" 0.20>>
 		<<if _bottomless is false>>
 			<<addevent "ForestBullies" 0.20>>
 		<</if>>
-		<<addinlineevent "forest_wolf" 0.33>>
-			<<beastNEWinit 1 wolf>>
-			<!-- Modified for monster people -->
-				A lone <<beasttype>> emerges from between the trees, teeth bared.
-				<<if $monster is 1>>
-					"Prey. No struggle."
-				<</if>>
-				<br><br>
-
-			<<if $monster is 1 or $bestialitydisable is "f">>
-				<<link [[Next|Forest Wolf]]>><<set $molestationstart to 1>><</link>>
-				<br>
-			<<else>>
-				It chases you through the woods. You run until you can no longer hear it behind you. You're not sure if you outran it or it grew bored.
-				<<beastescape>><<gtiredness>><<tiredness 4>><<gathletics>><<athletics 2>><<silently>><<physique 1>><</silently>>
-				<br><br>
-
-				<<link [[Next (0:20)|Forest]]>><<endevent>><<pass 20>><<set $eventskip to 1>><</link>>
-			<</if>>
-		<</addinlineevent>>
+		<<addevent "forestwolf" 0.33>>
 		<<addevent "forestbear" 0.15>>
 		<<addevent "forestrock" 0.25>>
 		<<addinlineevent "forest_clothingdamage">>
@@ -322,26 +273,13 @@
 <<widget "eventforestdeep">>
 	<<if $foresthunt lte 0 and wraithCanHunt() and $wraith.state and ($wraith.hunt or $wraith.timer gte random(0, 20))>>
 		<<wHunt "forest">>
+	<<elseif $foresthunt lte 0 and random(1, 6) is 1>>
+		/* 1 in 6 gives a 10% trigger rate when searching at max allure (given a 60% chance of calling eventforestdeep).
+		 * Not in eventpool: see eventforest.
+		 */
+		<<foresthuntstart>>
 	<<else>>
 		<<cleareventpool>>
-		<<if $foresthunt lte 0>>
-			<<addinlineevent "deepforest_hunted">>
-				A chill runs up your spine, a warning from some primal instinct. <span class="red">Something is hunting you.</span>
-				<<set $rng2 to random(1, 2)>>
-				<<if $rng2 is 1>>
-					<<set $edenforesthunt to 1>>
-					<<set $blackwolfhunt to 0>>
-				<<elseif $rng2 is 2>>
-					<<set $edenforesthunt to 0>>
-					<<set $blackwolfhunt to 1>>
-				<</if>>
-				<<set $foresthunt to 1>>
-				<<endevent>>
-				<br><br>
-
-				<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
-			<</addinlineevent>>
-		<</if>>
 		<<addevent "forestwolfspy2">>
 		<<addinlineevent "deepforest_wolf2">>
 			<<beastNEWinit 2 wolf>>
@@ -393,8 +331,10 @@
 				<</if>>
 			<</addinlineevent>>
 		<</if>>
-		<<if $tentacledisable is "f" and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
-			<<addinlineevent>>
+		<<if $plantdisable is "f" and $tentacledisable is "f" and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
+			<<addevent "forestplant_kiss">>
+			<<addevent "forestplant_snare">>
+			<<addinlineevent "deepforest_roots">>
 				Something grabs your ankle, causing you to trip and fall. You look back, and see a tree root coiling round you. Several others snake through the undergrowth.
 				<br><br>
 
@@ -416,26 +356,11 @@
 
 			<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
 		<</addinlineevent>>
-	<<if $plantdisable is "f" and $tentacledisable is "f" and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
-		<<addevent "forestplant_kiss">>
-		<<addevent "forestplant_snare">>
-	<</if>>
-	<<addevent "forestrock">>
-	<<if $bestialitydisable is "f" and $waspdisable is "f">>
-		<<addevent "forestwasps">>
-	<</if>>
-	<<addinlineevent "deepforest_clothingdamage">>
-		You squeeze through a thicket.
-		<<set $stripintegrity to 10>><<set $stripobject to "tree branch">><<stripobject>>
-		<br><br>
-
-		<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
-	<</addinlineevent>>
-	<<set _forestNestUnsafe to true>>
-	<<addevent "forest_nest">>
-	<<if $fox_grudge>>
-		<<addevent "fox_grudge" 0.33>>
-	<</if>>
+		<<set _forestNestUnsafe to true>>
+		<<addevent "forest_nest">>
+		<<if $fox_grudge>>
+			<<addevent "fox_grudge" 0.33>>
+		<</if>>
 		<<runeventpool>>
 	<</if>>
 <</widget>>
@@ -507,18 +432,35 @@
 <</widget>>
 
 <<widget "eventforestitem">>
+	<<rng>>
+	<<if $rng Lte 25>>
+		/* Not part of the eventpool, as having a fixed percent chance simplifies game balancing.
+		 * This way, adding new encounters and items to the event pool won't change the difficulty of
+		 *  mushroom-hunting between game versions.
+		 * Similarly, players modifying their toggles (eg the bees toggle, here) won't affect the mushroom drop rate.
+		 *
+		 * Note that other items in the pool will still be affected: so within the event pool,
+		 * the forest gem drop chance is 1:11 because of the bees event, while
+		 * the dagger and arrow are 1:7 as the bee event is not in their eventpool.
+		 * Multiplying that by 0.75 (not a mushroom) and 0.4 (searching), the overall chance
+		 * of getting a museum item each time you search is 2.7% in the deep forest, 4.3% elsewhere.
+		 */
+		<<mushroompick>>
+		<<exit>>
+	<</if>>
 	<<cleareventpool>>
-	<<addevent "forestgather">>
-	<<addevent "mushroompick" 0.33>>
-	<<addevent "forest_nest" 0.25>>
+	/* To calculate the overall odds of getting these when searching or walking, multiply by:
+	 * 0.75% (not a mushroom) * (0.2 for walking or 0.4 for searching) * odds within the event pool*/
+	<<addevent "forestgather" 4>>
+	<<addevent "forest_nest" 1>>
 	<<if $forest lte 20>>
-		<<addevent "forestarrow" 0.5>>
+		<<addevent "forestarrow" 2>>
 	<<elseif $forest lte 50>>
-		<<addevent "forestdagger" 0.5>>
+		<<addevent "forestdagger" 2>>
 	<<else>>
-		<<addevent "forestgem" 0.5>>
-		<<if $beedisable is "f">>
-			<<addinlineevent>>
+		<<addevent "forestgem" 2>>
+		<<addinlineevent "eventforestitem_bees" 4>>
+			<<if $beedisable is "f">>
 				You hear a gentle buzz up ahead. A large beehive hangs from a tree. Workers fly in and out in a quest for pollen. The honey would be valuable.
 				<br><br>
 
@@ -531,8 +473,13 @@
 				<</if>>
 				<<getouticon>><<link [[Leave|Forest]]>><<set $eventskip to 1>><</link>>
 				<br>
+			<<else>>
+					/* This event must exist whether or not $beedisable, so changing toggles won't affect drop rates. */
+					You take a moment to scramble over a fallen tree, and continue uneventfully.
+					<br><br>
+					<<getouticon>><<link [[Leave|Forest]]>><<set $eventskip to 1>><</link>>
+			<</if>>
 			<</addinlineevent>>
-		<</if>>
 	<</if>>
 	<<runeventpool>>
 <</widget>>
@@ -686,6 +633,32 @@
 	<</if>>
 <</widget>>
 
+<<widget "forestwolf">>
+	<<beastNEWinit 1 wolf>>
+
+	<!-- Modified for monster people -->
+	A lone <<beasttype>> emerges from between the trees, teeth bared.
+	<<if $monster is 1>>
+		<<if $forest lt 50>>
+			"Found you," <<bhe>> barks. "Mine."
+		<<else>>
+			"Prey. No struggle."
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<if $monster is 1 or $bestialitydisable is "f">>
+		<<link [[Next|Forest Wolf]]>><<set $molestationstart to 1>><</link>>
+		<br>
+	<<else>>
+			It chases you through the woods. You run until you can no longer hear it behind you. You're not sure if you outran it or it grew bored.
+			<<beastescape>><<gtiredness>><<tiredness 4>><<gathletics>><<athletics 2>><<silently>><<physique 1>><</silently>>
+			<br><br>
+
+			<<link [[Next (0:20)|Forest]]>><<pass 20>><<set $eventskip to 1>><<endevent>><</link>>
+		<</if>>
+<</widget>>
+
 <<widget "forestspider">>
 	You're walking across the top of a dell when the ground gives way. Your stomach lurches as you tumble down the slope.
 	<<if $rng gte 71 and $spiderdisable is "f">>
@@ -822,6 +795,22 @@
 	<<set $antiquemoney += 20>><<museumAntiqueStatus "antiqueforestarrow" "found">>
 	<<link [[Next|Forest]]>><<handheldon>><<set $eventskip to 1>><</link>>
 	<br>
+<</widget>>
+
+<<widget "foresthuntstart">>
+	A chill runs up your spine, a warning from some primal instinct. <span class="red">Something is hunting you.</span>
+	<<if random(1, 2) is 1>>
+		<<set $edenforesthunt to 1>>
+		<<set $blackwolfhunt to 0>>
+	<<els>>
+		<<set $edenforesthunt to 0>>
+		<<set $blackwolfhunt to 1>>
+	<</if>>
+	<<set $foresthunt to 1>>
+	<<endevent>>
+	<br><br>
+
+	<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
 <</widget>>
 
 <<widget "foresthunt">>
