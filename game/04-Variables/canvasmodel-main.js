@@ -2035,48 +2035,18 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/transformations/demon/tail/${options.demon_tail_type}.png`;
+				return `img/transformations/demon/${options.demon_tail_state}tail/${options.demon_tail_type}.png`;
 			},
 			showfn(options) {
 				return options.show_tf
 					&& isPartEnabled(options.demon_tail_type)
-					&& options.demon_tail_state === "idle"
 					&& !options.hideAll;
 			},
 			zfn(options) {
-				if (options.demon_tail_layer === "back") return ZIndices.tail;
+				if (["cover", "flaunt"].includes(options.demon_tail_state)) return  ZIndices.tailPenisCoverOverlay;
+				if (options.demon_tail_layer === "back" ) return ZIndices.tail;
 				if (options.demon_tail_layer === "cover") return ZIndices.tailPenisCoverOverlay;
 				return ZIndices.back_lower;
-			},
-		},
-		"demon_tail_flaunt": {
-			z: ZIndices.tailPenisCoverOverlay,
-			filters: ["demon_tail"],
-			animation: "idle",
-
-			srcfn(options) {
-				return `img/transformations/demon/flaunttail/${options.demon_tail_type}.png`;
-			},
-			showfn(options) {
-				return options.show_tf
-					&& isPartEnabled(options.demon_tail_type)
-					&& options.demon_tail_state === "flaunt"
-					&& !options.hideAll;
-			},
-		},
-		"demon_tail_cover": {
-			z: ZIndices.tailPenisCoverOverlay,
-			filters: ["demon_tail"],
-			animation: "idle",
-
-			srcfn(options) {
-				return `img/transformations/demon/rightcover/${options.demon_tail_type}.png`;
-			},
-			showfn(options) {
-				return options.show_tf
-					&& isPartEnabled(options.demon_tail_type)
-					&& options.demon_tail_state === "cover"
-					&& !options.hideAll;
 			},
 		},
 		"demon_horns": {
@@ -2300,13 +2270,16 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/transformations/cow/tail/${options.cow_tail_type}.png`;
+				const folder = options.cow_tail_type.includes("demon") && ["cover", "flaunt"].includes(options.demon_tail_state) ? options.demon_tail_state : "";
+				return `img/transformations/cow/${folder}tail/${options.cow_tail_type}.png`;
 			},
 			showfn(options) {
 				return options.show_tf && isPartEnabled(options.cow_tail_type) && !options.hideAll;
 			},
 			zfn(options) {
-				return options.cow_tail_layer === "back" ? ZIndices.tail : ZIndices.back_lower;
+				if (isChimeraEnabled("demoncow", "tail") && ["cover", "flaunt"].includes(options.demon_tail_state)) return  ZIndices.tailPenisCoverOverlay;
+				if (options.cow_tail_layer === "back" ) return ZIndices.tail;
+				return ZIndices.back_lower;
 			},
 		},
 		/***

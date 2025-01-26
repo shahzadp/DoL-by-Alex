@@ -99,9 +99,9 @@ setup.shopDetails = {
 		desc: "Something seems special about this set of clothing.",
 		details: `Feminises your body type, increases breast and butt size, and reduces penis size. Increases progress towards the "Lustful" trait.`,
 	},
-	himbo: {
+	pimp: {
 		name: "Special",
-		desc: "Protects you from the rain.",
+		desc: "Something seems special about this set of clothing.",
 		details: `Masculinises your body type, reduces breast and butt size, and increases penis size. Increases progress towards the "Lustful" trait.`,
 	},
 	heels: {

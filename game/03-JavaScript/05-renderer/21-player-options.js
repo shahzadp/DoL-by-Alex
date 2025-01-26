@@ -2059,7 +2059,7 @@ class PlayerCombatMapper {
 				inFront: false,
 			};
 		}
-		const style = ["default", "classic", "cat", "succubus"].includes(parts.tail) ? parts.tail : "default";
+		const style = ["default", "classic", "cat", "cow", "succubus"].includes(parts.tail) ? parts.tail : "default";
 		switch (type) {
 			case "demon":
 				if (PlayerCombatMapper.isChimeraPartEnabled("demon", "cat", "demoncat", "tail")) {
@@ -2071,7 +2071,26 @@ class PlayerCombatMapper {
 						inFront: false,
 					};
 				}
+				if (PlayerCombatMapper.isChimeraPartEnabled("demon", "cow", "demoncow", "tail")) {
+					return {
+						show: true,
+						type,
+						style: "cow",
+						state: "default",
+						inFront: false,
+					};
+				}
 				break;
+			case "cow":
+				if (PlayerCombatMapper.isChimeraPartEnabled("demon", "cow", "demoncow", "tail")) {
+					return {
+						show: true,
+						type,
+						style: parts.tail + "-demon",
+						state: "default",
+						inFront: false,
+					};
+				}
 		}
 		if (["demon"].includes(type) && V.enemytype === "man" && (V.anusstate === "penetrated" || V.vaginastate === "penetrated")) {
 			return {
