@@ -2077,7 +2077,6 @@ function earnHourlyFeats() {
 	if (specialTraits >= 1) earnFeat("A Special Trait");
 	if (specialTraits >= 9) earnFeat("A Special Trait Collector");
 
-	if (V.sexStats.anus.pregnancy.motherStatus >= 2 || V.sexStats.vagina.pregnancy.motherStatus >= 2) earnFeat("Broodmother Host");
 	if (
 		V.pregnancyStats.parasiteTypesSeen &&
 		V.pregnancyStats.parasiteTypesSeen.length >= 14 &&
