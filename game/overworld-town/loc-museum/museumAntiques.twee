@@ -40,8 +40,8 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 						<<icon _museumAntiqueText[_labelM].icon>>
 					</div>
 				<<case "found" "talk">>
-						<<set $_tooltip to `You should show the ${_museumAntiqueText[_labelM].name} to Winter`>>
-						<div class="item" @tooltip="$_tooltip">
+						<<set _tooltip to `You should show the ${_museumAntiqueText[_labelM].name} to Winter`>>
+						<div class="item" @tooltip="_tooltip">
 							<span class="icon-container">
 								<<icon _museumAntiqueText[_labelM].icon>>
 								<img class="alert" src="img/misc/icon/alert.png">
@@ -79,6 +79,7 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 :: MuseumAntiques [widget]
 <<widget "museumAntiqueStatus">>
 	<<if _args[0] and _args[1]>>
+		<<if _args[1] is "found">><<museumClearHint _args[0]>><</if>>
 		<<if ($museumAntiques.antiques[_args[0]] is "notFound" and _args[1] is "found")
 		or ($museumAntiques.antiques[_args[0]] is "found" and _args[1] is "talk")
 		or ($museumAntiques.antiques[_args[0]] is "talk" and _args[1] is "museum")
@@ -702,10 +703,8 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 <</widget>>
 
 <<widget "museumClearHint">>
-	<<if $phase isnot "ask">>
-		<<set $winterHint to "notGiven">>
-		<<if $museumAntiqueJournalHints.includes(_args[0])>>
-			<<run $museumAntiqueJournalHints.delete(_args[0])>>
-		<</if>>
+	<<set $winterHint to "notGiven">>
+	<<if $museumAntiqueJournalHints.includes(_args[0])>>
+		<<run $museumAntiqueJournalHints.delete(_args[0])>>
 	<</if>>
 <</widget>>

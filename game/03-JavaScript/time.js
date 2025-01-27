@@ -852,9 +852,10 @@ function hourPassed(hours) {
 		wikifier("orgasmHourlyRecovery");
 		statChange.arousal(0, "time");
 		wikifier("wetnessCalculate");
-		wikifier("bimboCheck", "upper");
-		wikifier("bimboCheck", "lower");
-		wikifier("bimboCheck", "feet");
+		wikifier("lustfulCheck", "upper");
+		wikifier("lustfulCheck", "lower");
+		wikifier("lustfulCheck", "feet");
+		wikifier("lustfulCheck", "head");
 
 		if (V.ejactrait >= 1) V.stress -= (V.goocount + V.semencount) * 10;
 		if (V.kylarwatched) V.kylarwatchedtimer--;
@@ -1242,7 +1243,7 @@ function dailyPlayerEffects() {
 	V.fringelength += 3;
 	wikifier("calchairlengthstage");
 	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 100);
-	wikifier("bimboUpdate");
+	wikifier("lustfulUpdate");
 
 	if (V.orgasmstat >= 1000 && V.orgasmtrait === 0) {
 		V.effectsmessage = 1;

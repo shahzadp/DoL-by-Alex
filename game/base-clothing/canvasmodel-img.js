@@ -427,6 +427,11 @@ DefineMacro("modelprepare-player-body", function () {
 		}
 		T.modeloptions.cow_horns_type = "default-demon";
 	}
+	// Demon-cow tail
+	if (isPartEnabled(T.modeloptions.cow_tail_type) && isPartEnabled(T.modeloptions.demon_horns_type) && isChimeraEnabled("demoncow", "tail")) {
+		T.modeloptions.demon_tail_type = "default-cow";
+		T.modeloptions.cow_tail_type = T.modeloptions.cow_tail_type + "-demon";
+	}
 
 	/*
 			██████ ██████   ██████  ████████  ██████ ██   ██

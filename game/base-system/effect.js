@@ -1466,8 +1466,22 @@ function effects() {
 					element(
 						"span",
 						`You feel different, but you're not sure how or why.${
-							V.worn.upper.type.includes("bimbo") || V.worn.lower.type.includes("bimbo") || V.worn.feet.type.includes("bimbo")
+							V.worn.upper.type.includesAny("bimbo", "pimp") ||
+							V.worn.lower.type.includesAny("bimbo", "pimp") ||
+							V.worn.feet.type.includes("bimbo") ||
+							V.worn.head.type.includes("pimp")
 								? " Your clothing seems to cling to you."
+								: ""
+						}`,
+						"lewd"
+					);
+					break;
+				case "pimpMessage1":
+					element(
+						"span",
+						`You feel different, but you're not sure how or why.${
+							V.worn.upper.type.includes("pimp") || V.worn.lower.type.includes("pimp") || V.worn.head.type.includes("pimp")
+								? " Your clothing feels warm to the touch."
 								: ""
 						}`,
 						"lewd"
@@ -1476,8 +1490,19 @@ function effects() {
 				case "bimboMessage2":
 					element(
 						"span",
-						`You feel different yet again, this time you're more sure about it, something is making you look more feminine. Your thoughts turn to the outfit you${
+						`You feel different yet again. This time you're more sure about it: something is making you look more feminine. Your thoughts turn to the outfit you${
 							V.worn.upper.type.includes("bimbo") || V.worn.lower.type.includes("bimbo") || V.worn.feet.type.includes("bimbo")
+								? "'re wearing."
+								: " had on earlier."
+						}`,
+						"lewd"
+					);
+					break;
+				case "pimpMessage2":
+					element(
+						"span",
+						`You feel different yet again. This time you're more sure about it: something is making you look more masculine. Your thoughts turn to the outfit you${
+							V.worn.upper.type.includes("pimp") || V.worn.lower.type.includes("pimp") || V.worn.head.type.includes("pimp")
 								? "'re wearing."
 								: " had on earlier."
 						}`,

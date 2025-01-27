@@ -852,9 +852,13 @@
 				<!-- most recent go on top -->
 				<<for _hint range _hintslist>>
 					<<if _museumAntiqueText[_hint]>>
-						<li><<print _museumAntiqueText[_hint].journal>></li>
+						<<if ["found", "talk"].includes($museumAntiques.antiques[_hint])>>
+							<li>You should show the <<= _museumAntiqueText[_hint].name.toLowerCase()>> to Winter.</li>
+						<<else>>
+							<li><<print _museumAntiqueText[_hint].journal>></li>
+						<</if>>
 					<<else>>
-						<li><span class="red">warning: antique "_hint" doesn't have a hint. save exported from modded version?</span></li>
+						<li><span class="red">Warning: Antique "_hint" doesn't have a hint. Did you export this save from a modded version?</span></li>
 						<<set $museumAntiqueJournalHints.delete(_hint)>>
 					<</if>>
 				<</for>>
@@ -876,9 +880,16 @@
 					<<for _labelM, _valueM range $museumAntiques.antiques>>
 						<<set _antique to $museumAntiqueJournalHints.includes(_labelM) ? _museumAntiqueText[_labelM]?.journalName || _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst() : _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst()>>
 						<<if $museumAntiqueJournalHints.includes(_labelM)>>
-							<div class="item unknown" @tooltip="_antique">
-								<<icon "museum_empty.png">>
-							</div>
+							<<switch _valueM>>
+								<<case "notFound">>
+									<div class="item unknown" @tooltip="_antique">
+										<<icon "museum_empty.png">>
+									</div>
+								<<default>>
+									<div class="item" @tooltip="_antique">
+										<<icon _museumAntiqueText[_labelM].icon>>
+									</div>
+							<</switch>>
 						<<else>>
 							<<switch _valueM>>
 								<<case "notFound">>
