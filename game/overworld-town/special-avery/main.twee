@@ -1,7 +1,7 @@
 :: Widgets Avery [widget]
 <<widget "streetavery">>
 	<<if C.npc.Avery.init isnot 1>>
-		<<npc Avery>><<initnpc Avery>><<generate2>><<generate3>>A <<person2>><<person>> blocks your path. You try to walk around <<him>>, but <<he>> steps in your way. "What's a <<girl>> like you doing walking alone?" <<he>> asks. "You're gonna get hurt." <<He>> grasps your arm and tries to pull you with <<him>>, until a <<nnpc_gender "Avery">> taps <<him>> on the shoulder.
+		<<npc Avery>><<initnpc Avery>><<set $averySeen.pushUnique("meetStreet")>><<generate2>><<generate3>>A <<person2>><<person>> blocks your path. You try to walk around <<him>>, but <<he>> steps in your way. "What's a <<girl>> like you doing walking alone?" <<he>> asks. "You're gonna get hurt." <<He>> grasps your arm and tries to pull you with <<him>>, until a <<nnpc_gender "Avery">> taps <<him>> on the shoulder.
 		<br><br>
 
 		"Walk away," the newcomer says. "Now."
@@ -668,7 +668,7 @@ When you finish, <<person1>><<he>> raises the bottle with a smile. "Champagne?"
 	<br><br>
 <<else>>
 	<<if $speech_attitude is "meek">>
-		"N...no thank you."
+		"N... no thank you."
 	<<elseif $speech_attitude is "bratty">>
 		"You aren't swaying me that easily."
 	<<else>>
@@ -4701,3 +4701,326 @@ You spend some time chatting, mostly listening and nodding as Avery talks about 
 <</if>>
 <br><br>
 <<link [[Next|Harvest Street]]>><<endevent>><</link>>
+
+:: Avery School Drop Off Accept
+<<set $outside to 0>><<effects>>
+<<set _car to {}>>
+<<if $phase2>>
+	<<set _car.intro to $phase2>>
+<</if>>
+
+You <<= either("climb into", "get in")>> the car and sit in the front passenger seat. Avery locks the doors and drives you to school.
+<br><br>
+The journey is short, though you're held up by traffic.
+
+<<set _chats to "Avery chats and occasionally glances at you " + either(`beside <<him>>.`,`every now and then.`)>>
+<<if _car.intro>>
+	<<switch _car.intro>>
+		<<case 1>>
+			<<if $averySeen.includes("meetCafe")>>
+				<<He>> picks back up on the conversation the two of you had in the cafe. "How has school been so far?" <<he>> asks at one point.
+				<<if $averySeen.includes("meetPark")>>
+					"Is your project going well?"
+				<<else>>
+					"Do you usually walk or take the bus?"
+				<</if>>
+			<<else>>
+				<<print _chats>> <<He>> asks a lot of questions, but deflects in <<his>> to answer yours.
+			<</if>>
+		<<case 2>>
+			<<print _chats>> "Seeing as I already pick you up. Just come outside at about seven. I've got work at eight"
+		<<default>>
+			<<print _chats>> "It's on my normal route. I should be able to pick you up too, every Monday, as well as any other day I get off early."
+	<</switch>>
+<<else>>
+	<<print _chats>>
+	<br><br>
+
+	<<set _car.event to random(0,4)>>
+	<<if _car.event is 4 and (C.npc.Avery.rage gte 20 or (C.npc.Avery.rage gte 10 and $averyragerevealed is 1))>>
+		Just as traffic lets up, it is brought to a standstill again when
+		<<if C.npc.Whitney.init is 1 and !["pillory","dungeon"].includes(C.npc.Whitney.state) and $rng gte 50>>
+			<<set _car.whitney to true>>
+			Whitney and <<nnpc_his "Whitney">> <<= either(`friends`, `gang`)>>
+		<<else>>
+			<<set _car.whitney to false>>
+			a group of students
+		<</if>>
+		walk out onto the roadway <<= either(`in front of the car`,`without heeding traffic`)>>.
+		<<if $averyragerevealed is 1>>
+			"Fucking hell!" Avery shouts and sounds the horn.
+			<br><br>
+			The group doesn't seem phased. Jeering laughter erupts, and
+			<<if _car.whitney is true>>
+				<<= either(`Whitney`, `one of Whitney's friends`)>>
+			<<else>>
+				a <<generatey2>><<person2>><<person>>
+			<</if>>
+			<<= either(`directs an obscene gesture toward`, `directs a vulgar gesture toward`, `sticks up a middle finger at`)>> Avery.<<person1>>
+			<br><br>
+			"Low class scum," Avery says between clenched teeth
+		<<else>>
+			"Lovely," Avery says with false cheer and begins <<= either(`tapping`,`drumming`)>> <<person1>><<his>> fingers on the steering wheel. "<<= either(`Such productive members of society.`,`So this is the future workforce?`)>>"
+			<br><br>
+			Avery lets out a sigh of relief
+		<</if>>
+		as the group crosses onto the pavement.
+	<<elseif _car.event is 3 and C.npc.Avery.rage gte 10 or (C.npc.Avery.rage gte 1 and $averyragerevealed is 1)>>
+		A <<generate2>><<person2>><<person>> on a bicycle rides past, close to the car.
+		<<if $averyragerevealed is 1>>
+			Avery winds down the window and leans out. "Watch it!" <<person1>><<he>> shouts at the cyclist before leaning back in and closing the window. "<<= either(`Prick`,`Cunt`,`Twat`)>>."
+		<<else>>
+			Avery curses under <<person1>><<his>> breath and tightens <<his>> grip on the steering wheel. "Cyclists can be quite annoying," <<he>> says. "You'll understand when you start to drive."
+		<</if>>
+	<<elseif _car.event is 2>> /* Different if the PC lives at their manor. */
+		<<= either(
+			`"I just had this car washed and detailed the other day," <<he>> says at one point. "Did you notice, <<pcpetname "Avery">>?"`,
+			`"I stopped by the petrol station the other day," <<he>> says at one point. "It cost me £<<= random(69, 163)>> to top up on this car alone. Unbelievable."`,
+			`There's a comfortable silence for most of the drive. Every now and then, you catch Avery looking at you when stopped at an intersection. Whenever you do, <<he>> flashes you a brief, hard to place <<= C.npc.Avery.rage gte 20 ? "smirk" : "smile">>, then looks back to the road.`
+		)>>
+	<<elseif _car.event is 1>> /* Different if the PC works for Avery */
+		<<= either(
+			`"These new hires at work are absolutely incompetent," <<he>> says, thrumming <<his>> fingers on the steering wheel. "They've got no work ethic."`,
+			`"There was a temp who was found drinking on the job instead of working the other day," <<he>> says, drumming <<his>> fingers on the steering wheel. "I don't even know where we're even getting these people from. Are we just hiring any imbecile that walks in off the street? Ridiculous." <<He>> snorts and glances at you. "I'm sure you would never do such a thing, right, <<pcpetname "Avery">>?"`,
+			`"A new intern at work misplaced some important files the other day," <<he>> says, tapping <<his>> fingers on the steering wheel. "If I wasn't a better person, I'd have..." <<He>> doesn't finish the sentence.`
+		)>>
+	<<else>>
+		<<set _car.window to random(0,6)>>
+		You stare out the
+		<<if $dissociation gte 1>>
+			window. Avery's voice fades into the background as you watch everything pass by in a blur.
+		<<elseif _car.window is 1 and $schoolfameblackmail isnot undefined>>
+			window. As the car gets closer and closer to the school, a dull, creeping dread starts to set in. <<stress 6>><<trauma 3>><<gstress>><<gtrauma>>
+		<<elseif _car.window is 2 and $syndromekylar gte 1>>
+			window as the car drives down Danube Street and passes by Kylar's manor.
+		<<elseif _car.window is 3 and ($syndromeeden gte 1 or $syndromewolves gte 1)>>
+			window as the car drives down Danube Street and Wolf Street. You see glimpses of the forest, and wonder how
+			<<if $syndromeeden gte 1 and random(1,2) is 2>>
+				Eden is doing. Maybe you should <<= $edenshopping is 0 ? 'buy <<nnpc_him "Eden">> some more supplies' : 'pay <<nnpc_him "Eden">> a visit soon'>>.
+			<<else>>
+				Black Wolf and the pack are doing, and if they're <<if $wolfpackferocity lt $wolfpackharmony>>still <</if>>getting along.
+			<</if>>
+		<<elseif _car.window is 4 and $temple_rank isnot undefined>>
+			window as the car drives down Wolf Street and passes by the temple.
+		<<elseif _car.window is 5 and $psych gte 1>>
+			window as the car drives down Nightingale Street and passes by the hospital. You remember that you have an appointment with Doctor Harper <<= Time.weekDay is 6 ? "today" : "this Friday">>.
+		<<elseif _car.window is 6 and isLoveInterest("Avery")>>
+			window and watch everything pass by. You wonder where Avery will take you for <<= Time.weekDay is 6 ? "tomorrow's date" : "your next date on Saturday">>.
+		<<else>>
+			window and watch everything pass by. It's quite early in the morning. But you can see other students making their way to school.
+		<</if>>
+	<</if>>
+<</if>>
+<br><br>
+Soon, the school grounds come into view as the car turns onto Oxford Street. Before you could take off your seat belt, you hear Avery clear <<his>> throat, and <<he>> rests a hand on your shoulder.
+<br><br>
+<<if _car.intro is 1>>
+	"Don't I deserve a 'thank you' for giving you a lift to school, <<pcpetname "Avery">>?" <<He>> <<= $player.virginity.kiss is "Avery" ? "taps a finger to <<his>> lips" : "leans in close">>.
+	<br><br>
+
+	<<link[[Thank|Avery School Drop Off Thank]]>><</link>>
+	<br>
+<<else>>
+	"Don't forget <<= either(`your manners`, `to show a little gratitude`, `my reward`)>>, <<pcpetname "Avery">>." <<He>> taps a finger to <<his>> lips.
+	<br><br>
+<</if>>
+
+<<link [[Kiss|Avery School Drop Off Kiss]]>><<npcincr Avery love 1>><<npcincr Avery rage -1>><</link>><<glove>><<larage>><<promiscuous1>><<kissvirginitywarning>>
+<br>
+<<link [[Just Leave|Avery School Drop Off Leave]]>><</link>>
+<br>
+
+:: Avery School Drop Off Thank
+<<set $outside to 1>><<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Thank you, <<sir>>," you say with an innocent smile. "I hope you have a good day today."
+<<elseif $speech_attitude is "bratty">>
+	"Thank you very much for the lift, <<sir>>," you say with only a bit of sarcasm. "Have a good one at work."
+<<else>>
+	"Thank you, Avery," you say with a polite smile. "I hope your day goes well."
+<</if>>
+<br><br>
+Avery quirks an eyebrow, then chuckles. "You as well, <<pcpetname "Avery">>." <<He>> squeezes your shoulder and leans in, planting a kiss on your cheek. "There's a chance we'll be seeing each other again soon. Sometime <<= Time.weekDay is 6 ? "tomorrow" : "this Saturday">>. Until then," <<he>> adds, "I'll see you around."
+<br><br>
+You remove your seat belt and step out of the car. <<He>> lingers for a moment before driving away.
+<br><br>
+
+<<link [[Next|School Front Courtyard]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Avery School Drop Off Kiss
+<<set $outside to 1>><<effects>>
+
+You lean over and plant a kiss on Avery's lips. <<He>> kisses back. <<takeKissVirginity "Avery" `($dateCount.Avery gte 3?"loveInterest":"romantic")`>><<promiscuity1>>
+
+<<if $speech_attitude is "meek">>
+	"Thank you for the lift, <<sir>>," you say as you pull away. "Have a good day at work."
+<<elseif $speech_attitude is "bratty">>
+	"Thanks for the lift," you say as you pull away. "Now get on to work."
+<<else>>
+	"Thank you for the lift, Avery," you say as you pull away. "Good luck at work."
+<</if>>
+<br><br>
+<<He>> smiles. You remove your seat belt before opening the door and stepping out. <<He>> lingers for a moment after you've shut the door before driving away.
+<br><br>
+
+<<link [[Next|School Front Courtyard]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Avery School Drop Off Leave
+<<set $outside to 1>><<effects>>
+<<set $averyRejected.dropOff ++>>
+<<set $weekly.averyRejected.dropOff ++>>
+
+<<set _rage to {}>>
+<<set _rage.revealed to $averyragerevealed is 1 ? 1 : 0>>
+<<set _rage.gain to $weekly.averyRejected.dropOff * (1 + _rage.revealed)>>
+
+You brush Avery's hand off your shoulder and remove your seat belt before opening the door and stepping out.
+<br><br>
+<<if $speech_attitude is "meek">>
+	"S-sorry, I have to go to class," you say with a nervous smile. "Have a good day at work, <<sir>>."
+<<elseif $speech_attitude is "bratty">>
+	"I've really got to get to class," you say. "And you've got work to get to."
+<<else>>
+	"I have to get to class," you say. "Good luck at work, Avery."
+<</if>>
+<br><br>
+<<switch $weekly.averyRejected.dropOff>>
+	<<case 1>>
+		Avery gives you a tight-lipped smile. "Alright then," <<he>> says. You shut the door. <<He>> watches you for a moment before driving away.
+	<<case 2>>
+		Avery frowns. "Of course," <<he>> says. You shut the door. <<He>> watches you for a moment before driving away.
+	<<case 3>>
+		Avery scowls. "Keep this up and I'll start to think you're taking me for granted," <<he>> says bitterly. You shut the door. <<He>> watches you for a moment before driving away.
+	<<default>>
+		Avery glares at you. "You ungrateful little <<= $averyragerevealed is 1 ? "<<bastard>>" : "brat">>," <<he>> mutters darkly. <<He>> reaches over to grasp the door handle, and slams the car door shut before driving away.
+<</switch>>
+<<npcincr Avery rage _rage.gain>><<= _rage.gain gte 5 ? "<<gggarage>>" : _rage.gain gte 3 ? "<<ggarage>>" : "<<garage>>">>
+<br><br>
+
+<<link [[Next|School Front Courtyard]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Avery School Drop Off Decline
+<<effects>>
+<<set $averyRejected.dropOff ++>>
+<<set $weekly.averyRejected.dropOff++>>
+
+<<set _rage to {}>>
+<<set _rage.revealed to $averyragerevealed is 1 ? 1 : 0>>
+<<set _rage.gain to $weekly.averyRejected.dropOff * (1 + _rage.revealed)>>
+
+<<if C.npc.Avery.rage gte random(20,100)>>
+	<<set _end to "rage">>
+<<else>>
+	<<set _end to "normal">>
+<</if>>
+
+<<switch $weekly.averyRejected.dropOff>>
+	<<case 1>>
+		<<if $speech_attitude is "meek">>
+			"Thank you, <<sir>>," you say with a polite smile. "But I don't need a lift."
+		<<elseif $speech_attitude is "bratty">>
+			"No," you say with a dismissive wave. "I can get there just fine on my own."
+		<<else>>
+			"No thanks," you say. "I don't need a lift."
+		<</if>>
+		<br><br>
+		<<set _end to "normal">>
+		Avery gives you a tight-lipped smile. "Alright then, <<pcpetname "Avery">>," <<he>> says and winds the window back up. <<He>> watches you for a few moments before driving away.
+	<<case 2>>
+		<<if $speech_attitude is "meek">>
+			"No thank you, <<sir>>," you say with a polite smile. "I don't need a lift."
+		<<elseif $speech_attitude is "bratty">>
+			"No need," you say with a dismissive wave.
+		<<else>>
+			"No thanks," you say.
+		<</if>>
+		<br><br>
+		<<if _end is "normal">>
+			Avery frowns. "Suit yourself," <<he>> says and winds the window back up. <<He>> watches you for a few moments before driving away.
+		<</if>>
+	<<case 3>>
+		<<if $speech_attitude is "meek">>
+			"I'm sorry, but no,"
+		<<elseif $speech_attitude is "bratty">>
+			"The answer's no,"
+		<<else>>
+			"No thanks,"
+		<</if>>
+		you say.
+		<br><br>
+		<<if _end is "normal">>
+			Avery scowls. "Keep this up and I'll start to think you're taking me for granted," <<he>> says bitterly. The window winds back up and <<he>> drives away.
+		<</if>>
+	<<default>>
+		<<if $speech_attitude is "meek">>
+			"Thank you, but I really don't need a lift," you say, with a nervous smile.
+		<<elseif $speech_attitude is "bratty">>
+			"Don't you have work or somewhere you've got to be instead of bothering me?" you say, staring at <<him>>.
+		<<else>>
+			"I really don't need a lift," you say.
+		<</if>>
+		<br><br>
+		<<if _end is "normal">>
+			Avery glares at you. "You ungrateful little <<= $averyragerevealed is 1 ? "<<bastard>>" : "brat">>..." <<he>> mutters darkly. "Fine, then." The window winds back up and <<he>> drives away.
+		<</if>>
+<</switch>>
+
+<<if _end is "rage">>
+	<<set $averyragerevealed to 1>>
+	Avery stares at you, <<his>> expression a mask as <<he>> taps <<his>> steering wheel. Then, having made up <<his>> mind, <<he>> opens the door and steps out. "I gave you a polite offer," <<he>> <<= either(`hisses`,`snarls`,`growls`)>> as <<he>> steps toward you. "Get in the fucking car." <<He>> grasps your arm and tries to pull you inside.
+	<br><br>
+
+	<<link [[Comply|Avery School Drop Off Comply]]>><<npcincr Avery rage -5>><</link>><<larage>>
+	<br>
+	<<link [[Refuse|Avery School Drop Off Refuse]]>><<npcincr Avery rage _rage.gain>><</link>><<= _rage.gain gte 5 ? "<<gggarage>>" : _rage.gain gte 3 ? "<<ggarage>>" : "<<garage>>">>
+	<br>
+<<else>>
+	<<npcincr Avery rage _rage.gain>><<= _rage.gain gte 5 ? "<<gggarage>>" : _rage.gain gte 3 ? "<<ggarage>>" : "<<garage>>">>
+	<br><br>
+	<<endevent>>
+	<<destinationeventend>>
+<</if>>
+
+:: Avery School Drop Off Comply
+<<set $outside to 0>><<effects>>
+
+<<if $speech_attitude is "meek">>
+	You let out a small whimper, and you tremble as you
+<<elseif $speech_attitude is "bratty">>
+	You glare at Avery before you
+<<else>>
+	You bow your head and
+<</if>>
+climb into the back of Avery's car. <<He>> scoffs quietly, and gets back behind the wheel. As you drive towards the school, whenever you make eye contact with <<him>> through the rear view mirror, the cold fury in <<his>> eyes makes you shiver. <<stress 6>><<gstress>><<pass 10>>
+<br><br>
+Avery drives past the school, and into a nearby alleyway. <<He>> unbuckles <<his>> seatbelt and climbs into the back with you. <<He>> pushes you down. "Don't be difficult, <<pcpetname "Avery">>," <<he>> says. "Or I'll be late for work."
+<br><br>
+
+<<link [[Next|Avery Walk Rape]]>><<set $molestationstart to 1>><</link>>
+<br>
+
+:: Avery School Drop Off Refuse
+<<effects>>
+
+<<athleticsdifficulty 200 1000 true>>
+<<if $athleticsSuccess>>
+	You <span class="green">manage to free yourself</span>, and rush off through a nearby alleyway. You hear <<him>> start to follow, but <<he>> gives up quickly with a furious snarl.
+	<br><br>
+
+	<<link [[Next|Residential alleyways]]>><<endevent>><</link>>
+	<br>
+<<else>>
+	You try to pull away from Avery's grip, but <<hes>> stronger than you, and <span class="red">you fail to free yourself.</span> <<He>> drags you towards <<his>> car, and opens the door. When you take a breath to say something, <<he>> grabs you by the front of your face, covering your mouth. <<His>> fingers dig painfully into your cheeks. <<pain 2>><<gpain>>
+	<br><br>
+	"Behave!" <<he>> growls before <<he>> shoves you into the back of the car. You hit your head on the opposing car door, leaving you briefly dazed. <<pain 6>><<ggpain>><<pass 5>>
+	<br><br>
+	Avery gets into the driver's seat, and peels away from the curb before you can recover enough to attempt an escape. <<He>> drives past the school, and into a nearby alleyway instead. <<He>> unbuckles <<his>> seatbelt and climbs into the back with you. <<He>> pushes you down. "Now, don't be difficult, <<pcpetname "Avery">>," <<he>> says. "Or I'll be late for work."
+	<br><br>
+
+	<<link [[Next|Avery Walk Rape]]>><<set $molestationstart to 1>><</link>>
+	<br>
+<</if>>

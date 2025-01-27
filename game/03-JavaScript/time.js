@@ -1119,6 +1119,7 @@ function dailyNPCEffects() {
 			delete V.averyPub;
 			wikifier("clearNPC", "avery_sidepiece");
 		}
+		if (V.weekly.averyRejected === undefined) V.weekly.averyRejected = {};
 	} else {
 		delete V.averyDismissalSceneWait;
 	}

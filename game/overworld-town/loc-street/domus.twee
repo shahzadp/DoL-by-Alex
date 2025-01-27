@@ -102,6 +102,94 @@ You are on Domus Street. The orphanage is here. The street is dominated by small
 			<br><br>
 			<<endevent>>
 			<<destinationeventend>>
+		<<elseif C.npc.Avery.state is "active" and !$daily.averySchoolDropOff and Time.schoolDay and Time.hour is 7 and $exposed lte 0 and ["upper", "lower", "handheld"].some(part => $worn[part].type.includes("school")) and (!$robinaverybeat or C.npc.Avery.rage lte 40) and ((C.npc.Avery.love gte random(20, 100) and ($rng gte 50 or Weather.precipitation isnot "none")) or (C.npc.Avery.love gte 20 and Time.weekDay is 2) or (C.npc.Avery.rage is 0 and $dateCount.Avery is 0 and !$averyRejected.dropOff))>>
+			<<npc "Avery">><<person1>>
+			<<set $daily.averySchoolDropOff to true>>
+			<<if !$weekly.averyRejected.dropOff>>
+				<<set $weekly.averyRejected.dropOff to 0>>
+			<</if>>
+			<<set $phase2 to 0>>
+
+			<<if $averySeen.includes("schoolDropOff")>>
+				Avery's car pulls up beside you. The windows wind down to reveal Avery dressed and ready for work. "Good morning, <<pcpetname "Avery">>," <<he>> says and unlocks the doors. "Get in.
+				<<if $averyRejected.dropOff gt 1 and random(1,2) is 2>>
+					It'll be better than walking
+					<<if Weather.precipitation isnot "none">>
+						in the <<= Weather.precipitation is "rain" ? "rain" : "snow">>."
+					<<elseif Weather.isFreezing>>
+						in the cold."
+					<<else>>
+						by yourself."
+					<</if>>
+				<<else>>
+					<<if Weather.precipitation isnot "none">>
+						<<if Weather.precipitation is "rain">>
+							Before you get <<= either("soaked","drenched")>>.<<if $averyragerevealed is 1>> I don't want you getting water on my seats.<</if>>"
+						<<else>>
+							And kick the snow off your shoes before you do.<<if $averyragerevealed is 1>> I do not want snow in my car.<</if>>"
+						<</if>>
+					<<else>>
+						Hopefully <<= either(`we can beat traffic this time`, `traffic isn't too bad today`)>>."
+					<</if>>
+				<</if>>
+			<<else>>
+				<<if $dateCount.Avery is 0 and C.npc.Avery.rage is 0 and !$averyRejected.dropOff>>
+					<<set $phase2 to 1>>
+					An expensive car pulls up beside you. The window winds down to reveal a <<personsimple>> in a <<= $pronoun is "m" ? "suit" : "smart dress">>. It's Avery, the <<personsimple>>
+					<<if $averySeen.some(event => ["meetPark", "meetStreet"].includes(event))>>
+						<<if $averySeen.includes("meetPark")>>
+							you met in the park who
+						<<else>>
+							who helped you in the streets and
+						<</if>>
+						<<if $averySeen.includes("meetCafe")>>
+							took you to the cafe.
+						<<else>>
+							offered to take you to the cafe.
+						<</if>>
+					<<else>>
+						you met the other day.
+					<</if>>
+					"Good morning, <<pcpetname "Avery">>," <<he>> says, looking you up and down. "It's nice to see you again."
+					<br><br>
+					"Are you off to school?" <<he>> asks. But before you can even answer, you hear the doors unlock. "I'll give you a lift there. You can sit in the front."
+				<<else>>
+					<<set $averySeen.pushUnique("schoolDropOff")>>
+					A familiar car pulls up beside you. The window winds down to reveal
+					<<if $averywalkintro is 1>>
+						Avery, dressed and ready for work.
+						<<if $robinaverybeat is 1>>
+							"Good morning," <<he>> greets with
+							<<if C.npc.Avery.rage gte 30>>
+								poorly repressed spite in <<his>> tone. "Decided to leave your little guard dog behind today, I see. Did it bite the hand that feeds it, perhaps?" <<he>> snipes with a derisive snort. "You know, I would take a good, long look at the kind of company you decide to keep, <<pcpetname "Avery">>. It would be a shame if you made enemies of those you shouldn't because of ill-bred brats like <<nnpc_him "Robin">>."
+							<<elseif C.npc.Avery.rage gte 20>>
+								an impatient clip to <<his>> tone. "Left that brat to find <<nnpc_his "Robin">> own way to school today?" <<He>> scoffs. "Good. I expect you to keep better company than that, <<pcpetname "Avery">>."
+							<<else>>
+								a carefully neutral expression on <<his>> face. "I see your... friend isn't with you today." There's a noticeable twitch of <<his>> brows at the mention of Robin, but <<he>> manages to keep <<his>> composure. Barely. "I hope you informed <<nnpc_him "Robin">> that <<nnpc_he "Robin">> ought to watch <<nnpc_his "Robin">> step going forward—for <<nnpc_his "Robin">> own good."
+							<</if>>
+							<br><br>
+							<<He>> glances around briefly, as if expecting another sudden intercession, then continues, "Anyway, walking alone in a town like this isn't safe<<if $allure gte (6000 * $alluremod)>>, as I'm sure you know<</if>>."
+							<br><br>
+							You hear the car doors unlock, and <<his>> eyes narrow. "Get in. It's <<= C.npc.Avery.rage gte 20 ? "for your own good" : "in your best interest">>." <<He>> flashes you a <<= either(`mirthless`,`contemptuous`,`unpleasant`,`imperious`)>> smile and adds, "I'll even let you sit in the front with me this time."
+						<<else>>
+							"Good morning, <<pcpetname "Avery">>," <<he>> says as <<he>> glances around for a few moments before looking at you. "I see your friend isn't with you today. Walking alone isn't safe, you know."
+							<br><br>
+							You hear the car doors unlock. "Get in, I'll give you a lift. You can even sit in the front this time."
+						<</if>>
+					<<else>>
+						<<set $phase2 to ($averyschoolpickupintro is 1 ? 2 : 3)>>
+						a <<personsimple>> in a <<= $pronoun is "m" ? "suit" : "smart dress">>. It's Avery. "Good morning, <<pcpetname "Avery">>," <<he>> says, looking you up and down. "I was just on my way to work when I spotted you. Walking alone isn't safe, you know."
+						<br><br>
+						You hear the car doors unlock. "Get in. I'll give you a lift."
+					<</if>>
+				<</if>>
+			<</if>>
+			<br><br>
+
+			<<getinicon>><<link [[Get in (0:10)|Avery School Drop Off Accept]]>><<pass 10>><</link>>
+			<br>
+			<<refuseicon>><<link [[Refuse|Avery School Drop Off Decline]]>><</link>>
+			<br>
 		<<elseif ($danger gte (9900 - $allure) or $eventforced) and $eventskip is 0>>
 			<<eventsstreet>>
 		<<else>>
