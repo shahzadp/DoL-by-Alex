@@ -204,6 +204,10 @@ function wolfChildActivity(childId) {
 	}
 	let activity = [];
 
+	if (toySets.includes("chew toys")) {
+		activity = activity.concat(["squeakyToy", "chewRope", "chewBone", "rollBall"]);
+	}
+
 	if (between(T.childTotalDays, 0, 100)) {
 		if (Time.dayState === "night") {
 			activity = activity.concat(["sleepingWithWolf", "sleepingWithWolf", "sleepingWithWolf", "sleeping"]);
@@ -269,6 +273,9 @@ function hawkChildActivity(childId) {
 	}
 	let activity = [];
 
+	/* ToDo: Waiting on additional writing and sprites in order to fully implement crafted hawk toys
+	if (toySets.includes("hawk toys")) activity = activity.concat(["preeningToy", "swing"]);
+	*/
 	if (between(T.childTotalDays, 0, 100)) {
 		if (Time.dayState === "night" && V.bird.state === "home" && ["sleep", "rest", "brood"].includes(V.bird.activity)) {
 			activity = activity.concat(["sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleeping"]);

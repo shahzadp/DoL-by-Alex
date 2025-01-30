@@ -13,6 +13,74 @@
 		<<case "bw">><<icon "blackwolf.png">>
 		<<case "ferocity">><span class="icon-container"><img class="icon" src="img/ui/wolfferocity.png"></span>
 		<<case "harmony">><span class="icon-container"><img class="icon" src="img/ui/wolfharmony.png"></span>
+		<<case "children">>
+			<<run Object.values($children).forEach(child => {
+				if (child.type is "wolf" and child.location is "wolf_cave") {
+					if (!T.childrenIconSelect) T.childrenIconSelect = [];
+					T.childrenIconSelect.push(child.childId);
+				}
+			})>>
+			<<if _childrenIconSelect.length gte 2>>
+				<<set $_child1 to _childrenIconSelect.pluck()>>
+				<<set $_child2 to _childrenIconSelect.pluck()>>
+				<<if $children[$_child1].features.monster isnot $children[$_child2].features.monster>>
+					<<set _wolfkid to ($children[$_child1].features.monster is "monster") ? $_child1 : $_child2>>
+					<<set _wolfpup to (_wolfkid is $_child1 ? $_child2 : $_child1)>>
+					<<set $_baseIcon to "children/pups/duo_features.png">>
+					<<set $_wolfkidHair to "children/pups/duo_monster_hair.png">>
+					<<set $_wolfkidSkin to "children/pups/duo_monster_skin.png">>
+					<<set $_wolfkidEyes to "children/pups/duo_monster_eyes.png">>
+					<<set $_wolfpupHair to "children/pups/duo_wolf_hair.png">>
+					<<set $_wolfpupEyes to "children/pups/duo_wolf_eyes.png">>
+					<<set _wolfkidSkinFilter = "filter: " + setup.colours.getSkinCSSFilter($children[_wolfkid].features.skinColour)>>
+					<<set _wolfPupEyeClass = $children[_wolfpup].features.eyeColour.replace("pc",V.eyeselect).replace(" ","-")>>
+					<<set _wolfKidEyeClass = $children[_wolfkid].features.eyeColour.replace("pc",V.eyeselect).replace(" ","-")>>
+
+					<span class="icon-container">
+						<<icon $_baseIcon>>
+						<span @style="_wolfkidSkinFilter">
+							<<icon $_wolfkidSkin>>
+						</span>
+						<span @class="'hair-'+$children[_wolfkid].features.hairColour">
+							<span class="colour-hair"><<icon $_wolfkidHair>></span>
+						</span>
+						<span @class="'hair-'+$children[_wolfpup].features.hairColour">
+							<span class="colour-hair"><<icon $_wolfpupHair>></span>
+						</span>
+						<span @class="'eye-'+_wolfPupEyeClass">
+							<<icon $_wolfpupEyes>>
+						</span>
+						<span @class="'eye-'+_wolfKidEyeClass">
+							<<icon $_wolfkidEyes>>
+						</span>
+						<<set $_baseIcon to "children/pups/duo_features.png">>
+					</span>
+				<<else>>
+					<<set _monster to $children[$_child1].features.monster is "monster">>
+					<<set $_wolfHair to _monster ? "children/pups/monster_fur.png" : "children/pups/beast_fur.png">>
+					<<set $_wolfSkin to _monster ? "children/pups/monster_body.png" : null>>
+					<<set $_wolfEyes to _monster ? "children/pups/monster_eyes.png" : "children/pups/beast_eyes.png">>
+					<<set _wolfEyeClass = $children[$_child1].features.eyeColour.replace("pc",V.eyeselect).replace(" ","-")>>
+
+					<span class="icon-container">
+						<<if $_wolfSkin>>
+							<<set _wolfkidSkinFilter = "filter: " + setup.colours.getSkinCSSFilter($children[$_child1].features.skinColour)>>
+							<span @style="_wolfkidSkinFilter">
+								<<icon $_wolfSkin>>
+							</span>
+						<</if>>
+						<span @class="'hair-'+$children[$_child1].features.hairColour">
+							<span class="colour-hair"><<icon $_wolfHair>></span>
+						</span>
+						<span @class="'eye-'+_wolfEyeClass">
+							<<icon $_wolfEyes>>
+						</span>
+						<<if $_wolfSkin>>
+							<<icon "children/pups/monster_paws.png">>
+						<</if>>
+					</span>
+				<</if>>
+			<</if>>
 		<<default>><<icon "wolves.png">>
 	<</switch>>
 <</widget>>
@@ -1158,7 +1226,7 @@
 	<<switch _args[0]>>
 		<<case "brush">><<icon "kennel_brush.png">>
 		<<case "cage">><<icon "cage.png">>
-		<<case "chew">><<icon "chewtoy.png">>
+		<<case "chew">><<icon "childToys/rope.png">>
 		<<case "decor">><<icon "tank_decor.png">>
 		<<case "decor exotic">><<icon "tank_decor_exotic.png">>
 		<<case "dog bowl">><<icon "dog_bowl.png">>
@@ -1398,7 +1466,89 @@
 <</widget>>
 
 <<widget "childicon">>
-	<<icon `"childToys/" + _args[0] + ".png"`>>
+	<<set _toy to _args[0].replace(/ /g, "_");>>
+	<<icon `"childToys/" + _toy + ".png"`>>
+<</widget>>
+
+<<widget "childrenicon">>
+	<<set $_child to $children[_args[0]]>>
+	<<set _monster to $_child.features.monster is "monster">>
+
+	<<switch $_child.type>>
+		<<case "hawk">>
+			<<if _monster>>
+				<<set _childIconFilter = "filter: " + setup.colours.getSkinCSSFilter($_child.features.skinColour)>>
+				<<set $_baseIcon to "birdTower/child_harpy.png">>
+				<<set $_skinIcon to "birdTower/child_harpy_skin.png">>
+				<span class="icon-container">
+					<<icon $_baseIcon>>
+					<span @style="_childIconFilter">
+						<<icon $_skinIcon>>
+					</span>
+				</span>
+			<<else>>
+				<<icon "birdTower/child_hawk.png">>
+			<</if>>
+		<<case "wolf">>
+			<<set $_wolfHair to _monster ? "children/pups/monster_fur.png" : "children/pups/beast_fur.png">>
+			<<set $_wolfSkin to _monster ? "children/pups/monster_body.png" : null>>
+			<<set $_wolfEyes to _monster ? "children/pups/monster_eyes.png" : "children/pups/beast_eyes.png">>
+			<<set _wolfEyeClass = $_child.features.eyeColour.replace("pc",V.eyeselect).replace(" ","-")>>
+
+			<span class="icon-container">
+				<<if $_wolfSkin>>
+					<<set _wolfkidSkinFilter = "filter: " + setup.colours.getSkinCSSFilter($_child.features.skinColour)>>
+					<span @style="_wolfkidSkinFilter">
+						<<icon $_wolfSkin>>
+					</span>
+				<</if>>
+				<span @class="'hair-'+$_child.features.hairColour">
+					<span class="colour-hair"><<icon $_wolfHair>></span>
+				</span>
+				<span @class="'eye-'+_wolfEyeClass">
+					<<icon $_wolfEyes>>
+				</span>
+				<<if $_wolfSkin>>
+					<<icon "children/pups/monster_paws.png">>
+				<</if>>
+				<<if $_child.localVariables.activity is "crying" and _monster>>
+					<<icon "children/pups/monster_tears.png">>
+				<</if>>
+			</span>
+		<<default>>
+			<<set $_hair to "children/humans/hair.png">>
+			<<set $_skin to "children/humans/body.png">>
+			<<set $_eyes to "children/humans/eyes.png">>
+			<<if $_child.features.eyeColour>>
+				<<set _eyeClass = $_child.features.eyeColour.replace("pc",V.eyeselect).replace(" ","-")>>
+			<<else>>
+				<<set _eyeClass = "hazel">>
+			<</if>>
+			<<set _skinFilter = "filter: " + setup.colours.getSkinCSSFilter($_child.features.skinColour)>>
+
+			<span class="icon-container">
+				<span @style="_skinFilter">
+					<<icon $_skin>>
+				</span>
+				<<if $_child.features.divineTransform>>
+					<<set $_divine to `children/humans/transformations_${$_child.features?.divineTransform}.png`>>
+					<<icon $_divine>>
+				<</if>>
+				<<if $_child.features.beastTransform>>
+					<<set $_beast to `children/humans/transformations_${$_child.features?.beastTransform}.png`>>
+					<span @class="'hair-'+$_child.features.hairColour">
+						<span class="colour-hair"><<icon $_beast>></span>
+					</span>
+				<</if>>
+				<<icon "children/humans/diaper.png">>
+				<span @class="'hair-'+$_child.features.hairColour">
+					<span class="colour-hair"><<icon $_hair>></span>
+				</span>
+				<span @class="'eye-'+_eyeClass">
+					<<icon $_eyes>>
+				</span>
+			</span>
+	<</switch>>
 <</widget>>
 
 <<widget "officebuildingicon">>

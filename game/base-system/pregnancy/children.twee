@@ -461,7 +461,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $children[$childSelected.childId].type>>
 			<<case "human">><<set $_text_output to "hands">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "paws">>
 			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "hands" : "wings")>>
@@ -604,27 +604,36 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 /*args[0] - child object*/
 <<widget "childTypeDisplay">><<silently>>
 	<<if _args[0] and _args[0].childId>>
+		<<if !(_args[0].type is "wolf" && _args[0].features.monster && _args[0].gender isnot "h")>>
+			<<switch _args[0].gender>>
+				<<case "m">><<set $_text_output to "Male ">>
+				<<case "f">><<set $_text_output to "Female ">>
+				<<case "h">><<set $_text_output to "Hermaphrodite ">>
+			<</switch>>
+		<<else>>
+			<<set $_text_output to "">>
+		<</if>>
 		<<if _args[0].type isnot "human">>
 			<<if _args[0].features.monster>>
 				<<switch _args[0].type>>
 					<<case "wolf">>
-						<<set $_text_output to "Wolf">>
+						<<set $_text_output += "Wolf">>
 						<<switch _args[0].gender>>
 							<<case "m">><<set $_text_output += "boy">>
 							<<case "f">><<set $_text_output += "girl">>
 							<<default>><<set $_text_output += "kid">>
 						<</switch>>
 					<<case "hawk">>
-						<<set $_text_output to "Harpy">>
+						<<set $_text_output += "Harpy">>
 				<</switch>>
 			<<else>>
-				<<set $_text_output to _args[0].type.toUpperFirst()>>
+				<<set $_text_output += _args[0].type.toUpperFirst()>>
 			<</if>>
 		<<else>>
-			<<set $_text_output to "Human<<if _args[0].features.beastTransform or _args[0].features.divineTransform>> (<<childTransform _args[0]>>)<</if>>">>
+			<<set $_text_output += "Human<<if _args[0].features.beastTransform or _args[0].features.divineTransform>> (<<childTransform _args[0]>>)<</if>>">>
 		<</if>>
 	<</if>>
-<</silently>><<if $_text_output>>Type: <<print $_text_output>> |<</if>>
+<</silently>><<if $_text_output>><span class="gold">Type:</span> <<print $_text_output>><</if>>
 <</widget>>
 
 <<widget "childTransform">><<silently>>
@@ -728,7 +737,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 <</widget>>
 
 <<widget "childViewerDisplayElements">>
-	<div class="childrenUi">
+	<div class="settingsGrid m-0 childContainer">
 		<<for $_i to _childStart; $_i lt _childEnd; $_i++>>
 			<<set _childId to _childrenIds[$_i]>>
 			<<capture _childId>>
@@ -772,31 +781,32 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set _children to {}>>
 	<</if>>
 	<<capture _args>>
-		<<childTypeDisplay $children[_args[0]]>>
-		Gender:
-		<<switch $children[_args[0]].gender>>
-			<<case "m">>Male
-			<<case "f">>Female
-			<<case "h">>Hermaphrodite
-		<</switch>>
-		<br>
-		<label>Name: <<textbox "_children[_args[0]]" `$children[_args[0]].name`>></label>
-		<br>
-		<<childActivity _args[0]>>
-		<<childViewerHiddenElements _args[0] _args[1]>>
+		<div class="settingsToggleItem m-0 childName">
+			<div>
+				<label><div><<childrenicon _args[0]>></div><div>Name:</div> <div><<textbox "_children[_args[0]]" `$children[_args[0]].name`>></div></label>
+			</div>
+		</div>
+		<div class="settingsToggleItem m-0 childDetails">
+			<<childTypeDisplay $children[_args[0]]>>
+			<span class="no-numberify">
+				| <<link "Extra Details">><<childViewerHiddenElementsUnhide _args[0]>><</link>>
+			</span>
+			<<childViewerHiddenElements _args[0] _args[1]>>
+			<<childActivity _args[0]>>
+		</div>
 	<</capture>>
 <</widget>>
 
 <<widget "childViewerHiddenElements">>
 	<<if _args[0]>>
 		<div @id="'childViewerHidden-'+_args[0]" @class="'childViewerHidden' + (_args[1] ? '' : ' hidden')">
-			Mother:
+			<span class="gold">Mother:</span>
 			<<if $children[_args[0]].motherKnown>>
 				<<print pregnancyNameCorrection($children[_args[0]].mother, true)>>
 			<<else>>
 				????
 			<</if>>
-			| Father:
+			| <span class="gold">Father:</span>
 			<<if $children[_args[0]].fatherKnown>>
 				<<print pregnancyNameCorrection($children[_args[0]].father, true)>>
 			<<else>>
@@ -804,42 +814,39 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 			<</if>>
 			<br>
 			<<if $children[_args[0]].laid>>
-				Laid: <<print $children[_args[0]].laid.day + " " + $children[_args[0]].laid.month + " " + $children[_args[0]].laid.year>> |
-				Hatched: <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>> |
+				<span class="gold">Laid:</span> <<print $children[_args[0]].laid.day + " " + $children[_args[0]].laid.month + " " + $children[_args[0]].laid.year>>
+				<span class="gold">Hatched:</span> <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>>
 			<<else>>
-				Born: <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>> |
+				<span class="gold">Born:</span> <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>>
 			<</if>>
 			<<if $children[_args[0]].adopted>>
-				Adopted: <<print $children[_args[0]].adopted.day + " " + $children[_args[0]].adopted.month + " " + $children[_args[0]].adopted.year>> |
+				<span class="gold">Adopted:</span> <<print $children[_args[0]].adopted.day + " " + $children[_args[0]].adopted.month + " " + $children[_args[0]].adopted.year>>
 			<</if>>
 			<br>
-			Age: <<childAge _args[0] "full">>
+			<span class="gold">Age:</span> <<childAge _args[0] "full">>
 			<br>
-			Size: <<print $children[_args[0]].features.size>> | Hair Colour: <<hairmapcolourtext $children[_args[0]].features.hairColour>>
+			<span class="gold">Size:</span> <<print $children[_args[0]].features.size>> | <span class="gold">Hair:</span> <<hairmapcolourtext $children[_args[0]].features.hairColour>>
 			<<if $children[_args[0]].features.skinColour>>
-				| Skin Colour: <<skinColourName $children[_args[0]].features.skinColour>>
+				| <span class="gold">Skin:</span> <<skinColourName $children[_args[0]].features.skinColour>>
 			<</if>>
 			<br>
 			<<if $children[_args[0]].features.identical>>
-				Identical: <<print $children[_args[0]].features.identical>>
+				<span class="gold">Identical:</span> <<print $children[_args[0]].features.identical>>
 				<br>
 			<</if>>
 			<<if $children[_args[0]].localVariables.interactionsTotal>>
-				Total Interactions: <<print $children[_args[0]].localVariables.interactionsTotal>>
+				<span class="gold">Total Interactions:</span> <<print $children[_args[0]].localVariables.interactionsTotal>>
 				<br>
 			<</if>>
 			<span class="no-numberify">
-			<<link "Rename">>
-				<<set $children[_args[0]].name to generateBabyName(_children[_args[0]], $children[_args[0]].gender, _args[0])>>
-				<<replace `"#child-" + _args[0]`>><<childViewerElement _args[0] true>><</replace>>
-			<</link>> |
-			<<link "Random Name">>
-				<<set $children[_args[0]].name to generateBabyName(undefined, $children[_args[0]].gender, _args[0])>>
-				<<replace `"#child-" + _args[0]`>><<childViewerElement _args[0] true>><</replace>>
-			<</link>>
+				<span class="gold">Rename:</span>
+				<<link "Random Name">>
+					<<set $children[_args[0]].name to generateBabyName(undefined, $children[_args[0]].gender, _args[0])>>
+					<<replace `"#child-" + _args[0]`>><<childViewerElement _args[0] true>><</replace>>
+				<</link>>
 			</span>
 			<br>
-			<small class="right">
+			<small>
 				ChildId: <<print $children[_args[0]].childId>>.
 				saveId: <<print $saveId>>.
 				<<if $saveName isnot "">>
@@ -864,14 +871,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<childSelect _args[0]>>
 		/*'updateChildActivity' Changes the current event if enough time has passed*/
 		<<updateChildActivity _args[0]>>
+		<hr>
 		<<switch $children[_args[0]].type>>
 			<<case "human">><<humanChildActivity _args[0]>>
 			<<case "wolf" "wolfboy" "wolfgirl">><<wolfChildActivity _args[0]>>
 			<<case "hawk">><<hawkChildActivity _args[0]>>
 		<</switch>>
-		<span class="no-numberify">
-			<<link "Extra Details">><<childViewerHiddenElementsUnhide _args[0]>><</link>>
-		</span>
 	<</if>>
 <</widget>>
 
@@ -889,24 +894,24 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<set _rng to random(1, 6)>>
 					<<switch _rng>>
 						<<case 1>>
-							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"transfixed", childid:_args[0]}>><</link>> |
+							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"transfixed", childid:_args[0]}>><</link>>
 						<<case 2>>
-							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"stroke", childid:_args[0]}>><</link>> |
+							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"stroke", childid:_args[0]}>><</link>>
 						<<case 3>>
-							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"yawn", childid:_args[0]}>><</link>> |
+							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"yawn", childid:_args[0]}>><</link>>
 						<<case 4>>
-							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"murmur", childid:_args[0]}>><</link>> |
+							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"murmur", childid:_args[0]}>><</link>>
 						<<case 5>>
-							<<link [[Nap (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"cotNap", childid:_args[0]}>><</link>> |
+							<<link [[Nap (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"cotNap", childid:_args[0]}>><</link>>
 						<<default>>
-							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"shiverInCot", childid:_args[0]}>><</link>> |
+							<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"shiverInCot", childid:_args[0]}>><</link>>
 					<</switch>>
 				<</if>>
 			<<case "restlessSleep">>
 				<<childHe>>'s moving restlessly in <<childhis>> sleep.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Calm <<childhim>> down (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"restlessSleep", childid:_args[0]}>><</link>> |
+					<<link [[Calm <<childhim>> down (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"restlessSleep", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crying">>
 				<<childHe>>'s distressed and crying.
@@ -915,17 +920,17 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<set _rng to random(1, 6)>>
 					<<switch _rng>>
 						<<case 1>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"holdToShoulder", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"holdToShoulder", childid:_args[0]}>><</link>>
 						<<case 2>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"melodicLullaby", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"melodicLullaby", childid:_args[0]}>><</link>>
 						<<case 3>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"foreheadKiss", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"foreheadKiss", childid:_args[0]}>><</link>>
 						<<case 4>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"objectShow", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"objectShow", childid:_args[0]}>><</link>>
 						<<case 5>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"carryRevolt", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"carryRevolt", childid:_args[0]}>><</link>>
 						<<default>>
-							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"rockToSleep", childid:_args[0]}>><</link>> |
+							<<link [[Comfort (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"rockToSleep", childid:_args[0]}>><</link>>
 					<</switch>>
 				<</if>>
 			<<case "lonely">>
@@ -935,63 +940,63 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<set _rng to random(1, 10)>>
 					<<switch _rng>>
 						<<case 1>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"nurseryRhymes", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"nurseryRhymes", childid:_args[0]}>><</link>>
 						<<case 2>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"FeetCup", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"FeetCup", childid:_args[0]}>><</link>>
 						<<case 3>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"shareThoughts", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"shareThoughts", childid:_args[0]}>><</link>>
 						<<case 4>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"speakCry", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"speakCry", childid:_args[0]}>><</link>>
 						<<case 5>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"waveTongue", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"waveTongue", childid:_args[0]}>><</link>>
 						<<case 6>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"handsClap", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"handsClap", childid:_args[0]}>><</link>>
 						<<case 7>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"peekaboo", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"peekaboo", childid:_args[0]}>><</link>>
 						<<case 8>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"blowRaspberriesHappy", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"blowRaspberriesHappy", childid:_args[0]}>><</link>>
 						<<case 9>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"blowRaspberriesUpset", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"blowRaspberriesUpset", childid:_args[0]}>><</link>>
 						<<default>>
-							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"faceStudy", childid:_args[0]}>><</link>> |
+							<<link [[Soothe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"faceStudy", childid:_args[0]}>><</link>>
 					<</switch>>
 				<</if>>
 			<<case "happy">>
 				<<childHe>>'s smiling and happily cooing.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Smile and laugh (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"smilesAndLaughs", childid:_args[0]}>><</link>> |
+					<<link [[Smile and laugh (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"smilesAndLaughs", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "talking">>
 				<<childHe>>'s gurgling and babbling to <<childherself>>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Join in the babbling (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking", childid:_args[0]}>><</link>> |
+					<<link [[Join in the babbling (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "talking2">>
 				<<childHe>>'s gurgling and attempting to make sounds to <<childherself>>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Join in the talking (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking2", childid:_args[0]}>><</link>> |
+					<<link [[Join in the talking (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking2", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "nappyChange">>
 				<<childHe>>'s looking uncomfortable and smells.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Clean up (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"nappyChange", childid:_args[0]}>><</link>> |
+					<<link [[Clean up (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"nappyChange", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "bathe">>
 				<<childHe>> is looking ready for a bath.
 				<<if $children[_args[0]].localVariables.event>>
 					<<switch random(1, 4)>>
 						<<case 1>>
-							<<link [[Bathe (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"batheGentle", childid:_args[0]}>><</link>> |
+							<<link [[Bathe (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"batheGentle", childid:_args[0]}>><</link>>
 						<<case 2>>
-							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"batheShampoo", childid:_args[0]}>><</link>> |
+							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"batheShampoo", childid:_args[0]}>><</link>>
 						<<case 3>>
-							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"BatheCalm", childid:_args[0]}>><</link>> |
+							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"BatheCalm", childid:_args[0]}>><</link>>
 						<<case 4>>
-							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"batheTantrum", childid:_args[0]}>><</link>> |
+							<<link [[Bathe (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"batheTantrum", childid:_args[0]}>><</link>>
 						<<default>>
 					<</switch>>
 				<</if>>
@@ -1001,25 +1006,25 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childHe>>'s being irritable.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Tickle (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"grumpyChild", childid:_args[0]}>><</link>> |
+					<<link [[Tickle (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"grumpyChild", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crawlingAttempt">>
 				<<childHe>>'s lying on <<childhis>> belly and flailing about.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt", childid:_args[0]}>><</link>> |
+					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crawlingAttempt2">>
 				<<childHe>>'s slowly crawling about the room.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt2", childid:_args[0]}>><</link>> |
+					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt2", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "readingAttempt">>
 				<<childHe>>'s looking at a children's book upside down.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Flip the book (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"readingAttempt", childid:_args[0]}>><</link>> |
+					<<link [[Flip the book (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"readingAttempt", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "readingCorrected">>
 				<<childHe>>'s looking at a children's book.
@@ -1114,11 +1119,11 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<<childHe>>'s sleeping soundly.
 	<<if $children[_args[0]].localVariables.event>>
 		<br>
-		<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"shiverInCot", childid:_args[0]}>><<set $child_played.pushUnique(_args[0])>><</link>> |
+		<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"shiverInCot", childid:_args[0]}>><<set $child_played.pushUnique(_args[0])>><</link>>
 	<</if>>
 <</widget>>
 
-/*ToDo: Pregnancy Story Content: Lacking events, no puppy toy events at all. Wolf pups events which the place accesses by going to the childrens UI*/
+/*ToDo: Pregnancy Story Content: Lacking events. Wolf pups events which the place accesses by going to the childrens UI*/
 <<widget "wolfChildActivity">>
 	<span class="no-numberify">
 		<<switch $children[_args[0]].localVariables.activity>>
@@ -1128,61 +1133,61 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childHe>>'s sleeping on <<childhis>> own.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStroke", childid:_args[0]}>><</link>> |
+					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStroke", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "sleepingWithWolf">>
 				<<childHe>>'s sound asleep while cuddled up against another <<if $monster is 1>>wolfgirl<<else>>female wolf<</if>>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Cuddle up to (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"cuddleAndNap", childid:_args[0]}>><</link>> |
+					<<link [[Cuddle up to (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"cuddleAndNap", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crying">>
 				<<childHe>>'s distressed and <<childcry>>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Comfort <<childhim>> (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"cryingWolf", childid:_args[0]}>><</link>> |
+					<<link [[Comfort <<childhim>> (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"cryingWolf", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "playing">>
 				<<childHe>>'s playing with some other pups.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Join in (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"playing", childid:_args[0]}>><</link>> |
+					<<link [[Join in (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"playing", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "watchingCurious">>
 				<<childHe>>'s watching you with a curious expression.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Sate curiosity (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"curiousGaze", childid:_args[0]}>><</link>> |
+					<<link [[Sate curiosity (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"curiousGaze", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "watchingLonging">>
 				<<childHe>>'s watching you with a longing expression.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Scratch ears (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"longingGaze", childid:_args[0]}>><</link>> |
+					<<link [[Scratch ears (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"longingGaze", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "playFighting">>
 				<<childHe>>'s play fighting with another pup.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Calm <<childhim>> (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"playFighting", childid:_args[0]}>><</link>> |
+					<<link [[Calm <<childhim>> (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"playFighting", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "staringOutside">>
 				<<childHe>>'s staring out of the cave.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Go for a walk (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"fieldTrip", childid:_args[0]}>><</link>> |
+					<<link [[Go for a walk (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"fieldTrip", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "grumpyWolf">>
 				<<childHe>>'s sitting alone and snapping at any who come near.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Cheer up (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"grumpyWolf", childid:_args[0]}>><</link>> |
+					<<link [[Cheer up (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"grumpyWolf", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "hungryWolf">>
 				<<childHe>>'s <<childcry>> in front of an overcrowded female <<wolf_cave_singular "f">>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Help finding a nipple (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"hungryWolf", childid:_args[0]}>><</link>> |
+					<<link [[Help finding a nipple (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"hungryWolf", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "gnawing">>
 				<<childHe>>'s gnawing on
@@ -1194,13 +1199,74 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<</switch>>
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Play tug of war (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"gnawing", childid:_args[0]}>><</link>> |
+					<<link [[Play tug of war (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"gnawing", childid:_args[0]}>><</link>>
+				<</if>>
+			<<case "squeakyToy">>
+				<<silently>><<childtoy $location "chew toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("squeaky")>>
+					<<childHe>>'s looking at a _toyName with curiosity.
+
+					<<if $children[_args[0]].localVariables.event>>
+						<br>
+						<<capture _toyName>><<link [[Give squeaky toy (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"squeakyToy", childid:_args[0]}>><<set $phase to _toyName>><</link>><</capture>>
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<wolfChildActivity _args[0]>>
+				<</if>>
+			<<case "chewRope">>
+				<<silently>><<childtoy $location "chew toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("rope")>>
+					<<childHe>>'s chewing on a colourful rope toy.
+
+					<<if $children[_args[0]].localVariables.event>>
+						<br>
+						<<link [[Play tug of war (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"chewRope", childid:_args[0]}>><</link>>
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<wolfChildActivity _args[0]>>
+				<</if>>
+			<<case "chewBone">>
+				<<silently>><<childtoy $location "chew toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("bone")>>
+					<<if $children[_args[0]].localVariables.event>>
+						<<childHe>>'s trying to dig a hole.
+						<br>
+						<<link [[Help dig (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"chewBone", childid:_args[0]}>><</link>>
+					<<else>>
+						<<childHe>>'s guarding <<childhis>> buried bone.
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<wolfChildActivity _args[0]>>
+				<</if>>
+			<<case "rollBall">>
+				<<silently>><<childtoy $location "chew toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("ball")>>
+					<<childHe>>'s nudging a ball closer to you.
+
+					<<if $children[_args[0]].localVariables.event>>
+						<br>
+						<<link [[Roll ball (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"rollBall", childid:_args[0]}>><</link>>
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<default>>
 				<<childHe>>'s has figured out that they're in a video game (This is an error, please report).
 				<<print $children[_args[0]].localVariables.activity>>
 		<</switch>>
 	</span>
+<</widget>>
+
+<<widget "wolfChildActivityNoToy">>
+	<<childHe>>'s sleeping on <<childhis>> own.
+	<<if $children[_args[0]].localVariables.event>>
+		<br>
+		<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStroke", childid:_args[0]}>><</link>>
+	<</if>>
 <</widget>>
 
 <<widget "hawkChildActivity">>
@@ -1212,7 +1278,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childHe>>'s sleeping on <<childhis>> own.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStrokeHawk", childid:_args[0]}>><</link>> |
+					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStrokeHawk", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "sleepingWithGreatHawk">>
 				<<npc "Great Hawk">>
@@ -1227,39 +1293,39 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 							}
 						})>>
 						<<pass 30>><<set $childActivityEvent to {event:"cuddleAndNapHawk", childid:_args[0], otherChildrenIds:_otherChildrenIds}>>
-					<</link>> |
+					<</link>>
 				<</if>>
 				<<endevent>>
 			<<case "crying">>
 				<<childHe>>'s distressed and <<childcry>>.
 				<<if $children[_args[0]].localVariables.event>>
 					<br>
-					<<link "Comfort <<childhim>> (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"cryingHawk", childid:_args[0]}>><</link>> |
+					<<link "Comfort <<childhim>> (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"cryingHawk", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "reaching">>
 				<<childHe>>'s reaching for you.
 				<br>
-				<<link "Pick <<childhim>> up (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"pickUpHawk", childid:_args[0]}>><</link>> |
+				<<link "Pick <<childhim>> up (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"pickUpHawk", childid:_args[0]}>><</link>>
 			<<case "flap">>
 				<<childHe>>'s flapping <<childhis>> little wings in short bursts.
 				<br>
-				<<link "Help <<childhim>> pretend to fly (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"pretendFly", childid:_args[0]}>><</link>> |
+				<<link "Help <<childhim>> pretend to fly (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"pretendFly", childid:_args[0]}>><</link>>
 			<<case "preen">>
 				<<childHe>> seems agitated and pecks at <<childhis>> wings.
 				<br>
-				<<link "Help <<childhim>> preen (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"preen", childid:_args[0]}>><</link>> |
+				<<link "Help <<childhim>> preen (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"preen", childid:_args[0]}>><</link>>
 			<<case "perch">>
 				<<childHe>> stares out at the perch.
 				<br>
-				<<link "Take <<childhim>> to the perch (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"perch", childid:_args[0]}>><</link>> |
+				<<link "Take <<childhim>> to the perch (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"perch", childid:_args[0]}>><</link>>
 			<<case "bathe">>
 				<<childHe>> looks like <<childhe>> needs a bath.
 				<br>
-				<<link "Bathe <<childhim>> (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"bathe", childid:_args[0]}>><</link>> |
+				<<link "Bathe <<childhim>> (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"bathe", childid:_args[0]}>><</link>>
 			<<case "batheSelf">>
 				<<childHe>>'s dipping <<childhis>> legs in the rainwater pool.
 				<br>
-				<<link "Help <<childhim>> bathe (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"batheHelp", childid:_args[0]}>><</link>> |
+				<<link "Help <<childhim>> bathe (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"batheHelp", childid:_args[0]}>><</link>>
 			<<case "lurkerEat">>
 				<<childHe>>'s
 				<<if _childDays lte 180>>
@@ -1274,6 +1340,38 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<else>>
 						pecking at a lurker.
 					<</if>>
+				<</if>>
+			<<case "swingToy">>
+				/* currently unreachable. credit writer as Anonymous when properly added */
+				<<silently>><<childtoy $location "hawk toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("swing")>>
+					<<childHe>>'s trying to climb onto the swing.
+
+					<<if $children[_args[0]].localVariables.event>>
+						<br>
+						<<link [[Help <<childhim>> up (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"swingToy", childid:_args[0]}>><</link>>
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<hawkChildActivity _args[0]>>
+				<</if>>
+			<<case "preeningToy">>
+				/* currently unreachable. credit writer as mochamante when properly added */
+				<<silently>><<childtoy $location "hawk toys" "lowercase">><</silently>>
+				<<if _toyName?.includes("preening")>>
+					<<if _childTotalDays lte 40>>
+						<<childHe>>'s awkwardly trying to preen <<childhimself>>.
+					<<else>>
+						<<childHe>>'s looking at the preening toy.
+					<</if>>
+
+					<<if $children[_args[0]].localVariables.event>>
+						<br>
+						<<link [[Give preening toy (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"preeningToy", childid:_args[0]}>><</link>>
+					<</if>>
+				<<else>>
+					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<hawkChildActivity _args[0]>>
 				<</if>>
 			<<default>>
 				<<childHe>>'s has figured out that they're in a video game (This is an error, please report).
