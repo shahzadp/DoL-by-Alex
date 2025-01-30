@@ -865,10 +865,39 @@
 		<<case "campfire">><<icon "birdTower/firepit_robust_3.gif">>
 		<<case "dock">><<icon "lake_dock.png">>
 		<<case "field office">><<icon "field_office.png">>
+		<<case "firepit">>
+			<<set $_firePitImg to "birdTower/firepit_bonfire_">>
+			<<set _edenHeaterBurnTime to Cooker.getBurnTime($edenHeater)>>
+			<<set _burnTimeRatio to _edenHeaterBurnTime / $edenHeater.maxBurnTime>>
+			<<set _startingBurnTimeRatio = Math.max(($edenHeaterStartingLastsUntil ?? $edenHeater.lastsUntil) - 
+				$timeStamp, 0) / $edenHeater.maxBurnTime>>
+
+			<<if _edenHeaterBurnTime is 0>>
+				<<set $_firePitImg += "0.gif">>
+			<<elseif _burnTimeRatio lte 0.05 or _startingBurnTimeRatio gte 0.95>>
+				<<set $_firePitImg += "1.gif">>
+			<<elseif _burnTimeRatio lte 0.1 or _startingBurnTimeRatio gte 0.9>>
+				<<set $_firePitImg += "2.gif">>
+			<<elseif _burnTimeRatio lte 0.2 or _startingBurnTimeRatio gte 0.8>>
+				<<set $_firePitImg += "3.gif">>
+			<<else>>
+				<<set $_firePitImg += "4.gif">>
+			<</if>>
+			<<icon $_firePitImg>>
 		<<case "fishing">><<icon "fishing.png">>
 		<<case "key">><<icon "bronze_key.png">>
 		<<case "meditate">><<icon "actions/meditate.png">>
-		<<case "pond">><<icon "pond.png">>
+		<<case "pond">>
+			<<if Weather.waterTemperature gte 36>>
+				<<icon "pond_steam.gif">>
+			<<else>>
+				<<icon "pond.png">>
+			<</if>>
+		<<case "pond twigs">>
+			<span class="icon-container">
+				<<icon "pond.png">>
+				<<icon "pond_twig.png">>
+			</span>
 		<<case "pots">><<icon "pots.png">>
 		<<case "skate">><span class="clothes-tan"><<icon "clothes/ice_skates.png">></span>
 		<<case "waterfall">><<icon "waterfall_lake.png">>
