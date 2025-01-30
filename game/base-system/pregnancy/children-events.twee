@@ -421,20 +421,26 @@ When you're done bathing <<childhim>>, you lay <<childhim>> on a towel and gentl
 <</if>>
 <br><br>
 <<childViewerDisplay _childrenIds>>
-<br><br>
+<br>
 <<if $location isnot "tower">>
-	<<if $player.inventory.childrenToys>>
+	<<if $location is "wolf_cave">>
+		<<childicon "rope">>
+	<<else>>
+		<<childicon "teddy bear">>
+	<</if>>
+	<<if $player.inventory.childrenToys and $player.inventory.childrenToys.length gt 0>>
 		<<if !$storedChildrenToys[$location]>><<set $storedChildrenToys[$location] to []>><</if>>
-		<<link [[Store children toys|Childrens Home Toys]]>><</link>>
+		<<link [[Store children's toys|Childrens Home Toys]]>><</link>>
 		<br>
 	<<else>>
-		You have not bought any toys for your children here. You should take a trip to a toy shop.
+		You have not bought any toys for your children here. You should take a trip to <<= $location is "wolf_cave" ? "the pet store" : "the toy shop">>.
 		<br>
 	<</if>>
 <</if>>
 <<if $location is "home">>
+	<<tendingicon "babybottle">>
 	<<if V.plants['baby_bottle_of_breast_milk'] and V.plants['baby_bottle_of_breast_milk'].amount gt 0>>
-		<<link [[Donate Breast Milk|Childrens Donate Milk]]>><</link>>
+		<<link [[Donate breast milk|Childrens Donate Milk]]>><</link>>
 		<<if $pregnancyStats.orphanageMilkBottles gt 0>>
 			(<span class="green"><<print $pregnancyStats.orphanageMilkBottles>></span> bottles remaining)
 		<<else>>
@@ -450,7 +456,7 @@ When you're done bathing <<childhim>>, you lay <<childhim>> on a towel and gentl
 	<</if>>
 	<br>
 <</if>>
-<<link [[Back|$exitPassage]]>><<unset $exitPassage>><</link>>
+<<getouticon>><<link [[Back|$exitPassage]]>><<unset $exitPassage>><</link>>
 
 :: Childrens Donate Milk
 <<effects>>
@@ -484,74 +490,133 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 </div>
 
 <br>
-<<link [[Back|Childrens Home]]>><<unset $childActivityEvent>><<endevent>><</link>>
+<<getouticon>><<link [[Back|Childrens Home]]>><<unset $childActivityEvent>><<endevent>><</link>>
 
 :: Childrens Home Toys Widgets [widget]
 
 <<widget "childrenToysUI">>
-	<<if $player.inventory.childrenToys.length gt 0>>
-		<div class="toysUiElement">
-			<h4>Toys with you</h4>
-			<<for _i to 0; _i lt $player.inventory.childrenToys.length; _i++>>
-				<label>
-					<<radiobutton "_selectedCurrentToy" _i autocheck>>
-					<span @class="$player.inventory.childrenToys[_i].colour"><<print $player.inventory.childrenToys[_i].name>></span>
-				</label>
-				<br>
-			<</for>>
-			<br>
-			<<link "Discard">>
-				<<run $player.inventory.childrenToys.deleteAt(_selectedCurrentToy)>>
-				<<set _selectedCurrentToy to 0>>
-				<<childrenToysUIReplace>>
-			<</link>>
-			<br>
-			<<if $storedChildrenToys[$location].length lt 10>>
-				<<link "Leave toy">>
-					<<run $storedChildrenToys[$location].push($player.inventory.childrenToys[_selectedCurrentToy])>>
-					<<run $player.inventory.childrenToys.deleteAt(_selectedCurrentToy)>>
-					<<set _selectedCurrentToy to 0>>
-					<<childrenToysUIReplace>>
-				<</link>>
-			<<else>>
-				You can't leave more than 10 toys at a time.
-			<</if>>
+	<div class="settingsGrid">
+		<div>
+			<div class="itemInventoryHeader settingsHeader">Inventory</div>
+			<div class="itemInventory itemDetails">
+				<<for _i to 0; _i lt 10; _i++>>
+					<<set _toy to $player.inventory.childrenToys[_i]>>
+					<<if _toy and _i lt 5>>
+						<<set _name to _toy.name>>
+						<<set _icon to _name.toLowerCase().replace(".","")>>
+						<<set _index to _i - 1>>
+						<div @class="_selectedCurrentToy is _i ? 'item selected' : 'item'" @tooltip="_name" onclick="$(this).siblings().removeClass('selected'); $(this).addClass('selected')">
+							<label>
+								<<if $options.images is 1>>
+									<<childicon _icon>>
+								<<else>>
+									<span @class="_toy.colour"><<print _toy.name>></span>
+								<</if>>
+								<<radiobutton "_selectedCurrentToy" _i autocheck>>
+							</label>
+						</div>
+					<<else>>
+						<<if _i lt 5>>
+							<div class="item unknown"><<ind>></div>
+						<<else>>
+							<div class="item empty"><<ind>></div>
+						<</if>>
+					<</if>>
+				<</for>>
+			</div>
+			<div class="containerFooter">
+				<<if $player.inventory.childrenToys.length gt 0>>
+					<div class="tab inventory">
+						<<button "<span class='fa-icon fa-trash'></span> Discard">>
+							<<run $player.inventory.childrenToys.deleteAt(_selectedCurrentToy)>>
+							<<set _selectedCurrentToy to 0>>
+							<<childrenToysUIReplace>>
+						<</button>>
+					</div>
+					<br>
+					<<if $storedChildrenToys[$location].length lt 10>>
+						<div class="tab inventory">
+							<<button "<span class='fa-icon fa-import'></span> Store">>
+								<<run $storedChildrenToys[$location].push($player.inventory.childrenToys[_selectedCurrentToy])>>
+								<<run $player.inventory.childrenToys.deleteAt(_selectedCurrentToy)>>
+								<<set _selectedCurrentToy to 0>>
+								<<childrenToysUIReplace>>
+							<</button>>
+						</div>
+					<</if>>
+				<<else>>
+					<div class="tab inventory">
+						<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-trash'></span> Discard">></button>
+					</div>
+					<div class="tab inventory">
+						<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-import'></span> Store">></button>
+					</div>
+				<</if>>
+			</div>
 		</div>
-	<<else>>
-		<div class="toysUiElement">You have no children's toys with you.</div>
-	<</if>>
-
-	<<if $storedChildrenToys[$location].length gt 0>>
-		<div class="toysUiElement">
-			<h4>Toys your children can play with</h4>
-			<<for _i to 0; _i lt $storedChildrenToys[$location].length; _i++>>
-				<label>
-					<<radiobutton "_selectedLocationToy" _i autocheck>>
-					<span @class="$storedChildrenToys[$location][_i].colour"><<print $storedChildrenToys[$location][_i].name>></span>
-				</label>
-				<br>
-			<</for>>
-			<br>
-			<<link "Discard">>
-				<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
-				<<set _selectedLocationToy to 0>>
-				<<childrenToysUIReplace>>
-			<</link>>
-			<br>
-			<<if $player.inventory.childrenToys.length lt 5>>
-				<<link "Take Back">>
-					<<run $player.inventory.childrenToys.push($storedChildrenToys[$location][_selectedLocationToy])>>
-					<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
-					<<set _selectedLocationToy to 0>>
-					<<childrenToysUIReplace>>
-				<</link>>
-			<<else>>
-				You can't have more than 5 toys with you at a time.
-			<</if>>
+		<div>
+			<div class="itemInventoryHeader settingsHeader">
+				<<switch $location>>
+					<<case "wolf_cave">>Wolf Cave
+					<<case "tower">>Tower
+					<<default>>Nursery
+				<</switch>>
+			</div>
+			<div class="itemInventory itemDetails">
+				<<for _i to 0; _i lt 10; _i++>>
+					<<set _toy to $storedChildrenToys[$location][_i]>>
+					<<if _toy>>
+						<<set _name to _toy.name>>
+						<<set _icon to _name.toLowerCase().replace(".","")>>
+						<div @class="_selectedLocationToy is _i ? 'item selected' : 'item'" @tooltip="_name" onclick="$(this).siblings().removeClass('selected'); $(this).addClass('selected')">
+							<label>
+								<<if $options.images is 1>>
+									<<childicon _icon>>
+								<<else>>
+									<span @class="_toy.colour"><<print _toy.name>></span>
+								<</if>>
+								<<radiobutton "_selectedLocationToy" _i autocheck>>
+							</label>
+						</div>
+					<<else>>
+						<div class="item unknown"><<ind>></div>
+					<</if>>
+				<</for>>
+			</div>
+			<div class="containerFooter">
+					<<if $storedChildrenToys[$location].length gt 0>>
+						<div class="tab inventory">
+							<<button "<span class='fa-icon fa-trash'></span> Discard">>
+								<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
+								<<set _selectedLocationToy to 0>>
+								<<childrenToysUIReplace>>
+							<</button>>
+						</div>
+						<<if $player.inventory.childrenToys.length lt 5>>
+							<div class="tab inventory">
+								<<button "<span class='fa-icon fa-export'></span> Carry">>
+									<<run $player.inventory.childrenToys.push($storedChildrenToys[$location][_selectedLocationToy])>>
+									<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
+									<<set _selectedLocationToy to 0>>
+									<<childrenToysUIReplace>>
+								<</button>>
+							</div>
+						<<else>>
+							<div class="tab inventory">
+								<button class="link-internal macro-button no-numberify buttonDisabled" disabled><span class='fa-icon fa-export'></span>Carry</button>
+							</div>
+						<</if>>
+					<<else>>
+						<div class="tab inventory">
+							<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-trash'></span> Discard">></button>
+						</div>
+						<div class="tab inventory">
+							<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-export'></span> Carry">></button>
+						</div>
+					<</if>>
+			</div>
 		</div>
-	<<else>>
-		<div class="toysUiElement">You haven't left any children's toys here.</div>
-	<</if>>
+	</div>
 <</widget>>
 
 <<widget "childrenToysUIReplace">>
@@ -858,6 +923,38 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 		<br><br>
 		Another pup, noticing your game, approaches <<childname>> and attempts to grab the $pupToy. You keep a close eye on the two of them, but thankfully,  <<childname>>'s playmate doesn't seem interested in actually stealing the toy from <<childhim>>. You smile as the pups play tug-of-war together before standing up and leaving them to their own devices.
 		<<set $children[$childActivityEvent.childid].localVariables.activity to "playing">>
+	<<case "squeakyToy">>
+		<<switch $phase>>
+			<<case "squeaky sheep">><<wearProp "chew toy" 0 "sheep">><<set _squeakyToy to "squeaky sheep">>
+			<<default>><<wearProp "chew toy" 0 "chicken">><<set _squeakyToy to "squeaky chicken">>
+		<</switch>>
+		 You pick up the _squeakyToy and sit next to <<childname>>. <<childHe>> immediately sinks <<childhis>> fangs into it. The toy lets out a loud squeak in protest. You startle at the sudden sound, and <<childname>> yelps in surprise. <<gstress>><<stress 6>>
+		 <br><br>
+		 <<childHe>> drops the toy and looks at it with distrust. You spend the next several moments trying to reassure <<childhim>>. <<childHe>> calms down, but doesn't want to play with the _squeakyToy anymore. You decide to leave it be for now.
+		<<set $children[$childActivityEvent.childid].localVariables.activity to "playing">>
+	<<case "chewBone">>
+		<<wearProp "chew toy" 0 "bone">>
+		You sit next to <<childname>> and start digging alongside <<childhim>>. The dirt is hard, but you manage to make a shallow hole. <<childname>> picks up a toy bone and drops it in the hole. You sit back and watch as <<childhe>> buries it. After pushing the unearthed dirt back into the hole, <<childhe>> sits on the mound.
+		<br><br>
+		<<switch random(1,2)>>
+			<<case 1>>
+				You move to scritch <<childhis>> ears, but <<childhe>> gives a warning growl. <<childHe>>'s clearly preoccupied with protecting <<childhis>> bone. You back away, and <<childhe>> settles down. <<gstress>><<stress 6>>
+			<<default>>
+				You scritch <<childhis>> ears before standing up, and <<childhe>> gives a happy bark. <<lstress>><<stress -6>>
+		<</switch>>
+	<<case "chewRope">>
+		<<wearProp "chew toy" 0 "rope">>
+		You sit next to <<childname>> and grab ahold of the rope. <<childHe>> growls as you gently pull on the toy and tugs it back. You continue tugging the rope back and forth before finally letting <<childhim>> win. <<childname>> yips joyfully as <<childhe>> claims <<childhis>> prize, tail wagging with excitement.
+		<br><br>
+		<<childHe>> rolls onto <<childhis>> back and holds the rope with <<childhis>> <<childhands>>, chewing on it with renewed gusto. You smile as you stand back up. <<lstress>><<stress -6>>
+		<<set $children[$childActivityEvent.childid].localVariables.activity to "playing">>
+	<<case "rollBall">>
+		<<wearProp "chew toy" 0 "ball">>
+		<<childname>> gives an enthusiastic bark as you pick up the ball. You gently roll it towards <<childhim>>. <<childHe>> <<= either("manages to catch it", "fumbles around with the ball", "stares at it")>> before rolling it back towards you <<if $children[$childSelected.childId].type is "wolf">>with <<childhis>> snout<<else>>with <<childhis>> tiny <<childhands>><</if>>.
+		<br><br>
+		You pass the ball back and forth for a bit, until <<childhe>>'s tuckered out. <<childHe>> curls up around the ball and falls asleep. You pet <<childhis>> head and stand up. <<lstress>><<stress -6>>
+		<<set $children[$childActivityEvent.childid].localVariables.activity to "sleeping">>
+
 	/*Hawk Specific*/
 	<<case "sleepingStrokeHawk">>
 		You climb into the nest with the slumbering <<childtype>>, and stroke <<childhis>>
@@ -990,6 +1087,42 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 			<<childHe>> shivers, so you waste no time drying <<childhim>> off.
 		<</if>>
 		<<set $children[$childActivityEvent.childid].localVariables.activity to "sleeping">>
+	<<case "swingToy">>
+		/* currently unreachable. credit writer as Anonymous when properly added */
+		You come up behind <<childname>> and lift <<childhim>> beneath the <<= $cmonster ? "arms," : "wings,">> setting <<childhim>> on the swing and giving it a little push. <<childHe>> <<= $cmonster ? "giggles" : "chirps">> and flaps <<childhis>> wings in excitement as <<childhe>> tries to swing higher.
+		<<if _childTotalDays lt 14>>
+			The wind rushes right through <<childhis>> undeveloped feathers, and you're easily able to keep control of <<childhis>> swings.
+		<<else>>
+			A couple times, <<childhe>> manages to catch the air with <<childhis>> wings and swing out of your reach. You worry briefly that <<childhe>> might fall, but <<childhe>> keeps <<childhis>> balance, and seems all the more excited for how close <<childhe>> gets to taking flight.
+		<</if>>
+		<br><br>
+		<<childHe>> soon grows tired, chirping softly as you pick <<childhim>> up and gently return <<childhim>> to the nest. <<ltrauma>><<trauma -6>>
+		<<set $children[$childActivityEvent.childid].localVariables.activity to "sleeping">>
+	<<case "preeningToy">>
+		/* currently unreachable. credit writer as mochamante when properly added */
+		You dangle the preening toy in front of <<childname>>, tugging gently at the fibers. Curious, the <<childtype>> hops closer, tilting <<childhis>> head to inspect it. After a few moments, you hook the toy onto the perch and step away, letting <<childhim>> engage with it at <<childhis>> own pace.
+		<br><br>
+		<<if _childTotalDays lte 40>>
+			<<switch random(1,3)>>
+				<<case 1>>
+					Eventually, <<childname>> <<if $cmonster is 1>>tugs<<else>>pecks<</if>> at the toy in short bursts. <<childHe>> tentatively nibbles on the toy's soft fibers, pulling lightly at the strands before trying to preen it. <<childHis>> tiny <<= $cmonster is 1 ? "hands" : "beak">> are working diligently. You watch with pride as <<childhe>> seems to get the hang of it. <<stress -6>><<lstress>>
+				<<case 2>>
+					A moment later, <<childname>> hops closer and gives the toy a hesitant <<= $cmonster is 1 ? "tug." : "peck.">> <<childHe>> eventually starts preening the toy, practicing <<childhis>> grooming instincts. <<childHe>> seems content, chirping softly as <<childhe>> tugs at the toy. <<trauma -6>><<ltrauma>>
+				<<default>>
+					<<childname>> gives a hesitant <<= $cmonster is 1 ? "tug" : "peck">> at the toy before, then pulls on one of the dangling strands. The toy swings back, and <<childhe>> flinches, letting out a soft chirp of distress. <<childHe>> flutters away, wary of the toy. <<stress 3>><<gstress>>
+			<</switch>>
+		<<else>>
+			<<switch random(1,4)>>
+				<<case 1>>
+					<<childname>> <<= either("ignores the toy completely and tries", "nibbles at it briefly before losing interest and attempting")>> to preen you instead. It tickles. <<lstress>><<ltrauma>><<stress -3>><<trauma -3>>
+				<<case 2>>
+					<<childname>> begins tugging at the loose fibers with <<childhis>> <<= $cmonster is 1 ? "hands," : "beak,">> mimicking preening motions. You watch as <<childhe>> grows more confident, fluffing <<childhis>> tiny feathers. <<ltrauma>><<trauma -6>>
+				<<case 3>>
+					<<childHe>> immediately preens the toy, chirping happily as <<childhe>> hops around it. <<childHis>> feathers puff up with contentment. <<lstress>><<stress -6>>
+				<<default>>
+					<<childHe>> watches intently, chirping with interest. <<childHe>> hops closer and <<= $cmonster is 1 ? "tugs" : "pecks">> at it. As <<childhe>> pulls at the threads, <<childhe>> occasionally looks to you for encouragement. <<ltrauma>><<trauma -6>>
+			<</switch>>
+		<</if>>
 	<<default>>
 		The event could not be found.<br>
 		Event: $childActivityEvent.event

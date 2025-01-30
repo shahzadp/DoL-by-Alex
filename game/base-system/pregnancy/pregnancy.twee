@@ -324,14 +324,16 @@
 	<</if>>
 	<<if _pregnancyBirth and _pregnancyBirth.fetus>>
 		<<pregnancyFeats _args[0]>>
-		<div id="birthUi">
-			<<for _i to 0; _i lt _pregnancyBirth.fetus.length; _i++>>
-				<<capture _i>>
-					<div @id="'child-' + _pregnancyBirth.fetus[_i].childId" class="childUi">
-						<<birthChildElement _pregnancyBirth.fetus[_i]>>
-					</div>
-				<</capture>>
-			<</for>>
+		<div>
+			<div class="settingsGrid m-0 childContainer">
+				<<for _i to 0; _i lt _pregnancyBirth.fetus.length; _i++>>
+					<<capture _i>>
+						<div @id="'child-' + _pregnancyBirth.fetus[_i].childId">
+							<<birthChildElement _pregnancyBirth.fetus[_i]>>
+						</div>
+					<</capture>>
+				<</for>>
+			</div>
 		</div>
 		<br>
 		<<if _args[4]>>
@@ -358,7 +360,7 @@
 	<<if Object.values($children).find(child => child.location is _args[0] and Time.date.timeStamp gte child.eggTimer)>>
 		<<set _childrenId to Object.keys($children).filter(id => $children[id].location is _args[0] and Time.date.timeStamp gte $children[id].eggTimer)>>
 		<<set $_date to { day: Time.monthDay, month: Time.monthName, year: Time.year }>>
-		<div id="birthUi">
+		<div class="settingsGrid m-0 childContainer">
 			<<for _childId range _childrenId>>
 				<<set $children[_childId].born to clone($_date)>>
 				<<set $children[_childId].birthLocation to $location>>
@@ -392,52 +394,60 @@
 <<widget "birthChildElement">>
 	<<if _args[0]?.childId>>
 		<<capture _args>>
-			<<if _args[0].type isnot "human">>
-				<<childTypeDisplay _args[0]>>
-			<</if>>
-			Gender:
-			<<switch _args[0].gender>>
-				<<case "m">>Male
-				<<case "f">>Female
-				<<case "h">>Hermaphrodite
-			<</switch>>
-			<br>
-			Mother:
-			<<if _args[0].motherKnown>>
-				<<print pregnancyNameCorrection(_args[0].mother, true)>>
-			<<else>>
-				????
-			<</if>>
-			| Father:
-			<<if _args[0].fatherKnown>>
-				<<print pregnancyNameCorrection(_args[0].father, true)>>
-			<<else>>
-				????
-			<</if>>
-			<br>
-			Size: <<print _args[0].features.size>> | Hair Colour: <<hairmapcolourtext _args[0].features.hairColour>>
-			<<if _args[0].features.skinColour>>
-				| Skin Colour: <<skinColourName _args[0].features.skinColour>>
-			<</if>>
-			<br>
-			<<if _args[0].features.identical>>
-				Identical: <<print _args[0].features.identical>>
-				<br>
-			<</if>>
-			<label><<print '<<textbox "_args[0].name" `_args[0].name or ""`>>'>></label>
-			<br>
-			<span class="no-numberify">
-				<<link "Random Name">>
-					<<set _args[0].name to generateBabyName(undefined, _args[0].gender)>>
-					<<replace `"#child-" + _args[0].childId`>><<birthChildElement _args[0]>><</replace>>
-				<</link>>
-			</span>
-			<small class="right">
-				saveId: <<print $saveId>>
-				<<if $saveName isnot "">>
-					| name: <<print $saveName>>
+			<div class="settingsToggleItem m-0 childName">
+				<div>
+					<label><div>Name:</div><div><<print '<<textbox "_args[0].name" `_args[0].name or ""`>>'>></div></label>
+				</div>
+			</div>
+			<div class="settingsToggleItem m-0 childDetails">
+				<<if _args[0].type isnot "human">>
+					<<childTypeDisplay _args[0]>>
+				<<else>>
+					<span class="gold">Gender:</span>
+					<<switch _args[0].gender>>
+						<<case "m">>Male
+						<<case "f">>Female
+						<<case "h">>Hermaphrodite
+					<</switch>>
 				<</if>>
-			</small>
+				<span class="no-numberify">
+					|
+					<<link "Random Name">>
+						<<set _args[0].name to generateBabyName(undefined, _args[0].gender)>>
+						<<replace `"#child-" + _args[0].childId`>><<birthChildElement _args[0]>><</replace>>
+					<</link>>
+				</span>
+				<hr>
+				<span class="gold">Mother:</span>
+				<<if _args[0].motherKnown>>
+					<<print pregnancyNameCorrection(_args[0].mother, true)>>
+				<<else>>
+					????
+				<</if>>
+				| <span class="gold">Father:</span>
+				<<if _args[0].fatherKnown>>
+					<<print pregnancyNameCorrection(_args[0].father, true)>>
+				<<else>>
+					????
+				<</if>>
+				<br>
+				<span class="gold">Size:</span> <<print _args[0].features.size>> | <span class="gold">Hair Colour:</span> <<hairmapcolourtext _args[0].features.hairColour>>
+				<<if _args[0].features.skinColour>>
+					| <span class="gold">Skin Colour:</span> <<skinColourName _args[0].features.skinColour>>
+				<</if>>
+				<br>
+				<<if _args[0].features.identical>>
+					<span class="gold">Identical:</span> <<print _args[0].features.identical>>
+					<br>
+				<</if>>
+				<br>
+				<small class="right">
+					saveId: <<print $saveId>>
+					<<if $saveName isnot "">>
+						| name: <<print $saveName>>
+					<</if>>
+				</small>
+			</div>
 		<</capture>>
 	<<else>>
 		Error Children Object not found in the passage '<<print $passage>>'. Please report the error with your save.
