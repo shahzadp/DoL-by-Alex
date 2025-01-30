@@ -487,3 +487,110 @@ function formatList(arr, conjunction = "and", useOxfordComma = false, separator 
 }
 window.formatList = formatList;
 DefineMacroS("formatList", formatList);
+
+function liquidcount(liquid, parts) {
+	if (!setup.bodyliquid.liquidtype.includes(liquid)) return Errors.report("liquidcount error: wrong type", liquid);
+	let count = 0;
+	for (const part of parts) {
+		count += V.player.bodyliquid[part][liquid];
+	}
+	return count;
+}
+
+function liquidclamp() {
+	for (const bodypart of setup.bodyliquid.bodyparts) {
+		for (const liquid of ["goo", "semen", "nectar"]) {
+			V.player.bodyliquid[bodypart][liquid] = Math.clamp(V.player.bodyliquid[bodypart][liquid], 0, 5);
+		}
+	}
+}
+
+function goocount() {
+	liquidclamp();
+	const outer = setup.bodyliquid.outerbodyparts;
+	const goooutsidecount = liquidcount("goo", outer);
+	const semenoutsidecount = liquidcount("semen", outer);
+	const nectaroutsidecount = liquidcount("nectar", outer);
+	const liquidoutsidecount = goooutsidecount + semenoutsidecount + nectaroutsidecount;
+
+	const inner = setup.bodyliquid.innerbodyparts;
+	const gooinsidecount = liquidcount("goo", inner) * 3;
+	const semeninsidecount = liquidcount("semen", inner) * 3;
+	const nectarinsidecount = liquidcount("nectar", inner) * 3;
+	const liquidinsidecount = gooinsidecount + semeninsidecount + nectarinsidecount;
+
+	V.goooutsidecount = goooutsidecount;
+	V.semenoutsidecount = semenoutsidecount;
+	V.nectaroutsidecount = nectaroutsidecount;
+	V.liquidoutsidecount = liquidoutsidecount
+	V.goocount = gooinsidecount + goooutsidecount;
+	V.semencount = semeninsidecount + semenoutsidecount;
+	V.nectarcount = nectarinsidecount + nectaroutsidecount;
+	V.liquidcount = liquidinsidecount + liquidoutsidecount;
+}
+DefineMacro("goocount", goocount);
+
+/* set $allure to allure, set $attractiveness to attractiveness */
+function calculateallure() {
+	/* attractiveness calcs */
+	let attractiveness;
+	/* baseline, reused later for allure danger mods */
+	let baseattractiveness = V.beauty / 3 + V.hairlength / 4;
+	if (!V.worn.over_upper.type.includes("naked")) {
+		baseattractiveness += V.worn.over_upper.reveal;
+	} else {
+		baseattractiveness += V.worn.upper.reveal
+		if (V.worn.upper.type.includes("naked")) baseattractiveness += V.worn.under_upper.reveal;
+	}
+	if (!V.worn.over_lower.type.includes("naked")) {
+		baseattractiveness += V.worn.over_lower.reveal;
+	} else {
+		baseattractiveness += V.worn.lower.reveal;
+		if (V.worn.lower.type.includes("naked")) baseattractiveness += V.worn.under_lower.reveal;
+	}
+	attractiveness = baseattractiveness;
+	/* extra attractiveness from accessories */
+	for (const slot of ["head", "face", "neck", "legs", "feet", "handheld", "hands"]) attractiveness += V.worn[slot].reveal || 0;
+	/* tf bonuses */
+	const partsHidden = (tf, parts) => parts.filter(part => V.transformationParts[tf][part] === "hidden").length;
+	if (V.demon >= 6) attractiveness += 500 - 100 * partsHidden("demon", ["horns", "tail", "wings"]);
+	if (V.angel >= 6) attractiveness += 500 - 150 *  partsHidden("angel", ["halo", "wings"]);
+	if (V.fallenangel >= 2) attractiveness += 500 - 150 * partsHidden("fallenAngel", ["halo", "wings"]) ;
+	if (V.wolfgirl >= 6) attractiveness += 500 - 150 * partsHidden("wolf", ["tail", "ears"]);
+	if (V.cat >= 6) attractiveness += 500 - 150 * partsHidden("cat", ["tail", "ears"]);
+	if (V.cow >= 6) attractiveness += 500 - 100 * partsHidden("cow", ["ears", "horns", "tail"]);
+	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird",  ["tail", "eyes", "wings", "malar", "plumage"]);
+	if (V.fox >= 6) attractiveness += 750 - 225 * partsHidden("fox" ,["ears", "tail"])
+	/* makeup */
+	for (const makeup of ["lipstick", "mascara", "eyeshadow", "blusher"]) {
+		if (V.makeup[makeup]) attractiveness += 100;
+	}
+	V.attractiveness = Math.floor(attractiveness);
+
+	/* allure calcs */
+	let allure = attractiveness;
+	/* night and exposed mods to base attractiveness. minus one, because it's already included into attractiveness above */
+	const nightMod = Weather.dayState === "night" ? 1.5 : 1;
+	const exposedMod = 1 + V.exposed / 5;
+	allure += baseattractiveness * (nightMod * exposedMod - 1);
+	/* bodyliquid danger */
+	goocount();
+	allure += V.liquidcount * 50;
+	/* ear slime */
+	if (V.earSlime.growth > 50) allure += (V.earSlime.growth - 50) * 10;
+	/* fame mods */
+	if (!["island"].includes(V.location)) {
+		for (const badfame of ["sex", "prostitution", "rape", "bestiality", "exhibitionism", "pregnancy", "impreg"]) allure += V.fame[badfame] / 10;
+		for (const goodfame of ["good", "scrap", "business", "social", "model", "pimp"]) allure -= V.fame[goodfame] / 2;
+	}
+	/* bloodmoon */
+	if (Time.isBloodMoon()) allure += 2000;
+	allure = Math.clamp(allure, 0, 8000);
+	V.baseAllure = allure;
+	/* extra modifiers */
+	allure *= V.alluremod;
+	if (V.moorLuck > 0) allure *= 1 - V.moorLuck / 100;
+
+	V.allure = Math.floor(allure);
+}
+DefineMacro("calculateallure", calculateallure);
