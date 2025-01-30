@@ -5,7 +5,8 @@
 		<div id="body">
 			<div id="mainSection">
 				<div id="search">
-					Search: <<textbox "_foodSearch" "">>
+					Search:
+					<<textbox "_foodSearch" "">>
 					<<run $(() => {
 						var foodTimer = null;
 						$('#textbox--foodsearch').on('input change keypress', e => {
@@ -42,76 +43,100 @@
 <</widget>>
 
 <<widget "kitchenDisplayOptions">>
-	<div class="mobileOnly">
-		<<link "Close">>
-			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<</link>>
-		<br><br>
+	<div id="basket">
+		<span class="gold bold">Options:</span>
+		<div class="mobileOnly">
+			<<link "Close">>
+				<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<</link>>
+			<br><br>
+		</div>
 	</div>
-	Search For:
-	<<listbox "$options.ingredientsSearch" autoselect>>
-		<<option "All" "all">>
-		<<option "Recipes" "recipes">>
-		<<option "Ingredients" "ingredients">>
-	<</listbox>>
-	<<run $(() => {
-		$('#listbox-optionsingredientssearch').on('input change', e => {
-			Wikifier.wikifyEval('<<replace "#itemList">><<kitchenDisplayRecipes>><</replace>>');
-		});
-	})>>
-
-	<br><br>
-	<label>Auto manage ingredients: <<checkbox "$options.ingredientsAutoManage" false true autocheck>></label>
-	<<if $chef_state gte 3>>
-		<br>
-		<label>Allow auto managed lewd ingredients: <<checkbox "$options.ingredientsAutoManageLewd" false true autocheck>></label>
+	<div id="basketItems" class="info">
+		Search for:
+		<<listbox "$options.ingredientsSearch" autoselect>>
+			<<option "All" "all">>
+			<<option "Recipes" "recipes">>
+			<<option "Ingredients" "ingredients">>
+		<</listbox>>
 		<<run $(() => {
-			$('#checkbox-optionsingredientsautomanage').on('input change', e => {
-				if (!$options.ingredientsAutoManageLewd) Wikifier.wikifyEval('<<replace "#itemList">><<kitchenDisplayRecipes>><</replace>>');
-			});
-			$('#checkbox-optionsingredientsautomanagelewd').on('input change', e => {
+			$('#listbox-optionsingredientssearch').on('input change', e => {
 				Wikifier.wikifyEval('<<replace "#itemList">><<kitchenDisplayRecipes>><</replace>>');
 			});
 		})>>
-	<</if>>
+
+		<br><br>
+		<label>Auto-manage ingredients: <<checkbox "$options.ingredientsAutoManage" false true autocheck>></label>
+		<<if $chef_state gte 3>>
+			<br>
+			<label>Allow lewd auto-managed ingredients: <<checkbox "$options.ingredientsAutoManageLewd" false true autocheck>></label>
+			<<run $(() => {
+				$('#checkbox-optionsingredientsautomanage').on('input change', e => {
+					if (!$options.ingredientsAutoManageLewd) Wikifier.wikifyEval('<<replace "#itemList">><<kitchenDisplayRecipes>><</replace>>');
+				});
+				$('#checkbox-optionsingredientsautomanagelewd').on('input change', e => {
+					Wikifier.wikifyEval('<<replace "#itemList">><<kitchenDisplayRecipes>><</replace>>');
+				});
+			})>>
+		<</if>>
+	</div>
 <</widget>>
 
 <<widget "kitchenDisplayRecipes">>
 	<<kitchenFilter>>
-
-	<<for _category range _recipesGroups>>
-		<<if !_recipesKeys.find(key => key.group is _category)>><<continue>><</if>>
-		<<set _categoryVar to "_" + _category.replace(" ", "")>>
-		<<foldout false _categoryVar>>
-			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
-			<<for $_keyObject range _recipesKeys>>
-				<<if $_keyObject.group isnot _category>><<continue>><</if>>
-				<div @id="$_key" class="item"><<kitchenDisplayRecipe $_keyObject.key>></div>
-			<</for>>
-		<</foldout>>
-	<</for>>
+	<<if _recipeKeys.some(key => key.group isnot "Provided Ingredients")>>
+		<<for _category range _recipesGroups>>
+			<<if !_recipeKeys.find(key => key.group is _category)>><<continue>><</if>>
+			<<set _categoryVar to "_" + _category.replace(" ", "")>>
+			<<foldout false _categoryVar>>
+				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
+				<<set _filteredRecipes to _recipeKeys.filter(key => key.group is _category)>>
+				<<for _i, $_keyObject range _filteredRecipes>>
+					<div @id="$_keyObject.key" class="item"><<kitchenDisplayRecipe $_keyObject.key>></div>
+					<<if _i < _filteredRecipes.length - 1>><hr><</if>>
+				<</for>>
+			<</foldout>>
+		<</for>>
+	<<else>>
+		<div class="info">You haven't learned how to cook yet! Attend housekeeping classes to unlock new recipes.</div>
+		<<for _category range _recipesGroups>>
+			<<if !_recipeKeys.find(key => key.group is _category)>><<continue>><</if>>
+			<<set _categoryVar to "_" + _category.replace(" ", "")>>
+			<<foldout false _categoryVar>>
+				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
+				<<set _filteredRecipes to _recipeKeys.filter(key => key.group is _category)>>
+				<<for _i, $_keyObject range _filteredRecipes>>
+					<div @id="$_keyObject.key" class="item"><<kitchenDisplayRecipe $_keyObject.key>></div>
+					<<if _i < _filteredRecipes.length - 1>><hr><</if>>
+				<</for>>
+			<</foldout>>
+		<</for>>
+	<</if>>
 <</widget>>
 
 <<widget "kitchenDisplayRecipe">>
 	<<set $_setupItem to setup.plants[_args[0]]>>
 	<div class="details">
-		<<tendingicon $_setupItem.icon>> |
-		<<recipe_name _args[0] "cap">> |
-		Owned: <span class="gold"><<print $plants[_args[0]].amount>></span>
-		<<set $_group to _recipesKeys.find((obj) => obj.key is _args[0]).group>>
+		<div>
+			<<tendingicon $_setupItem.icon>> <<recipe_name _args[0] "cap">> |
+			Owned: <span class="gold"><<print $plants[_args[0]].amount>></span>
+		</div>
+		<<set $_group to _recipeKeys.find((obj) => obj.key is _args[0]).group>>
 		<<switch $_group>>
-			<<case "Missing ingredients">>
-				<br>
-				<span class="red">Missing ingredients:</span>
-				<<print formatList($_setupItem.ingredients.filter(ingredient => {
-					return ingredientsTotal(ingredient, _args[0], true) lte 0 and !ingredientsProvided(ingredient, _args[0]);
-				}).sort(), "and").replace(/_/g, " ")>>
-			<<case "Restricted">>
-				<br>
-				<span class="red">Restricted ingredients:</span>
-				<<print formatList($_setupItem.ingredients.filter(ingredient => {
-					return !ingredientIsAllowed(ingredient);
-				}).sort(), "and").replace(/_/g, " ")>>
+			<<case "Missing Ingredients">>
+				<div>
+					<span class="red">Missing:</span>
+					<<print formatList($_setupItem.ingredients.filter(ingredient => {
+						return ingredientsTotal(ingredient, _args[0], true) lte 0 and !ingredientsProvided(ingredient, _args[0]);
+					}).sort(), "and", true).replace(/_/g, " ")>>
+				</div>
+			<<case "Restricted Ingredients">>
+				<div>
+					<span class="red">Restricted:</span>
+					<<print formatList($_setupItem.ingredients.filter(ingredient => {
+						return !ingredientIsAllowed(ingredient);
+					}).sort(), "and", true).replace(/_/g, " ")>>
+				</div>
 		<</switch>>
 	</div>
 	<div class="recipe">
@@ -133,53 +158,59 @@
 <</widget>>
 
 <<widget "kitchenDisplayRecipeDetail">>
-	<div class="mobileOnly">
-		<<link "Close">>
-			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<</link>>
-		<br><br>
-	</div>
 	<<set $lastRecipeViewed to _args[0]>>
 	<<set $_setupItem to setup.plants[$lastRecipeViewed]>>
-	<<tendingicon $_setupItem.icon>> |
-	<<recipe_name $lastRecipeViewed "cap">>
-	<br><br>
-	Owned: <span class="gold"><<print $plants[$lastRecipeViewed].amount>></span>
-	<<if $_setupItem?.ingredients.length>>
-		<br>
-		Time: <span class="gold"><<print $_setupItem.days>></span> minute<<if $_setupItem.days isnot 1>>s<</if>>
-		<br>
-		Result: <span class="gold"><<print $_setupItem.multiplier>></span>
-	<</if>>
-	<br><br>
-	<div id="requiredForRecipe">
-		<<requiredForRecipe>>
-		<<kitchenDisplayRecipeMake>>
+	<div id="basket">
+		<div>
+			<<tendingicon $_setupItem.icon>>
+			<div class="recipeTitle"><<recipe_name $lastRecipeViewed "cap">>:</div>
+		</div>
+		<div class="mobileOnly">
+			<<link "Close">>
+				<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<</link>>
+		</div>
 	</div>
+	<<set _basketOpen to false>>
+	<div id="basketItems">
+		Owned: <span class="gold"><<print $plants[$lastRecipeViewed].amount>></span>
+		<<if $_setupItem?.ingredients.length>>
+			<br>
+			Time: <span class="gold"><<print $_setupItem.days>></span> minute<<if $_setupItem.days isnot 1>>s<</if>>
+			<br>
+			Result: <span class="gold"><<print $_setupItem.multiplier>></span>
+			<hr>
+		<</if>>
+		<div id="requiredForRecipe">
+			<<requiredForRecipe>>
+			<<kitchenDisplayRecipeMake>>
+		</div>
 
-	<br>
-	<<knownFoodRecipes $lastRecipeViewed>>
+		<hr>
+		<<knownFoodRecipes $lastRecipeViewed>>
+	</div>
 <</widget>>
 
 <<widget "kitchenDisplayRecipeMake">>
 	<<set $_setupItem to setup.plants[$lastRecipeViewed]>>
-	<<set $_group to _recipesKeys.find((obj) => obj.key is $lastRecipeViewed).group>>
+	<<set $_group to _recipeKeys.find((obj) => obj.key is $lastRecipeViewed).group>>
 	<<if $_setupItem?.ingredients.length>>
 		<<switch $_group>>
-			<<case "Restricted">>
-				<span class="purple">Some required ingredients are banned.</span>
-			<<case "Provided">>
-				<span class="purple">No reason to make something you are being supplied.</span>
-			<<case "Missing ingredients">>
+			<<case "Restricted Ingredients">>
+				<span class="purple">Some required ingredients are banned in this kitchen.</span>
+			<<case "Provided Ingredients">>
+				<span class="purple">You don't need to make this ingredient, since you have access to an infinite supply.</span>
+			<<case "Missing Ingredients">>
 				<span class="purple">You do not have all the required ingredients.</span>
 			<<default>>
 				<<if $tiredness gte C.tiredness.max>>
 					<span class="purple">You're too tired to cook!</span>
 				<<elseif $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 1 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
+					Make:
 					<<set _hours to Math.floor($_setupItem.days / 60)>>
 					<<set _minutes to $_setupItem.days % 60>>
 					<<set _timeString to " (" + (_hours lt 10 ? "0": "") +_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")">>
-					<<link [["Make 1" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 1>><</link>>
+					<<link [["1" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 1>><</link>>
 					<<if $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 3 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
 						<<set _hours to Math.floor($_setupItem.days * 3 / 60)>>
 						<<set _minutes to ($_setupItem.days * 3) % 60>>
@@ -191,20 +222,20 @@
 						<<set _futureTime to _futureTime.addMinutes(_minutes)>>
 
 						<<if !_hourRestriction or _futureTime.hour lt _hourRestriction or _futureTime.minute lte 15>>
-							| <<link [["Make 3" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 3>><</link>>
+							| <<link [["3" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 3>><</link>>
 						<</if>>
 					<</if>>
 				<<else>>
-					<span class="purple">You are missing an ingredient but can switch to something different.</span>
+					<span class="purple">You are missing an ingredient, but may be able to use a substitute.</span>
 				<</if>>
 		<</switch>>
 	<<else>>
 		<<switch $_group>>
 			<<case "Provided">>
-				<span class="purple">You have access to supply of these.</span>
-			<<case "Restricted">>
-				<span class="purple">This ingredient is banned.</span>
-			<<case "Missing ingredients">>
+				<span class="purple">This kitchen provides you with an infinite supply of this ingredient.</span>
+			<<case "Restricted Ingredients">>
+				<span class="purple">This ingredient is banned in this kitchen.</span>
+			<<case "Missing Ingredients">>
 				<<if $_setupItem.shop>>
 					<span class="purple">You need to find a means to buy or access these.</span>
 				<<else>>
@@ -215,12 +246,12 @@
 <</widget>>
 
 <<widget "requiredForRecipe">>
-	<<if Array.isArray(setup.plants[$lastRecipeViewed]?.ingredients) and setup.plants[$lastRecipeViewed]?.ingredients.length>>
-		Required ingredients:
-		<ul>
+	<<if Array.isArray(setup.plants[$lastRecipeViewed]?.ingredients) and setup.plants[$lastRecipeViewed]?.ingredients.length gt 0>>
+		Ingredients:
+		<div class="itemSummary">
 			<<for $_ingredient range clone(setup.plants[$lastRecipeViewed].ingredients).sort()>>
 				<<set $_usedIngredient to ingredientUsed($_ingredient, $lastRecipeViewed)>>
-				<li>
+				<div class="basketItem">
 					<<tendingicon setup.plants[$_usedIngredient].icon>>
 					<<print $_usedIngredient.replace(/_/g, " ").toLocaleUpperFirst()>>
 					<<if _ingredientsSupplied?.includes($_usedIngredient)>>
@@ -240,9 +271,10 @@
 							<</link>>
 						<</capture>>
 					<</if>>
-				</li>
+				</div>
 			<</for>>
-		</ul>
+		</div>
+		<hr>
 	<</if>>
 <</widget>>
 
@@ -303,15 +335,16 @@
 			}
 		})>>
 
-		Known Recipes:
-		<ul>
-			<<if _knownRecipes.length>>
-				<<for $_recipe range _knownRecipes>>
-					<li>
-						<<tendingicon setup.plants[$_recipe].icon>>
+		<<if _knownRecipes.length>>
+			Known Recipes:
+			<br>
+			<<for $_recipe range _knownRecipes>>
+				<div class="recipe">
+					<div><<tendingicon setup.plants[$_recipe].icon>></div>
+					<div>
 						<mouse class="tooltip">
 							<<print $_recipe.replace(/_/g, " ").toLocaleUpperFirst()>>
-							<span>
+													<span>
 								Ingredients:
 								<ul>
 									<<for $_secondaryIngredients range setup.plants[$_recipe].ingredients>>
@@ -327,12 +360,12 @@
 								</ul>
 							</span>
 						</mouse>
-					</li>
-				<</for>>
-			<<else>>
-				<li>None</li>
-			<</if>>
-		</ul>
+					</div>
+				</div>
+			<</for>>
+		<<else>>
+			You don't know any recipes that use this item.
+		<</if>>
 		<<if setup.plants[_args[0]]?.type is "food" and Array.isArray($plants[_args[0]].knownFavorite) and $plants[_args[0]].knownFavorite.length>>
 			Known Favorite:
 			<ul>
