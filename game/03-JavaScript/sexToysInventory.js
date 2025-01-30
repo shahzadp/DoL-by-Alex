@@ -252,7 +252,7 @@ window.sextoysOnCloseDesc = sextoysOnCloseDesc;
 
 function updateNumberInString(element, indexMin, category) {
 	// No need to update, this element is unrelated.
-	if (!element.id.contains(category.replace(/\s/g, "_"))) return;
+	if (!element.id.includes(category.replace(/\s/g, "_"))) return;
 
 	// extract the index from the element's ID and force it into a number.
 	const index = parseInt(element.id.match(/\d+$/)[0]);

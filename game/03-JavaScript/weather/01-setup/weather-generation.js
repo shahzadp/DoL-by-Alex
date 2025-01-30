@@ -142,7 +142,7 @@ setup.WeatherGeneration = {
 		{
 			name: "clear",
 			iconType: "clear", // Determines which icon to use for the minimised sidebar
-			value: 0, // Value determines how to interpolate between different weather types. It always interpolates to a adjacent value first.
+			value: 0, // Value determines how to interpolate between different weather types. It always interpolates to an adjacent value first.
 			probability: {
 				// Weighted probabilities per month - there are compared to the other weather types, and not to the other seasons.
 				summer: 0.7,
