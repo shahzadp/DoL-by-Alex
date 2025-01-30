@@ -2571,8 +2571,8 @@ function ingredientsNextAlternative(mainIngredient, recipe) {
 window.ingredientsNextAlternative = ingredientsNextAlternative;
 
 function kitchenFilter() {
-	T.recipesKeys = [];
-	T.recipesGroups = ["sweets", "drink", "ingredient", "savouries"];
+	T.recipeKeys = [];
+	T.recipesGroups = ["ingredients", "sweets", "savouries", "drinks"];
 	const kitchenFilter = T.foodSearch ? T.foodSearch.split(/[_ ]/g) : false;
 
 	let missingIngredients = false;
@@ -2597,7 +2597,7 @@ function kitchenFilter() {
 
 		if (T.ingredientsSupplied?.includes(recipe)) {
 			providedIngredients = true;
-			if (!T.recipesKeys.find(recipe => recipe.key === recipe)) T.recipesKeys.push({ key: recipe, group: "Provided" });
+			if (!T.recipeKeys.find(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group: "Provided Ingredients" });
 			return;
 		}
 		if (!V.plants[recipe].recipe || !item.ingredients) return;
@@ -2606,9 +2606,9 @@ function kitchenFilter() {
 		if (item.special.includes("sweet")) {
 			group = "sweets";
 		} else if (item.special.includes("drink")) {
-			group = "drink";
+			group = "drinks";
 		} else if (item.type.includes("ingredient")) {
-			group = "ingredient";
+			group = "ingredients";
 		} else {
 			group = "savouries";
 		}
@@ -2619,17 +2619,17 @@ function kitchenFilter() {
 		});
 
 		if (!ingredientIsAllowed(recipe)) {
-			group = "Restricted";
+			group = "Restricted Ingredients";
 			knownRestrictions = true;
 		} else if (missingIngredientsFound) {
-			group = "Missing ingredients";
+			group = "Missing Ingredients";
 			missingIngredients = true;
 		}
-		if (!T.recipesKeys.find(recipe => recipe.key === recipe)) T.recipesKeys.push({ key: recipe, group });
+		if (!T.recipeKeys.find(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group });
 	});
 
-	if (missingIngredients) T.recipesGroups.push("Missing ingredients");
-	if (providedIngredients) T.recipesGroups.push("Provided");
-	if (knownRestrictions) T.recipesGroups.push("Restricted");
+	if (providedIngredients) T.recipesGroups.unshift("Provided Ingredients");
+	if (missingIngredients) T.recipesGroups.push("Missing Ingredients");
+	if (knownRestrictions) T.recipesGroups.push("Restricted Ingredients");
 }
 DefineMacro("kitchenFilter", kitchenFilter);

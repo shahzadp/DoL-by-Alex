@@ -589,7 +589,10 @@
 		<<set _selectedShop to _args[0]>>
 		<<if !$shoppingBasket>><<set $shoppingBasket to {}>><</if>>
 		<div id="mobileHeader">
-			<div id="controls" class="mobileOnly"><<supermarketDisplayFillBasket>></div>
+			<div id="controls" class="mobileOnly">
+				<div class="gold bold">Basket:</div>
+				<div><<supermarketDisplayFillBasket>></div>
+			</div>
 			<div  class="mobileOnly">
 				<<if $options.images>>
 					<<link "<<icon 'basket.png'>>">>
@@ -650,7 +653,7 @@
 		if (!item.shop or !item.shop.includes(_selectedShop)) return;
 
 		const filter = _foodSearch ? _foodSearch.split(/[_ ]/g) : false;
-		if (filter and !filter.find(term => 
+		if (filter and !filter.find(term =>
 				item.name.includes(term) or
 				item.type.includes(term) or
 				item.plural?.includes(term) or
@@ -671,12 +674,13 @@
 		<<set _categoryVar to "_" + _category.replace(" ", "")>>
 		<<foldout false _categoryVar>>
 			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
-			<<for $_key range _foodKeys>>
-				<<if (_category isnot "Sold out" and (setup.plants[$_key].type isnot _category or $plants[$_key].supermarket lte 0)) or
-				(_category is "Sold out" and $plants[$_key].supermarket gt 0)>>
-					<<continue>>
-				<</if>>
+			<<set _keys to _foodKeys.filter(key =>
+				(_category isnot "Sold out" && setup.plants[key].type is _category && $plants[key].supermarket > 0) ||
+				(_category is "Sold out" && $plants[key].supermarket <= 0)
+			)>>
+			<<for _i, $_key range _keys>>
 				<div @id="$_key" class="item"><<supermarketDisplayItem $_key>></div>
+				<<if _i lt _keys.length - 1>><hr><</if>>
 			<</for>>
 		<</foldout>>
 	<</for>>
@@ -686,18 +690,20 @@
 	<<set _key to _args[0]>>
 	<<set $_setupItem to setup.plants[_key]>>
 	<div class="details">
-		<<tendingicon $_setupItem.icon>> |
+		<div>
+			<<tendingicon $_setupItem.icon>> |
 
-		Owned: <span class="gold"><<print $plants[_key].amount>></span> |
+			Owned: <span class="gold"><<print $plants[_key].amount>></span> |
 
-		<<if Time.dayState is "night">>
-			Value: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
-		<<else>>
-			Price: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
-		<</if>>
-		<<if $_setupItem.boughtInBulk>>
-			per <<print $_setupItem.boughtInBulk>>
-		<</if>>
+			<<if Time.dayState is "night">>
+				Value: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
+			<<else>>
+				Price: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
+			<</if>>
+			<<if $_setupItem.boughtInBulk>>
+				per <<print $_setupItem.boughtInBulk>>
+			<</if>>
+		</div>
 		<<if $plants[_key].supermarket gt 0>>
 			<<numberStepper "<<recipe_name _key 'cap'>>" $shoppingBasket[_key] {
 				callback: (value, arr) => {
@@ -740,101 +746,114 @@
 
 <<widget "supermarketDisplayBasket">>
 	<<set _basketOpen to true>>
-	<div class="mobileOnly">
-		<<link "Close">>
-			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<</link>>
-		<br><br>
+	<div id="basket">Basket:
+		<div class="mobileOnly">
+			<<link "Close">>
+				<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<</link>>
+			<br><br>
+		</div>
 	</div>
-	<div class="mobileHidden">
-		<<supermarketDisplayFillBasket>>
-		<br>
-	</div>
-	<<set $_typesInBasket to 0>>
-	<<set _totalCost to Object.entries($shoppingBasket).reduce((sum, [key, amount]) => {
-		if (amount > 0) {
-			$_typesInBasket++;
-		};
-		sum += setup.plants[key].plant_cost * amount * 2 or 0;
-		return sum;
-	}, 0)>>
 
-	<<if $_typesInBasket is 0>>
-		No items in basket.
-		<<exit>>
-	<</if>>
-	<<link "Empty Basket">>
-		<<set $shoppingBasket to {}>>
-		<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<<replace "#itemList">><<supermarketDisplayItems>><</replace>>
-		<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
-	<</link>>
-	<br><br>
+	<div id="basketItems">
+		<div class="mobileHidden">
+			<<supermarketDisplayFillBasket>>
+			<hr>
+		</div>
+		<<set $_typesInBasket to 0>>
+		<<set _totalCost to Object.entries($shoppingBasket).reduce((sum, [key, amount]) => {
+			if (amount > 0) {
+				$_typesInBasket++;
+			};
+			sum += setup.plants[key].plant_cost * amount * 2 or 0;
+			return sum;
+		}, 0)>>
 
-	<<if $_typesInBasket gt 5>>
-		<<foldout false "_basketFoldout">>
-			<span>Item Summary:</span>
-			<<supermarketDisplayBasketSummary>>
-		<</foldout>>
-	<<else>>
-		Item Summary:
-		<<supermarketDisplayBasketSummary>>
-	<</if>>
+		<<if $_typesInBasket is 0>>
+			Your shopping basket is empty.
+			<<exit>>
+		<</if>>
 
-	<<if Time.dayState is "night" and Time.hour isnot 21>>
-		<<link [[Steal|$passage]]>>
-			<<for _itemInCart range Object.keys($shoppingBasket)>>
-				<<tending_give $plants[_itemInCart].name $shoppingBasket[_itemInCart]>>
-				<<crimeUp `setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2` "thievery">>
-				<<set $plants[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
-			<</for>>
-			<<set $shoppingBasket to {}>>
-		<</link>>
-	<<else>>
-		Final Total: <span class="gold"> £<<print (_totalCost / 100).toFixed(2)>></span>
-		<br><br>
-		<<if $money gte _totalCost>>
-			<<link [["Purchase"|$passage]]>>
+		<<if $_typesInBasket gt 5>>
+			<<foldout false "_basketFoldout">>
+				<span>Items:</span>
+				<div class="itemSummary">
+					<<supermarketDisplayBasketSummary>>
+				</div>
+			<</foldout>>
+		<<else>>
+			Items:
+			<div class="itemSummary">
+				<<supermarketDisplayBasketSummary>>
+			</div>
+		<</if>>
+		<hr>
+		<<if Time.dayState is "night" and Time.hour isnot 21>>
+			<<link [[Steal|$passage]]>>
 				<<for _itemInCart range Object.keys($shoppingBasket)>>
 					<<tending_give $plants[_itemInCart].name $shoppingBasket[_itemInCart]>>
-					<<money `-(setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
+					<<crimeUp `setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2` "thievery">>
 					<<set $plants[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
 				<</for>>
 				<<set $shoppingBasket to {}>>
 			<</link>>
 		<<else>>
-			You can't afford your selection of goods.
+			Total: <span class="gold"> £<<print (_totalCost / 100).toFixed(2)>></span>
+			<br>
+			<<if $money gte _totalCost>>
+				<<link [["Purchase"|$passage]]>>
+					<<for _itemInCart range Object.keys($shoppingBasket)>>
+						<<tending_give $plants[_itemInCart].name $shoppingBasket[_itemInCart]>>
+						<<money `-(setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
+						<<set $plants[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
+					<</for>>
+					<<set $shoppingBasket to {}>>
+				<</link>>
+			<<else>>
+				You can't afford your selection of goods.
+			<</if>>
 		<</if>>
-	<</if>>
+		|
+		<<link "Empty">>
+			<<set $shoppingBasket to {}>>
+			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<<replace "#itemList">><<supermarketDisplayItems>><</replace>>
+			<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
+		<</link>>
+	</div>
 	<br><br>
 <</widget>>
 
 <<widget "supermarketDisplayBasketSummary">>
-	<ul>
-		<<for _itemInCart range Object.keys($shoppingBasket)>>
-			<<if $shoppingBasket[_itemInCart] lte 0>><<continue>><</if>>
-			<li>
-				<<tendingicon setup.plants[_itemInCart].icon>> |
+	<<for _itemInCart range Object.keys($shoppingBasket)>>
+		<<if $shoppingBasket[_itemInCart] lte 0>><<continue>><</if>>
+		<div class="basketItem">
+			<div>
+				<<tendingicon setup.plants[_itemInCart].icon>>
 				<<recipe_name _itemInCart "cap">> |
-				x<<print $shoppingBasket[_itemInCart]>> |
-				<span class="gold"> £<<print (setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span> |
-				<<capture _itemInCart>>
-					<<link "Remove">>
-						<<run delete $shoppingBasket[_itemInCart]>>
-						<<replace "#itemList">><<supermarketDisplayItems>><</replace>>
-						<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
-					<</link>>
-				<</capture>>
-			</li>
-		<</for>>
-	</ul>
+				x<<print $shoppingBasket[_itemInCart]>>
+			</div>
+			<div class="price">
+				<span class="gold"> £<<print (setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span>
+				<span>
+					<<capture _itemInCart>>
+						<<link "Remove">>
+							<<run delete $shoppingBasket[_itemInCart]>>
+							<<replace "#itemList">><<supermarketDisplayItems>><</replace>>
+							<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
+						<</link>>
+					<</capture>>
+				</span>
+			</div>
+		</div>
+	<</for>>
 <</widget>>
 
 <<widget "supermarketDisplayFillBasket">>
 	<<if Object.keys(setup.plants).find(key => {
 		if (setup.plants[key]?.shop?.includes(_selectedShop) and $plants[key].supermarket) return key;
 	})>>
-		Fill basket:
+		Fill
 		<<link "25%">><<supermarketDisplayFillBasketLink 0.25>><</link>> |
 		<<link "50%">><<supermarketDisplayFillBasketLink 0.5>><</link>> |
 		<<link "75%">><<supermarketDisplayFillBasketLink 0.75>><</link>> |
@@ -857,28 +876,31 @@
 <</widget>>
 
 <<widget "supermarketDisplayDetails">>
-	<<set _basketOpen to false>>
-	<div class="mobileHidden">
-		<<link "Return to basket">>
-			<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
-			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<</link>>
-		<br><br>
-	</div>
-	<div class="mobileOnly">
-		<<link "Close">>
-			<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
-			<<addclass "#altSection, #mobileCloser" "mobileHidden">>
-		<</link>>
-		<br><br>
-	</div>
 	<<set $_setupItem to setup.plants[_args[0]]>>
-	<<tendingicon $_setupItem.icon>>
-	- <<recipe_name _args[0] "cap">>
-	<br><br>
-	<<if $_setupItem.boughtInBulk>>
-		Bought in sets of <<print $_setupItem.boughtInBulk>>.
-		<br><br>
-	<</if>>
-	<<knownFoodRecipes _args[0]>>
+	<div id="basket">
+		<div>
+		<<tendingicon $_setupItem.icon>>
+			<div class="recipeTitle"><<recipe_name _args[0] "cap">>:</div>
+		</div>
+		<div class="mobileOnly">
+			<<link "Close">>
+				<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<</link>>
+		</div>
+	</div>
+	<<set _basketOpen to false>>
+	<div id="basketItems">
+		<div class="mobileHidden">
+			<<link "Return to basket">>
+				<<replace "#altSection">><<supermarketDisplayBasket>><</replace>>
+				<<addclass "#altSection, #mobileCloser" "mobileHidden">>
+			<</link>>
+			<hr>
+		</div>
+		<<if $_setupItem.boughtInBulk>>
+			Bought in sets of <<print $_setupItem.boughtInBulk>>.
+			<hr>
+		<</if>>
+		<<knownFoodRecipes _args[0]>>
+	</div>
 <</widget>>
