@@ -2042,15 +2042,46 @@ Though you've no doubt you'd have more luck finding mushrooms in the forest prop
 <<link [[Next|Eden Clearing]]>><<endevent>><</link>>
 <br>
 
+:: Clearing Heater
+<span id = "clearingHeaterExamine">
+	<<clearingHeaterExamine>>
+</span>
+<br><br>
+<<getouticon>><<link [[Back|Eden Clearing]]>><<endevent>><</link>>
+
 :: Clearing Spring
 <<set $outside to 1>><<set $location to "cabin">><<effects>>
 
 <<strip>>
+<<water>>
+
+<<if Weather.waterTemperature lte 5>>
+	<<set _edenSpringTempDesc to "absolutely freezing">>
+	<<set _edenSpringStress to 6>>
+<<elseif Weather.waterTemperature lte 15>>
+	<<set _edenSpringTempDesc to "uncomfortably cold">>
+	<<set _edenSpringStress to 4>>
+<<elseif Weather.waterTemperature lte 25>>
+	<<set _edenSpringTempDesc to "cool and refreshing">>
+	<<set _edenSpringStress to -6>>
+<<elseif Weather.waterTemperature lte 35>>
+	<<set _edenSpringTempDesc to "comfortably warm">>
+	<<set _edenSpringStress to -6>>
+<<else>>
+	<<set _edenSpringTempDesc to "nice and hot, steam rising from the water">>
+	<<set _edenSpringStress to -8>>
+<</if>>
 
 <<if $phase lte 0>>
-	The cliff face curves around the spring, hiding you from the rest of the clearing. You undress and slip into the cool water. You lie back, close your eyes, and relax.
+	The cliff face curves around the spring, hiding you from the rest of the clearing. You undress and slip into the water. It's <<print _edenSpringTempDesc>>. 
+	<<stress _edenSpringStress>>
 <<else>>
-	You lie back, close your eyes, and relax.
+	The springwater is <<print _edenSpringTempDesc>>.
+	<<if Weather.waterTemperature lte 15>>
+		It's too cold for you to relax.
+	<<else>>
+		You lie back, close your eyes, and relax.
+	<</if>>
 <</if>>
 <<wash>>
 <br><br>
@@ -2075,7 +2106,16 @@ Though you've no doubt you'd have more luck finding mushrooms in the forest prop
 	<<link [[Let Eden have you|Clearing Spring Sex]]>><<set $sexstart to 1>><<npcincr Eden love 1>><<npcincr Eden dom 1>><</link>><<promiscuous1>><<gdom>><<glove>>
 	<br>
 <<else>>
-	<<ind>><<link [[Stay in the spring (0:30)|Clearing Spring]]>><<pass 30>><<stress -6>><<set $phase to 1>><</link>><<lstress>>
+	<<ind>><<link [[Stay in the spring (0:30)|Clearing Spring]]>><<pass 30>><<stress _edenSpringStress>><<set $phase to 1>><</link>>
+	<<if Weather.waterTemperature lte 5>>
+		<<ggstress>>
+	<<elseif Weather.waterTemperature lte 15>>
+		<<gstress>>
+	<<elseif Weather.waterTemperature lte 35>>
+		<<lstress>>
+	<<else>>
+		<<llstress>>
+	<</if>>
 	<br>
 	<<skinicon "masturbate">><<link [[Masturbate|Clearing Spring Masturbation]]>><<handheldruined true true>><<set $masturbationstart to 1>><</link>>
 	<br>
@@ -2083,7 +2123,7 @@ Though you've no doubt you'd have more luck finding mushrooms in the forest prop
 <</if>>
 
 :: Clearing Spring Push
-<<set $outside to 1>><<set $location to "cabin">><<effects>>
+<<set $outside to 1>><<set $location to "cabin">><<water>><<effects>>
 
 You press your hand against <<his>> face and push <<him>> away.
 
@@ -2104,6 +2144,7 @@ You press your hand against <<his>> face and push <<him>> away.
 <</if>>
 
 :: Clearing Spring Sex
+<<water>>
 <<if $sexstart is 1>>
 	<<set $sexstart to 0>>
 	<<consensual>>
@@ -2142,7 +2183,7 @@ You press your hand against <<his>> face and push <<him>> away.
 <</if>>
 
 :: Clearing Spring Sex Finish
-<<set $outside to 0>><<set $location to "cabin">><<effects>>
+<<set $outside to 0>><<set $location to "cabin">><<water>><<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<npcincr Eden lust -20>>
@@ -2166,6 +2207,7 @@ You press your hand against <<his>> face and push <<him>> away.
 <<getouticon>><<link [[Get out|Eden Clearing]]>><<endevent>><<clotheson>><</link>>
 
 :: Clearing Spring Masturbation Sex
+<<water>>
 <<if $sexstart is 1>>
 	<<set $sexstart to 0>>
 	<<consensual>>
@@ -2196,7 +2238,7 @@ You press your hand against <<his>> face and push <<him>> away.
 <</if>>
 
 :: Clearing Spring Masturbation Sex Finish
-<<set $outside to 0>><<set $location to "cabin">><<effects>>
+<<set $outside to 0>><<set $location to "cabin">><<water>><<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<npcincr Eden lust -20>>
@@ -2219,7 +2261,7 @@ You press your hand against <<his>> face and push <<him>> away.
 <<getouticon>><<link [[Get out|Eden Clearing]]>><<endevent>><<clotheson>><</link>>
 
 :: Eden Spring Intro
-<<set $outside to 1>><<set $location to "cabin">><<effects>>
+<<set $outside to 1>><<set $location to "cabin">><<water>><<effects>>
 
 <<strip>>
 
@@ -2244,7 +2286,7 @@ a sheen of sweat lining <<his>> neck. Though <<he>> looks quite focused, you can
 <<link [[Let <<him>> work|Clearing Spring]]>><<endevent>><<set $phase to 1>><</link>>
 
 :: Eden Spring Intro 2
-<<effects>>
+<<water>><<effects>>
 
 <<wash>>
 
@@ -2271,7 +2313,7 @@ Eden does the same, lying back against the edge with <<his>> eyes closed.
 <<link [[Splash some water at Eden|Eden Spring Splash]]>><</link>>
 
 :: Eden Spring Intro Cuddle
-<<effects>>
+<<water>><<effects>>
 
 Swimming over, you snuggle up to Eden, lying against <<his>> chest. Taking the hint, <<he>> wraps <<his>> arms around you, allowing you to settle onto <<his>> lap.
 Together, the both of you bask in the stillness of the forest, surrounded by nothing but birdsong and the gentle wind.
@@ -2282,7 +2324,7 @@ Together, the both of you bask in the stillness of the forest, surrounded by not
 <<link [[Just cuddle|Eden Spring Intro Cuddle 2]]>><</link>>
 
 :: Eden Spring Intro Cuddle 2
-<<effects>>
+<<water>><<effects>>
 
 The both of you spend some time in the water, curled up in each other's embrace. After a while, Eden pulls away, looking much less exhausted than before.
 Although it's clear that <<he>>'d like to stay with you, <<he>> glances back to the clearing. "I should get back to work," <<he>> says, eyes landing on
@@ -2304,7 +2346,7 @@ Although it's clear that <<he>>'d like to stay with you, <<he>> glances back to 
 <<link [[Next|Clearing Spring]]>><<pass 30>><<set $daily.eden.springJoin>><<endevent>><<set $phase to 1>><</link>>
 
 :: Eden Spring Intro Seduce
-<<effects>>
+<<water>><<effects>>
 
 Slowly, you trail your hands down Eden's chest. At the sudden sensation, <<he>> opens <<his>> eyes, chuckling and pulling you in for a kiss.
 <br><br>
@@ -2312,7 +2354,7 @@ Slowly, you trail your hands down Eden's chest. At the sudden sensation, <<he>> 
 <<link [[Next|Eden Spring Intro Sex]]>><<set $sexstart to 1>><</link>>
 
 :: Eden Spring Splash
-<<effects>>
+<<water>><<effects>>
 
 While <<hes>> not looking, you splash some water at Eden, laughing as the stream hits <<him>> right in the face. Startled, <<he>> sits up, a playfully dangerous look in <<his>> eyes.
 Before you can swim away, <<he>> grabs your arm and pulls you into <<him>>, pinning you by the edge of the spring.
@@ -2345,6 +2387,7 @@ Before you can swim away, <<he>> grabs your arm and pulls you into <<him>>, pinn
 	<<maninit>><<set $enemyhealth to 600>><<set $enemyhealthmax to 600>><<set $enemyanger += 50>>
 <</if>>
 
+<<water>>
 <<effects>>
 <<effectsman>>
 <<man>>
@@ -2359,7 +2402,7 @@ Before you can swim away, <<he>> grabs your arm and pulls you into <<him>>, pinn
 <</if>>
 
 :: Eden Spring Intro Sex Finish
-<<set $outside to 0>><<set $location to "cabin">><<effects>>
+<<set $outside to 0>><<set $location to "cabin">><<water>><<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<npcincr Eden lust -20>>
@@ -2396,6 +2439,7 @@ Before you can swim away, <<he>> grabs your arm and pulls you into <<him>>, pinn
 <br><br>
 
 :: Eden Spring Intro 3
+<<water>>
 <<effects>>
 <<npc Eden>><<person1>>
 <<wash>>
@@ -2423,9 +2467,10 @@ Although it's clear that <<he>>'d like to stay with you, <<he>> glances back to 
 <<set $outside to 1>><<set $location to "cabin">><<effects>>
 
 <<strip>>
+<<water>>
 <<wash>>
 
-You and Eden walk to the spring, undressing and slipping into the cool water. <<He>> holds you close as the both of you lie back and relax. Around you,
+You and Eden walk to the spring, undressing and slipping into the water. <<He>> holds you close as the both of you lie back and relax. Around you,
 <<if $rng gte 61>>
 	the leaves dance in the wind, resting gently by the water's edge.
 <<elseif $rng gte 31>>
@@ -2440,6 +2485,7 @@ You and Eden walk to the spring, undressing and slipping into the cool water. <<
 <<link [[Just cuddle (0:30)|Eden Spring 2]]>><<pass 30>><</link>>
 
 :: Eden Spring Seduce
+<<water>>
 <<effects>>
 
 <<set $seductiondifficulty to (10000 - (C.npc.Eden.lust * 200))>>
@@ -2465,6 +2511,7 @@ You trail your hand down Eden's stomach, bringing your lips to <<his>> neck.
 <</if>>
 
 :: Eden Spring Sex
+<<water>>
 <<if $sexstart is 1>>
 	<<set $sexstart to 0>>
 	<<consensual>>
@@ -2502,7 +2549,7 @@ You trail your hand down Eden's stomach, bringing your lips to <<his>> neck.
 <</if>>
 
 :: Eden Spring Sex Finish
-<<set $outside to 0>><<set $location to "cabin">><<effects>>
+<<set $outside to 0>><<set $location to "cabin">><<water>><<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<npcincr Eden lust -20>>
@@ -2533,7 +2580,7 @@ You trail your hand down Eden's stomach, bringing your lips to <<his>> neck.
 <</if>>
 
 :: Eden Spring 2
-<<effects>>
+<<water>><<effects>>
 
 After a while, Eden pulls away, giving your forehead a quick kiss before climbing out of the water.
 <br><br>
@@ -2628,6 +2675,108 @@ You push Eden off you. "Alright," <<he>> says, raising <<his>> hands in surrende
 
 <<link [[Next|Eden Clearing]]>><<endevent>><</link>>
 <br>
+
+:: Eden Hot Spring Creation 1
+<<npc Eden>><<person1>>
+<<if $bus is "edencabin">>
+	The cold makes your teeth chatter, waking you from your <<if $nightmares gte 1>> restless <</if>> sleep. You rub your eyes as you sit up. The first thing you notice is that Eden’s side of the bed is empty. There’s no sign of <<him>> in the cabin.
+	<br><br>
+
+	You hear the sound of a shovel hitting dirt outside. Curiosity fills you. You pull on your clothing and head outside into the clearing.
+<<else>>
+	You walk into the clearing. You can hear the sound of a shovel hitting dirt. Curiosity fills you, and you look for the source.
+<</if>>
+<br><br>
+
+<<set $outside to 1>>
+<<set $location to "cabin">>
+<<set $bus to "edenclearing">>
+
+There is a pile of dirt near the spring. As you walk over to investigate, you see Eden throw the shovel out and pull <<himself>> from the hole. <<He>> is covered in dirt and sweat. <<He>> notices you and nods.
+<br><br>
+
+<<if $speech_attitude is "meek">>
+	"Um," you say. "Wh-what are you doing?"
+<<elseif $speech_attitude is "bratty">>
+	"What are you doing down there?" you ask. "Lose something?"
+<<else>>
+	"Why are you digging a hole?" you ask.
+<</if>>
+<br><br>
+
+"Come here, <<girl>>," <<he>> says, motioning you over. "I want to show you something."
+<br><br>
+
+<<He>> seems excited.
+<br><br>
+
+<<link [[Next|Eden Hot Spring Creation 2]]>><</link>>
+
+:: Eden Hot Spring Creation 2
+You walk over to <<his>> side. <<He>> points down into the hole. There is a system of pipes connected to each other. 
+<br><br>
+<<if $science gte 700>> 
+	You recognise it as a thermosiphon heater.
+<<else>> 
+	You have no idea what it is.
+<</if>>
+<br><br>
+
+"We can heat the spring with this," <<he>> says. "All you need is firewood. Let me show you."
+<br><br>
+
+<<He>> takes you by the arm and guides you into the pit. You watch as <<he>> lights a fire in the middle of the coil of pipes. <<He>> explains how it works. 
+<<if $science gte 700>>
+	You knew this already, but listen politely. 
+<<else>>
+	You nod along, your eyes glazing over. 
+<</if>>
+<br><br>
+
+"If you keep the spring clear, we can relax during the day without getting too cold," <<he>> says.
+<br><br>
+
+You look at the complicated set-up. It's clear that <<hes>> worked hard on this.
+<br><br>
+
+<<link[[Thank with a kiss|Eden Hot Spring Creation Response]]>><<set $phase to "kiss">><</link>><<glove>><<ldom>>
+<br>
+<<link[[Thank|Eden Hot Spring Creation Response]]>><<set $phase to "thank">><</link>><<glove>><<gdom>>
+<br>
+<<link[[Walk away|Eden Hot Spring Creation Response]]>><<set $phase to "leave">><</link>><<lllove>>
+
+:: Eden Hot Spring Creation Response
+<<if $phase is "leave">>
+	You walk away without a word. Behind you, you hear Eden grumble.
+	<br><br>
+
+	"Ungrateful brat," <<he>> says, just loud enough for you to hear. <<He>> stomps away.
+	<<npcincr Eden love -3>>
+<<else>>
+	<<if $phase is "kiss">>
+		You stand on your toes and kiss <<his>> cheek. <<He>> coughs and turns away, but you can see <<him>> blushing.
+		<<npcincr Eden love 1>>
+		<<npcincr Eden dom -1>>
+
+	<<else>>
+		You give <<him>> a hug.
+		<<npcincr Eden love 1>>
+		<<npcincr Eden dom 1>>
+	<</if>>
+	<br><br>
+	"Thank you for working so hard," you say.
+	<br><br>
+
+	<<He>> nods, avoiding looking at you. "Let's go back inside while this heats up," <<he>> says. "It can take a while."
+<</if>>
+<br><br>
+
+<span class='gold'>You can now use the heater to make a hot spring!</span>
+<br><br>
+<<set $edenHotSpring to true>>
+<<set $edenHeater to Cooker.create({maxBurnTime: TimeConstants.secondsPerHour * 6})>>
+
+<<link [[Next|Eden Clearing]]>><<endevent>><</link>>
 
 :: Eden Shoot
 <<effects>>

@@ -103,41 +103,69 @@
 		<span class="purple">The spring is full of broken branches and twigs.</span>
 		<br>
 
-		<<lakeicon "pond">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
+		<<lakeicon "pond twigs">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
 		<br><br>
 	<<elseif $edenspring is 1>>
 		<span class="blue">The bottom of the spring is littered with branches.</span>
 		<br>
 
-		<<lakeicon "pond">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
+		<<lakeicon "pond twigs">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
 		<br><br>
 	<<elseif $edenspring is 2>>
 		<span class="lblue">You can see the bottom of the spring through the twigs and branches floating on its surface.</span>
 		<br>
 
-		<<lakeicon "pond">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
+		<<lakeicon "pond twigs">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
 		<br><br>
 	<<elseif $edenspring is 3>>
 		<span class="teal">Twigs float on the surface of the spring.</span>
 		<br>
 
-		<<lakeicon "pond">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
+		<<lakeicon "pond twigs">><<link [[Clear the debris (0:30)|Clearing Debris]]>><<tiredness 6>><<npcincr Eden love 1>><</link>><<gtiredness>><<glove>>
 		<br><br>
 	<<elseif $edenspring is 4>>
-		<span class="green">The spring is clean and clear.</span>
+		<<if Weather.waterTemperature gt 15>>
+			<span class="green">The spring is clean and clear.</span>
+		<<else>>
+			<span class="purple">The spring is clean and clear, but the water is cold.</span>
+		<</if>>
 		<br>
 
-		<<if !$edenspringintro and ((Time.hour gte 9 and Time.hour lte 10) or (Time.hour is 15) or (Time.hour is 16))>>
-			<<lakeicon "pond">><<link [[Relax in the spring (0:30)|Eden Spring Intro]]>><</link>><<lstress>>
-		<<else>>
-			<<lakeicon "pond">><<link [[Relax in the spring (0:30)|Clearing Spring]]>><<unset $edenpush>><<endevent>><<pass 30>><<stress -6>><</link>><<lstress>>
-		<</if>>
+	<<if Weather.waterTemperature lte 5>>
+		<<set _edenSpringStress to 6>>
+	<<elseif Weather.waterTemperature lte 15>>
+		<<set _edenSpringStress to 4>>
+	<<elseif Weather.waterTemperature lte 35>>
+		<<set _edenSpringStress to -6>>
+	<<else>>
+		<<set _edenSpringStress to -8>>
+	<</if>>
+
+	<<if !$edenspringintro and ((Time.hour gte 9 and Time.hour lte 10) or (Time.hour is 15) or (Time.hour is 16)) and Weather.waterTemperature gt 15 and Weather.waterTemperature lte 25>>
+		<<lakeicon "pond">><<link [[Relax in the spring (0:30)|Eden Spring Intro]]>><<stress _edenSpringStress>><</link>>
+	<<else>>
+		<<lakeicon "pond">><<link [[Relax in the spring (0:30)|Clearing Spring]]>><<unset $edenpush>><<endevent>><<pass 30>><<stress _edenSpringStress>><</link>>
+	<</if>>
+	<<if Weather.waterTemperature lte 5>>
+		<<ggstress>>
+	<<elseif Weather.waterTemperature lte 15>>
+		<<gstress>>
+	<<elseif Weather.waterTemperature lte 35>>
+		<<lstress>>
+	<<else>>
+		<<llstress>>
+	<</if>>
+	<br>
+	<<if $daily.eden.wash is undefined>>
+		<<lakeicon "pond">><<link [["Wash Eden's clothes in the spring (0:30)"|Wash Spring]]>><<pass 30>><<npcincr Eden love 1>><<npcincr Eden dom 1>><<set $daily.eden.wash to 1>><</link>><<glove>><<gdom>>
 		<br>
-		<<if $daily.eden.wash is undefined>>
-			<<lakeicon "pond">><<link [["Wash Eden's clothes in the spring (0:30)"|Wash Spring]]>><<pass 30>><<npcincr Eden love 1>><<npcincr Eden dom 1>><<set $daily.eden.wash to 1>><</link>><<glove>><<gdom>>
-			<br>
-		<</if>>
+	<</if>>
 		<br>
+	<</if>>
+
+	<<if $edenHotSpring>>
+		<<lakeicon "firepit">><<link [[Examine the heater|Clearing Heater]]>><</link>>
+		<br><br>
 	<</if>>
 
 	<<if $edenfreedom gte 1>>
@@ -148,6 +176,73 @@
 		<br>
 	<</if>>
 	<br>
+<</widget>>
+
+<<widget "clearingHeaterExamine">>
+	<<set _edenHeaterBurnTime to Cooker.getBurnTime($edenHeater)>>
+	You examine the thermosiphon heater. Spring heating time remaining: <<print getTimeString(_edenHeaterBurnTime / 60)>>
+	<br><br>
+
+	<<set _maxTime to Math.floor($edenHeater.maxBurnTime)>>
+	<<lakeicon "firepit">>The spring can remain heated for up to <<print Math.floor(_maxTime / (60 * 60))>> hours.
+	<br>
+	<<lakeicon "pond">>
+	<<set _burnTimeRatio to Cooker.getBurnTime($edenHeater) / $edenHeater.maxBurnTime>>
+	<<set _startingBurnTimeRatio = Math.max(($edenHeaterStartingLastsUntil ?? $edenHeater.lastsUntil) - 
+		$timeStamp, 0) / $edenHeater.maxBurnTime>>
+	<<if _edenHeaterBurnTime gt 0>>
+		<<if _startingBurnTimeRatio gte 0.8>>
+			The spring will take some time to heat up. 
+		<<elseif _burnTimeRatio lte 0.2>>
+			The spring is beginning to cool down.
+		<</if>>
+	<</if>>
+	
+	Currently, the spring is 
+	<<if Weather.waterTemperature lte 5>>
+		freezing cold.
+	<<elseif Weather.waterTemperature lte 15>>
+		cold.
+	<<elseif Weather.waterTemperature lte 25>>
+		cool.
+	<<elseif Weather.waterTemperature lte 35>>
+		warm.
+	<<else>>
+		nice and hot.
+	<</if>>
+
+	<br><br>
+
+	<<set _maxTimeAllowed to Math.clamp(_maxTime - _edenHeaterBurnTime, 0, _maxTime)>>
+	<<set _timeLteMax to _fireWoodTime lte _maxTimeAllowed>>
+
+	<<if $edenspring is 4>>
+		<<birdicon "wood">>
+		<<if _edenHeaterBurnTime is 0>>
+			<<link "Light the heater with firewood">>
+				<<run Cooker.addBurnTime($edenHeater, _maxTimeAllowed)>>
+				<<set $edenHeaterStartingLastsUntil to $edenHeater.lastsUntil>>
+				<<replace #clearingHeaterExamine>>
+					<<clearingHeaterExamine>>
+				<</replace>>
+			<</link>>
+		<<elseif _maxTimeAllowed gt 0>>
+			<<link "Add more firewood to the heater">>
+				<<run Cooker.addBurnTime($edenHeater, _maxTimeAllowed)>>
+				<<replace #clearingHeaterExamine>>
+					<<clearingHeaterExamine>>
+				<</replace>>
+			<</link>>
+		<<else>>
+			The fire's already strong enough.
+		<</if>>
+	<<else>>
+		<<if _edenHeaterBurnTime is 0>>
+			You should clear the spring before lighting the heater.
+		<<else>>
+			You should clear the spring before adding more wood to the heater.
+		<</if>>
+	<</if>>
 <</widget>>
 
 <<widget "clearingedenactions">>
