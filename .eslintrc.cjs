@@ -95,6 +95,7 @@ module.exports = {
 		Fadable: "readonly",
 		Skin: "readonly",
 		Sunscreen: "readonly",
+		Theme: "readonly",
 		// DoL SC2 functions
 		compressionVerifier: "readonly",
 		DefineMacro: "readonly",

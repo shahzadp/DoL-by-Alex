@@ -1,318 +1,347 @@
-/* eslint-disable no-new */
-
+/* eslint-disable no-unused-expressions */
 /*
-	The main purpose for this jQuery plugin was to enable tooltips for dynamically created elements, by using jQuery
-	However, I also added a [tooltip] attribute to be used with an html element, which is more flexible than the old tooltip.
+    The main purpose for this jQuery plugin was to enable tooltips for dynamically created elements, by using jQuery
+    However, I also added a [tooltip] attribute to be used with an html element, which is more flexible than the old tooltip.
 
-	Example usage: (jquery)
-	jqueryElement.tooltip({
-		message: "Here is a tooltip",
-		delay: 200,
-		position: "cursor",
-	});
+    Example usage: (jquery)
+    jqueryElement.tooltip({
+        message: "Here is a tooltip",
+        delay: 200,
+        position: "cursor",
+    });
 
-	Enable or disable it:
-	jqueryElement.tooltip("enable");
-	jqueryElement.tooltip("disable");
+    Enable or disable it:
+    jqueryElement.tooltip("enable");
+    jqueryElement.tooltip("disable");
 
-	Change message to an already existing tooltip:
-	jqueryElement.tooltip({ message: "New message" });
-
-
-	Example usage: (html)
-	<div tooltip="Here is a tooltip" id="someid" class="someclass">
-		Content here
-	</div>
-
-	Example usage (with added span for separate styles for the tooltip - and sugarcube variable)
-	<div tooltip="Here is a tooltip:<span class='yellow'>Current pepper sprays: $spray</span>">
-		Pepper sprays
-	</div>
-
-	Example usage (with customised settings):
-	<div tooltip="Tooltip text" tooltip-title="Title" tooltip-position="bottom">
-		Pepper sprays
-	</div>
+    Change message to an already existing tooltip:
+    jqueryElement.tooltip({ message: "New message" });
 
 
-	---------------------------------------------------
-	Styling: (tooltip.css)
-	.tooltip-popup - The container for the tooltip
-	.tooltip-header - An optional title property
-	.tooltip-body - The tooltip text
-	- Anchor styling can be changed with the property "anchorStyle" (anchor = the object to hover over to display the tooltip)
+    Example usage: (html)
+    <div tooltip="Here is a tooltip" id="someid" class="someclass">
+        Content here
+    </div>
 
-	Settings:
-		title: A bigger title text - default null
-		message: The actual tooltip content
-		anchorStyle: Optional css class for the anchor
-		position: Position of the tooltip. Options: cursor, top, bottom, left, right, bottomRight, bottomLeft, topRight, topLeft
-		cursor: Cursor styling when hovering over the anchor
-		delay: Optional delay - default 150ms)
-		width: Optional width of the tooltip. If set to null, it will resize itself based on the content
-		maxWidth: Optional max width of the tooltip. When it reaches this width, text will wrap to the next row
+    Example usage (with added span for separate styles for the tooltip - and sugarcube variable)
+    <div tooltip="Here is a tooltip:<span class='yellow'>Current pepper sprays: $spray</span>">
+        Pepper sprays
+    </div>
+
+    Example usage (with customised settings):
+    <div tooltip="Tooltip text" tooltip-title="Title" tooltip-position="bottom">
+        Pepper sprays
+    </div>
+
+
+    ---------------------------------------------------
+    Styling: (tooltip.css)
+    .tooltip-popup - The container for the tooltip
+    .tooltip-header - An optional title property
+    .tooltip-body - The tooltip text
+    - Anchor styling can be changed with the property "anchorStyle" (anchor = the object to hover over to display the tooltip)
+
+    Settings:
+        title: A bigger title text - default null
+        message: The actual tooltip content
+        anchorStyle: Optional css class for the anchor
+        position: Position of the tooltip. Options: cursor, top, bottom, left, right, bottomRight, bottomLeft, topRight, topLeft
+        cursor: Cursor styling when hovering over the anchor
+        delay: Optional delay - default 150ms)
+        width: Optional width of the tooltip. If set to null, it will resize itself based on the content
+        maxWidth: Optional max width of the tooltip. When it reaches this width, text will wrap to the next row
 */
 
-const tooltipRegistry = [];
+const defaultTooltipSettings = {
+	title: "",
+	message: "",
+	delay: 150,
+	position: "cursor",
+	cursor: "help",
+	style: null,
+	anchorStyle: null,
+	width: null,
+	maxWidth: null,
+};
 
-/* Clears tooltips on passage start - in case a tooltip is displayed during passage change */
-$(document).on(":passageinit", () => {
-	tooltipRegistry.forEach(function (tooltipElement) {
-		$(tooltipElement).trigger("mouseleave.tooltip");
-	});
-	tooltipRegistry.splice(0, tooltipRegistry.length);
-});
+// Robust cleanup if the tooltip element was removed while hover over it with the cursor, to prevent orphaned tooltip elements
+const observer = new MutationObserver(mutations => {
+	let shouldCleanup = false;
 
-$(document).on(":passageend", () => {
-	initializeTooltips();
-});
+	mutations.forEach(mutation => {
+		mutation.removedNodes.forEach(node => {
+			const $node = $(node);
 
-/*
-  This is basically a failsafe for the shop (and other places with <<replace>>)
-  If a popup is displayed while a <<replace>> widget is called, we remove it here
-*/
-function initializeTooltips() {
-	$(".tooltip-popup").remove();
-	$(() => {
-		$("[tooltip]").each(function () {
-			const message = $("<div>");
-			new Wikifier(message, $(this).attr("tooltip"));
+			if ($node.is("[tooltip], .tooltip-popup") || $node.find("[tooltip], .tooltip-popup").length > 0) {
+				shouldCleanup = true;
+			}
 
-			// Default attribute settings
-			const defaultSettings = {
-				title: "",
-				message,
-				anchorStyle: null,
-				position: "cursor",
-				cursor: "help",
-				delay: 150,
-				width: null,
-			};
+			$node
+				.find("[tooltip]")
+				.addBack("[tooltip]")
+				.each(function () {
+					const tooltipId = $(this).data("tooltip-id");
+					if (tooltipId) {
+						$(`.tooltip-popup[data-tooltip-id="${tooltipId}"]`).remove();
+					}
+				});
 
-			/*
-			  Extracts the attributes that are prefixed with "tooltip", in order to customise the tooltips from html
-			  Any of the above settings can be customised
-			*/
-			$.each(this.attributes, function () {
-				if (!this.name.startsWith("tooltip-")) return;
-				if (!Object.hasOwn(defaultSettings, this.name.substring(8))) return;
-
-				const key = this.name.substring(8);
-				if (isNaN(this.value)) return;
-				defaultSettings[key] = parseFloat(this.value);
-			});
-
-			$(this).tooltip(defaultSettings);
+			$node
+				.find(".tooltip-popup")
+				.addBack(".tooltip-popup")
+				.each(function () {
+					const tooltipId = $(this).data("tooltip-id");
+					$(`[tooltip][data-tooltip-id="${tooltipId}"]`).removeData("tooltip-id tooltip-instance");
+				});
 		});
 	});
-}
-window.initializeTooltips = initializeTooltips;
 
-/*
-  Extends jQuery to allow custom tooltips for any jQuery objects
-*/
-$.fn.tooltip = function (options = {}) {
-	const initializeSettings = () => {
-		const existingSettings = this.data("tooltip-settings");
-		if (existingSettings) {
-			$.extend(existingSettings, options);
-			return existingSettings;
+	// Check for orphaned tooltips - remove them if their container was removed
+	if (shouldCleanup) {
+		$(".tooltip-popup").each(function () {
+			const $tooltip = $(this);
+			const tooltipId = $tooltip.attr("data-tooltip-id");
+
+			const associatedAnchor = $(`[tooltip][data-tooltip-id="${tooltipId}"]`);
+			if (associatedAnchor.length === 0) {
+				$tooltip.remove();
+			}
+		});
+	}
+});
+
+observer.observe(document.body, {
+	childList: true,
+	subtree: true,
+});
+
+const getTooltipSettings = element => {
+	const settings = { ...defaultTooltipSettings };
+	$.each(element.attributes, function () {
+		if (this.name.startsWith("tooltip-")) {
+			const key = this.name.substring(8);
+			if (key in defaultTooltipSettings) {
+				// Convert to appropriate type if necessary
+				if (key === "delay" || key === "width" || key === "maxWidth") {
+					settings[key] = parseInt(this.value, 10) || defaultTooltipSettings[key];
+				} else {
+					settings[key] = this.value;
+				}
+			}
 		}
+	});
+	const messageAttr = $(element).attr("tooltip");
+	if (messageAttr) {
+		const message = $("<div>");
+		new Wikifier(message, messageAttr);
+		settings.message = message.html();
+	}
+	return settings;
+};
 
-		const defaults = {
-			title: "",
-			message: "",
-			delay: 150,
-			position: "cursor",
-			cursor: "help",
-			style: null,
-			anchorStyle: null,
-			width: null,
-		};
-		return $.extend({}, defaults, options);
-	};
+$(document).on("mouseenter.tooltip", "[tooltip]", function (event) {
+	const $this = $(this);
 
-	const show = function () {
-		const settings = initializeSettings.call(this);
-		this.data("tooltip-settings", settings);
-		const $this = $(this);
-		const disabled = $this.data("tooltip-disabled");
-		if (disabled) return;
+	const pluginSettings = $this.data("tooltip-settings") || {};
+	const attrSettings = getTooltipSettings(this);
+	const settings = $.extend({}, attrSettings, pluginSettings);
 
-		let tooltip = $this.data("tooltip-instance");
+	$this.data("tooltip-settings", settings);
+	if (settings.cursor) $this.css("cursor", settings.cursor);
+	if (settings.anchorStyle) $this.addClass(settings.anchorStyle);
+	$this.data("cursorPosition", { x: event.clientX, y: event.clientY });
+	show($this);
+});
 
-		if (settings.position.toLowerCase() === "cursor") {
-			$this.on("mousemove.tooltip", function (event) {
-				$this.data("cursorPosition", { x: event.pageX, y: event.pageY });
-				updatePosition.call($this, tooltip);
-			});
-		}
+$(document).on("mouseleave.tooltip", "[tooltip]", function () {
+	const $this = $(this);
+	clearTimeout($this.data("tooltip-timeout"));
+	hide($this);
+});
 
-		// Optionally delay the tooltip, if a delay is set
-		clearTimeout($this.data("tooltip-timeout"));
+$(document).on("mousemove.tooltip", "[tooltip]", function (event) {
+	const $this = $(this);
+	const settings = $this.data("tooltip-settings");
+	if (settings && settings.position.toLowerCase() === "cursor") {
+		$this.data("cursorPosition", { x: event.clientX, y: event.clientY });
+		const tooltip = $this.data("tooltip-instance");
+		if (tooltip) updateMousePosition($this, tooltip);
+	}
+});
+
+const show = ($element, force = false) => {
+	if ($element.data("tooltip-instance")) {
+		const tooltip = $element.data("tooltip-instance");
+		updatePosition($element, tooltip);
+		return;
+	}
+	const settings = $element.data("tooltip-settings");
+	if (!settings || $element.data("tooltip-disabled")) return;
+
+	if (!force) {
+		clearTimeout($element.data("tooltip-timeout"));
 		const timeout = setTimeout(() => {
-			if (!$.contains(document, $this[0])) return;
-			tooltip = $("<div>").addClass("tooltip-popup");
-			const header = $("<div>").addClass("tooltip-header").html(settings.title);
-			const body = $("<div>").addClass("tooltip-body");
-			if (settings.message instanceof DocumentFragment) {
-				body.append(settings.message);
-			} else {
-				body.html(settings.message);
-			}
-			if (settings.style) body.addClass(settings.style);
-			tooltip.append(header, body);
-			if (settings.width) tooltip.css("width", settings.width);
-			$("body").append(tooltip);
-			$this.data("tooltip-instance", tooltip);
-			updatePosition.call($this, tooltip);
+			createTooltip($element, settings);
 		}, settings.delay);
-		$this.data("tooltip-timeout", timeout);
+		$element.data("tooltip-timeout", timeout);
+	} else {
+		clearTimeout($element.data("tooltip-timeout"));
+		createTooltip($element, settings);
+	}
+};
 
-		// Handler to update the tooltip position
-		const resizeHandler = () => {
-			if (settings.position.toLowerCase() !== "cursor") {
-				updatePosition.call($(this), tooltip);
-			}
+const hide = $element => {
+	clearTimeout($element.data("tooltip-timeout"));
+	const tooltip = $element.data("tooltip-instance");
+	if (tooltip) {
+		tooltip.remove();
+		$element.removeData("tooltip-instance");
+	}
+	$(window).off("resize.tooltip", $element.data("resizeHandler"));
+};
+
+const createTooltip = ($element, settings) => {
+	const tooltipId = `tooltip-${Date.now()}-${Math.random()}`;
+	$element.data("tooltip-id", tooltipId);
+
+	const tooltip = $("<div>").addClass("tooltip-popup").attr("data-tooltip-id", tooltipId);
+
+	if (settings.title) {
+		$("<div>").addClass("tooltip-header").html(settings.title).appendTo(tooltip);
+	}
+	const $body = $("<div>").addClass("tooltip-body").appendTo(tooltip);
+	if (settings.style) $body.addClass(settings.style);
+	$body.html(settings.message); // or use `.append(settings.message)` if it’s HTML
+
+	if (settings.width) tooltip.css("width", settings.width);
+	if (settings.maxWidth) tooltip.css("max-width", settings.maxWidth);
+
+	$("body").append(tooltip);
+	$element.data("tooltip-instance", tooltip);
+
+	updatePosition($element, tooltip);
+
+	const resizeHandler = () => updatePosition($element, tooltip);
+	$(window).on("resize.tooltip", resizeHandler);
+	$element.data("resizeHandler", resizeHandler);
+};
+
+const updateMousePosition = ($element, tooltip) => {
+	const frameId = $element.data("animationFrameId");
+	if (frameId) cancelAnimationFrame(frameId);
+
+	const newFrameId = requestAnimationFrame(() => {
+		updatePosition($element, tooltip);
+	});
+	$element.data("animationFrameId", newFrameId);
+};
+
+const updatePosition = ($element, tooltip) => {
+	if (!$element?.length || !tooltip?.length) return;
+
+	const settings = $element.data("tooltip-settings");
+	if (!settings || typeof settings.position !== "string") return;
+
+	const position = settings.position.toLowerCase();
+	const distance = 15; // Distance from cursor
+	let left = 0;
+	let top = 0;
+
+	const zoomLevel = parseFloat($("body").css("zoom")) || 1;
+
+	if (position === "cursor") {
+		const cursor = $element.data("cursorPosition") || { x: 0, y: 0 };
+		left = cursor.x / zoomLevel + distance;
+		top = cursor.y / zoomLevel + distance;
+	} else {
+		const offset = $element.offset();
+		const elementWidth = $element.outerWidth();
+		const elementHeight = $element.outerHeight();
+		const tooltipWidth = tooltip.outerWidth();
+		const tooltipHeight = tooltip.outerHeight();
+
+		const positions = {
+			top: () => {
+				left = offset.left + (elementWidth - tooltipWidth) / 2;
+				top = offset.top - tooltipHeight - distance;
+			},
+			bottom: () => {
+				left = offset.left + (elementWidth - tooltipWidth) / 2;
+				top = offset.top + elementHeight + distance;
+			},
+			left: () => {
+				left = offset.left - tooltipWidth - distance;
+				top = offset.top + (elementHeight - tooltipHeight) / 2;
+			},
+			right: () => {
+				left = offset.left + elementWidth + distance;
+				top = offset.top + (elementHeight - tooltipHeight) / 2;
+			},
+			bottomright: () => {
+				left = offset.left + elementWidth - tooltipWidth;
+				top = offset.top + elementHeight + distance;
+			},
+			bottomleft: () => {
+				left = offset.left;
+				top = offset.top + elementHeight + distance;
+			},
+			topleft: () => {
+				left = offset.left;
+				top = offset.top - tooltipHeight - distance;
+			},
+			topright: () => {
+				left = offset.left + elementWidth - tooltipWidth;
+				top = offset.top - tooltipHeight - distance;
+			},
 		};
-		$(this).data("resizeHandler", resizeHandler);
-		$(window).on("resize", resizeHandler);
-		tooltipRegistry.push(this);
-	};
-
-	const hide = function () {
-		const settings = this.data("tooltip-settings");
-		const $this = $(this);
-		const tooltip = $this.data("tooltip-instance");
-		clearTimeout($this.data("tooltip-timeout"));
-		if (tooltip) {
-			tooltip.remove();
-			$this.removeData("tooltip-instance");
-			const index = tooltipRegistry.indexOf(this);
-			if (index > -1) {
-				tooltipRegistry.splice(index, 1);
-			}
-		}
-		if (settings.position.toLowerCase() === "cursor") {
-			$this.off("mousemove.tooltip");
-		}
-
-		const resizeHandler = $(this).data("resizeHandler");
-		if (resizeHandler) {
-			$(window).off("resize", resizeHandler);
-		}
-	};
-
-	const updateTooltip = function () {
-		const $this = $(this);
-		const settings = $this.data("tooltip-settings");
-		const tooltip = $this.data("tooltip-instance");
-		if (settings && tooltip) {
-			tooltip.find(".tooltip-header").html(settings.title);
-			tooltip.find(".tooltip-body").html(settings.message);
-			updatePosition.call($this, tooltip);
-		}
-	};
-
-	const updatePosition = function (tooltipInstance) {
-		if (!tooltipInstance) return;
-
-		const windowWidth = $(window).width();
-		const distance = 3;
-		const { left: offsetLeft, top: offsetTop } = this.offset();
-		const { width, height } = this.get(0).getBoundingClientRect();
-		const { x: cursorX, y: cursorY } = this.data("cursorPosition") || {};
-		const offsetX = 15;
-		const offsetY = 15;
-		const position = (this.data("tooltip-settings") || {}).position?.toLowerCase() || "cursor";
-
-		// Max width for mobile devices to not go off-screen
-		const maxWidth = Math.max(windowWidth - cursorX - offsetX - distance, 100);
-		tooltipInstance.css("max-width", `${maxWidth}px`);
-
-		let left = cursorX + offsetX;
-		let top = cursorY + offsetY;
-
-		if (position !== "cursor") {
-			const tooltipWidth = tooltipInstance.outerWidth();
-			const tooltipHeight = tooltipInstance.outerHeight();
-			const centerHorizontal = offsetLeft + width / 2 - tooltipWidth / 2;
-			const centerVertical = offsetTop + height / 2 - tooltipHeight / 2;
-
-			switch (position) {
-				case "top":
-					left = centerHorizontal;
-					top = offsetTop - tooltipHeight - distance;
-					break;
-				case "bottom":
-					left = centerHorizontal;
-					top = offsetTop + height + distance;
-					break;
-				case "left":
-					left = offsetLeft - tooltipWidth - distance;
-					top = centerVertical;
-					break;
-				case "right":
-					left = offsetLeft + width + distance;
-					top = centerVertical;
-					break;
-				case "bottomRight":
-					left = offsetLeft + width - tooltipWidth - distance;
-					top = offsetTop + height + distance;
-					break;
-				case "bottomLeft":
-					left = offsetLeft + distance;
-					top = offsetTop + height + distance;
-					break;
-				case "topRight":
-					left = offsetLeft + width - tooltipWidth - distance;
-					top = offsetTop - tooltipHeight - distance;
-					break;
-				case "topLeft":
-					left = offsetLeft + distance;
-					top = offsetTop - tooltipHeight - distance;
-					break;
-			}
-		}
-
-		// Adjust for window edges
-		left = Math.min(left, windowWidth - tooltipInstance.outerWidth() - offsetX - distance);
-		left = Math.max(left, distance);
-		tooltipInstance.css("transform", `translate(${left}px, ${top}px)`);
-	};
-
-	// Enable or Disable tooltip
-	if (options === "disable" || options === "enable") {
-		this.each(function () {
-			const $this = $(this);
-			$this.data("tooltip-disabled", options === "disable");
-
-			if (options === "disable") {
-				$this.trigger("mouseleave.tooltip");
-			} else if ($this.is(":hover")) {
-				$this.trigger("mouseenter.tooltip");
-				updateTooltip.call($this);
-			}
-		});
-		return this;
+		(positions[position] || positions.top)();
 	}
 
-	// Event Handlers
-	this.on("mouseenter.tooltip", function () {
-		show.call($(this));
-	}).on("mouseleave.tooltip", function () {
-		hide.call($(this));
-	});
+	if (settings.position.toLowerCase() === "cursor") {
+		left = Math.max(distance, Math.min(left, window.innerWidth - tooltip.outerWidth() - distance));
+		top = Math.max(distance, Math.min(top, window.innerHeight - tooltip.outerHeight() - distance));
+	} else {
+		const windowWidth = $(window).width();
+		const windowHeight = $(window).height();
+		left = Math.max(distance, Math.min(left, windowWidth - tooltip.outerWidth() - distance));
+		top = Math.max(distance, Math.min(top, windowHeight - tooltip.outerHeight() - distance));
+	}
 
-	// Main logic
-	this.each(function () {
+	tooltip.css({ left, top, position: "fixed" });
+};
+
+// .tooltip() jQuery method
+$.fn.tooltip = function (options = {}) {
+	return this.each(function () {
 		const $this = $(this);
-		const settings = initializeSettings.call($this);
+		if (typeof options === "string") {
+			switch (options.toLowerCase()) {
+				case "show":
+					show($this, true);
+					break;
+				case "hide":
+					hide($this, true);
+					break;
+				case "enable":
+					$this.data("tooltip-disabled", false);
+					break;
+				case "disable":
+					$this.data("tooltip-disabled", true);
+					hide($this);
+					break;
+			}
+			return;
+		}
+
+		const settings = $.extend({}, defaultTooltipSettings, $this.data("tooltip-settings"), options);
 		$this.data("tooltip-settings", settings);
 
 		if (settings.cursor) $this.css("cursor", settings.cursor);
 		if (settings.anchorStyle) $this.addClass(settings.anchorStyle);
-	});
+		$this.attr("tooltip", settings.message);
 
-	return this;
+		if (options !== "disable") {
+			$this.data("tooltip-disabled", false);
+		}
+	});
 };

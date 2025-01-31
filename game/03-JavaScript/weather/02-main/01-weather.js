@@ -68,6 +68,13 @@ const Weather = (() => {
 		}
 	}
 
+	function getBloodMoon(date = new DateTime(Time.date)) {
+		const sunRise = Weather.activeRenderer?.orbitals.bloodMoon?.settings.riseTime - 1;
+		const sunSet = Weather.activeRenderer?.orbitals.bloodMoon?.settings.setTime + 1;
+
+		return (date.day === date.lastDayOfMonth && date.hour >= sunRise) || (date.day === 1 && date.hour < sunSet);
+	}
+
 	return {
 		generateKeyPoints,
 		setAccumulatedSnow,
@@ -88,6 +95,7 @@ const Weather = (() => {
 		isFrozen(key) {
 			return V.weatherObj.ice[key] > Weather.tempSettings.ice.minThickness[key];
 		},
+		getBloodMoon,
 		get genSettings() {
 			return setup.WeatherGeneration;
 		},
@@ -154,9 +162,7 @@ const Weather = (() => {
 			return Weather.BodyTemperature.wetness;
 		},
 		get bloodMoon() {
-			const sunRise = Weather.activeRenderer?.orbitals.bloodMoon?.settings.riseTime - 1;
-			const sunSet = Weather.activeRenderer?.orbitals.bloodMoon?.settings.setTime + 1;
-			return (Time.date.day === Time.date.lastDayOfMonth && Time.date.hour >= sunRise) || (Time.date.day === 1 && Time.date.hour < sunSet);
+			return getBloodMoon();
 		},
 		get dayState() {
 			const sunRise = Weather.activeRenderer?.orbitals.sun.settings.riseTime;

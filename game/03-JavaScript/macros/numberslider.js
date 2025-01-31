@@ -15,16 +15,6 @@ Macro.add("numberslider", {
 			newValue = stepValidate(newValue);
 			newValue = Math.max(minValue, Math.min(maxValue, newValue));
 
-			if (pool) {
-				const poolValue = pool.get();
-				let delta = newValue - curValue;
-				if (poolValue < delta) {
-					newValue -= delta - poolValue;
-					delta = newValue - curValue;
-				}
-				pool.set(poolValue - delta);
-			}
-
 			Wikifier.setValue(varName, newValue);
 			el.value = newValue;
 
@@ -62,11 +52,6 @@ Macro.add("numberslider", {
 		if (!Number.isFinite(stepValue) || stepValue <= 0) return this.error(`step value (${this.args[4]}) is not a number greater than zero`);
 		if (defValue < minValue) return this.error(`default value (${this.args[1]}) is less than min value (${this.args[2]})`);
 		if (defValue > maxValue) return this.error(`default value (${this.args[1]}) is greater than max value (${this.args[3]})`);
-
-		const pool = function () {
-			const parent = this.contextSelect(ctx => ctx.name === "numberpool");
-			return parent && Object.hasOwn(parent, "pool") ? parent.pool : null;
-		}.call(this);
 
 		const $elControl = $("<div>").attr("id", `${this.name}-body-${varId}`).addClass(`macro-${this.name}`).appendTo(this.output);
 		const $elInput = $("<input>")

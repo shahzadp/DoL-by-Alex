@@ -2110,31 +2110,27 @@
 <<widget "sizeLimitsSettings">>
 	<div class="settingsGrid">
 		<div class="settingsHeader">
-			Body Part Size Limits <mouse class="tooltip linkBlue">(?)<span style="font-size:16px;">As you partake in lewd acts and experiences, your body parts may grow or shrink. Surgery, pills, and parasites can influence growth, among other conditions.</span></mouse>
+			Body Part Size Limits <span class="tooltip-anchor linkBlue" tooltip="As you partake in lewd acts and experiences, your body parts may grow or shrink. Surgery, pills, and parasites can influence growth, among other conditions.">(?)</span>
 		</div>
 
-		<div class="settingsToggleItem">
-			<span class="gold">Minimum breast size:</span> <mouse class="tooltip linkBlue">(?)<span>Breasts already below this size won't automatically grow.</span></mouse>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Breast size limits:</span> <span class="tooltip-anchor linkBlue" tooltip="Breasts already below the minimum size won't automatically grow.">(?)</span>
 			<br>
-			<<set _name to ["Flat", "Budding", "Tiny", "Small", "Pert"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="breastsizemax" @data-disabledif="_i + ' > V.breastsizemax'">
-					<label><<print _name[_i]>> <<radiobutton "$breastsizemin" _i autocheck>></label>
-					<<if _i lt _name.length - 1>>|<</if>>
-				</span>
-			<</for>>
-		</div>
+			<<rangeslider "$breastsizemin" "$breastsizemax" $breastsizemax $breastsizemax 0 12 1
+				{
+					minClamp: 5,
+					minClampMessage: `<span class="red">Cannot increase minimum size further.</span>`
+				}
+				{
+					value: (v1, v2) => {
+						const color1 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v1, 12, 0));
+						const color2 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v2, 12, 0));
+						var name = ["Flat", "Budding", "Tiny", "Small", "Pert", "Modest", "Full", "Large", "Ample", "Massive", "Huge", "Gigantic", "Enormous"];
+						return `<span style="color: ${color1}">${name[v1]}</span> - <span style="color: ${color2}">${name[v2]}</span>`;
+					},
+				}
 
-		<div class="settingsToggleItem">
-			<span class="gold">Maximum breast size:</span> <mouse class="tooltip linkBlue">(?)<span>Breasts already above this size won't automatically shrink.</span></mouse>
-			<br>
-			<<set _name to ["Flat", "Budding", "Tiny", "Small", "Pert", "Modest", "Full", "Large", "Ample", "Massive", "Huge", "Gigantic", "Enormous"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="breastsizemin" @data-disabledif="'V.breastsizemin > ' + _i">
-					<label><<print _name[_i]>> <<radiobutton "$breastsizemax" `_i` autocheck>></label>
-					<<if _i lt _name.length - 1>>|<</if>>
-				</span>
-			<</for>>
+			}>>
 		</div>
 
 		<div class="settingsToggleItem">
@@ -2187,63 +2183,6 @@
 				</span>
 			<</for>>
 		</div>
-	</div>
-<</widget>>
-
-<<widget "sizeLimitsSettingsOld">>
-	<div class="solidBorderContainer settings-container">
-		<div class="settingsToggleWide">
-			<span class="gold">Maximum player character breast size</span> <mouse class="tooltip linkBlue">(?)<span>Breasts already above this size won't automatically shrink. Your breasts will grow regardless of gender. Males and those with high purity experience slower growth. Surgery, pills and parasites can influence growth in both directions. Having breasts played with and hosting internal parasites both increase growth.</span></mouse>
-			<br>
-			<<set _name to ["Flat", "Budding", "Tiny", "Small", "Pert", "Modest", "Full", "Large", "Ample", "Massive", "Huge", "Gigantic", "Enormous"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="breastsizemin" @data-disabledif="'V.breastsizemin > ' + _i">
-					<label><<print _name[_i]>> <<radiobutton "$breastsizemax" `_i` autocheck>></label>
-				</span> |
-			<</for>>
-		</div>
-
-		<div class="settingsToggleWide">
-			<span class="gold">Minimum player character breast size</span> <mouse class="tooltip linkBlue">(?)<span>Breasts already below this size won't automatically grow.</span></mouse>
-			<br>
-			<<for _i to 0; _i lt 5; _i++>>
-				<span data-target="breastsizemax" @data-disabledif="_i + ' > V.breastsizemax'">
-					<label><<print _name[_i]>> <<radiobutton "$breastsizemin" _i autocheck>></label> |
-				</span>
-			<</for>>
-		</div>
-
-		<div class="settingsToggleWide">
-			<span class="gold">Maximum player character ass size</span> <mouse class="tooltip linkBlue">(?)<span>Bottoms already above this size won't automatically shrink.</span></mouse>
-			<br>
-			<<set _name to ["Slender", "Slim", "Modest", "Cushioned", "Soft", "Round", "Plump", "Large", "Huge"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<label><<print _name[_i]>> <<radiobutton "$bottomsizemax" _i autocheck>></label> |
-			<</for>>
-		</div>
-
-		<div class="settingsToggleWide">
-			<span class="gold">Maximum player character penis size</span> <mouse class="tooltip linkBlue">(?)<span>Penises already above this size won't automatically shrink. Surgery, pills and parasites can influence growth in both directions.</span></mouse>
-			<br>
-			<<set _name to ["Micro","Mini", "Tiny", "Small", "Normal", "Large", "Enormous"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="penissizemin" @data-disabledif="_i - 2 + ' < V.penissizemin'">
-					<label><<print _name[_i]>> <<radiobutton "$penissizemax" `(_i - 2)` autocheck>></label> |
-				</span>
-			<</for>>
-		</div>
-
-		<div class="settingsToggleWide">
-			<span class="gold">Minimum player character penis size</span> <mouse class="tooltip linkBlue">(?)<span>Penises already below this size won't automatically grow. The smaller sizes have additional requirements to shrink to/grow from.</span></mouse>
-			<br>
-			<<set _name to ["Micro","Mini", "Tiny"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="penissizemax" @data-disabledif="_i - 2 + ' > V.penissizemax'">
-					<label><<print _name[_i]>> <<radiobutton "$penissizemin" `(_i - 2)` autocheck>></label> |
-				</span>
-			<</for>>
-		</div>
-		<div style="clear:both;"></div>
 	</div>
 <</widget>>
 

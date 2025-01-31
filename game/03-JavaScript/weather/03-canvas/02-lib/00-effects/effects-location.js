@@ -434,7 +434,7 @@ Weather.Renderer.Effects.add({
 							};
 							return;
 						}
-						Errors.report("Warning: Missing location image: " + image.src);
+						if (V.debug) Errors.report("Warning: Missing location image: " + image.src);
 						resolve();
 					};
 				}
