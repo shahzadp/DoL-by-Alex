@@ -236,8 +236,14 @@
 					<</addinlineevent>>
 				<</if>>
 
+				<<if $location is "town" and $bus is "danube">>
+					<<addinlineevent "danube" 1.5>>
+						<<link [[Everything fades to black...|Passout Danube Street]]>><<set $phase2 to _passout>><</link>>
+					<</addinlineevent>>
+				<</if>>
+
 				<<if (($location is "town" and $bus is "high") or $location is "office") and $officejobintro is 1 and Time.hour gte 6 and Time.hour lte 21>>
-					<<addinlineevent "office" 5>>
+					<<addinlineevent "office" 2>>
 						<<link [[Everything fades to black...|Passout Office]]>><<set $phase2 to _passout>><</link>>
 					<</addinlineevent>>
 				<</if>>
@@ -512,8 +518,14 @@
 					<<link [[Everything fades to black...|Passout Heatstroke Rescue]]>><</link>>
 				<</addinlineevent>>
 
+				<<if $location is "town" and $bus is "danube">>
+					<<addinlineevent "danube" 1.5>>
+						<<link [[Everything fades to black...|Passout Danube Street]]>><<set $phase2 to _passout>><</link>>
+					<</addinlineevent>>
+				<</if>>
+
 				<<if (($location is "town" and $bus is "high") or $location is "office") and $officejobintro is 1 and Time.hour gte 6 and Time.hour lte 21>>
-					<<addinlineevent "office" 5>>
+					<<addinlineevent "office" 2>>
 						<<link [[Everything fades to black...|Passout Office]]>><<set $phase2 to _passout>><</link>>
 					<</addinlineevent>>
 				<</if>>
@@ -3305,4 +3317,458 @@ After making sure you're okay, the <<beasttype>> <<= $monster is 1 ? "waves" : "
 <br><br>
 
 <<link [[Next|Moor]]>><<endevent>><<set $eventskip to 1>><<unset $horseDifficulty>><<unset $moormove>><</link>>
+<br>
+
+:: Passout Danube Street
+<<set $outside to 0>><<effects>>
+<<outfitChecks>>
+
+You wake up in a well-appointed sitting room feeling much
+<<if $phase2 is "cold">>
+	<<upperstrip>><<upperruined>>
+	<<outfitChecks>>
+	<<if _bottomExposed>>
+		<<lowerruined>>
+	<</if>>
+	<<outfitChecks>>
+	<<hypothermiaClothes>>
+	warmer than before. You see a lit fireplace nearby, warming you up along. A blanket is draped over you<<if _clothes.length gte 1>>, and you're dressed in <<= _clothes.join(" and ")>><</if>>.
+<<else>>
+	<<set _gender to $player.gender_appearance>>
+	<<set _clothes to []>>
+
+	<<if $worn.upper.warmth gt 3>>
+		<<set _slot to "upper">>
+		<<set _upper to []>>
+		<<if _gender is "m" or $forcedcrossdressingdisable is "f">>
+			/* masc: short sailor shirt */
+			<<set _upper.push(57)>>
+		<</if>>
+		<<if _gender is "f" or $forcedcrossdressingdisable is "f">>
+			/* femme: babydoll */
+			<<set _upper.push(17)>>
+		<</if>>
+		<<set _index to _upper.random()>>
+		<<upperstrip>><<upperruined>>
+		<<upperwear _index>>
+		<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+		<<set _clothes.push(_text_output)>>
+	<</if>>
+
+	<<outfitChecks>>
+	<<if _bottomExposed>>
+		<<set _slot to "lower">>
+		<<switch _index>>
+			<<case 57>><<set _index to 52>> /* short sailor shirt match sailor shorts*/
+			<<case 17>><<set _index to 76>> /* babydoll match booty jorts*/
+			<<default>><<set _index to 21>> /* neutral: cycle shorts */
+		<</switch>>
+		<<lowerruined>>
+		<<lowerwear _index>>
+		<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+		<<set _clothes.push(_text_output)>>
+	<</if>>
+	cooler than before. You see an open window nearby, letting in a refreshing breeze. <<if _clothes.length gte 1>>You look down to find that you're dressed in <<= _clothes.join(" and ")>>.<</if>>
+<</if>>
+<br><br>
+No one seems to be around at the moment.<<if _clothes.length gte 1>> You unfortunately don't see the clothes you were wearing before anywhere.<</if>> With nothing else to do, you stand up and exit the room.
+<br><br>
+
+<<link [[Next|Passout Danube Street 2]]>><</link>>
+<br>
+
+:: Passout Danube Street 2
+<<effects>>
+
+<<generate1>><<person1>>
+You wander through the mansion until you find the foyer, where a well-dressed <<personsimple>> is ushering apparent party guests out the front door with a polite wave. After <<he>> shuts the door behind them, <<he>> turns and jumps a little upon seeing you.
+<br><br>
+"Well, you just saved me some time. I was about to come to check on you," the <<person>> says with a smile. "Are you feeling better?"
+<br><br>
+<<if $speech_attitude is "meek">>
+	"Yes, I am," you reply, head bowed. "Thank you very much for helping me..."
+<<elseif $speech_attitude is "bratty">>
+	"Sure am. Thanks for the clothes."
+<<else>>
+	You nod. "I am. Thank you for the help."
+<</if>>
+<br><br>
+The <<person>> approaches you, coming to a stop a touch closer than is polite. "You're welcome. Though I can't say that I did it entirely out of goodwill." <<His>> smile turns into a smirk. "I was actually hoping that you would do me a little favour in return."
+<br><br>
+
+<<link [[Ask what the favour is|Passout Danube Street 3]]>><</link>>
+<br>
+<<if $danger gte (9900 - $allure)>>
+	<<link [[Leave|Passout Danube Street Sex]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+<<else>>
+	<<link [[Leave|Passout Danube Street End]]>><<set $phase to 0>><</link>>
+<</if>>
+<br>
+
+:: Passout Danube Street 3
+<<effects>>
+<<saveNPC 0 passout_danube_master>>
+
+<<if $speech_attitude is "meek">>
+	"A f-favour...?" You wring your hands.
+<<elseif $speech_attitude is "bratty">>
+	You cross your arms. "What kind of favour?"
+<<else>>
+	"What did you have in mind?"
+<</if>>
+<br><br>
+<<if $danger gte (9900 - $allure)>>
+	The <<person>>'s smile turns
+	<<if $rng gte 80 and $bestialitydisable is "f">>
+		<<generateBEAST 2 dog>>
+		<<set $NPCList[1].name to $NPCList[1].pronoun is "f" ? $NPC_names_f.random() : $NPC_names_m.random()>>
+
+		perverse, and <<he>> puts an overfamiliar hand on your arm. <<He>> whistles sharply, and within a few moments, a dog enters the room, tail wagging eagerly.
+		<br><br>
+		"Good <<= $NPCList[1].pronouns.boy>>," <<he>> praises the dog. Then <<he>> looks at you again, and says, "My little <<= $NPCList[1].name>> has been quite lonely and pent up lately... Give the poor thing some special attention, won't you?"
+		<br><br>
+		You <<= $awarelevel gte 1 ? "know" : "aren't entirely positive, but you think you have an idea of">> what <<hes>> asking for: <<he>> wants you to let this dog have its way with you.
+		<br><br>
+
+		<<if hasSexStat("deviancy", 2)>>
+			<<link [[Accept the offer|Passout Danube Street Dog]]>><</link>><<deviant2>>
+		<<else>>
+			<<insufficientStat "deviancy" "to take up such an offer">>
+		<</if>>
+		<br>
+		<<link [[Refuse|Passout Danube Street Sex]]>>
+			<<endevent>>
+			<<set $phase to 1>><<set $molestationstart to 1>>
+			<<loadNPC 0 passout_danube_master>><<person1>>
+		<</link>>
+		<br>
+	<<else>>
+		flirtatious, and <<he>> puts an overfamiliar hand on your waist. "Spend a little bit of... quality time with me. Show me just how thankful you are." <<His>> hand slides down to cup your <<bottom>>.
+		<br><br>
+		You <<= $awarelevel gte 1 ? "know" : "aren't entirely positive, but you think you have an idea of">> what <<hes>> asking for: <<he>> wants to have sex with you.
+		<br><br>
+
+		<<if hasSexStat("promiscuity", 2)>>
+			<<link [[Accept the offer|Passout Danube Street Sex]]>><<set $sexstart to 1>><</link>><<promiscuous2>>
+		<<else>>
+			<<insufficientStat "promiscuity" "to take up such an offer">>
+		<</if>>
+		<br>
+		<<link [[Refuse|Passout Danube Street Sex]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	"I have a room in which I just hosted a party, and it could use a good cleaning. My usual cleaners are meant to stop by tomorrow, and I'd rather not pay an extra fee for them to come early if I don't have to..." The <<personsimple>> gestures down the hall. "It's not too big of a mess, and I'd give you a tip once you're finished. What do you say?"
+	<br><br>
+
+	<<link [[Accept|Passout Danube Street Housekeeping]]>><</link>>
+	<br>
+	<<if $danger gte (9900 - $allure)>>
+		<<link [[Leave|Passout Danube Street Sex]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+	<<else>>
+		<<link [[Leave|Passout Danube Street End]]>><<set $phase to 0>><</link>>
+	<</if>>
+	<br>
+<</if>>
+
+:: Passout Danube Street Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<promiscuity2>>
+	"Perfect. What a good <<girl>>." <<He>> takes you to a nearby room, unceremoniously pushes you down onto a settee, and climbs on top of you with an eager expression on <<his>> face.
+<</if>>
+
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>>
+	The <<person>> <<= either(`scowls`,`sneers`)>>.
+	<<if $phase is 0>> /* PC refused to hear the person out, refused to have sex with them, or refused to clean for them. */
+		"<<= either(`Don't be ungrateful`,`It wasn't actually a question`)>>, <<girl>>."
+	<<else>> /* PC refused to have sex with the dog. */
+		"You think you're too good for it? Gutter trash like you?" <<He>> scoffs. "Think again."
+	<</if>>
+	<<He>> lunges for you.
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Passout Danube Street Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Passout Danube Street Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Passout Danube Street Sex Finish
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+
+	<<if $arousal is $arousalmax>>
+		<<orgasm>>
+	<</if>>
+
+	<<if $consensual is 1>>
+		Satisfied, the <<person>> sits back and adjusts <<his>> clothes. "Very good.
+		<<if $orgasmcurrent gte 1>>
+			I see you enjoyed yourself as well," <<he>> remarks with a smirk.
+		<<else>>
+			It's a relief to see that at least some of the younger set are capable of showing gratitude," <<he>> remarks with a condescending smile.
+		<</if>>
+		<br><br>
+		<<endcombat>>
+
+		<<loadNPC 0 passout_danube_master>><<person1>>
+		<<link [[Next|Passout Danube Street End]]>><<set $phase to 1>><</link>>
+		<br>
+	<<else>>
+		The <<person>> moans in satisfaction, then <<= $enemyhealth lt $enemyhealthmax ? "kick" : "shove">> you towards the door. "Get out of here," <<he>> says with an unpleasant smirk. "You'd best think twice before <<= $enemyhealth lt $enemyhealthmax ? "acting out against" : "refusing">> your betters in the future<<if $orgasmcount gte 1>>, you little slut<</if>>."
+		<br><br>
+		<<tearful>> you head for the door, and make your exit.
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+
+		<<link [[Next|Danube Street]]>><<set $eventskip to 1>><</link>>
+		<br>
+	<</if>>
+<<elseif $enemyhealth lte 0>>
+	The <<person>> is knocked off of the settee, stumbling into a nearby coffee table. "<<= either(`Fuck!`,`You little <<bastard>>!`,`How dare you!?`)>>" <<he>> snarls.
+	<br><br>
+	<<tearful>> you scramble to your feet and rush for the door, running from the mansion as fast as you can. You only stop to catch your breath <<if $athletics lt 600>>in huge panting gulps <</if>>once you're a few blocks away.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Residential alleyways]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	The <<person>> lets out a sigh of frustration, and pulls away from you. "Fine," <<he>> says, tone reluctant. "Go ahead and leave, then." <<He>> starts muttering to <<himself>> as <<he>> straightens out <<his>> clothes; the only word you can make out is "<<= $consensual is 1 ? "tease" : "<<bastard>>">>".
+	<br><br>
+	<<tearful>> you climb to your feet and make your way out of the mansion.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Danube Street]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+<<clearNPC passout_danube_master>>
+
+:: Passout Danube Street Dog
+<<effects>>
+<<saveNPC 1 passout_danube_dog>>
+
+<<deviancy2>>
+
+"Perfect." <<He>> takes you to a nearby side room, whistling for <<his>> dog to follow behind. <<He>> puts you on your hands and knees on the floor. Then <<he>> sits on a settee and <<= $NPCList[0].pronoun is "m" ? "undoes <<his>> trousers" : "pulls up the skirt of <<his>> dress">>, <<npcRevealText $NPCList[0] "lower">>.
+<br><br>
+The <<beasttype 1>> mounts you at <<bhis 1>> <<master>>'s command. The <<person>> begins to touch <<himself>>.
+<br><br>
+
+<<endevent>>
+<<loadNPC 0 passout_danube_dog>><<person1>>
+<<link [[Next|Passout Danube Street Dog Sex]]>><<set $sexstart to 1>><</link>>
+<br>
+
+:: Passout Danube Street Dog Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<beastCombatInit>>
+
+	<<set $NPCList[0].stance to "top">><<set $position to "doggy">>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Passout Danube Street Dog Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Passout Danube Street Dog Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Passout Danube Street Dog Sex Finish
+<<effects>>
+<<loadNPC 1 passout_danube_master>><<person2>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<person1>><<beastejaculation>>
+
+	<<if $arousal gte $arousalmax>>
+		<<orgasm>>
+	<</if>>
+
+	Across the way, the <<person2>><<person>> moans as <<he>> cums, <<= $NPCList[1].penis isnot "none" ? "semen splattering the floor" : "juices running down <<his>> fingers">>.
+	<br><br>
+	"Well done," <<he>> says, pulling out a handkerchief to wipe <<his>> dirtied hand off with.<<if $orgasmcount gte 1>> "I can't believe you got off from fucking a dog."<</if>>
+	<br><br>
+	<<endcombat>>
+
+	<<loadNPC 0 passout_danube_master>><<person1>>
+	<<loadNPC 1 passout_danube_dog>>
+	<<link [[Next|Passout Danube Street End]]>><<set $phase to 2>><<clotheson>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	"What the hell is wrong with you!?" the <<person>> yells as you shove <<his>> <<beasttype>> away with a final kick.
+	<br><br>
+	The <<beasttype>> yips and doesn't move to follow as you scramble to your feet and rush for the door. Luckily, you're out before the <<person>> can get up from <<his>> leisurely sprawl.
+	<br><br>
+	<<tearful>> you run away from the mansion, only stopping to catch your breath <<if $athletics lt 600>>in huge panting gulps <</if>>once you're a few blocks away.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Residential alleyways]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	<<tearful>> you can do nothing but lie there and take what the <<person>>'s dog gives you until it's satisfied.
+	<br><br>
+	<<person1>><<beastejaculation>>
+
+	Once satisfied, it withdraws, panting happily. The <<person2>><<person>> gives you a <<= $enemyhealth lt $enemyhealthmax ? "kick" : "nudge with <<his>> foot">> towards the door. "I think you're done here," <<he>> says with an unpleasant smirk. "Ta-ta."
+	<br><br>
+	You take a couple minutes to collect yourself before getting up and leaving.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Danube Street]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+<<clearNPC passout_danube_master>>
+<<clearNPC passout_danube_dog>>
+
+:: Passout Danube Street End
+<<effects>>
+
+<<if $phase is 0>> /* PC leaves without doing the favour. */
+	You <<if $speech_attitude isnot "bratty">>apologise and <</if>>tell the <<person>> that you don't have the time to spare, and that you have to leave.
+	<br><br>
+	<<He>> <<= either(`scowls`, `sneers`, `scoffs`, `glares`)>> at you. "Fine, then. You can find your own way out." <<He>> spins on <<his>> heel and stalks off, muttering to <<himself>> about the ungratefulness of the younger set.
+	<br><br>
+	You leave the mansion once <<hes>> out of sight, relieved that the situation resolved itself peacefully.
+<<else>>
+	<<if $phase is 1>> /* From the sex branch. */
+		"I'm sure you can find the way out," the <<person>> says once <<hes>> straightened <<himself>> out. "Be more careful in the future to mind the weather, hm? It'd be a shame if someone less charitable than I had been the one to find you."
+	<<else>> /* From the dog branch. */
+		The <<person>> whistles to <<his>> <<beasttype 1>> as <<he>> stands, and <<he>> begins to put <<his>> clothes back into order. The <<beasttype 1>> woofs happily and trots to <<his>> side.
+		<br><br>
+		"It's a relief to see that at least some of the younger set are capable of showing gratitude," <<he>> says once <<hes>> straightened <<himself>> out. "I'm sure you can find the way out. Be more careful in the future to mind the weather, hm? It'd be a shame if someone less charitable than I found you."
+	<</if>>
+	<br><br>
+	With that said, <<he>> departs without sparing you a second glance.
+	<br><br>
+	<<tearful>> you leave the mansion once <<hes>> out of sight.
+<</if>>
+<br><br>
+
+<<link [[Next|Danube Street]]>><<clotheson>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Passout Danube Street Housekeeping
+<<effects>>
+<<set _event to random(1,3)>>
+
+"Perfect!" The <<person>> leads you down the hall, and opens a door to
+<<if _event is 1>>
+	a dining room. The long table is covered in questionable fluids, staining the wood and the table runner and dripping from the edges. There's more fluids beneath the table, as well as various spatterings elsewhere on the floor. <<if $condomLvl gte 2 and $rng gte 51>>It looks like there's a few used condoms on the ground.<</if>>
+<<elseif _event is 2>>
+	a sitting room. You see bits of glitter on a coffee table, as well as questionable fluids spattered on the tabletop and the floor around it. <<if $condomLvl gte 2 and $rng gte 51>>Used condoms litter the floor.<</if>> A speaker nearby is playing sensual dance music, and the <<person>> approaches it to turn it off before returning to you.
+<<else>>
+	a sitting room. The room is covered in questionable fluids, including puddles of pink liquid. There's a curious combination of scents in the air that makes you feel little lightheaded.<<drugs 60>><<gdrugged>>
+<</if>>
+<br><br>
+<<= $awarelevel gte 1 ? "You" : "Even you">> have a pretty good idea of what must have gone on in here.
+<br><br>
+<<He>> definitely understated the mess.
+<br><br>
+"I would apologise for the filth if you weren't here to clean it up in the first place," the <<person>> says with a chortle. "There should be some cleaning materials in the closet over there." <<He>> points to a nearby closet door. "When you're finished, I'll be in the room just across the hall from this one. Thanks again!"
+<br><br>
+With that, <<he>> leaves you to it.
+<br><br>
+
+<<link [[Clean the room|Passout Danube Street Housekeeping 2]]>><<housekeepingdifficulty 1 600>><</link>>
+<br>
+
+:: Passout Danube Street Housekeeping 2
+<<effects>>
+
+Retrieving a broom, spray cleaner, and a few rags from the closet, you get to work.
+<br><br>
+<<if $rng gte 91>>
+	While cleaning, you find a few loose bills beneath a chair that must have fallen from someone's pockets at some point during this function. You've earned <<moneyGainDisplay 20 true true>>.
+<<elseif $rng lte 30 and $ejactrait gte 1>>
+	While wiping down the table, you feel yourself salivate when you notice the lewd fluid on the table is still a bit warm. You resist the urge to rub your face against it.<<arousal 600>><<garousal>>
+<<else>>
+	<<set _event to random(1,5)>>
+
+	While cleaning, you
+	<<if _event is 1>>
+		keep getting the sense that you're being watched. But whenever you look around, you see no one in the room but yourself. A shiver goes down your spine every time.<<stress 6>><<gstress>>
+	<<elseif _event is 2>>
+		hum your favorite song to yourself. It makes a boring job less tedious, and a little more fun.<<stress -6>><<lstress>>
+	<<elseif _event is 3 and $tiredness gte (C.tiredness.max / 5) * 3>>
+		feel your eyelids drooping more than once. A part of you is tempted to just sit down and rest your eyes for a few moments, but you force yourself to focus and get the job done. You can rest later.
+	<<elseif _event is 4>>
+		crawl under the table to wipe up beneath it, and you end up disturbing a small cloud of pink dust from the floor. Inhaling some of it brings a bit of heat to your face.<<arousal 600>><<garousal>>
+	<<else>>
+		pay special focus to try and improve your overall efficiency. <<if $housekeeping lt 600>>You discover a few different methods to save time while cleaning in the future.<</if>><<housekeeping 1 600>><<ghousekeeping 600>>
+	<</if>>
+<</if>>
+<br><br>
+<<if $housekeepingSuccess>>
+	<<pass 45>><<set $phase to 0>>
+	It takes a while, but eventually you get the room back in order. You're tired after all the hard work, but you feel satisfied with your job well done.<<housekeeping 1 600>><<tiredness 5>><<ghousekeeping 600 "silent">><<gtiredness>>
+<<else>>
+	<<pass 60>><<set $phase to 1>>
+	It takes a good long while, but eventually you get the job done, more or less. You're exhausted after all the hard work, and ready to leave.<<housekeeping 1 600>><<tiredness 10>><<ghousekeeping 600 "silent">><<ggtiredness>>
+<</if>>
+<br><br>
+
+<<link [[Tell <<him>> you're finished|Passout Danube Street Housekeeping End]]>><</link>>
+<br>
+
+:: Passout Danube Street Housekeeping End
+<<effects>>
+
+You tell the <<person>> you're finished, and <<he>> follows you back to the room to check your work. Seemingly content, <<he>> puts a hand on your shoulder and
+<<if $arousal gte $arousalmax>>
+	opens <<his>> mouth to say something, but <<hes>> interrupted when that simple touch sends you over the edge.
+	<br><br>
+	<<orgasm>>
+
+	The <<person>> holds you up and watches as you shudder and moan with an interested gleam in <<his>> eyes. When you finally recover, <<he>> laughs.
+	<br><br>
+	"Got it all out?" <<he>> asks with a dirty grin. "You're pretty cute when you're cumming, you know... But I suppose you'd like to get paid and get on home, don't you?"
+<<else>>
+	says, "<<= $phase is 0 ? "Very nice" : "It'll do until the professional cleaners come by">>. Now, your tip..."
+<</if>>
+<br><br>
+<<He>> digs into his <<wallet>>, and pulls out <<= $phase is 0 ? "<<moneyGain 30>>" : "<<moneyGain 15>>">>. Once you take it, <<he>> leads you back to the foyer, and bids you a good <<= Time.dayState is "night" ? "evening" : "day">>.
+<br><br>
+
+<<link [[Next|Danube Street]]>><<clearNPC passout_danube_master>><<endevent>><<set $eventskip to 1>><</link>>
 <br>
