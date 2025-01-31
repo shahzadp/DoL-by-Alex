@@ -204,7 +204,7 @@ Macro.add("numberStepper", {
 					button.prop("disabled", disabled);
 				});
 			});
-			titleText.fontResizer({ margin: 18 });
+			titleText.fontResizer({ margin: 20 });
 		};
 
 		const createButton = (classes, iconClasses, clickHandler) => {

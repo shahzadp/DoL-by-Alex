@@ -6,6 +6,18 @@ Weather.WeatherGeneration = (() => {
 	function getWeather(date) {
 		if (date) {
 			// Do not modify weather obj if searching for another date than the current
+			const lastKeyPoint = V.weatherObj.keypointsArr[V.weatherObj.keypointsArr.length - 1];
+			const lastKeyPointTimestamp = lastKeyPoint?.timestamp || 0;
+
+			if (date.timeStamp > lastKeyPointTimestamp) {
+				console.warn(`getWeather: Provided date is after the last key point timestamp. Returning weather type of the last key point.`);
+				return Weather.genSettings.weatherTypes[lastKeyPoint?.value] || "unknown";
+			}
+			if (date.timeStamp < Time.date.timeStamp) {
+				console.warn(`getWeather: Provided date is before the current timestamp. Returning the current weather type.`);
+				return T.currentWeather || interpolateWeather(new DateTime(Time.date));
+			}
+
 			return interpolateWeather(date);
 		}
 		const currentWeather = V.weatherObj.name;
@@ -98,7 +110,7 @@ Weather.WeatherGeneration = (() => {
 		if (current.value === interpolatedValue) {
 			const newObj = createObjectByType(current);
 			V.weatherObj.name = newObj.name;
-			const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === Weather.name).overcast);
+			const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === newObj.name).overcast);
 			V.weatherObj.targetOvercast = targetOvercast * (Weather.bloodMoon ? setup.SkySettings.fade.overcast.bloodMoonMaxValue : 1);
 			return newObj;
 		}
@@ -126,7 +138,7 @@ Weather.WeatherGeneration = (() => {
 		const newObj = createObjectByType(chosenType);
 
 		V.weatherObj.name = chosenType.name;
-		const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === Weather.name).overcast);
+		const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === newObj.name).overcast);
 		V.weatherObj.targetOvercast = targetOvercast * (Weather.bloodMoon ? setup.SkySettings.fade.overcast.bloodMoonMaxValue : 1);
 		return newObj;
 	}

@@ -59,19 +59,25 @@ const ObjectAssignDeep = (function () {
 	}
 
 	function mergeObjects(target, source, options, filterFn, depth) {
-		const merged = Object.keys(source).reduce((obj, key) => {
-			if (filterFn && !filterFn(key, source[key], depth)) return obj;
+		const merged = Object.keys(source).reduce(
+			(obj, key) => {
+				if (filterFn && !filterFn(key, source[key], depth)) return obj;
 
-			if (options.arrayBehaviour === "strict-replace" && getTypeOf(source[key]) === "object") {
-				obj[key] = cloneValue(source[key]);
-			} else if (getTypeOf(source[key]) === "object") {
-				obj[key] = mergeObjects(target[key] || {}, source[key], options, filterFn, depth + 1);
-			} else {
-				obj[key] = cloneValue(source[key]);
-			}
+				const sourceValue = source[key];
+				const targetValue = target[key];
 
-			return obj;
-		}, {});
+				if (getTypeOf(sourceValue) === "object" && getTypeOf(targetValue) === "object") {
+					obj[key] = mergeObjects(targetValue, sourceValue, options, filterFn, depth + 1);
+				} else if (getTypeOf(sourceValue) === "array" && getTypeOf(targetValue) === "array") {
+					obj[key] = mergeArrays(targetValue, sourceValue, options);
+				} else {
+					obj[key] = cloneValue(sourceValue);
+				}
+
+				return obj;
+			},
+			{ ...target }
+		);
 
 		if (options.arrayBehaviour === "strict-replace") {
 			Object.keys(target).forEach(key => {
@@ -108,13 +114,12 @@ const ObjectAssignDeep = (function () {
 				if (filterFn && !filterFn(key, object[key], depth)) return;
 
 				const valueType = getTypeOf(object[key]);
-				if (valueType === "object") {
-					target[key] =
-						arrayBehaviour === "strict-replace" && depth > 1
-							? cloneValue(object[key])
-							: mergeObjects(target[key] || {}, object[key], { arrayBehaviour }, filterFn, depth + 1);
-				} else if (valueType === "array" && getTypeOf(target[key]) === "array") {
-					target[key] = mergeArrays(target[key], object[key], { arrayBehaviour });
+				const targetValue = target[key];
+
+				if (valueType === "object" && getTypeOf(targetValue) === "object") {
+					target[key] = mergeObjects(targetValue, object[key], { arrayBehaviour }, filterFn, depth + 1);
+				} else if (valueType === "array" && getTypeOf(targetValue) === "array") {
+					target[key] = mergeArrays(targetValue, object[key], { arrayBehaviour });
 				} else {
 					target[key] = cloneValue(object[key]);
 				}

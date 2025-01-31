@@ -101,7 +101,6 @@ function extendStats() {
 
 	$captionDiv.toggleClass("statsExtended", V.extendedStats);
 	Wikifier.wikifyEval("<<replace #stats>><<statsCaption>><</replace>>");
-	initializeTooltips();
 }
 window.extendStats = extendStats;
 
@@ -115,15 +114,24 @@ window.customColour = customColour;
 
 function zoom(value) {
 	const slider = $("[name$='" + Util.slugify("options.zoom") + "']");
-	value = Math.clamp(value || slider[0].value || 0, 50, 200);
-	$("body")
-		.css("zoom", value + "%")
-		.css("-ms-zoom", value + "%");
-	if (slider[0] !== undefined && slider[0].value != value) {
-		slider[0].value = value;
-		slider.trigger("change");
-	}
+	value = Math.clamp(value || slider?.val() || 0, 50, 200);
+
+	$("body").css("zoom", value + "%");
+	const zoomScale = value / 100;
+	// SVG map
+	$(".zoomable").each(function () {
+		const $image = $(this);
+		const originalWidth = $image.data("original-width") || this.width.baseVal.value;
+		const originalHeight = $image.data("original-height") || this.height.baseVal.value;
+
+		$image
+			.data({ "original-width": originalWidth, "original-height": originalHeight })
+			.attr({ width: originalWidth * zoomScale, height: originalHeight * zoomScale });
+	});
+
+	if (slider.length && slider.val() != value) slider.val(value).trigger("change");
 }
+
 window.zoom = zoom;
 
 function beastTogglesCheck() {
@@ -591,6 +599,7 @@ function settingsDisableElement() {
 						const style = cond ? "var(--500)" : "";
 						orig.css("color", style).children().css("color", style);
 						orig.find("input").prop("disabled", cond);
+						$(document).trigger("rangeslider::update");
 					} catch (e) {
 						console.log(e);
 					}
@@ -749,6 +758,12 @@ function updateCaptionTooltip() {
 		if (!e || typeof e.clientX !== "number" || typeof e.clientY !== "number") {
 			return;
 		}
+
+		// Prevent recursion by ignoring events triggered by the tooltip itself
+		if ($(e.target).is("#characterTooltip")) {
+			return;
+		}
+
 		const isCurrentlyOverElement = $(document.elementsFromPoint(e.clientX, e.clientY)).is("#characterTooltip");
 
 		// Only trigger events if the status has changed
@@ -767,8 +782,8 @@ function updateCaptionTooltip() {
 		if (isCurrentlyOverElement) {
 			element.trigger({
 				type: "mousemove",
-				pageX: e.pageX,
-				pageY: e.pageY,
+				clientX: e.clientX,
+                clientY: e.clientY,
 			});
 		}
 	};
