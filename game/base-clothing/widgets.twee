@@ -157,13 +157,13 @@
 	<<generalWear "feet" _args[0] _args[1] _args[2]>>
 <</widget>>
 
-/*The "generalSend" widget works in the same way as the "...send" widgets, however, the argument are as follows; Location, slot, item index, colour, accessory_colour*/
+/*The "generalSend" widget works in the same way as the "...send" widgets, however, the argument are as follows; Location, slot, item index, colour, accessory_colour, pattern*/
 
 <<widget "generalSend">>
 	<<set $_selectedWardrobe to (_args[0] is "wardrobe" or !(_args[0] in $wardrobes) ? $wardrobe : $wardrobes[_args[0]])>>
 	<<set $_outfitPrimary to setup.clothes[_args[1]][_args[2]].outfitPrimary>>
 	<<if _args[0]>>
-		<<sendToWardrobeFromDefault _args[0] _args[1] _args[2] _args[3] _args[4]>>
+		<<sendToWardrobeFromDefault _args[0] _args[1] _args[2] _args[3] _args[4] _args[5]>>
 
 		<<if $_outfitPrimary isnot undefined>>
 			<<set $_outfitPiece to $_selectedWardrobe[_args[1]].last()>>
@@ -171,11 +171,12 @@
 			<<set _colourCustom to $_outfitPiece.colourCustom>>
 			<<set _accessory_colour to $_outfitPiece.accessory_colour>>
 			<<set _accessory_colourCustom to $_outfitPiece.accessory_colourCustom>>
+			<<set _pattern to $_outfitPiece.pattern>>
 			<<for $_label, $_value range $_outfitPrimary>>
 				<<set _pieceId to setup.clothes[$_label].findIndex(item => item.name is $_value)>>
 				<<if _pieceId isnot -1>> <!-- findIndex() returns -1 if no index is found -->
 					<<if (!_hoodDown or $_label isnot "head") and _pieceId.one_piece isnot "split">> /*If hood is down, don't make a hood. If an upper part of an outfit is separated don't add a lower part*/
-						<<sendToWardrobeFromDefault _args[0] $_label _pieceId _colour _accessory_colour>>
+						<<sendToWardrobeFromDefault _args[0] $_label _pieceId _colour _accessory_colour _pattern>>
 					<</if>>
 				<<else>>
 					<!-- Error -->
@@ -248,6 +249,13 @@
 			<<set $_item.accessory_colour to clone($_item.accessory_colour_options.random())>>
 		<</if>>
 	<</if>>
+	<<if $_item.pattern_options.length gt 0>>
+		<<if _args[5]>>
+			<<set $_item.pattern to _args[5]>>
+		<<else>>
+			<<set $_item.pattern to clone($_item.pattern_options[0])>>
+		<</if>>
+	<</if>>
 	<<if _hoodDown and $_item.hoodposition isnot undefined>>
 		<<set $_item.hoodposition to "down">>
 		<<run delete $_item.outfitPrimary.head>>
@@ -255,66 +263,66 @@
 	<<run clothesDataTrimmer($_item)>>
 <</widget>>
 
-/*The "...send" widgets give the player character new clothing. They take the index of the item you want to provide as an argument, the location you want to send it to as a second argument, (such as "wardrobe",) and the colour of the item as an optional third argument. Fourth argument defines the secondary colour, if present. Only the upper half is required in the case of outfits. They differ from the "...wear" widgets in that they send clothes to your wardrobe, rather than put them on your character.*/
+/*The "...send" widgets give the player character new clothing. They take the index of the item you want to provide as an argument, the location you want to send it to as a second argument, (such as "wardrobe",) and the colour of the item as an optional third argument. Fourth argument defines the secondary colour, if present. Fifth argument defines the pattern, if present. Only the upper half is required in the case of outfits. They differ from the "...wear" widgets in that they send clothes to your wardrobe, rather than put them on your character.*/
 
 <<widget "overuppersend">>
-	<<generalSend _args[1] "over_upper" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "over_upper" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "overlowersend">>
-	<<generalSend _args[1] "over_lower" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "over_lower" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "uppersend">>
-	<<generalSend _args[1] "upper" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "upper" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "lowersend">>
-	<<generalSend _args[1] "lower" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "lower" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "underuppersend">>
-	<<generalSend _args[1] "under_upper" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "under_upper" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "underlowersend">>
-	<<generalSend _args[1] "under_lower" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "under_lower" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "genitalssend">>
-	<<generalSend _args[1] "genitals" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "genitals" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "overheadsend">>
-	<<generalSend _args[1] "over_head" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "over_head" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "headsend">>
-	<<generalSend _args[1] "head" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "head" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "facesend">>
-	<<generalSend _args[1] "face" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "face" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "necksend">>
-	<<generalSend _args[1] "neck" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "neck" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "handssend">>
-	<<generalSend _args[1] "hands" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "hands" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "handheldsend">>
-	<<generalSend _args[1] "handheld" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "handheld" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "legssend">>
-	<<generalSend _args[1] "legs" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "legs" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 <<widget "feetsend">>
-	<<generalSend _args[1] "feet" _args[0] _args[2] _args[3]>>
+	<<generalSend _args[1] "feet" _args[0] _args[2] _args[3] _args[4]>>
 <</widget>>
 
 /*The "...strip" widgets remove the player character's clothing. The clothing remains with the player character, ready to be put back on.*/
@@ -705,7 +713,25 @@
 	<<if _args[0] and _args[1]>>
 		<<set $_slot to _args[0]>>
 		<<set $_item to _args[1][$_slot]>>
-		<<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
+		<<if $_slot is "lower">>
+			<<switch clothesIndex($_slot,$_item)>>
+				<<case 107>>
+					<<set $_setupItem to setup.clothes[$_slot][106]>>
+					<<set $_item.pattern to "plaid">>
+				<<case 103>>
+					<<set $_setupItem to setup.clothes[$_slot][27]>>
+					<<set $_item.pattern to "plaid">>
+				<<case 104>>
+					<<set $_setupItem to setup.clothes[$_slot][28]>>
+					<<set $_item.pattern to "plaid">>
+				<<case 105>>
+					<<set $_setupItem to setup.clothes[$_slot][6]>>
+					<<set $_item.pattern to "plaid">>
+				<<default>><<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
+			<</switch>>
+		<<else>>
+			<<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
+		<</if>>
 		<<set $_return to clothesReturnLocation($_item,"rebuy")>>
 
 		<<if $_setupItem.shop.length isnot 0 and $_item.one_piece isnot "broken" and $_setupItem.cursed isnot 1>> /* NO SPLIT ADDED */
@@ -723,7 +749,7 @@
 
 			<<if $_item.outfitSecondary isnot undefined and $_item.outfitSecondary[1] is "broken">> /* NO SPLIT ADDED */
 			<<elseif $money gte $_cost>>
-				<<generalSend $_return $_slot $_setupItem.index $_item.colour $_item.accessory_colour>>
+				<<generalSend $_return $_slot $_setupItem.index $_item.colour $_item.accessory_colour $_item.pattern>>
 				<<if $_item.one_piece is "split">>
 					<<set $_selectedWardrobe to selectWardrobe($_return, "return")>>
 					<<set $_selectedWardrobe[$_slot].last().one_piece to "split">>

@@ -315,6 +315,7 @@ declare global {
 		};
 		demoncow?: {
 			horns?: boolean;
+			tail?: boolean;
 		};
 		demonharpy?: {
 			wings?: boolean;

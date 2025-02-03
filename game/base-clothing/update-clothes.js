@@ -98,6 +98,16 @@ function updateClothingColours(item, itemRef) {
 		case "karate trousers":
 			if (item.colour === 0) item.colour = "white";
 			break;
+		case "gingham dress":
+		case "gingham skirt":
+		case "patterned dress":
+		case "patterned skirt":
+			if (item.pattern === 0) item.pattern = "gingham";
+			if (item.accessory_colour === 0) {
+				item.accessory_colour = item.colour;
+				item.colour = "white";
+			}
+			break;
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
 			if (item.colour === 0) item.colour = itemRef.colour_options.random();
@@ -187,6 +197,12 @@ function updateClothesItem(slot, item, debug) {
 			if (itemRef[key] !== undefined) {
 				if (item[key] === undefined) item[key] = clone(itemRef[key]);
 				if (item.one_piece === "broken" || item.one_piece === "split") item[key][1] = item.one_piece;
+				for (const k in itemRef.outfitSecondary) {
+					// if one_piece is broken, everything is broken
+					if (item.one_piece === "broken" || item.one_piece === "split") item.outfitSecondary[k] = item.one_piece;
+					else if (item.outfitSecondary[k] !== "broken" && item.outfitSecondary[k] !== "split")
+						item.outfitSecondary[k] = clone(itemRef.outfitSecondary[k]);
+				}
 			}
 			continue;
 		}
@@ -194,9 +210,11 @@ function updateClothesItem(slot, item, debug) {
 	}
 	item.colour = remapColours[item.colour] || item.colour;
 	item.accessory_colour = remapColours[item.accessory_colour] || item.accessory_colour;
+	item.pattern = remapColours[item.pattern] || item.pattern;
 	if (
 		((item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
-		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0)
+		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0) ||
+		(item.pattern === 0 && itemRef.pattern_options?.length > 0)
 	)
 		updateClothingColours(item, itemRef);
 
@@ -323,6 +341,14 @@ function updateClothesItem(slot, item, debug) {
 			break;
 		case "doggy muzzle":
 			item.name_cap = "Doggy muzzle";
+			break;
+		case "gingham dress":
+			item.name = "patterned dress";
+			item.name_cap = "Patterned dress";
+			break;
+		case "gingham skirt":
+			item.name = "patterned skirt";
+			item.name_cap = "Patterned skirt";
 			break;
 	}
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
