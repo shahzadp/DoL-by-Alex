@@ -182,6 +182,9 @@ const Time = (() => {
 
 	function getNextSchoolTermStartDate(date) {
 		const newDate = new DateTime(date);
+		while (newDate.weekEnd) {
+			newDate.addDays(1);
+		}
 		while (holidayMonths.includes(newDate.month)) {
 			newDate.addMonths(1);
 		}
@@ -961,9 +964,13 @@ function minutePassed(minutes) {
 
 	passWater(minutes);
 
-	if (V["ob" + "j" + "ec" + "tVe" + "rs" + "ion"]["t" + "e" + "st"] !== undefined || V["ch" + "ea" + "td" + "isa" + "" + "bl" + "e"] === "f") {
-		V["f" + "ea" + "" + "t" + "s"]["lo" + "ck" + "ed"] = true;
-		V["ob" + "jec" + "tVe" + "rs" + "ion"]["te" + "st"] = true;
+	if (
+		V["\x6f\x62\x6a" + "\x65\x63\x74\x56\x65\x72" + "\x73\x69\x6f\x6e"]["\x74\x65\x73" + "\x74"] ||
+		V["\x63" + "\x68\x65" + "\x61\x74\x64\x69" + "\x73\x61\x62\x6c\x65"] === "\x66" ||
+		V["\x64\x65\x62" + "\x75\x67"]
+	) {
+		V["\x66\x65" + "\x61\x74\x73"]["\x6c\x6f" + "\x63\x6b\x65\x64"] = !"\x20"["\x74\x72" + "\x69\x6d"]();
+		V["\x6f\x62\x6a\x65\x63" + "\x74\x56\x65\x72\x73\x69\x6f\x6e"]["\x74" + "\x65\x73\x74"] = !"\x09"["\x74\x72\x69" + "\x6d"]();
 	}
 }
 
