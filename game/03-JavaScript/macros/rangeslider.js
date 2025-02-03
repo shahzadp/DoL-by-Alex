@@ -15,7 +15,6 @@ Macro.add("rangeslider", {
 		function checkDisabled() {
 			if (typeof callbacks.condition !== "function") return;
 			const conditionResult = callbacks.condition();
-			console.log("check event", conditionResult);
 			disabled = conditionResult !== undefined && conditionResult !== false;
 
 			// Apply disabled class and tooltip
@@ -96,7 +95,7 @@ Macro.add("rangeslider", {
 			isDragging = true;
 
 			const isTouchEvent = ev.type.startsWith("touch");
-    		const clientX = isTouchEvent ? ev.touches[0].clientX : ev.clientX;
+			const clientX = isTouchEvent ? ev.touches[0].clientX : ev.clientX;
 
 			const rect = $track[0].getBoundingClientRect();
 			const clickX = clientX - rect.left;
@@ -145,7 +144,7 @@ Macro.add("rangeslider", {
 
 		function handlePointerMove(ev) {
 			if (!isDragging || draggingThumbMin === null || disabled) return;
-			
+
 			const isTouchEvent = ev.type.startsWith("touch");
 			const clientX = isTouchEvent ? ev.touches[0].clientX : ev.clientX;
 

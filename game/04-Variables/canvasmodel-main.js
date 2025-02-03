@@ -385,6 +385,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				genitals: {
@@ -393,6 +394,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				over_upper: {
@@ -401,6 +403,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				lower: {
@@ -409,6 +412,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				over_lower: {
@@ -417,6 +421,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				under_lower: {
@@ -425,6 +430,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				under_upper: {
@@ -433,6 +439,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				hands: {
@@ -441,6 +448,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				handheld: {
@@ -449,6 +457,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				head: {
@@ -457,6 +466,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				over_head: {
@@ -465,6 +475,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				face: {
@@ -473,6 +484,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				neck: {
@@ -481,6 +493,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				legs: {
@@ -489,6 +502,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				},
 				feet: {
@@ -497,6 +511,7 @@ Renderer.CanvasModels.main = {
 					integrity: "full",
 					colour: "white",
 					accColour: "white",
+					pattern: 0,
 					setup: { type: [] },
 				}
 			},
@@ -689,6 +704,10 @@ Renderer.CanvasModels.main = {
 		options.lowerShadowMask = [];
 		options.underLowerMask = [];
 		options.underLowerShadowMask = [];
+		options.upperMask = []
+		if (options.worn.lower.setup.mask_img === 1) options.lowerMask.push(`img/clothes/lower/${options.worn.lower.setup.variable}/mask_${options.worn.lower.integrity}.png`);
+		if (options.worn.upper.setup.mask_img === 1) options.upperMask.push(`img/clothes/upper/${options.worn.upper.setup.variable}/mask_${options.worn.upper.integrity}.png`);
+
 		const hairTails = ["curly pigtails", "fluffy ponytail", "thick sidetail", "thick twintails", "ribbon tail", "thick sidetail", "thick ponytail", "half-up"];
 		const thickTails = ["scorpion tails", "thick pigtails", "thick twintails"];
 		const furCap = ["furcap f", "furcap m"];
@@ -853,6 +872,13 @@ Renderer.CanvasModels.main = {
 		} else {
 			options.hood_mask = null;
 		}
+
+		if (options.shirt_mask_clip_src) {
+			options.upperMask.push(options.shirt_mask_clip_src)
+		} else {
+			options.upperMask.push(options.shirt_fitted_clip_src)
+		};
+
 
 		/*clothes whose sleeves cannot be rolled up*/
 		if (options.worn.upper.setup.variable === "schoolcardigan" && options.worn.upper.alt !== "alt") {
@@ -2804,9 +2830,7 @@ Renderer.CanvasModels.main = {
 				return options.worn.upper.setup.name === "cocoon" ? ZIndices.over_head : options.zupper;
 			},
 			masksrcfn(options) {
-				return (options.belly >= 7 || options.body_type === "soft") ?
-					options.shirt_mask_clip_src :
-					options.worn.upper.setup.formfitting && options.shirt_fitted_clip_src;
+				return options.upperMask;
 			},
 		}),
 		"upper_fitted_left": genlayer_clothing_fitted_left("upper", {
@@ -3081,8 +3105,7 @@ Renderer.CanvasModels.main = {
 				return options.arm_right === "hold" && options.sleeve_over_hold ? ZIndices.lower_high : options.zupper;
 			},
 			masksrcfn(options) {
-				return options.belly >= 19 && options.worn.upper.setup.pregType == "split" ?
-					options.shirt_mask_clip_src : options.shirt_fitted_clip_src;
+				return options.upperMask;
 			},
 		}),
 		"upper_breasts_acc": genlayer_clothing_breasts_acc("upper", {
@@ -3266,7 +3289,8 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				const secondary = options.worn.upper.setup.name === "school blouse" && options.worn.lower.setup.name.includes("pinafore") ? '_under' : '';
 				const suffix = options.worn.lower.setup.accessory_integrity_img ? `_${options.worn.lower.integrity}` : secondary;
-				return gray_suffix(`img/clothes/lower/${options.worn.lower.setup.variable}/acc${suffix}.png`, options.filters['worn_lower_acc']);
+				const pattern = options.worn.lower?.pattern && options.worn.lower.setup?.pattern_layer === "secondary" ? "_" + options.worn.lower.pattern.replace(/ /g,"_") : '';
+				return gray_suffix(`img/clothes/lower/${options.worn.lower.setup.variable}/acc${suffix}${pattern}.png`, options.filters['worn_lower_acc']);
 			},
 			zfn(options) {
 				if (options.worn.lower.setup.name.includes("ballgown") || options.worn.lower.setup.name.includes("pinafore"))
@@ -3681,7 +3705,7 @@ Renderer.CanvasModels.main = {
 				const fabricNum = T.ropeLength || fabricLevels.findIndex(x => V.bird.rope >= x) + 1 || 1;
 				const fabric = options.worn.handheld.setup.variable === "fabric rope" ? fabricNum : '';
 
-				const special = options.worn.handheld?.pattern && !(options.worn.handheld?.pattern_layer === "secondary") ? "_" + options.worn.handheld.pattern.replace(" ", "_") : '';
+				const special = options.worn.handheld?.pattern && !(options.worn.handheld.setup?.pattern_layer === "secondary") ? "_" + options.worn.handheld.pattern.replace(/ /g,"_") : '';
 
 				const cover = options.arm_right === "cover" && options.handheld_position !== 'right_cover' ? "right_cover" : "right";
 				const extra = torch || cards || fabric || special || '';
@@ -3715,7 +3739,7 @@ Renderer.CanvasModels.main = {
 				const cardNum = V.blackjack ? Math.clamp(V.blackjack.playersCards.length, 1, 5) : 0;
 				const cards = options.worn.handheld.setup.variable === "cards" ? cardNum : '';
 
-				const special = options.worn.handheld?.pattern && options.worn.handheld?.pattern_layer === "secondary" ? "_" + options.worn.handheld.pattern.replace(" ", "_") : '';
+				const special = options.worn.handheld?.pattern && options.worn.handheld.setup?.pattern_layer === "secondary" ? "_" + options.worn.handheld.pattern.replace(/ /g,"_") : '';
 
 				const cover = options.arm_right === "cover" && options.handheld_position !== 'right_cover' ? "right_cover" : "right";
 				const extra = cards || special || '';
@@ -3801,7 +3825,9 @@ Renderer.CanvasModels.main = {
 		"head": genlayer_clothing_main('head', {
 			srcfn(options) {
 				const dmg = options.hood_damage ? options.worn.upper.integrity : options.worn.head.integrity;
-				const path = `img/clothes/head/${options.worn.head.setup.variable}/${dmg}.png`;
+				const pattern = options.worn.head?.pattern && !(options.worn.head.setup?.pattern_layer === "secondary") ? "_" + options.worn.head.pattern.replace(/ /g,"_") : '';
+
+				const path = `img/clothes/head/${options.worn.head.setup.variable}/${dmg}${pattern}.png`;
 				return gray_suffix(path, options.filters['worn_head']);
 			},
 			showfn(options) {
@@ -3814,7 +3840,8 @@ Renderer.CanvasModels.main = {
 		"head_acc": genlayer_clothing_accessory('head', {
 			srcfn(options) {
 				const dmg = options.hood_damage ? `_${options.worn.upper.integrity}` : '';
-				const path = `img/clothes/head/${options.worn.head.setup.variable}/acc${dmg}.png`;
+				const pattern = options.worn.head?.pattern && options.worn.head.setup?.pattern_layer === "secondary" ? "_" + options.worn.head.pattern.replace(/ /g,"_") : '';
+				const path = `img/clothes/head/${options.worn.head.setup.variable}/acc${dmg}${pattern}.png`;
 				return gray_suffix(path, options.filters['worn_head_acc']);
 			},
 			showfn(options) {
@@ -3900,11 +3927,12 @@ Renderer.CanvasModels.main = {
 				} else if (options.worn.neck.setup.name === "sailor ribbon" && options.worn.upper.setup.name === "serafuku") {
 					collar = "_serafuku";
 				}
+				const pattern = options.worn.neck?.pattern && !(options.worn.neck?.pattern_layer === "secondary") ? "_" + options.worn.neck.pattern.replace(/ /g,"_") : '';
 				const alt = isAltPosition ? '_alt' : '';
 
 				const setupVar = options.worn.neck.setup.variable;
 				const integrity = options.worn.neck.integrity;
-				const path = `img/clothes/neck/${setupVar}/${integrity}${collar}${alt}.png`;
+				const path = `img/clothes/neck/${setupVar}/${integrity}${collar}${pattern}${alt}.png`;
 				return gray_suffix(path, options.filters['worn_neck']);
 			},
 			showfn(options) {
@@ -3927,9 +3955,10 @@ Renderer.CanvasModels.main = {
 					&& options.worn.neck.alt === "alt";
 				const integrity = setup.accessory_integrity_img ? `_${options.worn.neck.integrity}` : '';
 				const alt = isAltPosition ? '_alt' : '';
+				const pattern = options.worn.neck?.pattern && options.worn.neck?.pattern_layer === "secondary" ? "_" + options.worn.neck.pattern.replace(/ /g,"_") : '';
 
 				const setupVar = options.worn.neck.setup.variable;
-				const path = `img/clothes/neck/${setupVar}/acc${integrity}${alt}.png`;
+				const path = `img/clothes/neck/${setupVar}/acc${integrity}${pattern}${alt}.png`;
 				return gray_suffix(path, options.filters['worn_neck_acc']);
 			},
 			showfn(options) {
@@ -4203,7 +4232,8 @@ function getClothingPathBreastsAcc(slot, options) {
 	const breastImg = options.worn[slot].setup.breast_img;
 	const breastAccImg = options.worn[slot].setup.breast_acc_img;
 	const breastSize = typeof breastAccImg === 'object' ? breastAccImg[options.breast_size] : typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
-	const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}_acc.png`;
+	const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
+	const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}${pattern}_acc.png`;
 	return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 }
 
@@ -4258,8 +4288,10 @@ function genlayer_clothing_main(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !setup?.altdisabled.includes("full");
 
+			const pattern = options.worn[slot]?.pattern && !(options.worn[slot].setup?.pattern_layer === "secondary") ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
+
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/${options.worn[slot].integrity}${end}.png`;
+			const path = `img/clothes/${slot}/${setup.variable}/${options.worn[slot].integrity}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}`]);
 		},
 	}, overrideOptions));
@@ -4309,8 +4341,9 @@ function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("acc");
 
 			const special = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${end}.png`;
+			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 		},
 	}, overrideOptions));
@@ -4338,8 +4371,10 @@ function genlayer_clothing_fitted_right_acc(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("acc");
 
 			const special = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${end}.png`;
+
+			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 		},
 	}, overrideOptions));
@@ -4367,8 +4402,10 @@ function genlayer_clothing_accessory(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("acc");
 
 			const special = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${end}.png`;
+
+			const path = `img/clothes/${slot}/${setup.variable}/acc${special}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 		},
 	}, overrideOptions));
@@ -4400,8 +4437,9 @@ function genlayer_clothing_breasts(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("breasts");
 
 			const breastSize = typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
+			const pattern = options.worn[slot]?.pattern && !(options.worn[slot].setup?.pattern_layer === "secondary") ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/${breastSize}${end}.png`;
+			const path = `img/clothes/${slot}/${setup.variable}/${breastSize}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}`]);
 		},
 	}, overrideOptions));
@@ -4439,7 +4477,8 @@ function genlayer_clothing_belly(slot, overrideOptions) {
 
 			const integrity = options.worn[slot].integrity;
 			const end = isAltPosition ? '_alt' : '';
-			const path = `img/clothes/${slot}/${setup.variable}/${integrity}${end}.png`;
+			const pattern = options.worn[slot]?.pattern && !(options.worn[slot].setup?.pattern_layer === "secondary") ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
+			const path = `img/clothes/${slot}/${setup.variable}/${integrity}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}`]);
 		},
 	}, overrideOptions));
@@ -4498,10 +4537,11 @@ function genlayer_clothing_belly_split_acc(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
 			const hoodDown = isHoodDown ? '_down' : end;
 
-			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${hoodDown}.png`;
+			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${hoodDown}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 		},
 	}, overrideOptions));
@@ -4511,8 +4551,9 @@ function genlayer_clothing_belly_shadow(slot, overrideOptions) {
 	return genlayer_clothing_main(slot, Object.assign({
 		z: ZIndices.bellyClothesShadow,
 		srcfn(options) {
+			const pattern = options.worn[slot]?.pattern && !(options.worn[slot].setup?.pattern_layer === "secondary") ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			return gray_suffix(
-				`img/clothes/${slot}/${options.worn[slot].setup.variable}/${options.worn[slot].integrity}.png`,
+				`img/clothes/${slot}/${options.worn[slot].setup.variable}/${options.worn[slot].integrity}${pattern}.png`,
 				options.filters[`worn_${slot}`]
 			);
 		},
@@ -4562,10 +4603,11 @@ function genlayer_clothing_belly_acc(slot, overrideOptions) {
 				&& !setup?.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
 			const hoodDown = isHoodDown ? '_down' : end;
 
-			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${hoodDown}.png`;
+			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${hoodDown}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 		},
 	}, overrideOptions));

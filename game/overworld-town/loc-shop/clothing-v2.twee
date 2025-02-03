@@ -90,7 +90,7 @@
 			(_outfits and x.outfitPrimary isnot undefined and Object.keys(x.outfitPrimary).some(secSlot => secSlot.includes("lower")))
 			or
 			(!_outfits and (x.outfitPrimary is undefined or Object.keys(x.outfitPrimary).every(secSlot => !secSlot.includes("lower")))))
-		and (_shopNameFilter is '' or x.name.includes(_shopNameFilter.toLowerCase()))
+		and (_shopNameFilter is '' or x.name.includes(_shopNameFilter.toLowerCase()) or (x.pattern_options and x.pattern_options.some(p => p.includes(_shopNameFilter.toLowerCase()))))
 		and (!V.shopClothingFilter.availableOnly or !(
 			(setup.clothingLayer.torso.includes(V.clothingShopSlot) and x.reveal < earSlimeCorruptionClothes() and !x.type.includesAny("school", "event")) or
 			(V.earSlime.forcedDressing and V.earSlime.forcedDressing.days gt 0 and x.gender isnot V.earSlime.forcedDressing.type and x.gender isnot "n" and !x.type.includesAny("event")) or
@@ -572,6 +572,44 @@
 						<br>
 						<<printShopColourOptions "secondary">>
 					<</if>>
+					<<if _temp_choice.pattern_options and _temp_choice.pattern_options.length isnot 0>>
+						<br>
+						<<if _temp_choice.pattern_options.length gte 15>>
+							Patterns:
+							<br>
+							<<set _highContrast = $shopDefaults.highContrast ? "colour-name-span-highcontrast" : "colour-name-span">>
+							<div class="colour-options-div no-numberify pattern">
+								<<listbox "$patternaction" autoselect>>
+									<<optionsfrom _temp_choice.pattern_options.map(p => toTitleCase(p))>>
+								<</listbox>>
+								<div class="colour-button div-link">
+									<div class="bg-random">
+										<<if $options.images is 1>>
+											<img src="img/ui/random.png">
+										<</if>>
+										<span @class="'capitalize ' + _highContrast">Random</span>
+										<<link "">>
+											<<set _colour = _temp_choice.pattern_options.filter(x => x !== "random").pluck()>>
+											<<set $patternaction = _colour>>
+
+											<<run $('.colour-options-div.pattern > .colour-button').removeClass('active').find('.bg-' + _colour).parent().addClass('active')>>
+											<<updatemannequin>>
+										<</link>>
+									</div>
+								</div>
+							</div>
+							<<run $(() => {
+								$("#listbox-patternaction").on("change", () => {
+									Wikifier.wikifyEval('<<updatemannequin>>');
+								});
+							})>>
+						<<else>>
+							<<run _temp_choice.pattern_options.pushUnique("random")>>
+							Patterns:
+							<<printShopColourOptions "pattern">>
+						<</if>>
+						<br>
+					<</if>>
 				</div>
 			</div>
 			<<run attachCustomColourHooks($clothingShopSlot)>>
@@ -841,10 +879,12 @@
 <</widget>>
 
 <<widget "printShopColourOptions">>
-	<<set _colourType = _args[0] == "secondary" ? "accessory_colour_options" : "colour_options">>
+	<<set _colourType = _args[0] == "pattern" ? "pattern_options" : _args[0] == "secondary" ? "accessory_colour_options" : "colour_options">>
 
 	<!-- Reset colour to default if invalid -->
-	<<if _args[0] == "secondary" and !$accessorycolouraction>>
+	<<if _args[0] == "pattern" and !$patternaction>>
+		<<set $patternaction = setup.clothes[$clothingShopSlot][$clothes_choice][_colourType][0]>>
+	<<elseif _args[0] == "secondary" and !$accessorycolouraction>>
 		<<if setup.clothes[$clothingShopSlot][$clothes_choice][_colourType].includes($shopDefaults.secColor)>>
 			<<set $accessorycolouraction = $shopDefaults.secColor>>
 		<<else>>
@@ -857,13 +897,13 @@
 			<<set $colouraction = setup.clothes[$clothingShopSlot][$clothes_choice][_colourType][0]>>
 		<</if>>
 	<</if>>
-	<<set _acc = _args[0] == "secondary" ? "secondary" : "primary">>
+	<<set _acc = _args[0] == "pattern" ? "pattern" : _args[0] == "secondary" ? "secondary" : "primary">>
 
 	<!-- Generate button for each colour -->
 	<<set _highContrast = $shopDefaults.highContrast ? "colour-name-span-highcontrast" : "colour-name-span">>
 	<div @class="'colour-options-div no-numberify ' + _acc">
 		<<for _buttonName range _temp_choice[_colourType]>>
-			<<set _active = (_acc == "primary" ? $colouraction : $accessorycolouraction) == _buttonName ? "active" : "">>
+			<<set _active = (_acc is "pattern" ? $patternaction : _acc is "secondary" ?  $accessorycolouraction : $colouraction) is _buttonName ? "active" : "">>
 			<div @class="'colour-button div-link ' + _active">
 				<div @class="'bg-' + _buttonName.replace(/ /g, '-')">
 					<<if $options.images is 1>>
@@ -883,13 +923,15 @@
 									<<run updateHueSlider($customColors.color[_acc], _acc)>>
 									<<set _colour = "custom">>
 								<<else>>
-									<<set _colour = (_args[0] == "secondary" ? _temp_choice.accessory_colour_options : _temp_choice.colour_options).filter(x => x !== "random").pluck()>>
+									<<set _colour = (_args[0] == "pattern" ? _temp_choice.pattern_options : _args[0] == "secondary" ? _temp_choice.accessory_colour_options : _temp_choice.colour_options).filter(x => x !== "random").pluck()>>
 								<</if>>
 							<<else>>
 								<<set _colour = _buttonName>>
 							<</if>>
 							<<if _args[0] == "secondary">>
 								<<set $accessorycolouraction = _colour>>
+							<<elseif _args[0] == "pattern">>
+								<<set $patternaction = _colour>>
 							<<else>>
 								<<set $colouraction = _colour>>
 							<</if>>
@@ -916,10 +958,15 @@
 		<<if _acc == "secondary" and $accessorycolouraction is undefined>>
 			<<run $(() => { $('.colour-options-div.secondary > .colour-button > .bg-' + $shopDefaults.secColor + ' > a').click(); })>>
 		<</if>>
+		<<if _acc == "pattern" and $patternaction is undefined>>
+			<<run $(() => { $('.colour-options-div.pattern > .colour-button > .bg-' + setup.clothes[$clothingShopSlot][$clothes_choice][_colourType].pattern_options[0] + ' > a').click(); })>>
+		<</if>>
 	</div>
 
 	<!-- Custom colour sliders -->
-	<<if _args[0] == "secondary">>
+	<<if _args[0] == "pattern">>
+		<<set _hidden = " hidden">>
+	<<elseif _args[0] == "secondary">>
 		<<set _hidden = $accessorycolouraction == "custom" ? "" : " hidden">>
 	<<else>>
 		<<set _hidden = $colouraction == "custom" ? "" : " hidden">>
@@ -1041,6 +1088,7 @@
 	<<if _choice_index isnot undefined>>
 		<<set $colouraction2 = $colouraction>>
 		<<set $accessorycolouraction2 = $accessorycolouraction>>
+		<<set $patternaction2 = $patternaction?.toLowerCase()>>
 	<</if>>
 
 	<<if _action isnot "reset">>
@@ -1073,12 +1121,14 @@
 		<<unset $colouraction2>>
 		<<unset $accessorycolouraction>>
 		<<unset $accessorycolouraction2>>
+		<<unset $patternaction>>
+		<<unset $patternaction2>>
 		<<set $shopDefaults.colorSet to null>>
 		<<set $shopDefaults.secColorSet to null>>
 	<</if>>
 
 	<<if _subaction is "wear">>
-		<<generalWear _slot _choice_index $colouraction2 $accessorycolouraction2>>
+		<<generalWear _slot _choice_index $colouraction2 $accessorycolouraction2 $patternaction2>>
 		<<updateOwned _slot>>
 		<<if $shopName is "school">>
 			<<set $schoolShopAction.push("wear")>>
@@ -1086,7 +1136,7 @@
 	<<elseif _subaction is "send">>
 		<<set _loop to _amount or 1>>
 		<<for _s = 0; _s lt _loop; _s++>>
-			<<generalSend $wardrobes.shopReturn _slot _choice_index $colouraction2 $accessorycolouraction2>>
+			<<generalSend $wardrobes.shopReturn _slot _choice_index $colouraction2 $accessorycolouraction2 $patternaction2>>
 		<</for>>
 	<</if>>
 <</widget>>
@@ -1106,6 +1156,11 @@
 			<<set _acc_col = _args[3] or $accessorycolouraction or (_item.accessory_colour_options.includes($shopDefaults.secColor) ? $shopDefaults.secColor : _item.accessory_colour_options[0])>>
 		<<else>>
 			<<set _acc_col = "">>
+		<</if>>
+		<<if _item.pattern_options and _item.pattern_options.length > 0>>
+			<<set _pat = _args[4] or $patternaction or _item.pattern_options[0]>>
+		<<else>>
+			<<set _pat = "">>
 		<</if>>
 
 		<<if _item>>
@@ -1191,6 +1246,9 @@
 											$customColors.brightness.secondary,
 											$customColors.contrast.secondary);>>
 							<</if>>
+						<</if>>
+						<<if _pat>>
+							<<set _modeloptions.worn[_slot].pattern to _pat>>
 						<</if>>
 					<</for>>
 					<<if _slot is "handheld">>
