@@ -3080,8 +3080,8 @@ Renderer.CanvasModels.main = {
 			masksrcfn(options) {
 				return options.shirt_fitted_left_move_src;
 			},
-			dxfn() {
-				return -2;
+			dxfn(options) {
+				return options.body_type === "soft" ? 2 : -2;
 			},
 		}),
 		"upper_fitted_right_acc": genlayer_clothing_fitted_right_acc("upper", {
@@ -3091,8 +3091,8 @@ Renderer.CanvasModels.main = {
 			masksrcfn(options) {
 				return options.shirt_fitted_right_move_src;
 			},
-			dxfn() {
-				return 2;
+			dxfn(options) {
+				return options.body_type === "soft" ? -2 : 2;
 			},
 		}),
 		"upper_breasts": genlayer_clothing_breasts("upper", {
@@ -3517,16 +3517,16 @@ Renderer.CanvasModels.main = {
 			masksrcfn(options) {
 				return options.shirt_fitted_left_move_src;
 			},
-			dxfn() {
-				return -2;
+			dxfn(options) {
+				return options.body_type === "soft" ? 2 : -2;
 			},
 		}),
 		"under_upper_fitted_right": genlayer_clothing_fitted_right("under_upper", {
 			masksrcfn(options) {
 				return options.shirt_fitted_right_move_src;
 			},
-			dxfn() {
-				return 2;
+			dxfn(options) {
+				return options.body_type === "soft" ? -2 : 2;
 			},
 		}),
 		"under_upper_belly_2": genlayer_clothing_belly_2("under_upper", {
@@ -4321,7 +4321,7 @@ function genlayer_clothing_fitted_right(slot, overrideOptions) {
 }
 
 function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
-	return genlayer_clothing_main(slot, Object.assign({
+	return genlayer_clothing_accessory(slot, Object.assign({
 		showfn(options) {
 			return options.worn[slot].index > 0
 				&& options.worn[slot].setup.accImage !== 0
@@ -4350,13 +4350,12 @@ function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 }
 
 function genlayer_clothing_fitted_right_acc(slot, overrideOptions) {
-	return genlayer_clothing_main(slot, Object.assign({
+	return genlayer_clothing_accessory(slot, Object.assign({
 		showfn(options) {
 			return options.worn[slot].index > 0
 				&& options.worn[slot].setup.accImage !== 0
 				&& options.worn[slot].setup.accessory === 1
-				&& options.worn[slot].setup.formfitting === 1
-				&& options.body_type == "curvy";
+				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || options.body_type === "soft");
 		},
 
 		srcfn(options) {
