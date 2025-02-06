@@ -2633,3 +2633,26 @@ function kitchenFilter() {
 	if (knownRestrictions) T.recipesGroups.push("Restricted Ingredients");
 }
 DefineMacro("kitchenFilter", kitchenFilter);
+
+function teensPresentCheck(location) {
+	let present = 0;
+
+	if(V.daily.teensPresent === undefined) {
+		if (Weather.temperature < 5 && !Weather.isFrozen("lake")) {
+			V.daily.teensPresent = "arcade";
+		} else {
+			V.daily.teensPresent = "lake";
+		}
+	}
+
+	if (V.daily.teensPresent === location){
+		if (["day", "dusk"].includes(Time.dayState) && ((Time.schoolDay && Time.hour >= 15) || !Time.schoolDay)){
+			if (location === "arcade" || (location === "lake" && Weather.precipitation == "none")){
+				present = 1;
+			}
+		}
+	}
+
+	return present;
+}
+window.teensPresentCheck = teensPresentCheck;
