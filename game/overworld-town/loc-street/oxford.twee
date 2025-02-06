@@ -191,13 +191,20 @@ You are on Oxford Street. There's an eclectic mix of buildings, but most notable
 				<br><br>
 			<</if>>
 		<</if>>
-		<<if Time.schoolDay and Time.hour is 15 and $exposed lte 0 and Weather.precipitation is "none">>
-			A group of students chat nearby. They say they're going to the lake.
-			<br>
-			<<if $town_projects.road gte 4>>
-				<<lakeicon>><<link [[Join them (0:15)|Lake Journey Road]]>><<pass 15>><</link>>
-			<<else>>
-				<<lakeicon>><<link [[Join them (0:30)|Lake Journey]]>><<pass 30>><</link>>
+		<<if Time.schoolDay and Time.hour is 15 and $exposed lte 0 and ["arcade", "lake"].some(teensPresentCheck) and !$daily.teensJourney>>
+			A group of students chat nearby. They say they're going to the
+			<<if teensPresentCheck("arcade") and !$daily.teensArcadeJourney>>
+				arcade.
+				<br>
+				<<arcadeicon>><<link [[Join them (0:10)|Arcade Journey]]>><<set $daily.teensJourney to true>><</link>>
+			<<elseif teensPresentCheck("lake")>>
+				lake.
+				<br>
+				<<if $town_projects.road gte 4>>
+					<<lakeicon>><<link [[Join them (0:15)|Lake Journey Road]]>><<pass 15>><<set $daily.teensJourney to true>><</link>>
+				<<else>>
+					<<lakeicon>><<link [[Join them (0:30)|Lake Journey]]>><<pass 30>><<set $daily.teensJourney to true>><</link>>
+				<</if>>
 			<</if>>
 			<br><br>
 		<</if>>
