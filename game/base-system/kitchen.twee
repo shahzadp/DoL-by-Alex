@@ -446,10 +446,12 @@ Should probably be removed once said feature has been implemented
 	<<unset $chosen_recipe>>
 	<<set _food_keys to Object.keys(setup.plants)>>
 	<<set _possible_recipes to []>>
-	<<set $_foodOptions to Object.entries(clone(setup.plants)).filter(([key, item]) => !item.recipe and item.ingredients?.length)>>
+	<<set $_foodOptions to Object.entries(clone(setup.plants)).filter(([key, item]) => !$plants[key].recipe and item.ingredients?.length)>>
 	<<for $_difficulty to 1; $_difficulty lt 5; $_difficulty++>>
 		<<run $_foodOptions.forEach(([key, item]) => {
-			if (item.difficulty is $_difficulty) _possible_recipes.pushUnique(key);
+			if (item.difficulty is $_difficulty and item.ingredients.every(ingredient => !setup.plants[ingredient].ingredients?.length or $plants[ingredient].recipe)) {
+				_possible_recipes.pushUnique(key);
+			}
 		})>>
 		<<if _possible_recipes.length>>
 			<<set $chosen_recipe to _possible_recipes.pluck()>>
@@ -493,5 +495,218 @@ Should probably be removed once said feature has been implemented
 	<<if C.npc[_args[0]] and setup.plants[_args[1]]?.type is "food">>
 		<<if !$plants[_args[1]].knownFavorite>><<set $plants[_args[1]].knownFavorite to []>><</if>>
 		<<run $plants[_args[1]].knownFavorite.pushUnique(_args[0])>>
+	<</if>>
+<</widget>>
+
+<<widget "recipe_exam_description">>
+	<<if setup.plants[_args[0]].ingredients.length lt 1>>
+		<span class="black">Food item "_args[0]" is not a cookable recipe! Please report this!</span>
+	<<else>>
+		<<if _difficultyNotice is 1>>
+			"We're going to start you off with simpler recipes," River says. "These are easier to make, but still either helpful or tasty. We're starting off with a recipe for <<recipe_name _args[0] "difficulty">>." <<He>> clears <<his>> throat.
+		<<elseif _difficultyNotice is 2>>
+			"We're moving up a level," River says. "You've demonstrated knowledge of the basics. Good. These next dishes are more complex, either because they take longer to make, require more ingredients, or are easier to make mistakes with. Today, you'll be learning to make <<recipe_name _args[0] "difficulty">>." <<He>> clears <<his>> throat.
+		<<elseif _difficultyNotice is 3>>
+			"We're moving to the advanced dishes today," River says. "Generally, the harder a dish, the more 'worth it' making it is. Though that's all subjective, of course. Your first advanced exam will be a recipe for <<recipe_name _args[0] "difficulty">>." <<He>> clears <<his>> throat.
+		<<elseif _difficultyNotice is 4>>
+			River claps to grab the class's attention. "As of today, you will be learning even more difficult dishes. There are not very many dishes left I can teach you. Regardless, these next few exams will be the hardest you've taken in this class yet. The first of them will be a recipe for <<recipe_name _args[0] "difficulty">>." <<He>> clears <<his>> throat.
+		<<else>>
+			"You will be learning a recipe for <<recipe_name _args[0] "difficulty">>," River says.
+		<</if>>
+
+		<<switch _args[0]>>
+			<<case "apple_crumble">>
+				"Very similar to an apple crisp, but there are differences. It's all in the topping."
+			<<case "apple_strudel">>
+				"If you're making these yourself, I recommend eating them warm. Fortunately, they're also good cold."
+			<<case "arancini">>
+				"Careful you don't burn yourself. Yes, I'll be saying that every time we're working with hot oil. It's important."
+			<<case "bakewell_tart">>
+				"Cherry bakewell tart, specifically. You can experiment with other fruit in your own time."
+			<<case "banana_bread">>
+				"Very similar to pumpkin bread or zucchini bread, but bananas are the cheapest for the academy to buy in bulk."
+			<<case "bangers_and_mash">>
+				"Don't be intimidated by the full plate. It's more arranging than anything."
+			<<case "beef_wellington">>
+				"You remember salmon wellington. This is very similar. Beef is hardier than salmon, so you don't need to be as delicate, but this is compounded by the serving size for beef wellington being larger."
+			<<case "belgian_bun">>
+				"Unlike most pastries, the cherry is not optional. If you used a different berry, it would no longer be a Belgian bun."
+			<<case "bread">>
+				"Homemade bread does not come pre-sliced. Yes, it's inconvenient, but you'll find it tastes far better than store-bought."
+			<<case "brownie">>
+				"I recommend serving warm with a scoop of vanilla ice cream. That's not on the exam, though."
+			<<case "butter">>
+				"I hear those groans. You'll be thanking me when the grocery store only has margarine."
+			<<case "carbonara">>
+				"This uses spaghetti as the base, but as with nearly all pastas, the flavour lies in the sauce. And the pork, in this case."
+			<<case "carrot_cake">>
+				"I know that, by name alone, it doesn't sound appealing. But stow your expectations. I think you'll be surprised."
+			<<case "cauliflower_cheese">>
+				"Don't chop the cauliflower. Break it into pieces with your hands. You'll get more natural bites that way."
+			<<case "cheese">>
+				"Apologies to the lactose intolerant among you, but cheese is a very common ingredient in many dishes."
+			<<case "cheese_and_crackers">>
+				"Always nice when you have guests over. It sounds unimpressive, but this is only a few steps removed from a charcuterie board."
+			<<case "cheese_topped_trout">>
+				"A common culinary rule is that cheese and seafood should never be on the same plate together. Like any culinary rule, sufficiently accomplished chefs can ignore it."
+			<<case "cheeseburger">>
+				"If you can make hamburgers, there's no reason you can't make this. Do not use pre-sliced cheese. Slice your own cheese, it's worth it."
+			<<case "chelsea_bun">>
+				"If you've ever had a cinnamon bun, these are extremely similar. The main difference is that Chelsea buns are more glazed, while cinnamon buns are more frosted."
+			<<case "chicken_tikka_masala">>
+				"The tikka and the masala- or the chicken and the sauce- are made separately, and then combined to simmer. This will test your ability to focus on two different processes at once."
+			<<case "chicken_vindaloo">>
+				"I will be entirely honest with you. This is likely the spiciest dish you'll learn in this class. If you have a problem with spice, well, I'm afraid that's a you problem."
+			<<case "chilli_con_carne">>
+				"Chilli con carne has a thicker sauce than standard chilli, and uses chunks of beef rather than ground beef. Many of the fundamentals are the same, however."
+			<<case "chips">>
+				"One of the most popular side dishes there is, and for a reason."
+			<<case "choc_chip_cookie">>
+				"Do not flatten them before putting them in the oven. Keep the dough in balls. They flatten out while baking."
+			<<case "chocolate">>
+				"This is for using as ingredients, not for eating on its own. That being said, there is no chef on this planet that has <i>never</i> had a nibble anyway."
+			<<case "clam_chowder">>
+				"Chowder is not just a type of soup; it's thicker and creamier. It's also unlike stew, as stew is meatier and tends to lack the cream that chowder has." A few students snicker at the description. River ignores them.
+			<<case "crumpet">>
+				"These are porous, to allow for spreadings to soak in. I recommend eating with honey or jam."
+			<<case "crème_brulee">>
+				"You may have seen recipes saying you need a blow torch for the best effect. That's not true. Broiling it will do just as well."
+			<<case "fish_and_chips">>
+				"Go to any pub in town, and they'll be serving this." <<He>> pauses. "I was speaking generally. That is not encouragement to go to pubs."
+			<<case "flapjack">>
+				"Not pancakes. These are made to be snacks, not breakfast."
+			<<case "flour">>
+				"Not the most exciting recipe, I'm aware, but you'll want to know how to make it. Flour is the foundation of so many meals."
+			<<case "full_english_breakfast">>
+				"It's called a breakfast, but you can have this any time of day. You shouldn't. But you can."
+			<<case "ghostbrew">>
+				<!-- failsafe -->
+				<<He>> pauses. "Wait. This wasn't in the syllabus. You shouldn't be learning about this." <<He>> clicks <<his>> tongue. "<span class="red">Report this to Vrelnir when you have a second.</span> In the meantime, I suppose we'll just... push on."
+			<<case "hamburger">>
+				"The quintessential junk food." <<He>> smiles thinly. "But you're not making junk food. You're learning to make <i>real</i> hamburgers."
+			<<case "honey">>
+				"To be honest, I would prefer if you just bought honey. Foraging for honeycomb is far too dangerous and tedious just to make some dessert. The local stores don't stock it, though, so here we are."
+			<<case "honeyed_pork">>
+				"Adding hints of sweetness to a savoury dish is a common trick. That being said, in this case, the honey sauce is just a glaze applied to the pork."
+			<<case "jam">>
+				"Not jelly. Jam and jelly are two separate things; jam uses fruit, jelly uses fruit juice. We're not getting into preserves."
+			<<case "jammie_dodger">>
+				"If you don't care about looks, you don't need to make the hole shaped exactly like a heart. However, for the sake of this exam, I <i>will</i> be judging aesthetics. Keep that in mind."
+			<<case "kedgeree">>
+				"Some purists will insist haddock is the only option for fish; anything else, like salmon or tuna, and it's not a kedgeree. I don't believe this to be the case, though haddock is notably more traditional than other fish."
+			<<case "lasagne">>
+				"Anyone who makes a 'pasta cake' joke will be on dish cleaning duty."
+			<<case "lemon_meringue_pie">>
+				"The ideal lemon meringue pie is not overpowering in its sourness. It's more tart than anything, blended with sweetness."
+			<<case "lemonade">>
+				"An excellent drink for the summer months, if you wish to cool off. Serve it hot for a satisfactory cold remedy, alongside some honey."
+			<<case "linguine">>
+				"It's recommended you use linguine as a base for other flavours, like seafood or alfredo. However, if your linguine cannot stand on its own, no amount of sauce will cover that up."
+			<<case "macaroni_cheese">>
+				"Remember to boil it for less time than the package says for. It will finish cooking in the oven."
+			<<case "melting_moment">>
+				"A rare pastry that doesn't require eggs to make."
+			<<case "mince_pie">>
+				"This was originally mince<i>meat</i> pie, and the meat was eventually phased out of the recipe. However, the 'mince' part of the name isn't actually derived from mincemeat. Though that's a lesson for English class, perhaps."
+			<<case "naan_bread">>
+				"This makes for an excellent side, especially if you slather it in garlic butter. It's not a main dish, however. A snack at most."
+			<<case "omelette">>
+				"A simple breakfast. You can add anything you want to this, but the exam will only focus on the fundamental technique."
+			<<case "onion_bhaji">>
+				"I'm aware some of you take issue with onion, either due to the taste or the texture. Hopefully, this dish will help you get over that."
+			<<case "orange_juice">>
+				"I see those eye rolls. If you'd like to stuff your body with preservatives, by all means, keep drinking store-bought."
+			<<case "pasta">>
+				"The foundation for so many savoury meals. Much like pastries and sweet dishes."
+				<<if $plants.pastry.recipe>>
+					<<He>> smiles. "Sound familiar?"
+				<</if>>
+			<<case "pastry">>
+				"The foundation for so many sweet meals. Much like pasta and savoury dishes."
+				<<if $plants.pasta.recipe>>
+					<<He>> smiles. "Sound familiar?"
+				<</if>>
+			<<case "peach_panzanella">>
+				"The bread must be cubed, and the peaches must be sliced into wedges. That's not a hard rule for the dish itself, but it's a requirement for this exam. This lesson is primarily about knife control."
+			<<case "pizza">>
+				"This will still end up slightly greasy, I'm afraid. That's just what happens when you cook cheese."
+			<<case "plum_pudding">>
+				"Despite the name, plums aren't actually a required ingredient. Any dried fruit will do. We're using plums for this exam, however."
+			<<case "poached_pear">>
+				"Do not raise the water to boiling temperatures. Poaching is done at lower heat levels."
+			<<case "porridge">>
+				"A good breakfast for when you're in a hurry. I'd recommend adding fruit or honey for taste, but it's edible without."
+			<<case "potato_pancake">>
+				"Very similar to bubble and squeak, but without the vegetables on the side. This makes potato pancakes more fitting as a breakfast, or a snack."
+			<<case "prawn_bisque">>
+				"Do not remove the shells until the prawns have been simmered. This helps the broth gain a lot of flavour you would otherwise lose. The shells are sieved out later."
+			<<case "quiche">>
+				"No, this is not just a savoury pie. Really, the only things they have in common is they both use pie crust."
+			<<case "rich_biscuit">>
+				"If you dunk these into the tea, it's an instant failure." You can't tell if <<hes>> joking or not.
+			<<case "roast_dinner">>
+				"You know how to make everything that goes into this. All that matters now is putting it together."
+			<<case "salad">>
+				"There's more than one type of salad, of course, but most of them share the same fundamentals. If you can make a garden salad, you can probably make a Caesar salad."
+			<<case "salmon_wellington">>
+				"This takes a long time in the oven, and the pastry needs to chill beforehand as well. Those are just waiting periods, though, so we'll be skipping those for the exam. Otherwise we'd be here until lunch."
+			<<case "samosa">>
+				"You can experiment with different shapes in your own time. For now, we're learning how to make them in triangles."
+			<<case "sausage_roll">>
+				"You've already learned how to make sausages. Now it's time to put them to use."
+			<<case "scone">>
+				"Unflavoured, but don't be afraid to experiment in your own time. You could put anything in a scone." <<He>> pauses. "Almost anything."
+			<<case "shortbread">>
+				"Contrary to what the name would have you think, these are a type of cookie. You won't be making sandwiches with these."
+			<<case "soufflé">>
+				"As far as desserts go, this recipe has a reputation for a reason. It's easy to mess up, and hard to get perfect. Pay close attention while preparing."
+			<<case "spaghetti_bolognese">>
+				"Take care to remove the bay leaves when you're finished. They impart flavour during the cooking process, but they should not be eaten themselves."
+			<<case "sponge_cake">>
+				"The ideal sponge cake should be so fluffy, you barely notice it's there. ...That's a joke. If you can't notice if your cake is there, you likely haven't made anything."
+			<<case "steak">>
+				"I'm sure many of you have been waiting for this one. To be quite honest, I've been waiting for it too."
+			<<case "sticky_toffee_pudding">>
+				"As with all cakes, be careful not to overbake it. When in doubt, use the toothpick trick."
+			<<case "stuffing">>
+				"Thanksgiving isn't a proper holiday here, like it is overseas. That means you can make this any time of year without feeling guilty."
+			<<case "sweet_and_sour_chicken">>
+				"Fried, not baked. Not deep-fried, though. We're making food, not junk."
+			<<case "swiss_roll">>
+				"Most Swiss rolls are dark brown, due to the chocolate used. However, the chocolate is optional. We'll be skipping it for this recipe."
+			<<case "tart">>
+				"It tastes exactly how the name suggests."
+			<<case "turnip_soup">>
+				"This is a meal I've made more times than I can count. Not the most exciting dish, but keeps your stomach full and warm."
+			<<case "wolfbrew">>
+				<!-- failsafe -->
+				<<He>> pauses. "Wait. This wasn't in the syllabus. You shouldn't be learning about this." <<He>> clicks <<his>> tongue. "<span class="red">Report this to Vrelnir when you have a second.</span> In the meantime, I suppose we'll just... push on."
+			<<case "yorkshire_pudding">>
+				"This isn't the type of pudding you would have for dessert. If you're making this alongside roast beef, use the meat drippings for extra flavour."
+			<<default>>
+				"Let's get right into it."
+				<<if $debug is 1 or $options.debugdisable is "f">>
+					<span class="black">Food item "_args[0]" does not have an exam description!</span>
+				<</if>>
+		<</switch>>
+		<<if setup.plants[_args[0]].ingredients.includes("chicken_egg") and !$housekeepingTips.includes("alternativeEgg")>>
+			<<set $housekeepingTips.pushUnique("alternativeEgg")>>
+			<br><br>
+			"Most recipes will call for standard eggs, those being chicken eggs," <<he>> adds. "But keep in mind that <span class="gold">any type of egg can be used as a substitute</span> if you don't have chicken eggs."
+		<</if>>
+		<<if _args[0] is "lasagne" and !$housekeepingTips.includes("alternativeLasagne")>>
+			<<set $housekeepingTips.pushUnique("alternativeLasagne")>>
+			<br><br>
+			"Lasagne is typically made with beef," <<he>> adds. "But if you don't have any beef, or if you'd just prefer a different flavour, <span class="gold">you can also substitute chicken instead</span>. Not pork, though."
+		<</if>>
+	<</if>>
+	<br><br>
+<</widget>>
+
+<<widget "allowLewdIngredients">>
+	<<set _allowLewdIngredients to true>>
+	<<if !$housekeepingTips.includes("alternativeLewd") and $plants.bottle_of_breast_milk.amount + $plants.bottle_of_semen gte 1>>
+		<<set $housekeepingTips.pushUnique("alternativeLewd")>>
+		You doubt you could get away with it in more controlled kitchens, but this kitchen seems quite free. If you're running short on milk or cream, <span class="gold">you may be able substitute with lewder ingredients</span>.
 	<</if>>
 <</widget>>
