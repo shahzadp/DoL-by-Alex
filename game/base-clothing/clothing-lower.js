@@ -23,6 +23,7 @@ function initLower() {
 	setup.clothes.lower = [
 		{
 			index: 0,
+			slot: "lower",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -69,6 +70,7 @@ function initLower() {
 
 		{
 			index: 1,
+			slot: "lower",
 			name: "sundress skirt",
 			name_cap: "Sundress skirt",
 			variable: "sundress",
@@ -120,6 +122,7 @@ function initLower() {
 
 		{
 			index: 2,
+			slot: "lower",
 			name: "pyjama bottoms",
 			name_cap: "Pyjama bottoms",
 			variable: "pjs",
@@ -169,6 +172,7 @@ function initLower() {
 
 		{
 			index: 3,
+			slot: "lower",
 			name: "towel skirt",
 			name_cap: "Towel skirt",
 			variable: "towel",
@@ -218,6 +222,7 @@ function initLower() {
 
 		{
 			index: 4,
+			slot: "lower",
 			name: "waist apron",
 			name_cap: "Waist apron",
 			variable: "waistapron",
@@ -267,6 +272,7 @@ function initLower() {
 
 		{
 			index: 5,
+			slot: "lower",
 			name: "shorts",
 			name_cap: "Shorts",
 			variable: "shorts",
@@ -316,6 +322,7 @@ function initLower() {
 
 		{
 			index: 6,
+			slot: "lower",
 			name: "school shorts",
 			name_cap: "School shorts",
 			variable: "schoolshorts",
@@ -367,6 +374,7 @@ function initLower() {
 
 		{
 			index: 7,
+			slot: "lower",
 			name: "school skirt",
 			name_cap: "School skirt",
 			variable: "schoolskirt",
@@ -418,6 +426,7 @@ function initLower() {
 
 		{
 			index: 8,
+			slot: "lower",
 			name: "plant skirt",
 			name_cap: "Plant skirt",
 			variable: "plant",
@@ -468,6 +477,7 @@ function initLower() {
 
 		{
 			index: 9,
+			slot: "lower",
 			name: "evening gown skirt",
 			name_cap: "Evening gown skirt",
 			variable: "eveninggown",
@@ -536,6 +546,7 @@ function initLower() {
 
 		{
 			index: 10,
+			slot: "lower",
 			name: "ballgown skirt",
 			name_cap: "Ballgown skirt",
 			variable: "ballgown",
@@ -622,6 +633,7 @@ function initLower() {
 
 		{
 			index: 11,
+			slot: "lower",
 			name: "kimono skirt",
 			name_cap: "Kimono skirt",
 			variable: "kimono",
@@ -673,6 +685,7 @@ function initLower() {
 
 		{
 			index: 12,
+			slot: "lower",
 			name: "mini kimono skirt",
 			name_cap: "Mini kimono skirt",
 			variable: "kimonomini",
@@ -724,6 +737,7 @@ function initLower() {
 
 		{
 			index: 13,
+			slot: "lower",
 			name: "maid skirt",
 			name_cap: "Maid skirt",
 			variable: "maid",
@@ -776,6 +790,7 @@ function initLower() {
 
 		{
 			index: 14,
+			slot: "lower",
 			name: "nun's habit skirt",
 			name_cap: "Nun's habit skirt",
 			variable: "nun",
@@ -829,6 +844,7 @@ function initLower() {
 
 		{
 			index: 15,
+			slot: "lower",
 			name: "large towel bottom",
 			name_cap: "Large towel bottom",
 			variable: "towellarge",
@@ -879,6 +895,7 @@ function initLower() {
 
 		{
 			index: 16,
+			slot: "lower",
 			name: "tuxedo trousers",
 			name_cap: "Tuxedo trousers",
 			variable: "tuxedo",
@@ -930,6 +947,7 @@ function initLower() {
 
 		{
 			index: 17,
+			slot: "lower",
 			name: "board shorts",
 			name_cap: "Board shorts",
 			variable: "boardshorts",
@@ -979,6 +997,7 @@ function initLower() {
 
 		{
 			index: 18,
+			slot: "lower",
 			name: "breeches",
 			name_cap: "Breeches",
 			variable: "breeches",
@@ -1029,6 +1048,7 @@ function initLower() {
 
 		{
 			index: 19,
+			slot: "lower",
 			name: "long cut skirt",
 			name_cap: "Long cut skirt",
 			variable: "cutskirtlong",
@@ -1079,6 +1099,7 @@ function initLower() {
 
 		{
 			index: 20,
+			slot: "lower",
 			name: "short cut skirt",
 			name_cap: "Short cut skirt",
 			variable: "cutskirtshort",
@@ -1129,6 +1150,7 @@ function initLower() {
 
 		{
 			index: 21,
+			slot: "lower",
 			name: "cycle shorts",
 			name_cap: "Cycle shorts",
 			variable: "cycleshorts",
@@ -1179,6 +1201,7 @@ function initLower() {
 
 		{
 			index: 22,
+			slot: "lower",
 			name: "jeans",
 			name_cap: "Jeans",
 			variable: "jeans",
@@ -1228,6 +1251,7 @@ function initLower() {
 
 		{
 			index: 23,
+			slot: "lower",
 			name: "trousers",
 			name_cap: "Trousers",
 			variable: "trousers",
@@ -1277,6 +1301,7 @@ function initLower() {
 
 		{
 			index: 24,
+			slot: "lower",
 			name: "long skirt",
 			name_cap: "Long skirt",
 			variable: "longskirt",
@@ -1327,6 +1352,7 @@ function initLower() {
 
 		{
 			index: 25,
+			slot: "lower",
 			name: "miniskirt",
 			name_cap: "Miniskirt",
 			variable: "miniskirt",
@@ -1377,6 +1403,7 @@ function initLower() {
 
 		{
 			index: 26,
+			slot: "lower",
 			name: "long school skirt",
 			name_cap: "Long school skirt",
 			variable: "schoolskirtlong",
@@ -1428,6 +1455,7 @@ function initLower() {
 
 		{
 			index: 27,
+			slot: "lower",
 			name: "short school skirt",
 			name_cap: "Short school skirt",
 			variable: "schoolskirtshort",
@@ -1479,6 +1507,7 @@ function initLower() {
 
 		{
 			index: 28,
+			slot: "lower",
 			name: "school trousers",
 			name_cap: "School trousers",
 			variable: "schooltrousers",
@@ -1530,6 +1559,7 @@ function initLower() {
 
 		{
 			index: 29,
+			slot: "lower",
 			name: "oversized sweater bottom",
 			name_cap: "Oversized sweater bottom",
 			variable: "sweaterlarge",
@@ -1581,6 +1611,7 @@ function initLower() {
 
 		{
 			index: 30,
+			slot: "lower",
 			name: "witch skirt",
 			name_cap: "Witch skirt",
 			variable: "witch",
@@ -1633,6 +1664,7 @@ function initLower() {
 
 		{
 			index: 31,
+			slot: "lower",
 			name: "denim shorts",
 			name_cap: "Denim shorts",
 			variable: "jorts",
@@ -1683,6 +1715,7 @@ function initLower() {
 
 		{
 			index: 32,
+			slot: "lower",
 			name: "girl's oversized sweater bottom",
 			name_cap: "Girl's oversized sweater bottom",
 			variable: "pinksweaterlarge",
@@ -1735,6 +1768,7 @@ function initLower() {
 
 		{
 			index: 33,
+			slot: "lower",
 			name: "christmas trousers",
 			name_cap: "Christmas trousers",
 			variable: "christmas",
@@ -1784,6 +1818,7 @@ function initLower() {
 
 		{
 			index: 34,
+			slot: "lower",
 			name: "christmas skirt",
 			name_cap: "Christmas skirt",
 			variable: "christmasdress",
@@ -1834,6 +1869,7 @@ function initLower() {
 
 		{
 			index: 35,
+			slot: "lower",
 			name: "monk's habit skirt",
 			name_cap: "Monk's habit skirt",
 			variable: "monk",
@@ -1887,6 +1923,7 @@ function initLower() {
 
 		{
 			index: 36,
+			slot: "lower",
 			name: "cowboy chaps",
 			name_cap: "Cowboy chaps",
 			variable: "cowboy",
@@ -1938,6 +1975,7 @@ function initLower() {
 
 		{
 			index: 37,
+			slot: "lower",
 			name: "belly dancer's bottoms",
 			name_cap: "Belly dancer's bottoms",
 			variable: "belly",
@@ -1989,6 +2027,7 @@ function initLower() {
 
 		{
 			index: 38,
+			slot: "lower",
 			name: "straightjacket bottom",
 			name_cap: "Straightjacket bottom",
 			variable: "straightjacket",
@@ -2039,6 +2078,7 @@ function initLower() {
 
 		{
 			index: 39,
+			slot: "lower",
 			name: "khakis",
 			name_cap: "Khakis",
 			variable: "khakis",
@@ -2089,6 +2129,7 @@ function initLower() {
 
 		{
 			index: 40,
+			slot: "lower",
 			name: "patterned skirt",
 			name_cap: "Patterned skirt",
 			variable: "gingham",
@@ -2177,6 +2218,7 @@ function initLower() {
 
 		{
 			index: 41,
+			slot: "lower",
 			name: "overall bottoms",
 			name_cap: "Overall bottoms",
 			variable: "overalls",
@@ -2228,6 +2270,7 @@ function initLower() {
 
 		{
 			index: 42,
+			slot: "lower",
 			name: "cheongsam skirt",
 			name_cap: "Cheongsam skirt",
 			variable: "cheongsam",
@@ -2280,6 +2323,7 @@ function initLower() {
 
 		{
 			index: 43,
+			slot: "lower",
 			name: "short cheongsam skirt",
 			name_cap: "Short cheongsam skirt",
 			variable: "cheongsamshort",
@@ -2332,6 +2376,7 @@ function initLower() {
 
 		{
 			index: 44,
+			slot: "lower",
 			name: "micro pleated skirt",
 			name_cap: "Micro pleated skirt",
 			variable: "micropleatedskirt",
@@ -2382,6 +2427,7 @@ function initLower() {
 
 		{
 			index: 45,
+			slot: "lower",
 			name: "chinos",
 			name_cap: "Chinos",
 			variable: "chinos",
@@ -2431,6 +2477,7 @@ function initLower() {
 
 		{
 			index: 46,
+			slot: "lower",
 			name: "gothic skirt",
 			name_cap: "Gothic skirt",
 			variable: "gothic",
@@ -2485,6 +2532,7 @@ function initLower() {
 
 		{
 			index: 47,
+			slot: "lower",
 			name: "gothic trousers",
 			name_cap: "Gothic trousers",
 			variable: "gothictrousers",
@@ -2536,6 +2584,7 @@ function initLower() {
 
 		{
 			index: 48,
+			slot: "lower",
 			name: "waiter's trousers",
 			name_cap: "Waiter's trousers",
 			variable: "waiter",
@@ -2587,6 +2636,7 @@ function initLower() {
 
 		{
 			index: 49,
+			slot: "lower",
 			name: "lederhosen bottoms",
 			name_cap: "Lederhosen bottoms",
 			variable: "leder",
@@ -2639,6 +2689,7 @@ function initLower() {
 
 		{
 			index: 50,
+			slot: "lower",
 			name: "karate trousers",
 			name_cap: "Karate trousers",
 			variable: "karate",
@@ -2690,6 +2741,7 @@ function initLower() {
 
 		{
 			index: 51,
+			slot: "lower",
 			name: "sailor trousers",
 			name_cap: "Sailor trousers",
 			variable: "sailortrousers",
@@ -2740,6 +2792,7 @@ function initLower() {
 
 		{
 			index: 52,
+			slot: "lower",
 			name: "sailor shorts",
 			name_cap: "Sailor shorts",
 			variable: "sailorshorts",
@@ -2790,6 +2843,7 @@ function initLower() {
 
 		{
 			index: 53,
+			slot: "lower",
 			name: "foreign football shorts",
 			name_cap: "Foreign football shorts",
 			variable: "football",
@@ -2840,6 +2894,7 @@ function initLower() {
 
 		{
 			index: 54,
+			slot: "lower",
 			name: "gym bloomers",
 			name_cap: "Gym bloomers",
 			variable: "gymbloomers",
@@ -2890,6 +2945,7 @@ function initLower() {
 
 		{
 			index: 55,
+			slot: "lower",
 			name: "chapette breeches",
 			name_cap: "Chapette breeches",
 			variable: "chapette",
@@ -2941,6 +2997,7 @@ function initLower() {
 
 		{
 			index: 56,
+			slot: "lower",
 			name: "cheerleading skirt",
 			name_cap: "Cheerleading skirt",
 			variable: "cheerleader",
@@ -2992,6 +3049,7 @@ function initLower() {
 
 		{
 			index: 57,
+			slot: "lower",
 			name: "mummy skirt",
 			name_cap: "Mummy skirt",
 			variable: "mummy",
@@ -3043,6 +3101,7 @@ function initLower() {
 
 		{
 			index: 58,
+			slot: "lower",
 			name: "diving suit bottom",
 			name_cap: "Diving suit bottom",
 			variable: "diving",
@@ -3095,6 +3154,7 @@ function initLower() {
 
 		{
 			index: 59,
+			slot: "lower",
 			name: "classic sundress skirt",
 			name_cap: "Classic sundress skirt",
 			variable: "classicsundress",
@@ -3146,6 +3206,7 @@ function initLower() {
 
 		{
 			index: 60,
+			slot: "lower",
 			name: "classic school shorts",
 			name_cap: "Classic school shorts",
 			variable: "classicschoolshorts",
@@ -3197,6 +3258,7 @@ function initLower() {
 
 		{
 			index: 61,
+			slot: "lower",
 			name: "classic school skirt",
 			name_cap: "Classic school skirt",
 			variable: "classicschoolskirt",
@@ -3248,6 +3310,7 @@ function initLower() {
 
 		{
 			index: 62,
+			slot: "lower",
 			name: "classic gothic skirt",
 			name_cap: "Classic gothic skirt",
 			variable: "gothicold",
@@ -3300,6 +3363,7 @@ function initLower() {
 
 		{
 			index: 63,
+			slot: "lower",
 			name: "scout shorts",
 			name_cap: "Scout shorts",
 			variable: "scout",
@@ -3351,6 +3415,7 @@ function initLower() {
 
 		{
 			index: 64,
+			slot: "lower",
 			name: "football shorts",
 			name_cap: "Football shorts",
 			variable: "soccer",
@@ -3401,6 +3466,7 @@ function initLower() {
 
 		{
 			index: 65,
+			slot: "lower",
 			name: "star pyjama shorts",
 			name_cap: "Star pyjama shorts",
 			variable: "pjsstar",
@@ -3451,6 +3517,7 @@ function initLower() {
 
 		{
 			index: 66,
+			slot: "lower",
 			name: "moon pyjama bottoms",
 			name_cap: "Moon pyjama bottoms",
 			variable: "pjsmoon",
@@ -3501,6 +3568,7 @@ function initLower() {
 
 		{
 			index: 67,
+			slot: "lower",
 			name: "sweatpants",
 			name_cap: "Sweatpants",
 			variable: "sweatpants",
@@ -3565,6 +3633,7 @@ function initLower() {
 
 		{
 			index: 68,
+			slot: "lower",
 			name: "catsuit bottoms",
 			name_cap: "Catsuit bottoms",
 			variable: "catsuit",
@@ -3615,6 +3684,7 @@ function initLower() {
 
 		{
 			index: 69,
+			slot: "lower",
 			name: "kilt",
 			name_cap: "Kilt",
 			variable: "kilt",
@@ -3664,6 +3734,7 @@ function initLower() {
 
 		{
 			index: 70,
+			slot: "lower",
 			name: "bathrobe bottom",
 			name_cap: "Bathrobe bottom",
 			variable: "bathrobe",
@@ -3716,6 +3787,7 @@ function initLower() {
 
 		{
 			index: 71,
+			slot: "lower",
 			name: "rag skirt",
 			name_cap: "Rag skirt",
 			variable: "rag",
@@ -3765,6 +3837,7 @@ function initLower() {
 
 		{
 			index: 72,
+			slot: "lower",
 			name: "retro trousers",
 			name_cap: "Retro trousers",
 			variable: "retro",
@@ -3815,6 +3888,7 @@ function initLower() {
 
 		{
 			index: 73,
+			slot: "lower",
 			name: "retro shorts",
 			name_cap: "Retro shorts",
 			variable: "retroshorts",
@@ -3865,6 +3939,7 @@ function initLower() {
 
 		{
 			index: 74,
+			slot: "lower",
 			name: "monster skirt",
 			name_cap: "Monster skirt",
 			variable: "monster",
@@ -3915,6 +3990,7 @@ function initLower() {
 
 		{
 			index: 75,
+			slot: "lower",
 			name: "keyhole skirt",
 			name_cap: "Keyhole skirt",
 			variable: "keyhole",
@@ -3966,6 +4042,7 @@ function initLower() {
 
 		{
 			index: 76,
+			slot: "lower",
 			name: "booty jorts",
 			name_cap: "Booty jorts",
 			variable: "bootyjorts",
@@ -4018,6 +4095,7 @@ function initLower() {
 
 		{
 			index: 77,
+			slot: "lower",
 			name: "prison trousers",
 			name_cap: "Prison trousers",
 			variable: "prison",
@@ -4069,6 +4147,7 @@ function initLower() {
 
 		{
 			index: 78,
+			slot: "lower",
 			name: "prison jumpsuit trousers",
 			name_cap: "Prison jumpsuit trousers",
 			variable: "jumpsuit",
@@ -4120,6 +4199,7 @@ function initLower() {
 
 		{
 			index: 79,
+			slot: "lower",
 			name: "patient gown skirt",
 			name_cap: "Patient gown skirt",
 			variable: "patient",
@@ -4171,6 +4251,7 @@ function initLower() {
 
 		{
 			index: 80,
+			slot: "lower",
 			name: "cow onesie bottoms",
 			name_cap: "Cow onesie bottoms",
 			variable: "cowonesie",
@@ -4222,6 +4303,7 @@ function initLower() {
 
 		{
 			index: 81,
+			slot: "lower",
 			name: "cow print chaps",
 			name_cap: "Cow print chaps",
 			variable: "cowchaps",
@@ -4273,6 +4355,7 @@ function initLower() {
 
 		{
 			index: 82,
+			slot: "lower",
 			name: "baseball shorts",
 			name_cap: "Baseball shorts",
 			variable: "baseball",
@@ -4323,6 +4406,7 @@ function initLower() {
 
 		{
 			index: 83,
+			slot: "lower",
 			name: "scarecrow skirt",
 			name_cap: "Scarecrow skirt",
 			variable: "scarecrow",
@@ -4377,6 +4461,7 @@ function initLower() {
 
 		{
 			index: 84,
+			slot: "lower",
 			name: "waitress skirt",
 			name_cap: "Waitress skirt",
 			variable: "waitress",
@@ -4442,6 +4527,7 @@ function initLower() {
 
 		{
 			index: 85,
+			slot: "lower",
 			name: "split dress skirt",
 			name_cap: "Split dress skirt",
 			variable: "split",
@@ -4507,6 +4593,7 @@ function initLower() {
 
 		{
 			index: 86,
+			slot: "lower",
 			name: "skimpy lolita skirt",
 			name_cap: "Skimpy lolita skirt",
 			variable: "skimpylolita",
@@ -4575,6 +4662,7 @@ function initLower() {
 
 		{
 			index: 87,
+			slot: "lower",
 			name: "short ballgown skirt",
 			name_cap: "Short ballgown skirt",
 			variable: "shortballgown",
@@ -4661,6 +4749,7 @@ function initLower() {
 
 		{
 			index: 88,
+			slot: "lower",
 			name: "slacks",
 			name_cap: "Slacks",
 			variable: "slacks",
@@ -4711,6 +4800,7 @@ function initLower() {
 
 		{
 			index: 89,
+			slot: "lower",
 			name: "pink nurse skirt",
 			name_cap: "Pink nurse skirt",
 			variable: "pinknurse",
@@ -4764,6 +4854,7 @@ function initLower() {
 
 		{
 			index: 90,
+			slot: "lower",
 			name: "plastic nurse skirt",
 			name_cap: "Plastic nurse skirt",
 			variable: "plasticnurse",
@@ -4817,6 +4908,7 @@ function initLower() {
 
 		{
 			index: 91,
+			slot: "lower",
 			name: "transparent nurse skirt",
 			name_cap: "Transparent nurse skirt",
 			variable: "transparentnurse",
@@ -4870,6 +4962,7 @@ function initLower() {
 
 		{
 			index: 92,
+			slot: "lower",
 			name: "hanfu skirt",
 			name_cap: "Hanfu skirt",
 			variable: "hanfu",
@@ -4935,6 +5028,7 @@ function initLower() {
 
 		{
 			index: 93,
+			slot: "lower",
 			name: "open shoulder sweater bottom",
 			name_cap: "Open shoulder sweater bottom",
 			variable: "openshouldersweater",
@@ -4987,6 +5081,7 @@ function initLower() {
 
 		{
 			index: 94,
+			slot: "lower",
 			name: "cocoon bottom",
 			name_cap: "Cocoon bottom",
 			variable: "cocoon",
@@ -5040,6 +5135,7 @@ function initLower() {
 
 		{
 			index: 95,
+			slot: "lower",
 			name: "skeleton bottoms",
 			name_cap: "Skeleton bottoms",
 			variable: "skele",
@@ -5092,6 +5188,7 @@ function initLower() {
 
 		{
 			index: 96,
+			slot: "lower",
 			name: "futuristic bodysuit pants",
 			name_cap: "Futuristic bodysuit pants",
 			variable: "futuresuit",
@@ -5145,6 +5242,7 @@ function initLower() {
 
 		{
 			index: 97,
+			slot: "lower",
 			name: "pencil skirt",
 			name_cap: "Pencil skirt",
 			variable: "pencil",
@@ -5195,6 +5293,7 @@ function initLower() {
 
 		{
 			index: 98,
+			slot: "lower",
 			name: "lace nightgown skirt",
 			name_cap: "Lace nightgown skirt",
 			variable: "lacegown",
@@ -5247,6 +5346,7 @@ function initLower() {
 
 		{
 			index: 99,
+			slot: "lower",
 			name: "ao dai trousers",
 			name_cap: "Ao dai trousers",
 			variable: "ao dai",
@@ -5298,6 +5398,7 @@ function initLower() {
 
 		{
 			index: 100,
+			slot: "lower",
 			name: "traditional maid skirt",
 			name_cap: "Traditional maid skirt",
 			variable: "traditionalmaid",
@@ -5350,6 +5451,7 @@ function initLower() {
 
 		{
 			index: 101,
+			slot: "lower",
 			name: "Victorian maid skirt",
 			name_cap: "Victorian maid skirt",
 			variable: "victorianmaid",
@@ -5402,6 +5504,7 @@ function initLower() {
 
 		{
 			index: 102,
+			slot: "lower",
 			name: "shrine maiden skirt",
 			name_cap: "Shrine maiden skirt",
 			variable: "shrinemaiden",
@@ -5454,6 +5557,7 @@ function initLower() {
 
 		{
 			index: 103,
+			slot: "lower",
 			name: "plaid school skirt",
 			name_cap: "Plaid school skirt",
 			variable: "schoolskirtplaid",
@@ -5505,6 +5609,7 @@ function initLower() {
 
 		{
 			index: 104,
+			slot: "lower",
 			name: "plaid school trousers",
 			name_cap: "Plaid school trousers",
 			variable: "schooltrousersplaid",
@@ -5556,6 +5661,7 @@ function initLower() {
 
 		{
 			index: 105,
+			slot: "lower",
 			name: "plaid school shorts",
 			name_cap: "Plaid school shorts",
 			variable: "schoolshortsplaid",
@@ -5607,6 +5713,7 @@ function initLower() {
 
 		{
 			index: 106,
+			slot: "lower",
 			name: "school pinafore",
 			name_cap: "School pinafore",
 			variable: "pinafore",
@@ -5661,6 +5768,7 @@ function initLower() {
 
 		{
 			index: 107,
+			slot: "lower",
 			name: "plaid school pinafore",
 			name_cap: "Plaid school pinafore",
 			variable: "plaid pinafore",
@@ -5715,6 +5823,7 @@ function initLower() {
 
 		{
 			index: 108,
+			slot: "lower",
 			name: "wide leg trousers",
 			name_cap: "Wide leg trousers",
 			variable: "wide leg trousers",
@@ -5766,6 +5875,7 @@ function initLower() {
 
 		{
 			index: 109,
+			slot: "lower",
 			name: "straight leg trousers",
 			name_cap: "Straight leg trousers",
 			variable: "straight trousers",
@@ -5816,6 +5926,7 @@ function initLower() {
 
 		{
 			index: 110,
+			slot: "lower",
 			name: "yoga pants",
 			name_cap: "Yoga pants",
 			variable: "yoga pants",
@@ -5882,6 +5993,7 @@ function initLower() {
 
 		{
 			index: 111,
+			slot: "lower",
 			name: "virgin killer skirt",
 			name_cap: "Virgin killer skirt",
 			variable: "virginkillerdress",
@@ -5933,6 +6045,7 @@ function initLower() {
 
 		{
 			index: 112,
+			slot: "lower",
 			name: "halter sundress skirt",
 			name_cap: "Halter sundress skirt",
 			variable: "haltersundress",
@@ -6001,6 +6114,7 @@ function initLower() {
 
 		{
 			index: 113,
+			slot: "lower",
 			name: "leather skirt",
 			name_cap: "Leather skirt",
 			variable: "leatherdress",
@@ -6070,6 +6184,7 @@ function initLower() {
 
 		{
 			index: 114,
+			slot: "lower",
 			name: "jean miniskirt",
 			name_cap: "Jean miniskirt",
 			variable: "jean miniskirt",
@@ -6121,6 +6236,7 @@ function initLower() {
 
 		{
 			index: 115,
+			slot: "lower",
 			name: "dolphin shorts",
 			name_cap: "Dolphin shorts",
 			variable: "dolphinshorts",
@@ -6174,6 +6290,7 @@ function initLower() {
 
 		{
 			index: 116,
+			slot: "lower",
 			name: "school skirt",
 			name_cap: "School skirt",
 			variable: "schoolskirt2",
@@ -6225,6 +6342,7 @@ function initLower() {
 
 		{
 			index: 117,
+			slot: "lower",
 			name: "long school skirt",
 			name_cap: "Long school skirt",
 			variable: "schoolskirtlong2",
@@ -6276,6 +6394,7 @@ function initLower() {
 
 		{
 			index: 118,
+			slot: "lower",
 			name: "short school skirt",
 			name_cap: "Short school skirt",
 			variable: "schoolskirtshort2",
@@ -6327,6 +6446,7 @@ function initLower() {
 
 		{
 			index: 119,
+			slot: "lower",
 			name: "booty jorts",
 			name_cap: "Booty jorts",
 			variable: "bootyjorts2",
@@ -6378,6 +6498,7 @@ function initLower() {
 		},
 		{
 			index: 120,
+			slot: "lower",
 			name: "lolita skirt",
 			name_cap: "Lolita skirt",
 			variable: "openshoulderlolita",
@@ -6445,6 +6566,7 @@ function initLower() {
 		},
 		{
 			index: 121,
+			slot: "lower",
 			name: "gym shorts",
 			name_cap: "Gym shorts",
 			variable: "gymshorts",
@@ -6494,6 +6616,7 @@ function initLower() {
 		},
 		{
 			index: 122,
+			slot: "lower",
 			name: "shortalls",
 			name_cap: "Shortalls",
 			variable: "shortalls",
@@ -6564,6 +6687,7 @@ function initLower() {
 
 		{
 			index: 123,
+			slot: "lower",
 			name: "jingle-bell skirt",
 			name_cap: "Jingle-bell skirt",
 			variable: "jingledress",
@@ -6615,6 +6739,7 @@ function initLower() {
 
 		{
 			index: 124,
+			slot: "lower",
 			name: "sleeveless jingle-bell skirt",
 			name_cap: "Sleeveless jingle-bell skirt",
 			variable: "jingledresssleeveless",
@@ -6665,6 +6790,7 @@ function initLower() {
 		},
 		{
 			index: 125,
+			slot: "lower",
 			name: "leather miniskirt",
 			name_cap: "Leather miniskirt",
 			variable: "leatherminiskirt",
@@ -6732,6 +6858,7 @@ function initLower() {
 		},
 		{
 			index: 126,
+			slot: "lower",
 			name: "leather pants",
 			name_cap: "Leather pants",
 			variable: "leatherpants",
@@ -6798,6 +6925,7 @@ function initLower() {
 		},
 		{
 			index: 127,
+			slot: "lower",
 			name: "leather shorts",
 			name_cap: "Leather shorts",
 			variable: "leathershorts",
@@ -6864,6 +6992,7 @@ function initLower() {
 		},
 		{
 			index: 128,
+			slot: "lower",
 			name: "sexy nun's habit skirt",
 			name_cap: "Sexy nun's habit skirt",
 			variable: "nunlewd",
@@ -6915,6 +7044,7 @@ function initLower() {
 		},
 		{
 			index: 129,
+			slot: "lower",
 			name: "sexy priest's shorts",
 			name_cap: "Sexy priest's shorts",
 			variable: "monklewd",
@@ -6966,6 +7096,7 @@ function initLower() {
 		},
 		{
 			index: 130,
+			slot: "lower",
 			name: "oversized button-down bottom",
 			name_cap: "Oversized button-down bottom",
 			variable: "oversizedbuttondown",
@@ -7017,6 +7148,7 @@ function initLower() {
 		},
 		{
 			index: 131,
+			slot: "lower",
 			name: "suit trousers",
 			name_cap: "Suit trousers",
 			variable: "3piecesuit",
@@ -7067,6 +7199,7 @@ function initLower() {
 		},
 		{
 			index: 132,
+			slot: "lower",
 			name: "puffy shorts",
 			name_cap: "Puffy shorts",
 			variable: "puffy",
@@ -7135,6 +7268,7 @@ function initLower() {
 		},
 		{
 			index: 133,
+			slot: "lower",
 			name: "bloomers",
 			name_cap: "Bloomers",
 			variable: "puffybloomers",
@@ -7203,6 +7337,7 @@ function initLower() {
 		},
 		{
 			index: 134,
+			slot: "lower",
 			name: "harem pants",
 			name_cap: "Harem pants",
 			variable: "harempants",
@@ -7253,6 +7388,7 @@ function initLower() {
 		},
 		{
 			index: 135,
+			slot: "lower",
 			name: "sexy butler shorts",
 			name_cap: "Sexy butler shorts",
 			variable: "slutler",
@@ -7303,6 +7439,7 @@ function initLower() {
 		},
 		{
 			index: 136,
+			slot: "lower",
 			name: "sarong",
 			name_cap: "Sarong",
 			variable: "sarong",
@@ -7351,6 +7488,7 @@ function initLower() {
 		},
 		{
 			index: 137,
+			slot: "lower",
 			name: "cargo pants",
 			name_cap: "Cargo pants",
 			variable: "cargo",
@@ -7401,6 +7539,7 @@ function initLower() {
 		},
 		{
 			index: 138,
+			slot: "lower",
 			name: "high-waisted skirt",
 			name_cap: "High-waisted skirt",
 			variable: "highwaistedskirt",
@@ -7466,6 +7605,7 @@ function initLower() {
 
 		{
 			index: 139,
+			slot: "lower",
 			name: "classic lolita skirt",
 			name_cap: "Classic lolita skirt",
 			variable: "openshoulderlolitaclassic",
@@ -7533,6 +7673,7 @@ function initLower() {
 		},
 		{
 			index: 140,
+			slot: "lower",
 			name: "jumpsuit trousers",
 			name_cap: "Jumpsuit trousers",
 			variable: "jumpsuitstylish",
@@ -7603,6 +7744,7 @@ function initLower() {
 		},
 		{
 			index: 141,
+			slot: "lower",
 			name: "ragged dress skirt",
 			name_cap: "Ragged dress skirt",
 			variable: "drowneddress",
@@ -7653,6 +7795,7 @@ function initLower() {
 		},
 		{
 			index: 142,
+			slot: "lower",
 			name: "bedsheet skirt",
 			name_cap: "Bedsheet skirt",
 			variable: "bedsheet",
@@ -7703,6 +7846,7 @@ function initLower() {
 		},
 		{
 			index: 143,
+			slot: "lower",
 			name: "pimp suit trousers",
 			name_cap: "Pimp suit rousers",
 			variable: "pimp",

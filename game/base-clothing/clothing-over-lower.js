@@ -5,6 +5,7 @@ function initOverLower() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "over_lower",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -47,6 +48,7 @@ function initOverLower() {
 
 		{
 			index: 1,
+			slot: "over_lower",
 			name: "froggy skirt",
 			name_cap: "Froggy skirt",
 			variable: "froggy",
@@ -97,6 +99,7 @@ function initOverLower() {
 
 		{
 			index: 2,
+			slot: "over_lower",
 			name: "cream",
 			name_cap: "Cream",
 			variable: "cream",

@@ -10,7 +10,7 @@ Mousetrap.prototype.stopCallback = function (e, element, combo) {
 
 // add binds for "next" link in combat
 // eslint-disable-next-line no-undef
-Mousetrap.bind(["z", "n", "enter", "space"], function () {
+Mousetrap.bind(["z", "n", "enter"], function () {
 	$("#passages #next a.macro-link").trigger("click");
 });
 
@@ -166,7 +166,7 @@ window.wetnessKeyword = wetnessKeyword;
 
 /**
  * Returns an optional wetness prefix for the article of clothing.
- 
+
  * @param {string} slot clothing article slot used
  * @returns {string} printable integrity prefix
  */

@@ -14,6 +14,7 @@ function initNeck() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "neck",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -46,6 +47,7 @@ function initNeck() {
 
 		{
 			index: 1,
+			slot: "neck",
 			name: "collar",
 			name_cap: "Collar",
 			variable: "collar",
@@ -81,6 +83,7 @@ function initNeck() {
 
 		{
 			index: 2,
+			slot: "neck",
 			name: "bunny collar",
 			name_cap: "Bunny collar",
 			variable: "bunnycollar",
@@ -117,6 +120,7 @@ function initNeck() {
 
 		{
 			index: 3,
+			slot: "neck",
 			name: "holy pendant",
 			name_cap: "Holy pendant",
 			variable: "holypendant",
@@ -152,6 +156,7 @@ function initNeck() {
 
 		{
 			index: 4,
+			slot: "neck",
 			name: "dark pendant",
 			name_cap: "Dark pendant",
 			variable: "darkpendant",
@@ -187,6 +192,7 @@ function initNeck() {
 
 		{
 			index: 5,
+			slot: "neck",
 			name: "stone pendant",
 			name_cap: "Stone pendant",
 			variable: "stonependant",
@@ -222,6 +228,7 @@ function initNeck() {
 
 		{
 			index: 6,
+			slot: "neck",
 			name: "gold choker",
 			name_cap: "Gold choker",
 			variable: "goldchoker",
@@ -258,6 +265,7 @@ function initNeck() {
 
 		{
 			index: 7,
+			slot: "neck",
 			name: "cat bell collar",
 			name_cap: "Cat bell collar",
 			variable: "cat",
@@ -293,6 +301,7 @@ function initNeck() {
 
 		{
 			index: 8,
+			slot: "neck",
 			name: "cow bell",
 			name_cap: "Cow bell",
 			variable: "cow",
@@ -325,6 +334,7 @@ function initNeck() {
 
 		{
 			index: 9,
+			slot: "neck",
 			name: "lace choker",
 			name_cap: "Lace choker",
 			variable: "lacechoker",
@@ -363,6 +373,7 @@ function initNeck() {
 
 		{
 			index: 10,
+			slot: "neck",
 			name: "spiked collar",
 			name_cap: "Spiked collar",
 			variable: "spiked",
@@ -400,6 +411,7 @@ function initNeck() {
 
 		{
 			index: 11,
+			slot: "neck",
 			name: "heart choker",
 			name_cap: "Heart choker",
 			variable: "heartchoker",
@@ -437,6 +449,7 @@ function initNeck() {
 
 		{
 			index: 12,
+			slot: "neck",
 			name: "ringed collar",
 			name_cap: "Ringed collar",
 			variable: "ringedcollar",
@@ -474,6 +487,7 @@ function initNeck() {
 
 		{
 			index: 13,
+			slot: "neck",
 			name: "necktie",
 			name_cap: "Necktie",
 			variable: "tie",
@@ -512,6 +526,7 @@ function initNeck() {
 
 		{
 			index: 14,
+			slot: "neck",
 			name: "suspenders",
 			name_cap: "Suspenders",
 			variable: "suspenders",
@@ -553,6 +568,7 @@ function initNeck() {
 
 		{
 			index: 15,
+			slot: "neck",
 			name: "cloth choker",
 			name_cap: "Cloth choker",
 			variable: "clothchoker",
@@ -586,6 +602,7 @@ function initNeck() {
 
 		{
 			index: 16,
+			slot: "neck",
 			name: "scarf",
 			name_cap: "Scarf",
 			variable: "scarf",
@@ -637,6 +654,7 @@ function initNeck() {
 
 		{
 			index: 17,
+			slot: "neck",
 			name: "gold chain",
 			name_cap: "Gold chain",
 			variable: "chaingold",
@@ -674,6 +692,7 @@ function initNeck() {
 
 		{
 			index: 18,
+			slot: "neck",
 			name: "iron chain",
 			name_cap: "Iron chain",
 			variable: "chainiron",
@@ -710,6 +729,7 @@ function initNeck() {
 
 		{
 			index: 19,
+			slot: "neck",
 			name: "holy stole",
 			name_cap: "Holy stole",
 			variable: "holystole",
@@ -745,6 +765,7 @@ function initNeck() {
 
 		{
 			index: 20,
+			slot: "neck",
 			name: "free use collar",
 			name_cap: "Free use collar",
 			variable: "freeuse",
@@ -781,6 +802,7 @@ function initNeck() {
 
 		{
 			index: 21,
+			slot: "neck",
 			name: "collar with leash",
 			name_cap: "Collar with leash",
 			variable: "collarleash",
@@ -818,6 +840,7 @@ function initNeck() {
 
 		{
 			index: 22,
+			slot: "neck",
 			name: "free use collar with leash",
 			name_cap: "Free use collar with leash",
 			variable: "freeuseleash",
@@ -855,6 +878,7 @@ function initNeck() {
 
 		{
 			index: 23,
+			slot: "neck",
 			name: "ivory necklace",
 			name_cap: "Ivory necklace",
 			variable: "ivorynecklace",
@@ -890,6 +914,7 @@ function initNeck() {
 
 		{
 			index: 24,
+			slot: "neck",
 			name: "leather collar with leash",
 			name_cap: "Leather collar with leash",
 			variable: "collarleashfetish",
@@ -927,6 +952,7 @@ function initNeck() {
 
 		{
 			index: 25,
+			slot: "neck",
 			name: "leather collar",
 			name_cap: "Leather collar",
 			variable: "collarfetish",
@@ -963,6 +989,7 @@ function initNeck() {
 
 		{
 			index: 26,
+			slot: "neck",
 			name: "spiked collar with leash",
 			name_cap: "Spiked collar with leash",
 			variable: "spikedleash",
@@ -1001,6 +1028,7 @@ function initNeck() {
 
 		{
 			index: 27,
+			slot: "neck",
 			name: "short tie",
 			name_cap: "Short tie",
 			variable: "shorttie",
@@ -1039,6 +1067,7 @@ function initNeck() {
 
 		{
 			index: 28,
+			slot: "neck",
 			name: "fur boa",
 			name_cap: "Fur boa",
 			variable: "boa",
@@ -1091,6 +1120,7 @@ function initNeck() {
 
 		{
 			index: 29,
+			slot: "neck",
 			name: "sailor ribbon",
 			name_cap: "Sailor ribbon",
 			variable: "serafuku ribbon",
@@ -1127,6 +1157,7 @@ function initNeck() {
 
 		{
 			index: 30,
+			slot: "neck",
 			name: "love locket",
 			name_cap: "Love locket",
 			variable: "lovelocket",
@@ -1163,6 +1194,7 @@ function initNeck() {
 		},
 		{
 			index: 31,
+			slot: "neck",
 			name: "classic lace choker",
 			name_cap: "Classic lace choker",
 			variable: "lacechokerold",
@@ -1200,6 +1232,7 @@ function initNeck() {
 		},
 		{
 			index: 32,
+			slot: "neck",
 			name: "bowtie",
 			name_cap: "Bowtie",
 			variable: "bowtie",
@@ -1237,6 +1270,7 @@ function initNeck() {
 		},
 		{
 			index: 33,
+			slot: "neck",
 			name: "ribbon tie",
 			name_cap: "Ribbon tie",
 			variable: "ribbontie",
@@ -1289,6 +1323,7 @@ function initNeck() {
 		},
 		{
 			index: 34,
+			slot: "neck",
 			name: "whistle",
 			name_cap: "Whistle",
 			variable: "whistle",

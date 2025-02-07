@@ -18,6 +18,7 @@ function initFeet() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "feet",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -49,6 +50,7 @@ function initFeet() {
 		},
 		{
 			index: 1,
+			slot: "feet",
 			name: "school shoes",
 			name_cap: "School shoes",
 			variable: "schoolshoes",
@@ -85,6 +87,7 @@ function initFeet() {
 		},
 		{
 			index: 2,
+			slot: "feet",
 			name: "tuxedo shoes",
 			name_cap: "Tuxedo shoes",
 			variable: "tuxedoshoes",
@@ -122,6 +125,7 @@ function initFeet() {
 		},
 		{
 			index: 3,
+			slot: "feet",
 			name: "ankle cuffs",
 			name_cap: "Ankle cuffs",
 			variable: "anklecuffs",
@@ -157,6 +161,7 @@ function initFeet() {
 		},
 		{
 			index: 4,
+			slot: "feet",
 			name: "sandals",
 			name_cap: "Sandals",
 			variable: "sandals",
@@ -193,6 +198,7 @@ function initFeet() {
 		},
 		{
 			index: 5,
+			slot: "feet",
 			name: "dress sandals",
 			name_cap: "Dress sandals",
 			variable: "dresssandals",
@@ -229,6 +235,7 @@ function initFeet() {
 		},
 		{
 			index: 6,
+			slot: "feet",
 			name: "trainers",
 			name_cap: "Trainers",
 			variable: "trainers",
@@ -266,6 +273,7 @@ function initFeet() {
 		},
 		{
 			index: 7,
+			slot: "feet",
 			name: "witch shoes",
 			name_cap: "Witch shoes",
 			variable: "witch",
@@ -302,6 +310,7 @@ function initFeet() {
 		},
 		{
 			index: 8,
+			slot: "feet",
 			name: "wellies",
 			name_cap: "Wellies",
 			variable: "wellies",
@@ -336,6 +345,7 @@ function initFeet() {
 		},
 		{
 			index: 9,
+			slot: "feet",
 			name: "platform heels",
 			name_cap: "Platform heels",
 			variable: "platformheels",
@@ -368,6 +378,7 @@ function initFeet() {
 		},
 		{
 			index: 10,
+			slot: "feet",
 			name: "kitten heels",
 			name_cap: "Kitten heels",
 			variable: "kittenheels",
@@ -400,6 +411,7 @@ function initFeet() {
 		},
 		{
 			index: 11,
+			slot: "feet",
 			name: "wedge sandals",
 			name_cap: "Wedge sandals",
 			variable: "wedgesandals",
@@ -436,6 +448,7 @@ function initFeet() {
 		},
 		{
 			index: 12,
+			slot: "feet",
 			name: "court heels",
 			name_cap: "Court heels",
 			variable: "courtheels",
@@ -468,6 +481,7 @@ function initFeet() {
 		},
 		{
 			index: 13,
+			slot: "feet",
 			name: "heeled boots",
 			name_cap: "Heeled boots",
 			variable: "bootheels",
@@ -500,6 +514,7 @@ function initFeet() {
 		},
 		{
 			index: 14,
+			slot: "feet",
 			name: "stripper heels",
 			name_cap: "Stripper heels",
 			variable: "stripperheels",
@@ -533,6 +548,7 @@ function initFeet() {
 		},
 		{
 			index: 15,
+			slot: "feet",
 			name: "horsebit loafers",
 			name_cap: "Horsebit loafers",
 			variable: "horsebitloafers",
@@ -570,6 +586,7 @@ function initFeet() {
 		},
 		{
 			index: 16,
+			slot: "feet",
 			name: "cordovan loafers",
 			name_cap: "Cordovan loafers",
 			variable: "cordovanloafers",
@@ -607,6 +624,7 @@ function initFeet() {
 		},
 		{
 			index: 17,
+			slot: "feet",
 			name: "bunny slippers",
 			name_cap: "Bunny slippers",
 			variable: "bunny",
@@ -644,6 +662,7 @@ function initFeet() {
 		},
 		{
 			index: 18,
+			slot: "feet",
 			name: "combat boots",
 			name_cap: "Combat boots",
 			variable: "combat",
@@ -680,6 +699,7 @@ function initFeet() {
 		},
 		{
 			index: 19,
+			slot: "feet",
 			name: "field boots",
 			name_cap: "Field boots",
 			variable: "field",
@@ -716,6 +736,7 @@ function initFeet() {
 		},
 		{
 			index: 20,
+			slot: "feet",
 			name: "paddock boots",
 			name_cap: "Paddock boots",
 			variable: "paddock",
@@ -752,6 +773,7 @@ function initFeet() {
 		},
 		{
 			index: 21,
+			slot: "feet",
 			name: "work boots",
 			name_cap: "Work boots",
 			variable: "work",
@@ -788,6 +810,7 @@ function initFeet() {
 		},
 		{
 			index: 22,
+			slot: "feet",
 			name: "flippers",
 			name_cap: "Flippers",
 			variable: "flippers",
@@ -825,6 +848,7 @@ function initFeet() {
 		},
 		{
 			index: 23,
+			slot: "feet",
 			name: "ice skates",
 			name_cap: "Ice skates",
 			variable: "iceskates",
@@ -860,6 +884,7 @@ function initFeet() {
 		},
 		{
 			index: 24,
+			slot: "feet",
 			name: "long boots",
 			name_cap: "Long boots",
 			variable: "long",
@@ -895,6 +920,7 @@ function initFeet() {
 		},
 		{
 			index: 25,
+			slot: "feet",
 			name: "light-up trainers",
 			name_cap: "Light-up trainers",
 			variable: "lightuptrainers",
@@ -929,6 +955,7 @@ function initFeet() {
 		},
 		{
 			index: 26,
+			slot: "feet",
 			name: "ball and chain",
 			name_cap: "Ball and chain",
 			variable: "ballchain",
@@ -960,6 +987,7 @@ function initFeet() {
 		},
 		{
 			index: 27,
+			slot: "feet",
 			name: "cowboy boots",
 			name_cap: "Cowboy boots",
 			variable: "cowboy",
@@ -996,6 +1024,7 @@ function initFeet() {
 		},
 		{
 			index: 28,
+			slot: "feet",
 			name: "high top trainers",
 			name_cap: "High top trainers",
 			variable: "hightops",
@@ -1032,6 +1061,7 @@ function initFeet() {
 		},
 		{
 			index: 29,
+			slot: "feet",
 			name: "belly dancer's shoes",
 			name_cap: "Belly dancer's shoes",
 			variable: "belly",
@@ -1068,6 +1098,7 @@ function initFeet() {
 
 		{
 			index: 30,
+			slot: "feet",
 			name: "canvas loafers",
 			name_cap: "Canvas loafers",
 			variable: "canvas loafers",
@@ -1104,6 +1135,7 @@ function initFeet() {
 		},
 		{
 			index: 31,
+			slot: "feet",
 			name: "thigh-high heeled boots",
 			name_cap: "Thigh-high heeled boots",
 			variable: "thighhigh_heels",
@@ -1139,6 +1171,7 @@ function initFeet() {
 		},
 		{
 			index: 32,
+			slot: "feet",
 			name: "fur boots",
 			name_cap: "Fur boots",
 			variable: "fur_boots",
@@ -1175,6 +1208,7 @@ function initFeet() {
 		},
 		{
 			index: 33,
+			slot: "feet",
 			name: "mary janes",
 			name_cap: "Mary janes",
 			variable: "maryjanes",
@@ -1211,6 +1245,7 @@ function initFeet() {
 		},
 		{
 			index: 34,
+			slot: "feet",
 			name: "platform mary janes",
 			name_cap: "Platform mary janes",
 			variable: "platformmaryjanes",
@@ -1248,6 +1283,7 @@ function initFeet() {
 		},
 		{
 			index: 35,
+			slot: "feet",
 			name: "geta",
 			name_cap: "Geta",
 			variable: "geta",
@@ -1283,6 +1319,7 @@ function initFeet() {
 		},
 		{
 			index: 36,
+			slot: "feet",
 			name: "zori",
 			name_cap: "Zori",
 			variable: "zori",

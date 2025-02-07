@@ -5,6 +5,7 @@ function initHandheld() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "handheld",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -36,6 +37,7 @@ function initHandheld() {
 		},
 		{
 			index: 1,
+			slot: "handheld",
 			name: "umbrella",
 			name_cap: "Umbrella",
 			variable: "umbrella",
@@ -87,6 +89,7 @@ function initHandheld() {
 		},
 		{
 			index: 2,
+			slot: "handheld",
 			name: "parasol",
 			name_cap: "Parasol",
 			variable: "parasol",
@@ -141,6 +144,7 @@ function initHandheld() {
 		},
 		{
 			index: 3,
+			slot: "handheld",
 			name: "sweet lolita parasol",
 			name_cap: "Sweet lolita parasol",
 			variable: "parasolsweet",
@@ -195,6 +199,7 @@ function initHandheld() {
 		},
 		{
 			index: 4,
+			slot: "handheld",
 			name: "paper parasol",
 			name_cap: "Paper parasol",
 			variable: "parasolpaper",
@@ -233,6 +238,7 @@ function initHandheld() {
 		},
 		{
 			index: 5,
+			slot: "handheld",
 			name: "purse",
 			name_cap: "Purse",
 			variable: "purse",
@@ -281,6 +287,7 @@ function initHandheld() {
 		},
 		{
 			index: 6,
+			slot: "handheld",
 			name: "heart purse",
 			name_cap: "Heart purse",
 			variable: "heartpurse",
@@ -329,6 +336,7 @@ function initHandheld() {
 		},
 		{
 			index: 7,
+			slot: "handheld",
 			name: "messenger bag",
 			name_cap: "Messenger bag",
 			variable: "messengerbag",
@@ -361,6 +369,7 @@ function initHandheld() {
 		},
 		{
 			index: 8,
+			slot: "handheld",
 			name: "backpack",
 			name_cap: "Backpack",
 			variable: "backpack",
@@ -396,6 +405,7 @@ function initHandheld() {
 		},
 		{
 			index: 9,
+			slot: "handheld",
 			name: "paper fan",
 			name_cap: "Paper fan",
 			variable: "paperfan",
@@ -429,6 +439,7 @@ function initHandheld() {
 		},
 		{
 			index: 10,
+			slot: "handheld",
 			name: "milkshake",
 			name_cap: "Milkshake",
 			variable: "milkshake",
@@ -451,6 +462,7 @@ function initHandheld() {
 		},
 		{
 			index: 11,
+			slot: "handheld",
 			name: "cigarette",
 			name_cap: "Cigarette",
 			variable: "cigarette",
@@ -473,6 +485,7 @@ function initHandheld() {
 		},
 		{
 			index: 12,
+			slot: "handheld",
 			name: "feather duster",
 			name_cap: "Feather duster",
 			variable: "featherduster",
@@ -506,6 +519,7 @@ function initHandheld() {
 		},
 		{
 			index: 13,
+			slot: "handheld",
 			name: "pom poms",
 			name_cap: "Pom poms",
 			variable: "pompoms",
@@ -540,6 +554,7 @@ function initHandheld() {
 		},
 		{
 			index: 14,
+			slot: "handheld",
 			name: "balloon",
 			name_cap: "Balloon",
 			variable: "balloon",
@@ -572,6 +587,7 @@ function initHandheld() {
 		},
 		{
 			index: 15,
+			slot: "handheld",
 			name: "heart balloon",
 			name_cap: "Heart balloon",
 			variable: "balloonheart",
@@ -604,6 +620,7 @@ function initHandheld() {
 		},
 		{
 			index: 16,
+			slot: "handheld",
 			name: "bag of popcorn",
 			name_cap: "Bag of popcorn",
 			variable: "popcorn",
@@ -626,6 +643,7 @@ function initHandheld() {
 		},
 		{
 			index: 17,
+			slot: "handheld",
 			name: "gingerbread man",
 			name_cap: "Gingerbread man",
 			variable: "gingerbread",
@@ -648,6 +666,7 @@ function initHandheld() {
 		},
 		{
 			index: 18,
+			slot: "handheld",
 			name: "cup of lemonade",
 			name_cap: "Cup of lemonade",
 			variable: "lemonade",
@@ -670,6 +689,7 @@ function initHandheld() {
 		},
 		{
 			index: 19,
+			slot: "handheld",
 			name: "hot drink",
 			name_cap: "Hot drink",
 			variable: "cocoa",
@@ -692,6 +712,7 @@ function initHandheld() {
 		},
 		{
 			index: 20,
+			slot: "handheld",
 			name: "mug",
 			name_cap: "Mug",
 			variable: "mug",
@@ -714,6 +735,7 @@ function initHandheld() {
 		},
 		{
 			index: 21,
+			slot: "handheld",
 			name: "beer bottle",
 			name_cap: "Beer bottle",
 			variable: "beer bottle",
@@ -737,6 +759,7 @@ function initHandheld() {
 		},
 		{
 			index: 22,
+			slot: "handheld",
 			name: "mug of beer",
 			name_cap: "Mug of beer",
 			variable: "beer mug",
@@ -760,6 +783,7 @@ function initHandheld() {
 		},
 		{
 			index: 23,
+			slot: "handheld",
 			name: "shot glass",
 			name_cap: "Shot glass",
 			variable: "shotglass",
@@ -783,6 +807,7 @@ function initHandheld() {
 		},
 		{
 			index: 24,
+			slot: "handheld",
 			name: "wine glass",
 			name_cap: "Wine glass",
 			variable: "wine",
@@ -808,6 +833,7 @@ function initHandheld() {
 		},
 		{
 			index: 25,
+			slot: "handheld",
 			name: "torch",
 			name_cap: "Torch",
 			variable: "torch",
@@ -832,6 +858,7 @@ function initHandheld() {
 		},
 		{
 			index: 26,
+			slot: "handheld",
 			name: "gym bag",
 			name_cap: "Gym bag",
 			variable: "gymbag",
@@ -878,6 +905,7 @@ function initHandheld() {
 		},
 		{
 			index: 27,
+			slot: "handheld",
 			name: "cup of tea",
 			name_cap: "Cup of tea",
 			variable: "tea",
@@ -901,6 +929,7 @@ function initHandheld() {
 		},
 		{
 			index: 28,
+			slot: "handheld",
 			name: "cup of coffee",
 			name_cap: "Cup of coffee",
 			variable: "coffee",
@@ -924,6 +953,7 @@ function initHandheld() {
 		},
 		{
 			index: 29,
+			slot: "handheld",
 			name: "forkful of salad",
 			name_cap: "Forkful of salad",
 			variable: "salad fork",
@@ -947,6 +977,7 @@ function initHandheld() {
 		},
 		{
 			index: 30,
+			slot: "handheld",
 			name: "forkful of pancake",
 			name_cap: "Forkful of pancake",
 			variable: "pancake",
@@ -970,6 +1001,7 @@ function initHandheld() {
 		},
 		{
 			index: 31,
+			slot: "handheld",
 			name: "forkful of pasta",
 			name_cap: "Forkful of pasta",
 			variable: "pasta",
@@ -993,6 +1025,7 @@ function initHandheld() {
 		},
 		{
 			index: 32,
+			slot: "handheld",
 			name: "fork",
 			name_cap: "Fork",
 			variable: "fork",
@@ -1016,6 +1049,7 @@ function initHandheld() {
 		},
 		{
 			index: 33,
+			slot: "handheld",
 			name: "spoon",
 			name_cap: "Spoon",
 			variable: "spoon",
@@ -1039,6 +1073,7 @@ function initHandheld() {
 		},
 		{
 			index: 34,
+			slot: "handheld",
 			name: "cream bun",
 			name_cap: "Cream bun",
 			variable: "creambun",
@@ -1062,6 +1097,7 @@ function initHandheld() {
 		},
 		{
 			index: 35,
+			slot: "handheld",
 			name: "ornate telescope",
 			name_cap: "Ornate telescope",
 			variable: "ornatetelescope",
@@ -1085,6 +1121,7 @@ function initHandheld() {
 		},
 		{
 			index: 36,
+			slot: "handheld",
 			name: "hand of cards",
 			name_cap: "Hand of cards",
 			variable: "cards",
@@ -1134,6 +1171,7 @@ function initHandheld() {
 		},
 		{
 			index: 37,
+			slot: "handheld",
 			name: "cane",
 			name_cap: "Cane",
 			variable: "cane",
@@ -1167,6 +1205,7 @@ function initHandheld() {
 		},
 		{
 			index: 38,
+			slot: "handheld",
 			name: "forearm crutch",
 			name_cap: "Forearm crutch",
 			variable: "crutch",
@@ -1200,6 +1239,7 @@ function initHandheld() {
 		},
 		{
 			index: 39,
+			slot: "handheld",
 			name: "bottle of sunscreen",
 			name_cap: "Bottle of sunscreen",
 			variable: "sunscreen",
@@ -1223,6 +1263,7 @@ function initHandheld() {
 		},
 		{
 			index: 40,
+			slot: "handheld",
 			name: "scrap of fabric",
 			name_cap: "Scrap of fabric",
 			variable: "rag",
@@ -1246,6 +1287,7 @@ function initHandheld() {
 		},
 		{
 			index: 41,
+			slot: "handheld",
 			name: "pill bottle",
 			name_cap: "Pill bottle",
 			variable: "pill bottle",
@@ -1269,6 +1311,7 @@ function initHandheld() {
 		},
 		{
 			index: 42,
+			slot: "handheld",
 			name: "paintbrush",
 			name_cap: "Paintbrush",
 			variable: "paintbrush",
@@ -1292,6 +1335,7 @@ function initHandheld() {
 		},
 		{
 			index: 43,
+			slot: "handheld",
 			name: "net",
 			name_cap: "Net",
 			variable: "net",
@@ -1315,6 +1359,7 @@ function initHandheld() {
 		},
 		{
 			index: 44,
+			slot: "handheld",
 			name: "bottle of lube",
 			name_cap: "Bottle of lube",
 			variable: "lube",
@@ -1338,6 +1383,7 @@ function initHandheld() {
 		},
 		{
 			index: 45,
+			slot: "handheld",
 			name: "breast pump",
 			name_cap: "Breast pump",
 			variable: "breast pump",
@@ -1361,6 +1407,7 @@ function initHandheld() {
 		},
 		{
 			index: 46,
+			slot: "handheld",
 			name: "can of hairspray",
 			name_cap: "Can of hairspray",
 			variable: "hairspray",
@@ -1384,6 +1431,7 @@ function initHandheld() {
 		},
 		{
 			index: 47,
+			slot: "handheld",
 			name: "bottle of hair gel",
 			name_cap: "Bottle of hair gel",
 			variable: "hairgel",
@@ -1407,6 +1455,7 @@ function initHandheld() {
 		},
 		{
 			index: 48,
+			slot: "handheld",
 			name: "bottle of hair dye",
 			name_cap: "Bottle of hair dye",
 			variable: "hairdye",
@@ -1430,6 +1479,7 @@ function initHandheld() {
 		},
 		{
 			index: 49,
+			slot: "handheld",
 			name: "dummy",
 			name_cap: "Dummy",
 			variable: "dummy",
@@ -1453,6 +1503,7 @@ function initHandheld() {
 		},
 		{
 			index: 50,
+			slot: "handheld",
 			name: "baby rattle",
 			name_cap: "Baby rattle",
 			variable: "rattle",
@@ -1476,6 +1527,7 @@ function initHandheld() {
 		},
 		{
 			index: 51,
+			slot: "handheld",
 			name: "toy car",
 			name_cap: "Toy car",
 			variable: "car",
@@ -1499,6 +1551,7 @@ function initHandheld() {
 		},
 		{
 			index: 52,
+			slot: "handheld",
 			name: "stuffed bear",
 			name_cap: "Stuffed bear",
 			variable: "bear",
@@ -1524,6 +1577,7 @@ function initHandheld() {
 		},
 		{
 			index: 53,
+			slot: "handheld",
 			name: "tray",
 			name_cap: "Tray",
 			variable: "tray",
@@ -1546,6 +1600,7 @@ function initHandheld() {
 		},
 		{
 			index: 54,
+			slot: "handheld",
 			name: "trash bag",
 			name_cap: "Trash bag",
 			variable: "trash bag",
@@ -1570,6 +1625,7 @@ function initHandheld() {
 		},
 		{
 			index: 55,
+			slot: "handheld",
 			name: "can of spray paint",
 			name_cap: "Can of spray paint",
 			variable: "spray paint",
@@ -1593,6 +1649,7 @@ function initHandheld() {
 		},
 		{
 			index: 56,
+			slot: "handheld",
 			name: "bar of soap",
 			name_cap: "Bar of soap",
 			variable: "soap",
@@ -1615,6 +1672,7 @@ function initHandheld() {
 		},
 		{
 			index: 57,
+			slot: "handheld",
 			name: "love locket",
 			name_cap: "Love locket",
 			variable: "love locket",
@@ -1638,6 +1696,7 @@ function initHandheld() {
 		},
 		{
 			index: 58,
+			slot: "handheld",
 			name: "textbook",
 			name_cap: "Textbook",
 			variable: "textbook",
@@ -1665,6 +1724,7 @@ function initHandheld() {
 		},
 		{
 			index: 59,
+			slot: "handheld",
 			name: "textbook",
 			name_cap: "Textbook",
 			variable: "open textbook",
@@ -1692,6 +1752,7 @@ function initHandheld() {
 		},
 		{
 			index: 60,
+			slot: "handheld",
 			name: "book",
 			name_cap: "Book",
 			variable: "book",
@@ -1718,6 +1779,7 @@ function initHandheld() {
 		},
 		{
 			index: 61,
+			slot: "handheld",
 			name: "book",
 			name_cap: "Book",
 			variable: "open book",
@@ -1744,6 +1806,7 @@ function initHandheld() {
 		},
 		{
 			index: 62,
+			slot: "handheld",
 			name: "plate of sausage rolls",
 			name_cap: "Plate of sausage rolls",
 			variable: "sausage rolls",
@@ -1767,6 +1830,7 @@ function initHandheld() {
 		},
 		{
 			index: 63,
+			slot: "handheld",
 			name: "plate of scones",
 			name_cap: "Plate of scones",
 			variable: "scone plate",
@@ -1790,6 +1854,7 @@ function initHandheld() {
 		},
 		{
 			index: 64,
+			slot: "handheld",
 			name: "plate of biscuits",
 			name_cap: "Plate of biscuits",
 			variable: "biscuit plate",
@@ -1815,6 +1880,7 @@ function initHandheld() {
 		},
 		{
 			index: 65,
+			slot: "handheld",
 			name: "soufflé",
 			name_cap: "Soufflé",
 			variable: "souffle",
@@ -1838,6 +1904,7 @@ function initHandheld() {
 		},
 		{
 			index: 66,
+			slot: "handheld",
 			name: "cake",
 			name_cap: "Cake",
 			variable: "cake",
@@ -1863,6 +1930,7 @@ function initHandheld() {
 		},
 		{
 			index: 67,
+			slot: "handheld",
 			name: "stuffing",
 			name_cap: "Stuffing",
 			variable: "stuffing",
@@ -1886,6 +1954,7 @@ function initHandheld() {
 		},
 		{
 			index: 68,
+			slot: "handheld",
 			name: "plate of sweet and sour chicken",
 			name_cap: "Plate of sweet and sour chicken",
 			variable: "sweet and sour",
@@ -1909,6 +1978,7 @@ function initHandheld() {
 		},
 		{
 			index: 69,
+			slot: "handheld",
 			name: "swiss roll",
 			name_cap: "Swiss roll",
 			variable: "swiss roll",
@@ -1932,6 +2002,7 @@ function initHandheld() {
 		},
 		{
 			index: 70,
+			slot: "handheld",
 			name: "blood lemon",
 			name_cap: "Blood lemon",
 			variable: "blood lemon",
@@ -1955,6 +2026,7 @@ function initHandheld() {
 		},
 		{
 			index: 71,
+			slot: "handheld",
 			name: "lemon",
 			name_cap: "Lemon",
 			variable: "lemon",
@@ -1978,6 +2050,7 @@ function initHandheld() {
 		},
 		{
 			index: 72,
+			slot: "handheld",
 			name: "apple",
 			name_cap: "Apple",
 			variable: "apple",
@@ -2001,6 +2074,7 @@ function initHandheld() {
 		},
 		{
 			index: 73,
+			slot: "handheld",
 			name: "banana",
 			name_cap: "Banana",
 			variable: "banana",
@@ -2024,6 +2098,7 @@ function initHandheld() {
 		},
 		{
 			index: 74,
+			slot: "handheld",
 			name: "blackberry",
 			name_cap: "Blackberry",
 			variable: "blackberry",
@@ -2047,6 +2122,7 @@ function initHandheld() {
 		},
 		{
 			index: 75,
+			slot: "handheld",
 			name: "orange",
 			name_cap: "Orange",
 			variable: "orange",
@@ -2070,6 +2146,7 @@ function initHandheld() {
 		},
 		{
 			index: 76,
+			slot: "handheld",
 			name: "peach",
 			name_cap: "Peach",
 			variable: "peach",
@@ -2093,6 +2170,7 @@ function initHandheld() {
 		},
 		{
 			index: 77,
+			slot: "handheld",
 			name: "pear",
 			name_cap: "Pear",
 			variable: "pear",
@@ -2116,6 +2194,7 @@ function initHandheld() {
 		},
 		{
 			index: 78,
+			slot: "handheld",
 			name: "honeycomb",
 			name_cap: "Honeycomb",
 			variable: "honeycomb",
@@ -2139,6 +2218,7 @@ function initHandheld() {
 		},
 		{
 			index: 79,
+			slot: "handheld",
 			name: "strawberry",
 			name_cap: "Strawberry",
 			variable: "strawberry",
@@ -2162,6 +2242,7 @@ function initHandheld() {
 		},
 		{
 			index: 80,
+			slot: "handheld",
 			name: "plum",
 			name_cap: "Plum",
 			variable: "plum",
@@ -2185,6 +2266,7 @@ function initHandheld() {
 		},
 		{
 			index: 81,
+			slot: "handheld",
 			name: "bottle",
 			name_cap: "Bottle",
 			variable: "milk bottle",
@@ -2211,6 +2293,7 @@ function initHandheld() {
 		},
 		{
 			index: 82,
+			slot: "handheld",
 			name: "salad",
 			name_cap: "Salad",
 			variable: "salad",
@@ -2234,6 +2317,7 @@ function initHandheld() {
 		},
 		{
 			index: 83,
+			slot: "handheld",
 			name: "burger",
 			name_cap: "Burger",
 			variable: "burger",
@@ -2259,6 +2343,7 @@ function initHandheld() {
 		},
 		{
 			index: 84,
+			slot: "handheld",
 			name: "plate of fish and chips",
 			name_cap: "Plate of fish and chips",
 			variable: "fish and chips",
@@ -2282,6 +2367,7 @@ function initHandheld() {
 		},
 		{
 			index: 85,
+			slot: "handheld",
 			name: "roast dinner",
 			name_cap: "Roast dinner",
 			variable: "roast dinner",
@@ -2305,6 +2391,7 @@ function initHandheld() {
 		},
 		{
 			index: 86,
+			slot: "handheld",
 			name: "mushroom",
 			name_cap: "Mushroom",
 			variable: "mushroom",
@@ -2328,6 +2415,7 @@ function initHandheld() {
 		},
 		{
 			index: 87,
+			slot: "handheld",
 			name: "wolfshroom",
 			name_cap: "Wolfshroom",
 			variable: "wolfshroom",
@@ -2351,6 +2439,7 @@ function initHandheld() {
 		},
 		{
 			index: 88,
+			slot: "handheld",
 			name: "ghostshroom",
 			name_cap: "Ghostshroom",
 			variable: "ghostshroom",
@@ -2374,6 +2463,7 @@ function initHandheld() {
 		},
 		{
 			index: 89,
+			slot: "handheld",
 			name: "pink mushroom",
 			name_cap: "Pink mushroom",
 			variable: "pinkshroom",
@@ -2397,6 +2487,7 @@ function initHandheld() {
 		},
 		{
 			index: 90,
+			slot: "handheld",
 			name: "jar of pink fluid",
 			name_cap: "Jar of pink fluid",
 			variable: "aphrodisiac jar",
@@ -2420,6 +2511,7 @@ function initHandheld() {
 		},
 		{
 			index: 91,
+			slot: "handheld",
 			name: "condom",
 			name_cap: "Condom",
 			variable: "condom",
@@ -2443,6 +2535,7 @@ function initHandheld() {
 		},
 		{
 			index: 92,
+			slot: "handheld",
 			name: "black box",
 			name_cap: "Black box",
 			variable: "black box",
@@ -2466,6 +2559,7 @@ function initHandheld() {
 		},
 		{
 			index: 93,
+			slot: "handheld",
 			name: "egg",
 			name_cap: "Egg",
 			variable: "egg",
@@ -2491,6 +2585,7 @@ function initHandheld() {
 		},
 		{
 			index: 94,
+			slot: "handheld",
 			name: "chocolate bar",
 			name_cap: "Chocolate bar",
 			variable: "chocolate bar",
@@ -2514,6 +2609,7 @@ function initHandheld() {
 		},
 		{
 			index: 95,
+			slot: "handheld",
 			name: "bucket of candy",
 			name_cap: "Bucket of candy",
 			variable: "halloween",
@@ -2537,6 +2633,7 @@ function initHandheld() {
 		},
 		{
 			index: 96,
+			slot: "handheld",
 			name: "sucker",
 			name_cap: "Sucker",
 			variable: "sucker",
@@ -2560,6 +2657,7 @@ function initHandheld() {
 		},
 		{
 			index: 97,
+			slot: "handheld",
 			name: "travel cup",
 			name_cap: "Travel cup",
 			variable: "travel cup",
@@ -2585,6 +2683,7 @@ function initHandheld() {
 		},
 		{
 			index: 98,
+			slot: "handheld",
 			name: "glass of juice",
 			name_cap: "Glass of juice",
 			variable: "juice",
@@ -2608,6 +2707,7 @@ function initHandheld() {
 		},
 		{
 			index: 99,
+			slot: "handheld",
 			name: "key",
 			name_cap: "Key",
 			variable: "key",
@@ -2633,6 +2733,7 @@ function initHandheld() {
 		},
 		{
 			index: 100,
+			slot: "handheld",
 			name: "razor",
 			name_cap: "Razor",
 			variable: "razor",
@@ -2656,6 +2757,7 @@ function initHandheld() {
 		},
 		{
 			index: 101,
+			slot: "handheld",
 			name: "solo cup",
 			name_cap: "Solo cup",
 			variable: "solo cup",
@@ -2679,6 +2781,7 @@ function initHandheld() {
 		},
 		{
 			index: 102,
+			slot: "handheld",
 			name: "salve jar",
 			name_cap: "Salve jar",
 			variable: "salve",
@@ -2702,6 +2805,7 @@ function initHandheld() {
 		},
 		{
 			index: 103,
+			slot: "handheld",
 			name: "whisk",
 			name_cap: "Whisk",
 			variable: "whisk",
@@ -2725,6 +2829,7 @@ function initHandheld() {
 		},
 		{
 			index: 104,
+			slot: "handheld",
 			name: "candy box",
 			name_cap: "Candy box",
 			variable: "candy box",
@@ -2748,6 +2853,7 @@ function initHandheld() {
 		},
 		{
 			index: 105,
+			slot: "handheld",
 			name: "watering can",
 			name_cap: "Watering can",
 			variable: "watering can",
@@ -2771,6 +2877,7 @@ function initHandheld() {
 		},
 		{
 			index: 106,
+			slot: "handheld",
 			name: "broomstick",
 			name_cap: "Broomstick",
 			variable: "witch broom",
@@ -2803,6 +2910,7 @@ function initHandheld() {
 		},
 		{
 			index: 107,
+			slot: "handheld",
 			name: "antique arrow",
 			name_cap: "Antique arrow",
 			variable: "arrow",
@@ -2826,6 +2934,7 @@ function initHandheld() {
 		},
 		{
 			index: 108,
+			slot: "handheld",
 			name: "antique artillery shell",
 			name_cap: "Antique artillery shell",
 			variable: "artillery",
@@ -2849,6 +2958,7 @@ function initHandheld() {
 		},
 		{
 			index: 109,
+			slot: "handheld",
 			name: "antique bell",
 			name_cap: "Antique bell",
 			variable: "bell",
@@ -2872,6 +2982,7 @@ function initHandheld() {
 		},
 		{
 			index: 110,
+			slot: "handheld",
 			name: "antique brass statuette",
 			name_cap: "Antique brass statuette",
 			variable: "brass statuette",
@@ -2895,6 +3006,7 @@ function initHandheld() {
 		},
 		{
 			index: 111,
+			slot: "handheld",
 			name: "antique bullet",
 			name_cap: "Antique bullet",
 			variable: "bullet",
@@ -2918,6 +3030,7 @@ function initHandheld() {
 		},
 		{
 			index: 112,
+			slot: "handheld",
 			name: "antique candlestick",
 			name_cap: "Antique candlestick",
 			variable: "candlestick",
@@ -2941,6 +3054,7 @@ function initHandheld() {
 		},
 		{
 			index: 113,
+			slot: "handheld",
 			name: "antique cane",
 			name_cap: "Antique cane",
 			variable: "sword cane",
@@ -2965,6 +3079,7 @@ function initHandheld() {
 		},
 		{
 			index: 114,
+			slot: "handheld",
 			name: "antique chastity belt",
 			name_cap: "Antique chastity belt",
 			variable: "chastity",
@@ -2988,6 +3103,7 @@ function initHandheld() {
 		},
 		{
 			index: 115,
+			slot: "handheld",
 			name: "antique chocolate bar",
 			name_cap: "Antique chocolate bar",
 			variable: "chocolate",
@@ -3011,6 +3127,7 @@ function initHandheld() {
 		},
 		{
 			index: 116,
+			slot: "handheld",
 			name: "antique copper coin",
 			name_cap: "Antique copper coin",
 			variable: "copper coin",
@@ -3034,6 +3151,7 @@ function initHandheld() {
 		},
 		{
 			index: 117,
+			slot: "handheld",
 			name: "antique copper compass",
 			name_cap: "Antique copper compass",
 			variable: "copper compass",
@@ -3057,6 +3175,7 @@ function initHandheld() {
 		},
 		{
 			index: 118,
+			slot: "handheld",
 			name: "antique copper ring",
 			name_cap: "Antique copper ring",
 			variable: "copper ring",
@@ -3080,6 +3199,7 @@ function initHandheld() {
 		},
 		{
 			index: 119,
+			slot: "handheld",
 			name: "antique coral ring",
 			name_cap: "Antique coral ring",
 			variable: "coral ring",
@@ -3103,6 +3223,7 @@ function initHandheld() {
 		},
 		{
 			index: 120,
+			slot: "handheld",
 			name: "antique crystal",
 			name_cap: "Antique crystal",
 			variable: "crystal",
@@ -3126,6 +3247,7 @@ function initHandheld() {
 		},
 		{
 			index: 121,
+			slot: "handheld",
 			name: "antique pink crystal",
 			name_cap: "Antique pink crystal",
 			variable: "crystal pink",
@@ -3149,6 +3271,7 @@ function initHandheld() {
 		},
 		{
 			index: 122,
+			slot: "handheld",
 			name: "antique cup",
 			name_cap: "Antique cup",
 			variable: "cup",
@@ -3172,6 +3295,7 @@ function initHandheld() {
 		},
 		{
 			index: 123,
+			slot: "handheld",
 			name: "antique cutlass",
 			name_cap: "Antique cutlass",
 			variable: "cutlass",
@@ -3195,6 +3319,7 @@ function initHandheld() {
 		},
 		{
 			index: 124,
+			slot: "handheld",
 			name: "antique dagger",
 			name_cap: "Antique dagger",
 			variable: "dagger",
@@ -3218,6 +3343,7 @@ function initHandheld() {
 		},
 		{
 			index: 125,
+			slot: "handheld",
 			name: "antique diamond",
 			name_cap: "Antique diamond",
 			variable: "diamond",
@@ -3241,6 +3367,7 @@ function initHandheld() {
 		},
 		{
 			index: 126,
+			slot: "handheld",
 			name: "antique medical aid",
 			name_cap: "Antique medical aid",
 			variable: "antique dildo",
@@ -3264,6 +3391,7 @@ function initHandheld() {
 		},
 		{
 			index: 127,
+			slot: "handheld",
 			name: "antique disc",
 			name_cap: "Antique disc",
 			variable: "disc",
@@ -3287,6 +3415,7 @@ function initHandheld() {
 		},
 		{
 			index: 128,
+			slot: "handheld",
 			name: "antique figurine",
 			name_cap: "Antique figurine",
 			variable: "figurine",
@@ -3310,6 +3439,7 @@ function initHandheld() {
 		},
 		{
 			index: 129,
+			slot: "handheld",
 			name: "antique gem",
 			name_cap: "Antique gem",
 			variable: "forest gem",
@@ -3333,6 +3463,7 @@ function initHandheld() {
 		},
 		{
 			index: 130,
+			slot: "handheld",
 			name: "antique gold brooch",
 			name_cap: "Antique gold brooch",
 			variable: "gold brooch",
@@ -3356,6 +3487,7 @@ function initHandheld() {
 		},
 		{
 			index: 131,
+			slot: "handheld",
 			name: "antique gold coin",
 			name_cap: "Antique gold coin",
 			variable: "gold coin",
@@ -3379,6 +3511,7 @@ function initHandheld() {
 		},
 		{
 			index: 132,
+			slot: "handheld",
 			name: "antique grenade",
 			name_cap: "Antique grenade",
 			variable: "grenade",
@@ -3402,6 +3535,7 @@ function initHandheld() {
 		},
 		{
 			index: 133,
+			slot: "handheld",
 			name: "antique horn",
 			name_cap: "Antique horn",
 			variable: "horn",
@@ -3425,6 +3559,7 @@ function initHandheld() {
 		},
 		{
 			index: 134,
+			slot: "handheld",
 			name: "antique hourglass",
 			name_cap: "Antique hourglass",
 			variable: "hourglass",
@@ -3448,6 +3583,7 @@ function initHandheld() {
 		},
 		{
 			index: 135,
+			slot: "handheld",
 			name: "antique incense burner",
 			name_cap: "Antique incense burner",
 			variable: "incense",
@@ -3471,6 +3607,7 @@ function initHandheld() {
 		},
 		{
 			index: 136,
+			slot: "handheld",
 			name: "antique island arrow",
 			name_cap: "Antique island arrow",
 			variable: "islander arrow",
@@ -3494,6 +3631,7 @@ function initHandheld() {
 		},
 		{
 			index: 137,
+			slot: "handheld",
 			name: "antique ivory box",
 			name_cap: "Antique ivory box",
 			variable: "ivory box",
@@ -3517,6 +3655,7 @@ function initHandheld() {
 		},
 		{
 			index: 138,
+			slot: "handheld",
 			name: "antique ivory statuette",
 			name_cap: "Antique ivory statuette",
 			variable: "ivory statuette",
@@ -3540,6 +3679,7 @@ function initHandheld() {
 		},
 		{
 			index: 139,
+			slot: "handheld",
 			name: "antique map",
 			name_cap: "Antique map",
 			variable: "map",
@@ -3563,6 +3703,7 @@ function initHandheld() {
 		},
 		{
 			index: 140,
+			slot: "handheld",
 			name: "antique mine sign",
 			name_cap: "Antique mine sign",
 			variable: "bailey",
@@ -3586,6 +3727,7 @@ function initHandheld() {
 		},
 		{
 			index: 141,
+			slot: "handheld",
 			name: "antique rusted cutlass",
 			name_cap: "Antique rusted cutlass",
 			variable: "rusted cutlass",
@@ -3609,6 +3751,7 @@ function initHandheld() {
 		},
 		{
 			index: 142,
+			slot: "handheld",
 			name: "antique silver blade",
 			name_cap: "Antique silver blade",
 			variable: "silver blade",
@@ -3632,6 +3775,7 @@ function initHandheld() {
 		},
 		{
 			index: 143,
+			slot: "handheld",
 			name: "antique silver brooch",
 			name_cap: "Antique silver brooch",
 			variable: "silver brooch",
@@ -3655,6 +3799,7 @@ function initHandheld() {
 		},
 		{
 			index: 144,
+			slot: "handheld",
 			name: "antique silver coin",
 			name_cap: "Antique silver coin",
 			variable: "silver coin",
@@ -3678,6 +3823,7 @@ function initHandheld() {
 		},
 		{
 			index: 145,
+			slot: "handheld",
 			name: "antique silver compass",
 			name_cap: "Antique silver compass",
 			variable: "silver compass",
@@ -3701,6 +3847,7 @@ function initHandheld() {
 		},
 		{
 			index: 146,
+			slot: "handheld",
 			name: "antique silver crown",
 			name_cap: "Antique silver crown",
 			variable: "silver crown",
@@ -3724,6 +3871,7 @@ function initHandheld() {
 		},
 		{
 			index: 147,
+			slot: "handheld",
 			name: "antique silver dagger",
 			name_cap: "Antique silver dagger",
 			variable: "silver dagger",
@@ -3747,6 +3895,7 @@ function initHandheld() {
 		},
 		{
 			index: 148,
+			slot: "handheld",
 			name: "antique silver goblet",
 			name_cap: "Antique silver goblet",
 			variable: "silver goblet",
@@ -3770,6 +3919,7 @@ function initHandheld() {
 		},
 		{
 			index: 149,
+			slot: "handheld",
 			name: "antique silver mask",
 			name_cap: "Antique silver mask",
 			variable: "silver mask",
@@ -3793,6 +3943,7 @@ function initHandheld() {
 		},
 		{
 			index: 150,
+			slot: "handheld",
 			name: "antique silver ring",
 			name_cap: "Antique silver ring",
 			variable: "silver ring",
@@ -3816,6 +3967,7 @@ function initHandheld() {
 		},
 		{
 			index: 151,
+			slot: "handheld",
 			name: "antique tea caddy",
 			name_cap: "Antique tea caddy",
 			variable: "tea caddy",
@@ -3839,6 +3991,7 @@ function initHandheld() {
 		},
 		{
 			index: 152,
+			slot: "handheld",
 			name: "antique trilobite",
 			name_cap: "Antique trilobite",
 			variable: "trilobite",
@@ -3862,6 +4015,7 @@ function initHandheld() {
 		},
 		{
 			index: 153,
+			slot: "handheld",
 			name: "antique watch",
 			name_cap: "Antique watch",
 			variable: "watch",
@@ -3885,6 +4039,7 @@ function initHandheld() {
 		},
 		{
 			index: 154,
+			slot: "handheld",
 			name: "antique gold compass",
 			name_cap: "Antique gold compass",
 			variable: "gold compass",
@@ -3908,6 +4063,7 @@ function initHandheld() {
 		},
 		{
 			index: 155,
+			slot: "handheld",
 			name: "antique gold necklace",
 			name_cap: "Antique gold necklace",
 			variable: "gold necklace",
@@ -3931,6 +4087,7 @@ function initHandheld() {
 		},
 		{
 			index: 156,
+			slot: "handheld",
 			name: "antique gold ring",
 			name_cap: "Antique gold ring",
 			variable: "gold ring",
@@ -3954,6 +4111,7 @@ function initHandheld() {
 		},
 		{
 			index: 157,
+			slot: "handheld",
 			name: "antique fetish",
 			name_cap: "Antique fetish",
 			variable: "fetish",
@@ -3977,6 +4135,7 @@ function initHandheld() {
 		},
 		{
 			index: 158,
+			slot: "handheld",
 			name: "tube of parasite cream",
 			name_cap: "Tube of parasite cream",
 			variable: "parasite cream",
@@ -4000,6 +4159,7 @@ function initHandheld() {
 		},
 		{
 			index: 159,
+			slot: "handheld",
 			name: "truffle",
 			name_cap: "Truffle",
 			variable: "truffle",
@@ -4023,6 +4183,7 @@ function initHandheld() {
 		},
 		{
 			index: 160,
+			slot: "handheld",
 			name: "antique islander mask",
 			name_cap: "Antique islander mask",
 			variable: "islander mask",
@@ -4046,6 +4207,7 @@ function initHandheld() {
 		},
 		{
 			index: 161,
+			slot: "handheld",
 			name: "antique ivory necklace",
 			name_cap: "Antique ivory necklace",
 			variable: "ivory necklace",
@@ -4069,6 +4231,7 @@ function initHandheld() {
 		},
 		{
 			index: 162,
+			slot: "handheld",
 			name: "antique stone talisman",
 			name_cap: "Antique stone talisman",
 			variable: "stone talisman",
@@ -4092,6 +4255,7 @@ function initHandheld() {
 		},
 		{
 			index: 163,
+			slot: "handheld",
 			name: "some lichen",
 			name_cap: "Some lichen",
 			variable: "lichen",
@@ -4115,6 +4279,7 @@ function initHandheld() {
 		},
 		{
 			index: 164,
+			slot: "handheld",
 			name: "leaf",
 			name_cap: "Leaf",
 			variable: "leaf",
@@ -4138,6 +4303,7 @@ function initHandheld() {
 		},
 		{
 			index: 165,
+			slot: "handheld",
 			name: "stuffed owl",
 			name_cap: "Stuffed owl",
 			variable: "kylar owl",
@@ -4161,6 +4327,7 @@ function initHandheld() {
 		},
 		{
 			index: 166,
+			slot: "handheld",
 			name: "piece of junk",
 			name_cap: "Piece of junk",
 			variable: "junk",
@@ -4184,6 +4351,7 @@ function initHandheld() {
 		},
 		{
 			index: 167,
+			slot: "handheld",
 			name: "hoe",
 			name_cap: "Hoe",
 			variable: "hoe",
@@ -4207,6 +4375,7 @@ function initHandheld() {
 		},
 		{
 			index: 168,
+			slot: "handheld",
 			name: "torch",
 			name_cap: "Torch",
 			variable: "heavy duty torch",
@@ -4230,6 +4399,7 @@ function initHandheld() {
 		},
 		{
 			index: 169,
+			slot: "handheld",
 			name: "hammer",
 			name_cap: "Hammer",
 			variable: "hammer",
@@ -4255,6 +4425,7 @@ function initHandheld() {
 		},
 		{
 			index: 170,
+			slot: "handheld",
 			name: "toy robot",
 			name_cap: "Toy robot",
 			variable: "robot",
@@ -4278,6 +4449,7 @@ function initHandheld() {
 		},
 		{
 			index: 171,
+			slot: "handheld",
 			name: "plate of burnt food",
 			name_cap: "Plate of burnt food",
 			variable: "burnt",
@@ -4301,6 +4473,7 @@ function initHandheld() {
 		},
 		{
 			index: 172,
+			slot: "handheld",
 			name: "plate of unrecognisable slop",
 			name_cap: "Plate of unrecognisable slop",
 			variable: "slop",
@@ -4326,6 +4499,7 @@ function initHandheld() {
 		},
 		{
 			index: 173,
+			slot: "handheld",
 			name: "plush clown",
 			name_cap: "Plush clown",
 			variable: "clown toy",
@@ -4349,6 +4523,7 @@ function initHandheld() {
 		},
 		{
 			index: 174,
+			slot: "handheld",
 			name: "baby doll",
 			name_cap: "Baby doll",
 			variable: "baby doll",
@@ -4372,6 +4547,7 @@ function initHandheld() {
 		},
 		{
 			index: 175,
+			slot: "handheld",
 			name: "net",
 			name_cap: "Net",
 			variable: "handheld net",
@@ -4395,6 +4571,7 @@ function initHandheld() {
 		},
 		{
 			index: 176,
+			slot: "handheld",
 			name: "sponge",
 			name_cap: "Sponge",
 			variable: "sponge",
@@ -4418,6 +4595,7 @@ function initHandheld() {
 		},
 		{
 			index: 177,
+			slot: "handheld",
 			name: "gold bar",
 			name_cap: "Gold bar",
 			variable: "gold bar",
@@ -4441,6 +4619,7 @@ function initHandheld() {
 		},
 		{
 			index: 178,
+			slot: "handheld",
 			name: "furniture catalogue",
 			name_cap: "Furniture catalogue",
 			variable: "catalogue",
@@ -4464,6 +4643,7 @@ function initHandheld() {
 		},
 		{
 			index: 179,
+			slot: "handheld",
 			name: "makeshift fabric rope",
 			name_cap: "Makeshift fabric rope",
 			variable: "fabric rope",
@@ -4487,6 +4667,7 @@ function initHandheld() {
 		},
 		{
 			index: 180,
+			slot: "handheld",
 			name: "salmon wellington",
 			name_cap: "Salmon wellington",
 			variable: "salmon wellington",
@@ -4510,6 +4691,7 @@ function initHandheld() {
 		},
 		{
 			index: 181,
+			slot: "handheld",
 			name: "feather",
 			name_cap: "Feather",
 			variable: "feather",
@@ -4533,6 +4715,7 @@ function initHandheld() {
 		},
 		{
 			index: 182,
+			slot: "handheld",
 			name: "eyeshadow palette",
 			name_cap: "Eyeshadow palette",
 			variable: "eyeshadow",
@@ -4556,6 +4739,7 @@ function initHandheld() {
 		},
 		{
 			index: 183,
+			slot: "handheld",
 			name: "dog treat",
 			name_cap: "Dog treat",
 			variable: "dog treat",
@@ -4579,6 +4763,7 @@ function initHandheld() {
 		},
 		{
 			index: 184,
+			slot: "handheld",
 			name: "flapjack",
 			name_cap: "Flapjack",
 			variable: "flapjack",
@@ -4602,6 +4787,7 @@ function initHandheld() {
 		},
 		{
 			index: 185,
+			slot: "handheld",
 			name: "scone",
 			name_cap: "Scone",
 			variable: "scone",
@@ -4625,6 +4811,7 @@ function initHandheld() {
 		},
 		{
 			index: 186,
+			slot: "handheld",
 			name: "bag of crisps",
 			name_cap: "Bag of crisps",
 			variable: "crisps",
@@ -4648,6 +4835,7 @@ function initHandheld() {
 		},
 		{
 			index: 187,
+			slot: "handheld",
 			name: "box",
 			name_cap: "Box",
 			variable: "box",
@@ -4674,6 +4862,7 @@ function initHandheld() {
 		},
 		{
 			index: 188,
+			slot: "handheld",
 			name: "coconut",
 			name_cap: "Coconut",
 			variable: "coconut",
@@ -4697,6 +4886,7 @@ function initHandheld() {
 		},
 		{
 			index: 189,
+			slot: "handheld",
 			name: "donut",
 			name_cap: "Donut",
 			variable: "donut",
@@ -4722,6 +4912,7 @@ function initHandheld() {
 		},
 		{
 			index: 190,
+			slot: "handheld",
 			name: "chainsaw",
 			name_cap: "Chainsaw",
 			variable: "chainsaw",
@@ -4746,6 +4937,7 @@ function initHandheld() {
 		},
 		{
 			index: 191,
+			slot: "handheld",
 			name: "butt plug",
 			name_cap: "Butt plug",
 			variable: "butt plug",
@@ -4769,6 +4961,7 @@ function initHandheld() {
 		},
 		{
 			index: 192,
+			slot: "handheld",
 			name: "bullet vibe",
 			name_cap: "Bullet vibe",
 			variable: "bullet vibe",
@@ -4792,6 +4985,7 @@ function initHandheld() {
 		},
 		{
 			index: 193,
+			slot: "handheld",
 			name: "broom",
 			name_cap: "Broom",
 			variable: "broom",
@@ -4815,6 +5009,7 @@ function initHandheld() {
 		},
 		{
 			index: 194,
+			slot: "handheld",
 			name: "bracelet",
 			name_cap: "Bracelet",
 			variable: "bracelet",
@@ -4838,6 +5033,7 @@ function initHandheld() {
 		},
 		{
 			index: 195,
+			slot: "handheld",
 			name: "broccoli",
 			name_cap: "Broccoli",
 			variable: "broccoli",
@@ -4861,6 +5057,7 @@ function initHandheld() {
 		},
 		{
 			index: 196,
+			slot: "handheld",
 			name: "binder",
 			name_cap: "Binder",
 			variable: "binder",
@@ -4884,6 +5081,7 @@ function initHandheld() {
 		},
 		{
 			index: 197,
+			slot: "handheld",
 			name: "tin of food",
 			name_cap: "Tin of food",
 			variable: "food tin",
@@ -4909,6 +5107,7 @@ function initHandheld() {
 		},
 		{
 			index: 198,
+			slot: "handheld",
 			name: "bag of nuts",
 			name_cap: "Bag of nuts",
 			variable: "nuts",
@@ -4932,6 +5131,7 @@ function initHandheld() {
 		},
 		{
 			index: 199,
+			slot: "handheld",
 			name: "cabbage",
 			name_cap: "Cabbage",
 			variable: "cabbage",
@@ -4955,6 +5155,7 @@ function initHandheld() {
 		},
 		{
 			index: 200,
+			slot: "handheld",
 			name: "anal beads",
 			name_cap: "Anal beads",
 			variable: "anal beads",
@@ -4978,6 +5179,7 @@ function initHandheld() {
 		},
 		{
 			index: 201,
+			slot: "handheld",
 			name: "dumbbell",
 			name_cap: "Dumbbell",
 			variable: "weight",
@@ -5001,6 +5203,7 @@ function initHandheld() {
 		},
 		{
 			index: 202,
+			slot: "handheld",
 			name: "wallet",
 			name_cap: "Wallet",
 			variable: "wallet",
@@ -5024,6 +5227,7 @@ function initHandheld() {
 		},
 		{
 			index: 203,
+			slot: "handheld",
 			name: "used condom",
 			name_cap: "Used condom",
 			variable: "used condom",
@@ -5047,6 +5251,7 @@ function initHandheld() {
 		},
 		{
 			index: 204,
+			slot: "handheld",
 			name: "toothbrush",
 			name_cap: "Toothbrush",
 			variable: "toothbrush",
@@ -5070,6 +5275,7 @@ function initHandheld() {
 		},
 		{
 			index: 205,
+			slot: "handheld",
 			name: "toolbox",
 			name_cap: "Toolbox",
 			variable: "toolbox",
@@ -5094,6 +5300,7 @@ function initHandheld() {
 		},
 		{
 			index: 206,
+			slot: "handheld",
 			name: "ticket",
 			name_cap: "Ticket",
 			variable: "ticket",
@@ -5117,6 +5324,7 @@ function initHandheld() {
 		},
 		{
 			index: 207,
+			slot: "handheld",
 			name: "slug",
 			name_cap: "Slug",
 			variable: "tenta slug",
@@ -5140,6 +5348,7 @@ function initHandheld() {
 		},
 		{
 			index: 208,
+			slot: "handheld",
 			name: "strange fruit",
 			name_cap: "Strange fruit",
 			variable: "tenta fruit",
@@ -5163,6 +5372,7 @@ function initHandheld() {
 		},
 		{
 			index: 209,
+			slot: "handheld",
 			name: "tarp",
 			name_cap: "Tarp",
 			variable: "tarp",
@@ -5186,6 +5396,7 @@ function initHandheld() {
 		},
 		{
 			index: 210,
+			slot: "handheld",
 			name: "spear",
 			name_cap: "Spear",
 			variable: "tarnished spear",
@@ -5209,6 +5420,7 @@ function initHandheld() {
 		},
 		{
 			index: 211,
+			slot: "handheld",
 			name: "spear",
 			name_cap: "Spear",
 			variable: "restored spear",
@@ -5232,6 +5444,7 @@ function initHandheld() {
 		},
 		{
 			index: 212,
+			slot: "handheld",
 			name: "stroker",
 			name_cap: "Stroker",
 			variable: "stroker",
@@ -5255,6 +5468,7 @@ function initHandheld() {
 		},
 		{
 			index: 213,
+			slot: "handheld",
 			name: "stick",
 			name_cap: "Stick",
 			variable: "stick",
@@ -5278,6 +5492,7 @@ function initHandheld() {
 		},
 		{
 			index: 214,
+			slot: "handheld",
 			name: "piece of wood",
 			name_cap: "Piece of wood",
 			variable: "wood",
@@ -5301,6 +5516,7 @@ function initHandheld() {
 		},
 		{
 			index: 215,
+			slot: "handheld",
 			name: "pair of shears",
 			name_cap: "Pair of shears",
 			variable: "shears",
@@ -5324,6 +5540,7 @@ function initHandheld() {
 		},
 		{
 			index: 216,
+			slot: "handheld",
 			name: "dildo",
 			name_cap: "Dildo",
 			variable: "small dildo",
@@ -5347,6 +5564,7 @@ function initHandheld() {
 		},
 		{
 			index: 217,
+			slot: "handheld",
 			name: "silver bar",
 			name_cap: "Silver bar",
 			variable: "silver bar",
@@ -5370,6 +5588,7 @@ function initHandheld() {
 		},
 		{
 			index: 218,
+			slot: "handheld",
 			name: "shovel",
 			name_cap: "Shovel",
 			variable: "shovel",
@@ -5393,6 +5612,7 @@ function initHandheld() {
 		},
 		{
 			index: 219,
+			slot: "handheld",
 			name: "screwdriver",
 			name_cap: "Screwdriver",
 			variable: "screwdriver",
@@ -5416,6 +5636,7 @@ function initHandheld() {
 		},
 		{
 			index: 220,
+			slot: "handheld",
 			name: "sandwich",
 			name_cap: "Sandwich",
 			variable: "sandwich",
@@ -5441,6 +5662,7 @@ function initHandheld() {
 		},
 		{
 			index: 221,
+			slot: "handheld",
 			name: "ring",
 			name_cap: "Ring",
 			variable: "ring",
@@ -5464,6 +5686,7 @@ function initHandheld() {
 		},
 		{
 			index: 222,
+			slot: "handheld",
 			name: "chemical bottle",
 			name_cap: "Chemical bottle",
 			variable: "science flask",
@@ -5487,6 +5710,7 @@ function initHandheld() {
 		},
 		{
 			index: 223,
+			slot: "handheld",
 			name: "rat",
 			name_cap: "Rat",
 			variable: "rat",
@@ -5510,6 +5734,7 @@ function initHandheld() {
 		},
 		{
 			index: 224,
+			slot: "handheld",
 			name: "carnation",
 			name_cap: "Carnation",
 			variable: "carnation",
@@ -5533,6 +5758,7 @@ function initHandheld() {
 		},
 		{
 			index: 225,
+			slot: "handheld",
 			name: "pickaxe",
 			name_cap: "Pickaxe",
 			variable: "pickaxe",
@@ -5556,6 +5782,7 @@ function initHandheld() {
 		},
 		{
 			index: 226,
+			slot: "handheld",
 			name: "phone",
 			name_cap: "Phone",
 			variable: "phone",
@@ -5581,6 +5808,7 @@ function initHandheld() {
 		},
 		{
 			index: 227,
+			slot: "handheld",
 			name: "pepper spray",
 			name_cap: "Pepper spray",
 			variable: "pepperspray",
@@ -5604,6 +5832,7 @@ function initHandheld() {
 		},
 		{
 			index: 228,
+			slot: "handheld",
 			name: "pencil",
 			name_cap: "Pencil",
 			variable: "pencil",
@@ -5627,6 +5856,7 @@ function initHandheld() {
 		},
 		{
 			index: 229,
+			slot: "handheld",
 			name: "pen",
 			name_cap: "Pen",
 			variable: "pen",
@@ -5650,6 +5880,7 @@ function initHandheld() {
 		},
 		{
 			index: 230,
+			slot: "handheld",
 			name: "pasty",
 			name_cap: "Pasty",
 			variable: "pasty",
@@ -5673,6 +5904,7 @@ function initHandheld() {
 		},
 		{
 			index: 231,
+			slot: "handheld",
 			name: "stack of paper",
 			name_cap: "Stack of paper",
 			variable: "papers",
@@ -5696,6 +5928,7 @@ function initHandheld() {
 		},
 		{
 			index: 232,
+			slot: "handheld",
 			name: "carrot",
 			name_cap: "Carrot",
 			variable: "carrot",
@@ -5719,6 +5952,7 @@ function initHandheld() {
 		},
 		{
 			index: 233,
+			slot: "handheld",
 			name: "necklace",
 			name_cap: "Necklace",
 			variable: "necklace",
@@ -5742,6 +5976,7 @@ function initHandheld() {
 		},
 		{
 			index: 234,
+			slot: "handheld",
 			name: "tube of mascara",
 			name_cap: "Tube of mascara",
 			variable: "mascara",
@@ -5765,6 +6000,7 @@ function initHandheld() {
 		},
 		{
 			index: 235,
+			slot: "handheld",
 			name: "marker",
 			name_cap: "Marker",
 			variable: "marker",
@@ -5788,6 +6024,7 @@ function initHandheld() {
 		},
 		{
 			index: 236,
+			slot: "handheld",
 			name: "lurker leather",
 			name_cap: "Lurker leather",
 			variable: "lurker leather",
@@ -5811,6 +6048,7 @@ function initHandheld() {
 		},
 		{
 			index: 237,
+			slot: "handheld",
 			name: "lurker",
 			name_cap: "Lurker",
 			variable: "lurker",
@@ -5834,6 +6072,7 @@ function initHandheld() {
 		},
 		{
 			index: 238,
+			slot: "handheld",
 			name: "lockpick",
 			name_cap: "Lockpick",
 			variable: "lockpick",
@@ -5857,6 +6096,7 @@ function initHandheld() {
 		},
 		{
 			index: 239,
+			slot: "handheld",
 			name: "tube of lipstick",
 			name_cap: "Tube of lipstick",
 			variable: "lipstick",
@@ -5880,6 +6120,7 @@ function initHandheld() {
 		},
 		{
 			index: 240,
+			slot: "handheld",
 			name: "dildo",
 			name_cap: "Dildo",
 			variable: "dildo",
@@ -5903,6 +6144,7 @@ function initHandheld() {
 		},
 		{
 			index: 241,
+			slot: "handheld",
 			name: "pair of shears",
 			name_cap: "Pair of shears",
 			variable: "hedge shears",
@@ -5927,6 +6169,7 @@ function initHandheld() {
 		},
 		{
 			index: 242,
+			slot: "handheld",
 			name: "wine bottle",
 			name_cap: "Wine bottle",
 			variable: "wine bottle",
@@ -5952,6 +6195,7 @@ function initHandheld() {
 		},
 		{
 			index: 243,
+			slot: "handheld",
 			name: "volleyball",
 			name_cap: "Volleyball",
 			variable: "volleyball",
@@ -5975,6 +6219,7 @@ function initHandheld() {
 		},
 		{
 			index: 244,
+			slot: "handheld",
 			name: "glowstick",
 			name_cap: "Glowstick",
 			variable: "glowstick",
@@ -6007,6 +6252,7 @@ function initHandheld() {
 		},
 		{
 			index: 245,
+			slot: "handheld",
 			name: "pinwheel",
 			name_cap: "Pinwheel",
 			variable: "pinwheel",
@@ -6054,6 +6300,7 @@ function initHandheld() {
 		},
 		{
 			index: 246,
+			slot: "handheld",
 			name: "bucket",
 			name_cap: "Bucket",
 			variable: "bucket",
@@ -6078,6 +6325,7 @@ function initHandheld() {
 		},
 		{
 			index: 247,
+			slot: "handheld",
 			name: "brush",
 			name_cap: "Brush",
 			variable: "brush",
@@ -6101,6 +6349,7 @@ function initHandheld() {
 		},
 		{
 			index: 248,
+			slot: "handheld",
 			name: "dog bowl",
 			name_cap: "Dog bowl",
 			variable: "dog bowl",
@@ -6126,6 +6375,7 @@ function initHandheld() {
 		},
 		{
 			index: 249,
+			slot: "handheld",
 			name: "dog leash",
 			name_cap: "Dog leash",
 			variable: "dog leash",
@@ -6148,6 +6398,7 @@ function initHandheld() {
 		},
 		{
 			index: 250,
+			slot: "handheld",
 			name: "jar of jam",
 			name_cap: "Jam",
 			variable: "jam",
@@ -6173,6 +6424,7 @@ function initHandheld() {
 		},
 		{
 			index: 251,
+			slot: "handheld",
 			name: "notebook",
 			name_cap: "Notebook",
 			variable: "notebook",
@@ -6196,6 +6448,7 @@ function initHandheld() {
 		},
 		{
 			index: 252,
+			slot: "handheld",
 			name: "basket of fish",
 			name_cap: "Basket of fish",
 			variable: "basket of fish",
@@ -6219,6 +6472,7 @@ function initHandheld() {
 		},
 		{
 			index: 253,
+			slot: "handheld",
 			name: "blusher",
 			name_cap: "Blusher",
 			variable: "blusher",
@@ -6242,6 +6496,7 @@ function initHandheld() {
 		},
 		{
 			index: 254,
+			slot: "handheld",
 			name: "brown bag",
 			name_cap: "Brown bag",
 			variable: "brown bag",
@@ -6265,6 +6520,7 @@ function initHandheld() {
 		},
 		{
 			index: 255,
+			slot: "handheld",
 			name: "cheese-covered trout",
 			name_cap: "Cheese-covered trout",
 			variable: "cheese covered trout",
@@ -6288,6 +6544,7 @@ function initHandheld() {
 		},
 		{
 			index: 256,
+			slot: "handheld",
 			name: "china dish",
 			name_cap: "China dish",
 			variable: "china",
@@ -6311,6 +6568,7 @@ function initHandheld() {
 		},
 		{
 			index: 257,
+			slot: "handheld",
 			name: "cigar",
 			name_cap: "Cigar",
 			variable: "cigar",
@@ -6334,6 +6592,7 @@ function initHandheld() {
 		},
 		{
 			index: 258,
+			slot: "handheld",
 			name: "note",
 			name_cap: "Note",
 			variable: "note",
@@ -6357,6 +6616,7 @@ function initHandheld() {
 		},
 		{
 			index: 259,
+			slot: "handheld",
 			name: "first aid kit",
 			name_cap: "First aid kit",
 			variable: "first aid",
@@ -6381,6 +6641,7 @@ function initHandheld() {
 		},
 		{
 			index: 260,
+			slot: "handheld",
 			name: "tart",
 			name_cap: "Tart",
 			variable: "tart",
@@ -6406,6 +6667,7 @@ function initHandheld() {
 		},
 		{
 			index: 261,
+			slot: "handheld",
 			name: "knife",
 			name_cap: "Knife",
 			variable: "knife",
@@ -6431,6 +6693,7 @@ function initHandheld() {
 		},
 		{
 			index: 262,
+			slot: "handheld",
 			name: "ladle",
 			name_cap: "Ladle",
 			variable: "ladle",
@@ -6454,6 +6717,7 @@ function initHandheld() {
 		},
 		{
 			index: 263,
+			slot: "handheld",
 			name: "lunch tray",
 			name_cap: "Lunch tray",
 			variable: "lunch tray",
@@ -6477,6 +6741,7 @@ function initHandheld() {
 		},
 		{
 			index: 264,
+			slot: "handheld",
 			name: "plate of steak",
 			name_cap: "Plate of steak",
 			variable: "steak",
@@ -6500,6 +6765,7 @@ function initHandheld() {
 		},
 		{
 			index: 265,
+			slot: "handheld",
 			name: "drink",
 			name_cap: "Drink",
 			variable: "odd drink",
@@ -6526,6 +6792,7 @@ function initHandheld() {
 		},
 		{
 			index: 266,
+			slot: "handheld",
 			name: "pregnancy test",
 			name_cap: "Pregnancy test",
 			variable: "pregnancy test",
@@ -6549,6 +6816,7 @@ function initHandheld() {
 		},
 		{
 			index: 267,
+			slot: "handheld",
 			name: "bundle of laundry",
 			name_cap: "Bundle of laundry",
 			variable: "laundry",
@@ -6573,6 +6841,7 @@ function initHandheld() {
 		},
 		{
 			index: 268,
+			slot: "handheld",
 			name: "rope",
 			name_cap: "Rope",
 			variable: "rope",
@@ -6596,6 +6865,7 @@ function initHandheld() {
 		},
 		{
 			index: 269,
+			slot: "handheld",
 			name: "rope",
 			name_cap: "Rope",
 			variable: "rope climb",
@@ -6619,6 +6889,7 @@ function initHandheld() {
 		},
 		{
 			index: 270,
+			slot: "handheld",
 			name: "snowball",
 			name_cap: "Snowball",
 			variable: "snowball",
@@ -6642,6 +6913,7 @@ function initHandheld() {
 		},
 		{
 			index: 271,
+			slot: "handheld",
 			name: "soft drink can",
 			name_cap: "Soft drink can",
 			variable: "soft drink can",
@@ -6665,6 +6937,7 @@ function initHandheld() {
 		},
 		{
 			index: 272,
+			slot: "handheld",
 			name: "bowl",
 			name_cap: "bowl",
 			variable: "soup bowl",
@@ -6691,6 +6964,7 @@ function initHandheld() {
 		},
 		{
 			index: 273,
+			slot: "handheld",
 			name: "packet of sweets",
 			name_cap: "Packet of sweets",
 			variable: "packet of sweets",
@@ -6714,6 +6988,7 @@ function initHandheld() {
 		},
 		{
 			index: 274,
+			slot: "handheld",
 			name: "thermos",
 			name_cap: "Thermos",
 			variable: "thermos",
@@ -6739,6 +7014,7 @@ function initHandheld() {
 		},
 		{
 			index: 275,
+			slot: "handheld",
 			name: "flask",
 			name_cap: "Flask",
 			variable: "flask",
@@ -6762,6 +7038,7 @@ function initHandheld() {
 		},
 		{
 			index: 276,
+			slot: "handheld",
 			name: "wooden spoon",
 			name_cap: "Wooden spoon",
 			variable: "wooden spoon",
@@ -6785,6 +7062,7 @@ function initHandheld() {
 		},
 		{
 			index: 277,
+			slot: "handheld",
 			name: "daisy",
 			name_cap: "Daisy",
 			variable: "daisy",
@@ -6808,6 +7086,7 @@ function initHandheld() {
 		},
 		{
 			index: 278,
+			slot: "handheld",
 			name: "basket",
 			name_cap: "Basket",
 			variable: "basket",
@@ -6831,6 +7110,7 @@ function initHandheld() {
 		},
 		{
 			index: 279,
+			slot: "handheld",
 			name: "garlic",
 			name_cap: "Garlic",
 			variable: "garlic",
@@ -6854,6 +7134,7 @@ function initHandheld() {
 		},
 		{
 			index: 280,
+			slot: "handheld",
 			name: "lily",
 			name_cap: "Lily",
 			variable: "lily",
@@ -6877,6 +7158,7 @@ function initHandheld() {
 		},
 		{
 			index: 281,
+			slot: "handheld",
 			name: "lotus",
 			name_cap: "Lotus",
 			variable: "lotus",
@@ -6900,6 +7182,7 @@ function initHandheld() {
 		},
 		{
 			index: 282,
+			slot: "handheld",
 			name: "onion",
 			name_cap: "Onion",
 			variable: "onion",
@@ -6923,6 +7206,7 @@ function initHandheld() {
 		},
 		{
 			index: 283,
+			slot: "handheld",
 			name: "orchid",
 			name_cap: "Orchid",
 			variable: "orchid",
@@ -6946,6 +7230,7 @@ function initHandheld() {
 		},
 		{
 			index: 284,
+			slot: "handheld",
 			name: "giant pearl",
 			name_cap: "Giant pearl",
 			variable: "oyster pearl",
@@ -6969,6 +7254,7 @@ function initHandheld() {
 		},
 		{
 			index: 285,
+			slot: "handheld",
 			name: "plumeria",
 			name_cap: "Plumeria",
 			variable: "plumeria",
@@ -6992,6 +7278,7 @@ function initHandheld() {
 		},
 		{
 			index: 286,
+			slot: "handheld",
 			name: "potato",
 			name_cap: "Potato",
 			variable: "potato",
@@ -7015,6 +7302,7 @@ function initHandheld() {
 		},
 		{
 			index: 287,
+			slot: "handheld",
 			name: "rose",
 			name_cap: "Rose",
 			variable: "rose",
@@ -7038,6 +7326,7 @@ function initHandheld() {
 		},
 		{
 			index: 288,
+			slot: "handheld",
 			name: "strange flower",
 			name_cap: "Strange flower",
 			variable: "strange flower",
@@ -7061,6 +7350,7 @@ function initHandheld() {
 		},
 		{
 			index: 289,
+			slot: "handheld",
 			name: "tulip",
 			name_cap: "Tulip",
 			variable: "tulip",
@@ -7084,6 +7374,7 @@ function initHandheld() {
 		},
 		{
 			index: 290,
+			slot: "handheld",
 			name: "turnip",
 			name_cap: "Turnip",
 			variable: "turnip",
@@ -7107,6 +7398,7 @@ function initHandheld() {
 		},
 		{
 			index: 291,
+			slot: "handheld",
 			name: "bacon",
 			name_cap: "Bacon",
 			variable: "bacon",
@@ -7130,6 +7422,7 @@ function initHandheld() {
 		},
 		{
 			index: 292,
+			slot: "handheld",
 			name: "bread",
 			name_cap: "Bread",
 			variable: "bread",
@@ -7153,6 +7446,7 @@ function initHandheld() {
 		},
 		{
 			index: 293,
+			slot: "handheld",
 			name: "stick of butter",
 			name_cap: "Stick of butter",
 			variable: "butter",
@@ -7176,6 +7470,7 @@ function initHandheld() {
 		},
 		{
 			index: 294,
+			slot: "handheld",
 			name: "cookie",
 			name_cap: "Cookie",
 			variable: "cookie",
@@ -7199,6 +7494,7 @@ function initHandheld() {
 		},
 		{
 			index: 295,
+			slot: "handheld",
 			name: "head of cauliflower",
 			name_cap: "Head of cauliflower",
 			variable: "cauliflower",
@@ -7222,6 +7518,7 @@ function initHandheld() {
 		},
 		{
 			index: 296,
+			slot: "handheld",
 			name: "cherry",
 			name_cap: "Cherry",
 			variable: "cherry",
@@ -7245,6 +7542,7 @@ function initHandheld() {
 		},
 		{
 			index: 297,
+			slot: "handheld",
 			name: "raw meat",
 			name_cap: "Raw meat",
 			variable: "meat",
@@ -7270,6 +7568,7 @@ function initHandheld() {
 		},
 		{
 			index: 298,
+			slot: "handheld",
 			name: "chilli pepper",
 			name_cap: "chilli pepper",
 			variable: "chilli pepper",
@@ -7293,6 +7592,7 @@ function initHandheld() {
 		},
 		{
 			index: 299,
+			slot: "handheld",
 			name: "plate of clams",
 			name_cap: "Plate of clams",
 			variable: "clams",
@@ -7316,6 +7616,7 @@ function initHandheld() {
 		},
 		{
 			index: 300,
+			slot: "handheld",
 			name: "cocoa powder",
 			name_cap: "Cocoa powder",
 			variable: "cocoa powder",
@@ -7339,6 +7640,7 @@ function initHandheld() {
 		},
 		{
 			index: 301,
+			slot: "handheld",
 			name: "biscuit",
 			name_cap: "Biscuit",
 			variable: "biscuit",
@@ -7364,6 +7666,7 @@ function initHandheld() {
 		},
 		{
 			index: 302,
+			slot: "handheld",
 			name: "cream",
 			name_cap: "Cream",
 			variable: "cream",
@@ -7387,6 +7690,7 @@ function initHandheld() {
 		},
 		{
 			index: 303,
+			slot: "handheld",
 			name: "date",
 			name_cap: "Date",
 			variable: "date",
@@ -7410,6 +7714,7 @@ function initHandheld() {
 		},
 		{
 			index: 304,
+			slot: "handheld",
 			name: "bag of flour",
 			name_cap: "Bag of flour",
 			variable: "flour",
@@ -7434,6 +7739,7 @@ function initHandheld() {
 		},
 		{
 			index: 305,
+			slot: "handheld",
 			name: "raw fish",
 			name_cap: "Raw fish",
 			variable: "fish",
@@ -7459,6 +7765,7 @@ function initHandheld() {
 		},
 		{
 			index: 306,
+			slot: "handheld",
 			name: "jar of honey",
 			name_cap: "Jar of honey",
 			variable: "honey",
@@ -7482,6 +7789,7 @@ function initHandheld() {
 		},
 		{
 			index: 307,
+			slot: "handheld",
 			name: "lime",
 			name_cap: "Lime",
 			variable: "lime",
@@ -7505,6 +7813,7 @@ function initHandheld() {
 		},
 		{
 			index: 308,
+			slot: "handheld",
 			name: "oats",
 			name_cap: "Oats",
 			variable: "oats",
@@ -7528,6 +7837,7 @@ function initHandheld() {
 		},
 		{
 			index: 309,
+			slot: "handheld",
 			name: "pastry dough",
 			name_cap: "Pastry dough",
 			variable: "pastry dough",
@@ -7551,6 +7861,7 @@ function initHandheld() {
 		},
 		{
 			index: 310,
+			slot: "handheld",
 			name: "pepper",
 			name_cap: "Pepper",
 			variable: "pepper",
@@ -7574,6 +7885,7 @@ function initHandheld() {
 		},
 		{
 			index: 311,
+			slot: "handheld",
 			name: "prawns",
 			name_cap: "Prawns",
 			variable: "prawns",
@@ -7597,6 +7909,7 @@ function initHandheld() {
 		},
 		{
 			index: 312,
+			slot: "handheld",
 			name: "salt",
 			name_cap: "Salt",
 			variable: "salt",
@@ -7620,6 +7933,7 @@ function initHandheld() {
 		},
 		{
 			index: 313,
+			slot: "handheld",
 			name: "sausage",
 			name_cap: "Sausage",
 			variable: "sausage",
@@ -7643,6 +7957,7 @@ function initHandheld() {
 		},
 		{
 			index: 314,
+			slot: "handheld",
 			name: "spatula",
 			name_cap: "Spatula",
 			variable: "spatula",
@@ -7666,6 +7981,7 @@ function initHandheld() {
 		},
 		{
 			index: 315,
+			slot: "handheld",
 			name: "spinach",
 			name_cap: "Spinach",
 			variable: "spinach",
@@ -7689,6 +8005,7 @@ function initHandheld() {
 		},
 		{
 			index: 316,
+			slot: "handheld",
 			name: "bag of sugar",
 			name_cap: "Bag of sugar",
 			variable: "sugar",
@@ -7713,6 +8030,7 @@ function initHandheld() {
 		},
 		{
 			index: 317,
+			slot: "handheld",
 			name: "tomato",
 			name_cap: "Tomato",
 			variable: "tomato",
@@ -7736,6 +8054,7 @@ function initHandheld() {
 		},
 		{
 			index: 318,
+			slot: "handheld",
 			name: "bottle of vegetable oil",
 			name_cap: "Bottle of vegetable oil",
 			variable: "vegetable oil",
@@ -7759,6 +8078,7 @@ function initHandheld() {
 		},
 		{
 			index: 319,
+			slot: "handheld",
 			name: "bowl of wheat",
 			name_cap: "Bowl of wheat",
 			variable: "wheat bowl",
@@ -7782,6 +8102,7 @@ function initHandheld() {
 		},
 		{
 			index: 320,
+			slot: "handheld",
 			name: "bag of rice",
 			name_cap: "Bag of rice",
 			variable: "rice",
@@ -7806,6 +8127,7 @@ function initHandheld() {
 		},
 		{
 			index: 321,
+			slot: "handheld",
 			name: "apple crumble",
 			name_cap: "Apple crumble",
 			variable: "apple crumble",
@@ -7829,6 +8151,7 @@ function initHandheld() {
 		},
 		{
 			index: 322,
+			slot: "handheld",
 			name: "apple strudel",
 			name_cap: "Apple strudel",
 			variable: "apple strudel",
@@ -7854,6 +8177,7 @@ function initHandheld() {
 		},
 		{
 			index: 323,
+			slot: "handheld",
 			name: "bowl of porridge",
 			name_cap: "Bowl of porridge",
 			variable: "porridge",
@@ -7877,6 +8201,7 @@ function initHandheld() {
 		},
 		{
 			index: 324,
+			slot: "handheld",
 			name: "banana bread",
 			name_cap: "Banana bread",
 			variable: "banana bread",
@@ -7900,6 +8225,7 @@ function initHandheld() {
 		},
 		{
 			index: 325,
+			slot: "handheld",
 			name: "bangers and mash",
 			name_cap: "Bangers and mash",
 			variable: "bangers and mash",
@@ -7923,6 +8249,7 @@ function initHandheld() {
 		},
 		{
 			index: 326,
+			slot: "handheld",
 			name: "beef wellington",
 			name_cap: "Beef wellington",
 			variable: "beef wellington",
@@ -7946,6 +8273,7 @@ function initHandheld() {
 		},
 		{
 			index: 327,
+			slot: "handheld",
 			name: "brownie",
 			name_cap: "Brownie",
 			variable: "brownie",
@@ -7969,6 +8297,7 @@ function initHandheld() {
 		},
 		{
 			index: 328,
+			slot: "handheld",
 			name: "slice of cake",
 			name_cap: "Slice of cake",
 			variable: "cake slice",
@@ -7994,6 +8323,7 @@ function initHandheld() {
 		},
 		{
 			index: 329,
+			slot: "handheld",
 			name: "cheesy cauliflower",
 			name_cap: "Cheesy cauliflower",
 			variable: "cauliflower cheese",
@@ -8017,6 +8347,7 @@ function initHandheld() {
 		},
 		{
 			index: 330,
+			slot: "handheld",
 			name: "cheese",
 			name_cap: "Cheese",
 			variable: "cheese",
@@ -8042,6 +8373,7 @@ function initHandheld() {
 		},
 		{
 			index: 331,
+			slot: "handheld",
 			name: "cheese and crackers",
 			name_cap: "Cheese and crackers",
 			variable: "cheese and crackers",
@@ -8065,6 +8397,7 @@ function initHandheld() {
 		},
 		{
 			index: 332,
+			slot: "handheld",
 			name: "buns",
 			name_cap: "buns",
 			variable: "buns",
@@ -8091,6 +8424,7 @@ function initHandheld() {
 		},
 		{
 			index: 333,
+			slot: "handheld",
 			name: "bun",
 			name_cap: "bun",
 			variable: "bun",
@@ -8117,6 +8451,7 @@ function initHandheld() {
 		},
 		{
 			index: 334,
+			slot: "handheld",
 			name: "chicken tikka masala",
 			name_cap: "Chicken tikka masala",
 			variable: "chicken tikka masala",
@@ -8140,6 +8475,7 @@ function initHandheld() {
 		},
 		{
 			index: 335,
+			slot: "handheld",
 			name: "chicken vindaloo",
 			name_cap: "Chicken vindaloo",
 			variable: "chicken vindaloo",
@@ -8163,6 +8499,7 @@ function initHandheld() {
 		},
 		{
 			index: 336,
+			slot: "handheld",
 			name: "chilli con carne",
 			name_cap: "chilli con carne",
 			variable: "chilli con carne",
@@ -8186,6 +8523,7 @@ function initHandheld() {
 		},
 		{
 			index: 337,
+			slot: "handheld",
 			name: "chips",
 			name_cap: "Chips",
 			variable: "chips",
@@ -8209,6 +8547,7 @@ function initHandheld() {
 		},
 		{
 			index: 338,
+			slot: "handheld",
 			name: "plate of chocolate chip cookies",
 			name_cap: "Plate of chocolate chip cookies",
 			variable: "cookie plate",
@@ -8232,6 +8571,7 @@ function initHandheld() {
 		},
 		{
 			index: 339,
+			slot: "handheld",
 			name: "samosas",
 			name_cap: "Samosas",
 			variable: "samosas",
@@ -8255,6 +8595,7 @@ function initHandheld() {
 		},
 		{
 			index: 340,
+			slot: "handheld",
 			name: "creme brulee",
 			name_cap: "Creme brulee",
 			variable: "creme brulee",
@@ -8278,6 +8619,7 @@ function initHandheld() {
 		},
 		{
 			index: 341,
+			slot: "handheld",
 			name: "plate of crumpets",
 			name_cap: "Plate of crumpets",
 			variable: "crumpets",
@@ -8301,6 +8643,7 @@ function initHandheld() {
 		},
 		{
 			index: 342,
+			slot: "handheld",
 			name: "plate of flapjacks",
 			name_cap: "Plate of flapjacks",
 			variable: "flapjacks",
@@ -8324,6 +8667,7 @@ function initHandheld() {
 		},
 		{
 			index: 343,
+			slot: "handheld",
 			name: "full English breakfast",
 			name_cap: "Full English breakfast",
 			variable: "full english",
@@ -8347,6 +8691,7 @@ function initHandheld() {
 		},
 		{
 			index: 344,
+			slot: "handheld",
 			name: "honeyed pork",
 			name_cap: "Honeyed pork",
 			variable: "honeyed pork",
@@ -8370,6 +8715,7 @@ function initHandheld() {
 		},
 		{
 			index: 345,
+			slot: "handheld",
 			name: "kedgeree",
 			name_cap: "Kedgeree",
 			variable: "kedgeree",
@@ -8393,6 +8739,7 @@ function initHandheld() {
 		},
 		{
 			index: 346,
+			slot: "handheld",
 			name: "lasagne",
 			name_cap: "Lasagne",
 			variable: "lasagne",
@@ -8416,6 +8763,7 @@ function initHandheld() {
 		},
 		{
 			index: 347,
+			slot: "handheld",
 			name: "slice of pie",
 			name_cap: "Slice of pie",
 			variable: "pie slice",
@@ -8441,6 +8789,7 @@ function initHandheld() {
 		},
 		{
 			index: 348,
+			slot: "handheld",
 			name: "plate of pasta",
 			name_cap: "Plate of pasta",
 			variable: "pasta plate",
@@ -8466,6 +8815,7 @@ function initHandheld() {
 		},
 		{
 			index: 349,
+			slot: "handheld",
 			name: "bowl of macaroni and cheese",
 			name_cap: "Bowl of macaroni and cheese",
 			variable: "macaroni and cheese",
@@ -8489,6 +8839,7 @@ function initHandheld() {
 		},
 		{
 			index: 350,
+			slot: "handheld",
 			name: "pie",
 			name_cap: "Pie",
 			variable: "pie",
@@ -8514,6 +8865,7 @@ function initHandheld() {
 		},
 		{
 			index: 351,
+			slot: "handheld",
 			name: "naan",
 			name_cap: "Naan",
 			variable: "naan",
@@ -8537,6 +8889,7 @@ function initHandheld() {
 		},
 		{
 			index: 352,
+			slot: "handheld",
 			name: "omelette",
 			name_cap: "Omelette",
 			variable: "omelette",
@@ -8562,6 +8915,7 @@ function initHandheld() {
 		},
 		{
 			index: 353,
+			slot: "handheld",
 			name: "onion bhaji",
 			name_cap: "Onion bhaji",
 			variable: "onion bhaji",
@@ -8585,6 +8939,7 @@ function initHandheld() {
 		},
 		{
 			index: 354,
+			slot: "handheld",
 			name: "peach panzanella",
 			name_cap: "Peach panzanella",
 			variable: "peach panzanella",
@@ -8608,6 +8963,7 @@ function initHandheld() {
 		},
 		{
 			index: 355,
+			slot: "handheld",
 			name: "pizza",
 			name_cap: "Pizza",
 			variable: "pizza",
@@ -8633,6 +8989,7 @@ function initHandheld() {
 		},
 		{
 			index: 356,
+			slot: "handheld",
 			name: "pudding",
 			name_cap: "Pudding",
 			variable: "pudding",
@@ -8658,6 +9015,7 @@ function initHandheld() {
 		},
 		{
 			index: 357,
+			slot: "handheld",
 			name: "slice of plum pudding",
 			name_cap: "Slice of plum pudding",
 			variable: "plum pudding",
@@ -8681,6 +9039,7 @@ function initHandheld() {
 		},
 		{
 			index: 358,
+			slot: "handheld",
 			name: "poached pear",
 			name_cap: "Poached pear",
 			variable: "poached pear",
@@ -8704,6 +9063,7 @@ function initHandheld() {
 		},
 		{
 			index: 359,
+			slot: "handheld",
 			name: "stack of potato pancakes",
 			name_cap: "Stack of potato pancakes",
 			variable: "potato pancakes",
@@ -8727,6 +9087,7 @@ function initHandheld() {
 		},
 		{
 			index: 360,
+			slot: "handheld",
 			name: "quiche",
 			name_cap: "Quiche",
 			variable: "quiche",
@@ -8750,6 +9111,7 @@ function initHandheld() {
 		},
 		{
 			index: 361,
+			slot: "handheld",
 			name: "quiche",
 			name_cap: "Quiche",
 			variable: "quiche",
@@ -8773,6 +9135,7 @@ function initHandheld() {
 		},
 		{
 			index: 362,
+			slot: "handheld",
 			name: "poppy",
 			name_cap: "Poppy",
 			variable: "poppy",
@@ -8796,6 +9159,7 @@ function initHandheld() {
 		},
 		{
 			index: 363,
+			slot: "handheld",
 			name: "chew toy",
 			name_cap: "Chew toy",
 			variable: "chew toy",
@@ -8821,6 +9185,7 @@ function initHandheld() {
 		},
 		{
 			index: 364,
+			slot: "handheld",
 			name: "signed cricket ball",
 			name_cap: "Signed cricket ball",
 			variable: "signed cricket ball",

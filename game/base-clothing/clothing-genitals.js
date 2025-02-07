@@ -5,6 +5,7 @@ function initGenitals() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "genitals",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -43,6 +44,7 @@ function initGenitals() {
 		},
 		{
 			index: 1,
+			slot: "genitals",
 			name: "chastity belt",
 			name_cap: "Chastity belt",
 			variable: "chastitybelt",
@@ -87,6 +89,7 @@ function initGenitals() {
 		},
 		{
 			index: 2,
+			slot: "genitals",
 			name: "chastity cage",
 			name_cap: "Chastity cage",
 			variable: "chastitycage",
@@ -157,6 +160,7 @@ function initGenitals() {
 		},
 		{
 			index: 3,
+			slot: "genitals",
 			name: "gold chastity belt",
 			name_cap: "Gold chastity belt",
 			variable: "goldchastitybelt",
@@ -201,6 +205,7 @@ function initGenitals() {
 		},
 		{
 			index: 4,
+			slot: "genitals",
 			name: "fetish chastity belt",
 			name_cap: "Fetish Chastity belt",
 			variable: "chastitybeltfetish",
@@ -249,6 +254,7 @@ function initGenitals() {
 		},
 		{
 			index: 5,
+			slot: "genitals",
 			name: "fetish chastity cage",
 			name_cap: "Fetish Chastity cage",
 			variable: "chastitycagefetish",
@@ -321,6 +327,7 @@ function initGenitals() {
 		},
 		{
 			index: 6,
+			slot: "genitals",
 			name: "small chastity cage",
 			name_cap: "Small Chastity cage",
 			variable: "smallchastitycage",
@@ -394,6 +401,7 @@ function initGenitals() {
 		},
 		{
 			index: 7,
+			slot: "genitals",
 			name: "flat chastity cage",
 			name_cap: "Flat Chastity cage",
 			variable: "flatchastitycage",
@@ -464,6 +472,7 @@ function initGenitals() {
 		},
 		{
 			index: 8,
+			slot: "genitals",
 			name: "chastity parasite",
 			name_cap: "chastity parasite",
 			variable: "slimechastitycage",

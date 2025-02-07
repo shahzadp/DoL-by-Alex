@@ -20,6 +20,7 @@ function initHead() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "head",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -51,6 +52,7 @@ function initHead() {
 		},
 		{
 			index: 1,
+			slot: "head",
 			name: "hairpin",
 			name_cap: "Hairpin",
 			variable: "hairpin",
@@ -83,6 +85,7 @@ function initHead() {
 		},
 		{
 			index: 2,
+			slot: "head",
 			name: "beanie",
 			name_cap: "Beanie",
 			variable: "beanie",
@@ -116,6 +119,7 @@ function initHead() {
 		},
 		{
 			index: 3,
+			slot: "head",
 			name: "bunny ears",
 			name_cap: "Bunny ears",
 			variable: "bunnyears",
@@ -147,6 +151,7 @@ function initHead() {
 		},
 		{
 			index: 4,
+			slot: "head",
 			name: "nun's veil",
 			name_cap: "Nun's veil",
 			variable: "nun",
@@ -181,6 +186,7 @@ function initHead() {
 		},
 		{
 			index: 5,
+			slot: "head",
 			name: "bow",
 			name_cap: "Bow",
 			variable: "bow",
@@ -213,6 +219,7 @@ function initHead() {
 		},
 		{
 			index: 6,
+			slot: "head",
 			name: "cap",
 			name_cap: "Cap",
 			variable: "cap",
@@ -247,6 +254,7 @@ function initHead() {
 		},
 		{
 			index: 7,
+			slot: "head",
 			name: "witch hat",
 			name_cap: "Witch hat",
 			variable: "witch",
@@ -281,6 +289,7 @@ function initHead() {
 		},
 		{
 			index: 8,
+			slot: "head",
 			name: "christmas hat",
 			name_cap: "Christmas hat",
 			variable: "christmas",
@@ -313,6 +322,7 @@ function initHead() {
 		},
 		{
 			index: 9,
+			slot: "head",
 			name: "chef hat",
 			name_cap: "Chef hat",
 			variable: "chef",
@@ -345,6 +355,7 @@ function initHead() {
 		},
 		{
 			index: 10,
+			slot: "head",
 			name: "cowboy hat",
 			name_cap: "Cowboy hat",
 			variable: "cowboy",
@@ -380,6 +391,7 @@ function initHead() {
 		},
 		{
 			index: 11,
+			slot: "head",
 			name: "fedora",
 			name_cap: "Fedora",
 			variable: "fedora",
@@ -413,6 +425,7 @@ function initHead() {
 		},
 		{
 			index: 12,
+			slot: "head",
 			name: "beatnik hat",
 			name_cap: "Beatnik hat",
 			variable: "beatnik",
@@ -445,6 +458,7 @@ function initHead() {
 		},
 		{
 			index: 13,
+			slot: "head",
 			name: "sou'wester",
 			name_cap: "Sou'wester",
 			variable: "sou",
@@ -477,6 +491,7 @@ function initHead() {
 		},
 		{
 			index: 14,
+			slot: "head",
 			name: "flower crown",
 			name_cap: "Flower crown",
 			variable: "flower",
@@ -507,6 +522,7 @@ function initHead() {
 		},
 		{
 			index: 15,
+			slot: "head",
 			name: "backwards cap",
 			name_cap: "Backwards cap",
 			variable: "backwardscap",
@@ -540,6 +556,7 @@ function initHead() {
 		},
 		{
 			index: 16,
+			slot: "head",
 			name: "alice band",
 			name_cap: "Alice band",
 			variable: "alice",
@@ -572,6 +589,7 @@ function initHead() {
 		},
 		{
 			index: 17,
+			slot: "head",
 			name: "straw hat",
 			name_cap: "Straw hat",
 			variable: "straw",
@@ -609,6 +627,7 @@ function initHead() {
 		},
 		{
 			index: 18,
+			slot: "head",
 			name: "straw flower hat",
 			name_cap: "Straw flower hat",
 			variable: "strawflower",
@@ -646,6 +665,7 @@ function initHead() {
 		},
 		{
 			index: 19,
+			slot: "head",
 			name: "maid band",
 			name_cap: "Maid band",
 			variable: "maid",
@@ -678,6 +698,7 @@ function initHead() {
 		},
 		{
 			index: 20,
+			slot: "head",
 			name: "bun covers",
 			name_cap: "Bun covers",
 			variable: "bun",
@@ -713,6 +734,7 @@ function initHead() {
 		},
 		{
 			index: 21,
+			slot: "head",
 			name: "headband",
 			name_cap: "Headband",
 			variable: "band",
@@ -745,6 +767,7 @@ function initHead() {
 		},
 		{
 			index: 22,
+			slot: "head",
 			name: "feathered cap",
 			name_cap: "Feathered cap",
 			variable: "feathered",
@@ -779,6 +802,7 @@ function initHead() {
 		},
 		{
 			index: 23,
+			slot: "head",
 			name: "large sailor's hat",
 			name_cap: "Large sailor's hat",
 			variable: "sailorbig",
@@ -813,6 +837,7 @@ function initHead() {
 		},
 		{
 			index: 24,
+			slot: "head",
 			name: "small sailor's hat",
 			name_cap: "Small sailor's hat",
 			variable: "sailorsmall",
@@ -846,6 +871,7 @@ function initHead() {
 		},
 		{
 			index: 25,
+			slot: "head",
 			name: "foreign football helmet",
 			name_cap: "Foreign football helmet",
 			variable: "football",
@@ -881,6 +907,7 @@ function initHead() {
 		},
 		{
 			index: 26,
+			slot: "head",
 			name: "big bow",
 			name_cap: "Big bow",
 			variable: "bigbow",
@@ -913,6 +940,7 @@ function initHead() {
 		},
 		{
 			index: 27,
+			slot: "head",
 			name: "riding helmet",
 			name_cap: "Riding helmet",
 			variable: "riding",
@@ -948,6 +976,7 @@ function initHead() {
 		},
 		{
 			index: 28,
+			slot: "head",
 			name: "top hat",
 			name_cap: "Top hat",
 			variable: "top",
@@ -983,6 +1012,7 @@ function initHead() {
 		},
 		{
 			index: 29,
+			slot: "head",
 			name: "umbrella hat",
 			name_cap: "Umbrella hat",
 			variable: "umbrella",
@@ -1017,6 +1047,7 @@ function initHead() {
 		},
 		{
 			index: 30,
+			slot: "head",
 			name: "racing helmet",
 			name_cap: "Racing helmet",
 			variable: "racing",
@@ -1053,6 +1084,7 @@ function initHead() {
 		},
 		{
 			index: 31,
+			slot: "head",
 			name: "feathered hair clip",
 			name_cap: "Feathered hair clip",
 			variable: "featheredhairclip",
@@ -1086,6 +1118,7 @@ function initHead() {
 		},
 		{
 			index: 32,
+			slot: "head",
 			name: "hoodie hood",
 			name_cap: "Hoodie hood",
 			variable: "hoodie",
@@ -1154,6 +1187,7 @@ function initHead() {
 		},
 		{
 			index: 33,
+			slot: "head",
 			name: "tam o' shanter",
 			name_cap: "Tam o' shanter",
 			variable: "tam",
@@ -1189,6 +1223,7 @@ function initHead() {
 		},
 		{
 			index: 34,
+			slot: "head",
 			name: "cat hat",
 			name_cap: "Cat hat",
 			variable: "cat",
@@ -1225,6 +1260,7 @@ function initHead() {
 		},
 		{
 			index: 35,
+			slot: "head",
 			name: "monster hood",
 			name_cap: "Monster hood",
 			variable: "monster",
@@ -1265,6 +1301,7 @@ function initHead() {
 		},
 		{
 			index: 36,
+			slot: "head",
 			name: "kitty ears",
 			name_cap: "Kitty ears",
 			variable: "kitty",
@@ -1302,6 +1339,7 @@ function initHead() {
 		},
 		{
 			index: 37,
+			slot: "head",
 			name: "mini snowman",
 			name_cap: "Mini snowman",
 			variable: "minisnowman",
@@ -1335,6 +1373,7 @@ function initHead() {
 		},
 		{
 			index: 38,
+			slot: "head",
 			name: "cow onesie hood",
 			name_cap: "Cow onesie hood",
 			variable: "cowonesie",
@@ -1372,6 +1411,7 @@ function initHead() {
 		},
 		{
 			index: 39,
+			slot: "head",
 			name: "baseball cap",
 			name_cap: "Baseball cap",
 			variable: "baseball",
@@ -1406,6 +1446,7 @@ function initHead() {
 		},
 		{
 			index: 40,
+			slot: "head",
 			name: "rose",
 			name_cap: "Rose",
 			variable: "rose",
@@ -1442,6 +1483,7 @@ function initHead() {
 		},
 		{
 			index: 41,
+			slot: "head",
 			name: "scarecrow hat",
 			name_cap: "Scarecrow hat",
 			variable: "scarecrow",
@@ -1473,6 +1515,7 @@ function initHead() {
 		},
 		{
 			index: 42,
+			slot: "head",
 			name: "fish hairpin",
 			name_cap: "Fish hairpin",
 			variable: "fishhairpin",
@@ -1505,6 +1548,7 @@ function initHead() {
 		},
 		{
 			index: 43,
+			slot: "head",
 			name: "pink nurse hat",
 			name_cap: "Pink nurse hat",
 			variable: "pinknurse",
@@ -1541,6 +1585,7 @@ function initHead() {
 		},
 		{
 			index: 44,
+			slot: "head",
 			name: "plastic nurse hat",
 			name_cap: "Plastic nurse hat",
 			variable: "plasticnurse",
@@ -1577,6 +1622,7 @@ function initHead() {
 		},
 		{
 			index: 45,
+			slot: "head",
 			name: "transparent nurse hat",
 			name_cap: "Transparent nurse hat",
 			variable: "transparentnurse",
@@ -1609,6 +1655,7 @@ function initHead() {
 		},
 		{
 			index: 46,
+			slot: "head",
 			name: "bunny headband",
 			name_cap: "Bunny headband",
 			variable: "bunband",
@@ -1641,6 +1688,7 @@ function initHead() {
 		},
 		{
 			index: 47,
+			slot: "head",
 			name: "daisy",
 			name_cap: "Daisy",
 			variable: "daisy",
@@ -1671,6 +1719,7 @@ function initHead() {
 		},
 		{
 			index: 48,
+			slot: "head",
 			name: "spirit mask",
 			name_cap: "Spirit mask",
 			variable: "spiritmask",
@@ -1705,6 +1754,7 @@ function initHead() {
 
 		{
 			index: 49,
+			slot: "head",
 			name: "raccoon cap",
 			name_cap: "Raccoon cap",
 			variable: "furcap m",
@@ -1743,6 +1793,7 @@ function initHead() {
 
 		{
 			index: 50,
+			slot: "head",
 			name: "fur cap",
 			name_cap: "Fur cap",
 			variable: "furcap f",
@@ -1783,6 +1834,7 @@ function initHead() {
 
 		{
 			index: 51,
+			slot: "head",
 			name: "conical hat",
 			name_cap: "Conical hat",
 			variable: "conicalhat",
@@ -1816,6 +1868,7 @@ function initHead() {
 
 		{
 			index: 52,
+			slot: "head",
 			name: "cat hoodie hood",
 			name_cap: "Cat hoodie hood",
 			variable: "cat hoodie",
@@ -1858,6 +1911,7 @@ function initHead() {
 
 		{
 			index: 53,
+			slot: "head",
 			name: "bat beanie",
 			name_cap: "Bat beanie",
 			variable: "bat beanie",
@@ -1895,6 +1949,7 @@ function initHead() {
 
 		{
 			index: 54,
+			slot: "head",
 			name: "mini pumpkin",
 			name_cap: "Mini pumpkin",
 			variable: "jackolantern",
@@ -1929,6 +1984,7 @@ function initHead() {
 
 		{
 			index: 55,
+			slot: "head",
 			name: "butterfly hairpin",
 			name_cap: "Butterfly hairpin",
 			variable: "butterflyhairpin",
@@ -1965,6 +2021,7 @@ function initHead() {
 
 		{
 			index: 56,
+			slot: "head",
 			name: "star hairpin",
 			name_cap: "Star hairpin",
 			variable: "starhairpin",
@@ -2000,6 +2057,7 @@ function initHead() {
 
 		{
 			index: 57,
+			slot: "head",
 			name: "durag",
 			name_cap: "Durag",
 			variable: "durag",
@@ -2039,6 +2097,7 @@ function initHead() {
 
 		{
 			index: 58,
+			slot: "head",
 			name: "kittycat hat",
 			name_cap: "Kittycat hat",
 			variable: "cattail",
@@ -2079,6 +2138,7 @@ function initHead() {
 
 		{
 			index: 59,
+			slot: "head",
 			name: "sexy nun's veil",
 			name_cap: "Sexy nun's veil",
 			variable: "nunlewd",
@@ -2119,6 +2179,7 @@ function initHead() {
 
 		{
 			index: 60,
+			slot: "head",
 			name: "sexy nun's ornate veil",
 			name_cap: "Sexy nun's ornate veil",
 			variable: "nunlewdornate",
@@ -2159,6 +2220,7 @@ function initHead() {
 
 		{
 			index: 61,
+			slot: "head",
 			name: "newsboy cap",
 			name_cap: "Newsboy cap",
 			variable: "newsboy",
@@ -2216,6 +2278,7 @@ function initHead() {
 
 		{
 			index: 62,
+			slot: "head",
 			name: "visor",
 			name_cap: "Visor",
 			variable: "visor",
@@ -2255,6 +2318,7 @@ function initHead() {
 
 		{
 			index: 63,
+			slot: "head",
 			name: "lolita headband",
 			name_cap: "Lolita headband",
 			variable: "lolita",
@@ -2323,6 +2387,7 @@ function initHead() {
 
 		{
 			index: 64,
+			slot: "head",
 			name: "gold hairpin",
 			name_cap: "Gold hairpin",
 			variable: "goldhairpin",
@@ -2360,6 +2425,7 @@ function initHead() {
 
 		{
 			index: 65,
+			slot: "head",
 			name: "classic lolita headband",
 			name_cap: "Classic lolita headband",
 			variable: "lolitaold",
@@ -2427,6 +2493,7 @@ function initHead() {
 		},
 		{
 			index: 66,
+			slot: "head",
 			name: "pimp hat",
 			name_cap: "Pimp hat",
 			variable: "pimp",

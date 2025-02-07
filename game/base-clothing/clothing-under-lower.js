@@ -17,6 +17,7 @@ function initUnderLower() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "under_lower",
 			name: "naked",
 			name_cap: "Naked",
 			name_simple: "naked",
@@ -61,6 +62,7 @@ function initUnderLower() {
 
 		{
 			index: 1,
+			slot: "under_lower",
 			name: "plain panties",
 			name_cap: "Plain panties",
 			name_simple: "panties",
@@ -110,6 +112,7 @@ function initUnderLower() {
 
 		{
 			index: 2,
+			slot: "under_lower",
 			name: "bikini bottoms",
 			name_cap: "Bikini bottoms",
 			name_simple: "bikini bottoms",
@@ -159,6 +162,7 @@ function initUnderLower() {
 
 		{
 			index: 3,
+			slot: "under_lower",
 			name: "lace panties",
 			name_cap: "Lace panties",
 			name_simple: "panties",
@@ -208,6 +212,7 @@ function initUnderLower() {
 
 		{
 			index: 4,
+			slot: "under_lower",
 			name: "briefs",
 			name_cap: "Briefs",
 			name_simple: "undies",
@@ -260,6 +265,7 @@ function initUnderLower() {
 
 		{
 			index: 5,
+			slot: "under_lower",
 			name: "chastity belt",
 			name_cap: "Chastity belt",
 			name_simple: "chastity belt",
@@ -308,6 +314,7 @@ function initUnderLower() {
 
 		{
 			index: 6,
+			slot: "under_lower",
 			name: "school swimsuit bottom",
 			name_cap: "School swimsuit bottom",
 			name_simple: "swimsuit",
@@ -357,6 +364,7 @@ function initUnderLower() {
 
 		{
 			index: 7,
+			slot: "under_lower",
 			name: "school swim shorts",
 			name_cap: "School swim shorts",
 			name_simple: "swim shorts",
@@ -408,6 +416,7 @@ function initUnderLower() {
 
 		{
 			index: 8,
+			slot: "under_lower",
 			name: "leotard bottom",
 			name_cap: "Leotard bottom",
 			name_simple: "leotard",
@@ -458,6 +467,7 @@ function initUnderLower() {
 
 		{
 			index: 9,
+			slot: "under_lower",
 			name: "unitard bottom",
 			name_cap: "Unitard bottom",
 			name_simple: "leotard",
@@ -509,6 +519,7 @@ function initUnderLower() {
 
 		{
 			index: 10,
+			slot: "under_lower",
 			name: "skimpy leotard bottom",
 			name_cap: "Skimpy leotard bottom",
 			name_simple: "leotard",
@@ -558,6 +569,7 @@ function initUnderLower() {
 
 		{
 			index: 11,
+			slot: "under_lower",
 			name: "foreign school swimsuit bottom",
 			name_cap: "Foreign school swimsuit bottom",
 			name_simple: "swimsuit",
@@ -607,6 +619,7 @@ function initUnderLower() {
 
 		{
 			index: 12,
+			slot: "under_lower",
 			name: "swimsuit bottom",
 			name_cap: "Swimsuit bottom",
 			name_simple: "swimsuit",
@@ -656,6 +669,7 @@ function initUnderLower() {
 
 		{
 			index: 13,
+			slot: "under_lower",
 			name: "bunny leotard bottom",
 			name_cap: "Bunny leotard bottom",
 			name_simple: "leotard",
@@ -706,6 +720,7 @@ function initUnderLower() {
 
 		{
 			index: 14,
+			slot: "under_lower",
 			name: "boyshorts",
 			name_cap: "Boyshorts",
 			name_simple: "undies",
@@ -755,6 +770,7 @@ function initUnderLower() {
 
 		{
 			index: 15,
+			slot: "under_lower",
 			name: "catgirl panties",
 			name_cap: "Catgirl panties",
 			name_simple: "panties",
@@ -803,6 +819,7 @@ function initUnderLower() {
 
 		{
 			index: 16,
+			slot: "under_lower",
 			name: "G-string",
 			name_cap: "G-string",
 			name_simple: "g-string",
@@ -850,6 +867,7 @@ function initUnderLower() {
 
 		{
 			index: 17,
+			slot: "under_lower",
 			name: "crotchless panties",
 			name_cap: "Crotchless panties",
 			name_simple: "panties",
@@ -898,6 +916,7 @@ function initUnderLower() {
 
 		{
 			index: 18,
+			slot: "under_lower",
 			name: "microkini bottom",
 			name_cap: "Microkini bottom",
 			name_simple: "swimsuit",
@@ -946,6 +965,7 @@ function initUnderLower() {
 
 		{
 			index: 19,
+			slot: "under_lower",
 			name: "speedo",
 			name_cap: "Speedo",
 			name_simple: "speedo",
@@ -994,6 +1014,7 @@ function initUnderLower() {
 
 		{
 			index: 20,
+			slot: "under_lower",
 			name: "striped panties",
 			name_cap: "Striped panties",
 			name_simple: "panties",
@@ -1045,6 +1066,7 @@ function initUnderLower() {
 
 		{
 			index: 21,
+			slot: "under_lower",
 			name: "loincloth",
 			name_cap: "Loincloth",
 			name_simple: "loincloth",
@@ -1093,6 +1115,7 @@ function initUnderLower() {
 
 		{
 			index: 22,
+			slot: "under_lower",
 			name: "thong",
 			name_cap: "Thong",
 			name_simple: "thong",
@@ -1141,6 +1164,7 @@ function initUnderLower() {
 
 		{
 			index: 23,
+			slot: "under_lower",
 			name: "classic plain panties",
 			name_cap: "Classic plain panties",
 			name_simple: "panties",
@@ -1190,6 +1214,7 @@ function initUnderLower() {
 
 		{
 			index: 24,
+			slot: "under_lower",
 			name: "classic bikini bottoms",
 			name_cap: "Classic bikini bottoms",
 			name_simple: "bikini bottoms",
@@ -1239,6 +1264,7 @@ function initUnderLower() {
 
 		{
 			index: 25,
+			slot: "under_lower",
 			name: "classic lace panties",
 			name_cap: "Classic lace panties",
 			name_simple: "panties",
@@ -1288,6 +1314,7 @@ function initUnderLower() {
 
 		{
 			index: 26,
+			slot: "under_lower",
 			name: "classic briefs",
 			name_cap: "Classic briefs",
 			name_simple: "undies",
@@ -1338,6 +1365,7 @@ function initUnderLower() {
 
 		{
 			index: 27,
+			slot: "under_lower",
 			name: "classic school swimsuit bottom",
 			name_cap: "Classic school swimsuit bottom",
 			name_simple: "swimsuit",
@@ -1387,6 +1415,7 @@ function initUnderLower() {
 
 		{
 			index: 28,
+			slot: "under_lower",
 			name: "jockstrap",
 			name_cap: "Jockstrap",
 			name_simple: "jockstrap",
@@ -1437,6 +1466,7 @@ function initUnderLower() {
 
 		{
 			index: 29,
+			slot: "under_lower",
 			name: "boxers",
 			name_cap: "Boxers",
 			name_simple: "boxers",
@@ -1486,6 +1516,7 @@ function initUnderLower() {
 
 		{
 			index: 30,
+			slot: "under_lower",
 			name: "long johns",
 			name_cap: "Long johns",
 			name_simple: "long johns",
@@ -1535,6 +1566,7 @@ function initUnderLower() {
 
 		{
 			index: 31,
+			slot: "under_lower",
 			name: "school swim bottoms",
 			name_cap: "School swim bottoms",
 			name_simple: "swimsuit bottoms",
@@ -1583,6 +1615,7 @@ function initUnderLower() {
 
 		{
 			index: 32,
+			slot: "under_lower",
 			name: "cow panties",
 			name_cap: "Cow panties",
 			name_simple: "panties",
@@ -1630,6 +1663,7 @@ function initUnderLower() {
 
 		{
 			index: 33,
+			slot: "under_lower",
 			name: "strap-on",
 			name_cap: "Strap-on",
 			name_simple: "strap-on",
@@ -1680,6 +1714,7 @@ function initUnderLower() {
 
 		{
 			index: 34,
+			slot: "under_lower",
 			name: "strap-on horse cock",
 			name_cap: "Strap-on horse cock",
 			name_simple: "strap-on",
@@ -1729,6 +1764,7 @@ function initUnderLower() {
 
 		{
 			index: 35,
+			slot: "under_lower",
 			name: "strap-on knotted cock",
 			name_cap: "Strap-on knotted cock",
 			name_simple: "strap-on",
@@ -1778,6 +1814,7 @@ function initUnderLower() {
 
 		{
 			index: 36,
+			slot: "under_lower",
 			name: "strap-on studded cock",
 			name_cap: "Strap-on studded cock",
 			name_simple: "strap-on",
@@ -1826,6 +1863,7 @@ function initUnderLower() {
 		},
 		{
 			index: 37,
+			slot: "under_lower",
 			name: "see-through swim bottoms",
 			name_cap: "See-through swim bottoms",
 			name_simple: "swimsuit bottoms",
@@ -1876,6 +1914,7 @@ function initUnderLower() {
 
 		{
 			index: 38,
+			slot: "under_lower",
 			name: "shibari ropes bottom",
 			name_cap: "Shibari ropes bottom",
 			name_simple: "bondage ropes",
@@ -1925,6 +1964,7 @@ function initUnderLower() {
 
 		{
 			index: 39,
+			slot: "under_lower",
 			name: "highwaisted microkini bottom",
 			name_cap: "Highwaisted microkini bottom",
 			name_simple: "swimsuit",
@@ -1974,6 +2014,7 @@ function initUnderLower() {
 
 		{
 			index: 40,
+			slot: "under_lower",
 			name: "turtleneck leotard bottom",
 			name_cap: "Turtleneck leotard bottom",
 			name_simple: "leotard",
@@ -2024,6 +2065,7 @@ function initUnderLower() {
 
 		{
 			index: 41,
+			slot: "under_lower",
 			name: "tie side bikini bottoms",
 			name_cap: "Tie side bikini bottoms",
 			name_simple: "bikini bottoms",
@@ -2072,6 +2114,7 @@ function initUnderLower() {
 
 		{
 			index: 42,
+			slot: "under_lower",
 			name: "vintage lace panties",
 			name_cap: "Vintage lace panties",
 			name_simple: "panties",
@@ -2120,6 +2163,7 @@ function initUnderLower() {
 		},
 		{
 			index: 43,
+			slot: "under_lower",
 			name: "denim panties",
 			name_cap: "Denim panties",
 			name_simple: "panties",
@@ -2169,6 +2213,7 @@ function initUnderLower() {
 		},
 		{
 			index: 44,
+			slot: "under_lower",
 			name: "denim thong",
 			name_cap: "Denim thong",
 			name_simple: "thong",
@@ -2218,6 +2263,7 @@ function initUnderLower() {
 		},
 		{
 			index: 45,
+			slot: "under_lower",
 			name: "latex leotard bottom",
 			name_cap: "Latex leotard bottom",
 			name_simple: "leotard",
@@ -2267,6 +2313,7 @@ function initUnderLower() {
 		},
 		{
 			index: 46,
+			slot: "under_lower",
 			name: "leather leggings",
 			name_cap: "Leather leggings",
 			name_simple: "leggings",

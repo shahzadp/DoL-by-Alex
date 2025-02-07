@@ -5,6 +5,7 @@ function initOverHead() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "over_head",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -37,6 +38,7 @@ function initOverHead() {
 
 		{
 			index: 1,
+			slot: "over_head",
 			name: "froggy hood",
 			name_cap: "Froggy hood",
 			variable: "froggy",

@@ -18,6 +18,7 @@ function initFace() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "face",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -48,6 +49,7 @@ function initFace() {
 		},
 		{
 			index: 1,
+			slot: "face",
 			name: "glasses",
 			name_cap: "Glasses",
 			variable: "glasses",
@@ -81,6 +83,7 @@ function initFace() {
 		},
 		{
 			index: 2,
+			slot: "face",
 			name: "cool shades",
 			name_cap: "Cool shades",
 			variable: "coolshades",
@@ -114,6 +117,7 @@ function initFace() {
 		},
 		{
 			index: 3,
+			slot: "face",
 			name: "surgical mask",
 			name_cap: "Surgical mask",
 			variable: "surgicalmask",
@@ -144,6 +148,7 @@ function initFace() {
 		},
 		{
 			index: 4,
+			slot: "face",
 			name: "gag",
 			name_cap: "Gag",
 			variable: "gag",
@@ -178,6 +183,7 @@ function initFace() {
 		},
 		{
 			index: 5,
+			slot: "face",
 			name: "blindfold",
 			name_cap: "Blindfold",
 			variable: "blindfold",
@@ -208,6 +214,7 @@ function initFace() {
 		},
 		{
 			index: 6,
+			slot: "face",
 			name: "gag and blindfold",
 			name_cap: "Gag and blindfold",
 			variable: "gagblindfold",
@@ -242,6 +249,7 @@ function initFace() {
 		},
 		{
 			index: 7,
+			slot: "face",
 			name: "skulduggery mask",
 			name_cap: "Skulduggery mask",
 			variable: "skulmask",
@@ -275,6 +283,7 @@ function initFace() {
 		},
 		{
 			index: 8,
+			slot: "face",
 			name: "low frame glasses",
 			name_cap: "Low frame glasses",
 			variable: "lowframe",
@@ -307,6 +316,7 @@ function initFace() {
 		},
 		{
 			index: 9,
+			slot: "face",
 			name: "half moon glasses",
 			name_cap: "Half moon glasses",
 			variable: "halfmoon",
@@ -342,6 +352,7 @@ function initFace() {
 		},
 		{
 			index: 10,
+			slot: "face",
 			name: "deep frame glasses",
 			name_cap: "Deep frame glasses",
 			variable: "deepframe",
@@ -374,6 +385,7 @@ function initFace() {
 		},
 		{
 			index: 11,
+			slot: "face",
 			name: "square shades",
 			name_cap: "Square shades",
 			variable: "square",
@@ -408,6 +420,7 @@ function initFace() {
 		},
 		{
 			index: 12,
+			slot: "face",
 			name: "round shades",
 			name_cap: "Round shades",
 			variable: "round",
@@ -441,6 +454,7 @@ function initFace() {
 		},
 		{
 			index: 13,
+			slot: "face",
 			name: "shield shades",
 			name_cap: "Shield shades",
 			variable: "shield",
@@ -475,6 +489,7 @@ function initFace() {
 		},
 		{
 			index: 14,
+			slot: "face",
 			name: "cat eye shades",
 			name_cap: "Cat eye shades",
 			variable: "cateye",
@@ -508,6 +523,7 @@ function initFace() {
 		},
 		{
 			index: 15,
+			slot: "face",
 			name: "aviators",
 			name_cap: "Aviators",
 			variable: "aviator",
@@ -542,6 +558,7 @@ function initFace() {
 		},
 		{
 			index: 16,
+			slot: "face",
 			name: "punk shades",
 			name_cap: "Punk shades",
 			variable: "punk",
@@ -576,6 +593,7 @@ function initFace() {
 		},
 		{
 			index: 17,
+			slot: "face",
 			name: "muzzle",
 			name_cap: "Muzzle",
 			variable: "muzzle",
@@ -606,6 +624,7 @@ function initFace() {
 		},
 		{
 			index: 18,
+			slot: "face",
 			name: "mummy facewrap",
 			name_cap: "Mummy facewrap",
 			variable: "mummy",
@@ -636,6 +655,7 @@ function initFace() {
 		},
 		{
 			index: 19,
+			slot: "face",
 			name: "swimming goggles",
 			name_cap: "Swimming goggles",
 			variable: "swimgoggles",
@@ -669,6 +689,7 @@ function initFace() {
 		},
 		{
 			index: 20,
+			slot: "face",
 			name: "belly dancer's veil",
 			name_cap: "Belly dancer's veil",
 			variable: "belly",
@@ -700,6 +721,7 @@ function initFace() {
 		},
 		{
 			index: 21,
+			slot: "face",
 			name: "muzzle",
 			name_cap: "Muzzle",
 			variable: "muzzlefetish",
@@ -734,6 +756,7 @@ function initFace() {
 		},
 		{
 			index: 22,
+			slot: "face",
 			name: "gag",
 			name_cap: "Gag",
 			variable: "gagfetish",
@@ -768,6 +791,7 @@ function initFace() {
 		},
 		{
 			index: 23,
+			slot: "face",
 			name: "bit gag",
 			name_cap: "Bit gag",
 			variable: "bitgag",
@@ -798,6 +822,7 @@ function initFace() {
 		},
 		{
 			index: 24,
+			slot: "face",
 			name: "wolf muzzle",
 			name_cap: "Wolf muzzle",
 			variable: "wolfmuzzle",
@@ -829,6 +854,7 @@ function initFace() {
 		},
 		{
 			index: 25,
+			slot: "face",
 			name: "kitty muzzle",
 			name_cap: "Kitty muzzle",
 			variable: "kittymuzzle",
@@ -860,6 +886,7 @@ function initFace() {
 		},
 		{
 			index: 26,
+			slot: "face",
 			name: "cloth gag",
 			name_cap: "Cloth gag",
 			variable: "clothgag",
@@ -891,6 +918,7 @@ function initFace() {
 		},
 		{
 			index: 27,
+			slot: "face",
 			name: "panty gag",
 			name_cap: "Panty gag",
 			variable: "pantygag",
@@ -922,6 +950,7 @@ function initFace() {
 		},
 		{
 			index: 28,
+			slot: "face",
 			name: "tape gag",
 			name_cap: "Tape gag",
 			variable: "tapegag",
@@ -952,6 +981,7 @@ function initFace() {
 		},
 		{
 			index: 29,
+			slot: "face",
 			name: "penis gag",
 			name_cap: "Penis gag",
 			variable: "penisgag",
@@ -985,6 +1015,7 @@ function initFace() {
 		},
 		{
 			index: 30,
+			slot: "face",
 			name: "skeleton mask",
 			name_cap: "Skeleton mask",
 			variable: "skele",
@@ -1015,6 +1046,7 @@ function initFace() {
 		},
 		{
 			index: 31,
+			slot: "face",
 			name: "esoteric spectacles",
 			name_cap: "Esoteric spectacles",
 			variable: "esoteric",
@@ -1045,6 +1077,7 @@ function initFace() {
 		},
 		{
 			index: 32,
+			slot: "face",
 			name: "gas mask",
 			name_cap: "Gas mask",
 			variable: "gasmask",
@@ -1077,6 +1110,7 @@ function initFace() {
 		},
 		{
 			index: 33,
+			slot: "face",
 			name: "eyepatch",
 			name_cap: "Eyepatch",
 			variable: "eyepatch",
@@ -1110,6 +1144,7 @@ function initFace() {
 		},
 		{
 			index: 34,
+			slot: "face",
 			name: "medical eyepatch",
 			name_cap: "Medical eyepatch",
 			variable: "medical eyepatch",
@@ -1143,6 +1178,7 @@ function initFace() {
 		},
 		{
 			index: 35,
+			slot: "face",
 			name: "doggy muzzle",
 			name_cap: "Doggy muzzle",
 			variable: "doggymuzzle",
@@ -1174,6 +1210,7 @@ function initFace() {
 		},
 		{
 			index: 36,
+			slot: "face",
 			name: "bamboo muzzle",
 			name_cap: "Bamboo muzzle",
 			variable: "bamboomuzzle",
@@ -1205,6 +1242,7 @@ function initFace() {
 		},
 		{
 			index: 37,
+			slot: "face",
 			name: "monocle",
 			name_cap: "Monocle",
 			variable: "monocle",
@@ -1238,6 +1276,7 @@ function initFace() {
 		},
 		{
 			index: 38,
+			slot: "face",
 			name: "islander mask",
 			name_cap: "Islander mask",
 			variable: "islandermask",
@@ -1268,6 +1307,7 @@ function initFace() {
 		},
 		{
 			index: 39,
+			slot: "face",
 			name: "reading glasses",
 			name_cap: "Reading glasses",
 			variable: "reading",
@@ -1301,6 +1341,7 @@ function initFace() {
 		},
 		{
 			index: 40,
+			slot: "face",
 			name: "bandanna",
 			name_cap: "Bandanna",
 			variable: "bandanna",
@@ -1332,6 +1373,7 @@ function initFace() {
 		},
 		{
 			index: 41,
+			slot: "face",
 			name: "heart sunglasses",
 			name_cap: "Heart sunglasses",
 			variable: "heartsunglasses",
@@ -1384,6 +1426,7 @@ function initFace() {
 		},
 		{
 			index: 42,
+			slot: "face",
 			name: "fox mask",
 			name_cap: "Fox mask",
 			variable: "foxmask",
