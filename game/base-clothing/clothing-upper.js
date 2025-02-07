@@ -20,6 +20,7 @@ function initUpper() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "upper",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -63,6 +64,7 @@ function initUpper() {
 		},
 		{
 			index: 1,
+			slot: "upper",
 			name: "sundress",
 			name_cap: "Sundress",
 			variable: "sundress",
@@ -112,6 +114,7 @@ function initUpper() {
 		},
 		{
 			index: 2,
+			slot: "upper",
 			name: "pyjama shirt",
 			name_cap: "Pyjama shirt",
 			variable: "pjs",
@@ -159,6 +162,7 @@ function initUpper() {
 		},
 		{
 			index: 3,
+			slot: "upper",
 			name: "towel top",
 			name_cap: "Towel top",
 			variable: "towel",
@@ -202,6 +206,7 @@ function initUpper() {
 		},
 		{
 			index: 4,
+			slot: "upper",
 			name: "t-shirt",
 			name_cap: "T-shirt",
 			variable: "tshirt",
@@ -245,6 +250,7 @@ function initUpper() {
 		},
 		{
 			index: 5,
+			slot: "upper",
 			name: "school shirt",
 			name_cap: "School shirt",
 			variable: "schoolshirt",
@@ -307,6 +313,7 @@ function initUpper() {
 		},
 		{
 			index: 6,
+			slot: "upper",
 			name: "plant top",
 			name_cap: "Plant top",
 			variable: "plant",
@@ -355,6 +362,7 @@ function initUpper() {
 		},
 		{
 			index: 7,
+			slot: "upper",
 			name: "evening gown",
 			name_cap: "Evening gown",
 			variable: "eveninggown",
@@ -421,6 +429,7 @@ function initUpper() {
 		},
 		{
 			index: 8,
+			slot: "upper",
 			name: "tank top",
 			name_cap: "Tank top",
 			variable: "tanktop",
@@ -467,6 +476,7 @@ function initUpper() {
 		},
 		{
 			index: 9,
+			slot: "upper",
 			name: "ballgown",
 			name_cap: "Ballgown",
 			variable: "ballgown",
@@ -551,6 +561,7 @@ function initUpper() {
 		},
 		{
 			index: 10,
+			slot: "upper",
 			name: "kimono",
 			name_cap: "Kimono",
 			variable: "kimono",
@@ -603,6 +614,7 @@ function initUpper() {
 		},
 		{
 			index: 11,
+			slot: "upper",
 			name: "mini kimono",
 			name_cap: "Mini kimono",
 			variable: "kimonomini",
@@ -655,6 +667,7 @@ function initUpper() {
 		},
 		{
 			index: 12,
+			slot: "upper",
 			name: "maid dress",
 			name_cap: "Maid dress",
 			variable: "maid",
@@ -706,6 +719,7 @@ function initUpper() {
 		},
 		{
 			index: 13,
+			slot: "upper",
 			name: "nun's habit",
 			name_cap: "Nun's habit",
 			variable: "nun",
@@ -755,6 +769,7 @@ function initUpper() {
 		},
 		{
 			index: 14,
+			slot: "upper",
 			name: "large towel",
 			name_cap: "Large towel",
 			variable: "towellarge",
@@ -802,6 +817,7 @@ function initUpper() {
 		},
 		{
 			index: 15,
+			slot: "upper",
 			name: "tuxedo jacket",
 			name_cap: "Tuxedo jacket",
 			variable: "tuxedo",
@@ -850,6 +866,7 @@ function initUpper() {
 		},
 		{
 			index: 16,
+			slot: "upper",
 			name: "blouse",
 			name_cap: "Blouse",
 			variable: "blouse",
@@ -898,6 +915,7 @@ function initUpper() {
 		},
 		{
 			index: 17,
+			slot: "upper",
 			name: "babydoll",
 			name_cap: "Babydoll",
 			variable: "babydoll",
@@ -945,6 +963,7 @@ function initUpper() {
 		},
 		{
 			index: 18,
+			slot: "upper",
 			name: "babydoll lingerie",
 			name_cap: "Babydoll lingerie",
 			variable: "babydolllingerie",
@@ -992,6 +1011,7 @@ function initUpper() {
 		},
 		{
 			index: 19,
+			slot: "upper",
 			name: "crop top",
 			name_cap: "Crop top",
 			variable: "croptop",
@@ -1040,6 +1060,7 @@ function initUpper() {
 		},
 		{
 			index: 20,
+			slot: "upper",
 			name: "classic serafuku",
 			name_cap: "Classic serafuku",
 			variable: "serafuku",
@@ -1088,6 +1109,7 @@ function initUpper() {
 		},
 		{
 			index: 21,
+			slot: "upper",
 			name: "tube top",
 			name_cap: "Tube top",
 			variable: "tubetop",
@@ -1136,6 +1158,7 @@ function initUpper() {
 		},
 		{
 			index: 22,
+			slot: "upper",
 			name: "turtleneck",
 			name_cap: "Turtleneck",
 			variable: "turtleneck",
@@ -1179,6 +1202,7 @@ function initUpper() {
 		},
 		{
 			index: 23,
+			slot: "upper",
 			name: "sweater",
 			name_cap: "Sweater",
 			variable: "sweater",
@@ -1226,6 +1250,7 @@ function initUpper() {
 		},
 		{
 			index: 24,
+			slot: "upper",
 			name: "oversized sweater",
 			name_cap: "Oversized sweater",
 			variable: "sweaterlarge",
@@ -1275,6 +1300,7 @@ function initUpper() {
 		},
 		{
 			index: 25,
+			slot: "upper",
 			name: "witch dress",
 			name_cap: "Witch dress",
 			variable: "witch",
@@ -1324,6 +1350,7 @@ function initUpper() {
 		},
 		{
 			index: 26,
+			slot: "upper",
 			name: "vampire jacket",
 			name_cap: "Vampire jacket",
 			variable: "vampire",
@@ -1371,6 +1398,7 @@ function initUpper() {
 		},
 		{
 			index: 27,
+			slot: "upper",
 			name: "slut shirt",
 			name_cap: "Slut shirt",
 			variable: "slut",
@@ -1420,6 +1448,7 @@ function initUpper() {
 		},
 		{
 			index: 28,
+			slot: "upper",
 			name: "girl's sweater",
 			name_cap: "Girl's sweater",
 			variable: "pinksweater",
@@ -1469,6 +1498,7 @@ function initUpper() {
 		},
 		{
 			index: 29,
+			slot: "upper",
 			name: "girl's oversized sweater",
 			name_cap: "Girl's oversized sweater",
 			variable: "pinksweaterlarge",
@@ -1519,6 +1549,7 @@ function initUpper() {
 		},
 		{
 			index: 30,
+			slot: "upper",
 			name: "christmas shirt",
 			name_cap: "Christmas shirt",
 			variable: "christmas",
@@ -1565,6 +1596,7 @@ function initUpper() {
 		},
 		{
 			index: 31,
+			slot: "upper",
 			name: "christmas dress",
 			name_cap: "Christmas dress",
 			variable: "christmasdress",
@@ -1614,6 +1646,7 @@ function initUpper() {
 		},
 		{
 			index: 32,
+			slot: "upper",
 			name: "monk's habit",
 			name_cap: "Monk's habit",
 			variable: "monk",
@@ -1663,6 +1696,7 @@ function initUpper() {
 		},
 		{
 			index: 33,
+			slot: "upper",
 			name: "checkered shirt",
 			name_cap: "Checkered shirt",
 			variable: "checkered",
@@ -1710,6 +1744,7 @@ function initUpper() {
 		},
 		{
 			index: 34,
+			slot: "upper",
 			name: "belly dancer's top",
 			name_cap: "Belly dancer's top",
 			variable: "belly",
@@ -1763,6 +1798,7 @@ function initUpper() {
 		},
 		{
 			index: 35,
+			slot: "upper",
 			name: "straightjacket",
 			name_cap: "Straightjacket",
 			variable: "straightjacket",
@@ -1813,6 +1849,7 @@ function initUpper() {
 		},
 		{
 			index: 36,
+			slot: "upper",
 			name: "argyle sweater vest",
 			name_cap: "Argyle sweater vest",
 			variable: "argyle",
@@ -1860,6 +1897,7 @@ function initUpper() {
 		},
 		{
 			index: 37,
+			slot: "upper",
 			name: "dress shirt",
 			name_cap: "Dress shirt",
 			variable: "dress",
@@ -1931,6 +1969,7 @@ function initUpper() {
 		},
 		{
 			index: 38,
+			slot: "upper",
 			name: "patterned dress",
 			name_cap: "Patterned dress",
 			variable: "gingham",
@@ -2018,6 +2057,7 @@ function initUpper() {
 		},
 		{
 			index: 39,
+			slot: "upper",
 			name: "overalls",
 			name_cap: "Overalls",
 			variable: "overalls",
@@ -2069,6 +2109,7 @@ function initUpper() {
 		},
 		{
 			index: 40,
+			slot: "upper",
 			name: "punk leather jacket",
 			name_cap: "Punk leather jacket",
 			variable: "blackleather",
@@ -2138,6 +2179,7 @@ function initUpper() {
 		},
 		{
 			index: 41,
+			slot: "upper",
 			name: "leather jacket",
 			name_cap: "Leather jacket",
 			variable: "brownleather",
@@ -2206,6 +2248,7 @@ function initUpper() {
 		},
 		{
 			index: 42,
+			slot: "upper",
 			name: "beatnik shirt",
 			name_cap: "Beatnik shirt",
 			variable: "beatnik",
@@ -2253,6 +2296,7 @@ function initUpper() {
 		},
 		{
 			index: 43,
+			slot: "upper",
 			name: "cable knit turtleneck",
 			name_cap: "Cable knit turtleneck",
 			variable: "cable",
@@ -2296,6 +2340,7 @@ function initUpper() {
 		},
 		{
 			index: 44,
+			slot: "upper",
 			name: "v neck",
 			name_cap: "V neck",
 			variable: "vneck",
@@ -2342,6 +2387,7 @@ function initUpper() {
 		},
 		{
 			index: 45,
+			slot: "upper",
 			name: "turtleneck jumper",
 			name_cap: "Turtleneck jumper",
 			variable: "turtleneckjumper",
@@ -2388,6 +2434,7 @@ function initUpper() {
 		},
 		{
 			index: 46,
+			slot: "upper",
 			name: "cheongsam",
 			name_cap: "Cheongsam",
 			variable: "cheongsam",
@@ -2438,6 +2485,7 @@ function initUpper() {
 		},
 		{
 			index: 47,
+			slot: "upper",
 			name: "short cheongsam",
 			name_cap: "Short cheongsam",
 			variable: "cheongsamshort",
@@ -2488,6 +2536,7 @@ function initUpper() {
 		},
 		{
 			index: 48,
+			slot: "upper",
 			name: "tie-front top",
 			name_cap: "Tie-front top",
 			variable: "tiefronttop",
@@ -2534,6 +2583,7 @@ function initUpper() {
 		},
 		{
 			index: 49,
+			slot: "upper",
 			name: "peacoat",
 			name_cap: "Peacoat",
 			variable: "peacoat",
@@ -2584,6 +2634,7 @@ function initUpper() {
 		},
 		{
 			index: 50,
+			slot: "upper",
 			name: "gothic gown",
 			name_cap: "Gothic gown",
 			variable: "gothic",
@@ -2641,6 +2692,7 @@ function initUpper() {
 		},
 		{
 			index: 51,
+			slot: "upper",
 			name: "gothic jacket",
 			name_cap: "Gothic jacket",
 			variable: "gothicjacket",
@@ -2689,6 +2741,7 @@ function initUpper() {
 		},
 		{
 			index: 52,
+			slot: "upper",
 			name: "swim shirt",
 			name_cap: "Swim shirt",
 			variable: "swimshirt",
@@ -2739,6 +2792,7 @@ function initUpper() {
 		},
 		{
 			index: 53,
+			slot: "upper",
 			name: "waiter's shirt",
 			name_cap: "Waiter's shirt",
 			variable: "waiter",
@@ -2789,6 +2843,7 @@ function initUpper() {
 		},
 		{
 			index: 54,
+			slot: "upper",
 			name: "lederhosen",
 			name_cap: "Lederhosen",
 			variable: "leder",
@@ -2838,6 +2893,7 @@ function initUpper() {
 		},
 		{
 			index: 55,
+			slot: "upper",
 			name: "karate jacket",
 			name_cap: "Karate jacket",
 			variable: "karate",
@@ -2888,6 +2944,7 @@ function initUpper() {
 		},
 		{
 			index: 56,
+			slot: "upper",
 			name: "sailor shirt",
 			name_cap: "Sailor shirt",
 			variable: "sailor",
@@ -2938,6 +2995,7 @@ function initUpper() {
 		},
 		{
 			index: 57,
+			slot: "upper",
 			name: "short sailor shirt",
 			name_cap: "Short sailor shirt",
 			variable: "sailorshort",
@@ -2988,6 +3046,7 @@ function initUpper() {
 		},
 		{
 			index: 58,
+			slot: "upper",
 			name: "foreign football shirt",
 			name_cap: "Foreign football shirt",
 			variable: "football",
@@ -3036,6 +3095,7 @@ function initUpper() {
 		},
 		{
 			index: 59,
+			slot: "upper",
 			name: "gym shirt",
 			name_cap: "Gym shirt",
 			variable: "gymshirt",
@@ -3085,6 +3145,7 @@ function initUpper() {
 		},
 		{
 			index: 60,
+			slot: "upper",
 			name: "cheerleading top",
 			name_cap: "Cheerleading top",
 			variable: "cheerleader",
@@ -3135,6 +3196,7 @@ function initUpper() {
 		},
 		{
 			index: 61,
+			slot: "upper",
 			name: "hunting coat",
 			name_cap: "Hunting coat",
 			variable: "hunt",
@@ -3183,6 +3245,7 @@ function initUpper() {
 		},
 		{
 			index: 62,
+			slot: "upper",
 			name: "letterman jacket",
 			name_cap: "Letterman jacket",
 			variable: "letterman",
@@ -3237,6 +3300,7 @@ function initUpper() {
 		},
 		{
 			index: 63,
+			slot: "upper",
 			name: "racing silks",
 			name_cap: "Racing silks",
 			variable: "racing",
@@ -3287,6 +3351,7 @@ function initUpper() {
 		},
 		{
 			index: 64,
+			slot: "upper",
 			name: "shadbelly coat",
 			name_cap: "Shadbelly coat",
 			variable: "shadbelly",
@@ -3335,6 +3400,7 @@ function initUpper() {
 		},
 		{
 			index: 65,
+			slot: "upper",
 			name: "mummy top",
 			name_cap: "Mummy top",
 			variable: "mummy",
@@ -3383,6 +3449,7 @@ function initUpper() {
 		},
 		{
 			index: 66,
+			slot: "upper",
 			name: "diving suit",
 			name_cap: "Diving suit",
 			variable: "diving",
@@ -3438,6 +3505,7 @@ function initUpper() {
 		},
 		{
 			index: 67,
+			slot: "upper",
 			name: "classic sundress",
 			name_cap: "Classic sundress",
 			variable: "classicsundress",
@@ -3487,6 +3555,7 @@ function initUpper() {
 		},
 		{
 			index: 68,
+			slot: "upper",
 			name: "classic gothic gown",
 			name_cap: "Classic gothic gown",
 			variable: "gothicold",
@@ -3539,6 +3608,7 @@ function initUpper() {
 		},
 		{
 			index: 69,
+			slot: "upper",
 			name: "scout shirt",
 			name_cap: "Scout shirt",
 			variable: "scout",
@@ -3587,6 +3657,7 @@ function initUpper() {
 		},
 		{
 			index: 70,
+			slot: "upper",
 			name: "football shirt",
 			name_cap: "Football shirt",
 			variable: "soccer",
@@ -3635,6 +3706,7 @@ function initUpper() {
 		},
 		{
 			index: 71,
+			slot: "upper",
 			name: "puffer jacket",
 			name_cap: "Puffer jacket",
 			variable: "puffer",
@@ -3682,6 +3754,7 @@ function initUpper() {
 		},
 		{
 			index: 72,
+			slot: "upper",
 			name: "camo shirt",
 			name_cap: "Camo shirt",
 			variable: "camo",
@@ -3729,6 +3802,7 @@ function initUpper() {
 		},
 		{
 			index: 73,
+			slot: "upper",
 			name: "star pyjama shirt",
 			name_cap: "Star pyjama shirt",
 			variable: "pjsstar",
@@ -3776,6 +3850,7 @@ function initUpper() {
 		},
 		{
 			index: 74,
+			slot: "upper",
 			name: "moon pyjama shirt",
 			name_cap: "Moon pyjama shirt",
 			variable: "pjsmoon",
@@ -3823,6 +3898,7 @@ function initUpper() {
 		},
 		{
 			index: 75,
+			slot: "upper",
 			name: "catsuit",
 			name_cap: "Catsuit",
 			variable: "catsuit",
@@ -3872,6 +3948,7 @@ function initUpper() {
 		},
 		{
 			index: 76,
+			slot: "upper",
 			name: "open shoulders crop top",
 			name_cap: "Open shoulders crop top",
 			variable: "openshoulderscrop",
@@ -3922,6 +3999,7 @@ function initUpper() {
 		},
 		{
 			index: 77,
+			slot: "upper",
 			name: "hoodie",
 			name_cap: "Hoodie",
 			variable: "hoodie",
@@ -4001,6 +4079,7 @@ function initUpper() {
 		},
 		{
 			index: 78,
+			slot: "upper",
 			name: "bathrobe",
 			name_cap: "Bathrobe",
 			variable: "bathrobe",
@@ -4051,6 +4130,7 @@ function initUpper() {
 		},
 		{
 			index: 79,
+			slot: "upper",
 			name: "rag top",
 			name_cap: "Rag top",
 			variable: "rag",
@@ -4097,6 +4177,7 @@ function initUpper() {
 		},
 		{
 			index: 80,
+			slot: "upper",
 			name: "retro top",
 			name_cap: "Retro top",
 			variable: "retro",
@@ -4159,6 +4240,7 @@ function initUpper() {
 		},
 		{
 			index: 81,
+			slot: "upper",
 			name: "utility vest",
 			name_cap: "Utility vest",
 			variable: "utility",
@@ -4205,6 +4287,7 @@ function initUpper() {
 		},
 		{
 			index: 82,
+			slot: "upper",
 			name: "utility vest with shirt",
 			name_cap: "Utility vest with shirt",
 			variable: "utilityshirt",
@@ -4255,6 +4338,7 @@ function initUpper() {
 		},
 		{
 			index: 83,
+			slot: "upper",
 			name: "monster hoodie",
 			name_cap: "Monster hoodie",
 			variable: "monster",
@@ -4306,6 +4390,7 @@ function initUpper() {
 		},
 		{
 			index: 84,
+			slot: "upper",
 			name: "keyhole dress",
 			name_cap: "Keyhole dress",
 			variable: "keyhole",
@@ -4354,6 +4439,7 @@ function initUpper() {
 		},
 		{
 			index: 85,
+			slot: "upper",
 			name: "prison shirt",
 			name_cap: "Prison shirt",
 			variable: "prison",
@@ -4400,6 +4486,7 @@ function initUpper() {
 		},
 		{
 			index: 86,
+			slot: "upper",
 			name: "prison jumpsuit",
 			name_cap: "Prison jumpsuit",
 			variable: "jumpsuit",
@@ -4448,6 +4535,7 @@ function initUpper() {
 		},
 		{
 			index: 87,
+			slot: "upper",
 			name: "patient gown",
 			name_cap: "Patient gown",
 			variable: "patient",
@@ -4496,6 +4584,7 @@ function initUpper() {
 		},
 		{
 			index: 88,
+			slot: "upper",
 			name: "cropped hoodie",
 			name_cap: "Cropped hoodie",
 			variable: "croppedhoodie",
@@ -4543,6 +4632,7 @@ function initUpper() {
 		},
 		{
 			index: 89,
+			slot: "upper",
 			name: "cow onesie",
 			name_cap: "Cow onesie",
 			variable: "cowonesie",
@@ -4593,6 +4683,7 @@ function initUpper() {
 		},
 		{
 			index: 90,
+			slot: "upper",
 			name: "baseball shirt",
 			name_cap: "Baseball shirt",
 			variable: "baseball",
@@ -4639,6 +4730,7 @@ function initUpper() {
 		},
 		{
 			index: 91,
+			slot: "upper",
 			name: "scarecrow shirt",
 			name_cap: "Scarecrow shirt",
 			variable: "scarecrow",
@@ -4690,6 +4782,7 @@ function initUpper() {
 		},
 		{
 			index: 92,
+			slot: "upper",
 			name: "waitress uniform",
 			name_cap: "Waitress uniform",
 			variable: "waitress",
@@ -4752,6 +4845,7 @@ function initUpper() {
 		},
 		{
 			index: 93,
+			slot: "upper",
 			name: "split dress",
 			name_cap: "Split dress",
 			variable: "split",
@@ -4814,6 +4908,7 @@ function initUpper() {
 		},
 		{
 			index: 94,
+			slot: "upper",
 			name: "skimpy lolita dress",
 			name_cap: "Skimpy lolita dress",
 			variable: "skimpylolita",
@@ -4880,6 +4975,7 @@ function initUpper() {
 		},
 		{
 			index: 95,
+			slot: "upper",
 			name: "short ballgown",
 			name_cap: "Short ballgown",
 			variable: "shortballgown",
@@ -4963,6 +5059,7 @@ function initUpper() {
 		},
 		{
 			index: 96,
+			slot: "upper",
 			name: "single breasted jacket",
 			name_cap: "Single breasted jacket",
 			variable: "singlebreasted",
@@ -5024,6 +5121,7 @@ function initUpper() {
 		},
 		{
 			index: 97,
+			slot: "upper",
 			name: "double breasted jacket",
 			name_cap: "Double breasted jacket",
 			variable: "doublebreasted",
@@ -5085,6 +5183,7 @@ function initUpper() {
 		},
 		{
 			index: 98,
+			slot: "upper",
 			name: "pink nurse dress",
 			name_cap: "Pink nurse dress",
 			variable: "pinknurse",
@@ -5137,6 +5236,7 @@ function initUpper() {
 		},
 		{
 			index: 99,
+			slot: "upper",
 			name: "plastic nurse dress",
 			name_cap: "Plastic nurse dress",
 			variable: "plasticnurse",
@@ -5189,6 +5289,7 @@ function initUpper() {
 		},
 		{
 			index: 100,
+			slot: "upper",
 			name: "transparent nurse dress",
 			name_cap: "Transparent nurse dress",
 			variable: "transparentnurse",
@@ -5241,6 +5342,7 @@ function initUpper() {
 		},
 		{
 			index: 101,
+			slot: "upper",
 			name: "hanfu",
 			name_cap: "Hanfu",
 			variable: "hanfu",
@@ -5306,6 +5408,7 @@ function initUpper() {
 		},
 		{
 			index: 102,
+			slot: "upper",
 			name: "open shoulder sweater",
 			name_cap: "Open shoulder sweater",
 			variable: "openshouldersweater",
@@ -5354,6 +5457,7 @@ function initUpper() {
 		},
 		{
 			index: 103,
+			slot: "upper",
 			name: "winter jacket",
 			name_cap: "Winter jacket",
 			variable: "winterjacket",
@@ -5406,6 +5510,7 @@ function initUpper() {
 		},
 		{
 			index: 104,
+			slot: "upper",
 			name: "cocoon",
 			name_cap: "Cocoon",
 			variable: "cocoon",
@@ -5457,6 +5562,7 @@ function initUpper() {
 		},
 		{
 			index: 105,
+			slot: "upper",
 			name: "skeleton outfit",
 			name_cap: "Skeleton outfit",
 			variable: "skele",
@@ -5506,6 +5612,7 @@ function initUpper() {
 		},
 		{
 			index: 106,
+			slot: "upper",
 			name: "classy vampire jacket",
 			name_cap: "Classy vampire jacket",
 			variable: "classyvampire",
@@ -5555,6 +5662,7 @@ function initUpper() {
 		},
 		{
 			index: 107,
+			slot: "upper",
 			name: "virgin killer",
 			name_cap: "Virgin killer",
 			variable: "virginkiller",
@@ -5600,6 +5708,7 @@ function initUpper() {
 		},
 		{
 			index: 108,
+			slot: "upper",
 			name: "futuristic bodysuit",
 			name_cap: "Futuristic bodysuit",
 			variable: "futuresuit",
@@ -5656,6 +5765,7 @@ function initUpper() {
 		},
 		{
 			index: 109,
+			slot: "upper",
 			name: "lace nightgown",
 			name_cap: "Lace nightgown",
 			variable: "lacegown",
@@ -5705,6 +5815,7 @@ function initUpper() {
 		},
 		{
 			index: 110,
+			slot: "upper",
 			name: "cat hoodie",
 			name_cap: "Cat hoodie",
 			variable: "cat hoodie",
@@ -5770,6 +5881,7 @@ function initUpper() {
 
 		{
 			index: 111,
+			slot: "upper",
 			name: "ao dai",
 			name_cap: "Ao dai",
 			variable: "ao dai",
@@ -5816,6 +5928,7 @@ function initUpper() {
 
 		{
 			index: 112,
+			slot: "upper",
 			name: "school cardigan",
 			name_cap: "School cardigan",
 			variable: "schoolcardigan",
@@ -5871,6 +5984,7 @@ function initUpper() {
 
 		{
 			index: 113,
+			slot: "upper",
 			name: "school blouse",
 			name_cap: "School blouse",
 			variable: "schoolblouse",
@@ -5921,6 +6035,7 @@ function initUpper() {
 
 		{
 			index: 114,
+			slot: "upper",
 			name: "traditional maid dress",
 			name_cap: "Traditional maid dress",
 			variable: "traditionalmaid",
@@ -5972,6 +6087,7 @@ function initUpper() {
 
 		{
 			index: 115,
+			slot: "upper",
 			name: "Victorian maid dress",
 			name_cap: "Victorian maid dress",
 			variable: "victorianmaid",
@@ -6023,6 +6139,7 @@ function initUpper() {
 
 		{
 			index: 116,
+			slot: "upper",
 			name: "shrine maiden robes",
 			name_cap: "Shrine maiden robes",
 			variable: "shrinemaiden",
@@ -6073,6 +6190,7 @@ function initUpper() {
 
 		{
 			index: 117,
+			slot: "upper",
 			name: "polo shirt",
 			name_cap: "Polo shirt",
 			variable: "polo",
@@ -6124,6 +6242,7 @@ function initUpper() {
 
 		{
 			index: 118,
+			slot: "upper",
 			name: "colour block crop top",
 			name_cap: "Colour block crop top",
 			variable: "colour block crop",
@@ -6177,6 +6296,7 @@ function initUpper() {
 
 		{
 			index: 119,
+			slot: "upper",
 			name: "band t-shirt",
 			name_cap: "Band t-shirt",
 			variable: "band tee",
@@ -6227,6 +6347,7 @@ function initUpper() {
 
 		{
 			index: 120,
+			slot: "upper",
 			name: "boxy t-shirt",
 			name_cap: "Boxy t-shirt",
 			variable: "boxy",
@@ -6277,6 +6398,7 @@ function initUpper() {
 
 		{
 			index: 121,
+			slot: "upper",
 			name: "virgin killer dress",
 			name_cap: "Virgin killer dress",
 			variable: "virginkillerdress",
@@ -6326,6 +6448,7 @@ function initUpper() {
 
 		{
 			index: 122,
+			slot: "upper",
 			name: "gakuran",
 			name_cap: "Gakuran",
 			variable: "gakuran",
@@ -6375,6 +6498,7 @@ function initUpper() {
 
 		{
 			index: 123,
+			slot: "upper",
 			name: "halter sundress",
 			name_cap: "Halter sundress",
 			variable: "haltersundress",
@@ -6442,6 +6566,7 @@ function initUpper() {
 
 		{
 			index: 124,
+			slot: "upper",
 			name: "leather dress",
 			name_cap: "Leather dress",
 			variable: "leatherdress",
@@ -6510,6 +6635,7 @@ function initUpper() {
 
 		{
 			index: 125,
+			slot: "upper",
 			name: "serafuku",
 			name_cap: "Serafuku",
 			variable: "serafuku_new",
@@ -6575,6 +6701,7 @@ function initUpper() {
 
 		{
 			index: 126,
+			slot: "upper",
 			name: "cable knit cardigan",
 			name_cap: "Cable knit cardigan",
 			variable: "cableknitcardigan",
@@ -6621,6 +6748,7 @@ function initUpper() {
 		},
 		{
 			index: 127,
+			slot: "upper",
 			name: "open shoulder lolita dress",
 			name_cap: "Open shoulder lolita dress",
 			variable: "openshoulderlolita",
@@ -6675,6 +6803,7 @@ function initUpper() {
 		},
 		{
 			index: 128,
+			slot: "upper",
 			name: "school sweater vest",
 			name_cap: "School sweater vest",
 			variable: "schoolvest",
@@ -6727,6 +6856,7 @@ function initUpper() {
 
 		{
 			index: 129,
+			slot: "upper",
 			name: "jingle-bell dress",
 			name_cap: "Jingle-bell dress",
 			variable: "jingledress",
@@ -6777,6 +6907,7 @@ function initUpper() {
 		},
 		{
 			index: 130,
+			slot: "upper",
 			name: "sleeveless jingle-bell dress",
 			name_cap: "Sleeveless jingle-bell dress",
 			variable: "jingledresssleeveless",
@@ -6826,6 +6957,7 @@ function initUpper() {
 		},
 		{
 			index: 131,
+			slot: "upper",
 			name: "jumper",
 			name_cap: "Jumper",
 			variable: "jumper",
@@ -6908,6 +7040,7 @@ function initUpper() {
 		},
 		{
 			index: 132,
+			slot: "upper",
 			name: "festive jumper",
 			name_cap: "Festive jumper",
 			variable: "jumperxmas",
@@ -6972,6 +7105,7 @@ function initUpper() {
 		},
 		{
 			index: 133,
+			slot: "upper",
 			name: "ghost jumper",
 			name_cap: "Ghost jumper",
 			variable: "jumperghost",
@@ -7054,6 +7188,7 @@ function initUpper() {
 		},
 		{
 			index: 134,
+			slot: "upper",
 			name: "heart jumper",
 			name_cap: "Heart jumper",
 			variable: "jumperheart",
@@ -7137,6 +7272,7 @@ function initUpper() {
 		},
 		{
 			index: 135,
+			slot: "upper",
 			name: "skull jumper",
 			name_cap: "Skull jumper",
 			variable: "jumperskull",
@@ -7220,6 +7356,7 @@ function initUpper() {
 		},
 		{
 			index: 136,
+			slot: "upper",
 			name: "leather crop top",
 			name_cap: "Leather crop top",
 			variable: "leathercroptop",
@@ -7268,6 +7405,7 @@ function initUpper() {
 		},
 		{
 			index: 137,
+			slot: "upper",
 			name: "zipped leather crop top",
 			name_cap: "Zipped leather crop top",
 			variable: "leathercroptopzip",
@@ -7317,6 +7455,7 @@ function initUpper() {
 		},
 		{
 			index: 138,
+			slot: "upper",
 			name: "leather top",
 			name_cap: "Leather top",
 			variable: "leathertop",
@@ -7366,6 +7505,7 @@ function initUpper() {
 		},
 		{
 			index: 139,
+			slot: "upper",
 			name: "zipped leather top",
 			name_cap: "Zipped leather top",
 			variable: "leathertopzip",
@@ -7417,6 +7557,7 @@ function initUpper() {
 		},
 		{
 			index: 140,
+			slot: "upper",
 			name: "cropped leather jacket",
 			name_cap: "Cropped leather jacket",
 			variable: "leathercropjacket",
@@ -7486,6 +7627,7 @@ function initUpper() {
 		},
 		{
 			index: 141,
+			slot: "upper",
 			name: "sexy nun's habit",
 			name_cap: "Sexy nun's habit",
 			variable: "nunlewd",
@@ -7537,6 +7679,7 @@ function initUpper() {
 		},
 		{
 			index: 142,
+			slot: "upper",
 			name: "sexy priest's vestments",
 			name_cap: "Sexy priest's vestments",
 			variable: "monklewd",
@@ -7586,6 +7729,7 @@ function initUpper() {
 		},
 		{
 			index: 143,
+			slot: "upper",
 			name: "waistcoat",
 			name_cap: "Waistcoat",
 			variable: "waistcoat",
@@ -7642,6 +7786,7 @@ function initUpper() {
 		},
 		{
 			index: 144,
+			slot: "upper",
 			name: "lapelled waistcoat",
 			name_cap: "Lapelled waistcoat",
 			variable: "waistcoatlapel",
@@ -7698,6 +7843,7 @@ function initUpper() {
 		},
 		{
 			index: 145,
+			slot: "upper",
 			name: "long waistcoat",
 			name_cap: "Long waistcoat",
 			variable: "waistcoatlong",
@@ -7751,6 +7897,7 @@ function initUpper() {
 		},
 		{
 			index: 146,
+			slot: "upper",
 			name: "long lapelled waistcoat",
 			name_cap: "Long lapelled waistcoat",
 			variable: "waistcoatlonglapel",
@@ -7805,6 +7952,7 @@ function initUpper() {
 		},
 		{
 			index: 147,
+			slot: "upper",
 			name: "shirt and blazer",
 			name_cap: "Shirt and blazer",
 			variable: "blazershirt",
@@ -7861,6 +8009,7 @@ function initUpper() {
 		},
 		{
 			index: 148,
+			slot: "upper",
 			name: "oversized button-down",
 			name_cap: "Oversized button-down",
 			variable: "oversizedbuttondown",
@@ -7913,6 +8062,7 @@ function initUpper() {
 		},
 		{
 			index: 149,
+			slot: "upper",
 			name: "button-down",
 			name_cap: "Button-down",
 			variable: "buttondown",
@@ -7966,6 +8116,7 @@ function initUpper() {
 		},
 		{
 			index: 150,
+			slot: "upper",
 			name: "life vest",
 			name_cap: "Life vest",
 			variable: "lifevest",
@@ -8014,6 +8165,7 @@ function initUpper() {
 
 		{
 			index: 151,
+			slot: "upper",
 			name: "harem vest",
 			name_cap: "Harem vest",
 			variable: "haremvest",
@@ -8061,6 +8213,7 @@ function initUpper() {
 		},
 		{
 			index: 152,
+			slot: "upper",
 			name: "long-sleeved shirt",
 			name_cap: "Long-sleeved shirt",
 			variable: "regularshirt",
@@ -8106,6 +8259,7 @@ function initUpper() {
 		},
 		{
 			index: 153,
+			slot: "upper",
 			name: "sexy butler top",
 			name_cap: "Sexy butler top",
 			variable: "slutler",
@@ -8153,6 +8307,7 @@ function initUpper() {
 		},
 		{
 			index: 154,
+			slot: "upper",
 			name: "classic open shoulder lolita dress",
 			name_cap: "Classic open shoulder lolita dress",
 			variable: "openshoulderlolitaclassic",
@@ -8204,6 +8359,7 @@ function initUpper() {
 		},
 		{
 			index: 155,
+			slot: "upper",
 			name: "jumpsuit",
 			name_cap: "Jumpsuit",
 			variable: "jumpsuitstylish",
@@ -8272,6 +8428,7 @@ function initUpper() {
 		},
 		{
 			index: 156,
+			slot: "upper",
 			name: "ragged dress",
 			name_cap: "Ragged dress",
 			variable: "drowneddress",
@@ -8321,6 +8478,7 @@ function initUpper() {
 		},
 		{
 			index: 157,
+			slot: "upper",
 			name: "bedsheet",
 			name_cap: "Bedsheet",
 			variable: "bedsheet",
@@ -8372,6 +8530,7 @@ function initUpper() {
 		},
 		{
 			index: 158,
+			slot: "upper",
 			name: "pimp suit jacket",
 			name_cap: "Pimp suit jacket",
 			variable: "pimp",

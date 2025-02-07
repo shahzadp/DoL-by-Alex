@@ -950,10 +950,21 @@ function minutePassed(minutes) {
 
 	// Effects
 	V.stress = Math.min(V.stress, V.stressmax);
-	if (V.drunk > 0) statChange.alcohol(-minutes);
+	if (V.drunk > 0) {
+		// use fancy math to ensure that `pass(60);` and `pass(30);pass(30);` apply the same amount of tiredness regardless of changed V.drunk value
+		const sum = (from, to) => ((from - to) * (from + to + 1)) / 2;
+		const drunkMod = sum(V.drunk, Math.max(V.drunk - minutes, 0));
+		// warning: assumes 1:1 negative alcohol changes, true as of yet
+		statChange.alcohol(-minutes);
+		// V.drunk ranging from 0 to 1000, 1 minute at 1000 will add extra 1.25 of tiredness (2.25x total)
+		// reference values are 2x at 800, 1.5x at 400 (pain reduction from drunkenness starts at 360), 1.25x at 200
+		if (minutes < 1200) statChange.tiredness(drunkMod / 12000);
+
+	}
 	if (V.hallucinogen > 0) statChange.hallucinogen(-minutes);
 	if (V.drugged > 0) statChange.drugs(-minutes);
-	if (minutes < 1200) statChange.tiredness((minutes * (V.drunk > 0 ? 2 : 1)) / 15);
+	// prevent fatigue from being an issue when passing days (actually 20+ hours) at a time
+	if (minutes < 1200) statChange.tiredness(minutes / 15);
 	statChange.pain(minutes, -1);
 
 	// Arousal

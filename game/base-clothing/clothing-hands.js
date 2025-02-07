@@ -18,6 +18,7 @@ function initHands() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "hands",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -50,6 +51,7 @@ function initHands() {
 
 		{
 			index: 1,
+			slot: "hands",
 			name: "fingerless gloves",
 			name_cap: "Fingerless gloves",
 			variable: "fingerlessgloves",
@@ -85,6 +87,7 @@ function initHands() {
 
 		{
 			index: 2,
+			slot: "hands",
 			name: "mittens",
 			name_cap: "Mittens",
 			variable: "mittens",
@@ -120,6 +123,7 @@ function initHands() {
 
 		{
 			index: 3,
+			slot: "hands",
 			name: "arm warmers",
 			name_cap: "Arm warmers",
 			variable: "armwarmers",
@@ -156,6 +160,7 @@ function initHands() {
 
 		{
 			index: 4,
+			slot: "hands",
 			name: "lace arm warmers",
 			name_cap: "Lace arm warmers",
 			variable: "lacewarmers",
@@ -194,6 +199,7 @@ function initHands() {
 		},
 		{
 			index: 5,
+			slot: "hands",
 			name: "long leather gloves",
 			name_cap: "Long leather gloves",
 			variable: "longleathergloves",
@@ -247,6 +253,7 @@ function initHands() {
 
 		{
 			index: 6,
+			slot: "hands",
 			name: "cheerleader gloves",
 			name_cap: "Cheerleader gloves",
 			variable: "pompoms",
@@ -286,6 +293,7 @@ function initHands() {
 
 		{
 			index: 7,
+			slot: "hands",
 			name: "gold bracelets",
 			name_cap: "Gold bracelets",
 			variable: "gold",
@@ -321,6 +329,7 @@ function initHands() {
 
 		{
 			index: 8,
+			slot: "hands",
 			name: "cow sleeves",
 			name_cap: "Cow sleeves",
 			variable: "cow",
@@ -355,6 +364,7 @@ function initHands() {
 
 		{
 			index: 9,
+			slot: "hands",
 			name: "work gloves",
 			name_cap: "Work gloves",
 			variable: "workgloves",
@@ -393,6 +403,7 @@ function initHands() {
 		},
 		{
 			index: 10,
+			slot: "hands",
 			name: "sexy nun's gloves",
 			name_cap: "Sexy nun's gloves",
 			variable: "nunlewd",
@@ -432,6 +443,7 @@ function initHands() {
 		},
 		{
 			index: 11,
+			slot: "hands",
 			name: "wrist cuffs",
 			name_cap: "Wrist cuffs",
 			variable: "wristcuffs",
@@ -469,6 +481,7 @@ function initHands() {
 		},
 		{
 			index: 12,
+			slot: "hands",
 			name: "gold shackles",
 			name_cap: "Gold shackles",
 			variable: "goldshackles",

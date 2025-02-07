@@ -19,6 +19,7 @@ function initLegs() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "legs",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -49,6 +50,7 @@ function initLegs() {
 		},
 		{
 			index: 1,
+			slot: "legs",
 			name: "tights",
 			name_cap: "Tights",
 			variable: "tights",
@@ -83,6 +85,7 @@ function initLegs() {
 		},
 		{
 			index: 2,
+			slot: "legs",
 			name: "boy's gym socks",
 			name_cap: "Boy's gym socks",
 			variable: "boysgymsocks",
@@ -119,6 +122,7 @@ function initLegs() {
 		},
 		{
 			index: 3,
+			slot: "legs",
 			name: "girl's gym socks",
 			name_cap: "Girl's gym socks",
 			variable: "girlsgymsocks",
@@ -155,6 +159,7 @@ function initLegs() {
 		},
 		{
 			index: 4,
+			slot: "legs",
 			name: "stockings",
 			name_cap: "Stockings",
 			variable: "stockings",
@@ -189,6 +194,7 @@ function initLegs() {
 		},
 		{
 			index: 5,
+			slot: "legs",
 			name: "fishnet stockings",
 			name_cap: "Fishnet stockings",
 			variable: "fishnetstockings",
@@ -224,6 +230,7 @@ function initLegs() {
 		},
 		{
 			index: 6,
+			slot: "legs",
 			name: "fishnet tights",
 			name_cap: "Fishnet tights",
 			variable: "fishnettights",
@@ -259,6 +266,7 @@ function initLegs() {
 		},
 		{
 			index: 7,
+			slot: "legs",
 			name: "garter stockings",
 			name_cap: "Garter stockings",
 			variable: "garterstockings",
@@ -313,6 +321,7 @@ function initLegs() {
 		},
 		{
 			index: 8,
+			slot: "legs",
 			name: "legwarmers",
 			name_cap: "Legwarmers",
 			variable: "legwarmers",
@@ -347,6 +356,7 @@ function initLegs() {
 		},
 		{
 			index: 9,
+			slot: "legs",
 			name: "christmas leg warmers",
 			name_cap: "Christmas leg warmers",
 			variable: "christmas",
@@ -380,6 +390,7 @@ function initLegs() {
 		},
 		{
 			index: 10,
+			slot: "legs",
 			name: "gold anklets",
 			name_cap: "Gold anklets",
 			variable: "goldanklets",
@@ -414,6 +425,7 @@ function initLegs() {
 		},
 		{
 			index: 11,
+			slot: "legs",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -443,6 +455,7 @@ function initLegs() {
 		},
 		{
 			index: 12,
+			slot: "legs",
 			name: "striped thighhighs",
 			name_cap: "Striped thighhighs",
 			variable: "stripedthighhighs",
@@ -480,6 +493,7 @@ function initLegs() {
 		},
 		{
 			index: 13,
+			slot: "legs",
 			name: "ankle socks",
 			name_cap: "Ankle socks",
 			variable: "anklesocks",
@@ -516,6 +530,7 @@ function initLegs() {
 		},
 		{
 			index: 14,
+			slot: "legs",
 			name: "plain thighhighs",
 			name_cap: "Plain thighhighs",
 			variable: "plainthighhighs",
@@ -551,6 +566,7 @@ function initLegs() {
 		},
 		{
 			index: 15,
+			slot: "legs",
 			name: "cow socks",
 			name_cap: "Cow socks",
 			variable: "cow",
@@ -585,6 +601,7 @@ function initLegs() {
 		},
 		{
 			index: 16,
+			slot: "legs",
 			name: "nurse socks",
 			name_cap: "Nurse socks",
 			variable: "nursesocks",
@@ -620,6 +637,7 @@ function initLegs() {
 		},
 		{
 			index: 17,
+			slot: "legs",
 			name: "ribbon stockings",
 			name_cap: "Ribbon stockings",
 			variable: "ribbonstockings",
@@ -657,6 +675,7 @@ function initLegs() {
 
 		{
 			index: 18,
+			slot: "legs",
 			name: "patterned dress socks",
 			name_cap: "Patterned dress socks",
 			variable: "twirly socks",
@@ -693,6 +712,7 @@ function initLegs() {
 
 		{
 			index: 19,
+			slot: "legs",
 			name: "polka dot socks",
 			name_cap: "Polka dot socks",
 			variable: "polka socks",
@@ -743,6 +763,7 @@ function initLegs() {
 
 		{
 			index: 20,
+			slot: "legs",
 			name: "sports socks",
 			name_cap: "Sports socks",
 			variable: "sports socks short",
@@ -779,6 +800,7 @@ function initLegs() {
 
 		{
 			index: 21,
+			slot: "legs",
 			name: "knee-high sports socks",
 			name_cap: "Knee-high sports socks",
 			variable: "sports socks long",
@@ -815,6 +837,7 @@ function initLegs() {
 
 		{
 			index: 22,
+			slot: "legs",
 			name: "rib-knit socks",
 			name_cap: "Rib-knit socks",
 			variable: "striped socks long",
@@ -851,6 +874,7 @@ function initLegs() {
 
 		{
 			index: 23,
+			slot: "legs",
 			name: "rib-knit ankle socks",
 			name_cap: "Rib-knit ankle socks",
 			variable: "striped socks short",
@@ -888,6 +912,7 @@ function initLegs() {
 
 		{
 			index: 24,
+			slot: "legs",
 			name: "striped kneehighs",
 			name_cap: "Striped kneehighs",
 			variable: "striped kneehighs",
@@ -925,6 +950,7 @@ function initLegs() {
 
 		{
 			index: 25,
+			slot: "legs",
 			name: "sheer leggings",
 			name_cap: "Sheer leggings",
 			variable: "sheerleggings",
@@ -978,6 +1004,7 @@ function initLegs() {
 		},
 		{
 			index: 26,
+			slot: "legs",
 			name: "mismatched socks",
 			name_cap: "Mismatched socks",
 			variable: "mismatched socks",
@@ -1014,6 +1041,7 @@ function initLegs() {
 		},
 		{
 			index: 27,
+			slot: "legs",
 			name: "loose socks",
 			name_cap: "Loose socks",
 			variable: "loosesocks",
@@ -1048,6 +1076,7 @@ function initLegs() {
 		},
 		{
 			index: 28,
+			slot: "legs",
 			name: "sexy nun's stockings",
 			name_cap: "Sexy nun's stockings",
 			variable: "nunlewd",
@@ -1083,6 +1112,7 @@ function initLegs() {
 		},
 		{
 			/* moved to underwear, conversion code broke, delete when it's possible to delete items without fucking up indices */ index: 29,
+			slot: "legs",
 			name: "leather leggings",
 			name_cap: "Leather leggings",
 			variable: "leatherleggings",
@@ -1123,6 +1153,7 @@ function initLegs() {
 		},
 		{
 			index: 30,
+			slot: "legs",
 			name: "men's garter socks",
 			name_cap: "Men's garter socks",
 			variable: "mensgarters",
@@ -1158,6 +1189,7 @@ function initLegs() {
 		},
 		{
 			index: 31,
+			slot: "legs",
 			name: "ruffled socks",
 			name_cap: "Ruffled socks",
 			variable: "ruffled socks",
@@ -1194,6 +1226,7 @@ function initLegs() {
 		},
 		{
 			index: 32,
+			slot: "legs",
 			name: "ruffled kneehighs",
 			name_cap: "Ruffled kneehighs",
 			variable: "ruffled kneehighs",
@@ -1229,6 +1262,7 @@ function initLegs() {
 		},
 		{
 			index: 33,
+			slot: "legs",
 			name: "ruffled thighhighs",
 			name_cap: "Ruffled thighhighs",
 			variable: "ruffled thighhighs",
@@ -1265,6 +1299,7 @@ function initLegs() {
 
 		{
 			index: 34,
+			slot: "legs",
 			name: "tabi",
 			name_cap: "Tabi",
 			variable: "tabi",
@@ -1300,6 +1335,7 @@ function initLegs() {
 		},
 		{
 			index: 35,
+			slot: "legs",
 			name: "gold shackles",
 			name_cap: "Gold shackles",
 			variable: "goldshackles",

@@ -94,6 +94,7 @@ declare global {
 
 	export interface ClothesItem {
 		index: number;
+		slot: ClothedSlots;
 		name: string;
 		name_cap: string;
 		name_simple?: string;

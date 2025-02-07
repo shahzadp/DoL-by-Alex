@@ -7,6 +7,7 @@ function initOverUpper() {
 	const clothing = [
 		{
 			index: 0,
+			slot: "over_upper",
 			name: "naked",
 			name_cap: "Naked",
 			variable: "naked",
@@ -47,6 +48,7 @@ function initOverUpper() {
 		},
 		{
 			index: 1,
+			slot: "over_upper",
 			name: "froggy coat",
 			name_cap: "Froggy coat",
 			variable: "froggy",
@@ -91,6 +93,7 @@ function initOverUpper() {
 		},
 		{
 			index: 2,
+			slot: "over_upper",
 			name: "cream",
 			name_cap: "Cream",
 			variable: "cream",
