@@ -350,6 +350,9 @@ function updateClothesItem(slot, item, debug) {
 			item.name = "patterned skirt";
 			item.name_cap = "Patterned skirt";
 			break;
+		case "sarong":
+			item.type = ["naked"];
+			break;
 	}
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
 }

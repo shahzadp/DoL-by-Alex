@@ -7468,7 +7468,7 @@ function initLower() {
 			vagina_exposed_base: 1,
 			anus_exposed: 1,
 			anus_exposed_base: 1,
-			type: ["normal"],
+			type: ["naked"],
 			set: "lower",
 			gender: "n",
 			warmth: 1,
