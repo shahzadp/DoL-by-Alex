@@ -28,23 +28,49 @@
 You are in the cosmetics store. Several shelvings stand before you, filled with all kinds of colourful tubes, jars and boxes.
 <br><br>
 
-<<if Time.dayState is "night" and Time.hour isnot 21 and !$weekly.theft.cosmeticsShop>>
-	<<shopicon "register">><<link [[Examine the cash register|Cosmetics Store Register]]>><</link>>
+<<if Time.dayState is "night" and Time.hour isnot $closinghour>>
+	You are alone in the darkness.
+	<br><br>
+<<elseif $exposed gte 1>>
+	You hide behind a shelf to protect your dignity.
 	<br><br>
 <</if>>
-<<cosmeticsicon>><<link [[Look at lipsticks|Cosmetics Lipstick]]>><</link>>
-<br>
-<<cosmeticsicon "eyeshadow">><<link [[Look at eyeshadows|Cosmetics Eyeshadow]]>><</link>>
-<br>
-<<cosmeticsicon "mascara">><<link [[Look at mascaras|Cosmetics Mascara]]>><</link>>
-<br>
-<<cosmeticsicon "blusher">><<link [[Look at blushers|Cosmetics Blusher]]>><</link>>
-<br>
-<<cosmeticsicon "dyes">><<link [[Look at hair dyes|Cosmetics Dyes]]>><</link>>
-<br>
-<<cosmeticsicon "sunscreen">><<link [[Look at sunscreen|Cosmetics Sunscreen]]>><</link>>
-<br><br>
-<<getouticon>><<link [[Leave|Shopping Centre Top]]>><</link>>
+
+<<if $stress gte $stressmax>>
+	<<passoutshop>>
+<<elseif Time.hour is $closinghour>>
+	It's closing time. Security is herding everyone outside.
+	<<if $exposed gte 1>>
+		Panic swells within you as you realise how embarrassed you'll be should security find you exposed like this.
+	<</if>>
+	<br><br>
+	<<if $exposed lte 0>>
+		<<highicon>><<link [[Go outside|High Street]]>><</link>>
+		<br>
+	<<else>>
+		<<ind>><<link [["Hide until it's over (1:00)"|Cosmetics Store]]>><<pass 1 hour>><</link>>
+	<</if>>
+<<else>>
+	<<if Time.dayState is "night" and !$weekly.theft.cosmeticsShop>>
+		<<shopicon "register">><<link [[Examine the cash register|Cosmetics Store Register]]>><</link>>
+		<br><br>
+	<</if>>
+	<<if Time.dayState is "night" or $exposed lte 0>>
+		<<cosmeticsicon>><<link [[Look at lipsticks|Cosmetics Lipstick]]>><</link>>
+		<br>
+		<<cosmeticsicon "eyeshadow">><<link [[Look at eyeshadows|Cosmetics Eyeshadow]]>><</link>>
+		<br>
+		<<cosmeticsicon "mascara">><<link [[Look at mascaras|Cosmetics Mascara]]>><</link>>
+		<br>
+		<<cosmeticsicon "blusher">><<link [[Look at blushers|Cosmetics Blusher]]>><</link>>
+		<br>
+		<<cosmeticsicon "dyes">><<link [[Look at hair dyes|Cosmetics Dyes]]>><</link>>
+		<br>
+		<<cosmeticsicon "sunscreen">><<link [[Look at sunscreen|Cosmetics Sunscreen]]>><</link>>
+		<br><br>
+	<</if>>
+	<<getouticon>><<link [[Leave|Shopping Centre Top]]>><</link>>
+<</if>>
 
 :: Cosmetics Lipstick
 <<CosmeticsGenericDepartment "lipstick" "lipstick" "lipsticks" "lipstick" "" "#FF0000" 1000 "Cosmetics Lipstick" "A bunch of colourful lipsticks stand on a shelf." true true 20 `setup.colours.lipstick.map(c=>c.variable)`>>
