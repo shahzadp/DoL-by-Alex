@@ -485,39 +485,40 @@
 		<br><br>
 	<</foldout>>
 
-	<<foldout false "_moneyFoldout">>
-		<span class="gold">Money</span>
-		Notes <mouse class="tooltip linkBlue">(?)<span>Adding too many extra columns may make it harder to read on some devices. Many of these were not tracked at all before version '0.5.2.x' and so will be inaccurate.<<if Object.keys($timeStats).length>> Hour rates cannot be easily used to track every state and so most will just be "N/A".<</if>></span></mouse>
-		<br>
-		<<set [_moneyKeys, _moneyStats, _moneyStatsTotal] to moneyStatsProcess(clone($moneyStats))>>
-		<<if $moneyStatsSnapshot?.money>>
-			<<set [_moneySnapshotKeys, _moneyStatsSnapshot, _moneyStatsSnapshotTotal] to moneyStatsProcess(clone($moneyStatsSnapshot.money))>>
-		<</if>>
-		<div id="moneyStatsDiv">
-			<<moneyStats>>
-		</div>
-		<<if $debug is 1>>
-			<<link "Reset Stats (Debug)">>
-				<<set $moneyStats to {}>>
-				<<set $timeStats to {}>>
-				<<unset $moneyStatsSnapshot>>
-				<<unset _showSnapshot>>
-				<<set [_moneyKeys, _moneyStats, _moneyStatsTotal] to moneyStatsProcess(clone($moneyStats))>>
-				<<replace "#moneyStatsDiv">><<moneyStats>><</replace>>
-			<</link>>
-		<</if>>
-	<</foldout>>
+	<<foldout false "_detailedTablesFoldout">>
+		<span class="gold">Detailed Stat Tables</span>
+		<span id="moneyButton" @class="_openedTable is 'money' ? 'gold': ''">
+			<<button "Money">>
+				<<set _openedTable to "money">>
+				<<replace "#detailedStatsDiv">><<statisticsDetailedTables>><</replace>>
+				<<addclass "#moneyButton" "gold">>
+				<<removeclass "#produceButton" "gold">>
+				<<removeclass "#badEndsButton" "gold">>
+			<</button>>
+		</span>
+		<span id="produceButton" @class="_openedTable is 'produce' ? 'gold': ''">
+			<<button "Produce">>
+				<<set _openedTable to "produce">>
+				<<replace "#detailedStatsDiv">><<statisticsDetailedTables>><</replace>>
+				<<removeclass "#moneyButton" "gold">>
+				<<addclass "#produceButton" "gold">>
+				<<removeclass "#badEndsButton" "gold">>
+			<</button>>
+		</span>
+		<span id="badEndsButton" @class="_openedTable is 'badEnd' ? 'gold': ''">
+			<<if $badEndStats.length>>
+				<<button "Bad Ends">>
+					<<set _openedTable to "badEnd">>
+					<<replace "#detailedStatsDiv">><<statisticsDetailedTables>><</replace>>
+					<<removeclass "#moneyButton" "gold">>
+					<<removeclass "#produceButton" "gold">>
+					<<addclass "#badEndsButton" "gold">>
+				<</button>>
+			<</if>>
+		</span>
 
-	<<if $badEndStats.length>>
-		<<foldout false "_badEndFoldout">>
-			<span class="gold">Bad Ends</span>
-			Notes <mouse class="tooltip linkBlue">(?)<span>Adding too many extra columns may make it harder to read on some devices. These were not tracked at all before version '0.5.2.x' and so will be inaccurate. If a bad end stays in progress but you have clearly ended the bad end, please report it as a bug with your save.</span></mouse>
-			<br>
-			<div id="badEndStatsDiv">
-				<<badEndStats>>
-			</div>
-		<</foldout>>
-	<</if>>
+		<div id="detailedStatsDiv"><<statisticsDetailedTables>></div>
+	<</foldout>>
 
 	<<foldout false "_miscFoldout">>
 		<span class="gold">Miscellaneous</span>
@@ -1242,6 +1243,43 @@
 <</silently>><<if $_text_output>><<print $_text_output>><</if>>
 <</widget>>
 
+<<widget "statisticsDetailedTables">>
+	<<switch _openedTable>>
+		<<case "money">>
+			Money notes <mouse class="tooltip linkBlue">(?)<span>Adding too many extra columns may make it harder to read on some devices. Many of these were not tracked at all before version '0.5.2.x' and so will be inaccurate.<<if Object.keys($timeStats).length>> Hour rates cannot be easily used to track every state and so most will just be "N/A".<</if>></span></mouse>
+			<br>
+			<<set [_moneyKeys, _moneyStats, _moneyStatsTotal] to moneyStatsProcess(clone($moneyStats))>>
+			<<if $moneyStatsSnapshot?.money>>
+				<<set [_moneySnapshotKeys, _moneyStatsSnapshot, _moneyStatsSnapshotTotal] to moneyStatsProcess(clone($moneyStatsSnapshot.money))>>
+			<</if>>
+			<div id="moneyStatsDiv">
+				<<moneyStats>>
+			</div>
+			<<if $debug is 1>>
+				<<link "Reset Stats (Debug)">>
+					<<set $moneyStats to {}>>
+					<<set $timeStats to {}>>
+					<<unset $moneyStatsSnapshot>>
+					<<unset _showSnapshot>>
+					<<set [_moneyKeys, _moneyStats, _moneyStatsTotal] to moneyStatsProcess(clone($moneyStats))>>
+					<<replace "#moneyStatsDiv">><<moneyStats>><</replace>>
+				<</link>>
+			<</if>>
+		<<case "produce">>
+			Produce notes: <mouse class="tooltip linkBlue">(?)<span>Adding too many extra columns may make it harder to read on some devices. These were not tracked at all before version '0.5.3.x' and so will be inaccurate.</span></mouse>
+			<br>
+			<div id="produceStatsDiv">
+				<<produceStats>>
+			</div>
+		<<case "badEnd">>
+			Bad end notes <mouse class="tooltip linkBlue">(?)<span>Adding too many extra columns may make it harder to read on some devices. These were not tracked at all before version '0.5.2.x' and so will be inaccurate. If a bad end stays in progress but you have clearly ended the bad end, please report it as a bug with your save.</span></mouse>
+			<br>
+			<div id="badEndStatsDiv">
+				<<badEndStats>>
+			</div>
+	<</switch>>
+<</widget>>
+
 <<widget "moneyStats">>
 	<<set $_moneyStats to (_showSnapshot is "show" ? clone(_moneyStatsSnapshot) : clone(_moneyStats))>>
 	<<set $_moneyKeys to (_showSnapshot is "show" ? clone(_moneySnapshotKeys) : clone(_moneyKeys))>>
@@ -1749,87 +1787,87 @@
 				<</if>>
 			</tr>
 		</thead>
-			<<for $_badEnd range $_badEndStats>>
-				<tbody class="stat">
-					<td data-label="Bad End">
-						<<print $_badEnd.source>>
-						<<if $_badEnd.notesStart or $_badEnd.notesEnd>>
-							<<set $_includesError to $_badEnd?.notesStart?.includes("Not correctly tracked") or $_badEnd?.notesEnd?.includes("Not correctly tracked")>>
-							<mouse @class="'tooltip ' + ($_includesError ? 'red' : 'linkBlue')">(?)<span>
-								<<if $_badEnd.notesStart>><<print $_badEnd.notesStart>><</if>>
-								<<if $_badEnd.notesEnd>>
-									<<if $_badEnd.notesStart>><hr><</if>>
-									<<print $_badEnd.notesEnd>>
-								<</if>>
-							</span></mouse>
-						<</if>>
-					</td>
-					<td data-label="Started">
-						<<set $_time to new DateTime($_badEnd.trackedStart)>>
+		<<for $_badEnd range $_badEndStats>>
+			<tbody class="stat">
+				<td data-label="Bad End">
+					<<print $_badEnd.source>>
+					<<if $_badEnd.notesStart or $_badEnd.notesEnd>>
+						<<set $_includesError to $_badEnd?.notesStart?.includes("Not correctly tracked") or $_badEnd?.notesEnd?.includes("Not correctly tracked")>>
+						<mouse @class="'tooltip ' + ($_includesError ? 'red' : 'linkBlue')">(?)<span>
+							<<if $_badEnd.notesStart>><<print $_badEnd.notesStart>><</if>>
+							<<if $_badEnd.notesEnd>>
+								<<if $_badEnd.notesStart>><hr><</if>>
+								<<print $_badEnd.notesEnd>>
+							<</if>>
+						</span></mouse>
+					<</if>>
+				</td>
+				<td data-label="Started">
+					<<set $_time to new DateTime($_badEnd.trackedStart)>>
+					<<switch $options.dateFormat>>
+						<<case "en-US">>
+							Started: $_time.month/$_time.day/$_time.year
+						<<case "zh-CN">>
+							Started: $_time.year/$_time.month/$_time.day
+						<<default>>
+							Started: $_time.day/$_time.month/$_time.year
+					<</switch>>
+				</td>
+				<td data-label="Ended">
+					<<if $_badEnd.trackedEnd>>
+						<<set $_time2 to new DateTime($_badEnd.trackedEnd)>>
 						<<switch $options.dateFormat>>
 							<<case "en-US">>
-								Started: $_time.month/$_time.day/$_time.year
+								Ended: $_time2.month/$_time2.day/$_time2.year
 							<<case "zh-CN">>
-								Started: $_time.year/$_time.month/$_time.day
+								Ended: $_time2.year/$_time2.month/$_time2.day
 							<<default>>
-								Started: $_time.day/$_time.month/$_time.year
+								Ended: $_time2.day/$_time2.month/$_time2.year
 						<</switch>>
-					</td>
-					<td data-label="Ended">
+					<<else>>
+						<span class="dash"></span>
+					<</if>>
+				</td>
+				<td data-label="Duration">
+					<<if $_badEnd.trackedEnd>>
+						<<statisticsTimeCompare $_time $_time2>>
+					<<else>>
+						In progress
+					<</if>>
+				</td>
+				<<if _badEndStatsHowLongAgo>>
+					<td data-label="How Long Ago">
 						<<if $_badEnd.trackedEnd>>
-							<<set $_time2 to new DateTime($_badEnd.trackedEnd)>>
-							<<switch $options.dateFormat>>
-								<<case "en-US">>
-									Ended: $_time2.month/$_time2.day/$_time2.year
-								<<case "zh-CN">>
-									Ended: $_time2.year/$_time2.month/$_time2.day
-								<<default>>
-									Ended: $_time2.day/$_time2.month/$_time2.year
-							<</switch>>
+							<<statisticsTimeCompare $_time2>>
 						<<else>>
-							<span class="dash"></span>
+							<span class="dash">-</span>
 						<</if>>
 					</td>
-					<td data-label="Duration">
-						<<if $_badEnd.trackedEnd>>
-							<<statisticsTimeCompare $_time $_time2>>
+				<</if>>
+				<<if _badEndStatsReasonStart>>
+					<td data-label="Start Reason">
+						<<if setup.badEndReasonText[$_badEnd.reasonStart] isnot undefined>>
+							<<print setup.badEndReasonText[$_badEnd.reasonStart] or '<span class="dash">-</span>'>>
+						<<elseif $_badEnd.reasonStart>>
+							<<print $_badEnd.reasonStart>>
 						<<else>>
-							In progress
+							<span class="dash">-</span>
 						<</if>>
 					</td>
-					<<if _badEndStatsHowLongAgo>>
-						<td data-label="How Long Ago">
-							<<if $_badEnd.trackedEnd>>
-								<<statisticsTimeCompare $_time2>>
-							<<else>>
-								<span class="dash">-</span>
-							<</if>>
-						</td>
-					<</if>>
-					<<if _badEndStatsReasonStart>>
-						<td data-label="Start Reason">
-							<<if setup.badEndReasonText[$_badEnd.reasonStart] isnot undefined>>
-								<<print setup.badEndReasonText[$_badEnd.reasonStart] or '<span class="dash">-</span>'>>
-							<<elseif $_badEnd.reasonStart>>
-								<<print $_badEnd.reasonStart>>
-							<<else>>
-								<span class="dash">-</span>
-							<</if>>
-						</td>
-					<</if>>
-					<<if _badEndStatsReasonEnd>>
-						<td data-label="End Reason">
-							<<if setup.badEndReasonText[$_badEnd.reasonEnd] isnot undefined>>
-								<<print setup.badEndReasonText[$_badEnd.reasonEnd] or '<span class="dash">-</span>'>>
-							<<elseif $_badEnd.reasonEnd>>
-								<<print $_badEnd.reasonEnd>>
-							<<else>>
-								<span class="dash">-</span>
-							<</if>>
-						</td>
-					<</if>>
-				</tbody>
-			<</for>>
+				<</if>>
+				<<if _badEndStatsReasonEnd>>
+					<td data-label="End Reason">
+						<<if setup.badEndReasonText[$_badEnd.reasonEnd] isnot undefined>>
+							<<print setup.badEndReasonText[$_badEnd.reasonEnd] or '<span class="dash">-</span>'>>
+						<<elseif $_badEnd.reasonEnd>>
+							<<print $_badEnd.reasonEnd>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+			</tbody>
+		<</for>>
 	</table>
 <</widget>>
 
@@ -1840,6 +1878,237 @@
 		<<set $_text_output to ` <<link "${_args[0]}&#x25BC;">><<unset _badEndStatsSorting>><<replace "#badEndStatsDiv">><<badEndStats>><</replace>><</link>>`>>
 	<<else>>
 		<<set $_text_output to ` <<link "${_args[0]}">><<set _badEndStatsSorting to "${_args[0]}">><<replace "#badEndStatsDiv">><<badEndStats>><</replace>><</link>>`>>
+	<</if>>
+<</silently>><<if $_text_output>><<print $_text_output>><</if>>
+<</widget>>
+
+<<widget "produceStats">>
+	<<set $_produceKeys to Object.keys(clone(setup.plants))>>
+	<span @class="_produceStatsCurrent ? '' : 'goldLink'">
+		/* Inverted in how it works */
+		<<link `_produceStatsCurrent ? "Show player stats" : "Hide player stats"`>>
+			<<set _produceStatsCurrent to !_produceStatsCurrent>>
+			<<replace "#produceStatsDiv">><<produceStats>><</replace>>
+		<</link>>
+	</span> |
+	<<if $stall_stats>>
+		<<if $daily.stallRented>>
+			<span @class="_produceStatsMarket ? 'goldLink' : ''">
+				<<link `_produceStatsMarket ? "Hide market daily stats" : "Show market daily stats"`>>
+					<<set _produceStatsMarket to !_produceStatsMarket>>
+					<<replace "#produceStatsDiv">><<produceStats>><</replace>>
+				<</link>>
+			</span> |
+		<</if>>
+		<span @class="_produceStatsMarketOverall ? 'goldLink' : ''">
+			<<link `_produceStatsMarketOverall ? "Hide market overall stats" : "Show market overall stats"`>>
+				<<set _produceStatsMarketOverall to !_produceStatsMarketOverall>>
+				<<replace "#produceStatsDiv">><<produceStats>><</replace>>
+			<</link>>
+		</span> |
+	<</if>>
+	<<if $farmersProduce?.soldData>>
+		<span @class="_produceStatsFactory ? 'goldLink' : ''">
+			<<link `_produceStatsFactory ? "Hide factory stats" : "Show factory stats"`>>
+				<<set _produceStatsFactory to !_produceStatsFactory>>
+				<<replace "#produceStatsDiv">><<produceStats>><</replace>>
+			<</link>>
+		</span> |
+	<</if>>
+	<<if _produceStatsSorting>>
+		<<link "Reset Sorting">>
+			<<unset _produceStatsSorting>>
+			<<replace "#badEndStatsDiv">><<badEndStats>><</replace>>
+		<</link>>
+		<<run $_produceKeys.sort((a, b) => {
+			if (_produceStatsSorting.includes("Desc")) {
+				const tempSwap = clone(a);
+				a = clone(b);
+				b = tempSwap;
+			}
+			switch(_produceStatsSorting.replace("Desc","")) {
+				case "Produce":
+					if (a.toUpperCase() < b.toUpperCase()) return -1;
+					return 1;
+				case "Value":
+					return (setup.plants[b]?.plant_cost || 0) - (setup.plants[a]?.plant_cost || 0);
+				case "Amount":
+					return ($plants[b].amount || 0) - ($plants[a].amount || 0);
+				case "Total":
+					return ((setup.plants[b]?.plant_cost * $plants[b].amount) || 0) - ((setup.plants[a]?.plant_cost * $plants[a].amount) || 0);
+				case "Market: Allowed to be sold":
+					return $plants[b]?.marketStall ? 1 : -1;
+				case "Market: Sold Today":
+					return ($stall_stats[b]?.sold.amount || 0) - ($stall_stats[a]?.sold.amount || 0);
+				case "Market: Average Today":
+					return (($stall_stats[b].sold.total || 0) / ($stall_stats[b]?.sold.amount || 1)) - (($stall_stats[a].sold.total || 0) / ($stall_stats[a]?.sold.amount || 1));
+				case "Market: Todays Total":
+					return ($stall_stats[b]?.sold.total || 0) - ($stall_stats[a]?.sold.total || 0);
+				case "Market: Sold":
+					return ($stall_stats[b]?.sold.amountHistory || 0) - ($stall_stats[a]?.sold.amountHistory || 0);
+				case "Market: Average":
+					return (($stall_stats[b].sold.totalHistory || 0) / ($stall_stats[b]?.sold.amountHistory || 1)) - (($stall_stats[a].sold.totalHistory || 0) / ($stall_stats[a]?.sold.amountHistory || 1));
+				case "Market: Total":
+					return ($stall_stats[b]?.sold.totalHistory || 0) - ($stall_stats[a]?.sold.totalHistory || 0);
+				case "Factory: Sold":
+					return ($farmersProduce.soldData[b]?.amount || 0) - ($farmersProduce.soldData[a]?.amount || 0);
+				case "Factory: Average":
+					return (($farmersProduce.soldData[b]?.total || 0) / ($farmersProduce.soldData[b]?.amount || 1)) - (($farmersProduce.soldData[a]?.total || 0) / ($farmersProduce.soldData[a]?.amount || 1));
+				case "Factory: Total":
+					return ($farmersProduce.soldData[b]?.total || 0) - ($farmersProduce.soldData[a]?.total || 0);
+			}
+		})>>
+	<</if>>
+	<table class="statsTable">
+		<thead>
+			<tr>
+				<th scope="col"><<produceStatsTitle "Produce">></th>
+				<th scope="col"><<produceStatsTitle "Value">></th>
+				<<if !_produceStatsCurrent>>
+					<th scope="col"><<produceStatsTitle "Amount">></th>
+					<th scope="col"><<produceStatsTitle "Total">></th>
+				<</if>>
+				<<if _produceStatsMarket or _produceStatsMarketOverall>>
+					<th scope="col"><<produceStatsTitle "Market: Allowed to be sold">></th>
+				<</if>>
+				<<if _produceStatsMarket>>
+					<th scope="col"><<produceStatsTitle "Market: Sold Today">></th>
+					<th scope="col"><<produceStatsTitle "Market: Average Today">></th>
+					<th scope="col"><<produceStatsTitle "Market: Todays Total">></th>
+				<</if>>
+				<<if _produceStatsMarketOverall>>
+					<th scope="col"><<produceStatsTitle "Market: Sold">></th>
+					<th scope="col"><<produceStatsTitle "Market: Average">></th>
+					<th scope="col"><<produceStatsTitle "Market: Total">></th>
+				<</if>>
+				<<if _produceStatsFactory>>
+					<th scope="col"><<produceStatsTitle "Factory: Sold">></th>
+					<th scope="col"><<produceStatsTitle "Factory: Average">></th>
+					<th scope="col"><<produceStatsTitle "Factory: Total">></th>
+				<</if>>
+			</tr>
+		</thead>
+		<<for $_key range $_produceKeys>>
+			<<set $_produce to clone(setup.plants[$_key])>>
+			<<set $_playerProduce to clone($plants[$_key])>>
+			<<if $_playerProduce.amount lte 0 and
+			!$stall_stats?.[$_key]?.sold.amount and !$stall_stats?.[$_key]?.sold.amountHistory and
+			!$farmersProduce?.selling[$_key] and !$farmersProduce?.soldData[$_key]>>
+				<<continue>>
+			<</if>>
+			<tbody class="stat">
+				<td data-label="Produce">
+					<<recipe_name $_key>>
+				</td>
+				<td data-label="Value">
+					<<printmoney `$_produce.plant_cost or 0`>>
+				</td>
+				<<if !_produceStatsCurrent>>
+					<td data-label="Amount">
+						<<if $_playerProduce.amount gt 0>>
+							<<print $_playerProduce.amount>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Total">
+						<<if $_playerProduce.amount gt 0>>
+							<<printmoney `($_produce.plant_cost or 0) * $_playerProduce.amount`>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+				<<if _produceStatsMarket or _produceStatsMarketOverall>>
+					<td data-label="Market: Allowed to be sold">
+						<<if $plants[$_key]?.marketStall isnot undefined>>
+							<<print $plants[$_key].marketStall>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+				<<if _produceStatsMarket>>
+					<td data-label="Market: Sold Today">
+						<<if $stall_stats[$_key]?.sold.amount gt 0>>
+							<<print $stall_stats[$_key].sold.amount>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Market: Average Today">
+						<<if $stall_stats[$_key]?.sold.amount gt 0>>
+							<<printmoney `$stall_stats[$_key].sold.total / $stall_stats[$_key].sold.amount`>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Market: Todays Total">
+						<<if $stall_stats[$_key]?.sold.total gt 0>>
+							<<printmoney $stall_stats[$_key].sold.total>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+				<<if _produceStatsMarketOverall>>
+					<td data-label="Market: Sold">
+						<<if $stall_stats[$_key]?.sold.amountHistory gt 0>>
+							<<print $stall_stats[$_key].sold.amountHistory>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Market: Average">
+						<<if $stall_stats[$_key]?.sold.amountHistory gt 0>>
+							<<printmoney `$stall_stats[$_key].sold.totalHistory / $stall_stats[$_key].sold.amountHistory`>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Market: Total">
+						<<if $stall_stats[$_key]?.sold.totalHistory gt 0>>
+							<<printmoney $stall_stats[$_key].sold.totalHistory>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+				<<if _produceStatsFactory>>
+					<td data-label="Factory: Sold">
+						<<if $farmersProduce.soldData[$_key]?.amount gt 0>>
+							<<print $farmersProduce.soldData[$_key].amount>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Factory: Average">
+						<<if $farmersProduce.soldData[$_key]?.amount gt 0>>
+							<<printmoney `$farmersProduce.soldData[$_key].total / $farmersProduce.soldData[$_key].amount`>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+					<td data-label="Factory: Total">
+						<<if $farmersProduce.soldData[$_key]?.total gt 0>>
+							<<printmoney $farmersProduce.soldData[$_key].total>>
+						<<else>>
+							<span class="dash">-</span>
+						<</if>>
+					</td>
+				<</if>>
+			</tbody>
+		<</for>>
+	</table>
+<</widget>>
+
+<<widget "produceStatsTitle">><<silently>>
+	<<if _produceStatsSorting is _args[0]>>
+		<<set $_text_output to ` <<link "${_args[0]}&#x25B2;">><<set _produceStatsSorting to "${_args[0]}Desc">><<replace "#produceStatsDiv">><<produceStats>><</replace>><</link>>`>>
+	<<elseif  _produceStatsSorting is _args[0] + "Desc">>
+		<<set $_text_output to ` <<link "${_args[0]}&#x25BC;">><<unset _produceStatsSorting>><<replace "#produceStatsDiv">><<produceStats>><</replace>><</link>>`>>
+	<<else>>
+		<<set $_text_output to ` <<link "${_args[0]}">><<set _produceStatsSorting to "${_args[0]}">><<replace "#produceStatsDiv">><<produceStats>><</replace>><</link>>`>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>>
 <</widget>>

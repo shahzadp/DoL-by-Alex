@@ -230,6 +230,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 			<<set _baseSaleQuantity to _baseSaleQuantity * 2>>
 		<</if>>
 		<<set _itemsSold to 0>>
+		<<if !$farmersProduce.soldData>><<set $farmersProduce.soldData = {}>><</if>>
 		<<for _label, _value range $farmersProduce.selling>>
 			<<set _quantity to clone(_baseSaleQuantity)>>
 			<<if !setup.plants[_label].season.includes(Time.season)>>
@@ -245,6 +246,16 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 
 			<<set $farmersProduce.money += bulkProduceValue(setup.plants[_label],_quantity)>>
 			<<set $farmersProduce.selling[_label] -= _quantity>>
+
+			<<if !$farmersProduce.soldData[_label]>>
+				<<set $farmersProduce.soldData[_label] to {
+					amount: _quantity,
+					total: bulkProduceValue(setup.plants[_label],_quantity),
+				}>>
+			<<else>>
+				<<set $farmersProduce.soldData[_label].amount += _quantity>>
+				<<set $farmersProduce.soldData[_label].total += bulkProduceValue(setup.plants[_label],_quantity)>>
+			<</if>>
 
 			<<if $farmersProduce.selling[_label] lte 0>>
 				<<run delete $farmersProduce.selling[_label]>>

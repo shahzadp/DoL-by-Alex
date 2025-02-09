@@ -2625,7 +2625,7 @@ function kitchenFilter() {
 			group = "Missing Ingredients";
 			missingIngredients = true;
 		}
-		if (!T.recipeKeys.find(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group });
+		if (!T.recipeKeys.find(recipeObj => recipeObj.key === recipe)) T.recipeKeys.push({ key: recipe, group });
 	});
 
 	if (providedIngredients) T.recipesGroups.unshift("Provided Ingredients");
@@ -2633,6 +2633,41 @@ function kitchenFilter() {
 	if (knownRestrictions) T.recipesGroups.push("Restricted Ingredients");
 }
 DefineMacro("kitchenFilter", kitchenFilter);
+
+function marketFilter() {
+	T.marketKeys = [];
+	T.marketGroups = [];
+	const marketFilter = T.marketSearch ? T.marketSearch.split(/[_ ]/g) : false;
+
+	let missingItems = false;
+
+	Object.keys(setup.plants).forEach(product => {
+		const item = setup.plants[product];
+
+		if (V.plants[product].amount <= 0 && V.plants[product].marketStall === undefined) return;
+
+		// Makes sure items always get this set for older saves
+		if (V.plants[product].marketStall === undefined) V.plants[product].marketStall = !setup.plants[product]?.shop?.length;
+
+		if (
+			marketFilter &&
+			!marketFilter.find(term => item.name.includes(term) || item.type.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))
+		) {
+			return;
+		}
+
+		T.marketGroups.pushUnique(item.type);
+		let group = item.type;
+		if (V.plants[product].amount <= 0) {
+			missingItems = true;
+			group = "No Stock";
+		}
+		if (!T.marketKeys.find(productObj => productObj.key === product)) T.marketKeys.push({ key: product, group });
+	});
+
+	if (missingItems) T.marketGroups.push("No Stock");
+}
+DefineMacro("marketFilter", marketFilter);
 
 function teensPresentCheck(location) {
 	let present = 0;

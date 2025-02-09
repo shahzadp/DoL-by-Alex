@@ -91,9 +91,9 @@
 			<<foldout false _categoryVar>>
 				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
 				<<set _filteredRecipes to _recipeKeys.filter(key => key.group is _category)>>
-				<<for _i, $_keyObject range _filteredRecipes>>
+				<<for $_i, $_keyObject range _filteredRecipes>>
 					<div @id="$_keyObject.key" class="item"><<kitchenDisplayRecipe $_keyObject.key>></div>
-					<<if _i < _filteredRecipes.length - 1>><hr><</if>>
+					<<if $_i < _filteredRecipes.length - 1>><hr><</if>>
 				<</for>>
 			<</foldout>>
 		<</for>>
@@ -105,9 +105,9 @@
 			<<foldout false _categoryVar>>
 				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
 				<<set _filteredRecipes to _recipeKeys.filter(key => key.group is _category)>>
-				<<for _i, $_keyObject range _filteredRecipes>>
+				<<for $_i, $_keyObject range _filteredRecipes>>
 					<div @id="$_keyObject.key" class="item"><<kitchenDisplayRecipe $_keyObject.key>></div>
-					<<if _i < _filteredRecipes.length - 1>><hr><</if>>
+					<<if $_i < _filteredRecipes.length - 1>><hr><</if>>
 				<</for>>
 			<</foldout>>
 		<</for>>
@@ -182,7 +182,7 @@
 			<hr>
 		<</if>>
 		<div id="requiredForRecipe">
-			<<requiredForRecipe>>
+			<<requiredForRecipe $lastRecipeViewed>>
 			<<kitchenDisplayRecipeMake>>
 		</div>
 
@@ -248,11 +248,11 @@
 <</widget>>
 
 <<widget "requiredForRecipe">>
-	<<if Array.isArray(setup.plants[$lastRecipeViewed]?.ingredients) and setup.plants[$lastRecipeViewed]?.ingredients.length gt 0>>
+	<<if Array.isArray(setup.plants[_args[0]]?.ingredients) and setup.plants[_args[0]]?.ingredients.length gt 0>>
 		Ingredients:
 		<div class="itemSummary">
-			<<for $_ingredient range clone(setup.plants[$lastRecipeViewed].ingredients).sort()>>
-				<<set $_usedIngredient to ingredientUsed($_ingredient, $lastRecipeViewed)>>
+			<<for $_ingredient range clone(setup.plants[_args[0]].ingredients).sort()>>
+				<<set $_usedIngredient to ingredientUsed($_ingredient, _args[0])>>
 				<div class="basketItem">
 					<<tendingicon setup.plants[$_usedIngredient].icon>>
 					<<print $_usedIngredient.replace(/_/g, " ").toLocaleUpperFirst()>>
@@ -262,12 +262,12 @@
 						<<set _ingredientsUnavailable to $plants[$_usedIngredient].amount gt 0>>
 						<span @class="$plants[$_usedIngredient].amount gt 0 ? 'gold' : 'red'">(<<print $plants[$_usedIngredient].amount>>)</span>
 					<</if>>
-					<<if !$options.ingredientsAutoManage and ingredientsOptions($_ingredient, $lastRecipeViewed).length gt 1>>
-						<<capture $_ingredient>>
+					<<if !$options.ingredientsAutoManage and ingredientsOptions($_ingredient, _args[0]).length gt 1>>
+						<<capture $_ingredient _args[0] _args[1]>>
 							<<link ">>">>
-								<<run ingredientsNextAlternative($_ingredient, $lastRecipeViewed)>>
+								<<run ingredientsNextAlternative($_ingredient, _args[0])>>
 								<<replace "#requiredForRecipe">>
-									<<requiredForRecipe>>
+									<<requiredForRecipe _args[0] _args[1]>>
 									<<kitchenDisplayRecipeMake>>
 								<</replace>>
 							<</link>>
@@ -331,9 +331,11 @@
 <<widget "knownFoodRecipes">>
 	<<if _args[0]>>
 		<<set _knownRecipes to []>>
+		<<set _foundRecipes to false>>
 		<<run Object.keys(setup.plants).forEach(item => {
-			if (setup.plants[item]?.ingredients.includes(_args[0]) and $plants[item].recipe) {
-				_knownRecipes.pushUnique(item);
+			if (setup.plants[item]?.ingredients.includes(_args[0])) {
+				if ($plants[item].recipe) _knownRecipes.pushUnique(item);
+				_foundRecipes to true;
 			}
 		})>>
 
@@ -365,7 +367,7 @@
 					</div>
 				</div>
 			<</for>>
-		<<else>>
+		<<elseif _foundRecipes>>
 			You don't know any recipes that use this item.
 		<</if>>
 		<<if setup.plants[_args[0]]?.type is "food" and Array.isArray($plants[_args[0]].knownFavorite) and $plants[_args[0]].knownFavorite.length>>
