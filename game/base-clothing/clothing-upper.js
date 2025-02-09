@@ -8585,6 +8585,7 @@ function initUpper() {
 
 		{
 			index: 159,
+			slot: "upper",
 			name: "graphic tee",
 			name_cap: "Graphic tee",
 			variable: "graphictee",
@@ -8710,6 +8711,7 @@ function initUpper() {
 
 		{
 			index: 160,
+			slot: "upper",
 			name: "cropped graphic tee",
 			name_cap: "Cropped graphic tee",
 			variable: "graphiccrop",
@@ -8835,6 +8837,7 @@ function initUpper() {
 
 		{
 			index: 161,
+			slot: "upper",
 			name: "oversized graphic tee",
 			name_cap: "Oversized graphic tee",
 			variable: "graphicoversized",
