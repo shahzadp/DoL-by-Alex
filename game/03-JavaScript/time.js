@@ -843,6 +843,14 @@ function dayPassed() {
 	// Activate the robin pillory
 	if (V.robinPillory && V.robinPillory.danger !== undefined && (V.robindebtevent <= 1 || !V.baileySold)) V.robinPillory.active = true;
 
+	// Reset the daily stats
+	if (V.stall_stats) {
+		Object.values(V.stall_stats).forEach(produce => {
+			produce.sold.amount = 0;
+			produce.sold.total = 0;
+		});
+	}
+
 	V.daily.clearProperties();
 }
 
