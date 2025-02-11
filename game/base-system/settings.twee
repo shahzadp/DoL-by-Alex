@@ -2118,7 +2118,7 @@
 		<div class="settingsToggleItemWide">
 			<span class="gold">Breast size limits:</span> <span class="tooltip-anchor linkBlue" tooltip="Breasts already below the minimum size won't automatically grow.">(?)</span>
 			<br>
-			<<rangeslider "$breastsizemin" "$breastsizemax" $breastsizemax $breastsizemax 0 12 1
+			<<rangeslider "$breastsizemin" "$breastsizemax" $breastsizemin $breastsizemax 0 12 1
 				{
 					minClamp: 5,
 					minClampMessage: `<span class="red">Cannot increase minimum size further.</span>`
@@ -2131,60 +2131,48 @@
 						return `<span style="color: ${color1}">${name[v1]}</span> - <span style="color: ${color2}">${name[v2]}</span>`;
 					},
 				}
-
 			}>>
 		</div>
 
-		<div class="settingsToggleItem">
-			<span class="gold">Minimum ass size:</span> <mouse class="tooltip linkBlue">(?)<span>Bottoms already below this size won't automatically grow.</span></mouse>
+		<div class="settingsToggleItemWide">
+			<span class="gold">Ass size limits:</span> <span class="tooltip-anchor linkBlue" tooltip="Bottoms already below the minimum size won't automatically grow.">(?)</span>
 			<br>
-			<<set _name to ["Slender", "Slim", "Modest", "Cushioned"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="bottomsizemax" @data-disabledif="_i + ' > V.bottomsizemax'">
-					<label><<print _name[_i]>> <<radiobutton "$bottomsizemin" _i autocheck>></label>
-					<<if _i lt _name.length - 1>>|<</if>>
-				</span>
-			<</for>>
+			<<rangeslider "$bottomsizemin" "$bottomsizemax" $bottomsizemin $bottomsizemax 0 8 1
+				{
+					minClamp: 3,
+					minClampMessage: `<span class="red">Cannot increase minimum size further.</span>`
+				}
+				{
+					value: (v1, v2) => {
+						const color1 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v1, 8, 0));
+						const color2 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v2, 8, 0));
+						var name = ["Slender", "Slim", "Modest", "Cushioned", "Soft", "Round", "Plump", "Large", "Huge"];
+						return `<span style="color: ${color1}">${name[v1]}</span> - <span style="color: ${color2}">${name[v2]}</span>`;
+					},
+				}
+			}>>
 		</div>
 
-		<div class="settingsToggleItem">
-			<span class="gold">Maximum ass size:</span> <mouse class="tooltip linkBlue">(?)<span>Bottoms already above this size won't automatically shrink.</span></mouse>
-			<br>
-			<<set _name to ["Slender", "Slim", "Modest", "Cushioned", "Soft", "Round", "Plump", "Large", "Huge"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target="bottomsizemin" @data-disabledif="'V.bottomsizemin > ' + _i">
-					<label><<print _name[_i]>> <<radiobutton "$bottomsizemax" _i autocheck>></label>
-					<<if _i lt _name.length - 1>>|<</if>>
-				</span>
-			<</for>>
-		</div>
 		<<if $passage is "Start" or $player.penisExist>>
-			<div class="settingsToggleItem">
-				<!-- Not applicable to the parasite penis -->
-				<span class="gold" data-target="player.gender" data-disabledif="V.player.gender==='f'">Minimum penis size - if applicable:</span> <mouse class="tooltip linkBlue">(?)<span>Penises already below this size won't automatically grow.</span></mouse>
-				<br>
-				<<set _name to ["Micro","Mini", "Tiny"]>>
-				<<for _i to 0; _i lt _name.length; _i++>>
-					<span data-target="penissizemax" @data-disabledif="_i - 2 + ` > V.penissizemax||V.player.gender==='f'`">
-						<label data-target="player.gender" data-disabledif="V.player.gender==='f'"><<print _name[_i]>> <<radiobutton "$penissizemin" `(_i - 2)` autocheck>></label>
-						<<if _i lt _name.length - 1>>|<</if>>
-					</span>
-				<</for>>
+			<div class="settingsToggleItemWide">
+			<span class="gold">Penis size limits:</span> <span class="tooltip-anchor linkBlue" tooltip="Penises already below the minimum size won't automatically grow.">(?)</span>
+			<<rangeslider "$penissizemin" "$penissizemax" $penissizemin $penissizemax -2 4 1
+				{
+					minClamp: 0,
+					minClampMessage: `<span class="red">Cannot increase minimum size further.</span>`
+				}
+				{
+					value: (v1, v2) => {
+						const color1 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v1, 4, -2));
+						const color2 = ColourUtils.interpolateMultiple(["--teal", "--pink"], normalise(v2, 4, -2));
+						var name = ["Micro","Mini", "Tiny", "Small", "Normal", "Large", "Enormous"];
+						return `<span style="color: ${color1}">${name[v1+2]}</span> - <span style="color: ${color2}">${name[v2+2]}</span>`;
+					},
+				}
+
+			}>>
 			</div>
 		<</if>>
-
-		<div class="settingsToggleItem">
-			<!-- Not applicable to females without a parasite penis -->
-			<span class="gold" data-target="player.gender">Maximum penis size - if applicable:</span> <mouse class="tooltip linkBlue">(?)<span>Penises already above this size won't automatically shrink.</span></mouse>
-			<br>
-			<<set _name to ["Micro","Mini", "Tiny", "Small", "Normal", "Large", "Enormous"]>>
-			<<for _i to 0; _i lt _name.length; _i++>>
-				<span data-target='["penissizemin", "player.gender"]' @data-disabledif="_i - 2 + ` < V.penissizemin||(` + _i + `<2&&V.player.gender==='f')`">
-					<label data-target="player.gender" @data-disabledif="`(` + _i + `<2&&V.player.gender==='f')`"><<print _name[_i]>> <<radiobutton "$penissizemax" `(_i - 2)` autocheck>></label>
-					<<if _i lt _name.length - 1>>|<</if>>
-				</span>
-			<</for>>
-		</div>
 	</div>
 <</widget>>
 
