@@ -98,8 +98,17 @@ Weather.Temperature = (() => {
 		switch (V.location) {
 			case "pool":
 				return 28;
-			// Eden's cabin pool
+			// Eden's cabin
 			case "cabin": {
+				if (V.bus === "edencabin") {
+					// For indoor bath temperature
+					return 37;
+				}
+				// For outside spring temperature
+				const baseTemp = getBaseTemperature(new DateTime(Time.date));
+				if (V.edenHeater === undefined) {
+					return baseTemp;
+				}
 				// Interpolates between baseTemperature and 37, depending on the time elapsed
 				const edenHeaterBurnTime = Cooker.getBurnTime(V.edenHeater);
 				/* Checks burn time from when heater was first lit, 
@@ -115,7 +124,7 @@ Weather.Temperature = (() => {
 					// Water warming as heater starts up
 					factor = (1 - startingBurnTimeRatio) / 0.2;
 				}
-				return interpolate(getBaseTemperature(new DateTime(Time.date)), 37, factor); // Max value of 37
+				return interpolate(baseTemp, 37, factor); // Max value of 37
 			}
 			case "hotel": // Avery date
 				return 37;
