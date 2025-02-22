@@ -119,21 +119,11 @@
 		<<if $worn.face.name isnot "naked" and $worn.face.type.includes("mask") and $consensual is 1 and $enemytype is "man" and !$npcSub and !$gloryhole and $nomaskasked isnot 1>>
 				<<set _askActions["to leave your mask on" + _diffText] to "nomask">>
 		<</if>>
-		<<if Object.keys(_askActions).length gt 0>>
+		<<set _askValues to Object.values(_askActions)>>
+		<<if _askValues.length gt 0>>
 			<<set _mouthaction["Ask "+_pron+""] to "ask">>
-			<<set _defaultsCombatAction to "askActions">>
-			<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-			<<set _pass to false>>
-			<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-				<<if Object.values(_askActions).includes(_actionsSet[_set])>>
-					<<set $askAction to clone(_actionsSet[_set])>>
-					<<set _pass to true>>
-					<<break>>
-				<</if>>
-			<</for>>
-			<<if _pass is false>>
-				<<set $askAction to Object.values(_askActions)[0]>>
-			<</if>>
+			<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, "askActions")>>
+			<<set $askAction to _actionsSet.find(action => _askValues.includes(action)) || _askValues[0]>>
 			<<switch $askAction>>
 				<<case "askchoke" "condoms" "noCondoms">><<set $askActionColour to "sub">>
 				<<default>><<set $askActionColour to "brat">>
