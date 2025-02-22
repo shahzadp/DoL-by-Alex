@@ -4782,21 +4782,20 @@
 <</widget>>
 
 <<widget "schoolrep_naked">>
-	/* _args[0] is used as an overwrite to perform retroactive school reputation changes. For example, if a video of the player 
-	nude circulates. If we just call "schoolrep_naked" when the news breaks and the player is wearing a chasitiy belt right now, 
-	but NOT in the video, reputaiton will update incorrectly. Same is true vice versa. 
-	
+	/* _args[0] is used as an overwrite to perform retroactive school reputation changes. For example, if a video of the player
+	nude circulates. If we just call "schoolrep_naked" when the news breaks and the player is wearing a chasitiy belt right now,
+	but NOT in the video, reputaiton will update incorrectly. Same is true vice versa.
+
 	The intended use-case of _args[0] is by saving a boolean of the status of playerChasity(Hidden) *at the time the video was
 	recorded*, and then input that boolean into _args[0] when the video circulates. Look at my implimentation of $flyover_chaste
 	to see the intended use in action. */
-	
+
 	<<if !playerChastity("hidden") or _args[0] is false>>
 		<<if $player.penisExist and $player.vaginaExist>>
 			<<schoolrep herm 1>>
-		<<elseif $player.gender isnot $player.gender_appearance and $NudeGenderDC gt 0>>
-			/*increases crossdressing fame if NPCs judge gender based on genitals*/
+		<<elseif isCrossdressing()>>
 			<<schoolrep crossdress 1>>
-		<<elseif $player.gender is $player.gender_appearance and $schoolrep.crossdress gt 0 and !$daily.crossdressingFameReduction and !$weekly.crossdressingFameReduction and random(0,100) gte 100 - ($schoolrep.crossdress * 3)>>
+		<<elseif $player.sex is $player.gender_appearance and $schoolrep.crossdress gt 0 and !$daily.crossdressingFameReduction and !$weekly.crossdressingFameReduction and random(0,100) gte 100 - ($schoolrep.crossdress * 3)>>
 			<<schoolrep crossdress -1>>
 			<<set $daily.crossdressingFameReduction to true>>
 		<</if>>

@@ -230,10 +230,6 @@ function settingsNudeGenderAppearance() {
 		let val = V.NudeGenderDC;
 		let text = null;
 		switch (val) {
-			case -1:
-				text =
-					"NPCs <span class='blue inline-colour'>ignore</span> genitals when perceiving gender. <span class='purple inline-colour'>Overrides some gender appearance modifiers, including the femininity factor of pregnant bellies. Player descriptions will match the behaviour chosen in the bedroom mirror.</span> <span class='red inline-colour'>Disables crossdressing warnings. NPCs will still judge gender based on your manner of dress.</span>";
-				break;
 			case 0:
 				text = "NPCs will <span class='blue inline-colour'>ignore</span> your genitals when perceiving your gender.";
 				break;
@@ -783,7 +779,7 @@ function updateCaptionTooltip() {
 			element.trigger({
 				type: "mousemove",
 				clientX: e.clientX,
-                clientY: e.clientY,
+				clientY: e.clientY,
 			});
 		}
 	};

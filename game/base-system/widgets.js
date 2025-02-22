@@ -268,9 +268,9 @@ function genderappearancecheck() {
 	/* Bottom */
 	addfemininityfromfactor(Math.trunc(V.player.bottomsize * T.bottom_visibility * 50), "Bottom size (" + Math.trunc(T.bottom_visibility * 100) + "% visible)");
 	/* Pregnant Belly */
-	if (V.sexStats === undefined || !playerBellyVisible() || V.NudeGenderDC === -1) {
+	if (V.sexStats === undefined || !playerBellyVisible() || V.NudeGenderDC === 0) {
 		// do glorious nothing
-	} else if (V.NudeGenderDC <= 1) {
+	} else if (V.NudeGenderDC === 1) {
 		addfemininityfromfactor(
 			Math.clamp((playerBellySize() - 7) * (V.NudeGenderDC === 1 ? 90 : 70), 0, Infinity),
 			playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly"
@@ -522,7 +522,7 @@ function goocount() {
 	V.goooutsidecount = goooutsidecount;
 	V.semenoutsidecount = semenoutsidecount;
 	V.nectaroutsidecount = nectaroutsidecount;
-	V.liquidoutsidecount = liquidoutsidecount
+	V.liquidoutsidecount = liquidoutsidecount;
 	V.goocount = gooinsidecount + goooutsidecount;
 	V.semencount = semeninsidecount + semenoutsidecount;
 	V.nectarcount = nectarinsidecount + nectaroutsidecount;
@@ -539,7 +539,7 @@ function calculateallure() {
 	if (!V.worn.over_upper.type.includes("naked")) {
 		baseattractiveness += V.worn.over_upper.reveal;
 	} else {
-		baseattractiveness += V.worn.upper.reveal
+		baseattractiveness += V.worn.upper.reveal;
 		if (V.worn.upper.type.includes("naked")) baseattractiveness += V.worn.under_upper.reveal;
 	}
 	if (!V.worn.over_lower.type.includes("naked")) {
@@ -554,13 +554,13 @@ function calculateallure() {
 	/* tf bonuses */
 	const partsHidden = (tf, parts) => parts.filter(part => V.transformationParts[tf][part] === "hidden").length;
 	if (V.demon >= 6) attractiveness += 500 - 100 * partsHidden("demon", ["horns", "tail", "wings"]);
-	if (V.angel >= 6) attractiveness += 500 - 150 *  partsHidden("angel", ["halo", "wings"]);
-	if (V.fallenangel >= 2) attractiveness += 500 - 150 * partsHidden("fallenAngel", ["halo", "wings"]) ;
+	if (V.angel >= 6) attractiveness += 500 - 150 * partsHidden("angel", ["halo", "wings"]);
+	if (V.fallenangel >= 2) attractiveness += 500 - 150 * partsHidden("fallenAngel", ["halo", "wings"]);
 	if (V.wolfgirl >= 6) attractiveness += 500 - 150 * partsHidden("wolf", ["tail", "ears"]);
 	if (V.cat >= 6) attractiveness += 500 - 150 * partsHidden("cat", ["tail", "ears"]);
 	if (V.cow >= 6) attractiveness += 500 - 100 * partsHidden("cow", ["ears", "horns", "tail"]);
-	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird",  ["tail", "eyes", "wings", "malar", "plumage"]);
-	if (V.fox >= 6) attractiveness += 750 - 225 * partsHidden("fox" ,["ears", "tail"])
+	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird", ["tail", "eyes", "wings", "malar", "plumage"]);
+	if (V.fox >= 6) attractiveness += 750 - 225 * partsHidden("fox", ["ears", "tail"]);
 	/* makeup */
 	for (const makeup of ["lipstick", "mascara", "eyeshadow", "blusher"]) {
 		if (V.makeup[makeup]) attractiveness += 100;
