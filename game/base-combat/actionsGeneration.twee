@@ -3,46 +3,6 @@
 /*Please read dev comments before making changes*/
 /*Be careful with changing names around, they are intentional as can get re-used when the user uses the controls, leading to errors if incorrect*/
 
-/*Sends the required variables to the chosen display type*/
-<<widget "generateCombatAction">>
-	<<switch $options.combatControls>>
-		<<case "radio" "columnRadio">>
-			<<generateCombatActionRadio _args[0] _args[1] _args[3]>>
-		<<case "lists" "limitedLists">>
-			<<generateCombatActionList _args[0] _args[1] _args[2]>>
-	<</switch>>
-<</widget>>
-
-/*Generated each set of actions in the form of a set of radio buttons*/
-<<widget "generateCombatActionRadio">>
-	<br>
-	<<for _labelC, _valueC range _args[0]>>
-		<label>
-			<<print '<<radiobutton "$'+_args[1]+'" "'+_valueC+'" ' + (_valueC is _args[2] ? "checked" : "") + '>>'>>
-			<span @id="(_valueC isnot 'ask' ?'':'askLabel')" @class="(_valueC isnot 'ask' ? combatListColor('', _valueC, '') : $askActionColour)"><<print _labelC>></span>
-			<<print '<<'+_args[1]+'Difficulty "'+_valueC+'">>'>><<if $options.combatControls is "radio">> |<</if>>
-		</label>
-	<</for>>
-	<br><br>
-<</widget>>
-
-/*Generated each set of actions in the form of a list*/
-<<widget "generateCombatActionList">>
-	<<if _args[0]>>
-		<<set _options to _args[0]>>
-		<<set _name to _args[1]>>
-		<<capture _var _options _name>>
-			<span @id="_name + 'Select'" @class="_args[2] + 'List flavorText'">
-				<<listbox `"$"+_name` autoselect>>
-					<<optionsfrom _options>>
-				<</listbox>>
-			</span>
-			/*Changes the colour of the list border when the option is changed*/
-			<<combatButtonAdjustments _name "">>
-		<</capture>>
-	<</if>>
-<</widget>>
-
 /*Generates the required divs and calls each type of action*/
 <<widget "generateActionsMan">>
 	<br>
@@ -161,7 +121,7 @@
 
 <<widget "replaceAction">>
 	<<set $_rape to ($actionDefaults || {}).rape || {}>>
-	<<set $_consent to ($actionDefaults || {}).rape || {}>>
+	<<set $_consent to ($actionDefaults || {}).consensual || {}>>
 	<<switch _args[0]>>
 		<<case "Alternative">>
 			<<if $_rape.Alternative === undefined
@@ -392,25 +352,8 @@
 		<</if>>
 		<<leftActions>>
 		<<if Object.keys(_leftaction).length gt 0>>
-			<<if Object.values(_leftaction).includes($leftactiondefault) is false or _args[0] is true or $leftactiondefault is "rest">>
-				<<set _defaultsCombatAction to "leftaction">>
-				<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-				<<set _pass to false>>
-				<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-					<<if Object.values(_leftaction).includes(_actionsSet[_set])>>
-						<<set $leftactiondefault to clone(_actionsSet[_set])>>
-						<<set _pass to true>>
-						<<break>>
-					<</if>>
-				<</for>>
-				<<if _pass is false>>
-					<<set $leftactiondefault to Object.values(_leftaction)[0]>>
-				<</if>>
-			<</if>>
-
-			<<set $leftaction to $leftactiondefault>>
-			<<set _textColor to combatListColor('leftaction', (Object.values(_leftaction).includes($leftaction) ? $leftaction : Object.values(_leftaction)[0]), "")>>
-			<<generateCombatAction _leftaction "leftaction" _textColor $leftaction>>
+			<<assignCombatDefaults "left" _args[0]>>
+			<<generateCombatAction _leftaction "leftaction">>
 
 			/*Checks/Difficulty*/
 			<<if $options.combatControls.includes("ists")>>
@@ -765,25 +708,8 @@
 	<<if $_changetype isnot true>>
 		<<rightActions>>
 		<<if Object.keys(_rightaction).length gt 0>>
-			<<if Object.values(_rightaction).includes($rightactiondefault) is false or _args[0] is true or $rightactiondefault is "rest">>
-				<<set _defaultsCombatAction to "rightaction">>
-				<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-				<<set _pass to false>>
-				<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-					<<if Object.values(_rightaction).includes(_actionsSet[_set])>>
-						<<set $rightactiondefault to clone(_actionsSet[_set])>>
-						<<set _pass to true>>
-						<<break>>
-					<</if>>
-				<</for>>
-				<<if _pass is false>>
-					<<set $rightactiondefault to Object.values(_rightaction)[0]>>
-				<</if>>
-			<</if>>
-
-			<<set $rightaction to $rightactiondefault>>
-			<<set _textColor to combatListColor('rightaction', (Object.values(_rightaction).includes($rightaction) ? $rightaction : Object.values(_rightaction)[0]), "")>>
-			<<generateCombatAction _rightaction "rightaction" _textColor $rightaction>>
+			<<assignCombatDefaults "right" _args[0]>>
+			<<generateCombatAction _rightaction "rightaction">>
 
 			/*Checks/Difficulty*/
 			<<if $options.combatControls.includes("ists")>>
@@ -1080,25 +1006,8 @@
 		<<if $_changetype isnot true>>
 			<<feetActions>>
 			<<if Object.keys(_feetaction).length gt 0>>
-				<<if Object.values(_feetaction).includes($feetactiondefault) is false or _args[0] is true or $feetactiondefault is "rest">>
-					<<set _defaultsCombatAction to "feetaction">>
-					<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-					<<set _pass to false>>
-					<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-						<<if Object.values(_feetaction).includes(_actionsSet[_set])>>
-							<<set $feetactiondefault to clone(_actionsSet[_set])>>
-							<<set _pass to true>>
-							<<break>>
-						<</if>>
-					<</for>>
-					<<if _pass is false>>
-						<<set $feetactiondefault to Object.values(_feetaction)[0]>>
-					<</if>>
-				<</if>>
-
-				<<set $feetaction to $feetactiondefault>>
-				<<set _textColor to combatListColor('feetaction', (Object.values(_feetaction).includes($feetaction) ? $feetaction : Object.values(_feetaction)[0]), "")>>
-				<<generateCombatAction _feetaction "feetaction" _textColor $feetaction>>
+				<<assignCombatDefaults "feet" _args[0]>>
+				<<generateCombatAction _feetaction "feetaction">>
 
 				/*Checks/Difficulty*/
 				<<if $options.combatControls.includes("ists")>>
@@ -1316,25 +1225,8 @@
 	<<if $_changetype isnot true>>
 		<<mouthActions>>
 		<<if Object.keys(_mouthaction).length gt 0>>
-			<<if Object.values(_mouthaction).includes($mouthactiondefault) is false or _args[0] is true or $mouthactiondefault is "rest">>
-				<<set _defaultsCombatAction to "mouthaction">>
-				<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-				<<set _pass to false>>
-				<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-					<<if Object.values(_mouthaction).includes(_actionsSet[_set])>>
-						<<set $mouthactiondefault to clone(_actionsSet[_set])>>
-						<<set _pass to true>>
-						<<break>>
-					<</if>>
-				<</for>>
-				<<if _pass is false>>
-					<<set $mouthactiondefault to Object.values(_mouthaction)[0]>>
-				<</if>>
-			<</if>>
-
-			<<set $mouthaction to $mouthactiondefault>>
-			<<set _textColor to combatListColor('mouthaction', (Object.values(_mouthaction).includes($mouthaction) ? $mouthaction : Object.values(_mouthaction)[0]), "")>>
-			<<generateCombatAction _mouthaction "mouthaction" _textColor $mouthaction>>
+			<<assignCombatDefaults "mouth" _args[0]>>
+			<<generateCombatAction _mouthaction "mouthaction">>
 
 			/*Checks/Difficulty*/
 			<<if $options.combatControls.includes("ists")>>
@@ -1561,25 +1453,8 @@
 		<<if $_changetype isnot true>>
 			<<penisActions>>
 			<<if Object.keys(_penisaction).length gt 0>>
-				<<if Object.values(_penisaction).includes($penisactiondefault) is false or _args[0] is true or $penisactiondefault is "rest">>
-					<<set _defaultsCombatAction to "penisaction">>
-					<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-					<<set _pass to false>>
-					<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-						<<if Object.values(_penisaction).includes(_actionsSet[_set])>>
-							<<set $penisactiondefault to clone(_actionsSet[_set])>>
-							<<set _pass to true>>
-							<<break>>
-						<</if>>
-					<</for>>
-					<<if _pass is false>>
-						<<set $penisactiondefault to Object.values(_penisaction)[0]>>
-					<</if>>
-				<</if>>
-
-				<<set $penisaction to $penisactiondefault>>
-				<<set _textColor to combatListColor('penisaction', (Object.values(_penisaction).includes($penisaction) ? $penisaction : Object.values(_penisaction)[0]), "")>>
-				<<generateCombatAction _penisaction "penisaction" _textColor $penisaction>>
+				<<assignCombatDefaults "penis", _args[0]>>
+				<<generateCombatAction _penisaction "penisaction">>
 
 				/*Checks/Difficulty*/
 				<<if $options.combatControls.includes("ists")>>
@@ -1817,25 +1692,8 @@
 		<<if $_changetype isnot true>>
 			<<vaginaActions>>
 			<<if Object.keys(_vaginaaction).length gt 0>>
-				<<if Object.values(_vaginaaction).includes($vaginaactiondefault) is false or _args[0] is true or $vaginaactiondefault is "rest">>
-					<<set _defaultsCombatAction to "vaginaaction">>
-					<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-					<<set _pass to false>>
-					<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-						<<if Object.values(_vaginaaction).includes(_actionsSet[_set])>>
-							<<set $vaginaactiondefault to clone(_actionsSet[_set])>>
-							<<set _pass to true>>
-							<<break>>
-						<</if>>
-					<</for>>
-					<<if _pass is false>>
-						<<set $vaginaactiondefault to Object.values(_vaginaaction)[0]>>
-					<</if>>
-				<</if>>
-
-				<<set $vaginaaction to $vaginaactiondefault>>
-				<<set _textColor to combatListColor('vaginaaction', (Object.values(_vaginaaction).includes($vaginaaction) ? $vaginaaction : Object.values(_vaginaaction)[0]), "")>>
-				<<generateCombatAction _vaginaaction "vaginaaction" _textColor $vaginaaction>>
+				<<assignCombatDefaults "vagina" _args[0]>>
+				<<generateCombatAction _vaginaaction "vaginaaction">>
 
 				/*Checks/Difficulty*/
 				<<if $options.combatControls.includes("ists")>>
@@ -2042,25 +1900,8 @@
 		<<if $_changetype isnot true>>
 			<<anusActions>>
 			<<if Object.keys(_anusaction).length gt 0>>
-				<<if Object.values(_anusaction).includes($anusactiondefault) is false or _args[0] is true or $anusactiondefault is "rest">>
-					<<set _defaultsCombatAction to "anusaction">>
-					<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-					<<set _pass to false>>
-					<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-						<<if Object.values(_anusaction).includes(_actionsSet[_set])>>
-							<<set $anusactiondefault to clone(_actionsSet[_set])>>
-							<<set _pass to true>>
-							<<break>>
-						<</if>>
-					<</for>>
-					<<if _pass is false>>
-						<<set $anusactiondefault to Object.values(_anusaction)[0]>>
-					<</if>>
-				<</if>>
-
-				<<set $anusaction to $anusactiondefault>>
-				<<set _textColor to combatListColor('anusaction', (Object.values(_anusaction).includes($anusaction) ? $anusaction : Object.values(_anusaction)[0]), "")>>
-				<<generateCombatAction _anusaction "anusaction" _textColor $anusaction>>
+				<<assignCombatDefaults "anus" _args[0]>>
+				<<generateCombatAction _anusaction "anusaction">>
 
 				/*Checks/Difficulty*/
 				<<if $options.combatControls.includes("ists")>>
@@ -2170,8 +2011,7 @@
 				<</if>>
 
 				<<set $chestaction to $chestactiondefault>>
-				<<set _textColor to combatListColor('chestaction', (Object.values(_chestaction).includes($chestaction) ? $chestaction : Object.values(_chestaction)[0]), "")>>
-				<<generateCombatAction _chestaction "chestaction" _textColor $chestaction>>
+				<<generateCombatAction _chestaction "chestaction">>
 
 				/*Checks/Difficulty*/
 				<<if $options.combatControls.includes("ists")>>
@@ -2232,8 +2072,7 @@
 				<<set $thighactiondefault to Object.values(_thighaction)[0]>>
 			<</if>>
 			<<set $thighaction to $thighactiondefault>>
-			<<set _textColor to combatListColor('thighaction', (Object.values(_thighaction).includes($thighaction) ? $thighaction : Object.values(_thighaction)[0]), "")>>
-			<<generateCombatAction _thighaction "thighaction" _textColor $thighaction>>
+			<<generateCombatAction _thighaction "thighaction">>
 
 			/*Checks/Difficulty*/
 			<<if $options.combatControls.includes("ists")>>
@@ -2487,25 +2326,8 @@
 	<</if>>
 	<<leftActionsSelf>>
 	<<if Object.keys(_leftaction).length gt 0>><<if $options.combatControls.includes("adio")>><br><</if>>
-		<<if Object.values(_leftaction).includes($leftactiondefault) is false or _args[0] is true or $leftactiondefault is "rest">>
-			<<set _defaultsCombatAction to "leftaction">>
-			<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-			<<set _pass to false>>
-			<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-				<<if Object.values(_leftaction).includes(_actionsSet[_set])>>
-					<<set $leftactiondefault to clone(_actionsSet[_set])>>
-					<<set _pass to true>>
-					<<break>>
-				<</if>>
-			<</for>>
-			<<if _pass is false>>
-				<<set $leftactiondefault to Object.values(_leftaction)[0]>>
-			<</if>>
-		<</if>>
-
-		<<set $leftaction to $leftactiondefault>>
-		<<set _textColor to combatListColor('leftaction', (Object.values(_leftaction).includes($leftaction) ? $leftaction : Object.values(_leftaction)[0]), "Self")>>
-		<<generateCombatActionOthers _leftaction "leftaction" _textColor $leftaction "Self">>
+		<<assignCombatDefaults "left" _args[0]>>
+		<<generateCombatAction _leftaction "leftaction" "Self">>
 
 		<<if $options.combatControls.includes("ists")>>
 			<div id="leftactionDifficulty">
@@ -2660,25 +2482,8 @@
 	<</if>>
 	<<rightActionsSelf>>
 	<<if Object.keys(_rightaction).length gt 0>><<if $options.combatControls.includes("adio")>><br><</if>>
-		<<if Object.values(_rightaction).includes($rightactiondefault) is false or _args[0] is true or $rightactiondefault is "rest">>
-			<<set _defaultsCombatAction to "rightaction">>
-			<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-			<<set _pass to false>>
-			<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-				<<if Object.values(_rightaction).includes(_actionsSet[_set])>>
-					<<set $rightactiondefault to clone(_actionsSet[_set])>>
-					<<set _pass to true>>
-					<<break>>
-				<</if>>
-			<</for>>
-			<<if _pass is false>>
-				<<set $rightactiondefault to Object.values(_rightaction)[0]>>
-			<</if>>
-		<</if>>
-
-		<<set $rightaction to $rightactiondefault>>
-		<<set _textColor to combatListColor('rightaction', (Object.values(_rightaction).includes($rightaction) ? $rightaction : Object.values(_rightaction)[0]), "Self")>>
-		<<generateCombatActionOthers _rightaction "rightaction" _textColor $rightaction "Self">>
+		<<assignCombatDefaults "right" _args[0]>>
+		<<generateCombatAction _rightaction "rightaction" "Self">>
 
 		<<if $options.combatControls.includes("ists")>>
 			<div id="rightactionDifficulty">
@@ -2795,25 +2600,8 @@
 		<</if>>
 		<<feetActionsSelf>>
 		<<if Object.keys(_feetaction).length gt 0>><<if $options.combatControls.includes("adio")>><br><</if>>
-			<<if Object.values(_feetaction).includes($feetactiondefault) is false or _args[0] is true or $feetactiondefault is "rest">>
-				<<set _defaultsCombatAction to "feetaction">>
-				<<set _actionsSet = DefaultActions.get($defaultsCombatType, $defaultsType, _defaultsCombatAction)>>
-				<<set _pass to false>>
-				<<for _set to 0; _set lt $maxDefaultActionSets; _set++>>
-					<<if Object.values(_feetaction).includes(_actionsSet[_set])>>
-						<<set $feetactiondefault to clone(_actionsSet[_set])>>
-						<<set _pass to true>>
-						<<break>>
-					<</if>>
-				<</for>>
-				<<if _pass is false>>
-					<<set $feetactiondefault to Object.values(_feetaction)[0]>>
-				<</if>>
-			<</if>>
-
-			<<set $feetaction to $feetactiondefault>>
-			<<set _textColor to combatListColor('feetaction', (Object.values(_feetaction).includes($feetaction) ? $feetaction : Object.values(_feetaction)[0]), "Self")>>
-			<<generateCombatActionOthers _feetaction "feetaction" _textColor $feetaction "Self">>
+			<<assignCombatDefaults "feet" _args[0]>>
+			<<generateCombatAction _feetaction "feetaction" "Self">>
 
 			<<if $options.combatControls.includes("ists")>>
 				<div id="feetactionDifficulty">
@@ -2848,41 +2636,6 @@
 	<<if $water isnot 1>>
 		<<feetshoes>>
 		<<feetsocks>>
-	<</if>>
-<</widget>>
-
-<<widget "generateCombatActionOthers">>
-	<<switch $options.combatControls>>
-		<<case "radio" "columnRadio">>
-			<<generateCombatActionOthersRadio _args[0] _args[1] _args[3] _args[4]>>
-		<<case "lists" "limitedLists">>
-			<<generateCombatActionOthersList _args[0] _args[1] _args[2] _args[4]>>
-	<</switch>>
-<</widget>>
-
-<<widget "generateCombatActionOthersRadio">>
-	<<for _labelC, _valueC range _args[0]>>
-		<label>
-			<<print '<<radiobutton "$'+_args[1]+'" "'+_valueC+'" ' + (_valueC is _args[2] ? "checked" : "") + '>>'>>
-			<span @class="combatListColor('', _valueC, _args[3])"><<print _labelC>></span>
-			<<print '<<'+_args[1]+'Difficulty'+_args[3]+' "'+_valueC+'">>'>><<if $options.combatControls is "radio">> |<</if>>
-		</label>
-	<</for>>
-<</widget>>
-
-<<widget "generateCombatActionOthersList">>
-	<<if _args[0]>>
-		<<set _options to _args[0]>>
-		<<set _name to _args[1]>>
-		<<set _typeOfCombat to _args[3]>>
-		<<capture _var _options _name>>
-			<span @id="_name + 'Select'" @class="_args[2] + 'List flavorText'">
-				<<listbox `"$"+_name` autoselect>>
-					<<optionsfrom _options>>
-				<</listbox>>
-			</span>
-			<<combatButtonAdjustments _name _typeOfCombat>>
-		<</capture>>
 	<</if>>
 <</widget>>
 

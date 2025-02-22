@@ -821,28 +821,29 @@ window.DefaultActions = {
 	setDefaults() {
 		V.actionDefaults = this.create(true);
 		let type = "rape";
-		this.addMany(type, "Submissive", "leftaction", ["leftchest"]);
-		this.addMany(type, "Submissive", "rightaction", ["rightchest"]);
-		this.addMany(type, "Submissive", "mouthaction", ["plead", "suck", "kiss", "breastsuck"]);
+		this.addMany(type, "Submissive", "leftaction", ["leftchest", "leftgrip", "leftprotect"]);
+		this.addMany(type, "Submissive", "rightaction", ["rightchest", "rightgrip", "rightprotect"]);
+		this.addMany(type, "Submissive", "mouthaction", ["plead", "suck", "breastsuck", "breastlick", "vaginalick", "letoutorgasm", "letout"]);
 		this.addMany(type, "Submissive", "penisaction", ["tease", "cooperate"]);
 		this.addMany(type, "Submissive", "vaginaaction", ["penistease", "cooperate"]);
 		this.addMany(type, "Submissive", "anusaction", ["penistease", "cooperate"]);
-		this.addMany(type, "Submissive", "feetaction", ["grabrub", "grabrub", "vaginagrabrub"]);
+		this.addMany(type, "Submissive", "feetaction", ["grabrub", "grabrub", "vaginagrabrub", "feetCurl"]);
 		this.addMany(type, "Defiant", "leftaction", ["lefthit", "leftstruggle"]);
 		this.addMany(type, "Defiant", "rightaction", ["penwhack", "righthit", "rightstruggle", "hypnosiswhack"]);
-		this.addMany(type, "Defiant", "mouthaction", ["pullaway", "bite", "breastbite", "headbutt"]);
+		this.addMany(type, "Defiant", "mouthaction", ["headbutt", "pullaway", "bite", "handbite", "breastbite", "bitepussy", "demand"]);
 		this.addMany(type, "Defiant", "penisaction", ["escape", "otheranusescape", "othermouthescape"]);
 		this.addMany(type, "Defiant", "vaginaaction", ["escape", "othermouthescape"]);
 		this.addMany(type, "Defiant", "anusaction", ["escape", "othermouthescape"]);
 		this.addMany(type, "Defiant", "feetaction", ["kick"]);
 		this.addMany(type, "Tentacles", "regrab", [0]);
 		type = "consensual";
-		this.addMany(type, "Submissive", "leftaction", ["leftchest"]);
-		this.addMany(type, "Submissive", "rightaction", ["rightchest"]);
-		this.addMany(type, "Submissive", "mouthaction", ["kiss", "suck", "breastsuck", "breastlick"]);
+		this.addMany(type, "Submissive", "leftaction", ["leftchest", "leftgrip", "leftprotect"]);
+		this.addMany(type, "Submissive", "rightaction", ["rightchest", "rightgrip", "rightprotect"]);
+		this.addMany(type, "Submissive", "mouthaction", ["kiss", "suck", "breastsuck", "breastlick", "vaginalick", "kissskin", "letoutorgasm", "letout"]);
 		this.addMany(type, "Submissive", "penisaction", ["tease", "cooperate"]);
 		this.addMany(type, "Submissive", "vaginaaction", ["penistease", "cooperate"]);
 		this.addMany(type, "Submissive", "anusaction", ["penistease", "cooperate"]);
+		this.addMany(type, "Submissive", "feetaction", ["feetCurl"]);
 		this.addMany(type, "Defiant", "leftaction", [0]);
 		this.addMany(type, "Defiant", "rightaction", ["penwhack"]);
 		this.addMany(type, "Defiant", "mouthaction", ["breastpull", "breastclosed"]);
@@ -2672,7 +2673,7 @@ DefineMacro("marketFilter", marketFilter);
 function teensPresentCheck(location) {
 	let present = 0;
 
-	if(V.daily.teensPresent === undefined) {
+	if (V.daily.teensPresent === undefined) {
 		if (Weather.temperature < 5 && !Weather.isFrozen("lake")) {
 			V.daily.teensPresent = "arcade";
 		} else {
@@ -2680,9 +2681,9 @@ function teensPresentCheck(location) {
 		}
 	}
 
-	if (V.daily.teensPresent === location){
-		if (["day", "dusk"].includes(Time.dayState) && ((Time.schoolDay && Time.hour >= 15) || !Time.schoolDay)){
-			if (location === "arcade" || (location === "lake" && Weather.precipitation == "none")){
+	if (V.daily.teensPresent === location) {
+		if (["day", "dusk"].includes(Time.dayState) && ((Time.schoolDay && Time.hour >= 15) || !Time.schoolDay)) {
+			if (location === "arcade" || (location === "lake" && Weather.precipitation === "none")) {
 				present = 1;
 			}
 		}
