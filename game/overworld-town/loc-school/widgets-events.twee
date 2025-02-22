@@ -2886,8 +2886,9 @@
 		<<link [[Comfort (0:05)|Bully Pantsing Robin]]>><<npcincr "Robin" trauma -2>><<pass 5>><</link>><<llrtrauma>>
 		<br>
 		<<link [[Ignore|Hallways]]>><<endevent>><<set $eventskip to 1>><<stress 6>><</link>><<gstress>>
-	<<elseif $bullyevent is 19 and C.npc.Whitney.dom gte 18 and ($watersportsdisable is "f" or $pillory.tenant.special.name isnot "Leighton")>>
-		<<set $bullyevent += 1>>
+	/* [18, 19].includes($bullyevent) and [18, 19, 20].includes($bullyevent) is a temp fix for this event being skiped in cases of Robin being missing, both event 18 and 19 need an alternative for when the event cant be run. The code can then be adjusted to fit with previous checks */
+	<<elseif [18, 19].includes($bullyevent) and C.npc.Whitney.dom gte 18 and ($watersportsdisable is "f" or $pillory.tenant.special.name isnot "Leighton")>>
+		<<set $bullyevent to 20>>
 
 		You're walking down the hallway when someone <<= $worn.neck.type.includes("leash") ? "jerks your leash back" : $worn.neck.name isnot "naked" ? "hooks a finger into your $worn.neck.name" : "grabs your arm">>, stopping you in your tracks.
 		<br><br>
@@ -2902,6 +2903,9 @@
 			<<link [[Fight|Bully Fight]]>><<set $phase to 0>><<set $fightstart to 1>><<def 1>><<npcincr Whitney dom -1>><</link>><<ldom>>
 			<br>
 		<</if>>
+	<<elseif [18, 19, 20].includes($bullyevent)>>
+		<<set $bullyevent to 21>>
+		<<WhitneyPantyCheck>>
 	<<else>>
 		<<set $bullyevent to 4>>
 		Someone grabs your hair from behind, tugging your head back. It's Whitney. <<He>> grins as <<his>> friends laugh.
@@ -3532,8 +3536,29 @@
 		<</if>>
 		<br><br>
 	<<else>>
-		Whitney and <<his>> friends surround you, and Whitney shoves you onto the floor. "Remember who owns you," <<he>> says before leaving. <<tearful>> you pick yourself up.
-		<<npcincr Whitney lust 5>><<glust>>
+		<<if random(0, 3) is 0>>
+			Whitney and <<his>> friends approach you in the hallway. Without stopping as <<he>> passes, Whitney gives you a smack on your rear. "Just checking up on my slut," <<he>> says as <<he>> walks off.
+			<<npcincr Whitney lust 5>><<glust>><<pain 2>><<gpain>>
+		<<elseif $whitneyromance and $player.virginity.kiss isnot true>>
+			Whitney walks up to you and pulls you in for a kiss. "Got to show everyone that you're mine,"
+			<<arousal 100>>
+			<<if $arousal gte $arousalmax>>
+				<<he>> says just as you're pushed over the edge. <<garousal>>
+				<br><br>
+				<<orgasm>>
+				"Are you seriously cumming from getting a kiss?" <<He>> says while turning to leave, "what a good slut."
+				<<npcincr Whitney love 2>><<glove>><<npcincr Whitney lust 10>><<gglust>>
+			<<else>>
+				<<he>> says before leaving with <<his>> friends.
+				<<garousal>><<npcincr Whitney love 1>><<glove>><<npcincr Whitney lust 8>><<glust>>
+			<</if>>
+		<<elseif C.npc.Whitney.love gte 15>>
+			Whitney and <<his>> friends surround you, and Whitney pulls you closer to <<him>>. "Remember who owns you," <<he>> says before leaving.
+			<<npcincr Whitney lust 5>><<glust>>
+		<<else>>
+			Whitney and <<his>> friends surround you, and Whitney shoves you onto the floor. "Remember who owns you," <<he>> says before leaving. <<tearful>> you pick yourself up.
+			<<npcincr Whitney lust 5>><<glust>>
+		<</if>>
 		<br><br>
 
 		<<link [[Next|Hallways]]>><<endevent>><<set $eventskip to 1>><</link>>
@@ -3700,6 +3725,7 @@
 <</widget>>
 
 <<widget "whitneyRulePunishment">>
+	<<set $daily.whitney.punished to true>>
 	<<cleareventpool>>
 
 	<<addinlineevent "whitney_rulePunishment_1">>
@@ -3839,4 +3865,56 @@
 	<br>
 	<<link [[Leave the key here|Hallways Delinquent Lockers End]]>><<set $phase to 2>><</link>>
 	<br>
+<</widget>>
+
+/* _args[0] - Alt text, _args[1] - altVersionCheck */
+<<widget "whitneyRoofRuleBreak">>
+	<<set _maleClothes to Object.keys($worn).filter((slot) => {
+		return $worn[slot].gender is "m" and !["genitals", "under_upper", "under_lower"].includes(slot);
+	})>>
+
+	<<set $_wearingSkirt to (clothingData('lower', $worn.lower, "skirt") is 1)>>
+	<<set $_whitneyMadAtUnderwear to _args[1] is "panties" and $_wearingSkirt and !$worn.under_lower.type.includes("naked") and
+		($whitneypantiescheck is 1 or ($whitneypantiescheck is 2 and $worn.under_lower.gender isnot "f" and $forcedcrossdressingdisable is "f"))>>
+	<<set $_whitneyMadAtSkirt to $forcedcrossdressingdisable is "f" and $whitneyskirtcheck gte 1 and (!$_wearingSkirt or ($worn.lower.reveal lte 200))>>
+	<<set $_whitneyMadAtClothes to $forcedcrossdressingdisable is "f" and $whitneyCrossdressSchool gte 1 and _maleClothes.length>>
+
+	<<if $_whitneyMadAtUnderwear or $_whitneyMadAtSkirt or $_whitneyMadAtClothes>>
+		<<if _args[0]>>
+			<<print _args[0]>>
+		<<else>>
+			You barely have a chance to react to Whitney's scowl before <<he>> grabs your wrist with <<his>> hand.
+		<</if>>
+		
+		<<if _args[1] is "skipFirstComment">>
+		<<elseif $_whitneyMadAtSkirt and !$_wearingSkirt>>
+			"Failing to show off, while breaking my rules? I don't see you wearing your skirt."
+		<<elseif $_whitneyMadAtUnderwear>>
+			<<if $whitneypantiescheck is 1>>
+				"Showing off how you break my rules? I said no <<if $player.gender_appearance is "f">>panties<<else>>underwear<</if>>, and I meant it."
+			<<elseif $whitneypantiescheck is 2 and $worn.under_lower.gender isnot "f">>
+				"Showing off how you break my rules? I said you should wear panties, and I meant it."
+			<</if>>
+		<<elseif $_whitneyMadAtSkirt>>
+			"That skirt isn't anywhere near short enough."
+			<<set $_skipNextSkirtComment to true>>
+		<<else>>
+			"Showing off how you break my rules?"
+		<</if>>
+		<<if $daily.whitney.punished>><<He>> sighs. "How many times do I have to repeat myself?"<<npcincr Whitney love -1>><<llove>><</if>>
+		<br><br>
+		<<He>> starts dragging you towards the stairs, leading you to the hallway.
+		<<if $_whitneyMadAtClothes>>
+			<<He>> sneers, "Did you think I would be blind to the fact you're clearly wearing boy's clothes?"
+		<<elseif $_whitneyMadAtSkirt and !$_wearingSkirt>>
+			<<He>> sneers, "I could have been looking forward to seeing if you would show off your panties."
+		<<elseif $_whitneyMadAtSkirt and !$_skipNextSkirtComment>>
+			<<He>> sneers, "That skirt isn't anywhere near short enough."
+		<<else>>
+			The silence only lasts till you reach the hallway.
+		<</if>>
+		<br><br>
+		<<whitneyRulePunishment true>>
+		<<exitAll>>
+	<</if>>
 <</widget>>
