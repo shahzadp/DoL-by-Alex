@@ -314,7 +314,8 @@ declare global {
 		vagina: string;
 		condom: Condom | false;
 
-		gender: "m" | "f";
+		gender: "m" | "f" | "n";
+		sex: "m" | "f" | "h";
 
 		virginity: {
 			penile: "string" | boolean;

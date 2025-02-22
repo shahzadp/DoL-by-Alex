@@ -121,14 +121,23 @@
 	<<set $worn.legs to clone(setup.clothes.legs[0])>>
 	<<set $worn.feet to clone(setup.clothes.feet[0])>>
 
-	<<if ($player.gender is "f" and $background isnot "crossdresser") or
-		($player.gender is "m" and $background is "crossdresser") or
-		($player.gender is "h" and
-			(
-				(($player.gender_body is "m" or ($player.gender_body is "a" and $player.breastsize lte 3)) and $background is "crossdresser") or
-				(($player.gender_body is "f" or ($player.gender_body is "a" and $player.breastsize gt 3)) and $background isnot "crossdresser")
-			)
-		)>>
+	<<if $player.gender is "m">>
+		<<set _clothesType to "male">>
+	<<elseif $player.gender is "f">>
+		<<set _clothesType to "female">>
+	<<else>>
+		<<if $player.gender_body is "m" or ($player.gender_body is "a" and $player.breastsize lte 3)>>
+			<<set _clothesType to "male">>
+		<<else>> <!-- if $player.gender_body is "f" or ($player.gender_body is "a" and $player.breastsize gt 3)) -->
+			<<set _clothesType to "female">>
+		<</if>>
+	<</if>>
+
+	<<if $background is "crossdresser">>
+		<<set _clothesType to ($player.sex is "m" ? "female" : "male")>>
+	<</if>>
+
+	<<if _clothesType is "female">>
 		<<set $outfit.push(
 			{index: $outfit.length,
 			name: "Everyday",

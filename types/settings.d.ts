@@ -23,7 +23,7 @@ declare module "twine-sugarcube" {
 		toymultiplepenetration: "f" | "t";
 		bodywritingLvl: 0 | 1 | 2 | 3;
 		asphyxiaLvl: 0 | 1 | 2 | 3 | 4;
-		NudeGenderDC: -1 | 0 | 1 | 2;
+		NudeGenderDC: 0 | 1 | 2;
 
 		bestialitydisable: "f" | "t";
 		swarmdisable: "f" | "t";

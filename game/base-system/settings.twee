@@ -674,7 +674,7 @@
 	<<unset $importString>>
 
 	/* Updates the penis max size for females so its never below 1 */
-	<<if $player.gender is "f" && $penissizemax < 0>>
+	<<if $player.sex is "f" && $penissizemax < 0>>
 		<<set $penissizemax to 0>>
 	<</if>>
 <</widget>>
@@ -886,13 +886,29 @@
 			Body
 		</div>
 
+		<div class="settingsToggleItemWide">
+			<span class="gold">Genitals:</span><br>
+			<label>Penis <<radiobutton "$player.sex" "m" autocheck>></label> |
+			<label>Vagina <<radiobutton "$player.sex" "f" autocheck>></label> |
+			<label>Hermaphrodite <<radiobutton "$player.sex" "h" autocheck>></label>
+		</div>
+
 		<div class="settingsToggleItem">
-			<div class="playergender">
-				<span class="gold">Gender:</span><br>
-				<label>Male <<radiobutton "$player.gender" "m" autocheck>></label> |
-				<label>Female <<radiobutton "$player.gender" "f" autocheck>></label> |
-				<label>Hermaphrodite <<radiobutton "$player.gender" "h" autocheck>></label>
-			</div>
+			<span class="gold">Gender:</span><br>
+			<label class="blue">Male <<radiobutton "$player.gender" "m" autocheck>></label> |
+			<label class="pink">Female <<radiobutton "$player.gender" "f" autocheck>></label> |
+			<label class="purple">Neither<<radiobutton "$player.gender" "a" autocheck>></label>
+			<br>
+			<span class="small-description">How you see yourself. Does not affect how other people perceive you. You may change this later in the mirror menu.</span>
+		</div>
+
+		<div class="settingsToggleItem">
+			<span class="gold">Appearance:</span><br>
+			<label class="blue">Masculine <<radiobutton "$player.gender_body" "m" autocheck>></label> |
+			<label class="pink">Feminine <<radiobutton "$player.gender_body" "f" autocheck>></label> |
+			<mouse class="tooltip purple">Androgynous<span>Has no effect on gender appearance.</span></mouse> <<radiobutton "$player.gender_body" "a" autocheck>>
+			<br>
+			<span class="small-description">Influences how others perceive you. Has no visual effect. Clothing and other factors will also affect your perceived gender.</span>
 		</div>
 
 		<div class="settingsToggleItem">
@@ -905,16 +921,6 @@
 		</div>
 
 		<div class="settingsToggleItem">
-			<span class="gold">Gender appearance:</span><br>
-			<label class="blue">Masculine <<radiobutton "$player.gender_body" "m" autocheck>></label> |
-			<label class="pink">Feminine <<radiobutton "$player.gender_body" "f" autocheck>></label> |
-			<mouse class="tooltip purple">Androgynous<span>Has no effect on gender appearance.</span></mouse> <<radiobutton "$player.gender_body" "a" autocheck>>
-			<br>
-			<span class="small-description">Influences how others perceive you. Has no visual effect.
-			Clothing and other factors will also affect your perceived gender.</span>
-		</div>
-
-		<div class="settingsToggleItem">
 			<span class="gold">Body shape:</span><br>
 			<label>Classic <<radiobutton "$player.bodyshape" "classic" autocheck>></label> |
 			<label>Slender <<radiobutton "$player.bodyshape" "slender" autocheck>></label> |
@@ -924,14 +930,6 @@
 			<span class="small-description">Purely cosmetic. Does not influence your perceived gender.
 			You may change this later in the mirror menu.</span>
 		</div>
-
-		<<if $debug is 1>>
-			<div class="settingsToggleItem">
-				<span class="gold">Sex:</span><br>
-				<label>Penis <<radiobutton "$player.sex" "m" autocheck>></label> |
-				<label>Vagina <<radiobutton "$player.sex" "f" autocheck>></label>
-			</div>
-		<</if>>
 
 		<div class="settingsToggleItem">
 			<span class="gold">Breast size:</span><br>
@@ -1163,7 +1161,7 @@
 			<br>
 			<label><span class="lewd">Beautiful</span> <<radiobutton "$background" "beautiful" autocheck>> - You turn heads. <i>Not recommended for beginners.</i></label>
 			<br>
-			<label data-target="player.gender" data-disabledif="V.player.gender==='h'"><span class="lewd">Crossdresser</span> <<radiobutton "$background" "crossdresser" autocheck>> - You've taken a liking to the clothing of the opposite sex. Does nothing for hermaphrodites.</label>
+			<label data-target="player.sex" data-disabledif="V.player.sex==='h'"><span class="lewd">Crossdresser</span> <<radiobutton "$background" "crossdresser" autocheck>> - You've taken a liking to the clothing of the opposite sex. Does nothing for hermaphrodites.</label>
 			<br>
 			<label><span class="lewd">Lustful</span> <<radiobutton "$background" "lustful" autocheck>> - Arousal increases over time, and needs to be managed.</label>
 			/*<br>
@@ -1828,8 +1826,9 @@
 		</div>
 
 		<div class="settingsToggleItem">
+			<<if !$femininityModifier>><<set $femininityModifier to {}>><</if>>
 			Nude Gender Appearance:
-			<<numberslider "$NudeGenderDC" $NudeGenderDC -1 2 1>>
+			<<numberslider "$NudeGenderDC" $NudeGenderDC 0 2 1>>
 			<<run settingsNudeGenderAppearance()>>
 		</div>
 		</div>

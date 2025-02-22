@@ -1122,9 +1122,7 @@ function effects() {
 					fragment.append(wikifier("earnFeat", "'Demon'"));
 					break;
 				case "angelUp1":
-					sWikifier(
-						'<span class="gold">Despite everything, you have managed to remain a pure <<if $NudeGenderDC lt 0>><<gender_posture>><<else>><<gender>><</if>>. The thought makes you happy.</span>'
-					);
+					sWikifier('<span class="gold">Despite everything, you have managed to remain a pure <<gender>. The thought makes you happy.</span>');
 					break;
 				case "angelUp2":
 					element("span", "You are pure and feel determined to keep it that way.", "gold");

@@ -2008,7 +2008,7 @@ function earnHourlyFeats() {
 
 	// Feats that can only be earned after 50 days
 	if (Time.days >= 50) {
-		switch (V.player.gender) {
+		switch (V.player.sex) {
 			case "m":
 				earnFeat("Being a Boy");
 				break;

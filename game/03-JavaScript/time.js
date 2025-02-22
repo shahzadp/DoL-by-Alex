@@ -927,7 +927,8 @@ function minutePassed(minutes) {
 	// Stress
 	// decay/rise and crossdresser trait
 	const isCrossdresser = V.backgroundTraits.includes("crossdresser");
-	const isCrossdressing = V.player.gender !== V.player.gender_appearance && V.player.gender !== "h";
+	// Not using isCrossdressing() since the stress gains/penalties should not be based on NudeGenderDC
+	const isCrossdressing = V.player.sex !== V.player.gender_appearance && V.player.sex !== "h";
 	if (V.controlled === 0 && V.anxiety >= 2) V.stress += minutes * ((isCrossdresser && !isCrossdressing) + 1);
 	else if (V.stress < V.stressmax && (V.controlled === 1 || V.anxiety === 0)) V.stress -= minutes * ((isCrossdresser && isCrossdressing) + 1);
 
@@ -967,7 +968,6 @@ function minutePassed(minutes) {
 		// V.drunk ranging from 0 to 1000, 1 minute at 1000 will add extra 1.25 of tiredness (2.25x total)
 		// reference values are 2x at 800, 1.5x at 400 (pain reduction from drunkenness starts at 360), 1.25x at 200
 		if (minutes < 1200) statChange.tiredness(drunkMod / 12000);
-
 	}
 	if (V.hallucinogen > 0) statChange.hallucinogen(-minutes);
 	if (V.drugged > 0) statChange.drugs(-minutes);
