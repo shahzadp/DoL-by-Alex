@@ -78,7 +78,7 @@ replace (?<!["'\w])_(?=\w) with T.
  *
  * FACE OPTIONS:
  * -------------
- * "facevariant:" "default"|"catty"|"aloof" - $facevariant variable, the img/face/{facestyle}/{facevariant} one.
+ * "facevariant:" "default"|"catty"|"aloof"|"foxy" - $facevariant variable, the img/face/{facestyle}/{facevariant} one.
  * "facestyle": "default" - $facestyle variable, the img/face/XXXX one.
  * "freckles": boolean
  * "trauma": boolean - traumatised state (empty eyes, less blinking)
