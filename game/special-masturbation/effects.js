@@ -1795,7 +1795,7 @@ function masturbationEffectsArms(
 					sWikifier(
 						`<span class="purple">You roughly fuck your precum covered <<penis>> with the ${toyDisplay(
 							altText.selectedToy
-						)},</span>, <span class="lewd">generating a lewd warmth throughout your body.</span>`
+						)},</span> <span class="lewd">generating a lewd warmth throughout your body.</span>`
 					);
 				}
 			} else {
