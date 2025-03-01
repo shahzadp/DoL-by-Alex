@@ -520,6 +520,8 @@ function initNeck() {
 			accessory_colour_sidebar: 1,
 			cursed: 0,
 			location: 0,
+			altposition: "none",
+			altdisabled: [],
 			iconFile: "necktie.png",
 			accIcon: "necktie_acc.png",
 		},

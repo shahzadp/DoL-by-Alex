@@ -5214,6 +5214,8 @@ function initHandheld() {
 			plural: 0,
 			colour: 0,
 			colour_options: [],
+			pattern_options: ["empty", "money"],
+			pattern: 0,
 			colour_sidebar: 0,
 			type: ["prop"],
 			shop: [],

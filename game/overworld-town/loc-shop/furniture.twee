@@ -241,8 +241,8 @@ You are in the furniture shop. Most of its stock is too large for your room.
 	<<set $currentFurnishing to Furniture.get($chosenFurnitureCategory)>>
 	Currently installed in your bedroom:
 	<<if $currentFurnishing>>
-		<<set _premade to ["vines", "tentacles", "plainwhite", "cowgirls", "cow_girls", "hearts", "trees", "crosses", "cowgirl", "cow_girl", "cat", "puppy"].includes($currentFurnishing.name)>>
-		<<set _icon to _premade ? $currentFurnishing.id + "_" + $currentFurnishing.name : ['dol', 'degrees of lewdity'].some(e => $currentFurnishing.name.toLowerCase().includes(e)) ? $chosenFurnitureCategory + "_dol" : $chosenFurnitureCategory is "poster" ? "poster" : "wallpaper_custom">>
+		<<set _premade to ["vines", "tentacles", "plainwhite", "cowgirls", "cow_girls", "hearts", "trees", "crosses", "cowgirl", "cow_girl", "cat", "puppy", "starry", "deep sea", "beach", "crabs", "flames", "stained glass", "audience", "bears"].includes($currentFurnishing.name)>>
+		<<set _icon to _premade ? $currentFurnishing.id + "_" + $currentFurnishing.name.replace(/ /g, '_') : ['dol', 'degrees of lewdity'].some(e => $currentFurnishing.name.toLowerCase().includes(e)) ? $chosenFurnitureCategory + "_dol" : $chosenFurnitureCategory is "poster" ? "poster" : "wallpaper_custom">>
 		<<furnitureicon _icon>>
 		<<set $_label to $currentFurnishing.nameCap is "Plainwhite" ? "Plain White" : $currentFurnishing.nameCap.replace("_","").toUpperFirst()>>
 		<<= $_label>>
@@ -266,6 +266,22 @@ You are in the furniture shop. Most of its stock is too large for your room.
 						The green trees bring you a feeling of being in a forest.
 					<<case "crosses">>
 						Golden crosses cover the walls.
+					<<case "starry">>
+						A starry galaxy covers the walls.
+					<<case "deep sea">>
+						A deep blue ocean surrounds you.
+					<<case "beach">>
+						An idyllic beach scene covers the walls.
+					<<case "crabs">>
+						A cute crab pattern covers the walls.
+					<<case "flames">>
+						Flames surround you. This is fine.
+					<<case "stained glass">>
+						A stained glass pattern covers the walls.
+					<<case "audience">>
+						Silhouettes surround you. It feels like a crowd is watching.
+					<<case "bears">>
+						A beary cute pattern covers the walls.
 					<<default>> /* Custom */
 						 Images of $currentFurnishing.name cover the walls.
 						<<if _icon.includes("dol")>>
@@ -303,15 +319,15 @@ You are in the furniture shop. Most of its stock is too large for your room.
 
 <<widget "generatePaperShopStock">>
 	<br>
-	<<set _availableHangings to $chosenFurnitureCategory is "wallpaper" ?  ["vines", "tentacles", "plainwhite", "cowgirls", "cow_girls", "hearts", "trees", "crosses"] : ["cowgirl", "cow_girl", "cat", "puppy"]>>
+	<<set _availableHangings to $chosenFurnitureCategory is "wallpaper" ?  ["vines", "tentacles", "plainwhite", "cowgirls", "cow_girls", "hearts", "trees", "crosses", "starry", "deep sea", "beach", "crabs", "flames", "stained glass", "audience", "bears"] : ["cowgirl", "cow_girl", "cat", "puppy"]>>
 
 	<<if Time.dayState is "night" and Time.hour isnot 21 and $weekly.theft.furnitureShop>>
 		<span class="purple">You've already stolen from the store.</span> You should wait before taking anything else.
 		<br>
 	<<else>>
 		<<for $_key range _availableHangings>>
-			<<set $_icon to $chosenFurnitureCategory + "_" + $_key>>
-			<<set $_label to $_key is "plainwhite" ? "Plain White" : $_key.replace("_","").toUpperFirst()>>
+			<<set $_icon to $chosenFurnitureCategory + "_" + $_key.replace(/ /g, '_')>>
+			<<set $_label to $_key is "plainwhite" ? "Plain White" : toTitleCase($_key.replace("_",""))>>
 			<<set $_cost to Furniture.setPrice(Furniture.get($chosenFurnitureCategory, true).cost)>>
 			<<set $_isCurrent to !(!$currentFurnishing or $_key isnot $currentFurnishing.name)>>
 
