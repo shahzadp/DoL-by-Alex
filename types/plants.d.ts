@@ -36,6 +36,7 @@ declare global {
 		special: any[];
 		season: Season[];
 		ingredients: any[];
+		ingredientIcon?: string;
 		icon: string;
 		shop?: any[];
 		boughtInBulk?: number;

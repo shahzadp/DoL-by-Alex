@@ -199,6 +199,7 @@ declare global {
 		accessory_layer_under?: 0 | 1;
 		high_img?: 0 | 1;
 		back_img?: 0 | 1 | "combat";
+		back_integrity_img?: 0 | 1;
 		back_img_acc?: 0 | 1 | "combat";
 		back_img_acc_colour?: string;
 		/**

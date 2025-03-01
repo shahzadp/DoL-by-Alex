@@ -815,6 +815,7 @@ function initPlants() {
 			special: ["vegetarian"],
 			season: [],
 			ingredients: ["bottle_of_milk"],
+			ingredientIcon: "raw_cheese.png",
 			icon: "cheese.png",
 		},
 
