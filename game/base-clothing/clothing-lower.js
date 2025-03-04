@@ -623,7 +623,7 @@ function initLower() {
 			],
 			accessory_colour_sidebar: "secondary",
 			high_img: 0,
-			back_img: 0,
+			back_img: 1,
 			cursed: 0,
 			notuck: 1,
 			location: 0,
