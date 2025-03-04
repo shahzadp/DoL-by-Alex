@@ -4,10 +4,10 @@
 Warmth checklist:
 	Base: 0
 	Normal: 0
-	Thick: +1
-	Very thick: +2
+	Thick: +2
+	Very thick: +4
 
-	Max warmth: 2
+	Max warmth: 4
 */
 function initNeck() {
 	/** @type {ClothesItem[]} */
@@ -640,7 +640,7 @@ function initNeck() {
 			type: ["normal"],
 			gender: "n",
 			femininity: 0,
-			warmth: 2,
+			warmth: 4,
 			cost: 1200,
 			description: "Snug.",
 			shop: ["clothing"],
@@ -751,7 +751,7 @@ function initNeck() {
 			type: ["holy"],
 			gender: "n",
 			femininity: 0,
-			warmth: 1,
+			warmth: 2,
 			cost: 10000,
 			description: "Ecclesiastical attire.",
 			shop: ["forest"],
@@ -1106,7 +1106,7 @@ function initNeck() {
 			colour_sidebar: 1,
 			type: ["normal"],
 			gender: "n",
-			warmth: 2,
+			warmth: 4,
 			cost: 3000,
 			description: "Soft and stylish.",
 			shop: ["clothing"],
