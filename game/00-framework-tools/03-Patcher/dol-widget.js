@@ -135,7 +135,7 @@ Macro.add("widget", {
 							const errList = [];
 
 							// Wikify the widget's code.
-							const resFrag = Wikifier.wikifyEval(widgetCode.replace(/^\n+|\n+$/g, "").replace(/\n+/g, " "));
+							const resFrag = Wikifier.wikifyEval(widgetCode.replace(/^\n+|\n+$/g, "").replace(/\s+/g, " "));
 
 							// Carry over the output, unless there were errors.
 							Array.from(resFrag.querySelectorAll(".error")).forEach(errEl => {

@@ -134,6 +134,7 @@ const statChange = (() => {
 		if (amount) {
 			V.control += amount * 10;
 			if (combat && V.control >= V.controlstart) V.control = V.controlstart;
+			else if (V.controlstart < V.control) V.controlstart = Math.min(V.control, V.controlmax);
 			V.controlled = V.control >= (V.controlmax / 5) * 2 ? 1 : 0;
 		}
 		V.control = Math.clamp(V.control, 0, V.controlmax);
