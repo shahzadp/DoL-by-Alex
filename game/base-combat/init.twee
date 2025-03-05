@@ -845,6 +845,10 @@
 <<widget "combatinit">>
 	<<if $consensual is 1>>
 		<<set $controlstart to $control>>
+	<<elseif !_controlloss>>
+		/* non-consensual combat failed to run <<controlloss>>, probably not intentional */
+		<<set $controlstart to $control>>
+		<<run Errors.report(`${$passage} failed to run controlloss`)>>
 	<</if>>
 	<<set $arousalmasochism to 0>>
 
@@ -968,7 +972,7 @@
 		<<run $npc.forEach(npc => $genderknown.pushUnique(npc))>>
 	<</if>>
 
-	<<if $worn.genitals.type.includesAll("chastity", "hidden") or $NPCList[0].state is "stalk" or $NPCList[0].state is "pursuit">>
+	<<if $worn.genitals.type.includesAll("chastity", "hidden") or $NPCList[0].state is "stalk" or $NPCList[0].state is "pursuit" or $gloryhole>>
 	<<elseif isCrossdressing() and $worn.over_lower.vagina_exposed gte 1 and $worn.under_lower.vagina_exposed gte 1 and $worn.lower.vagina_exposed gte 1>>
 		<<exposedcheck true>>
 		<<if $NPCList[0].teen is 1 and $location is "school" and !($npc.length is 1 and (["Kylar","Sydney"].includes($npc[0])))>>

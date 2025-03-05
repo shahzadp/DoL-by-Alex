@@ -542,54 +542,47 @@
 	<<elseif $danceaction is "orgasm">>
 			<<orgasmstage>>
 	<<elseif $danceaction is "groom">>
-		<<set $audiencearousal += 4>><<set $audienceexcitement += 4>><<set $audiencemod += 1>><<set $danceactiondefault to "groom">>
-		<<set _bl to []>><<set _nectar to []>>
-		<<for _bodypart range setup.bodyliquid.bodyparts>>
-			<<if !["vagina","anus","mouth"].includes(_bodypart)>>
-				<<if setup.bodyliquid.combined(_bodypart) gte 1>>
-					<<set _bl.pushUnique(_bodypart)>>
-					<<if $player.bodyliquid[_bodypart].nectar gte 1>>
-						<<set _nectar.pushUnique(_bodypart)>>
-					<</if>>
-				<</if>>
-			<</if>>
-		<</for>>
-		<<if $backgroundTraits.includes("plantlover") and _nectar.length gte 1>>
-			<<set _part to _nectar.random()>>
-			<<set _nectarPriority to true>>
-		<<else>>
-			<<set _part to _bl.random()>>
-		<</if>>
-		<<if _nectarPriority>>
-			<<set _liq to "nectar">>
-		<<else>>
-			<<if $player.bodyliquid[_part].nectar gte 1 and (random(1,3) is 1 or $player.bodyliquid[_part].goo is 0 and $player.bodyliquid[_part].semen is 0)>>
-				<<set _liq to "nectar">>
-			<<elseif $player.bodyliquid[_part].goo gte 1 and random(1,3) is 2 or ($player.bodyliquid[_part].semen is 0 and $player.bodyliquid[_part].nectar is 0)>>
-				<<set _liq to "slime">>
+		<<set $audiencearousal += 4>>
+		<<set $audienceexcitement += 4>>
+		<<set $audiencemod += 1>>
+		<<set $danceactiondefault to "groom">>
+		<<set _bl to setup.bodyliquid.outerbodyparts.filter(p => setup.bodyliquid.combined(p))>>
+		<<set _nectar to setup.bodyliquid.outerbodyparts.filter(p => V.player.bodyliquid[p].nectar)>>
+		<<if _bl.length>>
+			<<if $backgroundTraits.includes("plantlover") and _nectar.length gte 1>>
+				<<set _part to _nectar.random()>>
+				<<set _nectarPriority to true>>
 			<<else>>
-				<<set _liq to "semen">>
+				<<set _part to _bl.random()>>
 			<</if>>
+			<<if _nectarPriority>>
+				<<set _liq to "nectar">>
+			<<else>>
+				<<set _liq to ["nectar", "slime", "semen"].filter(l => V.player.bodyliquid[_part][l]).random()>>
+			<</if>>
+			You groom yourself,
+			<<switch _part>>
+				<<case "leftarm">>
+					lapping _liq off your left arm.
+				<<case "rightarm">>
+					lapping _liq off your right arm.
+				<<case "bottom">>
+					scooping up the _liq on your <<bottom>> and lapping it off your hands.
+				<<case "vaginaoutside">>
+					scooping up the _liq on your <<pussy>> and lapping it off your hands.
+				<<case "penis">>
+					scooping up the _liq on your <<penis>> and lapping it off your hands.
+				<<case "thigh">>
+					scooping up the _liq on your thighs and lapping it off your hands.
+				<<default>>
+					scooping up the _liq on your _part and lapping it off your hands.
+			<</switch>>
+			<<if _liq is "nectar">>
+				<<nectarfed 4>>
+			<</if>>
+			<<bodyliquid _part _liq -1>>
 		<</if>>
-		You groom yourself,
-		<<switch _part>>
-			<<case "leftarm">>
-				lapping _liq off your left arm.
-			<<case "rightarm">>
-				lapping _liq off your right arm.
-			<<case "bottom">>
-				scooping up the _liq on your <<bottom>> and lapping it off your hands.
-			<<case "vaginaoutside">>
-				scooping up the _liq on your <<pussy>> and lapping it off your hands.
-			<<case "penis">>
-				scooping up the _liq on your <<penis>> and lapping it off your hands.
-			<<case "thigh">>
-				scooping up the _liq on your thighs and lapping it off your hands.
-			<<default>>
-				scooping up the _liq on your _part and lapping it off your hands.
-		<</switch>>
-		<<if _liq is "nectar">><<nectarfed 4>><</if>>
-		<<bodyliquid _part _liq -1>><<goocount>>
+		<<goocount>>
 		<<if $liquidoutsidecount lt 1>>
 			<<set $danceactiondefault to "cool">>
 		<</if>>
