@@ -705,8 +705,20 @@ Renderer.CanvasModels.main = {
 		options.underLowerMask = [];
 		options.underLowerShadowMask = [];
 		options.upperMask = []
-		if (options.worn.lower.setup.mask_img === 1) options.lowerMask.push(`img/clothes/lower/${options.worn.lower.setup.variable}/mask_${options.worn.lower.integrity}.png`);
-		if (options.worn.upper.setup.mask_img === 1) options.upperMask.push(`img/clothes/upper/${options.worn.upper.setup.variable}/mask_${options.worn.upper.integrity}.png`);
+		if (options.worn.lower.pattern || options.worn.lower.setup.mask_img === 1) {
+			options.lowerMask.push(
+				gray_suffix(
+					`img/clothes/lower/${options.worn.lower.setup.variable}/${options.worn.lower.integrity}.png`,
+					options.filters['worn_lower']
+				))
+		}
+		if (options.worn.upper.pattern || options.worn.upper.setup.mask_img === 1) {
+			options.upperMask.push(
+				gray_suffix(
+					`img/clothes/upper/${options.worn.upper.setup.variable}/${options.worn.upper.integrity}.png`,
+					options.filters['worn_upper']
+				))
+		}
 
 		const hairTails = ["curly pigtails", "fluffy ponytail", "thick sidetail", "thick twintails", "ribbon tail", "thick sidetail", "thick ponytail", "half-up"];
 		const thickTails = ["scorpion tails", "thick pigtails", "thick twintails"];
@@ -4233,7 +4245,7 @@ function getClothingPathBreastsAcc(slot, options) {
 	const breastAccImg = options.worn[slot].setup.breast_acc_img;
 	const breastSize = typeof breastAccImg === 'object' ? breastAccImg[options.breast_size] : typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
 	const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
-	const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}${pattern}_acc.png`;
+	const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}_acc${pattern}.png`;
 	return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 }
 
@@ -4671,8 +4683,9 @@ function genlayer_clothing_back_img(slot, overrideOptions) {
 
 			const prefix = isAltPosition ? 'back_alt' : 'back';
 			const suffix = options.worn[slot].setup.back_integrity_img ? `_${options.worn[slot].integrity}` : '';
+			const pattern = options.worn[slot]?.pattern && !(options.worn[slot].setup?.pattern_layer === "secondary") ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
 
-			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${prefix}${suffix}.png`;
+			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${prefix}${suffix}${pattern}.png`;
 			return gray_suffix(path, options.filters[this.filtersfn(options)[0]]);
 		},
 	}, overrideOptions));
@@ -4709,7 +4722,9 @@ function genlayer_clothing_back_img_acc(slot, overrideOptions) {
 				&& !options.worn[slot].setup?.altdisabled.includes("back");
 
 			const suffix = isAltPosition ? 'back_alt' : 'back';
-			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${suffix}_acc.png`;
+			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup?.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern.replace(/ /g,"_") : '';
+
+			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${suffix}${pattern}_acc.png`;
 			return gray_suffix(path, options.filters[this.filtersfn(options)[0]]);
 		},
 	}, overrideOptions));
