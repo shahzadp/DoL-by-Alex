@@ -1430,10 +1430,6 @@ function initFace() {
 			name: "fox mask",
 			name_cap: "Fox mask",
 			variable: "foxmask",
-			combat: {
-				reference: "skulmask",
-				mainColour: "#af531b",
-			},
 			state: 0,
 			state_base: 0,
 			integrity: 30,
