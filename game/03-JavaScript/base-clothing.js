@@ -417,6 +417,8 @@ function getOutfitPair() {
 			check.colour_combat = V.worn[garmentLayers[i]].colour_combat;
 			check.accessory = V.worn[garmentLayers[i]].accessory;
 			check.accessory_colour = V.worn[garmentLayers[i]].accessory_colour;
+			check.pattern = V.worn[garmentLayers[i]].pattern;
+			check.pattern_colour = V.worn[garmentLayers[i]].pattern_colour;
 			check.location = V.worn[garmentLayers[i]].location;
 			foundPairs.push(check);
 		}
