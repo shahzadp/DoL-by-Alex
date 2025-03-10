@@ -1276,6 +1276,14 @@ const combatMainPc = {
 				return CombatRenderer.indices.head + 4;
 			},
 		}),
+		facewearPattern: PlayerCanvasHelper.genClothingPatternLayer("face", {
+			zfn(options) {
+				if (V.facelayer === "back") {
+					return CombatRenderer.indices.hair + 1;
+				}
+				return CombatRenderer.indices.head + 4;
+			},
+		}),
 		footwearBack: PlayerCanvasHelper.genClothingLayer("feet", {
 			srcfn(options) {
 				const clothes = options.clothes.feet;
@@ -1292,6 +1300,16 @@ const combatMainPc = {
 				if (clothes?.name == null || clothes.positions == null) return "";
 				const joined = clothes.joined.limbsAccessory ? `-front-${clothes.positions.front}` : "";
 				const path = `${options.src}clothing/feet/${clothes.name}/back-${clothes.positions.back}${joined}-acc.png`;
+				return path;
+			},
+			z: CombatRenderer.indices.backFootwear,
+		}),
+		footwearPatternBack: PlayerCanvasHelper.genClothingPatternLayer("feet", {
+			srcfn(options) {
+				const clothes = options.clothes.feet;
+				if (clothes?.name == null || clothes.positions == null) return "";
+				const joined = clothes.joined.limbs ? `-front-${clothes.positions.front}` : "";
+				const path = `${options.src}clothing/feet/${clothes.name}/back-${clothes.positions.back}-${clothes.pattern}${joined}.png`;
 				return path;
 			},
 			z: CombatRenderer.indices.backFootwear,
@@ -1316,10 +1334,23 @@ const combatMainPc = {
 			},
 			z: CombatRenderer.indices.frontFootwear,
 		}),
+		footwearPatternFront: PlayerCanvasHelper.genClothingPatternLayer("feet", {
+			srcfn(options) {
+				const clothes = options.clothes.feet;
+				if (clothes?.name == null || clothes.positions == null) return "";
+				const joined = clothes.joined.limbs ? `-back-${clothes.positions.back}` : "";
+				const path = `${options.src}clothing/feet/${clothes.name}/front-${clothes.positions.front}-${clothes.pattern}${joined}.png`;
+				return path;
+			},
+			z: CombatRenderer.indices.frontFootwear,
+		}),
 		genitals: PlayerCanvasHelper.genClothingLayer("genitals", {
 			z: CombatRenderer.indices.base + 4,
 		}),
 		genitalsAcc: PlayerCanvasHelper.genClothingAccLayer("genitals", {
+			z: CombatRenderer.indices.base + 4,
+		}),
+		genitalsPattern: PlayerCanvasHelper.genClothingPatternLayer("genitals", {
 			z: CombatRenderer.indices.base + 4,
 		}),
 		handsBack: PlayerCanvasHelper.genClothingLayer("hands", {
@@ -1374,6 +1405,38 @@ const combatMainPc = {
 					return false;
 				}
 				if (!clothes.hasAccessory) return false;
+				if (options.position === "doggy") {
+					const states = ["default", "handjob"];
+					if (clothes.isBoundable) {
+						states.push("bound");
+					}
+					return states.includes(options.armBackPosition);
+				}
+				return ["handjob"].includes(options.armBackPosition);
+			},
+			z: CombatRenderer.indices.backArm + 1.5,
+		}),
+		handsBackPattern: PlayerCanvasHelper.genClothingPatternLayer("hands", {
+			srcfn(options) {
+				const clothes = options.clothes.hands;
+				if (clothes?.name == null) return "";
+				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "back")) {
+					// return `${options.src}clothing/hands/${clothes.name}/back-handjob-bestial-acc.png`;
+					return `${options.src}clothing/hands/${clothes.name}/back-default-${clothes.pattern}.png`;
+				}
+				const path = `${options.src}clothing/hands/${clothes.name}/back-${options.armBackPosition}-${clothes.pattern}.png`;
+				return path;
+			},
+			showfn(options) {
+				const clothes = options.clothes.hands;
+				if (clothes == null) {
+					Errors.report("Clothing object was undefined");
+					return false;
+				}
+				if (!CombatRenderer.isClothingShown(clothes, options.showClothing)) {
+					return false;
+				}
+				if (!clothes.hasTertiaryPattern) return false;
 				if (options.position === "doggy") {
 					const states = ["default", "handjob"];
 					if (clothes.isBoundable) {
@@ -1443,6 +1506,36 @@ const combatMainPc = {
 				return CombatRenderer.indices.frontArm + 1.5;
 			},
 		}),
+		handsFrontPattern: PlayerCanvasHelper.genClothingPatternLayer("hands", {
+			srcfn(options) {
+				const clothes = options.clothes.hands;
+				if (clothes?.name == null) return "";
+				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
+					return `${options.src}clothing/hands/${clothes.name}/front-handjob-bestial-${clothes.pattern}.png`;
+				}
+				const path = `${options.src}clothing/hands/${clothes.name}/front-${options.armFrontPosition}-${clothes.pattern}.png`;
+				return path;
+			},
+			showfn(options) {
+				const clothes = options.clothes.hands;
+				if (clothes == null) {
+					Errors.report("Clothing object was undefined");
+					return false;
+				}
+				if (!CombatRenderer.isClothingShown(clothes, options.showClothing)) {
+					return false;
+				}
+				if (!clothes.hasTertiaryPattern) return false;
+				const available = options.position === "doggy" ? ["default", "handjob"] : ["default", "handjob", "stroke"];
+				return available.includes(options.armFrontPosition);
+			},
+			zfn(options) {
+				if (options.armFrontPosition === "bound") {
+					return CombatRenderer.indices.frontBoundArms + 1.5;
+				}
+				return CombatRenderer.indices.frontArm + 1.5;
+			},
+		}),
 		headwearBackAcc: PlayerCanvasHelper.genClothingAccLayer("head", {
 			srcfn(options) {
 				const clothes = options.clothes.head;
@@ -1484,6 +1577,9 @@ const combatMainPc = {
 		}),
 		headwearAcc: PlayerCanvasHelper.genClothingAccLayer("head", {
 			z: CombatRenderer.indices.hair + 1,
+		}),
+		headwearPattern: PlayerCanvasHelper.genClothingPatternLayer("head", {
+			z: CombatRenderer.indices.hair + 2,
 		}),
 		legwearBack: PlayerCanvasHelper.genClothingLayerLowerStep("legs", "back", false, {
 			z: CombatRenderer.indices.backLegwear,
@@ -1527,10 +1623,16 @@ const combatMainPc = {
 		neckWearAcc: PlayerCanvasHelper.genClothingAccLayer("neck", {
 			z: CombatRenderer.indices.head - 1,
 		}),
+		neckWearPattern: PlayerCanvasHelper.genClothingPatternLayer("neck", {
+			z: CombatRenderer.indices.head - 1,
+		}),
 		overHead: PlayerCanvasHelper.genClothingLayer("over_head", {
 			z: CombatRenderer.indices.head + 2,
 		}),
 		overHeadAcc: PlayerCanvasHelper.genClothingAccLayer("over_head", {
+			z: CombatRenderer.indices.head + 2,
+		}),
+		overHeadPattern: PlayerCanvasHelper.genClothingPatternLayer("over_head", {
 			z: CombatRenderer.indices.head + 2,
 		}),
 		backOverLower: PlayerCanvasHelper.genClothingLayer("over_lower", {
@@ -1553,10 +1655,23 @@ const combatMainPc = {
 			show: false,
 			z: CombatRenderer.indices.backLowerOverwear,
 		}),
+		backOverLowerPattern: PlayerCanvasHelper.genClothingPatternLayer("over_lower", {
+			srcfn(options) {
+				const clothes = options.clothes.over_lower;
+				if (clothes?.name == null || clothes.positions == null) return "";
+				const path = `${options.src}clothing/over_lower/${clothes.name}/back-${clothes.positions.back}-${clothes.pattern}.png`;
+				return path;
+			},
+			show: false,
+			z: CombatRenderer.indices.backLowerOverwear,
+		}),
 		frontOverLower: PlayerCanvasHelper.genClothingLayer("over_lower", {
 			z: CombatRenderer.indices.frontLowerOverwear,
 		}),
 		frontOverLowerAcc: PlayerCanvasHelper.genClothingAccLayer("over_lower", {
+			z: CombatRenderer.indices.frontLowerOverwear,
+		}),
+		frontOverLowerPattern: PlayerCanvasHelper.genClothingPatternLayer("over_lower", {
 			z: CombatRenderer.indices.frontLowerOverwear,
 		}),
 		overUpper: PlayerCanvasHelper.genClothingLayer("over_upper", {
@@ -1571,6 +1686,9 @@ const combatMainPc = {
 		overUpperBreastsAcc: PlayerCanvasHelper.genBreastsAccLayer("over_upper", {
 			z: CombatRenderer.indices.frontArm - 1,
 		}),
+		overUpperPattern: PlayerCanvasHelper.genClothingPatternLayer("over_upper", {
+			z: CombatRenderer.indices.frontArm - 1,
+		}),
 		underUpper: PlayerCanvasHelper.genClothingLayer("under_upper", {
 			z: CombatRenderer.indices.frontArm - 5,
 		}),
@@ -1583,6 +1701,9 @@ const combatMainPc = {
 		underUpperBreastsAcc: PlayerCanvasHelper.genBreastsAccLayer("under_upper", {
 			z: CombatRenderer.indices.frontArm - 5,
 		}),
+		underUpperPattern: PlayerCanvasHelper.genClothingPatternLayer("under_upper", {
+			z: CombatRenderer.indices.frontArm - 5,
+		}),
 		upper: PlayerCanvasHelper.genClothingLayer("upper", {
 			z: CombatRenderer.indices.frontArm - 3,
 		}),
@@ -1593,6 +1714,9 @@ const combatMainPc = {
 			z: CombatRenderer.indices.frontArm - 3,
 		}),
 		upperBreastsAcc: PlayerCanvasHelper.genBreastsAccLayer("upper", {
+			z: CombatRenderer.indices.frontArm - 3,
+		}),
+		upperPattern: PlayerCanvasHelper.genClothingPatternLayer("upper", {
 			z: CombatRenderer.indices.frontArm - 3,
 		}),
 		upperBackSleeves: PlayerCanvasHelper.genClothingSleeves("upper", "back", {

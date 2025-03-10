@@ -961,6 +961,7 @@ function clothesDataTrimmer(item) {
 		"description", // use `Setup example`
 		"colour_options", // use `Setup example`
 		"accessory_colour_options", // use `Setup example`
+		"pattern_colour_options", // use `Setup example`
 		"fabric_strength", // use `clothingData example`
 		"integrity_max", // use `clothingData example`
 		"bustresize", // use `clothingData example`

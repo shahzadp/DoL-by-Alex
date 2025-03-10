@@ -121,6 +121,7 @@ declare global {
 			sleeveAccColour?: string;
 			sleeveColour?: string;
 			boundable?: boolean;
+			pattern?: boolean;
 		};
 		integrity?: number;
 		integrity_max?: number;
@@ -182,7 +183,7 @@ declare global {
 		pattern?: 0 | string;
 		pattern_options?: string[];
 		pattern_caption?: boolean;
-		pattern_layer?: "secondary";
+		pattern_layer?: "primary" | "secondary" | "tertiary";
 		accessory: number;
 		accessory_colour?: 0 | string;
 		accessory_colour_options?: string[];

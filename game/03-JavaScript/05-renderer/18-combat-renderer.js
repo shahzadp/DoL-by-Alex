@@ -562,6 +562,19 @@ class CombatRenderer {
 	/**
 	 * @param {ClothedSlots} slot
 	 * @param {ClothesItem} defaults
+	 * @returns {boolean}
+	 */
+	static getPatternState(slot, defaults) {
+		const source = CombatRenderer.getSourceClothing(slot, defaults);
+		if (source.combat?.pattern !== undefined) {
+			return !!source.combat.pattern;
+		}
+		return source.pattern_layer === "tertiary";
+	}
+
+	/**
+	 * @param {ClothedSlots} slot
+	 * @param {ClothesItem} defaults
 	 * @returns {CombatClothingTypes | undefined}
 	 */
 	static getClothingRenderType(slot, defaults) {

@@ -43,7 +43,7 @@ function isHermOrCrossdresser() {
 	if (V.player.sex === "h") {
 		return "herm";
 	}
-	if (isCrossdressing() || (V.player.sex !== V.player.gender_appearance && !isGenitalMismatch)) {
+	if (isCrossdressing() || (V.player.sex !== V.player.gender_appearance && !isGenitalMismatch())) {
 		return true;
 	}
 	return false;

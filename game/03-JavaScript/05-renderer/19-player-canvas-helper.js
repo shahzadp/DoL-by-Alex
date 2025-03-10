@@ -450,6 +450,41 @@ class PlayerCanvasHelper {
 	}
 
 	/**
+	 *
+	 * @param {string} slot
+	 * @param {CanvasModelLayers<CombatPlayerOptions>} overrideOptions
+	 * @returns {CanvasModelLayers<CombatPlayerOptions>}
+	 */
+	static genClothingPatternLayer(slot, overrideOptions = {}) {
+		/**
+		 * @type {CanvasModelLayers<CombatPlayerOptions>}
+		 */
+		const defaults = {
+			srcfn(options) {
+				const clothes = options.clothes[slot];
+				if (clothes == null || clothes.name == null) return "";
+				const path = `${options.src}clothing/${slot}/${clothes.name}/${clothes.pattern}.png`;
+				return path;
+			},
+			showfn(options) {
+				const clothes = options.clothes[slot];
+				const show = options.showClothing && clothes != null && clothes.show && clothes.hasTertiaryPattern;
+				return !!show;
+			},
+			alphafn(options) {
+				const clothes = options.clothes[slot];
+				const alpha = clothes.alpha;
+				return alpha;
+			},
+			animationfn(options) {
+				return options.animKey;
+			},
+			z: CombatRenderer.indices[slot],
+		};
+		return Object.assign(defaults, overrideOptions);
+	}
+
+	/**
 	 * @param {TransformationKeys} transformation
 	 * @param {"front" | "back"} layer
 	 * @param {CanvasModelLayers<CombatPlayerOptions>} overrideOptions
