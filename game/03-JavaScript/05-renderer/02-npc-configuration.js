@@ -1,8 +1,15 @@
 // @ts-check
-/* globals CombatRendererNpcSetup */
+/* globals CombatRendererNpcSetup CombatRendererPlayerSetup */
 
 // @ts-ignore
 setup.renderer ||= {};
+
+/** @type {CombatRendererPlayerSetup} */
+setup.renderer.player = {
+	bodywriting: {
+		types: ["butterfly", "cross", "flame", "flower", "heart", "paw print", "skull", "star", "text", "unicorn"],
+	},
+};
 
 /** @type {CombatRendererNpcSetup} */
 setup.renderer.npc = {

@@ -1,5 +1,5 @@
 // @ts-check
-/* global CombatRenderer, CombatPlayerOptions, CanvasModelLayers, TransformationKeys, BodywritingOption, ClothingRendererStep, ClothedSlots */
+/* global CombatRenderer, CombatPlayerOptions, CanvasModelLayers, TransformationKeys, BodywritingOption, ClothingRendererStep, ClothedSlots, TransformationPartOptions, TransformationParts */
 
 class PlayerCanvasHelper {
 	/**
@@ -15,13 +15,13 @@ class PlayerCanvasHelper {
 			srcfn(options) {
 				/** @type {BodywritingOption} */
 				const bodywriting = options.bodywriting[id];
-				const path = `${options.src}bodywriting/${bodywriting.area}/${bodywriting.type}.png`;
+				const path = `${options.src}bodywriting/${bodywriting.type}/${bodywriting.area}.png`;
 				return path;
 			},
 			masksrcfn(options) {
 				/** @type {BodywritingOption} */
 				const bodywriting = options.bodywriting[id];
-				if (bodywriting.type === "left-shoulder") {
+				if (bodywriting.area === "left-shoulder") {
 					// Pull basic mask from arm
 					if (PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 						return {
