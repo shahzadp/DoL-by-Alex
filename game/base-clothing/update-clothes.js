@@ -111,6 +111,9 @@ function updateClothingColours(item, itemRef) {
 		case "necktie":
 			if (!item.altposition) item.altposition = "none";
 			break;
+		case "witch hat":
+			if (item.pattern === 0) item.pattern = "buckle";
+			break;
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
 			if (item.colour === 0) item.colour = itemRef.colour_options.random();

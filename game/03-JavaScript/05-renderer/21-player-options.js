@@ -201,6 +201,8 @@
  * @property {boolean} isRaised Whether the clothing layer (skirt) is displaced/raised.
  * @property {boolean} isBoundable Whether the clothing layer has a bound state.
  * @property {boolean} hasAccessory Whether the clothing uses accessory layer.
+ * @property {boolean} hasTertiaryPattern Whether the clothing uses an optional third layer for non-recolourable details or patterns.
+ * @property {boolean|string} pattern Whether the clothing has a pattern.
  * @property {boolean} hasMainImg Whether the clothing has a main img layer, tape for example.
  * @property {boolean} hasBackImg Whether the clothing has a back img layer, typically for headwear or handhelds.
  * @property {boolean} hasBackAccessory Whether the clothing has a back acc layer, typically for headwear or handhelds.
@@ -529,6 +531,8 @@ class PlayerCombatMapper {
 			isExposed: false,
 			isBoundable: false,
 			hasAccessory: false,
+			hasTertiaryPattern: false,
+			pattern: false,
 			hasMainImg: false,
 			hasBackImg: false,
 			hasBackAccessory: false,
@@ -1569,6 +1573,8 @@ class PlayerCombatMapper {
 
 		const name = source.variable;
 
+		const pattern = clothing.pattern || false;
+
 		/** @type {TotalClothingStates} */
 		const state = clothing.state;
 		let show = name != null;
@@ -1604,6 +1610,8 @@ class PlayerCombatMapper {
 			isExposed: !!clothing.exposed,
 			isBoundable: !!clothing.combat?.boundable,
 			hasAccessory: CombatRenderer.getAccessoryState(slot, defaults),
+			hasTertiaryPattern: CombatRenderer.getPatternState(slot, defaults),
+			pattern,
 			hasMainImg: clothing.combat?.hasMainImg !== false,
 			hasBackImg: !!defaults.back_img && [1, "combat"].includes(defaults.back_img),
 			hasBackAccessory: !!defaults.back_img_acc && [1, "combat"].includes(defaults.back_img_acc),
