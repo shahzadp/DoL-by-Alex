@@ -30,7 +30,16 @@ declare global {
 	export type BeastStates = "over" | "under" | "front";
 
 	export interface CombatRendererSetup {
+		player: CombatRendererPlayerSetup;
 		npc: CombatRendererNpcSetup;
+	}
+
+	export interface CombatRendererPlayerSetup {
+		bodywriting: CombatRendererBodywritingSetup;
+	}
+
+	export interface CombatRendererBodywritingSetup {
+		types: string[];
 	}
 
 	export interface CombatRendererNpcSetup {
