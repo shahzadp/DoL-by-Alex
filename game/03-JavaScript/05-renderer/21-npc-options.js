@@ -1,5 +1,5 @@
 // @ts-check
-/* globals CombatRenderer, CharacterTypes, AnimationSpeed, PenetratorTypes, SpritePositions, Partial, Dict, Record */
+/* globals CombatRenderer, CharacterTypes, AnimationSpeed, PenetratorTypes, CombatPositions, CombatRendererBeastStateSetup, CombatRendererBeastSetup, BeastStates, BestialTypes, Partial, Dict */
 
 /**
  * @typedef NpcOptions
@@ -7,7 +7,7 @@
  * @property {"img/sex"} root
  * @property {string} src Typically "img/sex/missionary"
  * @property {Dict<Partial<CompositeLayerSpec>>} filters
- * @property {SpritePositions} position
+ * @property {CombatPositions} position
  * @property {"shadow" | "beast"} category
  * @property {CharacterTypes} type
  * @property {boolean} isBlackWolf Don't want to manipulate type, so using this flag instead
@@ -25,7 +25,7 @@
 
 /**
  * @typedef Balls
- * @property {boolean} hasBalls
+ * @property {boolean} show
  * @property {string=} type
  * @property {number=} size
  */
@@ -79,7 +79,7 @@ class NpcCombatMapper {
 			},
 			penetrators: [],
 			balls: {
-				hasBalls: false,
+				show: false,
 			},
 			colour: {
 				hex: "#ffffff",
@@ -114,7 +114,45 @@ class NpcCombatMapper {
 		options.state = null;
 		options.show = false;
 
-		NpcCombatMapper.mapNpcToBodyOptions(index, npc, options);
+		options.balls = {
+			show: ["pig", "boar"].includes(npc.type) && npc.penis !== "none", // Assuming balls have to be paired with penises?
+		};
+
+		options.drool = {
+			show: false,
+			amount: V.enemyarousal >= (V.enemyarousalmax / 5) * 3 ? 2 : 1,
+		};
+
+		options.tongue.show =
+			typeof npc.mouth === "string" &&
+			[
+				"mouth",
+				"kiss",
+				"kissentrance",
+				"kissimminent",
+				"anus",
+				"anusentrance",
+				"anusimminent",
+				"vagina",
+				"vaginaentrance",
+				"vaginaimminent",
+				"penis",
+				"penisentrance",
+				"penisimminent",
+			].includes(npc.mouth);
+
+		if (typeof npc.mouth === "string" && ["penis", "penisentrance", "penisimminent"].includes(npc.mouth) && !combat.isPcGenitalsExposed()) {
+			options.tongue.show = false;
+		}
+
+		options.tongue.position = typeof npc.mouth === "string" ? npc.mouth : null;
+		options.penetrators = options.penetrators = [];
+
+		options.filters.skin = NpcCombatMapper.getNpcSkinFilter(npc);
+
+		options.penetrators = NpcCombatMapper.getPenetrators(index, npc, options);
+
+		NpcCombatMapper.mapNpcTypeToOptions(options, index, npc);
 
 		// Set animation speed
 		options.animKey = NpcCombatMapper.getNpcAnimation();
@@ -196,323 +234,74 @@ class NpcCombatMapper {
 	}
 
 	/**
+	 * Encapsulates getPenetrator for now. If NPCs ever support more than one penetrator at a time,
+	 * this could return more than just [getPenetrator()]
+	 *
 	 * @param {number} index
 	 * @param {Npc} npc
 	 * @param {NpcOptions} options
-	 * @returns {NpcOptions}
+	 * @returns {Penetrator[]}
 	 */
-	static mapNpcToBodyOptions(index, npc, options) {
-		options.balls = {
-			hasBalls: ["pig", "boar"].includes(npc.type) && npc.penis !== "none", // Assuming balls have to be paired with penises?
-		};
-		options.drool = {
-			show: false,
-			amount: V.enemyarousal >= (V.enemyarousalmax / 5) * 3 ? 2 : 1,
-		};
-		options.tongue.show =
-			typeof npc.mouth === "string" &&
-			[
-				"mouth",
-				"kiss",
-				"kissentrance",
-				"kissimminent",
-				"anus",
-				"anusentrance",
-				"anusimminent",
-				"vagina",
-				"vaginaentrance",
-				"vaginaimminent",
-				"penis",
-				"penisentrance",
-				"penisimminent",
-			].includes(npc.mouth);
-
-		if (typeof npc.mouth === "string" && ["penis", "penisentrance", "penisimminent"].includes(npc.mouth) && !combat.isPcGenitalsExposed()) {
-			options.tongue.show = false;
-		}
-
-		options.tongue.position = typeof npc.mouth === "string" ? npc.mouth : null;
-		options.penetrators = options.penetrators = [];
-
-		options.filters.skin = NpcCombatMapper.getNpcSkinFilter(npc);
-
-		const penetrator = NpcCombatMapper.mapNpcToPenetratorOptions(index, npc, options);
+	static getPenetrators(index, npc, options) {
+		const penetrators = [];
+		const penetrator = NpcCombatMapper.getPenetrator(index, npc, options);
 		if (penetrator != null) {
-			options.penetrators.push(penetrator);
+			penetrators.push(penetrator);
+		}
+		return penetrators;
+	}
 
-			// Figure out which shadow base to use from penetrator:
-			if (penetrator.position != null) {
-				options.state = penetrator.position;
-			}
+	/**
+	 * Constructs a penetrator object
+	 *
+	 * @param {number} index
+	 * @param {Npc} npc
+	 * @param {NpcOptions} options
+	 * @returns {Penetrator?}
+	 */
+	static getPenetrator(index, npc, options) {
+		/** @type {Penetrator} */
+		const penetrator = {
+			show: false,
+			type: NpcCombatMapper.getPenetratorType(npc),
+			colour: npc.skincolour,
+			target: combat.target.pc,
+			isEjaculating: combat.isNpcPenetratorEjaculating(index, npc),
+			ejaculate: {
+				type: "sperm",
+			},
+			size: 0,
+			position: null,
+			state: null,
+			condom: CombatRenderer.getCondomOptions(npc.condom),
+		};
 
-			if (npc.stance === "top") {
-				options.show = penetrator?.position != null && ["vagina", "anus", "thighs", "butt"].includes(penetrator.position);
-			}
+		Object.assign(penetrator, combat.getNpcPenetratorState(npc));
 
-			// Add penetrator states to NPC state so the shadows can be staggered for oral.
-			/*
-			if (penetrator.position === "mouth") {
-				options.state += "-" + penetrator.state;
-			}
-			*/
+		options.filters.penetrator = NpcCombatMapper.getNpcPenetratorFilter(npc);
+		options.filters.condom = penetrator.condom.colour;
+
+		if (options.category === "shadow") {
 			// Calculate DP state from positions, if position is >= 2, add double at least, triple P not sure what to do.
 			if (combat.penetratorCountBefore(index, penetrator.position) >= 2) {
-				options.state += "-double";
 				penetrator.state += "-double";
 			}
 
-			// Figure out whether to show the shadow man or not:
-			options.show = penetrator.position != null && ["vagina", "anus", "mouth"].includes(penetrator.position);
+			return penetrator;
+		}
 
-			// Add exclusion for mouth-entrance.
-			if (penetrator.position === "mouth" && penetrator.state === "entrance") {
-				options.show = false;
-				penetrator.show = false;
+		// Only beasts below
+
+		if (["horse", "centaur"].includes(npc.type)) {
+			if (options.position === "missionary") {
+				return null;
 			}
+			penetrator.show = npc.penis !== "none";
+			penetrator.state = [V.anusstate, V.vaginastate].includes("penetrated") ? "penetrating" : "entrance";
+			return penetrator;
 		}
 
-		NpcCombatMapper.mapNpcTypeToOptions(options, index, npc, penetrator);
-
-		// If beast, return for now.
-		if (options.category === "beast") {
-			return options;
-		}
-
-		// Figure out whether the NPC is riding the PC, prepare for combat retardation
-		if (V.penisuse === "otheranus" && V.penistarget === index) {
-			options.show = true;
-			options.state = "penis";
-		}
-		if (V.penisuse === "otherpenis" && V.penistarget === index) {
-			options.show = false;
-			options.state = "frotting"; // ? (Not in use)
-		}
-		if (V.penisuse === "othervagina" && V.penistarget === index) {
-			options.show = true;
-			options.state = "penis";
-		}
-
-		// Since no penetrator exists on the NPC, check for their other states
-		// WHY IS ANAL LIKE THIS
-		if (typeof npc.penis === "string" && ["otheranusfrot", "otheranusentrance", "otheranusimminent", "otheranus"].includes(npc.penis)) {
-			// options.state = options.category === "shadow" ? "default" : "under-default";
-			options.show = true;
-			return options;
-		}
-
-		if (options.category === "shadow" && ["penis"].includes(npc.vagina)) {
-			options.state = "penis";
-			options.show = true;
-		}
-
-		if (options.category !== "shadow" && ["penis", "penisimminent", "penisentrance"].includes(npc.vagina)) {
-			options.state = "penis";
-			options.show = true;
-		}
-
-		// Primary for being pinned:
-		if (npc.stance === "top" && options.state == null) {
-			// options.state = options.category === "shadow" ? "default" : "over-default";
-			options.state = "vagina";
-			options.show = true;
-			return options;
-		}
-
-		return options;
-	}
-
-	/**
-	 * @typedef {object} NpcTypeConfiguration
-	 * @property {boolean} show
-	 * @property {boolean=} hasOverSprite
-	 * @property {boolean=} hasFrontSprite
-	 * @property {boolean=} hasUnderSprite
-	 * @property {Partial<Record<SpritePositions, NpcTypePositionConfiguration>>=} positions
-	 */
-
-	/**
-	 * @typedef NpcTypePositionConfiguration
-	 * @property {boolean=} hasOverSprite
-	 * @property {boolean=} hasFrontSprite
-	 * @property {boolean=} hasUnderSprite
-	 */
-
-	/**
-	 * @returns {Partial<Record<CharacterTypes, NpcTypeConfiguration>>}
-	 */
-	static getNpcBeastTypeConfigurations() {
-		return {
-			bear: {
-				show: true,
-				hasFrontSprite: true,
-				hasOverSprite: true,
-				hasUnderSprite: true,
-			},
-			boar: {
-				show: true,
-				hasFrontSprite: true,
-				hasOverSprite: true,
-			},
-			bull: {
-				show: false,
-			},
-			cat: {
-				show: true,
-				hasOverSprite: true,
-				hasUnderSprite: true,
-			},
-			centaur: {
-				show: true,
-				hasOverSprite: true,
-			},
-			cow: {
-				show: false,
-			},
-			creature: {
-				show: true,
-				positions: {
-					doggy: {
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			dog: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			dolphin: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			fox: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			harpy: {
-				show: false,
-			},
-			hawk: {
-				show: true,
-				positions: {
-					doggy: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			horse: {
-				show: true,
-				hasOverSprite: true,
-				hasUnderSprite: true,
-			},
-			lizard: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			pig: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-			spider: {
-				show: false,
-			},
-			wolf: {
-				show: true,
-				positions: {
-					doggy: {
-						hasFrontSprite: true,
-						hasOverSprite: true,
-						hasUnderSprite: true,
-					},
-					missionary: {
-						hasOverSprite: true,
-					},
-				},
-			},
-		};
-	}
-
-	/**
-	 * @param {SpritePositions} position
-	 * @param {NpcTypeConfiguration} configuration
-	 * @returns {boolean}
-	 */
-	static hasOverSprite(position, configuration) {
-		if (configuration.positions && configuration.positions[position]?.hasOverSprite === true) {
-			return true;
-		}
-		return !!configuration.hasOverSprite;
-	}
-
-	/**
-	 * @param {SpritePositions} position
-	 * @param {NpcTypeConfiguration} configuration
-	 * @returns {boolean}
-	 */
-	static hasUnderSprite(position, configuration) {
-		if (configuration.positions && configuration.positions[position]?.hasUnderSprite === true) {
-			return true;
-		}
-		return !!configuration.hasUnderSprite;
-	}
-
-	/**
-	 * @param {SpritePositions} position
-	 * @param {NpcTypeConfiguration} configuration
-	 * @returns {boolean}
-	 */
-	static hasFrontSprite(position, configuration) {
-		if (configuration.positions && configuration.positions[position]?.hasFrontSprite === true) {
-			return true;
-		}
-		return !!configuration.hasFrontSprite;
+		return penetrator;
 	}
 
 	/**
@@ -520,7 +309,7 @@ class NpcCombatMapper {
 	 * @param {Penetrator?} penetrator
 	 * @returns {boolean}
 	 */
-	static isOverPositioned(npc, penetrator) {
+	static isBeastOverPositioned(npc, penetrator) {
 		if (["horse", "centaur"].includes(npc.type)) {
 			return true;
 		}
@@ -541,7 +330,7 @@ class NpcCombatMapper {
 	 * @param {Npc} npc
 	 * @returns {boolean}
 	 */
-	static isUnderPositioned(index, npc) {
+	static isBeastUnderPositioned(index, npc) {
 		if (V.penisuse === "othervagina" && V.penistarget === index) {
 			return true;
 		}
@@ -556,7 +345,7 @@ class NpcCombatMapper {
 	 * @param {Penetrator?} penetrator
 	 * @returns {boolean}
 	 */
-	static isFrontPositioned(npc, penetrator) {
+	static isBeastFrontPositioned(npc, penetrator) {
 		if (npc.stance === "topface") {
 			return true;
 		}
@@ -570,49 +359,168 @@ class NpcCombatMapper {
 	 * @param {NpcOptions} options
 	 * @param {number} index
 	 * @param {Npc} npc
-	 * @param {Penetrator?} penetrator
 	 * @returns {NpcOptions}
 	 */
-	static mapNpcTypeToOptions(options, index, npc, penetrator) {
-		const configurations = NpcCombatMapper.getNpcBeastTypeConfigurations();
-		const configuration = configurations[npc.type];
-
-		// Humanoid
-		if (configuration == null) {
+	static mapNpcTypeToOptions(options, index, npc) {
+		const penetrator = options.penetrators[0];
+		if (options.category === "shadow") {
 			options.show = penetrator?.position != null && ["thighs", "vagina", "anus", "mouth"].includes(penetrator.position);
 			options.state = penetrator?.position ?? null;
+
+			// Figure out whether the NPC is riding the PC, prepare for combat retardation
+			if (V.penisuse === "otheranus" && V.penistarget === index) {
+				options.show = true;
+				options.state = "penis";
+			}
+			if (V.penisuse === "otherpenis" && V.penistarget === index) {
+				options.show = false;
+				options.state = "frotting"; // ? (Not in use)
+			}
+			if (V.penisuse === "othervagina" && V.penistarget === index) {
+				options.show = true;
+				options.state = "penis";
+			}
+
+			// Since no penetrator exists on the NPC, check for their other states
+			// WHY IS ANAL LIKE THIS
+			if (typeof npc.penis === "string" && ["otheranusfrot", "otheranusentrance", "otheranusimminent", "otheranus"].includes(npc.penis)) {
+				// options.state = options.category === "shadow" ? "default" : "under-default";
+				options.show = true;
+				return options;
+			}
+
+			if (npc.vagina === "penis") {
+				options.state = "penis";
+				options.show = true;
+			}
+
+			// Primary for being pinned:
+			if (npc.stance === "top" && options.state == null) {
+				// options.state = options.category === "shadow" ? "default" : "over-default";
+				options.state = "vagina";
+				options.show = true;
+				return options;
+			}
+
 			return options;
 		}
 
 		// Beast
-		options.show = false;
 
-		if (!configuration.show) {
-			options.show = false;
-			options.state = null;
+		/** @type {CombatRendererBeastSetup} */
+		const configuration = setup.renderer.npc.beast[npc.type];
+
+		options.show = false;
+		options.state = "over";
+
+		// Explicitly false intended. If not specified, or true, show beast.
+		if (configuration.show === false) {
 			return options;
 		}
 
-		if (NpcCombatMapper.hasUnderSprite(options.position, configuration) && NpcCombatMapper.isUnderPositioned(index, npc)) {
-			options.show = true;
+		/** @type {BestialTypes} */
+		// @ts-ignore Just for type inferrence for isBeastStateEnabled, if we had a proper TypeScript setup, this wouldn't be needed.
+		const beastType = npc.type;
+
+		const isBeastUnderPositioned = NpcCombatMapper.isBeastUnderPositioned(index, npc);
+		if (isBeastUnderPositioned) {
+			options.show = NpcCombatMapper.isBeastStateEnabled(beastType, options.position, "under");
+			options.drool.show = NpcCombatMapper.isBeastDroolEnabled(beastType, options.position, "under");
+			options.balls.show = NpcCombatMapper.isBeastBallsEnabled(beastType, options.position, "under");
 			options.state = "under";
 			return options;
 		}
 
-		if (NpcCombatMapper.hasOverSprite(options.position, configuration) && NpcCombatMapper.isOverPositioned(npc, penetrator)) {
-			options.drool.show = ["pig", "boar"].includes(npc.type) && NpcCombatMapper.isOverPositioned(npc, penetrator);
-			options.show = true;
+		const isBeastOverPositioned = NpcCombatMapper.isBeastOverPositioned(npc, penetrator);
+		if (isBeastOverPositioned) {
+			options.show = NpcCombatMapper.isBeastStateEnabled(beastType, options.position, "over");
+			options.drool.show = NpcCombatMapper.isBeastDroolEnabled(beastType, options.position, "over");
+			options.balls.show = NpcCombatMapper.isBeastBallsEnabled(beastType, options.position, "over");
 			options.state = ["horse", "centaur"].includes(npc.type) && penetrator?.state === "penetrating" ? "over-penetrated" : "over";
 			return options;
 		}
 
-		if (NpcCombatMapper.hasFrontSprite(options.position, configuration) && NpcCombatMapper.isFrontPositioned(npc, penetrator)) {
-			options.show = true;
+		const isBeastFrontPositioned = NpcCombatMapper.isBeastFrontPositioned(npc, penetrator);
+		if (isBeastFrontPositioned) {
+			options.show = NpcCombatMapper.isBeastStateEnabled(beastType, options.position, "front");
+			options.drool.show = NpcCombatMapper.isBeastDroolEnabled(beastType, options.position, "front");
+			options.balls.show = NpcCombatMapper.isBeastBallsEnabled(beastType, options.position, "front");
 			options.state = "front";
 			return options;
 		}
 
 		return options;
+	}
+
+	/**
+	 * @param {BestialTypes} type
+	 * @param {CombatPositions} position
+	 * @param {BeastStates} state
+	 */
+	static isBeastStateEnabled(type, position, state) {
+		return NpcCombatMapper.isBeastPropertyEnabled(type, position, state, config => !!config.show);
+	}
+
+	/**
+	 * @param {BestialTypes} type
+	 * @param {CombatPositions} position
+	 * @param {BeastStates} state
+	 */
+	static isBeastBallsEnabled(type, position, state) {
+		return NpcCombatMapper.isBeastPropertyEnabled(type, position, state, config => !!config.balls);
+	}
+
+	/**
+	 * @param {BestialTypes} type
+	 * @param {CombatPositions} position
+	 * @param {BeastStates} state
+	 */
+	static isBeastDroolEnabled(type, position, state) {
+		return NpcCombatMapper.isBeastPropertyEnabled(type, position, state, config => !!config.drool);
+	}
+
+	/**
+	 * @param {BestialTypes} type
+	 * @param {CombatPositions} position
+	 * @param {BeastStates} state
+	 * @param {function(CombatRendererBeastStateSetup): boolean} predicate
+	 * @returns {boolean}
+	 */
+	static isBeastPropertyEnabled(type, position, state, predicate) {
+		const config = setup.renderer.npc.beast[type];
+		if (!config) {
+			return false;
+		}
+		if (config.reference) {
+			return NpcCombatMapper.isBeastPropertyEnabled(config.reference, position, state, predicate);
+		}
+		// Check global show
+		if (config.show) {
+			return true;
+		}
+		// Check the state's show
+		if (config.states && config.states[state]) {
+			const result = predicate(config.states[state]);
+			if (result) {
+				return result;
+			}
+		}
+		// Check the position global show
+		if (config.positions && config.positions[position]) {
+			const result = predicate(config.positions[position]);
+			if (result) {
+				return result;
+			}
+		}
+		// Check the position's state's show
+		if (config.positions && config.positions[position]?.states && config.positions[position].states[state]) {
+			const result = predicate(config.positions[position].states[state]);
+			if (result) {
+				return result;
+			}
+		}
+		// By this point, none of the show properties were set. Likely has no sprites.
+		return false;
 	}
 
 	/**
@@ -679,71 +587,6 @@ class NpcCombatMapper {
 			}
 		}
 		return NpcCombatMapper.getNpcSkinFilter(npc);
-	}
-
-	/**
-	 * @param {number} index
-	 * @param {Npc} npc
-	 * @param {NpcOptions} options
-	 * @returns {Penetrator?}
-	 */
-	static mapNpcToPenetratorOptions(index, npc, options) {
-		/** @type {Penetrator} */
-		const penetrator = {
-			show: false,
-			type: NpcCombatMapper.getPenetratorType(npc),
-			colour: npc.skincolour,
-			target: combat.target.pc,
-			isEjaculating: combat.isNpcPenetratorEjaculating(index, npc),
-			ejaculate: {
-				type: "sperm",
-			},
-			size: 0,
-			position: null,
-			state: null,
-			condom: CombatRenderer.getCondomOptions(npc.condom),
-		};
-
-		Object.assign(penetrator, combat.getNpcPenetratorState(npc));
-
-		options.filters.penetrator = NpcCombatMapper.getNpcPenetratorFilter(npc);
-		options.filters.condom = penetrator.condom.colour;
-
-		// Pig is in top/top-face position, but combat doesn't say the penis is at the mouth explicitly. This clause forces this state.
-		if (["pig", "boar"].includes(npc.type)) {
-			// If penetrator position is set, try to avoid fallbacks
-			if (penetrator.position != null) {
-				return penetrator;
-			}
-			if (npc.stance === "topface") {
-				penetrator.show = npc.penis !== "none";
-				penetrator.position = "mouth";
-				penetrator.state = "entrance";
-				return penetrator;
-			}
-			if (npc.stance === "top") {
-				penetrator.show = npc.penis !== "none";
-				penetrator.position = "vagina";
-				// Pigs/boars have a layer adjustment, entrance doesn't cut it.
-				penetrator.state = null;
-				return penetrator;
-			}
-		}
-
-		if (["horse", "centaur"].includes(npc.type)) {
-			if (options.position === "missionary") {
-				return null;
-			}
-			penetrator.show = npc.penis !== "none";
-			penetrator.state = [V.anusstate, V.vaginastate].includes("penetrated") ? "penetrating" : "entrance";
-			return penetrator;
-		}
-
-		if (!penetrator.show) {
-			return null;
-		}
-
-		return penetrator;
 	}
 
 	/**

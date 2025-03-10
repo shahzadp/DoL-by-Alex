@@ -31,11 +31,11 @@ class NpcCanvasHelper {
 				if (options.state == null) {
 					return false;
 				}
-				if (options.position === "doggy" && options.category === "shadow" && options.state === "penis") {
+				if (options.category === "shadow" && options.position === "doggy" && options.state === "penis") {
 					return false;
 				}
 				const penetrator = options.penetrators[0];
-				if (penetrator != null && penetrator.position === "mouth" && penetrator.state === "entrance") {
+				if (options.category === "shadow" && penetrator != null && penetrator.position === "mouth" && penetrator.state === "entrance") {
 					return false;
 				}
 				if (layer === "back" && options.category !== "beast") {
@@ -284,6 +284,13 @@ class NpcCanvasHelper {
 					return [];
 				}
 				return ["penetrator"];
+			},
+			masksrcfn(options) {
+				const penetrator = options.penetrators[0];
+				if (penetrator.position === "mouth" && penetrator.state === "penetrating") {
+					return `${options.src}/body/head/head-mask.png`;
+				}
+				return null;
 			},
 		};
 		return Object.assign(defaults, overrideOptions);

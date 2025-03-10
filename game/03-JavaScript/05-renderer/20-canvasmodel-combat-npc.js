@@ -55,7 +55,7 @@ const combatMainNpc = {
 				if (!options.show) {
 					return false;
 				}
-				return options.balls.hasBalls;
+				return options.balls.show;
 			},
 			animationfn(options) {
 				return options.animKey;

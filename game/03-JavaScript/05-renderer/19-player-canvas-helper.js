@@ -518,6 +518,9 @@ class PlayerCanvasHelper {
 					// Behind the pilloryFront
 					return 79;
 				}
+				if (part === "halo" && options.position === "doggy") {
+					return 85;
+				}
 				/** @type {TransformationPartOptions} */
 				const value = options.transformations[transformation][part];
 				let z = CombatRenderer.indices[layer + part.toUpperFirst()];
