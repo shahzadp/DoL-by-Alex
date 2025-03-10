@@ -1,13 +1,19 @@
+import { SugarCubeObject } from "twine-sugarcube";
+
 declare module "twine-sugarcube" {
 	export interface SugarCubeTemporaryVariables {
 		multiCombatModels: {
 			[x: string]: MultiCanvasModel;
 		};
 	}
+
+	export interface SugarCubeSetupObject {
+		renderer: CombatRendererSetup;
+	}
 }
 
 declare global {
-	export type SpritePositions = "doggy" | "missionary";
+	export type CombatPositions = "doggy" | "missionary";
 
 	export type CombatClothingTypes = "skirt" | "longskirt" | "trousers" | "shorts" | "waisthighs" | "thighhighs" | "kneehighs" | "ankled" | "strapon";
 
@@ -20,6 +26,32 @@ declare global {
 	export type PenetratorStates = "penetrating" | "imminent" | "entrance" | "rubbing";
 
 	export type SwarmTypes = "fish" | "eels" | "spiders" | "worms" | "snakes" | "maggots" | "slime";
+
+	export type BeastStates = "over" | "under" | "front";
+
+	export interface CombatRendererSetup {
+		npc: CombatRendererNpcSetup;
+	}
+
+	export interface CombatRendererNpcSetup {
+		beast: Record<BestialTypes, CombatRendererBeastSetup>;
+	}
+
+	export interface CombatRendererBeastSetup extends CombatRendererBeastPositionSetup, CombatRendererBeastStateSetup {
+		reference?: BestialTypes;
+		positions?: Partial<Record<CombatPositions, CombatRendererBeastPositionSetup>>;
+		states?: Partial<Record<BeastStates, CombatRendererBeastStateSetup>>;
+	}
+
+	export interface CombatRendererBeastPositionSetup extends CombatRendererBeastStateSetup {
+		states?: Partial<Record<BeastStates, CombatRendererBeastStateSetup>>;
+	}
+
+	export interface CombatRendererBeastStateSetup {
+		show?: boolean;
+		balls?: boolean;
+		drool?: boolean;
+	}
 
 	export interface Penetrator {
 		type: PenetratorTypes;
@@ -58,7 +90,7 @@ declare global {
 		show: boolean;
 		src: string;
 		root: string;
-		position: SpritePositions;
+		position: CombatPositions;
 		animKey: string;
 		animKeyImminent: string;
 		animKeyPenetrating: string;

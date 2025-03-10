@@ -1,8 +1,8 @@
 // @ts-check
-/* globals CombatClothingTypes, ClothingStates, ZeroedClothingStates, ClothingRendererStepState, SpritePositions, Partial, Record */
+/* globals CombatClothingTypes, ClothingStates, ZeroedClothingStates, ClothingRendererStepState, CombatPositions, Partial, Record */
 
 /**
- * @typedef {Partial<Record<SpritePositions, Partial<Record<ClothingStates, ClothingRendererStepState>>>>} RendererStepOptions
+ * @typedef {Partial<Record<CombatPositions, Partial<Record<ClothingStates, ClothingRendererStepState>>>>} RendererStepOptions
  */
 
 class ClothingRendererStep {
@@ -27,7 +27,7 @@ class ClothingRendererStep {
 	}
 
 	/**
-	 * @param {SpritePositions} position
+	 * @param {CombatPositions} position
 	 * @param {ZeroedClothingStates} state
 	 * @returns {boolean}
 	 */
@@ -47,7 +47,7 @@ class ClothingRendererStep {
 	}
 
 	/**
-	 * @param {SpritePositions} position
+	 * @param {CombatPositions} position
 	 * @param {ZeroedClothingStates} state
 	 * @returns {boolean}
 	 */
@@ -67,7 +67,7 @@ class ClothingRendererStep {
 	}
 
 	/**
-	 * @param {SpritePositions} position
+	 * @param {CombatPositions} position
 	 * @param {ZeroedClothingStates} state
 	 * @returns {boolean}
 	 */

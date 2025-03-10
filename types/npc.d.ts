@@ -41,6 +41,7 @@ declare global {
 		| "pig"
 		| "bull"
 		| "wolf"
+		| "blackwolf"
 		| "dolphin"
 		| "lizard"
 		| "bear"

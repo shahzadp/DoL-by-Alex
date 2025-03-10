@@ -1396,7 +1396,7 @@ class PlayerCombatMapper {
 			if (V.feetuse === "penis" || V.feetstate === "tentacle") {
 				return "up";
 			}
-			if (V.NPCList.some((npc, index) => npc.type === "horse" && NpcCombatMapper.isUnderPositioned(index, npc))) {
+			if (V.NPCList.some((npc, index) => npc.type === "horse" && NpcCombatMapper.isBeastUnderPositioned(index, npc))) {
 				return "down";
 			}
 			if (V.NPCList.some(a => ["horse", "centaur", "dog", "pig", "boar"].includes(a.type))) {
@@ -2437,13 +2437,12 @@ class PlayerCombatMapper {
 					}
 					if (bodywriting.type === "object") {
 						if (["up", "footjob"].includes(options.legBackPosition)) {
-							type += "-raised";
+							return {
+								show: true,
+								area: bodywriting.writing,
+								type: sanitise(type) + "-raised",
+							};
 						}
-						return {
-							show: true,
-							area: bodywriting.writing,
-							type: sanitise(type),
-						};
 					}
 					return null;
 				});
