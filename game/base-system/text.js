@@ -26,6 +26,8 @@ const statDisplay = {
 		const playerRankValue = ranks.indexOf(V.temple_rank);
 		const expectedRankValue = ranks.indexOf(expectedRank);
 
+		if (playerRankValue === -1) displayGrace = false;
+
 		if (expectedRankValue > 1) {
 			if (playerRankValue >= expectedRankValue) displayGrace = false;
 

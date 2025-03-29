@@ -123,10 +123,19 @@
 			tail: true
 		},
 		demoncow: {
+			tail: true,
 			horns: true,
+		},
+		demonwolf: {
 			tail: true
 		},
 		demonharpy: {
+			wings: true
+		},
+		angelharpy: {
+			wings: true
+		},
+		fallenharpy: {
 			wings: true
 		},
 	}>>
@@ -135,7 +144,10 @@
 		<<set $chimera to {}>>
 	<</if>>
 	/* Takes default object, and transposes chimera config ontop of it, assigning the result to chimera config. */
-	<<set $chimera to Object.assign(_defaultChimeraConfig, $chimera || {})>>
+	<<set $chimera = Object.keys(_defaultChimeraConfig).reduce((acc, key) => {
+		acc[key] = Object.assign({}, _defaultChimeraConfig[key], $chimera[key] || {});
+		return acc;
+	}, {})>>
 <</widget>>
 
 <<widget "transform">>/*First arg is transformation, second is the intensity of change.*/
@@ -328,14 +340,6 @@
 					<<set $fallenangel to 4>>
 					<<run $timeMessages.pushUnique("fallenAngelWings")>>
 					<<set $transformationParts.fallenAngel.wings to ($transformationParts.fallenAngel.wings is "classic" ? "classicfallenplus" : "fallenplus")>>
-					/* <<if $transformationParts.fallenAngel.wings is "classic">>
-						<<set $transformationParts.fallenAngel.wings to "classicfallenplus">>
-					<<else>>
-						<<set $transformationParts.fallenAngel.wings to "fallenplus">>
-					<</if>> */
-					<<if $transformationParts.bird.wings is "default">>
-						<<set $transformationParts.fallenAngel.wings to "hidden">>
-					<</if>>
 				<</if>>
 			<<case 99>>
 				<<set $specialTransform to 0>>
@@ -412,9 +416,6 @@
 					<<set $angel to 6>>
 					<<run $timeMessages.pushUnique("angelUp5")>>
 					<<set $transformationParts.angel.wings to "default">>
-					<<if $transformationParts.bird.wings is "default">>
-						<<set $transformationParts.angel.wings to "hidden">>
-					<</if>>
 				<<elseif $angelbuild lt 45>>
 					<<set $angel to 4>>
 					<<run $timeMessages.pushUnique("angelDown4")>>
@@ -439,9 +440,6 @@
 		<<set $angelbuild to 50>>
 		<<set $transformationParts.angel.halo to "default">>
 		<<set $transformationParts.angel.wings to "default">>
-		<<if $transformationParts.bird.wings is "default">>
-			<<set $transformationParts.angel.wings to "hidden">>
-		<</if>>
 	<</if>>
 <</widget>>
 
@@ -502,9 +500,6 @@
 					<<run $timeMessages.pushUnique("demonUp6")>>
 					<<arousal 600>>
 					<<set $transformationParts.demon.wings to "default">>
-					<<if $transformationParts.bird.wings is "default">>
-						<<set $transformationParts.demon.wings to "hidden">>
-					<</if>>
 				<<elseif $demonbuild lt 25>>
 					<<set $demon to 4>>
 					<<run $timeMessages.pushUnique("demonDown4")>>
@@ -534,9 +529,6 @@
 		<<set $transformationParts.demon.horns to "default">>
 		<<set $transformationParts.demon.tail to "default">>
 		<<set $transformationParts.demon.wings to "default">>
-		<<if $transformationParts.bird.wings is "default">>
-			<<set $transformationParts.demon.wings to "hidden">>
-		<</if>>
 	<</if>>
 <</widget>>
 
@@ -930,13 +922,6 @@
 					<<set $harpy to 6>>
 					<<run $timeMessages.pushUnique("harpyUp6")>>
 					<<set $transformationParts.bird.wings to "default">>
-					<<if $transformationParts.angel.wings is "default">>
-						<<set $transformationParts.angel.wings to "hidden">>
-					<<elseif $transformationParts.fallenAngel.wings is "default">>
-						<<set $transformationParts.fallenAngel.wings to "hidden">>
-					<<elseif $transformationParts.demon.wings is "default">>
-						<<set $transformationParts.demon.wings to "hidden">>
-					<</if>>
 					<<if $pbdisable is "f">>
 						<<set $transformationParts.bird.pubes to "default">>
 					<<else>>
@@ -997,13 +982,6 @@
 		<<set $transformationParts.bird.wings to "default">>
 		<<set $transformationParts.traits.sharpEyes to "default">>
 		<<set $transformationParts.traits.mateForLife to "default">>
-		<<if !["hidden", "disabled"].includes($transformationParts.angel.wings)>>
-			<<set $transformationParts.angel.wings to "hidden">>
-		<<elseif !["hidden", "disabled"].includes($transformationParts.fallenAngel.wings)>>
-			<<set $transformationParts.fallenAngel.wings to "hidden">>
-		<<elseif !["hidden", "disabled"].includes($transformationParts.demon.wings)>>
-			<<set $transformationParts.demon.wings to "hidden">>
-		<</if>>
 		<<if $pbdisable is "f">>
 			<<set $transformationParts.bird.pubes to "default">>
 		<<else>>

@@ -2125,7 +2125,7 @@ You tear and tie together fabric and other materials, adding to your rope.
 
 
 :: Bird Tower Rope Escape
-<<effects>>
+<<effects>><<wearProp "rope climb" 0 "fabric">>
 
 You tie one end of your rope around a chunk of upward-pointing stone, and throw the other off the edge. It almost reaches the bottom. It's enough.
 <br><br>
@@ -2151,14 +2151,11 @@ You tie one end of your rope around a chunk of upward-pointing stone, and throw 
 		<span class="red"> You hear a terrible shriek.</span> It didn't take long for the <<beasttype>> to notice your escape.
 	<</if>>
 	<br><br>
-
-	<<endevent>>
-
 <<else>>
 	You take the rope in both hands, turn around, and ease yourself down the tower wall. You drop the last few feet, landing in the castle courtyard.
 	<br><br>
 <</if>>
-<<link [[Next|Castle]]>><<set $moor to 100>><</link>>
+<<link [[Next|Castle]]>><<endevent>><<set $moor to 100>><</link>>
 <br>
 
 :: Bird Tower Glide Attempt
@@ -2552,20 +2549,27 @@ You lift the necklace.
 :: Bird Tower Wallet
 <<setTowerTemp>><<effects>>
 
-<<if ["wallet", "purse"].includes($phase)>>
-	<<wearProp $phase>>
-	You turn the <<= $phase>> upside down.
+<<if $phase is "wallet">>
+	<<wearProp "wallet" 0 "empty">>
+	You turn the wallet upside down.
+<<elseif $phase is "purse">>
+	<<wearProp "stolen purse">>
+	You turn the purse upside down.
 <<else>>
 	You turn the container upside down.
 <</if>>
 
 <<if $rng gte 81>>
+	<<wearProp "cash" 0 "four">>
 	<<moneyGain 200 true false>> in cash falls out.
 <<elseif $rng gte 61>>
+	<<wearProp "keycard" "silver">>
 	A credit card falls out. It might be worth something to a fence.<<set $blackmoney += 120>>
 <<elseif $rng gte 41>>
+	<<wearProp "cash" 0 "three">>
 	<<moneyGain 80 true false>> in cash falls out.
 <<elseif $rng gte 21>>
+	<<wearProp "cash" 0 "two">>
 	<<moneyGain 40 true false>> in cash falls out.
 <<else>>
 	It's empty.
@@ -3820,12 +3824,12 @@ You bring your attentive touch down towards <<bhis>> groin.
 <<if $daily.birdSelfPreen is undefined>>
 	<<set $daily.birdSelfPreen to 1>>
 	You preen your wings. It's harder doing this alone.
-	<<set _featherNum to random(1,2)>>
-	<<switch _featherNum>>
+	<<set _selfFeatherNum to random(1,2)>>
+	<<switch _selfFeatherNum>>
 		<<case 1>>One of your loose feathers has fallen out. <span class="teal">You take it.</span>
 		<<case 2>>A couple of your loose feathers have fallen out. <span class="teal">You take them.</span>
 	<</switch>>
-	<<set $bird.materials.feathers += _featherNum>>
+	<<set $bird.materials.feathers += _selfFeatherNum>>
 	<<wearProp "feather" "grey">>
 <<else>>
 	You preen your wings. There's no more loose feathers to remove for now, but it makes you feel better regardless.
