@@ -611,3 +611,21 @@ Renderer.Animations.coinFlip = {
 		{ frame: 6, duration: 500 },
 	],
 };
+Renderer.Animations.handWarmer = {
+	keyframes: [
+		{ frame: 0, duration: 1000 },
+		{ frame: 1, duration: 1000 },
+		{ frame: 2, duration: 1000 },
+		{ frame: 3, duration: 1000 },
+		{ frame: 4, duration: 1000 },
+		{ frame: 5, duration: 1000 },
+		{ frame: 6, duration: 1000 },
+		{ frame: 7, duration: 1000 },
+	],
+};
+Renderer.Animations.looseFeathers = {
+	keyframes: Array.from({ length: 25 }, (_, index) => ({
+		frame: index,
+		duration: index === 24 ? 1000 : 100,
+	})),
+};

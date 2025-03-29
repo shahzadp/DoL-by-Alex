@@ -78,7 +78,7 @@ You are in the furniture shop. Most of its stock is too large for your room.
 
 <<set $chosenFurnitureCategory to $chosenFurnitureCategory || "poster">>
 <<dynamic "furnitureUpdate" "paper-update-container">>
-<<getouticon>><<link [[Back|Furniture Shop]]>><<run delete $chosenFurnitureCategory>><</link>>
+<<getouticon>><<link [[Back|Furniture Shop]]>><<handheldon>><<run delete $chosenFurnitureCategory>><</link>>
 <br>
 <<paperCatalogue>>
 <br>
@@ -102,8 +102,15 @@ You are in the furniture shop. Most of its stock is too large for your room.
 
 <<widget "furnitureUpdate">>
 	<<if $boughtfurniturename isnot undefined>>
+		<<if $chosenFurnitureCategory is "poster">>
+			<<wearProp "rolled poster">>
+		<<else>>
+			<<set _prop to $boughtfurniturehandheld || "catalogue">>
+			<<wearProp _prop>>
+		<</if>>
 		You buy the <<= $boughtfurniturename is "plainwhite" ? "plain white wallpaper" : ["poster", "wallpaper"].includes($chosenFurnitureCategory) ? $boughtfurniturename.replace("_","") + " " + $chosenFurnitureCategory : $boughtfurniturename.replace("_","")>>. It'll be delivered by the time you get home.
 		<<run delete $boughtfurniturename>>
+		<<run delete $boughtfurniturehandheld>>
 	<<elseif ["poster", "wallpaper"].includes($chosenFurnitureCategory)>>
 		<<run Furniture.in('bedroom')>>
 		You approach the paperhangings corner. Samples of pre-made posters and wallpaper are on display. For an additional fee, you can have a custom design imprinted instead.
@@ -447,6 +454,7 @@ You are in the furniture shop. Most of its stock is too large for your room.
 								<<money `-$_cost` "furniture">>
 								<<run Furniture.set($_key, $chosenFurnitureCategory)>>
 								<<set $boughtfurniturename to $_furnishing.name>>
+								<<set $boughtfurniturehandheld to $_furnishing.handheld>>
 								<<run Furniture.wardrobeUpdate()>>
 							<</if>>
 						<</link>>

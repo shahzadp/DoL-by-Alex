@@ -194,14 +194,19 @@ DefineMacro("modelprepare-player-body", function () {
 			T.modeloptions.fallen_wing_right = "idle";
 			T.modeloptions.bird_wing_right = "idle";
 		} else if (T.coverBreasts) {
-			if (!T.disabled.includes(V.transformationParts.demon.wings)) {
+			if (
+				!T.disabled.includes(V.transformationParts.demon.wings) &&
+				!(isChimeraEnabled("demonharpy", "wings") && isPartEnabled(T.modeloptions.bird_wings_type))
+			) {
 				T.modeloptions.demon_wings_state = V.transformationParts.traits.flaunting === "default" ? "flaunt" : "cover";
 				T.modeloptions.arm_left = leftArm;
 			} else if (!T.disabled.includes(V.transformationParts.angel.wings)) {
 				T.modeloptions.angel_wing_right = "cover";
+				T.modeloptions.bird_wing_right = "cover";
 				T.modeloptions.arm_left = leftArm;
 			} else if (!T.disabled.includes(V.transformationParts.fallenAngel.wings)) {
 				T.modeloptions.fallen_wing_right = "cover";
+				T.modeloptions.bird_wing_right = "cover";
 				T.modeloptions.arm_left = leftArm;
 			} else if (!T.disabled.includes(V.transformationParts.bird.wings)) {
 				T.modeloptions.bird_wing_right = "cover";
@@ -218,6 +223,7 @@ DefineMacro("modelprepare-player-body", function () {
 				if (V.exposed >= 2 && !V.dontHide && V.libertine !== 2 && V.transformationParts.traits.flaunting === "default") {
 					T.modeloptions.demon_tail_state = "flaunt";
 					T.modeloptions.cat_tail_state = "flaunt";
+					T.modeloptions.cow_tail_state = "flaunt";
 				} else {
 					T.modeloptions.demon_tail_state = "idle";
 					T.modeloptions.cat_tail_state = "idle";
@@ -233,9 +239,11 @@ DefineMacro("modelprepare-player-body", function () {
 				T.modeloptions.arm_right = rightArm;
 			} else if (!T.disabled.includes(V.transformationParts.angel.wings)) {
 				T.modeloptions.angel_wing_left = "cover";
+				T.modeloptions.bird_wing_left = "cover";
 				T.modeloptions.arm_right = rightArm;
 			} else if (!T.disabled.includes(V.transformationParts.fallenAngel.wings)) {
 				T.modeloptions.fallen_wing_left = "cover";
+				T.modeloptions.bird_wing_left = "cover";
 				T.modeloptions.arm_right = rightArm;
 			} else if (!T.disabled.includes(V.transformationParts.bird.wings)) {
 				T.modeloptions.bird_wing_left = "cover";
@@ -419,6 +427,16 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.bird_wings_type = "default-demon";
 		T.modeloptions.demon_wings_type = "hidden";
 	}
+	// Angel-harpy wings
+	if (isPartEnabled(T.modeloptions.angel_wings_type) && isPartEnabled(T.modeloptions.bird_wings_type) && isChimeraEnabled("angelharpy", "wings")) {
+		T.modeloptions.bird_wings_type = "default-angel";
+		T.modeloptions.angel_wings_type = "harpy-default";
+	}
+	// Fallen angel-harpy wings
+	if (isPartEnabled(T.modeloptions.fallen_wings_type) && isPartEnabled(T.modeloptions.bird_wings_type) && isChimeraEnabled("fallenharpy", "wings")) {
+		T.modeloptions.bird_wings_type = "default-fallen";
+		T.modeloptions.fallen_wings_type = T.modeloptions.fallen_wings_type.includes("fallenplus") ? "harpy-fallenplus" : "harpy-default";
+	}
 	// Demon-cow horns
 	if (isPartEnabled(T.modeloptions.cow_horns_type) && isPartEnabled(T.modeloptions.demon_horns_type) && isChimeraEnabled("demoncow", "horns")) {
 		if (!["default", "succubus"].includes(T.modeloptions.demon_horns_type)) {
@@ -428,9 +446,14 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.cow_horns_type = "default-demon";
 	}
 	// Demon-cow tail
-	if (isPartEnabled(T.modeloptions.cow_tail_type) && isPartEnabled(T.modeloptions.demon_horns_type) && isChimeraEnabled("demoncow", "tail")) {
+	if (isPartEnabled(T.modeloptions.cow_tail_type) && isPartEnabled(T.modeloptions.demon_tail_type) && isChimeraEnabled("demoncow", "tail")) {
 		T.modeloptions.demon_tail_type = "default-cow";
 		T.modeloptions.cow_tail_type = T.modeloptions.cow_tail_type + "-demon";
+	}
+	// Demon-wolf tail
+	if (isPartEnabled(T.modeloptions.wolf_tail_type) && isPartEnabled(T.modeloptions.demon_tail_type) && isChimeraEnabled("demonwolf", "tail")) {
+		T.modeloptions.demon_tail_type = T.modeloptions.wolf_tail_type === "feral" ? "default-feral" : "default-wolf";
+		T.modeloptions.wolf_tail_type = T.modeloptions.wolf_tail_type === "feral" ? "demon-feral" : "demon-default";
 	}
 
 	/*

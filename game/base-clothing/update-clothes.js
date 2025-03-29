@@ -108,11 +108,48 @@ function updateClothingColours(item, itemRef) {
 				item.colour = "white";
 			}
 			break;
+		case "animal slippers":
+		case "bunny slippers":
+			if (item.pattern === 0) item.pattern = "bunny";
+			break;
 		case "necktie":
 			if (!item.altposition) item.altposition = "none";
 			break;
 		case "witch hat":
 			if (item.pattern === 0) item.pattern = "buckle";
+			break;
+		case "evening gown":
+		case "evening gown skirt":
+			if (item.pattern === 0) item.pattern = "ombre";
+			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			break;
+		case "bunny collar":
+			if (item.accessory_colour === 0) item.accessory_colour = "red";
+			if (item.colour === 0) item.colour = "white";
+			break;
+		case "cat bell collar":
+			if (item.accessory_colour === 0) item.accessory_colour = "gold";
+			if (item.colour === 0) item.colour = "black";
+			break;
+		case "cow bell":
+			if (item.accessory_colour === 0) item.accessory_colour = "gold";
+			if (item.colour === 0) item.colour = "black";
+			break;
+		case "cow onesie":
+		case "cow onesie hood":
+		case "cow onesie bottoms":
+		case "cow sleeves":
+		case "cow socks":
+		case "cow panties":
+		case "cow bra":
+			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			break;
+		case "heart choker":
+			if (item.accessory_colour === 0) item.accessory_colour = "red";
+			if (item.colour === 0) item.colour = "black";
+			break;
+		case "cargo pants":
+			if (item.accessory_colour === 0) item.accessory_colour = "silver";
 			break;
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
@@ -211,6 +248,13 @@ function updateClothesItem(slot, item, debug) {
 				}
 			}
 			continue;
+		}
+		if (item.variable === "schoolcardigan" && item.name !== itemRef.name) {
+			const colour = item.colour;
+			item.name = itemRef.name;
+			item.name_cap = itemRef.name_cap;
+			item.colour = item.accessory_colour;
+			item.accessory_colour = colour;
 		}
 		item[key] = clone(itemRef[key]);
 	}
@@ -358,6 +402,14 @@ function updateClothesItem(slot, item, debug) {
 			break;
 		case "sarong":
 			item.type = ["naked"];
+			break;
+		case "pencil skirt":
+			item.name = "pencil miniskirt";
+			item.name_cap = "Pencil miniskirt";
+			break;
+		case "bunny slippers":
+			item.name = "animal slippers";
+			item.name_cap = "Animal slippers";
 			break;
 	}
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));

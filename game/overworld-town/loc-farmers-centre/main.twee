@@ -55,7 +55,7 @@
 		<br>
 	<</if>>
 	<<socialiseicon "ask">><<link [[Enquire about selling produce|Farmers Centre Produce Sale]]>><</link>>
-	<br><br>
+	<br>
 	<<harvesticon>><<link [[Leave|Harvest Street]]>><<endevent>><</link>>
 
 <</if>>
@@ -70,7 +70,7 @@ The <<person>> enters the factory proper, and emerges with a wad of notes. You'v
 :: Farmers Centre Produce Sale
 The <<person>> opens a laptop. "So what do you have for me?"
 <br><br>
-<i>Money from sales will become available every day at noon. Higher business fame will help the factory sell your produce faster.</i>
+<i>You can collect money from sold produce every day at noon. High business fame helps the factory sell produce faster.</i>
 <br><br>
 <<set $farmersProduce.toSell to {}>>
 <<set _plant_keys to Object.keys($plants)>>
@@ -81,14 +81,14 @@ The <<person>> opens a laptop. "So what do you have for me?"
 			<<set _plantItems[_plant_keys[_i]] to clone($plants[_plant_keys[_i]])>>
 		<</if>>
 	<</for>>
-	<div id="produceDisplay">
+	<div id="supermarketDisplay" class="food_ui no-numberify">
 		<<produceDisplay>>
 	</div>
 <<else>>
 	You don't have any produce.
-	<br><br>
+	<br>
 <</if>>
-<br><br>
+<br>
 <<getouticon>><<link [[Leave|Farmers Centre]]>><<set $farmersProduce.toSell to {}>><</link>>
 
 :: Farmers Centre Produce Sale Confirm
@@ -99,65 +99,87 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 
 
 :: Farmers Centre Widgets [widget]
-<<widget "produceDisplay">>
-	<<set _listMaxItems to 10>>
-	<<set _keys to (Object.keys(_plantItems) gt Object.keys($farmersProduce.toSell) ? Object.keys(_plantItems) : Object.keys($farmersProduce.toSell))>>
-	<<if _listPage is undefined>>
-		<<set _listPage to 1>>
-	<</if>>
-	<<set _listPageMax to Math.ceil(_keys.length / _listMaxItems)>>
-	<<set _indexStart to ((_listPage - 1) * _listMaxItems)>>
-	<<set _indexEnd to (_indexStart + _listMaxItems gt _keys.length ? _keys.length : _indexStart + _listMaxItems)>>
 
-	<<for _i to _indexStart; _i lt _indexEnd; _i++>>
-		<<set _item to _keys[_i]>>
-		<div @id="'produceItem-'+_item" class="produceItem">
-			<<produceDisplayItem _item>>
-		</div>
-	<</for>>
-	<<run $(() => {
-		$('.produceItem input').on('input change', e => {
-			let valSpan = $(e.currentTarget).siblings().first();
-			let item = e.currentTarget.id.split("producetosell")[1].replace(/-/g,"_");
-			let value = valSpan.text();
-			if(!value.includes("£")){
-				valSpan.text((i, value) => value + " - £" + (bulkProduceValue(SugarCube.setup.plants[item],value) / 100).toFixed(2));
-				$('#produceConfirm').replaceWith(new Wikifier(null, '<<produceDisplayConfirm>>').output);
-			}
-		})
-	})>>
-	<div id="produceDisplayControls">
-		<<set _disabled = _listPage > 1 ? "" : "disabled">>
-		<div @class="'div-link btn-pagination prev ' + _disabled">
-			<<link "Previous">>
-				<<if _listPage > 1>>
-					<<set _listPage -= 1>>
-					<<replace #produceDisplay>><<produceDisplay>><</replace>>
-				<</if>>
-			<</link>>
-			<div class="btn-pagination-arrow">&lt;</div>
-		</div>
-		<div>
-			<<print (_listPage) + " out of " + _listPageMax>>
-		</div>
-		<<set _disabled = _listPage < _listPageMax ? "" : "disabled">>
-		<div @class="'div-link btn-pagination next ' + _disabled">
-			<<link "Next">>
-				<<if _listPage < _listPageMax>>
-					<<set _listPage += 1>>
-					<<replace #produceDisplay>><<produceDisplay>><</replace>>
-				<</if>>
-			<</link>>
-			<div class="btn-pagination-arrow">&gt;</div>
+<<widget "produceDisplay">>
+	<div id="mobileHeader">
+		<div class="mobileOnly">
+			<<produceDisplayBasket>>
 		</div>
 	</div>
-	<<run linkifyDivs('#produceDisplayControls')>>
-
-	<<produceDisplayConfirm>>
+	<div id="body">
+		<div id="mainSection">
+			<div id="search">
+				Search: <<textbox "_foodSearch" "">>
+				<<run $(() => {
+					var foodTimer = null;
+					$('#textbox--foodsearch').on('input change keypress', e => {
+						_foodSearch = e.target.value;
+						clearTimeout(foodTimer);
+						foodTimer = setTimeout(updateUI, 300);
+					});
+					var updateUI = () => {
+						Wikifier.wikifyEval('<<replace "#itemList">><<produceDisplayItems>><</replace>>');
+					}
+				})>>
+			</div>
+			<div id="itemList">
+				<<produceDisplayItems>>
+			</div>
+		</div>
+		<div id="altSection" class="mobileHidden">
+			<div id="basket">Selling:</div>
+			<<produceDisplayBasket>>
+		</div>
+		<div id="mobileCloser" class="mobileOnly mobileHidden" onclick="wikifier('addclass', '#altSection', 'mobileHidden'); wikifier('addclass', '#mobileCloser', 'mobileHidden');"></div>
+	</div>
 <</widget>>
 
-<<widget "produceDisplayConfirm">>
-	<div id="produceConfirm">
+
+<<widget "produceDisplayItems">>
+	<<set _keys to [...new Set([...Object.keys(_plantItems), ...Object.keys($farmersProduce.toSell)])]
+    .sort((a, b) => (_plantItems[a]?.plural || $farmersProduce.toSell[a]?.plural)
+        .localeCompare(_plantItems[b]?.plural || $farmersProduce.toSell[b]?.plural))>>
+
+	<<set _foodKeys to []>>
+	<<set _foodGroups to []>>
+	<<run Object.values(_keys).forEach(key => {
+		const item = setup.plants[key];
+
+		const filter = _foodSearch ? _foodSearch.split(/[_ ]/g) : false;
+		if (filter and !filter.find(term =>
+				item.name.includes(term) or
+				item.type.includes(term) or
+				item.plural?.includes(term) or
+				item.singular?.includes(term)
+			)) {
+			return;
+		}
+
+		_foodKeys.pushUnique(key);
+		if (V.plants[key].amount > 250) {
+			_foodGroups.pushUnique("Sellable Produce");
+		} else {
+			_foundSoldOut to true;
+		}
+	})>>
+	<<if _foundSoldOut>><<run _foodGroups.pushUnique("Owned Produce")>><</if>>
+	<<for _category range _foodGroups>>
+		<<set _categoryVar to "_" + _category.replace(" ", "")>>
+		<<set _open to _category is "Sellable Produce" ? true : false>>
+		<<foldout _open _categoryVar>>
+			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
+			<<set _keys to _foodKeys.filter(key => (_category isnot "Owned Produce" && $plants[key].amount > 250) ||	(_category is "Owned Produce" && ($plants[key] === undefined || V.plants[key].amount <= 250))
+			)>>
+			<<for $_i, $_key range _keys>>
+				<div @id="$_key" class="item"><<produceDisplayItem $_key>></div>
+				<<if $_i lt _keys.length - 1>><hr><</if>>
+			<</for>>
+		<</foldout>>
+	<</for>>
+<</widget>>
+
+<<widget "produceDisplayBasket">>
+	<div id="itemSummary">
 		<<set $_total to 0>>
 		<<for _label, _value range $farmersProduce.toSell>>
 			<<if _value gt 0>>
@@ -165,8 +187,8 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 			<</if>>
 		<</for>>
 		Total: <<printmoney $_total>>
-		<br>
 		<<if $_total gt 0>>
+			|
 			<<link [[Sell produce|Farmers Centre Produce Sale Confirm]]>>
 				<<for _label, _value range $farmersProduce.toSell>>
 					<<if _value gt 0>>
@@ -189,27 +211,48 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 <<widget "produceDisplayItem">>
 	<<if _args[0]>>
 		<<set _item to _args[0]>>
-		<<capture _item>>
+		<<set _icon to setup.plants[_item].icon>>
+		<<capture _item, _icon>>
 			<div>
 				<<if $farmersProduce.toSell[_item] is undefined>>
 					<<set $farmersProduce.toSell[_item] to 0>>
 				<</if>>
+				<<tendingicon _icon>>
 				<<if $plants[_item] is undefined>>
 					You don't have any <<print $plants[_item].plural>> right now.
 				<<elseif $plants[_item].amount lt 250>>
-					<<print $plants[_item].plural.toLocaleUpperFirst()>>: Not enough to sell.
+					<<print $plants[_item].plural.toLocaleUpperFirst()>> | Owned: <span class="gold"><<print $plants[_item].amount>></span>
+					<br>
+					Not enough to sell.
+					<<if $farmersProduce.selling[_item]>><br><</if>>
 				<<else>>
 					<<set _max to $plants[_item].amount - ($plants[_item].amount % 250)>>
 					<<set _base to bulkProduceValue(setup.plants[_item])>>
-					<<print $plants[_item].plural.toLocaleUpperFirst()>> - Sold for <<printmoney _base>> per 250.
-					<<numberslider `"$farmersProduce.toSell['"+_item+"']"` $farmersProduce.toSell[_item] 0 `_max` 250>>
+					<<set _title to $plants[_item].plural.toLocaleUpperFirst()>>
+					| Value per 250: <<printmoney _base>>
+					<<numberStepper "_title" 0 {
+						callback: (value, arr) => {
+							V.farmersProduce.toSell[arr[0]] = value;
+							Wikifier.wikifyEval('<<replace "#altSection">><div id="basket">Selling:</div><<produceDisplayBasket>><</replace>>');
+							if (!$('#mobileHeader').hasClass('hidden')) {
+								Wikifier.wikifyEval('<<replace "#mobileHeader">><div class="mobileOnly"><<produceDisplayBasket>></div><</replace>>');
+							};
+						},
+						valueFormat: (value, percentage, values) => {
+							return `${value}/${values[1]}`;
+						},
+						values: [_item, $plants[_item].amount],
+						disableMinMax: false,
+						step: 250,
+						max: _max,
+						colorArr:["--yellow"],
+						percentage: false
+					}>>
+				<</if>>
+				<<if $farmersProduce.selling[_item]>>
+					<span class="teal">They are still processing <<print $farmersProduce.selling[_item]>> <<print $plants[_item].plural>>.</span>
 				<</if>>
 			</div>
-			<<if $farmersProduce.selling[_item]>>
-				<div>
-					They are still processing <<print $farmersProduce.selling[_item]>> <<print $plants[_item].plural>>.
-				</div>
-			<</if>>
 		<</capture>>
 	<</if>>
 <</widget>>

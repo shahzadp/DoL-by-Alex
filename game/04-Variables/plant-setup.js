@@ -2347,7 +2347,7 @@ function initPlants() {
 			plural: "glasses of orange juice",
 			plant_cost: 55,
 			difficulty: 1,
-			handheld: "juice",
+			handheld: "juice|tangerine",
 			bed: "kitchen",
 			type: "food",
 			days: 5,

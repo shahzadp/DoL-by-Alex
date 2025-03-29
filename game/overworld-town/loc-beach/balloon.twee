@@ -30,15 +30,22 @@
 		<</if>>
 	<<default>>
 		<<set $daily.ex.balloonDrink to ($daily.ex.balloonDrink or 0) + 1>>
-		<<set _prop to $phase is "hot cider" ? "cider" : "cocoa">>
-		<<if $phase is "cold drink">>
-			<<wearProp "lemonade">>
-		<<else>>
-			<<wearProp "travel cup" 0 _prop>>
-		<</if>>
+		<<switch $phase2>>
+			<<case "hotcocoa">>
+				<<wearProp "travel cup" 0 "cocoa">>
+			<<case "strawberrylemonade">>
+				<<wearProp "lemonade" 0 "strawberry">>
+			<<case "hotcider">>
+				<<wearProp "travel cup" 0 "cider">>
+			<<default>>
+				<<wearProp "lemonade" 0 "default">>
+		<</switch>>
 
-		<<set _drink to $phase is "cold drink" ? "glass of ice-cold <<seasonal_beverage>>. The plastic cup swelters in your hand" : "a cup of steaming <<seasonal_beverage>>. The paper cup warms your hands">>
-		<<He>> pours you a _drink.
+		<<if $phase is "cold drink">>
+			<<He>> pours you a glass of glass of ice-cold <<seasonal_beverage>>. The plastic cup swelters in your hand.
+		<<else>>
+			<<He>> pours you a cup of steaming <<seasonal_beverage>>. The paper cup warms your hands.
+		<</if>>
 
 		<<if $daily.ex.balloonDrink is 2>>
 			"Thirsty, eh?" <<he>> says. "<<print playerBellyVisible() ? "Guess you gotta keep that little one hydrated, too" : "Glad to see you're staying hydrated">>." <<He>> smiles at you.
@@ -468,8 +475,14 @@ You take your leave and let the <<person>> finish setting up <<his>> stall.
 	<<if $balloonStand.freeDrink>>
 		<<set $balloonStand.freeDrink to false>>
 		<<switch Time.season>>
-			<<case "winter" "autumn">><<set _cold to "hot">><<wearProp "travel cup" 0 "cocoa">>
-			<<default>><<set _cold to "ice-cold">><<wearProp "lemonade">>
+			<<case "winter">>
+				<<wearProp "travel cup" 0 "cocoa">>
+			<<case "spring">>
+				<<wearProp "lemonade" 0 "strawberry">>
+			<<case "autumn">>
+				<<wearProp "travel cup" 0 "cider">>
+			<<default>>
+				<<wearProp "lemonade" 0 "default">>
 		<</switch>>
 
 		"Hey, you!" the <<person1>><<person>> says, flashing you a quick smile. "Thanks again for the business idea. I'm already seeing an influx of customers. Here, one drink on the house, as promised."
@@ -522,7 +535,7 @@ You take your leave and let the <<person>> finish setting up <<his>> stall.
 				<<default>><<set _drink to "hotcider">><<set _phase to "hot cider">>
 			<</switch>>
 			<br>
-			<<foodicon _drink>><<link [[Buy something to drink (0:02 £3)|Balloon Purchase]]>><<money -300>><<set $phase to _phase>><<pass 2>><</link>>
+			<<foodicon _drink>><<link [[Buy something to drink (0:02 £3)|Balloon Purchase]]>><<money -300>><<set $phase to _phase>><<set $phase2 to _drink>><<pass 2>><</link>>
 		<</if>>
 		<<if $balloonStand.robin.status is "convince" and !$daily.ex.balloonConvince>>
 			<br>
