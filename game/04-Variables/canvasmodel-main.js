@@ -3356,16 +3356,6 @@ Renderer.CanvasModels.main = {
 					&& !options.hideAll;
 			},
 		}),
-		"head_detail": genlayer_clothing_detail('head', {
-			showfn(options) {
-				return options.show_clothes
-					&& options.worn.head.index > 0
-					&& options.worn.head.setup.mainImage !== 0
-					&& options.worn.head.setup.pattern_layer === "tertiary"
-					&& !!options.worn.head.pattern
-					&& !options.hideAll;
-			},
-		}),
 		"head_acc": genlayer_clothing_accessory('head', {
 			srcfn(options) {
 				const dmg = options.worn.head.setup.accessory_integrity_img ? `_${options.worn.upper.integrity}` : '';
@@ -3378,6 +3368,16 @@ Renderer.CanvasModels.main = {
 					&& options.worn.head.index > 0
 					&& options.worn.head.setup.accImage !== 0
 					&& options.worn.head.setup.accessory === 1
+					&& !options.hideAll;
+			},
+		}),
+		"head_detail": genlayer_clothing_detail('head', {
+			showfn(options) {
+				return options.show_clothes
+					&& options.worn.head.index > 0
+					&& options.worn.head.setup.mainImage !== 0
+					&& options.worn.head.setup.pattern_layer === "tertiary"
+					&& !!options.worn.head.pattern
 					&& !options.hideAll;
 			},
 		}),
@@ -4189,7 +4189,7 @@ function genlayer_clothing_belly_acc(slot, overrideOptions) {
 }
 
 function genlayer_clothing_breasts_acc(slot, overrideOptions) {
-	return genlayer_clothing_main(slot, Object.assign({
+	return genlayer_clothing_accessory(slot, Object.assign({
 		filters: [`worn_${slot}_acc`],
 
 		srcfn(options) {

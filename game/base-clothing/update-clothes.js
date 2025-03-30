@@ -102,7 +102,7 @@ function updateClothingColours(item, itemRef) {
 		case "gingham skirt":
 		case "patterned dress":
 		case "patterned skirt":
-			if (item.pattern === 0) item.pattern = "gingham";
+			if (!item.pattern || item.pattern === 0) item.pattern = "gingham";
 			if (item.accessory_colour === 0) {
 				item.accessory_colour = item.colour;
 				item.colour = "white";
@@ -110,17 +110,17 @@ function updateClothingColours(item, itemRef) {
 			break;
 		case "animal slippers":
 		case "bunny slippers":
-			if (item.pattern === 0) item.pattern = "bunny";
+			if (!item.pattern || item.pattern === 0) item.pattern = "bunny";
 			break;
 		case "necktie":
 			if (!item.altposition) item.altposition = "none";
 			break;
 		case "witch hat":
-			if (item.pattern === 0) item.pattern = "buckle";
+			if (!item.pattern || item.pattern === 0) item.pattern = "buckle";
 			break;
 		case "evening gown":
 		case "evening gown skirt":
-			if (item.pattern === 0) item.pattern = "ombre";
+			if (!item.pattern || item.pattern === 0) item.pattern = "ombre";
 			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
 			break;
 		case "bunny collar":
@@ -148,8 +148,18 @@ function updateClothingColours(item, itemRef) {
 			if (item.accessory_colour === 0) item.accessory_colour = "red";
 			if (item.colour === 0) item.colour = "black";
 			break;
+		case "sexy nun's ornate veil":
 		case "cargo pants":
 			if (item.accessory_colour === 0) item.accessory_colour = "silver";
+			break;
+		case "racing helmet":
+			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			if (!item.pattern || item.pattern === 0) item.pattern = "goggles";
+			break;
+		case "riding helmet":
+			if (item.colour === 0) item.colour = "black";
+			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			if (!item.pattern || item.pattern === 0) item.pattern = "strap";
 			break;
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
@@ -165,6 +175,7 @@ const skip = [
 	"integrity_max",
 	"colour",
 	"accessory_colour",
+	"pattern",
 	"exposed",
 	"vagina_exposed",
 	"anus_exposed",
@@ -181,6 +192,7 @@ const skip = [
 	"description",
 	"colour_options",
 	"accessory_colour_options",
+	"pattern_options",
 	"fabric_strength",
 	"integrity_max",
 	"bustresize",
@@ -264,6 +276,7 @@ function updateClothesItem(slot, item, debug) {
 	if (
 		((item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
 		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0) ||
+		!item.pattern ||
 		(item.pattern === 0 && itemRef.pattern_options?.length > 0)
 	)
 		updateClothingColours(item, itemRef);
