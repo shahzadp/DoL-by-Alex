@@ -1662,8 +1662,9 @@
 		<</if>>
 		<<if $_item.accIcon isnot 0 and ($_item.accessory isnot 0 || $_item.breast_acc_img)>>
 			<<if typeof($_item.accIcon) === 'string'>>
-				<<if $_item.accIcon is "pattern" and $_item.pattern_layer is "secondary">>
+				<<if $_item.accIcon is "pattern" and ["secondary", "tertiary"].includes($_item.pattern_layer)>>
 					<<set $clothesiconFile = "img/misc/icon/clothes/" + $_item.name.replace(/ /g, '_') + "_" + (_args[0].pattern || $_item.pattern_options[0]).replace(/ /g, '_') + ".png" >>
+					<<set _noColour to $_item.pattern_layer is "tertiary">>
 				<<else>>
 					<<set $clothesiconFile = "img/misc/icon/clothes/" + $_item.accIcon>>
 				<</if>>
@@ -1671,10 +1672,9 @@
 				<<set $clothesiconFile = "img/misc/icon/clothes/" + $_item.name_cap + "_acc.png">>
 			<</if>>
 			<span class="spanIcon">
-			<<if !_args[0].accessory_colour or $_item.accessory_colour_options.length lt 2>>
+			<<if !_args[0].accessory_colour or $_item.accessory_colour_options.length lt 2 or _noColour>>
 				<img class="accIcon" alt="" @src="$clothesiconFile">
 			<<else>>
-
 				<img @class="'icon-'+ _args[0].accessory_colour.replace(/ /g, '-') + ' accIcon'" alt="" @src="$clothesiconFile" @style="(_args[0].accessory_colour is 'custom'? _args[0].accessory_colourCustom : '')">
 			<</if>>
 			</span>
