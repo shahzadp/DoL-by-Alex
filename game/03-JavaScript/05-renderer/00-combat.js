@@ -368,8 +368,8 @@ class CombatSystem {
 	 * @returns {Partial<Penetrator>}
 	 */
 	getNpcPenetratorState(npc) {
-		// Checks gender (sex), could be made redundant in the future.
-		const penisExists = npc.gender === "m" && npc.penis !== "none";
+		// Used to check the gender (sex), was made redundant: if an NPC has a penis (or strap-on), it is rendered to avoid contradicting the scene description.
+		const penisExists = npc.penis !== "none";
 		switch (npc.penis) {
 			case "anusentrance":
 				return {
