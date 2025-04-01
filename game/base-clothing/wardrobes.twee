@@ -864,13 +864,15 @@
 			<<clothingicon _wornItem _wardrobe_list>>
 			<<print _wornItemData.name_cap>>
 			<<if _wornItem.colour isnot 0>>
-				<span @class="_wornItem.colour.replace(' ','-')">
-					<<if _wornItem.pattern and ![0, "plain"].includes(_wornItem.pattern)>>
+				<span @class="_wornItem.colour?.replace(' ','-')">
+					<<if _wornItem.pattern and ![0, "plain"].includes(_wornItem.pattern) and _wornItemData.pattern_options?.length gt 1>>
 						(_wornItem.colour _wornItem.pattern)
 					<<else>>
 						(_wornItem.colour)
 					<</if>>
 				</span>
+			<<elseif _wornItem.pattern and _wornItem.pattern isnot 0 and _wornItemData.pattern_options?.length gt 1>>
+				<span @class="_wornItem.pattern?.replace(' ','-')">(_wornItem.pattern)</span>
 			<</if>>
 			<<if _wornItem.outfitPrimary isnot undefined>>
 				<<set _keys to Object.keys(_wornItem.outfitPrimary)>>
@@ -975,15 +977,15 @@
 
 				<</if>>
 				<<if _item.colour isnot 0>>
-					<span @class="_selectedWardrobe[_wardrobe_list][_i].colour.replace(' ','-')">
-						<<if _item.pattern and ![0, "plain"].includes(_item.pattern)>>
+					<span @class="_item.colour?.replace(' ','-')">
+						<<if _item.pattern and ![0, "plain"].includes(_item.pattern) and _itemData.pattern_options?.length gt 1>>
 							(_item.colour _item.pattern)
 						<<else>>
 							(_item.colour)
 						<</if>>
 					</span>
-				<<elseif _item.pattern and _item.pattern isnot 0>>
-					<span @class="_selectedWardrobe[_wardrobe_list][_i].pattern.replace(' ','-')">(_item.pattern)</span>
+				<<elseif _item.pattern and _item.pattern isnot 0 and _itemData.pattern_options?.length gt 1>>
+					<span @class="_item.pattern?.replace(' ','-')">(_item.pattern)</span>
 				<</if>>
 				<<if _item.outfitPrimary isnot undefined>>
 					<<set _keys to Object.keys(_item.outfitPrimary)>>
@@ -1172,8 +1174,8 @@
 				<<continue>>
 			<</if>>
 			<li class="no-numberify">/*<<clothingicon _item>>*/<<wearlink_norefresh setup.clothes[_wardrobe_list][clothesIndex(_wardrobe_list,_item)].name_cap _i _wear>>
-			<<if _selectedWardrobe[_wardrobe_list][_i].colour isnot 0>>
-				<span @class="_selectedWardrobe[_wardrobe_list][_i].colour.replace(' ','-')">(_item.colour)</span>
+			<<if _item.colour isnot 0>>
+				<span @class="_item.colour?.replace(' ','-')">(_item.colour)</span>
 			<</if>>
 			<<wardrobeintegrity _item _wardrobe_list>>
 			</li>
@@ -1370,7 +1372,7 @@
 	<</if>>
 
 	<<if $worn.handheld.type.includes("prop")>>
-		<<error { message: `Found a prop that should have been destroyed, please report it: '${$worn.handheld.name}'. It has been removed from your character for you.` }>>
+		<<error { message: `Removed a prop that should have been destroyed: '${$worn.handheld.name}'. Please report the location where this prop was equipped.` }>>
 		<<handheldruined true>>
 		<<handheldon>>
 	<</if>>

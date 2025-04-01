@@ -8730,6 +8730,7 @@ function initLower() {
 			location: 0,
 			iconFile: "baggy_shorts.png",
 			accIcon: "baggy_shorts_acc.png",
+			detailIcon: "baggy_shorts_detail.png",
 		},
 		{
 			index: 158,

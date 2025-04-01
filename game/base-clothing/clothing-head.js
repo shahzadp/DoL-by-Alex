@@ -289,6 +289,7 @@ function initHead() {
 			location: 0,
 			iconFile: "witch_hat.png",
 			accIcon: "witch_hat_acc.png",
+			detailIcon: "witch_hat_detail.png",
 		},
 		{
 			index: 8,
@@ -980,7 +981,8 @@ function initHead() {
 			cursed: 0,
 			location: 0,
 			iconFile: "riding_helmet.png",
-			accIcon: "pattern",
+			accIcon: "riding_helmet_acc.png",
+			detailIcon: "riding_helmet_detail.png",
 		},
 		{
 			index: 28,
@@ -1090,8 +1092,9 @@ function initHead() {
 			back_img_colour: "primary",
 			cursed: 0,
 			location: 0,
-			iconFile: "racing_helmet.png",
-			accIcon: 0,
+			iconFile: "riding_helmet.png",
+			accIcon: "riding_helmet_acc.png",
+			detailIcon: "racing_helmet_detail.png",
 		},
 		{
 			index: 31,
