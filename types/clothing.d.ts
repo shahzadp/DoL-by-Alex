@@ -228,11 +228,12 @@ declare global {
 		 * (For upper, over_upper, under_upper slots)
 		 * Recolouring of sleeves images:
 		 * * "" (default) - depending on colour_sidebar
-		 * * "no" - do not recolour image
+		 * * "pattern" - apply pattern to sleeves using pattern_layer colour (primary, secondary, or tertiary)
 		 * * "primary" - use primary/main colour
 		 * * "secondary" - use secondary/accessory colour
+		 * * "tertiary" - do not recolour image
 		 */
-		sleeve_colour?: "" | "none" | "no" | "primary" | "secondary";
+		sleeve_colour?: "" | "pattern" | "primary" | "secondary" | "tertiary";
 		/**
 		 * * 1 if has breast sprites and a unique image for every breast sprite
 		 * * 0 if no breast sprites
@@ -246,6 +247,7 @@ declare global {
 		location?: number;
 		iconFile?: 0 | string;
 		accIcon?: 0 | string;
+		detailIcon?: 0 | string;
 		outfitPrimary?: object;
 		outfitSecondary?: string[];
 		notuck?: number | "tie";

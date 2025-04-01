@@ -1605,6 +1605,7 @@ function initFeet() {
 			location: 0,
 			iconFile: "basketball_sneakers.png",
 			accIcon: "basketball_sneakers_acc.png",
+			detailIcon: "basketball_sneakers_detail.png",
 		},
 	];
 	setup.clothes.feet = clothing;
