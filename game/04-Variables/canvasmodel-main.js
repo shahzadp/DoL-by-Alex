@@ -3230,7 +3230,7 @@ Renderer.CanvasModels.main = {
 		}),
 		"handheld_detail": genlayer_clothing_detail('handheld', {
 			srcfn(options) {
-				const pattern = "_" + options.worn.handheld.pattern?.replace(/ /g,"_");
+				const pattern =  options.worn.handheld.pattern ? "_" + options.worn.handheld.pattern?.replace(/ /g,"_") : "";
 
 				const cover = options.arm_right === "cover" && options.handheld_position !== 'right_cover' ? "right_cover" : "right";
 
@@ -3740,7 +3740,7 @@ function getClothingPathBreastsAcc(slot, options) {
 	const breastImg = options.worn[slot].setup.breast_img;
 	const breastAccImg = options.worn[slot].setup.breast_acc_img;
 	const breastSize = typeof breastAccImg === 'object' ? breastAccImg[options.breast_size] : typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
-	const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+	const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 	const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}_acc${pattern}.png`;
 	return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
 }
@@ -3805,7 +3805,7 @@ function genlayer_clothing_main(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !setup.altdisabled.includes("full");
 
-			const pattern = options.worn[slot]?.pattern && !["secondary", "tertiary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && !["secondary", "tertiary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
 			const path = `img/clothes/${slot}/${setup.variable}/${options.worn[slot].integrity}${pattern}${end}.png`;
@@ -3858,7 +3858,7 @@ function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
 			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
@@ -3887,7 +3887,7 @@ function genlayer_clothing_fitted_right_acc(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
 
 			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${end}.png`;
@@ -3923,7 +3923,7 @@ function genlayer_clothing_accessory(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isHoodDown ? '_down' : isAltPosition ? '_alt' : '';
 
 			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${end}.png`;
@@ -3950,7 +3950,7 @@ function genlayer_clothing_detail(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !setup.altdisabled.includes("full");
 
-			const pattern = options.worn[slot].pattern?.replace(/ /g,"_");
+			const pattern = options.worn[slot].pattern ? options.worn[slot].pattern?.replace(/ /g,"_") : '';
 
 			const end = isAltPosition ? '_alt' : '';
 			return `img/clothes/${slot}/${setup.variable}/${pattern}${end}.png`;
@@ -3984,7 +3984,7 @@ function genlayer_clothing_breasts(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("breasts");
 
 			const breastSize = typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
-			const pattern = options.worn[slot]?.pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
 			const path = `img/clothes/${slot}/${setup.variable}/${breastSize}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}`]);
@@ -4024,7 +4024,7 @@ function genlayer_clothing_belly(slot, overrideOptions) {
 
 			const integrity = options.worn[slot].integrity;
 			const end = isAltPosition ? '_alt' : '';
-			const pattern = options.worn[slot]?.pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const path = `img/clothes/${slot}/${setup.variable}/${integrity}${pattern}${end}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}`]);
 		},
@@ -4084,7 +4084,7 @@ function genlayer_clothing_belly_split_acc(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
 			const hoodDown = isHoodDown ? '_down' : end;
 
@@ -4098,7 +4098,7 @@ function genlayer_clothing_belly_shadow(slot, overrideOptions) {
 	return genlayer_clothing_main(slot, Object.assign({
 		z: ZIndices.bellyClothesShadow,
 		srcfn(options) {
-			const pattern = options.worn[slot]?.pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			return gray_suffix(
 				`img/clothes/${slot}/${options.worn[slot].setup.variable}/${options.worn[slot].integrity}${pattern}.png`,
 				options.filters[`worn_${slot}`]
@@ -4150,7 +4150,7 @@ function genlayer_clothing_belly_acc(slot, overrideOptions) {
 				&& !setup.altdisabled.includes("acc");
 
 			const integrity = setup.accessory_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 			const end = isAltPosition ? '_alt' : '';
 			const hoodDown = isHoodDown ? '_down' : end;
 
@@ -4219,7 +4219,7 @@ function genlayer_clothing_back_img(slot, overrideOptions) {
 
 			const prefix = isAltPosition ? 'back_alt' : 'back';
 			const suffix = options.worn[slot].setup.back_integrity_img ? `_${options.worn[slot].integrity}` : '';
-			const pattern = options.worn[slot]?.pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 
 			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${prefix}${suffix}${pattern}.png`;
 			return gray_suffix(path, options.filters[this.filtersfn(options)[0]]);
@@ -4258,7 +4258,7 @@ function genlayer_clothing_back_img_acc(slot, overrideOptions) {
 				&& !options.worn[slot].setup.altdisabled.includes("back");
 
 			const suffix = isAltPosition ? 'back_alt' : 'back';
-			const pattern = options.worn[slot]?.pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 
 			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${suffix}${pattern}_acc.png`;
 			return gray_suffix(path, options.filters[this.filtersfn(options)[0]]);

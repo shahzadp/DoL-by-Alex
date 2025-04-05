@@ -759,11 +759,11 @@
 		<</if>>
 	<</if>>
 
-<<set _plant_keys to Object.keys($plants)>>
-<<set _hasProduce to Object.keys($plants).some(key => $plants[key].amount >= 1)>>
-<<set _carrying to [$antiquemoney, $blackmoney, $phials_held, $lurkers_held, $popcorn, $milkshake, $panties_held].some(i => i >= 1)>>
-<<if _carrying or _hasProduce>>
-	<hr>
+	<<set _plant_keys to Object.keys($plants)>>
+	<<set _hasProduce to Object.keys($plants).some(key => $plants[key].amount >= 1)>>
+	<<set _carrying to [$antiquemoney, $blackmoney, $phials_held, $lurkers_held, $popcorn, $milkshake, $panties_held].some(i => i >= 1)>>
+	<<if _carrying or _hasProduce>>
+		<hr>
 		<h1 class="header gold bold">Inventory</h1>
 	<</if>>
 	<<if $farm_key is true and $location is "farm" and !$bus.includes("farm")>>
@@ -773,70 +773,72 @@
 		</ul>
 		<br>
 	<</if>>
-	You are carrying:
-	<ul class="journal carry">
-		<<if ["prison", "prison_beach"].includes($location) and $prison.teeth gte 1>>
-			<li><<tendingicon "sharks_teeth">> <span class="green"><<number $prison.teeth>></span> shark's teeth.
-			<<if $prison_wren_intro isnot 1>>
-				You can find Wren in the yard on Fridays after lunch.
+	<<if _carrying or _hasProduce>>
+		You are carrying:
+		<ul class="journal carry">
+			<<if ["prison", "prison_beach"].includes($location) and $prison.teeth gte 1>>
+				<li><<tendingicon "sharks_teeth">> <span class="green"><<number $prison.teeth>></span> shark's teeth.
+				<<if $prison_wren_intro isnot 1>>
+					You can find Wren in the yard on Fridays after lunch.
+				<</if>>
+				</li>
 			<</if>>
-			</li>
-		<</if>>
-		<<if $antiquemoney gt 0>>
-			<li><<museumicon>><span class="green">£<<print $antiquemoney>></span> in antiques. You can sell them to the museum.</li>
-		<</if>>
-		<<if $blackmoney gt 0>>
-			<li><<highicon>><span class="green">£<<print $blackmoney>></span> in stolen goods. You can sell them to someone on the black market.</li>
-		<</if>>
-		<<if $phials_held gt 0>>
-			<li><<icon "aphrodisiac.png">> <span class="green">$phials_held</span> <<= $phials_held is 1 ? "phial" : "phials">> of aphrodisiac. You can sell <<= $phials_held is 1 ? "it" : "them">> on Elk Street.</li>
-		<</if>>
-		<<if $lurkers_held gt 0>>
-			<li><<birdicon "lurkers">><span class="green">$lurkers_held</span> <<= $lurkers_held is 1 ? "lurker" : "lurkers">>.</li>
-		<</if>>
-		<<if $milkshake gt 0>>
-			<li><<foodicon "milkshake">> <span class="green">$milkshake</span> <<print $milkshake is 1 ? "milkshake" : "milkshakes">>.</li>
-		<</if>>
-		<<if $popcorn gt 0>>
-			<li><<foodicon "popcorn">> <span class="green">$popcorn</span> <<print $popcorn is 1 ? "bag" : "bags">> of popcorn.</li>
-		<</if>>
-		<<if $panties_held gt 0>>
-			<li><span class="clothes-white"><<icon "clothes/plain_panties.png">></span> <<print $panties_held is 1 ? "a pair" : "<span class='green'>$panties_held</span> pairs">> of stolen underwear. You can sell <<print $panties_held is 1 ? "it" : "them">> during lunchtime in the school rear courtyard.</li>
-		<</if>>
+			<<if $antiquemoney gt 0>>
+				<li><<museumicon>><span class="green">£<<print $antiquemoney>></span> in antiques. You can sell them to the museum.</li>
+			<</if>>
+			<<if $blackmoney gt 0>>
+				<li><<highicon>><span class="green">£<<print $blackmoney>></span> in stolen goods. You can sell them to someone on the black market.</li>
+			<</if>>
+			<<if $phials_held gt 0>>
+				<li><<icon "aphrodisiac.png">> <span class="green">$phials_held</span> <<= $phials_held is 1 ? "phial" : "phials">> of aphrodisiac. You can sell <<= $phials_held is 1 ? "it" : "them">> on Elk Street.</li>
+			<</if>>
+			<<if $lurkers_held gt 0>>
+				<li><<birdicon "lurkers">><span class="green">$lurkers_held</span> <<= $lurkers_held is 1 ? "lurker" : "lurkers">>.</li>
+			<</if>>
+			<<if $milkshake gt 0>>
+				<li><<foodicon "milkshake">> <span class="green">$milkshake</span> <<print $milkshake is 1 ? "milkshake" : "milkshakes">>.</li>
+			<</if>>
+			<<if $popcorn gt 0>>
+				<li><<foodicon "popcorn">> <span class="green">$popcorn</span> <<print $popcorn is 1 ? "bag" : "bags">> of popcorn.</li>
+			<</if>>
+			<<if $panties_held gt 0>>
+				<li><span class="clothes-white"><<icon "clothes/plain_panties.png">></span> <<print $panties_held is 1 ? "a pair" : "<span class='green'>$panties_held</span> pairs">> of stolen underwear. You can sell <<print $panties_held is 1 ? "it" : "them">> during lunchtime in the school rear courtyard.</li>
+			<</if>>
+			<<if _hasProduce>>
+				<li><<tendingicon "basket">> <span class="green">Produce</span>. You can sell it by renting a stand on Connudatus Street at dawn.</li>
+			<</if>>
+		</ul>
+
 		<<if _hasProduce>>
-			<li><<tendingicon "basket">> <span class="green">Produce</span>. You can sell it by renting a stand on Connudatus Street at dawn.</li>
-		<</if>>
-	</ul>
+			<br>
+			<details class="journal">
+				<summary class="journal">Produce</summary>
+				<div class="itemInventory">
+					<<for _t to 0; _t lt _plant_keys.length; _t++>>
+						<<set _item to $plants[_plant_keys[_t]]>>
+						<<set _produce to setup.plants[$plants[_plant_keys[_t]].name]>>
+						<<if _item.amount gte 1>>
+							<<set _plant_temp to 1>>
+							<<set _formatter = new Intl.NumberFormat('en-gb', { roundingMode: 'trunc', notation: 'compact' })>>
+							<<set _amount = _formatter.format(_item.amount)>>
+							<<if _item.amount === 1>>
+								<<set _itemName to _produce.singular || _produce.name.replace(/_/g, ' ')>>
+							<<else>>
+								<<set _itemName to _produce.plural>>
+							<</if>>
+							<<set _tooltip to `<span class="green">${_item.amount}</span> ${_itemName}`>>
 
-	<<if _hasProduce>>
-		<br>
-		<details class="journal">
-			<summary class="journal">Produce</summary>
-			<div class="itemInventory">
-				<<for _t to 0; _t lt _plant_keys.length; _t++>>
-					<<set _item to $plants[_plant_keys[_t]]>>
-					<<set _produce to setup.plants[$plants[_plant_keys[_t]].name]>>
-					<<if _item.amount gte 1>>
-						<<set _plant_temp to 1>>
-						<<set _formatter = new Intl.NumberFormat('en-gb', { roundingMode: 'trunc', notation: 'compact' })>>
-						<<set _amount = _formatter.format(_item.amount)>>
-						<<if _item.amount === 1>>
-							<<set _itemName to _produce.singular || _produce.name.replace(/_/g, ' ')>>
-						<<else>>
-							<<set _itemName to _produce.plural>>
+							<div class="item" @tooltip="_tooltip">
+								<<set _iconName to setup.plants[_plant_keys[_t]].icon.replace(/\.[^/.]+$/, "")>>
+								<<tendingicon _iconName>>
+								<hr>
+								<<= _amount>>
+							</div>
 						<</if>>
-						<<set _tooltip to `<span class="green">${_item.amount}</span> ${_itemName}`>>
-
-						<div class="item" @tooltip="_tooltip">
-							<<set _iconName to setup.plants[_plant_keys[_t]].icon.replace(/\.[^/.]+$/, "")>>
-							<<tendingicon _iconName>>
-							<hr>
-							<<= _amount>>
-						</div>
-					<</if>>
-				<</for>>
-			</div>
-		</details>
+					<</for>>
+				</div>
+			</details>
+		<</if>>
 	<</if>>
 
 	<<if $museumintro is 1 or $plants_known.length gte 0>>
