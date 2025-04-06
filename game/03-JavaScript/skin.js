@@ -57,8 +57,7 @@ const Skin = (() => {
 	// Constants
 	const defaultModel = ["main", "sidebar"];
 	const defaultLayer = { layers: [], slots: {} };
-	const tanningMultiplier = 6; // Increase to make the tanning function even out more sharply (as the tan level increases)
-	const scalingFactor = 0.033; // Decrease for slower tanning gain from sun intensity
+	const scalingFactor = 0.025; // Decrease for slower tanning gain from sun intensity
 	const tanningLossPerMinute = 0.000695; // ~1 per day - ~100 days from 100% to 0%
 	const maxLayerGroups = 7;
 
@@ -70,14 +69,13 @@ const Skin = (() => {
 	 * Only run this from time.js
 	 *
 	 * TANNING GAIN/DECAY:
-	 * - Logarithmic gain: Tanning gain slows down the higher it is.
-	 * - If the total tanning value exceeds 100, the gain will be capped at 100, and any excess will be treated as tanning loss (to all groups except the one that gets the tanning gain)
+	 * - Linear gain is linear over time.
 	 * - Tanning decay is linear over time.
+	 * - If the total tanning value exceeds 100, the gain will be capped at 100, and any excess will be treated as tanning loss (to all groups except the one that gets the tanning gain)
 	 * - If a group gains tanning during the same time - only that group won't lose tanning.
 	 * - If a group loses tanning to below 0, that group will be removed.
 	 * - If tanning loss is higher than a group's value (causing it to be removed), the remainder will be distributed as a loss to the other layers.
 	 * - If more than 60 minutes pass at once - divide the tanning calculations into 60-minute chunks.
-	 *   This is to follow the logarithmic curve more closely, and more realistically follow the day/night sun intensity cycle.
 	 * - Limit of 10 layer groups. If 10 groups exist, and we want to add another one, remove the group with the lowest value, and distribute its value to the remaining groups.
 	 *
 	 * RENDERING:
@@ -119,8 +117,7 @@ const Skin = (() => {
 				const selectedLayers = setLayers(savedLayers, current);
 				selectedLayersIndex = savedLayers.indexOf(selectedLayers);
 
-				const logFactorGain = 1 / Math.log1p(((currentTan + accumulatedValue) / 100) * tanningMultiplier + 1);
-				let tanningGain = gainAmount * logFactorGain * scalingFactor;
+				let tanningGain = gainAmount * scalingFactor;
 
 				// Handle tanning gain and ensure the total tanning value does not exceed 100
 				if (currentTan + tanningGain >= 100) {
@@ -287,6 +284,7 @@ const Skin = (() => {
 		const skinType = ["gyaru", "ygyaru"].includes(Skin.color.natural) ? 0.3 : 1;
 
 		const result = round(sunIntensity * clothingModifier * sunscreenModifier * skinType, 2);
+
 		return {
 			sun: sunIntensity,
 			month: Weather.genSettings.months[Time.date.month - 1].sunIntensity,
