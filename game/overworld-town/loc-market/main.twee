@@ -23,14 +23,36 @@ You enter the small office responsible for the Connudatus market. A <<generate1>
 	You show <<him>> one of your _plant_temp. It seems to satisfy. You sign the paperwork, hand over the money, and leave to find your stall.
 	<br><br>
 	<<endevent>>
-	You lay your goods over the table, trying to arrange them in a pleasing way. There's a little roof to protect you from any rain, and a stool should your legs get tired. Other traders are setting up either side of you.
-	<br><br>
 
-	You finish just as the first customers trickle onto the street.
-	<br><br>
 
-	<<stall_actions>>
+	/*Would let PC choose which items to display initially, but it's not functional
+	What goods do you want to present for sale?
+
+	<br><br><<stall_setup>> */
+
+	<<link [[Open|Stall Rent 2]]>><</link>>
+	<br>
+	
 <</if>>
+
+:: Stall Rent 2
+<<set $outside to 0>><<set $location to "market">><<effects>>
+
+You lay your goods over the table, trying to arrange them in a pleasing way. There's a little roof to protect you from any rain, and a stool should your legs get tired. Other traders are setting up either side of you.
+<br><br>
+
+You finish just as the first customers trickle onto the street.
+<br><br>
+
+<<stall_actions>>
+
+:: Stall Rent Return
+<<set $outside to 0>><<set $location to "market">><<effects>>
+
+What goods do you want to present for sale?
+<br><br>
+
+<<stall_setup>>
 
 :: Stall
 <<set $outside to 0>><<set $location to "market">><<effects>>
@@ -46,6 +68,12 @@ You enter the small office responsible for the Connudatus market. A <<generate1>
 		<<set _stall_attention to 1>>
 	<</if>>
 <</for>>
+<<set _plant_keys to Object.keys($plants)>>
+<<for _t to 0; _t lt _plant_keys.length; _t++>>
+	<<if $plants[_plant_keys[_t]].amount gte 1>>
+		<<set _plant_temp to clone($plants[_plant_keys[_t]].plural)>>
+	<</if>>
+<</for>>
 
 <<if Time.dayState is "night">>
 	An official arrives to announce that the market's business hours are over.
@@ -59,7 +87,10 @@ You enter the small office responsible for the Connudatus market. A <<generate1>
 <<elseif _inventory_found isnot 1>>
 	With nothing to sell, there's little reason to attend your stall.
 	<br><br>
-
+	<<if _plant_temp isnot undefined>>
+		<<ind>><<link [[Display new produce|Stall Rent Return]]>><</link>>
+	<</if>>
+	<br>
 	<<connudatusicon>><<link [[Leave|Connudatus Street]]>><<endevent>><<endstall>><<clotheson>><</link>>
 	<br>
 <<elseif _inventory_in_stall isnot 1>>

@@ -108,6 +108,7 @@ class CombatRenderer {
 			"harpy",
 			"cow",
 			"spider",
+			"snake",
 		];
 	}
 

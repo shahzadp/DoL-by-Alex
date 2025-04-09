@@ -51,21 +51,25 @@ You are in the farmlands.
 <</if>>
 <br><br>
 
-<<if $farm_stage is undefined>>
-	A sign stands beside a dirt track leading up to a farmhouse. It advertises fresh eggs, carrots, and other produce. One line is written in darker paint than the others. It reads: "Farmhands needed. Ask inside." <<if Time.dayState is "night">>You'd need to come back during the day.<</if>>
-	<br><br>
-<</if>>
+
 
 <<if $exposed gte 1 and Time.dayState is "night">>
 	You hide behind a hay bale to cover your indecency.
 	<br><br>
 <</if>>
 
+<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
 <<if $stress gte $stressmax>>
 	<<passoutfarmroad>>
 <<elseif $exposed gte 1 and Time.dayState isnot "night" and $eventskip isnot 1>>
 	<<events_farm_exhibitionism>>
+<<elseif $rng gte 81 and $eventskip is 0 or $skulduggery gte 600 and $farmland_manors isnot 1>>
+	<<farmland_road_events>>
 <<else>>
+	<<if $farm_stage is undefined>>
+		A sign stands beside a dirt track leading up to a farmhouse. It advertises fresh eggs, carrots, and other produce. One line is written in darker paint than the others. It reads: "Farmhands needed. Ask inside." <<if Time.dayState is "night">>You'd need to come back during the day.<</if>>
+		<br><br>
+	<</if>>
 	<<if Time.dayState isnot "night">>
 		<<if $farm_stage is undefined and $exposed lte 0>>
 			<<farmicon "barn">><<link [[Ask about farm work (0:30)|Farm Intro]]>><<pass 30>><<set $farm_stage to 1>><</link>>
@@ -103,7 +107,20 @@ You are in the farmlands.
 		<br>
 	<</if>>
 	<<farmicon "meadow">><<link [[Meadow (0:10)|Meadow]]>><<pass 10>><</link>>
-	<br><br>
+	<br>
+	<<if $farmland_manors is 1>>
+		<<ind>><<link [[Manors (0:10)|Farmland Manors]]>><<pass 10>><</link>>
+		<br>
+	<</if>>
+	<<if $farmland_maze_key is 1>>
+		<<ind>><<link [[Investigate the strange gate|Maze Intro Key]]>><<set $farmland_maze_key to 2>><</link>>
+		<br>
+	<</if>>
+	<<if $farmland_maze_found is true>>
+		<<ind>><<link [[Maze (0:03)|Maze Entrance]]>><<pass 3>><<maze_init>><</link>>
+		<br>
+	<</if>>
+	<br>
 	<<mooricon>><<link [[Enter the moor (0:05)|Moor]]>><<set $moor to 0>><<unset $moor_hunt>><<pass 5>><<set $eventskip to 1>><</link>>
 	<br>
 	<<roadicon>><<link [[Walk towards town (0:05)|Farm Road 6]]>><<pass 5>><<set $phase to 0>><</link>>
@@ -2849,6 +2866,14 @@ Bottles of milk: $farm.stock.milk
 <<if $farm.stock.milk gte 1>>
 	<<set _farm_stocked to true>>
 	<<tendingicon "milk">><<link [[Take|Farm Stock]]>><<wearProp "milk bottle" 0 "milk">><<tending_give bottle_of_milk $farm.stock.milk>><<set $farm.stock.milk to 0>><</link>>
+	<br>
+<</if>>
+<br>
+Spoonfuls of cream: $farm.stock.cream
+<br>
+<<if $farm.stock.cream gte 1>>
+	<<set _farm_stocked to true>>
+	<<tendingicon "cream">><<link [[Take|Farm Stock]]>><<wearProp "cream" 0 "cream">><<tending_give cream $farm.stock.cream>><<set $farm.stock.cream to 0>><</link>>
 	<br>
 <</if>>
 <br>

@@ -1768,6 +1768,7 @@ function dailyFarmEvents() {
 			V.farm.stock.truffles = Math.trunc(V.farm.stock.truffles * 0.8);
 			V.farm.stock.milk = Math.trunc(V.farm.stock.milk * 0.8);
 			V.farm.stock.eggs = Math.trunc(V.farm.stock.eggs * 0.8);
+			V.farm.stock.cream = Math.trunc(V.farm.stock.cream * 0.8);
 		}
 		if (V.farm.woodland >= 3) {
 			wikifier("farm_stock", "truffles", 6, 12);
@@ -1778,8 +1779,10 @@ function dailyFarmEvents() {
 		}
 		if (V.farm.barn >= 2) {
 			wikifier("farm_stock", "milk", 12, 24);
+			wikifier("farm_stock", "cream", 12, 24);
 		} else if (V.farm.barn >= 1) {
 			wikifier("farm_stock", "milk", 6, 12);
+			wikifier("farm_stock", "cream", 6, 12);
 		}
 		if (V.farm.coop >= 2) {
 			wikifier("farm_stock", "eggs", 12, 24);

@@ -190,7 +190,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Wear swimsuit`, stayOnPassageFn],
-			widgets: [`<<underlowerwear 6>>`],
+			widgets: [`<<underupperwear 2>>`],
 		},
 		{
 			link: [`Testing Room`, `Testing Room`],

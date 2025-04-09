@@ -19,6 +19,9 @@
 		<</if>>
 		<<icon "projectMaths.png">><<link [[Manage your stall|Stall Manage]]>><</link>>
 		<br>
+		/* Stall Manage used instead
+		<<ind>><<link [[Change displayed produce|Stall Rent Return]]>><</link>>
+		<br> */
 		<<if $worn.lower.name isnot "naked">>
 			<<if $worn.under_lower.name isnot "naked">>
 				<<if $worn.upper.set isnot $worn.lower.set>>
@@ -50,6 +53,70 @@
 		<<connudatusicon>><<link [[Leave|Connudatus Street]]>><<endevent>><<endstall>><<clotheson>><<set $eventskip to 1>><</link>>
 		<br>
 	<</if>>
+<</widget>>
+
+<<widget "stall_setup">>
+		<<set $plants_stall to []>>
+		<<set _plant_keys to Object.keys($plants)>>
+		<<stall_setup_interior>>
+<</widget>>
+
+<<widget "stall_setup_interior">>
+	<span id="stall_setup">	
+	Your produce:
+	<<for _t to 0; _t lt _plant_keys.length; _t++>>
+		<<set _plant_name to $plants[_plant_keys[_t]].name>>
+		<<set _plant_name_text to $plants[_plant_keys[_t]].name.replace(/_/g," ")>>
+
+		<<if $plants[_plant_keys[_t]].amount and !$plants_stall.includes(_plant_name)>>
+			<<tendingicon setup.plants[_plant_name].icon>>
+			<<capture _plant_name>>
+				<<link "_plant_name_text">><<set $plants_stall.push(_plant_name)>><<replace #stall_setup>><<stall_setup_interior>><</replace>><</link>> |
+			<</capture>>
+		<</if>>
+	<</for>>
+	<br>
+	<<link "Add all">>
+		<<for _t to 0; _t lt _plant_keys.length; _t++>>
+			<<set _plant_name to $plants[_plant_keys[_t]].name>>
+			<<if $plants[_plant_keys[_t]].amount and !$plants_stall.includes(_plant_name)>>
+				<<set $plants_stall.push(_plant_name)>>
+			<</if>>
+		<</for>>
+		<<replace #stall_setup>><<stall_setup_interior>><</replace>>
+	<</link>>
+	<br><br>
+	On your stall:
+	<<for _t to 0; _t lt _plant_keys.length; _t++>>
+		<<set _plant_name to $plants[_plant_keys[_t]].name>>
+		<<set _plant_name_text to $plants[_plant_keys[_t]].name.replace(/_/g," ")>>
+		<<if $plants[_plant_keys[_t]].amount and $plants_stall.includes(_plant_name)>>
+			<<tendingicon setup.plants[_plant_name].icon>>
+			<<capture _plant_name>>
+				<<link "_plant_name_text">><<set $plants_stall.delete(_plant_name)>><<replace #stall_setup>><<stall_setup_interior>><</replace>><</link>> |
+			<</capture>>
+		<</if>>
+	<</for>>
+	<br>
+	<<link "Remove all">>
+		<<for _t to 0; _t lt _plant_keys.length; _t++>>
+			<<set _plant_name to $plants[_plant_keys[_t]].name>>
+			<<if $plants[_plant_keys[_t]].amount and $plants_stall.includes(_plant_name)>>
+				<<set $plants_stall.delete(_plant_name)>>
+			<</if>>
+		<</for>>
+		<<replace #stall_setup>><<stall_setup_interior>><</replace>>
+	<</link>>
+	<br><br>
+	<<if $plants_stall.length gte 1>>
+		<<link [[Open|Stall Rent 2]]>><</link>>
+		<br>
+	<<else>>
+		<<link [[Leave it for now|Connudatus Street]]>><</link>>
+		<br>
+	<</if>>
+	<br>
+	</span>
 <</widget>>
 
 <<widget "stall_inventory">>
