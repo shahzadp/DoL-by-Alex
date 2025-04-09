@@ -1157,6 +1157,13 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#72AC72" },
 	},
 	{
+		variable: "forest green",
+		name: "forest green",
+		name_cap: "Forest Green",
+		csstext: "forest-green",
+		canvasfilter: { blend: "#374f2f" },
+	},
+	{
 		variable: "lime",
 		name: "lime",
 		name_cap: "Lime",

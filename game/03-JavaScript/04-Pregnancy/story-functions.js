@@ -474,7 +474,7 @@ function playerPregnancyRisk() {
 window.playerPregnancyRisk = playerPregnancyRisk;
 
 function playerHeatMinArousal() {
-	if (!V.sexStats || !V.sexStats.pills || V.statFreeze) return 0;
+	if (!V.sexStats || !V.sexStats.pills || (V.statFreeze && !V.statFreezeIgnoreRestrictions)) return 0;
 	if (!V.player.vaginaExist && !canBeMPregnant()) return 0;
 	if (playerIsPregnant() && !V.pregnancyStats.heatStillEnabled) return 0;
 
@@ -503,7 +503,7 @@ function playerHeatMinArousal() {
 window.playerHeatMinArousal = playerHeatMinArousal;
 
 function playerRutMinArousal() {
-	if (!V.player.penisExist || V.player.penissize < -1 || !V.sexStats || !V.sexStats.pills || V.statFreeze) return 0;
+	if (!V.player.penisExist || V.player.penissize < -1 || !V.sexStats || !V.sexStats.pills || (V.statFreeze && !V.statFreezeIgnoreRestrictions)) return 0;
 
 	const pills = V.sexStats.pills.pills;
 	let minArousal = 0;

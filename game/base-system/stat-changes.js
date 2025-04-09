@@ -535,7 +535,6 @@ const statChange = (() => {
 	DefineMacro("spray", spray);
 
 	function awareness(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("awareness", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -550,7 +549,6 @@ const statChange = (() => {
 	DefineMacro("awareness", awareness);
 
 	function purity(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("purity", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -812,7 +810,6 @@ const statChange = (() => {
 	}
 
 	function willpower(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("willpower", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -948,7 +945,6 @@ const statChange = (() => {
 	DefineMacro("skulduggery", amount => skill("skulduggery", amount));
 
 	function prof(skill, amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("prof", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -968,7 +964,6 @@ const statChange = (() => {
 	DefineMacro("locker_suspicion", lockerSuspicion);
 
 	function alcohol(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("alcohol", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -980,7 +975,6 @@ const statChange = (() => {
 	DefineMacro("alcohol", alcohol);
 
 	function drugs(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("drugs", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -992,7 +986,6 @@ const statChange = (() => {
 	DefineMacro("drugs", drugs);
 
 	function hallucinogen(amount) {
-		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("hallucinogen", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {

@@ -445,6 +445,19 @@ function ordinalSuffixOf(i) {
 }
 window.ordinalSuffixOf = ordinalSuffixOf;
 
+function ordinalWritten(i) {
+	const ordinals = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
+	if (i > 0 && i < 10) return ordinals[i];
+
+	const j = i % 10;
+	const k = i % 100;
+	if (j === 1 && k !== 11) return i + "st";
+	if (j === 2 && k !== 12) return i + "nd";
+	if (j === 3 && k !== 13) return i + "rd";
+	return i + "th";
+}
+window.ordinalWritten = ordinalWritten;
+
 /**
  * Given there are {deckCount} cards in the deck and {markedCount} of them have been marked by the player,
  *   calculates the chance that the player will see at least {atLeast} number of marked cards (from the top of the deck),

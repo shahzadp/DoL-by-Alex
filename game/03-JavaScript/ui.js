@@ -1025,6 +1025,6 @@ window.basicDrunkCss = basicDrunkCss;
  * @returns {string}
  */
 function basicJitterCss() {
-	return V.options.textAnimations ? "jitter-text drunk-1" : "jitter-text";
+	return V.options.textAnimations ? "jitter-text jitter-1" : "jitter-text";
 }
 window.basicJitterCss = basicJitterCss;
