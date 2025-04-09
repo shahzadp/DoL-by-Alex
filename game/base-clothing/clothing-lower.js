@@ -856,6 +856,7 @@ function initLower() {
 			high_img: 0,
 			back_img: 1,
 			back_img_colour: "primary",
+			back_integrity_img: 1,
 			cursed: 0,
 			notuck: 1,
 			location: 0,
