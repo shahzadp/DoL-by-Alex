@@ -1058,7 +1058,10 @@ namespace Renderer {
 				if (imageIsLoading === true) return;
 				if (layer.show !== false && !layer.image) return;
 				if (layer.masksrc && !layer.mask) return;
-				if ((Array.isArray(layer.masksrc) && layer.masksrc.length < 1) && !layer.mask) return;
+				if (Array.isArray(layer.masksrc) && Array.isArray(layer.mask)) {
+					if (layer.mask.length != layer.masksrc.length) return;
+					for (let i = 0; i < layer.masksrc.length; i++) if (!layer.mask[i]) return;
+				}
 			}
 			if (listener && listener.loadingDone) listener.loadingDone(millitime() - t0, layersLoaded);
 			try {

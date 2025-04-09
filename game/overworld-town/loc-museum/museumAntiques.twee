@@ -1,6 +1,6 @@
 :: Museum Look around
 <<set $outside to 0>>
-<<museumAntiqueText>>
+<<museumAntiqueText>><<museumPaintingText>>
 <<npc Winter>><<person1>>
 You look around the museum. The pedestals are grooved, as if awaiting specific objects.
 <br><br>
@@ -55,6 +55,37 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 			<</switch>>
 		<</for>>
 	</div>
+	<<if $museum_paintings_intro>>
+		<summary class="journal">Paintings</summary>
+		<div class="itemPainting">
+			<<for _labelP, _valueP range $museumAntiques.paintings>>
+				<<switch _valueP>>
+					<<case "museum" "recovered">>
+						<div class="item" @tooltip="_museumPaintingText[_labelP].museum">
+							<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[_labelP].iconFull" width="120" height="120">
+						</div>
+					<<case "stolen">>
+						<div class="item" @tooltip="_museumPaintingText[_labelP].stolen">
+							<img class="icon" src="img/misc/icon/antiques/paintings/curtain_closed.png" width="120" height="120">
+						</div>
+					<<case "found">>
+						<<set _tooltip to `You should show the ${_museumPaintingText[_labelP].journalName.toLowerCase()} to Winter.`>>
+						<div class="item" @tooltip="_tooltip">
+							<img class="icon" src="img/misc/icon/antiques/paintings/curtain.png" width="120" height="120">
+						</div>
+					<<case "talk">>
+						<<set _tooltip to `You should ask Winter about the ${_museumPaintingText[_labelP].journalName.toLowerCase()}.`>>
+						<div class="item" @tooltip="_tooltip">
+							<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[_labelP].iconFull" width="120" height="120">
+						</div>
+					<<case "notFound">>
+						<div class="item" tooltip="Empty.">
+							<img class="icon" src="img/misc/icon/antiques/paintings/curtain.png" width="120" height="120">
+						</div>
+				<</switch>>
+			<</for>>
+		</div>
+	<</if>>
 </details>
 
 <<if _possibleHints.length gt 0>>
@@ -91,6 +122,20 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 				<<case "recovered">><<set $museumAntiques.recoveredCount++>>
 			<</switch>>
 		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "museumPaintingGet">>
+	<<set $_painting to _args[0]>>
+	<<if $museumAntiques.paintings[$_painting] is "notFound">>
+		<<set $museumAntiques.paintings[$_painting] to "found">>
+		<<museumPaintingText>>
+		<span class="gold">You found the <<print _museumPaintingText[$_painting].journalName.toLowerCase()>>!</span>
+		<<if $options.images>>
+			<br>
+			<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[$_painting].iconFull" width="120" height="120">
+		<</if>>
+		<br><br>
 	<</if>>
 <</widget>>
 
@@ -506,6 +551,32 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 	<</if>>
 <</widget>>
 
+<<widget "museumPaintingText">>
+	<<if _museumPaintingText is undefined>>
+		<!--journalName used before talked about with Winter, who reveals the name at that point. -->
+		<<set _museumPaintingText to {
+			"paintingward":{
+				hint: `"A few decades old, depicting someone with brownish hair laying in the water before a red moon. It has some occult significance."<br><br>`,
+				museum: "'Bleeding Ward' hangs on the wall.",
+				name: "Bleeding Ward",
+				journal: `"For a painting of a figure laying in the water as the moon above turns red."`,
+				journalName: "Red moon watcher painting",
+				icon: "antiques/paintings/painting_ward.png",
+				iconFull: "antiques/paintings/painting_ward_full.png"
+			},
+			"paintingsnake":{
+				hint: `"Around three hundred years old. Oval-shaped frame, depicting a woman emerging from a snake's skin."<br><br>`,
+				museum: "'Hopeless Cycle' hangs on the wall.",
+				name: "Hopeless Cycle",
+				journal: `"For a painting of a crying woman emerging from a snake husk."`,
+				journalName: "Snake-woman painting",
+				icon: "antiques/paintings/painting_snake.png",
+				iconFull: "antiques/paintings/painting_snake_full.png"
+			}
+		}>>
+	<</if>>
+<</widget>>
+
 <<widget "updateMuseumAntiques">>
 	<<if $museumAntiques is undefined>>
 		<<set $museumAntiques to {
@@ -564,6 +635,10 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 				"antiqueteacaddy": "notFound",
 				"antiquewoodenfigurine": "notFound",
 				"antiquecopperring": "notFound"
+			},
+			paintings:{
+				"paintingward": "notFound",
+				"paintingsnake": "notFound"
 			},
 			museumCount:0
 		}>>
@@ -697,6 +772,12 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 	<</if>>
 	<<if $museumAntiques.antiques.antiquecopperring is undefined>>
 		<<set $museumAntiques.antiques.antiquecopperring to "notFound">>
+	<</if>>
+	<<if $museumAntiques.paintings is undefined>>
+		<<set $museumAntiques.paintings to {
+			"paintingward": "notFound",
+			"paintingsnake": "notFound"
+		}>>
 	<</if>>
 	/*Should be the last to always run*/
 	<<set $museumAntiques.maxCount to Object.keys($museumAntiques.antiques).length>>

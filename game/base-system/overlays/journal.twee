@@ -845,7 +845,7 @@
 		<hr>
 		<h1 class="header gold bold">Collectibles</h1>
 		<<if $museumintro is 1>>
-			<<museumAntiqueText>>
+			<<museumAntiqueText>><<museumPaintingText>>
 			<<if $museumAntiqueJournalHints.length gte 1>>
 				Winter has mentioned some items that are missing from the museum.
 				<ul class="journal">
@@ -864,15 +864,29 @@
 					<</if>>
 				<</for>>
 				</ul>
-				<br>
 			<</if>>
+			<<for $_labelP, $_valueP range $museumAntiques.paintings>>
+				<<if $_valueP is "found">>
+					<li>You should show the <<= _museumPaintingText[$_labelP].journalName.toLowerCase()>> to Winter.</li>
+				<</if>>
+			<</for>>
+			<br>
 			<<set $_antiquesFound to Object.values($museumAntiques.antiques).filter(status => status !== "notFound").length>>
-			<<if $_antiquesFound is 0>>
+			<<set $_paintingsFound to Object.values($museumAntiques.paintings).filter(status => status !== "notFound").length>>
+			<<set $_totalFound to $_antiquesFound + $_paintingsFound>>
+			<<if $_totalFound is 0>>
 				You haven't found any items for the museum yet. Explore the world more to discover antiques.
-			<<elseif $_antiquesFound is $museumAntiques.maxCount>>
+			<<elseif $_antiquesFound is $museumAntiques.maxCount and !$museum_paintings_intro>>
+				You've found <span class="green">every</span> antique for the museum.
+			<<elseif $_totalFound is $museumAntiques.maxCount + Object.values($museumAntiques.paintings).length>>
 				You've found <span class="green">every</span> item for the museum.
 			<<else>>
-				You've found <span class="gold"><<= $_antiquesFound>></span> items for the museum. You're missing <span class="gold"><<= $museumAntiques.maxCount - $_antiquesFound>></span> <<= $museumAntiques.maxCount - $_antiquesFound is 1 ? "antique" : "antiques">>.
+				You've found
+				<span class="gold"><<= $_antiquesFound>></span> antique<<= $_antiqueCount is 1 ? "" : "s">>
+				<<if $museum_paintings_intro>>and <span class="gold"><<= $_paintingsFound>></span> painting<<= $_paintingsFound is 1 ? "" : "s">><</if>>
+				for the museum.
+				You're missing
+				<span class="gold"><<= $museumAntiques.maxCount - $_antiquesFound>></span> <<= $museumAntiques.maxCount - $_antiquesFound is 1 ? "antique" : "antiques">><<if $museum_paintings_intro>> and <span class="gold"><<= Object.values($museumAntiques.paintings).length - $_paintingsFound>></span> <<= Object.values($museumAntiques.paintings).length - $_paintingsFound is 1 ? "painting" : "paintings">><</if>>.
 			<</if>>
 			<br><br>
 			<details class="journal">
@@ -905,6 +919,24 @@
 						<</if>>
 					<</for>>
 				</div>
+				<<if $museum_paintings_intro>>
+					<summary class="journal">Paintings</summary>
+					<div class="itemPainting">
+						<<for _labelP, _valueP range $museumAntiques.paintings>>
+							<<set _painting to _valueP isnot "museum" ? _museumPaintingText[_labelP].journalName : _museumPaintingText[_labelP].name>>
+							<<switch _valueP>>
+								<<case "notFound">>
+									<div class="item unknown" tooltip="Unknown painting.">
+										<img class="icon" src="img/misc/icon/antiques/paintings/curtain_closed.png" width="120" height="120">
+									</div>
+								<<default>>
+									<div class="item" @tooltip="_painting">
+										<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[_labelP].iconFull" width="120" height="120">
+									</div>
+							<</switch>>
+						<</for>>
+					</div>
+				<</if>>
 			</details>
 			<br>
 		<</if>>

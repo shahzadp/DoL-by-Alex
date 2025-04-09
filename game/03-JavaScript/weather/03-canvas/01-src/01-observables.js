@@ -89,6 +89,7 @@ Weather.Observables = (() => {
 				observables[key]._notifyListeners(observables[key].value, changedKeys.get(key));
 			}
 		});
+		Weather.sky.updateFade(true);
 		$(document).on(":passageend", setBindings);
 	});
 

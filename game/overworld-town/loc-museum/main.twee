@@ -57,7 +57,7 @@
 <</widget>>
 
 <<widget "museumtalk">>
-	<<museumAntiqueText>>
+	<<museumAntiqueText>><<museumPaintingText>>
 	/* Prevent having to "sell" a worn chastity belt for £0 */
 	<<if $museumAntiques.antiques.antiquegoldchastitybelt is "found" and $worn.genitals.origin is "Underwater Temple" and $gold_chastity_held isnot true>>
 		<<museumAntiqueStatus "antiquegoldchastitybelt" "talk">>
@@ -72,6 +72,29 @@
 			<</if>>
 		<</capture>>
 	<</for>>
+	<<if !$daily.winterStoryTime>>
+		<<if $bleedingWardCheckpoint and $museumAntiques.paintings.paintingward is "museum">>
+			<<icon _museumPaintingText.paintingward.icon>><<link [[Ask Winter to tell you the 'Bleeding Ward' story from where you left off (0:15)|Bleeding Ward Resume]]>><<set $daily.winterStoryTime to true>><</link>>
+			<br>
+		<</if>>
+		<<for _labelP, _valueP range $museumAntiques.paintings>>
+			<<capture _labelP, _museumPaintingText[_labelP].name>>
+				<<if $museumAntiques.paintings[_labelP] is "talk">>
+					<<set _painting to _museumPaintingText[_labelP].journalName.toLowerCase()>>
+					<<icon _museumPaintingText[_labelP].icon>>
+					<<link [[`Ask about the _painting (0:30)`|`Museum `+ _museumPaintingText[_labelP].name + ` Story`]]>><<set $daily.winterStoryTime to true>><<npcincr Winter love 3>><</link>><<gglove>>
+					<<if _labelP is "paintingsnake">><<note "This may be a long story..." "red">> | <mouse class="tooltip red italic">(!Content Warning!)<span>This is an experimental scene. It is recommended that you save your game to a new file now, and not overwrite it until the scene concludes.<br><br> Within is disturbing content not found elsewhere, including bodily mutilation. It is not prevented by any toggles or settings. You have been warned.</span></mouse><</if>>
+					<br>
+				<<elseif $museumAntiques.paintings[_labelP] is "museum">>
+					<<set _painting to "'" + _museumPaintingText[_labelP].name + "'">>
+					<<icon _museumPaintingText[_labelP].icon>>
+					<<link [[`Ask Winter to tell you the _painting story again (0:30)`|`Museum `+ _museumPaintingText[_labelP].name + ` Story`]]>><<set $daily.winterStoryTime to true>><</link>>
+					<<if _labelP is "paintingsnake">><<note "This may be a long story..." "red">> | <mouse class="tooltip red italic">(!Content Warning!)<span>This is an experimental scene. It is recommended that you save your game to a new file now, and not overwrite it until the scene concludes.<br><br> Within is disturbing content not found elsewhere, including bodily mutilation. It is not prevented by any toggles or settings. You have been warned.</span></mouse><</if>>
+					<br>
+				<</if>>
+			<</capture>>
+		<</for>>
+	<</if>>
 <</widget>>
 
 :: Museum Lock
@@ -228,6 +251,17 @@ The museum is closed. There's a sign on the door.
 		<<set $museumAntiqueJournalHints to []>>
 	<</if>>
 	<<museumtalk>>
+	<<museumPaintingText>>
+	<<for _labelP, _valueP range $museumAntiques.paintings>>
+		<<capture _labelP, _museumPaintingText[_labelP].name>>
+			<<if $museumAntiques.paintings[_labelP] is "found">>
+				<<set _painting to _museumPaintingText[_labelP].journalName.toLowerCase()>>
+				<<icon _museumPaintingText[_labelP].icon>>
+				<<link [[`Show Winter the _painting`|`Museum `+ _museumPaintingText[_labelP].name + ` Painting`]]>><<set $museumAntiques.paintings[_labelP] to "talk">><</link>>
+				<br>
+			<</if>>
+		<</capture>>
+	<</for>>
 	<<if $worn.feet.type.includes("shackle")>>
 		<<crimeicon "shackles">><<link [[Ask to have your shackles removed (0:10)|Museum Shackle]]>><<pass 10>><</link>>
 		<br>

@@ -3,7 +3,7 @@
 
 <<He>> pulls a crumpled up piece of paper from <<his>> pocket. You lean over to look at it. <<= currentSkillValue("history") gte 600 ? "You recognise it as blueprints to a house" : "It looks like a mess of lines and numbers">>.
 <br><br>
-"There's a party tonight," Wren says. <<He>> taps the centre of the paper. "The person throwing it is rich and doesn't care who knows it. All of the fancy jewellery and valuables are right in plain sight. We're going to go and take whatever we can carry." <<He>> smiles at you. "<<if $prison.wren_names is 2>>A jailbird like you is no stranger to stealing<<elseif crimeSumCurrent() gte 5000>>You've been making waves in the underworld<<elseif $fame.social gte 600>>I've heard you like to schmooze with the upper class<</if>>. You're perfect for this job. It'll be easy, just in-and-out."
+"There's a party tonight," Wren says. <<He>> taps the centre of the paper. "The person throwing it is rich and doesn't care who knows it. All of the fancy jewellery and valuables are right in plain sight. We're going to go and take whatever we can carry." <<He>> smiles at you. "<<if $prison?.wren_names is 2>>A jailbird like you is no stranger to stealing<<elseif crimeSumCurrent() gte 5000>>You've been making waves in the underworld<<elseif $fame.social gte 600>>I've heard you like to schmooze with the upper class<</if>>. You're perfect for this job. It'll be easy, just in-and-out."
 <br><br>
 You consider the offer. Wren leans forward, pitching <<his>> voice lower. "I'll even sweeten the pot for you. We split the profits <<= C.npc.Wren.love gte 40 ? "fifty-fifty" : C.npc.Wren.love gte 20 ? "sixty-forty" : "seventy-thirty">>. Sound good?"
 <br><br>
@@ -118,7 +118,7 @@ As if on cue, the lights dim. A spotlight lands on you. You make your way to the
 	<<case 3>>
 		You notice Wren weaving through the crowd. <<nnpc_He "Wren">> is dressed as a <<= C.npc.Wren.pronoun is "m" ? "waiter" : "waitress">>.
 	<<case 2>>
-		One of the partygoers flags <<nnpc_him "Wren">> down. <<generate1>><<person1>><<He>> takes a
+		One of the partygoers flags <<nnpc_him "Wren">> down. <<He>> takes a
 		<<if $wrenHeistDance.phase is 1>>
 			flute of champagne
 		<<elseif $wrenHeistDance.phase is 2>>
@@ -131,8 +131,8 @@ As if on cue, the lights dim. A spotlight lands on you. You make your way to the
 		off Wren's tray.
 	<<case 1>>
 		<<if $wrenHeistDance.help is false and $wrenHeistDance.phase is 3>>
-			<<loadNPC 1 "wren_heist_fighting">><<clearNPC "wren_heist_fighting">><<person2>>
-			Someone stops <<nnpc_him "Wren">>. <span class="red">It's the <<person>>, and <<he>> doesn't look happy.</span> Neither does Wren, who says something to the <<personsimple>>. The two of them leave the room.<<stress 6>><<gstress>>
+			<<set _special_pronoun to $per_npc.wren_heist_fighting.pronoun>>
+			Someone stops <<nnpc_him "Wren">>. <span class="red">It's the <<= $per_npc.wren_heist_fighting.fullDescription>>, and <<if _special_pronoun is "m">>he<<else>>she<</if>> doesn't look happy.</span> Neither does Wren, who says something to the <<if _special_pronoun is "m">>man<<else>>woman<</if>>. The two of them leave the room. <<stress 6>><<gstress>>
 		<<else>>
 			<<set $wrenHeistDance.blackMoney += 500>>
 			<<if currentSkillValue('skulduggery') gte 800 or $transformationParts.traits.sharpEyes isnot "disabled">>
@@ -150,7 +150,7 @@ As if on cue, the lights dim. A spotlight lands on you. You make your way to the
 		<</if>>
 	<<case 0>>
 		<<if $wrenHeistDance.help is false and $wrenHeistDance.phase is 3>>
-			You have time before your next dance. You're not sure if Wren's managed to slip away from the <<person>>. You wander until you find <<him>>.
+			You have time before your next dance. You're not sure if Wren's managed to slip away from the <<person>>. You wander until you find <<nnpc_him "Wren">>.
 		<<else>>
 			Wren notices you watching <<nnpc_him "Wren">> and jerks <<nnpc_his "Wren">> head towards the
 			<<if $wrenHeistDance.phase is 1>>
@@ -232,7 +232,7 @@ As if on cue, the lights dim. A spotlight lands on you. You make your way to the
 		Wren straightens as you approach. "Let's go," <<he>> says.
 		<br><br>
 
-		<<link[[Next|Wren Heist Exit]]>><<unset $wrenHeistDance.phase>><</link>>
+		<<link[[Next|Wren Heist Exit]]>><<run delete $wrenHeistDance.phase>><</link>>
 		<br>
 <</switch>>
 
@@ -367,7 +367,7 @@ As <<he>> goes to deposit your haul somewhere safe, a spotlight lands on you. Th
 	<br><br>
 	"What in the world are you doing?" the <<person2>><<person>> asks. "Let go of <<pher>> — <<pshe>> needs to get on stage now. The audience is getting rowdy!"
 	<br><br>
-	"But–" the <<person1>><<person>> tries to say.
+	"But-" the <<person1>><<person>> tries to say.
 	<br><br>
 	The <<person3>><<person>> interrupts <<person1>><<him>>. "We don't have time to hear your excuses," <<person3>><<he>> says. "Come on, <<girl>>. Let's go."
 <<else>>
@@ -381,7 +381,6 @@ As <<he>> goes to deposit your haul somewhere safe, a spotlight lands on you. Th
 You rush into the main room just as the lights dim. The spotlight finds you amid the crowd. You head to the stage, prepared to dance again.
 <br><br>
 
-<<clearNPC "wren_heist_guard_1">><<clearNPC "wren_heist_guard_2">>
 <<link [[Dance|Wren Heist Dance]]>><<endevent>><<set $dancestart to 1>><</link>>
 <br>
 
@@ -389,26 +388,65 @@ You rush into the main room just as the lights dim. The spotlight finds you amid
 <<effects>>
 
 <<if $phase is 0>> /* Go upstairs second */
-	"Oh, no," you say. "You go first."
-	<br><br>
-	<<He>> shrugs and bounds up the stairs.
+	"Oh, no," you say. "You go first." <<He>> shrugs and bounds up the stairs ahead of you.
 	<br><br>
 <</if>>
 You go upstairs. The sounds of the party are muffled beneath your feet. You search through the rooms with Wren.
 <br><br>
 <<He>> pulls you into a dimly-lit room. There is a safe with a complicated-looking lock. You <<= currentSkillValue('skulduggery') gte 800 ? "think you can break into it with some effort" : "know there's no way you can break into it">>.
-<br><br>
 <<He>> crouches before the safe and fiddles with the keypad. It pops open, and <<he>> gives a self-satisfied hum. "A good thief never reveals <<his>> tricks, in case you're wondering," <<he>> says.
 <br><br>
 You help <<him>> search through the safe's contents. Most of it seems to be legal papers. You try to read some of them, but your eyes glaze over after the first few lines. Wren reaches into the safe one last time. <<His>> eyes widen.
 <br><br>
-You ask if <<hes>> found something, but <<he>> quickly denies it. "No, just more papers," <<he>> says. "Seems like this was a bust."
-<br><br>
-<<set $skulduggerydifficulty to 600>><<skulduggerycheck "silent">>
-<<if $skulduggerysuccess is 1 or $transformationParts.traits.sharpEyes isnot "disabled">>
-	<<set $wrenHeistDance.sneak to true>>
-	You see Wren put something in <<his>> pocket.
+
+<<if $museumAntiques.paintings.paintingward is "notFound">>
+	<span class="gold"><<He>> pulls out a rolled up canvas.</span> It's yellowed with age. <<He>> spreads it out on the ground and waves you over to look.
+	The first thing you notice is the moon.
+	<<if $hallucinations gte 1>>
+		<span class="red">A red sliver along the bottom waxes and wanes as if breathing.</span>
+	<<else>>
+		It has a sickle of red along the bottom. Droplets rain down like tears.
+	<</if>>
+	Your attention is then pulled to the nude figure at the heart of the painting. Their long brown hair flows down their bare back.
+	<<if $awarelevel gte 2>>
+		You notice that they have beast-like ears and a tail.
+		<<if $wolgirl gte 6 or $cat gte 6 or $fox gte 6>>
+			You think you recognise the shape, but the impression is so fleeting, you can't be sure.
+		<</if>>
+		With the blends of reds and browns, it's hard to tell if they're really even there.
+	<</if>>
 	<br><br>
+
+	Wren rolls it back up. "Cult stuff," <<he>> says. "I'd tell you not to get involved, but
+	<<if $wrenSeen?.includes("winter")>>
+		could you deliver this to our mutual friend?"
+	<<elseif $wrenSeen?.includes("letter")>>
+		I don't think Landry would mind if I borrowed <<nnpc_his "Landry">> errand <<girl>>. Mind returning this to its original owner? You'll find <<nnpc_him "Winter">> at the museum on weekends."
+	<<else>>
+		I owe a favour. Mind returning this to its original owner? You'll find <<nnpc_him "Winter">> at the museum on weekends."
+	<</if>>
+	You take the painting with a nod.
+	<br><br>
+
+	<<museumPaintingGet "paintingward">>
+
+	You ask if <<hes>> found anything else, but <<he>> quickly denies it. "No, just more papers," <<he>> says. "At least this wasn't a total bust."
+	<br><br>
+	<<set $skulduggerydifficulty to 600>><<skulduggerycheck "silent">>
+	<<if $skulduggerysuccess is 1 or $transformationParts.traits.sharpEyes isnot "disabled">>
+		<<set $wrenHeistDance.sneak to true>>
+		You see Wren put something in <<his>> pocket.
+		<br><br>
+	<</if>>
+<<else>>
+	You ask if <<hes>> found something, but <<he>> quickly denies it. "No, just more papers," <<he>> says. "Seems like this was a bust."
+	<br><br>
+	<<set $skulduggerydifficulty to 600>><<skulduggerycheck "silent">>
+	<<if $skulduggerysuccess is 1 or $transformationParts.traits.sharpEyes isnot "disabled">>
+		<<set $wrenHeistDance.sneak to true>>
+		You see Wren put something in <<his>> pocket.
+		<br><br>
+	<</if>>
 <</if>>
 
 "You should get back," <<he>> says. "Can't have the star attraction go missing. I'll clean up, then come find you after you're done."
@@ -495,6 +533,7 @@ You follow <<him>> to <<his>> car.<<if $wrenHeistDance.car isnot true>> It's fai
 
 <<set $wrenSeen.pushUnique("heist")>>
 <<set $wrenSeenLast to "heist">>
+<<clearNPC "wren_heist_guard_1">><<clearNPC "wren_heist_guard_2">><<clearNPC "wren_heist_fighting">>
 
 <<link [[Next|Danube Street]]>><<handheldon>><<endevent>><<set $eventskip to 1>><</link>>
 <br>

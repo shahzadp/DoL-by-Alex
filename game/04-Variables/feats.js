@@ -698,6 +698,22 @@ setup.feats = {
 		hint: "Hint: Discover the secret of Kylar's manor.",
 		filter: ["All", "Social"],
 	},
+	"Warmest Winter": {
+		title: "Warmest Winter",
+		desc: "Heard Winter's most personal tale.",
+		difficulty: 2,
+		series: "",
+		hint: "Hint: Help an old fossil remember.",
+		filter: ["All", "Social"],
+	},
+	"Trials of Faith": {
+		title: "Trials of Faith",
+		desc: "Heard the true ending of the 'Hopeless Cycle' story.",
+		difficulty: 2,
+		series: "",
+		hint: "Hint: A truth buried behind many lies.",
+		filter: ["All", "Social"],
+	},
 	Neko: {
 		title: "Purrfect",
 		desc: "Purring for attention.",

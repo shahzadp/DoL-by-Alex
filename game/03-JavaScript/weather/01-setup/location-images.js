@@ -344,6 +344,35 @@ setup.LocationImages = {
 			},
 		},
 	},
+	blitz: {
+		folder: "blitz",
+		base: {
+			default: {
+				condition: () => ["home", "manor", "winter"].includes(V.bus),
+				image: "base.png",
+			},
+			street: {
+				condition: () => !["home", "manor", "winter"].includes(V.bus),
+				image: "base_street.png",
+			},
+			smoke: {
+				condition: () => ["home", "manor", "winter"].includes(V.bus) && !T.smokeOff,
+				image: "smoke.png",
+				animation: {
+					frameDelay: 200,
+					cycleDelay: 0,
+				},
+			},
+			smoke_street: {
+				condition: () => !["home", "manor", "winter"].includes(V.bus),
+				image: "smoke_street.png",
+				animation: {
+					frameDelay: 220,
+					cycleDelay: 0,
+				},
+			},
+		},
+	},
 	bog: {
 		folder: "bog",
 		base: {
