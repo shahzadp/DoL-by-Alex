@@ -37,6 +37,7 @@
 	<<set $vaginaWetness to 0>>
 	<<set $penisWetness to 0>>
 	<<set $anusWetness to 0>>
+	<<set $uncomfortable.hypnosis to true>>
 
 	/* body */
 	<<set $player.bodyshape to "slender">>
@@ -484,7 +485,7 @@
 				/* Time until item is discovered and removed */
 				if (!item.vanishesIn || ["held", V.bus].includes(item.location)) item.vanishesIn = 12;
 				let hidden;
-				if (V.hcItems.some(sheet => sheet.type is "sheets" and sheet.location is item.location)) hidden = true;
+				if (V.hcItems.some(sheet => sheet.type is "sheets" && [item.location, item.containerID].includes(sheet.location))) hidden = true;
 				let suspicionLevel;
 				switch (item.location) {
 					case "disposal":
@@ -502,7 +503,11 @@
 					case "bed":
 						/* Player's bed, very rarely checked but very suspicious */
 						suspicionLevel = 5;
-						item.vanishesIn -= 0.5;
+						if (hidden) {
+							item.vanishesIn -= 0;
+						} else {
+							item.vanishesIn -= 0.5;
+						}
 						break;
 					case "guardhouse":
 					case "garden":
@@ -918,6 +923,7 @@
 				<</if>>
 			<<case "down">>You put down $_itemText.
 			<<case "drop">>You drop $_itemText.
+			<<case "dropDirty">>You drop $_itemText, and it becomes dirty.
 			<<case "disposal">>
 				You throw $_itemText into the disposal channel.
 				<<if $_itemText is "clothes">>
@@ -940,8 +946,12 @@
 				<</if>>
 			<<case "emptyGarden">>
 				You dump out $_itemText at the edge of the forest.
-			<<case "kick">><span class="red">You kick over $_itemText. The water makes a horrible mess everywhere.</span> <<if !["disposal", "forest", "lake"].includes($bus)>><<hopelessCycleSus 2>><</if>>
-
+			<<case "kick">>
+				<<if !["disposal", "forest", "lake"].includes($bus)>>
+					<span class="red">You kick over $_itemText. The water makes a horrible mess everywhere. <<hopelessCycleSus 2>></span>
+				<<else>>
+					You kick over $_itemText.
+				<</if>>
 			<<case "pickUpLit">>You quickly pick up the burning torch.
 			<<case "pickUpSnuffed">>You pick up the unlit torch.
 			<<case "pickUpBurnt">>You retrieve the remains of the torch.
@@ -970,7 +980,7 @@
 			<<case "clean">>You diligently scrub $_itemText clean.
 			<<case "burn">>You commit $_itemText to the pyre.
 				<<if $itemActionObject.dirty gte 2>>
-					Your siblings look pleased with your offering. <<stress -6>><<purity 5>><<lstress>><<gpurity>>
+					Your siblings look pleased with your offering. <<stress -6>><<purity 5>><<lstress>><<gpurity>><<hopelessCycleSus -2>>
 				<</if>>
 
 			<<case "armour">>You change into your armour. It's a slow, noisy process.
@@ -1013,18 +1023,23 @@
 	<<set $_itemsDropped to $_items.filter(item => item.location is $bus)>>
 	<<set _containers to $_items.filter(item => item.containerID and ["held", $bus].includes(item.location))>>
 	<<if _containers.length>>
-		<<set _containersHeld to _containers.filter(cont => cont.location is "held").length>>
 		<<set _containersHere to _containers.filter(cont => cont.location is V.bus).length>>
+		<<set _containersHereIndex to 0>>
+		<<set _containersHeld to _containers.filter(cont => cont.location is "held").length>>
+		<<set _containersHeldIndex to 0>>
 		<<run _containers.forEach((gucket, index) => {
 			gucket.nameText = gucket.name;
+			gucket.tooltip = null;
 			if (gucket.location is V.bus) {
 				if (_containersHere gte 2) {
-					$_int = index + 1;
+					_containersHereIndex++;
+					$_int = _containersHereIndex;
 					gucket.nameText = ordinalSuffixOf($_int) + " " + gucket.name;
 				}
 			} else {
 				if (_containersHeld gte 2) {
-					$_int = index + 1;
+					_containersHeldIndex++;
+					$_int = _containersHeldIndex;
 					gucket.nameText = ordinalSuffixOf($_int) + " held " + gucket.name;
 				} else {
 					gucket.nameText = "held " + gucket.name;
@@ -1054,7 +1069,13 @@
 				if (gucketItems.some(item => item.type isnot "water") and gucket.capacity) {
 					let cHas = gucketItems.length;
 					let cCap = gucket.capacity;
-					gucket.nameText += " <span class='gold'>(items " + cHas +"/" + cCap + ")</span>"
+					let itemsIn = [];
+					V.hcItems.filter(c => c.location === gucket.containerID).forEach(c => {
+						let itemName = c.nameText || c.name;
+						itemsIn.push(itemName);
+					});
+					let itemsInText = formatList(itemsIn);
+					gucket.tooltip = ` <span tooltip="<span class='gold'>` + itemsInText + `</span>" class="tooltip-anchor"><span class='gold'>(items ` + cHas +`/` + cCap + `)</span></span>`;
 				}
 			}
 		})>>
@@ -1190,6 +1211,9 @@
 
 	/* Item icon and name */
 	<<set $_displayName to $_item.nameText ? $_item.nameText.toUpperFirst() : $_item.name.toUpperFirst()>>
+	<<if $_item.tooltip>>
+		<<set $_displayName += $_item.tooltip>>
+	<</if>>
 	<<if $_item.type is "torch">>
 		<<if $_item.state is "snuffed">>
 			<<hcicon $_item>><<print $_displayName>> <span class="blue">(snuffed)</span>
@@ -1391,8 +1415,18 @@
 					| <<link [[Drop|$passage]]>><<set $_item.location to $bus>><<set $itemAction to "drop">><<set $itemActionObject to $_item>><</link>>
 				<</if>>
 			<</if>>
-			<<if _hcSconces.includes($bus) and !$hcItems.some(torch => torch.type is "torch" and torch.location is $bus and torch.inSconce is true)>>
-				| <<link [[Place in sconce|$passage]]>><<set $_item.location to $bus>><<set $_item.inSconce to true>><<set $itemAction to "put" + $bus.toUpperFirst()>><</link>>
+			<<if _hcSconces.includes($bus) and !$_item.inSconce>>
+				<<set $_torchAlreadyHere to $hcItems.find(torch => torch.type is "torch" and torch.location is $bus and torch.inSconce is true)>>
+				<<if $_torchAlreadyHere>>
+					<<capture $_torchAlreadyHere>>
+						| <<link [[Replace in sconce|$passage]]>>
+							<<set $_torchAlreadyHere.location to $_item.location>><<set $_torchAlreadyHere.inSconce to false>>
+							<<set $_item.location to $bus>><<set $_item.inSconce to true>><<set $itemAction to "put" + $bus.toUpperFirst()>>
+						<</link>>
+					<</capture>>
+				<<else>>
+					| <<link [[Place in sconce|$passage]]>><<set $_item.location to $bus>><<set $_item.inSconce to true>><<set $itemAction to "put" + $bus.toUpperFirst()>><</link>>
+				<</if>>
 			<</if>>
 			<<if $bus is "disposal">>
 				<<if !$hc.glassfingers and $_item.state is "lit">>
