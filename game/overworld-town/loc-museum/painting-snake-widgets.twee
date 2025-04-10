@@ -461,6 +461,7 @@
 	<<if $hc.hour isnot Time.hour>>
 		<<set $_hoursPassed to Time.hour - $hc.hour>>
 		<<if $_hoursPassed lt 0>><<set $_hoursPassed += 24>><</if>>
+		<<set $_containersToCheck to $hcItems.filter(cont => cont.containerID)>>
 		<<for $_t = 0; $_t lt $_hoursPassed; $_t++>>
 			<<run $hcItems.filter(item => item.time && item.state is "lit").forEach(item => {
 				item.time--;
@@ -470,10 +471,12 @@
 				Math.clamp(item.time, 0, 11);
 			})>>
 
-			<<run hcItemsFilter((item => item.dirty && item.location !== "held")).forEach(toDirty => {
+			<<run hcItemsFilter((item => item.dirty &&
+			item.location !== "held" &&
+			!$_containersToCheck.some(c => c.containerID === item.location))).forEach(toDirty => {
 				if (toDirty.location is "disposal") {
 					toDirty.dirty++;
-				} else if ($rng gte 95) {
+				} else if ($rng gte 85) {
 					toDirty.dirty++;
 				}
 				Math.clamp(toDirty.dirty, 0, 2);
@@ -555,20 +558,60 @@
 				}
 				if (item.vanishesIn <= 0) {
 					if (suspicionLevel >= 1) {
-						V.hc.vanishedItems.push(item.name);
+						let itemToPush = clone(item);
+						if (itemToPush.containerID) {
+							V.hcItems.filter(bye => bye.location === itemToPush.containerID).forEach(bye => {
+								let itemToPushFromContainer = clone(bye);
+								itemToPushFromContainer.fromCont = true;
+								V.hc.vanishedItems.push(itemToPushFromContainer);
+								V.hc.suspicionGained += suspicionLevel * 2;
+								hcItemRemove(bye);
+							})
+						}
+						V.hc.vanishedItems.push(itemToPush);
 						V.hc.suspicionGained += suspicionLevel * 2;
 					}
 					hcItemRemove(item);
 				}
 			})>>
-			<<if $hc.vanishedItems.length and !["cell", "forest", "lake", "disposal", "guardhouse", "bed"].includes($bus) and Time.dayState isnot "night">>
+			<<if $hc.vanishedItems.length and !["cell", "forest", "lake", "disposal", "guardhouse"].includes($bus) and Time.dayState isnot "night">>
 				<span class="red">
-					You overhear whispers from your brothers and sisters.
-					<<if $hc.vanishedItems.length is 1>>
-						An item was found in an unusual place and returned.
-					<<else>>
-						Some items were found in suspicious places and returned.
-					<</if>>
+					You overhear whispers from your siblings.
+					<<for $_labelVanished, $_valueVanished range $hc.vanishedItems>>
+						<<if !$_valueVanished.fromCont>>
+							<br>
+							<<print hcItemName($_valueVanished, "cap", "vanished")>>
+							<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>were<<else>>was<</if>> found
+							<<switch $_valueVanished.location>>
+								<<case "bed">>
+									under your bunk.
+								<<case "cell">>
+									in <<= $prisoner.name>>'s cell.
+								<<case "cloister">>
+									in the cloister's main hall.
+								<<case "dining">>
+									in the dining hall.
+								<<case "prayerroom">>
+									in the prayer room.
+								<<case "pyre">>
+									near the pyre grounds.
+								<<case "temple">>
+									in the main hall.
+								<<case "training">>
+									in the training room.
+								<<default>>
+									in the $_valueVanished.location.
+							<</switch>>
+							<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>They were<<else>>It was<</if>>
+							<<if $_valueVanished.dirty gte 2 or $_valueVanished.state is "burnt">>
+								promptly burned.
+							<<elseif $_valueVanished.persists>>
+								returned to the $_valueVanished.origin.
+							<<else>>
+								returned.
+							<</if>>
+						<</if>>
+					<</for>>
 					<<if $hc.suspicion gte 50>>
 						You notice many of them stealing glances at you.
 					<</if>>
@@ -596,6 +639,9 @@
 				<<set $hc.dungeonTorchTime to Math.clamp($hc.dungeonTorchTime, 0, 11);>>
 			<<elseif ["snuffed","burnt"].includes($hc.dungeonTorchState) and !["dusk","night"].includes(Time.dayState) and Time.hour gte 12>>
 				<<set $hc.suspicion++>>
+				<<if $hc.handLocation is "guardhouse">>
+					<<set $hc.suspicion++>>
+				<</if>>
 			<</if>>
 
 			<<set $prisoner.harmedRecently-->>
@@ -878,33 +924,7 @@
 
 	<<if $itemAction>>
 		<<if $itemActionObject>>
-			<<set $_itemFlavor to $itemActionObject.nameText || $itemActionObject.name>>
-			<<switch $itemActionObject.type>>
-				<<case "bandages">><<set $_itemText to "a roll of " + $_itemFlavor>>
-				<<case "snuffer">><<set $_itemText to "your torch snuffer">>
-				<<case "torch">>
-					<<switch $itemActionObject.state>>
-						<<case "lit">>
-							<<set $_itemText to "a lit torch">>
-						<<default>>
-							<<set $_itemText to "an unlit torch">>
-						<</switch>>
-				<<case "clutter" "sheets">><<set $_itemText to "some " + $_itemFlavor>>
-				<<case "food">>
-					<<switch $itemActionObject.name>>
-						<<case "prison gruel">>
-							<<if !$itemActionObject.used>><<set $_itemText to "a bowl of meagre rations">><<else>><<set $_itemText to "a bowl">><</if>>
-						<<case "stolen food">>
-							<<if !$itemActionObject.used>><<set $_itemText to "a plate of stolen food">><<else>><<set $_itemText to "a plate">><</if>>
-						<<case "stolen fruit">>
-							<<set $_itemText to "some stolen fruit">>
-						<<default>>
-							<<if !$itemActionObject.used>><<set $_itemText to "a plate of food">><<else>><<set $_itemText to "a plate">><</if>>
-					<</switch>>
-				<<case "bucket" "container">><<set $_itemText to "a bucket">>
-				<<case "water">><<set $_itemText to $_itemFlavor>>
-				<<default>><<set $_itemText to "a " + $_itemFlavor>>
-			<</switch>>
+			<<set $_itemText to hcItemName($itemActionObject, false, false, true)>>
 		<</if>>
 		<span class="gold">
 		<<switch $itemAction>>

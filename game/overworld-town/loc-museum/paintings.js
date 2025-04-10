@@ -238,3 +238,87 @@ function hcItemsFilter(filterfn) {
 	return found.concat(foundInContainers);
 }
 window.hcItemsFilter = hcItemsFilter;
+
+function hcItemName(item, cap = false, vanished = false, decorations = false) {
+	const nameSpace = decorations && item.nameText ? item.nameText : item.name;
+	let itemText;
+	switch (item.type) {
+		case "bandages":
+			itemText = "a roll of " + nameSpace;
+			break;
+		case "snuffer":
+			itemText = "your torch snuffer";
+			break;
+		case "torch":
+			switch (item.state) {
+				case "lit":
+					itemText = "a lit torch";
+					break;
+				case "snuffed":
+					itemText = "an unlit torch";
+					break;
+				default:
+					itemText = "a burnt out torch";
+					break;
+			}
+			break;
+		case "clutter":
+		case "sheets":
+		case "herbs":
+		case "bones":
+			itemText = "some " + nameSpace;
+			break;
+		case "food":
+			switch (item.name) {
+				case "prison gruel":
+					if (item.used) {
+						itemText = "a bowl of prison gruel";
+					} else {
+						itemText = "a used bowl";
+					}
+					break;
+				case "stolen food":
+					if (item.used) {
+						itemText = "a plate of stolen food";
+					} else {
+						itemText = "a stolen plate"
+					}
+					break;
+				default:
+					itemText = "some stolen fruit";
+					break;
+			}
+			break;
+		case "bucket":
+		case "container":
+			itemText = "a " + item.name;
+
+			// eslint-disable-next-line no-case-declarations
+			const containerItemArray = [];
+			if (vanished) {
+				V.hc.vanishedItems
+					.filter(q => q.location === item.containerID)
+					.forEach(bye => {
+						containerItemArray.push(hcItemName(bye, false, vanished, decorations));
+				})
+			} else {
+				V.hcItems
+					.filter(q => q.location === item.containerID)
+					.forEach(bye => {
+						containerItemArray.push(hcItemName(bye, false, vanished, decorations));
+					});
+			}
+			itemText += " containing " + formatList(containerItemArray);
+			break;
+		case "water":
+			itemText = nameSpace;
+			break;
+		default:
+			itemText = "a " + nameSpace;
+			break;
+	}
+
+	if (cap) return itemText.toUpperFirst();
+	return itemText;
+}
+window.hcItemName = hcItemName;
