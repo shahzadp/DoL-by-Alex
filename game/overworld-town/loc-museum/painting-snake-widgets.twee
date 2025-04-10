@@ -1042,6 +1042,30 @@
 	<<set $_itemsHeld to $_items.filter(item => item.location is "held")>>
 	<<set $_itemsDropped to $_items.filter(item => item.location is $bus)>>
 	<<set _containers to $_items.filter(item => item.containerID and ["held", $bus].includes(item.location))>>
+
+	<<run $hcItems.filter(item => item.dirty isnot undefined).forEach(item => {
+		item.nameText = item.name;
+		if (item.used and ["bandages"].includes(item.type)) item.nameText = "used " + item.nameText;
+		if (item.used and ["food"].includes(item.type)) item.nameText = "used dish";
+		if (item.type is "water") {
+			if (item.dirty gte 2) {
+				item.nameText = "<span class='purple'>tainted water</span>"
+			} else if (item.dirty is 1) {
+				item.nameText = " <span class='blue'>used water</span>"
+			} else {
+				item.nameText = " <span class='teal'>clean water</span>"
+			}
+		} else {
+			if (item.dirty gte 2) {
+				item.nameText += " <span class='purple'>(tainted)</span>"
+			} else if (item.dirty is 1) {
+				item.nameText += " <span class='brown'>(dirty)</span>"
+			} else {
+				item.nameText += " <span class='grey'>(clean)</span>"
+			}
+		}
+	})>>
+
 	<<if _containers.length>>
 		<<set _containersHere to _containers.filter(cont => cont.location is V.bus).length>>
 		<<set _containersHereIndex to 0>>
@@ -1100,29 +1124,6 @@
 			}
 		})>>
 	<</if>>
-
-	<<run $hcItems.filter(item => item.dirty isnot undefined).forEach(item => {
-		item.nameText = item.name;
-		if (item.used and ["bandages"].includes(item.type)) item.nameText = "used " + item.nameText;
-		if (item.used and ["food"].includes(item.type)) item.nameText = "used dish";
-		if (item.type is "water") {
-			if (item.dirty gte 2) {
-				item.nameText = "<span class='purple'>tainted water</span>"
-			} else if (item.dirty is 1) {
-				item.nameText = " <span class='blue'>used water</span>"
-			} else {
-				item.nameText = " <span class='teal'>clean water</span>"
-			}
-		} else {
-			if (item.dirty gte 2) {
-				item.nameText += " <span class='purple'>(tainted)</span>"
-			} else if (item.dirty is 1) {
-				item.nameText += " <span class='brown'>(dirty)</span>"
-			} else {
-				item.nameText += " <span class='grey'>(clean)</span>"
-			}
-		}
-	})>>
 
 	/* Item types that can't be put into containers */
 	<<set _hcBlacklist to ["bucket", "container", "prisoner"]>>
@@ -1243,7 +1244,13 @@
 			<<hcicon $_item>><<print $_displayName>> <span class="orange">(<<number $_item.time>> hour<<if $_item.time gte 2>>s<</if>>)</span>
 		<</if>>
 		<<if $_item.location isnot "held">>
-			<<if $_item.inSconce>><span class="green">(in sconce)</span><<else>><span class="red">(on ground)</span><</if>>
+			<<if $_item.inSconce>>
+				<span class="green">(in sconce)</span>
+			<<elseif $bus is "bed">>
+				<span class="green">(stashed)</span>
+			<<else>>
+				<span class="red">(on ground)</span>
+			<</if>>
 		<</if>>
 	<<else>>
 		<<hcicon $_item>><<print $_displayName>>

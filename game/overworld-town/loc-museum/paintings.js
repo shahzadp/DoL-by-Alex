@@ -308,7 +308,9 @@ function hcItemName(item, cap = false, vanished = false, decorations = false) {
 						containerItemArray.push(hcItemName(bye, false, vanished, decorations));
 					});
 			}
-			itemText += " containing " + formatList(containerItemArray);
+			if (containerItemArray.length) {
+				itemText += " containing " + formatList(containerItemArray);
+			}
 			break;
 		case "water":
 			itemText = nameSpace;
