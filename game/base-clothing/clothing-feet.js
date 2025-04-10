@@ -1601,7 +1601,7 @@ function initFeet() {
 			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			cursed: 0,
-			notuck: 1,
+			notuck: 0,
 			location: 0,
 			iconFile: "basketball_sneakers.png",
 			accIcon: "basketball_sneakers_acc.png",

@@ -846,31 +846,32 @@
 		<h1 class="header gold bold">Collectibles</h1>
 		<<if $museumintro is 1>>
 			<<museumAntiqueText>><<museumPaintingText>>
-			<<if $museumAntiqueJournalHints.length gte 1>>
-				Winter has mentioned some items that are missing from the museum.
-				<ul class="journal">
+			<<if $museumAntiqueJournalHints.length gte 1 || Object.values(V.museumAntiques.paintings).includes("found")>>
 				<<set _hintslist to clone($museumAntiqueJournalHints).reverse()>>
-				<!-- most recent go on top -->
-				<<for _hint range _hintslist>>
-					<<if _museumAntiqueText[_hint]>>
-						<<if ["found", "talk"].includes($museumAntiques.antiques[_hint])>>
-							<li>You should show the <<= _museumAntiqueText[_hint].name.toLowerCase()>> to Winter.</li>
-						<<else>>
-							<li><<print _museumAntiqueText[_hint].journal>></li>
-						<</if>>
-					<<else>>
-						<li><span class="red">Warning: Antique "_hint" doesn't have a hint. Did you export this save from a modded version?</span></li>
-						<<set $museumAntiqueJournalHints.delete(_hint)>>
-					<</if>>
-				<</for>>
-				</ul>
-			<</if>>
-			<<for $_labelP, $_valueP range $museumAntiques.paintings>>
-				<<if $_valueP is "found">>
-					<li>You should show the <<= _museumPaintingText[$_labelP].journalName.toLowerCase()>> to Winter.</li>
+				<<if $museumAntiqueJournalHints.length gte 1>>
+					Winter has mentioned some items that are missing from the museum.
 				<</if>>
-			<</for>>
-			<br>
+				<ul class="journal">
+					<<for _hint range _hintslist>>
+						<<if _museumAntiqueText[_hint]>>
+							<<if ["found", "talk"].includes($museumAntiques.antiques[_hint])>>
+								<li>You should show the <<= _museumAntiqueText[_hint].name.toLowerCase()>> to Winter.</li>
+							<<else>>
+								<li><<print _museumAntiqueText[_hint].journal>></li>
+							<</if>>
+						<<else>>
+							<li><span class="red">Warning: Antique "_hint" doesn't have a hint. Did you export this save from a modded version?</span></li>
+							<<set $museumAntiqueJournalHints.delete(_hint)>>
+						<</if>>
+					<</for>>
+					<<for $_labelP, $_valueP range $museumAntiques.paintings>>
+						<<if $_valueP is "found">>
+							<li>You should show the <<= _museumPaintingText[$_labelP].journalName.toLowerCase()>> to Winter.</li>
+						<</if>>
+					<</for>>
+				</ul>
+				<br>
+			<</if>>
 			<<set $_antiquesFound to Object.values($museumAntiques.antiques).filter(status => status !== "notFound").length>>
 			<<set $_paintingsFound to Object.values($museumAntiques.paintings).filter(status => status !== "notFound").length>>
 			<<set $_totalFound to $_antiquesFound + $_paintingsFound>>
@@ -890,7 +891,11 @@
 			<</if>>
 			<br><br>
 			<details class="journal">
-				<summary class="journal">Antiques</summary>
+				<summary class="journal">Museum Items</summary>
+				<<if $museum_paintings_intro>>
+					<span class="gold bold m-2">Antiques</span>
+					<br>
+				<</if>>
 				<div class="itemCollectible">
 					<<for _labelM, _valueM range $museumAntiques.antiques>>
 						<<set _antique to $museumAntiqueJournalHints.includes(_labelM) ? _museumAntiqueText[_labelM]?.journalName || _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst() : _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst()>>
@@ -920,7 +925,9 @@
 					<</for>>
 				</div>
 				<<if $museum_paintings_intro>>
-					<summary class="journal">Paintings</summary>
+					<hr>
+					<span class="gold bold m-2">Paintings</span>
+					<br>
 					<div class="itemPainting">
 						<<for _labelP, _valueP range $museumAntiques.paintings>>
 							<<set _painting to _valueP isnot "museum" ? _museumPaintingText[_labelP].journalName : _museumPaintingText[_labelP].name>>
