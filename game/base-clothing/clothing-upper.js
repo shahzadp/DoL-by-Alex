@@ -9296,6 +9296,7 @@ function initUpper() {
 			name_cap: "Drop arm tank top",
 			variable: "droparm",
 			combat: {
+				reference: "tanktop",
 				hasBreasts: true,
 			},
 			integrity: 100,
