@@ -234,7 +234,7 @@ function initHands() {
 			colour_combat: 0,
 			type: ["normal", "sticky_fingers", "stealthy"],
 			gender: "n",
-			warmth: 2,
+			warmth: 3,
 			cost: 8000,
 			description: "Fashionable and ready to slip into pockets.",
 			shop: ["clothing", "adult"],
