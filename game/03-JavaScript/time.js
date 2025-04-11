@@ -1349,9 +1349,9 @@ function dailyPlayerEffects() {
 	statChange.insecurity("penis_big", Math.clamp(V.player.penissize - 4, -5, -1)); // Increases by 1 for each size below large
 
 	const reducedBreastsize = Math.floor(V.player.breastsize / 2);
-	if (V.player.gender !== "f") {
+	if (V.player.sex !== "f") {
 		statChange.insecurity("breasts_big", Math.clamp(reducedBreastsize - 4, -5, -1)); // Increases by 1 for each other size below full
-	} else if (V.player.gender === "h") {
+	} else if (V.player.sex === "h") {
 		statChange.insecurity("breasts_big", Math.clamp(reducedBreastsize - 5, -5, -1)); // Increases by 1 for each other size below ample
 	} else {
 		statChange.insecurity("breasts_small", -Math.clamp(reducedBreastsize - 1, 1, 5)); // Increases by 1 for each other size above modest
@@ -1360,9 +1360,9 @@ function dailyPlayerEffects() {
 
 	// Lower acceptance when it no longer applies, takes 200 days for it to drop to 0 from max
 	if (!(V.player.penisExist && V.player.penissize <= 1)) statChange.acceptance("penis_small", -5);
-	if (!(V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3))) statChange.acceptance("penis_big", -5);
-	if (V.player.gender === "f" && !between(V.player.breastsize, 0, 4)) statChange.acceptance("breasts_small", -5);
-	if (!(V.player.breastsize >= (V.player.gender === "m" ? 1 : 8))) statChange.acceptance("breasts_big", -5);
+	if (!(V.player.penisExist && V.player.penissize >= (V.player.sex === "m" ? 4 : 3))) statChange.acceptance("penis_big", -5);
+	if (V.player.sex === "f" && !between(V.player.breastsize, 0, 4)) statChange.acceptance("breasts_small", -5);
+	if (!(V.player.breastsize >= (V.player.sex === "m" ? 1 : 8))) statChange.acceptance("breasts_big", -5);
 
 	if (playerBellySize() < 8) {
 		statChange.insecurity("pregnancy", -5);
@@ -1984,10 +1984,10 @@ function earSlimeDaily(passageEffects = false) {
 
 	if (V.earSlime.growth >= 100) {
 		if (
-			(V.earSlime.growth >= 100 && V.player.gender !== "f" && V.parasite.penis.name !== "parasite") ||
-			(V.earSlime.growth >= 100 && V.player.gender === "f" && V.parasite.clit.name !== "parasite")
+			(V.earSlime.growth >= 100 && V.player.sex !== "f" && V.parasite.penis.name !== "parasite") ||
+			(V.earSlime.growth >= 100 && V.player.sex === "f" && V.parasite.clit.name !== "parasite")
 		) {
-			if (V.player.gender !== "f") {
+			if (V.player.sex !== "f") {
 				V.effectsmessage = 1;
 				V.earSlimePenisParasite = 1;
 				if (V.parasite.penis.name && V.parasite.penis.name !== "parasite") {
@@ -2003,7 +2003,7 @@ function earSlimeDaily(passageEffects = false) {
 					wikifier("removeparasite", "clit");
 				}
 				wikifier("parasite", "clit", "parasite", "noSuck");
-				if (["mixed", "impregnation"].includes(V.earSlime.focus) && V.player.gender === "f") V.player.penisExist = true;
+				if (["mixed", "impregnation"].includes(V.earSlime.focus) && V.player.sex === "f") V.player.penisExist = true;
 			}
 		}
 

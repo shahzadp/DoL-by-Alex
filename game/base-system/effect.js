@@ -931,7 +931,7 @@ function effects() {
 				parasiteMessage += parasiteMessage ? " and the base of your penis" : "A new parasite forms around the base of your penis";
 			}
 
-			if (V.earSlimeClitParasite) {
+			if (V.earSlimeClitParasite && V.player.vaginaExist) {
 				if (V.earSlime.focus === "pregnancy") {
 					parasiteMessage += parasiteMessage ? " and <<pussy>>" : "A new parasite forms around your <<pussy>>";
 				} else {
