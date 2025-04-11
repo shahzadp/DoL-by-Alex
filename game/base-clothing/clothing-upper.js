@@ -9387,6 +9387,7 @@ function initUpper() {
 			accIcon: "vintage_skirtsuit_acc.png",
 			outfitPrimary: { lower: "vintage skirt" },
 			notuck: 1,
+			pregType: "split",
 		},
 
 		{
@@ -9438,6 +9439,7 @@ function initUpper() {
 			accIcon: "vintage_pantsuit_acc.png",
 			outfitPrimary: { lower: "vintage pants" },
 			notuck: 1,
+			pregType: "split",
 		},
 		{
 			index: 170,

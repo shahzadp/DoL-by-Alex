@@ -119,6 +119,7 @@
 	<<set $islander_language to 100>><<set $temple_burden to 5>><<set $prof.baton to 200>><<set $prof.whip to 800>><<set $temple_weapon to "whip">>
 	<<set $angelBanish to 3>><<set $angelBanishMax to 3>>
 	<<set $sadism to 180>><<set $sadism_level to 1>>
+	<<set $backgroundTraits to ['waif']>>
 
 	<<set $loveInterest to {
 		primary: "None",
@@ -466,7 +467,7 @@
 		<<set $_hoursPassed to Time.hour - $hc.hour>>
 		<<if $_hoursPassed lt 0>><<set $_hoursPassed += 24>><</if>>
 		<<set $_containersToCheck to $hcItems.filter(cont => cont.containerID)>>
-		<<set $_witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
+		<<set $_witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms")>>
 		<<for $_t = 0; $_t lt $_hoursPassed; $_t++>>
 			<<run $hcItems.filter(item => item.time && item.state is "lit").forEach(item => {
 				item.time--;
@@ -581,8 +582,8 @@
 				}
 			})>>
 			<<if $hc.vanishedItems.length and !["cell", "forest", "lake", "disposal", "guardhouse"].includes($bus) and Time.dayState isnot "night">>
+				<span class="narration">Whispers spread through the temple's flock. They reach the gaoler's ears.</span>
 				<span class="red">
-					You overhear whispers from your siblings.
 					<<for $_labelVanished, $_valueVanished range $hc.vanishedItems>>
 						<<if !$_valueVanished.fromCont>>
 							<br>
@@ -1068,7 +1069,13 @@
 	<<run $hcItems.filter(item => item.dirty isnot undefined).forEach(item => {
 		item.nameText = item.name;
 		if (item.used and ["bandages"].includes(item.type)) item.nameText = "used " + item.nameText;
-		if (item.used and ["food"].includes(item.type)) item.nameText = "used dish";
+		if (item.used and ["food"].includes(item.type)) {
+			if (item.name is "stolen food") {
+				item.nameText = "stolen dish"
+			} else {
+				item.nameText = "used dish";
+			}
+		}
 		if (item.type is "water") {
 			if (item.dirty gte 2) {
 				item.nameText = "<span class='purple'>tainted water</span>"
