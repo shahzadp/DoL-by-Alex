@@ -1752,6 +1752,7 @@ Renderer.CanvasModels.main = {
 			src: `img/transformations/cow/ears/tag.png`,
 		}),
 		"cow_tail": genlayer_tail("cow", false),
+
 		/***
 		 *    ██████  ██ ██████  ██████
 		 *    ██   ██ ██ ██   ██ ██   ██

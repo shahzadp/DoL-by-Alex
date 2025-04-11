@@ -169,7 +169,7 @@ window.determineCatEyeStages = function () {
 
 	/* The right eye is the one we see the most.
 	   If this eye is light blue and the target colour is blue, the player
-	   might not notice a difference.  So, swap the two eyes */
+	   might not notice a difference. So, swap the two eyes */
 	if (V.rightEyeColour === "light blue" && targetColours[1] === blue) targetColours = [targetColours[1], targetColours[0]];
 	for (let index = 1; index <= stages; index++) {
 		const eyesResult = {

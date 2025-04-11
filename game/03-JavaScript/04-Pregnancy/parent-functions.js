@@ -18,7 +18,7 @@ const parent = ({ name = null, npc = false, kids = 0, id = null, births = undefi
 
 /**
  * @description Finds the highest id within the passed parent type (mother or father).
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers.
  * @returns {number} The highest id value in the passed list type.
  */
 function findMaxParentId(parentType = 0) {
@@ -36,7 +36,7 @@ function findMaxParentId(parentType = 0) {
 /**
  * @description Looks for the passed parent's id in the passed list type.
  * @param {number} parentId The id of the parent.
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers. Defaults to mothers if no value is entered.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers. Defaults to mothers if no value is entered.
  * @param {boolean} byName If true, then this function will return an array containing all mothers or fathers that have the passed name.
  * @returns All of the information about the requested parent. Returns -1 if there was nothing to be found.
  */
@@ -70,7 +70,7 @@ function findParent(parentId, parentType = 0, byName = false) {
 /**
  * @description Finds the number of kids a passed parent has.
  * @param {number} parentId The id of the parent.
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers. Defaults to mothers if no value is entered.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers. Defaults to mothers if no value is entered.
  * @param {boolean} byName If true, searches the parent list type using the name instead of the id. This will then return the first match.
  * @returns Returns the number of kids the passed parent has.
  */
@@ -101,7 +101,7 @@ function totalKids(parentId, parentType = 0, byName = false) {
  * @description Adds a new parent to the parent list on the passed side.
  * @param {string} name The name of the passed NPC.
  * @param {object} npcObject The object containing the NPC's information.
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers. Defaults to mothers if no value is entered.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers. Defaults to mothers if no value is entered.
  * @param {number} passedID The id number of the NPC is they already have one. If the id is a duplicate, it will assign a new id.
  */
 function addToParentList(name, npcObject, parentType = 0, passedID = null) {
@@ -141,7 +141,7 @@ function addToParentList(name, npcObject, parentType = 0, passedID = null) {
 /**
  * @description Increases the kid count of the passed parent.
  * @param {number} parentId The id of the parent.
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers. Defaults to mothers if no value is entered.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers. Defaults to mothers if no value is entered.
  * @param {number} otherParentId The id of the other parent of the child. If passed a number, it will look in the other list for this parent and increase it's kid count as well.
  */
 function increaseKids(parentId, parentType = 0, otherParentId = null) {
@@ -157,7 +157,7 @@ function increaseKids(parentId, parentType = 0, otherParentId = null) {
 /**
  * @description Increases the kid count of the passed parent.
  * @param {number} parentId The id of the parent.
- * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers  or 1 for fathers. Defaults to mothers if no value is entered.
+ * @param {number} parentType The part of the parent list that is being looked in. Use 0 for mothers or 1 for fathers. Defaults to mothers if no value is entered.
  */
 function increaseBirths(parentId, parentType = 0) {
 	parentType = parentType === 0 ? "mothers" : "fathers";

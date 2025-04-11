@@ -323,7 +323,7 @@ window.playerChastity = playerChastity;
 /**
  * @description Takes in a passed item of clothing and returns its corresponding pair if it's an outfit part.
  * @param {object} garment The item of clothing that we want the second half of.
- * @param {string} layer  The layer the garment in being worn on.
+ * @param {string} layer The layer the garment in being worn on.
  * @returns {object} If found, it will return the item of clothing that is the other half. If not, it returns null.
  */
 function findOutfitPair(garment, layer) {
