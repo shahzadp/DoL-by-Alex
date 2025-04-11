@@ -375,6 +375,15 @@ You are in <<print $prisoner.name>>'s cell.
 					<br>
 				<</if>>
 			<</if>>
+			<<if $prisonerEvents.includes("talkHair") and !$prisonerEvents.includes("talkHairBlooms")>>
+				<<set _witchblooms to hcItemCanReach("clutter", w => w.name === "purified witchblooms")>>
+				<<if _witchblooms>>
+					<<capture _witchblooms>>
+						<<hcicon _witchblooms>><<link [[Braid the purified witchblooms into her hair (0:10)|Hopeless Cycle Cell Witchblooms]]>><<pass 10>><<set _witchblooms.location to "prisoner">><<set $prisoner.love += 5>><</link>><<gglove>>
+						<br>
+					<</capture>>
+				<</if>>
+			<</if>>
 			<<if _water and !$hc.daily.washed>>
 				<<capture _water, _clothesCurrent>>
 					<<hcicon "bucket">><<link [[Dump the bucket of water over her (0:01)|Hopeless Cycle Cell Dump Water]]>>
@@ -2211,6 +2220,29 @@ She taps your shoulder when she's finished. You turn back around and she smiles 
 <<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 <br>
 
+:: Hopeless Cycle Cell Witchblooms
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>><<set $prisonerEvents.pushUnique("talkHairBlooms")>><<set $prisoner.health ++>>
+
+You show <<= $prisoner.name>> the revitalised flowers. Her eye widens.
+<br><br>
+
+You sit behind her, and undo the bottom of her braid. She can't ask, but you know she's wondering how you managed to purify them.
+You tell her that you let them feed on your purity in your sleep.
+<br><br>
+
+You gently braid her hair around the twin blooms. She runs her hand against them, smiling.
+<br><br>
+
+Despite everything, you've made her look and feel pretty. She nearly topples you with a hug.
+<br><br>
+
+You look down at the blooms again. They shine radiantly, even with so little light. <span class="gold">If they can absorb your purity, perhaps they can absorb and ease her corruption, as well.</span>
+<br><br>
+
+<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
+<br>
+
 :: Hopeless Cycle Cell Kiss
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
@@ -2796,6 +2828,10 @@ The Hand looks <<= $prisoner.name>> over.
 	<<set _somethingToSay to true>>
 	<<set $prisonerEvents.pushUnique("talkHairSeen")>>
 	He notices her braided hair. "Must be good with her hands, to do that with shackles on." <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+	<br>
+<</if>>
+<<if $prisonerEvents.includes("talkHairBlooms") and !$prisonerEvents.includes("talkHairBloomsSeen")>>
+	He notices the flowers in her braids, and his eyebrows raise. "Only a pure hand can raise those blooms. Well done, brother. They should help keep her filth contained." <<set $hc.suspicion -= 5>><<hopelessCycleSus -2>>
 	<br>
 <</if>>
 <<if !_somethingToSay>>

@@ -1073,7 +1073,7 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 	<<set _itemsHere.push("bandages")>>
 	<div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div>
 	<b><u>Locations:</u></b><br>
-	<<templeicon "cloister">><<link [[Cloister|Hopeless Cycle Cloister]]>><<endevent>><</link>>
+	<<templeicon "cloister">><<link [[Cloister (0:01)|Hopeless Cycle Cloister]]>><<pass 1>><<endevent>><</link>>
 	<br>
 <</if>>
 
@@ -1722,7 +1722,7 @@ When you're done, it rolls over. You rub its belly. That should hopefully keep i
 You put down the $hcDogFood in front of the dog. It perks up and digs in right away.
 <br><br>
 
-<<if $hcFood is "prison gruel">>
+<<if $hcDogFood is "prison gruel">>
 	It does not seem to mind the quality at all.
 <<else>>
 	It's probably the best food it will ever eat.
@@ -2365,10 +2365,35 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 :: Hopeless Cycle Bunk Bed
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
-<<if $hcItems.some(item => item.location is "held")>>
-	You stash your items under your bed, before reciting your nightly prayers and climbing in.
+<<set _witchblooms to hcItemCanReach("clutter", w => w.name === "witchblooms" && w.dirty gte 1)>>
+<<if _witchblooms>>
+	<<if _witchblooms.location is "held">>
+		<<set _witchbloomsHeld to true>>
+	<<elseif !$hc.daily.witchbloomMessage>>
+		<<set $hc.daily.witchbloomMessage to true>>
+		As you prepare for bed, <span class="pink">your hands twitch. They feel empty.</span>
+		You look under your bed for the flowers. You want to hold them while you sleep, although you can't reason why.
+		Perhaps they yearn for your purity.
+		<br><br>
+
+		<<capture _witchblooms>>
+			<<link [[Take them|Hopeless Cycle Bunk Bed]]>><<set _witchblooms.location to "held">><</link>>
+			<br>
+		<</capture>>
+		<<link [[Ignore them|Hopeless Cycle Bunk Bed]]>><</link>>
+		<br>
+		<<exit>>
+	<</if>>
+<</if>>
+<<if $hcItems.some(item => item.location is "held" && item.name isnot "witchblooms")>>
+	<<run $hcItems.filter(item => item.location is "held" && item.name isnot "witchblooms").forEach(item => item.location = "bed")>>
+	<span class="blue">You stash your items under your bed,</span> before reciting your nightly prayers
+	<<if _witchbloomsHeld>><span class="purple">with the flowers between your hands</span><</if>>
+	and climbing in.
 <<else>>
-	You recite your nightly prayers and climb into bed.
+	You recite your nightly prayers
+	<<if _witchbloomsHeld>><span class="purple">with the flowers between your hands</span><</if>>
+	and climb into bed.
 <</if>>
 <br>
 
@@ -2396,6 +2421,19 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 		<</if>>
 	<</if>>
 	<br><br>
+
+	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
+	<<if _witchblooms>>
+		<<if _witchblooms.progress and _witchblooms.progress gte 14>>
+			<<set _witchblooms.name to "purified witchblooms">>
+			<<set _witchblooms.nameText to "witchblooms <span class='gold'>(purified)</span>">>
+			<<run delete _witchblooms.dirty>>
+			<span class="green">The flowers are vibrant and full of life.</span><<llpurity>>
+		<<elseif _witchblooms.progress>>
+			<span class="teal">The flowers look healthier, but still sickly.</span><<llpurity>>
+		<</if>>
+		<br><br>
+	<</if>>
 
 	<<link [[Get up|Hopeless Cycle Bunk]]>><<hopelessCycleOutfit "armour">><</link>>
 	<br>
@@ -2427,6 +2465,19 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 		<<set $hairlengthstage to "feet">>
 	<</if>>
 	<br><br>
+
+	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
+	<<if _witchblooms>>
+		<<if _witchblooms.progress and _witchblooms.progress gte 14>>
+			<<set _witchblooms.name to "purified witchblooms">>
+			<<set _witchblooms.nameText to "witchblooms <span class='gold'>(purified)</span>">>
+			<<run delete _witchblooms.dirty>>
+			<span class="green">The flowers are vibrant and full of life.</span><<llpurity>>
+		<<elseif _witchblooms.progress>>
+			<span class="teal">The flowers look healthier, but still sickly.</span><<llpurity>>
+		<</if>>
+		<br><br>
+	<</if>>
 
 	<<link [[Get up|Hopeless Cycle Bunk]]>><<hopelessCycleOutfit "armour">><</link>>
 	<br>
@@ -2678,7 +2729,7 @@ She nearly reaches him, her left arm and hand becoming black. Her fingers elonga
 
 :: Hopeless Cycle Prayer Report 5
 <<set _thermoDisable to true>><<effects>>
-<<hopelessCycleEffects>>
+<<hopelessCycleEffects>><<set $hc.daily.enteredDungeon to true>>
 <span class="narration">Despite the monk's crime, the gaoler and the witch did not lose themselves. Make no mistake, he was punished, but the punishment did not exceed the crime. Such was the duty of a gaoler.</span>
 <br><br>
 
@@ -3115,7 +3166,11 @@ You don't want to watch, but you can't look away. Finally, the Hand brandishes a
 <<elseif $prisonerEvents.includesAll("newClothes", "talkName", "talkMagic", "washHair") and ($prisonerEvents.includes("kiss") or $prisonerEvents.includesAll("sex", "virginity"))>>
 	<span class="blue">Her hair begins to float, as if being lifted by an unfelt wind.</span>
 	<<if $prisonerEvents.includes("talkHair")>>
-		<span class="pink">It unbraids itself, spreading out.</span>
+		<<if $prisonerEvents.includes("talkHairBlooms")>>
+			<span class="purple">Her braid elegently flows, the witchblooms within softly glowing.</span>
+		<<else>>
+			<span class="pink">It unbraids itself, spreading out.</span>
+		<</if>>
 	<</if>>
 	The Hand appears nervous for a moment, and the flock murmurs.
 	<br><br>
@@ -3146,7 +3201,11 @@ You don't want to watch, but you can't look away. Finally, the Hand brandishes a
 	<<if $prisonerEvents.includes("washHair")>>
 		<span class="blue">Her hair begins to float, as if being lifted by an unfelt wind.</span>
 		<<if $prisonerEvents.includes("talkHair")>>
-			<span class="pink">It unbraids itself, spreading out.</span>
+			<<if $prisonerEvents.includes("talkHairBlooms")>>
+				<span class="purple">Her braid elegently flows, the witchblooms within softly glowing.</span>
+			<<else>>
+				<span class="pink">It unbraids itself, spreading out.</span>
+			<</if>>
 		<</if>>
 		The Hand appears nervous for a moment, but hastily continues with the ritual.
 	<<else>>
@@ -3581,6 +3640,9 @@ From the tiny barred window, a flood of grass, leaves and algae have spilled int
 		Could this really be the result of her violation at the hands of one of your brothers?
 	<</if>>
 	You reach down.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		<span class="purple">The blooms you braided into <<= $prisoner.name>>'s hair are bound to their arm.</span>
+	<</if>>
 	<br><br>
 
 	The baby's eyes glow in the dim light. Your joints become stiff and unresponsive. <span class="red">You can't move! Its jaws split and open wide, like that of a snake. It bites your hand, before lunging at you. Your screams are swiftly silenced.</span>
@@ -3601,6 +3663,9 @@ From the tiny barred window, a flood of grass, leaves and algae have spilled int
 	<br><br>
 
 	You were mistaken. The forest didn't grow into the cell. It sprouted out, from right here. The stone is cracked.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		<span class="purple">The flowers you braided into her hair have taken root and become overgrown.</span>
+	<</if>>
 	<br><br>
 
 	<span class="narration">
@@ -3694,8 +3759,12 @@ You slump back against the wall, resigned to your fate. You know there's no esca
 
 	The gaoler soon realised that his siblings were all in on the secret, speaking only in hushed whispers around him.
 	He became isolated and obsessive, which only led his siblings to alienate him further.
-	It drove him to insanity. He began to demand answers, his anger and paranoia ruling over him,
-	until one day... he snapped. He cursed all of his siblings one last time, before flying into a frenzy.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		It all came to a head when he discovered a pair of flowers in his bed. The same flowers he had braided into her hair. It made him snap.
+	<<else>>
+		It drove him to insanity. He began to demand answers, his anger and paranoia ruling over him, until one day... he snapped.
+	<</if>>
+ 	He cursed all of his siblings one last time, before flying into a frenzy.
 	He was eventually restrained, but only after injuring dozens. They say he fought as though possessed.
 	<br><br>
 
@@ -3799,6 +3868,9 @@ You feel numb.
 
 	The monthly rituals instead became a monthly vigil. For years the flock searched for their missing brother, but would never find him.
 	Even though they could hear him and his beloved witch laughing in the red moonlight.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		Even though they found a familiar pair of flowers out in the forest, the same flowers that the gaoler had braided into her hair.
+	<</if>>
 	Even though some claimed to see them dancing on the lake shore, the witch finally whole of body, before both flickering out of existence.
 	<br><br>
 
@@ -3885,6 +3957,9 @@ The confessors drag the sinner away to face purification. You tug on <<= $prison
 <br><br>
 
 Your hands tremble. Penance always fills you with desire. Not just you, either. Juices leak from <<= $prisoner.name.toUpperFirst()>>'s eager vagina. She craves this as much as you, if not more. Her eyes are locked with yours, full of hunger as her antler shimmers.
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	The flowers in her braid have long-since withered and become dull again.
+<</if>>
 <br><br>
 
 You lay her down on your bed. The confessors stopped giving you inspections months ago; it didn't matter anymore. You were filthy, and the two of you faced punishments of your own constantly.
@@ -4164,13 +4239,25 @@ You kneel down to inspect it. It almost resembles shed snake skin, but the patte
 <br><br>
 
 Something rustles in the bushes nearby. You unclasp your whip and stand.
-<span class="pink">You see a <<personsimple>> with leaves in <<his>> hair staring at you.</span> <<His>> eyes go wide, and <<he>> quickly flees.
-<br><br>
+<span class="pink">You see a <<personsimple>> with leaves in <<his>> hair staring at you.</span>
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	<<His>> eyes go wide, and <<he>> slowly puts <<his>> hands forward to show you <<he>> means no harm.
+	<br><br>
 
-You shout after <<him>>, but <<he>> ignores you. <<He>> seemed to be carrying something heavy.
-<br><br>
+	<<He>> reaches behind <<him>>, and produces a familiar pair of flowers. <span class="purple">The same ones you braided into <<= $prisoner.name>>'s hair!</span>
+	<br><br>
 
-You step into the bushes where <<he>> had been standing, where the skin-like scraps are most concentrated. The deep green of the forest is stained with red. Blood. So much blood. Your heart catches in your chest.
+	<<He>> motions for you to follow <<him>>, and you hesitantly do so. You follow <<him>> to another clearing.
+<<else>>
+	<<His>> eyes go wide, and <<he>> quickly flees.
+	<br><br>
+
+	You shout after <<him>>, but <<he>> ignores you. <<He>> seemed to be carrying something heavy.
+	<br><br>
+
+	You step into the bushes where <<he>> had been standing, where the skin-like scraps are most concentrated.
+<</if>>
+The deep green of the forest is stained with red. Blood. So much blood. Your heart catches in your chest.
 <br><br>
 
 Something looks up at you and whines. <span class="green">It's a baby.</span> A baby with tiny black antlers on her head, almost resembling twigs.
@@ -4187,6 +4274,9 @@ Something looks up at you and whines. <span class="green">It's a baby.</span> A 
 <</if>>
 <br><br>
 
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	The <<personsimple>> lowers <<his>> head in respectful supplication.
+<</if>>
 You're flooded with guilt. You allowed this to happen. No. The <i>cloister</i> allowed this to happen. No faith, no sin can justify what happened here.
 You hold the child closely. She embraces you happily. There is still a way you can redeem yourself, and your brothers.
 <br><br>
@@ -4214,8 +4304,14 @@ You hold the child closely. She embraces you happily. There is still a way you c
 	It spurred him on until his final days.
 	<br><br>
 
-	He would pass from this world with a smile on his face, though. Staring out a window at the forest.
-	Some believe he saw her watching him from the edge, saying goodbye one final time.
+	He would pass from this world with a smile on his face, though.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		A cloaked stranger had visited him on his deathbed, and braided two purple blooms into his hair. Perhaps he got a final goodbye after all.
+	<<else>>
+		Staring out a window at the forest. Some believe he saw her watching him from the edge, saying goodbye one final time.
+	<</if>>
+	<br><br>
+
 	The constant search parties from the initial incident and throughout these years spurred a new tradition in the order,
 	in which a monthly vigil is held for the lost. Many hoped to find some sense of closure, answers for what had really happened on the fateful night of the ritual.
 	Some became obsessed.
@@ -4458,7 +4554,12 @@ The tentacle retracts back into her mouth, licking her lips as it does.
 	</span>
 	<br><br>
 
-	She smiles warmly at you. She leans in and kisses you again, without the tentacle intruding.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		She thumbs at the flowers you braided into her hair, and smiles warmly at you.
+	<<else>>
+		She smiles warmly at you.
+	<</if>>
+	She leans in and kisses you again, without the tentacle intruding.
 	<span class="green">You feel the smallest bit of warmth return to you, which doesn't fade when she pulls away this time.</span>
 	She takes your hands in hers and helps you stand.
 <<else>>
@@ -4482,7 +4583,11 @@ The tentacle retracts back into her mouth, licking her lips as it does.
 	<br><br>
 
 	She turns around and walks back to your side. She bends down, smiling. She tells you that you're still needed.
-	You'll take her corruption into yourself, over and over, forever. You'll take care of her, as you have been, forever.
+	You'll take her corruption into yourself, over and over, forever.
+	<<if $prisonerEvents.includes("talkHairBlooms")>>
+		Like the witchblooms you braided into her hair, you'll nourish her with your purity, forever.
+	<</if>>
+	You'll take care of her, as you have been, forever.
 	<br><br>
 
 	Forever. <span class="red">You couldn't be happier.</span> She takes your hands and helps you stand.
@@ -4983,6 +5088,9 @@ Burns, bruises, cuts and brandings adorn her pale skin. All highlighting the per
 You return it, and lift her into your arms. <span class="green">Her touch doesn't drain you anymore.</span>
 <br><br>
 
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	Despite all of that, the witchblooms still stubbornly cling into her braid.
+<</if>>
 She opens her mouth. A withered tentacle still lingers inside. It slowly moves to the roof of her mouth. She manages two words before it falls out.
 <br><br>
 
@@ -5032,7 +5140,11 @@ You carry her into the forest. Together, you leave the clearing, the cloister, a
 <<set $hc.ending to "S">>
 <br><br>
 
-Her head rests against your chest as you gently stroke her hair. Her soft snoring lulls you into a blissful trance.
+Her head rests against your chest as you gently stroke her hair.
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	Her witchblooms shine in the sun.
+<</if>>
+Her soft snoring lulls you into a blissful trance.
 <br><br>
 
 <span class="red"><i>Her cage is gilded, and she is happy. Finally, you have fulfilled your charge.</i>

@@ -400,6 +400,10 @@
 			<<set $hc.daily.treatedDayBefore to true>>
 		<</if>>
 
+		<<if $prisonerEvents.includes("talkHairBlooms")>>
+			<<set $prisoner.health++>>
+		<</if>>
+
 		/* Base health decay (increases based on event progress) */
 		<<set $prisoner.health -= 3>>
 		<<if $prisonerEvents.includes("silver")>>
@@ -462,6 +466,7 @@
 		<<set $_hoursPassed to Time.hour - $hc.hour>>
 		<<if $_hoursPassed lt 0>><<set $_hoursPassed += 24>><</if>>
 		<<set $_containersToCheck to $hcItems.filter(cont => cont.containerID)>>
+		<<set $_witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
 		<<for $_t = 0; $_t lt $_hoursPassed; $_t++>>
 			<<run $hcItems.filter(item => item.time && item.state is "lit").forEach(item => {
 				item.time--;
@@ -471,8 +476,9 @@
 				Math.clamp(item.time, 0, 11);
 			})>>
 
-			<<run hcItemsFilter((item => item.dirty &&
+			<<run hcItemsFilter((item => item.dirty !== undefined &&
 			item.location !== "held" &&
+			item.type !== "clutter" &&
 			!$_containersToCheck.some(c => c.containerID === item.location))).forEach(toDirty => {
 				if (toDirty.location is "disposal") {
 					toDirty.dirty++;
@@ -642,6 +648,11 @@
 				<<if $hc.handLocation is "guardhouse">>
 					<<set $hc.suspicion++>>
 				<</if>>
+			<</if>>
+
+			<<if $_witchblooms and $bus is "bed">>
+				<<set $_witchblooms.progress to $_witchblooms.progress || 0>>
+				<<set $_witchblooms.progress++>><<purity -5>>
 			<</if>>
 
 			<<set $prisoner.harmedRecently-->>
@@ -1320,7 +1331,7 @@
 			/* Putting down or returning, skip torches */
 			<<if $_item.type is "torch">>
 				<<if $_item.state is "lit" and !hcItemCanReach("snuffer") and $bus isnot $_item.origin and !_hcSconces.includes($bus)>>
-					<span class="red"><i>Too dangerous to drop!</i></span>
+					<span class="red"><i>Too dangerous to <<if $bus is "bed">>stash<<else>>drop<</if>>!</i></span>
 				<</if>>
 			<<else>>
 
@@ -1646,7 +1657,7 @@
 			<</if>>
 		<<case "clutter">>
 			<<if typeof $_thing is "object">>
-				<<if $_thing.name is "witchblooms">>
+				<<if $_thing.name is "witchblooms" or $_thing.name is "purified witchblooms">>
 					<<tendingicon "tulip">>
 				<<elseif $_thing.name is "leather gloves">>
 					<<icon "clothes/work_gloves.png">>
