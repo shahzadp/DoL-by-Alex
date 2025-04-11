@@ -139,15 +139,6 @@ function hcItemHolding(id, filterfn) {
 	if (itemHeld) {
 		return itemHeld;
 	}
-
-	const containers = V.hcItems.filter(container => container.containerID && ["held"].includes(container.location));
-
-	for (const container of containers) {
-		const itemHeldContainer = V.hcItems.find(thing => thing.name === id && thing.location === container.containerID && filterfn(thing));
-		if (itemHeldContainer) {
-			return itemHeldContainer;
-		}
-	}
 }
 window.hcItemHolding = hcItemHolding;
 

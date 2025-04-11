@@ -1741,13 +1741,42 @@ One of the handlers sees you and shoos you away. Hopefully this will keep the do
 You spend an hour working in the garden. You lament that there aren't more buckets to use.
 <br><br>
 
-<<link [[Enough working|Hopeless Cycle Garden]]>><<endevent>><</link>>
-<br>
-<<set _loc to hcItemHasFreeHand() ? "held" : "garden">>
-<<capture _loc>>
-	<<link [[Steal some fruit|Hopeless Cycle Garden]]>><<run hcItemAdd({ type: "food", name: "stolen fruit", location: _loc, origin: "garden", dirty: 0, dirtyOnDrop: true })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+<<if _hcEvent is "blood">>
+	A heavy hand rests on your shoulder. The Bishop's Hand looms before you. "<span class="red">It's time, brother.</span> Bring the witch up at once."
+	<br><br>
+
+	You enter the dungeon. There's no one to sanctify you on the way in. You suppose it's pointless since you'll be bringing her out anyways.
+	<br><br>
+
+	<<link [[Enter <<print $prisoner.name>>'s cell|Hopeless Cycle Blood Cell]]>><<endevent>><</link>>
 	<br>
-<</capture>>
+<<elseif $hc.suspicion gte 100>>
+	<span class="red">Everything goes dark as a sack is pulled over your head.</span> You're quickly struck in the gut, doubling you over. You're forced to your knees.
+	<br><br>
+
+	The last thing you feel is an impact against your head.
+	<br><br>
+
+	<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
+	<br>
+<<elseif $stress gte $stressmax>>
+	<<hopelessCyclePassout>>
+<<else>>
+	<<if Time.dayState isnot "night" or hcItemLitTorch()>>
+		<<link [[Keep working|Hopeless Cycle Garden Work]]>><<pass 60>><<stress -6>><<set $hc.suspicion-->><<tiredness 6>><<tending 1>><</link>><<lstress>><<gtending>><<hopelessCycleSus -1>><<gtiredness>>
+		<br>
+	<<else>>
+		<span class="red">It's too dark to continue working in the garden.</span>
+	<</if>>
+
+	<<link [[Enough working|Hopeless Cycle Garden]]>><<endevent>><</link>>
+	<br>
+	<<set _loc to hcItemHasFreeHand() ? "held" : "garden">>
+	<<capture _loc>>
+		<<link [[Steal some fruit|Hopeless Cycle Garden]]>><<run hcItemAdd({ type: "food", name: "stolen fruit", location: _loc, origin: "garden", dirty: 0, dirtyOnDrop: true })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<br>
+	<</capture>>
+<</if>>
 
 :: Hopeless Cycle Pyre
 <<set $location to "old_temple">><<set $outside to 1>><<set _thermoDisable to true>><<effects>><<set $bus to "pyre">>
@@ -2421,7 +2450,7 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 	<</if>>
 	<br><br>
 
-	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
+	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms")>>
 	<<if _witchblooms>>
 		<<if _witchblooms.progress and _witchblooms.progress gte 14>>
 			<<set _witchblooms.name to "purified witchblooms">>
@@ -2465,7 +2494,7 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 	<</if>>
 	<br><br>
 
-	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms" && w.location is "held")>>
+	<<set _witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms")>>
 	<<if _witchblooms>>
 		<<if _witchblooms.progress and _witchblooms.progress gte 14>>
 			<<set _witchblooms.name to "purified witchblooms">>
@@ -2495,31 +2524,53 @@ You get to work scrubbing down the barracks. You clean the floors, some sheets, 
 <i><span class="blue">Bedsheets can be used to conceal items inside of buckets. Any bucket with a bedsheet inside won't raise suspicion when entering the dungeon.</span></i>
 <br><br>
 
-<<if Time.dayState is "night">>
-	You'll wake people up if you keep cleaning.
-	<br>
-<<elseif _hcEvent is "blood">>
-	There's no more time for cleaning.
-	<br>
-<<elseif _water>>
-	<<capture _water>>
-		<<link [[Continue cleaning (1:00)|Hopeless Cycle Quarters Clean]]>><<pass 60>><<set $hc.suspicion -= 3>><<set _water.dirty++>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
-	<</capture>>
-	<br>
-<<else>>
-	Your water is too dirty to keep cleaning.
-	<br>
-<</if>>
+<<if _hcEvent is "blood">>
+	A heavy hand rests on your shoulder. The Bishop's Hand looms before you. "<span class="red">It's time, brother.</span> Bring the witch up at once."
+	<br><br>
 
-<<set _loc to hcItemHasFreeHand() ? "held" : "quarters">>
-<<link [[Enough cleaning|Hopeless Cycle Quarters]]>><<endevent>><</link>>
-<br>
-<<capture _loc>>
-	<<link [[Steal some bedsheets|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "sheets", name: "bedsheets", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+	You enter the dungeon. There's no one to sanctify you on the way in. You suppose it's pointless since you'll be bringing her out anyways.
+	<br><br>
+
+	<<link [[Enter <<print $prisoner.name>>'s cell|Hopeless Cycle Blood Cell]]>><<endevent>><</link>>
 	<br>
-	<<link [[Steal some clothes|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "clothes", name: "robe", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+<<elseif $hc.suspicion gte 100>>
+	<span class="red">Everything goes dark as a sack is pulled over your head.</span> You're quickly struck in the gut, doubling you over. You're forced to your knees.
+	<br><br>
+
+	The last thing you feel is an impact against your head.
+	<br><br>
+
+	<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
 	<br>
-<</capture>>
+<<elseif $stress gte $stressmax>>
+	<<hopelessCyclePassout>>
+<<else>>
+	<<if Time.dayState is "night">>
+		You'll wake people up if you keep cleaning.
+		<br>
+	<<elseif _hcEvent is "blood">>
+		There's no more time for cleaning.
+		<br>
+	<<elseif _water>>
+		<<capture _water>>
+			<<link [[Continue cleaning (1:00)|Hopeless Cycle Quarters Clean]]>><<pass 60>><<set $hc.suspicion -= 3>><<set _water.dirty++>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
+		<</capture>>
+		<br>
+	<<else>>
+		Your water is too dirty to keep cleaning.
+		<br>
+	<</if>>
+
+	<<set _loc to hcItemHasFreeHand() ? "held" : "quarters">>
+	<<link [[Enough cleaning|Hopeless Cycle Quarters]]>><<endevent>><</link>>
+	<br>
+	<<capture _loc>>
+		<<link [[Steal some bedsheets|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "sheets", name: "bedsheets", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<br>
+		<<link [[Steal some clothes|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "clothes", name: "robe", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<br>
+	<</capture>>
+<</if>>
 
 
 /* Prayer Room */
