@@ -653,7 +653,13 @@
 				<span class="red">You missed this morning's sermon in the cloister.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
 				<br>
 			<<elseif Time.hour gte 7 and Time.hour lte 9>>
-				<span class="blue">A daily sermon will be held in the cloister soon. Failing to attend will arouse suspicion.</span>
+				<span class="blue">A daily sermon will be held in the cloister soon.
+				<<if $hc.suspicionRevealed>>
+					Failing to attend will arouse suspicion.
+				<<else>>
+					Siblings of the faith are expected to attend.
+				<</if>>
+				</span>
 				<br>
 			<</if>>
 		<</if>>
@@ -932,7 +938,11 @@
 				<<if $bus is "lake">>
 					You fill the bucket from the lake.
 				<<else>>
-					You lower the bucket into the well by its rope and winch. You pull it back up, now full of water.
+					<<if $hc.wellTainted>>
+						You fill the bucket from the well. <span class="red">Red and purple hues swirl in the tainted water within.</span>
+					<<else>>
+						You lower the bucket into the well by its rope and winch. You pull it back up, now full of water.
+					<</if>>
 				<</if>>
 			<<case "pickUp">>You pick up $_itemText.
 			<<case "return">>
@@ -943,6 +953,7 @@
 				<</if>>
 			<<case "down">>You put down $_itemText.
 			<<case "drop">>You drop $_itemText.
+			<<case "dropStash">>You stash $_itemText under your bed.
 			<<case "dropDirty">>You drop $_itemText, and it becomes dirty.
 			<<case "disposal">>
 				You throw $_itemText into the disposal channel.
@@ -1341,7 +1352,13 @@
 				<<else>>
 
 					/* Drop */
-					<<if $_item.containerID>>
+					<<if $bus is "bed">>
+						<<if $_item.dirty is 0 and $_item.dirtyOnDrop>>
+							| <<link "Stash <span class='red'>(will dirty!)</span>" $passage>><<set $_item.location to $bus>><<set $itemAction to "dropStash">><<set $itemActionObject to $_item>><<set $_item.dirty to 1>><</link>>
+						<<else>>
+							| <<link [[Stash|$passage]]>><<set $_item.location to $bus>><<set $itemAction to "dropStash">><<set $itemActionObject to $_item>><</link>>
+						<</if>>
+					<<elseif $_item.containerID>>
 						| <<link [[Put down|$passage]]>><<set $_item.location to $bus>><<set $itemAction to "down">><<set $itemActionObject to $_item>><</link>>
 					<<elseif $_item.dirty isnot undefined and $_item.dirtyOnDrop>>
 						/* For items that can become dirty */
@@ -1438,6 +1455,8 @@
 			<<elseif $_item.location is "held">>
 				<<if $_item.origin is $bus>>
 					| <<link [[Return|$passage]]>><<run hcItemRemove($_item, "dungeonBack")>><</link>>
+				<<elseif $bus is "bed">>
+					| <<link [[Stash|$passage]]>><<set $_item.location to $bus>><<set $itemAction to "dropStash">><<set $itemActionObject to $_item>><</link>>
 				<<else>>
 					| <<link [[Drop|$passage]]>><<set $_item.location to $bus>><<set $itemAction to "drop">><<set $itemActionObject to $_item>><</link>>
 				<</if>>
