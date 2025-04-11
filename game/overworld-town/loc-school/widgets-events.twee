@@ -252,12 +252,11 @@
 		<<rng>> /*Used by $bullytimer and $kylar.timer.halls to regulate LI event frequency*/
 
 		<<if $bullytimer gte $rng and !["dungeon", "pillory"].includes(C.npc.Whitney.state)>>
-			/* When this event is added to the pool for the first time, if Whitney hasn't been introduced, eliminate all
-			other events as options. The if-statement will add the event to the poll 100% of time time by day 5 (when
-			$bullytimer hits 100), effectively making Whitney's intro mandatory by that point*/
+			/* If Whitney hasn't been introduced yet, this event becomes mandatory by eliminating all other options.
+			Note: The if-statement runs whenever $bullytimer gte $rng, so the intro becomes unavoidable by day 5 (when $bullytimer hits 100)*/
 			<<if $bullyevent is 0>> <<cleareventpool>> <</if>>
 
-			<<addinlineevent "whitney_hallways" 10>>
+			<<addinlineevent "whitney_hallways" 50>>
 				<<set $bullytimer to 0>>
 				<<schoolbully>>
 			<</addinlineevent>>
@@ -290,7 +289,7 @@
 			/* If it's been four weeks, Kylar's primary intro becomes mandatory by eliminatiing all other events as options */
 			<<if Time.days gte 28>> <<cleareventpool>> <</if>>
 
-			<<addinlineevent "kylar_intro" 10>>
+			<<addinlineevent "kylar_intro" 50>>
 				<<npc Kylar>><<initnpc Kylar>><<generatey2>><<generatey3>>Someone's bag lands in front of you. It spills its contents, scattering pens and books across the floor. You turn the corner and see its owner, a <<nnpc_gendery "Kylar">> held aloft by <<person1>><<his>> collar and pushed against a locker.
 				<br><br>
 				The <<personsimple>> kicks at the <<person2>><<person>> holding <<person1>><<him>> up, but the <<person2>><<person>> just laughs. "That your best?" <<person2>><<he>> says. <<He>> grasps <<his>> victim's unkempt dark hair with <<his>> free hand. "Lucky you. Hurting me would be stupid."
@@ -314,7 +313,7 @@
 			/* If it's been five weeks, Kylar's secondary intro becomes mandatory by eliminating all other events as options */
 			<<if Time.days gte 35>> <<cleareventpool>> <</if>>
 
-			<<addinlineevent "kylar_intro_ignored" 10>>
+			<<addinlineevent "kylar_intro_ignored" 50>>
 				<<npcset Kylar state "active">>
 				<<npc Kylar>><<person1>>You round a corner and bump into a dark haired <<personsimple>>. <<He>> scowls and looks up at you, but then <<his>> face softens and <<his>> mouth gapes.
 				<br><br>
@@ -343,7 +342,7 @@
 
 		<<set _kylarLocation to getKylarLocation()>>
 		<<if C.npc.Kylar.state is "active" and $kylar.timer.halls gte $rng and _kylarLocation.area isnot "english">>
-			<<addinlineevent "kylar_hallways" 10>>
+			<<addinlineevent "kylar_hallways" 50>>
 				<<set $kylar.timer.halls to 0>>
 				<<kylarhallways>>
 			<</addinlineevent>>
@@ -992,7 +991,7 @@
 		<</addinlineevent>>
 
 		<<addinlineevent "hallways_rape">>
-			<<generates1>><<generates2>><<person1>>A hand clamps over your mouth from behind, and an arm wraps around your waist. "Don't fight," says the <<person>> holding you. "I just need your help with something." <<He>> tries to pull you into an empty classroom.
+			<<generates1>><<generates2>><<person1>><span class="red">A hand clamps over your mouth from behind,</span> and an arm wraps around your waist. "Don't fight," says the <<person>> holding you. "I just need your help with something." <<He>> tries to pull you into an empty classroom.
 			<br><br>
 			<<if $whitneyromance is 1>>
 				"I think," says a <<person2>><<person>> from behind <<person1>><<him>>. "I think that's Whitney's <<girl>>."
@@ -1203,40 +1202,40 @@
 
 			/* TODO: Add more events for being exposed in the school courtyard */
 		<<else>>
-			<<if _whitney.love gte 20 and $whitneyromance isnot 1 and !["dungeon", "pillory"].includes(C.npc.Whitney.state)>>
-				<<addinlineevent "whitney_confession" 10>>
-					<<set $whitneyromance to 1>>
-					<<npc Whitney>><<person1>> Whitney approaches you, and shoves you against a wall. <<He>> looks angrier than usual.
-					<br><br>
-					"Stupid slut," <<he>> says. <<He>> pins you with <<his>> arms. "You've been asking for this, don't try to deny it." <<He>> kisses you with surprising tenderness. <<takeKissVirginity "Whitney" "loveInterest">>
-					<br><br>
-					"You're my <<girlfriend>> now. You better be grateful." <<He>> kisses you again, this time biting your lip. <<He>> pulls away and leaves you there without looking back.
-					<<npcincr Whitney lust 5>><<glust>>
-					<br><br>
-					<<tearful>> you steady yourself. <<gstress>><<garousal>><<stress 6>><<arousal 600>>
-					<br><br>
-
-					<<if $loveInterest.primary is "None">>
-						<<set $loveInterest.primary to "Whitney">>
-						<span class = "gold">Whitney is now your love interest! It seems you don't have a choice in the matter.</span>
+			<<if !["dungeon", "pillory"].includes(C.npc.Whitney.state)>>
+				<<rng>>
+				<<if _whitney.love gte 20 and $whitneyromance isnot 1>>
+					<<addinlineevent "whitney_confession" 30>>
+						<<set $whitneyromance to 1>>
+						<<npc Whitney>><<person1>> Whitney approaches you, and shoves you against a wall. <<He>> looks angrier than usual.
 						<br><br>
-					<<else>>
-						<span class = "gold">Whitney can now be claimed as your love interest! Although, you really don't have a choice in the matter.
-						<br>
-						You can change your love interest in the "Attitudes" menu.</span>
+						"Stupid slut," <<he>> says. <<He>> pins you with <<his>> arms. "You've been asking for this, don't try to deny it." <<He>> kisses you with surprising tenderness. <<takeKissVirginity "Whitney" "loveInterest">>
 						<br><br>
-					<</if>>
+						"You're my <<girlfriend>> now. You better be grateful." <<He>> kisses you again, this time biting your lip. <<He>> pulls away and leaves you there without looking back.
+						<<npcincr Whitney lust 5>><<glust>>
+						<br><br>
+						<<tearful>> you steady yourself. <<gstress>><<garousal>><<stress 6>><<arousal 600>>
+						<br><br>
 
-					<<courtyard>>
-				<</addinlineevent>>
-			<</if>>
+						<<if $loveInterest.primary is "None">>
+							<<set $loveInterest.primary to "Whitney">>
+							<span class = "gold">Whitney is now your love interest! It seems you don't have a choice in the matter.</span>
+							<br><br>
+						<<else>>
+							<span class = "gold">Whitney can now be claimed as your love interest! Although, you really don't have a choice in the matter.
+							<br>
+							You can change your love interest in the "Attitudes" menu.</span>
+							<br><br>
+						<</if>>
 
-			<<rng>>
-			<<if !["dungeon", "pillory"].includes(C.npc.Whitney.state) and $bullytimeroutside gte $rng and Time.hour gte 15 and _whitney.init is 1>>
-				<<addinlineevent "whitney_courtyard">>
-					<<set $bullytimeroutside to 0>>
-					<<schoolbullyoutside>>
-				<</addinlineevent>>
+						<<courtyard>>
+					<</addinlineevent>>
+				<<elseif $bullytimeroutside gte $rng and Time.hour gte 15 and _whitney.init is 1>>
+					<<addinlineevent "whitney_courtyard" 30>>
+						<<set $bullytimeroutside to 0>>
+						<<schoolbullyoutside>>
+					<</addinlineevent>>
+				<</if>>
 			<</if>>
 
 			<<if $panty_thief is undefined and Time.days gte 7>>
@@ -1872,7 +1871,7 @@
 				<</addinlineevent>>
 
 				<<addinlineevent "courtyard_fight">>
-					<<generatey1>><<generatey2>>You hear a shout, and suddenly realise that there's a fight happening. Near
+					<<generatey1>><<generatey2>>You hear a shout, and suddenly realise that there's a fight happening! Near
 					<<switch random(1,4)>>
 						<<case 1>>the corner of the school building,
 						<<case 2>>the entrance to the school,
@@ -1964,13 +1963,18 @@
 					<<generates1>><<generateyp2>><<npcClothesType $NPCList[1] "school">>
 					You notice two students <<print either("doing something","making some noise","moving around oddly")>> over
 					<<print either("in a corner, half-hidden by the school building.", "behind the bike shed.", "in a nearby ally, on the other side of the fence.")>>
-					<<if $awareness gte 0>>
+					<<if $awareness lte 200>>
+						You take a peek, but quickly look away. <span class="lewd">They're doing something lewd.</span>
+						<<garousal>><<arousal 200>><<gawareness>><<awareness 1>>
+						<br><br>
+						You pick up your pace.
+					<<else>>
 						Stopping for a closer look, you see
 						<<switch random(1,4)>>
 							<<case 1>> /* Dominant, masturbation */
-								a <<person1>><<person>> with <<his>> <<npcClothesText $NPCList[$index] "lower">> down around <<his>> knees, <span class="lewd">getting <<if $NPCList[$index].penis isnot "none">>jerked off<<else>>fingered<</if>></span> by a <<print either("flushed","blushing","shy-looking")>> <<person2>><<person>>.
+								a <<person1>><<person>> with <<his>> <<npcClothesText $NPCList[$index] "lower">> down around <<his>> knees, <span class="lewd">getting <<if $NPCList[$index].penis isnot "none">>jerked off<<else>>fingered<</if>></span> by a <<print either("flushed","blushing","shyly interested","clearly aroused")>> <<person2>><<person>>.
 								<br><br>
-								The <<person>> meets your gaze with a <<print either("horrified","mortified","humiliated","guilty","desperately aroused")>> expression, but before <<he>> can do anything the <<person1>><<person>> grabs <<person2>><<his>> head and firmly redirects <<his>> attention back to the <<person1>><<npcGenitals 0 "simple">> in front of <<person2>><<him>>.
+								The <<person>> meets your gaze with a <<print either("horrified","mortified","humiliated","guilty","desperately aroused")>> expression, but before <<he>> can do anything the <<person1>><<person>> grabs <<person2>><<his>> head and firmly redirects <<his>> attention back towards lewder pursuits.
 							<<case 2>> /* Dominant, oral */
 								a <<person1>><<person>> with <<his>> <<npcClothesText $NPCList[$index] "lower">> down around <<his>> knees, <<if $NPCList[$index].penis isnot "none">><span class="lewd">face fucking</span><<else>><span class="lewd">grinding <<his>> crotch</span> into the face of<</if>> a <<print either("flushed","blushing","clearly aroused")>> <<person2>><<person>>.
 								<br><br>
@@ -1982,20 +1986,16 @@
 							<<case 4>> /* Submissive, oral*/
 								a <<person2>><<person>> backed up against the wall by a kneeling <<person1>><<person>>, <<person2>><<his>> <<npcClothesText $NPCList[$index] "lower">> around <<his>> ankles as the <<person1>><<person>> <span class="lewd">hungrily <<person2>><<if $NPCList[$index].penis isnot "none">>sucks <<him>> off<<else>>eats <<him>> out<</if>>.</span>
 								<br><br>
-								The <<person1>><<person>> glances over, <<print either("gives you a wink","smugly narrows <<his>> eyes","makes a finger-heart in your direction","flips you the bird","gives you a casual wave")>>, then returns to enjoying the <<person2>><<npcGenitals 1 "simple">> of <<person1>><<his>> suddenly panicking lover.
+								The <<person1>><<person>> glances over, <<print either("gives you a wink","smugly narrows <<his>> eyes","makes a finger-heart in your direction","flips you the bird","gives you a casual wave")>>, then refocuses <<his>> attention on the <<person2>><<npcGenitals 1 "simple">> of <<person1>><<his>> suddenly panicking lover.
 						<</switch>>
 						<br><br>
-						<<if $awareness lt 200>>
-							Blushing deeply, you turn and hurry away from the perverted couple. You can't believe they're doing such things in the open! It's like they wanted to get caught.
+						<<if $awareness lte 300>>
+							Blushing, you turn and hurry away from the perverted couple.
 							<<ggarousal>><<arousal 1000>><<gawareness>><<awareness 3>>
 						<<else>>
 							Feeling your cheeks warm up, you turn away and leave the couple to their fetish play.
 							<<garousal>><<arousal 600>>
 						<</if>>
-					<<else>>
-						You take a peek, but quickly look away. <span class="lewd">They're doing something lewd.</span><<garousal>><<gawareness>><<arousal 200>><<awareness 1>>
-						<br><br>
-						You pick up your pace.
 					<</if>>
 					<br><br>
 					<<courtyard>>
