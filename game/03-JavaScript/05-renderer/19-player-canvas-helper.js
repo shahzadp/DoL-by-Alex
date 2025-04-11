@@ -553,7 +553,7 @@ class PlayerCanvasHelper {
 					// Behind the pilloryFront
 					return 79;
 				}
-				if (part === "halo" && options.position === "doggy") {
+				if (part === "halo" && options.position === "doggy" && layer === "front") {
 					return 85;
 				}
 				/** @type {TransformationPartOptions} */
