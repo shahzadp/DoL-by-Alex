@@ -7,7 +7,7 @@
  * Arguments are processed depending on their type:
  * String argument is `src` option (image source)
  * Number argument is `z` option (z-index)
- * Object argument is full or partial  CompositeLayerSpec object
+ * Object argument is full or partial CompositeLayerSpec object
  * Leftmost arguments have most priority.
  *
  * @example

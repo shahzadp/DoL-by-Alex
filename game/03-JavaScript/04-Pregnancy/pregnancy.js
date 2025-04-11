@@ -960,7 +960,7 @@ function recordSperm({
 		rngModifier = Math.clamp(rngModifier, 0, 200);
 		if (rngModifier === 0) return false;
 
-		// The  number in `1 + rngType`, the number should match the number of times `updatePlayerRecordedSperm` should not delete the `canWash` tag
+		// The number in `1 + rngType`, the number should match the number of times `updatePlayerRecordedSperm` should not delete the `canWash` tag
 		switch (rngType) {
 			case "canWash":
 				rngType = 1 + rngType;

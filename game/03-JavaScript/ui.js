@@ -374,7 +374,7 @@ function settingsGenericGenders(id) {
 					text = `<span class='gold inline-colour'>No</span> <span class='pink inline-colour'>${women}</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>${men}</span> will be ${attraction}.`;
 					break;
 				case 0:
-					text = `<span class='gold inline-colour'>All</span> <span class='pink inline-colour'>${women}</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>${men}</span> will be  ${attraction}.`;
+					text = `<span class='gold inline-colour'>All</span> <span class='pink inline-colour'>${women}</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>${men}</span> will be ${attraction}.`;
 					break;
 				default:
 					text = `<span class='gold inline-colour'>${

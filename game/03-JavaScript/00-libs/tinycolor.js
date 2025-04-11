@@ -1065,7 +1065,7 @@
 	  // <http://www.w3.org/TR/css3-values/#number-value>
 	  var CSS_NUMBER = "[-\\+]?\\d*\\.\\d+%?";
   
-	  // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
+	  // Allow positive/negative integer/number. Don't capture the either/or, just the entire outcome.
 	  var CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
   
 	  // Actual matching.
@@ -1100,8 +1100,8 @@
 	}
   
 	// `stringInputToObject`
-	// Permissive string parsing.  Take in a number of formats, and output an object
-	// based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
+	// Permissive string parsing. Take in a number of formats, and output an object
+	// based on detected format. Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
 	function stringInputToObject(color) {
 	  color = color.replace(trimLeft, "").replace(trimRight, "").toLowerCase();
 	  var named = false;

@@ -41,7 +41,7 @@ function npcPregObject(person, mother) {
 			parentId = parentFunction.addToParentList(person, undefined, parentType);
 		}
 		if (person === "pc") {
-			// pregnancy isnt required for the player
+			// pregnancy isn't required for the player
 			result = {
 				name: "pc",
 				gender: V.player.sex,

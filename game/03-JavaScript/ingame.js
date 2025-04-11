@@ -501,7 +501,7 @@ function calculateMarkedChance(deckCount, markedCount, depth, atLeast, doLog = f
 	for (let nMarkedPicked = atLeast; nMarkedPicked <= possibleMarkedCardsVisibleLimit; ++nMarkedPicked) {
 		// we calculate how many possible ways we can pull a valid number of marked cards from the deck
 		//   by dividing the cards into a pool of
-		//	* marked cards (and calculating how many ways we can pull the valid nMarkedPicked cards from the pool of markedCount marked cards),  nCr(markedCount, nMarkedPicked)
+		//	* marked cards (and calculating how many ways we can pull the valid nMarkedPicked cards from the pool of markedCount marked cards), nCr(markedCount, nMarkedPicked)
 		//	* unmarked cards (and calculating how many ways we can pull the remaining possibleMarkedCardsVisibleLimit-nMarkedPicked non-marked cards from the pool of deck-markedCount unmarked cards), ncr(deck-markedCount, possibleMarkedCardsVisibleLimit-nMarkedPicked)
 		//   and then we multiply the mutually exclusive combinations to get all possible combinations (cross-joins) of the two (since for each way we can pull (say) 1 marked card, there's the second number of ways we can pull the remaining non marked ones)
 		const markedPoolWays = nCr(markedCount, nMarkedPicked);
@@ -1786,7 +1786,7 @@ function getSexesFromRandomGroup() {
 window.getSexesFromRandomGroup = getSexesFromRandomGroup;
 
 /**
- * Pick the right colour to use when colouring various things.  Primarily sidebar stats.
+ * Pick the right colour to use when colouring various things. Primarily sidebar stats.
  * When using this function, try to keep in mind what value of your input variable you want "red" to be at.
  *
  * Example: $drugged goes higher than 500, but we want the bar to become red at 500, so we call this function as getColourClassFromPercentage($drugged / 5).

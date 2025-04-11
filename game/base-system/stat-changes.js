@@ -270,7 +270,7 @@ const statChange = (() => {
 			// Trait checks & effects
 			if (amount > 0 && V.orgasmtrait) mod *= 0.6;
 
-			// adds up to +1 to the  arousal modifier when suffocating
+			// adds up to +1 to the arousal modifier when suffocating
 			if (V.choketrait) mod += (V.oxygenmax - V.oxygen) / V.oxygenmax;
 
 			if (V.drugged > 0) {

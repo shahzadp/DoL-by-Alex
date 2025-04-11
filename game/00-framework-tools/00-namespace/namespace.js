@@ -10,7 +10,7 @@ window.DOL = {
 	// In pseudo-load order
 
 	/**
-	 * This is a miniature application reporter app.  It helps get detailed error messages to devs.
+	 * This is a miniature application reporter app. It helps get detailed error messages to devs.
 	 * See file {@link ./01-error/error.js} for more.
 	 */
 	Errors: {},
