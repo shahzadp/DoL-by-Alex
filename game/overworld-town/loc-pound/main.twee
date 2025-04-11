@@ -933,23 +933,29 @@ You make <<moneyGain $pound.money>>.<<pass 60>>
 <<beastNEWinit 1 dog>><<wearProp "brush">>
 <<if $slimePoundTask>>You follow the <<= numberOfEarSlime() gte 2 ? "slimes'" : "slime's">> command to do a specific task.<<unset $slimePoundTask>><</if>>
 Brush in hand, you enter one of the cages.
+<br><br>
 
-<<if random(1, 2) is 2 and ($bestialitydisable is "f" or $monster is 1)>>
-	The <<beasttype>> inside is friendly. Perhaps too friendly.
-	<<if $monster is 1>>
-		<<bHe>> wraps <<bhis>> arms around your waist, and humps your thigh.
-	<<else>>
-		<<bHe>> rears on <<bhis>> hind legs, and humps your thigh.
-	<</if>>
-	<br><br>
+<<cleareventpool>>
+<<if $bestialitydisable is "f" or $monster is 1>>
+	<<addinlineevent "pound_brush_1">>
+		The <<beasttype>> inside is friendly. Perhaps too friendly.
+		<<if $monster is 1>>
+			<<bHe>> wraps <<bhis>> arms around your waist, and humps your thigh.
+		<<else>>
+			<<bHe>> rears on <<bhis>> hind legs, and humps your thigh.
+		<</if>>
+		<br><br>
 
-	<<link [[Tell off|Pound Work Brush Tell]]>><</link>><<tendingdifficulty 1 600>>
-	<br>
-	<<if hasSexStat("deviancy", 2)>>
-		<<link [[Allow|Pound Work Brush Allow]]>><</link>><<deviant2>>
+		<<link [[Tell off|Pound Work Brush Tell]]>><</link>><<tendingdifficulty 1 600>>
 		<br>
-	<</if>>
-<<else>>
+		<<if hasSexStat("deviancy", 2)>>
+			<<link [[Allow|Pound Work Brush Allow]]>><</link>><<deviant2>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+<</if>>
+
+<<addinlineevent "pound_brush_2">>
 	The <<beasttype>> inside greets you with a low growl.<<gstress>><<stress 6>>
 	<br><br>
 
@@ -961,7 +967,23 @@ Brush in hand, you enter one of the cages.
 		<<link [[Act like a dog to put it at ease|Pound Work Brush Act]]>><</link>><<deviant1>>
 		<br>
 	<</if>>
-<</if>>
+<</addinlineevent>>
+
+<<addinlineevent "pound_brush_3">>
+	The <<beasttype>> looks at the brush, then at you.
+	<<if $monster is 1>>
+		"Person came before to brush. Clean now." The dogboy looks at your hair. "Look messy. I brush instead?" <<bHe>> points at the brush.
+	<<else>>
+		<<bHe>> tilts <<bhis>> head as if confused. You try to brush the <<beasttype>>, but <<bhe>> resists and tries to lick your hair.
+	<</if>>
+	<br><br>
+
+	<<link [[Insist on brushing|Pound Work Brush Clean End]]>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Let it clean you instead|Pound Work Brush Clean]]>><</link>>
+	<br>
+<</addinlineevent>>
+<<runeventpool>>
 
 :: Pound Work Brush Tell
 <<effects>>
@@ -3164,3 +3186,108 @@ The pound is closed. <<openinghours>>
 	<br><br>
 <</if>>
 <<starfishicon>><<link [[Leave|Starfish Street]]>><<handheldon>><</link>>
+
+:: Pound Work Brush Clean
+<<effects>>
+
+<<if $monster is 1>>
+	You let the <<beasttype>> take the brush and lay down on the floor. <<bHe>> brushes your hair roughly, causing you to wince.<<pain 4>><<gpain>>
+	<br><br>
+	"Sorry," the <<beasttype>> apologizes, noticing your reaction. <<bHe>> then proceeds to brush you more gently. It feels nice.<<stress -6>><<lstress>>
+	<br><br>
+	After <<bhe>> finishes, <<bhe>> hands the brush back and looks at you expectantly. "Reward?"
+<<else>>
+	You lay down on the floor and let the <<beasttype>> lick your hair. <<bHe>> then moves on to your face. It tickles, but feels nice.<<stress -6>><<lstress>>
+	<br><br>
+	After <<bhe>> finishes, <<bhe>> looks at you expectantly.
+<</if>>
+<br><br>
+
+<<link [[Pet|Pound Work Brush Clean End]]>><<set $phase to 1>><</link>>
+<br>
+<<if hasSexStat("deviancy", 2) and ($bestialitydisable is "f" or $monster is 1)>>
+	<<link [[Present your backside|Pound Work Brush Clean Sex]]>><<set $sexstart to 1>><</link>><<deviant2>>
+	<br>
+<</if>>
+
+:: Pound Work Brush Clean End
+<<effects>>
+
+<<if $phase is 0>> /* Insist on brushing */
+	<<if $monster is 1>>
+		You firmly tell <<bhim>> that you need to brush <<bhim>>. <<bHe>> obliges and lays down.
+	<<else>>
+		With a firm tone, you insist on brushing <<bhim>>. <<bHe>> obliges and lays down on the floor.
+	<</if>>
+	<<pound_status 1>><<gpound_status>>
+<<else>> /* Pet */
+	You pet the <<beasttype>>, and <<bhe>> <<if $monster is 1>>smiles and <</if>>wags <<bhis>> tail.<<stress -6>><<lstress>>
+<</if>>
+<br><br>
+You make <<moneyGain $pound.money>>.<<pass 60>>
+<br><br>
+
+<<if Time.hour gte $closinghour>>
+	<<link [[Next|Pound]]>><<endevent>><</link>>
+<<else>>
+	<<link [[Next|Pound Work]]>><<endevent>><</link>>
+<</if>>
+<br>
+
+:: Pound Work Brush Clean Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<beastCombatInit>>
+	<<set $NPCList[0].stance to "top">>
+	<<deviancy2>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Pound Work Brush Clean Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Pound Work Brush Clean Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Pound Work Brush Clean Sex Finish
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	The <<beasttype>> licks your face. <<if $monster is 1>>"Thank you!" <<bhe>> says.<</if>>
+<<elseif $enemyhealth lte 0>>
+	The <<beasttype>> whimpers as you push <<bhim>> away.
+	<<if $monster is 1>>
+		"Not reward. Not friend."
+	<<else>>
+		<<bHe>> goes back to laying down on the floor.
+	<</if>>
+<<else>>
+	The <<beasttype>>'s tail droops, but <<bhe>> stops regardless.
+<</if>>
+<br><br>
+
+<<clotheson>>
+<<endcombat>>
+
+You make <<moneyGain $pound.money>>.<<pass 60>>
+<br><br>
+
+<<if Time.hour gte $closinghour>>
+	<<link [[Next|Pound]]>><<endevent>><</link>>
+<<else>>
+	<<link [[Next|Pound Work]]>><<endevent>><</link>>
+<</if>>
+<br>

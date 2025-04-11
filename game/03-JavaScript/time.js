@@ -852,6 +852,8 @@ function dayPassed() {
 	}
 
 	V.daily.clearProperties();
+
+	if (random(1, 8) === 1) V.daily.robin.orphanageKitchen = true;
 }
 
 function hourPassed(hours) {
