@@ -605,16 +605,7 @@ statDisplay.create("ggghistory", () => {
 });
 
 statDisplay.create("lhousekeeping", () => statDisplay.statChange("Housekeeping", -1, "red"));
-statDisplay.create("ghousekeeping", (amount, silent = false) => {
-	if (amount === undefined || V.housekeeping < amount) {
-		return statDisplay.statChange("Housekeeping", 1, "green");
-	} else if (silent === "silent" || V.statdisable === "t") {
-		return "";
-	} else if (V.housekeeping >= amount) {
-		return " You're too skilled for this to improve your housekeeping.";
-	}
-	return "";
-});
+statDisplay.create("ghousekeeping", amount => statDisplay.statChange("Housekeeping", 1, "green", () => amount === undefined || V.housekeeping < amount));
 statDisplay.create("gghousekeeping", amount => statDisplay.statChange("Housekeeping", 2, "green", () => amount === undefined || V.housekeeping < amount));
 statDisplay.create("ggghousekeeping", amount => statDisplay.statChange("Housekeeping", 3, "green", () => amount === undefined || V.housekeeping < amount));
 
