@@ -974,7 +974,7 @@
 				<</if>>
 				<<if $itemActionObject and $itemActionObject.dirty gte 2>>
 					<<set $hc.disposals += 2>>
-				<<else>>
+				<<elseif $itemActionObject.state isnot "snuffed" and $itemActionObject.state isnot "lit">>
 					<<set $hc.disposals ++>>
 				<</if>>
 
@@ -1193,7 +1193,7 @@
 					<<if $_itemsHeld.length lt 2>>
 						<<if $_valueHere is "torch">>
 							/* Infinite torches in the guardhouse. */
-							<<set $_torchTime to $hc.dungeonTorchTime>>
+							<<set $_torchTime to $hc.dungeonTorchTime || 2>>
 							<<set $_torchState to $hc.dungeonTorchState is "lit" ? "lit" : "snuffed">>
 							<<set $_torchAction to "dungeon" + $_torchState.toUpperFirst()>>
 							<<set $_torchText to $hc.dungeonTorchState is "lit" ? "Take and light an unused torch" : "Take an unlit torch">>
@@ -1419,7 +1419,7 @@
 							<<for $_labelTrash, $_valueTrash range $_itemsInThisContainer>>
 								<<if $_valueTrash.dirty gte 2>>
 									<<set $hc.disposals += 2>>
-								<<else>>
+								<<elseif $_valueTrash.state isnot "snuffed" and $_valueTrash.state isnot "lit">>
 									<<set $hc.disposals++>>
 								<</if>>
 								<<run hcItemRemove($_valueTrash)>>
@@ -1589,10 +1589,11 @@
 	<<pass 1 hour>>
 	<<ruffleHair>>
 	<<run hcItemSetup()>>
+	<<set $hc.neverLeftDungeon to false>><<set $hc.snuckInDungeon to false>><<set $hc.daily.enteredDungeon to false>>
 	<<if _hcEvent is "night" or (_hcEvent is "dailyPunishment" and $bus is "cell") or $hc.suspicion gte 100>>
-		<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
+		<<link [[Everything fades to black...|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
 	<<else>>
-		<<link [[Next|Hopeless Cycle Passout]]>><</link>>
+		<<link [[Everything fades to black...|Hopeless Cycle Passout]]>><</link>>
 	<</if>>
 	<br>
 <</widget>>
