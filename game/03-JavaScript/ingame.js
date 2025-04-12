@@ -2612,7 +2612,7 @@ function kitchenFilter() {
 
 		if (T.ingredientsSupplied?.includes(recipe)) {
 			providedIngredients = true;
-			if (!T.recipeKeys.find(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group: "Provided Ingredients" });
+			if (!T.recipeKeys.some(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group: "Provided Ingredients" });
 			return;
 		}
 		if (!V.plants[recipe].recipe || !item.ingredients) return;
@@ -2640,7 +2640,7 @@ function kitchenFilter() {
 			group = "Missing Ingredients";
 			missingIngredients = true;
 		}
-		if (!T.recipeKeys.find(recipeObj => recipeObj.key === recipe)) T.recipeKeys.push({ key: recipe, group });
+		if (!T.recipeKeys.some(recipeObj => recipeObj.key === recipe)) T.recipeKeys.push({ key: recipe, group });
 	});
 
 	if (providedIngredients) T.recipesGroups.unshift("Provided Ingredients");

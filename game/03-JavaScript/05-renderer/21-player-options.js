@@ -1038,7 +1038,7 @@ class PlayerCombatMapper {
 				show = false;
 			}
 			if (id === "tattoo") {
-				show = machine.state !== "inert";
+				show = !["destroyed", "inert"].includes(machine.state);
 			}
 			return {
 				show,

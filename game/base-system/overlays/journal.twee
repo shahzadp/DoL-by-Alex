@@ -942,8 +942,44 @@
 										<img class="icon" src="img/misc/icon/antiques/paintings/curtain_closed.png" width="120" height="120">
 									</div>
 								<<default>>
-									<div class="item" @tooltip="_painting">
+									<<if _labelP is "paintingward" and $bleedingWardCheckpoint>>
+										<<set _painting += ": 50% heard">>
+									<<elseif _labelP is "paintingsnake">>
+										<<set _painting to `<div style='text-align:center'>${_museumPaintingText[_labelP].name}`>>
+										<<if $hcEndings.length is 0>>
+											<<set _painting += "<br><span class='gold'>0/7 Endings:</span><br><span class='black'>S, A, B, C, D, E, F</span></div>">>
+										<<else>>
+											<<set _painting += `<br><span class='gold'>${$hcEndings.length}/7 Endings:</span><br>`>>
+											<<set _painting += `<span class=${$hcEndings.includes('S') ? 'gold' : 'black'}> ${$hcEndings.includes('S') ? 'S' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('A') ? 'green' : 'black'}> ${$hcEndings.includes('A') ? 'A' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('B') ? 'teal' : 'black'}> ${$hcEndings.includes('B') ? 'B' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('C') ? 'blue' : 'black'}> ${$hcEndings.includes('C') ? 'C' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('D') ? 'purple' : 'black'}> ${$hcEndings.includes('D') ? 'D' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('E') ? 'pink' : 'black'}> ${$hcEndings.includes('E') ? 'E' : '?'}</span>,`>>
+											<<set _painting += `<span class=${$hcEndings.includes('F') ? 'red' : 'black'}> ${$hcEndings.includes('F') ? 'F' : '?'}</span></div>`>>
+										<</if>>
+									<</if>>
+									<div class="item" tooltip="_painting">
 										<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[_labelP].iconFull" width="120" height="120">
+										<<switch _labelP>>
+											<<case "paintingsnake">><<set _percent to (Math.round($hcEndings.length) / 7 * 100)>>
+											<<case "paintingward">><<set _percent to $bleedingWardCheckpoint ? 50 : 100>>
+											<<default>><<set _percent to 100>>
+										<</switch>>
+										<div class="paintingProgress" @style="'--progress: ' + _percent + '%;'">
+											<<if $options.images>>
+												<div class="progress">
+													<span class="starBar">
+														<img class="active-icon-img" src="img/ui/gold_star.png">
+														<img class="inactive-icon-img" src="img/ui/empty_star.png">
+													</span>
+												</div>
+											<<else>>
+												<div class="meter">
+													<div class="goldbar" @style="'width:' + _percent + '%'"></div>
+												</div>
+											<</if>>
+										</div>
 									</div>
 							<</switch>>
 						<</for>>

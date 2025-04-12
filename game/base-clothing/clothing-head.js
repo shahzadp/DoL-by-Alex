@@ -2672,6 +2672,7 @@ function initHead() {
 
 		{
 			index: 71,
+			slot: "head",
 			name: "cake hat",
 			name_cap: "Cake hat",
 			variable: "cake",
@@ -2683,7 +2684,7 @@ function initHead() {
 			reveal: 1,
 			word: "a",
 			plural: 0,
-			mask_img: 1,
+			mask_img: 0,
 			colour: 0,
 			colour_options: [],
 			colour_combat: 0,
