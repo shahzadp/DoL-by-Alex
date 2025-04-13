@@ -65,10 +65,13 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 		<br>
 		<div class="itemPainting">
 			<<for _labelP, _valueP range $museumAntiques.paintings>>
+				<<set _painting to _valueP isnot "museum" ? _museumPaintingText[_labelP].journalName : _museumPaintingText[_labelP].name>>
 				<<switch _valueP>>
 					<<case "museum" "recovered">>
-						<<if _labelP is "paintingward" and $bleedingWardCheckpoint>>
-							<<set _painting += ": 50% heard">>
+						<<if _labelP is "paintingward">>
+							<<if $bleedingWardCheckpoint>>
+								<<set _painting += ": 50% heard">>
+							<</if>>
 						<<elseif _labelP is "paintingsnake">>
 							<<set _painting to `<div style='text-align:center'>${_museumPaintingText[_labelP].name}`>>
 							<<if $hcEndings.length is 0>>
@@ -84,7 +87,7 @@ You look around the museum. The pedestals are grooved, as if awaiting specific o
 								<<set _painting += `<span class=${$hcEndings.includes('F') ? 'red' : 'black'}> ${$hcEndings.includes('F') ? 'F' : '?'}</span></div>`>>
 							<</if>>
 						<</if>>
-						<div class="item" tooltip="_painting">
+						<div class="item" @tooltip="_painting">
 							<img class="icon" @src="'img/misc/icon/' + _museumPaintingText[_labelP].iconFull" width="120" height="120">
 							<<switch _labelP>>
 								<<case "paintingsnake">><<set _percent to (Math.round($hcEndings.length) / 7 * 100)>>
