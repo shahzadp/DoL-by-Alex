@@ -4662,6 +4662,8 @@ function initUpper() {
 			variable: "cowonesie",
 			combat: {
 				reference: "regularshirt",
+				hasBreastsAcc: false,
+				hasSleevesAcc: false,
 				mainColour: "#ffffff",
 			},
 			integrity: 300,
