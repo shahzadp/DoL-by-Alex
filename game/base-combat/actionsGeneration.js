@@ -21,7 +21,7 @@ Macro.add("generateCombatAction", {
 			const actions = Object.values(optionsTable);
 			const listSpan = el("span");
 			listSpan.id = `${actionType}Select`;
-			const textColor = combatListColor("feetaction", actions.includes(V.feetaction) ? V.feetaction : actions[0]);
+			const textColor = combatListColor(actionType, actions.includes(V[actionType]) ? V[actionType] : actions[0]);
 			listSpan.className = `${textColor}List flavorText ${T.reducedWidths ? "reducedWidth" : ""}`;
 			T[`${actionType}options`] = optionsTable; // listbox is quirky like that
 			const listBox = Wikifier.wikifyEval(`<<listbox "$${actionType}" autoselect>><<optionsfrom _${actionType}options>><</listbox>>`);
