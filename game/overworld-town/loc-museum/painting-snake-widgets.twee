@@ -477,13 +477,13 @@
 				Math.clamp(item.time, 0, 11);
 			})>>
 
-			<<run hcItemsFilter((item => item.dirty !== undefined &&
+			<<run hcItemsFilter((item => item.dirty === 0 &&
 			item.location !== "held" &&
 			item.type !== "clutter" &&
 			!$_containersToCheck.some(c => c.containerID === item.location))).forEach(toDirty => {
 				if (toDirty.location is "disposal") {
 					toDirty.dirty++;
-				} else if ($rng gte 85) {
+				} else if ($rng gte 90) {
 					toDirty.dirty++;
 				}
 				Math.clamp(toDirty.dirty, 0, 2);
@@ -514,7 +514,7 @@
 						/* Player's bed, very rarely checked but very suspicious */
 						suspicionLevel = 5;
 						if (hidden) {
-							item.vanishesIn -= 0;
+							item.vanishesIn -= 0.2;
 						} else {
 							item.vanishesIn -= 0.5;
 						}
@@ -789,7 +789,12 @@
 		<<set $_prisonerSheet to $hcItems.find(sheet => sheet.type is "sheets" and sheet.location is "prisoner")>>
 		<br>
 		<<switch $prisoner.health>>
-			<<case 30 29 28 27 26>><span class="red"><<print $prisoner.name.toUpperFirst()>> is suspiciously healthy.</span>
+			<<case 30 29 28 27 26>>
+				<<if Time.lastDayOfMonth is $hc.day and $hc.daily.dailyPunishment or !$hc.suspicionRevealed>>
+					<span class="green"><<print $prisoner.name.toUpperFirst()>> is healthy.</span>
+				<<else>>
+					<span class="red"><<print $prisoner.name.toUpperFirst()>> is suspiciously healthy.</span>
+				<</if>>
 			<<case 25 24 23 22 21 20>><span class="green"><<print $prisoner.name.toUpperFirst()>> is healthy.</span>
 			<<case 19 18 17 16>><span class="teal"><<print $prisoner.name.toUpperFirst()>> is decently healthy.</span>
 			<<case 15 14 13 12>><span class="blue"><<print $prisoner.name.toUpperFirst()>> is sickly.</span>
