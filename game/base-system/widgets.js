@@ -94,6 +94,34 @@ function calculatePenisBulge() {
 }
 window.calculatePenisBulge = calculatePenisBulge;
 
+/* Calculate the player's gender appearance if their genitals and chest are exposed  */
+function nudeGenderAppearance() {
+	if (V.NudeGenderDC === 2 && !playerChastity("hidden")) return V.player.sex;
+
+	genderappearancecheck();
+	T.apparent_femininity_nude += (V.player.breastsize - 0.5) * 100;
+	T.apparent_femininity_nude += Math.trunc(V.player.bottomsize * 50);
+	if (playerChastity("hidden")) {
+		T.apparent_femininity_nude += setup.clothes.genitals[clothesIndex("genitals", V.worn.genitals)].femininity;
+	} else if (V.NudeGenderDC === 1) {
+		if (V.player.penisExist) T.apparent_femininity_nude += (-V.player.penissize - 2.5) * 150;
+		if (V.player.vaginaExist) T.apparent_femininity_nude += 450;
+	}
+	if (!(V.sexStats === undefined || !playerBellyVisible() || V.NudeGenderDC === 0)) {
+		if (V.NudeGenderDC === 1) T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * (V.NudeGenderDC === 1 ? 90 : 70), 0, Infinity);
+		else if (playerBellySize() >= 18) T.apparent_femininity_nude += Math.clamp(10000, 0, Infinity);
+		else if (playerBellySize() >= 8) T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * 250, 0, Infinity);
+	}
+	Object.keys(V.skin).forEach(label => {
+		if (["m", "f"].includes(V.skin[label].gender)) {
+			const multiplier = V.skin[label].gender === "m" ? -1 : 1;
+			T.apparent_femininity_nude += 50 * (V.skin[label].pen !== "pen" ? 2 : 1) * multiplier;
+		}
+	});
+	return T.apparent_femininity_nude > 0 ? "f" : "m";
+}
+window.nudeGenderAppearance = nudeGenderAppearance;
+
 /** Calculate the player's gender appearance */
 function genderappearancecheck() {
 	/* Calculate bulge size */
@@ -172,6 +200,9 @@ function genderappearancecheck() {
 	T.under_lower_protected = !V.worn.under_lower.exposed;
 	T.apparent_femininity_noow = T.apparent_femininity;
 	T.gender_appearance_factors_noow = clone(T.gender_appearance_factors);
+	/* Calculate gender appearance with no clothes on */
+	T.apparent_femininity_nude = T.apparent_femininity;
+
 	T.over_lower_femininity = setup.clothes.over_lower[clothesIndex("over_lower", V.worn.over_lower)].femininity
 		? setup.clothes.over_lower[clothesIndex("over_lower", V.worn.over_lower)].femininity
 		: 0;

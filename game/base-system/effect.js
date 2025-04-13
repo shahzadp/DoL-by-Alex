@@ -755,21 +755,23 @@ function effects() {
 		}
 
 		if (V.school_crossdress_message) {
+			const crossdressing = V.player.gender !== V.player.sex ? "presumed crossdressing" : "crossdressing";
+			const knows = V.player.gender !== V.player.sex ? "believes it to be true" : "knows";
 			switch (V.school_crossdress_message) {
 				case 5:
-					element("span", "Your crossdressing has become common knowledge at school. Everyone knows, including the teachers.", "red");
+					element("span", `Your ${crossdressing} has become common knowledge at school. Everyone ${knows}, including the teachers.`, "red");
 					break;
 				case 4:
-					element("span", "Rumours of your crossdressing are spreading throughout the school.", "pink");
+					element("span", `Rumours of your ${crossdressing} are spreading throughout the school.`, "pink");
 					break;
 				case 3:
-					element("span", "Rumours of your crossdressing are spreading, and have become a popular topic of conversation at school.", "purple");
+					element("span", `Rumours of your ${crossdressing} are spreading, and have become a popular topic of conversation at school.`, "purple");
 					break;
 				case 2:
-					element("span", "Whispers of your crossdressing are spreading through the school.", "blue");
+					element("span", `Whispers of your ${crossdressing} are spreading through the school.`, "blue");
 					break;
 				case 1:
-					element("span", "A few cliques at school have begun whispering of your crossdressing.", "lblue");
+					element("span", `A few cliques at school have begun whispering of your ${crossdressing}.`, "lblue");
 					break;
 			}
 			delete V.school_crossdress_message;
