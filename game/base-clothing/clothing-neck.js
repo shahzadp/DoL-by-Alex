@@ -110,7 +110,7 @@ function initNeck() {
 			description: "A collar and tie. Part of the bunny outfit.",
 			shop: ["adult"],
 			collared: 0,
-			accessory: 0,
+			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
