@@ -709,7 +709,7 @@ setup.feats = {
 	"Trials of Faith": {
 		title: "Trials of Faith",
 		desc: "Heard all endings of the 'Hopeless Cycle' story.",
-		difficulty: 3,
+		difficulty: 4,
 		series: "",
 		hint: "Hint: A truth buried behind many lies.",
 		filter: ["All", "Social"],
