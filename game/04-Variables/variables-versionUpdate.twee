@@ -3511,7 +3511,7 @@
 	/* Code that should not be moved into a check like above */
 	<<set $runWardrobeSanityChecker to true>>
 
-	<<if $objectVersion.updateClothes lt 67 or $objectVersion.updateClothes is undefined>>
+	<<if $objectVersion.updateClothes lt 68 or $objectVersion.updateClothes is undefined>>
 		<<updateClothes>>
 		<<if $objectVersion.updateClothes lt 38>>
 			<!-- V0.4.0.7 return items stuck in $store without proper .location -->
@@ -3536,7 +3536,7 @@
 		<</if>>
 
 		<!-- do NOT forget to bump this version in variables-start.twee, too -->
-		<<set $objectVersion.updateClothes to 67>>
+		<<set $objectVersion.updateClothes to 68>>
 	<</if>>
 
 	<<if $objectVersion.specialClothesEffectsSetup lt 1 or $objectVersion.specialClothesEffectsSetup is undefined>>
@@ -5268,7 +5268,7 @@
 	<<if $skinColor isnot undefined>>
 		<<set $player.skin.color to $skinColor.natural>>
 		<<script>>
-			const colorValue = Math.max(...V.skinColor.tanValues);
+			const colorValue = V.skinColor.tanValues ? Math.max(...V.skinColor.tanValues) : 0;
 			V.player.skin.layers = [
 				{
 					layers: [],
@@ -5952,6 +5952,13 @@
 		<<if $averyRejected is undefined>>
 			<<set $averyRejected to {}>>
 			<<set $weekly.averyRejected to {}>>
+		<</if>>
+		<!-- Fix NaN values -->
+		<<if isNaN($averyRejected.dropOff)>>
+			<<set $averyRejected.dropOff to 0>>
+		<</if>>
+		<<if isNaN(C.npc.Avery.rage)>>
+			<<set C.npc.Avery.rage to 0>>
 		<</if>>
 	<</if>>
 
