@@ -252,12 +252,8 @@ function updateClothesItem(slot, item, debug) {
 			if (itemRef[key] !== undefined) {
 				if (item[key] === undefined) item[key] = clone(itemRef[key]);
 				if (item.one_piece === "broken" || item.one_piece === "split") item[key][1] = item.one_piece;
-				for (const k in itemRef.outfitSecondary) {
-					// if one_piece is broken, everything is broken
-					if (item.one_piece === "broken" || item.one_piece === "split") item.outfitSecondary[k] = item.one_piece;
-					else if (item.outfitSecondary[k] !== "broken" && item.outfitSecondary[k] !== "split")
-						item.outfitSecondary[k] = clone(itemRef.outfitSecondary[k]);
-				}
+				// Fix both items in outfitSecondary array being "split" or "broken" when key index 0 should still be the slot of the matched item
+				if (["broken", "split"].includes(item[key][0]) && item[key][0] === item[key][1]) item[key][0] = clone(itemRef[key][0]);
 			}
 			continue;
 		}
