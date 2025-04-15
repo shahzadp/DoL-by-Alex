@@ -23,12 +23,11 @@ window.ampm = ampm;
 DefineMacroS("ampm", ampm);
 
 function advanceToHour() {
-	return passTime(60 - Time.minute);
+	passTime(60 - Time.minute);
 }
 Macro.add("advancetohour", {
 	handler() {
-		const fragment = advanceToHour();
-		this.output.append(fragment);
+		advanceToHour();
 	},
 });
 
@@ -36,12 +35,11 @@ function passTimeUntil(hour, minute = 0) {
 	const currentSeconds = Time.hour * TimeConstants.secondsPerHour + Time.minute * TimeConstants.secondsPerMinute;
 	const targetSeconds = hour * TimeConstants.secondsPerHour + minute * TimeConstants.secondsPerMinute;
 	const secondsToPass = (targetSeconds - currentSeconds + TimeConstants.secondsPerDay) % TimeConstants.secondsPerDay;
-	return passTime(secondsToPass, "sec");
+	passTime(secondsToPass, "sec");
 }
 Macro.add("passTimeUntil", {
 	handler() {
-		const fragment = passTimeUntil(...this.args);
-		this.output.append(fragment);
+		passTimeUntil(...this.args);
 	},
 });
 
