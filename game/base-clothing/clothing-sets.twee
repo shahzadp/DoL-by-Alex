@@ -300,6 +300,12 @@
 						/* Check for saved colors in clothing set */
 						<<set $_outfitColors to $outfit[$wear_outfit].colors>>
 						<<if $_outfitColors>>
+							<<if $_outfitColors[$_slot][0] is 0 and setup.clothes[$_slot].find(item => item.name === $_wardrobeItem.name).colour_options.length>>
+								<<set $_outfitColors[$_slot][0] to setup.clothes[$_slot].find(item => item.name === $_wardrobeItem.name).colour_options[0]>>
+							<</if>>
+							<<if $_outfitColors[$_slot][1] is 0 and setup.clothes[$_slot].find(item => item.name === $_wardrobeItem.name).accessory_colour_options.length>>
+								<<set $_outfitColors[$_slot][1] to setup.clothes[$_slot].find(item => item.name === $_wardrobeItem.name).accessory_colour_options[0]>>
+							<</if>>
 							/* Start of checking for random colours */
 							<<set _randomColourListItem to $_wardrobeItem.name>>
 							<<if $_outfitColors[$_slot][0] is "random" or $_outfitColors[$_slot][1] is "random">>
@@ -341,10 +347,10 @@
 							<<unset _randomColourListItem>>
 
 							/* Skips over items that do not match the random colours */
-							<<if (!_randomColour or _randomColour isnot $_wardrobeItem.colour) and $_outfitColors[$_slot][0] isnot $_wardrobeItem.colour>>
+							<<if (!_randomColour or _randomColour isnot $_wardrobeItem.colour) and $_outfitColors[$_slot][0] isnot 0 and $_outfitColors[$_slot][0] isnot $_wardrobeItem.colour>>
 								<<continue>>
 							<</if>>
-							<<if (!_randomColourAcc or _randomColourAcc isnot $_wardrobeItem.accessory_colour) and $_outfitColors[$_slot][1] isnot $_wardrobeItem.accessory_colour>>
+							<<if (!_randomColourAcc or _randomColourAcc isnot $_wardrobeItem.accessory_colour) and $_outfitColors[$_slot][1] isnot 0 and $_outfitColors[$_slot][1] isnot $_wardrobeItem.accessory_colour>>
 								<<continue>>
 							<</if>>
 							/* End of checking for random colours */

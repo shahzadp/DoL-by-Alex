@@ -643,8 +643,12 @@ function onHomePillItemClick(itemName) {
 					${item.description}
 					<div class="hpi_warning_label">${item.warning_label}</div>
 					<div id="hpi_desc_action">
-						<a id="hpi_take_pills" class="hpi_take_pills" onclick="window.onTakeClick(${itemName}, ${itemType})">Take pill</a>
-						<a id="hpi_take_every_morning" onclick="window.onAutoTakeClick(${itemName}, ${itemType})">Take every morning</a>
+						<div>
+							<a id="hpi_take_pills" onclick="window.onTakeClick(${itemName}, ${itemType})">Take pill</a>
+						</div>
+						<div>
+							<a id="hpi_take_every_morning" onclick="window.onAutoTakeClick(${itemName}, ${itemType})">Take every morning</a>
+						</div>
 					</div>
 				</div>`;
 				window.initPillContextButtons(item);
