@@ -560,6 +560,18 @@ DefineMacro("modelprepare-player-body", function () {
 		const liquidamt = Math.clamp(setup.bodyliquid.combined(bodypart), 0, 5);
 		T.modeloptions["cum_" + bodypart] = cumsprite[bodypart].select(liquidamt);
 	});
+
+	/***
+	 *    ███████  ██████  ██      ██       ██████  ██     ██ ███████ ██████
+	 *    ██      ██    ██ ██      ██      ██    ██ ██     ██ ██      ██   ██
+	 *    █████   ██    ██ ██      ██      ██    ██ ██  █  ██ █████   ██████
+	 *    ██      ██    ██ ██      ██      ██    ██ ██ ███ ██ ██      ██   ██
+	 *    ██       ██████  ███████ ███████  ██████   ███ ███  ███████ ██   ██
+	 */
+
+	if (V.follower) {
+		T.modeloptions.follower = V.follower;
+	}
 });
 
 DefineMacro("modelprepare-player-clothes", function () {
