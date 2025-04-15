@@ -3535,6 +3535,20 @@
 			<<if $propEquipped is 1 and $worn.handheld.type !== "prop" and $worn.handheld.variable !== "featherduster">><<set $propEquipped to 0>><</if>>
 		<</if>>
 
+		<!-- 0.5.4.3 console error fixes -->
+		<<if $objectVersion.updateClothes lt 68>>
+			<<script>>
+			for (const layer of Skin.tanningLayers) {
+				for (const [key, value] of Object.entries(layer.slots)) {
+					const patterns = setup.clothes[key].filter(item => item.index === value.index)[0].pattern_options;
+					if (patterns) {
+						value.pattern = patterns[0];
+					}
+				}
+			}
+			<</script>>
+		<</if>>
+
 		<!-- do NOT forget to bump this version in variables-start.twee, too -->
 		<<set $objectVersion.updateClothes to 68>>
 	<</if>>
@@ -5985,15 +5999,4 @@
 		<<set $weekly.maze to {}>>
 	<</if>>
 
-	<!-- 0.5.4.3 console error fixes -->
-	<<script>>
-	for (const layer of Skin.tanningLayers) {
-		for (const [key, value] of Object.entries(layer.slots)) {
-		const patterns = setup.clothes[key].filter(item => item.index === value.index)[0].pattern_options;
-		if (patterns) {
-			value.pattern = patterns[0];
-		}
-		}
-	}
-	<</script>>
 <</widget>>
