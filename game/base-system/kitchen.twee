@@ -86,7 +86,7 @@
 	<<kitchenFilter>>
 	<<if _recipeKeys.some(key => key.group isnot "Provided Ingredients")>>
 		<<for _category range _recipesGroups>>
-			<<if !_recipeKeys.some(key => key.group is _category)>><<continue>><</if>>
+			<<if !_recipeKeys.find(key => key.group is _category)>><<continue>><</if>>
 			<<set _categoryVar to "_" + _category.replace(" ", "")>>
 			<<foldout false _categoryVar>>
 				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
@@ -100,7 +100,7 @@
 	<<else>>
 		<div class="info">You haven't learned how to cook yet! Attend housekeeping classes to unlock new recipes.</div>
 		<<for _category range _recipesGroups>>
-			<<if !_recipeKeys.some(key => key.group is _category)>><<continue>><</if>>
+			<<if !_recipeKeys.find(key => key.group is _category)>><<continue>><</if>>
 			<<set _categoryVar to "_" + _category.replace(" ", "")>>
 			<<foldout false _categoryVar>>
 				<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
@@ -121,7 +121,7 @@
 			<<tendingicon $_setupItem.icon>> <<recipe_name _args[0] "cap">> |
 			Owned: <span class="gold"><<print $plants[_args[0]].amount>></span>
 		</div>
-		<<set $_group to _recipeKeys.some((obj) => obj.key is _args[0]).group>>
+		<<set $_group to _recipeKeys.find((obj) => obj.key is _args[0]).group>>
 		<<switch $_group>>
 			<<case "Missing Ingredients">>
 				<div>
@@ -158,7 +158,7 @@
 <</widget>>
 
 <<widget "kitchenDisplayRecipeDetail">>
-	<<set $lastRecipeViewed to _args[0]>>
+	<<set $lastRecipeViewed to _recipeKeys.some((obj) => obj.key is _args[0]) ? _args[0] : _recipeKeys[0].key>>
 	<<set $_setupItem to setup.plants[$lastRecipeViewed]>>
 	<div id="basket">
 		<div>
@@ -191,7 +191,7 @@
 
 <<widget "kitchenDisplayRecipeMake">>
 	<<set $_setupItem to setup.plants[$lastRecipeViewed]>>
-	<<set $_group to _recipeKeys.some((obj) => obj.key is $lastRecipeViewed).group>>
+	<<set $_group to _recipeKeys.find((obj) => obj.key is $lastRecipeViewed).group>>
 	<<if $_setupItem?.ingredients.length>>
 		<<switch $_group>>
 			<<case "Restricted Ingredients">>

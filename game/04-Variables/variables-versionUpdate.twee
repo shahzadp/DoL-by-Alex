@@ -5886,7 +5886,7 @@
 
 	<!-- 0.5.4.0 -->
 	<!-- Fix for child toy typos -->
-	<<if !$objectVersion.toyFix lt 1 or $objectVersion.toyFix is undefined>>
+	<<if !$objectVersion.toyFix lt 2 or $objectVersion.toyFix is undefined>>
 		<<set _nameChanges to {
 			"Mrs Teddy": "Mrs. Teddy",
 			"Mr Teddy": "Mr. Teddy",
@@ -5940,8 +5940,9 @@
 				<<set _toy.name_lower to _nameLowerChanges[_toy.name]>>
 				<<set _toy.name to _nameChanges[_toy.name]>>
 			<</if>>
+			<<if !_toy.name_lower>><<set _toy.name_lower to _toy.name.toLowerCase()>><</if>>
 		<</for>>
-		<<set $objectVersion.toyFix to 1>>
+		<<set $objectVersion.toyFix to 2>>
 	<</if>>
 
 	<!-- Avery's seen and tracking the number of rejections of Avery -->
@@ -5976,4 +5977,16 @@
 	<<if $weekly.maze is undefined>>
 		<<set $weekly.maze to {}>>
 	<</if>>
+
+	<!-- 0.5.4.3 console error fixes -->
+	<<script>>
+	for (const layer of Skin.tanningLayers) {
+		for (const [key, value] of Object.entries(layer.slots)) {
+		const patterns = setup.clothes[key].filter(item => item.index === value.index)[0].pattern_options;
+		if (patterns) {
+			value.pattern = patterns[0];
+		}
+		}
+	}
+	<</script>>
 <</widget>>

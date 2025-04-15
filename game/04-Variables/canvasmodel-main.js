@@ -922,11 +922,11 @@ Renderer.CanvasModels.main = {
 								index: Number(props.index),
 								integrity: props.integrity ?? "full",
 								alt: props.alt,
+								pattern: props.pattern,
 								colour: props.colour || "black",
 								accColour: props.accColour || "black",
 								setup: setup.clothes[slot][props.index],
-							};
-							newOptions.worn[slot] = { ...newOptions.worn[slot], ...item };
+							  };														  newOptions.worn[slot] = { ...newOptions.worn[slot], ...item };
 							// Set up the filters for the tanning layer in order to choose the correct sprites
 							// Uses default "black" colour since undefined will try to load the incorrect path
 							setClothingFilter(newOptions, slot, item, item.setup, '', 'colour_sidebar', 'colour');
@@ -987,9 +987,10 @@ Renderer.CanvasModels.main = {
 
 					acc.slots[obj.worn.slot] = {
 						index: obj.worn.index,
-						...(obj.worn.integrity !== "full" && { integrity: obj.worn.integrity }),
-						...(obj.worn.alt !== undefined && { alt: obj.worn.alt }),
-					};
+						  ...(obj.worn.integrity !== "full" && { integrity: obj.worn.integrity }),
+						  ...(obj.worn.alt !== undefined && { alt: obj.worn.alt }),
+						  ...(options.worn[obj.worn.slot].pattern !== undefined && { pattern: options.worn[obj.worn.slot].pattern }),
+						};
 					return acc;
 				}, { layers: [], slots: {} });
 		}

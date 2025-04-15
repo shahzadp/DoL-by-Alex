@@ -228,7 +228,7 @@ class CloseCombatMapper {
 			"small chastity cage": "small",
 		};
 		const chastityDevice = chastityTypes[V.worn.genitals.name] || "base";
-		const penisType = V.player.gender === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
+		const penisType = V.player.sex === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
 
 		options.penis = {
 			type: penisType,
