@@ -2979,6 +2979,56 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 :: Hopeless Cycle Blood Carry
 <<set _thermoDisable to true>><<set $bus to "cloister">>
 <<set $hc.forcedMove to true>><<run delete $hc.endingETimer>><<handheldon>>
+<<canvas-model-override "mouth" "neutral">><<canvas-model-override "eyes_half" true>>
+<<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
+
+<<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
+<<set _witchBrandings to $prisonerBrands.filter(brands => ["chest", "left arm", "right arm", "right cheek", "right foot", "right leg", "right shoulder", "right thigh"].includes(brands))>>
+
+<<if $prisonerBrands.includes("right cheek")>>
+	<<set _brandings to "brand_rightcheek">>
+<</if>>
+
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	<<set $hc.witchHair to "hair_flowers">>
+<<elseif $prisonerEvents.includes("talkHair")>>
+	<<set $hc.witchHair to "hair_braid">>
+<<elseif $prisonerEvents.includes("washHair")>>
+	<<set $hc.witchHair to "hair_clean">>
+<<else>>
+	<<set $hc.witchHair to "hair_dirty">>
+<</if>>
+
+<<if $prisoner.state is "catatonic" or $phase lte 1>>
+	<<set _leftarm to "leftarm">>
+	<<if _witchClothes is "robe">>
+		<<set _clothes_leftarm to "robe_leftarm">>
+	<</if>>
+<<else>>
+	<<set _leftarm to "leftarm_alt">>
+<</if>>
+
+<<if $prisoner.bandagesOn>>
+	<<set _bandages to "bandages">>
+<</if>>
+
+<<if _witchClothes is "robe">>
+	<<set _clothes to "robe">>
+<<elseif _witchClothes is "bloodstained sack" or _witchClothes is "torn vegetable sack">>
+	<<set _clothes to "sack">>
+<</if>>
+
+<<set $follower to {
+	name: "witchprisoner",
+	base: "base",
+	leftarm: _leftarm,
+	clothes_leftarm: _clothes_leftarm,
+	hair: $hc.witchHair,
+	under_clothes: _bandages,
+	clothes: _clothes,
+	skin: _brandings
+}>>
+
 <<set Time.setDate(new DateTime(1390, 5, 31, 22, 0))>><<set Weather.set("clear", true, 1000)>>
 <span class="narration">To this day, the temple puts special emphasis on the last day of each month. It is unclear when this tradition started, but it has been around for centuries.</span>
 <br><br>
@@ -3050,6 +3100,17 @@ You hear a heartbeat growing in volume and speed.
 	You wonder how disorienting it must feel to be carried in her condition.
 	She can't feel your left arm under her legs. It must feel like she's half-floating.
 <</if>>
+<<if $prisoner.state isnot "catatonic" and $phase gte 1>>
+	<<set $follower.base to "base_alt">>
+	<<if $follower.clothes is "robe">>
+		<<set $follower.clothes to "robe_alt">>
+	<<elseif $follower.clothes is "sack">>
+		<<set $follower.clothes to "sack_alt">>
+	<</if>>
+	<<if $follower.under_clothes>>
+		<<set $follower.under_clothes to "bandages_alt">>
+	<</if>>
+<</if>>
 <br><br>
 
 You take a deep breath as the clearing, and the altar, come into view.
@@ -3085,11 +3146,12 @@ The Bishop motions for you to approach.
 The silk-bearers walk with you to the altar, spreading the silk above you to shade it.
 <br><br>
 
-<<link [[Lay her down|Hopeless Cycle Blood Altar 2]]>><<pass 10>><</link>>
+<<link [[Lay her down|Hopeless Cycle Blood Altar 2]]>><<unset $follower>><<canvas-model-override "clear">><<pass 10>><</link>>
 <br>
 
 :: Hopeless Cycle Blood Altar 2
 <<set _thermoDisable to true>>
+<<canvas-model-override "mouth" "neutral">>
 <span class="narration">A blood-steeped altar. A blood red moon. Silver to prevent transmission. All in accordance with their scripture.</span>
 <br><br>
 
@@ -3122,7 +3184,7 @@ Some of the flock avert their gaze, while others become lost in her supernatural
 "You who bears her taint," comes the aged voice of the Bishop, directed at you.
 <<if $prisoner.state is "catatonic">>
 	"I am not impressed. She barely clings to life. You should have seen to it that she would be aware for her final punishment." He shakes his head. "No matter.
-<<elseif $phase is 2>>
+<<elseif $phase is 3>>
 	"You have done well watching over this servant of the Dark Elk. However, I worry that you feel sympathy for her. No matter.
 <<else>>
 	"You have done well watching over this servant of the Dark Elk. You will be honored for your service and sacrifice.
@@ -3845,7 +3907,20 @@ You slump back against the wall, resigned to your fate. You know there's no esca
 <br>
 
 :: Hopeless Cycle Ending D [ending]
-<<set _thermoDisable to true>><<canvas-model-override "mouth" "neutral">>
+<<set _thermoDisable to true>>
+<<canvas-model-override "mouth" "neutral">><<canvas-model-override "eyes_half" true>>
+<<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
+<<if $prisonerBrands.includes("right cheek")>>
+	<<set _brandings to "brand_rightcheek">>
+<</if>>
+
+<<set $follower to {
+	name: "witchprisoner",
+	base: "base",
+	leftarm: "leftarm",
+	hair: $hc.witchHair,
+	skin: _brandings
+}>>
 <span class="narration">In this version of the tale, the gaoler didn't attempt to stop the ritual. The needles of judgement found their mark.</span>
 <br><br>
 
@@ -3942,7 +4017,7 @@ You feel numb.
 <<set $hc.ending to "D">>
 <br><br>
 
-<<link [[Rest for the wicked|Hopeless Cycle End]]>><<endevent>><</link>>
+<<link [[Rest for the wicked|Hopeless Cycle End]]>><<unset $follower>><<endevent>><</link>>
 <br>
 
 :: Hopeless Cycle Ending C [ending]
@@ -3989,14 +4064,49 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 "Brother," the Hand's voice snaps you back to attention. "Forget your previous orders. You are no longer this witch's guard. We have uses for her. You are to be her keeper, instead."
 <br><br>
 
-<<link [[Next|Hopeless Cycle Ending C 3]]>><</link>>
+<<link [[Next|Hopeless Cycle Ending C 3]]>><<handheldon>><</link>>
 <br>
 
 :: Hopeless Cycle Ending C 3 [ending]
 <<set _thermoDisable to true>>
 <<set Time.setDate(new DateTime(1390, 8, 3, 12, 30))>><<set Weather.set("heavyPrecipitation", true, 600)>>
-<<set $trauma to 5000>><<set $stress to 0>><<set $control to 1000>><<set $purity to 500>>
+<<set $trauma to 5000>><<set $stress to 0>><<set $control to 1000>><<set $purity to 500>><<set $arousal to 7000>>
 <<set $player.virginity.penile to $prisoner.name>><<set $player.virginity.temple to false>>
+<<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
+<<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
+<<if $prisonerBrands.includes("right cheek")>>
+	<<set _brandings to "brand_rightcheek">>
+<</if>>
+
+<<if $prisonerEvents.includes("talkHairBlooms")>>
+	<<set $hc.witchHair to "hair_flowers">>
+<<elseif $prisonerEvents.includes("talkHair")>>
+	<<set $hc.witchHair to "hair_braid">>
+<<elseif $prisonerEvents.includes("washHair")>>
+	<<set $hc.witchHair to "hair_clean">>
+<<else>>
+	<<set $hc.witchHair to "hair_dirty">>
+<</if>>
+
+<<if $prisoner.bandagesOn>>
+	<<set _bandages to "bandages">>
+<</if>>
+
+<<if _witchClothes is "robe">>
+	<<set _clothes to "robe">>
+<<elseif _witchClothes is "bloodstained sack" or _witchClothes is "torn vegetable sack">>
+	<<set _clothes to "sack">>
+<</if>>
+
+<<set $follower to {
+	name: "witchprisoner",
+	base: "base",
+	leftarm: "leftarm_alt",
+	clothes: _clothes,
+	under_clothes: _bandages,
+	hair: $hc.witchHair,
+	skin: _brandings
+}>>
 <span class="narration">
 	Originally, the temple had planned to make an example of the witch. Now, she had proven to be a useful tool to them.
 	<br><br>
@@ -4070,7 +4180,7 @@ She wraps her arms around you and pulls you down. Once again, you purge the filt
 <<set $hc.ending to "C">>
 <br><br>
 
-<<link [[Salvation in suffering|Hopeless Cycle End]]>><<endevent>><</link>>
+<<link [[Salvation in suffering|Hopeless Cycle End]]>><<unset $follower>><<endevent>><</link>>
 <br>
 
 :: Hopeless Cycle Ending B [ending]
@@ -5215,6 +5325,7 @@ Her soft snoring lulls you into a blissful trance.
 :: Hopeless Cycle End
 <<set _endingSeen to $hc.ending>>
 <<hopelessCycleEnd>>
+<<unset $follower>>
 <<set $location to "museum">>
 <<effects>><<npc Winter>><<person1>>
 

@@ -531,6 +531,8 @@ Renderer.CanvasModels.main = {
 			"zupper": ZIndices.upper, // generated options
 			"zupperleft": ZIndices.upper_arms, // generated options
 			"zupperright": ZIndices.upper_arms, // generated options
+			// followers
+			"follower": false,
 			// filters
 			"filters": {
 				body: { blend: "#ffffff", blendMode: "multiply", desaturate: false },
@@ -3548,6 +3550,83 @@ Renderer.CanvasModels.main = {
 		"feet_details": genlayer_clothing_detail('feet'),
 		"feet_back_acc": genlayer_clothing_back_img_acc('feet'),
 		"feet_back": genlayer_clothing_back_img('feet'),
+		/***
+		 *    ███████  ██████  ██      ██       ██████  ██     ██ ███████ ██████  
+		 *    ██      ██    ██ ██      ██      ██    ██ ██     ██ ██      ██   ██ 
+		 *    █████   ██    ██ ██      ██      ██    ██ ██  █  ██ █████   ██████  
+		 *    ██      ██    ██ ██      ██      ██    ██ ██ ███ ██ ██      ██   ██ 
+		 *    ██       ██████  ███████ ███████  ██████   ███ ███  ███████ ██   ██                                                                 
+		 */
+		"follower_base": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.base}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.base;
+			},
+			z: ZIndices.head,
+		},
+		"follower_leftarm": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.leftarm}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.leftarm;
+			},
+			z: ZIndices.fronthair,
+		},
+		"follower_clothes_leftarm": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.clothes_leftarm}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.clothes_leftarm;
+			},
+			z: ZIndices.fronthair + 1,
+		},
+		"follower_hair": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.hair}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.hair;
+			},
+			z: ZIndices.head + 3,
+		},
+		"follower_under_clothes": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.under_clothes}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.under_clothes;
+			},
+			z: ZIndices.head + 1,
+		},
+		"follower_clothes": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.clothes}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.clothes;
+			},
+			z: ZIndices.head + 2,
+		},
+		"follower_skin": {
+			animation: "idle",
+			srcfn(options) {
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.skin}.png`;
+			},
+			showfn(options) {
+				return !!options.follower && !!options.follower.skin;
+			},
+			z: ZIndices.head + 1,
+		},
 
 		// new layer template
 		/*
