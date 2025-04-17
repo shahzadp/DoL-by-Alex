@@ -483,7 +483,7 @@
 		<<set $_containersToCheck to $hcItems.filter(cont => cont.containerID)>>
 		<<set $_witchblooms to hcItemHolding("clutter", w => w.name is "witchblooms")>>
 		<<for $_t = 0; $_t lt $_hoursPassed; $_t++>>
-			<<run $hcItems.filter(item => item.time && item.state is "lit").forEach(item => {
+			<<run $hcItems.filter(item => item.time !== undefined && item.state is "lit").forEach(item => {
 				item.time--;
 				if (item.location is "disposal" and $rng gte 80) item.time--;
 				if (item.location is "cell" and (Time.hour gte 23 or Time.hour lte 5) and $bus isnot "cell") V.hc.suspicion++;
@@ -1233,7 +1233,7 @@
 							<<capture $_valueGucket>>
 								<<if $_valueHere is "torch" and $hc.dungeonTorchState isnot "lit">>
 									/* Infinite torches in the guardhouse. */
-									<<set $_torchTime to $hc.dungeonTorchTime>>
+									<<set $_torchTime to $hc.dungeonTorchTime || 2>>
 									<<set $_torchState to "snuffed">>
 									<<set $_torchAction to "dungeon" + $_torchState.toUpperFirst()>>
 									<<set $_torchText to "Put an unlit torch in " + $_valueGucket.nameText>>
