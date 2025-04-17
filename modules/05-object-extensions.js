@@ -300,6 +300,8 @@ Object.defineProperty(Object.prototype, "isEqual", {
 				const key = keys[i];
 				const aValue = a[key];
 				const bValue = b[key];
+				if (aValue === bValue) continue;
+				if (aValue === null || bValue === null) return false;
 				if (typeof aValue === "object" && typeof bValue === "object") {
 					if (!aValue.isEqual(bValue)) return false;
 				} else if (aValue !== bValue) {
