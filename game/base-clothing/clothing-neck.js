@@ -117,7 +117,7 @@ function initNeck() {
 			cursed: 0,
 			location: 0,
 			iconFile: "bunny_collar.png",
-			accIcon: 0,
+			accIcon: "bunny_collar_acc.png",
 		},
 
 		{
