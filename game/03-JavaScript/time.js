@@ -670,10 +670,10 @@ function dayPassed() {
 	if (V.smuggler_timer < 0) {
 		V.smuggler_timer = random(4, 7);
 		const rng = random(1, 100);
-		if (rng >= 76) V.smuggle_location = "forest";
-		else if (rng >= 51) V.smuggle_location = "sewer";
-		else if (rng >= 26) V.smuggle_location = "beach";
-		else V.smuggle_location = "bus";
+		if (rng >= 76) V.smuggler_location = "forest";
+		else if (rng >= 51) V.smuggler_location = "sewer";
+		else if (rng >= 26) V.smuggler_location = "beach";
+		else V.smuggler_location = "bus";
 		delete V.smuggler_known;
 	}
 
