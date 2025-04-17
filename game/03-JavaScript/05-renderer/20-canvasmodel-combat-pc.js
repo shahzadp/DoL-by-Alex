@@ -1345,14 +1345,39 @@ const combatMainPc = {
 			z: CombatRenderer.indices.frontFootwear,
 		}),
 		genitals: PlayerCanvasHelper.genClothingLayer("genitals", {
-			z: CombatRenderer.indices.base + 4,
+			z: CombatRenderer.indices.base + 6,
+			showfn(options) {
+				const clothes = options.clothes.genitals;
+				if (clothes == null || clothes.name === "naked") {
+					return false;
+				}
+				const show = PlayerCombatMapper.isPenisExposed(options) && clothes.hasMainImg;
+				return !!show;
+			},
 		}),
 		genitalsAcc: PlayerCanvasHelper.genClothingAccLayer("genitals", {
-			z: CombatRenderer.indices.base + 4,
+			z: CombatRenderer.indices.base + 6,
+			showfn(options) {
+				const clothes = options.clothes.genitals;
+				if (clothes == null || clothes.name === "naked") {
+					return false;
+				}
+				const show = PlayerCombatMapper.isPenisExposed(options) && clothes.hasAccessory;
+				return !!show;
+			},
 		}),
 		genitalsPattern: PlayerCanvasHelper.genClothingPatternLayer("genitals", {
-			z: CombatRenderer.indices.base + 4,
+			z: CombatRenderer.indices.base + 6,
+			showfn(options) {
+				const clothes = options.clothes.genitals;
+				if (clothes == null || clothes.name === "naked") {
+					return false;
+				}
+				const show = PlayerCombatMapper.isPenisExposed(options) && options.showClothing && clothes.hasTertiaryPattern;
+				return !!show;
+			},
 		}),
+
 		handsBack: PlayerCanvasHelper.genClothingLayer("hands", {
 			srcfn(options) {
 				const clothes = options.clothes.hands;

@@ -141,7 +141,11 @@ class NpcCombatMapper {
 				"penisimminent",
 			].includes(npc.mouth);
 
-		if (typeof npc.mouth === "string" && ["penis", "penisentrance", "penisimminent"].includes(npc.mouth) && !combat.isPcGenitalsExposed()) {
+		if (
+			typeof npc.mouth === "string" &&
+			["penis", "penisentrance", "penisimminent"].includes(npc.mouth) &&
+			(!combat.isPcGenitalsExposed() || CombatRenderer.getClothingBySlot("genitals").name !== "naked")
+		) {
 			options.tongue.show = false;
 		}
 
