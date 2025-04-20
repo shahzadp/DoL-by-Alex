@@ -671,6 +671,12 @@ Config.navigation.override = function (dest) {
 			case "Prison Wren Trousers":
 			case "Prison Wren Jumpsuit":
 				return "Prison Wren Clothes";
+			case "Wolf Cave Hand":
+				return "Wolf Cave Accept";
+			case "Wolf Cave Hand Refuse":
+				return "Wolf Cave Refuse";
+			case "Wolf Cave Hand Finish":
+				return "Wolf Cave Accept Finish";
 
 			default:
 				return false;
