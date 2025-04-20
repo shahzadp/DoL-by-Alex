@@ -663,12 +663,6 @@ function updatehistorycontrols() {
 window.updatehistorycontrols = updatehistorycontrols;
 DefineMacro("updatehistorycontrols", updatehistorycontrols);
 
-function hidehistorycontrols() {
-	jQuery("#ui-bar-history").hide();
-}
-window.hidehistorycontrols = hidehistorycontrols;
-DefineMacro("hidehistorycontrols", hidehistorycontrols);
-
 /*
 	Refreshes the game when exiting options menu - applying the options object after State has been restored.
 	It is done this way to prevent exploits by re-rendering the same passage
