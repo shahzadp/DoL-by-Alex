@@ -3568,23 +3568,23 @@ Renderer.CanvasModels.main = {
 			},
 			z: ZIndices.head,
 		},
-		"follower_leftarm": {
+		"follower_left_arm": {
 			animation: "idle",
 			srcfn(options) {
-				return `img/clothes/props/npc/${options.follower.name}/${options.follower.leftarm}.png`;
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.left_arm}.png`;
 			},
 			showfn(options) {
-				return !!options.follower && !!options.follower.leftarm;
+				return !!options.follower && !!options.follower.left_arm;
 			},
 			z: ZIndices.head + 1,
 		},
-		"follower_clothes_leftarm": {
+		"follower_clothes_left_arm": {
 			animation: "idle",
 			srcfn(options) {
-				return `img/clothes/props/npc/${options.follower.name}/${options.follower.clothes_leftarm}.png`;
+				return `img/clothes/props/npc/${options.follower.name}/${options.follower.clothes_left_arm}.png`;
 			},
 			showfn(options) {
-				return !!options.follower && !!options.follower.clothes_leftarm;
+				return !!options.follower && !!options.follower.clothes_left_arm;
 			},
 			z: ZIndices.head + 2,
 		},

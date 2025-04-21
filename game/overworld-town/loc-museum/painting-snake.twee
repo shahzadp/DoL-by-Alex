@@ -2991,9 +2991,13 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
 
 <<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
+/* ToDo: Show all brandings on witch
+<<set _witchBrandings to $prisonerBrands.filter(brands => ["chest", "left arm", "right arm", "right foot", "right leg", "right shoulder", "right thigh"].includes(brands))>>
+<<set _witchBrandings to _witchBrandings.map(brands => brands.replace(/\s/g, '_'))>>
+*/
 
 <<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandings to "brand_rightcheek">>
+	<<set _brandRightCheek to "brand_right_cheek">>
 <</if>>
 
 <<if $prisonerEvents.includes("talkHairBlooms")>>
@@ -3007,12 +3011,12 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 <</if>>
 
 <<if $prisoner.state is "catatonic" or $phase lte 1>>
-	<<set _leftarm to "leftarm">>
+	<<set _left_arm to "left_arm">>
 	<<if _witchClothes is "robe">>
-		<<set _clothes_leftarm to "robe_leftarm">>
+		<<set _clothes_left_arm to "robe_left_arm">>
 	<</if>>
 <<else>>
-	<<set _leftarm to "leftarm_alt">>
+	<<set _left_arm to "left_arm_alt">>
 <</if>>
 
 <<if $prisoner.bandagesOn>>
@@ -3028,12 +3032,12 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 <<set $follower to {
 	name: "witchprisoner",
 	base: "base",
-	leftarm: _leftarm,
-	clothes_leftarm: _clothes_leftarm,
+	left_arm: _left_arm,
+	clothes_left_arm: _clothes_left_arm,
 	hair: $hc.witchHair,
 	under_clothes: _bandages,
 	clothes: _clothes,
-	skin: _brandings
+	skin: _brandRightCheek
 }>>
 
 <<set Time.setDate(new DateTime(1390, 5, 31, 22, 0))>><<set Weather.set("clear", true, 1000)>>
@@ -3920,15 +3924,15 @@ You slump back against the wall, resigned to your fate. You know there's no esca
 <<canvas-model-override "mouth" "neutral">><<canvas-model-override "eyes_half" true>>
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
 <<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandings to "brand_rightcheek">>
+	<<set _brandRightCheek to "brand_right_cheek">>
 <</if>>
 
 <<set $follower to {
 	name: "witchprisoner",
 	base: "base",
-	leftarm: "leftarm",
+	left_arm: "left_arm",
 	hair: $hc.witchHair,
-	skin: _brandings
+	skin: _brandRightCheek
 }>>
 <span class="narration">In this version of the tale, the gaoler didn't attempt to stop the ritual. The needles of judgement found their mark.</span>
 <br><br>
@@ -4084,7 +4088,7 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
 <<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
 <<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandings to "brand_rightcheek">>
+	<<set _brandRightCheek to "brand_right_cheek">>
 <</if>>
 
 <<if $prisonerEvents.includes("talkHairBlooms")>>
@@ -4110,11 +4114,11 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 <<set $follower to {
 	name: "witchprisoner",
 	base: "base_alt",
-	leftarm: "leftarm_alt",
+	left_arm: "left_arm_alt",
 	clothes: _clothes,
 	under_clothes: _bandages,
 	hair: $hc.witchHair,
-	skin: _brandings
+	skin: _brandRightCheek
 }>>
 <span class="narration">
 	Originally, the temple had planned to make an example of the witch. Now, she had proven to be a useful tool to them.
@@ -4848,7 +4852,10 @@ Your beloved leads you into the forest, into your new life.
 
 
 :: Hopeless Cycle Ending S Attempt
-<<set _thermoDisable to true>>
+<<set _thermoDisable to true>><<handheldon>>
+<<if $prisonerBrands.includes("chest")>>
+	<<set _brandChest to "brand_chest">>
+<</if>>
 
 The Bishop shakes his head in disappointment. "She has swayed you, my brother. Do not fret. We will purify her influence from your soul."
 <br><br>
@@ -4891,15 +4898,29 @@ Your siblings all pause as the writhing under her skin continues. She moans in m
 
 	Her feet meet the ground.
 	<<if _collapse>>
+		<<canvas-model-override "arm_right" "hold">><<canvas-model-override "eyes_half" true>>
+		<<set $follower to {
+			name: "witchstanding",
+			base: "base_alt",
+			hair: $hc.witchHair + "_alt",
+			skin: _brandChest
+		}>>
 		Slowly, you try to help her stand. <span class="red">She stumbles, her <<print _collapse>> leg having no support.</span>
 		You hold her up to stop her from collapsing entirely, but you can't hope to fight like this.
 		The placement of your brandings has sealed your fates. She looks at you with a sad, warm smile, and kisses you one last time.
 		<span class="red">You're both beaten and restrained.</span> It was a valiant effort. <<pain 8>><<ggpain>>
 		<br><br>
 
-		<<link [[Too late|Hopeless Cycle Ending B]]>><<pass 1>><</link>>
+		<<link [[Too late|Hopeless Cycle Ending B]]>><<unset $follower>><<endevent>><<pass 1>><</link>>
 		<br>
 	<<else>>
+		<<canvas-model-override "arm_right" "hold">><<canvas-model-override "eyes_half" true>>
+		<<set $follower to {
+			name: "witchstanding",
+			base: "base",
+			hair: $hc.witchHair,
+			skin: _brandChest
+		}>>
 		Slowly, <span class="green">you help her stand, the tentacles bracing and controlling her legs.</span>
 		Your siblings freeze. She takes a clumsy step as you guide her.
 		<br><br>
@@ -4960,11 +4981,11 @@ A quick strike from your whip stops an attack that would otherwise hit her head.
 <span class="green">You dance under the red moon as one, with whip and claw.</span>
 <br><br>
 
-<<link [[Dance|Hopeless Cycle Ending S Attempt 3]]>><<pass 5>><</link>>
+<<link [[Dance|Hopeless Cycle Ending S Attempt 3]]>><<unset $follower>><<endevent>><<pass 5>><</link>>
 <br>
 
 :: Hopeless Cycle Ending S Attempt 3
-<<set _thermoDisable to true>>
+<<set _thermoDisable to true>><<wearProp "whip" "khaki">><<canvas-model-override "mouth" "neutral">>
 <span class="narration">
 	I've always had a soft spot for these types of stories. Battles of impossible odds, won through sheer willpower and perseverence.
 	Perhaps it's juvenile of me, but there are plenty of real world examples too. What do you think?
