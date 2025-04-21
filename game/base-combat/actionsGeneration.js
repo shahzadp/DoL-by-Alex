@@ -30,7 +30,9 @@ Macro.add("generateCombatAction", {
 		} else {
 			// assume radio buttons
 			if (!combatType) frag.append(el("br"));
-			for (const name in optionsTable) {
+			const optionNames = Object.keys(optionsTable);
+			for (let n = 0; n < optionNames.length; n++) {
+				const name = optionNames[n];
 				const action = optionsTable[name];
 				const label = el("label");
 				const radioButton = Wikifier.wikifyEval(`<<radiobutton "$${actionType}" "${action}" autocheck>>`);
@@ -43,7 +45,7 @@ Macro.add("generateCombatAction", {
 				}
 				nameSpan.innerText = ` ${name} `;
 				const difficultyText = Wikifier.wikifyEval(`<<${actionType}Difficulty${combatType} ${action}>>`);
-				if (controls === "radio") difficultyText.append(" | ");
+				if (controls === "radio" && n < optionNames.length - 1) difficultyText.append(" | ");
 				label.append(radioButton, nameSpan, difficultyText);
 				frag.append(label);
 			}
