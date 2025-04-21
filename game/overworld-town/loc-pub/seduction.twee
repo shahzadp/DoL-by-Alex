@@ -176,15 +176,32 @@ You lean over and whisper something into the <<persons>> ear.
 		<</if>>
 
 	<<elseif $pubnpc is 4>>
+		<<rng>>
+		<<if $drunk gt 0 and $rng gte 51 and !Time.isBloodMoon()>>
 
-		<<He>> considers for a moment. "You're very forward. Alright, it might be fun."
-		<br><br>
+			<<set $location to "town">>
 
-		You leave the pub together. "I know just the place," <<he>> says, turning toward the forest.
-		<br><br>
+			<<He>> considers for a moment. "You're very forward. Alright, come with me."
+			<br><br>
 
-		<<link [[Next (0:10)|Pub Journey]]>><<pass 10>><</link>>
-		<br>
+			You leave the pub together. <<He>> leads you to <<his>> car.
+			<br><br>
+
+			<<link [[Next (0:10)|Pub Journey Home]]>><<handheldon>><<pass 10>><</link>>
+			<br>
+
+		<<else>>
+
+			<<He>> considers for a moment. "You're very forward. Alright, it might be fun."
+			<br><br>
+
+			You leave the pub together. "I know just the place," <<he>> says, turning toward the forest.
+			<br><br>
+
+			<<link [[Next (0:10)|Pub Journey]]>><<handheldon>><<pass 10>><</link>>
+			<br>
+
+		<</if>>
 
 	<<else>>
 
@@ -437,10 +454,24 @@ You lean over and whisper something into the <<persons>> ear.
 	<<if $pubdrink gte 8000>>
 		You nod and <<he>> stands to get another. By the time <<he>> returns, you're drooped on the table, everything spinning.
 		<br><br>
-		"Actually," <<he>> says. "I think you've had enough. Let's get you home."
-		<br><br>
-		<<link [[Next (0:10)|Pub Journey]]>><<handheldon>><<pass 10>><</link>>
-		<br>
+		<<rng>>
+		<<if $rng gte 51 and !Time.isBloodMoon()>>
+			"Actually," <<he>> says. "I think you've had enough. Let's get you home."
+			<br><br>
+			You leave the pub together. <<He>> leads you to <<his>> car.
+			<br><br>
+
+			<<link [[Next (0:10)|Pub Journey Home]]>><<handheldon>><<pass 10>><</link>>
+			<br>
+		<<else>>
+			"Alright," <<he>> says. "I think you've had enough. Come on, let's go have some fun."
+			<br><br>
+			You leave the pub together. "I know just the place," he says, turning toward the forest.
+			<br><br>
+
+			<<link [[Next (0:10)|Pub Journey]]>><<handheldon>><<pass 10>><</link>>
+			<br>
+		<</if>>
 	<<elseif $pubdrink gte 6000>>
 		<<He>> buys you yet another glass of liquor.
 		<br><br>
@@ -837,48 +868,36 @@ You lean over and whisper something into the <<persons>> ear.
 <<location "forest">><<effects>><<set $forest to 0>>
 
 <<if $drunk gt 0>>
-	<<if $rng gte 51 and !Time.isBloodMoon()>>
-
-		<<set $location to "town">>
-
-		You walk with <<him>>. <<He>> has to grab your shoulders to steady you more than once, but you manage to climb onto the back seat of <<his>> car. The journey doesn't take long. "This is your home right?" <<he>> asks. "It's not my place to say, but you should be more careful in the future. There are creeps who prey on cute <<girls>> like you." <<He>> helps you to the front door, only going back to <<his>> car once you're safe inside.
+	<<rngWraith>>
+	<<if _wraithEvent and $wraith.state is "haunt">>
+		<<set _hallucinogenAmount to (C.npc["Ivory Wraith"].lust * 15)>><<set _drugAmount to 140 + (C.npc["Ivory Wraith"].lust * 12)>>
+		You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a pink pill. "You'll like it. I promise."
 		<br><br>
 
-		<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<<link [[Eat the pill|Pub Wraith Mimic Hallucinogen]]>><<hallucinogen _hallucinogenAmount>><<drugs _drugAmount>><</link>>
 		<br>
-
-	<<else>>
-		<<rngWraith>>
-		<<if _wraithEvent and $wraith.state is "haunt">>
-			<<set _hallucinogenAmount to (C.npc["Ivory Wraith"].lust * 15)>><<set _drugAmount to 140 + (C.npc["Ivory Wraith"].lust * 12)>>
-			You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a pink pill. "You'll like it. I promise."
-			<br><br>
-
-			<<link [[Eat the pill|Pub Wraith Mimic Hallucinogen]]>><<hallucinogen _hallucinogenAmount>><<drugs _drugAmount>><</link>>
-			<br>
-			<<if $hallucinations gte 1>>
-				<<link [[Refuse|Pub Wraith Mimic Refuse]]>><</link>>
-			<<else>>
-				<<link [[Refuse|Pub Pill Refuse]]>><</link>>
-			<</if>>
-			<br>
-		<<elseif $cow isnot 6 or random(1, 2) is 2>>
-			You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a pink pill. "You'll like it. I promise."
-			<br><br>
-
-			<<link [[Eat the pill|Pub Pill]]>><<drugs 180>><</link>>
-			<br>
-			<<link [[Refuse|Pub Pill Refuse]]>><</link>>
-			<br>
+		<<if $hallucinations gte 1>>
+			<<link [[Refuse|Pub Wraith Mimic Refuse]]>><</link>>
 		<<else>>
-			You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a white pill. "You'll like it. I promise."
-			<br><br>
-
-			<<link [[Eat the pill|Pub White Pill]]>><<drugs 180>><</link>>
-			<br>
-			<<link [[Refuse|Pub White Pill Refuse]]>><</link>>
-			<br>
+			<<link [[Refuse|Pub Pill Refuse]]>><</link>>
 		<</if>>
+		<br>
+	<<elseif $cow isnot 6 or random(1, 2) is 2>>
+		You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a pink pill. "You'll like it. I promise."
+		<br><br>
+
+		<<link [[Eat the pill|Pub Pill]]>><<drugs 180>><</link>>
+		<br>
+		<<link [[Refuse|Pub Pill Refuse]]>><</link>>
+		<br>
+	<<else>>
+		You disappear with <<him>> into the forest. Shortly after <<he>> turns to you. "I always loved this forest," <<he>> says. "I have something for you." <<He>> holds out <<his>> hand, showing you a white pill. "You'll like it. I promise."
+		<br><br>
+
+		<<link [[Eat the pill|Pub White Pill]]>><<drugs 180>><</link>>
+		<br>
+		<<link [[Refuse|Pub White Pill Refuse]]>><</link>>
+		<br>
 	<</if>>
 <<else>>
 	<<rngWraith>>
@@ -915,6 +934,19 @@ You lean over and whisper something into the <<persons>> ear.
 	<</if>>
 
 <</if>>
+
+:: Pub Journey Home
+
+You get into <<his>> car. <<He>> has to grab your shoulders to steady you more than once, but you manage to climb onto the back seat of <<his>> car. 
+<br><br>
+The journey doesn't take long, and you're soon in front of the orphanage. You don't remember telling <<him>> where you live. 
+<br><br>
+"It's not my place to say, but you should be more careful in the future. There are creeps who prey on cute <<girls>> like you." <<He>> helps you to the front door, only going back to <<his>> car once you're safe inside.
+<br><br>
+
+<<link [[Next|Orphanage]]>><<endevent>><</link>>
+<br>
+
 
 :: Pub White Pill
 <<location "forest">><<effects>>
