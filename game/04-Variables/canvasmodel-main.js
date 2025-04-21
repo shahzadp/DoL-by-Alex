@@ -3596,7 +3596,7 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return !!options.follower && !!options.follower.hair;
 			},
-			z: ZIndices.head + 3,
+			z: ZIndices.head + 4,
 		},
 		"follower_under_clothes": {
 			animation: "idle",
