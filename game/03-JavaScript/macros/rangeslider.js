@@ -90,6 +90,7 @@ Macro.add("rangeslider", {
 
 		function handlePointerDown(ev) {
 			ev.preventDefault();
+			ev.stopPropagation();
 			if (disabled) return;
 
 			isDragging = true;
@@ -143,6 +144,7 @@ Macro.add("rangeslider", {
 		}
 
 		function handlePointerMove(ev) {
+			ev.stopPropagation();
 			if (!isDragging || draggingThumbMin === null || disabled) return;
 
 			const isTouchEvent = ev.type.startsWith("touch");

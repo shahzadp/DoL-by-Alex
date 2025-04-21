@@ -144,12 +144,12 @@
 					<span class="gold">Player:</span>
 					<<set _validatorObject to settingsObjects("starting")>>
 					<<presetConfirm _args[0].starting.player>>
-				<<if _args[0].starting.skinColor isnot undefined>>
-				<hr style="border-top:1px solid var(--700)">
-					<span class="gold">Skin Colour:</span>
-					<<set _validatorObject to settingsObjects("starting")>>
-					<<presetConfirm _args[0].starting.skinColor>>
-				<</if>>
+					<<if _args[0].starting.skinColor isnot undefined>>
+						<hr style="border-top:1px solid var(--700)">
+						<span class="gold">Skin Colour:</span>
+						<<set _validatorObject to settingsObjects("starting")>>
+						<<presetConfirm _args[0].starting.skinColor>>
+					<</if>>
 				</div>
 				<</if>>
 			<</if>>
@@ -267,7 +267,7 @@
 						<<set _displayName to _validatorObject[$_label]["displayName"]>>
 						<<set _currentValue to (_altValue2 isnot undefined ? _altValue2 : $_value)>>
 						<<print _displayName>> <span class="green"><<print _currentValue .toString().toUpperFirst()>></span>
-					<<case "bodysize" "breastsensitivity" "genitalsensitivity" "mouthsensitivity" "bottomsensitivity" >>
+					<<case "bodysize" "breastsensitivity" "genitalsensitivity" "mouthsensitivity" "bottomsensitivity" "facevariant">>
 						<<set _object to _validatorObject[$_label]>>
 						<<if _object isnot undefined>>
 							<<set _valid to validateValue(_object, $_value)>>
@@ -277,7 +277,7 @@
 						<<print _displayName>> <span class="green"><<print _currentValue .toString().toUpperFirst()>></span>
 					<<case "hairlength">>
 						<<set _displayName to _validatorObject[$_label]["displayName"]>>
-						<<print _displayName>> <span class="green"><<print (_altValue2 isnot undefined ? _altValue2 : $_value) gte 400 ? "Neck" : (_altValue2 isnot undefined ? _altValue2 : $_value) gte 200 ? "Chest" : "Ear">></span>
+						<<print _displayName>> <span class="green"><<print (_altValue2 isnot undefined ? _altValue2 : $_value) gte 400 ? "Chest" : (_altValue2 isnot undefined ? _altValue2 : $_value) gte 200 ? "Neck" : "Ear">></span>
 					<<case "ironmanmode">>
 						Ironman Mode: <span class="green"><<print (_altValue2 isnot undefined ? _altValue2 : $_value) is false ? "Disabled" : "Enabled">></span>
 					<<case "timestyle">>
@@ -288,7 +288,7 @@
 						<<set _displayName to _validatorObject["options"][$_label]["displayName"]>>
 						<<set _currentValue to (_altValue2 isnot undefined ? _altValue2 : $_value) is "military" ? "Military (24-Hour)" : "AM/PM (12-Hour)">>
 						<<print _displayName>> <span class="green"><<print _currentValue .toString().toUpperFirst()>></span>
-					<<case "images" "combatImages" "bodywritingImages" "silhouetteEnabled" "tanImgEnabled" "characterLightEnabled" "halfClosedEnabled" "combatAnimations" "blinkingEnabled" "sidebarAnimations">>
+					<<case "images" "combatImages" "bodywritingImages" "silhouetteEnabled" "tanImgEnabled" "characterLightEnabled" "halfClosedEnabled" "combatAnimations" "blinkingEnabled" "sidebarAnimations" "dateFormat" "historyControls" "clothingCaption">>
 						<<set _object to _validatorObject["options"][$_label]>>
 						<<if _object isnot undefined>>
 							<<set _valid to validateValue(_object, $_value)>>
@@ -365,7 +365,7 @@
 						<<set _currentValue to (_altValue2 isnot undefined ? _validatorObject[$_label]["textMap"][_altValue2] : _validatorObject[$_label]["textMap"][$_value])>>
 
 						<<if $_label is "penissizemin" or $_label is "penissizemax">>
-							<<if $_currentGender is "Female">>
+							<<if $_currentSex is "Female">>
 								<<print _displayName>> <span class="green">Not Applicable</span> /*Don't show min/max penis size for players without a penis*/
 							<<else>>
 								<<print _displayName>> <span class="green"><<print _currentValue>></span>
@@ -377,7 +377,7 @@
 						<<set _displayName to _validatorObject[$_label]["displayName"]>>
 						<<set _currentValue to (_altValue2 isnot undefined ? _altValue2 : $_value)>>
 						<<print _displayName>> <span class="green"><<print _currentValue * 100 + "%">></span>
-					<<case "pronoun" "gender" "skincolour" "penissize" "breastsize" "bottomsize" "gender_body" "ballsExist" "freckles">>
+					<<case "pronoun" "sex" "gender" "skincolour" "penissize" "breastsize" "bottomsize" "gender_body" "ballsExist" "freckles" "bodyshape">>
 						<<if _args[1]>>
 							<<set _object to _validatorObject[$_label]>>
 							<<set _displayName to _validatorObject[$_label]["displayName"]>>
@@ -395,14 +395,14 @@
 							<<if $_value is "none" and $passage is "Start">>
 								<<set _valid to true>>
 							<</if>>
-						<<elseif $_label is "gender">>
+						<<elseif $_label is "sex">>
 							<<set _object to _validatorObject["player"][$_label]>>
 							<<if _object isnot undefined>>
 								<<set _valid to validateValue(_object, $_value)>>
 							<</if>>
 							<<set _displayName to _validatorObject["player"][$_label]["displayName"]>>
-							<<set $_currentGender to (_altValue2 isnot undefined ? _validatorObject["player"][$_label]["textMap"][_altValue2] : _validatorObject["player"][$_label]["textMap"][$_value])>>
-							<<print _displayName>> <span class="green"><<print $_currentGender>></span>
+							<<set $_currentSex to (_altValue2 isnot undefined ? _validatorObject["player"][$_label]["textMap"][_altValue2] : _validatorObject["player"][$_label]["textMap"][$_value])>>
+							<<print _displayName>> <span class="green"><<print $_currentSex>></span>
 						<<elseif $_label is "penissize">>
 							<<set _object to _validatorObject["player"][$_label]>>
 							<<if _object isnot undefined>>
@@ -410,7 +410,7 @@
 							<</if>>
 							<<set _displayName to _validatorObject["player"][$_label]["displayName"]>>
 							<<set _currentValue to (_altValue2 isnot undefined ? _validatorObject["player"][$_label]["textMap"][_altValue2] : _validatorObject["player"][$_label]["textMap"][$_value])>>
-							<<if $_currentGender is "Female">>
+							<<if $_currentSex is "Female">>
 								<<print _displayName>> <span class="green">None</span> /*Don't show penis size for players without a penis*/
 							<<else>>
 								<<print _displayName>> <span class="green"><<print _currentValue .toString().toUpperFirst()>></span>
@@ -422,7 +422,7 @@
 							<</if>>
 							<<set _displayName to _validatorObject["player"][$_label]["displayName"]>>
 							<<set _currentValue to (_altValue2 isnot undefined ? _validatorObject["player"][$_label]["textMap"][_altValue2] : _validatorObject["player"][$_label]["textMap"][$_value])>>
-							<<if $_currentGender is "Male">>
+							<<if $_currentSex is "Male">>
 								<<print _displayName>> <span class="green">Existent</span> /*Don't show 'nonexistent' for players who have a penis*/
 							<<else>>
 								<<print _displayName>> <span class="green"><<print _currentValue>></span>
