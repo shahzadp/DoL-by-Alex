@@ -460,7 +460,7 @@
 
 		<<if $hc.daysPassed lte 1>>
 			<<set $prisoner.health to Math.clamp($prisoner.health, 4, 30)>>
-		<<elseif $prisoner.health lte 0>>
+		<<elseif $prisoner.health lte 0 and !$hc.prisonerDaily.secondChance>>
 			/* Ending F */
 			<<set $hc.gameOver to true>>
 		<</if>>
@@ -599,59 +599,6 @@
 					hcItemRemove(item);
 				}
 			})>>
-			<<if $hc.vanishedItems.length and !["cell", "forest", "lake", "disposal", "guardhouse"].includes($bus) and Time.dayState isnot "night">>
-				<span class="narration">Whispers spread through the temple's flock. They reach the gaoler's ears.</span>
-				<span class="red">
-					<<for $_labelVanished, $_valueVanished range $hc.vanishedItems>>
-						<<if !$_valueVanished.fromCont>>
-							<br>
-							<<print hcItemName($_valueVanished, "cap", "vanished")>>
-							<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>were<<else>>was<</if>> found
-							<<switch $_valueVanished.location>>
-								<<case "bed">>
-									under your bunk.
-								<<case "cell">>
-									in <<= $prisoner.name>>'s cell.
-								<<case "cloister">>
-									in the cloister's main hall.
-								<<case "dining">>
-									in the dining hall.
-								<<case "prayerroom">>
-									in the prayer room.
-								<<case "pyre">>
-									near the pyre grounds.
-								<<case "temple">>
-									in the main hall.
-								<<case "training">>
-									in the training room.
-								<<default>>
-									in the $_valueVanished.location.
-							<</switch>>
-							<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>They were<<else>>It was<</if>>
-							<<if $_valueVanished.dirty gte 2 or $_valueVanished.state is "burnt">>
-								promptly burned.
-							<<elseif $_valueVanished.persists>>
-								returned to the $_valueVanished.origin.
-							<<else>>
-								returned.
-							<</if>>
-						<</if>>
-					<</for>>
-					<<if $hc.suspicion gte 50>>
-						You notice many of them stealing glances at you.
-					<</if>>
-					<<if $hc.suspicionGained gte 20>>
-						<<set $_susPlus to 3>>
-					<<elseif $hc.suspicionGained gte 10>>
-						<<set $_susPlus to 2>>
-					<<else>>
-						<<set $_susPlus to 1>>
-					<</if>>
-					<<set $hc.suspicion += $hc.suspicionGained>><<hopelessCycleSus $_susPlus>>
-				</span>
-				<<run delete $hc.suspicionGained>><<run delete $hc.vanishedItems>>
-				<br>
-			<</if>>
 
 			<<if $hc.dungeonTorchState is "lit">>
 				<<if Time.dayState is "night">>
@@ -748,6 +695,62 @@
 	<</if>>
 
 	/* Every passage */
+
+	<<if $hc.vanishedItems.length>>
+		<<if !["cell", "forest", "lake", "disposal", "guardhouse"].includes($bus) and Time.dayState isnot "night">>
+			<span class="narration">Whispers spread through the temple's flock. They reach the gaoler's ears.</span>
+			<span class="red">
+				<<for $_labelVanished, $_valueVanished range $hc.vanishedItems>>
+					<<if !$_valueVanished.fromCont>>
+						<br>
+						<<print hcItemName($_valueVanished, "cap", "vanished")>>
+						<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>were<<else>>was<</if>> found
+						<<switch $_valueVanished.location>>
+							<<case "bed">>
+								under your bunk.
+							<<case "cell">>
+								in <<= $prisoner.name>>'s cell.
+							<<case "cloister">>
+								in the cloister's main hall.
+							<<case "dining">>
+								in the dining hall.
+							<<case "prayerroom">>
+								in the prayer room.
+							<<case "pyre">>
+								near the pyre grounds.
+							<<case "temple">>
+								in the main hall.
+							<<case "training">>
+								in the training room.
+							<<default>>
+								in the $_valueVanished.location.
+						<</switch>>
+						<<if ["clutter", "sheets", "herbs", "bones"].includes($_valueVanished.type)>>They were<<else>>It was<</if>>
+						<<if $_valueVanished.dirty gte 2 or $_valueVanished.state is "burnt">>
+							promptly burned.
+						<<elseif $_valueVanished.persists>>
+							returned to the $_valueVanished.origin.
+						<<else>>
+							returned.
+						<</if>>
+					<</if>>
+				<</for>>
+				<<if $hc.suspicion gte 50>>
+					You notice many of them stealing glances at you.
+				<</if>>
+				<<if $hc.suspicionGained gte 20>>
+					<<set $_susPlus to 3>>
+				<<elseif $hc.suspicionGained gte 10>>
+					<<set $_susPlus to 2>>
+				<<else>>
+					<<set $_susPlus to 1>>
+				<</if>>
+				<<set $hc.suspicion += $hc.suspicionGained>><<hopelessCycleSus $_susPlus>>
+			</span>
+			<<run delete $hc.suspicionGained>><<run delete $hc.vanishedItems>>
+			<br>
+		<</if>>
+	<</if>>
 
 	<<if Time.dayState isnot "night" and ["cloister", "training", "quarters", "temple", "garden", "pyre", "dining"].includes($bus)>>
 		<<set _susFromHeld to 0>>
@@ -1621,6 +1624,17 @@
 		<<link [[Everything fades to black...|Hopeless Cycle Passout]]>><</link>>
 	<</if>>
 	<br>
+<</widget>>
+
+<<widget "hopelessCycleBrandings">>
+	<<set _brandings to {}>>
+	<<if !$prisonerBrands or !$prisonerBrands.length>>
+		<<set _witchBrandings to false>>
+	<<else>>
+		<<set _witchBrandings to $prisonerBrands.map(brands => brands.replace(/\s/g, '_'))>>
+
+		<<run _witchBrandings.forEach(brand => { _brandings[brand] = "brand_" + brand })>>
+	<</if>>
 <</widget>>
 
 <<widget "hopelessCycleOutfit">>

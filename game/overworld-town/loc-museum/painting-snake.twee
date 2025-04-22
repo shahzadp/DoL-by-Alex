@@ -1770,6 +1770,7 @@ You spend an hour working in the garden. You lament that there aren't more bucke
 		<br>
 	<<else>>
 		<span class="red">It's too dark to continue working in the garden.</span>
+		<br>
 	<</if>>
 
 	<<link [[Enough working|Hopeless Cycle Garden]]>><<endevent>><</link>>
@@ -2598,7 +2599,7 @@ You get to work scrubbing down the barracks. You clean the floors, some sheets, 
 
 	<<link [[Enter <<print $prisoner.name>>'s cell|Hopeless Cycle Blood Cell]]>><<endevent>><</link>>
 	<br>
-<<elseif $hc.handLocation is "prayerroom" and !$hc.daily.prayerWarning and $hcAction is "enter" and Time.hour lte 22>>
+<<elseif $hc.handLocation is "prayerroom" and !$hc.daily.prayerWarning and $hcAction is "enter" and Time.hour lte 22 and Time.hour gte 6>>
 	<<generateTemple 1>><<person1>>
 	You approach the prayer room. One of your <<sister_npc>>s stops you. "The Bishop's Hand is in prayer."
 	<br><br>
@@ -2991,14 +2992,7 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
 
 <<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
-/* ToDo: Show all brandings on witch
-<<set _witchBrandings to $prisonerBrands.filter(brands => ["chest", "left arm", "right arm", "right foot", "right leg", "right shoulder", "right thigh"].includes(brands))>>
-<<set _witchBrandings to _witchBrandings.map(brands => brands.replace(/\s/g, '_'))>>
-*/
-
-<<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandRightCheek to "brand_right_cheek">>
-<</if>>
+<<hopelessCycleBrandings>>
 
 <<if $prisonerEvents.includes("talkHairBlooms")>>
 	<<set $hc.witchHair to "hair_flowers">>
@@ -3017,6 +3011,9 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 	<</if>>
 <<else>>
 	<<set _left_arm to "left_arm_alt">>
+	<<if _brandings.left_arm>>
+		<<run delete _brandings.left_arm>>
+	<</if>>
 <</if>>
 
 <<if $prisoner.bandagesOn>>
@@ -3037,7 +3034,14 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 	hair: $hc.witchHair,
 	under_clothes: _bandages,
 	clothes: _clothes,
-	skin: _brandRightCheek
+	writing_right_cheek: _brandings.right_cheek,
+	writing_chest: _brandings.chest,
+	writing_left_arm: _brandings.left_arm,
+	writing_right_arm: _brandings.right_arm,
+	writing_right_shoulder: _brandings.right_shoulder,
+	writing_right_thigh: _brandings.right_thigh,
+	writing_right_leg: _brandings.right_leg,
+	writing_right_foot: _brandings.right_foot
 }>>
 
 <<set Time.setDate(new DateTime(1390, 5, 31, 22, 0))>><<set Weather.set("clear", true, 1000)>>
@@ -3120,6 +3124,12 @@ You hear a heartbeat growing in volume and speed.
 	<</if>>
 	<<if $follower.under_clothes>>
 		<<set $follower.under_clothes to "bandages_alt">>
+	<</if>>
+	<<if $follower.writing_chest>>
+		<<set $follower.writing_chest to "brand_chest_alt">>
+	<</if>>
+	<<if $follower.writing_right_arm>>
+		<<set $follower.writing_right_arm to "brand_right_arm_alt">>
 	<</if>>
 <</if>>
 <br><br>
@@ -3923,16 +3933,21 @@ You slump back against the wall, resigned to your fate. You know there's no esca
 <<set _thermoDisable to true>>
 <<canvas-model-override "mouth" "neutral">><<canvas-model-override "eyes_half" true>>
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
-<<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandRightCheek to "brand_right_cheek">>
-<</if>>
+<<hopelessCycleBrandings>>
 
 <<set $follower to {
 	name: "witchprisoner",
 	base: "base",
 	left_arm: "left_arm",
 	hair: $hc.witchHair,
-	skin: _brandRightCheek
+	writing_right_cheek: _brandings.right_cheek,
+	writing_chest: _brandings.chest,
+	writing_left_arm: _brandings.left_arm,
+	writing_right_arm: _brandings.right_arm,
+	writing_right_shoulder: _brandings.right_shoulder,
+	writing_right_thigh: _brandings.right_thigh,
+	writing_right_leg: _brandings.right_leg,
+	writing_right_foot: _brandings.right_foot
 }>>
 <span class="narration">In this version of the tale, the gaoler didn't attempt to stop the ritual. The needles of judgement found their mark.</span>
 <br><br>
@@ -4087,9 +4102,7 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 <<set $player.virginity.penile to $prisoner.name>><<set $player.virginity.temple to false>>
 <<canvas-model-override "arm_left" "none">><<canvas-model-override "arm_right" "none">>
 <<set _witchClothes to $hcItems.find(clothes => clothes.type is "clothes" and clothes.location is "prisoner")?.name>>
-<<if $prisonerBrands.includes("right cheek")>>
-	<<set _brandRightCheek to "brand_right_cheek">>
-<</if>>
+<<hopelessCycleBrandings>>
 
 <<if $prisonerEvents.includes("talkHairBlooms")>>
 	<<set $hc.witchHair to "hair_flowers">>
@@ -4104,11 +4117,16 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 <<if $prisoner.bandagesOn>>
 	<<set _bandages to "bandages_alt">>
 <</if>>
-
 <<if _witchClothes is "robe">>
 	<<set _clothes to "robe_alt">>
 <<elseif _witchClothes is "bloodstained sack" or _witchClothes is "torn vegetable sack">>
 	<<set _clothes to "sack_alt">>
+<</if>>
+<<if _brandings.chest>>
+	<<set _brandings.chest to "brand_chest_alt">>
+<</if>>
+<<if _brandings.right_arm>>
+	<<set _brandings.right_arm to "brand_right_arm_alt">>
 <</if>>
 
 <<set $follower to {
@@ -4118,7 +4136,13 @@ You sit down and cautiously lower your hand, petting her on the head. You expect
 	clothes: _clothes,
 	under_clothes: _bandages,
 	hair: $hc.witchHair,
-	skin: _brandRightCheek
+	writing_right_cheek: _brandings.right_cheek,
+	writing_chest: _brandings.chest,
+	writing_right_arm: _brandings.right_arm,
+	writing_right_shoulder: _brandings.right_shoulder,
+	writing_right_thigh: _brandings.right_thigh,
+	writing_right_leg: _brandings.right_leg,
+	writing_right_foot: _brandings.right_foot
 }>>
 <span class="narration">
 	Originally, the temple had planned to make an example of the witch. Now, she had proven to be a useful tool to them.
@@ -4853,9 +4877,7 @@ Your beloved leads you into the forest, into your new life.
 
 :: Hopeless Cycle Ending S Attempt
 <<set _thermoDisable to true>><<handheldon>>
-<<if $prisonerBrands.includes("chest")>>
-	<<set _brandChest to "brand_chest">>
-<</if>>
+<<hopelessCycleBrandings>>
 
 The Bishop shakes his head in disappointment. "She has swayed you, my brother. Do not fret. We will purify her influence from your soul."
 <br><br>
@@ -4899,11 +4921,29 @@ Your siblings all pause as the writhing under her skin continues. She moans in m
 	Her feet meet the ground.
 	<<if _collapse>>
 		<<canvas-model-override "arm_right" "hold">><<canvas-model-override "eyes_half" true>>
+		<<if _brandings.left_thigh>>
+			<<set _brandings.left_thigh to "brand_left_thigh_alt">>
+		<</if>>
+		<<if _brandings.right_thigh>>
+			<<set _brandings.right_thigh to "brand_right_thigh_alt">>
+		<</if>>
+		<<if _brandings.right_leg>>
+			<<set _brandings.right_leg to "brand_right_leg_alt">>
+		<</if>>
 		<<set $follower to {
 			name: "witchstanding",
 			base: "base_alt",
 			hair: $hc.witchHair + "_alt",
-			skin: _brandChest
+			writing_right_cheek: _brandings.right_cheek,
+			writing_chest: _brandings.chest,
+			writing_left_shoulder: _brandings.left_shoulder,
+			writing_right_shoulder: _brandings.right_shoulder,
+			writing_left_thigh: _brandings.left_thigh,
+			writing_right_thigh: _brandings.right_thigh,
+			writing_left_leg: _brandings.left_leg,
+			writing_right_leg: _brandings.right_leg,
+			writing_left_foot: _brandings.left_foot,
+			writing_right_foot: _brandings.right_foot
 		}>>
 		Slowly, you try to help her stand. <span class="red">She stumbles, her <<print _collapse>> leg having no support.</span>
 		You hold her up to stop her from collapsing entirely, but you can't hope to fight like this.
@@ -4919,7 +4959,16 @@ Your siblings all pause as the writhing under her skin continues. She moans in m
 			name: "witchstanding",
 			base: "base",
 			hair: $hc.witchHair,
-			skin: _brandChest
+			writing_right_cheek: _brandings.right_cheek,
+			writing_chest: _brandings.chest,
+			writing_left_shoulder: _brandings.left_shoulder,
+			writing_right_shoulder: _brandings.right_shoulder,
+			writing_left_thigh: _brandings.left_thigh,
+			writing_right_thigh: _brandings.right_thigh,
+			writing_left_leg: _brandings.left_leg,
+			writing_right_leg: _brandings.right_leg,
+			writing_left_foot: _brandings.left_foot,
+			writing_right_foot: _brandings.right_foot
 		}>>
 		Slowly, <span class="green">you help her stand, the tentacles bracing and controlling her legs.</span>
 		Your siblings freeze. She takes a clumsy step as you guide her.
