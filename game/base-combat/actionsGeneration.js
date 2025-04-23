@@ -45,7 +45,7 @@ Macro.add("generateCombatAction", {
 				}
 				nameSpan.innerText = ` ${name} `;
 				const difficultyText = Wikifier.wikifyEval(`<<${actionType}Difficulty${combatType} ${action}>>`);
-				if (controls === "radio" && n < optionNames.length - 1) difficultyText.append(" | ");
+				if (controls === "radio" && n < optionNames.length - 1) difficultyText.append(" |\xa0");
 				label.append(radioButton, nameSpan, difficultyText);
 				frag.append(label);
 			}
