@@ -331,9 +331,6 @@ function initGenitals() {
 			name: "small chastity cage",
 			name_cap: "Small Chastity cage",
 			variable: "smallchastitycage",
-			combat: {
-				reference: "chastitycage",
-			},
 			integrity: 4000,
 			integrity_max: 4000,
 			fabric_strength: 20,
@@ -476,9 +473,6 @@ function initGenitals() {
 			name: "chastity parasite",
 			name_cap: "chastity parasite",
 			variable: "slimechastitycage",
-			combat: {
-				reference: "chastitycage",
-			},
 			integrity: 500,
 			integrity_max: 500,
 			fabric_strength: 10,
