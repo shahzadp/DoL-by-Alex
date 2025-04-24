@@ -318,6 +318,19 @@ const combatMainPc = {
 			},
 			z: 80,
 		},
+		pilloryHands: {
+			srcfn(options) {
+				return `${options.root}prop/pillory/hands.png`;
+			},
+			showfn(options) {
+				return options.props.pillory.show && !!options.showPlayer;
+			},
+			animationfn(options) {
+				return options.animKey;
+			},
+			z: 80,
+			filters: ["body"],
+		},
 		pilloryTomatoes: {
 			srcfn(options) {
 				const pillory = options.props.pillory;
@@ -764,6 +777,18 @@ const combatMainPc = {
 		},
 		penetrator: {
 			srcfn(options) {
+				const genitals = options.clothes.genitals?.item;
+				if (genitals?.type.includes("chastity")) {
+					if (genitals.name === "chastity parasite") {
+						const size = Math.clamp(V.player.penissize, -1, 2);
+						return `${options.src}body/penetrator/parasite${size}.png`;
+					}
+					if (genitals.type.includes("cage")) {
+						const chastity = genitals.combat?.reference || genitals.variable;
+						return `${options.src}body/penetrator/default-${chastity}.png`;
+					}
+					return `${options.src}body/penetrator/default-chastitybelt.png`;
+				}
 				if (V.player.virginity.penile === true) {
 					return `${options.src}body/penetrator/default-virgin.png`;
 				}
@@ -777,7 +802,29 @@ const combatMainPc = {
 			animationfn(options) {
 				return options.animKey;
 			},
-			filters: ["body"],
+			filtersfn(options) {
+				if (options.clothes.genitals?.item.name === "chastity parasite") return ["parasiteClothing"];
+				return ["body"];
+			},
+			z: CombatRenderer.indices.backLowerOverwear + 1,
+		},
+		penetratorCondom: {
+			srcfn(options) {
+				return `${options.src}body/penetrator/default-condom.png`;
+			},
+			showfn(options) {
+				const penetrator = options.penetrator;
+				const result = options.showPlayer && penetrator?.condom.show && options.clothes.genitals?.name === "naked";
+				return !!result;
+			},
+			animationfn(options) {
+				return options.animKey;
+			},
+			filtersfn(options) {
+				if (options.penetrator) return [options.penetrator.condom.colour];
+				return [];
+			},
+			alpha: 0.4,
 			z: CombatRenderer.indices.backLowerOverwear + 1,
 		},
 		penetratorEjaculate: {
@@ -1348,7 +1395,7 @@ const combatMainPc = {
 			z: CombatRenderer.indices.base + 6,
 			showfn(options) {
 				const clothes = options.clothes.genitals;
-				if (clothes == null || clothes.name === "naked") {
+				if (clothes == null || clothes.name === "naked" || clothes.name === "slimechastitycage") {
 					return false;
 				}
 				const show = PlayerCombatMapper.isPenisExposed(options) && clothes.hasMainImg;
@@ -1359,7 +1406,7 @@ const combatMainPc = {
 			z: CombatRenderer.indices.base + 6,
 			showfn(options) {
 				const clothes = options.clothes.genitals;
-				if (clothes == null || clothes.name === "naked") {
+				if (clothes == null || clothes.name === "naked" || clothes.name === "slimechastitycage") {
 					return false;
 				}
 				const show = PlayerCombatMapper.isPenisExposed(options) && clothes.hasAccessory;
@@ -1370,7 +1417,7 @@ const combatMainPc = {
 			z: CombatRenderer.indices.base + 6,
 			showfn(options) {
 				const clothes = options.clothes.genitals;
-				if (clothes == null || clothes.name === "naked") {
+				if (clothes == null || clothes.name === "naked" || clothes.name === "slimechastitycage") {
 					return false;
 				}
 				const show = PlayerCombatMapper.isPenisExposed(options) && options.showClothing && clothes.hasTertiaryPattern;

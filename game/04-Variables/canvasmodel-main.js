@@ -1718,7 +1718,7 @@ Renderer.CanvasModels.main = {
 		"wolf_tail": genlayer_tail("wolf", true),
 		"wolf_ears": genlayer_ears("wolf", true),
 		"wolf_cheeks": genlayer_cheeks("wolf"),
-		"wolf_pits": genlayer_tf("wolf", "hirsute", "pits"),
+		"wolf_pits": genlayer_tf_pits("wolf", "hirsute"),
 		"wolf_pubes": genlayer_tf_pubes("wolf", "hirsute"),
 		/***
 		 *     ██████  █████  ████████
@@ -4742,6 +4742,17 @@ function genlayer_tf_pubes(tf, folder, overrideOptions) {
 		},
 		masksrcfn(options) {
 			return options.body_type === "soft" ? "img/clothes/masks/soft_lower_clip.png" : null;
+		},
+	}, overrideOptions))
+}
+
+function genlayer_tf_pits(tf, folder, overrideOptions) {
+	return genlayer_tf(tf, folder, "pits", Object.assign({
+		z: ZIndices.hirsute,
+		showfn(options) {
+			return options.show_tf
+			&& isPartEnabled(options[`${tf}_pits_type`])
+			&& !options.hideAll;
 		},
 	}, overrideOptions))
 }

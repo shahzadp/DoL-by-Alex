@@ -131,7 +131,8 @@ class NpcCanvasHelper {
 				if (tongue.position === "mouth") positionAlias = "kiss";
 				if (options.position === "missionary") {
 					if (["anus", "anusentrance", "anusimminent"].includes(tongue.position)) positionAlias = "anus";
-					if (["penis", "penisentrance", "penisimminent"].includes(tongue.position)) positionAlias = "penis";
+					if (["penis"].includes(tongue.position)) positionAlias = "penis";
+					if (["penisentrance", "penisimminent"].includes(tongue.position)) positionAlias = "penisentrance";
 					if (["vagina", "vaginaentrance", "vaginaimminent"].includes(tongue.position)) positionAlias = "vagina";
 					if (["kiss", "kissentrance", "kissimminent"].includes(tongue.position)) positionAlias = "kiss";
 				}
