@@ -2123,7 +2123,6 @@ Renderer.CanvasModels.main = {
 			},
 		},
 		"cum_leftarm": {
-			z: ZIndices.tears,
 			animation: "idle",
 			srcfn(options) {
 				return `img/body/cum/Left Arm ${options.cum_leftarm}.png`;
@@ -2131,9 +2130,11 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return options.arm_left !== "none" && options.arm_left != "cover" && !!options.cum_leftarm;
 			},
+			zfn(options) {
+				return (options.arm_right === "cover") ? ZIndices.arms_cover + 0.05 : options.zarms + 0.05;
+			},
 		},
 		"cum_rightarm": {
-			z: ZIndices.tears,
 			animation: "idle",
 
 			srcfn(options) {
@@ -2144,6 +2145,9 @@ Renderer.CanvasModels.main = {
 					&& options.arm_right != "cover"
 					&& options.arm_right != "hold"
 					&& !!options.cum_rightarm;
+			},
+			zfn(options) {
+				return (options.arm_right === "cover" || options.arm_right === "hold") ? ZIndices.arms_cover + 0.05 : options.zarms + 0.05;
 			},
 		},
 		"cum_neck": {

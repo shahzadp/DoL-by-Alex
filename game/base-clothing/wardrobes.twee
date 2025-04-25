@@ -1391,7 +1391,7 @@
 				<<continue>>
 			<</if>>
 			<<if $wardrobeRepair[_equip[_eIndex]][_iIndex][5]>>
-				<<generalSend "wardrobe" _equip[_eIndex] `$wardrobeRepair[_equip[_eIndex]][_iIndex][0]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][1]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][3]`>>
+				<<sendToWardrobeFromDefault "wardrobe" _equip[_eIndex] `$wardrobeRepair[_equip[_eIndex]][_iIndex][0]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][1]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][3]`>>
 				<<set _selectedWardrobe[_equip[_eIndex]].last().one_piece to "split">>
 				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
 					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
@@ -1408,7 +1408,7 @@
 				<<set _selectedWardrobe[_equip[_eIndex]].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
 				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary isnot undefined and _selectedWardrobe[_equip[_eIndex]].last().one_piece isnot "split">>
 					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
-						<<if _selectedWardrobe[$_label].last().name is $_value>>
+						<<if _selectedWardrobe[$_label].last()?.name is $_value>>
 							<<set _selectedWardrobe[$_label].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
 						<</if>>
 					<</for>>
@@ -1419,7 +1419,7 @@
 				<<set _selectedWardrobe[_equip[_eIndex]].last().accessory_colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][4]>>
 				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary isnot undefined and _selectedWardrobe[_equip[_eIndex]].last().one_piece isnot "split">>
 					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
-						<<if _selectedWardrobe[$_label].last().name is $_value>>
+						<<if _selectedWardrobe[$_label].last()?.name is $_value>>
 							<<set _selectedWardrobe[$_label].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
 						<</if>>
 					<</for>>
@@ -1840,6 +1840,9 @@ to the crate and send them to be repaired? Might be best to go shopping shortly 
 		<<if (_items[_i].outfitPrimary is undefined and _items[_i].outfitSecondary is undefined and $crateContents is "outfits") or (_items[_i].integrity gt clothingData(_label,_items[_i],'integrity_max'))>>
 			<<continue>>
 		<</if>>
+		<<if $crateContents is "damaged" and _items[_i].one_piece isnot "broken" and (_items[_i].outfitPrimary isnot undefined or _items[_i].outfitSecondary isnot undefined)>>
+			<<continue>>
+		<</if>>
 		<<set _value += Math.floor(tailorClothingCost(_items[_i],_label) * (1 - (_items[_i].integrity / clothingData(_label,_items[_i],'integrity_max'))) * 1.25)>>
 	<</for>>
 <</for>>
@@ -1923,7 +1926,7 @@ It will cost you
 	<</for>>
 <</for>>
 <<if _value gt 5000>>
-	<<money `-_value - 5000` "tailor">>
+	<<money `-(_value - 5000)` "tailor">>
 	The driver takes <<printmoney `_value - 5000`>> and the crate away.
 <<else>>
 	The driver takes the crate away.
