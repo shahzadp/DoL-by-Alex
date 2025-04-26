@@ -689,7 +689,7 @@ function initPillContextButtons(item) {
 	//  Add 'Take pill' button
 	document.getElementById("hpi_take_pills").innerHTML = item.hpi_take_pills ? item.hpi_take_pills() : "Take pill";
 
-	// If the button doesnt exist, create it. If it exists, display the right dose Taken for that pill
+	// If the button doesn't exist, create it. If it exists, display the right dose Taken for that pill
 	if (document.getElementById("hpi_doseTaken") != null) {
 		if (item.hpi_doseTaken) {
 			document.getElementById("hpi_doseTaken").outerHTML =

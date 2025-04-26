@@ -88,7 +88,7 @@ Weather.Temperature = (() => {
 		The water temperature uses the base temperature, without modifiers
 		The exponential function will cause the water temperature to always try to be above lowerLimit,
 		and below upperLimit - and flatten the curve when it's close to the limits.
-		
+
 	*/
 	function getWaterTemperature() {
 		// Can override water - in that case, use that value
@@ -111,7 +111,7 @@ Weather.Temperature = (() => {
 				}
 				// Interpolates between baseTemperature and 37, depending on the time elapsed
 				const edenHeaterBurnTime = Cooker.getBurnTime(V.edenHeater);
-				/* Checks burn time from when heater was first lit, 
+				/* Checks burn time from when heater was first lit,
 				to stop warm up time from resetting if more firewood is added */
 				const edenHeaterStartingBurnTime = Math.max((V.edenHeaterStartingLastsUntil ?? V.edenHeater.lastsUntil) - V.timeStamp, 0);
 				const burnTimeRatio = edenHeaterBurnTime / V.edenHeater.maxBurnTime;

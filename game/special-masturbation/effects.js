@@ -2158,9 +2158,9 @@ function masturbationEffectsArms(
 				altText.finger = V.mVaginaFingerAdd === 2 ? `two${altText.lubricated} fingers` : `a${altText.lubricated} finger`;
 				if (altText.lubricated.includes("semen")) V.semenInVagina = true;
 				if (hymenIntact) {
-					sWikifier(`<span class="purple">You push ${altText.finger}  into your <<pussy>> until you poke your unblemished hymen.</span>`);
+					sWikifier(`<span class="purple">You push ${altText.finger} into your <<pussy>> until you poke your unblemished hymen.</span>`);
 				} else if (V.bugsinside) {
-					sWikifier(`<span class="purple">You push ${altText.finger}  into your <<pussy>>. You feel insects crawling inside.</span>`);
+					sWikifier(`<span class="purple">You push ${altText.finger} into your <<pussy>>. You feel insects crawling inside.</span>`);
 				} else {
 					sWikifier(`<span class="purple">You push ${altText.finger} into your <<pussy>> which parts to allow the intrusion.</span>`);
 				}
