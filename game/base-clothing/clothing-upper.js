@@ -2190,7 +2190,7 @@ function initUpper() {
 			accessory_colour_sidebar: 1,
 			accessory_integrity_img: 1,
 			sleeve_img: 1,
-			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 3, 5: 5, 6: 6 },
+			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 3, 5: 5, 6: 5 },
 			altposition: "none",
 			altdisabled: ["sleeves"],
 			cursed: 0,
