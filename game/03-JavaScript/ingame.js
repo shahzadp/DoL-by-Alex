@@ -959,7 +959,7 @@ window.clothesDataTrimmerLoop = clothesDataTrimmerLoop;
 	Setup example - setup.clothes.upper[clothesIndex('upper',$worn.upper)].name_cap
 	clothingData example - clothingData(_slot, $worn[_slot], "integrity_max")
 
-	The `clothingData example`, allows you to add the variable back to override the setup varient, for example, if you want to increase `integrity_max`
+	The `clothingData example`, allows you to add the variable back to override the setup variant, for example, if you want to increase `integrity_max`
 
 	If any use the `Setup example` and you want to override variables like the `clothingData example`, every instance needs to be converted first, please update the comment below if you do
 */
@@ -1187,7 +1187,7 @@ function currentSkillValue(skill, disableModifiers = 0) {
 		});
 		return 0;
 	}
-	// Prevents infinate loops, any call to `currentSkillValue` in this function should be written like 'currentSkillValue("skillName", disableModifiers + 1)'
+	// Prevents infinite loops, any call to `currentSkillValue` in this function should be written like 'currentSkillValue("skillName", disableModifiers + 1)'
 	if (disableModifiers >= 2) return result;
 	if (
 		// prettier-ignore
@@ -1627,7 +1627,7 @@ window.checkTFparts = checkTFparts;
 
 /*
 	Might be good to convert the whole TF mechanic, including `transformationStateUpdate` to something like below at some point.
-	Part of the transformationParts is unsued right now, but its to account for this potential.
+	Part of the transformationParts is unused right now, but its to account for this potential.
 */
 function validateTransformations() {
 	if (V.cat >= 1 || V.wolfgirl >= 1 || V.cow >= 1 || V.harpy >= 1) {
@@ -1779,7 +1779,7 @@ function getSexesFromRandomGroup() {
 		if (V.cbchance <= 0) return SexTypes.ALL_MALES;			/* All males, no cuntboys. Always males. */
 		if (V.cbchance >= 100) return SexTypes.ALL_CUNTBOYS;	/* All males, all cuntboys. Always vaginal. */
 	}
-	if (V.cbchance >= 100 && V.dgchance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but males are cuntboys, and there are no dickgirls. */
+	if (V.cbchance >= 100 && V.dgchance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but all males are cuntboys, and there are no dickgirls. */
 	if (V.dgchance >= 100 && V.cbchance <= 0) return SexTypes.ALL_DICKS;	/* Both females and males, but all females are dickgirls, and there are no cuntboys. */
 	return SexTypes.BOTH;
 }
@@ -2333,7 +2333,7 @@ function earSlimeCorruptionClothes() {
 	if (!numberOfEarSlime()) return 0;
 	if (!V.daily.corruptionSlimeClothes) {
 		const baseCorruption = V.earSlime.corruption + V.earSlime.growth;
-		// Reduced from the origonal equivalent of *2.5 and *12.5, still want it to have SOME effect, but this should hopefully soften it enough
+		// Reduced from the original equivalent of *2.5 and *12.5, still want it to have SOME effect, but this should hopefully soften it enough
 		V.daily.corruptionSlimeClothes = Math.clamp(random(baseCorruption, baseCorruption * 5) - currentSkillValue("willpower"), 0, 1000);
 	}
 	const cap = ["prison", "asylum"].includes(V.location) ? 1000 : 500;
