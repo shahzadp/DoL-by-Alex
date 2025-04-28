@@ -2011,6 +2011,20 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return options.show_writings && !!options.writing_pubic;
 			},
+			dxfn(options) {
+				if (options.belly >= 23) return 10;
+				if (options.belly >= 22) return 8;
+				if (options.belly >= 20) return 6;
+				if (options.belly >= 17) return 4;
+				if (options.belly >= 8) return 2;
+				return 0;
+			},
+			dyfn(options) {
+				if (options.belly >= 24) return 6;
+				if (options.belly >= 22) return 4;
+				if (options.belly >= 21) return 2;
+				return 0;
+			},
 		},
 		"writing_left_thigh": {
 			z: ZIndices.skin,
