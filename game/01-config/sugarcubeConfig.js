@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.4.8",
+	version: "0.5.4.9",
 	versionName: `"Hopeless Cycle" edition`,
 	sneaky: false,
 	socialMediaEnabled: true,

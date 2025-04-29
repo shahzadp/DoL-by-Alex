@@ -924,6 +924,12 @@ function hourPassed(hours) {
 		if (V.per_npc.pubfame_nurse) wikifier("clearNPC", "pubfame_nurse");
 	}
 
+	if (V.avery_mansion) {
+		if (V.avery_mansion.away_timer >= 1) {
+			V.avery_mansion.away_timer--;
+		}
+	}
+
 	V.home_gone++;
 }
 
