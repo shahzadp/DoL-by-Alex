@@ -609,7 +609,7 @@ function effects() {
 					element("span", "Your butt feels small.", "purple");
 					break;
 				case 0:
-					element("span", "Your butt feels tiny", "purple");
+					element("span", "Your butt feels tiny.", "purple");
 					break;
 			}
 			delete V.bottomshrinkmessage;
