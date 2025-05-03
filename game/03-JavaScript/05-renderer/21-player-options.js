@@ -2493,7 +2493,7 @@ class PlayerCombatMapper {
 					if (bodywriting.type !== "object") {
 						return null;
 					}
-					if (V.leftarm === "bound" || V.rightarm === "grappled" || V.leftarm === "behind") {
+					if (V.leftarm === "bound" || V.leftarm === "grappled" || V.leftarm === "behind") {
 						return {
 							show: true,
 							type: bodywriting.writing,

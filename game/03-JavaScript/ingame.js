@@ -1495,6 +1495,37 @@ function playerIsPenetrated() {
 }
 window.playerIsPenetrated = playerIsPenetrated;
 
+/**
+ * @param {"left" | "right" | "any" | "both"} arm
+ */
+function pcAreArmsBound(arm = "any") {
+	if (!["left", "right", "any", "both"].includes(arm)) {
+		Errors.report(`[pcAreArmsBound]: invalid argument received: '${arm}'.`, {
+			Stacktrace: Utils.GetStack(),
+			arm,
+		});
+		return false;
+	}
+	switch (arm) {
+		case "any":
+			return V.leftarm === "bound" || V.rightarm === "bound";
+		case "both":
+			return V.leftarm === "bound" && V.rightarm === "bound";
+		default:
+			return V[arm + "arm"] === "bound";
+	}
+}
+window.pcAreArmsBound = pcAreArmsBound;
+
+/**
+ * @returns {"none" | "left" | "right" | "both"}
+ */
+function pcGetArmsBound() {
+	const outcome = (V.leftarm === "bound") + (V.rightarm === "bound") * 2;
+	return ["none", "left", "right", "both"][outcome];
+}
+window.pcGetArmsBound = pcGetArmsBound;
+
 function npcAssignClothesToSet(upper, lower) {
 	return { upper: T.npcClothesItems.upper[upper], lower: T.npcClothesItems.lower[lower] };
 }

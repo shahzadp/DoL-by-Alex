@@ -59,7 +59,7 @@ function masturbationEffects() {
 		wikifier("vaginaWetnessCalculate");
 	}
 	if (V.corruptionMasturbation) {
-		if (V.leftarm === "bound" && V.rightarm === "bound") {
+		if (pcAreArmsBound("both")) {
 			sWikifier(
 				'The slime in your ear makes you fight against the binds around your arms. You make no progress, <span class="blue">and it gives up.</span><<arousal 600 "masturbation">><<stress 6>><<gstress>><<garousal>>'
 			);

@@ -44,30 +44,16 @@
 	<br><br>
 	<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
 		/* variables */
-		<<set _helpless to 0>>
-		<<if $leftarm is "bound" and $rightarm is "bound">>
-			<<set _helpless to 1>>
-		<</if>>
-		<<set _nopan to 0>>
-		<<if $worn.under_lower.type.includes("naked")>>
-			<<set _nopan to 1>>
-		<</if>>
+		<<set _helpless to pcAreArmsBound("both")>>
 		<<set _trauma_gain to 0>>
 		<<set _arousal_gain to 0>>
 
-		<<set _seen to 0>>
-		<<if random(0, 10) gte 5>>
-			<<set _seen to 1>>
-		<</if>>
-
-		<<set _caught_on_camera to 0>>
-		<<if _seen and random(0, 10) gte 7>>
-			<<set _caught_on_camera to 1>>
-		<</if>>
+		<<set _seen to random(0, 10) gte 5 ? 1 : 0>>
+		<<set _caught_on_camera to _seen and >>
 
 		/* event */
 		It flares up your skirt, exposing your
-		<<if _nopan>>
+		<<if $worn.under_lower.type.includes("naked")>>
 			<<set _arousal_gain += 200>>
 			<<set _trauma_gain += .5>>
 			<<genitals>>
@@ -81,7 +67,7 @@
 			<<set _trauma_gain += 1>>
 			Bound and helpless you can do nothing but endure the wind as it toys with your exposure, until finally it abates and your skirt hem settles back where it should be.
 		<</if>>
-		<<if _seen>>
+		<<if random(0, 10) gte 5>>
 			<<print [
 			"A sudden giggle causes you to turn, facing the onlooker.",
 			"A sudden giggle grabs your attention.",
@@ -92,7 +78,7 @@
 			].pluck()>>
 			<<fameexhibitionism 1>>
 
-			<<if _caught_on_camera>>
+			<<if random(0, 10) gte 7>>
 				<<endevent>>
 				<span class="pink">
 					You notice a phone pointing at you, and realise they were probably recording.
@@ -140,11 +126,8 @@
 
 		/* cleanup */
 		<<unset _helpless>>
-		<<unset _nopan>>
 		<<unset _arousal_gain>>
 		<<unset _trauma_gain>>
-		<<unset _seen>>
-		<<unset _caught_on_camera>>
 	<<else>>
 		<<link [[Next|Beach]]>><<set $eventskip to 1>><</link>>
 	<</if>>
