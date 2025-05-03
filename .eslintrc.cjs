@@ -169,6 +169,8 @@ module.exports = {
 		parasiteProgressTime: "readonly",
 		parentFunction: "readonly",
 		parseCSSFilter: "readonly",
+		pcAreArmsBound: "readonly",
+		pcGetArmsBound: "readonly",
 		pickRandomItemInArray: "readonly",
 		playerAwareTheyArePregnant: "readonly",
 		playerBellySize: "readonly",

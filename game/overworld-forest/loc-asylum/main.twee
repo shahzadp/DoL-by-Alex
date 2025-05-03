@@ -94,7 +94,7 @@
 	<</if>>
 	<<if $eden_asylum_window is 1 and Time.hour gte 22>>
 		Eden should be watching.
-		<<if $leftarm is "bound" and $rightarm is "bound">>
+		<<if pcAreArmsBound("both")>>
 			You could throw a towel up to your window to signal your location, but you'd need to unbind your arms first.
 			<br>
 		<<else>>
@@ -104,7 +104,7 @@
 			<br>
 		<</if>>
 	<</if>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
+	<<if pcAreArmsBound("both")>>
 		A padded cupboard containing your clothes protrudes from the wall, but you can't reach it with your arms bound.
 		<br>
 	<<else>>
@@ -141,7 +141,7 @@
 	<</if>>
 	<<if $eden_asylum_window is 1 and Time.hour gte 22>>
 		Eden should be watching.
-		<<if $leftarm is "bound" and $rightarm is "bound">>
+		<<if pcAreArmsBound("both")>>
 			You could throw a towel up to your window to signal your location, but you'd need to unbind your arms first.
 			<br>
 		<<else>>
@@ -151,7 +151,7 @@
 			<br>
 		<</if>>
 	<</if>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
+	<<if pcAreArmsBound("both")>>
 		A padded cupboard containing your clothes protrudes from the wall, but you can't reach it with your arms bound.
 		<br>
 	<<else>>
@@ -188,7 +188,7 @@
 	<</if>>
 	<<if $eden_asylum_window is 1 and Time.hour gte 22>>
 		Eden should be watching.
-		<<if $leftarm is "bound" and $rightarm is "bound">>
+		<<if pcAreArmsBound("both")>>
 			You could throw a towel up to your window to signal your location, but you'd need to unbind your arms first.
 			<br>
 		<<else>>
@@ -198,7 +198,7 @@
 			<br>
 		<</if>>
 	<</if>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
+	<<if pcAreArmsBound("both")>>
 		A padded cupboard containing your clothes protrudes from the wall, but you can't reach it with your arms bound.
 		<br>
 	<<else>>
@@ -688,7 +688,7 @@ You sneak to a nurse. "Excuse me," you say.
 		<br><br>
 		"How did you manage that? No, never mind. I don't want to know." <<He>> makes a note on a clipboard. "I'll have to inform the doctor."<<set $suspicion += 1>><<gsuspicion>>
 		<br><br>
-		<<He>> removes the remains of your straightjacket<<if $leftarm is "bound" and $rightarm is "bound">>, letting your arms fall to your sides<</if>>. Your freedom is short-lived as <<he>> forces a fresh one onto you.
+		<<He>> removes the remains of your straightjacket<<if pcAreArmsBound("both")>>, letting your arms fall to your sides<</if>>. Your freedom is short-lived as <<he>> forces a fresh one onto you.
 		<<bind>><<upperwear 35>><<lowerwear 38>><<fameexhibitionism 1>>
 	<</if>>
 <<elseif ($beauty gte ($beautymax / 3) * 2) and _towel lte 3>> /* 1 in 5 to skip beauty*/
@@ -734,7 +734,13 @@ You sneak to a nurse. "Excuse me," you say.
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 <<if isPregnancyEnding()>>
 	<<pregnancyPassout "asylumOutside">>
-<<elseif C.npc.Eden.love gte 100 and ($edenfreedom is 1 and $edendays gte 2 and !$daily.eden.asylumRescue and $eden_asylum_fence isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound" and $trauma lte $traumamax / 2) or ($edenfreedom gte 2 and $edendays gte 8 and !$daily.eden.asylumRescue and $eden_asylum_fence isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound" and $trauma lte $traumamax / 2)>>
+<<elseif C.npc.Eden.love gte 100 and
+	(($edenfreedom is 1 and $edendays gte 2) or ($edenfreedom gte 2 and $edendays gte 8)) and
+	!$daily.eden.asylumRescue and
+	$eden_asylum_fence isnot 1 and
+	$trauma lte $traumamax / 2 and
+	!pcAreArmsBound("any")
+>>
 	<<set $eden_asylum_fence to 1>>
 	<<set $daily.eden.asylumRescue to 1>>
 	You see movement among the trees, a lurking figure. It steps closer. <span class="green">It's Eden.</span>
@@ -765,7 +771,7 @@ You sneak to a nurse. "Excuse me," you say.
 	<<exhibitionism3>>
 	<<asylumevents>>
 <<else>>
-	<<if $leftarm is "bound" and $rightarm is "bound" and $worn.upper.name is "straightjacket">>
+	<<if pcAreArmsBound("both") and $worn.upper.name is "straightjacket">>
 		Despite the straightjacket, you persist in running around the asylum grounds.
 		<<if currentSkillValue('danceskill') + currentSkillValue('athletics') gte 1600>>
 			With your agile and athletic movement, you make it an excellent training session.
@@ -883,7 +889,13 @@ You chat with the other patients.
 <</if>>
 <<generate1>><<person1>><br>
 
-<<if C.npc.Eden.love gte 100 and ($edenfreedom is 1 and $edendays gte 2 and !$daily.eden.asylumRescue and !$eden_asylum_window and $leftarm isnot "bound" and $rightarm isnot "bound" and $trauma lte $traumamax / 2) or ($edenfreedom gte 2 and $edendays gte 8 and !$daily.eden.asylumRescue and !$eden_asylum_window and $leftarm isnot "bound" and $rightarm isnot "bound" and $trauma lte $traumamax / 2)>>
+<<if C.npc.Eden.love gte 100 and
+	(($edenfreedom is 1 and $edendays gte 2) or ($edenfreedom gte 2 and $edendays gte 8)) and
+	!$daily.eden.asylumRescue and
+	!$eden_asylum_window and
+	!pcAreArmsBound("any") and
+	$trauma lte $traumamax / 2
+>>
 	<<set $daily.eden.asylumRescue to 1>>
 	<<set $eden_asylum_window to 1>>
 	<<set $daily.eden.asylumDisarm to 1>>
@@ -1360,13 +1372,13 @@ It seems that for this plan to work, you'll have to find and disable it.
 
 :: Asylum Study
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
-<<if $leftarm isnot "bound" and $rightarm isnot "bound">>
+<<if !pcAreArmsBound("any")>>
 	<<set _prop to either("english", "history", "science", "maths")>>
 		<<set _colour to _prop is "science" ? "blue" : _prop is "history" ? "yellow" : _prop is "maths" ? "red" : "green">>
 	<<wearProp "open textbook" _colour _prop>>
 <</if>>
 You read old text books in the dusty library. Most of this should still apply.
-<<if $leftarm is "bound" and $rightarm is "bound">>
+<<if pcAreArmsBound("both")>>
 	Your arms are bound, so
 	<<if $asylumstatus gte 60>>
 		a nearby patient helps you with turning pages.
@@ -1412,7 +1424,7 @@ You nod. The orderly pulls a chair close and sits down.
 <br><br>
 <<link [[Thank|Asylum Study Thank]]>><<set $suspicion -= 1>><</link>><<lsuspicion>>
 <br>
-<<if $leftarm isnot "bound" and $rightarm isnot "bound">>
+<<if !pcAreArmsBound("any")>>
 <<link [[Rest a hand on <<his>> thigh|Asylum Study Thigh]]>><<handheldon>><</link>><<promiscuous1>>
 <</if>>
 <br>
@@ -1494,7 +1506,7 @@ You rest a hand on <<his>> thigh as <<he>> explains something to you. <<His>> vo
 
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 You sit down and enjoy breakfast with the other patients.
-<<if $leftarm is "bound" and $rightarm is "bound">>
+<<if pcAreArmsBound("both")>>
 	Your arms are bound, so
 	<<if $asylumstatus gte 66>>
 		a nearby patient helps you to eat.
@@ -1537,14 +1549,14 @@ The food is good, and leaves you feeling warm and happy. It's not just you. The 
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 You approach the staff door with a keycard lock.
 <<if $asylumkeycard is 1>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
+	<<if pcAreArmsBound("both")>>
 		You have the keycard, but you can't use it with your arms bound.
 	<<else>>
 		<<wearProp "keycard" "silver">>
 		You could open it with the keycard if you wanted.
 	<</if>>
 <<else>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
+	<<if pcAreArmsBound("both")>>
 		With your arms bound, you couldn't reach it even if you had the keycard.
 	<<else>>
 		If you had the keycard you could open it.
@@ -1552,8 +1564,7 @@ You approach the staff door with a keycard lock.
 <</if>>
 <br><br>
 <<if $asylumkeycard is 1>>
-	<<if $leftarm is "bound" and $rightarm is "bound">>
-	<<else>>
+	<<if !pcAreArmsBound("both")>>
 		<<icon "access_card.png">><<link [[Open|Asylum Open]]>><<handheldon>><</link>>
 		<br>
 	<</if>>

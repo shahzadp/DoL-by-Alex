@@ -2277,7 +2277,7 @@
 
 <<widget "unbind">>
 	/*<<unbind>> is only used for the player unbinding their arms after they've been tied with rope. it will destroy handheld items. do not use it for unbinding arms after they've been temporarily restrained; use <<unbindtemp>> instead*/
-	<<if $rightarm is "bound" and $worn.handheld.name isnot "naked">>
+	<<if pcAreArmsBound("right") and $worn.handheld.name isnot "naked">>
 		<<handheldruined>>
 	<</if>>
 	<<set $rightboundcarry to 0>>
@@ -2316,7 +2316,7 @@
 	/*<<bind>> and <<unbind>> are only used for binding the player's arms with rope. they are only meant to be used for scenes where the player is left helpless and must undo their bindings elsewhere, forcing them to leave behind their handheld items. Use <<bindtemp>> and <<unbindtemp>> for temporarily binding arms.*/
 	<<if _args[0]>>
 		<<set _args[0] to "bound">>
-		<<if $rightarm is "bound" and $worn.handheld.name isnot "naked">>
+		<<if pcAreArmsBound("right") and $worn.handheld.name isnot "naked">>
 			<<handheldruined>>
 		<</if>>
 	<<else>>
@@ -2363,13 +2363,14 @@
 <</widget>>
 
 <<widget "bindings">>
-	<<if $leftarm is "bound" and $position isnot "wall">><<set $leftboundcarry to 1>><</if>>
-	<<if $rightarm is "bound" and $position isnot "wall">><<set $rightboundcarry to 1>><</if>>
-	<<if $rightboundcarry is 1 and $rightarm isnot "bound">>
-		<<set $rightarm to "bound">>
-	<</if>>
-	<<if $leftboundcarry is 1 and $leftarm isnot "bound">>
+	<<if pcAreArmsBound("left") and $position isnot "wall">><<set $leftboundcarry to 1>><</if>>
+	<<if !pcAreArmsBound("left") and $leftboundcarry is 1>>
 		<<set $leftarm to "bound">>
+	<</if>>
+
+	<<if pcAreArmsBound("right") and $position isnot "wall">><<set $rightboundcarry to 1>><</if>>
+	<<if !pcAreArmsBound("right") and $rightboundcarry is 1>>
+		<<set $rightarm to "bound">>
 	<</if>>
 <</widget>>
 
