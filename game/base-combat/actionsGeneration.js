@@ -29,7 +29,7 @@ Macro.add("generateCombatAction", {
 			frag.append(listSpan);
 		} else {
 			// assume radio buttons
-			if (!combatType) frag.append(el("br"));
+			if (!combatType && controls !== "columnRadio") frag.append(el("br"));
 			const optionNames = Object.keys(optionsTable);
 			for (let n = 0; n < optionNames.length; n++) {
 				const name = optionNames[n];
@@ -49,7 +49,7 @@ Macro.add("generateCombatAction", {
 				label.append(radioButton, nameSpan, difficultyText);
 				frag.append(label);
 			}
-			if (!combatType) frag.append(el("br"), el("br"));
+			if (!combatType && controls !== "columnRadio") frag.append(el("br"), el("br"));
 		}
 		this.output.append(frag);
 
