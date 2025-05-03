@@ -515,6 +515,12 @@ Renderer.CanvasModels.main = {
 					setup: { type: [] },
 				}
 			},
+			// followers
+			"follower": false,
+			//weather
+			"precipitation_back": "",
+			"precipitation_front": "",
+			"player_temp_effect": "",
 			// misc
 			"tanningEnabled": true,
 			"genitals_chastity": false, // generated option
@@ -531,8 +537,6 @@ Renderer.CanvasModels.main = {
 			"zupper": ZIndices.upper, // generated options
 			"zupperleft": ZIndices.upper_arms, // generated options
 			"zupperright": ZIndices.upper_arms, // generated options
-			// followers
-			"follower": false,
 			// filters
 			"filters": {
 				body: { blend: "#ffffff", blendMode: "multiply", desaturate: false },
@@ -3755,6 +3759,56 @@ Renderer.CanvasModels.main = {
 				return !!options.follower && !!options.follower.writing_right_foot;
 			},
 			z: ZIndices.head + 2,
+		},
+		/***
+		 *    ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████ 
+		 *    ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+		 *    ██  █  ██ █████   ███████    ██    ███████ █████   ██████ 
+		 *    ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+		 *     ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+		 */
+		"precipitation_back": {
+			animationfn() {
+				if (Weather.precipitation === "snow") return "snowBack";
+				return "rain";
+			},
+			srcfn() {
+				const type = Weather.precipitation;
+				const intensity = Weather.name;
+				return `img/misc/ambient/precipitation/${type}/${intensity}Back.png`
+			},
+			showfn() {
+				return V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && V.outside === 1 && !V.underwater;
+			},
+			z: ZIndices.bg,
+		},
+		"precipitation_front": {
+			animationfn() {
+				if (Weather.precipitation === "snow") return "snowFront";
+				return "rain";
+			},
+			srcfn() {
+				const type = Weather.precipitation;
+				const intensity = Weather.name;
+				return `img/misc/ambient/precipitation/${type}/${intensity}Front.png`
+			},
+			showfn() {
+				return V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && V.outside === 1 && !V.underwater;
+			},
+			z: ZIndices.precipitationFront,
+		},
+		"player_temp_effect": {
+			animationfn() {
+				if (V.arousal >= 6000 || V.pain >= 40) return "coldBreathFast";
+				return "coldBreath";
+			},
+			srcfn() {
+				return `img/misc/ambient/playerBreath.png`
+			},
+			showfn() {
+				return V.outside === 1 && Weather.temperature <= 5 && !V.underwater;
+			},
+			z: ZIndices.precipitationFront,
 		},
 
 		// new layer template
