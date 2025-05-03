@@ -101,6 +101,8 @@ const ZIndices = {
 
 	tailPenisCover: 165,
 	tailPenisCoverOverlay: 166,
+
+	precipitationFront: 170,
 };
 window.ZIndices = ZIndices;
 
