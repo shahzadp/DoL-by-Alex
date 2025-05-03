@@ -43,6 +43,12 @@ const Sunscreen = (() => {
 		get usesLeft() {
 			return V.player.skin.sunscreen.usesLeft;
 		},
+		set autoApply(value) {
+			V.player.skin.sunscreen.autoApply = !!value;
+		},
+		get autoApply() {
+			return V.player.skin.sunscreen.autoApply;
+		},
 		/** @param {number} [uses] */
 		addUses(uses) {
 			V.player.skin.sunscreen.usesLeft += uses ?? this.bottle.uses;

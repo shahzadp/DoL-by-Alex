@@ -625,6 +625,12 @@ function effects() {
 			element("span", "You've become too defiant to adopt a meek demeanor in conversation.", "purple");
 		}
 
+		if (V.sunscreenAutoApplied) {
+			element("span", `You apply sunscreen to your skin${Skin.Sunscreen.usesLeft <= 0 ? "," : "."}`, "purple");
+			if (Skin.Sunscreen.usesLeft <= 0) element("span", "using the last of it.", "red");
+			delete V.sunscreenAutoApplied;
+		}
+
 		if (V.pillsTaken) {
 			element("span", "You take your daily pills.", "purple");
 			if (V.pillsTakenLast) element("span", "You have run out of some of them.", "red");
