@@ -2424,7 +2424,17 @@
 				<<set $leftaction to 0>><<set $leftactiondefault to "pursuit_grab">><<set $rightaction to 0>><<set $rightactiondefault to "pursuit_grab">>
 				<<set $feetaction to "rest">>
 				<<set $feetuse to 0>>
-				You grasp the back of the <<persons>> shirt with both hands, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<if $NPCList[0].state is "pursuit">>
+					You grasp the back of the <<persons>> shirt with both hands, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<else>>
+					You lunge for
+					<<if $npcrow.includes(0) and $stalk_assess>>
+						<<print $npc[$npcrow.indexOf(0)]>>
+					<<else>>
+						the <<person>>
+					<</if>>
+					and <span class="green">wrap both of your arms around <<his>> waist</span>. You both tumble to the ground.
+				<</if>>
 				<<stalk_catch>>
 			<</if>>
 
@@ -2432,7 +2442,17 @@
 				<<set $leftaction to 0>><<set $leftactiondefault to "pursuit_grab">>
 				<<set $feetaction to "rest">>
 				<<set $feetuse to 0>>
-				You grasp the back of the <<persons>> shirt with your left hand, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<if $NPCList[0].state is "pursuit">>
+					You grasp the back of the <<persons>> shirt with your left hand, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<else>>
+					You lunge for
+					<<if $npcrow.includes(0) and $stalk_assess>>
+						<<print $npc[$npcrow.indexOf(0)]>>
+					<<else>>
+						the <<person>>
+					<</if>>
+					and <span class="green">grab <<him>> with your left hand</span>. You both tumble to the ground.
+				<</if>>
 				<<stalk_catch>>
 			<</if>>
 
@@ -2440,7 +2460,17 @@
 				<<set $rightaction to 0>><<set $rightactiondefault to "pursuit_grab">>
 				<<set $feetaction to "rest">>
 				<<set $feetuse to 0>>
-				You grasp the back of the <<persons>> shirt with your right hand, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<if $NPCList[0].state is "pursuit">>
+					You grasp the back of the <<persons>> shirt with your right hand, <span class="green">and force <<him>> to stop.</span> <<He>> turns to face you.
+				<<else>>
+					You lunge for
+					<<if $npcrow.includes(0) and $stalk_assess>>
+						<<print $npc[$npcrow.indexOf(0)]>>
+					<<else>>
+						the <<person>>
+					<</if>>
+					and <span class="green">grab <<him>> with your right hand</span>. You both tumble to the ground.
+				<</if>>
 				<<stalk_catch>>
 			<</if>>
 		<</if>>
@@ -2662,7 +2692,9 @@
 
 			<<if $feetaction is "run">>
 				<<set $feetaction to 0>><<set $feetactiondefault to "run">>
-				<<if _stalkNoRunning is "chastity parasite">>
+				<<if $mouthaction is "taunt" and !$stalk_end>>
+					<<stalk_taunt_effects>>
+				<<elseif _stalkNoRunning is "chastity parasite">>
 					<<set $feetactiondefault to "walk">><<set $feetuse to "walk">>
 					<<if $earSlime.growth gte 150>><<set $earSlime.defyCooldown++>><</if>>
 					You attempt to run, <span class="lewd">but you find the pleasure you're feeling is too much to run.</span>
@@ -2688,6 +2720,36 @@
 						<<stalk_run>>
 					<<else>>
 						You chase the thief.
+					<</if>>
+					<<run_text>>
+					<<if $worn.feet.type.includes("heels")>>
+						<<if currentSkillValue("feetskill") gte random(1, 1000)>>
+							<<set _stalk_feet to true>>
+						<<else>>
+							<<set _stalk_feet to false>>
+						<</if>>
+					<<else>>
+						<<set _stalk_feet to true>>
+					<</if>>
+					<<if currentSkillValue('athletics') gte random(1, $NPCList[0].skills.athletics)>>
+						<<set _stalk_athletics to true>>
+					<<else>>
+						<<set _stalk_athletics to false>>
+					<</if>>
+					<<if _stalk_athletics and _stalk_feet>>
+						<span class="teal">You catch up.</span>
+						<<set $NPCList[0].distance -= 2>>
+					<<else>>
+						<span class="red"><<He>> outpaces you.</span>
+						<br>
+					<</if>>
+					<<stalk_run_events>>
+				<<elseif $NPCList[0].state is "chased">>
+					<<if $feetuse isnot "run">>
+						You break into a run, and chase your quarry.
+						<<stalk_run>>
+					<<else>>
+						You chase your quarry.
 					<</if>>
 					<<run_text>>
 					<<if $worn.feet.type.includes("heels")>>
@@ -2830,7 +2892,7 @@
 					<</if>>
 
 					<<stalk_walk_events>>
-				<<elseif _hide_success and $NPCList[0].state is "pursuit">>
+				<<elseif _hide_success and ($NPCList[0].state is "pursuit" or $NPCList[0].state is "chased")>>
 					<<switch $location>>
 						<<case forest lake>>
 							You hide behind a tree, and hope that no one's watching.
@@ -3015,6 +3077,113 @@
 					<br><br>
 					<<set $stalk_end to "passed">>
 					<<set $NPCList[_n].distance to 1>>
+				<</if>>
+			<</if>>
+
+			<<if $feetaction is "ambush" and !$stalk_end>>
+				<<set $feetaction to 0>><<set $feetactiondefault to "run">>
+				<<set _difficulty to $NPCList[0].skills.athletics>>
+				<<if currentSkillValue('skulduggery') gte random(1, _difficulty)>>
+					<<set _ambush_success to true>>
+				<</if>>
+				<<if $earSlime.growth - random(0, Math.clamp(75 - ($earSlime.defyCooldown * 5), 0, 75)) gte (currentSkillValue('willpower')/ 10)>>
+					<<if $earSlime.growth gte 150>><<set $earSlime.defyCooldown++>><</if>>
+					<<if $earSlime.growth gt 50 and hasSexStat("exhibitionism", 2)>>
+						<<set $feetactiondefault to "strut">><<set $feetuse to "strut">>
+						You attempt to hide for an ambush, <span class="red">but you suddenly find yourself strutting.</span> You feel the slime steal your control away.
+						<<meek 3>>
+					<<else>>
+						<<set $feetactiondefault to "walk">><<set $feetuse to "walk">>
+						You attempt to hide for an ambush, <span class="red">but you find yourself being unable to move any quicker.</span> You feel the slime steal your control away.
+					<</if>>
+					<<if $daily.stalkWillpower lt 20>>
+						<<gwillpower>><<willpower 1>>
+						<<set $daily.stalkWillpower to ($daily.stalkWillpower or 0) + 1>>
+					<</if>>
+
+					<<stalk_walk_events>>
+				<<elseif !_ambush_success or $NPCList[0].fullDescription is "Ivory Wraith" and C.npc["Ivory Wraith"].lust gte random(5,15)>>
+					<<switch $location>>
+						<<case alley>>
+							You dive down a thin alley, and take cover behind a dumpster. You prepare to pounce.
+						<<case forest lake>>
+							You run into a dense copse, and take cover behind a thick trunk. You prepare to pounce.
+						<<case moor>>
+							You crest a small ridge, and dive into a ditch. You prepare to pounce.
+						<<default>>
+							You dive down a thin alley, and take cover behind a dumpster. You prepare to pounce.
+					<</switch>>
+					<br><br>
+
+					You leap out and attack as you sense <<if $enemyno gt 1>>them<<else>><<him>><</if>> coming close, 
+					<<if $NPCList[0].fullDescription is "Ivory Wraith">>
+						<span class="red">only to be met in the embrace of countless pale arms.</span>
+					<<else>>
+						<span class="red">but <<he>> was ready for you. <<He>> catches you and pins you down.</span>
+					<</if>>
+
+					/* Prevents stalking mouth actions from appearing once the encounter starts */
+					<<set $mouthaction to 0>><<set $mouthactiondefault to "rest">>
+					<br><br>
+					<<set $NPCList[0].distance to 0>>
+					<<stalk_img>>
+					<<if $npcrow.includes(0)>>
+						<<stalk_nnpc_text_attack $NPCList[0].fullDescription>>
+						<<if !$stalk_assess>>
+							<<if $NPCList[0].fullDescription is "Ivory Wraith">>
+								<span class="red">A<<if $wraith.seen gte 3>> familiar<</if>> pale figure stares down at you, eyes flashing <<wraithEyes>>.</span>
+							<<else>>
+								<span class="pink">It's <<print $npc[$npcrow.indexOf(0)]>>.</span>
+							<</if>>
+						<</if>>
+						<br><br>
+						<<events_stalk_nnpc $NPCList[0].fullDescription>>
+					<<else>>
+						<br><br>
+						<<stalk_attack>>
+					<</if>>
+				<<else>>
+					<<switch $location>>
+						<<case alley>>
+							You dive down a thin alley on all fours. You deftly turn on the spot, taking cover behind a dumpster and preparing to pounce.
+						<<case forest lake>>
+							You run into a dense copse on all fours, and take cover behind a thick trunk. You prepare to pounce.
+						<<case moor>>
+							You crest a small ridge, and deftly turn on all fours to face your pursuer<<if $enemyno gte 2>>s<</if>>. You prepare to pounce.
+						<<default>>
+							You dive down a thin alley on all fours. You deftly turn on the spot, taking cover behind a dumpster and preparing to pounce.
+					<</switch>>
+					<br><br>
+
+					<<if $NPCList[0].fullDescription is "Ivory Wraith">>
+						<<set $stalk_assess to true>>
+						Your heart pounds in your ears. You can't hear anyone approaching, but you can feel it. You let your instincts guide you, and leap from cover to attack.
+						<br><br>
+
+						Your vision is filled with a terrible pale, <span class="red">which fades into a freezing mist as soon as you touch it</span>. You crash painfully to the ground. <<pain 4>><<gpain>>
+						<br><br>
+
+						Its voice echoes around you.
+						<<switch random(1, 3)>>
+							<<case 3>><<set _wraith_output to "The pursuit bends.">>
+							<<case 2>><<set _wraith_output to "The predator remembers its place.">>
+							<<case 1>><<set _wraith_output to "Take nothing in your hands. Feast on it.">>
+						<</switch>>
+						"<span class="wraith"><<print _wraith_output>></span>"
+						<<trauma 2>><<stress 4>><<gtrauma>><<gstress>>						
+					<<else>>
+						Your sharp ears focus on the sound of footsteps, and you wait for the perfect moment. You spring out of your hiding spot,
+						<<if $npcrow.includes(0)>>
+							<<if !$stalk_assess>>
+								<span class="green">and topple your pursuer.</span> <span class="pink">It's <<print $npc[$npcrow.indexOf(0)]>>.</span>
+							<<else>>
+								<span class="green">and topple <<print $npc[$npcrow.indexOf(0)]>>.</span>
+							<</if>>
+						<<else>>
+							<span class="green">and topple the <<person>>. <<if $enemyno gt 1>><<His>> companion<<if $enemyno gt 2>>s<</if>> back away in shock.<</if>></span>
+						<</if>>
+					<</if>>
+					<<set $stalk_end to "ambush">>
 				<</if>>
 			<</if>>
 		<</if>>
@@ -4905,6 +5074,10 @@
 					others follow <<him>>.
 				<</if>>
 				<<set $stalk_assess to true>>
+			<</if>>
+
+			<<if $mouthaction is "taunt" and !$stalk_end and $feetuse isnot "run">>
+				<<stalk_taunt_effects>>
 			<</if>>
 		<</if>>
 

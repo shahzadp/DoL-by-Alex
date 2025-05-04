@@ -75,9 +75,9 @@ const combatActionColours = {
 			/* leftaction or rightaction */
 			"steal", "penwhack", "freeface", "leftcovervagina", "leftcoverpenis", "leftcoveranus", "rightcovervagina", "rightcoverpenis", "rightcoveranus", "leftunderpull", "leftskirtpull", "leftlowerpull", "leftupperpull", "rightunderpull", "rightskirtpull", "rightlowerpull", "rightupperpull", "rightUndressOther", "leftUndressOther", "stopchoke", "clench", "shacklewhack", "leftfold", "rightfold", "dildowhack", "hypnosiswhack", "leftstruggleweak", "rightstruggleweak", "handpullpenis", "handpullvagina", "handpullanus", "leftresistW", "rightresistW", "leftstillW", "rightstillW", "penisremovecondom", "npcremovecondom",
 			/* feetaction */
-			"run", "hide", "confront", "feetresistW", "legLock", "legLocked", "feetHold",
+			"run", "taunt", "hide", "feetresistW", "legLock", "legLocked", "feetHold",
 			/* mouthaction */
-			"pullaway", "ejacspit", "pullawayvagina", "finish", "novaginal", "nopenile", "noanal", "scream", "mock", "breastclosed", "breastpull", "pullawaykiss", "noupper", "analpull", "up", "stifleorgasm", "stifle", "mouthresistW", "handcloseW", "growl", "askPullOut","disparage",
+			"pullaway", "ejacspit", "pullawayvagina", "finish", "novaginal", "nopenile", "noanal", "scream", "mock", "breastclosed", "breastpull", "pullawaykiss", "noupper", "analpull", "up", "stifleorgasm", "stifle", "mouthresistW", "handcloseW", "growl", "askPullOut", "disparage",
 			/* penisaction */
 			"othermouthescape", "escape", "otheranusescape", "fencingescape", "pullOut",
 			/* vaginaaction */
@@ -89,9 +89,9 @@ const combatActionColours = {
 			/* leftaction or rightaction */
 			"spray", "lefthit", "righthit", "leftstruggle", "rightstruggle", "stopchokenoncon", "pursuit_grab",
 			/* feetaction */
-			"kick",
+			"kick", "ambush",
 			/* mouthaction */
-			"bite", "demand", "breastbite", "handbite", "headbutt", "bitepussy",
+			"confront", "bite", "demand", "breastbite", "handbite", "headbutt", "bitepussy",
 		],
 		meek: [
 			/* leftaction or rightaction */
@@ -1743,6 +1743,7 @@ function validateTransformations() {
 				{ name: "fangs", tfRequired: 2 },
 				{ name: "sharpEyes", tfRequired: 2 },
 				{ name: "mateForLife", tfRequired: 3 },
+				{ name: "chase", tfRequired: 4 },
 			],
 		},
 		{

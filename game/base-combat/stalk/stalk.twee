@@ -7,7 +7,7 @@
 		You could always run or hide, but failing will increase the chance of being assaulted. Looking over your shoulder will give an idea of how hard they are to outrun or deceive.
 		<br><br></i>
 	<</if>>
-	<<if _n is 0 and $stalk_end isnot "escaped" and $stalk_end isnot "hide" and $stalk_end isnot "confront">>/*Only triggers on first NPC in a group. */
+	<<if _n is 0 and $stalk_end isnot "escaped" and $stalk_end isnot "hide" and $stalk_end isnot "confront" and $stalk_end isnot "ambush">>/*Only triggers on first NPC in a group. */
 		<<if $NPCList[_n].legs is "walk">>
 			<<set $NPCList[_n].distance -= 1>>
 			<<if $NPCList[_n].distance is 3>>
@@ -177,7 +177,7 @@
 		<</if>>
 		<<switch $location>>
 			<<case forest>>
-
+				/* ToDo: Forest pursuit events */
 			<<case moor>>
 
 			<<case alley>>
@@ -515,17 +515,56 @@
 	<<stalk_img>>
 <</widget>>
 
-<<widget "stalk_catch">>
-	<<for _i = 0; _i < $NPCList.length; _i++>>
-		<<set $NPCList[_i].state to "attack">>
-	<</for>>
-	<<if random(1, 2) is 2>>
-		<<set $position to "missionary">>
-	<<else>>
-		<<set $position to "doggy">>
+<<widget "man-chased">>
+	<<if _n is 0>>
+		<<set $NPCList[_n].distance += 1>>
+		<<if $location is "forest">>
+			<<if $NPCList[_n].distance gte 4>>
+				You push through the foliage, but your quarry is nowhere to be seen. <span class="red">You've lost <<him>>.</span>
+				<<set $stalk_end to "outpaced">>
+			<<elseif $NPCList[_n].distance is 3>>
+				Your quarry is barely visible through the trees. <span class="pink">You've almost lost <<him>>.</span>
+			<<elseif $NPCList[_n].distance is 2>>
+				Your quarry runs, expertly dodging branches. <span class="purple"><<Hes>> some distance from you.</span>
+			<<elseif $NPCList[_n].distance is 1>>
+				Your quarry runs, and throws the occasional glance over <<his>> shoulder. <span class="blue"><<Hes>> not far ahead.</span>
+			<<else>>
+				<<set $NPCList[_n].distance to 0>>
+				Your quarry runs. <span class="green"><<Hes>> right in front of you.</span>
+			<</if>>
+		<<else>>
+			<<if $NPCList[_n].distance gte 4>>
+				You round a corner, but the <<person>> is nowhere to be seen. <span class="red">You've lost <<him>>.</span>
+				<<set $stalk_end to "outpaced">>
+			<<elseif $NPCList[_n].distance is 3>>
+				The <<person>> rounds a corner ahead. <span class="pink">You've almost lost <<him>>.</span>
+			<<elseif $NPCList[_n].distance is 2>>
+				The <<person>> runs. <span class="purple"><<Hes>> some distance from you.</span>
+			<<elseif $NPCList[_n].distance is 1>>
+				The <<person>> runs, and throws the occasional glance over <<his>> shoulder. <span class="blue"><<Hes>> not far ahead.</span>
+			<<else>>
+				<<set $NPCList[_n].distance to 0>>
+				The <<person>> runs. <span class="green"><<Hes>> right in front of you.</span>
+			<</if>>
+		<</if>>
 	<</if>>
-	<<if $location is "town" and Time.dayState isnot "night">>
-		<<set $audience_active to true>>
+	<<stalk_img>>
+<</widget>>
+
+<<widget "stalk_catch">>
+	<<set $stalk_end to "catch">>
+	<<if $consensual isnot 1>>
+		<<for _i = 0; _i < $NPCList.length; _i++>>
+			<<set $NPCList[_i].state to "attack">>
+		<</for>>
+		<<if random(1, 2) is 2>>
+			<<set $position to "missionary">>
+		<<else>>
+			<<set $position to "doggy">>
+		<</if>>
+		<<if $location is "town" and Time.dayState isnot "night">>
+			<<set $audience_active to true>>
+		<</if>>
 	<</if>>
 <</widget>>
 
@@ -555,6 +594,14 @@
 	<<set $rescue to 0>>
 	<<controlloss>>
 	<<molested>>
+<</widget>>
+
+<<widget "stalk_chased">>
+	<<for _i = 0; _i < $NPCList.length; _i++>>
+		<<set $NPCList[_i].state to "chased">>
+		<<set $NPCList[_i].distance to 2>>
+	<</for>>
+	<<set $rescue to 0>>
 <</widget>>
 
 <<widget "stalk_run">>
@@ -707,7 +754,7 @@
 <</widget>>
 
 <<widget "stalk_athletics_difficulty">>
-	<<if $stalk_assess or $NPCList[0].state is "pursuit">>
+	<<if $stalk_assess or $NPCList[0].state is "pursuit" or $NPCList[0].state is "chased">>
 		<<if $worn.feet.type.includes("heels")>>
 			<<skill_difficulty `currentSkillValue("feetskill")` "Feet (heels)" 1 1000>>
 		<</if>>
@@ -716,7 +763,7 @@
 <</widget>>
 
 <<widget "stalk_skulduggery_difficulty">>
-	<<if $stalk_assess or $NPCList[0].state is "pursuit">>
+	<<if $stalk_assess or $NPCList[0].state is "pursuit" or $NPCList[0].state is "chased">>
 		<<set _difficulty to $NPCList[0].skills.security>>
 		<<set _difficulty += $liquidcount * 20>>
 		<<if $liquidcount gte 1>>
@@ -1110,58 +1157,262 @@
 	<</if>>
 <</widget>>
 
+<<widget "stalk_taunt_effects">>
+	/* This has to be able to account for the player starting to run at the same time, hence why it's in its own widget */
+	You look behind you, at
+	<<person1>>
+	<<if $npcrow.includes(0)>>
+		<<if $NPCList[0].fullDescription is "Ivory Wraith">>
+			<<if $stalk_assess>>
+				the pale figure.
+			<<else>>
+				a<<if $wraith.seen gte 3>> familiar<</if>> pale figure.
+			<</if>>
+		<<else>>
+			<<if $stalk_assess>>
+				<<if $enemyno gte 3>>
+					<<print $NPCList[0].fullDescription>> and <<his>> companions.
+				<<elseif $enemyno is 2>>
+					<<print $NPCList[0].fullDescription>> and <<his>> companion.
+				<<else>>
+					<<print $NPCList[0].fullDescription>>.
+				<</if>>
+			<<else>>
+				<<if $enemyno gte 3>>
+					a <<personsimple>> and <<his>> companions.
+				<<elseif $enemyno is 2>>
+					a <<personsimple>> and <<his>> companion.
+				<<else>>
+					a <<personsimple>>.
+				<</if>>
+				<span class="pink">It's <<print $NPCList[0].fullDescription>>.</span>
+			<</if>>
+		<</if>>
+	<<elseif $enemyno gte 3>>
+		the <<person>> and <<his>> companions.
+	<<elseif $enemyno is 2>>
+		the <<person>> and <<his>> companion.
+	<<else>>
+		the <<person>>.
+	<</if>>
+	<<set $stalk_assess to true>>
+	<<if $npcrow.includes(0)>>
+		<<actionstauntNNPC>>
+	<<else>>
+		<<actionstaunt>>
+	<</if>>
+	<br>
+
+	<<if $combatgoal is "confront" or
+	$NPCList[0].fullDescription isnot "Ivory Wraith" and $NPCList[0].bold * 2 gte random(1, 1000)
+	or $NPCList[0].fullDescription is "Ivory Wraith" and C.npc["Ivory Wraith"].lust gte random(1,10)>>
+		<<set $_chasingAnyways to true>>
+	<</if>>
+	<<if currentSkillValue('seductionskill') gte random(1, 1000)>>
+		<<set $_tauntSuccess to true>>
+	<</if>>
+	<<if $_chasingAnyways or $_tauntSuccess>>
+		<<stalk_run>><<set $feetaction to 0>><<set $feetactiondefault to "run">>
+		<<if $NPCList[0].fullDescription is "Ivory Wraith">>
+			<span class="red">The pale figure floats towards you, faster now.</span>
+		<<else>>
+			<<if $_chasingAnyways>>
+				<<if $_tauntSuccess>>
+					<span class="blue"><<He>> hesitates for just a moment, before starting to run after you.</span> It's clear <<he>> was already planning something, <span class="green">but your boldness has caught <<him>> off guard</span>.
+					<<set $stalk_taunted to "success">>
+				<<else>>
+					<span class="red"><<He>> sneers, and immediately starts to run after you. It's clear <<he>> intended to chase you even before your provocation.</span>
+				<</if>>
+				<<set $NPCList[0].skills.athletics += 150>>
+				<<set $NPCList[0].skills.athletics to Math.clamp($NPCList[_n].skills.athletics, 1, 1000)>>
+			<<else>>
+				<span class="green"><<He>> hesitates, before starting to run after you.</span>
+				<<set $stalk_taunted to "success">>
+			<</if>>
+		<</if>>
+		<br><br>
+		<<if $npcrow.includes(0)>>
+			<<stalk_nnpc_text_attack $NPCList[0].fullDescription>>
+		<<else>>
+			<<if $NPCList[0].traits.includes("relaxed")>>
+				"You look like you're worth it, and now you've gotten me excited!" <<he>> yells after you.
+			<<elseif $NPCList[0].traits.includes("sociable")>>
+				"Making a <<if $pronoun is "m">>gentleman<<else>>lady<</if>> like me run is so uncouth," <<he>> says. "You'll make it up to me once I catch you, mark my words!"
+			<<elseif $NPCList[0].traits.includes("brooding")>>
+				"Don't run, that just makes me more eager," <<he>> says.
+			<<else>>
+				"Get back here!" <<he>> yells after you.
+			<</if>>
+		<</if>>
+		<br><br>
+	<<else>>
+		<<if $npcrow.includes(0)>>
+			<<stalk_nnpc_text_threat $NPCList[0].fullDescription>>
+		<<else>>
+			<span class="blue"><<He>> gives you a strange look, and doesn't pursue.</span>
+			<<if $NPCList[0].traits.includes("relaxed")>>
+				"Easy <<girl>>," <<he>> says, giving you a wide berth. "Sorry for making you jumpy."
+			<<elseif $NPCList[0].traits.includes("sociable")>>
+				"Damn," <<he>> says. "Talk about damaged goods." <<He>> gives you a wide berth.
+			<<elseif $NPCList[0].traits.includes("brooding")>>
+				<<He>> laughs. "The streets that rough for you?" <<he>> asks. "I'll give you space."
+			<<else>>
+				"I was only looking!" <<he>> says. "Wasn't gonna try anything, honest." <<He>> gives you a wide berth.
+			<</if>>
+			<br><br>
+
+			<<He>> walks ahead. You feel a little silly.
+		<</if>>
+		<br><br>
+		<<set $stalk_end to "passed">>
+		<<set $NPCList[_n].distance to 1>>
+	<</if>>
+<</widget>>
+
+<<widget "stalk_ambush_text">><<silently>>
+	<<set $_npc to _args[0]>>
+	<<if $dissociation gte 1>>
+		<<set $_ambushTextPool to ["You settle on top of the <<person>>, resting on <<his>> chest. You freeze, staring unblinkingly into <<his>> eyes. Eventually, you shake yourself out of it and stand up. As you run, you hear a second set of footsteps fleeing in the other direction."]>>
+	<<else>>
+		<<set $_ambushTextPool to [
+			"You bat the <<person>> in the face a few times as <<he>> lays under you, helpless. You spring off of <<him>> and continue running before <<he>> can get <<his>> bearings.",
+			"You bring your face close to <<his>>. Before <<he>> can get any ideas, you scream loudly. You clamber off of <<his>> body with a victorious giggle, leaving <<him>> stunned."
+		]>>
+		<<if $_npc?.clothes?.lower.name isnot "naked">>
+			<<set $_ambushTextPool.pushUnique("You grab the <<persons>> <<npcClothesText $NPCList[0] 'lower'>> in your fangs and tug until it rips, leaving <<him>> exposed. You flee as <<he>> tries to cover <<himself>>.")>>
+		<</if>>
+		<<if $submissive lte 850>>
+			<<set $_ambushTextPool.pushUnique("You roll off of <<him>> gracefully and kick <<him>> in the groin before fleeing. <<He>> won't be getting up to chase you for a while.")>>
+			<<set $_ambushTextPool.pushUnique("Secure in your position straddling the <<person>>, you spit in <<his>> face. You hear <<him>> groaning in disgust as you flee.")>>
+		<<elseif $submissive gte 1150>>
+			<<set $_ambushTextPool.pushUnique('"Boo!" you say as you lay atop <<him>>. <<He>> looks utterly confused, and you use the moment to flee before <<he>> can get <<his>> bearings.')>>
+		<</if>>
+		<<if $transformationParts.angel.halo isnot "disabled" and $transformationParts.angel.halo isnot "hidden">>
+			<<set $_ambushTextPool.pushUnique("You bring your face down to <<his>>. <<He>> tries to cover <<his>> eyes as your halo sheds blinding light into them. <<He>> trembles in fear, and you let out a satisfied huff. <<He>> doesn't even try to chase you again.")>>
+		<</if>>
+		<<if $transformationParts.demon.horns isnot "disabled" and $transformationParts.demon.horns isnot "hidden">>
+			<<set $_ambushTextPool.pushUnique("You headbutt <<him>> with your horns, and roll off of <<him>>. You flee as <<he>> writhes on the ground, clutching <<his>> head.")>>
+		<</if>>
+		<<if hasSexStat("promiscuity", 3)>>
+			<<set $_ambushTextPool.pushUnique("You crash down on top of the <<person>>, purposefully planting your <<bottom>> against <<his>> face. You playfully wiggle against <<his>> mouth and nose, hearing <<him>> struggle to breathe. After a few moments of this, you're satisfied, and leap off <<him>> to flee the scene. <<arousal 500>><<ggarousal>><br>")>>
+		<</if>>
+		<<if currentSkillValue('skulduggery') gte 600>>
+			<<set $_ambushTextPool.pushUnique("You manage to knock the <<person>> to the ground. Taking advantage, you tie <<his>> shoelaces together with incredible deftness. <<He>> curses as you triumphantly make your escape.")>>
+		<</if>>
+	<</if>>
+	<<set $_text to $_ambushTextPool.pluck()>>
+<</silently>><<print $_text>><</widget>>
+
 <<widget "stalk_img">>
+	/* 'pursuit' = NPC stole clothes and is running away from player. 'chased' = NPC running from player for other reason. */
 	<<if $options.images is 1>>
 		<br><br>
 		<div class="div_stalk">
+			/* Tiles */
 			<<for _i to 0; _i lt 8; _i++>>
 				<img @class="'stalk_' + _i" src="img/misc/stalk/base.png">
 			<</for>>
+			/* NPC */
 			<<if $NPCList[0].fullDescription is "Ivory Wraith" and $stalk_assess>>
 				<<set $_stalker to "_wraith">>
+			<<elseif $consensual is 1 and $stalk_assess>>
+				<<set $_stalker to "_friendly">>
 			<<else>>
 				<<set $_stalker to "">>
 			<</if>>
-			<<set $_pcAction to (_clothesJustStolen ? "_theft" : $feetuse is "run" ? "_run" : "")>>
-			<<if $NPCList[0].distance lte 0 and $NPCList[0].state isnot "pursuit" or $stalk_end is "hide">>
+			/* Player */
+			<<if _clothesJustStolen>>
+				<<set $_pcAction to "_theft">>
+			<<elseif $feetuse is "run">>
+				<<if $exposed gte 1>>
+					<<set $_pcAction to "_run_exposed">>
+				<<else>>
+					<<set $_pcAction to "_run">>
+				<</if>>
+			<<else>>
+				<<set $_pcAction to "">>
+			<</if>>
+
+			/* NPC and PC have reached the same tile */
+			<<if $NPCList[0].distance lte 0 or $stalk_end is "hide" or $stalk_end is "ambush">>
 				<<if $stalk_end is "confront">>
+					/* NPC goal is confront */
 					<<if $_stalker is "_wraith">>
+						/* PC is never ready for the Wraith */
 						<img class="stalk_4" src="img/misc/stalk/caught_wraith.png">
 					<<elseif $feetaction is "confront">>
-						<img class="stalk_4" src="img/misc/stalk/confront_npc.png">
+						/* PC Confronting NPC */
+						<img class="stalk_4" @src="'img/misc/stalk/confront_npc' + $_stalker + '.png'">
 					<<else>>
-						<img class="stalk_4" src="img/misc/stalk/grabbed.png">
+						<<if $consensual is 1>>
+							/* Friendly NPC was running and tackles PC */
+							<img class="stalk_4" src="img/misc/stalk/grabbed_friendly.png">
+						<<else>>
+							/* NPC grabs PC */
+							<img class="stalk_4" src="img/misc/stalk/grabbed.png">
+						<</if>>
 					<</if>>
+				<<elseif $stalk_end is "catch" and $_stalker isnot "_wraith">>
+					<<if $NPCList[0].state is "pursuit">>
+						/* PC caught up to NPC who stole clothes*/
+						<img class="stalk_4" @src="'img/misc/stalk/npc_theft_caught' + $_stalker + '.png'">
+					<<else>>
+						/* PC caught NPC */
+						<<if $consensual isnot 1>>
+							/* No sprites for catching non-friendly NPC normally yet */
+							<img class="stalk_4" @src="'img/misc/stalk/npc_caught_theft' + $_stalker + '.png'">
+						<<else>>
+							<img class="stalk_4" @src="'img/misc/stalk/npc_caught' + $_stalker + '.png'">
+						<</if>>
+					<</if>>
+				<<elseif $stalk_end is "ambush" and $_stalker isnot "_wraith">>
+					/* PC ambush success */
+					<img class="stalk_4" @src="'img/misc/stalk/ambush' + $_stalker + '.png'">	
 				<<elseif $stalk_end>>
-					<<if $feetaction is "confront">>
-						<img class="stalk_4" src="img/misc/stalk/confront_safe_npc.png">
+					/* NPC passing by, either because PC successfully hid or confronted an NPC who didn't intend to attack */
+					<<if $feetaction is "confront" or $mouthaction is "taunt">>
+						<img class="stalk_4" src="img/misc/stalk/confront_npc_safe.png">
 					<<else>>
 						<img class="stalk_4" src="img/misc/stalk/pc.png">
 					<</if>>
-					<img class="stalk_5" @src="'img/misc/stalk/safe_npc' + $_stalker + '.png'">
+					<img class="stalk_5" @src="'img/misc/stalk/npc_safe' + $_stalker + '.png'">
 				<<else>>
+					/* NPC caught PC */
 					<<if $feetaction is "confront" and $_stalker isnot "_wraith">>
 						<img class="stalk_4" src="img/misc/stalk/confront_npc.png">
 					<<else>>
-						<img class="stalk_4" @src="'img/misc/stalk/caught' + $_stalker + '.png'">
+						<<if $consensual is 1 and $NPCList[_i].legs is "run" and $_stalker isnot "_wraith">>
+							<img class="stalk_4" src="'img/misc/stalk/caught_friendly.png'">
+						<<else>>
+							<img class="stalk_4" @src="'img/misc/stalk/caught' + $_stalker + '.png'">
+						<</if>>
 					<</if>>
 				<</if>>
 			<<else>>
+				/* Active */
 				<<if $NPCList[0].distance lt 4>>
 					<<if $NPCList[0].state is "pursuit">>
+						/* NPC running away with stolen clothes */
 						<<set _stalk_position to 4 + $NPCList[0].distance>>
-						<<if $_stalker isnot "">>
+						<<if $_stalker is "_wraith">>
 							<img @class="'stalk_' + _stalk_position" @src="'img/misc/stalk/npc' + $_stalker + '.png'">
 							<img @class="'stalk_' + _stalk_position" src="img/misc/stalk/clothes.png">
 						<<else>>
-							<img @class="'stalk_' + _stalk_position" src="img/misc/stalk/npc_theft.png">
+							<img @class="'stalk_' + _stalk_position" @src="img/misc/stalk/npc_theft' + $_stalker + '.png">
 						<</if>>
+					<<elseif $NPCList[0].state is "chased">>
+						/* NPC ahead of player */
+						<<set _stalk_position to 4 + $NPCList[0].distance>>
+						<img @class="'stalk_' + _stalk_position" @src="'img/misc/stalk/npc' + $_stalker + '.png'">						
 					<<elseif $stalk_end is "escaped">>
+						/* No NPC image */
 					<<else>>
+						/* NPC behind player */
 						<<set _stalk_position to 4 - $NPCList[0].distance>>
 						<img @class="'stalk_' + _stalk_position" @src="'img/misc/stalk/npc' + $_stalker + '.png'">
 					<</if>>
 				<</if>>
+				/* Player sprite */
 				<img class="stalk_4" @src="'img/misc/stalk/pc' + $_pcAction + '.png'">
 			<</if>>
 		</div>
