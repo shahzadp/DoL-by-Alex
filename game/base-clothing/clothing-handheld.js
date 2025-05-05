@@ -530,7 +530,7 @@ function initHandheld() {
 			integrity_max: 200,
 			fabric_strength: 20,
 			reveal: 300,
-			word: "a",
+			word: "n",
 			plural: 0,
 			colour: 0,
 			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "pale tangerine", "teal", "pale white", "pale yellow", "custom"],

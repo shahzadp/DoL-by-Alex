@@ -366,7 +366,7 @@ function findOutfitPair(garment, layer) {
 			if (garment.index - 7 < setup.clothes[findLayer].length) {
 				for (let i = 0; i <= 7; i++) {
 					if (garment.index - i < 0) break;
-					if (tempSet === setup.clothes[findLayer][garment.index - i].set) {
+					if (tempSet === setup.clothes[findLayer][garment.index - i]?.set) {
 						pair = { ...setup.clothes[findLayer][garment.index - i] };
 						break;
 					}

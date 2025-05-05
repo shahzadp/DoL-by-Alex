@@ -1916,7 +1916,7 @@ function initPlants() {
 			special: ["vegetarian", "sweet"],
 			season: [],
 			ingredients: ["bottle_of_milk", "cream", "sugar", "chicken_egg"],
-			icon: "crème_brulee.png",
+			icon: "creme_brulee.png",
 		},
 
 		date: {

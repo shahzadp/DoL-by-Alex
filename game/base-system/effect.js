@@ -1,4 +1,4 @@
-function effectsWater() {
+function effectsWater(waterType = "liquid") {
 	DOL.Perflog.logWidgetStart("effectsWaterJs");
 	const fragment = document.createDocumentFragment();
 
@@ -47,7 +47,7 @@ function effectsWater() {
 		if (V.upperwet >= 100 && V.upperwetstage < 3) {
 			V.upperwetstage = 3;
 			wetIntro = 2;
-			sWikifier(`<span class="lewd">Water soaks through your ${V.worn.upper.name}, exposing your <<undertop>>.</span>`);
+			sWikifier(`<span class="lewd">${waterType.toUpperFirst()} soaks through your ${V.worn.upper.name}, exposing your <<undertop>>.</span>`);
 		} else if (V.upperwet < 90 && V.upperwetstage >= 3) {
 			V.upperwetstage = 2;
 			sWikifier(`<span class="green">Your ${V.worn.upper.name} <<upperhas>> dried, concealing your <<undertop>>.</span>`);
@@ -71,7 +71,7 @@ function effectsWater() {
 		if (V.lowerwet >= 100 && V.lowerwetstage < 3) {
 			V.lowerwetstage = 3;
 			wetIntro = 2;
-			sWikifier(`<span class="lewd">Water soaks through your ${V.worn.lower.name}, exposing your <<undies>>.</span>`);
+			sWikifier(`<span class="lewd">${waterType.toUpperFirst()} soaks through your ${V.worn.lower.name}, exposing your <<undies>>.</span>`);
 		} else if (V.lowerwet < 90 && V.lowerwetstage >= 3) {
 			V.lowerwetstage = 2;
 			sWikifier(`<span class="green">Your ${V.worn.lower.name} <<lowerhas>> dried, concealing your <<undies>>.</span>`);
@@ -108,7 +108,7 @@ function effectsWater() {
 		} else if (V.underlowerwet >= 100 && V.underlowerwetstage < 3) {
 			V.underlowerwetstage = 3;
 			wetIntro = 2;
-			sWikifier(`<span class="lewd">Water soaks through your ${V.worn.under_lower.name}, exposing your <<genitals>>.</span>`);
+			sWikifier(`<span class="lewd">${waterType.toUpperFirst()} soaks through your ${V.worn.under_lower.name}, exposing your <<genitals>>.</span>`);
 		} else if (V.underlowerwet < 90 && V.underlowerwetstage >= 3) {
 			V.underlowerwetstage = 2;
 			sWikifier(`<span class="green">Your ${V.worn.under_lower.name} <<underlowerhas>> dried, concealing your <<genitals>>.</span>`);
@@ -132,7 +132,7 @@ function effectsWater() {
 		if (V.underupperwet >= 100 && V.underupperwetstage < 3) {
 			V.underupperwetstage = 3;
 			wetIntro = 2;
-			sWikifier(`<span class="lewd">Water soaks through your ${V.worn.under_upper.name}, exposing your <<breasts>>.</span>`);
+			sWikifier(`<span class="lewd">${waterType.toUpperFirst()} soaks through your ${V.worn.under_upper.name}, exposing your <<breasts>>.</span>`);
 		} else if (V.underupperwet < 90 && V.underupperwetstage >= 3) {
 			V.underupperwetstage = 2;
 			sWikifier(`<span class="green">Your ${V.worn.under_upper.name} <<underupperhas>> dried, concealing your <<breasts>>.</span>`);
@@ -196,7 +196,7 @@ function effectsWater() {
 
 Macro.add("effectswater", {
 	handler() {
-		const fragment = effectsWater();
+		const fragment = effectsWater(this.args[0]);
 		if (fragment) this.output.append(fragment);
 	},
 });

@@ -606,6 +606,10 @@ DefineMacro("modelprepare-player-clothes", function () {
 	T.modeloptions.upper_tucked = V.upperTucked && !setup.clothes.upper[clothesIndex("upper", V.worn.upper)].notuck && V.worn.upper.outfitPrimary === undefined;
 	T.modeloptions.lower_tucked = !V.worn.feet.notuck && !V.worn.lower.notuck && V.lowerTucked;
 
+	T.modeloptions.precipitation =
+		V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && Weather.overcast > 0.25 && V.outside === 1 && !V.underwater;
+	T.modeloptions.temperature = V.outside === 1 && Weather.temperature <= 5 && !V.underwater;
+
 	Object.assign(T.modeloptions, getClothingOptions());
 	const overrides = V.modeloptionsOverride;
 	if (Object.keys(overrides).length > 0) {
