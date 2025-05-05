@@ -2012,6 +2012,81 @@ function featsMerge() {
 }
 DefineMacro("featsMerge", featsMerge);
 
+function earnFeat(featName) {
+	if (!featName || V.feats.locked || V.cheatdisable !== "t" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.statFreeze) return;
+
+	if (
+		V.feats.currentSave[featName] !== undefined ||
+		(V.feats.soft && setup.feats[featName].softLockable) ||
+		(V.feats.pregnancyLocked && setup.feats[featName].pregnancyLockable) ||
+		(V.feats.pregnancySillyLocked && setup.feats[featName].pregnancySillyLockable)
+	)
+		return;
+
+	V.feats.currentSave[featName] = new Date();
+	displayFeat(featName);
+}
+DefineMacro("earnFeat", earnFeat);
+
+function displayFeat(featName) {
+	const feat = setup.feats[featName];
+	if (!feat) return;
+
+	setTimeout(() => {
+		const passages = document.getElementById("passages");
+
+		const featsCount = passages?.querySelectorAll(".feat").length;
+		const hidden = featsCount >= 3 ? " hiddenFeat" : "";
+
+		const wrapper = document.createElement("div");
+		wrapper.id = `feat-${featsCount}`;
+		wrapper.className = `feat feat${featsCount}${hidden} feat-overlay`;
+
+		const featImage = document.createElement("div");
+		featImage.className = "featImage";
+
+		const coin = document.createElement("img");
+		coin.className = "featCoin";
+		switch (feat.difficulty) {
+			case 1:
+				coin.src = "img/ui/CopperCoin.gif";
+				break;
+			case 2:
+				coin.src = "img/ui/SilverCoin.gif";
+				break;
+			case 3:
+				coin.src = "img/ui/GoldCoin.gif";
+				break;
+			case 4:
+				coin.src = "img/ui/PlatinumCoin.gif";
+				break;
+			case 5:
+				coin.src = "img/ui/JeweledCoin.gif";
+				break;
+		}
+		featImage.appendChild(coin);
+
+		const featText = document.createElement("div");
+		featText.className = "featText";
+		featText.innerHTML = `
+			<span class="title">${feat.title}</span>
+			<span class="text">${feat.desc}</span>
+		`;
+
+		const close = document.createElement("div");
+		close.id = `closeFeat-${featsCount}`;
+		close.className = "closeFeat";
+		close.setAttribute("onclick", `closeFeats(${featsCount})`);
+
+		wrapper.appendChild(featImage);
+		wrapper.appendChild(featText);
+		wrapper.appendChild(close);
+
+		passages?.appendChild(wrapper);
+	}, 0);
+}
+DefineMacro("displayFeat", displayFeat);
+
 // eslint-disable-next-line no-unused-vars
 function earnHourlyFeats() {
 	if (V.feats.locked || V.cheatdisable === "f" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.replayScene) return false;

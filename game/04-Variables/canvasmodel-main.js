@@ -3761,9 +3761,9 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.head + 2,
 		},
 		/***
-		 *    ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████ 
+		 *    ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
 		 *    ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-		 *    ██  █  ██ █████   ███████    ██    ███████ █████   ██████ 
+		 *    ██  █  ██ █████   ███████    ██    ███████ █████   ██████
 		 *    ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
 		 *     ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
 		 */
@@ -3777,8 +3777,8 @@ Renderer.CanvasModels.main = {
 				const intensity = Weather.name;
 				return `img/misc/ambient/precipitation/${type}/${intensity}Back.png`
 			},
-			showfn() {
-				return V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && V.outside === 1 && !V.underwater;
+			showfn(options) {
+				return options.precipitation;
 			},
 			z: ZIndices.bg,
 		},
@@ -3792,8 +3792,8 @@ Renderer.CanvasModels.main = {
 				const intensity = Weather.name;
 				return `img/misc/ambient/precipitation/${type}/${intensity}Front.png`
 			},
-			showfn() {
-				return V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && V.outside === 1 && !V.underwater;
+			showfn(options) {
+				return options.precipitation;
 			},
 			z: ZIndices.precipitationFront,
 		},
@@ -3805,8 +3805,8 @@ Renderer.CanvasModels.main = {
 			srcfn() {
 				return `img/misc/ambient/playerBreath.png`
 			},
-			showfn() {
-				return V.outside === 1 && Weather.temperature <= 5 && !V.underwater;
+			showfn(options) {
+				return options.temperature;
 			},
 			z: ZIndices.precipitationFront,
 		},

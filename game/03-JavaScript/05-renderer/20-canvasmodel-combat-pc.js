@@ -1801,7 +1801,7 @@ const combatMainPc = {
 				const show = CombatRenderer.isClothingShown(clothes, options.showClothing) && clothes.sleeves.show;
 				// If missionary: Sleeves on the side behind are never shown, except for handjobs.
 				if (options.position === "doggy" && options.armBackPosition === "bound") return false;
-				if (options.position === "missionary" && !["handjob"].includes(clothes.sleeves.state)) return false;
+				if (options.position === "missionary" && !["handjob"].includes(options.armBackPosition)) return false;
 				return !!show;
 			},
 			z: CombatRenderer.indices.backArm + 2,
@@ -1816,7 +1816,7 @@ const combatMainPc = {
 				const show = CombatRenderer.isClothingShown(clothes, options.showClothing) && clothes.sleeves.hasAccessory;
 				// If missionary: Sleeves on the side behind are never shown, except for handjobs.
 				if (options.position === "doggy" && options.armBackPosition === "bound") return false;
-				if (options.position === "missionary" && !["handjob"].includes(clothes.sleeves.state)) return false;
+				if (options.position === "missionary" && !["handjob"].includes(options.armBackPosition)) return false;
 				return !!show;
 			},
 			z: CombatRenderer.indices.backArm + 2,
@@ -1871,7 +1871,7 @@ const combatMainPc = {
 				const show = CombatRenderer.isClothingShown(clothes, options.showClothing) && clothes.sleeves.show;
 				// If missionary: Sleeves on the side behind are never shown, except for handjobs.
 				if (options.position === "doggy" && options.armBackPosition === "bound") return false;
-				if (options.position === "missionary" && !["handjob"].includes(clothes.sleeves.state)) return false;
+				if (options.position === "missionary" && !["handjob"].includes(options.armBackPosition)) return false;
 				return !!show;
 			},
 			z: CombatRenderer.indices.backArm + 1,
@@ -1886,7 +1886,7 @@ const combatMainPc = {
 				const show = CombatRenderer.isClothingShown(clothes, options.showClothing) && clothes.sleeves.hasAccessory;
 				// If missionary: Sleeves on the side behind are never shown, except for handjobs.
 				if (options.position === "doggy" && options.armBackPosition === "bound") return false;
-				if (options.position === "missionary" && !["handjob"].includes(clothes.sleeves.state)) return false;
+				if (options.position === "missionary" && !["handjob"].includes(options.armBackPosition)) return false;
 				return !!show;
 			},
 			z: CombatRenderer.indices.backArm + 1,
