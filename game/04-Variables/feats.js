@@ -2032,58 +2032,53 @@ function displayFeat(featName) {
 	const feat = setup.feats[featName];
 	if (!feat) return;
 
-	setTimeout(() => {
-		const passages = document.getElementById("passages");
+	$(() => {
+		const passages = $("#passages");
 
-		const featsCount = passages?.querySelectorAll(".feat").length;
+		const featsCount = passages.find(".feat").length;
 		const hidden = featsCount >= 3 ? " hiddenFeat" : "";
 
-		const wrapper = document.createElement("div");
-		wrapper.id = `feat-${featsCount}`;
-		wrapper.className = `feat feat${featsCount}${hidden} feat-overlay`;
+		const wrapper = $("<div>", {
+			id: `feat-${featsCount}`,
+			class: `feat feat${featsCount}${hidden} feat-overlay`,
+		});
 
-		const featImage = document.createElement("div");
-		featImage.className = "featImage";
-
-		const coin = document.createElement("img");
-		coin.className = "featCoin";
+		const coin = $("<img>", { class: "featCoin" });
 		switch (feat.difficulty) {
 			case 1:
-				coin.src = "img/ui/CopperCoin.gif";
+				coin.attr("src", "img/ui/CopperCoin.gif");
 				break;
 			case 2:
-				coin.src = "img/ui/SilverCoin.gif";
+				coin.attr("src", "img/ui/SilverCoin.gif");
 				break;
 			case 3:
-				coin.src = "img/ui/GoldCoin.gif";
+				coin.attr("src", "img/ui/GoldCoin.gif");
 				break;
 			case 4:
-				coin.src = "img/ui/PlatinumCoin.gif";
+				coin.attr("src", "img/ui/PlatinumCoin.gif");
 				break;
 			case 5:
-				coin.src = "img/ui/JeweledCoin.gif";
+				coin.attr("src", "img/ui/JeweledCoin.gif");
 				break;
 		}
-		featImage.appendChild(coin);
 
-		const featText = document.createElement("div");
-		featText.className = "featText";
-		featText.innerHTML = `
-			<span class="title">${feat.title}</span>
-			<span class="text">${feat.desc}</span>
-		`;
+		const featImage = $("<div>", { class: "featImage" }).append(coin);
 
-		const close = document.createElement("div");
-		close.id = `closeFeat-${featsCount}`;
-		close.className = "closeFeat";
-		close.setAttribute("onclick", `closeFeats(${featsCount})`);
+		const featText = $("<div>", { class: "featText" })
+			.append($("<span>", { class: "title" }).text(feat.title))
+			.append($("<span>", { class: "text" }).text(feat.desc));
 
-		wrapper.appendChild(featImage);
-		wrapper.appendChild(featText);
-		wrapper.appendChild(close);
+		const close = $("<div>", {
+			id: `closeFeat-${featsCount}`,
+			class: "closeFeat",
+			on: {
+				click: () => closeFeats(featsCount),
+			},
+		});
 
-		passages?.appendChild(wrapper);
-	}, 0);
+		wrapper.append(featImage, featText, close);
+		passages.append(wrapper);
+	});
 }
 DefineMacro("displayFeat", displayFeat);
 
