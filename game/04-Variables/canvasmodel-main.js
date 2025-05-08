@@ -3778,7 +3778,7 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/precipitation/${type}/${intensity}Back.png`
 			},
 			showfn(options) {
-				return options.precipitation;
+				return !!options.precipitation;
 			},
 			z: ZIndices.bg,
 		},
@@ -3793,7 +3793,7 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/precipitation/${type}/${intensity}Front.png`
 			},
 			showfn(options) {
-				return options.precipitation;
+				return !!options.precipitation;
 			},
 			z: ZIndices.precipitationFront,
 		},
@@ -3806,7 +3806,7 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/playerBreath.png`
 			},
 			showfn(options) {
-				return options.temperature;
+				return !!options.temperature;
 			},
 			z: ZIndices.precipitationFront,
 		},
