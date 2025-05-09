@@ -708,10 +708,11 @@ Renderer.Animations.snowBack = {
 };
 Renderer.Animations.coldBreath = {
 	keyframes: [
+		{ frame: 3, duration: 2000 },
 		{ frame: 0, duration: 200 },
 		{ frame: 1, duration: 200 },
 		{ frame: 2, duration: 200 },
-		{ frame: 3, duration: 3400 },
+		{ frame: 3, duration: 1400 },
 	],
 };
 Renderer.Animations.coldBreathFast = {
