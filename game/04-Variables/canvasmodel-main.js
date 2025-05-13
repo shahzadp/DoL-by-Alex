@@ -4384,9 +4384,8 @@ function genlayer_clothing_belly_shadow(slot, overrideOptions) {
 }
 
 function genlayer_clothing_belly_acc(slot, overrideOptions) {
-	return genlayer_clothing_belly(slot, Object.assign({
+	return genlayer_clothing_accessory(slot, Object.assign({
 		z: ZIndices[slot],
-		filters: [`worn_${slot}_acc`],
 
 		showfn(options) {
 			const commonChecks = options.belly > 7
@@ -4419,6 +4418,14 @@ function genlayer_clothing_belly_acc(slot, overrideOptions) {
 
 			const path = `img/clothes/${slot}/${setup.variable}/acc${integrity}${pattern}${hoodDown}.png`;
 			return gray_suffix(path, options.filters[`worn_${slot}_acc`]);
+		},
+		dxfn(options) {
+			if (options.belly >= 24) return 10;
+			if (options.belly >= 23) return 8;
+			if (options.belly >= 22) return 6;
+			if (options.belly >= 19) return 4;
+			if (options.belly >= 15) return 2;
+			return 0;
 		},
 	}, overrideOptions));
 }

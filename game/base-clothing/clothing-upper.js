@@ -5906,6 +5906,7 @@ function initUpper() {
 			notuck: 1,
 			hoodposition: "up",
 			pregType: "min",
+			back_img: 1,
 		},
 
 		{
