@@ -124,6 +124,21 @@ Weather.Thermometer = (() => {
 		thermometerCanvas.ctx.fillRect(13, 2, img.width, img.height);
 
 		Weather.Tooltips.thermometer();
+
+		if (V.options.showSidebarPrecipitation === false || Weather.precipitation === "none" || Weather.overcast <= 0.25 || V.outside === 0 || V.underwater)
+			return;
+		tooltipElement.on("click", () => {
+			if (!T.hideSidebarWeather) {
+				T.hideSidebarWeather = true;
+			} else {
+				T.hideSidebarWeather = false;
+			}
+			const canvasModel = Renderer.locateModel("main", "sidebar");
+			if (canvasModel.canvas) {
+				Renderer.refreshLayer(canvasModel, "precipitation_back");
+				Renderer.refreshLayer(canvasModel, "precipitation_front");
+			}
+		});
 	}
 
 	return Object.create({

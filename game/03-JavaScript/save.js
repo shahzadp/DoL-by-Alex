@@ -1196,7 +1196,6 @@ function settingsObjects(type) {
 					combatImages: { min: 0, max: 1, decimals: 0, displayName: "Combat images:" },
 					bodywritingImages: { bool: true, displayName: "Bodywriting images:" },
 					silhouetteEnabled: { bool: true, displayName: "NPC silhouettes:" },
-					tanImgEnabled: { bool: true, displayName: "Visual representation of skin colours:" },
 					sidebarAnimations: { bool: true, displayName: "Sidebar images:" },
 					blinkingEnabled: { bool: true, displayName: "Animated blinking:" },
 					combatAnimations: { bool: true, displayName: "Combat animations:" },

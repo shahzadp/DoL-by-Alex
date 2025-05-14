@@ -1306,6 +1306,14 @@ namespace Renderer {
 		}
 	}
 
+	export function refreshLayer(model, layerName, options = model.options) {
+		const layer = model.layers?.[layerName];
+		if (!layer) return;
+		delete layer.show;
+		Renderer.invalidateLayerCaches([layer]);
+		model.redraw(options);
+	}
+
 	export function animateLayersAgain() {
 		return animateLayers.apply(Renderer, lastAnimateCall);
 	}
