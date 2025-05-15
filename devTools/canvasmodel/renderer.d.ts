@@ -1,5 +1,3 @@
-/// <reference path="model.d.ts" />
-/// <reference types="tinycolor2" />
 declare namespace Renderer {
     export function isMaskObject(mask: string | HTMLCanvasElement | CanvasImageSource | MaskObject | undefined | null): mask is MaskObject;
     export function isMaskOffsetObject(mask: string | HTMLCanvasElement | CanvasImageSource | MaskObject | undefined | null): mask is MaskObject;
@@ -229,6 +227,7 @@ declare namespace Renderer {
         layerList: CompositeLayerSpec[];
     }): void;
     export function invalidateLayerCaches(layers: CompositeLayer[]): void;
+    export function refreshLayer(model: any, layerName: any, options?: any): void;
     export function animateLayersAgain(): any;
     export function getAnimatingCanvas(targetCanvas: CanvasRenderingContext2D): AnimatingCanvas | undefined;
     export function getAnimatingCanvases(): WeakMap<CanvasRenderingContext2D, AnimatingCanvas> | undefined;
