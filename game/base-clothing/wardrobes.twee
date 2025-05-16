@@ -1390,37 +1390,63 @@
 				<<set _takenAway++>>
 				<<continue>>
 			<</if>>
-			<<if $wardrobeRepair[_equip[_eIndex]][_iIndex][5]>>
-				<<sendToWardrobeFromDefault "wardrobe" _equip[_eIndex] `$wardrobeRepair[_equip[_eIndex]][_iIndex][0]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][1]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][3]`>>
-				<<set _selectedWardrobe[_equip[_eIndex]].last().one_piece to "split">>
-				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
-					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
-						<<set _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary[$_label] to "split">>
-					<</for>>
-				<<elseif _selectedWardrobe[_equip[_eIndex]].last().outfitSecondary>>
-					<<set _selectedWardrobe[_equip[_eIndex]].last().outfitSecondary[1] to "split">>
-				<</if>>
-			<<else>>
-				<<sendToWardrobeFromDefault "wardrobe" _equip[_eIndex] `$wardrobeRepair[_equip[_eIndex]][_iIndex][0]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][1]` `$wardrobeRepair[_equip[_eIndex]][_iIndex][3]`>>
+			<<set _itemStats to $wardrobeRepair[_equip[_eIndex]][_iIndex]>>
+			/* Players may have $wardrobeRepair already set when updated */
+			<<if typeof _itemStats is "object" and _itemStats?.length >= 5>>
+				<<set _itemStats to {
+					index: _itemStats[0],
+					colour: _itemStats[1],
+					colourCustom: _itemStats[2],
+					accessory_colour: _itemStats[3],
+					accessory_colourCustom: _itemStats[4],
+					isSplit: _itemStats[5],
+					pattern: _itemStats[6]
+					/* hoodposition: "up/down" */
+					/* altposition: "alt/none" */
+				}>>
 			<</if>>
-			<<if $wardrobeRepair[_equip[_eIndex]][_iIndex][2] isnot undefined and $wardrobeRepair[_equip[_eIndex]][_iIndex][2] isnot null>>
+			
+			<<sendToWardrobeFromDefault "wardrobe" _equip[_eIndex] `_itemStats.index` `_itemStats.colour` `_itemStats.accessory_colour` `_itemStats.pattern`>>
+			<<set _latestWardrobeAddition to _selectedWardrobe[_equip[_eIndex]].last()>> 
+			<<if _itemStats.isSplit>>
+				/*splitted*/
+				<<set _latestWardrobeAddition.one_piece to "split">>
+				<<if _latestWardrobeAddition.outfitPrimary>>
+					<<for $_label, $_value range _latestWardrobeAddition.outfitPrimary>>
+						<<set _latestWardrobeAddition.outfitPrimary[$_label] to "split">>
+					<</for>>
+				<<elseif _latestWardrobeAddition.outfitSecondary>>
+					<<set _latestWardrobeAddition.outfitSecondary[1] to "split">>
+				<</if>>
+			<</if>>
+			<<if _latestWardrobeAddition.hoodposition and _itemStats?.hoodposition is "down" >>
+				/*hoodposition*/
+				<<set _latestWardrobeAddition.hoodposition to _itemStats.hoodposition>>
+				<<set delete _latestWardrobeAddition.outfitPrimary.head>>
+				/* TODO: when over_head slot is added: <<set delete _latestWardrobeAddition.outfitPrimary.over_head>> */
+			<</if>>
+			<<if _latestWardrobeAddition.altposition and _itemStats.altposition>>
+				/*altposition*/
+				<<set _latestWardrobeAddition.altposition to _itemStats.altposition>>
+			<</if>>
+			<<if _itemStats.colourCustom isnot undefined and _itemStats.colourCustom isnot null>>
 				/*colourCustom*/
-				<<set _selectedWardrobe[_equip[_eIndex]].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
-				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary isnot undefined and _selectedWardrobe[_equip[_eIndex]].last().one_piece isnot "split">>
-					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
+				<<set _latestWardrobeAddition.colourCustom to _itemStats.colourCustom>>
+				<<if _latestWardrobeAddition.outfitPrimary isnot undefined and _latestWardrobeAddition.one_piece isnot "split">>
+					<<for $_label, $_value range _latestWardrobeAddition.outfitPrimary>>
 						<<if _selectedWardrobe[$_label].last()?.name is $_value>>
-							<<set _selectedWardrobe[$_label].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
+							<<set _selectedWardrobe[$_label].last().colourCustom to _itemStats.colourCustom>>
 						<</if>>
 					<</for>>
 				<</if>>
 			<</if>>
-			<<if $wardrobeRepair[_equip[_eIndex]][_iIndex][4] isnot undefined and $wardrobeRepair[_equip[_eIndex]][_iIndex][4] isnot null>>
+			<<if _itemStats.accessory_colourCustom isnot undefined and _itemStats.accessory_colourCustom isnot null>>
 				/*accessory_colourCustom*/
-				<<set _selectedWardrobe[_equip[_eIndex]].last().accessory_colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][4]>>
-				<<if _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary isnot undefined and _selectedWardrobe[_equip[_eIndex]].last().one_piece isnot "split">>
-					<<for $_label, $_value range _selectedWardrobe[_equip[_eIndex]].last().outfitPrimary>>
+				<<set _latestWardrobeAddition.accessory_colourCustom to _itemStats.accessory_colourCustom>>
+				<<if _latestWardrobeAddition.outfitPrimary isnot undefined and _latestWardrobeAddition.one_piece isnot "split">>
+					<<for $_label, $_value range _latestWardrobeAddition.outfitPrimary>>
 						<<if _selectedWardrobe[$_label].last()?.name is $_value>>
-							<<set _selectedWardrobe[$_label].last().colourCustom to $wardrobeRepair[_equip[_eIndex]][_iIndex][2]>>
+							<<set _selectedWardrobe[$_label].last().colourCustom to _itemStats.colourCustom>>
 						<</if>>
 					<</for>>
 				<</if>>
@@ -1873,51 +1899,74 @@ It will cost you
 <<for _eIndex to 0; _eIndex lt _equip.length; _eIndex++>>
 	<<set _toDelete to []>>
 	<<for _iIndex to 0; _iIndex lt $wardrobe[_equip[_eIndex]].length; _iIndex++>>
-		<<if isNaN(clothingData(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex],'integrity_max'))>><<continue>><</if>>
-		<<if $wardrobe[_equip[_eIndex]][_iIndex].integrity is clothingData(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex],'integrity_max') and $wardrobe[_equip[_eIndex]][_iIndex].one_piece isnot "broken" and $crateContents is "damaged">>
+		<<set _currentClothing to $wardrobe[_equip[_eIndex]][_iIndex]>>
+		<<if isNaN(clothingData(_equip[_eIndex],_currentClothing,'integrity_max'))>><<continue>><</if>>
+		<<if _currentClothing.integrity is clothingData(_equip[_eIndex],_currentClothing,'integrity_max') and _currentClothing.one_piece isnot "broken" and $crateContents is "damaged">>
 			<<continue>>
 		<</if>>
-		<<if $crateContents is "damaged" and $wardrobe[_equip[_eIndex]][_iIndex].one_piece isnot "broken" and ($wardrobe[_equip[_eIndex]][_iIndex].outfitPrimary isnot undefined or $wardrobe[_equip[_eIndex]][_iIndex].outfitSecondary isnot undefined)>>
+		<<if $crateContents is "damaged" and _currentClothing.one_piece isnot "broken" and (_currentClothing.outfitPrimary isnot undefined or _currentClothing.outfitSecondary isnot undefined)>>
 			<<continue>>
 		<</if>>
-		<<if ($wardrobe[_equip[_eIndex]][_iIndex].outfitPrimary is undefined and $wardrobe[_equip[_eIndex]][_iIndex].outfitSecondary is undefined and $crateContents is "outfits") or ($wardrobe[_equip[_eIndex]][_iIndex].integrity gt clothingData(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex],'integrity_max'))>>
+		<<if (_currentClothing.outfitPrimary is undefined and _currentClothing.outfitSecondary is undefined and $crateContents is "outfits") or (_currentClothing.integrity gt clothingData(_equip[_eIndex],_currentClothing,'integrity_max'))>>
 			<<continue>>
 		<</if>>
-		<<set _value += Math.floor(tailorClothingCost($wardrobe[_equip[_eIndex]][_iIndex],_equip[_eIndex]) * (1 - ($wardrobe[_equip[_eIndex]][_iIndex].integrity / clothingData(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex],'integrity_max'))) * 1.25)>>
+		<<set _value += Math.floor(tailorClothingCost(_currentClothing,_equip[_eIndex]) * (1 - (_currentClothing.integrity / clothingData(_equip[_eIndex],_currentClothing,'integrity_max'))) * 1.25)>>
 
 		<<if $wardrobeRepair[_equip[_eIndex]] is undefined>>
 			<<set $wardrobeRepair[_equip[_eIndex]] to []>>
 		<</if>>
-		<<if $wardrobe[_equip[_eIndex]][_iIndex].outfitSecondary and $wardrobe[_equip[_eIndex]][_iIndex].one_piece is "broken">>
-			/* If a secondary part of an outfit is broken adds the primary part so the complete outfit will be repaired */
-			<<set _upperSlot to $wardrobe[_equip[_eIndex]][_iIndex].outfitSecondary[0]>>
-			<<set _upperItem to setup.clothes[_upperSlot].findIndex(x => x.name === setup.clothes[_equip[_eIndex]][clothesIndex(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex])].outfitSecondary[1])>>
-			<<if $wardrobeRepair[_upperSlot] is undefined>>
-				<<set $wardrobeRepair[_upperSlot] to []>>
-			<</if>>
-			<<set _itemStats to [
-					clone(_upperItem),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].colour),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].colourCustom),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].accessory_colour),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].accessory_colourCustom),
-					false
-				]>>
-			<<run $wardrobeRepair[_upperSlot].push(clone(_itemStats))>>
-			<<run _toDelete.push(clone(_iIndex))>>
-		<<else>>
-			<<set _splitted to ($wardrobe[_equip[_eIndex]][_iIndex].one_piece === "split" ? true : false)>>
-			<<set _itemStats to [
-					clone(clothesIndex(_equip[_eIndex],$wardrobe[_equip[_eIndex]][_iIndex])),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].colour),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].colourCustom),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].accessory_colour),
-					clone($wardrobe[_equip[_eIndex]][_iIndex].accessory_colourCustom),
-					clone(_splitted)
-				]>>
-			<<run $wardrobeRepair[_equip[_eIndex]].push(clone(_itemStats))>>
-			<<run _toDelete.push(clone(_iIndex))>>
+
+		<<set _itemStats to {
+			index: -1,
+			colour: clone(_currentClothing.colour),
+			colourCustom: clone(_currentClothing.colourCustom) || null,
+			accessory_colour: clone(_currentClothing.accessory_colour),
+			accessory_colourCustom: clone(_currentClothing.accessory_colourCustom) || null,
+			isSplit: false,
+			pattern: clone(_currentClothing.pattern) || null
+		}>>
+		<<if _currentClothing.hoodposition>>
+			<<set _itemStats.hoodposition to _currentClothing.hoodposition>>
 		<</if>>
+		<<if _currentClothing.altposition>>
+			<<set _itemStats.altposition to _currentClothing.altposition>>
+		<</if>>
+
+		<<set _isBroken to (_currentClothing.one_piece === "broken")>>
+		<<if _currentClothing.outfitSecondary and _isBroken>>
+			/* If a secondary part of an outfit is broken adds the primary part so the complete outfit will be repaired */
+			<<set _upperSlot to _currentClothing.outfitSecondary[0]>>
+			<<set _upperItem to clothesIndex(_upperSlot, _currentClothing)>>
+			<<set $wardrobeRepair[_upperSlot] ||= []>>
+			/* clothing to send for repair is now _currentClothing's upper part */
+			<<set _itemStats.index to clone(_upperItem)>>
+			<<run $wardrobeRepair[_upperSlot].push(clone(_itemStats))>>
+
+			/* Adds all outfit components from upper primary (i.e. bottom + hood from a cow onesie) */
+			<<set _upperOutfit to setup.clothes[_upperSlot][_upperItem]>>
+			<<run Object.keys(_upperOutfit.outfitPrimary).forEach((itemSlot) => {
+				T.itemStats.index = clothesIndex(itemSlot, T.upperOutfit);
+				V.wardrobeRepair[itemSlot] ||= []
+				V.wardrobeRepair[itemSlot].push(clone(T.itemStats));
+			})>>
+		<<else>>
+			<<set _itemStats.index to clone(clothesIndex(_equip[_eIndex],_currentClothing))>>
+			<<set _itemStats.isSplit to (_currentClothing.one_piece === "split")>>
+			<<run $wardrobeRepair[_equip[_eIndex]].push(clone(_itemStats))>>
+			
+			<<if _currentClothing.outfitPrimary and _isBroken>>
+				/* Adds all broken outfit components from upper primary */
+				<<set _upperOutfit to _currentClothing>>
+				<<run Object.entries(_upperOutfit.outfitPrimary).forEach(([itemSlot, itemName]) => {
+					if (itemName === "broken") {
+						T.itemStats.index = clothesIndex(itemSlot, T.upperOutfit);
+						V.wardrobeRepair[itemSlot] ||= []
+						V.wardrobeRepair[itemSlot].push(clone(T.itemStats));
+					}
+				})>>
+			<</if>>
+		<</if>>
+		<<run _toDelete.push(clone(_iIndex))>>
 	<</for>>
 	<<for _iIndex to $wardrobe[_equip[_eIndex]].length; _iIndex gte 0; _iIndex-->>
 		<<if _toDelete.includes(_iIndex)>>
