@@ -1074,7 +1074,19 @@
 			<<if !$journalNotes[_currentPage]>><<set _currentPage to "default">><</if>>
 			<<replace "#customOverlayContent">><<journalNotes>><</replace>>
 		<</link>> |
-
+		<<if $debug is 1>>
+			<<link "DEBUG: <<=($options.enableJournalDebugTwee ? 'Disable' : 'Enable')>> Code Execution">>
+				<<if $options.enableJournalDebugTwee>>
+					<<set delete $options.enableJournalDebugTwee>>
+				<<else>>
+					<<set $options.enableJournalDebugTwee to true>>
+				<</if>>
+				<<replace "#customOverlayContent">><<journalNotes>><</replace>>
+			<</link>>
+			<mouse class="tooltip linkBlue">(?)<span>
+				Allows journal notes to run as Twee code.
+			</span></mouse> |
+		<</if>>
 		<br><br>
 
 		New page name: <<textbox "_pageName" "">>
@@ -1099,7 +1111,29 @@
 <</widget>>
 
 <<widget "journalNotesTextarea">>
-	<<button `"Save (" + _currentPage + ")"`>>
+	<<if $options.enableJournalDebugTwee and $debug is 1>>		
+		<div class="settingsToggleItemWide">
+			<<foldout true "_journalDebugTweeFoldout">>
+				<span style="font-size:large">output</span>
+				<span id='journalDebugTweeOutput'>@@color:red;wiki&lpar;&rpar; executes Twee code from the textarea below.@@<br></span>
+			<</foldout>>
+			<hr>
+			<<button "@@color:red;.wiki&lpar;'_currentPage'&rpar;@@">>
+				<<journalNotesTextareaSave>>
+				<<replace "#journalDebugTweeOutput">><<script>>$(output).wiki(T.displayedTextArea);<</script>><</replace>>
+				<<replace "#journalDebugTweeCopyButton">>
+					<<button 'Copy to clipboard'>>
+						<<run _txt = $('#journalDebugTweeOutput')[0].innerHTML>>
+						<<run navigator.clipboard.writeText(_txt.replaceAll('<br>','\n'))>>
+					<</button>>
+					<<button [[Reload Passage|$passage]]>><<set $cheatReload to true>><</button>>
+				<</replace>>
+			<</button>>
+			<span id='journalDebugTweeCopyButton'></span>
+		</div>
+		<br>
+	<</if>>
+	<<button `'<span class="fa-icon fa-save"></span> Save (' + _currentPage + ')'`>>
 		<<journalNotesTextareaSave>>
 	<</button>>
 	<label><<checkbox "$options.notesAutoSave" false true autocheck>> Auto Save</label>
