@@ -29,13 +29,45 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 <<effects>>
 <<npc Winter>><<person1>>
 
+<<set $hcChallenge to {
+	handLongPatrol: false, handStrict: false, handCruel: false,
+	torchFaster: false, torchSnuffer: false, torchDarker: false,
+	faithBanish: false, faithBurden: false, faithBlooms: false,
+	forestFurther: false, forestNoShortcut: false, forestItem: false,
+	waterLeaky: false, waterDirty: false, waterEarly: false,
+	itemDirty: false, itemFind: false, itemNoHide: false,
+	prisonerFood: false, prisonerHealth: false, prisonerClean: false,
+	susIncrease: false, susDecrease: false, susSermon: false,
+	dogsTwice: false, dogsEarly: false, dogsDouble: false,
+	timeSleep: false, timeLonger: false, timePrayer: false
+}>>
+
 <span class="red"><i>
 	This is an experimental scene. It is recommended that you save your game to a new file now, and not overwrite it until the scene concludes.
 </i></span>
 <br><br>
 
 <<set $hcEndings ||= []>>
-<<if $hcEndings.includesAll("F","E","D","C","B","A") and !$hcEndings.includes("S")>>
+<<if $hcEndings.includes("S")>>
+	<<hopelessCycleEndings>>
+	"Could you tell me the story behind this painting again?" you ask Winter.
+	<br><br>
+
+	<<He>> stops what <<hes>> doing. "If you're willing to listen, I'm always glad to share history. Folklore or otherwise."
+	<br><br>
+
+	<<He>> walks off for a moment, returning with a chair and inviting you to sit. The painting hangs on the wall next to you, the figure's weeping gaze bearing down.
+	<br><br>
+
+	Winter sits down too. "The painting is titled <span class="gold">'Hopeless Cycle'</span>. It's written on the back of the frame in an older tongue, and the translation could also mean 'desperate spiral' or similar.
+	It evokes the feeling of being trapped in self-fulfilling loops. It's at least three centuries old. Though you know all this by now, of course."
+	<br><br>
+
+	<<link [[Ask Winter if there are any other variations on the story|Museum Hopeless Cycle Story Challenge]]>><</link>> | <span class="blue"><i>Challenge options</i></span> <!-- Appears even with blind stats enabled. Intentional -->
+	<br>
+	<<link [[Let <<him>> continue|Museum Hopeless Cycle Story Continue]]>><</link>>
+	<<exit>>
+<<elseif $hcEndings.includesAll("F","E","D","C","B","A") and !$hcEndings.includes("S")>>
 	<<hopelessCycleEndings>>
 	"You said you'd add some missing details this time. I'd like to hear them."
 	<br><br>
@@ -92,6 +124,74 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 <<link [[...the injustice of which immortalised her in myth.|Hopeless Cycle]]>><<pass 30>><<endevent>><</link>>
 <br>
 
+:: Museum Hopeless Cycle Story Challenge
+<<effects>>
+<<if !$hcChallengesCompleted>>
+	<<set $hcChallengesCompleted to {
+		handLongPatrol: "", handStrict: "", handCruel: "",
+		torchFaster: "", torchSnuffer: "", torchDarker: "",
+		faithBanish: "", faithBurden: "", faithBlooms: "",
+		forestFurther: "", forestNoShortcut: "", forestItem: "",
+		waterLeaky: "", waterDirty: "", waterEarly: "",
+		itemDirty: "", itemFind: "", itemNoHide: "",
+		prisonerFood: "", prisonerHealth: "", prisonerClean: "",
+		susIncrease: "", susDecrease: "", susSermon: "",
+		dogsTwice: "", dogsEarly: "", dogsDouble: "",
+		timeSleep: "", timeLonger: "", timePrayer: ""
+	}>>
+	<<set $hcChallengesRun to []>>
+<</if>>
+
+<<if $speech_attitude is "meek">>
+	"Um, Winter?" you ask, raising your hand. "Before you start, are there any other details to this story, in other variations?"
+<<elseif $speech_attitude is "bratty">>
+	"I've sat through this story so many times," you huff. "The first times you told it, you left out details. Anything like that you could throw in?"
+<<else>>
+	"Are there any other variations to this story that haven't been covered yet?" you ask. "Details not widely agreed upon, or anything like that."
+<</if>>
+<br><br>
+
+Winter pauses, thinking. "Well, there are a few aspects some tellings disagree on. For the most part, I've tried to stick to the most accepted versions, but..."
+<<He>> smiles. "Alright. I'll try to include some more niche aspects. Was there anything you had in mind? As a jumping-off point."
+<br><br>
+
+<i>Completing runs with all challenges enabled is not intended, and almost certainly not possible. There are no rewards, feats or otherwise, for completing runs with challenges enabled.</i>
+<br><br>
+
+<<if $hcChallengesRun.length gt 0>>
+	<span class="green" tooltip='<<hcDetailsTotal>>'>Total completed: <<print Object.values($hcChallengesCompleted).count("S")>>/<<print Object.keys($hcChallenge).length>></span>
+	|
+	<span class="blue" tooltip='<<hcDetailsBestRun>>'>Best run: <<print $hcChallengesRun.length>>/<<print Object.keys($hcChallenge).length>></span>
+	<br><br>
+<</if>>
+
+<<link "Enable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = true)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>> | 
+<<link "Disable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = false)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>>
+<br><br>
+
+<div id="challenges"><<hcChallengeMenu>></div>
+
+<<link [[Proceed with these selections|Museum Hopeless Cycle Story Continue]]>><</link>>
+<br>
+
+:: Museum Hopeless Cycle Story Continue
+<<effects>>
+<<if Object.values(V.hcChallenge).some(x => x === true)>>
+	<<hcChallengeSummary>>
+	Winter nods, closing his eyes. "I believe there are versions that align with those conditions. Uncommon, but they are told."
+<<else>>
+	Winter smiles. "The classic version, then."
+<</if>>
+<br><br>
+
+<<He>> looks back to you. "You know how this goes by now. The subject is a controversial local folk figure. This was almost certainly painted long after the event that inspired it.
+The temple has attempted, many times, to censor or revise the tale, as it's quite the embarassment to their more modern image.
+Or so they claim. This painting represents the story of a beloved wise woman they persecuted for apostasy and witchcraft..."
+<br><br>
+
+<<link [[...the injustice of which immortalised her in myth.|Hopeless Cycle]]>><<pass 30>><<endevent>><</link>>
+<br>
+
 /* Event start */
 :: Hopeless Cycle
 <<hopelessCycleStart>>
@@ -128,7 +228,7 @@ no, that's a person. His dark eyes scan the room, passing each guard, until his 
 
 <<link [[Take the torch|Hopeless Cycle Torch]]>><<set $phase to 1>><</link>>
 <br>
-<<link [[Make him carry it himself|Hopeless Cycle Torch]]>><<set $hc.suspicion += 2>><<set $phase to 2>><</link>>
+<<link [[Make him carry it himself|Hopeless Cycle Torch]]>><<hcSuspicion 2>><<set $phase to 2>><</link>>
 <br>
 <<link [[Offer to carry the new prisoner instead|Hopeless Cycle Torch]]>><<set $prisoner.love += 1>><<set $phase to 3>><</link>>
 <br>
@@ -170,11 +270,11 @@ He approaches the back wall, laying the new prisoner down. "You won't get much n
 He turns to you, chuckling. Staring. As if waiting for you to speak out of turn.
 <br><br>
 
-<<link [[Ask what her crimes are|Hopeless Cycle Ask]]>><<set $hc.suspicion += 5>><<set $prisoner.love += 1>><<set $phase2 to 1>><</link>>
+<<link [[Ask what her crimes are|Hopeless Cycle Ask]]>><<hcSuspicion 5>><<set $prisoner.love += 1>><<set $phase2 to 1>><</link>>
 <br>
 <<link [[Stay silent|Hopeless Cycle Ask]]>><<set $phase2 to 2>><</link>>
 <br>
-<<link [[Ask what your orders are|Hopeless Cycle Ask]]>><<set $hc.suspicion -= 3>><<set $phase2 to 3>><</link>>
+<<link [[Ask what your orders are|Hopeless Cycle Ask]]>><<hcSuspicion -3>><<set $phase2 to 3>><</link>>
 <br>
 
 :: Hopeless Cycle Ask
@@ -309,6 +409,9 @@ There's a stairway to the disposal channel here.
 	<br><br>
 
 	You peek into the cell, and see a <<personsimple>> in black robes approaching <<print $prisoner.name>>.
+	<<if $hcChallenge.faithBlooms>>
+		<<His>> fingers twitch. "Do you remember these hands? <span @class="$prisonerEvents.includes('washHair') ? 'red' : ''">They took your hair so easily.</span> I'll be <i>taking</i> more than just a lock of hair this time."
+	<</if>>
 	<br><br>
 
 	<<link [[Sneak out of the dungeon|Hopeless Cycle Cell Caught Sneak]]>><</link>>
@@ -339,13 +442,13 @@ There's a stairway to the disposal channel here.
 		<<switch $hc.dungeonTorchState>>
 			<<case "burnt">>
 				<<if !["night"].includes(Time.dayState) or hcItemLitTorch()>>
-					<<link [[Replace torches (2:30)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchReplace">><<pass 150>><<tiredness 6>><<set $hc.dungeonTorchTime to 11>><<set $hc.dungeonTorchState to "snuffed">><</link>><<gtiredness>>
+					<<link [[Replace torches <<hcTimeTaskDisplay 150>>|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchReplace">><<hcTimeTaskPass 150>><<tiredness 6>><<set $hc.dungeonTorchTime to 11>><<set $hc.dungeonTorchState to "snuffed">><</link>><<gtiredness>>
 				<<else>>
 					<span class="red">It's too dark to replace the torches. You'll have to wait until daybreak, or get light from elsewhere.</span>
 				<</if>>
 			<<case "snuffed">>
 				<<if hcItemLitTorch()>>
-					<<link [[Re-ignite torches (0:10)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchReignite">><<pass 10>><<set $hc.dungeonTorchState to "lit">><</link>>
+					<<link [[Re-ignite torches <<hcTimeTaskDisplay 10>>|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchReignite">><<hcTimeTaskPass 10>><<set $hc.dungeonTorchState to "lit">><</link>>
 				<<elseif !["night"].includes(Time.dayState)>>
 					<<if hcItemHolding("torch")>>
 						<<link [[Light a torch by hand (0:15)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchByHand">><<pass 15>><<tiredness 12>><<set hcItemHolding("torch").state to "lit">><<set hcItemHolding("torch").time to 5>><</link>><<ggtiredness>>
@@ -357,11 +460,11 @@ There's a stairway to the disposal channel here.
 				<</if>>
 				<<if $hc.dungeonTorchTime lt 6>>
 					<br>
-					<<link [[Renew torch fuel (0:30)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchRenew">><<pass 30>><<set $hc.dungeonTorchTime += 8>><</link>>
+					<<link [[Renew torch fuel <<hcTimeTaskDisplay 30>>|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchRenew">><<hcTimeTaskPass 30>><<set $hc.dungeonTorchTime += 8>><</link>>
 				<</if>>
 			<<default>>
 				<<if hcItemCanReach("snuffer")>>
-					<<link [[Snuff torches (0:10)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchSnuff">><<set $hc.dungeonTorchState to "snuffed">><<pass 10>><</link>>
+					<<link [[Snuff torches <<hcTimeTaskDisplay 10>>|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchSnuff">><<set $hc.dungeonTorchState to "snuffed">><<hcTimeTaskPass 10>><</link>>
 				<<else>>
 					<span class="red">You need your torch cap to snuff the torches.</span>
 				<</if>>
@@ -398,7 +501,7 @@ There's a stairway to the disposal channel here.
 			<<getouticon>><<link [[Sneak out to the cloister (0:02)|Hopeless Cycle Cloister Sneak]]>><<pass 2>><</link>>
 			<br>
 		<<else>>
-			<<templeicon "cloister">><<link [[Cloister (0:30)|Hopeless Cycle Dungeon Leave]]>><<pass 30>><</link>>
+			<<templeicon "cloister">><<link [[Cloister <<hcTimeDungeonDisplay>>|Hopeless Cycle Dungeon Leave]]>><<hcTimeDungeonPass>><</link>>
 			<br>
 		<</if>>
 		<<if $prisonerEvents.includes("wash")>>
@@ -507,14 +610,14 @@ There's a stairway to the disposal channel here.
 	You leave the dungeon. A <<priest>> awaits you at the top of the stairs, and covers <<his>> mouth when <<he>> notices your exposure. "Brother, what happened?"
 	<br><br>
 
-	You're forced to stay there, exposed, for an agonisingly long time as you undergo the prayers and blessings. <<stress 40>><<gggstress>><<trauma 50>><<gggtrauma>><<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	You're forced to stay there, exposed, for an agonisingly long time as you undergo the prayers and blessings. <<stress 40>><<gggstress>><<trauma 50>><<gggtrauma>><<hcSuspicion 10>><<hopelessCycleSus 2>>
 	<br><br>
 <<else>>
 	<<if !$hc.daily.enteredDungeon>>
 		<<if $worn.upper.name isnot "chain tunic">>
-			You leave the dungeon. A <<priest>> awaits you at the top of the stairs, and looks confused. "Brother? I never saw you enter. Where is your armour?" You undergo the lengthy process of prayers and blessings to purge the witch's filth from your body. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>><<set $hc.suspicion += 20>><<hopelessCycleSus 3>>
+			You leave the dungeon. A <<priest>> awaits you at the top of the stairs, and looks confused. "Brother? I never saw you enter. Where is your armour?" You undergo the lengthy process of prayers and blessings to purge the witch's filth from your body. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>><<hcSuspicion 20>><<hopelessCycleSus 3>>
 		<<else>>
-			You leave the dungeon. A <<priest>> awaits you at the top of the stairs, and looks confused. "Brother? I never saw you enter." You undergo the lengthy process of prayers and blessings to purge the witch's filth from your body. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>><<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+			You leave the dungeon. A <<priest>> awaits you at the top of the stairs, and looks confused. "Brother? I never saw you enter." You undergo the lengthy process of prayers and blessings to purge the witch's filth from your body. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>><<hcSuspicion 10>><<hopelessCycleSus 2>>
 		<</if>>
 	<<else>>
 		You leave the dungeon. A <<priest>> awaits you at the top of the stairs. You undergo the lengthy process of prayers and blessings to purge the witch's filth from your body. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>>
@@ -522,7 +625,7 @@ There's a stairway to the disposal channel here.
 	<br><br>
 
 	<<if _susFromContainers>>
-		<<Hes>> too busy with the rites to inspect the items in your bucket, but some of your other brothers and sisters steal the occasional glance. <<set $hc.suspicion += _susFromContainers>><<hopelessCycleSus 1>>
+		<<Hes>> too busy with the rites to inspect the items in your bucket, but some of your other brothers and sisters steal the occasional glance. <<hcSuspicion _susFromContainers>><<hopelessCycleSus 1>>
 		<br><br>
 	<</if>>
 <</if>>
@@ -553,18 +656,18 @@ You approach the stairs to the dungeon.
 	<br>
 <<else>>
 	<<if $hc.daily.enteredDungeon>>
-		A <<priest>> awaits you, and raises an eyebrow. "Brother? I didn't see you leave." You undergo the lengthy process of prayers and blessings to ready yourself for exposure to the witch. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+		A <<priest>> awaits you, and raises an eyebrow. "Brother? I didn't see you leave." You undergo the lengthy process of prayers and blessings to ready yourself for exposure to the witch. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 	<<else>>
 		A <<priest>> awaits you. You undergo the lengthy process of prayers and blessings to ready yourself for exposure to the witch. <<stress 8>><<gstress>><<trauma 10>><<gtrauma>>
 	<</if>>
 	<br><br>
 
 	<<if _susFromContainers>>
-		<<Hes>> too busy with the rites to inspect the items in your bucket, but some of your other brothers and sisters steal the occasional glance. <<set $hc.suspicion += _susFromContainers>><<hopelessCycleSus 1>>
+		<<Hes>> too busy with the rites to inspect the items in your bucket, but some of your other brothers and sisters steal the occasional glance. <<hcSuspicion _susFromContainers>><<hopelessCycleSus 1>>
 		<br><br>
 	<</if>>
 
-	<<link [[Next|Hopeless Cycle Dungeon]]>><<endevent>><<pass 30>><<set $hc.daily.enteredDungeon to true>><<set $hc.snuckInDungeon to false>><</link>>
+	<<link [[Next|Hopeless Cycle Dungeon]]>><<endevent>><<hcTimeDungeonPass>><<set $hc.daily.enteredDungeon to true>><<set $hc.snuckInDungeon to false>><</link>>
 	<br>
 <</if>>
 
@@ -574,9 +677,9 @@ You approach the stairs to the dungeon.
 
 You sneak back to the cloister.
 <<if $worn.upper.name is "chain tunic">>
-	<span class="red">Your noisy chain armour does not make it easy. Someone certainly heard you.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	<span class="red">Your noisy chain armour does not make it easy. Someone certainly heard you.</span> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 <<elseif hcItemLitTorch()>>
-	<span class="red">A lit torch makes for poor stealth, however. It's likely someone saw you.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	<span class="red">A lit torch makes for poor stealth, however. It's likely someone saw you.</span> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 <<else>>
 	You don't think anyone heard or saw you.
 <</if>>
@@ -591,9 +694,9 @@ You sneak back to the cloister.
 
 You sneak into the dungeon from the cloister.
 <<if $worn.upper.name is "chain tunic">>
-	<span class="red">Your noisy chain armour does not make it easy. Someone certainly heard you.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	<span class="red">Your noisy chain armour does not make it easy. Someone certainly heard you.</span> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 <<elseif hcItemLitTorch()>>
-	<span class="red">A lit torch makes for poor stealth, however. It's likely someone saw you.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	<span class="red">A lit torch makes for poor stealth, however. It's likely someone saw you.</span> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 <<else>>
 	You don't think anyone heard or saw you.
 <</if>>
@@ -626,7 +729,8 @@ A long stone staircase connects it to the temple's dungeon.
 	<span class="red">It's pitch black. You can't see where you're going!</span>
 	<br><br>
 
-	<<if $rng gte 66>>
+	<<cleareventpool>>
+	<<addinlineevent "dungeon">>
 		<<set _toDrop to $hcItems.find(bucket => bucket.name is "bucket" and bucket.location is "held")>>
 		<<if _toDrop>>
 			<<set _toDrop.location to "disposal">>
@@ -645,7 +749,9 @@ A long stone staircase connects it to the temple's dungeon.
 			<<prisonicon "cell">><<link [[Dungeon (0:20)|Hopeless Cycle Dungeon]]>><<pass 20>><</link>>
 			<br>
 		<</if>>
-	<<elseif $rng gte 33>>
+	<</addinlineevent>>
+
+	<<addinlineevent "lizard">>
 		<<beastNEWinit 1 lizard>>
 		A massive <<beasttype>> rears out of the water! There's something unnatural about <<bhim>>, other than <<bhis>> size. There's something protruding from <<bhis>> brow ridge, almost like tree branches.
 		<br><br>
@@ -666,19 +772,25 @@ A long stone staircase connects it to the temple's dungeon.
 			<<prisonicon "cell">><<link [[Dungeon (0:20)|Hopeless Cycle Dungeon]]>><<pass 20>><</link>>
 			<br>
 		<</if>>
-	<<else>>
-		Your hands press against something hard and cold. You push, and it clatters to the ground noisily. You see light further beyond.
-		<br><br>
+	<</addinlineevent>>
 
-		You feel the ground start to slope. It feels like you're walking upwards now.
-		<br><br>
+	<<if !$hcChallenge.forestNoShortcut>>
+		<<addinlineevent "forest">>
+			Your hands press against something hard and cold. You push, and it clatters to the ground noisily. You see light further beyond.
+			<br><br>
 
-		You emerge in the forest.
-		<br><br>
+			You feel the ground start to slope. It feels like you're walking upwards now.
+			<br><br>
 
-		<<foresticon>><<link [[Forest (0:20)|Hopeless Cycle Forest]]>><<pass 20>><<set $hcForest to 15>><<set $hc.forestPassage to true>><</link>>
-		<br>
+			You emerge in the forest.
+			<br><br>
+
+			<<foresticon>><<link [[Forest (0:20)|Hopeless Cycle Forest]]>><<pass 20>><<set $hcForest to 15>><<set $hc.forestPassage to true>><</link>>
+			<br>
+		<</addinlineevent>>
 	<</if>>
+
+	<<runeventpool>>
 <<else>>
 	<<if !$hc.disposalState and $hc.disposals gte 5>>
 		<<set $hc.disposalState to 1>>
@@ -947,8 +1059,8 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 	<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
 	<br>
 <<elseif $exposed gte 2>>
-	You creep around the cloister, concealing your nudity behind a column of gargoyles whenever you hear the shuffle of feet. <<set $hc.suspicion += 2>><<hopelessCycleSus 1>>
-	<br><br>
+    You creep around the cloister, concealing your nudity behind a column of gargoyles whenever you hear the shuffle of feet. <<hcSuspicion 2>><<hopelessCycleSus 1>>
+    <br><br>
 
 	<b><u>Locations:</u></b><br>
 	<<templeicon "quarters">><<link [[Passage to quarters (0:01)|Hopeless Cycle Quarters]]>><<pass 1>><</link>>
@@ -992,7 +1104,7 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 	<br>
 <<else>>
 	<<if Time.hour gte 7 and Time.hour lte 9 and !$hc.daily.sermon>>
-		<<templeicon "altar">><<link [[Attend sermon (0:30)|Hopeless Cycle Cloister Sermon]]>><<pass 30>><<trauma -6>><<purity 4>><<set $hc.suspicion -= 5>><<set $hc.daily.sermon to true>><</link>><<ltrauma>><<gpurity>><<hopelessCycleSus -2>>
+		<<templeicon "altar">><<link [[Attend sermon (0:30)|Hopeless Cycle Cloister Sermon]]>><<pass 30>><<trauma -6>><<purity 4>><<hcSuspicion -5 "sermon">><<set $hc.daily.sermon to true>><</link>><<ltrauma>><<gpurity>><<hopelessCycleSus -2>>
 		<br>
 	<</if>>
 	<<if $temple_confessor_intro>>
@@ -1019,7 +1131,7 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 	<<else>>
 		A priest stands guard at the top of the dungeon stairs.
 		<br>
-		<<prisonicon "cell">><<link [[Dungeon (0:30)|Hopeless Cycle Dungeon Enter]]>><</link>>
+		<<prisonicon "cell">><<link [[Dungeon <<hcTimeDungeonDisplay>>|Hopeless Cycle Dungeon Enter]]>><</link>>
 	<</if>>
 	<br>
 	<<kitchenicon "soup">><<link [[Dining hall (0:01)|Hopeless Cycle Cloister Dining]]>><<pass 1>><</link>>
@@ -1061,9 +1173,9 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 <<else>>
 	<<if Time.dayState isnot "night">>
 		<<if $temple_weapon is "baton">>
-			<<templeicon "baton">><<link [[Spar (1:00)|Hopeless Cycle Spar]]>><<prof baton 4>><<set $temple_spar to 1>><<physique 6>><<tiredness 6>><<pass 60>><<set $hc.suspicion -= 1>><<sadism 5>><</link>><<gtiredness>><<gbaton>><<gphysique>><<hopelessCycleSus -1>>
+			<<templeicon "baton">><<link [[Spar <<hcTimeTaskDisplay>>|Hopeless Cycle Spar]]>><<prof baton 4>><<set $temple_spar to 1>><<physique 6>><<tiredness 6>><<hcTimeTaskPass>><<hcSuspicion -1>><<sadism 5>><</link>><<gtiredness>><<gbaton>><<gphysique>><<hopelessCycleSus -1>>
 		<<elseif $temple_weapon is "whip">>
-			<<templeicon "whip">><<link [[Spar (1:00)|Hopeless Cycle Spar]]>><<prof whip 4>><<set $temple_spar to 1>><<physique 6>><<tiredness 6>><<pass 60>><<set $hc.suspicion -= 1>><<sadism 5>><</link>><<gtiredness>><<gwhip>><<gphysique>><<hopelessCycleSus -1>>
+			<<templeicon "whip">><<link [[Spar <<hcTimeTaskDisplay>>|Hopeless Cycle Spar]]>><<prof whip 4>><<set $temple_spar to 1>><<physique 6>><<tiredness 6>><<hcTimeTaskPass>><<hcSuspicion -1>><<sadism 5>><</link>><<gtiredness>><<gwhip>><<gphysique>><<hopelessCycleSus -1>>
 		<</if>>
 		<br>
 	<</if>>
@@ -1164,15 +1276,15 @@ You are in the cloister's dining hall.
 		<br>
 	<<else>>
 		<<if !$hc.daily.foodPlayer>>
-			<<foodicon "eat">><<link [[Eat (0:30)|Hopeless Cycle Cloister Dining Eat]]>><<pass 30>><<set $hc.daily.foodPlayer to true>><<tiredness -6>><<stress -24>><<trauma -12>><</link>><<lltiredness>><<llstress>><<ltrauma>>
+			<<foodicon "eat">><<link [[Eat <<hcTimeTaskDisplay 30>>|Hopeless Cycle Cloister Dining Eat]]>><<hcTimeTaskPass 30>><<set $hc.daily.foodPlayer to true>><<tiredness -6>><<stress -24>><<trauma -12>><</link>><<lltiredness>><<llstress>><<ltrauma>>
 			<br>
 			<<if hcItemHasFreeHand()>>
-				<<icon "tending/salmon_wellington.png">><<link [[Leave with your portion|Hopeless Cycle Cloister Dining]]>><<run hcItemAdd({ type: "food", name: "stolen food", location: "held", origin: "dining" })>><<set $hc.daily.foodPlayer to true>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+				<<icon "tending/salmon_wellington.png">><<link [[Leave with your portion|Hopeless Cycle Cloister Dining]]>><<run hcItemAdd({ type: "food", name: "stolen food", location: "held", origin: "dining", dirtyOnDrop: V.hcChallenge.itemDirty })>><<set $hc.daily.foodPlayer to true>><<hcSuspicion 5>><</link>><<hopelessCycleSus 1>>
 				<br>
 			<</if>>
 		<</if>>
 		<<if !$hc.daily.foodWitch and hcItemHasFreeHand()>>
-			<<hcicon "food">><<link [[`Take a portion for $prisoner.name`|Hopeless Cycle Cloister Dining]]>><<run hcItemAdd({ type: "food", name: "prison gruel", location: "held", origin: "dining" })>><<set $hc.daily.foodWitch to true>><</link>>
+			<<hcicon "food">><<link [[`Take a portion for $prisoner.name`|Hopeless Cycle Cloister Dining]]>><<run hcItemAdd({ type: "food", name: "prison gruel", location: "held", origin: "dining", dirtyOnDrop: V.hcChallenge.itemDirty })>><<set $hc.daily.foodWitch to true>><</link>>
 			<br>
 		<</if>>
 		<<if !hcItemHasFreeHand() and (!$hc.daily.foodPlayer or !$hc.daily.foodWitch)>>
@@ -1372,7 +1484,7 @@ When the prayers are finished, the Bishop's Hand steps forward and clears his th
 	<br><br>
 
 	"They wish to sell us some of their trained hounds. <span class="blue">They will operate on the temple grounds each day until dusk.</span> Get used to the noise."
-<<elseif $hc.daysPassed is 6>>
+<<elseif $hc.daysPassed is 6 and !hcChallenge.waterEarly>>
 	<<set $hc.wellTainted to true>>
 	"The well is to be left unused until after the red moon. <span class="red">Its water has turned foul.</span>" Murmurs from the flock follow.
 	<br><br>
@@ -1431,15 +1543,17 @@ With the announcement finished, the flock disperses. Some head to the dining hal
 <</if>>
 <<unset $hcAction>>
 
-<<if $temple_burden lt 50>>
-	<<templeicon "statue">><<link [[Embrace (0:05)|Hopeless Cycle Cloister Statue]]>><<pass 5>><<set $itemAction to "embrace">><<set $temple_burden += 5>><</link>>
+<<if !$hcChallenge.faithBurden>>
+	<<if $temple_burden lt 50>>
+		<<templeicon "statue">><<link [[Embrace (0:05)|Hopeless Cycle Cloister Statue]]>><<pass 5>><<set $itemAction to "embrace">><<set $temple_burden += 5>><</link>>
+		<br>
+	<</if>>
+	<<if $temple_burden gte 1>>
+		<<templeicon "statue">><<link [[Surrender (0:05)|Hopeless Cycle Cloister Statue]]>><<pass 5>><<set $itemAction to "surrender">><<set $temple_burden -= 5>><</link>>
+		<br>
+	<</if>>
 	<br>
 <</if>>
-<<if $temple_burden gte 1>>
-	<<templeicon "statue">><<link [[Surrender (0:05)|Hopeless Cycle Cloister Statue]]>><<pass 5>><<set $itemAction to "surrender">><<set $temple_burden -= 5>><</link>>
-	<br>
-<</if>>
-<br>
 
 <<templeicon "cloister">><<link [[Leave|Hopeless Cycle Cloister]]>><</link>>
 <br>
@@ -1478,7 +1592,7 @@ With the announcement finished, the flock disperses. Some head to the dining hal
 	<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
 	<br>
 <<elseif $exposed gte 2>>
-	You hide behind one of the pillars to conceal your <<nudity>>. <<set $hc.suspicion += 2>><<hopelessCycleSus 1>>
+	You hide behind one of the pillars to conceal your <<nudity>>. <<hcSuspicion 2>><<hopelessCycleSus 1>>
 	<br><br>
 
 	<b><u>Locations:</u></b><br>
@@ -1607,7 +1721,7 @@ You are in the temple garden. Rows of flowers lead away from the temple proper, 
 	<<link [[Next|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
 	<br>
 <<elseif $exposed gte 2>>
-	You hide behind a hedge to conceal your <<nudity>>. <<set $hc.suspicion += 2>><<hopelessCycleSus 1>>
+	You hide behind a hedge to conceal your <<nudity>>. <<hcSuspicion 2>><<hopelessCycleSus 1>>
 	<br><br>
 
 	<b><u>Locations:</u></b><br>
@@ -1643,36 +1757,43 @@ You are in the temple garden. Rows of flowers lead away from the temple proper, 
 		<<if $prisonerEvents.includes("brand")>>
 			<<set _itemsHere.push("herbs")>>
 		<</if>>
-		<<templeicon "garden">><<link [[Work in the garden (1:00)|Hopeless Cycle Garden Work]]>><<pass 60>><<stress -6>><<set $hc.suspicion-->><<tiredness 6>><<tending 1>><</link>><<lstress>><<gtending>><<hopelessCycleSus -1>><<gtiredness>>
+		<<templeicon "garden">><<link [[Work in the garden <<hcTimeTaskDisplay>>|Hopeless Cycle Garden Work]]>><<hcTimeTaskPass>><<stress -6>><<hcSuspicion -1>><<tiredness 6>><<tending 1>><</link>><<lstress>><<gtending>><<hopelessCycleSus -1>><<gtiredness>>
 		<br>
 	<</if>>
 	<<if $hc.dogs and Time.dayState is "day">>
 		<br>
 		The hounds are out and about.
-		<<if $hc.dogs is "loud">>
-			<span class="pink">One of them is barking particularly loudly, seeming neglected by its masters.</span>
-			Some food from the dining hall might keep it quiet, or you could find something to play with it.
+		<<if $hc.dogs.includes("loud")>>
+			<<if $hc.dogs.count("loud") gt 1>>
+				<span class="pink"><<number $hc.dogs.count("loud")>> of them are barking particularly loudly, seeming neglected by their masters.</span>
+				Some food from the dining hall might keep one of them quiet, or you could find something to play with it.
+			<<else>>
+				<span class="pink">One of them is barking particularly loudly, seeming neglected by its masters.</span>
+				Some food from the dining hall might keep it quiet, or you could find something to play with it.
+			<</if>>
 		<<else>>
-			<span class="green">The loudest of the hounds has been quieted.</span>
+			<span class="green">The loudest of the hounds <<= $hcChallenge.dogsDouble ? "have" : "has">> been quieted.</span>
 		<</if>>
 		<br>
 		<<set _stick to hcItemCanReach("torch", t => t.state isnot "lit")>>
 		<<set _food to hcItemCanReach("food", t => t.name isnot "stolen fruit" and !t.used)>>
-		<<if $hc.dogs is "loud">>
-			<<if _stick>>
-				<<animalicon "dog">><<link [[Play tug-of-war with it using an unlit torch (0:15)|Hopeless Cycle Garden Dog Play]]>><<pass 15>><</link>>
-				<br>
-			<</if>>
-			<<if _food>>
-				<<capture _food>>
-					<<hcicon _food>><<link [[`Feed it _food.name (0:05)`|Hopeless Cycle Garden Dog Feed]]>><<pass 5>><<set $hcDogFood to _food.name>><<run hcItemRemove(_food)>><</link>>
+		<<for _i to 0; _i lt $hc.dogs.length; _i++>>
+			<<capture _i, _food>>
+				<<if $hc.dogs[_i] is "loud">>
+					<<if _stick>>
+						<<animalicon "dog">><<link [[Play tug-of-war with it using an unlit torch (0:15)|Hopeless Cycle Garden Dog Play]]>><<set $phase to _i>><<pass 15>><</link>>
+						<br>
+					<</if>>
+					<<if _food>>
+						<<hcicon _food>><<link [[`Feed it _food.name (0:05)`|Hopeless Cycle Garden Dog Feed]]>><<set $phase to _i>><<pass 5>><<set $hcDogFood to _food.name>><<run hcItemRemove(_food)>><</link>>
+						<br>
+					<</if>>
+				<<else>>
+					<<animalicon "dog">><<link [[Pet the dog (0:05)|Hopeless Cycle Garden]]>><<set $hc.dogsTimer[_i]++>><<pass 5>><<stress -3>><<set $itemAction to "petTheDog">><</link>><<lstress>>
 					<br>
-				<</capture>>
-			<</if>>
-		<<else>>
-			<<animalicon "dog">><<link [[Pet the dog (0:05)|Hopeless Cycle Garden]]>><<pass 5>><<stress -3>><<set $itemAction to "petTheDog">><</link>><<lstress>>
-			<br>
-		<</if>>
+				<</if>>
+			<</capture>>
+		<</for>>
 	<</if>>
 	<br>
 
@@ -1714,7 +1835,7 @@ You grab your unlit torch by the top, and hold out the bottom to the dog. It imm
 When you're done, it rolls over. You rub its belly. That should hopefully keep it quiet.
 <br><br>
 
-<<link [[Next|Hopeless Cycle Garden]]>><<set $hc.dogs to "quiet">><</link>>
+<<link [[Next|Hopeless Cycle Garden]]>><<set $hc.dogs[$phase] to "quiet">><<set $hc.dogsTimer[$phase] to 5>><</link>>
 <br>
 
 :: Hopeless Cycle Garden Dog Feed
@@ -1734,7 +1855,7 @@ You put down the $hcDogFood in front of the dog. It perks up and digs in right a
 One of the handlers sees you and shoos you away. Hopefully this will keep the dog quiet.
 <br><br>
 
-<<link [[Next|Hopeless Cycle Garden]]>><<set $hc.dogs to "quiet">><<unset $hcDogFood>><</link>>
+<<link [[Next|Hopeless Cycle Garden]]>><<set $hc.dogs[$phase] to "quiet">><<set $hc.dogsTimer[$phase] to 5>><<unset $hcDogFood>><</link>>
 <br>
 
 :: Hopeless Cycle Garden Work
@@ -1766,7 +1887,7 @@ You spend an hour working in the garden. You lament that there aren't more bucke
 	<<hopelessCyclePassout>>
 <<else>>
 	<<if Time.dayState isnot "night" or hcItemLitTorch()>>
-		<<link [[Keep working|Hopeless Cycle Garden Work]]>><<pass 60>><<stress -6>><<set $hc.suspicion-->><<tiredness 6>><<tending 1>><</link>><<lstress>><<gtending>><<hopelessCycleSus -1>><<gtiredness>>
+		<<link [[Keep working <<hcTimeTaskDisplay>>|Hopeless Cycle Garden Work]]>><<hcTimeTaskPass>><<stress -6>><<hcSuspicion -1>><<tiredness 6>><<tending 1>><</link>><<lstress>><<gtending>><<hopelessCycleSus -1>><<gtiredness>>
 		<br>
 	<<else>>
 		<span class="red">It's too dark to continue working in the garden.</span>
@@ -1777,7 +1898,7 @@ You spend an hour working in the garden. You lament that there aren't more bucke
 	<br>
 	<<set _loc to hcItemHasFreeHand() ? "held" : "garden">>
 	<<capture _loc>>
-		<<link [[Steal some fruit|Hopeless Cycle Garden]]>><<run hcItemAdd({ type: "food", name: "stolen fruit", location: _loc, origin: "garden", dirty: 0, dirtyOnDrop: true })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<<link [[Steal some fruit|Hopeless Cycle Garden]]>><<run hcItemAdd({ type: "food", name: "stolen fruit", location: _loc, origin: "garden", dirty: 0, dirtyOnDrop: true })>><<endevent>><<hcSuspicion 5>><</link>><<hopelessCycleSus 1>>
 		<br>
 	<</capture>>
 <</if>>
@@ -1808,7 +1929,7 @@ You are in the open temple grounds.
 		<br><br>
 
 		<<if !$hc.daily.trialOfPurity>>
-			<<link [[Attempt the Trial of Purity (1:00)|Hopeless Cycle Firewalk]]>><<pass 60>><<set $hc.daily.trialOfPurity to true>><</link>><<gwillpower>><<hopelessCycleSus -1>>
+			<<link [[Attempt the Trial of Purity <<hcTimeTaskDisplay>>|Hopeless Cycle Firewalk]]>><<hcTimeTaskPass>><<set $hc.daily.trialOfPurity to true>><</link>><<gwillpower>><<hopelessCycleSus -1>>
 			<br>
 		<</if>>
 	<<else>>
@@ -1846,7 +1967,7 @@ You are in the open temple grounds.
 	<br><br>
 
 	The initiates applaud, along with several of your brothers and sisters standing on a balcony back at the temple, watching over the hedge. You examine your soles. They're covered in soot, but not burnt at all.
-	<<set $hc.suspicion -= 5>><<hopelessCycleSus -2>>
+	<<hcSuspicion -5>><<hopelessCycleSus -2>>
 	<br><br>
 
 	<<clotheson>>
@@ -1874,7 +1995,7 @@ You are in the open temple grounds.
 	<br><br>
 
 	<<if (currentSkillValue('willpower') / 10) gte ((100 - Math.floor($purity / 10)) + random(1, 100))>>
-		<span class="green">You press on.</span><<gwillpower>><<willpower 1>><<set $hc.suspicion-->><<hopelessCycleSus -1>>
+		<span class="green">You press on.</span><<gwillpower>><<willpower 1>><<hcSuspicion -1>><<hopelessCycleSus -1>>
 		<<set _success to true>>
 	<<else>>
 		<span class="red">You feel your feet burning. You leap off the coals onto the cool dirt.</span><<ggwillpower>><<willpower 10>>
@@ -1906,14 +2027,14 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 :: Hopeless Cycle Forest
 <<set $location to "forest">><<set $outside to 1>><<set _thermoDisable to true>><<effects>><<set $bus to "forest">>
 <<hopelessCycleEffects>>
-<<if $hcForest is 0>>
+<<if $hcForest lte 0>>
 	You are on the outskirts of the forest. It used to regularly overgrow into the temple's garden.
 <<else>>
 	You are in the forest, surrounded by nature.
 <</if>>
 <br><br>
 
-<<if $hcForest is 0>><div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div><</if>>
+<<if $hcForest lte 0>><div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div><</if>>
 <b><u>Locations:</u></b><br>
 
 <<if $hcForest gte 25>>
@@ -1922,15 +2043,15 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 <</if>>
 
 <<if $hcForest lt 25>>
-	<<getinicon>><<link [[Travel deeper into the forest (0:10)|Hopeless Cycle Forest]]>><<pass 10>><<set $hcForest += 5>><</link>>
+	<<getinicon>><<link [[Travel deeper into the forest (0:10)|Hopeless Cycle Forest]]>><<pass 10>><<hcForest "forward">><</link>>
 	<br>
 <</if>>
 <<if $hcForest gt 0>>
-	<<getouticon>><<link [[Travel towards the temple (0:10)|Hopeless Cycle Forest]]>><<pass 10>><<set $hcForest -= 5>><</link>>
+	<<getouticon>><<link [[Travel towards the temple (0:10)|Hopeless Cycle Forest]]>><<pass 10>><<hcForest "back">><</link>>
 	<br>
 <</if>>
 
-<<if $hcForest is 15 and $hc.forestPassage>>
+<<if between($hcForest, 15, 19) and $hc.forestPassage>>
 	There's a natural cave that merges with the disposal channel here.
 	<<if hcItemLitTorch()>>
 		<br>
@@ -1939,7 +2060,7 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 		<span class="red">You'll need a torch to traverse it.</span>
 	<</if>>
 	<br>
-<<elseif $hcForest is 15 and !$hc.forestPassage and hcItemLitTorch()>>
+<<elseif between($hcForest, 15, 19) and !$hc.forestPassage and hcItemLitTorch() and !$hcChallenge.forestNoShortcut>>
 	<<set $hc.forestPassage to true>>
 	<br>
 	By the light of your torch, you spot the opening of a cave.
@@ -1947,7 +2068,7 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 	<br>
 	<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Disposal]]>><<pass 20>><<set $hcForest to 0>><</link>>
 	<br>
-<<elseif $hcForest is 0>>
+<<elseif $hcForest lte 0>>
 	<<templeicon "garden">><<link [[Temple garden (0:10)|Hopeless Cycle Garden]]>><<pass 10>><<set $hcForest to 0>><</link>>
 	<br>
 <</if>>
@@ -2165,7 +2286,11 @@ You follow its movements. You take your whip's end in your other hand, using it 
 
 "You must ensure she is strong enough. <span class="blue">Her body must be full of vitality.</span>"<br>
 You lash a falling leaf out of the air. <<gwhip>><br>
-"<span class="blue">Her hair, ever important to a witch, must be beautiful.</span>"<br>
+<<if $hcChallenge.faithBlooms>>
+	"Her hair, ever important to a witch, <span class="red">has been mangled</span>. You must make it more than beautiful to restore what was taken. <span class="purple">Accept her gift. Cleanse it. Bestow it back upon her.</span>"
+<<else>>
+	"<span class="blue">Her hair, ever important to a witch, must be beautiful.</span>"
+<</if>><br>
 Your whip circles at your feet. You twirl and strike. Its rebound barely misses your ear. <<gwhip>><br>
 "She is strengthened by your touch. <span class="blue">Take her hands</span>, so you may both bloom. <span class="blue">Your kiss, or your body in intimate union, will grant her power.</span>"<br>
 You coil your whip, and make many quick strikes around you. <<prof whip 10>><<gwhip>><br>
@@ -2180,7 +2305,13 @@ Take heed. This will allow her to tear it from your chest without effort."
 
 Your arms circle and stretch, preparing for more exertion.<br>
 "You must burden your heart. Weighed down and offered as a final gift, it can't be stolen.
-<span class="blue">Embrace the likeness of the expectant mother, until half of the burden rests on your shoulders.</span>"
+<span @class='$hcChallenge.faithBurden ? "" : "blue"'>Embrace the likeness of the expectant mother, until half of the burden rests on your shoulders.</span>"
+<<if $hcChallenge.faithBurden>>
+	<br><br>
+
+	You tilt your head.<br>
+	"<span class="gold">But you've already done that, haven't you?</span> Of course you have. Of course you have."
+<</if>>
 <br><br>
 
 <span class="nextLink"><<link [[Next|Hopeless Cycle Wraith 5]]>><</link>></span>
@@ -2279,7 +2410,7 @@ There are four large rooms surrounding the central hall.
 		<br><br>
 	<<elseif _water>>
 		<<capture _water>>
-			<<choreicon "sweep">><<link [[Clean barracks (1:00)|Hopeless Cycle Quarters Clean]]>><<pass 60>><<set $hc.suspicion -= 3>><<set _water.dirty++>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
+			<<choreicon "sweep">><<link [[Clean barracks <<hcTimeTaskDisplay>>|Hopeless Cycle Quarters Clean]]>><<hcTimeTaskPass>><<hcSuspicion -3>><<hcWash _water>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
 		<</capture>>
 		<br><br>
 	<<else>>
@@ -2392,7 +2523,7 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 
 	You can stash items under your bed. They're unlikely to be found, but will arouse heavy suspicion if they are. Your bed will never be searched while you're sleeping in it.
 	<br>
-	<<if $hcItems.some(item => item.type is "sheets" and item.location is "bed")>>
+	<<if $hcItems.some(item => item.type is "sheets" and item.location is "bed") and !$hcChallenge.itemNoHide>>
 		<span class="green">You've placed a folded bedsheet in front of your stashed items. They'll be even harder to find now.</span>
 	<</if>>
 	<div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div>
@@ -2518,6 +2649,11 @@ You are beside your bunk in the temple quarters. There's a rack for your armour 
 		<</if>>
 		<br><br>
 	<</if>>
+	<<if _leak?.includes("bed")>>
+		<<set _bucketOutput to _leak.filter(x => x is "bed").length gt 1 ? "buckets" : "bucket">>
+		<span class="red">The water had leaked from your _bucketOutput while you slept.</span> You clean it up before anyone can notice.
+		<br><br>
+	<</if>>
 
 	<<link [[Get up|Hopeless Cycle Bunk]]>><<hopelessCycleOutfit "armour">><</link>>
 	<br>
@@ -2565,7 +2701,7 @@ You get to work scrubbing down the barracks. You clean the floors, some sheets, 
 		<br>
 	<<elseif _water>>
 		<<capture _water>>
-			<<link [[Continue cleaning (1:00)|Hopeless Cycle Quarters Clean]]>><<pass 60>><<set $hc.suspicion -= 3>><<set _water.dirty++>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
+			<<link [[Continue cleaning <<hcTimeTaskDisplay>>|Hopeless Cycle Quarters Clean]]>><<hcTimeTaskPass>><<hcSuspicion -3>><<hcWash _water>><<housekeeping 1 1000>><</link>><<ghousekeeping>><<hopelessCycleSus -1>>
 		<</capture>>
 		<br>
 	<<else>>
@@ -2577,9 +2713,9 @@ You get to work scrubbing down the barracks. You clean the floors, some sheets, 
 	<<link [[Enough cleaning|Hopeless Cycle Quarters]]>><<endevent>><</link>>
 	<br>
 	<<capture _loc>>
-		<<link [[Steal some bedsheets|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "sheets", name: "bedsheets", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<<link [[Steal some bedsheets|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "sheets", name: "bedsheets", location: _loc, origin: "quarters", dirty: 0, dirtyOnDrop: V.hcChallenge.itemDirty })>><<endevent>><<hcSuspicion 5>><</link>><<hopelessCycleSus 1>>
 		<br>
-		<<link [[Steal some clothes|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "clothes", name: "robe", location: _loc, origin: "quarters", dirty: 0 })>><<endevent>><<set $hc.suspicion += 5>><</link>><<hopelessCycleSus 1>>
+		<<link [[Steal some clothes|Hopeless Cycle Quarters]]>><<run hcItemAdd({ type: "clothes", name: "robe", location: _loc, origin: "quarters", dirty: 0, dirtyOnDrop: V.hcChallenge.itemDirty })>><<endevent>><<hcSuspicion 5>><</link>><<hopelessCycleSus 1>>
 		<br>
 	<</capture>>
 <</if>>
@@ -2623,10 +2759,10 @@ You get to work scrubbing down the barracks. You clean the floors, some sheets, 
 			<<lockicon "unlock">><<link [[Tell the Hand that one of your brothers is tainted|Hopeless Cycle Prayer Report]]>><<set $prisonerEvents.pushUnique("rapedReported")>><</link>>
 			<br>
 		<</if>>
-		<<getouticon>><<link [[Leave (0:01)|Hopeless Cycle Temple]]>><<set $hc.suspicion += 2>><<pass 1>><</link>><<hopelessCycleSus 1>>
+		<<getouticon>><<link [[Leave (0:01)|Hopeless Cycle Temple]]>><<hcSuspicion 2>><<pass 1>><</link>><<hopelessCycleSus 1>>
 		<br>
 	<<else>>
-		<<templeicon "pray">><<link [[Meditate (1:00)|Hopeless Cycle Prayer]]>><<stress -6>><<willpower 2>><<pass 60>><</link>><<lstress>><<gwillpower>>
+		<<templeicon "pray">><<link [[Meditate <<hcTimeTaskDisplay>>|Hopeless Cycle Prayer]]>><<stress -6>><<willpower 2>><<hcTimeTaskPass>><</link>><<lstress>><<gwillpower>>
 		<br><br>
 
 		<div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div>
@@ -2659,7 +2795,7 @@ You sit on the cushion, and pray. The incense makes you feel light and dizzy. <<
 	The door to the prayer room swings open. The Bishop's Hand stands there. "Out," he commands.
 	<br><br>
 <<else>>
-	<<templeicon "pray">><<link [[Meditate (1:00)|Hopeless Cycle Prayer]]>><<stress -6>><<willpower 2>><<pass 60>><</link>><<lstress>><<gwillpower>>
+	<<templeicon "pray">><<link [[Meditate <<hcTimeTaskDisplay>>|Hopeless Cycle Prayer]]>><<stress -6>><<willpower 2>><<hcTimeTaskPass>><</link>><<lstress>><<gwillpower>>
 	<br><br>
 
 	<div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div>
@@ -2688,7 +2824,7 @@ You explain everything in excruciating detail. You're not even meaning to. The w
 He seems to get angrier with every word you say, until his shoulders finally fall. He smiles at you. Warmly. It makes you uncomfortable.
 <br><br>
 
-"It's hard to lie in a place so close to heaven. Good work, brother." He laughs, and pats you on the shoulder. "This presents a contamination risk. We will do an emergency inspection. Come." He leads you out of the prayer room, rings the confessional's bell loudly seven times, and walks with you to the cloister. <<set $hc.suspicion -= 50>><<hopelessCycleSus -3>>
+"It's hard to lie in a place so close to heaven. Good work, brother." He laughs, and pats you on the shoulder. "This presents a contamination risk. We will do an emergency inspection. Come." He leads you out of the prayer room, rings the confessional's bell loudly seven times, and walks with you to the cloister. <<hcSuspicion -50>><<hopelessCycleSus -3>>
 <br><br>
 
 <<link [[Next|Hopeless Cycle Prayer Report 2]]>><<pass 30>><</link>>
@@ -2814,12 +2950,12 @@ The confessors re-enter the cell to retrieve the monk, who sobs and groans in pa
 	You start to pull her back to the wall. Her arms suddenly wrap around you, bringing you to the ground.
 	<br><br>
 
-	You struggle, worried that she's still seeking further purging. You stop when you realise that she's simply embracing you. Her head presses into your chest, and a warm smile is across her lips. <<set $prisoner.love += 10>><<set $prisoner.health += 10>><<gglove>>
+	You struggle, worried that she's still seeking further purging. You stop when you realise that she's simply embracing you. Her head presses into your chest, and a warm smile is across her lips. <<set $prisoner.love += 10>><<hcPrisonerHealth 10>><<gglove>>
 	<br><br>
 
 	The usual chill and weakness from her touch is absent, if only for a moment. She releases you before it comes back.
 <<else>>
-	You pull <<print $prisoner.name>> back to the wall and re-secure her manacles. She looks satisfied. <<set $prisoner.love += 2>><<set $prisoner.health += 10>><<hopelessCycleLove 1>>
+	You pull <<print $prisoner.name>> back to the wall and re-secure her manacles. She looks satisfied. <<set $prisoner.love += 2>><<hcPrisonerHealth 10>><<hopelessCycleLove 1>>
 <</if>>
 <br><br>
 
@@ -2838,7 +2974,7 @@ The confessors re-enter the cell to retrieve the monk, who sobs and groans in pa
 	You open your eyes, and see a single grey one staring back. <<print $prisoner.name.toUpperFirst()>> quickly crawls back to the wall away from you.
 	<br><br>
 
-	You feel strange, but she looks a little more healthy. <<purity -200>><<lllpurity>><<set $prisoner.health += 3>>
+	You feel strange, but she looks a little more healthy. <<purity -200>><<lllpurity>><<hcPrisonerHealth 3>>
 	<br><br>
 
 	<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
@@ -2853,7 +2989,7 @@ The confessors re-enter the cell to retrieve the monk, who sobs and groans in pa
 		"I'm telling you, he's bewitched!"
 		<br><br>
 
-		One of them helps you stand. "We'll have to report this to the bishop, brother." <<set $hc.suspicion += 15>><<hopelessCycleSus 3>>
+		One of them helps you stand. "We'll have to report this to the bishop, brother." <<hcSuspicion 15>><<hopelessCycleSus 3>>
 	<<else>>
 		<<set $hc.suspicionRevealed to true>>
 		"Brother Fayne, what's going on?" one asks. "This is not like you. We grow concerned."
@@ -3302,7 +3438,7 @@ You don't want to watch, but you can't look away. Finally, the Hand brandishes a
 
 	<<link [[Watch|Hopeless Cycle Ending D]]>><<pass 1>><</link>>
 	<br>
-<<elseif $prisonerEvents.includesAll("newClothes", "talkName", "talkMagic", "washHair") and ($prisonerEvents.includes("kiss") or $prisonerEvents.includesAll("sex", "virginity"))>>
+<<elseif $prisonerEvents.includesAll("newClothes", "talkName", "talkMagic", "washHair") and ($prisonerEvents.includes("kiss") or $prisonerEvents.includesAll("sex", "virginity")) and ($prisonerEvents.includes("talkHairBlooms") or !$hcChallenge.faithBlooms)>>
 	<span class="blue">Her hair begins to float, as if being lifted by an unfelt wind.</span>
 	<<if $prisonerEvents.includes("talkHair")>>
 		<<if $prisonerEvents.includes("talkHairBlooms")>>
@@ -3339,16 +3475,27 @@ You don't want to watch, but you can't look away. Finally, the Hand brandishes a
 	<br><br>
 
 	<<if $prisonerEvents.includes("washHair")>>
-		<span class="blue">Her hair begins to float, as if being lifted by an unfelt wind.</span>
-		<<if $prisonerEvents.includes("talkHair")>>
-			<<if $prisonerEvents.includes("talkHairBlooms")>>
-				<span class="purple">Her braid elegently flows, the witchblooms within softly glowing.</span>
-			<<else>>
-				<<set $hc.witchHair to "hair_clean">>
-				<span class="pink">It unbraids itself, spreading out.</span>
+		<<if $hcChallenge.faithBlooms and !$prisonerEvents.includes("talkHairBlooms")>>
+			Her hair begins to float, as if being lifted by an unfelt wind.
+			<<if $prisonerEvents.includes("talkHair")>>
+				It unbraids itself, spreading out.
 			<</if>>
+			<br><br>
+			The Hand appears nervous for a moment, but it doesn't last. <span class="red">Her hair settles back down.</span>
+			You think about the stories of witches' hair being important to their power, and the spot ripped out from the back of her head.
+			Had she been given something to offset that weakness, something might have happened.
+		<<else>>
+			<span class="blue">Her hair begins to float, as if being lifted by an unfelt wind.</span>
+			<<if $prisonerEvents.includes("talkHair")>>
+				<<if $prisonerEvents.includes("talkHairBlooms")>>
+					<span class="purple">Her braid elegently flows, the witchblooms within softly glowing.</span>
+				<<else>>
+					<<set $hc.witchHair to "hair_clean">>
+					<span class="pink">It unbraids itself, spreading out.</span>
+				<</if>>
+			<</if>>
+			The Hand appears nervous for a moment, but hastily continues with the ritual.
 		<</if>>
-		The Hand appears nervous for a moment, but hastily continues with the ritual.
 	<<else>>
 		<span class="red">Her dirty, blood-matted hair appears to briefly move on its own.</span>
 		You think about the stories of witches' hair being important to their power.
@@ -3377,7 +3524,7 @@ You don't want to watch, but you can't look away. Finally, the Hand brandishes a
 		<br><br>
 	<</if>>
 
-	<<link [[Just Watch|Hopeless Cycle Ending D]]>><<pass 1>><</link>>
+	<<link [[Just watch|Hopeless Cycle Ending D]]>><<pass 1>><</link>>
 	<br>
 <</if>>
 
@@ -4396,7 +4543,7 @@ You clutch your head, and try to make your way back to the temple.
 <<else>>
 	<<set $hc.search++>>
 <</if>>
-<<if $hcForest is 0>>
+<<if $hcForest lte 0>>
 	You are on the outskirts of the forest. It used to regularly overgrow into the temple's garden.
 <<else>>
 	You are in the forest, surrounded by nature.
@@ -4422,11 +4569,11 @@ You search for some sign of <<= $prisoner.name>>.
 	<b><u>Locations:</u></b><br>
 
 	<<if $hcForest lt 25>>
-		<<getinicon>><<link [[Search deeper into the forest (0:10)|Hopeless Cycle Ending B Forest]]>><<pass 10>><<set $hcForest += 5>><</link>>
+		<<getinicon>><<link [[Search deeper into the forest (0:10)|Hopeless Cycle Ending B Forest]]>><<pass 10>><<hcForest "forward">><</link>>
 		<br>
 	<</if>>
 	<<if $hcForest gt 0>>
-		<<getouticon>><<link [[Search towards the temple (0:10)|Hopeless Cycle Ending B Forest]]>><<pass 10>><<set $hcForest -= 5>><</link>>
+		<<getouticon>><<link [[Search towards the temple (0:10)|Hopeless Cycle Ending B Forest]]>><<pass 10>><<hcForest "back">><</link>>
 		<br>
 	<</if>>
 <</if>>
@@ -4460,6 +4607,9 @@ Something rustles in the bushes nearby. You unclasp your whip and stand.
 	<br><br>
 
 	You step into the bushes where <<he>> had been standing, where the skin-like scraps are most concentrated.
+<</if>>
+<<if $hcChallenge.forestItem>>
+	There are numerous items piled up in a hoard of sorts, including several that must have been pilfered from the cloister, but that's not what catches your eye.
 <</if>>
 The deep green of the forest is stained with red. Blood. So much blood. Your heart catches in your chest.
 <br><br>
@@ -5424,6 +5574,12 @@ Her soft snoring lulls you into a blissful trance.
 	<br><br>
 
 	<<He>> clears <<his>> throat. "It may be silly of me, but it's the version I enjoy the most, too. Now, my voice grows weary. Thank you for showing so much interest. Come back soon."
+<<elseif Object.values($hcChallenge).count(true) gte 1 and _endingSeen isnot "S">>
+	<<set $daily.winterStoryTime to false>>
+	"As you know, that's just one version of the story. Although..." Winter scratches <<his>> head. "I'm not sure I properly covered those details you requested. We can review them again, if you wish. Just give me a few minutes to stretch my legs."
+	<br><br>
+
+	<<He>> stands up, and starts to walk around the museum.
 <<elseif $hcEndings.includesAll("F","E","D","C","B","A","S")>>
 	"As you know, that's just one version of the story." Winter stands up from <<his>> seat and stretches.
 	<br><br>
@@ -5464,7 +5620,7 @@ Her soft snoring lulls you into a blissful trance.
 <<hopelessCycleEndings>>
 <<set $museumAntiques.paintings.paintingsnake to "museum">>
 
-<<link [[Next|Museum]]>><<endevent>><</link>>
+<<link [[Next|Museum]]>><<unset $hcChallenge>><<endevent>><</link>>
 <br>
 
 

@@ -3,7 +3,9 @@
 <<set _thermoDisable to true>><<effects>><<set $bus to "cell">>
 <<hopelessCycleEffects>>
 You are in <<print $prisoner.name>>'s cell.
-<<if Time.dayState is "dawn">>
+<<if $hcChallenge.torchDarker>>
+	It's dark, as the barred opening at the ceiling is sealed. Not a sliver of light comes through.
+<<elseif Time.dayState is "dawn">>
 	The morning sun's light is strangled through the tiny barred opening near the ceiling.
 <<elseif Time.dayState is "day">>
 	A miniscule amount of natural light flows in from the barred window.
@@ -15,10 +17,12 @@ You are in <<print $prisoner.name>>'s cell.
 <<set _cellTorch to $hcItems.find(item => item.type is "torch" and item.location is $bus and item.inSconce)>>
 <<set _heldTorch to $hcItems.find(item => item.type is "torch" and item.location is "held")>>
 
-<<if ["dusk","night"].includes(Time.dayState) and !hcItemLitTorch() and _heldTorch?.state isnot "lit" and _cellTorch?.state isnot "lit">>
+<<if (["dusk","night"].includes(Time.dayState) or $hcChallenge.torchDarker) and !hcItemLitTorch() and _heldTorch?.state isnot "lit" and _cellTorch?.state isnot "lit">>
 	<br>
 	<<if (_heldTorch and _heldTorch?.state isnot "lit" or _cellTorch and _cellTorch?.state isnot "lit")>>
 		<span class="red">With your torch snuffed, you can't see much.</span>
+	<<elseif $hcChallenge.torchDarker>>
+		<span class="red">With the sealed window, it's too dark for you to see her clearly.</span> You'll need a torch.
 	<<else>>
 		<span class="red">After dusk, it's too dark for you to see her clearly.</span> You'll need a torch.
 	<</if>>
@@ -86,7 +90,7 @@ You are in <<print $prisoner.name>>'s cell.
 
 		<<if $worn.upper.name isnot "chain tunic">>
 			"Good, you're already... where is your armour, brother? No matter. It is time for her penance."
-			<<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+			<<hcSuspicion 10>><<hopelessCycleSus 2>>
 		<<else>>
 			"Good, you're already here, brother. It is time for her penance."
 		<</if>>
@@ -104,7 +108,7 @@ You are in <<print $prisoner.name>>'s cell.
 		<<person1>>
 		<<if $hc.dungeonTorchState is "lit">>
 			A <<personsimple>> in black robes enters the cell. <<He>> freezes upon seeing you.
-			"Brother Fayne? Did the time run away from you? Come, I'll help you snuff the torches for the night." <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+			"Brother Fayne? Did the time run away from you? Come, I'll help you snuff the torches for the night." <<hcSuspicion 5>><<hopelessCycleSus 1>>
 			<br><br>
 
 			<<set $hc.dungeonTorchState to "snuffed">>
@@ -122,9 +126,9 @@ You are in <<print $prisoner.name>>'s cell.
 				"I will awaken a <<priest>> to sanctify us. Wait here." <<He>> disappears into a side passage. <<set $hc.neverLeftDungeon to false>><<set $hc.snuckInDungeon to false>>
 				<br><br>
 
-				<<link [[Wait (0:35)|Hopeless Cycle Cloister]]>><<endevent>><<pass 35>><</link>>
+				<<link [[Wait <<hcTimeDungeonDisplay 35>>|Hopeless Cycle Cloister]]>><<endevent>><<hcTimeDungeonPass 35>><</link>>
 				<br>
-				<<link [[Leave (0:05)|Hopeless Cycle Cloister]]>><<endevent>><<pass 5>><<set $hc.suspicion += 10>><</link>><<hopelessCycleSus 2>>
+				<<link [[Leave (0:05)|Hopeless Cycle Cloister]]>><<endevent>><<pass 5>><<hcSuspicion 10>><</link>><<hopelessCycleSus 2>>
 				<br>
 			<</if>>
 		<<elseif _heldTorch?.state is "lit" or _cellTorch?.state is "lit">>
@@ -144,6 +148,9 @@ You are in <<print $prisoner.name>>'s cell.
 				<br><br>
 
 				"Wretched seductress," <<he>> spits. "Why should Brother Fayne have you to himself?" She glares back at <<him>> as <<he>> approaches. "My vows are already broken. There will be no harm. Not for me, that is."
+				<<if $hcChallenge.faithBlooms>>
+					<<His>> fingers twitch. "Do you remember these hands? <span @class="$prisonerEvents.includes('washHair') ? 'red' : ''">They took your hair so easily.</span> I'll be <i>taking</i> more than just a lock of hair this time."
+				<</if>>
 				<br><br>
 
 				<<link [[Stay perfectly still|Hopeless Cycle Cell Caught Still]]>><<pass 1 hour>><<set $prisoner.love -= 15>><</link>><<hopelessCycleLove -3>>
@@ -154,7 +161,7 @@ You are in <<print $prisoner.name>>'s cell.
 				A <<personsimple>> in black robes enters the cell. <<He>> looks around, <<his>> eyes only stopping on where <<print $prisoner.name>> sits. You cling to the shadows. <<He>> must not be able to see you.
 				<br><br>
 
-				<<He>> huffs and leaves the cell, slamming the barred door shut. You wait a few minutes to make sure <<hes>> out of the dungeon entirely. <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+				<<He>> huffs and leaves the cell, slamming the barred door shut. You wait a few minutes to make sure <<hes>> out of the dungeon entirely. <<hcSuspicion 5>><<hopelessCycleSus 1>>
 				<br><br>
 
 				<<link [[Next (0:05)|Hopeless Cycle Cell]]>><<endevent>><</link>>
@@ -162,7 +169,7 @@ You are in <<print $prisoner.name>>'s cell.
 			<</if>>
 		<</if>>
 	<</if>>
-<<elseif Time.dayState is "day" and $hc.dogs is "loud" and !$hc.daily.prisonerDogs>>
+<<elseif Time.dayState is "day" and $hc.dogs?.includes("loud") and !$hc.daily.prisonerDogs>>
 	<<set $hc.daily.prisonerDogs to true>>
 	<<if $prisoner.state isnot "dogs">>
 		You start to hear the barking of dogs outside. <span class="red">She freezes up, before trying to cover her ears.</span>
@@ -176,7 +183,7 @@ You are in <<print $prisoner.name>>'s cell.
 
 	<<link [[Next|Hopeless Cycle Cell]]>><</link>>
 	<br>
-<<elseif $prisoner.state is "dogs" and ($hc.dogs is "quiet" or Time.dayState isnot "day")>>
+<<elseif $prisoner.state is "dogs" and (!$hc.dogs?.includes("loud") or Time.dayState isnot "day")>>
 	<<set $prisoner.state to "lucid">>
 	She breathes heavily. You shake her by the shoulder.
 	<br><br>
@@ -198,7 +205,7 @@ You are in <<print $prisoner.name>>'s cell.
 	<<elseif Time.dayState is "night" and (Time.hour gte 22 or Time.hour lte 3) and ($prisonerEvents.includes("spendNight") or ($prisoner.love gte 60 and $prisonerEvents.includesAll("talkMagic", "talkHair", "talkName"))) and !$hc.daily.cellSleep and !$hcIncoming and !(Time.lastDayOfMonth is $hc.day)>>
 		<<hcicon "prisoner">><<link [[`Sleep in the cell with $prisoner.name tonight (6:00)`|Hopeless Cycle Cell Spend Night]]>>
 			<<endevent>><<set $phase to 3>><<pass 1 hour>>
-			<<set $prisoner.health += 1>><<set $prisoner.love += 3>>
+			<<hcPrisonerHealth 1>><<set $prisoner.love += 3>>
 			<<purity -30>><<stress -60>><<trauma 50>><<tiredness -12>>
 		<</link>>
 		<<lllpurity>><<lllstress>><<gggtrauma>><<lltiredness>><<hopelessCycleLove 3>>
@@ -220,14 +227,14 @@ You are in <<print $prisoner.name>>'s cell.
 	<<elseif $prisoner.state is "awake" and $prisonerEvents.includes("fed")>>
 		<<if $prisoner.love gte 60 or $prisonerEvents.includes("comfort")>>
 			<<loveicon>><<link [[Talk to her (0:20)|Hopeless Cycle Cell Talk]]>>
-				<<pass 20>><<set $prisoner.love++>><<if $hc.handLocation is "guardhouse">><<set $hc.suspicion += 10>><</if>><<stress -6>>
+				<<pass 20>><<set $prisoner.love++>><<if $hc.handLocation is "guardhouse">><<hcSuspicion 10>><</if>><<stress -6>>
 				<<if !_clothesCurrent and !_sheetsCurrent and _canSee>><<trauma 12>><<arousal 300>><<else>><<trauma 6>><</if>>
 			<</link>>
 			<<hopelessCycleLove 1>><<if $hc.handLocation is "guardhouse">><<hopelessCycleSus 2>><</if>><<lstress>>
 		<<else>>
 			<<if $prisonerEvents.includes("speech")>><<set _talkLinkText to "Talk to her (0:20)">><<else>><<set _talkLinkText to "Try to talk to her (0:20)">><</if>>
 			<<socialiseicon>><<link [[`_talkLinkText`|Hopeless Cycle Cell Talk]]>>
-				<<pass 20>><<set $prisoner.love++>><<if $hc.handLocation is "guardhouse">><<set $hc.suspicion += 10>><</if>><<stress 12>>
+				<<pass 20>><<set $prisoner.love++>><<if $hc.handLocation is "guardhouse">><<hcSuspicion 10>><</if>><<stress 12>>
 				<<if !_clothesCurrent and !_sheetsCurrent and _canSee>><<trauma 24>><<arousal 300>><<else>><<trauma 12>><</if>>
 			<</link>>
 			<<hopelessCycleLove 1>><<if $hc.handLocation is "guardhouse">><<hopelessCycleSus 2>><</if>><<gstress>>
@@ -294,12 +301,12 @@ You are in <<print $prisoner.name>>'s cell.
 				<</if>>
 				<br>
 			<<else>>
-				<<if _water and !$hc.daily.washed>>
+				<<if _water and (!$hc.daily.washed or $hcChallenge.prisonerClean and $prisoner.cleanBody lt 4)>>
 					<<capture _water>>
 						<<if !$prisonerEvents.includes("wash")>>
-							<<skinicon "wash">><<link [[Wash her|Hopeless Cycle Cell Wash Intro]]>><<set $hc.daily.washed to true>><<set _water.dirty++>><<set $prisoner.love += 1>><</link>>
+							<<skinicon "wash">><<link [[Wash her|Hopeless Cycle Cell Wash Intro]]>><<set $hc.daily.washed to true>><<hcWash _water>><<set $prisoner.love += 1>><</link>>
 						<<else>>
-							<<skinicon "wash">><<link [[Wash her|Hopeless Cycle Cell Wash]]>><<set $hc.daily.washed to true>><<set _water.dirty++>><<set $prisoner.love += 1>><</link>><<gtrauma>><<ggarousal>><<lpurity>><<hopelessCycleLove 1>>
+							<<skinicon "wash">><<link [[Wash her|Hopeless Cycle Cell Wash]]>><<set $hc.daily.washed to true>><<hcWash _water>><<if !$hc.daily.washed>><<set $prisoner.love += 1>><</if>><</link>><<gtrauma>><<ggarousal>><<lpurity>><<if !$hc.daily.washed>><<hopelessCycleLove 1>><</if>>
 						<</if>>
 						<br>
 					<</capture>>
@@ -309,7 +316,7 @@ You are in <<print $prisoner.name>>'s cell.
 					<<if _waterCleanOnly>>
 						<<capture _herbs>>
 							<<if !$hc.daily.treated>>
-								<<hcicon "herbs">><<link [[Treat her burns|Hopeless Cycle Cell Burns]]>><<set $hc.daily.treated to true>><<set $prisoner.health += 3>><<set $prisoner.harmed-->><<set $prisoner.love += 2>><<run hcItemRemove(_herbs)>><<stress 12>><<trauma 24>><</link>><<gstress>><<ggtrauma>><<hopelessCycleLove 1>>
+								<<hcicon "herbs">><<link [[Treat her burns|Hopeless Cycle Cell Burns]]>><<set $hc.daily.treated to true>><<hcPrisonerHealth 3>><<set $prisoner.harmed-->><<set $prisoner.love += 2>><<run hcItemRemove(_herbs)>><<stress 12>><<trauma 24>><</link>><<gstress>><<ggtrauma>><<hopelessCycleLove 1>>
 								<br>
 							<</if>>
 							<<if $hc.daily.treated and $prisonerEvents.includes("talkHerbsMouth") and !$prisonerEvents.includes("herbsMouth")>>
@@ -343,10 +350,10 @@ You are in <<print $prisoner.name>>'s cell.
 							<<hcicon _valueFood>><<link [[`Give her _valueFood.name (0:10)`|Hopeless Cycle Cell Food Intro]]>>
 								<<pass 10>><<set $hcFood to _valueFood.name>>
 								<<if _valueFood.name is "stolen fruit">>
-									<<set $prisoner.health += 1>>
+									<<hcPrisonerHealth 1>>
 									<<run hcItemRemove(_valueFood)>>
 								<<else>>
-									<<if _valueFood.name isnot "prison gruel">><<set $prisoner.health += 3>><</if>>
+									<<if _valueFood.name isnot "prison gruel">><<hcPrisonerHealth 3>><</if>>
 									<<set _valueFood.used to true>><<set _valueFood.dirty to 1>>
 								<</if>>
 							<</link>>
@@ -354,14 +361,17 @@ You are in <<print $prisoner.name>>'s cell.
 						<<elseif $prisoner.harmed gte Math.floor($prisoner.love / 8) and $prisoner.state isnot "catatonic">>
 							<<hcicon _valueFood>><<link [[`Give her _valueFood.name (0:10)`|Hopeless Cycle Cell Food Refused]]>><</link>>
 							<br>
+						<<elseif $hcChallenge.prisonerFood and $hc.daily.fed>>
+							<<hcicon _valueFood>><<link [[`Give her _valueFood.name (0:10)`|Hopeless Cycle Cell Food Restricted]]>><<set $hcFood to _valueFood.name>><</link>>
+							<br>
 						<<else>>
 							<<hcicon _valueFood>><<link [[`Give her _valueFood.name (0:10)`|Hopeless Cycle Cell Food]]>>
 								<<pass 10>><<set $prisoner.love++>><<set $hcFood to _valueFood.name>>
 								<<if _valueFood.name is "stolen fruit">>
-									<<set $prisoner.health += 1>>
+									<<hcPrisonerHealth 1>>
 									<<run hcItemRemove(_valueFood)>>
 								<<else>>
-									<<if _valueFood.name isnot "prison gruel">><<set $prisoner.health += 3>><</if>>
+									<<if _valueFood.name isnot "prison gruel">><<hcPrisonerHealth 3>><</if>>
 									<<set _valueFood.used to true>><<set _valueFood.dirty to 1>>
 								<</if>>
 							<</link>>
@@ -370,7 +380,7 @@ You are in <<print $prisoner.name>>'s cell.
 						<</if>>
 					<</capture>>
 				<</for>>
-				<<if _food.length gte 2 and !$hcIncoming and $prisoner.love gte 30>>
+				<<if _food.length gte 2 and !$hcIncoming and $prisoner.love gte 30 and !($hc.daily.fed and $hcChallenge.prisonerFood)>>
 					<<hcicon "prisoner">><<link [[Sit and eat with her (0:20)|Hopeless Cycle Cell Food Together]]>><<pass 20>><<set $prisoner.love += 3>><<stress -12>><<trauma -24>><<tiredness -6>><</link>><<ltiredness>><<if $prisonerEvents.includes("eatTogether")>><<lstress>><<lltrauma>><</if>><<hopelessCycleLove 2>>
 					<br>
 				<</if>>
@@ -384,7 +394,7 @@ You are in <<print $prisoner.name>>'s cell.
 					<</capture>>
 				<</if>>
 			<</if>>
-			<<if _water and !$hc.daily.washed>>
+			<<if _water and (!$hc.daily.washed or $hcChallenge.prisonerClean and $prisoner.cleanBody gt 0)>>
 				<<capture _water, _clothesCurrent>>
 					<<hcicon "bucket">><<link [[Dump the bucket of water over her (0:01)|Hopeless Cycle Cell Dump Water]]>>
 						<<set $prisoner.harmed += 1>><<set $prisoner.love -= 3>><<sadism 5>>
@@ -406,16 +416,16 @@ You are in <<print $prisoner.name>>'s cell.
 				<<if $prisoner.love gte 45>>
 					<<templeicon $temple_weapon>><<link [[Whip her (0:02)|Hopeless Cycle Cell Whip]]>>
 						<<pass 2>><<if $sadism_level gte 2>><<arousal 800>><</if>>
-						<<set $prisoner.harmed += 1>><<set $prisoner.health -= 1>>
+						<<set $prisoner.harmed += 1>><<hcPrisonerHealth -1>>
 						<<stress 6>><<control 25>><<sadism 30>>
-						<<if $hc.handLocation is "guardhouse">><<set $hc.suspicion -= 3>><</if>>
+						<<if $hc.handLocation is "guardhouse">><<hcSuspicion -3>><</if>>
 					<</link>><<gstress>><<gcontrol>><<if $hc.handLocation is "guardhouse">><<hopelessCycleSus -1>><</if>>
 				<<else>>
 					<<templeicon $temple_weapon>><<link [[Whip her (0:02)|Hopeless Cycle Cell Whip]]>>
 						<<pass 2>><<if $sadism_level gte 2>><<arousal 800>><</if>>
-						<<set $prisoner.harmed += 1>><<set $prisoner.health -= 1>>
+						<<set $prisoner.harmed += 1>><<hcPrisonerHealth -1>>
 						<<stress -24>><<trauma -12>><<control 25>><<sadism 30>>
-						<<if $hc.handLocation is "guardhouse">><<set $hc.suspicion -= 3>><</if>>
+						<<if $hc.handLocation is "guardhouse">><<hcSuspicion -3>><</if>>
 					<</link>><<llstress>><<ltrauma>><<gcontrol>><<if $hc.handLocation is "guardhouse">><<hopelessCycleSus -1>><</if>>
 				<</if>>
 				<<if $sadism_level gte 2>><<garousal>><</if>>
@@ -462,7 +472,12 @@ The other eye and her mouth are obscured behind dirty bandages. You stand perfec
 You were ordered to keep her alive. You'll need to change her bandages, or she probably won't even survive the night. <span class="blue">You can find bandages in the cloister's training area.</span>
 <br><br>
 
-It might help to wash her as well. <span class="blue">You can fill a wash bucket with water in the garden.</span>
+It might help to wash her as well.
+<<if $hcChallenge.waterEarly>>
+	<span class="red">The water from the garden's well is foul,</span> but <span class="blue">you can still fill a wash bucket with water from the lake in the forest.</span> It's a bit of a walk, but needs must.
+<<else>>
+	<span class="blue">You can fill a wash bucket with water in the garden.</span>
+<</if>>
 <br><br>
 
 <<link [[Next|Hopeless Cycle Cell]]>><</link>>
@@ -481,9 +496,9 @@ Her silver manacles bind her hands in front of her, and the chain between them i
 They will make this difficult, but freeing her for even a moment could be dangerous.
 <br><br>
 
-<<link [[Just cut her 'clothes' away (0:01)|Hopeless Cycle Cell Undress Intro 2]]>><<set $phase to 1>><</link>>
+<<link [[Just cut her 'clothes' away (0:01)|Hopeless Cycle Cell Undress Intro 2]]>><<pass 1>><<set $phase to 1>><</link>>
 <br>
-<<link [[Unlock her shackles and pull it off over her head (0:04)|Hopeless Cycle Cell Undress Intro 2]]>><<set $prisoner.love++>><<set $phase to 2>><</link>>
+<<link [[Unlock her shackles and pull it off over her head (0:04)|Hopeless Cycle Cell Undress Intro 2]]>><<pass 4>><<set $prisoner.love++>><<set $phase to 2>><</link>>
 <br>
 
 :: Hopeless Cycle Cell Undress Intro 2
@@ -556,7 +571,7 @@ Your hand clenches. If she's as dangerous as the Bishop's Hand believes, her cor
 :: Hopeless Cycle Cell Bandages Intro Talk
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
-<<if $hc.handLocation is "guardhouse">><<set $hc.suspicion += 5>><</if>>
+<<if $hc.handLocation is "guardhouse">><<hcSuspicion 5>><</if>>
 <span class="narration">The gaoler wanted to minimise contact, and getting the witch to keep still would be the best way. How did he do it? Well...</span>
 <br><br>
 
@@ -726,7 +741,7 @@ Touching her at all is unpleasant. You can feel her corruption seeping into you.
 
 	When you're done, she lets out a quiet sigh of relief.
 <<else>>
-	<<set $prisoner.cleanBody += 2>><<set $prisoner.health += 3>>
+	<<set $prisoner.cleanBody += 2>><<hcPrisonerHealth 3>>
 	<span class="narration">The gaoler, despite his discomfort, did his job thoroughly.</span>
 	<br><br>
 
@@ -758,6 +773,11 @@ She looks at you, and you shiver once again.
 You look down at the water bucket, its contents no longer clean. <span class="blue">You can dump it out in the disposal channel under the guardhouse.</span>
 <br><br>
 
+<<if $hcChallenge.prisonerClean>>
+	Despite washing her, she still looks unclean. <span class="pink">With how tainted her wounds are, washing her more than once per day may be required.</span>
+	<br><br>
+<</if>>
+
 <<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 <br>
 
@@ -782,10 +802,10 @@ You prop her up in a kneeling position.
 
 <<link [[Wash her quickly (0:10)|Hopeless Cycle Cell Wash 2]]>><<pass 10>><<trauma 12>><<arousal 600>><<purity -10>><<set $phase to 1>><</link>><<gtrauma>><<garousal>><<lpurity>>
 <br>
-<<link [[Wash her thoroughly (0:30)|Hopeless Cycle Cell Wash 2]]>><<pass 30>><<set $prisoner.love++>><<trauma 24>><<arousal 1200>><<purity -20>><<set $phase to 2>><</link>><<ggtrauma>><<ggarousal>><<llpurity>><<hopelessCycleLove 1>>
+<<link [[Wash her thoroughly (0:30)|Hopeless Cycle Cell Wash 2]]>><<pass 30>><<if !$hc.daily.washed>><<set $prisoner.love++>><</if>><<trauma 24>><<arousal 1200>><<purity -20>><<set $phase to 2>><</link>><<ggtrauma>><<ggarousal>><<llpurity>><<if !$hc.daily.washed>><<hopelessCycleLove 1>><</if>>
 <br>
 <<if $prisonerEvents.includes("face") and !$prisonerEvents.includes("washHair")>>
-	<<link [[Wash her hair (1:00)|Hopeless Cycle Cell Wash Hair]]>><<pass 60>><<set $prisoner.cleanBody += 3>><<set $prisoner.health += 4>><<set $prisoner.harmed -= 1>><<set $prisoner.love += 3>><<pass 30>><<trauma 24>><<arousal 1200>><<purity -30>><</link>><<ggtrauma>><<ggarousal>><<llpurity>><<hopelessCycleLove 2>>
+	<<link [[Wash her hair (1:00)|Hopeless Cycle Cell Wash Hair]]>><<pass 60>><<set $prisoner.cleanBody += 3>><<hcPrisonerHealth 4>><<set $prisoner.harmed -= 1>><<set $prisoner.love += 3>><<pass 30>><<trauma 24>><<arousal 1200>><<purity -30>><</link>><<ggtrauma>><<ggarousal>><<llpurity>><<hopelessCycleLove 2>>
 	<br>
 <</if>>
 
@@ -793,8 +813,8 @@ You prop her up in a kneeling position.
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
 
-<<if $phase2 is 1>>
-	<<set $prisoner.cleanBody += 1>><<set $prisoner.health++>>
+<<if $phase is 1>>
+	<<set $prisoner.cleanBody += 1>><<hcPrisonerHealth 1>>
 	You show no regard for her pain, washing over her wounds<<if $prisonerBrands>> and brandings<</if>> quickly.
 	<br><br>
 
@@ -804,7 +824,7 @@ You prop her up in a kneeling position.
 		When you're done, she lets out a quiet sigh of relief.
 	<</if>>
 <<else>>
-	<<set $prisoner.cleanBody += 2>><<set $prisoner.health += 3>>
+	<<set $prisoner.cleanBody += 2>><<hcPrisonerHealth 3>>
 	<<if $prisonerEvents.includes("brand") and $prisonerBrands>>
 		<<set _brands to $prisonerBrands.filter(brand => brand isnot "right cheek")>>
 		You make sure to be careful around her wounds, and to clean each branding thoroughly.
@@ -843,7 +863,7 @@ You prop her up in a kneeling position.
 <</if>>
 <br><br>
 
-<<if !$prisonerEvents.includes("hunger")>>
+<<if !$prisonerEvents.includes("hunger") and $hc.daysPassed gt 0>>
 	<<set $prisonerEvents.pushUnique("hunger")>>
 	As you wash her, you hear a low rumble. She covers her abdomen.
 	<br><br>
@@ -875,6 +895,13 @@ Her hair is absolutely full of knots, too. You gently run your fingers down, doi
 <</if>>
 <br><br>
 
+<<if $hcChallenge.faithBlooms>>
+	<!-- TODO CHALLENGE: maybe get a follower sprite variant with the bald spot?
+	Or just rewrite so the bald spot wouldn't be visible from the sidebar camera angle. -->
+	With her hair less matted and bloodied, you can see <span class="red">a bald spot on the back of her head, where a chunk of her hair had been ripped out</span>. She squeezes her eyes shut and looks away when your finger brushes it. You feel uneasy. This was not penance. This was cruelty, for cruelty's sake.
+	<br><br>
+<</if>>
+
 After thirty minutes of untangling the knots while trying to avoid any contact with the antler, you give up and unsheathe your dagger. You show it to her, and ask for her permission to continue. She nods.
 <br><br>
 
@@ -886,7 +913,12 @@ It frames her face, which looks almost vibrant and youthful now that you've clea
 <br><br>
 
 You become lost in her beauty. Her skin looks radiant, the gentle curve of her shoulders guiding your eyes down to her breasts. Her wounds and bruises simply highlight an underlying perfection.
-The only flaw is the glass-like empty antler erupting from her head. You feel urges creeping in. <<arousal 2000>><<garousal>>
+<<if $hcChallenge.faithBlooms>>
+	The only flaws are the glass-like empty antler erupting from her head, and the thin spot on the back of her head, only partly covered by the rest of her hair.
+<<else>>
+	The only flaw is the glass-like empty antler erupting from her head.
+<</if>>
+You feel urges creeping in. <<arousal 2000>><<garousal>>
 <br><br>
 
 She starts to blush as you continue to stare. You shake your head and snap out of it. You know those thoughts aren't your own. Is she still trying to bewitch you?
@@ -1137,6 +1169,37 @@ You place the food before her. <span class="red">She pushes it away, glaring at 
 <<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 <br>
 
+:: Hopeless Cycle Cell Food Restricted
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>>
+
+<<if $prisoner.state is "catatonic">>
+	You place the food down, but she doesn't move. She's not lucid.
+	<br><br>
+
+	You sigh, and attempt to feed her by hand. <span class="red">Her lips remain closed.</span> You take it back.
+<<else>>
+	<<if $prisoner.state is "asleep">>
+		<<set $prisoner.state to "awake">><<set $prisoner.awakeTimer to 3>>
+		You gently shake <<= $prisoner.name>> awake. She rubs her eye as she sits up.
+		<br><br>
+	<</if>>
+
+	<<if $prisoner.love gte 30>>
+		You place the $hcFood in her hands.
+	<<else>>
+		You place the $hcFood down in front of her.
+	<</if>>
+	She looks at it reluctantly, <span class="red">shaking her head.</span> You take it back.
+<</if>>
+<br><br>
+
+<span class="narration">Remember, in this version of the tale, the witch's stomach was feeble. She could barely keep one meal down, let alone another.</span>
+<br><br>
+
+<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
+<br>
+
 :: Hopeless Cycle Cell Food Together
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
@@ -1150,9 +1213,9 @@ You give her the...
 			<<set $hcFood to _valueFood.name>>
 			<<if _valueFood.name is "stolen fruit">>
 				<<run hcItemRemove(_valueFood)>>
-				<<set $prisoner.health += 1>>
+				<<hcPrisonerHealth 1>>
 			<<else>>
-				<<if _valueFood.name isnot "prison gruel">><<set $prisoner.health += 3>><</if>>
+				<<if _valueFood.name isnot "prison gruel">><<hcPrisonerHealth 3>><</if>>
 				<<set _valueFood.used to true>><<set _valueFood.dirty to 1>>
 			<</if>>
 		<</link>>
@@ -1368,7 +1431,7 @@ You eat the...
 		<<if $prisoner.love gte 45 and !(Time.lastDayOfMonth is $hc.day)>>
 			<<link [[Sleep here tonight (6:00)|Hopeless Cycle Cell Spend Night]]>>
 				<<endevent>><<set $phase to 1>><<pass 1 hour>>
-				<<set $prisoner.health += 1>><<set $prisoner.love += 3>>
+				<<hcPrisonerHealth 1>><<set $prisoner.love += 3>>
 				<<purity -30>><<stress -60>><<trauma 50>><<tiredness -12>>
 			<</link>>
 			<<lllpurity>><<lllstress>><<gggtrauma>><<lltiredness>><<hopelessCycleLove 3>>
@@ -1504,6 +1567,9 @@ You remain there for a short time, before gently laying her down. <<set $prisone
 		<br><br>
 
 		"Wretched seductress," <<he>> spits. "Why should Brother Fayne have you to himself?" She glares back at <<him>> as <<he>> approaches. "My vows are already broken. There will be no harm. Not for me, that is."
+		<<if $hcChallenge.faithBlooms>>
+			<<His>> fingers twitch. "Do you remember these hands? <span @class="$prisonerEvents.includes('washHair') ? 'red' : ''">They took your hair so easily.</span> I'll be <i>taking</i> more than just a lock of hair this time."
+		<</if>>
 		<br><br>
 
 		<<link [[Stay perfectly still|Hopeless Cycle Cell Caught Still]]>><<pass 1 hour>><<set $prisoner.love -= 10>><</link>><<hopelessCycleLove -3>>
@@ -1514,23 +1580,19 @@ You remain there for a short time, before gently laying her down. <<set $prisone
 		<<He>> looks around, <<his>> eyes only stopping on where <<print $prisoner.name>> sits. You cling to the shadows. <<He>> must not be able to see you.
 		<br><br>
 
-		<<He>> huffs and leaves the cell, slamming the barred door shut. You wait a few minutes to make sure <<hes>> out of the dungeon entirely. <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+		<<He>> huffs and leaves the cell, slamming the barred door shut. You wait a few minutes to make sure <<hes>> out of the dungeon entirely. <<hcSuspicion 5>><<hopelessCycleSus 1>>
 		<br><br>
 
 		That was close. <<stress 24>><<ggstress>>
 		<br><br>
 
-		<<link [[Go back to sleep|Hopeless Cycle Cell Spend Night 2]]>><<set $hc.daily.cellSleep to true>><<set $prisoner.health += 3>><<endevent>><<pass 5 hours>><<tiredness -60>><</link>>
+		<<link [[Go back to sleep|Hopeless Cycle Cell Spend Night 2]]>><<set $hc.daily.cellSleep to true>><<hcPrisonerHealth 3>><<endevent>><<pass 5 hours>><<tiredness -60>><</link>>
 		<br>
 		<<link [[Get up|Hopeless Cycle Cell]]>><<set $hc.daily.cellSleep to true>><<endevent>><</link>>
 		<br>
 	<</if>>
-<<elseif $prisonerEvents.includes("face") and ($prisoner.health lte 11 or $prisonerEvents.includes("kissRefuse"))>>
-	/* ToDo: Prisoner sleep rape? Maybe later */
-	<<link [[Sleep|Hopeless Cycle Cell Spend Night 2]]>><<set $hc.daily.cellSleep to true>><<set $prisoner.health += 3>><<endevent>><<pass 5 hours>><<tiredness -60>><</link>>
-	<br>
 <<else>>
-	<<link [[Sleep|Hopeless Cycle Cell Spend Night 2]]>><<set $hc.daily.cellSleep to true>><<set $prisoner.health += 3>><<endevent>><<pass 5 hours>><<tiredness -60>><</link>>
+	<<link [[Sleep|Hopeless Cycle Cell Spend Night 2]]>><<set $hc.daily.cellSleep to true>><<hcPrisonerHealth 3>><<endevent>><<pass 5 hours>><<tiredness -60>><</link>>
 	<br>
 <</if>>
 
@@ -1700,7 +1762,7 @@ You carefully pluck the dried leaves from the herb, and dip each in the clean wa
 			<<set $prisonerEvents.pushUnique("herbsMouth")>>
 			A long-suffered pain is, at last, suppressed. Her face contorts after a moment. You forgot to warn her about the taste.
 			You didn't think she'd be able to taste it at all considering her condition.
-			<<set $prisoner.love += 5>><<set $prisoner.health += 5>><<set $prisoner.harmed -= 3>><<hopelessCycleLove 2>>
+			<<set $prisoner.love += 5>><<hcPrisonerHealth 5>><<set $prisoner.harmed -= 3>><<hopelessCycleLove 2>>
 		<</if>>
 		<br><br>
 
@@ -1732,7 +1794,7 @@ You dip an herb in the water and motion for her to open her mouth. She opens wid
 
 A long-suffered pain is, at last, suppressed. Her face contorts after a moment. You forgot to warn her about the taste.
 You didn't think she'd be able to taste it at all considering her condition.
-<<set $prisoner.love += 5>><<set $prisoner.health += 5>><<set $prisoner.harmed -= 3>><<hopelessCycleLove 2>>
+<<set $prisoner.love += 5>><<hcPrisonerHealth 5>><<set $prisoner.harmed -= 3>><<hopelessCycleLove 2>>
 <<set $prisonerEvents.pushUnique("herbsMouth")>>
 <br><br>
 
@@ -1758,7 +1820,7 @@ You didn't think she'd be able to taste it at all considering her condition.
 
 	<<link [[Lay As One (0:30)|Hopeless Cycle Cell Burns Sex]]>>
 		<<pass 30>><<set $prisoner.love += 5>><<trauma 50>><<purity -100>>
-		<<if $hc.handLocation is "guardhouse">><<set $hc.suspicion += 20>><</if>>
+		<<if $hc.handLocation is "guardhouse">><<hcSuspicion 20>><</if>>
 	<</link>>
 	<<gggtrauma>><<gggarousal>><<lllpurity>><<hopelessCycleLove 2>><<penilevirginitywarning>>
 	<<if $hc.handLocation is "guardhouse">><<hopelessCycleSus 3>><</if>>
@@ -1771,7 +1833,7 @@ You didn't think she'd be able to taste it at all considering her condition.
 
 	<<link [[Allow it (0:30)|Hopeless Cycle Cell Burns Sex]]>>
 		<<pass 30>><<set $prisoner.love += 5>><<trauma 50>><<purity -100>>
-		<<if $hc.handLocation is "guardhouse">><<set $hc.suspicion += 20>><</if>>
+		<<if $hc.handLocation is "guardhouse">><<hcSuspicion 20>><</if>>
 	<</link>>
 	<<gggtrauma>><<gggarousal>><<lllpurity>><<hopelessCycleLove 2>><<penilevirginitywarning>>
 	<<if $hc.handLocation is "guardhouse">><<hopelessCycleSus 3>><</if>>
@@ -1782,7 +1844,7 @@ You didn't think she'd be able to taste it at all considering her condition.
 
 :: Hopeless Cycle Cell Burns Purge 2
 <<set _thermoDisable to true>><<effects>>
-<<hopelessCycleEffects>><<set $prisoner.health += 2>><<set $prisoner.harmed-->>
+<<hopelessCycleEffects>><<hcPrisonerHealth 2>><<set $prisoner.harmed-->>
 You easily hold her back, and push her down. She lets out a grunt of pain, but continues looking up at you with a great hunger in her eyes.
 <br><br>
 
@@ -1839,7 +1901,7 @@ She pauses, before smiling sadly. She pushes away from you.
 
 :: Hopeless Cycle Cell Burns Sex
 <<set _thermoDisable to true>><<effects>>
-<<hopelessCycleEffects>><<set $prisonerEvents.pushUnique("sex")>><<set $prisoner.health += 6>>
+<<hopelessCycleEffects>><<set $prisonerEvents.pushUnique("sex")>><<hcPrisonerHealth 6>>
 
 You pull her towards the straw bed. Her breathing gets even heavier as you lay her down.
 <<if $worn.upper.name is "chain tunic">>
@@ -2229,7 +2291,7 @@ She taps your shoulder when she's finished. You turn back around and she smiles 
 
 :: Hopeless Cycle Cell Witchblooms
 <<set _thermoDisable to true>><<effects>>
-<<hopelessCycleEffects>><<set $prisonerEvents.pushUnique("talkHairBlooms")>><<set $prisoner.health ++>>
+<<hopelessCycleEffects>><<set $prisonerEvents.pushUnique("talkHairBlooms")>><<hcPrisonerHealth 1>>
 
 You show <<= $prisoner.name>> the revitalised flowers. Her eye widens.
 <br><br>
@@ -2239,6 +2301,9 @@ You tell her that you let them feed on your purity in your sleep.
 <br><br>
 
 You gently braid her hair around the twin blooms. She runs her hand against them, smiling.
+<<if $hcChallenge.faithBlooms>>
+	Her fingers brush against her bald spot on the back of her head. For the first time, <span class="green">being reminded of it doesn't upset her</span>. Not anymore.
+<</if>>
 <br><br>
 
 Despite everything, you've made her look and feel pretty. She nearly topples you with a hug.
@@ -2443,7 +2508,7 @@ You gently lay the sheet over her. She stirs for a moment, before pulling it clo
 		<<run $hcItems.filter(item => item.location is "held").forEach(item => {item.location = "cell"})>>
 		<br><br>
 
-		<<link [[Next|Hopeless Cycle Quarters]]>><<pass 30>><<endevent>><<set $hc.nightBreakIn to "passed">><<set $hc.suspicion += 10>><</link>><<hopelessCycleSus 2>>
+		<<link [[Next|Hopeless Cycle Quarters]]>><<pass 30>><<endevent>><<set $hc.nightBreakIn to "passed">><<hcSuspicion 10>><</link>><<hopelessCycleSus 2>>
 		<br>
 	<<else>>
 		<<if $prisoner.love gte 40 and !$hc.secondChance>>
@@ -2501,7 +2566,7 @@ Your siblings lead you back to the barracks.
 <span class="narration">It was not the gaoler's place to intervene in his siblings' vision of justice for the unholy. He simply needed to be sure that he would not be the one facing the consequences. That's what he told himself, at least.</span>
 <br><br>
 
-<<set $prisoner.health -= 10>>
+<<hcPrisonerHealth -10>>
 <<set $prisoner.harmed += 2>>
 <<set $prisoner.cleanBody -= 2>>
 <<set $prisoner.cleanBandages -= 2>>
@@ -2539,7 +2604,7 @@ Her look says everything. She wants revenge. <span class="red">With a broken vow
 <span class="narration">It was not the gaoler's place to intervene in his siblings' vision of justice for the unholy. He simply needed to be sure that he would not be the one facing the consequences.</span>
 <br><br>
 <<set $hc.nightBreakIn to "failed">>
-<<set $prisoner.health -= 10>>
+<<hcPrisonerHealth -10>>
 <<set $prisoner.harmed += 2>>
 <<set $prisoner.cleanBody -= 2>>
 <<set $prisoner.cleanBandages -= 2>>
@@ -2636,7 +2701,7 @@ Why else would you be a gaoler?
 
 You sit in front of <<print $prisoner.name>>.
 <<if $prisoner.state is "catatonic">>
-	<<set $prisoner.health += 4>><<set $prisoner.state to "lucid">>
+	<<hcPrisonerHealth 4>><<set $prisoner.state to "lucid">>
 	Her eye is empty and lightless.
 	<br><br>
 
@@ -2690,7 +2755,7 @@ You leave the cell, locking the door behind you.
 
 	<<if $worn.upper.name isnot "chain tunic">>
 		"Where is your armour, brother? No matter. It is time for her penance. Inside." You obey. The Hand follows you in, along with a confessor.
-		<<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+		<<hcSuspicion 10>><<hopelessCycleSus 2>>
 	<<else>>
 		"It is time for her penance. Inside." You obey. The Hand follows you in, along with a confessor.
 	<</if>>
@@ -2732,7 +2797,7 @@ You leave the cell, locking the door behind you.
 		<<He>> stops <<himself>> upon realising who you are.
 		<br><br>
 
-		"Brother Fayne? Did the time run away from you? Come, I'll help you snuff the torches for the night." <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+		"Brother Fayne? Did the time run away from you? Come, I'll help you snuff the torches for the night." <<hcSuspicion 5>><<hopelessCycleSus 1>>
 		<br><br>
 
 		<<set $hc.dungeonTorchState to "snuffed">>
@@ -2742,9 +2807,9 @@ You leave the cell, locking the door behind you.
 		"I will awaken a <<priest>> to sanctify us. Wait here." <<He>> disappears into a side passage. <<set $hc.neverLeftDungeon to false>><<set $hc.snuckInDungeon to false>>
 		<br><br>
 
-		<<link [[Wait (0:35)|Hopeless Cycle Cloister]]>><<endevent>><<pass 35>><</link>>
+		<<link [[Wait <<hcTimeDungeonDisplay 35>>|Hopeless Cycle Cloister]]>><<endevent>><<hcTimeDungeonPass 35>><</link>>
 		<br>
-		<<link [[Leave (0:05)|Hopeless Cycle Cloister]]>><<endevent>><<pass 5>><<set $hc.suspicion += 10>><</link>><<hopelessCycleSus 2>>
+		<<link [[Leave (0:05)|Hopeless Cycle Cloister]]>><<endevent>><<pass 5>><<hcSuspicion 10>><</link>><<hopelessCycleSus 2>>
 		<br>
 	<<else>>
 		<<generateConfessor 1>><<person1>>
@@ -2752,7 +2817,7 @@ You leave the cell, locking the door behind you.
 		<<He>> stops <<himself>> upon realising who you are.
 		<br><br>
 
-		"Brother Fayne? What are you doing in the gaol at this hour?" <<He>> eyes you with concern, seeing the cell you just emerged from. "This will not do. Come, you need rest." <<He>> forcibly guides you out of the dungeon. <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+		"Brother Fayne? What are you doing in the gaol at this hour?" <<He>> eyes you with concern, seeing the cell you just emerged from. "This will not do. Come, you need rest." <<He>> forcibly guides you out of the dungeon. <<hcSuspicion 10>><<hopelessCycleSus 2>>
 		<br><br>
 
 		"I will awaken a <<priest>> to sanctify us. Wait here." <<He>> disappears into a side passage. <<set $hc.neverLeftDungeon to false>><<set $hc.snuckInDungeon to false>>
@@ -2760,7 +2825,7 @@ You leave the cell, locking the door behind you.
 
 		<<link [[Wait (0:30)|Hopeless Cycle Cloister]]>><<endevent>><<pass 30>><</link>>
 		<br>
-		<<link [[Leave|Hopeless Cycle Cloister]]>><<endevent>><<set $hc.suspicion += 10>><</link>><<hopelessCycleSus 2>>
+		<<link [[Leave|Hopeless Cycle Cloister]]>><<endevent>><<hcSuspicion 10>><</link>><<hopelessCycleSus 2>>
 		<br>
 	<</if>>
 <<elseif ["dawn","day"].includes(Time.dayState) and ($hc.neverLeftDungeon or $hc.snuckInDungeon) and $hc.daysPassed gte 1>>
@@ -2776,13 +2841,13 @@ You leave the cell, locking the door behind you.
 
 	<<His>> arms cross.
 	<<if $hc.suspicionRevealed>>
-		"I will have to report this to the Bishop. We must take precautions in the event you fail your charge." <<set $hc.suspicion += 15>><<hopelessCycleSus 3>>
+		"I will have to report this to the Bishop. We must take precautions in the event you fail your charge." <<hcSuspicion 15>><<hopelessCycleSus 3>>
 		<br><br>
 
 		<<He>> leaves without another word.
 	<<else>>
 		<<set $hc.suspicionRevealed to true>>
-		"You are either very dedicated to your charge, or the Elk's servant has wormed her way into your head. I pray it is not the latter. Do not fail us." <<set $hc.suspicion += 10>>
+		"You are either very dedicated to your charge, or the Elk's servant has wormed her way into your head. I pray it is not the latter. Do not fail us." <<hcSuspicion 10>>
 		<br><br>
 
 		<<He>> leaves without another word.
@@ -2809,10 +2874,10 @@ The Hand looks <<= $prisoner.name>> over.
 	He kicks her awake.
 <</if>>
 <br>
-<<if $hcItems.some(clothing => clothing.type is "clothes" and clothing.dirty is 0 and clothing.location is "prisoner") and $prisonerEvents.includes("newClothes") and !$prisonerEvents.includes("newClothesSeen")>>
+<<if $hcItems.some(clothing => clothing.type is "clothes" and clothing.dirty is 0 and clothing.location is "prisoner") and $prisonerEvents.includes("newClothes") and (!$prisonerEvents.includes("newClothesSeen") or hcChallenge.handStrict)>>
 	<<set _somethingToSay to true>>
 	<<set $prisonerEvents.pushUnique("newClothesSeen")>>
-	<span class="red">He seems to notice that you've given her new clothes, but says nothing.</span> <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	<span class="red">He seems to notice that you've given her new clothes, but says nothing.</span> <<hcSuspicion 10>><<hopelessCycleSus 2>>
 	<br>
 <<elseif !$hcItems.some(clothing => clothing.type is "clothes" and clothing.location is "prisoner")>>
 	He ogles her naked body for a moment, before shaking his head.
@@ -2820,32 +2885,32 @@ The Hand looks <<= $prisoner.name>> over.
 <</if>>
 <<if $prisoner.health gte 26>>
 	<<set _somethingToSay to true>>
-	"You've been treating her well," he says before a low, growling chuckle. "Been feeding her extra?" <<set $hc.suspicion += 20>><<hopelessCycleSus 3>>
+	"You've been treating her well," he says before a low, growling chuckle. "Been feeding her extra?" <<hcSuspicion 20>><<hopelessCycleSus 3>>
 	<br>
 <</if>>
 <<if $hcItems.some(sheet => sheet.type is "sheets" and sheet.location is "prisoner")>>
 	<<set _somethingToSay to true>>
-	"They said a sheet was stolen from the barracks," he says, eyeing her bedsheet. <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+	"They said a sheet was stolen from the barracks," he says, eyeing her bedsheet. <<hcSuspicion 5>><<hopelessCycleSus 1>>
 	<br>
 <</if>>
 <<if $prisoner.harmedRecently lte 0 and $prisonerEvents.includes("punishmentIntro")>>
 	<<set _somethingToSay to true>>
-	"No fresh wounds. You've been showing mercy, brother." <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+	"No fresh wounds. You've been showing mercy, brother." <<hcSuspicion 10>><<hopelessCycleSus 2>>
 	<br>
 <</if>>
-<<if $prisonerEvents.includes("talkHair") and !$prisonerEvents.includes("talkHairSeen")>>
+<<if $prisonerEvents.includes("talkHair") and (!$prisonerEvents.includes("talkHairSeen") or $hcChallenge.handStrict)>>
 	<<set _somethingToSay to true>>
 	<<set $prisonerEvents.pushUnique("talkHairSeen")>>
-	He notices her braided hair. "Must be good with her hands, to do that with shackles on." <<set $hc.suspicion += 5>><<hopelessCycleSus 1>>
+	He notices her braided hair. "Must be good with her hands, to do that with shackles on." <<hcSuspicion 5>><<hopelessCycleSus 1>>
 	<br>
 <</if>>
 <<if $prisonerEvents.includes("talkHairBlooms") and !$prisonerEvents.includes("talkHairBloomsSeen")>>
 	<<set $prisonerEvents.pushUnique("talkHairBloomsSeen")>>
-	He notices the flowers in her braids, and his eyebrows raise. "Only a pure hand can raise those blooms. Well done, brother. They should help keep her filth contained." <<set $hc.suspicion -= 5>><<hopelessCycleSus -2>>
+	He notices the flowers in her braids, and his eyebrows raise. "Only a pure hand can raise those blooms. Well done, brother. They should help keep her filth contained." <<hcSuspicion -5>><<hopelessCycleSus -2>>
 	<br>
 <</if>>
 <<if !_somethingToSay>>
-	<span class="green">He slowly nods in approval, finding nothing amiss.</span> <<set $hc.suspicion -= 5>><<hopelessCycleSus -2>>
+	<span class="green">He slowly nods in approval, finding nothing amiss.</span> <<hcSuspicion -5>><<hopelessCycleSus -2>>
 	<br>
 <</if>>
 <br>
@@ -2867,11 +2932,11 @@ The Hand looks <<= $prisoner.name>> over.
 	He sneers and slaps her across the face before turning to you. "Whip her." The confessor cautiously approaches and lifts her, forcing her to turn around so her back is facing you. She looks down and braces herself.
 	<br><br>
 
-	<<link [[Whip her hard|Hopeless Cycle Punishment Intro]]>><<set $phase to 1>><<set $hc.suspicion -= 5>><<stress -6>><<trauma -6>><<control 25>><<sadism 40>><</link>><<lstress>><<ltrauma>><<gcontrol>><<hopelessCycleSus -2>>
+	<<link [[Whip her hard|Hopeless Cycle Punishment Intro]]>><<set $phase to 1>><<hcSuspicion -5>><<stress -6>><<trauma -6>><<control 25>><<sadism 40>><</link>><<lstress>><<ltrauma>><<gcontrol>><<hopelessCycleSus -2>>
 	<br>
-	<<link [[Whip her, but hold back|Hopeless Cycle Punishment Intro]]>><<set $phase to 2>><<set $hc.suspicion += 5>><<sadism 20>><</link>><<hopelessCycleSus 1>>
+	<<link [[Whip her, but hold back|Hopeless Cycle Punishment Intro]]>><<set $phase to 2>><<hcSuspicion 5>><<sadism 20>><</link>><<hopelessCycleSus 1>>
 	<br>
-	<<link [[Refuse|Hopeless Cycle Punishment Intro]]>><<set $phase to 3>><<set $hc.suspicion += 10>><<set $prisoner.love += 3>><<trauma 12>><</link>><<gtrauma>><<hopelessCycleSus 2>><<hopelessCycleLove 1>>
+	<<link [[Refuse|Hopeless Cycle Punishment Intro]]>><<set $phase to 3>><<hcSuspicion 10>><<set $prisoner.love += 3>><<trauma 12>><</link>><<gtrauma>><<hopelessCycleSus 2>><<hopelessCycleLove 1>>
 	<br>
 <<elseif !$prisonerEvents.includes("face") and $hc.daysPassed gte 3>>
 	/* Redundant day check is to make sure this always happens on day 3 if the player tried to delay a lower priority punishment */
@@ -2894,7 +2959,7 @@ The Hand looks <<= $prisoner.name>> over.
 
 	<<link [[Just watch|Hopeless Cycle Cell Face]]>><<set $phase to 1>><<stress 24>><</link>><<ggstress>>
 	<br>
-	<<link [[Stop him|Hopeless Cycle Cell Face]]>><<set $phase to 2>><<set $prisoner.love += 2>><<set $hc.suspicion += 10>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
+	<<link [[Stop him|Hopeless Cycle Cell Face]]>><<set $phase to 2>><<set $prisoner.love += 2>><<hcSuspicion 10>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
 	<br>
 <<elseif !$prisonerEvents.includes("brand") and $hc.daysPassed gte 4>>
 	<<set $prisonerEvents.pushUnique("brand")>>
@@ -2958,19 +3023,19 @@ The Hand looks <<= $prisoner.name>> over.
 			<<if $prisonerBrands.includes(_valueBrand)>>
 				/* Already branded */
 			<<elseif ["left leg", "right leg", "left thigh", "right thigh", "left foot", "right foot"].includes(_valueBrand) and $prisonerEvents.includes("legs")>>
-				<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $prisoner.love += 2>><<set $hcBrand to _valueBrand>><<set $prisoner.health -= 1>><</link>><<hopelessCycleLove 1>>
+				<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $prisoner.love += 2>><<set $hcBrand to _valueBrand>><<hcPrisonerHealth -1 "penance">><</link>><<hopelessCycleLove 1>>
 				<br>
 			<<else>>
-				<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $hcBrand to _valueBrand>><<set $prisoner.health -= 3>><<set $prisoner.harmed++>><<set $hc.suspicion -= 3>><<sadism 40>><</link>><<hopelessCycleSus -1>>
+				<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $hcBrand to _valueBrand>><<hcPrisonerHealth -3 "penance">><<set $prisoner.harmed++>><<hcSuspicion -3>><<sadism 40>><</link>><<hopelessCycleSus -1>>
 				<br>
 			<</if>>
 		<</capture>>
 	<</for>>
-	<<link [[Refuse|Hopeless Cycle Cell Brand]]>><<set $hcBrand to "refuse">><<set $hc.suspicion += 25>><<set $prisoner.love += 5>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
+	<<link [[Refuse|Hopeless Cycle Cell Brand]]>><<set $hcBrand to "refuse">><<hcSuspicion 25>><<set $prisoner.love += 5>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
 	<br>
 
 <<elseif !$prisonerEvents.includes("silver")>>
-	<<set $prisonerEvents.pushUnique("silver")>><<set $prisoner.health -= 2>>
+	<<set $prisonerEvents.pushUnique("silver")>><<hcPrisonerHealth -2 "penance">>
 	<<run hcItemAdd({ type: "clutter", name: "leather gloves", nameText: "leather gloves", location: "cell", origin: "hand", dirty: 2})>>
 	He puts on a pair of very large and thick leather gloves. "Hold her still," he says to you. "You're one of the cleanest of us. You can withstand and recover from her touch better than most."
 	<br><br>
@@ -3005,21 +3070,21 @@ The Hand looks <<= $prisoner.name>> over.
 	<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 	<br>
 <<else>>
-	<<if $hc.suspicion lte 30>>
+	<<if $hc.suspicion lte 30 and !$hcSuspicion.handCruel>>
 		<span class="green">The Hand sees no need for a physical punishment.</span> You're made to lead a prayer for <<= $prisoner.name>>'s soul. <<stress -12>><<trauma -12>><<purity 5>><<gstress>><<ltrauma>><<gpurity>>
 		<br><br>
 
 		<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 		<br>
 	<<elseif $prisoner.state is "catatonic">>
-		He kicks her on the side. She doesn't react at all. "No purpose in penance. She won't even feel it." He turns to you. "Take better care of her." <<set $hc.suspicion += 10>><<hopelessCycleSus 2>>
+		He kicks her on the side. She doesn't react at all. "No purpose in penance. She won't even feel it." He turns to you. "Take better care of her." <<hcSuspicion 10>><<hopelessCycleSus 2>>
 		<br><br>
 
 		<<link [[Next|Hopeless Cycle Cell]]>><<endevent>><</link>>
 		<br>
 	<<else>>
 		<<wearProp "whip" "khaki">>
-		<<set $prisoner.harmed++>><<set $prisoner.health-->><<sadism 10>>
+		<<set $prisoner.harmed++>><<hcPrisonerHealth -1 "penance">><<sadism 10>>
 		You're made to whip her again.
 		<<if $prisoner.love gte 45>>
 			It's a simple punishment, which relieves you both. She subtly nods at you, prepared for each strike. It doesn't make her cries of pain any easier to hear.
@@ -3040,21 +3105,21 @@ The Hand looks <<= $prisoner.name>> over.
 <br><br>
 
 <<if $phase is 1>>
-	<<set $prisoner.harmed += 2>><<set $prisoner.health -= 3>><<set $prisoner.harmedRecently to 16>>
+	<<set $prisoner.harmed += 2>><<hcPrisonerHealth -3 "penance">><<set $prisoner.harmedRecently to 16>>
 	<<set $prisoner.cleanBody -= 1>><<set $prisoner.cleanBandages -= 1>>
 	You don't hold back, letting your lash rip through air, then skin. She cries out in pain as you open a new wound on her back.
 	<br><br>
 
 	You do it again. The Hand grins. "Good." He pats you on the shoulder. "I knew you were the one for this."
 <<elseif $phase is 2>>
-	<<set $prisoner.harmed += 1>><<set $prisoner.health -= 1>><<set $prisoner.harmedRecently to 16>>
+	<<set $prisoner.harmed += 1>><<hcPrisonerHealth -1 "penance">><<set $prisoner.harmedRecently to 16>>
 	You know how to make it hurt, but you also know how to hold back. You give her three lashes on the back, but none are hard enough to break skin. They're each still hard enough to make her cry out in pain, though.
 	<br><br>
 
 	The expression on the Hand's face is hard to read, but eventually he nods. "Enough."
 <<else>>
 	<<wearProp "whip" "khaki">>
-	<<set $prisoner.health -= 4>><<set $prisoner.harmedRecently to 16>>
+	<<hcPrisonerHealth 4 "penance">><<set $prisoner.harmedRecently to 16>>
 	<<set $prisoner.cleanBody -= 1>><<set $prisoner.cleanBandages -= 1>>
 	The Hand raises an eyebrow as you stand there with your whip, but make no strike.
 	<br><br>
@@ -3354,7 +3419,7 @@ She gasps for breath, her body going limp. You gently lay her on her side. The b
 The world spins in a chariot's wheel, and everything fades to black.
 <br><br>
 
-<<link [[Purge...|Hopeless Cycle Cell Elkspawn End]]>><<endevent>><<set $phase to 1>><<pass 2 hours>><<tiredness -36>><<set $hc.suspicion -= 30>><</link>><<hopelessCycleSus -3>>
+<<link [[Purge...|Hopeless Cycle Cell Elkspawn End]]>><<endevent>><<set $phase to 1>><<pass 2 hours>><<tiredness -36>><<hcSuspicion -30>><</link>><<hopelessCycleSus -3>>
 <br>
 
 :: Hopeless Cycle Cell Elkspawn Embrace
@@ -3448,7 +3513,7 @@ The world spins in a chariot's wheel, and everything fades to black. <<purity -2
 
 :: Hopeless Cycle Cell Elkspawn End
 <<set _thermoDisable to true>><<effects>>
-<<hopelessCycleEffects>><<set $prisoner.health += 8>><<set $prisoner.harmed -= 1>><<stress -100>>
+<<hopelessCycleEffects>><<hcPrisonerHealth 8>><<set $prisoner.harmed -= 1>><<stress -100>>
 
 You wake up to water being poured on your face. You shoot up. You're still in the cell.
 <br><br>
@@ -3597,6 +3662,9 @@ One by one, the confessors leave, followed by the Hand. <<= $prisoner.name.toUpp
 		You stick the branding iron back into the cart of hot coals, heating it once more.
 		<br><br>
 
+		/*  Note for "A Cruel Hand" challenge: "penance" argument deliberately not applied to following hcPrisonerHealth calls.
+			Adding up to five extra damage to the branding would be unfair for anyone not getting S-rank.
+			And S-rank requires branding her face, which sets her health to 5, so it doesn't really matter anyway. */
 		<<for _labelBrand, _valueBrand range $prisonerBrandSpots>>
 			<<capture _valueBrand>>
 				<<if $prisonerBrands.includes(_valueBrand)>>
@@ -3605,18 +3673,18 @@ One by one, the confessors leave, followed by the Hand. <<= $prisoner.name.toUpp
 					<<if $hcBrandLegs>>
 						/* Can't brand these parts anymore */
 					<<else>>
-						<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $prisoner.love += 2>><<set $hcBrand to _valueBrand>><<set $prisoner.health -= 1>><</link>><<hopelessCycleLove 1>>
+						<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $prisoner.love += 2>><<set $hcBrand to _valueBrand>><<hcPrisonerHealth -1>><</link>><<hopelessCycleLove 1>>
 						<br>
 					<</if>>
 				<<else>>
-					<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $hcBrand to _valueBrand>><<set $prisoner.health -= 3>><<set $prisoner.harmed++>><<set $hc.suspicion -= 5>><<sadism 40>><</link>><<hopelessCycleSus -2>>
+					<<link [[`Brand her _valueBrand`|Hopeless Cycle Cell Brand]]>><<pass 2>><<set $hcBrand to _valueBrand>><<hcPrisonerHealth -3>><<set $prisoner.harmed++>><<hcSuspicion -5>><<sadism 40>><</link>><<hopelessCycleSus -2>>
 					<br>
 				<</if>>
 			<</capture>>
 		<</for>>
 		<br>
 		<<if !$hcBrandStop>>
-			<<link [[Stop|Hopeless Cycle Cell Brand]]>><<set $hcBrand to "stop">><<set $hc.suspicion += 25>><<set $prisoner.love += 5>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
+			<<link [[Stop|Hopeless Cycle Cell Brand]]>><<set $hcBrand to "stop">><<hcSuspicion 25>><<set $prisoner.love += 5>><</link>><<hopelessCycleSus 2>><<hopelessCycleLove 2>>
 			<br>
 		<</if>>
 	<</if>>

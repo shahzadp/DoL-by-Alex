@@ -3,11 +3,22 @@ function hcItemSetup() {
 		V.hcItems = V.hcItems.filter(toKeep => toKeep.persists);
 	} else {
 		V.hcItems = [
-			{ type: "prisoner", name: V.prisoner.name, location: "cell", origin: "cell", persists: true, containerID: "prisoner", twoHanded: true, hidden: true },
+			{
+				type: "prisoner",
+				name: V.prisoner.name,
+				location: "cell",
+				origin: "cell",
+				persists: true,
+				containerID: "prisoner",
+				twoHanded: true,
+				hidden: true,
+			},
 			{ type: "clothes", name: "bloodstained sack", location: "prisoner", origin: "prisoner", dirty: 2 },
-			{ type: "snuffer", name: "torch snuffer", location: "guardhouse", origin: "guardhouse", persists: true },
 			{ type: "container", name: "bucket", location: "garden", origin: "garden", persists: true, containerID: "gardenBucket1", capacity: 3 },
 		];
+		if (!V.hcChallenge.torchSnuffer) {
+			V.hcItems.push({ type: "snuffer", name: "torch snuffer", location: "guardhouse", origin: "guardhouse", persists: true });
+		}
 	}
 }
 window.hcItemSetup = hcItemSetup;
@@ -58,13 +69,16 @@ function hcItemAdd(item, loc = "held", actionText = undefined) {
 				newItemProperties = { type: "container", name: "bucket", containerID: ID, capacity: 3 };
 				break;
 			case "herbs":
-				newItemProperties = { name: "medicinal herbs", used: true };
+				newItemProperties = { name: "medicinal herbs", used: true, dirtyOnDrop: V.hcChallenge.itemDirty };
 				break;
 			case "water":
 				if (V.bus === "garden" && V.hc.wellTainted) {
 					newItemProperties = { dirty: 2 };
 				} else {
 					newItemProperties = { dirty: 0 };
+				}
+				if (V.hcChallenge.waterLeaky) {
+					newItemProperties.time = 3;
 				}
 				break;
 			case "prisoner":
@@ -177,6 +191,10 @@ function hcItemCanReach(id, filterfn) {
 
 	if (typeof filterfn !== "function") filterfn = () => true;
 
+	if (V.hcChallenge.torchSnuffer && id === "snuffer" && V.passage === "Hopeless Cycle Dungeon") {
+		return true;
+	}
+
 	const itemWithinReach = V.hcItems.find(item => (item.name === id || item.type === id) && [V.bus, "held"].includes(item.location) && filterfn(item));
 
 	if (itemWithinReach) {
@@ -272,7 +290,7 @@ function hcItemName(item, cap = false, vanished = false, decorations = false) {
 					if (item.used) {
 						itemText = "a plate of stolen food";
 					} else {
-						itemText = "a stolen plate"
+						itemText = "a stolen plate";
 					}
 					break;
 				default:
@@ -291,7 +309,7 @@ function hcItemName(item, cap = false, vanished = false, decorations = false) {
 					.filter(q => q.location === item.containerID)
 					.forEach(bye => {
 						containerItemArray.push(hcItemName(bye, false, vanished, decorations));
-				})
+					});
 			} else {
 				V.hcItems
 					.filter(q => q.location === item.containerID)
