@@ -831,16 +831,20 @@ Renderer.CanvasModels.main = {
 		}
 
 		if (notMasc) {
-			const check = (options.worn.upper.setup.formfitting || options.worn.under_upper.setup.formfitting);
-			options.shirt_fitted_clip_src = check ? `img/clothes/masks/formfitting_${options.body_type}.png` : null;
-			options.shirt_fitted_right_move_src = check ? "img/clothes/masks/formfitting_right_move.png" : null;
-			options.shirt_fitted_left_move_src = check ? "img/clothes/masks/formfitting_left_move.png" : null;
+			["upper", "under_upper"].forEach(slot => {
+				const isFormfitting = options.worn[slot].setup.formfitting;
+				options[`${slot}_fitted_clip_src`] = isFormfitting ? `img/clothes/masks/formfitting_${options.body_type}.png` : null;
+				options[`${slot}_fitted_right_move_src`] = isFormfitting ? "img/clothes/masks/formfitting_right_move.png" : null;
+				options[`${slot}_fitted_left_move_src`] = isFormfitting ? "img/clothes/masks/formfitting_left_move.png" : null;
+			});
 		} else if (soft) {
 			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
 			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name)  && !options.belly_mask_clip_src;
 			options.shirt_mask_clip_src = "img/clothes/masks/soft_clip.png";
-			options.shirt_fitted_right_move_src = "img/clothes/masks/soft_right_move.png";
-			options.shirt_fitted_left_move_src = "img/clothes/masks/soft_left_move.png";
+			["upper", "under_upper"].forEach(slot => {
+				options[`${slot}_fitted_right_move_src`] = "img/clothes/masks/soft_right_move.png";
+				options[`${slot}_fitted_left_move_src`]  = "img/clothes/masks/soft_left_move.png";
+			});
 			options.lowerMask.push(upperCheck ? "img/clothes/masks/soft_lower_clip.png" : null);
 			options.legsMask.push(upperCheck ? "img/clothes/masks/soft_lower_clip.png" : null);
 			options.lowerShadowMask.push(upperCheck ? "img/clothes/masks/soft_shadow.png" : null);
@@ -892,7 +896,7 @@ Renderer.CanvasModels.main = {
 		if (options.shirt_mask_clip_src) {
 			options.upperMask.push(options.shirt_mask_clip_src)
 		} else {
-			options.upperMask.push(options.shirt_fitted_clip_src)
+			options.upperMask.push(options.upper_fitted_clip_src)
 		};
 
 
@@ -1072,7 +1076,7 @@ Renderer.CanvasModels.main = {
 				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/preggyBelly/pregnancy_belly_${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.upper_fitted_left_move_src;
 			},
 			dxfn(options) {
 				return 2;
@@ -1090,7 +1094,7 @@ Renderer.CanvasModels.main = {
 				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/preggyBelly/pregnancy_belly_${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_right_move_src;
+				return options.upper_fitted_right_move_src;
 			},
 			dxfn(options) {
 				return -2;
@@ -2238,7 +2242,7 @@ Renderer.CanvasModels.main = {
 				return options.zupper;
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.upper_fitted_left_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? 2 : -2;
@@ -2249,7 +2253,7 @@ Renderer.CanvasModels.main = {
 				return options.zupper;
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_right_move_src;
+				return options.upper_fitted_right_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? -2 : 2;
@@ -2478,7 +2482,7 @@ Renderer.CanvasModels.main = {
 				return options.zupper;
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.upper_fitted_left_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? 2 : -2;
@@ -2489,7 +2493,7 @@ Renderer.CanvasModels.main = {
 				return options.zupper;
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_right_move_src;
+				return options.upper_fitted_right_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? -2 : 2;
@@ -2911,12 +2915,12 @@ Renderer.CanvasModels.main = {
 						&& options.shirt_mask_clip_src;
 
 				return options.worn.under_upper.setup.formfitting
-					&& options.shirt_fitted_clip_src;
+					&& options.under_upper_fitted_clip_src;
 			}
 		}),
 		"under_upper_fitted_left": genlayer_clothing_fitted_left("under_upper", {
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.under_upper_fitted_left_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? 2 : -2;
@@ -2924,7 +2928,7 @@ Renderer.CanvasModels.main = {
 		}),
 		"under_upper_fitted_right": genlayer_clothing_fitted_right("under_upper", {
 			masksrcfn(options) {
-				return options.shirt_fitted_right_move_src;
+				return options.under_upper_fitted_right_move_src;
 			},
 			dxfn(options) {
 				return options.body_type === "soft" ? -2 : 2;
@@ -3050,7 +3054,7 @@ Renderer.CanvasModels.main = {
 					&& !(options.belly > 7)
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.upper_fitted_left_move_src || options.under_upper_fitted_left_move_src ;
 			},
 			dxfn() {
 				return -2;
@@ -3079,7 +3083,7 @@ Renderer.CanvasModels.main = {
 					&& !(options.belly > 7);
 			},
 			masksrcfn(options) {
-				return options.shirt_fitted_left_move_src;
+				return options.upper_fitted_left_move_src || options.under_upper_fitted_left_move_src;
 			},
 			dxfn() {
 				return -2;
@@ -4595,7 +4599,7 @@ function genlayer_clothing_arm_fitted(arm, slot, overrideOptions) {
 				&& options["arm_" + arm] !== "none";
 		},
 		masksrcfn(options) {
-			return options.shirt_fitted_left_move_src;
+			return options[`${slot}_fitted_left_move_src`];
 		},
 		dxfn() {
 			return -2;
@@ -4662,7 +4666,7 @@ function genlayer_clothing_arm_acc_fitted(arm, slot, overrideOptions) {
 				&& options[`arm_${arm}`] !== "none";
 		},
 		masksrcfn(options) {
-			return options.shirt_fitted_left_move_src;
+			return options[`${slot}_fitted_left_move_src`];
 		},
 		dxfn() {
 			return -2;

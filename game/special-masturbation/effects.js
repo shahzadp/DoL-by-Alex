@@ -270,7 +270,7 @@ function masturbationEffects() {
 			wikifier("underlowerwet", 1);
 		} else if (V.worn.lower.vagina_exposed === 0) {
 			sWikifier(
-				`<span class="pink">Juices leak from your <<pussy>><<if V.underlowerwet gte 60>>, soak through your ${V.worn.under_lower.name},<</if>> and dampen your ${V.worn.lower.name}.</span>`
+				`<span class="pink">Juices leak from your <<pussy>><<if V.underlowerwet gte 60 and V.worn.under_lower.name isnot "naked">>, soak through your ${V.worn.under_lower.name},<</if>> and dampen your ${V.worn.lower.name}.</span>`
 			);
 		} else {
 			sWikifier('<span class="pink">Juices leak from your <<pussy>> and dampen your clothing.</span>');
