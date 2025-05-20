@@ -121,8 +121,9 @@
 	<<elseif !$worn.handheld.type.includes("bookbag")>>
 		<span class="blue">You can't study without your bookbag.</span>
 		<br>
+		<<scienceicon>><<link [[Relax before class|Science Classroom Study]]>><<set $phase to 0>><</link>><<lstress>>
 	<<else>>
-		<<scienceicon>><<link [[Study science|Science Classroom Study]]>><</link>><<gstress>><<gscience>>
+		<<scienceicon>><<link [[Study science|Science Classroom Study]]>><<set $phase to 1>><</link>><<gstress>><<gscience>>
 	<</if>>
 	<br>
 	<<getouticon>><<link [[Leave|Hallways]]>><</link>>
@@ -208,9 +209,9 @@ Sirris looks exasperated. "Right. I'll have to inform the head of your behaviour
 <<wearProp "open textbook" "blue" "science">>
 <<if $worn.over_upper.name isnot "naked" or $worn.over_lower.name isnot "naked" or $worn.over_head.name isnot "naked">>
 	<<undressOverClothes "scienceClassroom">>
-	You hang your coat at the back of the class, take your seat and read a science textbook.
+	You hang your coat at the back of the class<<if $phase is 1>>, take your seat and read a science textbook<<else>> and take your seat<</if>>.
 <<else>>
-	You take a seat and read a science textbook.
+	You take your seat<<if $phase is 1>> and read a science textbook<</if>>.
 <</if>>
 <br><br>
 
@@ -244,10 +245,15 @@ Sirris looks exasperated. "Right. I'll have to inform the head of your behaviour
 <<schooleffects>>
 <!-- add stress every 5 minutes -->
 <<set _stress to Math.trunc(_time_to_pass / 5)>>
-<<stress _stress>>
-<!-- improve science grade with same efficiency as studying in the library -->
-<<set _science to _time_to_pass / 20>>
-<<scienceskill _science>>
+<<if $phase is 1>>
+	<<stress _stress>>
+	<!-- improve science grade with same efficiency as studying in the library -->
+	<<set _science to _time_to_pass / 20>>
+	<<scienceskill _science>>
+<<else>>
+	<<set _stress to _stress * -1>>
+	<<stress _stress>>
+<</if>>
 
 :: Science Lesson
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
