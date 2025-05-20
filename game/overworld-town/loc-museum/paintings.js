@@ -192,7 +192,7 @@ function hcItemCanReach(id, filterfn) {
 	if (typeof filterfn !== "function") filterfn = () => true;
 
 	if (V.hcChallenge.torchSnuffer && id === "snuffer" && V.passage === "Hopeless Cycle Dungeon") {
-		return true;
+		return;
 	}
 
 	const itemWithinReach = V.hcItems.find(item => (item.name === id || item.type === id) && [V.bus, "held"].includes(item.location) && filterfn(item));
@@ -281,16 +281,16 @@ function hcItemName(item, cap = false, vanished = false, decorations = false) {
 			switch (item.name) {
 				case "prison gruel":
 					if (item.used) {
-						itemText = "a bowl of prison gruel";
-					} else {
 						itemText = "a used bowl";
+					} else {
+						itemText = "a bowl of prison gruel";
 					}
 					break;
 				case "stolen food":
 					if (item.used) {
-						itemText = "a plate of stolen food";
-					} else {
 						itemText = "a stolen plate";
+					} else {
+						itemText = "a plate of stolen food";
 					}
 					break;
 				default:

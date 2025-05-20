@@ -86,6 +86,7 @@
 	<<set $willpower to 700>>
 	<<set $spraymax to 0>>
 	<<set $money to 0>>
+	<<set $innocencestate to 0>>
 
 	<<set $angel to 4>>
 	<<set $angelbuild to 40>>
@@ -1504,12 +1505,12 @@
 					/* Return used dishes */
 					<<if $_item.type is "food" and $_item.used>>
 						| <<link [[Return|$passage]]>>
+							<<run hcItemRemove($_item, "return")>>
 							<<if $_item.dirty and $_item.name is "stolen food">>
 								<<hcSuspicion 5>>
 							<<elseif $_item.dirty is 0>>
 								<<hcSuspicion -5>>
 							<</if>>
-							<<run hcItemRemove($_item, "return")>>
 						<</link>><<if $_item.dirty and $_item.name is "stolen food">><<hopelessCycleSus 1>><<elseif $_item.dirty is 0>><<hopelessCycleSus -2>><</if>>
 					<<elseif $_item.containerID>>
 						<<if $_itemsInThisContainer.length is 0>>
@@ -1674,7 +1675,7 @@
 					<<if $_item.dirty and $_waterInThatContainer?.dirty lt 2 and $_item.type isnot "clutter">>
 						| <<link [[`Clean in $_waterInThatContainer.nameText (0:05)`|$passage]]>>
 							<<pass 5>><<set $_item.dirty to 0>><<set $itemAction to "clean">><<set $itemActionObject to $_item>>
-							<<if $_item.name is "bloodstained sack">><<set $_item.name to "torn vegetable sack">><<hcWash $_waterInThatContainer>><</if>>
+							<<if $_item.name is "bloodstained sack">><<set $_item.name to "torn vegetable sack">><</if>><<hcWash $_waterInThatContainer>>
 						<</link>>
 					<</if>>
 					/* Put item in container */
@@ -1711,12 +1712,12 @@
 		/* Pyre */
 		<<if _itemsHere.includes("fire") and !$_item.persists>>
 			| <<link [[Burn|$passage]]>>
+				<<run hcItemRemove($_item, "burn")>>
 				<<if ["food"].includes($_item.type) or ["sheets","clothes","bandages"].includes($_item.type) and $_item.dirty lte 1>>
 					<<hcSuspicion 5>>
 				<<elseif $_item.dirty gte 2>>
 					<<hcSuspicion -5>>
 				<</if>>
-				<<run hcItemRemove($_item, "burn")>>
 			<</link>>
 			<<if ["food"].includes($_item.type) or ["sheets","clothes","bandages"].includes($_item.type) and $_item.dirty lte 1>>
 				<<hopelessCycleSus 1>>
@@ -1738,12 +1739,16 @@
 <</widget>>
 
 <<widget "hopelessCyclePassout">>
-	You've pushed yourself too much.
+	<span class="narration">The gaolor had pushed himself too much.</span>
 	<br><br>
 	<<set $stress -= 7000>>
 	<<pass 1 hour>>
 	<<ruffleHair>>
+	<<if $hcItems.filter(x => x.location is "prisoner").length gte 1>>
+		<<set $witchItems to true>>
+	<</if>>
 	<<run hcItemSetup()>>
+	<<run $hcItems.filter(cont => cont.containerID).forEach(cont => cont.location = cont.origin)>>
 	<<set $hc.neverLeftDungeon to false>><<set $hc.snuckInDungeon to false>><<set $hc.daily.enteredDungeon to false>>
 	<<if _hcEvent is "night" or (_hcEvent is "dailyPunishment" and $bus is "cell") or $hc.suspicion gte 100>>
 		<<link [[Everything fades to black...|Hopeless Cycle Ending E]]>><<pass 4 hours>><<endevent>><</link>>
@@ -1952,8 +1957,11 @@
 				<<if _c isnot 0>>
 					<<set _rawDescs[_c] to _rawDescs[_c].charAt(0).toLowerCase() + _rawDescs[_c].substring(1)>>
 				<</if>>
-				<<if _c isnot 2>>
+				<<if _c isnot 2 and _sum.filter(x => x.set is _filter)[_c].desc2>>
 					<<set _rawDescs[_c] to _rawDescs[_c].slice(0,-1)>>
+				<</if>>
+				<<if _c is 2 and _rawDescs[_c].charAt(_rawDescs[_c].length-1) isnot ".">>
+					<<set _rawDescs[_c] += ".">>
 				<</if>>
 			<</for>>
 			<<set _chal.pushUnique({
@@ -1969,6 +1977,9 @@
 				<<set _descToPush to _sum[_solo].desc2>>
 			<<else>>
 				<<set _descToPush to _sum[_solo].desc1.split(".")[1].trim()>>
+			<</if>>
+			<<if _descToPush.charAt(_descToPush.length-1) isnot ".">>
+				<<set _descToPush += ".">>
 			<</if>>
 			<<set _chal.pushUnique({
 				name: _sum[_solo].name,
