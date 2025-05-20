@@ -194,8 +194,9 @@
 	<<elseif !$worn.handheld.type.includes("bookbag")>>
 		<span class="blue">You can't study without your bookbag.</span>
 		<br>
+		<<historyicon>><<link [[Relax before class|History Classroom Study]]>><<set $phase to 0>><</link>><<lstress>>
 	<<else>>
-		<<historyicon>><<link [[Study history|History Classroom Study]]>><</link>><<gstress>><<ghistory>>
+		<<historyicon>><<link [[Study history|History Classroom Study]]>><<set $phase to 1>><</link>><<gstress>><<ghistory>>
 	<</if>>
 	<br>
 	<<getouticon>><<link [[Leave|Hallways]]>><</link>>
@@ -448,19 +449,22 @@ You rest your head on the desk while Winter <<print either("elaborates on the si
 :: History Classroom Study
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<run statusCheck("Robin")>>
-<<wearProp "open textbook" "yellow" "history">>
+<<if $phase is 1>>
+	<<wearProp "open textbook" "yellow" "history">>
+<</if>>
+<<npc Robin>><<person1>>
 <<if $robinhistory is "seat">>
-	You sit beside Robin and read a history textbook.
+	You sit beside Robin <<if $phase is 1>>and read<<else>>while <<He>> reads<</if>> a history textbook.
 <<else>>
-	You take a seat and read a history textbook.
+	You take a seat and <<if $phase is 1>>read a history textbook<<else>>wait for class to start<</if>>.
 	<<if _robin_location is "school" and $daily.school.lunchEaten isnot 1>>
-		Robin is the next to arrive, and takes the seat beside you.
+		Robin is the next to arrive and takes the seat beside you.
 		<<set $robinhistory to "seat">>
 	<</if>>
 <</if>>
 <br><br>
 
-<<npc Winter>><<person1>>The classroom soon fills and Winter arrives to begin the lesson.
+<<npc Winter 2>>The classroom soon fills and Winter arrives to begin the lesson.
 <br><br>
 
 <<if pcAreArmsBound("any") or $feetuse is "bound">>
@@ -486,10 +490,15 @@ You rest your head on the desk while Winter <<print either("elaborates on the si
 <<schooleffects>>
 <!-- add stress every 5 minutes -->
 <<set _stress to Math.trunc(_time_to_pass / 5)>>
-<<stress _stress>>
-<!-- gain history skill with same efficiency as studying in the library -->
-<<set _history to _time_to_pass / 20>>
-<<historyskill _history>>
+<<if $phase is 1>>
+	<<stress _stress>>
+	<!-- gain history skill with same efficiency as studying in the library -->
+	<<set _history to _time_to_pass / 20>>
+	<<historyskill _history>>
+<<else>>
+	<<set _stress to _stress * -1>>
+	<<stress _stress>>
+<</if>>
 
 :: History Robin Move
 <<effects>>
