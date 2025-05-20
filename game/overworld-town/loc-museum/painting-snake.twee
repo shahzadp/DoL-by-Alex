@@ -65,7 +65,7 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 
 	<<link [[Ask Winter if there are any other variations on the story|Museum Hopeless Cycle Story Challenge]]>><</link>> | <span class="blue"><i>Challenge options</i></span> <!-- Appears even with blind stats enabled. Intentional -->
 	<br>
-	<<link [[Let <<him>> continue|Museum Hopeless Cycle Story Continue]]>><</link>>
+	<<link [[Let <<him>> continue|Museum Hopeless Cycle Story Continue]]>><<set $phase to 1>><</link>>
 	<<exit>>
 <<elseif $hcEndings.includesAll("F","E","D","C","B","A") and !$hcEndings.includes("S")>>
 	<<hopelessCycleEndings>>
@@ -171,18 +171,20 @@ Winter pauses, thinking. "Well, there are a few aspects some tellings disagree o
 
 <div id="challenges"><<hcChallengeMenu>></div>
 
-<<link [[Proceed with these selections|Museum Hopeless Cycle Story Continue]]>><</link>>
+<<link [[Proceed with these selections|Museum Hopeless Cycle Story Continue]]>><<set $phase to 0>><</link>>
 <br>
 
 :: Museum Hopeless Cycle Story Continue
 <<effects>>
-<<if Object.values(V.hcChallenge).some(x => x === true)>>
-	<<hcChallengeSummary>>
-	Winter nods, closing his eyes. "I believe there are versions that align with those conditions. Uncommon, but they are told."
-<<else>>
-	Winter smiles. "The classic version, then."
+<<if $phase is 0>>
+	<<if Object.values(V.hcChallenge).some(x => x === true)>>
+		<<hcChallengeSummary>>
+		Winter nods, closing his eyes. "I believe there are versions that align with those conditions. Uncommon, but they are told."
+	<<else>>
+		Winter smiles. "The classic version, then."
+	<</if>>
+	<br><br>
 <</if>>
-<br><br>
 
 <<He>> looks back to you. "You know how this goes by now. The subject is a controversial local folk figure. This was almost certainly painted long after the event that inspired it.
 The temple has attempted, many times, to censor or revise the tale, as it's quite the embarassment to their more modern image.
@@ -1484,7 +1486,7 @@ When the prayers are finished, the Bishop's Hand steps forward and clears his th
 	<br><br>
 
 	"They wish to sell us some of their trained hounds. <span class="blue">They will operate on the temple grounds each day until dusk.</span> Get used to the noise."
-<<elseif $hc.daysPassed is 6 and !hcChallenge.waterEarly>>
+<<elseif $hc.daysPassed is 6 and !$hcChallenge.waterEarly>>
 	<<set $hc.wellTainted to true>>
 	"The well is to be left unused until after the red moon. <span class="red">Its water has turned foul.</span>" Murmurs from the flock follow.
 	<br><br>
@@ -1776,17 +1778,19 @@ You are in the temple garden. Rows of flowers lead away from the temple proper, 
 		<</if>>
 		<br>
 		<<set _stick to hcItemCanReach("torch", t => t.state isnot "lit")>>
-		<<set _food to hcItemCanReach("food", t => t.name isnot "stolen fruit" and !t.used)>>
+		<<set _food to hcItemsOnScreen(f => f.type is "food" and !f.name isnot "stolen fruit" and !f.used and !f.dirty)>>
 		<<for _i to 0; _i lt $hc.dogs.length; _i++>>
-			<<capture _i, _food>>
+			<<capture _i, _food, _f>>
 				<<if $hc.dogs[_i] is "loud">>
 					<<if _stick>>
-						<<animalicon "dog">><<link [[Play tug-of-war with it using an unlit torch (0:15)|Hopeless Cycle Garden Dog Play]]>><<set $phase to _i>><<pass 15>><</link>>
+						<<animalicon "dog">><<link [[Play tug-of-war with it using a _stick.state torch (0:15)|Hopeless Cycle Garden Dog Play]]>><<set $phase to _i>><<pass 15>><</link>>
 						<br>
 					<</if>>
 					<<if _food>>
-						<<hcicon _food>><<link [[`Feed it _food.name (0:05)`|Hopeless Cycle Garden Dog Feed]]>><<set $phase to _i>><<pass 5>><<set $hcDogFood to _food.name>><<run hcItemRemove(_food)>><</link>>
-						<br>
+						<<for _f range _food>>
+							<<hcicon _f>><<link [[`Feed it _f.name (0:05)`|Hopeless Cycle Garden Dog Feed]]>><<set $phase to _i>><<pass 5>><<set $hcDogFood to _f.name>><<run hcItemRemove(_f)>><</link>>
+							<br>
+						<</for>>
 					<</if>>
 				<<else>>
 					<<animalicon "dog">><<link [[Pet the dog (0:05)|Hopeless Cycle Garden]]>><<set $hc.dogsTimer[_i]++>><<pass 5>><<stress -3>><<set $itemAction to "petTheDog">><</link>><<lstress>>
@@ -1817,8 +1821,9 @@ You are in the temple garden. Rows of flowers lead away from the temple proper, 
 :: Hopeless Cycle Garden Dog Play
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
+<<set _stick to hcItemCanReach("torch", t => t.state isnot "lit")>>
 
-You grab your unlit torch by the top, and hold out the bottom to the dog. It immediately perks up and grabs it in its mouth.
+You grab your _stick.state torch by the top, and hold out the bottom to the dog. It immediately perks up and grabs it in its mouth.
 <br><br>
 
 <<if $rng gte 50>>
@@ -1852,7 +1857,7 @@ You put down the $hcDogFood in front of the dog. It perks up and digs in right a
 <</if>>
 <br><br>
 
-One of the handlers sees you and shoos you away. Hopefully this will keep the dog quiet.
+One of the handlers sees you and shoos you away, picking up the <<= $hcDogFood is "prison gruel" ? "bowl" : "plate">>. Hopefully this will keep the dog quiet.
 <br><br>
 
 <<link [[Next|Hopeless Cycle Garden]]>><<set $hc.dogs[$phase] to "quiet">><<set $hc.dogsTimer[$phase] to 5>><<unset $hcDogFood>><</link>>
@@ -2966,6 +2971,15 @@ The confessors re-enter the cell to retrieve the monk, who sobs and groans in pa
 :: Hopeless Cycle Passout
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
+
+<span class="narration">
+	In the wake of the gaolor's fainting spell, many items had been found, returned or burned as needed.
+	<<if $witchItems>>
+		<<unset $witchItems>>
+		This included several items in the witch's cell, and on her person.
+	<</if>>
+</span>
+<br><br>
 
 <<if $bus is "cell">>
 	You awaken feeling warm. Something is on top of you.
