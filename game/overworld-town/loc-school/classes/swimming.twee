@@ -169,16 +169,20 @@
 			<br><br>
 
 			<<if hasSexStat("exhibitionism", 5) and $swimall isnot 1>>
+				<<set _hasAskLink to true>>
 				<<socialiseicon "ask">><<link [[Ask to swim naked|School Pool Ask Naked]]>><<fameexhibitionism 15>><<endevent>><<set $swimnudecounter += 1>><</link>><<exhibitionist5>>
 				<br>
 			<</if>>
+		
 			<<if $player.sex is "f" or ($player.sex is "h" and $player.gender_appearance is "f")>>
 				<<if !$daily.swimCrossdressPermission>>
+					<<set _hasAskLink to true>>
 					<<socialiseicon>><<link [[Say you only have a boy's swimming costume|School Pool Wrong]]>><</link>>
 					<br>
 				<</if>>
 			<<else>>
 				<<if !$daily.swimCrossdressPermission>>
+					<<set _hasAskLink to true>>
 					<<socialiseicon>>
 					<<if ($worn.upper.type.includes("naked") and $worn.under_upper.type.includes("naked")) and
 					($worn.lower.type.includes("swim") or ($worn.lower.type.includes("naked") and $worn.under_lower.type.includes("swim")))>>
@@ -189,9 +193,14 @@
 					<br>
 				<</if>>
 			<</if>>
-			<<socialiseicon>><<link [[Say you don't have anything to change into|School Pool Spare]]>><</link>>
-			<br><br>
-
+			<<if !$daily.swimSpareClothes>>
+				<<set _hasAskLink to true>>
+				<<socialiseicon>><<link [[Say you don't have anything to change into|School Pool Spare]]>><</link>>
+			<br>
+			<</if>>
+			<<if _hasAskLink>>
+				<br>
+			<</if>>
 			<<destinationpoolchangingroom>>
 		<</if>>
 	<</if>>
@@ -552,7 +561,7 @@ You speak in a low voice, so only the teacher will hear you.
 <</if>>
 
 :: School Pool Spare
-<<set $outside to 0>><<set $location to "pool">><<schooleffects>><<effects>>
+<<set $outside to 0>><<set $location to "pool">><<set $daily.swimSpareClothes to true>><<schooleffects>><<effects>>
 "I don't have a swimming costume, <<sir>>."
 <br><br>
 
@@ -568,7 +577,7 @@ You speak in a low voice, so only the teacher will hear you.
 	No one will be able to see anything once you're in."
 	<br><br>
 
-	<<link [[Accept|School Pool Nude]]>><<schoolpoolundress>><<endevent>><<exposure>><</link>>
+	<<link [[Accept|School Pool Nude]]>><<endevent>>>><</link>>
 	<br>
 	<<link [[Refuse (0:05)|School Pool Refuse]]>><<pass 5>><<detention 6>><<endevent>><</link>><<ggdelinquency>>
 <<elseif $rng gte 41 or $forcedcrossdressingdisable is "t">>
@@ -645,15 +654,16 @@ Mason also blushes. "I-I'll pretend I didn't hear that." <<He>> points to the ch
 <<destinationpoolchangingroom>>
 
 :: School Pool Nude
-<<set $outside to 0>><<set $location to "pool">><<schooleffects>><<effects>>
+<<set $outside to 0>><<set $location to "pool">><<schoolpoolundress>><<exposure>><<schooleffects>><<effects>>
 
 You <<nervously>> undress and tuck your clothes away inside the cupboard. You open the door slightly and peek through the gap.
 Thirty or so students, plus the teacher. You'll get in trouble if you don't join them, but can you really expose yourself in front of so many people?
 <br><br>
 
-<<link [[This was a mistake!|School Pool Refuse]]>><</link>>
+<<link [[Enter the pool|School Pool Nude Entry]]>><</link>>
 <br>
-<<link [[I have no choice|School Pool Nude Entry]]>><</link>>
+<<link [[Skip the lesson (0:05)|School Pool Refuse]]>><<pass 5>><<storeload _store_location>><<detention 6>><<endevent>><</link>><<ggdelinquency>>
+
 
 :: School Pool Refuse
 <<set $outside to 0>><<set $location to "pool">><<schooleffects>><<effects>>
