@@ -1664,11 +1664,41 @@
 			<br>
 			<<for _i, _hr range [1, 2, 3, 6, 8, 12, 16, 24]>>
 				<<capture _hr>>
+					<<= _i gt 0 ? "<br>" : "">>
 					<<set _hours to _i is 0 ? "hour" : "hours">>
 					<<link [[_hr _hours|$passage]]>><<pass _hr hour>><</link>>
-					<<= _i lt 7 ? "<br>" : "">>
 				<</capture>>
 			<</for>>
+			<hr>
+
+			<<foldout false "_cheatsExpiredHistoryFoldout">>
+				<span class="grey">Expired passages:</span>
+				<<set _cheatsHistoryPassageTitles to State.expired>>			
+				<<for _i to 0; _i lt _cheatsHistoryPassageTitles.length; _i++>>
+					<<= _i gt 0 ? "<br>" : "">>
+					<<print (_i - _cheatsHistoryPassageTitles.length) + ':\t'>>
+					<span class="grey"><<print _cheatsHistoryPassageTitles[_i]>></span>
+				<</for>>
+			<</foldout>>
+
+			<<foldout false "_cheatsHistoryNavigationFoldout">>
+				<span class="gold">Current passages: """[[""" <<print $passage>> """]]"""</span>
+				<<set _cheatsHistoryPassageTitles to State.history.map((e) => e.title)>>			
+				<<for _i to 0; _i lt _cheatsHistoryPassageTitles.length; _i++>>
+					<<= _i gt 0 ? "<br>" : "">>
+					<<print _i + ':\t'>>
+					<<if _i === State.activeIndex>>
+						<span class="gold"><<print _cheatsHistoryPassageTitles[_i]>></span>
+					<<else>>
+						<<capture _i>>
+							<<link _cheatsHistoryPassageTitles[_i]>><<cheatsHistoryNavigation _i true>><</link>>
+						<</capture>>
+					<</if>>
+				<</for>>
+			<</foldout>>
+
+			<<link "Backward">><<cheatsHistoryNavigation `State.activeIndex - 1` true>><</link>> |
+			<<link "Forward">><<cheatsHistoryNavigation `State.activeIndex + 1` true>><</link>>
 		</div>
 		<div class="settingsToggleItem">
 			<span class="gold">Current Weather:</span>
@@ -1746,6 +1776,19 @@
 			</div>
 		<</if>>
 	</div>
+<</widget>>
+
+<<widget "cheatsHistoryNavigation">>
+	<<if typeof _args[0] is "number">>
+		<<if !(_args[1] === true) or State.history[_args[0]]?.title === "Start">>
+			<<run Engine.goTo(_args[0])>>
+			<<exit>>
+		<</if>>
+		<<set setup.cheatsHistoryNavigation to {offsetY: $("#customOverlayContent").scrollTop() || 0}>>
+		<<run Engine.goTo(_args[0])>>
+		<<run $("#customOverlayContent").scrollTop(setup.cheatsHistoryNavigation.offsetY)>>
+		<<set delete setup.cheatsHistoryNavigation>>
+	<</if>>
 <</widget>>
 
 <<widget "cheatsParasiteOptions">>
