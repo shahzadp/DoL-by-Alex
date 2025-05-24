@@ -2078,6 +2078,38 @@ function getTimeString(...args) {
 }
 window.getTimeString = getTimeString;
 
+/* Returns a date formatted for the user's dateFormat
+ * getFormattedDate() returns a long date with optional weekday (e.g. [Sunday ]the 4th of September)
+ * getShortFormattedDate() returns an abbreviated date (e.g. 4th Sep)
+ */
+window.getFormattedDate = function(date, includeWeekday = false) {
+	switch(V.options.dateFormat) {
+		case "en-US": {
+			const formattedDate = date.monthName + " " + ordinalSuffixOf(date.day);
+			return includeWeekday ? date.weekDayName + ", " + formattedDate : formattedDate;
+		}
+		case "zh-CN": // Fallthrough to en-GB
+		case "en-GB": {
+			const formattedDate = "the " + ordinalSuffixOf(date.day) + " of " + date.monthName;
+			return includeWeekday ? date.weekDayName + " " + formattedDate : formattedDate;
+		}
+		default:
+			throw new Error(`Invalid date format: ${V.options.dateFormat}`);
+	}
+}
+
+window.getShortFormattedDate = function(date) {
+	switch(V.options.dateFormat) {
+		case "en-US":
+			return date.monthName.slice(0,3) + " " + ordinalSuffixOf(date.day);
+		case "zh-CN":
+		case "en-GB":
+			return ordinalSuffixOf(date.day) + " " + date.monthName.slice(0,3);
+		default:
+			throw new Error(`Invalid date format: ${V.options.dateFormat}`);
+	}
+}
+
 /* Determines and replenishes stock at supermarket */
 function supermarketWeekly() {
 	Object.keys(setup.plants).forEach(key => {
