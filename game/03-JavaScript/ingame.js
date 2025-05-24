@@ -2738,3 +2738,9 @@ function teensPresentCheck(location) {
 	return present;
 }
 window.teensPresentCheck = teensPresentCheck;
+
+function insecurityExists(type)	{
+	const [possible, returnedType] = statChange.insecurityPossible(type);
+	return (possible && returnedType === type && V["insecurity_" + type] > 0);
+}
+window.insecurityExists = insecurityExists;

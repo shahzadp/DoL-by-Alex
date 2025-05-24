@@ -701,28 +701,31 @@ const statChange = (() => {
 		return "";
 	}
 
+	function insecurityPossible(type) {
+		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"].includes(type)) {
+			paramError("insecurity", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"');
+		}
+		if (V.player.gender === "m" && type === "breasts_small") type = "breasts_big";
+
+		return [{
+			penis_small: V.player.penisExist && V.player.penissize <= 1,
+			penis_big: V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3),
+			breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
+			breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
+			pregnancy: playerBellySize() >= 8
+		}[type] && V["acceptance_" + type] < 1000,
+		type];
+	}
+
 	function insecurity(type, amount) {
 		if (V.statFreeze) return;
 		if (isNaN(amount)) paramError("insecurity", "amount", amount, "Expected a number.");
-		if (!["penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"].includes(type)) {
-			paramError("insecurity", "type", type, 'Expected values include "penis_small", "penis_big", "breasts_small", "breasts_big", "pregnancy"');
-			return;
-		}
 		amount = Number(amount);
 		if (amount) {
-			// Male players always gain insecurity when breast size is above 0
-			if (V.player.gender === "m" && type === "breasts_small") type = "breasts_big";
-
-			const insecurityPossible = {
-				penis_small: V.player.penisExist && V.player.penissize <= 1,
-				penis_big: V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3),
-				breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
-				breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
-				pregnancy: playerBellySize() >= 8,
-			}[type];
-			const acceptance = V["acceptance_" + type];
+			let possible;
+			[possible, type] = insecurityPossible(type);
 			let insecurity = V["insecurity_" + type];
-			if ((acceptance < 1000 && insecurityPossible) || amount < 0) {
+			if (possible || amount < 0) {
 				insecurity = Math.clamp(insecurity + amount, 0, 1000);
 				V["insecurity_" + type] = insecurity;
 
@@ -753,7 +756,7 @@ const statChange = (() => {
 							break;
 					}
 					// reduce acceptance by matching amount
-					V["acceptance_" + type] = Math.clamp(acceptance - amount, 0, 1000);
+					V["acceptance_" + type] = Math.clamp(V["acceptance_" + type] - amount, 0, 1000);
 				}
 			}
 		}
@@ -1295,6 +1298,7 @@ const statChange = (() => {
 		subCheck,
 		gainPenisInsecurity,
 		gainBreastInsecurity,
+		insecurityPossible,
 		insecurity,
 		acceptance,
 		gainPenisAcceptance,
