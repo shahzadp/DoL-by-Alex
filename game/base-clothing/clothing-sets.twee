@@ -291,8 +291,8 @@
 					<</if>>
 				<<else>>
 					<<set _foundEquip to null>><<set _lastResort to null>>
-					<<unset _randomColour>>
-					<<unset _randomColourAcc>>
+					<<unset _randomColourData>>
+					<<unset _randomColourAccData>>
 					<<for $_equipIndex, $_wardrobeItem range _selectedWardrobe[$_slot]>>
 						<<if $_incomingItemName isnot $_wardrobeItem.name or ($_wardrobeItem.outfitSecondary and !["broken", "split"].includes($_wardrobeItem.outfitSecondary[1]))>>
 							<<continue>>
@@ -315,42 +315,83 @@
 								<<if $_outfitColors[$_slot][0] and $_outfitColors[$_slot][0] isnot "random">>
 									<<set _tempColour to $_outfitColors[$_slot][0]>>
 									<<set $_randomColourItems to $_randomColourItems.filter(item => item.colour === T.tempColour)>>
+									/* Keep only the specific custom colour in the random pool */
+									<<if $_outfitColors[$_slot][0] is "custom">>
+										<<set _tempColourCustom to $_outfitColors[$_slot+"custom"][0]>>
+										<<set $_randomColourItems to $_randomColourItems.filter(item => item.colourCustom === _tempColourCustom)>>
+									<</if>>
 									<<unset _tempColour>>
 								<</if>>
 								<<if $_outfitColors[$_slot][1] and $_outfitColors[$_slot][1] isnot "random">>
 									<<set _tempColour to $_outfitColors[$_slot][1]>>
 									<<set $_randomColourItems to $_randomColourItems.filter(item => item.accessory_colour === T.tempColour)>>
+									/* Keep only the specific custom accessory colour in the random pool */
+									<<if $_outfitColors[$_slot][1] is "custom">>
+										<<set _tempColourCustom to $_outfitColors[$_slot+"custom"][1]>>
+										<<set $_randomColourItems to $_randomColourItems.filter(item => item.accessory_colourCustom === _tempColourCustom)>>
+									<</if>>
 									<<unset _tempColour>>
 								<</if>>
 							<</if>>
 
 							/* Picks the random colours*/
-							<<if $_outfitColors[$_slot][0] is "random" and !_randomColour>>
+							<<if $_outfitColors[$_slot][0] is "random" and !_randomColourData>>
 								<<set _randomColourList to []>>
-								<<if $_randomColourItems and $_randomColourItems.length>>
-									<<run $_randomColourItems.forEach(item => T.randomColourList.pushUnique(item.colour))>>
+								<<if $_randomColourItems?.length>>
+									/* This used to be "T.randomColourList.pushUnique", but we need to account for custom colours */
+									<<run $_randomColourItems.forEach(item => {
+										var colourData = {colour: item.colour};
+										if (item.colour === "custom") {
+											colourData.colourCustom = item.colourCustom;
+										}
+										if (!T.randomColourList.some((item) =>
+													item.colour === colourData.colour &&
+													item.colourCustom === colourData.colourCustom)) {
+											T.randomColourList.push(colourData);
+										}
+									})>>
 								<</if>>
 								<<if _randomColourList.length>>
-									<<set _randomColour to _randomColourList[random(0, _randomColourList.length - 1)]>>
-									<<set $_randomColourItems to $_randomColourItems.filter(item => item.colour === T.randomColour)>>
+									/* _randomColourData might look like this:
+										{colour:"red"} or {colour:"custom",colourCustom:"filter..."} */
+									<<set _randomColourData to _randomColourList[random(0, _randomColourList.length - 1)]>>
+									<<set $_randomColourItems to $_randomColourItems.filter(item => 
+											item.colour === T.randomColourData.colour &&
+											item.colourCustom === T.randomColourData.colourCustom)>>
 								<</if>>
 							<</if>>
-							<<if $_outfitColors[$_slot][1] is "random" and !_randomColourAcc>>
+							<<if $_outfitColors[$_slot][1] is "random" and !_randomColourAccData>>
 								<<set _randomColourAccList to []>>
-								<<if $_randomColourItems and $_randomColourItems.length>>
-									<<run $_randomColourItems.forEach(item => T.randomColourAccList.pushUnique(item.accessory_colour))>>
+								<<if $_randomColourItems?.length>>
+									<<run $_randomColourItems.forEach(item => {
+										var colourData = {accessory_colour: item.accessory_colour};
+										if (item.accessory_colour === "custom") {
+											colourData.accessory_colourCustom = item.accessory_colourCustom;
+										}
+										if (!T.randomColourAccList.some((item) =>
+													item.accessory_colour === colourData.accessory_colour &&
+													item.accessory_colourCustom === colourData.accessory_colourCustom)) {
+											T.randomColourAccList.push(colourData);
+										}
+									})>>
 								<</if>>
 								<<if _randomColourAccList.length>>
-									<<set _randomColourAcc to _randomColourAccList[random(0, _randomColourAccList.length - 1)]>>
+									/* _randomColourAccData might look like this:
+										{accessory_colour:"red"} or {accessory_colour:"custom",accessory_colourCustom:"filter..."} */
+									<<set _randomColourAccData to _randomColourAccList[random(0, _randomColourAccList.length - 1)]>>
 								<</if>>
 							<</if>>
 							<<unset _randomColourListItem>>
 
 							/* Skips over items that do not match the random colours */
-							<<if (!_randomColour or _randomColour isnot $_wardrobeItem.colour) and $_outfitColors[$_slot][0] isnot 0 and $_outfitColors[$_slot][0] isnot $_wardrobeItem.colour>>
+							<<if _randomColourData?.colour isnot $_wardrobeItem.colour and
+									$_outfitColors[$_slot][0] isnot 0 and
+									$_outfitColors[$_slot][0] isnot $_wardrobeItem.colour>>
 								<<continue>>
 							<</if>>
-							<<if (!_randomColourAcc or _randomColourAcc isnot $_wardrobeItem.accessory_colour) and $_outfitColors[$_slot][1] isnot 0 and $_outfitColors[$_slot][1] isnot $_wardrobeItem.accessory_colour>>
+							<<if _randomColourAccData?.accessory_colour isnot $_wardrobeItem.accessory_colour and
+									$_outfitColors[$_slot][1] isnot 0 and
+									$_outfitColors[$_slot][1] isnot $_wardrobeItem.accessory_colour>>
 								<<continue>>
 							<</if>>
 							/* End of checking for random colours */
