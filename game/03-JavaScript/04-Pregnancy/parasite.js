@@ -87,6 +87,7 @@ function impregnateParasite(parasiteType, chance, genital = "anus", hermParasite
 	if (pregnancy && rngCheck) {
 		switch (parasiteType) {
 			case "slimes":
+			case "pale slimes":
 			case "eels":
 			case "worms":
 			case "snakes":
