@@ -36,10 +36,15 @@ declare global {
 
 	export interface CombatRendererPlayerSetup {
 		bodywriting: CombatRendererBodywritingSetup;
+		bestialHandjob: Partial<Record<CombatPositions, CombatRendererBestialHandjobSetup>>;
 	}
 
 	export interface CombatRendererBodywritingSetup {
 		types: string[];
+	}
+
+	export interface CombatRendererBestialHandjobSetup {
+		allowed: string[];
 	}
 
 	export interface CombatRendererNpcSetup {

@@ -9,6 +9,11 @@ setup.renderer.player = {
 	bodywriting: {
 		types: ["butterfly", "cross", "flame", "flower", "heart", "paw print", "skull", "star", "text", "unicorn"],
 	},
+	bestialHandjob: {
+		doggy: {
+			allowed: ["longleathergloves"],
+		},
+	},
 };
 
 /** @type {CombatRendererNpcSetup} */
