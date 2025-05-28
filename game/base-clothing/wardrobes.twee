@@ -286,10 +286,49 @@
 	<<exposure>>
 <</widget>>
 
+<<widget "loadWardrobeOptions">>
+	<div onclick="event.stopPropagation()">
+		<div class="legend-caption bold gold">Settings</div>
+		<div>
+			<label>
+				<<checkbox "$wardrobeDefaults.showTraits" false true autocheck>>
+				Show clothing trait icons.
+			</label>
+		</div>
+		<div>
+			<label>
+				<<checkbox "$wardrobeDefaults.extraInfo" false true autocheck>>
+				Show 'Extra Info' by default.
+			</label>
+		</div>
+		<<link [[Update wardrobe|$passage]]>><</link>>
+	</div>
+<</widget>>
+
+
 <<widget "wardrobe">>
 	<<set _inWardrobe to true>>
 	<div id="action-popup">Don't look here.</div>
 	<<unset $tempDisable>>
+
+	<!-- Options -->
+	<div id="wardrobe-options-div" class="main-shop-div">
+		<div class="wardrobe-options-button no-numberify div-link">
+			<<if $options.images is 1>>
+				<span class="button-icon"><img src="img/ui/options.png"></span>
+			<<else>>
+				Opt.
+			<</if>>
+			<<link "">>
+				<<replace '#shop-options'>><<loadWardrobeOptions>><</replace>>
+				<<run linkifyDivs('#shop-options')>>
+				<<toggleclass '#shop-options' 'hidden'>>
+			<</link>>
+		</div>
+		<div id="shop-options" class="wardrobe-options no-numberify hidden" onclick="$(this).addClass('hidden')">
+		</div>
+	</div>
+	<<run linkifyDivs('#wardrobe-options-div')>>
 
 	<hr>
 	<span>Warmth:</span>
@@ -906,7 +945,7 @@
 			<<wardrobeintegrity _wornItem _wardrobe_list>>
 			<a onclick="document.getElementById('wardrobeItemDetails').classList.toggle('hidden')">Extra Info</a>
 			<br>
-			<div id="wardrobeItemDetails" class="hidden">
+			<div id="wardrobeItemDetails" @class="$wardrobeDefaults.extraInfo?'':'hidden'">
 				<<if _wornItem.plural is 1>>
 					<<integrity `clothingData(_wardrobe_list,_wornItem,'integrity_max')` "cap">>
 				<<else>>
@@ -1016,6 +1055,11 @@
 				<<wardrobeintegrity _item _wardrobe_list>>
 				<<reveal _item.reveal>>
 				| <span class="cold-resist-icon noDivider"><<print getTrueWarmth(_item)>></span>
+				<<if $wardrobeDefaults.showTraits>>
+					| <span class="wardrobe-traits noDivider"><<for _n, _trait range _item.type>>
+						<<clothingtrait _trait>>
+					<</for>></span>
+				<</if>>
 			</div>
 		<</for>>
 		<div style="clear:both;"></div>
