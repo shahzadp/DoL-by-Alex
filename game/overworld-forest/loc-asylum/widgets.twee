@@ -488,7 +488,9 @@
 <<widget "asylumevents">>
 	<<set $danger to random(1, 10000)>>
 	<<if $danger gte (9900 - $allure)>>
-		<<if $rng gte 91>>
+		<<cleareventpool>>
+
+		<<addinlineevent "asylum_exposure" 1>>
 			<<generate1>><<person1>>
 			"Excuse me," says a voice to your side. It's a <<person>> wearing a patient's gown. "Doctor Harper gave me a task. I need to-" <<He>> looks away. "I need to expose myself to a dozen people before my next assessment. My b-body, I mean. C-can I show you?" <<He>> doesn't look happy.
 			<br><br>
@@ -501,17 +503,25 @@
 			<br>
 			<<link [[Refuse|Asylum Exposure Refuse]]>><<handheldon>><</link>>
 			<br>
-		<<elseif $rng gte 81 and (random(1,100) lte $suspicion)>>
-			<<generateDoctor 1>><<generate2>><<person1>>
-			A <<person>> dressed as an orderly approaches you.
-			"Hello. The doctor has extra time today and wants you in for an extra treatment," <<he>> says. "Come with me please."<br>
-			A <<person2>><<person>> stands behind you.
-			<br><br>
-			<<link [[Go with them|Asylum Fake Treatment Accept]]>><<handheldon>><</link>>
-			<br>
-			<<link [[Refuse to go|Asylum Fake Treatment Refuse]]>><<handheldon>><</link>><<physiquedifficulty 1 $physiquemax>>
-			<br>
-		<<elseif $rng gte 61>>
+		<</addinlineevent>>
+
+		<<if random(1,100) lte $suspicion>>
+			<<addinlineevent "asylum_fake_treatment" 1>>
+				<<generateDoctor 1>><<generate2>><<person1>>
+				A <<person>> dressed as an orderly approaches you. "Hello. The doctor has extra time today and wants you in for an extra treatment," <<he>> says. "Come with me please."
+				<br><br>
+
+				A <<person2>><<person>> stands behind you.
+				<br><br>
+
+				<<link [[Go with them|Asylum Fake Treatment Accept]]>><<handheldon>><</link>>
+				<br>
+				<<link [[Refuse to go|Asylum Fake Treatment Refuse]]>><<handheldon>><</link>><<physiquedifficulty 1 $physiquemax>>
+				<br>
+			<</addinlineevent>>
+		<</if>>
+
+		<<addinlineevent "asylum_flirt" 2>>
 			<<generate1>><<person1>><<npcClothesType $NPCList[0] "patient">>You catch one of the other patients, a <<person>>, looking at you. <<He>> smiles.
 			<br><br>
 
@@ -519,7 +529,9 @@
 			<br>
 			<<link [[Ignore|Asylum]]>><<endevent>><</link>>
 			<br>
-		<<elseif $rng gte 21>>
+		<</addinlineevent>>
+
+		<<addinlineevent "asylum_nurse_grope" 4>>
 			<<generate1>><<generatev2>><<person1>>One of the patients, a <<person>>, gropes one of the nurses, a <<person2>><<person>>. The nurse doesn't resist. <<He>> looks resigned.
 			<br><br>
 
@@ -527,8 +539,9 @@
 			<br>
 			<<link [[Ignore|Asylum]]>><<endevent>><</link>>
 			<br>
+		<</addinlineevent>>
 
-		<<else>>
+		<<addinlineevent "asylum_answer" 2>>
 			<<generate1>><<person1>><<generate2>>A <<person>>, a patient, runs past you and hides from view, just as a <<person2>><<person>> rounds the corner. <<Hes>> a nurse. <<He>> looks around, then at you. "Have you seen a <<person1>><<person>> by chance?"
 			<br><br>
 
@@ -536,7 +549,70 @@
 			<br>
 			<<link [[Lie|Asylum Lie]]>><<handheldon>><<suspicion 5>><<asylumstatus 5>><</link>><<ggsuspicion>><<ggcool>>
 			<br>
+		<</addinlineevent>>
+
+		<<addinlineevent "asylum_flower_patch" 1>>
+			Eventually, you grow tired of the other patients, and wander out to the asylum yard for some fresh air. You take a walk, strolling through the grounds and finding what enjoyment you can.
+			<br><br>
+			While on your walk, you stumble across a patch of wildflower.
+			<br><br>
+			<<if !pcAreArmsBound("any")>>
+				<<link [[Make a flower crown|Asylum Flower Patch Crown]]>><</link>><<tendingdifficulty 1 200>>
+				<br>
+			<<else>>
+				<span class="blue">You cannot do anything with the flowers while your arms are bound.</span>
+				<br>
+			<</if>>
+			<<link [[Sit and observe|Asylum Flower Patch Observe]]>><<stress -6>><</link>><<lstress>>
+			<br>
+			<<link [[Ignore|Asylum]]>><<endevent>><</link>>
+			<br>
+		<</addinlineevent>>
+
+
+		<<if $daily.asylumPuzzle isnot 1>>
+			<<addinlineevent "asylum_puzzle" 1>>
+
+				<<set $daily.asylumPuzzle to 1>>
+				You notice a group of patients sitting around a table, off to the side.
+				<<if $asylumPuzzleProgress gte 1>>
+					<<loadNPC 0 "asylum_puzzle_group">>
+					<span class="blue"> It's the same group you helped last time,</span> back to pouring over their puzzle.
+				<<else>>
+					<<generate1>>
+					They're working on what appears to be a large puzzle laid out in front of them.
+				<</if>>
+				<br><br>
+
+				<<= $asylumPuzzleProgress >= 1 ? "The" : "A">> <<person1>><<person>> looks over and makes eye contact,
+				<<if pcAreArmsBound("both")>>
+					then laughs and turns away.<<asylumstatus -1>><<lcool>>
+					<br><br>
+
+					<span class="blue"> You can't participate with your arms bound.</span>
+					<br><br>
+
+					<<link [[Next|Asylum]]>><<handheldon>><<endevent>><</link>>
+					<br>
+				<<elseif $asylumstatus gte 60>>
+					then waves you over.
+					<br><br>
+
+					<<link [[Join them|Asylum Puzzle]]>><<asylumstatus 1>><</link>><<gcool>>
+					<br>
+					<<link [[Turn away|Asylum]]>><<handheldon>><<endevent>><</link>>
+					<br>
+				<<else>>
+					then glares at you in contempt. You hasten to turn away and find something else to do.
+					<br><br>
+
+					<<link [[Next|Asylum]]>><<handheldon>><<endevent>><</link>>
+					<br>
+				<</if>>
+			<</addinlineevent>>
 		<</if>>
+
+		<<runeventpool>>
 	<<else>>
 		<<link [[Next|Asylum]]>><<handheldon>><</link>>
 		<br>
