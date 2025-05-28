@@ -44,8 +44,8 @@ There is a thermometer outside the window. It reads <span class="teal"><<print W
 
 	<<link [[Next|Eden Caged Intro]]>><<set $phase to 2>><</link>>
 	<br>
-<<elseif ($edenfreedom is 2 and $edendays gte 8 and Time.hour gte 0 and Time.hour lte 6) or ($edenfreedom is 1 and $edendays gte 2 and Time.hour gte 0 and Time.hour lte 6) and !$possessed>>
-	<<set $edendays to 0>>
+<<elseif edenFreedomStatus() gte 1 and Time.hour gte 0 and Time.hour lte 6 and !$possessed>>
+	<<edenTrackers>>
 	<<npcincr Eden love -2>>
 	You enter to find Eden sleeping. Woken by the sound of the door opening, <<he>> quickly rises from the bed, but relaxes slightly when <<he>> sees you.
 	Throwing off the covers, <<he>> rushes over to you.
@@ -131,8 +131,8 @@ There is a thermometer outside the window. It reads <span class="teal"><<print W
 		<br><br>
 	<</if>>
 
-	<<if ($edenfreedom is 2 and $edendays lt 8) or ($edenfreedom is 1 and $edendays lt 2)>>
-		<<set $edendays to 0>>
+	<<if edenFreedomStatus() is 0>>
+		<<edenTrackers>>
 	<</if>>
 
 	<<if $possessed>>
@@ -1201,8 +1201,8 @@ You are in the clearing outside Eden's cabin. The surrounding trees are so huge 
 	<<link [[Next|Eden Caged Intro]]>><<set $phase to 2>><</link>>
 	<br>
 
-<<elseif ($edenfreedom is 2 and $edendays gte 8 and Time.hour gte 6) or ($edenfreedom is 1 and $edendays gte 2 and Time.hour gte 6)>>
-	<<set $edendays to 0>>
+<<elseif edenFreedomStatus() gte 1 and Time.hour gte 6>>
+	<<edenTrackers>>
 	<<npcincr Eden love -1>>
 	Eden looks up as you approach the cabin. <<He>> stops what <<hes>> doing and rushes over to you.
 	<<if $edenPreyEscaped>><<unset $edenPreyEscaped>>
@@ -1302,8 +1302,8 @@ You are in the clearing outside Eden's cabin. The surrounding trees are so huge 
 		<br><br>
 	<</if>>
 
-	<<if ($edenfreedom is 2 and $edendays lt 8) or ($edenfreedom is 1 and $edendays lt 2)>>
-		<<set $edendays to 0>>
+	<<if edenFreedomStatus() is 0>>
+		<<edenTrackers>>
 	<</if>>
 
 	<<if Time.hour gte 9 and Time.hour lte 10>>
@@ -1510,7 +1510,8 @@ You nod, and <<he>> gives you one last look before walking off.
 <</if>>
 <br><br>
 
-<<if C.npc.Eden.love gte 20>><<set $edenfreedom to 1>><<set $edenshopping to 0>><<set $edendays to 0>>
+<<if C.npc.Eden.love gte 20>>
+	<<set $edenfreedom to 1>><<set $edenshopping to 0>><<edenTrackers>>
 	<<He>> seems conflicted. "I suppose it was too much to hope you'd be content stuck here. Fine, you can go back to town. Make sure you get your little bottom back here though. <span class="gold">If you're gone longer than a day you'll worry me sick.</span> I'd have to come find you."
 	<br><br>
 
@@ -1602,7 +1603,8 @@ You walk to the edge of the clearing and gaze into the darkness of the forest. A
 <</if>>
 <br><br>
 
-<<if C.npc.Eden.love gte 100>><<set $edenfreedom to 2>><<set $edendays to 0>>
+<<if C.npc.Eden.love gte 100>>
+	<<set $edenfreedom to 2>><<edenTrackers>>
 	<<He>> looks about to argue, but sighs in resignation. "Fine. I'm used to being alone. <span class="gold">You can leave for up to a week.</span> If you're gone longer, I'll hunt you down."
 	<br><br>
 
@@ -1896,7 +1898,7 @@ Once you're finished, you hang the scarf on the coat stand, where you know Eden 
 
 :: Eden Recaptured
 <<set $outside to 0>><<set $location to "cabin">><<effects>>
-<<set $edendays to 0>>
+<<edenTrackers>>
 
 Eden grabs your arm and pushes you in front of <<him>>. <<He>> pushes you through the forest and back to <<his>> cabin. Once inside, <<he>> shoves you to the floor.
 <br><br>
@@ -2068,7 +2070,7 @@ You climb to your knees and look up at <<him>>.
 
 :: Eden Asylum Rescue
 <<set $outside to 0>><<set $location to "cabin">><<effects>>
-<<set $edendays to 0>><<asylumescape>>
+<<edenTrackers>><<asylumescape>>
 <<badEndTrackingEnd "Asylum" { reason: "asylumEden" }>>
 After you enter the cabin, Eden shuts the door behind you and wraps you up in a big hug. Is <<he>> trembling?
 <br><br>
@@ -2111,7 +2113,7 @@ You tell <<him>> that you can't promise anything, but that you'll try to be safe
 
 :: Eden Farm Rescue
 <<set $outside to 0>><<set $location to "cabin">><<effects>>
-<<set $edendays to 0>>
+<<edenTrackers>>
 You feel safe once beneath the canopy, but don't stop until you reach the cabin. Eden hugs you as soon as you're inside.
 <br><br>
 
@@ -2644,7 +2646,7 @@ You search the clearing for wild flowers, and find a number of poppies growing a
 :: Eden Recaptured 2
 <<effects>>
 <<npc Eden>><<person1>>
-<<set $edendays to 0>>
+<<edenTrackers>>
 
 <<if $rng gte 51>>
 	You awaken, and find yourself slumped over Eden's shoulder. You're in the clearing outside <<his>> cabin. <<He>> tosses you to the floor once inside.
@@ -2671,7 +2673,7 @@ You search the clearing for wild flowers, and find a number of poppies growing a
 :: Eden Cabin Rescued
 <<set $outside to 0>><<set $location to "cabin">><<effects>>
 /* eden is not actually generated on passages that lead here */
-<<set $edendays to 0>>
+<<edenTrackers>>
 <<npc Eden>><<person1>>
 
 You slip in and out of consciousness. You feel something carry you, and hear the sounds of the forest.
@@ -2726,7 +2728,6 @@ You awaken on the cabin bed. Turning your head to the side, you see Eden sitting
 
 :: Eden Passout Lake Rescue
 <<effects>>
-<<set $edendays to 0>>
 You feel yourself being lifted into the air and someone wrapping an arm around your waist.
 <br><br>
 

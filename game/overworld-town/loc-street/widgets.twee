@@ -1005,7 +1005,7 @@
 <</widget>>
 
 <<widget "streetedenrage">>
-	<<npc Eden>><<person1>><<set $edendays to 0>>
+	<<npc Eden>><<person1>><<edenRageRespite>>
 	<<set $NPCList[0].skills to {athletics: random(750, 1500), security: random(750, 1500)}>>
 
 	You hear heavy footsteps behind you. <span class="red">Someone is hunting you.</span>
@@ -1082,7 +1082,7 @@
 	<<elseif Time.hour lte 4 or Time.hour gte 21>>
 		"It's late. Come back to the cabin with me." <<He>> grips onto your shoulders tightly.
 		<br><br>
-		<<link [[Accept (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<set $edendays to 0>><<npcincr Eden dom 1>><</link>>
+		<<link [[Accept (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<edenTrackers>><<npcincr Eden dom 1>><</link>>
 		<br>
 		<<link [[Run|Street Eden Worried Run Cabin]]>><<npcincr Eden love -2>><<npcincr Eden dom -1>><</link>><<llove>>
 		<br>
@@ -1096,7 +1096,7 @@
 	<<else>>
 		<<He>> grips onto your shoulders tightly. "We're going back. Now."
 		<br><br>
-		<<link [[Agree (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<set $edendays to 0>><<npcincr Eden dom 1>><</link>>
+		<<link [[Agree (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<edenTrackers>><<npcincr Eden dom 1>><</link>>
 		<br>
 		<<link [[Run|Street Eden Worried Run Cabin]]>><<npcincr Eden love -2>><<npcincr Eden dom -1>><</link>><<llove>>
 		<br>
@@ -3398,9 +3398,9 @@
 				<<addevent "whitneyposter" 0.9>>
 			<</if>>
 
-			<<if $syndromeeden is 1 and (($edenfreedom isnot 2 or $edenCagedEscape) and $edendays gte 7) or ($edenfreedom gte 2 and $edendays gte 21) or $edenescape>>
+			<<if (edenFreedomStatus() gte 2 or ($edenescape and Time.dayState is "night")) and ($edenragerespite lte 0 || $edenragerespite is undefined)>>
 				<<addevent "streetedenrage" 0.9>>
-			<<elseif !$edenCagedEscape and ($edenfreedom is 1 and $edendays gte 2) or ($edenfreedom gte 2 and $edendays gte 8)>>
+			<<elseif edenFreedomStatus() gte 1 and !$edenCagedEscape>>
 				<<if $edenfreedom gte 2 and C.npc.Eden.love gte 60>>
 					<<addevent "streetedenworried" 0.9>>
 				<<else>>

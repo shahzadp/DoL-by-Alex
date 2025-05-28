@@ -46,26 +46,25 @@
 			<</if>>
 
 			<<if $syndromeeden is 1 and $edenfreedom gte 1 and $location isnot "cabin">> /* Another parameter is planned, something like $edenpunishment. It is meant to only trigger the journal note after the player has been given a reason to be wary of breaking Eden's rules. */
-				<<if ($edenfreedom is 1 and $edendays lt 2) or ($edenfreedom is 2 and $edendays lt 8)>>
-					<li>You promised Eden you would return to the cabin
+				<<if edenFreedomStatus() is 0>>
+					<li>You are expected back at Eden's cabin
 					<<if $edenfreedom is 1>>
-						<<if $edendays is 1>>
+						<<if $edendays is 2>>
 							<span class="pink">tonight, before midnight</span>.
-						<<else>> /* We can assume $edendays is 0 */
+						<<else>> /* $edendays is 1 */
 							by <span class="yellow">tomorrow night</span>, at the latest.
 						<</if>>
-					<<else>> /* We can assume $edenfreedom is 2 */
+					<<else>> /* $edenfreedom is 2 or more */
 						<<if $edendays is 7>>
 							<span class="pink">tonight, before midnight</span>.
 						<<elseif $edendays is 6>>
 							by <span class="yellow">tomorrow night</span>, at the latest.
-						<<else>>
-							in <span class="yellow"><<print 7 - $edendays>></span> days, at the latest.
+						<<else>> /* $edendays is between 1 and 5 */
+							in <span class="yellow"><<print ["", "six", "five", "four", "three", "two"][$edendays]>></span> days, at the latest.
 						<</if>>
 					<</if>></li>
-				/* Warning lasts for one day on freedom 1, and three days on freedom 2 */
-				<<elseif ($edenfreedom is 1 and $edendays lt 3) or ($edenfreedom is 2 and $edendays lt 11)>>
-					<li>You have <span class="red">failed</span> to return to the cabin on time. Eden will have taken note.</li>
+				<<elseif edenFreedomStatus() is 1 and (($edenfreedom is 1 and $edendays lt 4) or ($edenfreedom is 2 and $edendays lt 10))>> /* Warning lasts for one day on freedom 1, and two days on freedom 2 */
+					<li>You have <span class="red">failed</span> to return to Eden on time. <<nnpc_He "Eden">> will have noticed by now.</li>
 				<</if>>
 			<</if>>
 
