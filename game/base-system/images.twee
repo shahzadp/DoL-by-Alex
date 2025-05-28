@@ -13,6 +13,21 @@
 		<<case "bw">><<icon "blackwolf.png">>
 		<<case "ferocity">><span class="icon-container"><img class="icon" src="img/ui/wolfferocity.png"></span>
 		<<case "harmony">><span class="icon-container"><img class="icon" src="img/ui/wolfharmony.png"></span>
+		<<case "inside">><<icon "wolfcave_inside.png">>
+		<<case "outside">><<icon "wolfcave_outside.png">>
+		<<case "entrance">><<icon "wolfcave_entrance.png">>
+		<<case "hole">><<icon "wolfcave_hole.png">>
+		<<case "pupsden">><<icon "wolfcave_pupsden.png">>
+		<<case "wolf">>
+			<<set _wolfcolor = ["brown", "caramel", "gray", "white"]>>
+			<<set _selectedColor = _wolfcolor.random()>>
+			<<set _wolf = "wolf_" + _selectedColor + ".png">>
+			<<icon _wolf>>
+		<<case "wolf play">>
+			<<set _wolfcolor = ["brown", "caramel", "gray", "white"]>>
+			<<set _selectedColor = _wolfcolor.random()>>
+			<<set _wolfplay = "wolf_" + _selectedColor + "_play" + ".png">>
+			<<icon _wolfplay>>
 		<<case "children">>
 			<<run Object.values($children).forEach(child => {
 				if (child.type is "wolf" and child.location is "wolf_cave") {
@@ -1750,4 +1765,27 @@
 		<<case "lightbulb">><<icon "lightbulb.gif">>
 		<<default>><<icon `_args[0] + ".png"`>>
 	<</switch>>
+<</widget>>
+
+<<widget "watericon">>
+	<<set _daytime to Time.isBloodMoon() ? "-bloodmoon" :
+	Time.dayState is "dawn" or Time.dayState is "dusk" ? "-dawn" :
+	Time.dayState is "day" ? "-day" : "-night">>
+
+	<<set _water to {
+	"waterfall": { decoclass: "", decotype: "waterfall_rockgreen.png", waterclass: "water-outdoor", watertype: "waterfall_base.gif" },
+	"stream": { decoclass: "", decotype: "stream_grass.png", waterclass: "water-outdoor", watertype: "stream_base.gif" },
+	"pond": { decoclass: "", decotype: "pond_grass.png", waterclass: "water-outdoor", watertype: "pond_base.gif" },
+	"waterfall_wolfcave": { decoclass: "static-rock", decotype: "waterfall_rock.png", waterclass: "water-wolfcave", watertype: "waterfall_base.gif" },
+	"stream_wolfcave": { decoclass: "static-rock", decotype: "stream_rock.png", waterclass: "water-wolfcave", watertype: "stream_base.gif" },
+	"waterside_wolfcave": { decoclass: "", decotype: "waterside_soil.png", waterclass: "water-wolfcave", watertype: "waterside_base.gif" },
+	"waterfall_sewer": { decoclass: "", decotype: "waterfall_sewer.png", waterclass: "static-sewer", watertype: "waterfall_base.gif" },
+	}>>
+
+	<<set _key to _args[0]>>
+	<<set _decoclass to _water[_key].decoclass.includes("static") ? _water[_key].decoclass.replace("static-", "water-") : (_water[_key].decoclass ? _water[_key].decoclass + _daytime : "")>>
+	<<set _waterclass to _water[_key].waterclass.includes("static") ? _water[_key].waterclass.replace("static-", "water-") : (_water[_key].waterclass ? _water[_key].waterclass + _daytime : "")>>
+
+	<span @class="'icon-container icon infront'"><span @class=_decoclass><<icon _water[_key].decotype>></span></span>
+	<span @class=_waterclass><<icon _water[_key].watertype>></span>
 <</widget>>
