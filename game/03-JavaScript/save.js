@@ -615,7 +615,7 @@ function importSettingsData(data) {
 	if (overrides.general != null) {
 		const listObject = settingsObjects("general");
 		const listKey = Object.keys(listObject);
-		const namedObjects = ["map", "shopDefaults", "options"];
+		const namedObjects = ["map", "shopDefaults", "options", "wardrobeDefaults"];
 		// correct swapped min/max values
 		if (overrides.general.breastsizemin > overrides.general.breastsizemax) {
 			const temp = overrides.general.breastsizemin;
@@ -726,6 +726,7 @@ function exportSettings(data, type) {
 			map: {},
 			shopDefaults: {},
 			options: {},
+			wardrobeDefaults: {},
 		},
 		npc: {},
 	};
@@ -747,7 +748,7 @@ function exportSettings(data, type) {
 
 	listObject = settingsObjects("general");
 	listKey = Object.keys(listObject);
-	const namedObjects = ["map", "shopDefaults", "options"];
+	const namedObjects = ["map", "shopDefaults", "options", "wardrobeDefaults"];
 
 	for (let i = 0; i < listKey.length; i++) {
 		if (namedObjects.includes(listKey[i]) && V[listKey[i]] != null) {
@@ -1253,6 +1254,10 @@ function settingsObjects(type) {
 						strings: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom", "random"],
 					},
 				},
+				wardrobeDefaults: {
+					showTraits: { bool: false },
+					extraInfo: { bool: false },
+				},
 			};
 			break;
 		case "npc":
@@ -1301,7 +1306,7 @@ function settingsConvert(exportType, type, settings) {
 	const keys = Object.keys(listObject);
 	for (let i = 0; i < keys.length; i++) {
 		if (result[keys[i]] === undefined) continue;
-		if (["map", "player", "shopDefaults", "options"].includes(keys[i])) {
+		if (["map", "player", "shopDefaults", "options", "wardrobeDefaults"].includes(keys[i])) {
 			const itemKey = Object.keys(listObject[keys[i]]);
 			for (let j = 0; j < itemKey.length; j++) {
 				if (result[keys[i]][itemKey[j]] === undefined) continue;
