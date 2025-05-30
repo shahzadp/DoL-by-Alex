@@ -187,12 +187,36 @@ statDisplay.create("lharass", () => statDisplay.statChange("Decreases chance of 
 statDisplay.create("gharass", () => statDisplay.statChange("Increases chance of harassment", 0, "pink"));
 statDisplay.create("noharass", () => statDisplay.statChange("No chance of harassment", 0, "green"));
 
-statDisplay.create("llove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -1, "red"));
-statDisplay.create("lllove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -2, "red"));
-statDisplay.create("llllove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -3, "red"));
-statDisplay.create("glove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 1, "green"));
-statDisplay.create("gglove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 2, "green"));
-statDisplay.create("ggglove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 3, "green"));
+statDisplay.create("llove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -1, "red");
+});
+statDisplay.create("lllove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -2, "red");
+});
+statDisplay.create("llllove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -3, "red");
+});
+statDisplay.create("glove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 1, "green");
+});
+statDisplay.create("gglove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 2, "green");
+});
+statDisplay.create("ggglove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 3, "green");
+});
 
 statDisplay.create("llust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -1, "teal"));
 statDisplay.create("lllust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -2, "teal"));
