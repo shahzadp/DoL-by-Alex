@@ -564,7 +564,7 @@
 			<</if>>
 			<<if $skin[_active_bodypart].type is "text">>
 				<<set _written to "written">>
-				<span @class="_colour">"<<= $skin[_active_bodypart].writing.toUpperFirst()>>"</span>
+				"<span @class="_colour"><<= $skin[_active_bodypart].writing.toUpperFirst()>></span>"
 			<<else>>
 				<<set _written to "drawn">>
 				A picture of a <span @class="_colour"><<= $skin[_active_bodypart].writing>></span>
@@ -689,20 +689,16 @@
 		<div class="settingsHeader">Body</div>
 		<<if _bodywriting_exposed is 1 and _bodywriting_hidden is 1>>
 			<div class="settingsToggleItem">
-				<div class="skinMenu">
-					<span class="gold bold">Visible Bodywriting:</span>
-					<br>
-					<<mirrorBodywriting "visible">>
-					<br>
-				</div>
+				<span class="gold bold">Visible Bodywriting:</span>
+				<br>
+				<<mirrorBodywriting "visible">>
+				<br>
 			</div>
 			<div class="settingsToggleItem">
-				<div class="skinMenu">
-					<span class="gold bold">Hidden Bodywriting:</span>
-					<br>
-					<<mirrorBodywriting "hidden">>
-					<br>
-				</div>
+				<span class="gold bold">Hidden Bodywriting:</span>
+				<br>
+				<<mirrorBodywriting "hidden">>
+				<br>
 			</div>
 		<<elseif _bodywriting_exposed is 1 || _bodywriting_hidden is 1>>
 			<div class="settingsToggleItemWide">
@@ -715,6 +711,7 @@
 					<span class="gold bold">Hidden Bodywriting:</span>
 					<br>
 					<<mirrorBodywriting "hidden">>
+					<br>
 				<</if>>
 			</div>
 		<</if>>
@@ -748,25 +745,25 @@
 			</div>
 		</div>
 		<div class="settingsToggleItemWide">
-			<div class="skinMenu">
-				<span class="gold bold">Body shape:</span>
-				<mouse class="tooltip-small linkBlue">(?)<span>This is a cosmetic change that does not contribute towards gender appearance.</span></mouse>
-				<br>
-				Your chosen body shape is:
-				<<set _bodyOptions to {
-					"Classic": "classic",
-					"Slender": "slender",
-					"Curvy": "curvy",
-					"Soft": "soft"
-				}>>
-				<<listbox "$player.bodyshape" autoselect>>
-					<<optionsfrom _bodyOptions>>
-				<</listbox>>
-				<br>
-				<<link "Apply">>
-					<<updatesidebarimg true>>
-				<</link>>
-			</div>
+			<span class="gold bold">Body shape:</span>
+			<mouse class="tooltip-small linkBlue">(?)<span>This is a cosmetic change that does not contribute towards gender appearance.</span></mouse>
+			<br>
+			Your chosen body shape is:
+			<<set _bodyOptions to {
+				"Classic": "classic",
+				"Slender": "slender",
+				"Curvy": "curvy",
+				"Soft": "soft"
+			}>>
+			<<listbox "$player.bodyshape" autoselect>>
+				<<optionsfrom _bodyOptions>>
+			<</listbox>>
+			<br>
+			<<run $(() => {
+				$("#listbox-playerbodyshape").on("change", () => {
+					Wikifier.wikifyEval('<<updatesidebarimg true>>');
+				});
+			})>>
 		</div>
 	</div>
 	<hr>
@@ -1113,6 +1110,8 @@
 <</widget>>
 
 <<widget "bodywritingMenuLinks">>
+	<span class="gold bold">Add Bodywriting:</span>
+	<br>
 	<div id="bodywritingMenuLinks">
 		<<set _keys to Object.keys(_bodyWritingOptions)>>
 		<<if $bodywritingSet is undefined>>
@@ -1146,8 +1145,6 @@
 
 <<widget "bodywritingMenu">>
 	<<if Object.keys(_bodyWritingOptions[$bodywritingSet]).length gt 0>>
-		<span class="gold bold">Add Bodywriting:</span>
-		<br>
 		<<set _bodyPartOptions to {}>>
 		<<if _args[0] isnot undefined>>
 			<<set _bodyPartOptionsSkip to _args[0]>>
