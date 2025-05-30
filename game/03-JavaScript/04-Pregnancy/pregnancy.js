@@ -1077,7 +1077,7 @@ function playerCanBreedWith(npc) {
 window.playerCanBreedWith = playerCanBreedWith;
 
 function pregnancyCompatible(NPC) {
-	if (playerPregnancyPossibleWith(NPC) === false || NPCPregnancyPossibleWithPlayer(NPC) === false) return false;
+	if (playerPregnancyPossibleWith(NPC) === false && NPCPregnancyPossibleWithPlayer(NPC) === false) return false;
 	return true;
 }
 window.pregnancyCompatible = pregnancyCompatible;
