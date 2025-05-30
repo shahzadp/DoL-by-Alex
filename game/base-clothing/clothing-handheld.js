@@ -6464,6 +6464,7 @@ function initHandheld() {
 			name: "basket of fish",
 			name_cap: "Basket of fish",
 			variable: "basket of fish",
+			holdPosition: "right_cover",
 			state: 0,
 			state_base: 0,
 			warmth: 0,
