@@ -1526,9 +1526,6 @@ const combatMainPc = {
 				if (clothes?.name == null) {
 					return "";
 				}
-				if (!setup.renderer.player.bestialHandjob.doggy?.allowed.includes(clothes.name)) {
-					return "";
-				}
 				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
 					return `${options.src}clothing/hands/${clothes.name}/front-handjob-bestial.png`;
 				}
@@ -1557,9 +1554,6 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.hands;
 				if (clothes?.name == null) {
-					return "";
-				}
-				if (!setup.renderer.player.bestialHandjob.doggy?.allowed.includes(clothes.name)) {
 					return "";
 				}
 				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
@@ -1592,9 +1586,6 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.hands;
 				if (clothes?.name == null) {
-					return "";
-				}
-				if (!setup.renderer.player.bestialHandjob.doggy?.allowed.includes(clothes.name)) {
 					return "";
 				}
 				if (options.position === "doggy" && PlayerCanvasHelper.isBestialHandjob(options, "front")) {
