@@ -1,7 +1,7 @@
 :: Widgets Journal [widget]
 <<widget "journal">>
 	<br>
-	<<print "It is the " + ordinalSuffixOf(Time.monthDay) + " of " + Time.monthName + ", " + Time.year + "." >>
+	<<print "It is " + getFormattedDate(Time.date) + ", " + Time.year + "." >>
 	<ul class="journal">
 	<<if Time.days lt 0>>
 		<<if Time.days lt -365>>
@@ -46,26 +46,25 @@
 			<</if>>
 
 			<<if $syndromeeden is 1 and $edenfreedom gte 1 and $location isnot "cabin">> /* Another parameter is planned, something like $edenpunishment. It is meant to only trigger the journal note after the player has been given a reason to be wary of breaking Eden's rules. */
-				<<if ($edenfreedom is 1 and $edendays lt 2) or ($edenfreedom is 2 and $edendays lt 8)>>
-					<li>You promised Eden you would return to the cabin
+				<<if edenFreedomStatus() is 0>>
+					<li>You are expected back at Eden's cabin
 					<<if $edenfreedom is 1>>
-						<<if $edendays is 1>>
+						<<if $edendays is 2>>
 							<span class="pink">tonight, before midnight</span>.
-						<<else>> /* We can assume $edendays is 0 */
+						<<else>> /* $edendays is 1 */
 							by <span class="yellow">tomorrow night</span>, at the latest.
 						<</if>>
-					<<else>> /* We can assume $edenfreedom is 2 */
+					<<else>> /* $edenfreedom is 2 or more */
 						<<if $edendays is 7>>
 							<span class="pink">tonight, before midnight</span>.
 						<<elseif $edendays is 6>>
 							by <span class="yellow">tomorrow night</span>, at the latest.
-						<<else>>
-							in <span class="yellow"><<print 7 - $edendays>></span> days, at the latest.
+						<<else>> /* $edendays is between 1 and 5 */
+							in <span class="yellow"><<print ["", "six", "five", "four", "three", "two"][$edendays]>></span> days, at the latest.
 						<</if>>
 					<</if>></li>
-				/* Warning lasts for one day on freedom 1, and three days on freedom 2 */
-				<<elseif ($edenfreedom is 1 and $edendays lt 3) or ($edenfreedom is 2 and $edendays lt 11)>>
-					<li>You have <span class="red">failed</span> to return to the cabin on time. Eden will have taken note.</li>
+				<<elseif edenFreedomStatus() is 1 and (($edenfreedom is 1 and $edendays lt 4) or ($edenfreedom is 2 and $edendays lt 10))>> /* Warning lasts for one day on freedom 1, and two days on freedom 2 */
+					<li>You have <span class="red">failed</span> to return to Eden on time. <<nnpc_He "Eden">> will have noticed by now.</li>
 				<</if>>
 			<</if>>
 
@@ -183,10 +182,25 @@
 					You will receive an <span class="gold">allowance</span> when passing the exam.
 				</li>
 			<</if>>
+
+			<<if $studyBooks isnot undefined and $studyBooks.rented isnot "none">>
+				<li>
+					<<if $book_rent_timer is 0>>
+						<span class="blue">You have a library book due.</span>
+					<<elseif $book_rent_timer lt 0>>
+						<span class="red">You have a library book overdue.</span>
+					<<else>>
+						You have a library book due in <span class="gold">$book_rent_timer</span> day<<if $book_rent_timer gt 1>>s<</if>>.
+					<</if>>
+					<<if !Time.schoolTerm>>
+						<span class="blue">Books are not due over school break!</span>
+					<</if>>
+				</li>
+			<</if>>
 		</ul>
 	<</if>>
 
-	<<if !$statFreeze and (($location is "asylum" and ($eden_asylum_window is 1 or ($daily.eden.distract gte 1 and Time.hour lt 21))) || $temple_spear_mission gte 1 || $dockwork gte 2 || ($brothelshowdata.intro and $brothelshowdata.type is "none") || $robindebtevent gte 1 and $robinmissing isnot 0 || $pubtask2 is 1 || $pubtask || $police_hack is 1 || $pub_hack_job gte 1 || $pubfame ||( $earSlime.event and !_tempEventHide) || $earSlime.forcedCommando isnot undefined || $earSlime.forcedDressing isnot undefined || $temple_rank is "prospective" || $chef_state gte 4 || $mason_pond gte 1 || ($brothel_machine_repair gte 1 and $brothel_machine_repair lte 3) || ($harpy gte 6 and $birdFly isnot 1) || ($studyBooks isnot undefined and $studyBooks.rented isnot "none") || $adultshopgrandopening || ($adultshopintro is 1 and $adultshopunlocked is undefined))>>
+	<<if !$statFreeze and (($location is "asylum" and ($eden_asylum_window is 1 or ($daily.eden.distract gte 1 and Time.hour lt 21))) || $temple_spear_mission gte 1 || $dockwork gte 2 || ($brothelshowdata.intro and $brothelshowdata.type is "none") || $robindebtevent gte 1 and $robinmissing isnot 0 || $pubtask2 is 1 || $pubtask || $police_hack is 1 || $pub_hack_job gte 1 || $pubfame ||( $earSlime.event and !_tempEventHide) || $earSlime.forcedCommando isnot undefined || $earSlime.forcedDressing isnot undefined || $temple_rank is "prospective" || $chef_state gte 4 || $mason_pond gte 1 || ($brothel_machine_repair gte 1 and $brothel_machine_repair lte 3) || ($harpy gte 6 and $birdFly isnot 1) || $adultshopgrandopening || ($adultshopintro is 1 and $adultshopunlocked is undefined))>>
 		/*TODO: streamline during eventual Journal UI Overhaul bc lol. lmao, even. */
 		<hr>
 		<h1 class="header gold bold">Reminders</h1>
@@ -356,7 +370,7 @@
 			<<if $mason_pond is 1>>
 				<li>Mason mentioned a stream under Domus Street, which could be used to make a spring. You'd need Bailey's permission first.</li>
 			<<elseif $mason_pond is 2>>
-				<li>Bailey wants <span class="gold">£6000</span> to build a spring in the orphanage garden.</li>
+				<li>Bailey wants <<printmoney 600000>> to build a spring in the orphanage garden.</li>
 			<<elseif $mason_pond is 3>>
 				<li>A spring is being built in the orphanage garden.</li>
 			<<elseif $mason_pond is 4>>
@@ -403,16 +417,6 @@
 				<li>Jordan has asked you to investigate one of the manors on Danube Street. One of the temple's flock went missing after finding work there. You can get access through Charlie, and your status as a dancer.</li>
 			<<elseif $jordan_ritual_dance is 2>>
 				<li>You encountered a strange ritual in a manor on Danube Street. Inform Jordan, head <<nnpc_title "Jordan">> at the temple.</li>
-			<</if>>
-
-			<<if $studyBooks isnot undefined and $studyBooks.rented isnot "none">>
-				<<if $book_rent_timer is 0>>
-					<li><span class="blue">You have a library book due.</span></li>
-				<<elseif $book_rent_timer lt 0>>
-					<li><span class="red">You have a library book overdue.</span></li>
-				<<else>>
-					<li>You have a library book due in <span class="gold">$book_rent_timer</span> day<<if $book_rent_timer gt 1>>s<</if>>.</li>
-				<</if>>
 			<</if>>
 
 			<<if $farm>>

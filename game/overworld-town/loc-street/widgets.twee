@@ -335,7 +335,7 @@
 
 <<widget "streetvan">>
 	<<generate1>><<person1>>
-	"'Ey <<girl>>," a voice says to your right. A <<person1>><<person>> leans against an open van, panting. "Fancy making some cash? My usual help didn't turn up, and I'm struggling to move all these boxes. I'll pay you three times the usual. So <span class="gold">£30.</span> Should take about an hour."
+	"'Ey <<girl>>," a voice says to your right. A <<person1>><<person>> leans against an open van, panting. "Fancy making some cash? My usual help didn't turn up, and I'm struggling to move all these boxes. I'll pay you three times the usual. So <<printmoney 3000>>. Should take about an hour."
 	<br><br>
 
 	<<link [[Help (1:00)|Street Van Help]]>><<tiredness 6>><</link>><<gtiredness>>
@@ -648,7 +648,7 @@
 	<<rng>>
 	<<generate1>><<person1>>A <<person1>><<person>> approaches you.
 	<<if $watersportsdisable is "f" and $rng lte 20 and $fame.exhibitionism gte 400 and $location isnot "alley">>
-		"Hey <<girl>>, wanna make some money?" <<He>> takes out a couple banknotes from <<his>> pocket. "<span class="gold">£30</span>, if you let me watch you pee." <<He>> is serious.
+		"Hey <<girl>>, wanna make some money?" <<He>> takes out a couple banknotes from <<his>> pocket. "<<printmoney 3000>>, if you let me watch you pee." <<He>> is serious.
 		<br><br>
 
 		<<if !hasSexStat("exhibitionism", 4)>>
@@ -661,7 +661,7 @@
 		<<link [[Refuse|Street Urination Show]]>><<set $phase to 2 >><</link>><<gstress>>
 		<br>
 	<<elseif $rng gte 65 and $fame.exhibitionism gte 400>>
-		"Hey, I recognise you! You're that <<girl>> who likes showing off. Want to make some money? I'll give you <span class="gold">£50</span> if I can take some pictures of your <<if $player.gender_appearance is "m">>penis<<else>>pussy<</if>> for my... collection."
+		"Hey, I recognise you! You're that <<girl>> who likes showing off. Want to make some money? I'll give you <<printmoney 5000>> if I can take some pictures of your <<if $player.gender_appearance is "m">>penis<<else>>pussy<</if>> for my... collection."
 		<br><br>
 
 		<<if !hasSexStat("exhibitionism", 4)>>
@@ -682,7 +682,7 @@
 		<<link [[Refuse|Street Panties Photo]]>><<set $phase to 3>><</link>><<gstress>>
 		<br>
 	<<else>>
-		"Hey <<girl>>, want to make some money? I'll give you <span class="gold">£30</span> for your underwear."
+		"Hey <<girl>>, want to make some money? I'll give you <<printmoney 3000>> for your underwear."
 		<br><br>
 
 		<<if !hasSexStat("exhibitionism", 3)>>
@@ -867,7 +867,9 @@
 		<<default>>
 			<<set $_carcash to random(50, 100)>>
 			<<wearProp "wallet" 0 "money">>
-			The water balloon hits the windscreen, blinding the driver. The car careens into a pole then smashes into a parked car. The car's occupants flee, but you see the <<person>> drop <<his>> wallet as <<he>> escapes. You pick it up and find <<moneyGain $_carcash>> inside.
+			The water balloon hits the windscreen, blinding the driver. The car careens into a pole then smashes into a parked car. No one is hurt, but as the car's occupants flee, you see the <<person>> drop something in <<his>> haste.
+			<br><br>
+			You pick it up. It's a wallet. You decide to keep the <<moneyGain $_carcash>> inside.
 			<br><br>
 		<</switch>>
 	<<elseif (currentSkillValue('danceskill') + $rng) gte 500>><<generate2>><<person2>>
@@ -1005,7 +1007,7 @@
 <</widget>>
 
 <<widget "streetedenrage">>
-	<<npc Eden>><<person1>><<set $edendays to 0>>
+	<<npc Eden>><<person1>><<edenRageRespite>>
 	<<set $NPCList[0].skills to {athletics: random(750, 1500), security: random(750, 1500)}>>
 
 	You hear heavy footsteps behind you. <span class="red">Someone is hunting you.</span>
@@ -1082,7 +1084,7 @@
 	<<elseif Time.hour lte 4 or Time.hour gte 21>>
 		"It's late. Come back to the cabin with me." <<He>> grips onto your shoulders tightly.
 		<br><br>
-		<<link [[Accept (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<set $edendays to 0>><<npcincr Eden dom 1>><</link>>
+		<<link [[Accept (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<edenTrackers>><<npcincr Eden dom 1>><</link>>
 		<br>
 		<<link [[Run|Street Eden Worried Run Cabin]]>><<npcincr Eden love -2>><<npcincr Eden dom -1>><</link>><<llove>>
 		<br>
@@ -1096,7 +1098,7 @@
 	<<else>>
 		<<He>> grips onto your shoulders tightly. "We're going back. Now."
 		<br><br>
-		<<link [[Agree (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<set $edendays to 0>><<npcincr Eden dom 1>><</link>>
+		<<link [[Agree (1:00)|Street Eden Worried Go To Cabin]]>><<pass 60>><<edenTrackers>><<npcincr Eden dom 1>><</link>>
 		<br>
 		<<link [[Run|Street Eden Worried Run Cabin]]>><<npcincr Eden love -2>><<npcincr Eden dom -1>><</link>><<llove>>
 		<br>
@@ -1390,9 +1392,9 @@
 
 	<<if _bottomIsSkirt and _skirtExposed>>
 		<<if !playerChastity() and !$worn.under_lower.type.includes("naked")>>
-			up your _bottom.name. It tangles in your $worn.under_lower.name.
+			up your _bottom.name. <span class="lewd">It tangles in your $worn.under_lower.name.</span>
 		<<elseif $worn.under_lower.type.includes("naked")>>
-			up your _bottom.name. It winds around inside the fabric until it touches your
+			up your _bottom.name. It winds around inside the fabric <span class="lewd">until it touches your
 			<<set $phase to 1>>
 			<<rng>>
 			<<if $analdisable is "f" and $rng gte 60>>
@@ -1410,31 +1412,41 @@
 					<<set _target to 'none'>><<set $phase to 0>>
 				<</if>>
 			<</if>>
+			</span>
 			You feel an excited tremble running through the tentacle.
 		<<else>>
-			up your _bottom.name. It bunches up and winds around the fabric.
+			up your _bottom.name. <span class="lewd">It bunches up and winds around the fabric.</span>
 		<</if>>
 	<<elseif $worn.lower.type.includes("naked")>>
+		<span class="lewd">
 		<<if !playerChastity() and !$worn.under_lower.type.includes("naked")>>
 			tangles in your $worn.under_lower.name.
 		<<else>>
 			begins coiling around your thighs.
 			<<set $phase to 2>>
 		<</if>>
+		</span>
 	<<else>>
-		tangles in your _bottom.name.
+		<span class="lewd">tangles in your _bottom.name.</span>
 	<</if>>
 	<br><br>
 
-	<<if $phase is 0>>
-		<<link [[Hold on to your clothes|Street Tentacle Hold]]>><</link>><<physiquedifficulty 5000 16000>>
-	<</if>>
-	<br>
 
 	<<if !pcAreArmsBound("both")>>
+		<<if $angel gte 4 and $angelBanish gte 1>>
+			<<link [[Exorcise the tentacle|Street Tentacle Banish]]>><<set $angelBanish -->><</link>><<angelbanish>>
+			<br>
+		<</if>>
+
+		<<if $phase is 0>>
+			<<link [[Hold on to your clothes|Street Tentacle Hold]]>><</link>><<physiquedifficulty 5000 16000>>
+			<br>
+		<</if>>
+
 		<<link [[Grab the tentacle|Street Tentacle Grab]]>><</link>><<physiquedifficulty 5000 16000>><<deviant1>>
 		<br>
-		<<if ($phase isnot 1) and hasSexStat("deviancy", 4)>>
+
+		<<if ($phase isnot 1) and hasSexStat("deviancy", 3)>>
 			<<link [[Stroke the tentacle|Street Tentacle Stroke]]>><</link>><<deviant3>>
 			<br>
 		<</if>>
@@ -2038,11 +2050,18 @@
 <<widget "shadyFan">>
 	You round a corner and walk right into a <<generate1>><<person1>><<person>>, causing the large package that they were holding to fall to the ground.
 	<br><br>
-	<<if ($fame.exhibitionism gte 400 or $fame.sex gte 400 or $fame.prostitution gte 400 or $fame.rape gte 400) and ($player.gender_appearance is "f" or $forcedcrossdressingdisable is "f")>>
-		"Careful, <<girl>>," <<he>> says while checking the package. Happy it isn't damaged, <<he>> takes another look at you and continues,
-		"You look familiar. Do I know you from somewhere?"
+	<<if ($fame.exhibitionism gte 400 or $fame.sex gte 400 or $fame.prostitution gte 400 or $fame.rape gte 400)>>
+		<<if $forcedcrossdressingdisable is "f">>
+			<<set $lustfulClothes to either("bimbo", "pimp")>>
+			<<set _crossdresserClothes to ($lustfulClothes is "pimp" and $player.gender_appearance is "f") or ($lustfulClothes is "bimbo" and $player.gender_appearance is "m")>>
+		<<else>>
+			<<set $lustfulClothes to $player.gender_appearance is "f" ? "bimbo" : "pimp">>
+		<</if>>
+		The package splits at the seam, and you catch a glimpse of <<= $lustfulClothes is "pimp" ? "a gaudy suit. It exudes machismo, and looks like an outfit you'd find at a brothel." : "a pair of platform heels. They're too tall to be practical, and look like something you'd find at a strip club.">>
 		<br><br>
-		<<He>> starts to get uncomfortably close as <<he>> eyes you up. "I know this may seem abrupt, but I think the clothes in this package would suit you. Want them?"
+		"Careful, <<girl>>," <<he>> says. <<He>> picks up the box and inspects the damage before taking another look at you. "You look familiar," <<he>> continues. "Do I know you from somewhere?"
+		<br><br>
+		<<He>> starts to get uncomfortably close as <<he>> eyes you up. "I know this may seem abrupt, but I think the clothes in this package would suit you.<<if _crossdresserClothes>> There's nothing sexier than a <<girl>> in a <<= $lustfulClothes is "pimp" ? "suit" : "skirt">>.<</if>> Want them?"
 		<br><br>
 		<<if hasSexStat("exhibitionism", 5)>>
 			<<link [[Strip as you are and put them on|Shady Fan Strip]]>><</link>><<exhibitionist5>>
@@ -2316,18 +2335,23 @@
 			As you're walking down the street, you see two groups of teens handing out pamphlets to bystanders. One group is composed of initiates from the temple, while the others appear to be a group of out-of-town volunteers.
 			<<if $rng lte 33>>
 				<<set $phase to 1>>
-				The two groups mostly ignore one another as they distribute their papers. They seem to be focused on doing their job right. One person of each group, a <<person1>><<person>> from the temple and a <<person2>><<person>> from the volunteers, unintentionally approach you at the same time.
+				The two groups mostly ignore one another as they distribute their papers. They seem to be focused on doing their job right.
 				<br><br>
 
+				One person of each group, a <<person1>><<person>> from the temple and a <<person2>><<person>> from the volunteers, unintentionally approach you at the same time.
 				<<if ($temple_rank is "initiate" or $temple_rank is "monk" or $temple_rank is "priest") and !$worn.face.type.includes("mask")>>
-					<<person1>>Upon recognising you, the initiate picks up the pace and gets to you first.
-					"Hey there, nice to see you. You probably don't need it, but I can offer you a pamphlet if you'd like? It would greatly help our cause."
+					<span class="blue">Upon recognising you,</span> the initiate picks up the pace and gets to you first.
 					<br><br>
 
-					The <<person2>><<person>> politely waits for <<his>> turn, but you can see <<him>> glancing at you. <<He>> speaks up.
+					"Hey there, nice to see you," <<person1>><<he>> says with a friendly smile. "You probably don't need it, but I can offer you a pamphlet if you'd like? It would greatly help our cause."
+					<br><br>
+
+					The <<person2>><<person>> politely waits for <<his>> turn, but you can see <<him>> glancing at you. <<He>> speaks up once the <<person1>><<person>> is done talking.
 					"We're also giving out pamphlets, although... they're a little different."
 				<<else>>
 					The volunteer gets to you first. The initiate slows down, waiting <<person1>><<his>> turn.
+					<br><br>
+
 					"Hey there friend, could I bother you for a moment? Teens like us are in the primes of our lives, and we would like for you to be as healthy and happy as possible. Can I interest you in our informative paper?"
 					<br><br>
 
@@ -2335,28 +2359,34 @@
 					"We're... also giving out information. It's about the benefits of abstinence and faith. I'd like to give you one, if that's okay."
 					<br><br>
 
-					You feel a little overwhelmed, even though none of them seem too pushy about it.
+					You feel a little overwhelmed, even though neither of them seem too pushy about it.
 				<</if>>
 			<<elseif $rng gte 66>>
 				<<set $phase to 2>>
-				The two groups give each other wary stares. Tension seems to be running high. Some of them even sport fresh bruises. One person of each group, a <<person1>><<person>> from the initiates and a <<person2>><<person>> from the volunteers, rush towards you while shoving each other.
+				The two groups give each other wary stares. Tension seems to be running high. <span class="purple">Some of them even sport fresh bruises.</span>
 				<br><br>
 
+				One person of each group, a <<person1>><<person>> from the initiates and a <<person2>><<person>> from the volunteers, rush towards you while shoving each other.
 				<<if ($temple_rank is "initiate" or $temple_rank is "monk" or $temple_rank is "priest") and !$worn.face.type.includes("mask")>>
-					<<person1>>Upon recognising you, the initiate aggressively shoves <<his>> opponent and gets to you first.
+					<span class="blue">Upon recognising you,</span> the initiate aggressively shoves <<his>> opponent and gets to you first.
+					<br><br>
+
 					"Don't listen to this sinner. <<person2>><<He>>'ll try to throw you off the righteous path. Abstinence is the only way." <<person1>><<He>> holds out a pamphlet for you.
 					<br><br>
 
-					The <<person2>><<person>> approaches, quite angered by the initiate's words. However, <<he>> doesn't lose <<his>> calm nor <<his>> professionalism.
-					"You can't know until you try, but you can be hurt while trying. We want to protect you against the dangers of sex, all while assuring you the freedom to explore your body and others', with their consent."
+					The <<person2>><<person>> approaches, clearly angered by the initiate's words. However, <<he>> doesn't lose <<his>> calm nor <<his>> professionalism.
+					"You can't know until you try, but you can be hurt while trying. We want to protect you against the dangers of sex, all while assuring you the freedom to explore your body and others', with their consent." <<He>> holds out <<his>> own pamphlet.
+					<br><br>
+
+					They're both quite intense, and you can practically feel the animosity rolling of them.<<stress 3>><<gstress>>
 				<<else>>
 					The volunteer reaches you first. The initiate seems irritated, but upon noticing your gaze, <<person1>><<he>> manages <<his>> anger and impatiently waits for <<his>> turn.
 					<br><br>
 
-					"You're a resident of this town, right? We're giving out essential information about sexual health and safety. Heaven knows this town needs it."
+					"You're a resident of this town, right? We're giving out essential information about sexual health and safety. Heaven knows this place needs it." <<person2>><<He>> holds out a pamphlet.
 					<br><br>
 
-					The initiate seems absolutely furious upon hearing such blasphemy. <<He>> imposes <<himself>> in between you and the volunteer.
+					The initiate seems absolutely furious upon hearing such blasphemy. <<He>> imposes <<himself>> in between you and the volunteer and holds out <<his>> own pamphlet.
 					"This sinner has no right to invoke the name of heaven! Trust is not something to be so easily given. The temple has been watching over our town for generations. Don't you want to reward the work of those that defend purity?"
 					<br><br>
 
@@ -2364,37 +2394,38 @@
 				<</if>>
 			<<else>>
 				<<set $phase to 3>>
-				The two groups seem to be mingling. You hear them laughing and joking with one another. One person of each group, a <<person1>><<person>> from the initiates and a <<person2>><<person>> from the volunteers, make a game of reaching you first.
+				The two groups seem to be mingling. You hear them laughing and joking with one another.
 				<br><br>
 
+				One person of each group, a <<person1>><<person>> from the initiates and a <<person2>><<person>> from the volunteers, make a game of reaching you first.
 				<<if ($temple_rank is "initiate" or $temple_rank is "monk" or $temple_rank is "priest") and !$worn.face.type.includes("mask")>>
-					Upon recognising you, the initiate switches instead to a leisurely stroll, sure of <<person1>><<his>> victory. <<He>> shouts to <<his>> rival.
-					"Don't even bother. This one is a fellow worshipper!"
+					However, <span class="blue">upon recognising you,</span> the initiate switches to a leisurely stroll, sure of <<person1>><<his>> victory.
 					<br><br>
 
-					The <<person2>><<person>> greets you with an ample, competitive smile. <<He>> winks at you, then speaks up.<br>
+					<<He>> shouts to <<his>> rival. "Don't even bother. This one is a fellow worshipper!"
+					<br><br>
+
+					Undaunted, the <<person2>><<person>> greets you with a large, competitive smile. <<He>> winks at you, then gives <<his>> pitch.
 					"There are only winners if you take my pamphlet. You, me, this town, everyone. A good sexual education brings wonders. I 'pray' that I can convince you!"
 					<br><br>
 
-					The initiate does not seem bothered in the slightest, although the volunteer's cheesy sales pitch earns <<person2>><<him>> a few strange looks.
+					The volunteer's cheesy sales pitch earns <<person2>><<him>> a few strange looks, but the initiate doesn't seem bothered in the slightest. <<person1>><<He>> gives you a smile as <<he>> strolls up. "As for us, we're just handing out the regular stuff. I'm sure you're familiar."
 				<<else>>
-					The volunteer has more luck and gets to you first. The initiate arrives a few seconds later, laughing and nagging at <<person1>><<his>> opponent for fun. You almost feel like they've forgotten about you, until the volunteer accosts you.
-					"Hey, hope you're doing well today. I - well, we're - giving out pamphlets. It's up to you whether you want to learn more about sex, abstinence, or both."
+					The volunteer manages to find a clear path through the crowd and gets to you first. The initiate arrives a few seconds later, laughing and nagging at <<person1>><<his>> opponent for fun.
 					<br><br>
 
-					The <<person1>><<person>> nods in confirmation.
-					"Our pamphlets are better though."
+					You almost feel like they've forgotten about you, until the volunteer turns and accosts you. "Hey, hope you're doing well today. I - well, we're - giving out pamphlets. It's up to you whether you want to learn more about sex, abstinence, or both!"
 					<br><br>
 
-					Their friendliness towards one another puts you at ease. <<stress -5>><<lstress>>
+					The initiate nods in confirmation. "My pamphlets are better, though," <<he>> teases. Their friendliness towards one another puts you at ease. <<stress -5>><<lstress>>
 				<</if>>
 			<</if>>
 			<br><br>
 			<<link [[Accept both pamphlets|Street Duo Accept Both]]>><</link>>
 			<br>
-			<<link [["Accept the initiate's pamphlet"|Street Duo Accept Abstinence]]>><</link>>
+			<<link [[Accept the initiate's pamphlet|Street Duo Accept Abstinence]]>><</link>>
 			<br>
-			<<link [["Accept the volunteer's pamphlet"|Street Duo Accept Volunteers]]>><</link>>
+			<<link [[Accept the volunteer's pamphlet|Street Duo Accept Volunteers]]>><</link>>
 			<br>
 			<<link [[Refuse both|Street Duo Refuse Both]]>><</link>>
 			<br>
@@ -3101,7 +3132,7 @@
 					<br><br>
 				<</if>>
 			<<case 7>>
-				You stop by a stall selling bananas. <span class="gold">£5</span> a bushel.
+				You stop by a stall selling bananas. <<printmoney 500>> a bushel.
 				<br><br>
 				<<if $money gte 500>>
 					<<link [[Buy 6 bananas (£5)|Connudatus Street]]>><<money -500>><<tending_give banana 6>><</link>>
@@ -3386,9 +3417,9 @@
 				<<addevent "whitneyposter" 0.9>>
 			<</if>>
 
-			<<if $syndromeeden is 1 and (($edenfreedom isnot 2 or $edenCagedEscape) and $edendays gte 7) or ($edenfreedom gte 2 and $edendays gte 21) or $edenescape>>
+			<<if (edenFreedomStatus() gte 2 or ($edenescape and Time.dayState is "night")) and ($edenragerespite lte 0 || $edenragerespite is undefined)>>
 				<<addevent "streetedenrage" 0.9>>
-			<<elseif !$edenCagedEscape and ($edenfreedom is 1 and $edendays gte 2) or ($edenfreedom gte 2 and $edendays gte 8)>>
+			<<elseif edenFreedomStatus() gte 1 and !$edenCagedEscape>>
 				<<if $edenfreedom gte 2 and C.npc.Eden.love gte 60>>
 					<<addevent "streetedenworried" 0.9>>
 				<<else>>

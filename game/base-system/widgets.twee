@@ -3441,7 +3441,7 @@
 
 			let statDefaults = {
 				"love" : {
-					name : "Love",
+					name : setup.loveAlias[T.npcData.nam](),
 					value : T.npcData.love,
 					activeIcon : 'img/ui/sym_love.png',
 					inactiveIcon: 'img/ui/emptyheart.png',
@@ -3531,13 +3531,6 @@
 							_npcData.nam
 							<small class="relation-title black"><i>The _wraithTitle</i></small>
 						</span>
-						<div class="quick-stats">
-							<<for _j = 0; _j lt _otherNpcStats.length; _j++>>
-								<<if _npcData[_otherNpcStats[_j]] gt 0 and _checkRequirements(_otherNpcStats[_j])>>
-									<<relation-box-stat _getStatConfig(_otherNpcStats[_j])>>
-								<</if>>
-							<</for>>
-						</div>
 					</div>
 					<div class="relation-description">
 						<<if $options.images is 1 and (_rngWraithFace is 1 or $possessed)>>
@@ -3545,6 +3538,13 @@
 						<<else>>
 							<<npcrelationship _npcData.nam>>
 						<</if>>
+					</div>
+					<div @class="(_npcData[_otherNpcStats[1]] lte 0 or _npcData[_otherNpcStats[0]] lte 0 ? 'full-width ' : '') + 'quick-stats relation-stat-list'">
+						<<for _j = 0; _j lt _otherNpcStats.length; _j++>>
+							<<if _npcData[_otherNpcStats[_j]] gt 0 and _checkRequirements(_otherNpcStats[_j])>>
+								<<relation-box-stat _getStatConfig(_otherNpcStats[_j])>>
+							<</if>>
+						<</for>>
 					</div>
 				</div>
 			<<elseif $wraithIntro and $wraith.mimic is _npcData.nam and $wraith.revealed and _npcOverrides and _npcOverrides.important>>
@@ -3615,16 +3615,16 @@
 						_npcData.nam
 						<small class="relation-title black"><i>The _npcData.title</i></small>
 					</span>
-					<div class="quick-stats">
-						<<for _j = 0; _j lt _otherNpcStats.length; _j++>>
-							<<if _npcData[_otherNpcStats[_j]] gt 0 and _checkRequirements(_otherNpcStats[_j])>>
-								<<relation-box-stat _getStatConfig(_importantNpcStats[_j])>>
-							<</if>>
-						<</for>>
-					</div>
 				</div>
 				<div class="relation-description">
 					<<npcrelationship _npcData.nam>>
+				</div>
+				<div @class="(!_importantNPCs.includes(_npcData.description) and (_npcData[_otherNpcStats[1]] lte 0 or _npcData[_otherNpcStats[0]] lte 0) ? 'full-width ' : '') + 'quick-stats relation-stat-list'">
+					<<for _j = 0; _j lt _otherNpcStats.length; _j++>>
+						<<if _npcData[_otherNpcStats[_j]] gt 0 and _checkRequirements(_otherNpcStats[_j])>>
+							<<relation-box-stat _getStatConfig(_otherNpcStats[_j])>>
+						<</if>>
+					<</for>>
 				</div>
 			</div>
 		<</if>>
@@ -3644,6 +3644,11 @@
 		<</if>>
 		<<if $options.images>>
 			<div class="relation-stat">
+				<<if !_important>>
+					<span class="relation-stat-name">
+						<small>_config.name</small>
+					</span>
+				<</if>>
 				<span @class="'relation-stat-icon ' + (_config.iconOrientation || 'horizontal')">
 					<img class="active-icon-img" @src="_config.activeIcon">
 					<<if _config.inactiveIcon>>

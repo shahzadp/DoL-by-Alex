@@ -83,3 +83,17 @@ function understandsBirdBehaviour() {
 	return V.harpy >= 6 || V.tending >= 600;
 }
 window.understandsBirdBehaviour = understandsBirdBehaviour;
+
+function edenFreedomStatus() {
+    if (V.edenfreedom >= 1 && V.edendays >= 0) {
+		// if edenCagedEscape is true, the cage limit is 7 days regarless of $edenfreedom
+        const daysCage = (V.edenCagedEscape || V.edenfreedom === 1) ? 7 : 21;
+        const daysFreedom = V.edenfreedom === 1 ? 2 : 7;
+
+        if (V.syndromeeden && V.edendays > daysCage) return 2; // Cage if Eden hunts you down/finds you
+        if (V.edendays > daysFreedom) return 1; // Recaptured if Eden finds you, angry if return on your own
+        return 0; // Free as a bird, allowed to come and go as you please
+    }
+    return -1; // Player not allowed to leave (hasn't asked for freedom/pre-stockholm/hasn't met Eden)
+}
+window.edenFreedomStatus = edenFreedomStatus;

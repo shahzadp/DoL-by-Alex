@@ -23,7 +23,13 @@
 		<span class="green">You can earn feats.</span>
 	<</if>>
 	<br><br>
+	<<set _keysSetup to Object.keys(setup.feats)>>
+	<<set _keysSave to Object.keys($feats.currentSave)>>
+	<<set _keysAll to Object.keys($feats.allSaves)>>
 	You currently have <<if $feats.allSaves.point is undefined>><span class="gold"><<print $feats.allSaves.points>></span><<else>><span class="red">0</span><</if>> VrelCoins.
+	You have obtained 
+	<<if _keysSave.length gte 1>><span class="gold"><<print _keysSave.length>></span> feat<<if _keysSave.length isnot 1>>s<</if>> in this save and <</if>>
+	<<if _keysAll.length gte 1>><span class="gold"><<print _keysAll.length>></span><<else>><span class="red">0</span><</if>> feat<<if _keysAll.length isnot 1>>s<</if>> in total, out of a possible <span class="gold"><<print _keysSetup.length>></span>.
 	<br><br>
 	<<set $feats.filter to "General">>
 	Filter by:
@@ -36,8 +42,24 @@
 		<option value="Discoveries-Other">Discoveries - Outside Town</option>
 		<option value="Special">Special</option>
 		<option value="Pregnancy">Pregnancy</option>
+		<option value="All">Show All</option>
 		<option value="General" hidden="hidden" selected="selected">General</option>
 	</select>
+	<br>
+	<<set $feats.sort to "None">>
+	Sort by: 
+	<select id="featSort" name="featSort" onchange="V.feats.sort = this.value; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')">
+		<option value="None" selected>None</option>
+		<option value="Date">Date</option>
+		<option value="None" hidden="hidden" selected="selected">None</option>
+	</select>
+	<br>
+	<<set $feats.shownew to true>>
+	<input type="checkbox" checked name="showNew" onchange="V.feats.shownew = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show New | 
+	<<set $feats.showold to true>>
+	<input type="checkbox" checked name="showOld" onchange="V.feats.showold = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Old | 
+	<<set $feats.showmissing to true>>
+	<input type="checkbox" checked name="showMissing" onchange="V.feats.showmissing = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Missing
 	<br><br>
 	<div id="featsList">
 		<<featsList>>
@@ -45,58 +67,72 @@
 <</widget>>
 
 <<widget "featsList">>
-	<<set _skip to []>>
-	<<set _filter to "All">>
-	<<set _keys to Object.keys(setup.feats)>>
-	<<for _i to 0; _i lt _keys.length; _i++>>
-		<<if !setup.feats[_keys[_i]].filter.includes($feats.filter)>>
+	<<set _skip to []>>	
+	<<set _sorting to []>>
+	<<for _i to 0; _i lt _keysSetup.length; _i++>>
+		<<set _setup to setup.feats[_keysSetup[_i]]>>
+		<<if !_setup.filter.includes($feats.filter)>>
 			<<continue>>
 		<</if>>
-		<<if Object.keys($feats.currentSave).includes(_keys[_i])>>
+		<<if _keysSave.includes(_keysSetup[_i])>>
+			<<if !$feats.shownew>><<continue>><</if>>
 			<<set _owned to 2>>
-		<<elseif Object.keys($feats.allSaves).includes(_keys[_i])>>
+			<<set _date to new Date($feats.currentSave[_keysSetup[_i]])>>
+		<<elseif _keysAll.includes(_keysSetup[_i])>>
+			<<if !$feats.showold>><<continue>><</if>>
 			<<set _owned to 1>>
+			<<set _date to new Date($feats.allSaves[_keysSetup[_i]])>>
 		<<else>>
-			<<set _owned to 0>>
-			<<if setup.feats[_keys[_i]].hidden or _skip.includes(setup.feats[_keys[_i]].series)>>
+			<<if !$feats.showmissing>><<continue>><</if>>
+			<<if _setup.hidden or _skip.includes(_setup.series)>>
 				<<continue>>
 			<</if>>
-			<<if setup.feats[_keys[_i]].series isnot "">>
-				<<set _skip.push(setup.feats[_keys[_i]].series)>>
+			<<if _setup.series isnot "">>
+				<<set _skip.push(_setup.series)>>
 			<</if>>
+			<<set _owned to 0>>
+			<<set _date to 0>>
 		<</if>>
+		<<set _sorting.push( { key: _keysSetup[_i], owned: _owned, date: _date } )>>
+	<</for>>
+	<<if $feats.sort is "Date">>
+		<<set _sorting to _sorting.sort(function(a, b) { return b.date - a.date; })>>
+	<</if>>
+	<<for _i to 0; _i lt _sorting.length; _i++>>
+		<<set _feat to _sorting[_i]>>
+		<<set _setup to setup.feats[_feat.key]>>
 		<div class="feat">
 			<div class="featImage">
-				<<if _owned gt 0>>
-					<<switch setup.feats[_keys[_i]].difficulty>>
-						<<case 1>><img @src="'img/ui/CopperCoin'+(_owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 2>><img @src="'img/ui/SilverCoin'+(_owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_owned is 1 ? 'filter:brightness(75%) contrast(85%);':'')">
-						<<case 3>><img @src="'img/ui/GoldCoin'+(_owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 4>><img @src="'img/ui/PlatinumCoin'+(_owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 5>><img @src="'img/ui/JeweledCoin'+(_owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
+				<<if _feat.owned gt 0>>
+					<<switch _setup.difficulty>>
+						<<case 1>><img @src="'img/ui/CopperCoin'+(_feat.owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
+						<<case 2>><img @src="'img/ui/SilverCoin'+(_feat.owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(75%) contrast(85%);':'')">
+						<<case 3>><img @src="'img/ui/GoldCoin'+(_feat.owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
+						<<case 4>><img @src="'img/ui/PlatinumCoin'+(_feat.owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
+						<<case 5>><img @src="'img/ui/JeweledCoin'+(_feat.owned is 1 ? 'Dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
 					<</switch>>
 				<<else>>
 					<img class="dot">
 				<</if>>
 			</div>
 			<div class="featText">
-				<<if ($feats.pregnancyLocked and setup.feats[_keys[_i]].pregnancyLockable) or ($feats.pregnancySillyLocked and setup.feats[_keys[_i]].pregnancySillyLockable) or ($feats.soft and setup.feats[_keys[_i]].softLockable) or $feats.locked or ($gamemode is "soft" or $alluremod lt 1)>>
+				<<if ($feats.pregnancyLocked and _setup.pregnancyLockable) or ($feats.pregnancySillyLocked and _setup.pregnancySillyLockable) or ($feats.soft and _setup.softLockable) or $feats.locked or ($gamemode is "soft" or $alluremod lt 1)>>
 					<<set _titleColor to " red">>
 				<<else>>
 					<<set _titleColor to "">>
 				<</if>>
-				<<if _owned gt 0 or setup.feats[_keys[_i]].hint is undefined>>
-					<span @class="'title' + _titleColor"><<print setup.feats[_keys[_i]].title>></span>
-					<span class="text"><<print setup.feats[_keys[_i]].desc>></span>
+				<<if _feat.owned gt 0 or _setup.hint is undefined>>
+					<span @class="'title' + _titleColor"><<print _setup.title>></span>
+					<span class="text"><<print _setup.desc>></span>
 				<<else>>
 					<span @class="'title' + _titleColor">?????</span>
-					<span class="text"><<print setup.feats[_keys[_i]].hint>></span>
+					<span class="text"><<print _setup.hint>></span>
 				<</if>>
 				<br>
-				<<if _owned is 2>>
-					<span class="text">Earned on: <<print new Date($feats.currentSave[_keys[_i]]).toLocaleString(returnTimeFormat())>></span>
-				<<elseif _owned is 1>>
-					<span class="text">Originally Earned on: <<print new Date($feats.allSaves[_keys[_i]]).toLocaleString(returnTimeFormat())>></span>
+				<<if _feat.owned is 2>>
+					<span class="text">Earned on: <<print _feat.date.toLocaleString(returnTimeFormat())>></span>
+				<<elseif _feat.owned is 1>>
+					<span class="text">Originally Earned on: <<print _feat.date.toLocaleString(returnTimeFormat())>></span>
 				<</if>>
 			</div>
 		</div>

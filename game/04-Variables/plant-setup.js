@@ -1318,6 +1318,7 @@ function initPlants() {
 			season: ["summer", "autumn"],
 			ingredients: [],
 			icon: "haddock.png",
+			shop: ["supermarket"],
 		},
 
 		honeyed_pork: {

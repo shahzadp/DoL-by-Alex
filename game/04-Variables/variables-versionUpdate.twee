@@ -5818,7 +5818,7 @@
 	<<if $insecurity_breasts_tiny isnot undefined or $insecurity_penis_tiny isnot undefined>>
 		<<set $insecurity_breasts_small to Math.max($insecurity_breasts_small, $insecurity_breasts_tiny)>>
 		<<set $acceptance_breasts_small to Math.max($acceptance_breasts_small, $acceptance_breasts_tiny)>>
-		<<if $player.sex isnot "f">>
+		<<if $player.sex is "m">>
 			<<set $insecurity_breasts_big to Math.max($insecurity_breasts_big, $insecurity_breasts_small)>>
 			<<set $acceptance_breasts_big to Math.max($acceptance_breasts_big, $acceptance_breasts_small)>>
 			<<set $insecurity_breasts_small to 0>>
@@ -6041,5 +6041,49 @@
 			<<set $hc.dogs[0] to $_hcDog>>
 		<</if>>
 	<</if>>
+
+	<!-- 0.5.4.9 replace 'pale slimes' with 'pale slime' -->
+	<<if !$objectVersion.parasitePregnancy>>
+		<<if $sexStats>>
+			<<run ["vagina", "anus"].forEach((orfice) => {
+				const fetuses = V.sexStats[orfice]?.pregnancy?.fetus;
+				if (!fetuses) return;
+				fetuses.forEach((fetus) => {
+					if (fetus.creature && fetus.creature.match(/^pale slimes$/i)) fetus.creature = "Pale Slime";
+				});
+			})>>
+		<</if>>
+		<<if $container>>
+			<<run [...V.container.list, "portable"].forEach((location) => {
+				if (!V.container[location]?.creatures) return;
+				const specimenList = Object.values(V.container[location].creatures);
+				specimenList.forEach((specimen) => {
+					if (specimen?.creature && specimen.creature.match(/^pale slimes$/i)) specimen.creature = "Pale Slime";
+				});
+			})>>
+		<</if>>
+		<<if $pregnancyStats?.parasiteTypesSeen>>
+			<<run $pregnancyStats.parasiteTypesSeen.deleteWith(type => type.match(/^slimes$/i))>>
+			<<set $pregnancyStats.parasiteTypesSeen.pushUnique("Slime")>>
+		<</if>>
+
+		<<set $objectVersion.parasitePregnancy to 1>>
+	<</if>>
+
+	<!-- New wardrobe options -->
+	<<if $wardrobeDefaults is undefined>>
+		<<set $wardrobeDefaults to {
+			"showTraits": false,
+			"extraInfo": false
+		}>>
+	<</if>>
+
+	<<if $wardrobeDefaults.showTraits is undefined>>
+		<<set $wardrobeDefaults.showTraits to false>>
+	<</if>>
+	<<if $wardrobeDefaults.extraInfo is undefined>>
+		<<set $wardrobeDefaults.extraInfo to false>>
+	<</if>>
+
 
 <</widget>>

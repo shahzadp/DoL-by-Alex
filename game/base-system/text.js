@@ -187,12 +187,36 @@ statDisplay.create("lharass", () => statDisplay.statChange("Decreases chance of 
 statDisplay.create("gharass", () => statDisplay.statChange("Increases chance of harassment", 0, "pink"));
 statDisplay.create("noharass", () => statDisplay.statChange("No chance of harassment", 0, "green"));
 
-statDisplay.create("llove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -1, "red"));
-statDisplay.create("lllove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -2, "red"));
-statDisplay.create("llllove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", -3, "red"));
-statDisplay.create("glove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 1, "green"));
-statDisplay.create("gglove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 2, "green"));
-statDisplay.create("ggglove", npc => statDisplay.statChange(npc ? `${npc}'s Love` : "Love", 3, "green"));
+statDisplay.create("llove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -1, "red");
+});
+statDisplay.create("lllove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -2, "red");
+});
+statDisplay.create("llllove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, -3, "red");
+});
+statDisplay.create("glove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 1, "green");
+});
+statDisplay.create("gglove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 2, "green");
+});
+statDisplay.create("ggglove", (npc, alias) => {
+	const selectedNPC = npc || V.npc.find(name => !!C.npc[name]);
+	const loveAlias = `${alias || (selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	return statDisplay.statChange(selectedNPC && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 3, "green");
+});
 
 statDisplay.create("llust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -1, "teal"));
 statDisplay.create("lllust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -2, "teal"));
@@ -355,18 +379,9 @@ statDisplay.create("ggghunger", () => statDisplay.statChange("Hunger", 3, "red")
 
 statDisplay.create("gacceptance", () => statDisplay.statChange("Acceptance", 1, "green"));
 statDisplay.create("ginsecurity", (type, amount) => {
-	// Male players can always gain insecurity when breast size is above 0
-	if (V.player.gender === "m" && type === "breasts_small") type = "breasts_big";
-
-	const insecurityPossible = {
-		penis_small: V.player.penisExist && V.player.penissize <= 1,
-		penis_big: V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3),
-		breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
-		breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
-		pregnancy: playerBellySize() >= 8,
-	}[type];
-	if (!insecurityPossible) return "";
-	if (V["acceptance_" + type] <= 999) return statDisplay.statChange("Insecurity", amount ?? 1, "red");
+	let possible;
+	[possible, type] = statChange.insecurityPossible(type);
+	if (possible) return statDisplay.statChange("Insecurity", amount ?? 1, "red");
 	return "";
 });
 
