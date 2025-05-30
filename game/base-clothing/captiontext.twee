@@ -7,7 +7,7 @@
 		<<set _finally to ".">>
 		<<set _text_output to "">>
 
-		<<set _wearing to "You are " + (_topless ? "<span class='pink'>topless</span>, " : "") + "wearing ">>
+		<<set _wearing to "<<possessedWord 'You'>> are " + (_topless ? "<span class='pink'>topless</span>, " : "") + "wearing ">>
 
 		<<if !_overNaked>>
 			<<clothingCaptionTextOver>>
@@ -30,7 +30,7 @@
 		<<clothingCaptionTextHandheld>>
 	<<elseif playerHasButtPlug()>>
 		<<set $_a to ($worn.butt_plug.name is "anal beads"? "": "a ")>>
-		<<print `You wear ${$_a}$worn.butt_plug.name.`>>
+		<<print `<<possessedWord 'You'>> wear ${$_a}$worn.butt_plug.name.`>>
 	<</if>>
 	<<clothingCaptionTextNothing>>
 	<<clothingCaptionTextMask>>
@@ -46,6 +46,10 @@
 	<<if playerIsPregnant() and playerAwareTheyArePregnant() and playerBellySize() gt 7 or $bellySizeDebug>>
 		<br>
 		<<clothingCaptionTextPreggy>>
+	<</if>>
+	<<if $follower>>
+		<!-- lack of line break intentional, line break present in widget -->
+		<<clothingCaptionTextFollower>>
 	<</if>>
 <</widget>>
 
@@ -110,7 +114,7 @@
 		<</if>>
 	<<else>>
 		<<if $_exposed>>
-			<<set _wearing to "<span class='pink'>You are " + (_topless ? "topless, " : "") + "wearing ">>
+			<<set _wearing to "<span class='pink'><<possessedWord 'You' 'pink'>> are " + (_topless ? "topless, " : "") + "wearing ">>
 			<<set _finally to ".</span>">>
 		<</if>>
 		<<if $worn.under_upper.name isnot "naked" and $worn.under_lower.name isnot "naked">>
@@ -127,7 +131,7 @@
 
 			<<set _nothingBut to $_exposed>>
 			<<if !$_exposed and !_bottomless>>
-				<<set _finally to ". <span class='purple'>You are not wearing " + ($player.gender_appearance isnot "m" ? "any panties" : "undies") + ".</span>">>
+				<<set _finally to ". <span class='purple'><<possessedWord 'You' 'purple'>> are not wearing " + ($player.gender_appearance isnot "m" ? "any panties" : "undies") + ".</span>">>
 			<</if>>
 		<<elseif $worn.under_lower.name isnot "naked">>
 			<!--Lower only-->
@@ -136,7 +140,7 @@
 
 			<<set _nothingBut to $_exposed>>
 			<<if !$_exposed and !_topless and $player.breastsize gte 4 and ($player.sex isnot "m" or $backgroundTraits.includes("crossdresser"))>>
-				<<set _finally to ". <span class='purple'>You are not wearing a bra.</span>">>
+				<<set _finally to ". <span class='purple'><<possessedWord 'You' 'purple'>> are not wearing a bra.</span>">>
 			<</if>>
 		<</if>>
 	<</if>>
@@ -145,7 +149,7 @@
 <<widget "clothingCaptionTextHandheld">>
 	<<silently>>
 	<<if $worn.handheld.name isnot "naked" and !pcAreArmsBound("right")>>
-		<<set $_text_output to `You are carrying ${$worn.handheld?.pattern_caption ? ($worn.handheld.pattern.match(/^[aeiou]/i) ? "an " : "a ") + $worn.handheld.pattern : "<<word 'handheld'>>"} ${$worn.handheld.name}.`>>
+		<<set $_text_output to `<<possessedWord 'You'>> are carrying ${$worn.handheld?.pattern_caption ? ($worn.handheld.pattern.match(/^[aeiou]/i) ? "an " : "a ") + $worn.handheld.pattern : "<<word 'handheld'>>"} ${$worn.handheld.name}.`>>
 	<</if>>
 	<</silently>>
 	<<if $_text_output>><<print $_text_output>><</if>>
@@ -154,13 +158,13 @@
 <<widget "clothingCaptionTextGenitals">><<silently>>
 	<<if $worn.genitals.name isnot "naked">>
 		<<if _bottomless>>
-			<<set $_text_output to " <span class='red'>Your <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name <<if playerChastity('anus')>>with an anal shield<</if>><<if playerHasButtPlug()>> and $worn.butt_plug.name give<<else>> gives<</if>> you no comfort.</span>">>
+			<<set $_text_output to " <span class='red'><<possessedWord 'Your'>> <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name <<if playerChastity('anus')>>with an anal shield<</if>><<if playerHasButtPlug()>> and $worn.butt_plug.name give<<else>> gives<</if>> <<possessedWord 'you' 'red'>> no comfort.</span>">>
 		<<else>>
-			<<set $_text_output to " You wear <<genitalsword>> <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name<<if playerChastity('anus')>> with an anal shield<</if>><<if playerHasButtPlug()>> and $worn.butt_plug.name<</if>>.">>
+			<<set $_text_output to " <<possessedWord 'You'>> wear <<genitalsword>> <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name<<if playerChastity('anus')>> with an anal shield<</if>><<if playerHasButtPlug()>> and $worn.butt_plug.name<</if>>.">>
 		<</if>>
 	<<elseif playerHasButtPlug()>>
 		<<set $_a to ($worn.butt_plug.name is "anal beads"? "": "a ")>>
-		<<set $_text_output to ` You wear ${$_a}$worn.butt_plug.name.`>>
+		<<set $_text_output to ` <<possessedWord 'You'>> wear ${$_a}$worn.butt_plug.name.`>>
 	<</if>>
 	<</silently>><<if $_text_output>><<print $_text_output>><</if>>
 <</widget>>
@@ -168,19 +172,19 @@
 <<widget "clothingCaptionTextMask">>
 	<<if $worn.face.type.includes("mask")>>
 		<br>
-		Your identity is concealed by your <<faceintegrity>> $worn.face.name.
+		<<possessedWord 'Your'>> identity is concealed by <<possessedWord 'your'>> <<faceintegrity>> $worn.face.name.
 	<</if>>
 <</widget>>
 
 <<widget "clothingCaptionTextNothing">><<silently>>
 	<<if _fullyNaked>>
 		<<if $worn.genitals.name isnot "naked">>
-			<<set $_text_output to "Your <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name <<if playerChastity('anus')>>with an anal shield<</if>> gives you no comfort.">>
+			<<set $_text_output to "<<possessedWord 'Your'>> <<clothingCaptionChastityEffect>> <<genitalsintegrity>> $worn.genitals.name <<if playerChastity('anus')>>with an anal shield<</if>> gives <<possessedWord 'you'>> no comfort.">>
 		<<else>>
-			<<set $_text_output to "You are completely naked!">>
+			<<set $_text_output to "<<possessedWord 'You'>> are completely naked!">>
 		<</if>>
 	<<elseif _bottomless>>
-		<<set $_text_output to "Your bottom half is completely exposed!">>
+		<<set $_text_output to "<<possessedWord 'Your'>> bottom half is completely exposed!">>
 	<</if>>
 <</silently>><<if $_text_output>><span class="red"><<print $_text_output>></span><</if>><</widget>>
 
@@ -278,37 +282,37 @@
 				<<case "totheside">>	<<set $_verb to ($_verbIsPlural ? " have been pulled to the side, " : " has been pulled to the side, ")>>
 			<</switch>>
 
-			<<if _output isnot "">><<set _output += " and your ">><</if>>
+			<<if _output isnot "">><<set _output += " and <<possessedWord 'your'>> ">><</if>>
 			<<set _output += formatList($_clothes[$_type]) + $_verb>>
 		<</for>>
 
 		/* Print the caption */
 		<<set _captionCount += 1>>
 		<br>
-		Your _output <span @class="$_revealColour">revealing your $_undertext.</span>
+		<<possessedWord 'Your'>> _output <span @class="$_revealColour">revealing <<possessedWord 'your' $_revealColour>> $_undertext.</span>
 	<</if>>
 <</widget>>
 
 <<widget "clothingCaptionTextGender">><<silently>>
 	<<if $player.gender_appearance is "f" and ($player.gender is "m" or (isHermOrCrossdresser() and $player.sex isnot "f"))>>
 		<<if $exposed gte 2 and $player.gender is "m">>
-			<<set $_text_output to `The way you look, people will think you're a girl!`>>
+			<<set $_text_output to `The way <<possessedWord 'you'>> look, people will think <<possessedWord "you're">> a girl!`>>
 		<<elseif $breastindicator is 1 and $player.perceived_breastsize gt 1 and $player.gender is "m">>
-			<<set $_text_output to `Your exposed breasts will make people think you're a girl!`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> exposed breasts will make people think <<possessedWord "you're">> a girl!`>>
 		<<elseif nudeGenderAppearance() is "m" and $player.gender is "f">>
-			<<set $_text_output to `If people see your genitals, they will think you're a boy!`>>
+			<<set $_text_output to `If people see <<possessedWord 'your'>> genitals, they will think <<possessedWord "you're">> a boy!`>>
 		<<elseif $player.gender is "m">>
-			<<set $_text_output to `The way you're dressed, people will think you're a girl!`>>
+			<<set $_text_output to `The way <<possessedWord "you're">> dressed, people will think <<possessedWord "you're">> a girl!`>>
 		<</if>>
 	<<elseif $player.gender_appearance is "m" and ($player.gender is "f" or (isHermOrCrossdresser() and $player.sex isnot "m"))>>
 		<<if $exposed gte 2>>
-			<<set $_text_output to `The way you look, people will think you're a boy!`>>
+			<<set $_text_output to `The way <<possessedWord 'you'>> look, people will think <<possessedWord "you're">> a boy!`>>
 		<<elseif $breastindicator is 1 and $player.perceived_breastsize lte 1 and $player.gender is "f">>
-			<<set $_text_output to `Your exposed flat chest will make people think you're a boy!`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> exposed flat chest will make people think <<possessedWord "you're">> a boy!`>>
 		<<elseif nudeGenderAppearance() is "f" and $player.gender is "m">>
-			<<set $_text_output to `If people see your genitals, they will think you're a girl!`>>
+			<<set $_text_output to `If people see <<possessedWord 'your'>> genitals, they will think <<possessedWord "you're">> a girl!`>>
 		<<elseif $player.gender is "f">>
-			<<set $_text_output to `The way you're dressed, people will think you're a boy!`>>
+			<<set $_text_output to `The way <<possessedWord "you're">> dressed, people will think <<possessedWord "you're">> a boy!`>>
 		<</if>>
 	<</if>>
 <</silently>><<if $_text_output>><span class="pink"><<print $_text_output>></span><</if>><</widget>>
@@ -317,32 +321,32 @@
 	<<if playerBellyVisible()>>
 		<<set $_textCol to "pink">>
 		<<if _fullyNaked>>
-			<<set $_text_output to `Your complete lack of clothing makes your <<bellyDescription "pc">> more obvious.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> complete lack of clothing makes <<possessedWord 'your'>> <<bellyDescription "pc">> more obvious.`>>
 		<<elseif $worn.upper.type.includes("naked") and $worn.over_upper.type.includes("naked")>>
 			<<if $worn.under_upper.type.includes("naked")>>
-				<<set $_text_output to `Your exposed upper body makes your <<bellyDescription "pc">> more obvious.`>>
+				<<set $_text_output to `<<possessedWord 'Your'>> exposed upper body makes <<possessedWord 'your'>> <<bellyDescription "pc">> more obvious.`>>
 			<<else>>
-				<<set $_text_output to `Your $worn.under_upper.name does nothing to conceal your <<bellyDescription "pc">>.`>>
+				<<set $_text_output to `<<possessedWord 'Your'>> $worn.under_upper.name does nothing to conceal <<possessedWord 'your'>> <<bellyDescription "pc">>.`>>
 			<</if>>
 		<<elseif $worn.upper.type.includes("bellyShow") and $worn.over_upper.type.includes("naked")>>
-			<<set $_text_output to `Your $worn.upper.name shows off your <<bellyDescription "pc">>.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> $worn.upper.name shows off <<possessedWord 'your'>> <<bellyDescription "pc">>.`>>
 		<<elseif $worn.upper.type.includes("bellyHide") and $worn.over_upper.type.includes("naked")>>
-			<<set $_text_output to `Your <<bellyDescription "pc">> is too large for your $worn.upper.name to hide.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> <<bellyDescription "pc">> is too large for <<possessedWord 'your'>> $worn.upper.name to hide.`>>
 		<<elseif $worn.lower.type.includes("bellyHide") and $worn.over_upper.type.includes("naked")>>
-			<<set $_text_output to `Your <<bellyDescription "pc">> is too large for your $worn.lower.name to hide.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> <<bellyDescription "pc">> is too large for <<possessedWord 'your'>> $worn.lower.name to hide.`>>
 		<<else>>
-			<<set $_text_output to `Your <<bellyDescription "pc">> is visible.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> <<bellyDescription "pc">> is visible.`>>
 		<</if>>
 	<<else>>
 		<<set $_textCol to "blue">>
 		<<if $worn.upper.type.includes("bellyHide")>>
-			<<set $_text_output to `Your $worn.upper.name hides your <<bellyDescription "pc">>.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> $worn.upper.name hides <<possessedWord 'your'>> <<bellyDescription "pc">>.`>>
 		<<elseif $worn.lower.type.includes("bellyHide")>>
-			<<set $_text_output to `Your $worn.lower.name hides your <<bellyDescription "pc">>.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> $worn.lower.name hides <<possessedWord 'your'>> <<bellyDescription "pc">>.`>>
 		<<elseif !$worn.over_upper.type.includes("naked")>>
-			<<set $_text_output to `Your $worn.over_upper.name hides your <<bellyDescription "pc">>.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> $worn.over_upper.name hides <<possessedWord 'your'>> <<bellyDescription "pc">>.`>>
 		<<else>>
-			<<set $_text_output to `Your <<bellyDescription "pc">> is not visible.`>>
+			<<set $_text_output to `<<possessedWord 'Your'>> <<bellyDescription "pc">> is not visible.`>>
 		<</if>>
 	<</if>>
 <</silently>><<if $_text_output>><span @class=$_textCol><<print $_text_output>></span><</if>><</widget>>
@@ -358,4 +362,17 @@
 		<</if>>
 	<</if>>
 	<</silently>><<if $_text_output>><<print $_text_output>><</if>>
+<</widget>>
+
+<<widget "clothingCaptionTextFollower">>
+	<<switch $follower.name>>
+		<<case "witchprisoner">>
+			<br>
+			<<possessedWord 'You'>> carry <<= $prisoner.name>> in <<possessedWord 'your'>> arms.
+		<<case "witchstanding">>
+			<br>
+			<<= $prisoner.name.toUpperFirst()>> stands beside <<possessedWord 'you'>>.
+		<<default>>
+			<<run console.log("follower " + $follower.name + " has no clothingCaptionTextFollower text!")>>
+	<</switch>>
 <</widget>>

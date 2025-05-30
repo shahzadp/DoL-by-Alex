@@ -37,7 +37,7 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 	waterLeaky: false, waterDirty: false, waterEarly: false,
 	itemDirty: false, itemFind: false, itemNoHide: false,
 	prisonerFood: false, prisonerHealth: false, prisonerClean: false,
-	susIncrease: false, susDecrease: false, susSermon: false,
+	suspicionIncrease: false, suspicionDecrease: false, suspicionSermon: false,
 	dogsTwice: false, dogsEarly: false, dogsDouble: false,
 	timeSleep: false, timeLonger: false, timePrayer: false
 }>>
@@ -135,7 +135,7 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 		waterLeaky: "", waterDirty: "", waterEarly: "",
 		itemDirty: "", itemFind: "", itemNoHide: "",
 		prisonerFood: "", prisonerHealth: "", prisonerClean: "",
-		susIncrease: "", susDecrease: "", susSermon: "",
+		suspicionIncrease: "", suspicionDecrease: "", suspicionSermon: "",
 		dogsTwice: "", dogsEarly: "", dogsDouble: "",
 		timeSleep: "", timeLonger: "", timePrayer: ""
 	}>>
@@ -165,8 +165,10 @@ Winter pauses, thinking. "Well, there are a few aspects some tellings disagree o
 	<br><br>
 <</if>>
 
-<<link "Enable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = true)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>> | 
-<<link "Disable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = false)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>>
+<div class="no-numberify">
+	<<link "Enable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = true)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>> |
+	<<link "Disable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = false)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>>
+</div>
 <br><br>
 
 <div id="challenges"><<hcChallengeMenu>></div>
@@ -453,7 +455,7 @@ There's a stairway to the disposal channel here.
 					<<link [[Re-ignite torches <<hcTimeTaskDisplay 10>>|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchReignite">><<hcTimeTaskPass 10>><<set $hc.dungeonTorchState to "lit">><</link>>
 				<<elseif !["night"].includes(Time.dayState)>>
 					<<if hcItemHolding("torch")>>
-						<<link [[Light a torch by hand (0:15)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchByHand">><<pass 15>><<tiredness 12>><<set hcItemHolding("torch").state to "lit">><<set hcItemHolding("torch").time to 5>><</link>><<ggtiredness>>
+						<<link [[Light a torch by hand (0:15)|Hopeless Cycle Dungeon Torch]]>><<set $torchAction to "dungeonTorchByHand">><<pass 15>><<tiredness 12>><<set hcItemHolding("torch").state to "lit">><<set hcItemHolding("torch").time to $hcChallenge.torchFaster ? 10 : 5>><</link>><<ggtiredness>>
 					<<else>>
 						<span class="blue">Grab a snuffed torch to light it by hand.</span>
 					<</if>>
@@ -776,7 +778,7 @@ A long stone staircase connects it to the temple's dungeon.
 		<</if>>
 	<</addinlineevent>>
 
-	<<if !$hcChallenge.forestNoShortcut>>
+	<<if !$hcChallenge.forestNoShortcut or $hc.shortcutCount gte 1>>
 		<<addinlineevent "forest">>
 			Your hands press against something hard and cold. You push, and it clatters to the ground noisily. You see light further beyond.
 			<br><br>
@@ -786,6 +788,11 @@ A long stone staircase connects it to the temple's dungeon.
 
 			You emerge in the forest.
 			<br><br>
+
+			<<if $hc.shortcutCount isnot undefined>>
+				<<set $hc.shortcutCount to 0>>
+				You feel a pair of eyes watching you, and hear a piercing screech of glass rubbing against glass. <span class="red">You no longer have permission to travel this path,</span> and must make another offering if you wish to pass.
+			<</if>>
 
 			<<foresticon>><<link [[Forest (0:20)|Hopeless Cycle Forest]]>><<pass 20>><<set $hcForest to 15>><<set $hc.forestPassage to true>><</link>>
 			<br>
@@ -859,13 +866,32 @@ A long stone staircase connects it to the temple's dungeon.
 		<<link [[Next|Hopeless Cycle Disposal]]>><<endevent>><</link>>
 		<br>
 	<<else>>
+		<<if $hc.forestPassage and $hc.shortcutCount isnot undefined>>
+			<<if $hc.shortcutCount gt 1>>
+				You feel you have permission to take the shortcut to the forest <span class="blue"><<number $hc.shortcutCount>></span> more times.
+			<<elseif $hc.shortcutCount is 1>>
+				You feel you have permission to take the shortcut to the forest <span class="blue">one</span> more time.
+				<span class="pink">You would not be able to return here. It would be a one way trip.</span>
+			<<else>>
+				You feel you <span class="red">do not have permission</span> to take the shortcut to the forest.
+			<</if>>
+			<br><br>
+		<</if>>
 		<div id="hcItems" class="no-numberify"><<hopelessCycleItemLinks>></div>
 
 		<b><u>Locations:</u></b><br>
 		<<prisonicon "cell">><<link [[Dungeon (0:05)|Hopeless Cycle Dungeon]]>><<pass 5>><</link>>
 		<br>
 		<<if $hc.forestPassage>>
-			<<foresticon>><<link [[Passage to forest (0:20)|Hopeless Cycle Forest]]>><<pass 20>><<set $hcForest to 15>><<set $hc.snuckInDungeon to false>><</link>>
+			<<if hcItemLitTorch()>>
+				<<if $hcChallenge.forestNoShortcut and !$hc.shortcutCount>>
+					<<foresticon>><<link [[Passage to forest (0:20)|Hopeless Cycle Shortcut]]>><<pass 5>><</link>>
+				<<else>>
+					<<foresticon>><<link [[Passage to forest (0:20)|Hopeless Cycle Shortcut]]>><<pass 20>><<set $hcForest to 15>><<set $hc.snuckInDungeon to false>><</link>>
+				<</if>>
+			<<else>>
+				<<ind>><span class="purple">You need to be <i>holding</i> a lit torch to take the shortcut to the forest.</span>
+			<</if>>
 			<br>
 		<</if>>
 	<</if>>
@@ -917,6 +943,7 @@ A long stone staircase connects it to the temple's dungeon.
 
 :: Hopeless Cycle Disposal Glassfingers
 <<set _thermoDisable to true>><<effects>><<set $hc.disposals += 10>>
+<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount++>><</if>>
 <<unset $itemAction>><<unset $itemActionObject>>
 
 You toss your still-burning torch into the channel.
@@ -944,6 +971,9 @@ The torch, fingers, and appendage all wink out of existence at once. You rub you
 
 		It was a creature of glass. Different retellings disagree on whether it was translucent or reflective. Sometimes it was both.
 		It was blamed for torches going out prematurely, or pyres failing to burn through the night.
+		<<if $hcChallenge.forestNoShortcut>>
+			Flockmembers losing their way in the channel was also blamed on this creature.
+		<</if>>
 		I believe sightings were a product of torch flames exhausting the oxygen in the enclosed space of the channel.
 		<br><br>
 
@@ -1106,7 +1136,7 @@ A six-armed, six-winged angel statue stands resolute in the centre. The angel ap
 	<br>
 <<else>>
 	<<if Time.hour gte 7 and Time.hour lte 9 and !$hc.daily.sermon>>
-		<<templeicon "altar">><<link [[Attend sermon (0:30)|Hopeless Cycle Cloister Sermon]]>><<pass 30>><<trauma -6>><<purity 4>><<hcSuspicion -5 "sermon">><<set $hc.daily.sermon to true>><</link>><<ltrauma>><<gpurity>><<hopelessCycleSus -2>>
+		<<templeicon "altar">><<link [[Attend sermon (0:30)|Hopeless Cycle Cloister Sermon]]>><<pass 30>><<trauma -6>><<purity 4>><<hcSuspicion -5 "sermon">><<set $hc.daily.sermon to true>><</link>><<ltrauma>><<gpurity>><<if !$hcChallenge.suspicionSermon>><<hopelessCycleSus -2>><</if>>
 		<br>
 	<</if>>
 	<<if $temple_confessor_intro>>
@@ -2058,20 +2088,39 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 
 <<if between($hcForest, 15, 19) and $hc.forestPassage>>
 	There's a natural cave that merges with the disposal channel here.
+	<<if $hc.forestPassage and $hc.shortcutCount isnot undefined>>
+		<br>
+		<<if $hc.shortcutCount gt 1>>
+			You feel you have permission to take the shortcut to the disposal channel <span class="blue"><<number $hc.shortcutCount>></span> more times.
+		<<elseif $hc.shortcutCount is 1>>
+			You feel you have permission to take the shortcut to the disposal channel <span class="blue">one</span> more time.
+			<span class="pink">You would not be able to return here. It would be a one way trip.</span>
+		<<else>>
+			You feel you <span class="red">do not have permission</span> to take the shortcut to the disposal channel.
+		<</if>>
+	<</if>>
 	<<if hcItemLitTorch()>>
 		<br>
-		<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Disposal]]>><<pass 20>><<set $hcForest to 0>><</link>>
+		<<if $hcChallenge.forestNoShortcut and !$hc.shortcutCount>>
+			<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 5>><</link>>
+		<<else>>
+			<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 20>><<set $hcForest to 0>><</link>>
+		<</if>>
 	<<else>>
 		<span class="red">You'll need a torch to traverse it.</span>
 	<</if>>
 	<br>
-<<elseif between($hcForest, 15, 19) and !$hc.forestPassage and hcItemLitTorch() and !$hcChallenge.forestNoShortcut>>
+<<elseif between($hcForest, 15, 19) and !$hc.forestPassage and hcItemLitTorch()>>
 	<<set $hc.forestPassage to true>>
 	<br>
 	By the light of your torch, you spot the opening of a cave.
 	<span class="gold">It looks like it leads to the disposal channel.</span>
 	<br>
-	<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Disposal]]>><<pass 20>><<set $hcForest to 0>><</link>>
+	<<if $hcChallenge.forestNoShortcut and $hc.shortcutCount lt 1>>
+		<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 5>><</link>>
+	<<else>>
+		<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 20>><<set $hcForest to 0>><</link>>
+	<</if>>
 	<br>
 <<elseif $hcForest lte 0>>
 	<<templeicon "garden">><<link [[Temple garden (0:10)|Hopeless Cycle Garden]]>><<pass 10>><<set $hcForest to 0>><</link>>
@@ -2253,7 +2302,9 @@ It sinks back into the lake slowly, and the mist fades.
 <<hopelessCycleEffects>>
 <<canvas-model-override "trauma" true>><<canvas-model-override "eyes_half" true>>
 <<canvas-model-override "left_eye" "blue possessed">><<canvas-model-override "right_eye" "blue possessed">>
-<<neckruined>><<neckwear 23>><<wearProp "whip" "khaki">>
+<<set $possessed to true>><<canvas-model-override "blink" false>>
+<<set $control to 1>>
+<<neckruined>><<neckwear 23>>
 
 You take its hand. It's cold, and starts to pass through you. It floats forward, embracing you and vanishing. Something hangs around your neck.
 <br><br>
@@ -2262,29 +2313,49 @@ You stand frozen in place. Suddenly, your body takes a deep breath, looking upwa
 Your hands clench and open over and over.
 <br><br>
 
-You exhale. "I understand," your voice says. You place a hand over your chest.
-"Your heart sings to me beautifully. No one deserves to die in a cage.
-Your witch... she slips down the empty gullet, yet she is not wholly consumed.
-What you seek lies through the eye of a needle. Fate does not favor you. There lies one path."
-<br><br>
+<<if $prisonerBrands.includesAny("lower back", "left arm", "right arm", "left shoulder", "right shoulder")
+or $prisonerBrands.filter(brands => ["left leg", "left thigh", "left foot"].includes(brands)).length gte 2
+or $prisonerBrands.filter(brands => ["right leg", "right thigh", "right foot"].includes(brands)).length gte 2
+or $prisonerBrands.length lt 3>>
+	<span class="red">You freeze.</span> Your mind ripples like water, and memories float to the surface.
+	A searing brand pressed to flesh. Screams, both stifled and released. Beauty forever marked by a hubris made in divinity's image, guided by a cruel Hand.
+	The sweet air now tastes bitter and stagnant.
+	<br><br>
 
-Your hand rests on your whip. Your body unclasps it and stretches it. "I will grant you a gift of knowledge. Arts and techniques lost to our faith. You will learn, and as you do, I will enlighten you on the path you must tread."
-<br><br>
+	Eventually, you exhale a haggard, wearied breath. "Writhing gaolor," your voice says. You place a hand over your chest.
+	"Your heart sings to me beautifully. No one deserves to die in a cage.
+	Your witch... she slips down the empty gullet. She is not wholly consumed... <span class="red">but she will be.</span>"
+	<br><br>
 
-A pale arm separates from yours. A white tendril snakes along it, past the hand. It holds the tendril as you hold your whip. You have control of your arm again.
-"The arrow of time will be mere seconds from midnight. A distance your body cannot cross in time." The pale arm snaps the tendril. You snap your whip in the exact same way.
-"An extension of your body. Trust it, <span class="green">master it,</span> and distance will mean nothing."
-<br><br>
+	<span class="nextLink"><<link [[Next|Hopeless Cycle Wraith Failure]]>><</link>></span>
+	<br>
+<<else>>
+	<<wearProp "whip" "khaki">>
+	You exhale. "I understand," your voice says. You place a hand over your chest.
+	"Your heart sings to me beautifully. No one deserves to die in a cage.
+	Your witch... she slips down the empty gullet, yet she is not wholly consumed.
+	What you seek lies through the eye of a needle. Fate does not favor you. There lies one path."
+	<br><br>
 
-It guides you through a dance of the whip. You know these movements. It's just testing your body. "<span class="blue">Heed my words. Remember them.</span> The slightest of missteps will have salvation slipping through your fingers."
-<br><br>
+	Your hand rests on your whip. Your body unclasps it and stretches it. "I will grant you a gift of knowledge. Arts and techniques lost to our faith. You will learn, and as you do, I will enlighten you on the path you must tread."
+	<br><br>
 
-<span class="nextLink"><<link [[Next|Hopeless Cycle Wraith 4]]>><</link>></span>
-<br>
+	A pale arm separates from yours. A white tendril snakes along it, past the hand. It holds the tendril as you hold your whip. You have control of your arm again.
+	"The arrow of time will be mere seconds from midnight. A distance your body cannot cross in time." The pale arm snaps the tendril. You snap your whip in the exact same way.
+	"An extension of your body. Trust it, <span class="green">master it,</span> and distance will mean nothing."
+	<br><br>
+
+	It guides you through a dance of the whip. You know these movements. It's just testing your body. "<span class="blue">Heed my words. Remember them.</span> The slightest of missteps will have salvation slipping through your fingers."
+	<br><br>
+
+	<span class="nextLink"><<link [[Next|Hopeless Cycle Wraith 4]]>><</link>></span>
+	<br>
+<</if>>
 
 :: Hopeless Cycle Wraith 4
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
+<<set $control to 400>>
 
 You follow its movements. You take your whip's end in your other hand, using it to start strikes from positions you've never seen. <<gwhip>>
 <br><br>
@@ -2325,6 +2396,7 @@ Your arms circle and stretch, preparing for more exertion.<br>
 :: Hopeless Cycle Wraith 5
 <<set _thermoDisable to true>><<effects>>
 <<hopelessCycleEffects>>
+<<set $control to 800>>
 
 You lash out with your whip twice in quick succession, carving a cross in the sand.
 <br><br>
@@ -2366,9 +2438,49 @@ The explosive snap shatters the branch into pieces, and echoes throughout the fo
 The pale figure gently exits your body, leaving your limbs tingling. It smiles at you. "<span class="wraith">Best of fortunes, clever gaoler. May your hearts beat <span class="tentacle">As One</span>.</span>" It sinks back into the water. The mist fades away.
 <br><br>
 
-<<link [[Next|Hopeless Cycle Lake]]>><<set $hc.wraith to true>><<neckruined>><<endevent>><</link>>
+<<link [[Next|Hopeless Cycle Lake]]>><<set $control to 1000>><<unset $possessed>><<set $hc.wraith to true>><<neckruined>><<endevent>><</link>>
 <br>
 
+:: Hopeless Cycle Wraith Failure
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>>
+<<set $control to 0>>
+
+You stretch your arm out. A pale arm separates from yours. Many white tendrils snake along it, past the hand. The pale arm gestures, and the tendrils swarm you.
+<br><br>
+
+"The flame you held was wielded with imperfection. You have sealed her fate."
+<br><br>
+
+<<if $prisonerBrands.includesAny("lower back", "left arm", "right arm", "left shoulder", "right shoulder")>>
+	The tendrils press against your <<print formatList($prisonerBrands.filter(brands => ["lower back", "left arm", "right arm", "left shoulder", "right shoulder"].includes(brands)), "and")>>.<br>
+<</if>>
+"<span @class='$prisonerBrands.includes("lower back") ? "red" : ""'>With her lower spine branded,</span> her roots are severed.<br>
+<span @class='$prisonerBrands.includesAny("left arm", "right arm") ? "red" : ""'>With either arm branded,</span> her claws become dull.<br>
+<span @class='$prisonerBrands.includesAny("left shoulder", "right shoulder") ? "red" : ""'>With either shoulder branded,</span> her wings become clipped."
+<br><br>
+
+<<set _legColor to "">>
+<<if $prisonerBrands.filter(brands => ["left leg", "left thigh", "left foot"].includes(brands)).length gte 2 or $prisonerBrands.filter(brands => ["right leg", "right thigh", "right foot"].includes(brands)).length gte 2>>
+	<<set _legColor to "red">>
+	The tendrils wrap around your <<print formatList($prisonerBrands.filter(brands => ["left leg", "right leg", "left thigh", "right thigh", "left foot", "right foot"].includes(brands)), "and")>>.<br>
+<</if>>
+"You may have thought it a mercy to scar her legs, to spare her pain.<br>
+Yet, <span @class="_legColor">with either leg branded more than once,</span> she stumbles at the critical moment."
+<br><br>
+
+You count the tendrils. They touch your <<print formatList($prisonerBrands, "and")>>; <span class="blue"><<number $prisonerBrands.length>></span> in total.<br>
+"Despite all this, <span @class='$prisonerBrands.length lt 3 ? "red" : ""'>if not branded at least thrice,</span> she is devoured by Auriga."
+<br><br>
+
+The pale figure gently exits your body, leaving your limbs tingling. "<span class="wraith">And now, you see. What you hoped for has already slipped through your fingers. There is no glory to be found here.</span>" It bows its head, and remains silent for a long time. "<span class="wraith">I am sorry.</span>"
+<br><br>
+
+It sinks back into the water. The mist fades away.
+<br><br>
+
+<<link [[Next|Hopeless Cycle Lake]]>><<set $control to 999>><<unset $possessed>><<neckruined>><<endevent>><</link>>
+<br>
 
 /* Barracks */
 :: Hopeless Cycle Quarters
@@ -3020,6 +3132,215 @@ The confessors re-enter the cell to retrieve the monk, who sobs and groans in pa
 	<br>
 <</if>>
 
+:: Hopeless Cycle Shortcut
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>>
+<<set _comingFrom to "Hopeless Cycle " + $bus.toLocaleUpperFirst()>>
+<<set _goingTo to "Hopeless Cycle " + ($bus is "disposal" ? "Forest" : "Disposal")>>
+
+You walk through the dank cave by the light of your torch, occasionally crouching as the ceiling bares down.
+<<if !$hcChallenge.forestNoShortcut>>
+	It's cold and uncomfortable, but you eventually emerge
+	<<if $bus is "disposal">>
+		deep into the forest.
+	<<else>>
+		in the temple's disposal channel.
+	<</if>>
+	<br><br>
+
+	<<link [[Next|_goingTo]]>><</link>>
+<<elseif $hc.shortcutCount is undefined>>
+	<<set $hc.shortcutCount to 0>>
+	It's cold and uncomfortable, and the cave winds around in ways that almost feel cyclical. You can't tell if you're making any progress.
+	<br><br>
+
+	You turn a corner and bump your head against what seems to be thin air. Confused, you place your hand forward. <span class="blue">A wall of glass blocks your way.</span> You can advance no further.
+	<br><br>
+
+	You turn around. <span class="red">The cave branches off in several directions.</span> You can't even tell which way you came from.
+	<br><br>
+
+	<<link [[Follow the first path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 1>><<set $shortcutLost to 0>><</link>>
+	<br>
+	<<link [[Follow the second path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 2>><<set $shortcutLost to 0>><</link>>
+	<br>
+	<<link [[Follow the third path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 3>><<set $shortcutLost to 0>><</link>>
+	<br>
+	<<link [[Follow the fourth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 4>><<set $shortcutLost to 0>><</link>>
+	<br>
+<<elseif $hc.shortcutCount is 0>>
+	It's cold and uncomfortable, but you eventually emerge...
+	<<if $bus is "disposal">>
+		in the temple's disposal channel.
+	<<else>>
+		deep in the forest.
+	<</if>>
+	<br><br>
+
+	You look behind you. The path branches off in several familiar directions. You hear a screech of glass rubbing against glass. <span class="purple">You must make an offering <<= $bus is "forest" ? "at the disposal channel" : "">> before you are permitted to pass.</span>
+	<br><br>
+
+	<<link [[Return|_comingFrom]]>><</link>>
+<<else>>
+	<<set $hc.shortcutCount-->>
+	It's cold and uncomfortable, but you eventually emerge
+	<<if $bus is "disposal">>
+		deep into the forest.
+	<<else>>
+		in the temple's disposal channel.
+	<</if>>
+	<br><br>
+
+	<<if $hc.shortcutCount gte 1>>
+		You feel a pair of eyes watching you, but hear nothing. You may travel this path <span class="blue"><<number $hc.shortcutCount>> more <<= $hc.shortcutCount is 1 ? "time" : "times">></span>.
+	<<else>>
+		You feel a pair of eyes watching you, and hear a piercing screech of glass rubbing against glass. <span class="red">You no longer have permission to travel this path,</span> and must make another offering if you wish to pass.
+	<</if>>
+	<br><br>
+
+	<<link [[Next|_goingTo]]>><</link>>
+<</if>>
+
+:: Hopeless Cycle Shortcut Lost
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>>
+
+<span class="narration">
+	<<if $phase is 0>>
+		The gaolor doubled back along the path he had just walked.
+	<<elseif $phase is 10>>
+		The gaolor examined the walls. As long as he could see, he could keep track of which paths he'd been down.
+	<<else>>
+		The gaolor travelled along the <<print ordinalWritten($phase)>> path he saw.
+	<</if>>
+</span>
+<br><br>
+
+<<if $shortcutLost gte 5>>
+	<<pain -2>>
+	<<set _goingTo to $bus is "disposal" ? "forest" : "disposal channel">>
+	<<set $shortcutMirror to {}>>
+	<<set $shortcutMirror.item to $hcItems.filter(item => item.location is "held" and item.type isnot "torch")[0]>>
+	<<if $shortcutMirror.item?.type is "container" and $hcItems.filter(x => x.type is "water" and x.location is $shortcutMirror.item.containerID).length>>
+		<<set $shortcutMirror.itemName to "a bucket of water">>
+	<<elseif !$shortcutMirror.item or $shortcutMirror.item.persists>>
+		<<set $shortcutMirror.itemName to "a roll of bandages">>
+	<<else>>
+		<<set $shortcutMirror.itemName to hcItemName($shortcutMirror.item)>>
+	<</if>>
+	<<set $shortcutMirror.itemName to $shortcutMirror.itemName.substr($shortcutMirror.itemName.indexOf(" ") + 1)>>
+	You run into another glass wall. You step back and try to look through it.
+	<br><br>
+
+	No. It's not a wall. It's a mirror.
+	<br><br>
+
+	You look into the mirror. A gaolor holding a <<= $shortcutMirror.itemName>> and <span class="orange">a lit torch</span> looks back.
+	Behind your reflection, in the mirror, <span class="green">you see the <<= $bus is "forest" ? "disposal channel" : "forest">></span> you were intending to go to.
+	<br><br>
+
+	<<link [[Reach out|Hopeless Cycle Shortcut Mirror]]>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Turn around and go to the _goingTo|Hopeless Cycle Shortcut Mirror]]>><<set $phase to 1>><</link>>
+	<br>
+<<else>>
+	<<switch $shortcutLost>>
+		<<case 0>>
+			You've heard rumors of these tricks. The path is defying you because you believe it is.
+			<br><br>
+			You scratch the wall of the cave with your torch's handle as you walk. The scraping doesn't sound like stone.
+		<<case 1>>
+			You hear a rapid rattling and thumping approach from some unknown path. You swing your torch around you, but see nothing.
+		<<case 2>>
+			<span class="red">Your <<= $hcItems.filter(torch => torch.type is "torch" and torch.state is "lit" and torch.location is "held").length is 1 ? "torch goes" : "torches go">> out!</span>
+			You feel blindly for the wall. You can't feel any markings.
+			<<run $hcItems.filter(torch => torch.type is "torch" and torch.state is "lit" and torch.location is "held").forEach(torch => {torch.state = "snuffed"})>>
+			<<stress 6>><<gstress>>
+		<<case 3>>
+			You attempt to stay the course, believing there is only one path. You run into a wall.
+			<<stress 6>><<pain 2>><<gstress>><<gpain>>
+		<<case 4>>
+			You run, directionless and lost. Nothing seems real.
+			<<stress 12>><<ggstress>>
+	<</switch>>
+	<<set $shortcutLost++>>
+	<br><br>
+
+	More paths branch off ahead.
+	<br><br>
+
+	<<link [[Try to backtrack (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Follow the first path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 1>><</link>>
+	<br>
+	<<link [[Follow the second path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 2>><</link>>
+	<br>
+	<<link [[Follow the third path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 3>><</link>>
+	<br>
+	<<link [[Follow the fourth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 4>><</link>>
+	<br>
+	<<link [[Follow the fifth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 5>><</link>>
+	<br>
+	<<if $shortcutLost gte 2>>
+		<<link [[Follow the sixth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 6>><</link>>
+		<br>
+		<<if $shortcutLost gte 3>>
+			<<link [[Follow the seventh path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 7>><</link>>
+			<br>
+			<<if $shortcutLost gte 4>>
+				<<link [[Follow the eighth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 8>><</link>>
+				<br>
+				<<link [[Follow the ninth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 9>><</link>>
+				<br>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if between($shortcutLost,1,2)>>
+		<<link [[Look for paths with marked walls (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 10>><</link>>
+	<</if>>
+<</if>>
+
+:: Hopeless Cycle Shortcut Mirror
+<<set _thermoDisable to true>><<effects>>
+<<hopelessCycleEffects>>
+<<set _goingTo to $bus is "disposal" ? "forest" : "disposal channel">>
+<<set _comingFrom to $bus is "disposal" ? "disposal channel" : "forest">>
+<<set _comingFromLink to "Hopeless Cycle " + $bus.toLocaleUpperFirst()>>
+<<set $hcItems.filter(torch => torch.type is "torch" and torch.state is "snuffed" and torch.location is "held")[0].state to "lit">>
+
+<<if $phase is 0>>
+	You step forward, up to the mirror. After a slight delay, your reflection does the same.
+<<else>>
+	You turn around, hoping to see the _goingTo behind you. All you see is more paths into the darkness. You turn back around.
+	<br><br>
+
+	Your reflection steps forward, up to the mirror. After a slight delay, you do the same.
+<</if>>
+<br><br>
+
+The reflection holds his lit torch up. Feeling somewhat foolish, you raise your snuffed torch to match the movement.
+<br><br>
+
+<span class="green">Your torch catches alight.</span>
+<br><br>
+
+The reflection turns, letting go of his torch. It remains in midair.
+<<if $shortcutMirror.itemName is "bucket of water">>
+	He takes his bucket of water and empties it out to the side.
+<<else>>
+	He takes his <<print $shortcutMirror.itemName>> and throws it to the side, as hard as he can.
+<</if>>
+After a moment, he picks up his torch, turns around and continues on to the _goingTo.
+<br><br>
+
+<span class="blue">The mirror cracks.</span> The reflection freezes, the flame's flickering going entirely still. With a horrific sound, the mirror shatters. Behind the mirror is the _comingFrom.
+<br><br>
+
+<span class="purple">You may not traverse the shortcut without leaving an offering.</span> Dispose of items in the disposal channel to gain access.
+<br><br>
+
+<<link [[Next|_comingFromLink]]>><</link>>
+
 :: Hopeless Cycle Blood Cell Late
 <<set _thermoDisable to true>><<set $location to "old_temple">><<set $bus to "barracks">>
 
@@ -3193,6 +3514,9 @@ You release the chain that holds her manacles to the wall and pick her up. She d
 	writing_right_leg: _brandings.right_leg,
 	writing_right_foot: _brandings.right_foot
 }>>
+<<if $hcChallenge.faithBlooms>>
+	<<set $follower.hair += "_challenge_faithBlooms">>
+<</if>>
 
 <<set Time.setDate(new DateTime(1390, 5, 31, 22, 0))>><<set Weather.set("clear", true, 1000)>>
 <span class="narration">To this day, the temple puts special emphasis on the last day of each month. It is unclear when this tradition started, but it has been around for centuries.</span>
@@ -5220,9 +5544,9 @@ You disarm two of your brothers, and move to block his path. He looks down at yo
 	<<if $prisonerBrands.includesAll("left shoulder", "right shoulder")>>
 		The brandings on her back shoulders are burning her. Black smoke rises from them as something tries to break free from inside.
 	<<elseif $prisonerBrands.includes("left shoulder")>>
-		The branding on her left shoulder is burning her. Black smoke rises from them as something tries to break free from inside.
+		The branding on her left shoulder is burning her. Black smoke rises from it as something tries to break free from inside.
 	<<else>>
-		The branding on her right shoulder is burning her. Black smoke rises from them as something tries to break free from inside.
+		The branding on her right shoulder is burning her. Black smoke rises from it as something tries to break free from inside.
 	<</if>>
 	You look back to the Hand just in time to be thrown aside.
 	<br><br>
