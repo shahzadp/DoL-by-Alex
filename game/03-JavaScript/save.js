@@ -1221,6 +1221,7 @@ function settingsObjects(type) {
 					condomsDisplay: { strings: ["none", "standard"], displayName: "Condom display:" },
 					closeButtonMobile: { bool: true, displayName: "Items per page:" },
 					showDebugRenderer: { bool: true, displayName: "Enable renderer debugger:" },
+					showCombatTools: { bool: true, displayName: "Enable combat tools:" },
 					numpad: { bool: true, displayName: "Enable numpad:" },
 					traitOverlayFormat: { strings: ["table", "reducedTable", "list"], displayName: "Display traits:" },
 					font: {
