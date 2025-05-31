@@ -69,7 +69,7 @@ function hcItemAdd(item, loc = "held", actionText = undefined) {
 				newItemProperties = { type: "container", name: "bucket", containerID: ID, capacity: 3 };
 				break;
 			case "herbs":
-				newItemProperties = { name: "medicinal herbs", used: true, dirtyOnDrop: V.hcChallenge.itemDirty };
+				newItemProperties = { name: "medicinal herbs", dirtyOnDrop: V.hcChallenge.itemDirty };
 				break;
 			case "water":
 				if (V.bus === "garden" && V.hc.wellTainted) {
@@ -78,7 +78,7 @@ function hcItemAdd(item, loc = "held", actionText = undefined) {
 					newItemProperties = { dirty: 0 };
 				}
 				if (V.hcChallenge.waterLeaky) {
-					newItemProperties.time = 3;
+					newItemProperties.time = 5;
 				}
 				break;
 			case "prisoner":
@@ -192,7 +192,7 @@ function hcItemCanReach(id, filterfn) {
 	if (typeof filterfn !== "function") filterfn = () => true;
 
 	if (V.hcChallenge.torchSnuffer && id === "snuffer" && V.passage === "Hopeless Cycle Dungeon") {
-		return;
+		return true;
 	}
 
 	const itemWithinReach = V.hcItems.find(item => (item.name === id || item.type === id) && [V.bus, "held"].includes(item.location) && filterfn(item));
@@ -333,3 +333,12 @@ function hcItemName(item, cap = false, vanished = false, decorations = false) {
 	return itemText;
 }
 window.hcItemName = hcItemName;
+
+/* Accepts challenge name OR set name as argument. Automatically detects which based on content */
+function hcChallengeColor(challenge) {
+	const colors = ["red", "orange", "gold", "green", "lblue", "blue", "purple", "meek", "brat", "black"];
+	const sets = ["hand", "torch", "faith", "forest", "water", "item", "suspicion", "prisoner", "dogs", "time"];
+	const set = sets.includes(challenge) ? challenge : setup.hopelessCycleChallenges.filter(x => x.key === challenge)[0].key.split(/[A-Z]/)[0];
+	return colors[sets.indexOf(set)];
+}
+window.hcChallengeColor = hcChallengeColor;

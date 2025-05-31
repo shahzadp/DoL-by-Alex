@@ -262,7 +262,8 @@ You are in <<print $prisoner.name>>'s cell.
 		<<else>>
 			<<set _food to hcItemsOnScreen(f => f.type is "food" and !f.used and !f.dirty)>>
 			<<set _water to hcItemCanReach("water", (water => water.dirty lt 2))>>
-			<<set _bandages to hcItemCanReach("bandages", (bandage => bandage.dirty is 0))>>
+			<<set _bandagesFresh to hcItemCanReach("bandages", (bandage => bandage.dirty is 0 and !bandage.used))>>
+			<<set _bandagesUsed to hcItemCanReach("bandages", (bandage => bandage.dirty is 0 and bandage.used))>>
 			<<set _herbs to hcItemCanReach("herbs")>>
 
 			<<if _clothesCurrent>>
@@ -319,29 +320,39 @@ You are in <<print $prisoner.name>>'s cell.
 								<<hcicon "herbs">><<link [[Treat her burns|Hopeless Cycle Cell Burns]]>><<set $hc.daily.treated to true>><<hcPrisonerHealth 3>><<set $prisoner.harmed-->><<set $prisoner.love += 2>><<run hcItemRemove(_herbs)>><<stress 12>><<trauma 24>><</link>><<gstress>><<ggtrauma>><<hopelessCycleLove 1>>
 								<br>
 							<</if>>
-							<<if $hc.daily.treated and $prisonerEvents.includes("talkHerbsMouth") and !$prisonerEvents.includes("herbsMouth")>>
-								<<hcicon "herbs">><<link [[Give her an herb to chew on|Hopeless Cycle Cell Burns Mouth]]>><<run hcItemRemove(_herbs)>><</link>><<hopelessCycleLove 1>>
-								<br>
-							<</if>>
 						<</capture>>
 					<</if>>
 				<</if>>
-				<<if _bandages>>
-					<<capture _bandages>>
-						<<hcicon "bandages">><<link [[Apply bandages (0:05)|Hopeless Cycle Cell]]>>
+				<<if _bandagesFresh>>
+					<<capture _bandagesFresh>>
+						<<hcicon "bandages">><<link [[Apply fresh bandages (0:05)|Hopeless Cycle Cell]]>>
 							<<pass 5>><<stress 3>><<trauma 3>>
-							<<set $itemAction to "bandagesApply">><<set $itemActionObject to _bandages>>
-							<<set $prisoner.bandagesOn to true>><<run hcItemRemove(_bandages)>>
-							<<if _bandages.used>>
-								<<set $prisoner.cleanBandages to 3>>
-							<<else>>
-								<<set $prisoner.cleanBandages to 4>>
-							<</if>>
+							<<set $itemAction to "bandagesApply">><<set $itemActionObject to _bandagesFresh>>
+							<<set $prisoner.bandagesOn to true>><<run hcItemRemove(_bandagesFresh)>>
+							<<set $prisoner.cleanBandages to 4>>
 						<</link>>
 						<<gstress>><<gtrauma>>
 					<</capture>>
 					<br>
 				<</if>>
+				<<if _bandagesUsed>>
+					<<capture _bandagesUsed>>
+						<<hcicon "bandages">><<link [[Apply used bandages (0:05)|Hopeless Cycle Cell]]>>
+							<<pass 5>><<stress 3>><<trauma 3>>
+							<<set $itemAction to "bandagesApply">><<set $itemActionObject to _bandagesUsed>>
+							<<set $prisoner.bandagesOn to true>><<run hcItemRemove(_bandagesUsed)>>
+							<<set $prisoner.cleanBandages to 3>>
+						<</link>>
+						<<gstress>><<gtrauma>>
+					<</capture>>
+					<br>
+				<</if>>
+			<</if>>
+			<<if _herbs and $prisonerEvents.includes("brand") and $hc.daily.treated and $prisonerEvents.includes("talkHerbsMouth") and !$prisonerEvents.includes("herbsMouth")>>
+				<<capture _herbs>>
+					<<hcicon "herbs">><<link [[Give her an herb to chew on|Hopeless Cycle Cell Burns Mouth]]>><<run hcItemRemove(_herbs)>><</link>><<hopelessCycleLove 1>>
+					<br>
+				<</capture>>
 			<</if>>
 			<<if _food.length>>
 				<<for _labelFood, _valueFood range _food>>
