@@ -144,6 +144,23 @@ function DefineMacroS(macroName, macroFunction, tags, skipArgs, maintainContext)
 }
 
 /**
+ * Pluralises a given word if the count is not 1
+ * 
+ * @param {number} count Number to check
+ * @param {string} singular Singular form of the word
+ * @param {string} [plural] Optional plural form for irregular plurals
+ * @returns {string} Correct word form
+ */
+
+function pluralise(count, singular, plural) {
+	if (plural === undefined) {
+		plural = singular + "s";
+	}
+	return count === 1 ? singular : plural;
+}
+window.pluralise = pluralise;
+
+/**
  * Creates and returns a keyword describing the wetness of a clothing article.
  *
  * @param {string} slot clothing article slot used
