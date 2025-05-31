@@ -647,7 +647,7 @@ class PlayerCombatMapper {
 			options = PlayerCombatMapper.generateOptions();
 		}
 
-		options.isDebugging = !!V.debug;
+		options.isDebugging = !!V.debug && V.options.showCombatTools;
 
 		// Set position
 		options.position = CombatRenderer.getPosition(V.position);

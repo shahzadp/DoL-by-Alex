@@ -13,7 +13,7 @@ class CombatEditor {
 			})
 		);
 
-		if (V.debug) {
+		if (V.debug && V.options.showCombatTools) {
 			para.append(
 				CombatEditor.createButtonAsIcon("./img/ui/refresh.png", "Refresh", () => {
 					CombatEditor.refreshCombatCanvas();
