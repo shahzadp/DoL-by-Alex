@@ -281,7 +281,6 @@ declare global {
 		altposition?: string;
 		altdisabled?: string[];
 		zip?: 0 | 1;
-		integrity_mask_img?: 0 | 1;
 		hoodposition?: "down" | "up";
 		altDamage?: "metal" | "plastic" | "parasite";
 		penisSize?: boolean;

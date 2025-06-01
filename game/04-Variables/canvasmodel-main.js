@@ -712,14 +712,14 @@ Renderer.CanvasModels.main = {
 		options.underLowerShadowMask = [];
 		options.upperMask = [];
 		options.legsMask = [];
-		if (options.worn.lower.pattern || options.worn.lower.setup.mask_img === 1) {
+		if (options.worn.lower.setup.mask_img === 1) {
 			options.lowerMask.push(
 				gray_suffix(
 					`img/clothes/lower/${options.worn.lower.setup.variable}/${options.worn.lower.integrity}.png`,
 					options.filters['worn_lower']
 				))
 		}
-		if (options.worn.upper.pattern || options.worn.upper.setup.mask_img === 1) {
+		if (options.worn.upper.setup.mask_img === 1) {
 			options.upperMask.push(
 				gray_suffix(
 					`img/clothes/upper/${options.worn.upper.setup.variable}/${options.worn.upper.integrity}.png`,
@@ -857,6 +857,8 @@ Renderer.CanvasModels.main = {
 			options.lowerMask.push(options.feet_clip_src);
 			options.legsMask.push(options.feet_clip_src);
 			options.lowerBellyMask.push(options.feet_clip_src);
+		} else if (!options.worn.feet.setup.notuck) {
+			options.legsMask.push(`img/clothes/feet/${options.worn.feet.setup.variable}/mask.png`)
 		} else {
 			options.feet_clip_src = null;
 		}
