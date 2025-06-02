@@ -192,7 +192,7 @@ class NpcCanvasHelper {
 					return 0;
 				}
 				if (penetrator.position === "mouth") {
-					return CombatRenderer.indices.head + 2;
+					return CombatRenderer.indices.head + 4;
 				}
 				if (penetrator.position === "thighs") {
 					return 30;

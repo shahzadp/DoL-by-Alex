@@ -426,6 +426,10 @@ class NpcCombatMapper {
 		// @ts-ignore Just for type inferrence for isBeastStateEnabled, if we had a proper TypeScript setup, this wouldn't be needed.
 		const beastType = npc.type;
 
+		if (penetrator?.position && ["leftarm", "rightarm"].includes(penetrator.position)) {
+			return options;
+		}
+
 		const isBeastUnderPositioned = NpcCombatMapper.isBeastUnderPositioned(index, npc);
 		if (isBeastUnderPositioned) {
 			options.show = NpcCombatMapper.isBeastStateEnabled(beastType, options.position, "under");
@@ -599,6 +603,9 @@ class NpcCombatMapper {
 	 */
 	static getPenetratorType(npc) {
 		if (["dog", "doggirl", "dogboy", "wolf", "wolfgirl", "wolfboy", "fox", "foxgirl", "foxboy", "bear", "beargirl", "bearboy"].includes(npc.type)) {
+			return "knotted";
+		}
+		if (["lizard", "lizardboy", "lizardgirl"].includes(npc.type)) {
 			return "knotted";
 		}
 		if (["horse", "centaur"].includes(npc.type)) {
