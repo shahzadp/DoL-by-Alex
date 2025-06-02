@@ -1,5 +1,5 @@
 // @ts-check
-/* globals CombatClothingTypes, ClothingStates, ZeroedClothingStates, ClothingRendererStepState, CombatPositions, Partial, Record */
+/* globals CombatClothingTypes ClothingStates ClothingRendererStepState CombatPositions Partial Record TotalClothingStates */
 
 /**
  * @typedef {Partial<Record<CombatPositions, Partial<Record<ClothingStates, ClothingRendererStepState>>>>} RendererStepOptions
@@ -28,7 +28,7 @@ class ClothingRendererStep {
 
 	/**
 	 * @param {CombatPositions} position
-	 * @param {ZeroedClothingStates} state
+	 * @param {TotalClothingStates} state
 	 * @returns {boolean}
 	 */
 	isStateLayered(position, state) {
@@ -48,7 +48,7 @@ class ClothingRendererStep {
 
 	/**
 	 * @param {CombatPositions} position
-	 * @param {ZeroedClothingStates} state
+	 * @param {TotalClothingStates} state
 	 * @returns {boolean}
 	 */
 	isStateLegged(position, state) {
@@ -68,7 +68,7 @@ class ClothingRendererStep {
 
 	/**
 	 * @param {CombatPositions} position
-	 * @param {ZeroedClothingStates} state
+	 * @param {TotalClothingStates} state
 	 * @returns {boolean}
 	 */
 	shouldShow(position, state) {

@@ -1594,6 +1594,9 @@ class PlayerCombatMapper {
 			show = false;
 		}
 
+		const isRaised = defaults.skirt === 1 && clothing.skirt_down === 0 && state === "waist";
+		const isPenetratorVisible = !!options.penetrator?.show && options.legFrontPosition === "down";
+
 		/**
 		 * @type {ClothingState}
 		 */
@@ -1606,7 +1609,7 @@ class PlayerCombatMapper {
 			show,
 			alpha: CombatRenderer.getAlpha(slot),
 			isSkirt: defaults.skirt === 1,
-			isRaised: defaults.skirt === 1 && clothing.skirt_down === 0 && state === "waist",
+			isRaised: isRaised && (options.position === "doggy" || isPenetratorVisible),
 			isExposed: !!clothing.exposed,
 			isBoundable: !!clothing.combat?.boundable,
 			hasAccessory: CombatRenderer.getAccessoryState(slot, defaults),

@@ -94,7 +94,7 @@ class PlayerCanvasHelper {
 	 * @param {ClothedSlots} slot
 	 * @param {"front" | "back"} layer
 	 * @param {boolean} isAccessory
-	 * @param {object} options
+	 * @param {CombatPlayerOptions} options
 	 * @returns {string}
 	 */
 	static genClothingLayerLowerSrc(slot, layer, isAccessory, options) {
@@ -107,7 +107,7 @@ class PlayerCanvasHelper {
 			});
 			return "";
 		}
-		if (clothes?.name == null || clothes.renderStep == null) return "";
+		if (clothes.name == null || clothes.renderStep == null) return "";
 		const step = ClothingRendererStep.instances[clothes.renderStep];
 		if (step == null) {
 			// Fallback
@@ -120,16 +120,14 @@ class PlayerCanvasHelper {
 			return "";
 		}
 		const states = [];
-		// @ts-ignore
 		if (step.isStateLayered(options.position, clothes.state)) {
 			states.push(layer);
 		}
-		// @ts-ignore
 		if (clothes.positions != null && step.isStateLegged(options.position, clothes.state)) {
 			states.push(clothes.positions[layer]);
 		}
 		states.push(clothes.state);
-		if (options.position === "doggy" && clothes.isRaised) {
+		if (clothes.isRaised) {
 			states.push("raised");
 		}
 		if (isAccessory) {
