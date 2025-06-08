@@ -508,16 +508,14 @@ There's a stairway to the disposal channel here.
 			<<templeicon "cloister">><<link [[Cloister <<hcTimeDungeonDisplay>>|Hopeless Cycle Dungeon Leave]]>><<hcTimeDungeonPass>><</link>>
 			<br>
 		<</if>>
-		<<if $prisonerEvents.includes("wash")>>
-			<<if hcItemLitTorch()>>
-				<<sewericon "main">><<link [[Disposal channel (0:05)|Hopeless Cycle Disposal]]>><<pass 5>><</link>>
-			<<elseif $hcItems.some(torch => torch.type is "torch" and torch.location is "disposal" and torch.inSconce is true and torch.state is "lit")>>
-				<<sewericon "main">><<link [[Disposal channel (0:05)|Hopeless Cycle Disposal]]>><<pass 5>><</link>>
-			<<else>>
-				<span class="red">The disposal channel is too dark to enter without a torch.</span>
-			<</if>>
-			<br>
+		<<if hcItemLitTorch()>>
+			<<sewericon "main">><<link [[Disposal channel (0:05)|Hopeless Cycle Disposal]]>><<pass 5>><</link>>
+		<<elseif $hcItems.some(torch => torch.type is "torch" and torch.location is "disposal" and torch.inSconce is true and torch.state is "lit")>>
+			<<sewericon "main">><<link [[Disposal channel (0:05)|Hopeless Cycle Disposal]]>><<pass 5>><</link>>
+		<<else>>
+			<span class="red">The disposal channel is too dark to enter without a torch.</span>
 		<</if>>
+		<br>
 	<</if>>
 
 	<<if $debug is 1>>
@@ -3150,7 +3148,7 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 
 	<<link [[Next|_goingTo]]>><</link>>
 <<elseif $hc.shortcutCount is undefined>>
-	<<set $hc.shortcutCount to 0>>
+	<<set $hc.shortcutCount to 0>><<set $shortcut to {lost: 0}>>
 	It's cold and uncomfortable, and the cave winds around in ways that almost feel cyclical. You can't tell if you're making any progress.
 	<br><br>
 
@@ -3160,13 +3158,13 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 	You turn around. <span class="red">The cave branches off in several directions.</span> You can't even tell which way you came from.
 	<br><br>
 
-	<<link [[Follow the first path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 1>><<set $shortcutLost to 0>><</link>>
+	<<link [[Follow the first path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 1>><</link>>
 	<br>
-	<<link [[Follow the second path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 2>><<set $shortcutLost to 0>><</link>>
+	<<link [[Follow the second path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 2>><</link>>
 	<br>
-	<<link [[Follow the third path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 3>><<set $shortcutLost to 0>><</link>>
+	<<link [[Follow the third path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 3>><</link>>
 	<br>
-	<<link [[Follow the fourth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 4>><<set $shortcutLost to 0>><</link>>
+	<<link [[Follow the fourth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 4>><</link>>
 	<br>
 <<elseif $hc.shortcutCount is 0>>
 	It's cold and uncomfortable, but you eventually emerge...
@@ -3216,26 +3214,25 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 </span>
 <br><br>
 
-<<if $shortcutLost gte 5>>
+<<if $shortcut.lost gte 5>>
 	<<pain -2>>
 	<<set _goingTo to $bus is "disposal" ? "forest" : "disposal channel">>
-	<<set $shortcutMirror to {}>>
-	<<set $shortcutMirror.item to $hcItems.filter(item => item.location is "held" and item.type isnot "torch")[0]>>
-	<<if $shortcutMirror.item?.type is "container" and $hcItems.filter(x => x.type is "water" and x.location is $shortcutMirror.item.containerID).length>>
-		<<set $shortcutMirror.itemName to "a bucket of water">>
-	<<elseif !$shortcutMirror.item or $shortcutMirror.item.persists>>
-		<<set $shortcutMirror.itemName to "a roll of bandages">>
+	<<set $shortcut.item to $hcItems.filter(item => item.location is "held" and item.type isnot "torch")[0]>>
+	<<if $shortcut.item?.type is "container" and $hcItems.filter(x => x.type is "water" and x.location is $shortcut.item.containerID).length>>
+		<<set $shortcut.itemName to "a bucket of water">>
+	<<elseif !$shortcut.item or $shortcut.item.persists>>
+		<<set $shortcut.itemName to "a roll of bandages">>
 	<<else>>
-		<<set $shortcutMirror.itemName to hcItemName($shortcutMirror.item)>>
+		<<set $shortcut.itemName to hcItemName($shortcut.item)>>
 	<</if>>
-	<<set $shortcutMirror.itemName to $shortcutMirror.itemName.substr($shortcutMirror.itemName.indexOf(" ") + 1)>>
+	<<set $shortcut.itemName to $shortcut.itemName.substr($shortcut.itemName.indexOf(" ") + 1)>>
 	You run into another glass wall. You step back and try to look through it.
 	<br><br>
 
 	No. It's not a wall. It's a mirror.
 	<br><br>
 
-	You look into the mirror. A gaoler holding a <<= $shortcutMirror.itemName>> and <span class="orange">a lit torch</span> looks back.
+	You look into the mirror. A gaoler holding a <<= $shortcut.itemName>> and <span class="orange">a lit torch</span> looks back.
 	Behind your reflection, in the mirror, <span class="green">you see the <<= $bus is "forest" ? "disposal channel" : "forest">></span> you were intending to go to.
 	<br><br>
 
@@ -3244,7 +3241,7 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 	<<link [[Turn around and go to the _goingTo|Hopeless Cycle Shortcut Mirror]]>><<set $phase to 1>><</link>>
 	<br>
 <<else>>
-	<<switch $shortcutLost>>
+	<<switch $shortcut.lost>>
 		<<case 0>>
 			You've heard rumors of these tricks. The path is defying you because you believe it is.
 			<br><br>
@@ -3264,7 +3261,7 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 			You run, directionless and lost. Nothing seems real.
 			<<stress 12>><<ggstress>>
 	<</switch>>
-	<<set $shortcutLost++>>
+	<<set $shortcut.lost++>>
 	<br><br>
 
 	More paths branch off ahead.
@@ -3282,13 +3279,13 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 	<br>
 	<<link [[Follow the fifth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 5>><</link>>
 	<br>
-	<<if $shortcutLost gte 2>>
+	<<if $shortcut.lost gte 2>>
 		<<link [[Follow the sixth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 6>><</link>>
 		<br>
-		<<if $shortcutLost gte 3>>
+		<<if $shortcut.lost gte 3>>
 			<<link [[Follow the seventh path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 7>><</link>>
 			<br>
-			<<if $shortcutLost gte 4>>
+			<<if $shortcut.lost gte 4>>
 				<<link [[Follow the eighth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 8>><</link>>
 				<br>
 				<<link [[Follow the ninth path (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 9>><</link>>
@@ -3296,7 +3293,7 @@ You walk through the dank cave by the light of your torch, occasionally crouchin
 			<</if>>
 		<</if>>
 	<</if>>
-	<<if between($shortcutLost,1,2)>>
+	<<if between($shortcut.lost,1,2)>>
 		<<link [[Look for paths with marked walls (0:01)|Hopeless Cycle Shortcut Lost]]>><<pass 1>><<set $phase to 10>><</link>>
 	<</if>>
 <</if>>
@@ -3327,10 +3324,10 @@ The reflection holds his lit torch up. Feeling somewhat foolish, you raise your 
 <br><br>
 
 The reflection turns, letting go of his torch. It remains in midair.
-<<if $shortcutMirror.itemName is "bucket of water">>
+<<if $shortcut.itemName is "bucket of water">>
 	He takes his bucket of water and empties it out to the side.
 <<else>>
-	He takes his <<print $shortcutMirror.itemName>> and throws it to the side, as hard as he can.
+	He takes his <<print $shortcut.itemName>> and throws it to the side, as hard as he can.
 <</if>>
 After a moment, he picks up his torch, turns around and continues on to the _goingTo.
 <br><br>
@@ -3341,7 +3338,7 @@ After a moment, he picks up his torch, turns around and continues on to the _goi
 <span class="purple">You may not traverse the shortcut without leaving an offering.</span> Dispose of items in the disposal channel to gain access.
 <br><br>
 
-<<link [[Next|_comingFromLink]]>><</link>>
+<<link [[Next|_comingFromLink]]>><<unset $shortcut>><</link>>
 
 :: Hopeless Cycle Blood Cell Late
 <<set _thermoDisable to true>><<set $location to "old_temple">><<set $bus to "barracks">>
