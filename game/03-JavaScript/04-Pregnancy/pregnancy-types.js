@@ -132,7 +132,7 @@ function pregPrep({ motherObject, fatherObject, parasiteType = null, genital = n
 		}
 
 		// Prevent Non-parasitic pregnancy in the anus unless the player is male with a magic tattoo
-		if (genital === "anus" && !canBeMPregnant() && !parasiteType) return ["MPreg is not currently avaliable to the player"];
+		if (genital === "anus" && !canBeMPregnant() && !parasiteType) return ["MPreg is not currently available to the player"];
 
 		pregnancy = V.sexStats[genital].pregnancy;
 
