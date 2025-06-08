@@ -118,7 +118,7 @@ function hcItemRemove(item, actionText = undefined) {
 	const toRemove = V.hcItems.findIndex(thing => thing.isEqual(item));
 
 	if (toRemove < 0) {
-		V.itemAction = "Nonexistant item removed";
+		V.itemAction = "Nonexistent item removed";
 		V.hcItemError = item.type;
 		return;
 	}
