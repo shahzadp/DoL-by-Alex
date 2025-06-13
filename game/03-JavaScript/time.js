@@ -892,6 +892,8 @@ function hourPassed(hours) {
 		}
 		playerEndWaterProgress();
 
+		if (V.wolfpatrolsent >= 1) V.wolfpatrolsent++;
+
 		if (C.npc.Sydney.init === 1) {
 			sydneySchedule();
 			if (T.sydney_location === "temple" && V.temple_rank !== undefined && V.temple_rank !== "prospective") {
