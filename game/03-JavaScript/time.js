@@ -859,16 +859,22 @@ function dayPassed() {
 function hourPassed(hours) {
 	if (V.statFreeze) return;
 
+	// reset hourly vars
+	V.hourly = {};
+
 	for (let i = 0; i < hours; i++) {
 		if (V.innocencestate === 1 && V.control <= 0) statChange.awareness(1);
 		statChange.control(1);
 		wikifier("orgasmHourlyRecovery");
 		statChange.arousal(0, "time");
 		wikifier("wetnessCalculate");
-		wikifier("lustfulCheck", "upper");
-		wikifier("lustfulCheck", "lower");
-		wikifier("lustfulCheck", "feet");
-		wikifier("lustfulCheck", "head");
+		// special clothes effects
+		// currently, only these slots can have lustful traits, consider universalizing
+		["upper", "lower", "feet", "head"].forEach(slot => {
+			["bimbo", "pimp"].forEach(type => {
+				if (V.worn[slot].type.includes(type)) ++V.specialClothesEffects[type].progress;
+			});
+		});
 
 		if (V.ejactrait >= 1) V.stress -= (V.goocount + V.semencount) * 10;
 		if (V.kylarwatched) V.kylarwatchedtimer--;
@@ -878,7 +884,6 @@ function hourPassed(hours) {
 			count += V.sexStats.pills.pills["Hair Growth Formula"].doseTaken ? 1 : 0;
 			V.hairlength += count;
 			V.fringelength += count;
-			wikifier("calchairlengthstage");
 		}
 		if (V.earSlime.defyCooldown) {
 			V.earSlime.defyCooldown--;
@@ -886,7 +891,27 @@ function hourPassed(hours) {
 			if (V.earSlime.defyCooldown <= 0) V.earSlime.defyCooldown = 0;
 		}
 		playerEndWaterProgress();
+
+		if (C.npc.Sydney.init === 1) {
+			sydneySchedule();
+			if (T.sydney_location === "temple" && V.temple_rank !== undefined && V.temple_rank !== "prospective") {
+				if (V.sydney_templeWork === "garden") {
+					if (V.temple_garden >= 1) V.temple_garden++;
+				} else if (V.sydney_templeWork === "quarters") {
+					if (V.temple_quarters >= 1) V.temple_quarters++;
+				}
+			}
+		}
+
+		if (V.avery_mansion) {
+			if (V.avery_mansion.away_timer >= 1) {
+				V.avery_mansion.away_timer--;
+			}
+		}
+
+		V.home_gone++;
 	}
+	calchairlengthstage();
 
 	if (
 		V.sexStats.vagina.menstruation.running &&
@@ -901,36 +926,17 @@ function hourPassed(hours) {
 
 	if (!V.wolfevent) V.wolfevent = 1;
 	if (V.wolfpatrolsent >= 24) delete V.wolfpatrolsent;
-	else if (V.wolfpatrolsent >= 1) V.wolfpatrolsent++;
 
 	if (V.robinPillory && V.robinPillory.danger !== undefined && V.robinPillory.active) wikifier("robinPilloryHour");
 	if (V.pillory.tenant.exists && V.pillory.tenant.endTime < V.timeStamp) wikifier("clear_pillory");
 
 	if (V.robinbed === "yours" && !["sleep", "orphanage"].includes(getRobinLocation())) delete V.robinbed;
 
-	if (C.npc.Sydney.init === 1) {
-		wikifier("sydneySchedule");
-		if (T.sydney_location === "temple" && V.temple_rank !== undefined && V.temple_rank !== "prospective") {
-			if (V.sydney_templeWork === "garden") {
-				if (V.temple_garden >= 1) V.temple_garden++;
-			} else if (V.sydney_templeWork === "quarters") {
-				if (V.temple_quarters >= 1) V.temple_quarters++;
-			}
-		}
-	}
 	if (V.per_npc.pubfame_receptionist) {
 		wikifier("clearNPC", "pubfame_receptionist");
 		V.pubfame.hospital = {};
 		if (V.per_npc.pubfame_nurse) wikifier("clearNPC", "pubfame_nurse");
 	}
-
-	if (V.avery_mansion) {
-		if (V.avery_mansion.away_timer >= 1) {
-			V.avery_mansion.away_timer--;
-		}
-	}
-
-	V.home_gone++;
 }
 
 function minutePassed(minutes) {
@@ -1279,9 +1285,9 @@ function dailyPlayerEffects() {
 
 	V.hairlength += 3;
 	V.fringelength += 3;
-	wikifier("calchairlengthstage");
+	calchairlengthstage();
 	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 100);
-	wikifier("lustfulUpdate");
+	lustfulUpdate();
 
 	if (V.orgasmstat >= 1000 && V.orgasmtrait === 0) {
 		V.effectsmessage = 1;

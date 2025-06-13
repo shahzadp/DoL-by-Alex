@@ -1428,22 +1428,14 @@ const randomizeSettingSet = function (setting) {
 	return result;
 };
 
-// !!Hack warning!! Don't use it maybe?
-window.updateMoment = function () {
-	// change current (and only) moment in local history
+/**
+ * instantly moves changes made in the passage into save data without changing the passage
+ * WARNING: the game __will__ re-apply passage effects after reload, be sure to account for that or avoid using it
+ */
+function updateMoment() {
 	State.history[State.activeIndex].variables = JSON.parse(JSON.stringify(V));
-	// prepare the moment object with modified history
-	const moment = State.marshalForSave();
-	// if sessionStorage compression is enabled again,
-	// replace moment.history with moment.delta, because that's what SugarCube expects to find
-	// delta-encode the state
-	// delete Object.assign(moment, { delta: State.deltaEncode(moment.history) }).history;
-
-	// replace saved moment in session with the new one
-	State.setSessionState(moment);
-
-	// Voilà! F5 will reload the current state now without going to another passage!
-};
+}
+window.updateMoment = updateMoment;
 
 window.isJsonString = function (s) {
 	try {
