@@ -1952,12 +1952,8 @@ function featsMerge() {
 			localStorageSaves.autosave.state.history = State.deltaDecode(localStorageSaves.autosave.state.delta);
 			DoLSave.decompressIfNeeded(localStorageSaves.autosave);
 
-			if (
-				localStorageSaves.autosave.state.history &&
-				localStorageSaves.autosave.state.history[0] &&
-				localStorageSaves.autosave.state.history[0].variables
-			) {
-				const variables = localStorageSaves.autosave.state.history[0].variables;
+			if (localStorageSaves.autosave.state?.history?.[localStorageSaves.autosave.state.index]?.variables) {
+				const variables = localStorageSaves.autosave.state.history[localStorageSaves.autosave.state.index].variables;
 				if (variables.feats) {
 					loadFeats(variables.feats.allSaves);
 					loadFeats(variables.feats.currentSave);
@@ -1971,8 +1967,8 @@ function featsMerge() {
 				if (slot) {
 					slot.state.history = State.deltaDecode(slot.state.delta);
 					DoLSave.decompressIfNeeded(slot);
-					if (slot.state.history && slot.state.history[0] && slot.state.history[0].variables) {
-						const variables = slot.state.history[0].variables;
+					if (slot.state.history?.[slot.state.index]?.variables) {
+						const variables = slot.state.history[slot.state.index].variables;
 						if (variables.feats) {
 							loadFeats(variables.feats.allSaves);
 							loadFeats(variables.feats.currentSave);
@@ -1993,12 +1989,11 @@ function featsMerge() {
 				saves.forEach((slot, index) => {
 					// auto-detect between uncompressed and compressed saves
 					const history = slot.data.history || State.deltaDecode(slot.data.delta);
-					history.forEach(saveData => {
-						if (saveData.variables.feats) {
-							loadFeats(saveData.variables.feats.allSaves);
-							loadFeats(saveData.variables.feats.currentSave);
-						}
-					});
+					const saveData = history[slot.data.index].variables;
+					if (saveData.feats) {
+						loadFeats(saveData.feats.allSaves);
+						loadFeats(saveData.feats.currentSave);
+					}
 					loadingBar.css("width", `${((localSavesChecked + index + 1) / savesToLoad) * 100}%`);
 					loadingText.html(`${index + 1} out of ${savesToLoad} saves checked.`);
 				})
