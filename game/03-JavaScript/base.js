@@ -153,12 +153,14 @@ function DefineMacroS(macroName, macroFunction, tags, skipArgs, maintainContext)
  */
 
 function pluralise(count, singular, plural) {
+	count = Wikifier.getValue(count);
 	if (plural === undefined) {
 		plural = singular + "s";
 	}
 	return count === 1 ? singular : plural;
 }
 window.pluralise = pluralise;
+DefineMacroS("pluralise", pluralise);
 
 /**
  * Creates and returns a keyword describing the wetness of a clothing article.
