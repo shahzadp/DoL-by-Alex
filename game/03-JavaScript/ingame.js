@@ -2224,8 +2224,19 @@ function convertHairLengthToStage(hair, length) {
 		else return "short";
 	}
 }
-
 window.convertHairLengthToStage = convertHairLengthToStage;
+
+function calchairlengthstage() {
+	const stages = ["short", "shoulder", "chest", "navel", "thighs", "feet"];
+
+	V.hairlength = Math.clamp(V.hairlength, 0, 1000);
+	V.hairlengthstage = stages[Math.trunc(V.hairlength / 200)];
+
+	V.fringelength = Math.clamp(V.fringelength, 0, 1000);
+	V.fringelengthstage = stages[Math.trunc(V.fringelength / 200)];
+}
+window.calchairlengthstage = calchairlengthstage;
+DefineMacro("calchairlengthstage", calchairlengthstage);
 
 function calculateSemenReleased() {
 	if (T.deniedOrgasm) return 0;
