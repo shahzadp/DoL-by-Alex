@@ -2091,8 +2091,8 @@ window.getTimeString = getTimeString;
  * getFormattedDate() returns a long date with optional weekday (e.g. [Sunday ]the 4th of September)
  * getShortFormattedDate() returns an abbreviated date (e.g. 4th Sep)
  */
-window.getFormattedDate = function(date, includeWeekday = false) {
-	switch(V.options.dateFormat) {
+window.getFormattedDate = function (date, includeWeekday = false) {
+	switch (V.options.dateFormat) {
 		case "en-US": {
 			const formattedDate = date.monthName + " " + ordinalSuffixOf(date.day);
 			return includeWeekday ? date.weekDayName + ", " + formattedDate : formattedDate;
@@ -2105,19 +2105,19 @@ window.getFormattedDate = function(date, includeWeekday = false) {
 		default:
 			throw new Error(`Invalid date format: ${V.options.dateFormat}`);
 	}
-}
+};
 
-window.getShortFormattedDate = function(date) {
-	switch(V.options.dateFormat) {
+window.getShortFormattedDate = function (date) {
+	switch (V.options.dateFormat) {
 		case "en-US":
-			return date.monthName.slice(0,3) + " " + ordinalSuffixOf(date.day);
+			return date.monthName.slice(0, 3) + " " + ordinalSuffixOf(date.day);
 		case "zh-CN":
 		case "en-GB":
-			return ordinalSuffixOf(date.day) + " " + date.monthName.slice(0,3);
+			return ordinalSuffixOf(date.day) + " " + date.monthName.slice(0, 3);
 		default:
 			throw new Error(`Invalid date format: ${V.options.dateFormat}`);
 	}
-}
+};
 
 /* Determines and replenishes stock at supermarket */
 function supermarketWeekly() {
