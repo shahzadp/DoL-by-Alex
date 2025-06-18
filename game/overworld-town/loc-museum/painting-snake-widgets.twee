@@ -544,9 +544,9 @@
 
 			/* Hourly effects on items that are not at their origin, held by the player, or in the same location as the player */
 			<<set $hc.vanishedItems ||= []>><<set $hc.suspicionGained ||= 0>>
-			<<run $hcItems.filter(items => ![items.origin, "prisoner"].includes(items.location) and !items.inSconce).forEach(item => {
+			<<run $hcItems.filter(items => ![V.bus, items.origin, "prisoner", "held"].includes(items.location) and !items.inSconce).forEach(item => {
 				/* Time until item is discovered and removed */
-				if (!item.vanishesIn || ["held", V.bus].includes(item.location)) item.vanishesIn = 12;
+				if (!item.vanishesIn) item.vanishesIn = 12;
 				let hidden;
 				if (V.hcItems.some(sheet => sheet.type is "sheets" && [item.location, item.containerID].includes(sheet.location)) && !V.hcChallenge.itemNoHide) hidden = true;
 				let suspicionLevel;
@@ -559,7 +559,7 @@
 						/* Locations that NPCs wouldn't check */
 						suspicionLevel = 0;
 						item.vanishesIn -= 0.3;
-						if (V.hcChallenge.forestItem && item.location !== "disposal") item.vanishesIn -= 14;
+						if (V.hcChallenge.forestItem && item.location !== "disposal" && !["forest","lake"].includes(V.bus)) item.vanishesIn -= 14;
 						break;
 					case "cell":
 						/* Prisoner's cell */
