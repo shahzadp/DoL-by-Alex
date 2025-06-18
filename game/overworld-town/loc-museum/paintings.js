@@ -13,7 +13,7 @@ function hcItemSetup() {
 				twoHanded: true,
 				hidden: true,
 			},
-			{ type: "clothes", name: "bloodstained sack", location: "prisoner", origin: "prisoner", dirty: 2 },
+			{ type: "clothes", name: "bloodstained sack", location: "prisoner", origin: "prisoner", dirty: 2, dirtyOnDrop: V.hcChallenge.itemDirty },
 			{ type: "container", name: "bucket", location: "garden", origin: "garden", persists: true, containerID: "gardenBucket1", capacity: 3 },
 		];
 		if (!V.hcChallenge.torchSnuffer) {
