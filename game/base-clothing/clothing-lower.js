@@ -702,7 +702,7 @@ function initLower() {
 			notuck: 1,
 			location: 0,
 			iconFile: "kimono.png",
-			accIcon: 0,
+			accIcon: "kimono_acc.png",
 			outfitSecondary: ["upper", "kimono"],
 		},
 
@@ -754,7 +754,7 @@ function initLower() {
 			notuck: 1,
 			location: 0,
 			iconFile: "mini_kimono.png",
-			accIcon: 0,
+			accIcon: "mini_kimono_acc.png",
 			outfitSecondary: ["upper", "mini kimono"],
 		},
 
@@ -4676,8 +4676,9 @@ function initLower() {
 			description: "A blend of fashions.",
 			shop: ["clothing"],
 			accessory: 1,
+			accessory_colour_sidebar: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [],
+			accessory_colour_options: ["white", "custom"],
 			high_img: 0,
 			back_img: 0,
 			cursed: 0,
