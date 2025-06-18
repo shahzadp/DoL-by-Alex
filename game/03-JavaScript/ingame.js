@@ -2750,8 +2750,18 @@ function teensPresentCheck(location) {
 }
 window.teensPresentCheck = teensPresentCheck;
 
-function insecurityExists(type)	{
+function insecurityExists(type) {
 	const [possible, returnedType] = statChange.insecurityPossible(type);
-	return (possible && returnedType === type && V["insecurity_" + type] > 0);
+	return possible && returnedType === type && V["insecurity_" + type] > 0;
 }
 window.insecurityExists = insecurityExists;
+
+function bestialityEnabled() {
+	return V.bestialitydisable === "f";
+}
+window.bestialityEnabled = bestialityEnabled;
+
+function isBeastSceneAllowed() {
+	return bestialityEnabled() || ((V.monsterhallucinations === "f" || V.hallucinations > 0) && V.monsterchance >= random(1, 100));
+}
+window.isBeastSceneAllowed = isBeastSceneAllowed;
