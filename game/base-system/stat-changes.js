@@ -1045,7 +1045,7 @@ const statChange = (() => {
 		if (isNaN(amount)) paramError("money", "amount", amount, "Expected a number.");
 		if (!(typeof source === "string" || source instanceof String || source === undefined))
 			paramError("money", "source", source, "Expected a string or undefined.");
-		if (!(typeof optional === "object" && optional !== null)) paramError("money", "optional", optional, "Expected a object.");
+		if (!(typeof optional === "object" && optional !== null)) paramError("money", "optional", optional, "Expected an object.");
 		amount = Number(amount);
 
 		if (!Number.isFinite(amount)) {
