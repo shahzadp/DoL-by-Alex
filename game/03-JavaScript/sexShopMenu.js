@@ -284,7 +284,7 @@ setup.sextoys = [
 		name: "breast pump",
 		namecap: "Breast pump",
 		name_underscore: "breast_pump",
-		description: "A hand held breast pump.",
+		description: "A hand-held breast pump.",
 		cost: 5000,
 		wearable: 0,
 		size: 3,

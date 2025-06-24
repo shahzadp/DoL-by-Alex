@@ -213,7 +213,7 @@ Dynamic.task = (fn, name) => {
 		try {
 			fn();
 		} catch (e) {
-			console.warn(`Encountered a unexpected critical error while performing a dynamic render task`, fn.toString(), e);
+			console.warn(`Encountered an unexpected critical error while performing a dynamic render task`, fn.toString(), e);
 		}
 	} else {
 		Dynamic.tasks.push(fn);

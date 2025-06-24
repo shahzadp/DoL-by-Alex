@@ -1007,7 +1007,7 @@ function initHead() {
 			femininity: -200,
 			warmth: 2,
 			cost: 6000,
-			description: "Old fashioned sophistication.",
+			description: "Old-fashioned sophistication.",
 			shop: ["clothing", "adult"],
 			accessory: 1,
 			accessory_colour: 0,

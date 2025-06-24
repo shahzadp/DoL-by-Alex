@@ -2955,7 +2955,7 @@ function initLower() {
 			femininity: 200,
 			warmth: 1,
 			cost: 2200,
-			description: "Old fashioned PE bloomers from a foreign land.",
+			description: "Old-fashioned PE bloomers from a foreign land.",
 			shop: ["clothing", "school", "adult"],
 			accessory: 0,
 			accessory_colour: 0,
