@@ -4272,21 +4272,22 @@
 		<<if $options.combatControls.includes("ists")>>
 			<br>
 		<</if>>
+		<<if !$combat>> | <</if>>
 		<<switch _args[1]>>
 			<<case "vaginal">>
-				<span class="red"> This action will deflower <<him>>.</span>
+				<span class="red"> This action will deflower <<him>></span>
 			<<case "penile">>
 				<<if !npcHasStrapon(V.NPCList.findIndex(npc => npc.fullDescription === _args[0]))>>
-					<span class="red"> This action will deflower <<him>>.</span>
+					<span class="red"> This action will deflower <<him>></span>
 				<</if>>
 			<<case "anal">>
-				<span class="red"> This action will take <<his>> anal virginity.</span>
+				<span class="red"> This action will take <<his>> anal virginity</span>
 			<<case "oral">>
-				<span class="red"> This action will take <<his>> oral virginity.</span>
+				<span class="red"> This action will take <<his>> oral virginity</span>
 			<<case "kiss">>
-				<span class="red"> This action will take <<his>> first kiss.</span>
+				<span class="red"> This action will take <<his>> first kiss</span>
 			<<case "handholding">>
-				<span class="red"> This action will take <<his>> handholding virginity.</span>
+				<span class="red"> This action will take <<his>> handholding virginity</span>
 			<<default>>
 		<</switch>>
 	<</if>>
@@ -4375,11 +4376,41 @@
 	<</if>>
 <</widget>>
 
-/* Note: Someone who understands how this works should make it so you can't
-output a teacher's name when that teacher is supposed to be in class. */
-<<widget "randomteacher">><<silently>>
-	<<set $_teacherNames to ["Sirris","River","Doren","Winter","Mason"].filter(name => C.npc[name].init is 1)>>
-	<<set _text_output to ($_teacherNames.length gte 1 ? $_teacherNames.random() : "a teacher")>>
+<<widget "generateRandomTeacher">><<silently>>
+	<<set _position to _args[0] ? _args[0] : 1>>
+
+	<<set _teacherNames to []>>
+	<<if C.npc.Sirris.init is 1 and $schoolstate isnot "first">>
+		<<run _teacherNames.push("Sirris")>>
+	<</if>>
+	<<if C.npc.River.init is 1 and $schoolstate isnot "second">>
+		<<run _teacherNames.push("River")>>
+	<</if>>
+	<<if C.npc.Doren.init is 1 and $schoolstate isnot "third">>
+		<<run _teacherNames.push("Doren")>>
+	<</if>>
+	<<if C.npc.Winter.init is 1 and $schoolstate isnot "fourth">>
+		<<run _teacherNames.push("Winter")>>
+	<</if>>
+	<<if C.npc.Mason.init is 1 and $schoolstate isnot "fifth">>
+		<<run _teacherNames.push("Mason")>>
+	<</if>>
+
+	<<if _teacherNames.length gte 1>>
+		<<set _teacher to _teacherNames.random()>>
+		<<set _text_output to _teacher>>
+		<<switch _teacher>>
+			<<case "Sirris">><<npc Sirris _position>>
+			<<case "River">><<npc River _position>>
+			<<case "Doren">><<npc Doren _position>>
+			<<case "Winter">><<npc Winter _position>>
+			<<case "Mason">><<npc Mason _position>>
+		<</switch>>
+	<<else>>
+		<<set _teacher to "The teacher">>
+		<<set _text_output to "a teacher">>
+		<<generateNPC _position>>
+	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "skincolourtext">>
