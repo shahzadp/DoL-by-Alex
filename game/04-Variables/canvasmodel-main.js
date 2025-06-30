@@ -96,6 +96,7 @@ replace (?<!["'\w])_(?=\w) with T.
  * "mascara_colour": "" (none), key from setup.colours.mascara_map, or "custom" ("mascara" filter required)
  * "mascara_running": number - mascara smear level, 0..4, 0 is "no smears"
  * "blusher_colour": "" (none), key from setup.colours.blusher_map, or "custom" ("blusher" filter required)
+ * "makeup_adjustment": number - to determine makeup brightness based on tan level
  *
  * TF OPTIONS: ("disabled" & "hidden" types hide the layer)
  * ----------
@@ -306,6 +307,7 @@ Renderer.CanvasModels.main = {
 			"mascara_colour": "",
 			"mascara_running": 0,
 			"blusher_colour": "",
+			"makeup_adjustment": 0,
 			// tf
 			"angel_wings_type": "disabled",
 			"angel_wing_right": "idle",
@@ -1323,6 +1325,11 @@ Renderer.CanvasModels.main = {
 			filters: ["eyeshadow"],
 			z: ZIndices.eyelids,
 
+			brightnessfn(options) {
+				makeupAdjustment(options);
+				return options.makeup_adjustment;
+			},
+
 			srcfn(options) {
 				const half = options.eyes_half ? "-half-closed" : "";
 				return `img/face/${options.facestyle}/${options.facevariant}/makeup/eyeshadow${half}.png`;
@@ -1388,6 +1395,11 @@ Renderer.CanvasModels.main = {
 		"makeup_lipstick": {
 			filters: ["lipstick"],
 			z: ZIndices.mouth,
+
+			brightnessfn(options) {
+				makeupAdjustment(options);
+				return options.makeup_adjustment;
+			},
 
 			srcfn(options) {
 				return `img/face/${options.facestyle}/lipstick-${options.mouth}.png`;
@@ -4880,3 +4892,27 @@ function setClothingFilter(options, slot, clothingObject, setupObj, filterSuffix
 		)
 		: Renderer.emptyLayerFilter();
 }
+
+function makeupAdjustment(options) {
+    let limit = [0, -0.1];
+    switch (options.skin_type) {
+        case "medium":
+        case "ymedium":
+            limit = [-0.1, -0.3];
+            break;
+        case "dark":
+        case "ydark":
+            limit = [-0.3, -0.4];
+            break;
+        case "gyaru":
+        case "ygyaru":
+            limit = [0, -0.2];
+            break;
+        default:
+    }
+    const [min, max] = limit;
+    const ratio = options.skin_tone / 100;
+    options.makeup_adjustment = min + (max - min) * ratio;
+}
+
+
