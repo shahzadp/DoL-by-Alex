@@ -15,6 +15,8 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 "I want you to help me rearrange some furniture." <<He>> stands up, moves in front of <<his>> desk, and looks you up and down.
 <br><br>
 
+/* TODO: add variation when PC is wearing over clothes,  */
+/* TODO: Add a generic clothing exhibitionism function StripExhibitionismRequired(slot/type)? types: all/allUpper/allLower? */
 <<switch $execFetish>>
 	<<case 5>>
 		<<if !$worn.feet.type.includes("naked") and !$worn.feet.type.includes("shackle")>>
@@ -32,13 +34,13 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 		<<if !_fullyNaked>>
 			"If you want some extra money, take off all of your clothes while you work. I like to see a <<if $player.gender_appearance is "m">>strapping<<else>>nubile<</if>> young <<lass>> in action, and I'm willing to pay."
 			<br><br>
-			<<if hasSexStat("exhibitionism", 4)>>
+
+			<<if hasSexStat("exhibitionism", 5)>>
 				<<link [[Remove all clothes|Office Executive Undress]]>><<execstriporder>><</link>><<exhibitionist4>>
-				<br>
 			<<else>>
 				<<insufficientStat "exhibitionism" "to undress here">>
-				<br>
 			<</if>>
+			<br>
 			<<link [[Refuse|Office Executive Refuse]]>><</link>>
 		<<else>>
 			<<He>> takes in your nudity. Your body shakes with arousal as <<he>> eyes up your <<lewdness>>. "Let's get you to work shall we?" <<garousal>>
@@ -47,15 +49,23 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 		<</if>>
 	<<case 3>>
 		<<if $worn.lower.name isnot "naked">>
+			<<if _middleOutfit>>
+				<<set _statRequired to _danceExhibition.middleOutfit[0]>>
+				<<set _cloth to $worn.upper.name>>
+			<<else>>
+				<<set _statRequired to _danceExhibition.lower[0]>>
+				<<set _cloth to $worn.lower.name>>
+			<</if>>
+
 			"I'll give you a nice tip if you are bottomless while you work. Don't worry, it's just you and me."
 			<br><br>
-			<<if hasSexStat("exhibitionism", 4)>>
-				<<link [[Remove your bottoms|Office Executive Undress]]>><<execstriporder>><</link>> <<exhibitionist4>>
-				<br>
+
+			<<if hasSexStat("exhibitionism", _statRequired)>>
+				<<link [[Remove your _cloth|Office Executive Undress]]>><<execstriporder>><</link>> <<exhibitionist _statRequired>>
 			<<else>>
-				You don't feel comfortable working with your <<genitals>> exposed.
-				<br><br>
+				<<insufficientStat "exhibitionism" "to take up <<his>> offer">>
 			<</if>>
+			<br>
 			<<link [[Refuse|Office Executive Refuse]]>><</link>>
 		<<else>>
 			<<He>> leers at your exposed <<genitals>> with a lustful gaze. "Let's get you to work shall we?" <<garousal>>
@@ -63,24 +73,24 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 			<<link [[Next|Office Executive Work]]>><</link>>
 		<</if>>
 	<<case 2>>
+		<<outfitChecks>>
+		<<danceStripActionObject>>
 		<<if $worn.upper.name isnot "naked">>
+			<<if _middleOutfit>>
+				<<set _statRequired to _danceExhibition.middleOutfit[0]>>
+			<<else>>
+				<<set _statRequired to _danceExhibition.upper[0]>>
+			<</if>>
+
 			"I'll give you a nice tip if you are topless while you work. Don't worry, it's just you and me."
 			<br><br>
-			<<if $worn.upper.set is $worn.lower.set>>
-				<<if $worn.under_lower.name is "naked" and hasSexStat("exhibitionism", 5)>>
-					<<link [[Remove your top|Office Executive Undress]]>><<execstriporder>><</link>> <<exhibitionist5>>
-					<br>
-				<<else>>
-					You don't feel comfortable removing your $worn.upper.name without any underwear on.
-					<br><br>
-				<</if>>
-			<<elseif hasSexStat("exhibitionism", 3)>>
-				<<link [[Remove your top|Office Executive Undress]]>><<execstriporder>><</link>> <<exhibitionist3>>
-				<br>
+
+			<<if hasSexStat("exhibitionism", _statRequired)>>
+				<<link [[Remove your $worn.upper.name|Office Executive Undress]]>><<execstriporder>><</link>> <<exhibitionist _statRequired>>
 			<<else>>
-				You don't feel comfortable working without a top on.
-				<br><br>
+				<<insufficientStat "exhibitionism" "to take up <<his>> offer">>
 			<</if>>
+			<br>
 			<<link [[Refuse|Office Executive Refuse]]>><</link>>
 		<<else>>
 			"I see they let you lot walk around without a top on. Interesting," <<he>> says as <<he>> eyes up your <<chest>>. "Let's get you to work shall we?" <<garousal>>
@@ -423,7 +433,7 @@ You manage to push the <<person1>><<person>> off of you and gather up your cloth
 		soft under your feet.
 	<</if>>
 	<<He>> picks up your discarded shoes and places them on <<his>> desk. "Please continue." <<feetundress "exec room">>
-	<br>
+	<br><br>
 	<<link [[Next|Office Executive Undress]]>><<set $stripCount++>><</link>>
 <</widget>>
 
