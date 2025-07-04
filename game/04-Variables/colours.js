@@ -1192,6 +1192,15 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#d67caf" },
 	},
 	{
+		variable: "hospital pink",
+		name: "hospital pink",
+		name_cap: "Hospital Pink",
+		csstext: "hospital-pink",
+		canvasfilter: {
+			blend: "#fe8b90",
+		},
+	},
+	{
 		variable: "purple",
 		name: "purple",
 		name_cap: "Purple",

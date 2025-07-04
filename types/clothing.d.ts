@@ -269,6 +269,7 @@ declare global {
 			variable: string;
 		}[];
 		breast_acc_img?: object | 1 | 0;
+		breast_pattern?: boolean;
 		accImage?: 0 | 1;
 		breast_combat?: 0 | 1;
 		anal_shield?: 0 | 1 | null;

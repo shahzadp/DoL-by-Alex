@@ -1299,7 +1299,6 @@ function initPlants() {
 			season: ["spring", "summer", "autumn"],
 			ingredients: [],
 			icon: "rice.png",
-			shop: ["supermarket"],
 		},
 
 		haddock: {

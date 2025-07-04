@@ -78,7 +78,7 @@ replace (?<!["'\w])_(?=\w) with T.
  *
  * FACE OPTIONS:
  * -------------
- * "facevariant:" "default"|"catty"|"aloof"|"foxy" - $facevariant variable, the img/face/{facestyle}/{facevariant} one.
+ * "facevariant:" "default"|"catty"|"aloof"|"foxy"|"gloomy" - $facevariant variable, the img/face/{facestyle}/{facevariant} one.
  * "facestyle": "default" - $facestyle variable, the img/face/XXXX one.
  * "freckles": boolean
  * "trauma": boolean - traumatised state (empty eyes, less blinking)
@@ -2531,6 +2531,11 @@ Renderer.CanvasModels.main = {
 				return options.zupper;
 			},
 		}),
+		"upper_breasts_detail": genlayer_clothing_breasts_detail("upper", {
+			zfn(options) {
+				return options.zupper;
+			},
+		}),
 		"upper_rightarm": genlayer_clothing_arm("right", "upper", {
 			zfn(options) {
 				return options.zupperright;
@@ -2976,6 +2981,7 @@ Renderer.CanvasModels.main = {
 		"under_upper_breasts": genlayer_clothing_breasts("under_upper"),
 		"under_upper_acc": genlayer_clothing_accessory('under_upper'),
 		"under_upper_breasts_acc": genlayer_clothing_breasts_acc('under_upper'),
+		"under_upper_breasts_detail": genlayer_clothing_breasts_detail("under_upper"),
 		"under_upper_back": genlayer_clothing_back_img('under_upper'),
 		"under_upper_rightarm": genlayer_clothing_arm("right", "under_upper", {
 			zfn(options) {
@@ -4038,6 +4044,15 @@ function filterFnArm(state, slot, options) {
 			return altFilterSwap ? [`worn_${slot}_acc`] : [`worn_${slot}`];
 		case "secondary":
 			return altFilterSwap ? [`worn_${slot}`] : [`worn_${slot}_acc`];
+		case "pattern":
+			switch (options.worn[slot].pattern_layer) {
+				case "tertiary":
+					return [];
+				case "secondary":
+					return [`worn_${slot}_acc`]
+				default:
+					return [`worn_${slot}`]
+			}
 		default:
 			return [];
 	}
@@ -4235,6 +4250,24 @@ function genlayer_clothing_detail(slot, overrideOptions) {
 
 			const end = isAltPosition ? '_alt' : '';
 			return `img/clothes/${slot}/${setup.variable}/${pattern}${end}.png`;
+		},
+	}, overrideOptions));
+}
+
+function genlayer_clothing_breasts_detail(slot, overrideOptions) {
+	return genlayer_clothing_detail(slot, Object.assign({
+		showfn(options) {
+				let breastImg = options.worn[slot].setup.breast_acc_img;
+				if (typeof breastImg === 'object' && breastImg[options.breast_size] !== null) breastImg = 1;
+				return options.show_clothes && options.worn[slot].index > 0 && breastImg === 1 && !!options.worn[slot].pattern && !!options.worn[slot].setup.breast_pattern;
+			},
+		srcfn(options) {
+			const breastImg = options.worn[slot].setup.breast_img;
+			const breastAccImg = options.worn[slot].setup.breast_acc_img;
+			const breastSize = typeof breastAccImg === 'object' ? breastAccImg[options.breast_size] : typeof breastImg === 'object' ? breastImg[options.breast_size] : Math.min(options.breast_size, 6);
+
+			const pattern = options.worn[slot].pattern ? options.worn[slot].pattern?.replace(/ /g,"_") : '';
+			return`img/clothes/${slot}/${options.worn[slot].setup.variable}/${breastSize}_${pattern}.png`;
 		},
 	}, overrideOptions));
 }
