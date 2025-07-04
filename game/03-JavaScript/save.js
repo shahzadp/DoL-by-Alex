@@ -816,9 +816,9 @@ function settingsObjects(type) {
 					randomize: "characterAppearance",
 				},
 				facevariant: {
-					strings: ["default", "catty", "aloof", "sweet", "foxy"],
+					strings: ["default", "catty", "aloof", "sweet", "foxy", "gloomy"],
 					displayName: "Demeanour:",
-					textMap: { default: "Default", catty: "Catty", aloof: "Aloof", sweet: "Sweet", foxy: "Foxy" },
+					textMap: { default: "Default", catty: "Catty", aloof: "Aloof", sweet: "Sweet", foxy: "Foxy", gloomy: "Gloomy" },
 					randomize: "characterAppearance",
 				},
 				breastsensitivity: {

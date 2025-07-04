@@ -2770,16 +2770,6 @@
 				<</if>>
 			</div>
 		<</if>>
-		<div class="mainButton">
-			<<button [[Confirm|$passage]]>>
-				<<set $mirrorMenu to "transformation">>
-				<<if $transformationParts.cat.heterochromia is "hidden">>
-					<<catHeterochromiaTF "hide">>
-				<<elseif $cat gte 7 and $cat lte 10>>
-					<<catHeterochromiaTF `$cat - 7`>>
-				<</if>>
-			<</button>>
-		</div>
 		<<if _isMenuEnabled>>
 			<details class="expandMenu">
 				<summary class="expandMenu">Custom Colours</summary>
@@ -2797,8 +2787,13 @@
 
 	<!-- Attach an event to every listbox item to update the PC on the sidebar. -->
 	<<script>>
-	jQuery('.passage').on('change', 'select.macro-listbox', function (e) {
-		Wikifier.wikifyEval('<<updatesidebarimg true>>');
-	});
+		jQuery('.passage').on('change', 'select.macro-listbox', function (e) {
+			if (V.transformationParts.cat.heterochromia === "hidden") {
+				Wikifier.wikifyEval('<<catHeterochromiaTF "hide">>');
+			} else if (V.cat >= 7 && V.cat <= 10) {
+				Wikifier.wikifyEval('<<catHeterochromiaTF `$cat - 7`>>')
+			};
+			Wikifier.wikifyEval('<<updatesidebarimg true>>');
+		});
 	<</script>>
 <</widget>>

@@ -112,6 +112,20 @@ function updateClothingColours(item, itemRef) {
 		case "bunny slippers":
 			if (!item.pattern || item.pattern === 0) item.pattern = "bunny";
 			break;
+		case "plastic nurse skirt":
+		case "plastic nurse dress":
+		case "plastic nurse hat":
+		case "pink nurse skirt":
+		case "pink nurse dress":
+		case "pink nurse hat":
+		case "nurse skirt":
+		case "nurse dress":
+		case "nurse hat":
+		case "nurse socks":
+			if (item.accessory_colour === 0) item.accessory_colour = "red";
+			if (item.colour === 0) item.colour = item.name === "nurse socks" ? "red" : "hospital pink";
+			if ((!item.pattern || item.pattern === 0) && ["upper", "lower"].includes(itemRef.slot)) item.pattern = "zipper";
+			break;
 		case "necktie":
 			if (!item.altposition) item.altposition = "none";
 			break;
@@ -161,10 +175,14 @@ function updateClothingColours(item, itemRef) {
 			if (item.accessory_colour === 0) item.accessory_colour = "black";
 			if (!item.pattern || item.pattern === 0) item.pattern = "strap";
 			break;
+		case "classic gothic gown":
+		case "classic gothic skirt":
+			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			break;
 		default:
 			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
 			if (item.colour === 0) item.colour = itemRef.colour_options.random();
-
+			if ((item.pattern === 0 || !item.pattern) && itemRef.pattern_options) item.pattern = itemRef.pattern_options[0];
 			if (item.accessory_colour === 0) item.accessory_colour = itemRef.accessory_colour_options.random();
 	}
 }
@@ -272,8 +290,7 @@ function updateClothesItem(slot, item, debug) {
 	if (
 		((item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
 		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0) ||
-		!item.pattern ||
-		(item.pattern === 0 && itemRef.pattern_options?.length > 0)
+		((!item.pattern || item.pattern === 0) && itemRef.pattern_options?.length > 0)
 	)
 		updateClothingColours(item, itemRef);
 
@@ -419,6 +436,18 @@ function updateClothesItem(slot, item, debug) {
 		case "bunny slippers":
 			item.name = "animal slippers";
 			item.name_cap = "Animal slippers";
+			break;
+		case "pink nurse dress":
+			item.name = "nurse dress";
+			item.name_cap = "Nurse dress";
+			break;
+		case "pink nurse skirt":
+			item.name = "nurse skirt";
+			item.name_cap = "Nurse skirt";
+			break;
+		case "pink nurse hat":
+			item.name = "nurse hat";
+			item.name_cap = "Nurse hat";
 			break;
 	}
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
