@@ -12,11 +12,11 @@
 function updateClothingColours(item, itemRef) {
 	switch (item.name) {
 		case "swimming goggles":
-			if (item.accessory_colour === 0) item.accessory_colour = "white";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "white";
 			break;
 		case "winter jacket":
 			if (item.colour === 0) item.colour = "black";
-			if (item.accessory_colour === 0) item.accessory_colour = "tan";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "tan";
 			break;
 		// eslint-disable-next-line no-fallthrough
 		case "long leather gloves":
@@ -26,60 +26,60 @@ function updateClothingColours(item, itemRef) {
 		case "mesh shirt":
 		case "fishnet stockings":
 		case "fishnet tights":
-			if (item.colour === 0) item.colour = "black";
+			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "square shades":
 		case "shield shades":
 		case "punk shades":
-			if (item.colour === 0) item.colour = "black";
-			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			if (!item.colour || item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "black";
 			break;
 		case "aviators":
-			if (item.colour === 0) item.colour = "grey";
-			if (item.accessory_colour === 0) item.accessory_colour = "original";
+			if (!item.colour || item.colour === 0) item.colour = "grey";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "original";
 			break;
 		case "glasses":
-			if (item.colour === 0) item.colour = "silver";
+			if (!item.colour || item.colour === 0) item.colour = "silver";
 			break;
 		case "checkered shirt":
-			if (item.colour === 0) item.colour = "russet";
+			if (!item.colour || item.colour === 0) item.colour = "russet";
 			break;
 		case "lace choker":
-			if (item.colour === 0) item.colour = "black";
+			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "school shirt":
-			if (item.accessory_colour === 0) {
+			if (!item.accessory_colour || item.accessory_colour === 0) {
 				item.accessory_colour = "light blue";
 				item.accessory_colour_combat = "light blue";
 			}
 			break;
 		case "brown leather jacket":
-			if (item.colour === 0) item.colour = "brown";
+			if (!item.colour || item.colour === 0) item.colour = "brown";
 			break;
 		case "love locket":
-			if (item.colour === 0) item.colour = "bronze";
+			if (!item.colour || item.colour === 0) item.colour = "bronze";
 			break;
 		case "black leather jacket":
-			if (item.colour === 0) item.colour = "black";
-			if (item.accessory_colour === 0) item.accessory_colour = "silver";
+			if (!item.colour || item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "silver";
 			break;
 		case "overall bottoms":
 		case "overalls":
-			if (item.colour === 0 || item.colour === "original") item.colour = "denim";
-			if (item.accessory_colour === 0) item.accessory_colour = "gold";
+			if (!item.colour || item.colour === 0 || item.colour === "original") item.colour = "denim";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "gold";
 			break;
 		case "jean miniskirt":
 		case "booty jorts":
 		case "denim shorts":
 		case "jeans":
-			if (item.colour === 0 || item.colour === "original") item.colour = "denim";
+			if (!item.colour || item.colour === 0 || item.colour === "original") item.colour = "denim";
 			break;
 		case "loose socks":
-			if (item.colour === 0) item.colour = "white";
+			if (!item.colour || item.colour === 0) item.colour = "white";
 			break;
 		case "cowboy hat":
 			if (item.colour === 0) item.colour = "sand";
-			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "black";
 			break;
 		case "ballgown":
 		case "ballgown skirt":
@@ -88,22 +88,22 @@ function updateClothingColours(item, itemRef) {
 		case "school swim shorts":
 		case "futuristic bodysuit":
 		case "argyle sweater vest":
-			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
 			if (item.colourCustom) item.accessory_colourCustom = item.colourCustom;
 			break;
 		case "karate jacket":
-			if (item.colour === 0) item.colour = "white";
-			if (item.accessory_colour === 0) item.accessory_colour = "red";
+			if (!item.colour || item.colour === 0) item.colour = "white";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "red";
 			break;
 		case "karate trousers":
-			if (item.colour === 0) item.colour = "white";
+			if (!item.colour || item.colour === 0) item.colour = "white";
 			break;
 		case "gingham dress":
 		case "gingham skirt":
 		case "patterned dress":
 		case "patterned skirt":
 			if (!item.pattern || item.pattern === 0) item.pattern = "gingham";
-			if (item.accessory_colour === 0) {
+			if (!item.accessory_colour || item.accessory_colour === 0) {
 				item.accessory_colour = item.colour;
 				item.colour = "white";
 			}
@@ -122,8 +122,8 @@ function updateClothingColours(item, itemRef) {
 		case "nurse dress":
 		case "nurse hat":
 		case "nurse socks":
-			if (item.accessory_colour === 0) item.accessory_colour = "red";
-			if (item.colour === 0) item.colour = item.name === "nurse socks" ? "red" : "hospital pink";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "red";
+			if (!item.colour || item.colour === 0) item.colour = item.name === "nurse socks" ? "red" : "hospital pink";
 			if ((!item.pattern || item.pattern === 0) && ["upper", "lower"].includes(itemRef.slot)) item.pattern = "zipper";
 			break;
 		case "necktie":
@@ -135,19 +135,19 @@ function updateClothingColours(item, itemRef) {
 		case "evening gown":
 		case "evening gown skirt":
 			if (!item.pattern || item.pattern === 0) item.pattern = "ombre";
-			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
 			break;
 		case "bunny collar":
-			if (item.accessory_colour === 0) item.accessory_colour = "red";
-			if (item.colour === 0) item.colour = "white";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "red";
+			if (!item.colour || item.colour === 0) item.colour = "white";
 			break;
 		case "cat bell collar":
-			if (item.accessory_colour === 0) item.accessory_colour = "gold";
-			if (item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "gold";
+			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "cow bell":
-			if (item.accessory_colour === 0) item.accessory_colour = "gold";
-			if (item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "gold";
+			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "cow onesie":
 		case "cow onesie hood":
@@ -156,34 +156,34 @@ function updateClothingColours(item, itemRef) {
 		case "cow socks":
 		case "cow panties":
 		case "cow bra":
-			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "black";
 			break;
 		case "heart choker":
-			if (item.accessory_colour === 0) item.accessory_colour = "red";
-			if (item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "red";
+			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "sexy nun's ornate veil":
 		case "cargo pants":
-			if (item.accessory_colour === 0) item.accessory_colour = "silver";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "silver";
 			break;
 		case "racing helmet":
-			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
 			if (!item.pattern || item.pattern === 0) item.pattern = "goggles";
 			break;
 		case "riding helmet":
-			if (item.colour === 0) item.colour = "black";
-			if (item.accessory_colour === 0) item.accessory_colour = "black";
+			if (!item.colour || item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "black";
 			if (!item.pattern || item.pattern === 0) item.pattern = "strap";
 			break;
 		case "classic gothic gown":
 		case "classic gothic skirt":
-			if (item.accessory_colour === 0) item.accessory_colour = item.colour;
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
 			break;
 		default:
-			// Catch-all case if people forget to adjust this widget for whatever clothing item is updated. Can make weird looking clothes if "custom" is selected.
-			if (item.colour === 0) item.colour = itemRef.colour_options.random();
-			if ((item.pattern === 0 || !item.pattern) && itemRef.pattern_options) item.pattern = itemRef.pattern_options[0];
-			if (item.accessory_colour === 0) item.accessory_colour = itemRef.accessory_colour_options.random();
+			if ((item.colour === 0 || !item.colour) && itemRef.colour_options?.length) item.colour = itemRef.colour_options[0];
+			if ((item.pattern === 0 || !item.pattern) && itemRef.pattern_options?.length) item.pattern = itemRef.pattern_options[0];
+			if ((item.accessory_colour === 0 || !item.accessory_colour) && itemRef.accessory_colour_options?.length)
+				item.accessory_colour = itemRef.accessory_colour_options[0];
 	}
 }
 
@@ -288,8 +288,8 @@ function updateClothesItem(slot, item, debug) {
 	item.accessory_colour = remapColours[item.accessory_colour] || item.accessory_colour;
 	item.pattern = remapColours[item.pattern] || item.pattern;
 	if (
-		((item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
-		(item.accessory_colour === 0 && itemRef.accessory_colour_options?.length > 0) ||
+		((!item.colour || item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
+		((!item.accessory_colour || item.accessory_colour === 0) && itemRef.accessory_colour_options?.length > 0) ||
 		((!item.pattern || item.pattern === 0) && itemRef.pattern_options?.length > 0)
 	)
 		updateClothingColours(item, itemRef);
