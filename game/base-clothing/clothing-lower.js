@@ -7893,7 +7893,7 @@ function initLower() {
 			index: 143,
 			slot: "lower",
 			name: "pimp suit trousers",
-			name_cap: "Pimp suit rousers",
+			name_cap: "Pimp suit trousers",
 			variable: "pimp",
 			combat: {
 				reference: "trousers",
