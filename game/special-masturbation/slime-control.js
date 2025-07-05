@@ -255,7 +255,7 @@ function masturbationSlimeControl() {
 					if (currentToyType && (["home", "brothel", "cafe"].includes(V.location) || T.enableSexToys)) {
 						if (currentToyType.includes("stroker")) {
 							if (V.penisuse !== 0) {
-								// When no action is avaliable
+								// When no action is available
 								V[armAction] = "mdildostop";
 							} else if (V.player.penisExist && random(0, 100) >= 50) {
 								// ToDo: check that this is the correct action
