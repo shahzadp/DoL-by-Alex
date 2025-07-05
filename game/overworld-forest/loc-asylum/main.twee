@@ -18,10 +18,11 @@
 <<set $asylumdistracted to 0>>
 <<wash>>
 <<set $wardrobe_location to "asylum">>
+<<set $wardrobes.asylum.unlocked to true>>
 <<wardrobeSelection true>>
+<<npc Harper>><<person1>>
+<<asylumBind>>
 <<if $asylumintro is 1>>
-	<<npc Harper>><<person1>>
-	<<bind>><<upperwear 35>>
 	You awaken on a bed in a white room. The walls and floor are padded. Doctor Harper stands over you.
 	"You're awake," <<he>> says. <<He>> jots something down on <<his>> clipboard. "Welcome back." Your arms are bound. "I'm sorry to admit we failed you last time. That won't happen again."
 	<br><br>
@@ -39,11 +40,9 @@
 	<br>
 <<else>>
 	<<set $asylumintro to 1>>
-	<<npc Harper>><<person1>>
-	<<bind>><<upperwear 35>>
 	You awaken on a bed in a white room. The walls and floor are padded. Doctor Harper stands over you.
 	<br><br>
-	"You're awake," <<he>> says. <<He>> jots something down on <<his>> clipboard. "There's nothing to be nervous about. You're here to get better." <<He>> crouches beside you. "We're in another hospital. In the forest." You can't move your arms. They're bound tight in front of you. "That's for your own safety. If you're good, we'll untie you in a day or two."
+	"You're awake," <<he>> says. <<He>> jots something down on <<his>> clipboard. "There's nothing to be nervous about. You're here to get better." <<He>> crouches beside you. "We're in another hospital. In the forest." You can't move your arms. They're bound tight in front of you. "That's for your own safety. If you're good, we'll untie you in a day or two. We've stored your clothes in the cupboard for you."
 	<br><br>
 	<<He>> looks back at <<his>> notes. "We follow a schedule here. Sleep at <<ampm 22>>. Breakfast at <<ampm 6>>. You have two treatments scheduled per day, at <<ampm 10>> and <<ampm 15>>. You'll be assessed each evening at <<ampm 20>>. Don't worry if you forget; someone will remind you."
 	<br><br>
@@ -113,8 +112,8 @@
 		<<asylumicon "wardrobe">><<link [[Open|Asylum Wardrobe]]>><</link>>
 		<br>
 	<</if>>
-	<br>
 	<<if $asylumstate isnot "sleep">>
+		<br>
 		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
@@ -160,8 +159,8 @@
 		<<asylumicon "wardrobe">><<link [[Open|Asylum Wardrobe]]>><</link>>
 		<br>
 	<</if>>
-	<br>
 	<<if $asylumstate isnot "sleep">>
+		<br>
 		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
@@ -207,8 +206,8 @@
 		<<asylumicon "wardrobe">><<link [[Open|Asylum Wardrobe]]>><</link>>
 		<br>
 	<</if>>
-	<br>
 	<<if Time.weekDay is 1 and $daily.massAttended isnot 1>>
+		<br>
 		<<if $fallenangel gte 2>>
 			<<templeicon "pray">><<link [[Pray (1:00)|Asylum Pray Fallen Angel]]>><<purity 63>><<pass 60>><<stress 10>><<set $daily.massAttended to 1>><</link>><<gggpurity>><<gstress>>
 		<<elseif $angel gte 6>>
@@ -219,8 +218,8 @@
 			<<templeicon "pray">><<link [[Pray (1:00)|Asylum Pray]]>><<purity 10>><<pass 60>><<stress -10>><<set $daily.massAttended to 1>><</link>><<gpurity>><<lstress>>
 		<</if>>
 	<</if>>
-	<br>
 	<<if $asylumstate isnot "sleep">>
+		<br>
 		<<getouticon>><<link [[Leave|Asylum]]>><</link>>
 		<br>
 	<</if>>
@@ -284,14 +283,14 @@ A worried face appears at the bars. Eden gazes at you. <<He>> produces a saw fro
 <<effects>>
 
 <<npc Harper>><<generate2>><<person2>>
-<<bind>><<upperwear 35>>
+<<asylumBind "punish">>
 You hear footsteps outside, and security barge through the door. A <<person>> pushes you to the bed while another examines the rope.
 <br><br>
 
 Doctor Harper enters. "It's okay," <<person1>><<he>> says sitting on the bed beside you. The <<person2>><<person>> continues to hold you down. <<person1>>"Someone tried to take you away. But you're safe." <<He>> looks towards the door, and nods.
 <br><br>
 
-More security arrive. They wrestle you into a straightjacket. "Just to make sure you're extra safe." Harper says. The alarm stops, and the lights turn white. You hear dogs barking from the grounds below.
+More security arrive. They <<if getVisibleClothesList().some(item => item.name !== "naked")>>tear off your clothes and <</if>>wrestle you into a straightjacket. "Just to make sure you're extra safe." Harper says. The alarm stops, and the lights turn white. You hear dogs barking from the grounds below.
 <br><br>
 
 Harper and security leave you alone in your room. The shutters remain.
@@ -346,69 +345,51 @@ You snuggle under the covers.
 		<br><br>
 		<<link [[Next|Asylum Cell Rape]]>><<set $molestationstart to 1>><</link>>
 		<br>
-	<<elseif $asylumstate is "firsttreatment" and $daily.asylumTreatment1 isnot 1>>
-		<<set $daily.asylumTreatment1 to 1>>
+	<<elseif ($asylumstate is "firsttreatment" and $daily.asylumTreatment1 isnot 1) or ($asylumstate is "secondtreatment" and $daily.asylumTreatment2 isnot 1) or ($asylumstate is "assessment" and $daily.asylumAssessment isnot 1)>>
 		<<generate1>><<person1>>
+
+		<<if $asylumstate is "firsttreatment">>
+			<<set $daily.asylumTreatment1 to 1>>
+			<<set _asylumStateType to "treatment">>
+		<<elseif $asylumstate is "secondtreatment">>
+			<<set $daily.asylumTreatment2 to 1>>
+			<<set _asylumStateType to "treatment">>
+		<<elseif $asylumstate is "assessment">>
+			<<set $daily.asylumAssessment to 1>>
+			<<set _asylumStateType to "assessment">>
+		<</if>>
+
 		<<if _wakingEffect is "dryheaving">>
 			A <<person>> rubs your back. <<Hes>> a nurse.
-			<br><br>
 		<<else>>
 			A <<person>> shakes you awake. <<Hes>> a nurse.
-			<br><br>
 		<</if>>
-		<<asylumoptions>>
-		"Doctor says it's time for your treatment," <<he>> says. "Come with me."
 		<br><br>
+
+		<<asylumoptions>>
+		"Doctor says it's time for your _asylumStateType," <<he>> says. "Come with me." <<He>> leads you outside your cell and down a hallway.
+		<br><br>
+
 		<<endevent>>
-		<<asylumtreatments>>
-	<<elseif $asylumstate is "secondtreatment" and $daily.asylumTreatment2 isnot 1>>
-		<<set $daily.asylumTreatment2 to 1>>
-		<<generate1>><<person1>>
-		<<if _wakingEffect is "dryheaving">>
-			A <<person>> rubs your back. <<Hes>> a nurse.
-			<br><br>
+		<<if _asylumStateType is "assessment">>
+			<<asylumassessment>>
 		<<else>>
-			A <<person>> shakes you awake. <<Hes>> a nurse.
-			<br><br>
+			<<asylumtreatments>>
 		<</if>>
-		<<asylumoptions>>
-		"Doctor says it's time for your treatment," <<he>> says. "Come with me."
-		<br><br>
-		<<endevent>>
-		<<asylumtreatments>>
-	<<elseif $asylumstate is "assessment" and $daily.asylumAssessment isnot 1>>
-		<<set $daily.asylumAssessment to 1>>
-		<<generate1>><<person1>>
-		<<if _wakingEffect is "dryheaving">>
-			A <<person>> rubs your back. <<Hes>> a nurse.
-			<br><br>
-		<<else>>
-			A <<person>> shakes you awake. <<Hes>> a nurse.
-			<br><br>
-		<</if>>
-		<<asylumoptions>>
-		"Doctor says it's time for your assessment," <<he>> says. "Come with me."
-		<br><br>
-		<<endevent>>
-		<<asylumassessment>>
 	<<else>>
 		<<if _wakingEffect is "dryheaving">>
 			A loud buzzing continues in the background.
-			<br><br>
 		<<else>>
 			A loud buzzing wakes you.
-			<br><br>
 		<</if>>
 		<br><br>
 		<<getouticon>><<link [[Get out of bed|Asylum Cell]]>><</link>>
 		<br><br>
 	<</if>>
 <<else>>
-	<br><br>
 	<<getouticon>><<link [[Get out of bed|Asylum Cell]]>><</link>>
 	<br><br>
 <</if>>
-<<set $phase to 0>>
 
 :: Asylum Settings [exitCheckBypass]
 <<set $settingsExitPassage to "Asylum Cell">>
@@ -446,33 +427,33 @@ You are in the asylum, deep in the forest. The building is over a century old, a
 		<br><br>
 		<<link [[Next|Eden Asylum Fail]]>><<pass 30>><</link>>
 	<</if>>
-<<elseif $asylumstate is "firsttreatment" and $daily.asylumTreatment1 isnot 1>>
-	<<set $daily.asylumTreatment1 to 1>>
-	<<generateDoctor 1>><<person1>>A <<person>> approaches you. <<Hes>> a nurse.
+<<elseif ($asylumstate is "firsttreatment" and $daily.asylumTreatment1 isnot 1) or ($asylumstate is "secondtreatment" and $daily.asylumTreatment2 isnot 1) or ($asylumstate is "assessment" and $daily.asylumAssessment isnot 1)>>
+	<<generateDoctor 1>><<person1>>
+
+	<<if $asylumstate is "firsttreatment">>
+		<<set $daily.asylumTreatment1 to 1>>
+		<<set _asylumStateType to "treatment">>
+	<<elseif $asylumstate is "secondtreatment">>
+		<<set $daily.asylumTreatment2 to 1>>
+		<<set _asylumStateType to "treatment">>
+	<<elseif $asylumstate is "assessment">>
+		<<set $daily.asylumAssessment to 1>>
+		<<set _asylumStateType to "assessment">>
+	<</if>>
+
+	A <<person>> approaches you. <<Hes>> a nurse.
 	<br><br>
+
 	<<asylumoptions>>
-	"Doctor says it's time for your treatment," <<he>> says. "Come with me."
+	"Doctor says it's time for your _asylumStateType," <<he>> says. "Come with me." <<He>> leads you down a hallway.
 	<br><br>
+
 	<<endevent>>
-	<<asylumtreatments>>
-<<elseif $asylumstate is "secondtreatment" and $daily.asylumTreatment2 isnot 1>>
-	<<set $daily.asylumTreatment2 to 1>>
-	<<generateDoctor 1>><<person1>>A <<person>> approaches you. <<Hes>> a nurse.
-	<br><br>
-	<<asylumoptions>>
-	"Doctor says it's time for your treatment," <<he>> says. "Come with me."
-	<br><br>
-	<<endevent>>
-	<<asylumtreatments>>
-<<elseif $asylumstate is "assessment" and $daily.asylumAssessment isnot 1>>
-	<<set $daily.asylumAssessment to 1>>
-	<<generateDoctor 1>><<person1>>A <<person>> approaches you. <<Hes>> a nurse.
-	<br><br>
-	<<asylumoptions>>
-	"Doctor says it's time for your assessment," <<he>> says. "Come with me."
-	<br><br>
-	<<endevent>>
-	<<asylumassessment>>
+	<<if _asylumStateType is "assessment">>
+		<<asylumassessment>>
+	<<else>>
+		<<asylumtreatments>>
+	<</if>>
 <<elseif $asylumstate is "exercise" and $daily.asylumExcercise isnot 1>>
 	<<set $daily.asylumExcercise to 1>>
 	<<generateDoctor 1>><<person1>>A <<person>> approaches you. <<Hes>> an orderly.
@@ -676,8 +657,14 @@ You ask for help distracting the orderlies. You have trouble finding anyone who 
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 <<generateDoctor 1>><<person1>><<set _towel to random(0,4)>>
 You sneak to a nurse. "Excuse me," you say.
-<<if $worn.upper.name is "straightjacket" or $worn.lower.name is "straightjacket bottom">>
-	<<He>> turns, and regards your ruined jacket with a
+<<if $worn.upper.name is "straightjacket" or $worn.lower.name is "straightjacket bottom" or $asylumbound gt 0>>
+	<<if $worn.upper.name is "straightjacket" or $worn.lower.name is "straightjacket bottom">>
+		<<set _nurseJacket to "broken">>
+	<<else>>
+		<<set _anyclothing to getVisibleClothesList().some(item => item.name !== "naked")>>
+	<</if>>
+
+	<<He>> turns, and regards your <<if _nurseJacket is "broken">>ruined jacket<<else>>undressed state<</if>>with a
 	<<if ($beauty gte ($beautymax / 3) * 2) and _towel lte 1>>
 		smirk. <<covered>> "Can I have some clothes please?"
 		<br><br>
@@ -688,13 +675,28 @@ You sneak to a nurse. "Excuse me," you say.
 		<br><br>
 		"How did you manage that? No, never mind. I don't want to know." <<He>> makes a note on a clipboard. "I'll have to inform the doctor."<<set $suspicion += 1>><<gsuspicion>>
 		<br><br>
-		<<He>> removes the remains of your straightjacket<<if pcAreArmsBound("both")>>, letting your arms fall to your sides<</if>>. Your freedom is short-lived as <<he>> forces a fresh one onto you.
-		
-		/* Undammaged cursed clothing cannot be removed via clothing widgets, so lets uncurse these items so they can be swapped */
-		<<if $worn.upper.name is "straightjacket">><<set $worn.upper.cursed to 0>><</if>>
-		<<if $worn.lower.name is "straightjacket bottom">><<set $worn.lower.cursed to 0>><</if>>
-		
-		<<bind>><<upperwear 35>><<lowerwear 38>><<fameexhibitionism 1>>
+
+		<<if _nurseJacket is "broken">>
+			<<He>> removes the remains of your straightjacket<<if pcAreArmsBound("both")>>, letting your arms fall at your sides<</if>>.
+		<</if>>
+
+		<<asylumBind>>
+		<<if _anyclothing and (!_asylumBindUnderwear or _asylumBindUnderwear is "given")>>
+			<<He>> makes you hand over all your personal items.
+		<<elseif _asylumBindUnderwear and _asylumBindUnderwear isnot "given">>
+			<<He>> makes you strip down to your underwear.
+			<<if _nurseJacket is "broken">>
+				Then <<he>>
+			<<else>>
+				<<He>>
+			<</if>>
+
+			slides down your _asylumBindUnderwear and makes you step out of them.
+		<</if>>
+		<<if _asylumBindUnderwear>> <<He>> makes you step into a fresh pair of $worn.under_lower.name_simple and pulls them up.
+		<</if>>
+		Your brief moment of freedom ends as <<he>> secures you into a new straightjacket.
+		<<fameexhibitionism 1>>
 	<</if>>
 <<elseif ($beauty gte ($beautymax / 3) * 2) and _towel lte 3>> /* 1 in 5 to skip beauty*/
 	<<if _towel is 0>> /*1 in 4 chance*/
@@ -847,11 +849,11 @@ Eden's face falls at this realisation. "I'll delay the distraction to <<ampm 21>
 <br>
 
 :: Eden Asylum Fail
+<<asylumBind "punish">>
 <<effects>>
 <<set $daily.eden.distract to 4>>
 
 <<npc Harper>><<generate2>><<person2>>
-<<bind>><<upperwear 35>>
 You awaken strapped to a bed. A light glares in your eyes. It dims to reveal an old <<person>> in a white coat. Doctor Harper stands beside <<him>>.
 <br><br>
 
@@ -2329,12 +2331,15 @@ is an important part of your assessment so you need to be on your best behaviour
 <</if>>
 <br><br>
 <<set $ft_count to 5>>
+The <<person2>><<person>>
+<<if $worn.upper.name isnot "straightjacket">>
+	<<asylumBind "fake">>
+	strips you and then puts a straightjacket on you, binding your arms.
+<<else>>
+	checks your straightjacket.
+<</if>>
 <<if $rng gte 66 and $lactating gte 1 and $breastfeedingdisable is "f" and $milk_amount gte 500>>
 	<<set $ft_event to "milk">><<person2>>
-	<<if $worn.upper.name isnot "straightjacket">>
-		<<bind>><<upperwear 35>>
-		The <<person>> puts a medical straightjacket on you, binding your arms.
-	<</if>>
 	<br><br>
 	You are led to the wall opposite the mirror - you notice a number of steel chain-links embedded in the wall at different heights.
 	The <<person1>><<person>> turns you around so you are facing into the room. A large number of orderlies have gathered near the door.
@@ -2359,13 +2364,6 @@ is an important part of your assessment so you need to be on your best behaviour
 	<<link [[Next|Asylum Fake Treatment Milked]]>><<set $ft_count to 8>><</link>>
 <<elseif $rng gte 33 and !playerChastity()>>
 	<<set $ft_event to "masturbation">>
-	The <<person2>><<person>>
-	<<if $worn.upper.name isnot "straightjacket">>
-		<<bind>><<upperwear 35>>
-		puts a medical straightjacket on you that binds your arms,
-	<<else>>
-		checks your straightjacket,
-	<</if>>
 	<<if $worn.under_lower.type.includes("naked") and $worn.genitals.type.includes("naked")>>
 		and
 	<<else>>
@@ -2403,10 +2401,6 @@ is an important part of your assessment so you need to be on your best behaviour
 	<<link [[Next|Asylum Fake Treatment Masturbation]]>><<set $ft_count to 20>><<set $ft_five to random(11,15)>><<set $ft_four to random(5,10)>><</link>>
 <<else>>
 	<<set $ft_event to "bukkake">>
-	<<if $worn.upper.name isnot "straightjacket">>
-		<<bind>><<upperwear 35>>
-		The <<person>> puts a medical straightjacket on you, binding your arms.
-	<</if>>
 	You are led to the wall opposite the mirror - you notice a number of steel chain-links embedded in the wall at different heights.
 	The <<person>> turns you around so you are facing into the room. A large number of orderlies have gathered near the door.
 	The <<person>> pushes you down to a kneeling position, backed against the wall, while the <<person2>><<person>> clips the back of your straightjacket
@@ -2424,7 +2418,6 @@ is an important part of your assessment so you need to be on your best behaviour
 	<br><br>
 	<<link [[Next|Asylum Fake Treatment Bukkake]]>><</link>>
 <</if>>
-
 
 :: Asylum Fake Treatment Milked
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
@@ -2662,10 +2655,11 @@ is an important part of your assessment so you need to be on your best behaviour
 	<<he>> cums, <<his>> fluids splattering against your cheek and running down the collar of your straightjacket.
 	<br>
 	Two more orderlies take <<his>> place.<<if $NPCList[0].penis isnot "none">><<bodyliquid "neck" "semen">><<else>><<bodyliquid "neck" "goo">><</if>>
-	<br><br>
 	<<if $arousal gte $arousalmax>>
+		<br><br>
 		<<orgasm>>
 	<</if>>
+
 	<br><br>
 	<<link [[Next|Asylum Fake Treatment Bukkake]]>><<set $ft_count -= 1>><</link>>
 <<elseif $ft_count gte 1>>
@@ -2713,13 +2707,13 @@ is an important part of your assessment so you need to be on your best behaviour
 			a moment later you feel hot juices soak your hair.
 			<<hairejacstat>><<ejacstat>><<set $hygiene += 500>><<bodyliquid "hair" _goo>>
 		<</if>>
+		<br><br>
 	<<elseif _rand is 7 and (maleChance() gte 1 and $cbchance lt 100 or maleChance() lt 100 and $dgchance gte 1)>>
 		One orderly tries to shove their cock in your mouth. They're jerked away by another.
-		<br>
+		<br><br>
 		"May I remind everyone that any attempt at any kind of penetration will result in removal." <<lstress>><<stress -2>>
-		<br>
+		<br><br>
 	<</if>><<unset _rand>>
-	<br>
 
 	<<if $speech_attitude is "meek">>
 		<span class="sub">Being degraded like this makes you feel horny.</span><<ggarousal>><<arousal 666>>
@@ -2728,9 +2722,12 @@ is an important part of your assessment so you need to be on your best behaviour
 	<<else>>
 		<<garousal>><<arousal 200>>
 	<</if>>
+
 	<<if $arousal gte $arousalmax>>
+		<br><br>
 		<<orgasm>>
 	<</if>>
+
 	<br><br>
 	<<link [[Next|Asylum Fake Treatment Bukkake]]>><<set $ft_count -= 1>><</link>>
 <<else>>
@@ -2752,9 +2749,8 @@ is an important part of your assessment so you need to be on your best behaviour
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 
 "Excellent. Doctor Harper's very pleased with your progress. The doctor asked me to tell you not to mention this treatment to anyone.
-It's very important for your treatment. If you mention it to anyone - even to Doctor Harper <<nnpc_himself "Harper">> - <<nnpc_he "Harper">>
-will be very angry and it will set back your progress. This should be kept secret. Understood?"
-<br>
+It's very important for your treatment. If you mention it to anyone, even to Doctor Harper <<nnpc_himself "Harper">>, <<nnpc_he "Harper">> will be very angry and it will set back your progress. This should be kept secret. Understood?"
+<br><br>
 
 <<if $speech_attitude is "meek">>
 	You meekly nod.
@@ -2776,9 +2772,12 @@ will be very angry and it will set back your progress. This should be kept secre
 	<<else>>
 		"After the fuss <<pshe>> made about coming here?" <<person1>><<He>> shakes <<his>> head. "This one needs to learn some obedience."
 	<</if>>
-<<else>>
+	<<ruined false true "carried">>
+<<elseif $asylumbound lte 0>>
 	The <<person2>><<person>> removes the straightjacket.
 	<<unbind>><<exposure>><<upperwear 87>>
+<<else>>
+	<<returnCarried>>
 <</if>>
 <br><br>
 
