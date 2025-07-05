@@ -156,8 +156,6 @@ Macro.add("rangeslider", {
 			const rangeWidth = trackWidth - 2 * handleWidth;
 			let offsetX = clientX - rect.left - cursorOffset;
 
-			console.log("OFFSET", rect.left, cursorOffset, clientX, offsetX);
-
 			const oppositeThumbPosition = draggingThumbMin ? $thumbMax.position().left - handleWidth : $thumbMin.position().left + handleWidth;
 
 			offsetX = draggingThumbMin
