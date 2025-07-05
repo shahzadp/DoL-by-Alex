@@ -155,7 +155,9 @@ Winter pauses, thinking. "Well, there are a few aspects some tellings disagree o
 <<He>> smiles. "Alright. I'll try to include some more niche aspects. Was there anything you had in mind? As a jumping-off point."
 <br><br>
 
-<i>Completing runs with all challenges enabled is not intended, and almost certainly not possible. There are no rewards, feats or otherwise, for completing runs with challenges enabled.</i>
+<i>Completing runs with all challenges enabled is not intended, and almost certainly not possible. There are no rewards, feats or otherwise, for completing runs with challenges enabled.
+<br>
+You may select any arrangement of challenges you like, or let the game choose a random selection of challenges for you.</i>
 <br><br>
 
 <<if $hcChallengesRun.length gt 0>>
@@ -169,17 +171,33 @@ Winter pauses, thinking. "Well, there are a few aspects some tellings disagree o
 	<<link "Enable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = true)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>> |
 	<<link "Disable all">><<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = false)>><<replace #challenges>><<hcChallengeMenu>><</replace>><</link>>
 </div>
-<br><br>
+<br>
 
 <div id="challenges"><<hcChallengeMenu>></div>
 
-<<link [[Proceed with these selections|Museum Hopeless Cycle Story Continue]]>><<set $phase to 0>><</link>>
+<<set $hcChallengeRandom to {
+	min: 0,
+	max: 30,
+	blind: false
+}>>
+<<checkbox "$hcChallengeRandom.blind" false true autocheck>> <span class="gold">Blind random challenges</span> <span class="tooltip-anchor linkBlue" tooltip='If enabled, selecting "Proceed with random challenges" will not tell you what challenges are enabled.<br><span class="red">Not recommended unless you are familiar with all challenges.</span>'>(?)</span>
+<br>
+<<hcChallengeRandomSliders>>
+<br><br>
+
+<<link [[Proceed with selected challenges|Museum Hopeless Cycle Story Continue]]>><<set $hcChallengeRandom.blind to false>><<set $phase to 0>><</link>>
+<br>
+<<link [[Proceed with random challenges|Museum Hopeless Cycle Story Continue]]>><<hcChallengeRandomSelect>><<set $phase to 0>><</link>>
 <br>
 
 :: Museum Hopeless Cycle Story Continue
 <<effects>>
 <<if $phase is 0>>
-	<<if Object.values(V.hcChallenge).some(x => x === true)>>
+	<<if $hcChallengeRandom.blind>>
+		<b>Challenges selected:</b> <span class="blue italic">a random amount between <<number $hcChallengeRandom.min>> and <<number $hcChallengeRandom.max>>.</span>
+		<br>
+		Winter smiles, amused. "Very well. I'll see if I can surprise you."
+	<<elseif Object.values(V.hcChallenge).some(x => x === true)>>
 		<<hcChallengeSummary>>
 		Winter nods, closing his eyes. "I believe there are versions that align with those conditions. Uncommon, but they are told."
 	<<else>>

@@ -1923,6 +1923,7 @@
 	<</for>>
 	<br>
 	<<if _endingSeen and Object.keys(V.hcChallenge).filter(x => V.hcChallenge[x] === true).length gt 0>>
+		<<unset $hcChallengeRandom>>
 		<<hcChallengeSummary "ending">>
 		<<hcChallengeTierUpdate _endingSeen>>
 	<</if>>
@@ -2181,4 +2182,28 @@
 		<<set $hcChallengesRun to $_list>>
 		<br><br>
 	<</if>>
+<</widget>>
+
+<<widget "hcChallengeRandomSliders">>
+	<!-- The range slider macro doesn't work if it's directly inside passage text. It only works inside a widget -->
+	<<rangeslider "$hcChallengeRandom.min" "$hcChallengeRandom.max" 1 setup.hopelessCycleChallenges.length 1 setup.hopelessCycleChallenges.length 1
+		{}
+		{
+			value: (v1, v2) => {
+				const color1 = ColourUtils.interpolateMultiple(["--black", "--red", "--orange", "--gold"], normalise(v1, setup.hopelessCycleChallenges.length, 0));
+				const color2 = ColourUtils.interpolateMultiple(["--black", "--red", "--orange", "--gold"], normalise(v2, setup.hopelessCycleChallenges.length, 0));
+				return `<span style="color: ${color1}">${v1}</span> - <span style="color: ${color2}">${v2}</span>`;
+			},
+		}
+	>>
+<</widget>>
+
+<<widget "hcChallengeRandomSelect">>
+	<<run Object.keys($hcChallenge).forEach(c => $hcChallenge[c] = false)>>
+	<<set $_keys to setup.hopelessCycleChallenges.map(s => s.key)>>
+	<<set $_num to random($hcChallengeRandom.min, $hcChallengeRandom.max)>>
+	<<for _i to 0; _i lt $_num; _i++>>
+		<<set $_chal to $_keys.pluck()>>
+		<<set $hcChallenge[$_chal] to true>>
+	<</for>>
 <</widget>>
