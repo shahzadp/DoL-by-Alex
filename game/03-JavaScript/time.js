@@ -502,6 +502,7 @@ function weekPassed() {
 		V.brothelVending.weeksRent++;
 		if (V.brothelVending.weeksEmpty >= 4) V.brothelVending.status = "sold";
 	}
+	if (V.averySpaBanWeeks > 0) V.averySpaBanWeeks--;
 
 	supermarketWeekly();
 

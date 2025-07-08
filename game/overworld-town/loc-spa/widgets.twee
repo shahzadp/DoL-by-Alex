@@ -14,56 +14,67 @@
 
 <<widget "spa_work">>
 	<<spa_init>>
-	<<generate1>><<person1>>
-	A <<person>> enters,
-	<<if $pronoun is "m">>
-		wearing a towel around <<his>> waist.
+	<<if C.npc.Avery.init is 1 and $dateCount.Avery gte 1 and C.npc.Avery.state isnot "dismissed" and $rng gte 95 and Time.weekDay is 1 and !$averySpaBanWeeks and !$daily.averySpa>>
+		<<set $spa.personality to "Avery">><<set $daily.averySpa to true>><<set $endear to 0>>
+		<<npc Avery>><<person1>>
+		It's not long before one enters,
 	<<else>>
-		wearing a towel around <<his>> body.
+		<<generate1>><<person1>>
+		A <<person>> enters,
 	<</if>>
-	<<rng 5>>
-	<<switch $rng>>
-	<<case 1>>
-		<<set $spa.personality to "hesitant">>
-		"Hello," <<he>> says. "I've not done this before. Do I just lie down?"
+	wearing a towel around <<his>> <<= $pronoun is "m" ? "waist" : "body">>.
+	<<if $spa.personality is "Avery">>
+		<<averyspa>>
+	<<else>>
+		<<cleareventpool>>
+		<<addinlineevent "spa_hesitant" 1>>
+			<<set $spa.personality to "hesitant">>
+			"Hello," <<he>> says. "I've not done this before. Do I just lie down?"
+		<</addinlineevent>>
+
+		<<addinlineevent "spa_tired" 1>>
+			<<set $spa.personality to "tired">>
+			<<He>> <span class="lewd">pulls off <<his>> towel</span> and lies down with barely a glance in your direction.
+			<<if $awareness lte 100>>
+				<<awareness 1>><<gawareness>>
+			<</if>>
+			<<if $purity gte 990>>
+				<<gstress>><<stress 6>>
+			<</if>>
+		<</addinlineevent>>
+
+		<<addinlineevent "spa_rude" 1>>
+			<<set $spa.personality to "rude">>
+			<<He>> eyes you up.
+			<<if $beauty gte 8000>>
+				"Nice," <<he>> says, before lying on the table.
+			<<else>>
+				"Was expecting better," <<he>> says, before lying on the table. "You better be good."<<gstress>><<stress 6>>
+			<</if>>
+		<</addinlineevent>>
+
+		<<addinlineevent "spa_lewd" 1>>
+			<<set $spa.personality to "lewd">>
+			"You're a treat," <<he>> says, leering at your body. "How about I lose the towel." <<He>> lets it drop to the floor, and puts <<his>> hands on <<his>> hips. "Like what you see?"
+			<<if $awareness lte 100>>
+				<<awareness 1>><<gawareness>>
+			<</if>>
+			<<if $purity gte 990>>
+				<<gstress>><<stress 6>>
+			<</if>>
+			<br><br>
+			<<He>> laughs, and lies on the table.
+		<</addinlineevent>>
+
+		<<addinlineevent "spa_polite" 1>>
+			<<set $spa.personality to "polite">>
+			<<He>> nods at you, and lies on the table.
+		<</addinlineevent>>
+		<<runeventpool>>
 		<br><br>
-	<<case 2>>
-		<<set $spa.personality to "tired">>
-		<<He>> <span class="lewd">pulls off <<his>> towel</span> and lies down with barely a glance in your direction.
-		<<if $awareness lte 100>>
-			<<awareness 1>><<gawareness>>
-		<</if>>
-		<<if $purity gte 990>>
-			<<gstress>><<stress 6>>
-		<</if>>
-		<br><br>
-	<<case 3>>
-		<<set $spa.personality to "rude">>
-		<<He>> eyes you up.
-		<<if $beauty gte 8000>>
-			"Nice," <<he>> says, before lying on the table.
-		<<else>>
-			"Was expecting better," <<he>> says, before lying on the table. "You better be good."<<gstress>><<stress 6>>
-		<</if>>
-		<br><br>
-	<<case 4>>
-		<<set $spa.personality to "lewd">>
-		"You're a treat," <<he>> says, leering at your body. "How about I lose the towel." <<He>> lets it drop to the floor, and puts <<his>> hands on <<his>> hips. "Like what you see?"
-		<<if $awareness lte 100>>
-			<<awareness 1>><<gawareness>>
-		<</if>>
-		<<if $purity gte 990>>
-			<<gstress>><<stress 6>>
-		<</if>>
-		<br><br>
-		<<He>> laughs, and lies on the table.
-		<br><br>
-	<<case 5>>
-		<<set $spa.personality to "polite">>
-		<<He>> nods at you, and lies on the table.
-		<br><br>
-	<</switch>>
-	<<spa_actions>>
+
+		<<spa_actions>>
+	<</if>>
 <</widget>>
 
 <<widget "spa_init">>
