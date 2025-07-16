@@ -205,7 +205,7 @@ function wolfChildActivity(childId) {
 	let activity = [];
 
 	if (toySets.includes("chew toys")) {
-		activity = activity.concat(["squeakyToy", "chewRope", "chewBone", "rollBall"]);
+		activity = activity.concat(["squeakyToy", "squeakyToy2", "chewRope", "chewRope2", "chewBone", "chewBone2", "rollBall", "rollBall2"]);
 	}
 
 	if (between(T.childTotalDays, 0, 100)) {
