@@ -932,15 +932,65 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 		<br><br>
 		<<childHe>> drops the toy and looks at it with distrust. You spend the next several moments trying to reassure <<childhim>>. <<childHe>> calms down, but doesn't want to play with the _squeakyToy anymore. You decide to leave it be for now.
 		<<set $children[$childActivityEvent.childid].localVariables.activity to "playing">>
+	<<case "squeakyToy2">>
+		<<if $leftarm is "bound" and $rightarm is "bound">>
+			You struggle to pick up the <<= $phase>> with your bound hands, let alone make it squeak. By the time you manage to grasp it, <<childname>> has already left.
+		<<elseif random(1, 3) is 1>>
+			You pick up the <<= $phase>> and give it a squeeze. <<childname>>'s ears perk up as it squeaks. After squeezing it again, the <<childtype>> jumps for the <<= $phase>>. <<childHe>> repeatedly bites the toy, delighted with the sounds it makes. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gferocity>>
+		<<elseif random(1, 3) is 2>>
+			You give the <<= $phase>> a squeeze. The <<childtype>> takes a step back. You give the toy another squeeze, and <<childhe>> bolts away from you. <<trauma 6>><<gtrauma>><<lferocity>>
+		<<else>>
+			<<getChildrenIds `{location:"wolf_cave"}`>>
+			<<set _childrenTotal to _childrenIds.length>>
+
+			You hold the <<= $phase>> out. When <<childname>> sniffs it, you give it a squeeze. <<childHe>> throws <<childhis>> head back and howls.
+			<br><br>
+			<<if random(1, 3) is 1 and _childrenTotal gte 2>>
+				<<set _child1 to $childActivityEvent.childid>>
+				<<set _childrenIds to _childrenIds.filter(childid => childid !== _child1)>>
+				<<set _child2 to _childrenIds.pluck()>>
+
+				You squeak the toy again. This time <<childhis>> <<childsibling _child2>> rushes over and howls too.
+				<br><br>
+				<<if random(1, 2) is 1 and _childrenTotal gte 3>>
+					<<set _child3 to _childrenIds.pluck()>>
+					You keep squeaking the toy, drawing the attention of another <<childSelect _child3>><<childtype>>. Soon you have a choir of pups howling together in unison with the <<= $phase>>. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+				<<else>>
+					You keep squeaking the toy, and they howl every time. Eventually one of them grabs the <<= $phase>> and runs off. It squeaks with every step. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+				<</if>>
+			<<elseif random(1, 3) is 2>>
+				You squeak the toy again. Instead of howling this time, the <<childtype>> watches the <<= $phase>> with wary intensity. At a third squeak, <<childhe>> snarls. You put the <<= $phase>> down. <<stress 6>><<gstress>><<gferocity>>
+			<<else>>
+				You squeak the <<= $phase>> again, and the <<childtype>> lets out another howl with a wag of <<childhis>> tail. For the next few minutes, <<childhe>> howls in harmony every time you squeak the toy for <<childhim>>. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+			<</if>>
+		<</if>>
 	<<case "chewBone">>
 		<<wearProp "chew toy" 0 "bone">>
 		You sit next to <<childname>> and start digging alongside <<childhim>>. The dirt is hard, but you manage to make a shallow hole. <<childname>> picks up a toy bone and drops it in the hole. You sit back and watch as <<childhe>> buries it. After pushing the unearthed dirt back into the hole, <<childhe>> sits on the mound.
 		<br><br>
-		<<switch random(1,2)>>
+		<<switch random(1, 2)>>
 			<<case 1>>
 				You move to scritch <<childhis>> ears, but <<childhe>> gives a warning growl. <<childHe>>'s clearly preoccupied with protecting <<childhis>> bone. You back away, and <<childhe>> settles down. <<gstress>><<stress 6>>
 			<<default>>
 				You scritch <<childhis>> ears before standing up, and <<childhe>> gives a happy bark. <<lstress>><<stress -6>>
+		<</switch>>
+	<<case "chewBone2">>
+		<<switch random(1, 3)>>
+			<<case 1>>
+				You nudge the bone closer to <<childname>>. <<childHe>> stops and stares at it. You nudge it closer, and <<childhe>> chomps down on it before pulling it away. The <<childtype>> continues to gnaw on it for several minutes. <<stress -6>><<lstress>>
+			<<case 2>>
+				You nudge the bone closer to <<childname>>. <<childHe>> jumps with a startled yelp, then chomps down on the bone and aggressively shakes it. <<gferocity>>
+			<<default>>
+				You nudge the bone closer to <<childname>>. <<childHe>> chomps down on the bone and runs off with <<childhis>> tail wagging.
+				<br><br>
+
+				<<link [[Let <<childhim>> go|Wolf Children Chew Bone]]>><<set $phase to 0>><</link>>
+				<br>
+				<<if $leftleg isnot "bound" and $rightleg isnot "bound">>
+					<<link [[Chase|Wolf Children Chew Bone]]>><<set $phase to 1>><</link>>
+					<br>
+				<</if>>
+				<<exit>>
 		<</switch>>
 	<<case "chewRope">>
 		<<wearProp "chew toy" 0 "rope">>
@@ -948,12 +998,59 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 		<br><br>
 		<<childHe>> rolls onto <<childhis>> back and holds the rope with <<childhis>> <<childhands>>, chewing on it with renewed gusto. You smile as you stand back up. <<lstress>><<stress -6>>
 		<<set $children[$childActivityEvent.childid].localVariables.activity to "playing">>
+	<<case "chewRope2">>
+		<<getChildrenIds `{location:"wolf_cave"}`>>
+		<<set _childrenTotal to _childrenIds.length>>
+
+		<<if $leftarm is "bound" and $rightarm is "bound">>
+			You struggle to grasp the rope with your bound hands. <<childname>> watches curiously for a moment, but soon bores of watching and runs off to play elsewhere.
+		<<elseif random(1, 3) is 1 and _childrenTotal gte 2 and !$worn.face.type.includes("gag")>>
+			<<set _child1 to $childActivityEvent.childid>>
+			<<set _childrenIds to _childrenIds.filter(childid => childid !== _child1)>>
+			<<set $childActivityEvent.childid2 to _childrenIds.pluck()>>
+			<<set _child2 to $childActivityEvent.childid2>>
+
+			You pull the rope away from <<childname>>. <<childHe>> goes to jump for it, but <<childhis>> <<childsibling _child2>> jumps in and beats <<childhim>> to it.
+			<br><br>
+
+			<<link [[Play with first <<childtype>>|Wolf Children Chew Rope]]>><<set $phase to 0>><</link>>
+			<br>
+			<<link [[Play with second <<childSelect _child2>><<childtype>>|Wolf Children Chew Rope]]>><<set $phase to 1>><</link>>
+			<br>
+			<<link [[Play with both|Wolf Children Chew Rope]]>><<set $phase to 2>><</link>>
+			<<exit>>
+		<<elseif random(1,3) is 2>>
+			You pull the rope away from <<childname>>. <<childHe>> turns away, uninterested.
+		<<else>>
+			You pull the rope away from <<childname>>. <<childHe>> instantly jumps at it and bites down. You continue to pull, and the <<childtype>> tugs back in return. <<childHe>> gives a little growl as you tow <<childhim>> along. Soon <<childhe>> wears out and drops the rope. <<lstress>><<ltrauma>><<gferocity>><<stress -6>><<trauma -6>>
+		<</if>>
 	<<case "rollBall">>
 		<<wearProp "chew toy" 0 "ball">>
 		<<childname>> gives an enthusiastic bark as you pick up the ball. You gently roll it towards <<childhim>>. <<childHe>> <<= either("manages to catch it", "fumbles around with the ball", "stares at it")>> before rolling it back towards you <<if $children[$childSelected.childId].type is "wolf">>with <<childhis>> snout<<else>>with <<childhis>> tiny <<childhands>><</if>>.
 		<br><br>
 		You pass the ball back and forth for a bit, until <<childhe>>'s tuckered out. <<childHe>> curls up around the ball and falls asleep. You pet <<childhis>> head and stand up. <<lstress>><<stress -6>>
 		<<set $children[$childActivityEvent.childid].localVariables.activity to "sleeping">>
+	<<case "rollBall2">>
+		<<if $leftarm is "bound" and $rightarm is "bound">>
+			You struggle to grasp the ball with your hands bound, but eventually manage to pick it up. When you attempt to throw it, it just falls to the ground. <<childname>> sniffs it, then loses interest and leaves.
+		<<else>>
+			<<switch random(1, 3)>>
+				<<case 1>>
+					<<childname>> becomes overly excited when you pick up the ball. <<childHe>>  jumps up and nips your hand in an attempt to reach the toy.
+					<br><br>
+					You cry out in pain and drop the ball. The outburst frightens the <<childtype>>, who runs for cover. <<pain 2>><<trauma 6>><<gpain>><<gtrauma>>
+				<<case 2>>
+					<<childname>> jumps and tries to get the ball back, but misses. <<childHe>> watches closely as you wave the ball in front of <<childhim>>. Right as you wind up to release, <<childhe>> pounces and intercepts the ball. <<childHe>> is delighted with the little game and sinks <<childhis>> teeth into <<childhis>> prize. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gferocity>>
+				<<default>>
+					Picking up the ball instantly grabs <<childname>>'s attention. <<childHe>> watches closely as you wave the ball in front of <<childhim>>.
+					<br><br>
+
+					<<link [[Toss gently|Wolf Children Roll Ball]]>><<set $phase to 0>><</link>>
+					<br>
+					<<link [[Throw hard|Wolf Children Roll Ball]]>><<set $phase to 1>><</link>>
+					<<exit>>
+			<</switch>>
+		<</if>>
 
 	/*Hawk Specific*/
 	<<case "sleepingStrokeHawk">>
@@ -1381,3 +1478,139 @@ Alex guides you back to bed, giving you one last goodnight kiss before going bac
 <<else>>
 	<<link [[Next|Farm Bed]]>><<endevent>><</link>>
 <</if>>
+
+:: Wolf Children Chew Bone
+<<effects>>
+
+<<if $phase is 0>> /* Let child go */
+	You smile as you watch the <<childtype>> run off to play. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+<<else>> /* Chase */
+	After allowing the <<childtype>> a head start, you pursue.
+	<br><br>
+	<<switch random(1, 3)>>
+		<<case 1>>
+			<<childHe>> does not notice you until you catch <<childhim>>. <<childHe>> yelps and drops the bone before running for cover. It takes several minutes before <<childhe>> comes out of hiding, <<childhis>> tail between <<childhis>> legs. <<trauma 6>><<gtrauma>><<lharmony>><<lferocity>>
+		<<case 2>>
+			<<childHe>> notices your pursuit and quickens <<childhis>> pace. You soon catch <<childhim>> and scoop <<childhim>> up. <<childHis>> tail keeps wagging, but <<childhe>> maintains <<childhis>> grip on the bone. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+		<<default>>
+			<<childHe>> notice your pursuit and quickens <<childhis>> pace. Just as you are about to catch <<childhim>>, you allow <<childhim>> to escape. <<childHe>> continues to evade you in <<childhis>> game of keep away. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+	<</switch>>
+<</if>>
+<br><br>
+
+<<link [[Next|Childrens Home]]>><<unset $childActivityEvent>><<endevent>><</link>>
+<br>
+
+:: Wolf Children Chew Rope
+<<effects>>
+<<set _child1 to $childActivityEvent.childid>>
+<<set _child2 to $childActivityEvent.childid2>>
+
+<<if $phase is 0>> /* Play with first wolf child*/
+	"Hey now," you chide <<childSelect _child2>><<childname>>. "You'll have to wait your turn."
+	<br><br>
+	You pull the rope away from the <<childtype>> and toss it back to <<childSelect _child1>><<childname>>. <<childHe>> grabs it right away and begins tugging.
+	<br><br>
+	<<childSelect _child2>>
+	<<switch random(1, 2)>>
+		<<case 1>>
+			<<childname>> wags <<childhis>> tail before running off to play elsewhere. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+		<<default>>
+			<<childname>> drops <<childhis>> head and sulks away. <<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<</switch>>
+<<elseif $phase is 1>> /* Play with second wolf child */
+	"You'll need to be quicker next time," you tell <<childSelect _child1>><<childname>>.
+	<br><br>
+	You pull the rope as the <<childSelect _child2>><<childtype>> tugs back, giving a happy growl.
+	<br><br>
+	<<childSelect _child1>>
+	<<switch random(1, 2)>>
+		<<case 1>>
+			<<childname>> sits and watches, wagging <<childhis>> tail. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+		<<default>>
+			<<childname>> whines as <<childhe>> watches you play with <<childhis>> <<childsibling _child2>>. <<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<</switch>>
+<<else>> /* Play with both */
+	You quickly pull the rope away from <<childSelect _child2>><<childname>>, who promptly whines at the loss of  the toy.
+	<br><br>
+	"Oh settle down, I can play with both of you," you say. You toss the rope between them.
+	<br><br>
+	<<switch random(1, 3)>>
+		<<case 1>>
+			They both latch onto either end of the rope tightly. You grab the center and begin tugging them both. Their tails wag eagerly as you tow them around. They eventually tire and drop the rope. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+		<<case 2>>
+			They both latch onto either end of the rope. You attempt to grab the center, but are not prepared for how energetic they are. The rope slips from your grasp but, you are content to watch the two tug it back and forth. They growl and wag their tails for a while until they wear themselves out. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>><<gferocity>>
+		<<default>>
+			They both latch onto either end of the rope tightly. You grab the center and begin tugging. However, the two are not willing to share. <<childname>> drops <<childhis>> end of the rope and begins tussling with <<childhis>> <<childsibling _child1>>.
+			<br><br>
+			<<childSelect _child1>><<childname>> yelps in pain as <<childSelect _child2>><<childname>> bites <<childSelect _child1>><<childhim>>. Acting quickly, you intervene. One of them bites your hand. <<pain 2>><<gpain>>
+			<br><br>
+			"No fighting!" you tell them as you drag them apart.
+			<br><br>
+			They growl at each other before leaving in opposite directions. You shake out your hand. <<stress 6>><<gstress>><<lharmony>><<gferocity>>
+	<</switch>>
+<</if>>
+<br><br>
+
+<<link [[Next|Childrens Home]]>><<unset $childActivityEvent>><<endevent>><</link>>
+<br>
+
+:: Wolf Children Roll Ball
+<<effects>>
+
+<<if $phase is 0>> /* Toss gently */
+	<<switch random(1, 2)>>
+		<<case 1>>
+			With a quick flick of the wrist, you toss the ball a short distance. The <<childtype>> bounds over to it and begins happily gnawing on the ball. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+		<<default>>
+			With a quick flick of the wrist, you toss the ball a short distance. The <<childtype>> walks over and sniffs the ball, then loses interest and leaves.
+	<</switch>>
+<<else>> /* Thow hard */
+	<<getChildrenIds `{location:"wolf_cave"}`>>
+	<<set _childrenTotal to _childrenIds.length>>
+
+	<<if random(1, 3) is 1 and _childrenTotal gte 2>>
+		<<set _child1 to $childActivityEvent.childid>>
+		<<set _childrenIds to _childrenIds.filter(childid => childid !== _child1)>>
+		<<set _child2 to _childrenIds.pluck()>>
+
+		You hurl the ball. <<childname>> sprints after it, but one of <<childhis>> siblings beats <<childhim>> to it.
+		<br><br>
+		<<childSelect _child2>>
+		<<switch random(1, 3)>>
+			<<case 1>>
+				<<childname>> retrieves the ball and runs off with it, with <<childSelect _child1>><<childname>> in close pursuit. After an improv game of tag, <<childname>> catches <<childhis>> <<childsibling _child2>>. They playfully tussle over the ball. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gferocity>>
+			<<case 2>>
+				<<childname>> sniffs the ball until <<childhis>> <<childsibling _child1>> arrives. <<childSelect _child1>><<childname>> picks it up and runs off with it. <<childHis>> <<childsibling _child2>> follows, wagging <<childSelect _child2>><<childhis>> tail. <<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<gharmony>>
+			<<default>>
+				<<childname>> retrieves the ball and runs off as <<childSelect _child1>><<childname>> gives chase. When <<childhe>> catches up to <<childhis>> <<childsibling _child2>>, a fight breaks out.
+				<br><br>
+				You rush to intervene, but it ends before you arrive. <<childname>> retrieves <<childhis>> ball while  <<childSelect _child2>><<childtype>> whimpers in pain. You spend some time consoling the other <<childtype>>. <<stress 6>><<trauma 6>><<gstress>><<gtrauma>><<lharmony>><<gferocity>>
+		<</switch>>
+	<<elseif random(1, 3) is 2>>
+		You hurl the ball. <<childname>> sprints after it.
+		<br><br>
+		<<switch random(1, 2)>>
+			<<case 1>>
+				<<if Weather.isSnow>>
+					The snow conceals the ball, but the <<childtype>> is determined. After digging up several spots, <<childhe>> finally finds it. <<childHe>> carries it around for a while, looking quite pleased with <<childhimself>>.
+				<<else>>
+					<<childHe>> quickly finds <<childhis>> ball. The <<childtype>> carries it around for a while, looking quite pleased with <<childhimself>>.
+				<</if>>
+				<<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+			<<default>>
+				<<if Weather.isSnow>>
+					The snow conceals the ball, much to the <<childtype>>'s dismay. After digging around in the snow for a while, <<childhe>> begins to whine. By the time you dig it out for <<childhim>>, your fingers are numb from the cold and <<childhe>>'s no longer interested in playing.
+				<<else>>
+					<<childHe>> quickly finds <<childhis>> ball, but <<childhe>> cannot reach it. It seems to have gotten stuck in the briar. <<childHe>> whines at the loss of <<childhis>> toy. You get scratched up trying to fetch it for <<childhim>>, but <<childhe>>'s no longer interested in playing.
+				<</if>>
+				<<pain 2>><<stress 6>><<gpain>><<gstress>>
+		<</switch>>
+	<<else>>
+		You hurl the ball. <<childname>> turns <<childhis>> head and watches the ball land off in the distance. <<childHe>> stares at it for a moment before walking off, uninterested in pursuing.
+	<</if>>
+<</if>>
+<br><br>
+
+<<link [[Next|Childrens Home]]>><<unset $childActivityEvent>><<endevent>><</link>>
+<br>
