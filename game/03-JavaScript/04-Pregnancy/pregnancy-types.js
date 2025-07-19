@@ -449,9 +449,9 @@ window.pregnancyGenerator = {
 
 		if (pregnancy) {
 			const result = { fetus: [], type: "wolf", timer: 0 };
-			const furColour = ["gray", "brown", "tan", "white"];
+			let furColour = ["grey", "brown", "tan", "white"];
 			if (motherObject.name === "Black Wolf" || fatherObject.name === "Black Wolf") {
-				furColour.concat(["black", "black", "black"]);
+				furColour = furColour.concat(["black", "black", "black"]);
 			}
 			for (let i = 0; i < 8; i++) {
 				const childId =

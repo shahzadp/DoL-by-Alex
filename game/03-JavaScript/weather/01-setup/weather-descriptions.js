@@ -19,7 +19,7 @@ setup.WeatherDescriptions = {
 		},
 		heavyClouds: {
 			dawn: () => "The cloudy sky is dyed orange by the rising sun.",
-			day: () => "The sky is overcast and gray.",
+			day: () => "The sky is overcast and grey.",
 			dusk: () => "The cloudy sky takes on an orange glow.",
 			night: () => "The stars can barely be seen through the thick clouds.",
 			bloodMoon: () => "The sky is filled with a red glow.",
