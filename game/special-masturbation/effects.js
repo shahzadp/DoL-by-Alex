@@ -3258,7 +3258,7 @@ function masturbationEffectsMouth({
 				wikifier("arousal", 100, "masturbationGenital");
 				wikifier("pain", 4);
 				sWikifier(
-					`You lick the parasite, for each one, the parasite sends alternating waves of <span class="lewd">pleasure</span> and <span class="red">pain</span>.<<gpain>>`
+					`You lick the parasite. With each lick, the parasite sends alternating waves of <span class="lewd">pleasure</span> and <span class="red">pain</span>.<<gpain>>`
 				);
 			} else if (V.earSlime.corruption < 100) {
 				wikifier("arousal", 200, "masturbationGenital");
