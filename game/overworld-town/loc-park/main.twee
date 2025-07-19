@@ -3,30 +3,20 @@ You've pushed yourself too much.
 <br><br>
 <<passout>>
 <<set $bus to "park">>
-<<set $dangerpark to 0>>
-<<set $safepark to 0>>
-<<set $danger to random(1, 10000)>>
 
-<<if $danger gte (9900 - $allure)>>
-	<<set $dangerpark to random(1, 100)>>
-<<elseif $danger lt (9900 - $allure)>>
-	<<set $safepark to random(1, 100)>>
-<</if>>
-
-<<if $dangerpark gte 81>>
-	<<link [[Wake up|Abduction]]>><<set $molestationstart to 1>><</link>>
-<<elseif $dangerpark gte 1>>
-	<<if $monster is 1 or $bestialitydisable is "f">>
-		<<link [[Wake up|Dog Park]]>><<set $molestationstart to 1>><</link>>
-	<<else>>
-		<<link [[Wake up|Dog Park 2]]>><</link>>
-	<</if>>
-	<!--
+<<if dangerEvent()>>
+	<<if random(1, 100) gte 81>>
 		<<link [[Wake up|Abduction]]>><<set $molestationstart to 1>><</link>>
-	-->
+	<<else>>
+		<<if $monster is 1 or $bestialitydisable is "f">>
+			<<link [[Wake up|Dog Park]]>><<set $molestationstart to 1>><</link>>
+		<<else>>
+			<<link [[Wake up|Dog Park 2]]>><</link>>
+		<</if>>
+	<</if>>
+<<else>>
+	<<ambulance>>
 <</if>>
-
-<<if $safepark gte 1>><<ambulance>><</if>>
 
 <<pass 1 hour>>
 
@@ -216,8 +206,8 @@ You are in the men's toilets in the park.
 	<<passoutpark>>
 <<else>>
 
-	<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-		<<if $danger gte (9900 - $allure) and $player.gender_appearance is "f" and $eventskip is 0>>
+	
+		<<if dangerEvent() and $player.gender_appearance is "f" and $eventskip is 0>>
 			<<eventstoilets>>
 		<<else>>
 			<<storeactions "parkmens">>
@@ -318,8 +308,8 @@ You are in the women's toilets in the park.
 <<if $stress gte $stressmax>>
 	<<passoutpark>>
 <<else>>
-	<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-		<<if $danger gte (9900 - $allure) and $player.gender_appearance is "m" and $eventskip isnot 1>>
+	
+		<<if dangerEvent() and $player.gender_appearance is "m" and $eventskip isnot 1>>
 			<<eventstoilets>>
 		<<else>>
 			<<storeactions "parkwomens">>
@@ -1080,8 +1070,8 @@ You run back to the toilets. You take deep breaths as you try to slow your pulse
 <<eventParkStreakEnd>>
 
 :: Toilets Stall
-<<effects>><<set $danger to random(1, 10000)>><<set $phase to 0>>
-<<if $danger gte (8900 - ($allure / 3))>>
+<<effects>><<set $phase to 0>>
+<<if dangerEvent(1/3, 8900)>>
 	<<set $toiletsrape to 1>>
 <</if>>
 <<if $exposed gte 2>>

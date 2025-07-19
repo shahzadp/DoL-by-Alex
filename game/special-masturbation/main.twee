@@ -186,16 +186,13 @@ You listen out in case anyone snuck in while you were distracted. You don't hear
 <<if $masturbationstart is 1>>
 	<<set $masturbationstart to 0>>
 	<<set $masturbationstat += 1>>
+	<<set $edenpush to 0>>
 	<<masturbationstart>>
 	You lie back and allow your hands to wander.
 	<br><br>
 <</if>>
 
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-
-<<if (!$edenpush and $danger gte (9900 - $allure) and (between(Time.hour, 6, 11) or Time.hour gt 14)) or $edenpush is 2>>
-	<<if $edenpush is 2>><<unset $edenpush>><</if>>
-
+<<if masturbationEdenPush()>>
 	<<npc Eden>><<person1>>Out of nowhere, you feel your hands being grabbed by someone else's.
 	<br><br>
 
@@ -215,9 +212,7 @@ You listen out in case anyone snuck in while you were distracted. You don't hear
 	<br>
 	<<link [[Lean into Eden|Clearing Spring Masturbation Pre Sex]]>><<npcincr Eden love 1>><<npcincr Eden dom 1>><</link>><<promiscuous1>>
 	<br>
-
 <<else>>
-
 	<<masturbationeffects>>
 	<<masturbationactions>>
 	<<masturbationControls "edenPush">>
@@ -741,20 +736,15 @@ You fondle yourself. The other students are so near, they could so easily see wh
 			<<destinationpoolchangingroom "towels">>
 		<</if>>
 	<<else>>
+		<<set _mod to 0.1>>
 		<<if $exposed gte 1>>
-			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-			<<if $danger gte (8900 - ($allure / 2))>>
-				<<eventsswimming>>
-			<<else>>
-				<<eventsswimmingsafe>>
-			<</if>>
-		<<elseif $exposed lte 0>>
-			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-			<<if $danger gte (8900 - ($allure / 10))>>
-				<<eventsswimming>>
-			<<else>>
-				<<eventsswimmingsafe>>
-			<</if>>
+			<<set _mod to 0.5>>
+		<</if>>
+
+		<<if dangerEvent(_mod, 8900)>>
+			<<eventsswimming>>
+		<<else>>
+			<<eventsswimmingsafe>>
 		<</if>>
 	<</if>>
 <</if>>

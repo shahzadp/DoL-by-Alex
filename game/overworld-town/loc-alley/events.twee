@@ -3,19 +3,20 @@
 You've pushed yourself too much.
 <br><br>
 <<passout>>
-<<set $safealley to 0>>
-<<set $dangeralley to 0>>
-<<set $danger to random(1, 10000)>>
-<<if $danger gte (9900 - $allure)>><<set $dangeralley to random(1, 100)>><</if>>
-<<if $danger lt (9900 - $allure)>><<set $safealley to random(1, 100)>><</if>>
-<<if $dangeralley gte 71>>
-	<<link [[Wake up|Abduction]]>><<set $molestationstart to 1>><</link>>
-<<elseif $dangeralley gte 45>>
-	<<link [[Wake up|Street Wake]]>><</link>>
-<<elseif $dangeralley gte 1>>
-	<<link [[Wake up|Molestation alley]]>><<set $molestationstart to 1>><</link>>
+
+<<if dangerEvent()>>
+	<<switch random(1, 3)>>
+		<<case 3>>
+			<<link [[Wake up|Abduction]]>><<set $molestationstart to 1>><</link>>
+		<<case 2>>
+			<<link [[Wake up|Street Wake]]>><</link>>
+		<<case 1>>
+			<<link [[Wake up|Molestation alley]]>><<set $molestationstart to 1>><</link>>
+	<</switch>>
+<<else>>
+		<<ambulance>>
 <</if>>
-<<if $safealley gte 1>><<ambulance>><</if>>
+
 <<pass 1 hour>>
 <<trauma 6>><<set $stress -= 2000>>
 
@@ -359,11 +360,8 @@ You slide down the chute to the park.
 	Your clothing snags on a rut.
 	<br><br>
 <</if>>
-<<set $danger to random(1, 10000)>><<set $dangerchute to 0>>
-<<if $danger gte (9900 - ($allure * 3))>>
-	<<set $dangerchute to random(1)>>
-<</if>>
-<<if $dangerchute is 1>>
+
+<<if dangerEvent(3)>>
 	As the chute exit comes into view you see someone has left a cement mixer in front of it!
 	<br><br>
 	<<link [[Dodge it at any cost!|Molestation Chute]]>><<set $molestationstart to 1>><</link>>
@@ -373,7 +371,6 @@ You slide down the chute to the park.
 <<else>>
 	<<parkquick>>
 <</if>>
-<<set $dangerchute to 0>>
 
 :: Molestation Chute
 
@@ -558,7 +555,7 @@ You are on the rooftop of a commercial building. You can access the shopping cen
 			<br><br>
 			<<link [[Quietly tell <<bhim>> to shut up|Residential Dog]]>><<set $noise += 1>><</link>>
 			<br>
-			<!-- Modified for Beast People -->
+			
 			<<link [[Stroke <<bhis>> head|Residential Dog]]>><<set $phase to 2>><</link>>
 			<br><br>
 		<<case 2>>
@@ -656,9 +653,7 @@ At the sound of their approach, the <<beasttype>> ceases <<bhis>> adventure and 
 <<endcombat>>
 <<generatey1>><<generatey2>>Before you can recover, you are discovered by a <<fullGroup>>.
 <br><br>
-<<set $danger to random(1, 10000)>><<set $dangerstreet to 0>>
-<<if $danger gte (9900 - ($allure * 3))>>
-	<<set $dangerstreet to random(1, 100)>>
+<<if dangerEvent(3)>>
 	They take advantage of your vulnerability.
 	<br><br>
 
@@ -999,8 +994,8 @@ You search the alleyways for something you could prop up under Briar's window.
 	<span class="red">You can't find anything of use.</span>
 	<br><br>
 
-	<<set $danger to random(1, 10000)>><<set $dangerevent to 0>><<rng>>
-	<<if ($danger gte (9900 - $allure) or $eventforced) and $eventskip is 0>>
+	<<rng>>
+	<<if (dangerEvent() or $eventforced) and $eventskip is 0>>
 		<<eventsstreet>>
 	<<else>>
 		<<link [[Keep looking|Industrial Ladder]]>><</link>>

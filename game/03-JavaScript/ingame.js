@@ -2765,3 +2765,8 @@ function isBeastSceneAllowed() {
 	return bestialityEnabled() || ((V.monsterhallucinations === "f" || V.hallucinations > 0) && V.monsterchance >= random(1, 100));
 }
 window.isBeastSceneAllowed = isBeastSceneAllowed;
+
+function dangerEvent(mod = 1, floor = 9900, allure = V.allure) {
+	return random(1, 10000) >= floor - allure * mod;
+}
+window.dangerEvent = dangerEvent;
