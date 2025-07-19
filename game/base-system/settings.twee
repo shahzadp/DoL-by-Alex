@@ -888,12 +888,23 @@
 			Body
 		</div>
 
-		<div class="settingsToggleItem">
+		<div class="settingsToggleItem" id="genitals">
 			<span class="gold">Genitals:</span><br>
 			<label>Penis <<radiobutton "$player.sex" "m" autocheck>></label> |
 			<label>Vagina <<radiobutton "$player.sex" "f" autocheck>></label> |
             <label>Both <<radiobutton "$player.sex" "h" autocheck>></label>
+			<<if $player.sex is "h">>
+				<br>
+				<label>Testes: <<checkbox "$player.ballsExist" false true autocheck>></label>
+			<</if>>
 		</div>
+		<<run
+		$(() => {
+			$('#genitals input[type="radio"]').on('change', () => {
+				Wikifier.wikifyEval('<<replace #settingsDiv>><<characterSettings>><</replace>>');
+			});
+		})
+		>>
 
 		<div class="settingsToggleItem">
 			<span class="gold">Gender:</span><br>
@@ -939,23 +950,16 @@
 			<label>Modest <<radiobutton "$player.bottomsize" 2 autocheck>></label> |
 			<label>Cushioned <<radiobutton "$player.bottomsize" 3 autocheck>></label>
 		</div>
-
-		<div class="settingsToggleItem">
-			<span data-target="player.sex" data-disabledif="V.player.sex==='f'">
-			<span class="gold">Penis size:</span><br>
-			<label>Tiny <<radiobutton "$player.penissize" 0 autocheck>></label> |
-			<label>Small <<radiobutton "$player.penissize" 1 autocheck>></label> |
-			<label>Normal <<radiobutton "$player.penissize" 2 autocheck>></label>
-			</span>
-		</div>
-
-		<div class="settingsToggleItem">
-			<span data-target="player.sex" data-disabledif="V.player.sex!=='h'">
-			<span class="gold">Hermaphrodite testes:</span><br>
-			<label>Yes <<radiobutton "$player.ballsExist" true autocheck>></label> |
-			<label>No <<radiobutton "$player.ballsExist" false autocheck>></label>
-			</span>
-		</div>
+		<<if $player.sex isnot "f">>
+			<div class="settingsToggleItem">
+				<span data-target="player.sex" data-disabledif="V.player.sex==='f'">
+				<span class="gold">Penis size:</span><br>
+				<label>Tiny <<radiobutton "$player.penissize" 0 autocheck>></label> |
+				<label>Small <<radiobutton "$player.penissize" 1 autocheck>></label> |
+				<label>Normal <<radiobutton "$player.penissize" 2 autocheck>></label>
+				</span>
+			</div>
+		<</if>>
 	</div>
 
 	<hr>
@@ -1521,9 +1525,7 @@
 				<<numberslider "$cbchance" $cbchance 0 100 1>>
 			</div>
 			<div class="settingsToggleItemWide numberslider-inline">
-				<span class="gold">Percentage of women that have strap-on penises
-				<mouse class="tooltip linkBlue">(?)<span>'Visual representation of player's and NPC's skin colour' must be enabled in the Performance tab of the Options menu for strap-ons to be coloured.</span></mouse>
-				</span>
+				<span class="gold">Percentage of women that have strap-on penises</span>
 				<<numberslider "$straponchance" $straponchance 0 100 1>>
 			</div>
 		</div>
@@ -1545,9 +1547,7 @@
 				<<numberslider "$npcVirginityChanceAdult" $npcVirginityChanceAdult 0 100 1>>
 			</div>
 			<div class="settingsToggleItemWide numberslider-inline">
-				<span class="gold">Likelihood that NPCs have dark skin
-				<mouse class="tooltip linkBlue">(?)<span>'Visual representation of player's and NPC's skin colour' must be enabled in the Performance tab of the Options menu.</span></mouse>
-				</span>
+				<span class="gold">Likelihood that NPCs have dark skin</span>
 				<<numberslider "$blackchance" $blackchance 0 100 1>>
 			</div>
 		</div>
@@ -2138,7 +2138,7 @@
 			}>>
 		</div>
 
-		<<if $passage is "Start" or $player.penisExist>>
+		<<if ($passage is "Start" and $player.sex isnot "f") or $player.penisExist>>
 			<div class="settingsToggleItemWide">
 			<span class="gold">Penis size limits:</span> <span class="tooltip-anchor linkBlue" tooltip="Penises already below the minimum size won't automatically grow.">(?)</span>
 			<<rangeslider "$penissizemin" "$penissizemax" $penissizemin $penissizemax -2 4 1

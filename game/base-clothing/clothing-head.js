@@ -146,6 +146,7 @@ function initHead() {
 			accessory_colour_options: ["pink", "rose gold", "white", "custom"],
 			accessory_colour_sidebar: 1,
 			back_img: "combat",
+			back_img_acc: "combat",
 			cursed: 0,
 			location: 0,
 			iconFile: "bunny_ears.png",
