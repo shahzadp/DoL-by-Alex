@@ -1630,7 +1630,7 @@ const combatMainPc = {
 				if (!CombatRenderer.isClothingShown(clothes, options.showClothing)) return false;
 				return !!clothes.hasBackAccessory;
 			},
-			z: CombatRenderer.indices.head - 1,
+			z: CombatRenderer.indices.head - 0.5,
 		}),
 		headwearBack: PlayerCanvasHelper.genClothingLayer("head", {
 			srcfn(options) {
