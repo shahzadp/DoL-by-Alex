@@ -123,9 +123,9 @@
 <</widget>>
 
 <<widget "lessonEvents">>
-	<<set $_mod to _args[1] or 1>>
-	<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-	<<if $danger gte (8900 - ($allure * $_mod))>> <!-- $_mod multiplies the effect that allure has on your odds of getting an unsafe event -->
+	<<set $_mod to _args[1] or 1>> <!-- $_mod multiplies the effect that allure has on your odds of getting an unsafe event -->
+	
+	<<if dangerEvent($_mod, 8900)>>
 		<<switch _args[0]>>
 			<<case "maths">><<eventsmaths>>
 			<<case "science">><<eventsscience>>
@@ -1902,7 +1902,7 @@
 
 					<<link [[Next|English Lesson]]>><<endevent>><</link>>
 				<</if>>
-				<!-- Modified for Beast People -->
+				
 			<</if>>
 
 		<<else>>
@@ -3665,37 +3665,28 @@
 		<<if $exposed gte 1 and $swimall isnot 1>>
 			The bell rings, signifying the end of the lesson. You wait as the other students leave. Some students linger, doubtlessly hoping to get a nice view when you climb out, but Mason herds them away, giving you some privacy. You climb out of the pool<<if playerBellyVisible()>> once Mason gives the go ahead, and <<nnpc_he "Mason">> sticks close by to assist you<</if>>.
 			<br><br>
-
 		<<elseif $exposed lte 0>>
 			The bell rings, signifying the end of the lesson. You climb out of the pool<<if playerBellyVisible()>> once Mason gives the go ahead, and <<nnpc_he "Mason">> sticks close by to assist you<</if>>.
 			<br><br>
-
 		<</if>>
 
 		<<if $exposed lte 0 or $swimall is 1>>
 			<<destinationpoolchangingroom>>
-
 		<</if>>
 
 		<<if $exposed gte 1>>
 			<<destinationpoolchangingroom "towels">>
-
 		<</if>>
 	<<else>>
+		<<set _mod to 0.2>>
 		<<if $exposed gte 1>>
-			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-			<<if $danger gte (8900 - $allure)>>
-				<<eventsswimming>>
-			<<else>>
-				<<eventsswimmingsafe>>
-			<</if>>
-		<<elseif $exposed lte 0>>
-			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-			<<if $danger gte (8900 - ($allure / 5))>>
-				<<eventsswimming>>
-			<<else>>
-				<<eventsswimmingsafe>>
-			<</if>>
+			<<set _mod to 1>>
+		<</if>>
+
+		<<if dangerEvent(_mod, 8900)>>
+			<<eventsswimming>>
+		<<else>>
+			<<eventsswimmingsafe>>
 		<</if>>
 	<</if>>
 <</widget>>

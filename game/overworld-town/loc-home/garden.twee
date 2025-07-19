@@ -283,8 +283,8 @@ You watch the couple hump away with reckless abandon. Their panting and stifled 
 :: Garden Voyeurism Masturbate Finish
 <<effects>>
 
-<<set $danger to random(1, 10000)>>
-<<if $danger gte (9900 - $allure) and $orgasmdown gte 1 and $timer gt 0>>
+
+<<if dangerEvent() and $orgasmdown gte 1 and $timer gt 0>>
 
 	The orphans start up and scan the surroundings.
 	<br><br>
@@ -295,7 +295,7 @@ You watch the couple hump away with reckless abandon. Their panting and stifled 
 	With that, the orphans hastily pull up their clothes and scramble inside.
 	<br><br>
 
-<<elseif $danger gte (9900 - $allure) and $timer lte 0>>
+<<elseif dangerEvent() and $timer lte 0>>
 
 	As you are busy pleasuring yourself, you suddenly feel a hand grabbing you by the shoulder. You turn around in surprise. It's Bailey!<<gstress>><<stress 12>>
 	<br><br>
@@ -417,7 +417,6 @@ You decide not to investigate the source of the noise; you have your own things 
 	<<set $outside to 1>>
 <</if>>
 
-
 <<if $garden_flowers_intro is 1>>
 	<<unset $garden_flowers_intro>>
 	<<plots_init garden 3 earth 1 small>>
@@ -425,38 +424,10 @@ You decide not to investigate the source of the noise; you have your own things 
 	<br><br>
 <</if>>
 
-
-<<if $event_trigger is 1>>
-	<<set _robin to statusCheck("Robin")>>
-	<<if $rng gte 51 and _robin_location is "orphanage" and _robin.trauma lt 80 and $daily.robin.tending isnot 1>>
-		<<set $daily.robin.tending to 1>>
-		<<npc Robin>><<person1>>
-		<<if _robin.trauma gte 40>>
-			You hear a gentle patter of footsteps disturbing the grass. It's Robin.
-			<br><br>
-
-			"I hope I'm not being rude," <<he>> says. <<He>> watches you water with red eyes. "I heard someone watering out here, and thought it would be you."
-			<br><br>
-
-			<<link [[Hug (0:05)|Garden Robin Hug]]>><<pass 5>><<npcincr Robin love 1>><<npcincr Robin trauma -1>><<trauma -6>><</link>><<ltrauma>><<glove>><<lrtrauma>>
-			<br>
-			<<link [[Let Robin help (0:10)|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass 10>><</link>><<ltrauma>><<lstress>><<glove>>
-			<br>
-			<<link [[Say you're finished|Garden Robin Finished]]>><</link>>
-			<br>
-		<<else>>
-			You hear a gentle patter of footsteps disturbing the grass. It's Robin.
-			<br><br>
-
-			"I thought I heard you out here," <<he>> says, stepping closer. "Can I help?"
-			<br><br>
-
-			<<link [[Let Robin help (0:10)|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass 10>><</link>><<ltrauma>><<lstress>><<glove>>
-			<br>
-			<<link [[Say you're finished|Garden Robin Finished]]>><</link>>
-			<br>
-		<</if>>
-	<<elseif $rng gte 31 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
+<<set _robin to statusCheck("Robin")>>
+<<if $phase is "watering" and dangerEvent()>>
+	/* TODO: eventpool */
+	<<if random(1, 5) gte 4 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 		Something brushes against your leg. You shake it off, assuming it an insect, but it happens again. You look down, and see a stem curling around your ankle.
 		<br><br>
 
@@ -472,6 +443,34 @@ You decide not to investigate the source of the noise; you have your own things 
 		<<link [[Next|Garden Flowers]]>><</link>>
 		<br>
 	<</if>>
+<<elseif $phase is "watering" and _robin_location is "orphanage" and _robin.trauma lt 80 and $daily.robin.tending isnot 1>>
+	<<set $daily.robin.tending to 1>>
+	<<npc Robin>><<person1>>
+	<<if _robin.trauma gte 40>>
+		You hear a gentle patter of footsteps disturbing the grass. It's Robin.
+		<br><br>
+
+		"I hope I'm not being rude," <<he>> says. <<He>> watches you water with red eyes. "I heard someone watering out here, and thought it would be you."
+		<br><br>
+
+		<<link [[Hug (0:05)|Garden Robin Hug]]>><<pass 5>><<npcincr Robin love 1>><<npcincr Robin trauma -1>><<trauma -6>><</link>><<ltrauma>><<glove>><<lrtrauma>>
+		<br>
+		<<link [[Let Robin help (0:10)|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass 10>><</link>><<ltrauma>><<lstress>><<glove>>
+		<br>
+		<<link [[Say you're finished|Garden Robin Finished]]>><</link>>
+		<br>
+	<<else>>
+		You hear a gentle patter of footsteps disturbing the grass. It's Robin.
+		<br><br>
+
+		"I thought I heard you out here," <<he>> says, stepping closer. "Can I help?"
+		<br><br>
+
+		<<link [[Let Robin help (0:10)|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass 10>><</link>><<ltrauma>><<lstress>><<glove>>
+		<br>
+		<<link [[Say you're finished|Garden Robin Finished]]>><</link>>
+		<br>
+	<</if>>
 <<else>>
 	<<display_plot garden>>
 	<<if !$plants_known.includes("daisy")>>
@@ -482,8 +481,6 @@ You decide not to investigate the source of the noise; you have your own things 
 	<<getouticon>><<link [[Leave|Garden]]>><<handheldon>><</link>>
 	<br>
 <</if>>
-
-<<unset $event_trigger>>
 
 :: Garden Flowers Seeds
 
@@ -605,8 +602,8 @@ You feel exposed and humiliated as you look at the clothes held in <<his>> hand,
 You grab hold of a low branch and begin climbing the tree. You feel more exposed as you ascend, and hope the leaves and other trees will provide enough cover.
 <br><br>
 
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $danger gte (9900 - $allure) and $eventskip is 0>>
+
+<<if dangerEvent() and $eventskip is 0>>
 	<<if $rng gte 51 and $tentacledisable is "f" and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 		You're making sure your legs are secure when the branches jerk to life. Shoots bend towards you and entangle you, until you're surrounded and trapped.
 		<br><br>
