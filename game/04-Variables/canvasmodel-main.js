@@ -4045,7 +4045,7 @@ function filterFnArm(state, slot, options) {
 		case "secondary":
 			return altFilterSwap ? [`worn_${slot}`] : [`worn_${slot}_acc`];
 		case "pattern":
-			switch (options.worn[slot].pattern_layer) {
+			switch (options.worn[slot].setup.pattern_layer) {
 				case "tertiary":
 					return [];
 				case "secondary":
