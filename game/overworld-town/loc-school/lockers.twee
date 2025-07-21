@@ -60,6 +60,17 @@ You successfully pick the locks.
 		<<link [[Leave|School Lockers]]>><<handheldon>><</link>>
 		<br>
 	<</addinlineevent>>
+
+	<<if $studentCondomPrank and !$studentCondomPrank.test.seen and Time.date.timeStamp gte $studentCondomPrank.test.start and Time.date.timeStamp lt $studentCondomPrank.test.end>>
+		<<addinlineevent "condom prank result" 15>>
+			<<set $studentCondomPrank.test.seen to true>>
+			You rummage through the belongings, uncovering a positive pregnancy test beneath strewn aside books. A passing thought sends a shiver down your spine. <span class="lewd">With the condom pranks you've pulled, this could be evidence of your work backfiring.</span>
+			<br><br>
+
+			<<link [[Next|School Lockers]]>><<handheldon>><</link>>
+			<br>
+		<</addinlineevent>>
+	<</if>>
 <</if>>
 <<addinlineevent "Bus Fare" 0.3>>
 	<<wearProp "silver coin">>
@@ -272,6 +283,35 @@ You quickly pocket the condom. You need it more than they do. <<gcondoms 1>>
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 <<wearProp "condom">>
 You find a small pin in the locker, and use the tip to poke a tiny hole in the condom. <<promiscuity5>>
+
+<<script>>
+	if (V.studentCondomPrank && Time.date.timeStamp > V.studentCondomPrank.npc.end) {
+		delete V.studentCondomPrank;
+	}
+
+	if (100 / (20 -V.baseNpcPregnancyChance) >= random(1, 2) && !V.studentCondomPrank) {
+		const date = new DateTime(Time.date);
+		const days = random(7, 7 + V.humanPregnancyMonths*3);
+		const start = date.addDays(days).timeStamp;
+		const end = date.addDays(7).timeStamp;
+		const pregnancyStartDate = new DateTime(Time.date);
+		const pregnancyStart = pregnancyStartDate.addDays(V.humanPregnancyMonths*18).timeStamp;
+		const pregnancyEndDate = new DateTime(Time.date);
+		const pregnancyEnd = pregnancyEndDate.addMonths(V.humanPregnancyMonths).timeStamp;
+		V.studentCondomPrank = {
+			test: {
+				start: start,
+				end: end,
+				seen: false
+			},
+			npc: {
+				start: pregnancyStart,
+				end: pregnancyEnd,
+				seen: false
+			}
+		}
+	}
+<</script>>
 
 <<link [[Next|School Lockers]]>><<handheldon>><</link>>
 <br>
