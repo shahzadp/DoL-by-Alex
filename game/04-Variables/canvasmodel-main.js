@@ -4116,8 +4116,7 @@ function genlayer_clothing_fitted_left(slot, overrideOptions) {
 			return options.show_clothes
 				&& options.worn[slot].index > 0
 				&& options.worn[slot].setup.mainImage !== 0
-				&& options.worn[slot].setup.formfitting === 1
-				&& ["curvy", "slender"].includes(options.body_type);
+				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || options.body_type === "soft");
 		},
 	}, overrideOptions));
 }
