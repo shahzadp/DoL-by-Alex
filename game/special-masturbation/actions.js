@@ -605,7 +605,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 				if (breastsExposed() && V.player.breastsize >= 1) {
 					result.options.push({
 						action: "mbreastpump",
-						text: "Move to your <<breasts>>",
+						text: "Move to your <<breasts true>>",
 						colour: "sub",
 					});
 				}
