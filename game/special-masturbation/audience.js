@@ -355,7 +355,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 		case "mouthBreast":
 			resultArray.push(
 				`"Sucking on your own nipples, stupid slut."`,
-				`"Showing off how easy it is to such on your own large breasts? You really are a pervert."`,
+				`"Showing off how easy it is to suck on your own large breasts? You really are a pervert."`,
 				`"Can I suck on those tits too?"`
 			);
 			if (V.lactating && V.breastfeedingdisable === "f") {
