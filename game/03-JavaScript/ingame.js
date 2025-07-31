@@ -1938,7 +1938,7 @@ function getHalloweenCostume() {
 		return "karate";
 	} else if (upper.name === "monk's habit" && lower.name === "monk's habit skirt") {
 		return "monk";
-	} else if (upper.name === "padded football shirt" && lower.name === "football shorts") {
+	} else if (["football shirt", "foreign football shirt"].includes(upper.name) && ["football shorts", "foreign football shorts"].includes(lower.name)) {
 		return "football";
 	} else if (
 		(upper.name === "belly dancer's top" && lower.name === "belly dancer's bottoms") ||
