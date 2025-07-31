@@ -21,24 +21,42 @@
 	<<if random(1, 2500) is 1>>
 		<<set _toast to true>>
 	<</if>>
+
 	<<set $sleepHoursTotal to 0>>
 	<<set $_bonusFatigueLoss to 10>>
-	<!-- wearing sleep clothes -->
-	<<if $worn.upper.type.includes("sleep") or $worn.lower.type.includes("sleep")>>
-		<<set $_bonusFatigueLoss += 5>>
-	<</if>>
+
 	<!-- sleeping with others -->
 	<<if $bedGuest or $wolfbed is 1>>
 		<<set $_bonusFatigueLoss += 5>>
 	<</if>>
+
 	<!-- bonus for sleeping with Love Interests with the Mate For Life trait -->
 	<<if $bedGuest and $transformationParts.traits.mateForLife isnot "disabled" and isLoveInterest($bedGuest) and !$sleepWraith>>
 		<<set $_bonusFatigueLoss += 3>><<set $stress -= 10>><<set $trauma -= 1>><<set $arousal += 10>>
 	<</if>>
-	<!-- wearing any non-sleep clothing disables the sleep bonus (except under_upper and under_lower and anything else not listed here) -->
-	<<if !["over_upper", "over_lower", "upper", "lower", "over_head", "head", "face", "neck", "hands", "handheld", "legs", "feet"].every(slot => $worn[slot].type.includes("naked") || $worn[slot].type.includes("sleep") || $worn[slot].type.includes("eerie"))>>
-		<<set $_bonusFatigueLoss to 0>>
-	<</if>>
+
+	<<set $_bonusFatigueLossClothing to 3>>
+
+	<<for _slot range Object.keys($worn)>>
+		/* 
+			Wearing any non-sleep clothing disables the sleep bonus
+			under_upper and under_lower and anything else listed here are exempt from disabling the bonus
+			Non-sleep clothing is defined as anything not tagged with "sleep" or "eerie"
+		 */
+		<<if !["under_upper", "under_lower", "genitals"].includes(_slot)>>
+			<<if !["naked", "sleep", "eerie"].find((element) => $worn[_slot].type.includes(element))>>
+				<<set $_bonusFatigueLoss to 0>>
+				<<break>>
+			<</if>>
+		<</if>>
+
+		<!-- wearing sleep clothes -->
+		<<if $worn[_slot].type.includes("sleep")>>
+			<<set $_bonusFatigueLoss += $_bonusFatigueLossClothing>>
+			<<set $_bonusFatigueLossClothing to Math.clamp($_bonusFatigueLossClothing - 1, 1, 3)>>
+		<</if>>
+	<</for>>
+
 	<!-- sleeping in a poor/regular/comfy bed at home provides a -10/0/+10 bonus regardless of clothing -->
 	<<if $location is "home">>
 		<<set $_bed to Furniture.get('bed')>>
