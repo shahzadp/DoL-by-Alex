@@ -298,38 +298,42 @@ function effects() {
 	}
 
 	sWikifier("<<updateHallucinations>>");
-	switch (V.location) {
-		case "town":
-			if (V.flashbacktownready === 1 && V.controlled === 0) {
-				delete V.flashbacktownready;
-				sWikifier("<<flashbacktown>>");
-			}
-			break;
-		case "home":
-			if (V.flashbackhomeready === 1 && V.controlled === 0) {
-				delete V.flashbackhomeready;
-				sWikifier("<<flashbackhome>>");
-			}
-			break;
-		case "beach":
-			if (V.flashbackbeachready === 1 && V.controlled === 0) {
-				delete V.flashbackbeachready;
-				sWikifier("<<flashbackbeach>>");
-			}
-			break;
-		case "underground":
-			if (V.flashbackundergroundready === 1 && V.controlled === 0) {
-				delete V.flashbackundergroundready;
-				sWikifier("<<flashbackunderground>>");
-			}
-			break;
-		case "school":
-			if (V.flashbackschoolready === 1 && V.controlled === 0) {
-				delete V.flashbackschoolready;
-				sWikifier("<<flashbackschool>>");
-			}
-			break;
+
+	if (V.controlled === 0 && V.flashbacks >= 1) {
+		switch (V.location) {
+			case "town":
+				if (V.flashbacktownready === 1) {
+					delete V.flashbacktownready;
+					sWikifier("<<flashbacktown>>");
+				}
+				break;
+			case "home":
+				if (V.flashbackhomeready === 1) {
+					delete V.flashbackhomeready;
+					sWikifier("<<flashbackhome>>");
+				}
+				break;
+			case "beach":
+				if (V.flashbackbeachready === 1) {
+					delete V.flashbackbeachready;
+					sWikifier("<<flashbackbeach>>");
+				}
+				break;
+			case "underground":
+				if (V.flashbackundergroundready === 1) {
+					delete V.flashbackundergroundready;
+					sWikifier("<<flashbackunderground>>");
+				}
+				break;
+			case "school":
+				if (V.flashbackschoolready === 1) {
+					delete V.flashbackschoolready;
+					sWikifier("<<flashbackschool>>");
+				}
+				break;
+		}
 	}
+
 	// eslint-disable-next-line no-undef
 	if (isPregnancyEnding()) {
 		sWikifier(
