@@ -458,7 +458,61 @@ function updateClothesItem(slot, item, debug) {
 			break;
 		case "leather miniskirt":
 			item.one_piece = 0;
+			item.type.pushUnique("waterproof");
 			break;
+		case "catsuit":
+			item.type.pushUnique("waterproof");
+			break;
+		case "catsuit bottoms":
+			item.type.pushUnique("waterproof");
+			break;
+		case "cropped leather jacket":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather crop top":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather dress":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather jacket":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather leggings":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather pants":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather shorts":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather skirt":
+			item.type.pushUnique("waterproof");
+			break;
+		case "leather top":
+			item.type.pushUnique("waterproof");
+			break;
+		case "lederhosen bottoms":
+			item.type.pushUnique("waterproof");
+			break;
+		case "plastic nurse dress":
+			item.type.pushUnique("waterproof");
+			break;
+		case "plastic nurse skirt":
+			item.type.pushUnique("waterproof");
+			break;
+		case "puffer jacket":
+			item.type.pushUnique("waterproof");
+			break;
+		case "punk leather jacket":
+			item.type.pushUnique("waterproof");
+			break;
+		case "zipped leather crop top":
+			item.type.pushUnique("waterproof");
+			break;
+		case "zipped leather top":
+			item.type.pushUnique("waterproof");
 	}
 
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
