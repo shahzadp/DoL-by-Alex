@@ -261,19 +261,36 @@
 		<</if>>
 	<</if>>
 
-
 	<<if $transformdisable is "f">>
-		<<if ($wolfbuild gte 5 and $physicalTransform isnot 1) or ($wolfgirl gte 1 and $physicalTransform is 1)>>
-			<<wolfTransform $wolfgirl>>
-		<<elseif ($catbuild gte 5 and $physicalTransform isnot 1) or ($cat gte 1 and $physicalTransform is 1)>>
-			<<catTransform $cat>>
-		<<elseif ($cowbuild gte 5 and $physicalTransform isnot 1) or ($cow gte 1 and $physicalTransform is 1)>>
-			<<cowTransform $cow>>
-		<<elseif ($birdbuild gte 5 and $physicalTransform isnot 1) or ($harpy gte 1 and $physicalTransform is 1)>>
-			<<harpyTransform $harpy>>
-		<<elseif ($foxbuild gte 5 and $physicalTransform isnot 1) or ($fox gte 1 and $physicalTransform is 1)>>
-			<<foxTransform $fox>>
-		<</if>>
+		<<script>>
+			let manifestArray = [V.wolfgirl, V.cat, V.cow, V.harpy, V.fox];
+			var highestManifestIndex = manifestArray.indexOf(Math.max(...manifestArray));
+
+			if (manifestArray[highestManifestIndex] > 0) {
+				T.activeTransformIndex = highestManifestIndex;
+			} else {
+				let buildArray = [V.wolfbuild, V.catbuild, V.cowbuild, V.birdbuild, V.foxbuild];
+				let buildMax = Math.max(...buildArray);
+				let highestBuildIndex = buildArray.indexOf(buildMax);
+
+				if (buildArray.count(buildMax) === 1 && buildArray[highestBuildIndex] >= 5) {
+					T.activeTransformIndex = highestBuildIndex;
+				}
+			}
+		<</script>>
+
+		<<switch _activeTransformIndex>>
+			<<case 0>>
+				<<wolfTransform $wolfgirl>>
+			<<case 1>>
+				<<catTransform $cat>>
+			<<case 2>>
+				<<cowTransform $cow>>
+			<<case 3>>
+				<<harpyTransform $harpy>>
+			<<case 4>>
+				<<foxTransform $fox>>
+		<</switch>>
 	<</if>>
 <</widget>>
 
