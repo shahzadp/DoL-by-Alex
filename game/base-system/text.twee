@@ -2571,7 +2571,7 @@
 		<<elseif !$worn.under_upper.type.includes("naked")>>
 			<<undertop>>
 			<<set _undertop to _text_output>>
-			<<set _text_output to `<span class=\"lewd\">exposed ${_genitals}${!$worn.under_upper.type.includes("covered") ? " and "  + _undertop : ""}</span>. Your somewhat covered chest makes your bare lower half feel more conspicuous`>>
+			<<set _text_output to `<span class=\"lewd\">exposed ${_genitals}${!$worn.under_upper.type.includes("covered") ? " and " + _undertop : ""}</span>. Your somewhat covered chest makes your bare lower half feel more conspicuous`>>
 		<<else>>
 			<<set _text_output to "<span class=\"lewd\">exposed</span> ">>
 			<<if $player.breastsize gte 3>>
@@ -2872,37 +2872,62 @@
 	<</if>>
 <</silently>>_text_output<</widget>>
 
-<<widget "lewdness">><<silently>>
-	/* consider refactoring */
-	<<exposure>>
-	<<genitals>>
-	<<set _genitals to _text_output>>
-	<<undertop>>
-	<<set _undertop to _text_output>>
-	<<if $worn.under_lower.exposed gte 1 and $worn.lower.exposed gte 2 and $worn.over_lower.exposed gte 1 and $worn.upper.exposed lte 1>>
-		<<set _text_output to '<span class="lewd">exposed _genitals</span>'>>
-	<<elseif $worn.under_lower.exposed lte 0 and $worn.lower.exposed gte 2 and $worn.over_lower.exposed gte 1 and $worn.upper.exposed lte 1 and !$worn.under_lower.type.includes("covered")>>
-		<<set _text_output to '<span class="lewd">exposed $worn.under_lower.name</span>'>>
-	<<elseif $worn.over_upper.exposed gte 1 and $worn.upper.exposed gte 2 and $worn.over_lower.exposed gte 1 and $worn.lower.exposed lte 1 and $player.gender_appearance is "m" and $player.sex is "m">>
-		<<set _text_output to '<span class="lewd">lewdness</span>'>>
-	<<elseif $worn.over_upper.exposed gte 1 and $worn.upper.exposed gte 2 and $worn.lower.exposed lte 1 and !$worn.under_upper.type.includes("covered")>>
-		<<set _text_output to '<span class="lewd">exposed _undertop</span>'>>
-	<<elseif $worn.over_upper.exposed gte 1 and $worn.upper.exposed gte 2 and $worn.lower.exposed gte 2 and $worn.under_lower.exposed lte 0 and !$worn.under_lower.type.includes("covered") and $player.gender_appearance is "m" and $player.sex is "m">>
-		<<set _text_output to '<span class="lewd">exposed $worn.under_lower.name</span>'>>
-	<<elseif $worn.over_upper.exposed gte 1 and $worn.upper.exposed gte 2 and $worn.over_lower.exposed gte 1 and $worn.lower.exposed gte 2 and $worn.under_lower.exposed lte 0 and !$worn.under_lower.type.includes("covered") and !$worn.under_upper.type.includes("covered")>>
-		<<set _text_output to '<span class="lewd">exposed _undertop and $worn.under_lower.name</span>'>>
-	<<elseif $worn.under_lower.exposed gte 1 and $worn.lower.exposed gte 2 and $worn.over_lower.exposed gte 1 and $player.gender_appearance is "m" and $player.sex is "m">>
-		<<set _text_output to '<span class="lewd">exposed _genitals</span>'>>
-	<<elseif $worn.over_upper.exposed gte 1 and $worn.upper.exposed gte 2 and $worn.lower.exposed gte 2 and $worn.under_lower.exposed gte 1 and !$worn.under_upper.type.includes("covered")>>
-		<<if $player.penisExist and $player.vaginaExist and !playerChastity()>>
-			<<set _text_output to '<span class="lewd">exposed _undertop, _genitals</span>'>>
-		<<else>>
-			<<set _text_output to '<span class="lewd">exposed _undertop and _genitals</span>'>>
+<<widget "lewdness">>
+	<<silently>>
+		<<exposure>>
+
+		<<genitals>><<set _genitals_text to _text_output>>
+		<<breasts>><<set _breasts_text to _text_output>>
+
+		<<set _text_output to "">>
+		<<set _exposed to false>>
+		<<set _wet to false>>
+
+		<<if $worn.upper.exposed gte 1 or $upperwetstage gte 3>>
+			<<if $upperwetstage gte 3 or $underupperwetstage gte 3>>
+				<<set _text_output += "visible ">>
+				<<set _wet to true>>
+			<<else>>
+				<<set _text_output += "exposed ">>
+				<<set _exposed to true>>
+			<</if>>
+			<<if $player.gender_appearance is "m" and $player.sex is "m" and $worn.lower.exposed lte 0 and $lowerwetstage lt 3>>
+				<<set _text_output += "chest">>
+			<<elseif $worn.under_upper.exposed gte 1 or $underupperwetstage gte 3>>
+				<<set _text_output += _breasts_text>>
+			<<else>>
+				<<set _text_output += $worn.under_upper.name>>
+			<</if>>
 		<</if>>
-	<<else>>
-		<<set _text_output to '<span class="lewd">lewdness</span>'>>
-	<</if>>
-<</silently>>_text_output<</widget>>
+
+		<<if $worn.lower.exposed gte 1 or $lowerwetstage gte 3>>
+			<<if _text_output isnot "">>
+				<<set _text_output += " and ">>
+			<</if>>
+
+			<<if _wet is false and ($lowerwetstage gte 3 or $underlowerwetstage gte 3)>>
+				<<if _text_output isnot "">>
+					<<set _text_output += "your ">>
+				<</if>>
+
+				<<set _text_output += "visible ">>
+			<<elseif !_exposed and $lowerwetstage lt 3 and $underlowerwetstage lt 3>>
+				<<if _text_output isnot "">>
+					<<set _text_output += "your ">>
+				<</if>>
+
+				<<set _text_output += "exposed ">>
+			<</if>>
+			<<if $worn.under_lower.exposed gte 1 or $underlowerwetstage gte 3>>
+				<<set _text_output += _genitals_text>>
+			<<else>>
+				<<set _text_output += $worn.under_lower.name>>
+			<</if>>
+		<</if>>
+	<</silently>>
+
+	<span class="lewd">_text_output</span>
+<</widget>>
 
 <<widget "flaunting">>
 	<<exposure>>/*Makes sure your clothing state is up to date*/
@@ -3097,30 +3122,6 @@
 	<<exposure>>
 
 	<<if $exposed gt 0>>
-
-		/* calculating section */
-		<<silently>>
-			<<genitals>><<set _genitals_text to _text_output>>
-			<<breasts>><<set _breasts_text to _text_output>>
-		<</silently>>
-
-		<<set _parts to "">>
-		<<if $worn.upper.exposed gte 2>>
-			<<if $player.gender_appearance is "m" and $player.sex is "m" and $worn.lower.exposed lte 0>>
-				<<set _parts += "chest">>
-			<<else>>
-				<<set _parts += ($worn.under_upper.exposed gte 1 ? _breasts_text : $worn.under_upper.name)>>
-			<</if>>
-		<</if>>
-		<<if $worn.lower.exposed gte 2>>
-			<<if _parts isnot "">>
-				<<set _parts += " and ">>
-			<</if>>
-			<<set _parts += ($worn.under_lower.exposed gte 1 ? _genitals_text : $worn.under_lower.name)>>
-		<</if>>
-
-		/* text output section */
-
 		<<if pcAreArmsBound("both") and $exposed gte 1>>
 			With your arms bound, there's little you can do to shield your <<lewdness>> from prying eyes.
 			<<if !$uncomfortable.nude and $exposed gte 2 and hasSexStat("exhibitionism", 6)>>
@@ -3129,18 +3130,10 @@
 				You quiver with excitement.
 			<</if>>
 		<<elseif ($exposed gte 2 and ($exhibitionism lt 95 or $uncomfortable.nude))
-			or ($exposed is 1 and ($exhibitionism lt 55 or $uncomfortable.nude))>>
-			<<if _parts isnot "">>
-				You cover your <span class="lewd">exposed _parts</span> with your hands.
-			<<else>>
-				You cover the <span class="lewd">lewder</span> parts of your outfit with your hands.
-			<</if>>
+			or ($exposed is 1 and ($exhibitionism lt 55 or $uncomfortable.underwear))>>
+			You cover your <<lewdness>> with your hands.
 		<<else>>
-			<<if _parts isnot "">>
-				You quiver with excitement from your <span class="lewd">exposed _parts</span>.
-			<<else>>
-				The <span class="lewd">lewder</span> parts of your outfit make you quiver with excitement.
-			<</if>>
+			You quiver with excitement from your <<lewdness>>.
 		<</if>>
 		<<embarrassment>>
 	<</if>>
