@@ -249,8 +249,6 @@ function updateClothesItem(slot, item, debug) {
 	// transfer new properties from itemRef to the item
 	const itemRef = setup.clothes[slot][clothesIndex(slot, item)];
 	for (const key in itemRef) {
-		// one_piece fix for items that shouldn't have it set
-		if (["school pinafore", "plaid school pinafore"].includes(item.name) && item.one_piece === 1) item.one_piece = 0;
 		if (skip.includes(key)) continue;
 		if (key === "hoodposition" && V.objectVersion.updateClothes >= 31) continue;
 		if (key === "outfitPrimary") {
@@ -291,8 +289,12 @@ function updateClothesItem(slot, item, debug) {
 		((!item.colour || item.colour === 0 || item.colour === "original") && itemRef.colour_options.length > 0) ||
 		((!item.accessory_colour || item.accessory_colour === 0) && itemRef.accessory_colour_options?.length > 0) ||
 		((!item.pattern || item.pattern === 0) && itemRef.pattern_options?.length > 0)
-	)
+	) {
 		updateClothingColours(item, itemRef);
+	}
+
+	// one_piece fix for items that shouldn't have it set
+	if (["school pinafore", "plaid school pinafore"].includes(item.name) && item.one_piece === 1) item.one_piece = 0;
 
 	// Clothing warmth
 	if (item.warmth !== itemRef.warmth) item.warmth = itemRef.warmth;
@@ -302,6 +304,7 @@ function updateClothesItem(slot, item, debug) {
 	if (item.accessory_colour_combat !== undefined && itemRef.colour_options.length === 0) item.accessory_colour = 0;
 	// end of fix
 	if (slot === "genitals") return;
+
 	// put renamed clothes and updated types here
 	switch (item.name) {
 		case "Crop top":
@@ -449,7 +452,15 @@ function updateClothesItem(slot, item, debug) {
 			item.name = "nurse hat";
 			item.name_cap = "Nurse hat";
 			break;
+		case "sexy priest's vestments":
+			item.exposed = 1;
+			item.exposed_base = 1;
+			break;
+		case "leather miniskirt":
+			item.one_piece = 0;
+			break;
 	}
+
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
 }
 
