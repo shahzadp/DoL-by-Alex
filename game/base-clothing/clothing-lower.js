@@ -6847,7 +6847,7 @@ function initLower() {
 			reveal: 800,
 			rearresize: 0,
 			word: "a",
-			one_piece: 1,
+			one_piece: 0,
 			skirt: 1,
 			skirt_down: 1,
 			short: 0,
