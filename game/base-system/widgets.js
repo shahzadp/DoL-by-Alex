@@ -344,7 +344,7 @@ function genderappearancecheck() {
 		// if herm pc and perfect 0 apparent_femininity
 		T.gender_appearance = genderAppearanceHermTiebreak();
 	} else {
-		T.gender_appearance = V.player.gender;
+		T.gender_appearance = V.player.sex;
 	}
 	if (T.apparent_femininity_noow > 0) {
 		T.gender_appearance_noow = "f";
@@ -353,7 +353,7 @@ function genderappearancecheck() {
 	} else if (V.player.sex === "h") {
 		T.gender_appearance_noow = genderAppearanceHermTiebreak();
 	} else {
-		T.gender_appearance_noow = V.player.gender;
+		T.gender_appearance_noow = V.player.sex;
 	}
 }
 
