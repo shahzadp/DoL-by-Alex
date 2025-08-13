@@ -465,6 +465,37 @@ Should probably be removed once said feature has been implemented
 	<<if !$chosen_recipe>><<set $chosen_recipe to "none">><</if>>
 <</widget>>
 
+<<widget "avery_food_select">>
+	<<unset $chosen_recipe>>
+	<<set _food_keys to Object.keys(setup.plants)>>
+	<<set _possible_recipes to []>>
+	<<set $_foodOptions to Object.entries(clone(setup.plants)).filter(([key, item]) => item.ingredients?.length && item.type !== "ingredient")>>
+	
+	<<if C.npc.Avery.dom gte 75>>
+		<<set $_difficulty to 4>>
+	<<elseif C.npc.Avery.dom gte 50>>
+		<<set $_difficulty to 3>>
+	<<elseif C.npc.Avery.dom gte 25>>
+		<<set $_difficulty to 2>>
+	<<else>>
+		<<set $_difficulty to 1>>
+	<</if>>
+	<<for $_difficulty to 1; $_difficulty lt 5; $_difficulty++>>
+		<<run $_foodOptions.forEach(([key, item]) => {
+			if (item.difficulty is $_difficulty) {
+				_possible_recipes.pushUnique(key);
+			}
+		})>>
+		<<if _possible_recipes.length>>
+			<<set $chosen_recipe to _possible_recipes.pluck()>>
+			<<break>>
+		<</if>>
+	<</for>>
+	
+	<<if !$chosen_recipe>><<set $chosen_recipe to "none">><</if>>
+	<<set $avery_mansion.food to $chosen_recipe>>
+<</widget>>
+
 <<widget "food_gift_list">>
 	<<set _food_keys to Object.keys(setup.plants)>>
 	<<for _i to 0; _i lt _food_keys.length; _i++>>
@@ -660,7 +691,7 @@ Should probably be removed once said feature has been implemented
 			<<case "samosa">>
 				"You can experiment with different shapes in your own time. For now, we're learning how to make them in triangles."
 			<<case "sausage_roll">>
-				"You've already learned how to make sausages. Now it's time to put them to use."
+				"We've talked a bit about sausages. Now it's time to put them to use."
 			<<case "scone">>
 				"Unflavoured, but don't be afraid to experiment in your own time. You could put anything in a scone." <<He>> pauses. "Almost anything."
 			<<case "shortbread">>

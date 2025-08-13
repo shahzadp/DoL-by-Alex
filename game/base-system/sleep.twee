@@ -76,7 +76,9 @@
 	<!-- if you select "just sleep", then you wake up when tiredness hits 0, or after 10 hours. -->
 	<<for $sleephour gte 1 or $sleephour lte -1>>
 		<<set $sleephour -= 1>>
-
+		<<if $avery_mansion and $bus is "avery_bedroom">>
+			<<avery_mansion>>
+		<</if>>
 		<<switch $location>>
 			<<case "home">>
 				<<set _robin to statusCheck("Robin")>>
@@ -286,8 +288,27 @@
 						<<break>>
 					<</if>>
 				<</if>>
+			<<case "avery_mansion">>
+				<<avery_mansion_interrupt>>
+				<<if _avery_interrupt is "injury">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "work">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "party_missed">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "date_ready">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "party_prepare">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "party">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif _avery_interrupt is "skyscraper_ready">>
+					<<set _sleepinterrupt to 1>>
+				<<elseif Time.hour gte 0 and Time.hour lte 4 and $avery_mansion.schedule isnot "away" and $avery_mansion.sleep_interrupt isnot 1>>
+					<<set _sleepinterrupt to 1>>
+					<<set $avery_mansion.sleep_interrupt to 1>>
+				<</if>>
 		<</switch>>
-
 		<!-- this will stop sleep from happening, meaning no fatigue reduction or time passing -->
 		<<if _sleepinterrupt>>
 			<<break>>
@@ -401,6 +422,9 @@
 		<<case "Pirate Bed Lie">>
 			<<set $_storeLocation to "Pirate Bed Lie">>
 			<<set $wardrobe_location to "pirate">>
+		<<case "Mansion Bed">>
+			<<set $_storeLocation to "Mansion Bed">>
+			<<set $wardrobe_location to "avery_mansion">>
 		<<default>>
 			Something went wrong with the "bedclotheson" widget, please report
 			<<run console.log('Something went wrong with the "bedclotheson" widget, please report')>>

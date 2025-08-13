@@ -673,6 +673,43 @@ statDisplay.create("gggdom", npc => {
 	return statDisplay.statChange(`${targetName} Dominance`, 3, "purple");
 });
 
+statDisplay.create("lfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, -1, "red");
+});
+statDisplay.create("llfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, -2, "red");
+});
+statDisplay.create("lllfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, -3, "red");
+});
+statDisplay.create("gfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, 1, "green");
+});
+statDisplay.create("ggfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, 2, "green");
+});
+statDisplay.create("gggfrustration", npc => {
+	let targetName = "";
+	if (npc) targetName = npc + "'s";
+	else if (V.npc.length >= 2) targetName = V.npc[0] + "'s";
+	return statDisplay.statChange(`${targetName} Frustration`, 3, "green");
+});
+
 statDisplay.create("lrespect", () => statDisplay.statChange("Respect", -1, "red"));
 statDisplay.create("llrespect", () => statDisplay.statChange("Respect", -2, "red"));
 statDisplay.create("lllrespect", () => statDisplay.statChange("Respect", -3, "red"));

@@ -57,6 +57,29 @@
 		<<techicon "usb">><<link [[Offer USB from the farmland manor|Pub Farm USB]]>><<unset $farm_manors_usb>><</link>>
 		<br>
 	<</if>>
+	<<if $avery_mansion>>
+
+		
+		<<if (!$avery_mansion.landry_told or $avery_mansion.landry_told is 1) and ($avery_fate is "fallen" or $avery_fate is "kicked" or $avery_fate is "saved")>>
+			<<ind>><<link [[Tell Landry about what happened in the skyscraper|Pub Avery Stones Tell 2]]>><<set $avery_mansion.landry_told to 2>><</link>>
+			<br>
+			<<ind>><<link [[Get angry with Landry about what happened in the skyscraper|Pub Avery Stones Tell Angry]]>><<set $avery_mansion.landry_told to 2>><</link>>
+			<br>
+		<<elseif !$avery_mansion.landry_told and $fake_artefact is "Avery">>
+			<<link [[Tell Landry you've replace the stones|Pub Avery Stones Tell]]>><<set $avery_mansion.landry_told to 1>><</link>>
+			<br>
+		<</if>>
+		/*
+		<<if $avery_mansion.landry gte 2 and $avery_mansion.fake_stones is 1>>
+			<<link [[Ask about replacement wishing stones|Pub Avery Fake Stones]]>><</link>>
+			<br>
+		<</if>>
+		 */
+	<</if>>
+	<<if (($fake_artefact is "pc" or $fake_artefact is "Avery") and $avery_fate isnot "fallen" and $avery_fate isnot "kicked") and C.npc.Avery.state is "dismissed" and !$avery_card_gift>>
+		<<ind>> in the door. The rest will be up to yo<<link [[Tell Landry you need a way to get back in Avery's good graces|Pub Avery Card]]>><</link>>
+		<br>
+	<</if>>
 	<br>
 <</widget>>
 
@@ -224,59 +247,77 @@ Deciding there's no chance of danger in public like this, you agree. <<He>> lead
 <br>
 
 :: Pub Landry
-
 <<set $outside to 0>><<set $location to "pub">><<effects>><<set $bus to "harvest">>
 
 <<if $phase is 1>>
 	<<endevent>><<npc Landry>><<person1>>
 	You walk back to Landry's table. "What's your plan now?" <<he>> asks.
-<<else>>
+	<br><br>
+	<<landryoptions>>
+	<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+	<br>
+<<elseif $fake_artefact is undefined and $skulduggery gte 600 and C.npc.Avery.init is 1 and !$avery_fate or ($avery_mansion and $avery_mansion.landry is 1)>>
+	<<npc Landry>><<person1>><<npc Avery 1>>
+	You ask the bartender for Landry, who nods and beckons you over to your usual table. Someone's sitting in your usual spot, hunched forwards and speaking in a hushed tone. They wear a dark green cloak with a hood.
+	<<if $transformationParts.fox.ears or $transformationParts.wolf.ears or $transformationParts.wolf.ears>>
+		Thanks to your sharp hears, you're just able to make out what they're saying.
+	<</if>>
+	<br><br>
+	"...Cloister uses a similar reactive dust for their chastity exams. Very similar. It's a toned down version of what the Children use, in fact. It normally reacts with natural oils secreted by the human body, but there are more... explosive reactions, too. We add a small reservoir of mercury behind a stopper made of the stuff. When it dissolves in reaction to the chemicals they use in their ritual, it'll flow out. It'll be like completing a circuit, and it'll-"
+	<br><br>
+	They suddenly stop. <span class="red">Their head tilts in your direction.</span> Landry immediately raises <<his>> hand. "It's okay. <<pShes>> here to see me."
+	<br><br>
+	The mysterious figure nods and stands. They turn, revealing that their face is obscured by a brown fox mask. It's almost identical to the ones you saw at Remy's party. They stride past you without saying a word, and exit the Pub.
+	<br><br>
+	You take your seat. "Awfully useful, that one," Landry says. "No one ever pays <<him>> any mind, or ever seems to remember <<hes>> been somewhere. Not all old dogs need new tricks I guess."
+	<br><br>
+	<<link [[Next|Pub Avery Note]]>><</link>>
+	<br>
+<<elseif ($wren_intro isnot undefined or $wrenSeen?.includesAny("cards", "prison")) and ($prison?.wren_names is 2 or crimeSumCurrent() gte 5000 or $fame.social gte 600) and $wrenHeist is undefined and Time.hour lte 17>>
 	<<npc Landry>><<person1>>You ask the bartender for Landry, who nods and beckons you over to your usual table. You've barely sat down when
-	<<if ($wren_intro isnot undefined or $wrenSeen?.includesAny("cards", "prison")) and ($prison?.wren_names is 2 or crimeSumCurrent() gte 5000 or $fame.social gte 600) and $wrenHeist is undefined and Time.hour lte 17>>
-		<<set $wrenHeist to false>><<set $wrenHeistMonthly to 30>>
+	<<set $wrenHeist to false>><<set $wrenHeistMonthly to 30>>
 
-		<<npc Wren 2>><<person2>>there's a small disturbance at the front of the pub. Landry sighs and leaves to investigate. You're about to follow when someone sits across from you. <span class="gold">It's Wren.</span>
-		<br><br>
-		"Fancy running into you here," <<he>> says.
-		<br><br>
-		<<if $speech_attitude is "meek">>
-			"W-what are you doing here?" you ask.
-		<<elseif $speech_attitude is "bratty">>
-			"Let me guess," you say with a smirk.
-		<</if>>
-
-		<<if $wrenSeenLast is "cards">>
-			<<if $speech_attitude is "meek">>
-				"Sorry, but I-I can't play cards right now..."
-			<<elseif $speech_attitude is "bratty">>
-				"You want to swindle me out of my clothes? Well, I'm too busy to play your games right now."
-			<<else>>
-				"Looking for a game?" you ask. "Sorry, but I'm busy."
-			<</if>>
-			<br><br>
-			"Not this time," <<he>> says lightly.
-		<<else>>
-			<<if $speech_attitude is "meek">>
-				"I-I'm not here to do anything to Landry, I promise..."
-			<<elseif $speech_attitude is "bratty">>
-				"You want to rope me into stealing from Landry? Not on your life."
-			<<else>>
-				"Looking for a partner-in-crime?" you ask. "Sorry, but I won't steal from Landry."
-			<</if>>
-			<br><br>
-			"Easy, <<girl>>. That's not why I'm here," <<he>> says.
-		<</if>>
-		<br><br>
-		"I've got something different in mind. Something that will benefit both of us. A job." <<He>> grins at you. "Interested?"
-		<br><br>
-
-		<<link [[Listen to what Wren has to say|Wren Heist Intro]]>><</link>>
-		<br>
-		<<link [[Decline Wren's offer|Wren Heist Intro End]]>><<set $phase to 0>><<npcincr Wren love -1>><</link>><<llove "Wren">>
-		<<exit>>
+	<<npc Wren 2>><<person2>>there's a small disturbance at the front of the pub. Landry sighs and leaves to investigate. You're about to follow when someone sits across from you. <span class="gold">It's Wren.</span>
+	<br><br>
+	"Fancy running into you here," <<he>> says.
+	<br><br>
+	<<if $speech_attitude is "meek">>
+		"W-what are you doing here?" you ask.
+	<<elseif $speech_attitude is "bratty">>
+		"Let me guess," you say with a smirk.
 	<</if>>
 
-	Landry arrives and sits opposite you.
+	<<if $wrenSeenLast is "cards">>
+		<<if $speech_attitude is "meek">>
+			"Sorry, but I-I can't play cards right now..."
+		<<elseif $speech_attitude is "bratty">>
+			"You want to swindle me out of my clothes? Well, I'm too busy to play your games right now."
+		<<else>>
+			"Looking for a game?" you ask. "Sorry, but I'm busy."
+		<</if>>
+		<br><br>
+		"Not this time," <<he>> says lightly.
+	<<else>>
+		<<if $speech_attitude is "meek">>
+			"I-I'm not here to do anything to Landry, I promise..."
+		<<elseif $speech_attitude is "bratty">>
+			"You want to rope me into stealing from Landry? Not on your life."
+		<<else>>
+			"Looking for a partner-in-crime?" you ask. "Sorry, but I won't steal from Landry."
+		<</if>>
+		<br><br>
+		"Easy, <<girl>>. That's not why I'm here," <<he>> says.
+	<</if>>
+	<br><br>
+	"I've got something different in mind. Something that will benefit both of us. A job." <<He>> grins at you. "Interested?"
+	<br><br>
+
+	<<link [[Listen to what Wren has to say|Wren Heist Intro]]>><</link>>
+	<br>
+	<<link [[Decline Wren's offer|Wren Heist Intro End]]>><<set $phase to 0>><<npcincr Wren love -1>><</link>><<llove "Wren">>
+	<<exit>>
+<<else>>
+	<<npc Landry>><<person1>>You ask the bartender for Landry, who nods and beckons you over to your usual table. You've barely sat down when Landry arrives and sits opposite you.
 	<br><br>
 
 	"What have you got for me?" <<he>> asks.
@@ -287,12 +328,12 @@ Deciding there's no chance of danger in public like this, you agree. <<He>> lead
 			"If you're looking for our friend, they're still lying low. Should be ready to see you <span class="gold"><<if $pubfame.timer gt 1>>in <<number $pubfame.timer>> days<<else>>tomorrow<</if>></span>."
 		<</if>>
 	<</if>>
+	<br><br>
+	<<landryoptions>>
+	<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+	<br>
 <</if>>
-<br><br>
 
-<<landryoptions>>
-<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
-<br>
 
 :: Pub Spray
 <<wearProp "pepperspray">>
@@ -947,13 +988,418 @@ You withdraw your hand and give <<him>> a scandalised look.
 :: Pub Farm USB
 <<effects>>
 
-You push the USB from the farm manor across the table. Landry looks at it like it was a live snake. "You got this from the farmlands?" <<he>> asks. "Do they know you have it?"
+You push the USB from the farm manor across the table. Landry leans back, like it was a live snake. "You got this from the farmlands?" <<he>> asks. "Do they know you have it?"
 <br><br>
 
 You shake your head. Landry nods with satisfaction, and takes the USB. "Something for your trouble." <<He>> pushes a wad of notes across the table. You've made <<moneyGain 500>>
 <br><br>
 
 "Anything else?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Note
+<<effects>>
+<<if $avery_mansion and $avery_mansion.landry is 1>>
+	<<set $avery_mansion.landry to 2>>
+	<<if $speech_attitude is "meek">>
+		"Someone bumped into me near Danube Street," you say. "They dropped a note, telling me to find a friend here. Is that you?"
+	<<elseif $speech_attitude is "bratty">>
+		"Someone gave me a note near Danube Street," you say. "Telling me to come here. You wouldn't happen to have anything to do with it, would you?"
+	<<else>>
+		"Someone bumped into me near Danube Street," you say. "Someone sent them. That wouldn't happen to be you, would it?"
+	<</if>>
+	<br><br>
+
+	Landry smiles. "Danube Street? I hear you've a home there now. Hooking up with Avery. Moving up in the world." <<He>> leans forward. "Now that you mention it, <span class="gold">I have a proposition for you.</span>"
+	<br><br>
+	<<He>> smiles. "Somewhere in that mansion is a vault." <<person1>><<He>> leans closer. "It protects one thing only. This."
+	<br><br>
+<<else>>
+	"I've a proposition for you." <<He>> smiles. "There's this local <<if $NPCList[1].gender is "f">>businessman<<else>>businesswoman<</if>>, <span class="red">Avery,</span> that I've had my eye on for a while. So imagine my surprise when I heard <<nnpc_he Avery>>'d gained an interest in someone as sly as you."
+	<br><br>
+	"You know <<nnpc_he Avery>> has a very attractive mansion off Danube Street. Somewhere in that mansion is a vault." <<person1>><<He>> leans closer. "It protects one thing only. This."
+	<br><br>
+<</if>>
+
+Landry produces white bundle, and unravels it. <span class="pink">A white so pale.</span>
+<br><br>
+<<link [[Next|Pub Avery Stones]]>><<set $fake_artefact to "pc">><</link>>
+<br>
+
+:: Pub Avery Stones
+<<effects>>
+<<npc Avery 2>>
+"They're called wishing stones," Landry says. "Or clutching bones. Not sure if they're actually bones. Regardless, they're important to Avery."
+<br><br>
+"More importantly, these are fake. Here's my proposition. <span class="gold">I want you to infiltrate Avery's mansion, open <<person2>><<his>> vault, and replace the real stones with this forgery."</span> <<person1>><<He>> folds the clothes over the fake stones, and pushes them towards you. "I know of only one other who's become close enough with Avery to reach <<person2>><<his>> inner sanctum. <<pShe>> did it by moving in with <<him>>, and playing <<his>> game."
+<br><br>
+<<if C.npc.Avery.state is "dismissed">>
+	"Easier said than done." <<He>> continues. "I heard you manage to shake <<him>> off your tail. That's no matter. <span class="gold">Give <<person2>><<him>> this."</span> Landry reaches into <<person1>><<his>> pocket, and produces a thin card in a protective case. <<He>> slides it across the table. It's from an old collectible game. "Should get your foot in the door. The rest will be up to you."
+	<<set $avery_card_gift to true>>
+	<br><br>
+<</if>>
+You reach for the fake stones. Landry's smile falters as you touch them. "Be gentle with them," <<he>> says. "We used illegal components. Had to. Damage could release nasty chemicals into the air. They'd be hard to replace as well."
+<br><br>
+
+<<link [[Ask what's in it for you|Pub Avery Stones Ask]]>><</link>>
+<br>
+<<link [[Say you'll do it|Pub Avery Stones Accept]]>><</link>>
+<br>
+<<link [[Refuse|Pub Avery Stones Refuse]]>><</link>>
+<br>
+
+:: Pub Avery Card
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Avery is upset with me," you say. "Is there any way you could help?"
+<<elseif $speech_attitude is "bratty">>
+	"I need to get back in Avery's good books," you say. "Any way you can help?"
+<<else>>
+	"Avery and I aren't on speaking terms," you say. "Is there any way you could help?"
+<</if>>
+<br><br>
+
+Landry reaches into <<person1>><<his>> pocket, and produces a thin rectangle in a protective case. <<He>> slides it across the table. It's from an old collectible card game. "Should get your foot in the door. The rest will be up to you."
+<<set $avery_card_gift to true>>
+<br><br>
+
+"Have anything else for me?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Ask
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"That sounds very dangerous," you say. "What do I get in return."
+<<elseif $speech_attitude is "bratty">>
+	"What's in it for me?" you ask.
+<<else>>
+	"What do I get in return?" you ask.
+<</if>>
+<br><br>
+
+Landry pauses for a moment, thinking over <<person1>><<his>> words. <span class="red">"If you want to destroy Avery,</span> then replace <<person2>><<his>> stones with mine. Avery runs in esoteric circles. They've trusted <<person2>><<him>> with this artefact, or soon will. When the stones are revealed to be fake, <<his>> plans will crumble. There's no reward. If our goals align, they align, and we can work together."
+<br><br>
+
+<<person1>><<He>> leans back. "I'm sure someone as enterprising as you will be able to squeeze Avery in other ways. Must be a lot of nice loot in that place. Though I shouldn't have to tell you this will be dangerous, and there's no rush. Avery plays a long game, and so do we."
+<br><br>
+
+"Thanks for indulging me. Now, what can I do for you?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+
+:: Pub Avery Stones Accept
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I'll try," you say. "If you think I'm up to it."
+<<elseif $speech_attitude is "bratty">>
+	"Fine," you say. "I'll soon have Avery wrapped around my finger."
+<<else>>
+	"I'll do it," you say. "Sounds exciting."
+<</if>>
+<br><br>
+
+Landry smiles. "Excellent. Avery runs in esoteric circles. They've trusted <<person2>><<him>> with this artefact, or soon will. When the stones are revealed to be fake, <<his>> plans will crumble. <span class="red">Replace the stones, and Avery will be destroyed."</span>
+<br><br>
+
+<<person1>><<He>> leans back. "I shouldn't have to tell you it will be dangerous. There's no rush. Avery plas a long game, and so do we."
+<br><br>
+"Thanks for indulging me. Now, what can I do for you?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+
+:: Pub Avery Stones Refuse
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I'm sorry," you say. "This sounds too dangerous."
+<<elseif $speech_attitude is "bratty">>
+	"Sounds like you want me to do all the dangerous work while you sit here drinking beer," you say.
+<<else>>
+	"Sounds too dangerous for me I'm afraid."
+<</if>>
+<br><br>
+
+"You're right," Landry says. "It would be incredibly dangerous. Keep the fake stones, in case you reconsider. There's no one else who could get so close to Avery. Not with the skills to pull it off."
+<br><br>
+
+"I won't hide my motives. <span class="red">I want to destroy Avery.</span> Replacing those stones would accomplish that. <<person2>><<He>> runs in esoteric circles. They've trusted <<him>> with this artefact, or soon will. When the stones are revealed to be fake, <<his>> plans will crumble. <span class="red">Replace the stones, and Avery will be destroyed."</span>
+<br><br>
+
+<<person1>><<He>> leans back. "There's no rush. Avery plays a long game, and so do we. Thanks for indulging me. Now, what can I help you with?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+
+/*
+:: Pub Avery Nod Note
+<<effects>>
+Reworked
+You nod, and Landry leans back with a smile. "Anything else?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Nod Point
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"That's very generous of you," you say. "But Avery is also generous. And rich. You want me to betray <<nnpc_him Avery>>?"
+<<elseif $speech_attitude is "bratty">>
+	"You want me to betray Avery for a sum <<nnpc_he Avery>>'d find down <<nnpc_his Avery>> sofa?" you ask.
+<<else>>
+	"That's not much money for Avery," you say.
+<</if>>
+<br><br>
+
+Landry laughs. "I know. Wasn't my decision, that reward, believe me." <<He>> glances towards the front of the pub. "The £10000 would be from some friends of mine. They're a bit out of touch I'm afraid. But they're strong. The sort your Bailey has to tiptoe around, or risk being crushed. They have things, and do things, money can't buy. Friends like that would be good to have, no?"
+<br><br>
+
+"No pressure. Just keep an eye out." <<He>> leans back. "Anything else?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Give
+<<effects>>
+
+You reach for the stones. A strength runs through your fingers as you touch them. Landry observes you, and raises an eyebrow.
+<br><br>
+"You have something for me?"
+<br><br>
+
+<<link [[Give Landry the stones|Pub Avery Stones 2]]>><</link>>
+<br>
+<<link [[Reconsider|Pub Avery Stones Reconsider]]>><</link>>
+<br>
+
+
+:: Pub Avery Stones Reconsider
+<<effects>>
+
+You shake your head. Landry observes you, <<his>> face giving nothing away.
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+ 
+:: Pub Avery Stones 2
+<<effects>>
+
+<<set $auriga_artefact to "Landry">>
+
+Landry just looks at the stones for a moment, transfixed as if in wonder. "To be honest," <<he>> says. "I didn't think you'd find them." <<He>> reaches forward, then catches <<himself>>. <<He>> reaches into <<his>> pocket, and produces a thick envelope. <<He>> pushes it across the table. "For services rendered. I'll also put in a good word for you." <<He>> smiles. "You've done a very good thing."
+<br><br>
+
+<<He>> reaches for the bones, but hesitates. "Those really are bones." <<He>> peers at them. "Let's hope they're from an animal, eh?" <<He>> reaches into <<his>> pocket, and produces a magnifying glass. <<His>> smile broadens. "There's a code etched into the bone. As I thought. Wish they had hidden it somewhere less gristly."
+<br><br>
+
+You've gained <<moneyGain 10000>>.
+<br><br>
+
+Landry seals the wishing stones within a plastic bag. "I'll need help to analyse them more closely. Anything else?"
+<br><br>
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+
+ 
+:: Pub Avery Fake Stones
+<<effects>>
+
+<<set $avery_mansion.fake_stones to 2>>
+<<if $auriga_artefact is "Landry">>
+	<<if $speech_attitude is "meek">>
+		"I hate to be a bother," you say. "But do you know how I could replace the wishing stones? Avery can be hard to deal with, and it would be easier if they were replaced with a fake."
+	<<elseif $speech_attitude is "bratty">>
+		"Avery will discover the stones' absence sooner or later," you say. "Could be trouble for me. Know any way I could fool <<nnpc_him Avery>>?"
+	<<else>>
+		"A forgery of the stones would be useful," you say. "I could leave them in the vault instead, and keep Avery in the dark for longer."
+	<</if>>
+	<br><br>
+	Landry smiles, reaches beneath the table, and produces the wishing stones.
+	<br><br>
+	"These are fake," <<he>> says with a satisfied smile. "Good, aren't they?" They do appear identical, as far as you can tell. "Note that they're not a perfect copy. We only had those pictures to go on. But it should fool Avery and co well enough."
+	<br><br>
+<<else>>
+	<<if $speech_attitude is "meek">>
+		"I found the wishing stones you wanted," you say. "But I'd be in trouble if Avery sees them gone. Do you have something I could replace them with?"
+	<<elseif $speech_attitude is "bratty">>
+		"I know where those stones are," you say. "Gimme something to replace them with, and they're all yours."
+	<<else>>
+		"I found the stones," you say. "I just need something to replace them with."
+	<</if>>
+	<br><br>
+	Landry smiles, reaches beneath the table, and produces a copy of the wishing stones. Identical, as far as you can tell.
+	<br><br>
+
+	"It pays to prepare," <<he>> says, giving you a satisfied smile. "Note that they're not a perfect copy. We only had those pictures to go on. But it should fool Avery and co well enough."
+	<br><br>
+<</if>>
+
+You reach for the fake stones. Landry's smile falters as you touch them. "Be gentle with them," <<he>> says. "We used illegal components. Had to. Damage could release nasty chemicals into the air. They'd be hard to replace as well." <<He>> leans back. "Anything else?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+ */
+
+:: Pub Avery Stones Tell
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"It was hard," you say. "But I managed to replace Avery's stones."
+<<elseif $speech_attitude is "bratty">>
+	"I replaced Avery's stones," you say. "It wasn't difficult."
+<<else>>
+	"I got into Avery's vault," you say. "And replaced <<nnpc_his Avery>> stones with yours."
+<</if>>
+<br><br>
+
+Landry smiles. "Very nice work. Now we just need to wait for Avery to finish that building of <<nnpc_his Avery>> on Elk Street. <<nnpc_He Avery>>'ll need the stones for the opening ceremony. When <<nnpc_he Avery>> can't produce them, <<nnpc_his Avery>> plans will blow up in <<his>> face."
+<br><br>
+
+"Anything else?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Tell 2
+<<effects>>
+
+<<if $avery_fate is "saved">>
+	<<if $speech_attitude is "meek">>
+		"It all blew up in Avery's face," you say. "Like you wanted."
+	<<elseif $speech_attitude is "bratty">>
+		"Your bomb went off," you say. "Just as I assume you planned."
+	<<else>>
+		"Your bomb went off," you say. "Like you wanted."
+	<</if>>
+	<br><br>
+	"So I hear," Landry says. "Avery and those friends of <<nnpc_his Avery>> will think twice before stirring up more trouble. I'm under no illusions, though. The war is far from over, but this is the first significant blow we've struck."
+	<br><br>
+
+<<else>>
+	<<if $speech_attitude is "meek">>
+		"Avery won't trouble you again," you say.
+	<<elseif $speech_attitude is "bratty">>
+		"Good job," you say. "Avery's gone, and you didn't need to dirty your own hands."
+	<<else>>
+		"Your plan worked," you say. "Avery is gone."
+	<</if>>
+	<br><br>
+
+	"So I heard. You've done a good thing," Landry says. "Sorry I left out some details. The less you knew, the safer you were. Those friends of <<nnpc_his Avery>> will be cowed, but I'm under no illusions. This war is far from over, but this is the first significant blow we've struck."
+	<br><br>
+<</if>>
+
+<<link [["Ask who " + $NPCList[0].pronouns.he + " means by 'we'"|Pub Avery Stones Tell Ask]]>><</link>>
+<br>
+<<link [[Remain silent|Pub Avery Stones Tell Silent]]>><</link>>
+<br>
+
+:: Pub Avery Stones Angry
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Your hurt me," you say. "It hurt others. I know they're bad people, but that doesn't make it okay."
+<<elseif $speech_attitude is "bratty">>
+	"Your bomb could've killed me," you say. "Who do you think you are?"
+<<else>>
+	"Your bomb hurt me," you say. "You went too far."
+<</if>>
+<br><br>
+
+Landry throws up <<his>> hands in mock surrender. "I'm sorry," <<he>> says. "It wasn't my decision. Still, you were safer this way. Imagine if you knew the fake stones were a bomb. What you'd now be accessory to."
+<br><br>
+
+<<link [[Threaten to tell the police|Pub Avery Stones Threaten]]>><</link>>
+<br>
+<<link [[Stay silent|Pub Avery Stones Silent]]>><</link>>
+<br>
+
+:: Pub Avery Stones Threaten
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"It would be safer for me to involve the police," you say.
+<<elseif $speech_attitude is "bratty">>
+	"I could sic the cops on your arse," you say.
+<<else>>
+	"I could tell the police about you," you say.
+<</if>>
+<br><br>
+
+Landry smiles in amusement for just a moment, before gaining control of <<his>> features. "I am at your mercy."
+<br><br>
+A moment passes. "While you consider involving the authorities, is there anything else you have for me?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Tell Ask
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Who's 'we'?" you ask. "You and me? I didn't sign up for a war."
+<<elseif $speech_attitude is "bratty">>
+	"'We'?" you ask. "You talking about those friends of yours?"
+<<else>>
+	"Who do you mean by 'we'?" you ask.
+<</if>>
+<br><br>
+
+Landry gives you an embarrassed smile. "Did I say that? Your good work got my lips flapping. I'll say you've made some powerful people happy, and leave it at that."
+<br><br>
+
+"Now, is there anything else you have for me?"
+<br><br>
+
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Tell Silent
+<<effects>>
+
+You remain silent. Landry looks unsure for a moment. "Cheer up. You've made some powerful people happy. That could be useful."
+<br><br>
+
+"Now, is there anything else you have for me?"
 <br><br>
 
 <<landryoptions>>

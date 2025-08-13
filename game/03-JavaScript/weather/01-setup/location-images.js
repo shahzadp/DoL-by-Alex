@@ -233,6 +233,115 @@ setup.LocationImages = {
 			},
 		},
 	},
+	avery_mansion: {
+		folder: "avery_mansion",
+		base: {
+			default: {
+				image: "base.png",
+				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+			},
+			pool: {
+				image: "pool.png",
+				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+			},
+			fire: {
+				image: "base_fire.png",
+				condition: () => V.avery_mansion_fire_time > 0,
+				animation: {
+					frameDelay: 150,
+				},
+			},
+			ruin: {
+				image: "base_burnt.png",
+				condition: () => !V.avery_mansion_fire_time && (V.avery_fate == "fallen" || V.avery_fate == "kicked"),
+			},
+		},
+		emissive: {
+			white: {
+				image: "emissive_white.png",
+				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				color: "#ffffff",
+				size: 5,
+			},
+			yellow: {
+				image: "emissive_yellow.png",
+				condition: () => Weather.lightsOn && V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				size: 5,
+			},
+			fire: {
+				image: "fireparticle.png",
+				condition: () => V.avery_mansion_fire_time > 0,
+				animation: {
+					frameDelay: 150,
+				},
+				color: "#e6502eff",
+				strength: 1,
+			},
+			dust: {
+				image: "fireparticle_dust.png",
+				condition: () => V.avery_mansion_fire_time > 0,
+				color: "#46221bff",
+				animation: {
+					frameDelay: 150,
+					cycleDelay: () => random(0, 4, true) * 1000,
+				},
+				strength: 0.1,
+			},
+		},
+		reflective: {
+			mask: {
+				image: "pool_fire.png",
+				condition: () => V.avery_mansion_fire_time > 0,
+				verticalFactor: 3.5,
+				amplitude: 6,
+				verticalSpeed: 0.1,
+				horizon: 30,
+			},
+		},
+	},
+	avery_skyscraper: {
+		folder: "avery_skyscraper",
+		base: {
+			default: {
+				image: "base.png",
+				condition: () => V.avery_tower.progress >= 80,
+			},
+			default_mid: {
+				image: "base_mid.png",
+				animation: {
+					frameDelay: 300,
+					cycleDelay: () => 1200,
+				},
+				condition: () => V.avery_tower.progress >= 40 && V.avery_tower.progress < 80,
+			},
+			default_low: {
+				image: "base_low.png",
+				condition: () => V.avery_tower.progress < 40,
+			},
+			winter: {
+				image: "winter.png",
+				condition: () => Time.season == "winter" && V.avery_tower.progress >= 80,
+			},
+			mid_winter: {
+				image: "mid_winter.png",
+				condition: () => Time.season == "winter" && V.avery_tower.progress >= 40 && V.avery_tower.progress < 80,
+			},
+		},
+		emissive: {
+			lights: {
+				image: "lights.png",
+				condition: () => Time.dayState === "night" && V.avery_tower.progress >= 100,
+				color: "#deae66",
+				size: 5,
+			},
+			mid_lights: {
+				image: "mid_lights.png",
+				condition: () => Time.dayState === "night" && V.avery_tower.progress < 80,
+				color: "#deae66",
+				size: 5,
+			},
+		},
+	},
 	banner: {
 		folder: "banner",
 		base: {

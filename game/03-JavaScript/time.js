@@ -504,6 +504,30 @@ function weekPassed() {
 	}
 	if (V.averySpaBanWeeks > 0) V.averySpaBanWeeks--;
 
+	if (V.avery_mansion) {
+		V.avery_mansion.date_seen = false;
+		if (V.avery_tower.effects.includes("theft")) {
+			V.avery_tower.progress -= 4;
+		}
+		if (V.avery_tower.effects.includes("temple")) {
+			V.avery_tower.progress -= 4;
+		}
+		if (V.avery_tower.effects.includes("mayor")) {
+			V.avery_tower.progress += 4;
+		}
+		if (V.avery_tower.effects.includes("Remy")) {
+			V.avery_tower.progress += 4;
+		}
+		if (V.avery_tower.effects.includes("Harper")) {
+			V.avery_tower.progress += 4;
+		}
+		if (V.avery_tower.progress > 100) {
+			V.avery_tower.progress = 100;
+		} else if (V.avery_tower.progress < 0) {
+			V.avery_tower.progress = 0;
+		}
+	}
+
 	supermarketWeekly();
 
 	statChange.worldCorruption("soft", V.world_corruption_hard);
@@ -648,11 +672,28 @@ function dayPassed() {
 		wikifier("stray_happiness", -1);
 		V.pound.tasks = [];
 	}
-	V.renttime--;
-	// Not seen bailey for more than 2 weeks, tracks missed rent
-	if (V.renttime < 0 && V.renttime % 7 === 0) {
-		V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
-		V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+
+	if (V.avery_mansion && V.avery_fate !== "fallen" && V.avery_fate !== "kicked") {
+		// Avery takes on the PC's debt, but stops if unsatisfied
+		if (Time.weekDay !== 1) {
+			V.avery_mansion.days_absent++;
+		}
+		if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) {
+			V.renttime--;
+			// Not seen bailey for more than 2 weeks, tracks missed rent
+			if (V.renttime < 0 && V.renttime % 7 === 0) {
+				V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
+				V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+			}
+		}
+		V.avery_mansion.study_unlocked = 0;
+	} else {
+		V.renttime--;
+		// Not seen bailey for more than 2 weeks, tracks missed rent
+		if (V.renttime < 0 && V.renttime % 7 === 0) {
+			V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
+			V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+		}
 	}
 
 	if (V.flashbacktown > 0) V.flashbacktown--;
@@ -855,6 +896,14 @@ function dayPassed() {
 	V.daily.clearProperties();
 
 	if (random(1, 8) === 1) V.daily.robin.orphanageKitchen = true;
+
+	if (V.avery_skyscraper_fire_time >= 1) {
+		V.avery_skyscraper_fire_time--;
+	} 
+	if (V.avery_mansion_fire_time >= 1) {
+		V.avery_mansion_fire_time--;
+	} 
+	
 }
 
 function hourPassed(hours) {
@@ -1037,6 +1086,14 @@ function noonCheck() {
 	delete V.edenbed;
 	delete V.glideScared;
 	if (V.pound) V.pound.sneak = 0;
+
+	if (V.avery_mansion) {
+		if (Time.weekDay !== 7 && Time.weekDay !== 1) {
+			V.avery_mansion.rage.work = true;
+		}
+		V.avery_mansion.sleep_interrupt = 0;
+		V.avery_mansion.party_done = false;
+	}
 }
 
 function dawnCheck() {
@@ -1166,6 +1223,99 @@ function dailyNPCEffects() {
 			wikifier("clearNPC", "avery_sidepiece");
 		}
 		if (V.weekly.averyRejected === undefined) V.weekly.averyRejected = {};
+
+		if (V.avery_fate === "saved") {
+			C.npc.Avery.rage -= 5;
+		}
+
+		if (V.avery_mansion) {
+			V.avery_mansion.days++;
+			V.avery_mansion.date_ready = false;
+			V.avery_party_skipped = false;
+			if (Time.weekDay == 3) {
+				if (V.avery_mansion.guest === "Bailey_skip") {
+					V.avery_mansion.guest = "Bailey";
+				} else if (V.avery_mansion.guest === "Bailey") {
+					V.avery_mansion.guest = "Bailey_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Bailey_done") {
+					if (V.avery_mansion.jordan_intro) {
+						V.avery_mansion.guest = "Jordan";
+					} else {
+						V.avery_mansion.guest = "Quinn";
+					}
+				} else if (V.avery_mansion.guest === "Jordan") {
+					V.avery_mansion.guest = "Jordan_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Jordan_done") {
+					V.avery_mansion.guest = "Quinn";
+				} else if (V.avery_mansion.guest === "Quinn") {
+					V.avery_mansion.guest = "Quinn_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Quinn_done") {
+					V.avery_mansion.guest = "Remy";
+				} else if (V.avery_mansion.guest === "Remy") {
+					V.avery_mansion.guest = "Remy_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Remy_done") {
+					V.avery_mansion.guest = "Briar";
+				} else if (V.avery_mansion.guest === "Briar") {
+					V.avery_mansion.guest = "Briar_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Briar_done") {
+					V.avery_mansion.guest = "Harper";
+				} else if (V.avery_mansion.guest === "Harper") {
+					V.avery_mansion.guest = "Harper_missed";
+					V.avery_mansion.rage.party_missed = true;
+				} else if (V.avery_mansion.guest === "Harper_done") {
+					if (V.avery_mansion.jordan_intro) {
+						V.avery_mansion.guest = "Jordan";
+					} else {
+						V.avery_mansion.guest = "Quinn";
+					}
+				}
+			}
+			if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7) {
+				V.avery_mansion.rage.dinner_missed++;
+			}
+			V.avery_mansion.outfit_warning = false;
+
+
+			if (V.avery_mansion.folder_daily === true) {
+				V.avery_mansion.folder_daily = false;
+			}
+			if (V.avery_mansion.injury_timer >= 1) {
+				V.avery_mansion.injury_timer--;
+			}
+			if (V.avery_mansion.rage.timer >= 1) {
+				V.avery_mansion.rage.timer--;
+			}
+			if (V.avery_mansion.pool < 4) {
+				V.avery_mansion.pool++;
+			}
+			if (V.avery_mansion.kitchen < 4) {
+				V.avery_mansion.kitchen++;
+			}
+			if (V.avery_mansion.lounge < 4) {
+				V.avery_mansion.lounge++;
+			}
+			if (V.avery_mansion.display < 4) {
+				V.avery_mansion.display++;
+			}
+			if (V.avery_mansion.bedroom < 4) {
+				V.avery_mansion.bedroom++;
+			}
+			if (V.avery_mansion.bathroom < 4) {
+				V.avery_mansion.bathroom++;
+			}
+			if (V.avery_mansion.dining < 4) {
+				V.avery_mansion.dining++;
+			}
+			if (V.avery_mansion.garden < 4) {
+				V.avery_mansion.garden++;
+			}
+		}
+
 	} else {
 		delete V.averyDismissalSceneWait;
 	}
@@ -1378,12 +1528,13 @@ function dailyPlayerEffects() {
 		statChange.insecurity("breasts_big", Math.clamp(reducedBreastsize - 5, -5, -1)); // Increases by 1 for each other size below ample
 	}
 
+	/* Disabled due to bug, and I'm not sure it's necessary anyway - Vrel
 	// Lower acceptance when it no longer applies, takes 200 days for it to drop to 0 from max
 	if (!(V.player.penisExist && V.player.penissize <= 1)) statChange.acceptance("penis_small", -5);
-	if (!(V.player.penisExist && V.player.penissize >= (V.player.sex === "m" ? 4 : 3))) statChange.acceptance("penis_big", -5);
+	if (!(V.player.penisExist && V.player.penissize >= (V.player.sex === "m" ? 4 : 2))) statChange.acceptance("penis_big", -5);
 	if (V.player.sex === "f" && !between(V.player.breastsize, 0, 4)) statChange.acceptance("breasts_small", -5);
 	if (!(V.player.breastsize >= (V.player.sex === "m" ? 1 : 8))) statChange.acceptance("breasts_big", -5);
-
+	*/
 	if (playerBellySize() < 8) {
 		statChange.insecurity("pregnancy", -5);
 		statChange.acceptance("pregnancy", -5);
