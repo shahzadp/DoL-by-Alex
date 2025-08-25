@@ -296,6 +296,9 @@ function updateClothesItem(slot, item, debug) {
 	// one_piece fix for items that shouldn't have it set
 	if (["school pinafore", "plaid school pinafore"].includes(item.name) && item.one_piece === 1) item.one_piece = 0;
 
+	// one_piece fix for items that should have it set
+	if ((item.outfitPrimary || item.outfitSecondary) && item.one_piece === 0) item.one_piece = 1;
+
 	// Clothing warmth
 	if (item.warmth !== itemRef.warmth) item.warmth = itemRef.warmth;
 
