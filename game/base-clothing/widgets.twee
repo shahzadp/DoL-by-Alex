@@ -189,6 +189,10 @@
 <<widget "carriedSend">>
 	<<if _args[0] is "wardrobe" or Object.keys($wardrobes).includes(_args[0])>>
 		<<set $_undressSlot to _args[1]>>
+		/*Checks if the current slot is part of an outfit and switches to the main piece if that is the case*/
+		<<if $carried[$_undressSlot].outfitSecondary isnot undefined and $carried[$carried[$_undressSlot].outfitSecondary[0]].name is $carried[$_undressSlot].outfitSecondary[1]>>
+			<<set $_undressSlot to $carried[$_undressSlot].outfitSecondary[0]>>
+		<</if>>
 		<<set $_outfitPrimaryUndress to $carried[$_undressSlot].outfitPrimary>>
 
 		<<set _slots to []>>
@@ -397,6 +401,9 @@
 
 			<<if _cursedPrevent isnot true>>
 				<<set V[_stripSlot.replace(/_/g,"")+'last'] to $worn[_stripSlot].name>>
+				<<if $carried[_stripSlot].name isnot "naked">>
+					<<carriedSend "wardrobe" _stripSlot>>
+				<</if>>
 				<<set $carried[_stripSlot] to clone($worn[_stripSlot])>>
 				<<set $worn[_stripSlot] to clone(setup.clothes[_stripSlot][0])>>
 
@@ -404,6 +411,9 @@
 					<<for _labelStrip, _valueStrip range _outfitPrimaryStrip>>
 						<<if $worn[_labelStrip].name is _valueStrip>>
 							<<set V[_labelStrip.replace(/_/g,"")+'last'] to $worn[_labelStrip].name>>
+							<<if $carried[_labelStrip].name isnot "naked">>
+								<<carriedSend "wardrobe" _labelStrip>>
+							<</if>>
 							<<set $carried[_labelStrip] to clone($worn[_labelStrip])>>
 							<<set $worn[_labelStrip] to clone(setup.clothes[_labelStrip][0])>>
 						<</if>>
@@ -931,12 +941,18 @@
 				<<carriedSend "wardrobe" $_slot>>
 			<<else>>
 				<<set _slots.pushUnique($_slot)>>
+				<<if $worn[$_slot].name isnot "naked">>
+					<<generalUndress "wardrobe" $_slot>>
+				<</if>>
 				<<set $worn[$_slot] to clone($carried[$_slot])>>
 				<<set $carried[$_slot] to clone(setup.clothes[$_slot][0])>> <!-- set this slot to "naked" -->
 
 				<<set _outfitPrimaryOn to $worn[$_slot].outfitPrimary or []>>
 				<<for $_outfitPieceSlot, $_outfitPieceName range _outfitPrimaryOn>>
 					<<if $carried[$_outfitPieceSlot].name is $_outfitPieceName>>
+						<<if $worn[$_outfitPieceSlot].name isnot "naked">>
+							<<generalUndress "wardrobe" $_outfitPieceSlot>>
+						<</if>>
 						<<set $worn[$_outfitPieceSlot] to clone($carried[$_outfitPieceSlot])>>
 						<<set $carried[$_outfitPieceSlot] to clone(setup.clothes[$_outfitPieceSlot][0])>> <!-- set this slot to "naked" -->
 						<<set _slots.pushUnique($_outfitPieceSlot)>>
