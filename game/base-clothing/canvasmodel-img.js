@@ -434,7 +434,7 @@ DefineMacro("modelprepare-player-body", function () {
 	}
 	// Fallen angel-harpy wings
 	if (isPartEnabled(T.modeloptions.fallen_wings_type) && isPartEnabled(T.modeloptions.bird_wings_type) && isChimeraEnabled("fallenharpy", "wings")) {
-		T.modeloptions.bird_wings_type = "default-fallen";
+		T.modeloptions.bird_wings_type = V.transformationParts.fallenAngel.wings.includes("fallenplus") ? "default-angel" : "default-fallen";
 		T.modeloptions.fallen_wings_type = T.modeloptions.fallen_wings_type.includes("fallenplus") ? "harpy-fallenplus" : "harpy-default";
 	}
 	// Demon-cow horns
