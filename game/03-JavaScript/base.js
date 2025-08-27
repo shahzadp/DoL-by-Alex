@@ -145,7 +145,7 @@ function DefineMacroS(macroName, macroFunction, tags, skipArgs, maintainContext)
 
 /**
  * Pluralises a given word if the count is not 1
- * 
+ *
  * @param {number} count Number to check
  * @param {string} singular Singular form of the word
  * @param {string} [plural] Optional plural form for irregular plurals
