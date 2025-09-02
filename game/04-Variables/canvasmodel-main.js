@@ -847,8 +847,8 @@ Renderer.CanvasModels.main = {
 				options[`${slot}_fitted_right_move_src`] = "img/clothes/masks/soft_right_move.png";
 				options[`${slot}_fitted_left_move_src`]  = "img/clothes/masks/soft_left_move.png";
 			});
-			options.lowerMask.push(upperCheck ? "img/clothes/masks/soft_lower_clip.png" : null);
-			options.legsMask.push(upperCheck ? "img/clothes/masks/soft_lower_clip.png" : null);
+			options.lowerMask.push(upperCheck && !options.belly_tucked ? "img/clothes/masks/soft_lower_clip.png" : null);
+			options.legsMask.push(upperCheck && !options.belly_tucked ? "img/clothes/masks/soft_lower_clip.png" : null);
 			options.lowerShadowMask.push(upperCheck ? "img/clothes/masks/soft_shadow.png" : null);
 			options.underLowerShadowMask.push(underUpperCheck ? "img/clothes/masks/soft_shadow.png" : null);
 			options.underLowerMask.push(underUpperCheck? "img/clothes/masks/soft_lower_clip.png" : null);
