@@ -602,9 +602,8 @@
 				feet: clone($worn.feet.name),
 				genitals: clone($worn.genitals.name),
 				type: ["normal"],
-				colors: false
+				colors: false,
 			}>>
-
 			<<if $outfit_name is "" or $outfit_name is "Custom">><<set $outfit_name to "Custom " + $outfit.length>><</if>>
 			<<set _newOutfit.name to $outfit_name>>
 			<<if $outfit_type>>
@@ -623,6 +622,18 @@
 				<<set _newOutfit.colors to _colors>>
 			<<else>>
 				<<set _newOutfit.colors to false>>
+			<</if>>
+			<<set _positions to {}>>
+			<<for _slot range _equip>>
+				<<if $worn[_slot].altposition>>
+					<<set _positions[_slot] to $worn[_slot].altposition>>
+				<</if>>
+				<<if $worn[_slot].altsleeve>>
+					<<set _positions.sleeves to $worn[_slot].altsleeve>>
+				<</if>>
+			<</for>>
+			<<if Object.keys(_positions).length > 0>>
+				<<set _newOutfit.positions to _positions>>
 			<</if>>
 			<<if _saveLocation>>
 				<<set _newOutfit.location to $wardrobe_location>>
@@ -746,6 +757,20 @@
 			<<set $lowerTucked to +!$lowerTucked>>
 			<<updatesidebarimg>>
 			<<run $(".toggleLowerTuck .link-internal").html($lowerTucked ? _linkOption1 : _linkOption2)>>
+			<<run Links.generateLinkNumbers($(".passage"))>>
+		<</link>>
+	</div>
+<</widget>>
+
+
+<<widget "toggleBellyTuck">>
+	<<set _softOption1 to _args[0] || `Tug down your ${$worn.lower.name}`>>
+	<<set _softOption2 to _args[1] || `Pull up your ${$worn.lower.name}`>>
+	<div class="toggleBellyTuck">
+		<<link `($bellyTucked ? _softOption1 : _softOption2)`>>
+			<<set $bellyTucked to +!$bellyTucked>>
+			<<updatesidebarimg>>
+			<<run $(".toggleBellyTuck .link-internal").html($bellyTucked ? _softOption1 : _softOption2)>>
 			<<run Links.generateLinkNumbers($(".passage"))>>
 		<</link>>
 	</div>
@@ -974,6 +999,9 @@
 				<div class="no-numberify"><<toggleUpperTuck>></div>
 			<<elseif _wardrobe_list is "lower" and $worn.feet.name isnot "naked" and !_wornItemData.notuck and !setup.clothes.feet[clothesIndex("feet",$worn.feet)].notuck>>
 				<div class="no-numberify"><<toggleLowerTuck>></div>
+			<</if>>
+			<<if _wardrobe_list is "lower" and $player.bodyshape is "soft" and $worn.lower.name isnot "naked" and (!setup.clothes.lower[clothesIndex("lower",$worn.lower)].outfitSecondary or setup.clothes.lower[clothesIndex("lower",$worn.lower)]?.outfitSecondary[1] isnot $worn.upper.name)>>
+				<div class="no-numberify"><<toggleBellyTuck>></div>
 			<</if>>
 			<<if _wardrobe_list is "upper" and $worn.upper.name isnot "naked" and _wornItemData.altsleeve>>
 				<div class="no-numberify toggleAltSleeve"><<toggleAltSleeve>></div>
@@ -1449,7 +1477,7 @@
 					<<continue>>
 				<</if>>
 			<</if>>
-			
+
 			<<sendToWardrobeFromDefault "wardrobe" _equip[_eIndex] `_itemStats.index` `_itemStats.colour` `_itemStats.accessory_colour` `_itemStats.pattern`>>
 			<<set _latestWardrobeAddition to _selectedWardrobe[_equip[_eIndex]].last()>>
 
@@ -1570,7 +1598,7 @@
 <</widget>>
 
 <<widget "cleanupOnWardrobeExit">>
-	<<unset $saveColor>><<unset $wardrobeRepeat>><<unset $tempDisable>><<set $delete_outfit to "none">><<unset $forceWardrobeLocation>><<set $dontHide to false>>
+	<<unset $saveColor>><<unset $wardrobeRepeat>><<unset $tempDisable>><<set $delete_outfit to "none">><<unset $forceWardrobeLocation>><<set $dontHide to false>><<run delete $wardrobeExit>>
 <</widget>>
 
 <<widget "wardrobeExits">>
@@ -1581,9 +1609,11 @@
 			<<link [[Close wardrobe|Bedroom]]>><<cleanupOnWardrobeExit>><</link>>
 		<<case "Changing Room">>
 			<<if $exposed lte 1>>
-				<<getouticon>><<link [[Leave|Beach]]>><<cleanupOnWardrobeExit>><</link>>
+				<<set _exit to $wardrobeExit or "Beach">>
+				<<getouticon>><<link [[Leave|_exit]]>><<cleanupOnWardrobeExit>><</link>>
 			<<elseif hasSexStat("exhibitionism", 5)>>
-				<<sneakicon>><<link [[Sneak outside|Beach Changing Room Sneak]]>><<cleanupOnWardrobeExit>><</link>><<exhibitionist5>>
+				<<set _exitSneak to $wardrobeExit or "Beach Changing Room Sneak">>
+				<<sneakicon>><<link [[Sneak outside|_exitSneak]]>><<cleanupOnWardrobeExit>><</link>><<exhibitionist5>>
 			<<else>>
 				You can't go out like this!
 			<</if>>
@@ -2005,11 +2035,11 @@ It will cost you
 					/* Edge case for damaged lower paired with an upper w/ hoodposition === "down" */
 					<<set _upperOutfit to _itemDeleteCandidates[_upperSlot].item>>
 					<<set _currentClothing to clone(_upperOutfit)>>
-					
+
 					<<run _itemDeleteSlots.clear()>>
 					<<run [_upperSlot, ...Object.keys(_upperOutfit.outfitPrimary)].forEach((k) => T.itemDeleteSlots.add(k))>>
 					<<set _itemDeleteSlots.delete(_ignoreSlot)>>
-					
+
 					<<run Object.entries(_itemDeleteCandidates).forEach(([slot]) => {
 						if (!T.itemDeleteSlots.has(slot)) {
 							delete T.itemDeleteCandidates[slot];
@@ -2082,7 +2112,7 @@ It will cost you
 			})>>
 		<<else>>
 			<<run $wardrobeRepair[_currentClothing.slot].push(clone(_itemStats))>>
-			
+
 			<<if _currentClothing.outfitPrimary and _isBroken>>
 				/* Adds all broken outfit components from upper primary */
 				<<set _upperOutfit to _currentClothing>>

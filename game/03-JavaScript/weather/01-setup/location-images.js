@@ -12,6 +12,11 @@ setup.Locations = {
 		if (V.bus === "residential") return "res_alley";
 		return "com_alley";
 	},
+	beach: () => {
+		if (V.sublocation === "changingroom" && V.bus === "high") return "shopping_centre";
+		if (V.sublocation === "changingroom" && V.bus === "wolf") return "forest_shop";
+		return "beach";
+	},
 	cafe: () => {
 		if (V.chef_state >= 9) return "cafe_renovated";
 		if (V.chef_state >= 7) return "cafe_construction";
