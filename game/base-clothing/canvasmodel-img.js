@@ -609,6 +609,12 @@ DefineMacro("modelprepare-player-clothes", function () {
 	T.modeloptions.facewear_layer = V.facelayer;
 	T.modeloptions.upper_tucked = V.upperTucked && !setup.clothes.upper[clothesIndex("upper", V.worn.upper)].notuck && V.worn.upper.outfitPrimary === undefined;
 	T.modeloptions.lower_tucked = !V.worn.feet.notuck && !V.worn.lower.notuck && V.lowerTucked;
+	T.modeloptions.belly_tucked =
+		V.bellyTucked === 1 &&
+		V.player.bodyshape === "soft" &&
+		V.worn.lower.name !== "naked" &&
+		(!setup.clothes.lower[clothesIndex("lower", V.worn.lower)].outfitSecondary ||
+			setup.clothes.lower[clothesIndex("lower", V.worn.lower)]?.outfitSecondary[1] !== V.worn.upper.name);
 
 	Object.assign(T.modeloptions, getClothingOptions());
 	const overrides = V.modeloptionsOverride;

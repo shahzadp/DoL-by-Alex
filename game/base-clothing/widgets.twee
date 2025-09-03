@@ -1,6 +1,6 @@
 :: Widgets Clothing [widget]
 
-/*The "generalWear" widget works in the same way as the "...wear" widgets, however, the argument are as follows; slot, item index, colour, accessory_colour*/
+/*The "generalWear" widget works in the same way as the "...wear" widgets, however, the argument are as follows; slot, item index, colour, accessory_colour, pattern*/
 
 <<widget "generalWear">>
 	<<if $worn[_args[0]].cursed is 1>>
@@ -723,25 +723,7 @@
 	<<if _args[0] and _args[1]>>
 		<<set $_slot to _args[0]>>
 		<<set $_item to _args[1][$_slot]>>
-		<<if $_slot is "lower">>
-			<<switch clothesIndex($_slot,$_item)>>
-				<<case 107>>
-					<<set $_setupItem to setup.clothes[$_slot][106]>>
-					<<set $_item.pattern to "plaid">>
-				<<case 103>>
-					<<set $_setupItem to setup.clothes[$_slot][27]>>
-					<<set $_item.pattern to "plaid">>
-				<<case 104>>
-					<<set $_setupItem to setup.clothes[$_slot][28]>>
-					<<set $_item.pattern to "plaid">>
-				<<case 105>>
-					<<set $_setupItem to setup.clothes[$_slot][6]>>
-					<<set $_item.pattern to "plaid">>
-				<<default>><<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
-			<</switch>>
-		<<else>>
-			<<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
-		<</if>>
+		<<set $_setupItem to setup.clothes[$_slot][clothesIndex($_slot,$_item)]>>
 		<<set $_return to clothesReturnLocation($_item,"rebuy")>>
 
 		<<if $_setupItem.shop.length isnot 0 and $_item.one_piece isnot "broken" and $_setupItem.cursed isnot 1>> /* NO SPLIT ADDED */
@@ -1791,7 +1773,7 @@
 				<<for _labelWW, _valueWW range _outfitPrimary>>
 					<<if _valueWW isnot "broken" and _valueWW isnot "split">>
 						<<for _j to 0; _j lt $_selectedWardrobe[_labelWW].length; _j++>>
-							<<if $_selectedWardrobe[_labelWW][_j].name is _valueWW and _item.colour is $_selectedWardrobe[_labelWW][_j].colour and _item.accessory_colour is $_selectedWardrobe[_labelWW][_j].accessory_colour>>
+							<<if $_selectedWardrobe[_labelWW][_j].name is _valueWW and _item.colour is $_selectedWardrobe[_labelWW][_j].colour and _item.accessory_colour is $_selectedWardrobe[_labelWW][_j].accessory_colour and _item.pattern is $_selectedWardrobe[_labelWW][_j].pattern>>
 								<<if $_selectedWardrobe[_labelWW][_j].outfitSecondary[1] isnot _item.name>>
 									<<continue>>
 								<</if>>
@@ -1810,7 +1792,7 @@
 										<<set _matched++>>
 									<</if>>
 								<</if>>
-								<<if _matched is 2>>
+								<<if _matched is 2>
 									<<set _outfitPieceIds[clone(_labelWW)] to clone(_j)>>
 									<<if _equipSkip isnot undefined>>
 										<<set _equipSkip[_labelWW] to true>>
