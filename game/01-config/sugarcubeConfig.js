@@ -124,7 +124,7 @@ function onSave(save, details) {
 	// Save time and weather to localStorage
 	localStorage.setItem("weather", Packer.packWeatherData());
 	localStorage.setItem("time", Time.date.timeStamp.toString(36));
-
+	localStorage.setItem("worldCorruption", V.world_corruption_soft);
 	// * legacy code for old saves system * //
 	if (!(window.idb && window.idb.active)) {
 		// eslint-disable-next-line no-undef

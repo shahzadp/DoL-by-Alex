@@ -875,7 +875,7 @@ function initFeet() {
 			cost: 10000,
 			description: "Sturdy, yet elegant, like those that perform in them.",
 			shop: ["clothing"],
-			accessory: 0,
+			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [],
 			cursed: 0,
