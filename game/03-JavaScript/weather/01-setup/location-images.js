@@ -237,43 +237,41 @@ setup.LocationImages = {
 		folder: "banner",
 		base: {
 			default: {
-				condition: () => !Weather.bloodMoon,
-				image: "banner_text.png",
-			},
-			bloodmoon: {
-				condition: () => Weather.bloodMoon,
-				image: "banner_text_bloodmoon.png",
-			},
-			tentacles: {
-				condition: () => !Weather.bloodMoon,
+				condition: () => !Weather.bloodMoon && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				image: "banner_tentacles_1.png",
 			},
-			bloodmoonTentacles: {
-				condition: () => Weather.bloodMoon,
+			bloodmoon: {
+				condition: () => Weather.bloodMoon && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				image: "banner_tentacles_bloodmoon_1.png",
 			},
 			tentacles2: {
-				condition: () => !Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 25,
+				condition: () =>
+					!Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 25 && Number(localStorage.getItem("worldCorruption")) < 50,
 				image: "banner_tentacles_2.png",
 			},
 			bloodmoonTentacles2: {
-				condition: () => Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 25,
+				condition: () =>
+					Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 25 && Number(localStorage.getItem("worldCorruption")) < 50,
 				image: "banner_tentacles_bloodmoon_2.png",
 			},
 			tentacles3: {
-				condition: () => !Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 50,
+				condition: () =>
+					!Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 50 && Number(localStorage.getItem("worldCorruption")) < 75,
 				image: "banner_tentacles_3.png",
 			},
 			bloodmoonTentacles3: {
-				condition: () => Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 50,
+				condition: () =>
+					Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 50 && Number(localStorage.getItem("worldCorruption")) < 75,
 				image: "banner_tentacles_bloodmoon_3.png",
 			},
 			tentacles4: {
-				condition: () => !Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 75,
+				condition: () =>
+					!Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 75 && Number(localStorage.getItem("worldCorruption")) < 100,
 				image: "banner_tentacles_4.png",
 			},
 			bloodmoonTentacles4: {
-				condition: () => Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 75,
+				condition: () =>
+					Weather.bloodMoon && Number(localStorage.getItem("worldCorruption")) >= 75 && Number(localStorage.getItem("worldCorruption")) < 100,
 				image: "banner_tentacles_bloodmoon_4.png",
 			},
 			tentacles5: {
@@ -286,83 +284,91 @@ setup.LocationImages = {
 			},
 		},
 		emissive: {
-			night: {
-				image: "banner_text.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Weather.banner.orbitals.sun.factor < 0,
+			default: {
+				image: "banner_tentacles_1.png",
+				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.6,
 			},
 			bloodmoon: {
-				image: "banner_text_bloodmoon.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0,
-				color: "#ffffff40",
-				size: 4,
-				blur: 0,
-				intensity: 0.4,
-			},
-			tentacles1: {
-				image: "banner_tentacles_1.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 25,
-				color: "#ffffff40",
-				size: 4,
-				blur: 0,
-				intensity: 0.6,
-			},
-			bloodmoonTentacles1: {
 				image: "banner_tentacles_bloodmoon_1.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 25,
+				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.4,
 			},
 			tentacles2: {
 				image: "banner_tentacles_2.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 25,
+				condition: () =>
+					!Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 25 &&
+					Number(localStorage.getItem("worldCorruption")) < 50,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.6,
 			},
 			bloodmoonTentacles2: {
 				image: "banner_tentacles_bloodmoon_2.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 25,
+				condition: () =>
+					Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 25 &&
+					Number(localStorage.getItem("worldCorruption")) < 50,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.4,
 			},
 			tentacles3: {
 				image: "banner_tentacles_3.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 50,
+				condition: () =>
+					!Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 50 &&
+					Number(localStorage.getItem("worldCorruption")) < 75,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.6,
 			},
 			bloodmoonTentacles3: {
 				image: "banner_tentacles_bloodmoon_3.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 50,
+				condition: () =>
+					Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 50 &&
+					Number(localStorage.getItem("worldCorruption")) < 75,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.4,
 			},
 			tentacles4: {
 				image: "banner_tentacles_4.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 75,
+				condition: () =>
+					!Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 75 &&
+					Number(localStorage.getItem("worldCorruption")) < 100,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.6,
 			},
 			bloodmoonTentacles4: {
 				image: "banner_tentacles_bloodmoon_4.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 75,
+				condition: () =>
+					Weather.bloodMoon &&
+					Weather.banner.orbitals.sun.factor < 0 &&
+					Number(localStorage.getItem("worldCorruption")) >= 75 &&
+					Number(localStorage.getItem("worldCorruption")) < 100,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.4,
 			},
@@ -370,7 +376,7 @@ setup.LocationImages = {
 				image: "banner_tentacles_5.png",
 				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.6,
 			},
@@ -378,7 +384,7 @@ setup.LocationImages = {
 				image: "banner_tentacles_bloodmoon_5.png",
 				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
 				color: "#ffffff40",
-				size: 4,
+				size: 0,
 				blur: 0,
 				intensity: 0.4,
 			},
