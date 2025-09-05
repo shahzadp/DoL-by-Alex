@@ -497,7 +497,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 				text: "Tease",
 				colour: "sub",
 			});
-			if (V.player.penisExist) {
+			if (V.player.sex !== "f") {
 				result.options.push({
 					action: "manusprostate",
 					text: "Tease your prostate",
@@ -529,7 +529,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 				text: "Tease",
 				colour: "sub",
 			});
-			if (V.player.penisExist) {
+			if (V.player.sex !== "f") {
 				result.options.push({
 					action: "manusprostatedildo",
 					text: "Tease your prostate",
