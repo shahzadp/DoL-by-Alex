@@ -20,6 +20,14 @@ setup.debugMenu.eventList = {
 			widgets: [`<<endcombat>>`],
 		},
 		{
+			link: [`Enrage Avery`, stayOnPassageFn],
+			widgets: [`<<npcincr Avery rage 100>>`, `<<set $averyragerevealed to 1>>`],
+		},
+		{
+			link: [`Calm Avery`, stayOnPassageFn],
+			widgets: [`<<npcincr Avery rage -100>>`, `<<set $averyragerevealed to 0>>`],
+		},
+		{
 			link: [`Pass 1 minute`, stayOnPassageFn],
 			widgets: [`<<pass 1>>`],
 		},
