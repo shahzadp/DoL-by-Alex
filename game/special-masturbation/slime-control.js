@@ -245,7 +245,7 @@ function masturbationSlimeControl() {
 					}
 					break;
 				case "manus":
-					if (V.player.penisExist && random(0, 100) > 20) {
+					if (V.player.sex !== "f" && random(0, 100) > 20) {
 						V[armAction] = "manusprostate";
 					} else {
 						V[armAction] = "manustease";
@@ -333,7 +333,7 @@ function masturbationSlimeControl() {
 					}
 					break;
 				case "manusdildo":
-					if (V.player.penisExist && random(0, 100) >= 50) {
+					if (V.player.sex !== "f" && random(0, 100) >= 50) {
 						V[armAction] = "manusprostatedildo";
 					} else {
 						V[armAction] = "manusteasedildo";
