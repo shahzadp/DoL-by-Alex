@@ -506,7 +506,7 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Social"],
 	},
-	"Kept": {
+	Kept: {
 		title: "Kept",
 		desc: "Accessed Avery's mansion.",
 		difficulty: 2,
