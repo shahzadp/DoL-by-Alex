@@ -7434,7 +7434,7 @@ function initUpper() {
 			colour_sidebar: 1,
 			exposed: 0,
 			exposed_base: 0,
-			type: ["normal", "cool", "bellyShow"],
+			type: ["normal", "cool", "bellyShow", "waterproof"],
 			set: "upper",
 			gender: "f",
 			femininity: 200,
