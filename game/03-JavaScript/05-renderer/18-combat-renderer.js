@@ -309,7 +309,8 @@ class CombatRenderer {
 				Errors.report("Position was set to stalk, and the combat renderer doesn't support it yet.");
 				return "missionary";
 			default:
-				Errors.report("Position not set to any valid values", V.position);
+				/* fights start in position 0 */
+				console.error("Position not set to any valid values", V.position);
 				return "missionary";
 		}
 	}
