@@ -839,41 +839,32 @@
 <</widget>>
 
 <<widget "skulduggeryskilluse">>
-	<<if $statFreeze isnot true>>
-		<<set $skulduggery += 3>>
-		<<if $skulduggery lt 1000>>
-			<span class="gold"> You learned a thing or two about skulduggery.</span>
-			<br><br>
-		<</if>>
+	<<if $statFreeze isnot true and $skulduggery lt 1000>>
+		<<combatskulduggeryskilluse>>
+		<br><br>
 	<</if>>
 <</widget>>
 
 <<widget "combatskulduggeryskilluse">>
-	<<if $statFreeze isnot true>>
+	<<if $statFreeze isnot true and $skulduggery lt 1000>>
+		<span class="gold"> You learned a thing or two about skulduggery.</span>
 		<<set $skulduggery += 3>>
 		<<set $skulduggery to Math.clamp($skulduggery, 0, 1000)>>
-		<<if $skulduggery lt 1000>>
-			<span class="gold"> You learned a thing or two about skulduggery.</span>
-		<</if>>
 	<</if>>
 <</widget>>
 
 <<widget "swimmingskilluse">>
-	<<if $statFreeze isnot true>>
+	<<if $statFreeze isnot true and $swimmingskill lt 1000>>
+		<span class="gold"> You've become more confident at swimming.</span>
 		<<set $swimmingskill += 9>>
-		<<if $swimmingskill lt 1000>>
-			<span class="gold"> You've become more confident at swimming.</span>
-		<</if>>
 		<<set $swimmingskill to Math.clamp($swimmingskill, 0, 1000)>>
 	<</if>>
 <</widget>>
 
 <<widget "danceskilluse">>
-	<<if $statFreeze isnot true>>
+	<<if $statFreeze isnot true and $danceskill lt 1000>>
+		<span class="gold"> You feel more confident in your dancing abilities.</span>
 		<<danceskill 1>>
-		<<if $danceskill lt 1000>>
-			<span class="gold"> You feel more confident in your dancing abilities.</span>
-		<</if>>
 	<</if>>
 <</widget>>
 
@@ -4720,20 +4711,51 @@
 	<</if>>
 <</widget>>
 
+/* 0: difficulty, 1: "locks"/"target", 2: additional progress */
 <<widget "skulduggeryuse">>
-	<<if _args[0] is true>>
-		<!-- This argument lets us use skulduggery without adding extra linebreaks that make formatting things a nightmare. -->
-		<<if $skulduggery lte ($skulduggerydifficulty + 100)>>
-			<<combatskulduggeryskilluse>>
+	<<if _args[0]>>
+		<<set $_difficulty to _args[0]>>
+	<<else>>
+		<<set $_difficulty to ($skulduggerydifficulty + 100)>>
+	<</if>>
+
+	<<if currentSkillValue("skulduggery") lt $_difficulty>>
+		<<skulduggeryskilluse>>
+		<<if _args[2]>>
+			<<skulduggery _args[2]>>
+		<</if>>
+	<<elseif $skulduggerysuccess or _args[1]>>
+		<<if _args[1] is "locks">>
+			<span class="blue">There's nothing more you can learn from locks this simple.</span>
+		<<elseif _args[1] is "target">>
+			<span class="blue">There's nothing more you can learn from such an easy target.</span>
 		<<else>>
 			<span class="blue">That was too easy. You didn't learn anything.</span>
 		<</if>>
+		<br><br>
+	<</if>>
+<</widget>>
+
+/* 0: difficulty, 1: "locks"/"target", 2: additional progress */
+<<widget "skulduggeryuseinline">>
+	<<if _args[0]>>
+		<<set $_difficulty to _args[0]>>
 	<<else>>
-		<<if $skulduggery lte ($skulduggerydifficulty + 100)>>
-			<<skulduggeryskilluse>>
+		<<set $_difficulty to ($skulduggerydifficulty + 100)>>
+	<</if>>
+
+	<<if currentSkillValue("skulduggery") lt $_difficulty>>
+		<<combatskulduggeryskilluse>>
+		<<if _args[2]>>
+			<<skulduggery _args[2]>>
+		<</if>>
+	<<elseif $skulduggerysuccess or _args[1]>>
+		<<if _args[1] is "locks">>
+			<span class="blue">There's nothing more you can learn from locks this simple.</span>
+		<<elseif _args[1] is "target">>
+			<span class="blue">There's nothing more you can learn from such an easy target.</span>
 		<<else>>
 			<span class="blue">That was too easy. You didn't learn anything.</span>
-			<br><br>
 		<</if>>
 	<</if>>
 <</widget>>
@@ -4957,14 +4979,14 @@
 <</silently>><<print $_text_output>><</widget>>
 
 <<widget "sadism">>
-	<<if _args[0]>>
+	<<if _args[0] and $sadism lt 1000>>
 		<<set $sadism += _args[0]>>
 		<<set $sadism to Math.clamp($sadism, 0, 1000)>>
 	<</if>>
 <</widget>>
 
 <<widget "masochism">>
-	<<if _args[0]>>
+	<<if _args[0] and $masochism lt 1000>>
 		<<set $masochism += _args[0]>>
 		<<set $masochism to Math.clamp($masochism, 0, 1000)>>
 	<</if>>
