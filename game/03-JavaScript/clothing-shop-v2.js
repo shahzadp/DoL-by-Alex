@@ -356,12 +356,7 @@ function applyClothingShopFilters(items) {
 		It will definitely drastically improve speed, but it will probably not have a noticable difference in performance.
 		*/
 
-		const getSlot = item_ => {
-			if (V.clothingShopSlot === "all") {
-				return item_.realSlot;
-			}
-			return V.clothingShopSlot;
-		};
+		const getSlot = item_ => item_.slot;
 
 		// items is a shallow copy, so we're not mutating the passed array
 		if (prop === "price") {
@@ -380,18 +375,6 @@ function applyClothingShopFilters(items) {
 	return items;
 }
 window.applyClothingShopFilters = applyClothingShopFilters;
-
-function allClothesSetup() {
-	let clothes = [];
-	Object.keys(setup.clothes).forEach(slot => {
-		if (["all", "over_head", "over_upper", "over_lower"].includes(slot)) return;
-		const items = clone(setup.clothes[slot]);
-		items.forEach(item => (item.realSlot = slot));
-		clothes = clothes.concat(items);
-	});
-	setup.clothes.all = clothes;
-}
-window.allClothesSetup = allClothesSetup;
 
 function shopSearchReplacer(name) {
 	return name.replace(/[^a-zA-Z0-9\u4e00-\u9fa5' -]+/g, "");
