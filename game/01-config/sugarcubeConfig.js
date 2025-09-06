@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.5.0",
+	version: "0.5.5.1",
 	versionName: `"Pride Cometh" edition`,
 	sneaky: true,
 	socialMediaEnabled: true,
