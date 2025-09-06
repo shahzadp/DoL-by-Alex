@@ -228,7 +228,7 @@
 				<<set $avery_mansion.schedule to "work">>
 			<<elseif Time.hour lte 17 and $avery_mansion.rage.work is true>>
 				<<set $avery_mansion.schedule to "return">>
-			<<elseif Time.hour lte 17 and $avery_mansion.guest isnot "Bailey_skip">>
+			<<elseif Time.hour lte 17 and $avery_mansion.party_done is false and $avery_mansion.guest isnot "Bailey_skip">>
 				<<set $avery_mansion.schedule to "party_prepare">>
 			<<elseif $avery_mansion.party_done is false and $avery_mansion.guest isnot "Bailey_skip" and !$avery_party_skipped>>
 				<<set $avery_mansion.schedule to "party">>
@@ -438,6 +438,9 @@
 <<if $avery_mansion.bedroom_state is "ignored" or $avery_mansion.bedroom_state is "locked">>
 	<<set _avery_mansion_time to _avery_mansion_time - $avery_mansion.bedroom * _avery_housekeeping>>
 <</if>>
+
+<<set _avery_mansion_time to Math.ceil(_avery_mansion_time)>>
+
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("lounge")>>
 	Lounge:
 <</if>>
@@ -596,7 +599,10 @@
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("pool")>>
 	<br>
 <</if>>
-<br><br>
+<<if _args[0] isnot "all">>
+	<br>
+<</if>>
+<br>
 <</widget>>
 
 <<widget "avery_mansion_links">>
@@ -3140,25 +3146,23 @@
 				<br>
 				<<attitudesControlCheck>>
 				<<if $attitudesControl.showGoldLink is true>>
-				<span class="goldLink"><<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>> </span><span class="red">!!</span>
+					<span class="goldLink"><<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>> </span><span class="red">!!</span>
 				<<else>>
-				<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
+					<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
 				<</if>>
+				<br><br>
 
 				<<if $avery_mansion.folder gte 12 and !$avery_mansion.folder_daily and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
 					<<set _extralinebreak to true>>
-					<br><br>
 					<<link [[Read the folder from the orphanage|Mansion Folder Avery]]>><<set $avery_mansion.folder>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
 					<br>
 				<<elseif $avery_mansion.folder gte 1 and !$avery_mansion.folder_daily>>
 					<<set _extralinebreak to true>>
-					<br><br>
 					<<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<</if>>
 				<<if $avery_mansion.schedule is "sleep">>
 					<<set _extralinebreak to true>>
-					<br><br>
 					<<npc "Avery">><<person1>>
 					<<if C.npc.Avery.rage gte 80>>
 						Avery thrashes in <<his>> sleep.

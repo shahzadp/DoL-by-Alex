@@ -899,11 +899,10 @@ function dayPassed() {
 
 	if (V.avery_skyscraper_fire_time >= 1) {
 		V.avery_skyscraper_fire_time--;
-	} 
+	}
 	if (V.avery_mansion_fire_time >= 1) {
 		V.avery_mansion_fire_time--;
-	} 
-	
+	}
 }
 
 function hourPassed(hours) {
@@ -1212,7 +1211,7 @@ function dailyNPCEffects() {
 	if (C.npc.Avery.state !== "dismissed") {
 		V.averyschoolpickup = 0;
 		V.averyseen = 0;
-		if (V.averydate) {
+		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
 			if (V.averydateattended !== 1) V.averydatemissed = 1;
 			V.averydateattended = 0;
@@ -1232,7 +1231,7 @@ function dailyNPCEffects() {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
 			V.avery_party_skipped = false;
-			if (Time.weekDay == 3) {
+			if (Time.weekDay === 3) {
 				if (V.avery_mansion.guest === "Bailey_skip") {
 					V.avery_mansion.guest = "Bailey";
 				} else if (V.avery_mansion.guest === "Bailey") {
@@ -1280,7 +1279,6 @@ function dailyNPCEffects() {
 			}
 			V.avery_mansion.outfit_warning = false;
 
-
 			if (V.avery_mansion.folder_daily === true) {
 				V.avery_mansion.folder_daily = false;
 			}
@@ -1315,7 +1313,6 @@ function dailyNPCEffects() {
 				V.avery_mansion.garden++;
 			}
 		}
-
 	} else {
 		delete V.averyDismissalSceneWait;
 	}
