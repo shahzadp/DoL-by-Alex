@@ -2965,9 +2965,9 @@
 					<br>
 				<</if>>
 			<<else>>
-				<<if Time.monthDay is 30>>
+				<<if Time.monthDay is Time.lastDayOfMonth>>
 					<span class="gold">"The opening ceremony is tonight.</span> When the moon is blood red.
-				<<elseif Time.monthDay 29>>
+				<<elseif Time.monthDay is Time.lastDayOfMonth - 1>>
 					<span class="gold">"The opening ceremony will be tomorrow.</span> When the moon is blood red.
 				<<else>>
 					<span class="gold">"The opening ceremony will be on the last day of the month.</span> When the moon is blood red.
@@ -3411,7 +3411,7 @@
 		<<set _avery_interrupt to "work">>
 	<<elseif $_avery_present is true and $avery_tower.stage is 2 and $avery_tower.progress gte 100 and $avery_mansion.schedule isnot "away">>
 		<<set _avery_interrupt to "skyscraper_approach">>
-	<<elseif $_avery_present is true and $avery_tower.stage is 3 and Time.isBloodMoon()>>
+	<<elseif $_avery_present is true and $avery_tower.stage is 3 and Time.isBloodMoon() and !$avery_fate>>
 		<<set _avery_interrupt to "skyscraper_ready">>
 	<<elseif $avery_tower.stage gte 1 and getRobinLocation() is "orphanage" and $avery_mansion and $avery_mansion_robin is 1 and Time.hour gte 6 and Time.hour lte 21 and !$fromRobinRoom and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
 		<<set _avery_interrupt to "robin">>
@@ -3461,30 +3461,16 @@
 <</widget>>
 
 <<widget "skyscraper_time">>
-	<<if Time.monthName is "September" or Time.monthName is "April" or Time.monthName is "June" or Time.monthName is "November">>
-		<<if Time.monthDay is 30>>
-			<<if Time.hour gte 21>>
-				<<set _skyscraper_time to "now">>
-			<<else>>
-				<<set _skyscraper_time to "tonight">>
-			<</if>>
-		<<elseif Time.monthDay is 29>>
-			<<set _skyscraper_time to "tomorrow">>
+	<<if Time.monthDay is Time.lastDayOfMonth>>
+		<<if Time.hour gte 21>>
+			<<set _skyscraper_time to "now">>
 		<<else>>
-			<<set _skyscraper_time to "blood">>
+			<<set _skyscraper_time to "tonight">>
 		<</if>>
+	<<elseif Time.monthDay is Time.lastDayOfMonth - 1>>
+		<<set _skyscraper_time to "tomorrow">>
 	<<else>>
-		<<if Time.monthDay is 31>>
-			<<if Time.hour gte 21>>
-				<<set _skyscraper_time to "now">>
-			<<else>>
-				<<set _skyscraper_time to "tonight">>
-			<</if>>
-		<<elseif Time.monthDay is 30>>
-			<<set _skyscraper_time to "tomorrow">>
-		<<else>>
-			<<set _skyscraper_time to "blood">>
-		<</if>>
+		<<set _skyscraper_time to "blood">>
 	<</if>>
 <</widget>>
 
