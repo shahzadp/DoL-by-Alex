@@ -140,6 +140,12 @@
 <<set $avery_mansion.landry to 0>>
 <<set $avery_mansion.vault_progress to 0>>
 
+<<set $avery_mansion.kitchen_stock to {
+	normal: ["salt", "vegetable_oil", "bottle_of_milk", "flour", "chicken_egg", "beef", "pork", "truffle", "cream", "tomato", "red_wine", "white_wine", "rice", "chilli_pepper"],
+	requested: []
+}>>
+<<set $avery_mansion.kitchen_made to 0>>
+
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
 <<set $avery_tower.effects to []>>
@@ -182,13 +188,25 @@
 	<br><br>
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
-	<<if $plants[$avery_mansion.food.name].recipe isnot true>>
-		<<link [[Say you don't know the recipe|Avery Gifts Recipe]]>><</link>>
+
+	<<for _i range setup.plants[$avery_requested_food].ingredients>>
+		<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
+			<<set _missingIngredients to true>>
+		<</if>>
+	<</for>>
+	<<if _missingIngredients>>
+		<<link [[Say you couldn't make <<recipe_name $avery_requested_food "article">> because you were missing ingredients|Avery Gifts Ingredients]]>><</link>>
 		<br>
-		<<link [[Say nothing|Mansion Dining]]>><<endevent>><</link>>
+	<</if>>
+	<<if $plants[$avery_mansion.food.name].recipe isnot true>>
+		<<link [[Say you don't know the recipe|Avery Gifts Recipe]]>><<unset $avery_requested_food>><</link>>
+		<br>
+	<</if>>
+	<<if $plants[$avery_mansion.food.name].recipe isnot true or _missingIngredients>>
+		<<link [[Say nothing|Mansion Dining]]>><<endevent>><<unset $avery_requested_food>><</link>>
 		<br>
 	<<else>>
-		<<link [[Next|Mansion Dining]]>><<endevent>><</link>>
+		<<link [[Next|Mansion Dining]]>><<endevent>><<unset $avery_requested_food>><</link>>
 		<br>
 	<</if>>
 
@@ -431,15 +449,13 @@
 
 <<widget "avery_mansion_description">>
 <<avery_housework_check>>
-<<set _avery_housekeeping to 10 - $housekeeping / 200>>
-<<set _avery_tending to 10 - $tending / 200>>
+<<set _avery_housekeeping to Math.floor(10 - $housekeeping / 200)>>
+<<set _avery_tending to Math.floor(10 - $tending / 200)>>
 <<set _avery_mansion_time to 0 + $avery_mansion.pool * _avery_housekeeping + $avery_mansion.kitchen * _avery_housekeeping + $avery_mansion.lounge * _avery_housekeeping + $avery_mansion.display * _avery_housekeeping + $avery_mansion.bedroom * _avery_housekeeping + $avery_mansion.bathroom * _avery_housekeeping + $avery_mansion.dining * _avery_housekeeping + $avery_mansion.garden * _avery_tending>>
 
 <<if $avery_mansion.bedroom_state is "ignored" or $avery_mansion.bedroom_state is "locked">>
 	<<set _avery_mansion_time to _avery_mansion_time - $avery_mansion.bedroom * _avery_housekeeping>>
 <</if>>
-
-<<set _avery_mansion_time to Math.ceil(_avery_mansion_time)>>
 
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("lounge")>>
 	Lounge:
@@ -721,6 +737,31 @@
 		<i>Rage assess so far:</i> <<print $avery_mansion.rage.assess>>
 		<br>
 	<</if>>
+	/* Todo Avery: Vrel removed missing parties and getting dinner wrong as sources of rage. Was that intentional? If so, remove again */
+	<<if $avery_mansion.guest.includes("_missed")>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Missed party with guest</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.dinner_wrong>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Dinner wrong</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Asked about already-requested ingredients</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Asked about already-requested ingredients</i><br>
+		<</if>>
+	<</if>>
 	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("kneel")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<if $debug is 1>>
@@ -835,7 +876,7 @@
 			<br>
 	<<elseif $averyragerevealed gte 1 and C.npc.Avery.rage gte 20 and $avery_mansion.rage.assess gte 1 and $avery_mansion.rage.timer lte 0>>
 		<<if $avery_mansion.rage.assess gte random(1, 12)>>
-			<<He>> strides up to you,
+			<<He>> strides up to you.
 			<br><br>
 			<<if _args[0] is "work">>
 				"I work so fucking hard for you," <<he>> says. "And this is how you repay me." <span class="red"><<He>> grasps your arm.</span>
@@ -1089,82 +1130,83 @@
 <<widget "avery_mansion_rage_housework">>
 	<<set $avery_mansion.rage.timer to 30>>
 	<<He>> launches into a tirade, aimed at you, at <<his>> work colleagues, <<his>> enemies, <<his>> friends, <<his>> parents. <<He>> rages at everything, but some lines come up again and again.
-	<br><span class="red">
+	<span class="red">
 	<<if $avery_mansion.pool gte 1>>
-		"The pool's a fucking swamp."
 		<br>
+		"The pool's a fucking swamp."
 	<</if>>
 	<<if $avery_mansion.kitchen gte 1>>
-		"The kitchen looks like a rat's picnic."
 		<br>
+		"The kitchen looks like a rat's picnic."
 	<</if>>
 	<<if $avery_mansion.lounge gte 1>>
-		"The lounge looks like a rape scene."
 		<br>
+		"The lounge looks like a rape scene."
 	<</if>>
 	<<if $avery_mansion.display gte 1>>
-		"The display room likes like a fucking tomb."
 		<br>
+		"The display room likes like a fucking tomb."
 	<</if>>
 	<<if $avery_mansion.bedroom gte 1>>
-		"The bedroom looks like a murder scene."
 		<br>
+		"The bedroom looks like a murder scene."
 	<</if>>
 	<<if $avery_mansion.bathroom gte 1>>
-		"I wouldn't wash a dog in that bathroom."
 		<br>
+		"I wouldn't wash a dog in that bathroom."
 	<</if>>
 	<<if $avery_mansion.dining gte 1>>
-		"The dining room smells like shit."
 		<br>
+		"The dining room smells like shit."
 	<</if>>
 	<<if $avery_mansion.garden gte 1>>
-		"The garden looks like the fucking temple grounds."
 		<br>
+		"The garden looks like the fucking temple grounds."
 	<</if>>
 
 	<<if $avery_mansion.rage.dinner_wrong is true and $avery_mansion.rage.dinner_missed gte 1>>
+		<<set $avery_mansion.rage.dinner_missed to 0>>
+		<br>
 		"You serve me the wrong food. When you can even be bothered to make anything."
-		<br>
 	<<elseif $avery_mansion.rage.dinner_wrong is true>>
+		<br>
 		"You serve me the wrong food."
-		<br>
 	<<elseif $avery_mansion.rage.dinner_missed gte 1>>
-		"You let me go hungry."
+		<<set $avery_mansion.rage.dinner_missed to 0>>
 		<br>
+		"You let me go hungry."
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<unset $avery_mansion.rage.ingredients>>
+		<br>
+		"I go out of my way to buy you ingredients and you don't even remember they're there."
 	<</if>>
 	<<if _avery_mansion_maid_failed>>
+		<br>
 		"You're dressed like you own the place."
-		<br>
 	<<elseif _avery_mansion_formal_failed>>
-		"You look like a tramp."
 		<br>
+		"You look like a tramp."
 	<</if>>
 
 	<<if $avery_mansion.jobs.includes("kneel") and !$avery_mansion.kneel>>
+		<br>
 		"Why are you stood as if you're my equal?"
-		<br>
 	<<elseif $avery_mansion.jobs.includes("bow") and !$avery_mansion.bow>>
-		"You didn't fucking
-		<<if $player.gender_appearance is "f">>
-			curtsy
-		<<else>>
-			bow
-		<</if>>
-		."
 		<br>
+		"You didn't fucking <<= $player.gender_appearance is "f" ? "curtsy" : "bow">>."
 	<</if>>
 
 	<<if _avery_mansion_hairstyle_failed>>
+		<br>
 		<<if _avery_mansion_hairlength_failed>>
 			"Your hair is a disaster."
 		<<else>>
 			"Your hair is a mess."
 		<</if>>
-		<br>
 	<<elseif _avery_mansion_hairlength_failed>>
-		"You should cut your fucking hair."
 		<br>
+		"You should cut your fucking hair."
 	<</if>>
 	</span>
 	<<gpain>><<gtrauma>><<gstress>><<pain 4>><<trauma 6>><<stress 6>>
@@ -2842,6 +2884,10 @@
 
 	<<if $bus is "avery_kitchen">>
 		You are in Avery's kitchen.
+		<<if $avery_mansion.kitchen_made gte 3>>
+			<<avery_housework_change "kitchen" 1>>
+			<<set $avery_mansion.kitchen_made -= 3>>
+		<</if>>
 
 		<<avery_mansion_description kitchen>>
 	<</if>>
@@ -3075,7 +3121,7 @@
 			<</if>>
 
 			<<if $bus is "avery_kitchen">>
-				<<ingredientsSupplied "salt" "vegetable_oil" "bottle_of_milk" "flour" "chicken_egg" "beef" "pork" "truffle" "cream">>
+				<<ingredientsSupplied $avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested)>>
 
 				<<kitchenDisplay>>
 			<</if>>
@@ -3347,7 +3393,12 @@
 					<</if>>
 					<<if $avery_mansion.food.name isnot "none" and $plants[$avery_mansion.food.name].recipe isnot true>>
 						<<set _extralinebreak to true>>
-						<<ind>><<link [[Learn recipe (2:00)|Mansion Study Learn]]>><<pass 120>><</link>>
+						<<ind>><<link [[Learn recipe for <<recipe_name $avery_mansion.food.name>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.food.name>><<pass 120>><</link>>
+						<br>
+					<</if>>
+					<<if $avery_mansion.recipe>>
+						<<set _extralinebreak to true>>
+						<<ind>><<link [[Learn recipe for <<recipe_name $avery_mansion.recipe>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.recipe>><<pass 120>><</link>>
 						<br>
 					<</if>>
 					<<if $avery_mansion.schedule isnot "study" or $avery_mansion.schedule is "away">>
