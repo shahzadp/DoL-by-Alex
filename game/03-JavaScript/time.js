@@ -537,7 +537,7 @@ function weekPassed() {
 
 function dayPassed() {
 	Weather.sky.initSun();
-
+	
 	// Lose one day of tanning
 	Skin.applyTanningLoss(1440);
 
@@ -1274,11 +1274,17 @@ function dailyNPCEffects() {
 					}
 				}
 			}
-			if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7) {
+
+
+			if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7 && V.avery_mansion.rage.dinner_missed < 4) {
 				V.avery_mansion.rage.dinner_missed++;
 			}
 			V.avery_mansion.outfit_warning = false;
 
+			V.avery_mansion.rage.assess = 0;
+
+			V.avery_mansion.rage.assess = V.avery_mansion.pool + V.avery_mansion.kitchen + V.avery_mansion.lounge + V.avery_mansion.display + V.avery_mansion.bedroom + V.avery_mansion.bathroom + V.avery_mansion.dining + V.avery_mansion.garden + V.avery_mansion.rage.dinner_missed;
+			
 			if (V.avery_mansion.folder_daily === true) {
 				V.avery_mansion.folder_daily = false;
 			}
@@ -1288,28 +1294,28 @@ function dailyNPCEffects() {
 			if (V.avery_mansion.rage.timer >= 1) {
 				V.avery_mansion.rage.timer--;
 			}
-			if (V.avery_mansion.pool < 4) {
+			if (V.avery_mansion.jobs.includes("pool") && V.avery_mansion.pool < 4) {
 				V.avery_mansion.pool++;
 			}
-			if (V.avery_mansion.kitchen < 4) {
+			if (V.avery_mansion.jobs.includes("kitchen") && V.avery_mansion.kitchen < 4) {
 				V.avery_mansion.kitchen++;
 			}
-			if (V.avery_mansion.lounge < 4) {
+			if (V.avery_mansion.jobs.includes("lounge") && V.avery_mansion.lounge < 4) {
 				V.avery_mansion.lounge++;
 			}
-			if (V.avery_mansion.display < 4) {
+			if (V.avery_mansion.jobs.includes("display") && V.avery_mansion.display < 4) {
 				V.avery_mansion.display++;
 			}
-			if (V.avery_mansion.bedroom < 4) {
+			if (V.avery_mansion.jobs.includes("bedroom") && V.avery_mansion.bedroom < 4) {
 				V.avery_mansion.bedroom++;
 			}
-			if (V.avery_mansion.bathroom < 4) {
+			if (V.avery_mansion.jobs.includes("bathroom") && V.avery_mansion.bathroom < 4) {
 				V.avery_mansion.bathroom++;
 			}
-			if (V.avery_mansion.dining < 4) {
+			if (V.avery_mansion.jobs.includes("dining") && V.avery_mansion.dining < 4) {
 				V.avery_mansion.dining++;
 			}
-			if (V.avery_mansion.garden < 4) {
+			if (V.avery_mansion.jobs.includes("garden") && V.avery_mansion.garden < 4) {
 				V.avery_mansion.garden++;
 			}
 		}
