@@ -1275,7 +1275,9 @@ function dailyNPCEffects() {
 				}
 			}
 
-			} if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay,2,6)) {
+			if (V.avery_mansion.rage.dinner_done === 1 && V.avery_mansion.rage.dinner_missed > 0 && between(Time.weekDay, 2, 6)) {
+				V.avery_mansion.rage.dinner_missed--;
+			} else if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7 && V.avery_mansion.rage.dinner_missed < 4) {
 				V.avery_mansion.rage.dinner_missed++;
 			}
 
