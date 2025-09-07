@@ -202,7 +202,7 @@
 <</widget>>
 
 <<widget "avery_mansion">>
-<<if $avery_mansion.schedule is "away" and $avery_mansion_fire_time lte 0 and $avery_mansion.injury>>
+<<if $avery_mansion.schedule is "away" and $avery_skyscraper_fire_time lte 0 and $avery_mansion.injury>>
 	<<set $avery_mansion.schedule to "return">>
 <<elseif $avery_mansion.schedule is "away" and $avery_mansion.away_timer lte 0 and !$avery_mansion.injury>>
 	<<set $avery_mansion.schedule to "return">>
@@ -683,16 +683,16 @@
 		<<icon "avery_pool.png">><<link [[Pool (0:01)|Mansion Pool]]>><<handheldon 1>><<pass 1>><</link>>
 		<br>
 	<</if>>
-	<<if $avery_mansion.landry is 0 and $auriga_artefact is "Avery" and !$avery_fate and !$fake_artefact>>
+	<<if $possessed and $nextPassageCheck is "Danube Street">>
+		<<icon "front_gate.png">><<link [[Leave (0:02)|Danube Street]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
+	<<elseif $avery_mansion.landry is 0 and $auriga_artefact is "Avery" and !$avery_fate and !$fake_artefact>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Landry Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
-		<br>
-	<<elseif $avery_mansion.days gte 7 and $mickeyPub gte 2 and $auriga_artefact is "Avery" and !$avery_fate and !$avery_mansion.mickey>>
+	<<elseif $avery_mansion.days gte 7 and $mickeyPub gte 2 and $auriga_artefact is "Avery" and $fake_artefact is "pc" and !$avery_fate and !$avery_mansion.mickey>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Mickey Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
-		<br>
 	<<else>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Danube Street]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
-		<br>
-<</if>>
+	<</if>>
+	<br>
 <</widget>>
 
 <<widget "avery_rage_assess">>
@@ -3140,6 +3140,17 @@
 			<</if>>
 
 			<<if $bus is "avery_bedroom">>
+				<<if $unbind is 1>>
+					<<unset $unbind>>
+					<<if $possessed>>
+						You stare down at your bindings. You pull, and they fall apart, unable to hold against you.
+						<br><br>
+					<<else>>
+						<span class="green">You rub your bindings against the corner of a table.</span> It takes some effort, but eventually the material yields, freeing your limbs.
+						<br><br>
+					<</if>>
+					<<unbind>>
+				<</if>>
 				<<if $leftarm is "bound" or $rightarm is "bound" or $feetuse is "bound" or $worn.feet.name is "ankle cuffs">>
 					<<undobindingsicon>><<link [[Undo your bindings (0:10)|Mansion Bedroom]]>><<set $unbind to 1>><<pass 10>><<unbind>><</link>>
 					<br><br>
@@ -3149,9 +3160,15 @@
 					<br><br>
 				<</if>>
 
-				<<icon "avery_bedroom.png">><<link [[Strip and get in bed|Mansion Bed]]>><<undressSleep "Mansion Bed">><</link>>
-				<br>
-				<<listsleepoutfits "Mansion Bed">>
+				<<if $nextPassageCheck is "Mansion Bed">>
+					<span class="nextLink"><<furnitureicon _bed.iconFile>><<link [[Avery.|Mansion Bed]]>><</link>></span>
+					<br>
+					<<listsleepoutfits>>
+				<<else>>
+					<<icon "avery_bedroom.png">><<link [[Strip and get in bed|Mansion Bed]]>><<undressSleep "Mansion Bed">><</link>>
+					<br>
+					<<listsleepoutfits "Mansion Bed">>
+				<</if>>
 				<<roomoptions>>
 				<br>
 				<<wardrobeicon>><<link [[Wardrobe|Mansion Wardrobe]]>><</link>>
@@ -3160,7 +3177,12 @@
 					<<sextoysicon>><<link [[Sex toys|Sextoys Inventory]]>><<set $sextoyInvReturnLink to $passage>><</link>>
 					<br>
 				<</if>>
-				<<mirroricon "home">><<link [[Mirror|Mansion Mirror]]>><<preMirror>><</link>>
+				<<if $nextPassageCheck is "Mansion Mirror">>
+					<span class="nextLink"><<mirroricon "home">><<link [[Mirror|Mansion Mirror]]>><<preMirror>><<endevent>><</link>></span>
+				<<else>>
+					<<mirroricon "home">><<link [[Mirror|Mansion Mirror]]>><<preMirror>><</link>>
+				<</if>>
+				<br><br>
 
 				<<if $avery_mansion.folder gte 12 and !$avery_mansion.folder_daily and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
 					<<set _extralinebreak to true>>
