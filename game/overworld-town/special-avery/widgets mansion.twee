@@ -140,6 +140,12 @@
 <<set $avery_mansion.landry to 0>>
 <<set $avery_mansion.vault_progress to 0>>
 
+<<set $avery_mansion.kitchen_stock to {
+	normal: ["salt", "vegetable_oil", "bottle_of_milk", "flour", "chicken_egg", "beef", "pork", "truffle", "cream", "tomato", "red_wine", "white_wine", "rice", "chilli_pepper"],
+	requested: []
+}>>
+<<set $avery_mansion.kitchen_made to 0>>
+
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
 <<set $avery_tower.effects to []>>
@@ -182,13 +188,25 @@
 	<br><br>
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
-	<<if $plants[$avery_mansion.food.name].recipe isnot true>>
-		<<link [[Say you don't know the recipe|Avery Gifts Recipe]]>><</link>>
+
+	<<for _i range setup.plants[$avery_requested_food].ingredients>>
+		<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
+			<<set _missingIngredients to true>>
+		<</if>>
+	<</for>>
+	<<if _missingIngredients>>
+		<<link [[Say you couldn't make <<recipe_name $avery_requested_food "article">> because you were missing ingredients|Avery Gifts Ingredients]]>><</link>>
 		<br>
-		<<link [[Say nothing|Mansion Dining]]>><<endevent>><</link>>
+	<</if>>
+	<<if $plants[$avery_mansion.food.name].recipe isnot true>>
+		<<link [[Say you don't know the recipe|Avery Gifts Recipe]]>><<unset $avery_requested_food>><</link>>
+		<br>
+	<</if>>
+	<<if $plants[$avery_mansion.food.name].recipe isnot true or _missingIngredients>>
+		<<link [[Say nothing|Mansion Dining]]>><<endevent>><<unset $avery_requested_food>><</link>>
 		<br>
 	<<else>>
-		<<link [[Next|Mansion Dining]]>><<endevent>><</link>>
+		<<link [[Next|Mansion Dining]]>><<endevent>><<unset $avery_requested_food>><</link>>
 		<br>
 	<</if>>
 
@@ -343,7 +361,7 @@
 <</widget>>
 
 <<widget "avery_mansion_away">>
-	<<set $avery_manion.schedule to "away">>
+	<<set $avery_mansion.schedule to "away">>
 	<<set $avery_mansion.timer to 6>>
 <</widget>>
 
@@ -431,15 +449,13 @@
 
 <<widget "avery_mansion_description">>
 <<avery_housework_check>>
-<<set _avery_housekeeping to 10 - $housekeeping / 200>>
-<<set _avery_tending to 10 - $tending / 200>>
-<<set _avery_mansion_time to 0 + $avery_mansion.pool * _avery_housekeeping + $avery_mansion.kitchen * _avery_housekeeping + $avery_mansion.lounge * _avery_housekeeping + $avery_mansion.display * _avery_housekeeping + $avery_mansion.bedroom * _avery_housekeeping + $avery_mansion.bathroom * _avery_housekeeping + $avery_mansion.dining * _avery_housekeeping + $avery_mansion.garden * _avery_tending>>
+<<set _avery_housekeeping to Math.floor(10 - $housekeeping / 200)>>
+<<set _avery_tending to Math.floor(10 - $tending / 200)>>
+<<set _avery_mansion_time to 0 + $avery_mansion.pool * _avery_housekeeping + $avery_mansion.kitchen * _avery_housekeeping + $avery_mansion.lounge * _avery_housekeeping + $avery_mansion.display * _avery_housekeeping + $avery_mansion.bathroom * _avery_housekeeping + $avery_mansion.dining * _avery_housekeeping + $avery_mansion.garden * _avery_tending>>
 
-<<if $avery_mansion.bedroom_state is "ignored" or $avery_mansion.bedroom_state is "locked">>
-	<<set _avery_mansion_time to _avery_mansion_time - $avery_mansion.bedroom * _avery_housekeeping>>
+<<if $avery_mansion.bedroom_state isnot "ignored" and $avery_mansion.bedroom_state isnot "locked">>
+	<<set _avery_mansion_time to _avery_mansion_time + $avery_mansion.bedroom * _avery_housekeeping>>
 <</if>>
-
-<<set _avery_mansion_time to Math.ceil(_avery_mansion_time)>>
 
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("lounge")>>
 	Lounge:
@@ -534,9 +550,8 @@
 	<</if>>
 	<<if $avery_mansion.bedroom_state is "off-limits">>
 		<span class="blue">Avery slumbers, and doesn't like you cleaning the bedroom while <<nnpc_he Avery>> sleeps.</span> <<link [[Clean it anyway|$passage]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
-		<<if $avery_mansion.bedroom_state is "locked">>
-			<span class="bedroom">The bedroom door is locked.</span>
-		<</if>>
+	<<elseif $avery_mansion.bedroom_state is "locked">>
+		<span class="bedroom">The bedroom door is locked.</span>
 	<</if>>
 <</if>>
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("bedroom")>>
@@ -721,6 +736,31 @@
 		<i>Rage assess so far:</i> <<print $avery_mansion.rage.assess>>
 		<br>
 	<</if>>
+	/* Todo Avery: Vrel removed missing parties and getting dinner wrong as sources of rage. Was that intentional? If so, remove again */
+	<<if $avery_mansion.guest.includes("_missed")>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Missed party with guest</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.dinner_wrong>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Dinner wrong</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Asked about already-requested ingredients</i><br>
+		<</if>>
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<set $avery_mansion.rage.assess += 4>>
+		<<if $debug is 1>>
+			<i>Asked about already-requested ingredients</i><br>
+		<</if>>
+	<</if>>
 	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("kneel")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<if $debug is 1>>
@@ -835,7 +875,7 @@
 			<br>
 	<<elseif $averyragerevealed gte 1 and C.npc.Avery.rage gte 20 and $avery_mansion.rage.assess gte 1 and $avery_mansion.rage.timer lte 0>>
 		<<if $avery_mansion.rage.assess gte random(1, 12)>>
-			<<He>> strides up to you,
+			<<He>> strides up to you.
 			<br><br>
 			<<if _args[0] is "work">>
 				"I work so fucking hard for you," <<he>> says. "And this is how you repay me." <span class="red"><<He>> grasps your arm.</span>
@@ -1089,82 +1129,83 @@
 <<widget "avery_mansion_rage_housework">>
 	<<set $avery_mansion.rage.timer to 30>>
 	<<He>> launches into a tirade, aimed at you, at <<his>> work colleagues, <<his>> enemies, <<his>> friends, <<his>> parents. <<He>> rages at everything, but some lines come up again and again.
-	<br><span class="red">
+	<span class="red">
 	<<if $avery_mansion.pool gte 1>>
-		"The pool's a fucking swamp."
 		<br>
+		"The pool's a fucking swamp."
 	<</if>>
 	<<if $avery_mansion.kitchen gte 1>>
-		"The kitchen looks like a rat's picnic."
 		<br>
+		"The kitchen looks like a rat's picnic."
 	<</if>>
 	<<if $avery_mansion.lounge gte 1>>
-		"The lounge looks like a rape scene."
 		<br>
+		"The lounge looks like a rape scene."
 	<</if>>
 	<<if $avery_mansion.display gte 1>>
-		"The display room likes like a fucking tomb."
 		<br>
+		"The display room likes like a fucking tomb."
 	<</if>>
 	<<if $avery_mansion.bedroom gte 1>>
-		"The bedroom looks like a murder scene."
 		<br>
+		"The bedroom looks like a murder scene."
 	<</if>>
 	<<if $avery_mansion.bathroom gte 1>>
-		"I wouldn't wash a dog in that bathroom."
 		<br>
+		"I wouldn't wash a dog in that bathroom."
 	<</if>>
 	<<if $avery_mansion.dining gte 1>>
-		"The dining room smells like shit."
 		<br>
+		"The dining room smells like shit."
 	<</if>>
 	<<if $avery_mansion.garden gte 1>>
-		"The garden looks like the fucking temple grounds."
 		<br>
+		"The garden looks like the fucking temple grounds."
 	<</if>>
 
 	<<if $avery_mansion.rage.dinner_wrong is true and $avery_mansion.rage.dinner_missed gte 1>>
+		<<set $avery_mansion.rage.dinner_missed to 0>>
+		<br>
 		"You serve me the wrong food. When you can even be bothered to make anything."
-		<br>
 	<<elseif $avery_mansion.rage.dinner_wrong is true>>
+		<br>
 		"You serve me the wrong food."
-		<br>
 	<<elseif $avery_mansion.rage.dinner_missed gte 1>>
-		"You let me go hungry."
+		<<set $avery_mansion.rage.dinner_missed to 0>>
 		<br>
+		"You let me go hungry."
+	<</if>>
+	<<if $avery_mansion.rage.ingredients>>
+		<<unset $avery_mansion.rage.ingredients>>
+		<br>
+		"I go out of my way to buy you ingredients and you don't even remember they're there."
 	<</if>>
 	<<if _avery_mansion_maid_failed>>
+		<br>
 		"You're dressed like you own the place."
-		<br>
 	<<elseif _avery_mansion_formal_failed>>
-		"You look like a tramp."
 		<br>
+		"You look like a tramp."
 	<</if>>
 
 	<<if $avery_mansion.jobs.includes("kneel") and !$avery_mansion.kneel>>
+		<br>
 		"Why are you stood as if you're my equal?"
-		<br>
 	<<elseif $avery_mansion.jobs.includes("bow") and !$avery_mansion.bow>>
-		"You didn't fucking
-		<<if $player.gender_appearance is "f">>
-			curtsy
-		<<else>>
-			bow
-		<</if>>
-		."
 		<br>
+		"You didn't fucking <<= $player.gender_appearance is "f" ? "curtsy" : "bow">>."
 	<</if>>
 
 	<<if _avery_mansion_hairstyle_failed>>
+		<br>
 		<<if _avery_mansion_hairlength_failed>>
 			"Your hair is a disaster."
 		<<else>>
 			"Your hair is a mess."
 		<</if>>
-		<br>
 	<<elseif _avery_mansion_hairlength_failed>>
-		"You should cut your fucking hair."
 		<br>
+		"You should cut your fucking hair."
 	<</if>>
 	</span>
 	<<gpain>><<gtrauma>><<gstress>><<pain 4>><<trauma 6>><<stress 6>>
@@ -2842,6 +2883,10 @@
 
 	<<if $bus is "avery_kitchen">>
 		You are in Avery's kitchen.
+		<<if $avery_mansion.kitchen_made gte 3>>
+			<<avery_housework_change "kitchen" 1>>
+			<<set $avery_mansion.kitchen_made -= 3>>
+		<</if>>
 
 		<<avery_mansion_description kitchen>>
 	<</if>>
@@ -3075,7 +3120,7 @@
 			<</if>>
 
 			<<if $bus is "avery_kitchen">>
-				<<ingredientsSupplied "salt" "vegetable_oil" "bottle_of_milk" "flour" "chicken_egg" "beef" "pork" "truffle" "cream">>
+				<<ingredientsSupplied $avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested)>>
 
 				<<kitchenDisplay>>
 			<</if>>
@@ -3186,12 +3231,10 @@
 
 				<<if $avery_mansion.folder gte 12 and !$avery_mansion.folder_daily and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
 					<<set _extralinebreak to true>>
-					<br>
 					<<ind>><<link [[Read the folder from the orphanage|Mansion Folder Avery]]>><<set $avery_mansion.folder>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
 					<br>
 				<<elseif $avery_mansion.folder gte 1 and !$avery_mansion.folder_daily>>
 					<<set _extralinebreak to true>>
-					<br>
 					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<</if>>
@@ -3369,7 +3412,12 @@
 					<</if>>
 					<<if $avery_mansion.food.name isnot "none" and $plants[$avery_mansion.food.name].recipe isnot true>>
 						<<set _extralinebreak to true>>
-						<<tendingicon setup.plants[$avery_mansion.food.name].icon>><<link [[Learn recipe (2:00)|Mansion Study Learn]]>><<pass 120>><</link>>
+						<<tendingicon setup.plants[$avery_mansion.food.name].icon>><<link [[Learn recipe for <<recipe_name $avery_mansion.food.name>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.food.name>><<pass 120>><</link>>
+						<br>
+					<</if>>
+					<<if $avery_mansion.recipe>>
+						<<set _extralinebreak to true>>
+						<<tendingicon $avery_mansion.recipe>><<link [[Learn recipe for <<recipe_name $avery_mansion.recipe>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.recipe>><<pass 120>><</link>>
 						<br>
 					<</if>>
 					<<if $avery_mansion.schedule isnot "study" or $avery_mansion.schedule is "away">>
@@ -3529,4 +3577,308 @@
 
 <<widget "avery_mansion_seen">>
 	<<set $avery_mansion.days_absent to 0>>
+<</widget>>
+
+<<widget "avery_mansion_clean">>
+	<<switch _args[0]>>
+		<<case "lounge">>
+			<<avery_mansion_clean_lounge>>
+		<<case "kitchen">>
+			<<avery_mansion_clean_kitchen>>
+		<<case "dining">>
+			<<avery_mansion_clean_dining>>
+		<<case "display">>
+			<<avery_mansion_clean_display>>
+		<<case "bedroom">>
+			<<avery_mansion_clean_bedroom>>
+		<<case "bathroom">>
+			<<avery_mansion_clean_bathroom>>
+		<<case "garden">>
+			<<avery_mansion_clean_garden>>
+		<<case "pool">>
+			<<avery_mansion_clean_pool>>
+	<</switch>>
+<</widget>>
+
+<<widget "avery_mansion_clean_lounge">>
+	<<if $avery_mansion.lounge gte 4>>
+		You right the upturned furniture in the lounge, and affix the curtains above the windows.
+	<<elseif $avery_mansion.lounge is 3>>
+		You clean the television in the lounge with a cloth.
+	<<elseif $avery_mansion.lounge is 2>>
+		You sweep the litter on the table in the lounge into a bin bag, then clean the table of crumbs with a dustpan and brush.
+	<<elseif $avery_mansion.lounge is 1>>
+		You arrange the cushions in the lounge into a more pleasing form.
+	<</if>>
+	<<avery_housework_change "lounge" -1>>
+	<<pass _housekeeping_time>>
+
+	<<if $avery_mansion.schedule is "lounge">>
+		<<set _event_triggered to true>>
+		<<npc "Avery">><<person1>>.
+		<br><br>
+
+		Avery watches you while you work, going so far as to turn off the television. <<He>> props <<his>> elbow on the arm of the chair, and rests <<his>> head in <<his>> hand as <<he>> observes you.
+		<br><br>
+
+		<<link [[Tease|Mansion Housework Tease]]>><<exhibitionist1>><</link>>
+		<br>
+		<<link [[Ignore|Mansion Housework Ignore]]>><</link>>
+		<br>
+		<<link [[Be rude|Mansion Housework Rude]]>><<def 1>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<llove>><<garage>>
+	<<elseif $avery_mansion.schedule is "drink">>
+		<<set _event_triggered to true>>
+		<<npc "Avery">><<person1>>
+		<br><br>
+
+		"Sit," Avery says while you clean the lounge. <<He>> puts a second glass on the table, fills it with an expensive spirit, and pushes it your way.
+		<br><br>
+
+		<<if playerIsPregnant() and playerAwareTheyArePregnant()>>
+			<span class="blue">You can't bring yourself to drink while you know you're with child.</span>
+		<<else>>
+			<<link [[Drink (0:05)|Mansion Housework Drink]]>><<pass 5>><<set $drunk += 60>><<npcincr Avery love 1>><</link>><<galcohol>><<glove>>
+		<</if>>
+		<br>
+		<<link [[Refuse|Mansion Housework Drink Refuse]]>><<npcincr Avery love -1>><</link>><<llove>>
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_kitchen">>
+	<<if $avery_mansion.kitchen gte 4>>
+		You clean the kitchen sink with heavy duty chemicals.
+	<<elseif $avery_mansion.kitchen is 3>>
+		You mop up the spillage on the kitchen floor.
+	<<elseif $avery_mansion.kitchen is 2>>
+		You wash the dishes in the kitchen.
+	<<elseif $avery_mansion.kitchen is 1>>
+		You clean the kitchen counters of crumbs, until they're spotless.
+	<</if>>
+	<<avery_housework_change "kitchen" -1>>
+	<<pass _housekeeping_time>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_dining">>
+	<<if $avery_mansion.dining gte 4>>
+		The dining room is a mess, but you don a pair of gloves and clean the worst of it.
+	<<elseif $avery_mansion.dining gte 3>>
+		You fill a bucket with hot water, and scrub out the red stain in the dining room.
+	<<elseif $avery_mansion.dining gte 2>>
+		You sweep the mess on the dining room table into a bin bag, and wipe up the stains left behind.
+	<<elseif $avery_mansion.dining gte 1>>
+		You arrange the cutlery in the dining room, until it's fit for royalty.
+	<</if>>
+	<<avery_housework_change "dining" -1>>
+	<<pass _housekeeping_time>>
+
+	<<if $avery_mansion.schedule is "breakfast">>
+		<<set _event_triggered to true>>
+		<<npc "Avery">><<person1>>
+		<br><br>
+
+		Avery eats breakfast as if you're not there, but you catch <<him>> watching you now and then, <<his>> gaze returning to <<his>> food so fast you might have imagined it.
+		<br><br>
+		"Fetch me cream from the kitchen," <<he>> says. "I fancy some with my dessert."
+		<br><br>
+
+		<<link [[Fetch cream (0:03)|Mansion Housework Cream]]>><<pass 3>><</link>>
+		<br>
+		<<link [[Refuse|Mansion Housework Cream Refuse]]>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<llove>><<garage>>
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_display">>
+	<<if $avery_mansion.display gte 4>>
+		You clear the cobwebs filling the display room, making it look less antique than the possessions kept within.
+	<<elseif $avery_mansion.display is 3>>
+		You polish the antiques in the display room.
+	<<elseif $avery_mansion.display is 2>>
+		You rub down the antiques in the display room.
+	<<elseif $avery_mansion.display is 1>>
+		You dust the antiques in the display room.
+	<</if>>
+	<<avery_housework_change "display" -1>>
+	<<pass _housekeeping_time>>
+
+	<<if $avery_antiques.progress is 0>>
+		<<set _event_triggered to true>>
+		<<set $avery_antiques.progress to 1>>
+		<br><br>
+
+		Three objects in particular catch your eye in the display room, glittering in the light. A dagger, amulet, and mask, all made of gold. They look much more valuable than the other objects on display, and more worthy of a museum than here. They're kept behind thick glass. There's no lock, and the glass is sealed by metal bolts. Getting to them would be difficult.
+		<br><br>
+
+		<<link [[Work the bolts free|Mansion Housework Antiques]]>><<set $avery_antiques.bolt_progress += 1>><</link>>
+		<br>
+		<<link [[Ignore them|Mansion Housework Antiques Ignore]]>><</link>>
+	<<elseif $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_antiques.stolen>>
+		<<npc "Avery">><<person1>>
+		<<set _event_triggered to true>>
+		<br><br>
+
+		Avery enters the display room, and inspects the antiques for dust.
+		<<set _items to ["dagger", "amulet", "mask"].filter(item => $avery_antiques.stolen.includes(item))>>
+		<<set $_pronoun to pluralise(_items.length, "it", "them")>>
+
+		<<run _items.forEach(item => {
+			$avery_antiques.noticed.pushUnique(item)
+			$avery_antiques.stolen.delete(item)
+		})>>
+
+		<<He>> arrives at the display that once housed the <<print _items.join(", ").replace(/, ([^,]*)$/, " and $1")>>. <<He>> stares at it a moment.
+		<br><br>
+
+		"My <<pluralise _items.length "antique">>," <<he>> says, turning to you. "Where did you put $_pronoun?"
+		<br><br>
+
+		<<link [[Say you didn't take "+ $_pronoun + " (lie)|Mansion Housework Antiques Lie]]>><</link>>
+		<br>
+		<<link [[Remain silent|Mansion Housework Antiques Silent]]>><</link>>
+		<br>
+		<<link [[Say you took "+ $_pronoun + " to sell|Mansion Housework Antiques Sell]]>><</link>>
+		<br>
+		<<link [[Say you took "+ $_pronoun + " to the museum|Mansion Housework Antiques Museum]]>><</link>>
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_bedroom">>
+	<<if ["locked", "off-limits"].contains($avery_mansion.bedroom_state)>>
+		<<exit>>
+	<</if>>
+
+	<<if $avery_mansion.schedule is "sleep" and not _args[0] is true>>
+		<<set _event_triggered to true>>
+		<<npc "Avery">><<person1>>
+		You enter the bedroom and start your chore. Avery tosses and turns while you work. <<His>> eyes snap open, and <<he>> observes you with a frown.
+		<br><br>
+
+		<<if $avery_mansion.bedroom_state is "ignored">>
+			<<if C.npc.Avery.rage gte 20 and $averyragerevealed is 1>>
+				"What the fuck did I tell you?" <<he>> says, turning on the bedside lamp and rising to <<his>> feet. "If you need a lesson so badly, so be it."<<garage>><<npcincr Avery rage 1>>
+				<br><br>
+
+				<<link [[Next|Mansion Housework Bedroom Rape]]>><<set $molestationstart to 1>><</link>>
+			<<else>>
+				"I told you not to bother me while I slept," <<he>> growls. "Get the fuck out. Now."
+				<br><br>
+
+				<<link [[Comply|Mansion Housework Bedroom Comply]]>><<set $avery_mansion.bedroom_state to "locked">><</link>>
+				<br>
+				<<link [[Refuse|Mansion Housework Bedroom Refuse]]>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<garage>><<llove>>
+			<</if>>
+		<<else>>
+			"Can't you do that in the morning?"
+			<br><br>
+
+			<<link [[Insist on cleaning now|Mansion Housework Bedroom Insist]]>><<npcincr Avery rage 1>><<npcincr Avery love -1>><</link>><<garage>><<llove>>
+			<br>
+			<<link [[Agree to clean later|Mansion Housework Bedroom Agree]]>><<set $avery_mansion.bedroom_state to "off-limits">><</link>>
+		<</if>>
+	<<else>>
+		<<if $avery_mansion.bedroom gte 4>>
+			You move the bed back to its proper place, and clean up the mess it was concealing.
+		<<elseif $avery_mansion.bedroom gte 3>>
+			You clean the suspicious smears in the bedroom.
+		<<elseif $avery_mansion.bedroom gte 2>>
+			You return the clothes in the bedroom to their homes.
+		<<elseif $avery_mansion.bedroom gte 1>>
+			You stretch out the sheets, and make the bed.
+		<</if>>
+		<<avery_housework_change "bedroom" -1>>
+		<<pass _housekeeping_time>>
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_bathroom">>
+	<<if $avery_mansion.bathroom gte 4>>
+		You clean the taps in the bathroom with a cloth.
+	<<elseif $avery_mansion.bathroom gte 3>>
+		You soak the bath and sink in water and a chemical cleaner, restoring their pearly whiteness.
+	<<elseif $avery_mansion.bathroom gte 2>>
+		You take the spiders in the bathroom outside.
+	<<elseif $avery_mansion.bathroom gte 1>>
+		You dry the bathroom with a cloth.
+	<</if>>
+	<<avery_housework_change "bathroom" -1>>
+	<<pass _housekeeping_time>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_garden">>
+	<<if $avery_mansion.garden gte 4>>
+		You use a pair of shears to fight back the tangled weeds overrunning the garden.
+	<<elseif $avery_mansion.garden is 3>>
+		Careful not to harm other flowers, you remove weeds from the garden.
+	<<elseif $avery_mansion.garden is 2>>
+		You pull up the weeds in the garden by the root.
+	<<elseif $avery_mansion.garden is 1>>
+		You prune the topiary to Avery's taste.
+	<</if>>
+	<<avery_housework_change "garden" -1>>
+	<<pass _tending_time>>
+
+	<<if $avery_mansion.schedule is "garden">>
+		<<set _event_triggered to true>>
+		<<npc "Avery">><<person1>>
+		<br><br>
+
+		Avery potters in the garden, taking <<his>> time pruning individual leaves while you do the grunt work. "This one's exquisite," <<he>> says, gesturing at a holly bush.
+		<br><br>
+		Avery makes delicate adjustments with <<his>> shears, stepping back to admire <<his>> handiwork often.
+		<<if currentSkillValue('tending') gte 600>>
+			<span class="green">You think you could do a better job.</span> It might be wise to keep it to yourself, however.
+			<br><br>
+			<<link [[Teach Avery|Mansion Housework Garden Teach]]>><</link>>
+			<br>
+		<<else>>
+			<span class="red">Avery seems to know what <<hes>> doing.</span>
+			<br><br>
+		<</if>>
+		<<link [[Compliment|Mansion Housework Garden Compliment]]>><</link>>
+		<br>
+		<<link [[Ignore|Mansion Housework Garden Ignore]]>><</link>>
+	<</if>>
+	<br>
+<</widget>>
+
+<<widget "avery_mansion_clean_pool">>
+	<<if $avery_mansion.pool gte 4>>
+		You unfurl a hose, and vacuum the pool clear of algae.
+	<<elseif $avery_mansion.pool is 3>>
+		You retrieve chlorine from a nearby shed, and add a healthy dose to the pool.
+	<<elseif $avery_mansion.pool is 2>>
+		You remove the bugs floating on the pool with a net.
+	<<elseif $avery_mansion.pool is 1>>
+		You clear the bugs floating on the pool with a net, leaving it pristine.
+	<</if>>
+	<<avery_housework_change "pool" -1>>
+	<<pass _housekeeping_time>>
+
+	<<if $avery_mansion.schedule is "pool">>
+		<<npc "Avery">><<person1>>
+		<<set _event_triggered to true>>
+		<br><br>
+
+		Avery strides outside, <span class="lewd">wearing nothing.</span>
+		<<if Weather.temperature <= 10>>
+			The cold doesn't seem to bother <<him>>.
+		<</if>>
+		<<He>> pulls a pair of goggles over <<his>> eyes, and dives in, sending a rippling wave your way.
+		<br><br>
+
+		<<He>> emerges, and starts swimming lengths.
+		<br><br>
+
+		<<link [[Work around Avery without complaint|Mansion Housework Pool Work]]>><<stress 6>><</link>><<gstress>>
+		<br>
+		<<link [[Tell Avery to wait until you've finished|Mansion Housework Pool Tell]]>><<npcincr Avery rage 1>><</link>><<garage>>
+		<br>
+		<<link [[Stop cleaning for now|Mansion Pool]]>><<avery_housework_change "pool" 1>><</link>>
+	<</if>>
+	<br>
 <</widget>>
