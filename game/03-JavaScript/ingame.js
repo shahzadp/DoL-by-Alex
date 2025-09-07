@@ -1238,8 +1238,8 @@ function currentSkillValue(skill, disableModifiers = 0) {
 				if (V.worn.feet.type.includes("rugged")) {
 					result = Math.floor(result * (1 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
 				}
-				if (V.auriga_artefact == "pc") {
-					result = Math.floor(result * 1.10);
+				if (V.auriga_artefact === "pc") {
+					result = Math.floor(result * 1.1);
 				}
 			}
 			break;

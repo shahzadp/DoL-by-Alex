@@ -1,4 +1,4 @@
-/* global initOverUpper, initOverLower, initUpper, initLower, initUnderUpper, initUnderLower, initGenitals, initOverHead, initHead, initFace, initNeck, initHands, initHandheld, initLegs, initFeet, allClothesSetup, wardrobesUpdate, clothesDataTrimmerLoop, npcAssignClothesToSet */
+/* global initOverUpper, initOverLower, initUpper, initLower, initUnderUpper, initUnderLower, initGenitals, initOverHead, initHead, initFace, initNeck, initHands, initHandheld, initLegs, initFeet, wardrobesUpdate, clothesDataTrimmerLoop, npcAssignClothesToSet */
 
 function clothingDataInit() {
 	setup.clothes = {};
