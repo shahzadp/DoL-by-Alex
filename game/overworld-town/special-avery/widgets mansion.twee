@@ -610,7 +610,7 @@
 	<<if $avery_mansion.jobs.length gte 1>>
 		<<avery_housework_check>>
 		<<if !_avery_housework_count>>
-			The mansion is spick and span.
+			<span class="green">The mansion is spick and span.</span>
 			<br><br>
 		<<else>>
 			<<icon "housekeeping.png">><<link [[Assess the state of the house|Mansion Housework Assess]]>><<handheldon 1>><</link>>
@@ -618,7 +618,7 @@
 		<</if>>
 	<</if>>
 
-	<u>Downstairs</u>
+	Downstairs
 	<br>
 
 	<<if $bus isnot "avery_lounge">>
@@ -647,7 +647,7 @@
 	<</if>>
 	<br>
 
-	<u>Upstairs</u>
+	Upstairs
 	<br>
 
 	<<if $bus isnot "avery_bedroom">>
@@ -671,11 +671,12 @@
 		<</if>>
 	<</if>>
 	<br>
-	<u>Outdoors</u>
+
+	Outdoors
 	<br>
 
 	<<if $bus isnot "avery_garden">>
-		<<icon "avery_garden.png">><<link [[Garden (0:01)|Mansion Garden]]>><<handheldon 1>><<pass 1>><</link>>
+		<<icon "avery_garden.gif">><<link [[Garden (0:01)|Mansion Garden]]>><<handheldon 1>><<pass 1>><</link>>
 		<br>
 	<</if>>
 	<<if $bus isnot "avery_pool">>
@@ -696,57 +697,78 @@
 
 <<widget "avery_rage_assess">>
 	<<avery_mansion_seen>>
-	<<set $avery_mansion.rage.assess to
-	($avery_mansion.pool +
-	$avery_mansion.kitchen +
-	$avery_mansion.lounge +
-	$avery_mansion.display +
-	$avery_mansion.bedroom +
-	$avery_mansion.bathroom +
-	$avery_mansion.dining +
-	$avery_mansion.garden +
-	$avery_mansion.rage.dinner_missed)>>
-	<<if $avery_mansion.rage.dinner_wrong>>
-		<<set $avery_mansion.rage.assess += 4>>
-	<</if>>
-	<<if $avery_mansion.guest is "Bailey_missed" or $avery_mansion.guest is "Jordan_missed" or $avery_mansion.guest is "Quinn_missed" or $avery_mansion.guest is "Remy_missed" or $avery_mansion.guest is "Briar_missed" or $avery_mansion.guest is "Harper_missed">>
-		<<set $avery_mansion.rage.assess += 4>>
+
+	<<if $debug is 1>>
+		<br>
+		<i>Pool disorder:</i> <<print $avery_mansion.pool>>
+		<br>
+		<i>Kitchen disorder:</i> <<print $avery_mansion.kitchen>>
+		<br>
+		<i>Lounge disorder:</i> <<print $avery_mansion.lounge>>
+		<br>
+		<i>Display disorder:</i> <<print $avery_mansion.display>>
+		<br>
+		<i>Bedroom disorder:</i> <<print $avery_mansion.bedroom>>
+		<br>
+		<i>Bathroom disorder:</i> <<print $avery_mansion.bathroom>>
+		<br>
+		<i>Dining disorder:</i> <<print $avery_mansion.dining>>
+		<br>
+		<i>Garden disorder:</i> <<print $avery_mansion.garden>>
+		<br>
+		<i>Dinner missed:</i> <<print $avery_mansion.rage.dinner_missed>>
+		<br>
+		<i>Rage assess so far:</i> <<print $avery_mansion.rage.assess>>
+		<br>
 	<</if>>
 	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("kneel")>>
 		<<set $avery_mansion.rage.assess += 1>>
+		<<if $debug is 1>>
+			<i>No kneeling</i><br>
+		<</if>>
 	<<elseif !$avery_mansion.bow and $avery_mansion.jobs.includes("bow")>>
 		<<set $avery_mansion.rage.assess += 1>>
+		<<if $debug is 1>>
+			<i>No bow</i><br>
+		<</if>>
 	<</if>>
 	<<if !$speech_attitude_avery>>
 		<<set $avery_mansion.rage.assess += 1>>
+		<<if $debug is 1>>
+			<i>Wrong demeanour</i><br>
+		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("maid") and !$worn.upper.type.includes("maid") and !$worn.lower.type.includes("maid") and !$worn.head.type.includes("maid")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set _avery_mansion_maid_failed to true>>
+		<<if $debug is 1>>
+			<i>No maid clothes</i><br>
+		<</if>>
 	<</if>>
 	<<if !$avery_mansion.jobs.includes("maid") and $avery_mansion.jobs.includes("formal") and !$worn.upper.type.includes("formal") and !$worn.lower.type.includes("formal")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set _avery_mansion_formal_failed to true>>
+		<<if $debug is 1>>
+			<i>No formal clothes</i><br>
+		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("hairstyle") and $hairstyle isnot "neat">>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairstyle_failed to true>>
+		<<if $debug is 1>>
+			<i>Hair wrong style</i><br>
+		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("hairlength") and $hairlength gte 400>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairlength_failed to true>>
+		<<if $debug is 1>>
+			<i>Hair too short</i><br>
+		<</if>>
 	<</if>>
-	<<if $avery_antiques.confront.includes("dagger")>>
-		<<set $avery_antiques.confront.delete("dagger")>>
-		<<set $avery_mansion.rage.assess += 12>>
-	<</if>>
-	<<if $avery_antiques.stolen.includes("amulet") and !$avery_antiques.noticed.includes("amulet")>>
-		<<set $avery_antiques.stolen.delete("amulet")>>
-		<<set $avery_mansion.rage.assess += 12>>
-	<</if>>
-	<<if $avery_antiques.stolen.includes("mask") and !$avery_antiques.noticed.includes("mask")>>
-		<<set $avery_antiques.stolen.delete("mask")>>
-		<<set $avery_mansion.rage.assess += 12>>
+	<<if $debug is 1>>
+		<i>Total rage assess:</i> <<print $avery_mansion.rage.assess>>
+		<br>
 	<</if>>
 <</widget>>
 
@@ -1250,8 +1272,8 @@
 
 	<<endevent>>
 	<<avery_mansion_end_links>>
-<<elseif C.npc.Avery.dom gte 50 and !$avery_mansion.jobs.includes("hairtype")>>
-	<<set $avery_mansion.jobs.push("hairtype")>>
+<<elseif C.npc.Avery.dom gte 50 and !$avery_mansion.jobs.includes("hairstyle")>>
+	<<set $avery_mansion.jobs.push("hairstyle")>>
 	<<if $hairtype is "neat">>
 		"I love your hairstyle. Be sure to keep it that way in the future."
 	<<else>>
@@ -2241,7 +2263,7 @@
 			<<icon "avery_garage.png">><<link [[Next|Mansion Chase Garage]]>><</link>>
 			<br>
 		<<case "garden">>
-			<<icon "avery_garden.png">><<link [[Next|Mansion Chase Garden]]>><</link>>
+			<<icon "avery_garden.gif">><<link [[Next|Mansion Chase Garden]]>><</link>>
 			<br>
 		<<case "pool">>
 			<<icon "avery_pool.png">><<link [[Next|Mansion Chase Pool]]>><</link>>
@@ -2315,7 +2337,7 @@
 			<<icon "avery_hallway.png">><<link [[Next|Mansion Chase Hallway 3]]>><</link>>
 			<br>
 		<<case "hallway_1">>
-			<<icon "avery_garden.png">><<link [[Next|Mansion Chase Garden]]>><</link>>
+			<<icon "avery_garden.gif">><<link [[Next|Mansion Chase Garden]]>><</link>>
 			<br>
 		<<case "hallway_1_w">>
 			<<icon "avery_hallway.png">><<link [[Next|Mansion Chase Hallway 1 E]]>><</link>>
@@ -2938,8 +2960,7 @@
 			Avery smiles at you, wearing <<his>> best. "I'm ready when you are," <<he>> says. "For the date. I'll be waiting in the garage."
 			<br><br>
 
-			<<endevent>>
-			<<avery_mansion_links>>
+			<<link [[Next|$passage]]>><</link>>
 
 		<<elseif _avery_interrupt is "party_prepare">>
 
@@ -3044,10 +3065,10 @@
 				<</if>>
 
 				<<if $avery_mansion.schedule is "pool">>
-					<<link [[Dive|Mansion Pool Dive Avery]]>><</link>>
+					<<swimicon "dive">><<link [[Dive|Mansion Pool Dive Avery]]>><</link>>
 					<br>
 				<<else>>
-					<<link [[Dive|Mansion Pool Dive]]>><</link>>
+					<<swimicon "dive">><<link [[Dive|Mansion Pool Dive]]>><</link>>
 					<br>
 				<</if>>
 				<br>
@@ -3128,7 +3149,7 @@
 					<br><br>
 				<</if>>
 
-				<<bedicon>><<link [[Strip and get in bed|Mansion Bed]]>><<undressSleep "Mansion Bed">><</link>>
+				<<icon "avery_bedroom.png">><<link [[Strip and get in bed|Mansion Bed]]>><<undressSleep "Mansion Bed">><</link>>
 				<br>
 				<<listsleepoutfits "Mansion Bed">>
 				<<roomoptions>>
@@ -3140,25 +3161,16 @@
 					<br>
 				<</if>>
 				<<mirroricon "home">><<link [[Mirror|Mansion Mirror]]>><<preMirror>><</link>>
-				<br>
-				<br>
-				<<link [[Gameplay Settings|Settings]]>><<set $settingsExitPassage to "Mansion Bedroom">><</link>>
-				<br>
-				<<attitudesControlCheck>>
-				<<if $attitudesControl.showGoldLink is true>>
-					<span class="goldLink"><<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>> </span><span class="red">!!</span>
-				<<else>>
-					<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
-				<</if>>
-				<br><br>
 
 				<<if $avery_mansion.folder gte 12 and !$avery_mansion.folder_daily and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
 					<<set _extralinebreak to true>>
-					<<link [[Read the folder from the orphanage|Mansion Folder Avery]]>><<set $avery_mansion.folder>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
+					<br>
+					<<ind>><<link [[Read the folder from the orphanage|Mansion Folder Avery]]>><<set $avery_mansion.folder>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
 					<br>
 				<<elseif $avery_mansion.folder gte 1 and !$avery_mansion.folder_daily>>
 					<<set _extralinebreak to true>>
-					<<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
+					<br>
+					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<</if>>
 				<<if $avery_mansion.schedule is "sleep">>
@@ -3176,7 +3188,7 @@
 						Avery slumbers, <<his>> chest rising and falling beneath the covers.
 					<</if>>
 					<<endevent>>
-					<br><br>
+					<br>
 					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
 					<br>
 				<</if>>
@@ -3357,6 +3369,19 @@
 			<</if>>
 
 			<<avery_mansion_links>>
+
+			<<if $bus is "avery_bedroom">>
+				<br><br>
+				<<link [[Gameplay Settings|Settings]]>><<set $settingsExitPassage to "Mansion Bedroom">><</link>>
+				<br>
+				<<attitudesControlCheck>>
+				<<if $attitudesControl.showGoldLink is true>>
+					<span class="goldLink"><<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>> </span><span class="red">!!</span>
+				<<else>>
+					<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
+				<</if>>
+				<br><br>
+			<</if>>
 		<</if>>
 	<</if>>
 <</widget>>
@@ -3401,6 +3426,8 @@
 	<</if>>
 	<<if $_avery_present is true and $avery_mansion.injury>>
 		<<set _avery_interrupt to "injury">>
+	<<elseif $_avery_present is true and $avery_mansion.schedule is "return">>
+		<<set _avery_interrupt to "work">>
 	<<elseif $_avery_present is true and $avery_mansion.rage.party_missed is true>>
 		<<set _avery_interrupt to "party_missed">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "party_prepare" and !$avery_mansion.outfit_warning>>
