@@ -537,7 +537,7 @@ function weekPassed() {
 
 function dayPassed() {
 	Weather.sky.initSun();
-	
+
 	// Lose one day of tanning
 	Skin.applyTanningLoss(1440);
 
@@ -1275,16 +1275,27 @@ function dailyNPCEffects() {
 				}
 			}
 
-
-			if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7 && V.avery_mansion.rage.dinner_missed < 4) {
+			if (V.avery_mansion.rage.dinner_done === 1 && V.avery_mansion.rage.dinner_missed > 0) {
+				V.avery_mansion.rage.dinner_missed--;
+			} else if (V.avery_mansion.rage.dinner_done !== 1 && Time.weekDay >= 3 && Time.weekDay <= 7 && V.avery_mansion.rage.dinner_missed < 4) {
 				V.avery_mansion.rage.dinner_missed++;
 			}
+
 			V.avery_mansion.outfit_warning = false;
 
 			V.avery_mansion.rage.assess = 0;
 
-			V.avery_mansion.rage.assess = V.avery_mansion.pool + V.avery_mansion.kitchen + V.avery_mansion.lounge + V.avery_mansion.display + V.avery_mansion.bedroom + V.avery_mansion.bathroom + V.avery_mansion.dining + V.avery_mansion.garden + V.avery_mansion.rage.dinner_missed;
-			
+			V.avery_mansion.rage.assess =
+				V.avery_mansion.pool +
+				V.avery_mansion.kitchen +
+				V.avery_mansion.lounge +
+				V.avery_mansion.display +
+				V.avery_mansion.bedroom +
+				V.avery_mansion.bathroom +
+				V.avery_mansion.dining +
+				V.avery_mansion.garden +
+				V.avery_mansion.rage.dinner_missed;
+
 			if (V.avery_mansion.folder_daily === true) {
 				V.avery_mansion.folder_daily = false;
 			}
