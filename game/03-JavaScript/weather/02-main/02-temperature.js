@@ -128,6 +128,8 @@ Weather.Temperature = (() => {
 			}
 			case "hotel": // Avery date
 				return 37;
+			case "avery_mansion":
+				return 37;
 		}
 
 		const date = new DateTime(Time.date);
