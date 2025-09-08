@@ -643,7 +643,7 @@ function exposure() {
 	V.topless = 0;
 
 	// wraith cares not of your exposure
-	if (V.posessed) {
+	if (V.possessed) {
 		return;
 	}
 
