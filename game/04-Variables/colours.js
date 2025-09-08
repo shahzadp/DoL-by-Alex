@@ -1126,7 +1126,7 @@ setup.colours.clothes = [
 		name: "pale white",
 		name_cap: "Pale White",
 		csstext: "white",
-		canvasfilter: { blend: "#949494" },
+		canvasfilter: { blend: "#eeeeee", contrast: 1.1 },
 	},
 	{
 		variable: "red",
