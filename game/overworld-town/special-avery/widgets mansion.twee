@@ -153,6 +153,7 @@
 <<set $avery_tower.effects to []>>
 <<set $avery_tower.effects.pushUnique("theft")>>
 <<set $avery_tower.stage to 0>>
+<<set $avery_tower.intro to 0>>
 
 <<avery_antiques_init>>
 <<avery_mansion_start_clothes>>
@@ -933,29 +934,29 @@
 			<<if $avery_mansion.rage.party_missed>>
 				<<if $avery_mansion.guest is "Bailey_missed">>
 					<<set $avery_mansion.guest to "Bailey">>
-					"You missed the party," <<he>> says. "Bailey was there. <<nnpc_He Bailey>> left when you didn't show, but agreed to return <span class="gold"><<this_sunday>>.</span> Don't humiliate me again."<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
+					You missed the party," <<he>> says. "Bailey was there. <<nnpc_He Bailey>> left when you didn't show, but agreed to return <span class="gold"><<this_sunday>>.</span> Don't humiliate me again."<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 					<br><br>
 				<<elseif $avery_mansion.guest is "Jordan_missed">>
 					<<set $avery_mansion.guest to "Quinn">>
-					"You missed the party," <<he>> says. "Jordan brought the usual entourage, and they were the usual headache. <span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't show me up."
+					You missed the party," <<he>> says. "Jordan brought the usual entourage, and they were the usual headache. <span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't show me up."
 					<<avery_mansion_tower_negative_effects "Jordan">>
 					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 					<br><br>
 				<<elseif $avery_mansion.guest is "Quinn_missed">>
 					<<set $avery_mansion.guest to "Remy">>
-					"You missed the party," <<he>> says. "The mayor was a handful. Kept making jokes, insinuating that you were being unfaithful. <span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Don't put me in this position again.
+					You missed the party," <<he>> says. "The mayor was a handful. Kept making jokes, insinuating that you were being unfaithful. <span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Don't put me in this position again.
 					<<avery_mansion_tower_negative_effects "Quinn">>
 					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 					<br><br>
 				<<elseif $avery_mansion.guest is "Remy_missed">>
 					<<set $avery_mansion.guest to "Briar">>
-					"You missed the party," <<he>> says. "I had to explain to Remy that you weren't attending. It wasn't pleasant. <span class="gold">The local business owner, Briar, will be attending <<this_sunday>>.</span> Don't make me look a fool. Be there.
+					You missed the party," <<he>> says. "I had to explain to Remy that you weren't attending. It wasn't pleasant. <span class="gold">The local business owner, Briar, will be attending <<this_sunday>>.</span> Don't make me look a fool. Be there.
 					<<avery_mansion_tower_negative_effects "Remy">>
 					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 					<br><br>
 				<<elseif $avery_mansion.guest is "Briar_missed">>
 					<<set $avery_mansion.guest to "Harper">>
-					"You missed the party," <<he>> says. "Briar asked about you personally. I made excuses, but I dislike being questioned by one so low. <span class="gold">The Doctor, Harper, will be attending <<this_sunday>>.</span> An important person, and I'd like to avoid being questioned about you yet again. Make sure you're here.
+					You missed the party," <<he>> says. "Briar asked about you personally. I made excuses, but I dislike being questioned by one so low. <span class="gold">The Doctor, Harper, will be attending <<this_sunday>>.</span> An important person, and I'd like to avoid being questioned about you yet again. Make sure you're here.
 					<<avery_mansion_tower_negative_effects "Briar">>
 					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 					<br><br>
@@ -965,7 +966,7 @@
 					<<else>>
 						<<set $avery_mansion.guest to "Quinn">>
 					<</if>>
-					"You missed the party," <<he>> says. "The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer.
+					You missed the party," <<he>> says. "The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer.
 					<<if $avery_mansion.jordan_intro>>
 						<span class="gold">Jordan will be attending <<this_sunday>>.</span> Don't leave me alone with their ilk."
 					<<else>>
@@ -2741,7 +2742,11 @@
 
 <<widget "avery_mansion_party_end">>
 	<<unset $avery_party>>
-	<<set $avery_mansion.guest to $avery_mansion.guest + "_done">>
+	<<if $avery_mansion.guest.includes("_done")>>
+		<<run throw new Error("avery_mansion_party_end was run when current guest was already marked as 'done'! Please report this error.")>>
+	<<else>>
+		<<set $avery_mansion.guest to $avery_mansion.guest + "_done">>
+	<</if>>
 <</widget>>
 
 <<widget "avery_mansion_party_speech">>
@@ -2775,8 +2780,8 @@
 		<</if>>
 	<<elseif _args[0] is "Quinn">>
 		<<if $avery_tower.effects.includes("mayor")>>
-			<span class="gold">Quinn will no longer help Avery cut through red tape for the sake of their building project.</span>
 			<<set $avery_tower.effects.delete("mayor")>>
+			<span class="gold">Quinn will no longer help Avery cut through red tape for the sake of their building project.</span>
 		<</if>>
 	<<elseif _args[0] is "Remy">>
 		<<if $avery_tower.effects.includes("Remy")>>
@@ -2786,14 +2791,14 @@
 	<<elseif _args[0] is "Briar">>
 		<<if !$avery_tower.effects.includes("theft")>>
 			<<set $avery_tower.effects.pushUnique("theft")>>
-			<span class="gold">Briar will no longer protect Avery's project from the criminal underworld..</span>
+			<span class="gold">Briar will no longer protect Avery's project from the criminal underworld.</span>
 		<<else>>
 			<span class="gold">The town's underworld will continue to sabotage Avery's project for profit.</span>
 		<</if>>
 	<<elseif _args[0] is "Harper">>
 		<<if $avery_tower.effects.includes("Harper")>>
 			<<set $avery_tower.effects.delete("Harper")>>
-			<span class="gold">Remy will no longer provide assistance to Avery's building project.</span>
+			<span class="gold">Harper will no longer provide assistance to Avery's building project.</span>
 		<</if>>
 	<</if>>
 <</widget>>
