@@ -650,7 +650,8 @@ function exposure() {
 	// calculate libertine factors.
 	const safeLocations = ["Wardrobe", "Bedroom", "Sleep", "Bird Tower", "Bird Hunt", "Spa Tan Underwear", "Spa Tan Curtains", "Spa Tan Naked", "Mirror"];
 	if (
-		safeLocations.includes(V.passage) &&
+		// the check for safe locations might be too generous with included passage names, but seems to be working as of 0.5.4.9
+		safeLocations.some(location => V.passage.includes(location)) &&
 		V.NPCList.every(npc => !npc.fullDescription || Object.values(V.loveInterest).includes(npc.fullDescription)) &&
 		V.audiencepresent === 0
 	) {

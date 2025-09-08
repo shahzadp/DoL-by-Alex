@@ -113,6 +113,8 @@
 <<set $avery_mansion.bathroom to 0>>
 <<set $avery_mansion.dining to 0>>
 <<set $avery_mansion.garden to 0>>
+<<set $avery_mansion.study to 0>>
+<<set $avery_mansion.garage to 0>>
 
 <<set $avery_mansion.jobs to []>>
 <<set $avery_mansion.schedule to "home">>
@@ -735,31 +737,6 @@
 		<br>
 		<i>Rage assess so far:</i> <<print $avery_mansion.rage.assess>>
 		<br>
-	<</if>>
-	/* Todo Avery: Vrel removed missing parties and getting dinner wrong as sources of rage. Was that intentional? If so, remove again */
-	<<if $avery_mansion.guest.includes("_missed")>>
-		<<set $avery_mansion.rage.assess += 4>>
-		<<if $debug is 1>>
-			<i>Missed party with guest</i><br>
-		<</if>>
-	<</if>>
-	<<if $avery_mansion.rage.dinner_wrong>>
-		<<set $avery_mansion.rage.assess += 4>>
-		<<if $debug is 1>>
-			<i>Dinner wrong</i><br>
-		<</if>>
-	<</if>>
-	<<if $avery_mansion.rage.ingredients>>
-		<<set $avery_mansion.rage.assess += 4>>
-		<<if $debug is 1>>
-			<i>Asked about already-requested ingredients</i><br>
-		<</if>>
-	<</if>>
-	<<if $avery_mansion.rage.ingredients>>
-		<<set $avery_mansion.rage.assess += 4>>
-		<<if $debug is 1>>
-			<i>Asked about already-requested ingredients</i><br>
-		<</if>>
 	<</if>>
 	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("kneel")>>
 		<<set $avery_mansion.rage.assess += 1>>
@@ -1834,138 +1811,142 @@
 <<widget "avery_mansion_chase">>
 	<span class="red">Avery is hunting you.</span>
 	<br><br>
-	<span class="pink">
+
+	<<set $_averysound to "">>
 	<<switch $avery_mansion.chase.bus>>
 		<<case "lounge">>
 			<<if $avery_mansion.chase.avery_bus is "display">>
-				You hear avery in the display room, knocking pedestals aside in <<his>> haste.
+				<<set $_averysound to "You hear avery in the display room, knocking pedestals aside in <<his>> haste.">>
 				<<avery_housework_change "display" 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_w">>
-				You hear Avery smack the wall in the hallway outside, followed by one of the paintings hitting the floor.
+				<<set $_averysound to "You hear Avery smack the wall in the hallway outside, followed by one of the paintings hitting the floor.">>
 			<</if>>
 		<<case "dining">>
 			<<if $avery_mansion.chase.avery_bus is "kitchen">>
-				You hear Avery in the kitchen, slamming cupboards shut after checking for you.
+				<<set $_averysound to "You hear Avery in the kitchen, slamming cupboards shut after checking for you.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_e">>
-				You hear Avery lurking in the hallway outside, searching for you.
+				<<set $_averysound to "You hear Avery lurking in the hallway outside, searching for you.">>
 			<</if>>
 		<<case "kitchen">>
 			<<if $avery_mansion.chase.avery_bus is "dining">>
-				You hear a chair skid across the dining room table.
+				<<set $_averysound to "You hear a chair skid across the dining room table.">>
 				<<avery_housework_change dining 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_e">>
-				You hear Avery in the hallway outside, scraping <<his>> fingernails against the wall as <<he>> walks.
+				<<set $_averysound to "You hear Avery in the hallway outside, scraping <<his>> fingernails against the wall as <<he>> walks.">>
 			<<elseif $avery_mansion.chase.avery_bus is "garage">>
-				You make out Avery walking through the garage.
+				<<set $_averysound to "You make out Avery walking through the garage.">>
 			<</if>>
 		<<case "display">>
 			<<if $avery_mansion.chase.avery_bus is "lounge">>
-				You hear Avery kick a cushion across the lounge.
+				<<set $_averysound to "You hear Avery kick a cushion across the lounge.">>
 				<<avery_housework_change lounge 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_w">>
-				You hear Avery in the hallway outside, tapping the wall as <<he>> walks.
+				<<set $_averysound to "You hear Avery in the hallway outside, tapping the wall as <<he>> walks.">>
 			<</if>>
 		<<case "garage">>
 			<<if $avery_mansion.chase.avery_bus is "kitchen">>
-				You hear a drawer slam in the kitchen.
+				<<set $_averysound to "You hear a drawer slam in the kitchen.">>
 			<<elseif $avery_mansion.chase.avery_bus is "garden">>
-				You spy Avery in the garden through a small window, pulling the heads off roses, thorns drawing blood.
+				<<set $_averysound to "You spy Avery in the garden through a small window, pulling the heads off roses, thorns drawing blood.">>
 			<</if>>
 		<<case "garden">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_1">>
-				You hear Avery in the atrium, <<his>> shoes tapping on the hard floor.
+				Y<<set $_averysound to "You hear Avery in the atrium, <<his>> shoes tapping on the hard floor.">>
 			<<elseif $avery_mansion.chase.avery_bus is "garage">>
-				You spy Avery in the garage, taking <<his>> anger out on everything but the cars.
+				<<set $_averysound to "You spy Avery in the garage, taking <<his>> anger out on everything but the cars.">>
 			<<elseif $avery_mansion.chase.avery_bus is "pool">>
-				You hear something heavy splash into the pool.
+				<<set $_averysound to "You hear something heavy splash into the pool.">>
 			<</if>>
 		<<case "pool">>
 			<<if $avery_mansion.chase.avery_bus is "garden">>
-				The heads of decapitated roses fly into view. Avery is in the garden.
+				<<set $_averysound to "The heads of decapitated roses fly into view. Avery is in the garden.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_w">>
-				You spy Avery in the mansion, back turned to you, just inside the back door.
+				<<set $_averysound to "You spy Avery in the mansion, back turned to you, just inside the back door.">>
 			<</if>>
 		<<case "bedroom">>
 			<<if $avery_mansion.chase.avery_bus is "bathroom">>
-				You hear Avery in the bathroom, turning on the taps.
+				<<set $_averysound to "You hear Avery in the bathroom, turning on the taps.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_2_w">>
-				You hear Avery in the hallway outside, checking the spare rooms, slamming each door.
+				<<set $_averysound to "You hear Avery in the hallway outside, checking the spare rooms, slamming each door.">>
 			<</if>>
 		<<case "bathroom">>
 			<<if $avery_mansion.chase.avery_bus is "bedroom">>
-				You hear Avery in the bedroom, searching for you in the wardrobe.
+				<<set $_averysound to "You hear Avery in the bedroom, searching for you in the wardrobe.">>
 			<</if>>
 		<<case "study">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_3">>
-				You hear Avery in the hallway outside, trapping you.
+				<<set $_averysound to "You hear Avery in the hallway outside, trapping you.">>
 			<</if>>
 		<<case "hallway_1">>
 			<<if $avery_mansion.chase.avery_bus is "garden">>
-				You hear Avery in the garden, stomping straight through a bush.
+				<<set $_averysound to "You hear Avery in the garden, stomping straight through a bush.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_2">>
-				You hear Avery upstairs.
+				<<set $_averysound to "You hear Avery upstairs.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_w">>
-				You hear Avery in the hallway between here and the lounge.
+				<<set $_averysound to "You hear Avery in the hallway between here and the lounge.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_e">>
-				You hear Avery in the hallway between here and the dining room.
+				<<set $_averysound to "You hear Avery in the hallway between here and the dining room.">>
 			<</if>>
 		<<case "hallway_1_w">>
 			<<if $avery_mansion.chase.avery_bus is "lounge">>
-				You hear Avery move the sofa in the lounge, perhaps checking for you behind it.
+				<<set $_averysound to "You hear Avery move the sofa in the lounge, perhaps checking for you behind it.">>
 				<<avery_housework_change "lounge" 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "display">>
-				You hear Avery in the display room, showing the antiques no respect.
+				<<set $_averysound to "You hear Avery in the display room, showing the antiques no respect.">>
 				<<avery_housework_change "display" 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1">>
-				You hear Avery kick the staircase in the atrium.
+				<<set $_averysound to "You hear Avery kick the staircase in the atrium.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_e">>
-				You hear Avery further up the hallway.
+				<<set $_averysound to "You hear Avery further up the hallway.">>
 			<</if>>
 		<<case "hallway_1_e">>
 			<<if $avery_mansion.chase.avery_bus is "dining">>
-				You hear Avery in the dining room, throwing chairs aside.
+				<<set $_averysound to "You hear Avery in the dining room, throwing chairs aside.">>
 				<<avery_housework_change "dining" 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "kitchen">>
-				You hear Avery in the kitchen, throwing cutlery at the wall.
+				<<set $_averysound to "You hear Avery in the kitchen, throwing cutlery at the wall.">>
 				<<avery_housework_change "kitchen" 1>>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1">>
-				You hear Avery in the atrium, <<his>> footfalls so hard you're surprised <<he>> doesn't shatter the floor.
+				<<set $_averysound to "You hear Avery in the atrium, <<his>> footfalls so hard you're surprised <<he>> doesn't shatter the floor.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_1_w">>
-				You hear Avery further up the hallway.
+				<<set $_averysound to "You hear Avery further up the hallway.">>
 			<</if>>
 		<<case "hallway_2">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_1">>
-				You hear Avery's footsteps echo from the atrium downstairs.
+				<<set $_averysound to "You hear Avery's footsteps echo from the atrium downstairs.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_2_w">>
-				You hear Avery in the hallway between here and the bedroom.
+				<<set $_averysound to "You hear Avery in the hallway between here and the bedroom.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_2_e">>
-				You hear Avery in the hallway between here and the study.
+				<<set $_averysound to "You hear Avery in the hallway between here and the study.">>
 			<</if>>
 		<<case "hallway_2_w">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_2">>
-				You hear the landing creak nearby.
+				<<set $_averysound to "You hear the landing creak nearby.">>
 			<<elseif $avery_mansion.chase.avery_bus is "bedroom">>
-				You hear Avery open the balcony doors in the bedroom.
+				<<set $_averysound to "You hear Avery open the balcony doors in the bedroom.">>
 			<</if>>
 		<<case "hallway_2_e">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_2">>
-				You hear the landing floor creak.
+				<<set $_averysound to "You hear the landing floor creak.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_3">>
-				You hear footsteps above you.
+				<<set $_averysound to "You hear footsteps above you.">>
 			<</if>>
 		<<case "hallway_3">>
 			<<if $avery_mansion.chase.avery_bus is "study">>
-				You hear thumping from the study.
+				<<set $_averysound to "You hear thumping from the study.">>
 			<<elseif $avery_mansion.chase.avery_bus is "hallway_2_w">>
-				You hear Avery tear a panel from the wall downstairs.
+				<<set $_averysound to "You hear Avery tear a panel from the wall downstairs.">>
 			<</if>>
 	<</switch>>
-	</span>
 	<<if $avery_mansion.chase.sound isnot "none">>
 		<<avery_mansion_chase_sound $avery_mansion.chase.sound>>
 	<</if>>
 	<<avery_mansion_player_sound $avery_mansion.chase.bus>>
-	<br><br>
+	
+	<<if $_averysound isnot "">>
+		<span class="pink"><<= $_averysound>></span>
+		<br><br>
+	<</if>>
 <</widget>>
 
 <<widget "avery_mansion_chase_location">>
@@ -2283,7 +2264,8 @@
 			<<case "study">>
 				You hear the thud of books thrown across the room.
 		<</switch>>
-	<</if>>
+	<</if>> 
+	<br><br>
 <</widget>>
 
 <<widget "avery_mansion_chase_links">> /* Puts PC in current room */
@@ -3279,8 +3261,16 @@
 					<br>
 					<<bathroomicon "bath">><<link [[Bathe with Avery (0:20)|Mansion Bathe Avery]]>><<clothesstrip>><<pass 20>><</link>>
 					<br>
+					<<bathroomicon "sink">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
+					<br>
+					<<pregnancyTest "Mansion Bathroom">>
+					<br>
 				<<else>>
 					<<bathroomicon "bath">><<link [[Bathe (0:20)|Mansion Bathe]]>><<clothesstrip>><<pass 20>><</link>>
+					<br>
+					<<bathroomicon "sink">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
+					<br>
+					<<pregnancyTest "Mansion Bathroom">>
 					<br>
 				<</if>>
 				<br>
@@ -3453,6 +3443,8 @@
 				<br><br>
 			<</if>>
 		<</if>>
+	<<else>>
+		<<avery_mansion_links>>
 	<</if>>
 <</widget>>
 
