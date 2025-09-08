@@ -344,7 +344,7 @@ function effects() {
 		br();
 	}
 
-	if (V.effectsmessage && !V.statFreeze) {
+	if (V.effectsmessage && !V.statFreeze && !V.silenceNotifications) {
 		delete V.effectsmessage;
 
 		if (V.recovered_from_pregnancy) {
