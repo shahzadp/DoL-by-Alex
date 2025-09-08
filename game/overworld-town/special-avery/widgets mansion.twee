@@ -192,11 +192,13 @@
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
 
-	<<for _i range setup.plants[$avery_requested_food].ingredients>>
-		<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
-			<<set _missingIngredients to true>>
-		<</if>>
-	<</for>>
+	<<if $gift.name isnot $avery_mansion.food_last>>
+		<<for _i range setup.plants[$avery_requested_food].ingredients>>
+			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
+				<<set _missingIngredients to true>>
+			<</if>>
+		<</for>>
+	<</if>>
 	<<if _missingIngredients>>
 		<<link [[Say you couldn't make <<recipe_name $avery_requested_food "article">> because you were missing ingredients|Avery Gifts Ingredients]]>><</link>>
 		<br>
@@ -1852,7 +1854,7 @@
 			<</if>>
 		<<case "garden">>
 			<<if $avery_mansion.chase.avery_bus is "hallway_1">>
-				Y<<set $_averysound to "You hear Avery in the atrium, <<his>> shoes tapping on the hard floor.">>
+				<<set $_averysound to "You hear Avery in the atrium, <<his>> shoes tapping on the hard floor.">>
 			<<elseif $avery_mansion.chase.avery_bus is "garage">>
 				<<set $_averysound to "You spy Avery in the garage, taking <<his>> anger out on everything but the cars.">>
 			<<elseif $avery_mansion.chase.avery_bus is "pool">>
@@ -1946,6 +1948,8 @@
 
 	<<if $_averysound isnot "">>
 		<span class="pink"><<= $_averysound>></span>
+		<br><br>
+	<<elseif _averyHear>>
 		<br><br>
 	<</if>>
 <</widget>>
@@ -2097,6 +2101,8 @@
 				<</if>>
 		<<case "study">>
 			<<set $avery_mansion.chase.avery_bus to "hallway_3">>
+		<<case "dungeon">>
+			<<set $avery_mansion.chase.avery_bus to "study">>
 		<<case "hallway_1">>
 			<<rng 4>>
 			<<if $rng is 4>>
@@ -2520,6 +2526,9 @@
 		<span class="red">Avery can hear you.</span>
 	<</if>>
 <</if>>
+<<if $avery_mansion.chase.player_sound isnot "none">>
+	<<set _averyHear to true>>
+<</if>>
 <</widget>>
 
 <<widget "avery_mansion_trap_victory">>
@@ -2864,7 +2873,7 @@
 		<<icon "avery_vault.png">><<link [[Approach the vault|Mansion Dungeon Vault Approach]]>><<set $avery_mansion.vault_progress += 1>><</link>>
 		<br>
 	<<elseif $avery_mansion.vault_progress lt 100 and $auriga_artefact is "Avery">>
-		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 6>><<set $avery_dungeon.timer -= 30>><<pass 30>><</link>><<avery_mansion_vault_progress>>
+		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 6>><<if $avery_dungeon>><<set $avery_dungeon.timer -= 30>><</if>><<pass 30>><</link>><<avery_mansion_vault_progress>>
 		<br>
 	<<elseif $avery_mansion.vault_progress gte 100 and $auriga_artefact is "Avery">>
 		<<icon "avery_vault.png">><<link [[Open the vault|Mansion Dungeon Vault]]>><</link>>
@@ -2876,10 +2885,12 @@
 	<<set $avery_dungeon to {}>>
 	<<set $avery_dungeon.tool to "tickler">>
 	<<set $avery_dungeon.timer to 120>>
+	<<handheldstrip>>
 <</widget>>
 
 <<widget "avery_mansion_dungeon_end">>
 	<<unset $avery_dungeon>>
+	<<handheldon>>
 <</widget>>
 
 <<widget "avery_mansion_contents">>/* Contents of main "room" passages in Avery's mansion. The room description is separated from the main body so the conditional outcomes between them don't have to be copy pasted in every room. */
@@ -3237,16 +3248,17 @@
 				<</if>>
 				<br><br>
 
-				<<if $avery_mansion.folder gte 12 and !$avery_mansion.folder_daily and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
+				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
 					<<set _extralinebreak to true>>
-					<<ind>><<link [[Read the folder from the orphanage|Mansion Folder Avery]]>><<set $avery_mansion.folder>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
+					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder Avery]]>><<trauma 6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
-				<<elseif $avery_mansion.folder gte 1 and !$avery_mansion.folder_daily>>
+				<<elseif $avery_mansion.folder gte 1 and !$daily.mansion_folder>>
 					<<set _extralinebreak to true>>
-					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
+					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<set $avery_mansion.folder++>><<set $daily.mansion_folder to true>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<</if>>
 				<<if $avery_mansion.schedule is "sleep">>
+					<<if _extralinebreak>><br><</if>>
 					<<set _extralinebreak to true>>
 					<<npc "Avery">><<person1>>
 					<<if C.npc.Avery.rage gte 80>>

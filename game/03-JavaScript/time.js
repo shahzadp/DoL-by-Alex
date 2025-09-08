@@ -1291,9 +1291,6 @@ function dailyNPCEffects() {
 				V.avery_mansion.garden +
 				V.avery_mansion.rage.dinner_missed;
 
-			if (V.avery_mansion.folder_daily === true) {
-				V.avery_mansion.folder_daily = false;
-			}
 			if (V.avery_mansion.injury_timer >= 1) {
 				V.avery_mansion.injury_timer--;
 			}
