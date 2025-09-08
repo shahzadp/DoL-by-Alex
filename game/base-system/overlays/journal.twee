@@ -82,7 +82,7 @@
 			<</if>>
 
 			<<if $averydate is 1 and Time.hour lte 21 and $averydatedone isnot 1>>
-				<li>You have a date scheduled with Avery <span class="pink">tonight</span>. <<nnpc_He "Avery">>'ll wait for you on Domus Street between <span class="gold"><<ampm 20 00>></span> and <span class="gold"><<ampm 21 00>></span>.</li>
+				<li>You have a date scheduled with Avery <span class="pink">tonight</span>. <<nnpc_He "Avery">>'ll wait for you <<= $avery_mansion ? "in the garage" : "on Domus Street">> between <span class="gold"><<ampm 20 00>></span> and <span class="gold"><<ampm 21 00>></span>.</li>
 			<</if>>
 
 			<<if $harper_appointments.enabled or $schoolPsych is 1>>
@@ -576,8 +576,88 @@
 					<li>Eden's invited you for a Christmas dinner at <<ampm 18 00>>.</li>
 				<</if>>
 			<</if>>
+			<<if $fake_artefact is "pc">>
+				<li>Landry wants you to find the wishing stones in the vault in Avery's mansion, and replace them with the fakes <<nnpc_he Landry>> provided. <<nnpc_He Landry>> said that would save Avery.</li>
+			<</if>>
 		</ul>
 	<</if>>
+
+	<<if $avery_mansion and C.npc.Avery.state isnot "dismissed">>
+		<hr>
+		<h1 class="header gold bold">Avery's Demands</h1>
+		<ul class="journal carry">
+			<li><<foodicon "eat">>Avery wants you to have dinner ready at <span @class="between(Time.weekDay,2,6) ? 'gold' : ''"><<ampm 21 00>> weekdays</span>, and <span @class="Time.weekDay is 1 ? 'gold' : ''"><<ampm 17 00>> Sundays</span>.</li>
+			<<if $avery_mansion.food.name isnot "none">>
+				<li>
+					<<tendingicon $avery_mansion.food.icon>>
+					<<set $_averyMissedColor to ["","purple","pink","red"][Math.clamp($avery_mansion.rage.dinner_missed,0,3)]>>
+					<span @class="$_averyMissedColor">Avery wants <<recipe_name $avery_mansion.food.name "article">>.</span>
+				</li>
+			<</if>>
+			<<if ["Bailey", "Bishop", "Quinn", "Remy", "Briar", "Harper"].includes($avery_mansion.guest)>>
+				<li><<icon "front_gate.png">>You're expected at Avery's mansion <span @class="Time.weekDay is 1 ? 'gold' : ''">after <<ampm 18>> on Sunday</span>, for a party. The guest of honour is <<= $avery_mansion.guest is "Bishop" ? "the Bishop" : $avery_mansion.guest>>.</li>
+			<</if>>
+			<<if $avery_mansion.landry is 1>>
+				<li><<harvesticon>> Someone dropped a note for you outside Avery's mansion, asking you to visit them in the pub on Harvest Street.</li>
+			<</if>>
+			/* Reworked, left in while in construction
+			<<if $avery_mansion.landry gte 2 and $auriga_artefact is "Avery">>
+				<li>Landry will give you <span class="gold">£10000</span> if you can bring <<nnpc_him "Landry">> the <span class="pink">wishing stones</span> from Avery's mansion.</li>
+				<<if $avery_mansion.mickey>>
+					<li>Mickey suggests making Avery feel more dominant would cause them to reveal the stones' location. Alternatively, helping Avery reach their goals could bring them into the open.</li>
+				<</if>>
+				<<if $avery_mansion.jobs.includes("dungeon")>>
+					<li>Avery revealed a dungeon containing a vault. It seems a likely place for the stones.</li>
+				<</if>>
+				<<if $avery_mansion.fake_stones is 2>>
+					<li>Optionally, replace Avery's wishing stones with the fakes Mickey gave you.</li>
+				<</if>>>
+			<<elseif $avery_mansion.landry gte 2 and $auriga_artefact is "pc">>
+				<li>Landry will give you <span class="gold">£10000</span> if you can bring <<nnpc_him "Landry">> the <span class="pink">wishing stones</span> that are in your possession.</li>
+			<</if>>
+			<<if $avery_mansion.fake_stones is 1>>
+				<li><<investigateicon>> Find a convincing fake to swap for the wishing stones.</li>
+			<<elseif $avery_mansion.fake_stones is 2>>
+				<li><<icon "avery_vault.png">> Leave the fake wishing stones in Avery's vault.</li>
+			<</if>>*/
+			<<if $avery_mansion.jobs.includes("maid")>>
+				<li><<iconUi "clothes/traits/maid.png">>Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the maid trait.</li>
+			<<elseif $avery_mansion.jobs.includes("formal")>>
+				<li><<iconUi "clothes/traits/formal.png">>Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the formal trait.</li>			<</if>>
+			<<if $avery_mansion.jobs.includes("hairlength")>>
+				<li><<icon "scissors.png">> Avery wants you to keep your hair no longer than the top of your chest.</li>
+			<</if>>
+			<<if $avery_mansion.jobs.includes("hairtype")>>
+				<li><<icon "comb.png">> Avery wants you to keep your hair in the neat style.</li>
+			<</if>>
+			<<if $avery_mansion.jobs.includes("kneel")>>
+				<li><<socialiseicon>> Avery wants you to kneel before <<nnpc_him Avery>> after work.</li>
+			<<elseif $avery_mansion.jobs.includes("bow")>>
+				<li><<socialiseicon>> Avery wants you to <<= $player.gender_appearance is "f" ? "curtsy" : "bow">> to <<nnpc_him Avery>> after work.</li>
+			<</if>>
+			<<if $avery_mansion.jobs.includes("lounge") or
+			$avery_mansion.jobs.includes("dining") or
+			$avery_mansion.jobs.includes("bedroom") or
+			$avery_mansion.jobs.includes("pool") or
+			$avery_mansion.jobs.includes("garden") or
+			$avery_mansion.jobs.includes("display") or
+			$avery_mansion.jobs.includes("kitchen") or
+			$avery_mansion.jobs.includes("bathroom")>>
+				<li><<icon "clothes/feather_duster.png">>
+					<<set $_averyCleanColor to ["","purple","pink","red"][Math.clamp(Math.floor(($avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed) / 3),0,3)]>>
+					<span @class="$_averyCleanColor">Avery wants you to keep <<nnpc_his Avery>> mansion clean.</span>
+				</li>
+			<</if>>
+			<<if $avery_tower>>
+				<<if $avery_tower.stage is 3>>
+					<li><<iconUi "weather/blood_clear.png">> Avery expects you to meet <<nnpc_him Avery>> at <<nnpc_his Avery>> mansion <span class="gold">during the next blood moon</span> to attend the opening ceremony for <<nnpc_his Avery>> skycraper.
+					</li>
+				<</if>>
+			<</if>>
+		</ul>
+	<</if>>
+
+
 
 	<<if $scienceproject is "ongoing">>
 		<hr>
@@ -591,7 +671,7 @@
 		You have the following ongoing science projects. You'll choose one to present at the fair.
 		<br><br>
 		<<if $sciencelichenknown is 1>>
-			<h1 class="header gold bold">Local lichen</h1>
+			<h1 class="header gold bold">Local Lichen</h1>
 			<<if $sciencechance is undefined>>
 				<<set $sciencechance to []>>
 			<</if>>
@@ -656,7 +736,7 @@
 			<br><br>
 		<</if>>
 		<<if $scienceshroomknown is 1>>
-			<h1 class="header gold bold">Local mushrooms</h1>
+			<h1 class="header gold bold">Local Mushrooms</h1>
 			<span @class="($scienceshroomheart is 5 ? 'fa-icon fa-selected' : 'fa-icon fa-unselected')"></span><span @class="$scienceshroomheart is 0 and $scienceshroomheartready is 0 ? 'black' : ''"> $scienceshroomheart/5 heartshrooms found.</span>
 			<br>
 			<span @class="($scienceshroomheartready is 5 ? 'fa-icon fa-selected' : 'fa-icon fa-unselected')"></span><span @class="$scienceshroomheart is 0 and $scienceshroomheartready is 0 ? 'black' : ''"> $scienceshroomheartready/5 heartshrooms added to project.</span>
@@ -681,7 +761,7 @@
 			<br><br>
 		<</if>>
 		<<if $sciencephallusknown is 1>>
-			<h1 class="header gold bold">Local phalli <mouse class="tooltip gold">(?)<span>Look for participants on the beach during good weather.</span></mouse></h1>
+			<h1 class="header gold bold">Local Phalli <mouse class="tooltip gold">(?)<span>Look for participants on the beach during good weather.</span></mouse></h1>
 			<span @class="($sciencephallus is 10 ? 'fa-icon fa-selected' : 'fa-icon fa-unselected')"></span> $sciencephallus/10 phalli measured.
 			<br>
 			<span @class="($sciencephallusready is 10 ? 'fa-icon fa-selected' : 'fa-icon fa-unselected')"></span> $sciencephallusready/10 phalli added to project.
@@ -772,146 +852,6 @@
 				It's too late for you to take a role, but you can still help other students rehearse and watch the plays with the audience.
 			<</if>>
 		<</if>>
-	<</if>>
-
-	<<if $fake_artefact is "pc">>
-		Landry wants you to find the wishing stones in the vault in Avery's mansion, and replace them with the fakes <<nnpc_he Landry>> provided. <<nnpc_He Landry>> said that would save Avery.
-		<br>
-	<</if>>
-	<<if $avery_mansion and C.npc.Avery.state isnot "dismissed">>
-		------------------
-		<br>
-		<i>Avery's demands:</i>
-		<br>
-		Avery wants you to have dinner ready at <<ampm 21 00>> weekdays, and <<ampm 17 00>> Sundays.
-		<br>
-		<<if $avery_mansion.food.name isnot "none">>
-			<<if $avery_mansion.rage.dinner_missed gte 3>>
-				<span class="red">Avery wants <<recipe_name $avery_mansion.food.name "article">>.</span>
-				<br>
-			<<elseif $avery_mansion.rage.dinner_missed gte 2>>
-				<span class="pink">Avery wants <<recipe_name $avery_mansion.food.name "article">>.</span>
-				<br>
-			<<elseif $avery_mansion.rage.dinner_missed gte 1>>
-				<span class="purple">Avery wants <<recipe_name $avery_mansion.food.name "article">>.</span>
-				<br>
-			<<else>>
-				Avery wants <<recipe_name $avery_mansion.food.name "article">>.
-				<br>
-			<</if>>
-		<</if>>
-		<<if $avery_mansion.guest is "Bailey">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Bailey.
-			<br>
-		<<elseif $avery_mansion.guest is "Jordan">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Jordan.
-			<br>
-		<<elseif $avery_mansion.guest is "Quinn">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Quinn.
-			<br>
-		<<elseif $avery_mansion.guest is "Remy">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Remy.
-			<br>
-		<<elseif $avery_mansion.guest is "Briar">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Briar.
-			<br>
-		<<elseif $avery_mansion.guest is "Harper">>
-			You're expected at Avery's mansion after <<ampm 18>> on Sunday, for a party. The guest of honour is Harper.
-			<br>
-		<</if>>
-		<<if $avery_mansion.landry is 1>>
-			Someone dropped a note for you outside Avery's mansion, asking you to visit them in the pub on Harvest Street.
-			<br>
-		<</if>>
-		/* Reworked, left in while in construction
-		<<if $avery_mansion.landry gte 2 and $auriga_artefact is "Avery">>
-			Landry will give you <span class="gold">£10000</span> if you can bring <<nnpc_him "Landry">> the <span class="pink">wishing stones</span> from Avery's mansion.
-			<br>
-			<<if $avery_mansion.mickey>>
-				Mickey suggests making Avery feel more dominant would cause them to reveal the stones' location. Alternatively, helping Avery reach their goals could bring them into the open.
-				<br>
-			<</if>>
-			<<if $avery_mansion.brown_fox>>
-				The brown fox suggests enraging Avery to get <<nnpc_him 'Avery'>> to reveal the stones' location in a moment of weakness.
-				<br>
-			<</if>>
-			<<if $avery_mansion.jobs.includes("dungeon")>>
-				Avery revealed a dungeon containing a vault. It seems a likely place for the stones.
-				<br>
-			<</if>>
-			<<if $avery_mansion.fake_stones is 2>>
-				Optionally, replace Avery's wishing stones with the fakes Mickey gave you.
-				<br>
-			<</if>>
-		<<elseif $avery_mansion.landry gte 2 and $auriga_artefact is "pc">>
-			Landry will give you <span class="gold">£10000</span> if you can bring <<nnpc_him "Landry">> the <span class="pink">wishing stones</span> that are in your possession.
-			<br>
-		<</if>>
-		<<if $avery_mansion.fake_stones is 1>>
-			Fine a convincing fake to swap for the wishing stones.
-			<br>
-		<<elseif $avery_mansion.fake_stones is 2>>
-			Leave the fake wishing stones in Avery's vault.
-			<br>
-		<</if>>*/
-		<<if $avery_mansion.jobs.includes("maid")>>
-			Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the maid trait.
-			<br>
-		<<elseif $avery_mansion.jobs.includes("formal")>>
-			Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the formal trait.
-			<br>
-		<</if>>
-		<<if $avery_mansion.jobs.includes("hairlength")>>
-			Avery wants you to keep your hair no longer than the top of your chest.
-			<br>
-		<</if>>
-		<<if $avery_mansion.jobs.includes("hairtype")>>
-			Avery wants you to keep your hair in the neat style.
-			<br>
-		<</if>>
-		<<if $avery_mansion.jobs.includes("kneel")>>
-			Avery wants you to kneel before <<nnpc_him Avery>> after work.
-			<br>
-		<<elseif $avery_mansion.jobs.includes("bow")>>
-			Avery wants you to
-			<<if $player.gender_appearance is "f">>
-				curtsy
-			<<else>>
-				bow
-			<</if>>
-			to <<nnpc_him Avery>> after work.
-			<br>
-		<</if>>
-		<<if $avery_mansion.jobs.includes("bedroom") or
-		$avery_mansion.jobs.includes("dining") or
-		$avery_mansion.jobs.includes("bedroom") or
-		$avery_mansion.jobs.includes("pool") or
-		$avery_mansion.jobs.includes("garden") or
-		$avery_mansion.jobs.includes("display") or
-		$avery_mansion.jobs.includes("kitchen") or
-		$avery_mansion.jobs.includes("bathroom")>>
-			<<if $avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed gte 9>>
-				<span class="red">Avery wants you to keep <<nnpc_his Avery>> mansion clean.</span>
-				<br>
-			<<elseif $avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed gte 6>>
-				<span class="pink">Avery wants you to keep <<nnpc_his Avery>> mansion clean.</span>
-				<br>
-			<<elseif $avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed gte 3>>
-				<span class="purple">Avery wants you to keep <<nnpc_his Avery>> mansion clean.</span>
-				<br>
-			<<else>>
-				Avery wants you to keep <<nnpc_his Avery>> mansion clean.
-				<br>
-			<</if>>
-		<</if>>
-		<<if $avery_tower>>
-			<<if $avery_tower.stage is 3>>
-				Avery's skyscraper is finished, and the opening ceremony is being held during the next blood moon. Avery expects you to meet <<nnpc_him Avery>> at <<nnpc_his Avery>> mansion to attend.
-				<br>
-			<</if>>
-		<</if>>
-		------------------
-		<br>
 	<</if>>
 
 	<<set _plant_keys to Object.keys($plants)>>
