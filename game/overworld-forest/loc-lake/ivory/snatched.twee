@@ -133,6 +133,40 @@ The rest of them back away. You walk out into the forest, but can tell some of t
 <br><br>
 <span class="nextLink"><<link [[Walk.|Forest]]>><<set $location to "forest">><<set $wraith.exit to "forest">><<set $forest to 90>><<set $phase2 to 1>><<set $phaseWraith to 0>><</link>></span>
 
+:: Wraith Snatched Mansion Mirror
+<<effects>>
+You shamble over to the mirror. A pale <<girl>> with <<wraithEyes>> eyes stares back.
+<br><br>
+<<link [[Step away (0:01)|Wraith Snatched Mansion Mirror 2]]>><<pass 1>><</link>>
+<br>
+<span class="nextLink"><<link [[Stare (0:01)|Wraith Snatched Mansion Mirror 2]]>><<pass 1>><</link>></span>
+<br>
+
+:: Wraith Snatched Mansion Mirror 2
+<<effects>>
+You move each finger individually, as if to test them.
+<br><br>
+You place your hand against the mirror.
+You can't feel the surface.
+<br><br>
+Your head quickly tilts to the side, making sickening cracks. Your hands open and clench.
+<br><br>
+<<set $wraithWillMessage to true>>
+<i><span class="red">Fully restore your </span><span class="green">control</span><span class="red"> to take back your body.</span></i>
+<br><br>
+<span class="nextLink"><<link [[Step away (0:01)|Mansion Bedroom]]>><<pass 1>><<set $phase2 to 1>><</link>></span>
+<br>
+
+:: Wraith Snatched Mansion Leave
+<<effects>><<getTarget>><<rainWraith>>
+Your gaze passes over the mansion one last time.
+<br><br>
+
+You walk out into the <<print Weather.precipitation>>, and escape into the town.
+<br><br>
+
+<span class="nextLink"><<link [[Walk.|Danube Street]]>><<endevent>><<set $location to "town">><<set $wraith.exit to "town">><<set $phase2 to 1>><<set $phaseWraith to 0>><</link>></span>
+
 :: Wraith Snatched Far Mirror
 <<effects>><<endevent>>
 You shamble over to the mirror. A pale <<girl>> with <<wraithEyes>> eyes stares back.
@@ -326,6 +360,8 @@ Zephyr frowns. On a whim, <<he>> takes <<his>> spyglass from <<his>> side and pe
 	<</if>>
 <<elseif $location is "cabin">>
 	<<set _bedGuest to "Eden">>
+<<elseif $location is "avery_mansion">>
+	<<set _bedGuest to "Avery">>
 <</if>>
 You quietly approach the bed. You stare at _bedGuest, unmoving.
 <br><br>
@@ -355,6 +391,8 @@ You remain purely focused on <<nnpc_him _bedGuest>>. You raise an arm, and begin
 	<</if>>
 <<elseif $location is "cabin">>
 	<<set _bedGuest to "Eden">>
+<<elseif $location is "avery_mansion">>
+	<<set _bedGuest to "Avery">>
 <</if>>
 You place your hand on <<nnpc_his _bedGuest>> cheek. You can't feel it. You stroke it gently.
 <br><br>
@@ -383,6 +421,8 @@ You place your hand on <<nnpc_his _bedGuest>> cheek. You can't feel it. You stro
 		<span class="nextLink"><<link [[Step away|Bedroom]]>><</link>></span>
 	<<case "cabin">>
 		<span class="nextLink"><<link [[Step away|Cabin Actions]]>><</link>></span>
+	<<case "mansion">>
+		<span class="nextLink"><<link [[Step away|Mansion Bedroom]]>><</link>></span>
 <</switch>>
 <br>
 
@@ -809,6 +849,30 @@ You find yourself sinking through the ice, submerging without causing a break.
 				<<case "Pirate Deck">>
 					<<set $nextPassageCheck to "Wraith Snatched Pirate Railing">>
 					<<set $nextPassage to "Wraith Snatched Pirate Railing">>
+				<<case "Mansion Bedroom">>
+					<<pass 1>>
+					<<set $wraith.exit to "mansion">>
+					<<if !$nextPassageCheck>>
+						<<set $phaseWraith to 0>>
+						<<set $nextPassageCheck to "Mansion Mirror">>
+						<<set $nextPassage to "Wraith Snatched Mansion Mirror">>
+						<<if pcAreArmsBound("any") or $feetuse is "bound">>
+							<<set $unbind to 1>>
+						<</if>>
+					<<else>>
+						<<if $phaseWraith is 0 and $avery_schedule is "sleep">>
+							<<set $nextPassageCheck to "Mansion Bed">>
+							<<set $nextPassage to "Wraith Snatched Guest">>
+							<<set $phaseWraith to 1>>
+						<<else>>
+							<<set $nextPassageCheck to "Mansion Garden">>
+							<<set $nextPassage to "Mansion Garden">>
+							<<set $phaseWraith to 2>>
+						<</if>>
+					<</if>>
+				<<case "Mansion Garden">>
+					<<set $nextPassageCheck to "Danube Street">>
+					<<set $nextPassage to "Wraith Snatched Mansion Leave">>
 				<<case "Domus Street" "Barb Street" "Danube Street" "Residential Drain">>
 					<<pass 5>>
 					<<set $nextPassageCheck to "Residential alleyways">>

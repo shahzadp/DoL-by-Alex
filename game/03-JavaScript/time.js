@@ -521,11 +521,7 @@ function weekPassed() {
 		if (V.avery_tower.effects.includes("Harper")) {
 			V.avery_tower.progress += 4;
 		}
-		if (V.avery_tower.progress > 100) {
-			V.avery_tower.progress = 100;
-		} else if (V.avery_tower.progress < 0) {
-			V.avery_tower.progress = 0;
-		}
+		V.avery_tower.progress = Math.clamp(V.avery_tower.progress, 0, 100);
 	}
 
 	supermarketWeekly();

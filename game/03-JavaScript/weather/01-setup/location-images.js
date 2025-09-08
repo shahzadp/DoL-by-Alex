@@ -238,11 +238,11 @@ setup.LocationImages = {
 		base: {
 			default: {
 				image: "base.png",
-				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				condition: () => V.avery_fate !== "fallen" && V.avery_fate !== "kicked",
 			},
 			pool: {
 				image: "pool.png",
-				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				condition: () => V.avery_fate !== "fallen" && V.avery_fate !== "kicked",
 			},
 			fire: {
 				image: "base_fire.png",
@@ -253,19 +253,19 @@ setup.LocationImages = {
 			},
 			ruin: {
 				image: "base_burnt.png",
-				condition: () => !V.avery_mansion_fire_time && (V.avery_fate == "fallen" || V.avery_fate == "kicked"),
+				condition: () => !V.avery_mansion_fire_time && (V.avery_fate === "fallen" || V.avery_fate === "kicked"),
 			},
 		},
 		emissive: {
 			white: {
 				image: "emissive_white.png",
-				condition: () => V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				condition: () => V.avery_fate !== "fallen" && V.avery_fate !== "kicked",
 				color: "#ffffff",
 				size: 5,
 			},
 			yellow: {
 				image: "emissive_yellow.png",
-				condition: () => Weather.lightsOn && V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				condition: () => Weather.lightsOn && V.avery_fate !== "fallen" && V.avery_fate !== "kicked",
 				size: 5,
 			},
 			fire: {
@@ -320,11 +320,11 @@ setup.LocationImages = {
 			},
 			winter: {
 				image: "winter.png",
-				condition: () => Time.season == "winter" && V.avery_tower.progress >= 80,
+				condition: () => Time.season === "winter" && V.avery_tower.progress >= 80,
 			},
 			mid_winter: {
 				image: "mid_winter.png",
-				condition: () => Time.season == "winter" && V.avery_tower.progress >= 40 && V.avery_tower.progress < 80,
+				condition: () => Time.season === "winter" && V.avery_tower.progress >= 40 && V.avery_tower.progress < 80,
 			},
 		},
 		emissive: {
