@@ -318,6 +318,14 @@ setup.LocationImages = {
 				image: "base_low.png",
 				condition: () => V.avery_tower.progress < 40,
 			},
+			base_fire: {
+				image: "base_fire.png",
+				condition: () => V.avery_skyscraper_fire_time > 1,
+			},
+			burnt: {
+				image: "base_burnt.png",
+				condition: () => V.avery_fate === "saved" || V.avery_fate === "fallen" || V.avery_fate === "kicked" && !V.avery_skyscraper_fire_time,
+			},
 			winter: {
 				image: "winter.png",
 				condition: () => Time.season === "winter" && V.avery_tower.progress >= 80,
@@ -330,7 +338,7 @@ setup.LocationImages = {
 		emissive: {
 			lights: {
 				image: "lights.png",
-				condition: () => Time.dayState === "night" && V.avery_tower.progress >= 100,
+				condition: () => Time.dayState === "night" && V.avery_tower.progress >= 100 && V.avery_fate != "saved" && V.avery_fate != "fallen" && V.avery_fate != "kicked",
 				color: "#deae66",
 				size: 5,
 			},
@@ -339,6 +347,15 @@ setup.LocationImages = {
 				condition: () => Time.dayState === "night" && V.avery_tower.progress < 80,
 				color: "#deae66",
 				size: 5,
+			},
+			fire: {
+				image: "fire.png",
+				condition: () => V.avery_skyscraper_fire_time > 0,
+				animation: {
+					frameDelay: 150,
+				},
+				color: "#e6502eff",
+				strength: 1,
 			},
 		},
 	},
