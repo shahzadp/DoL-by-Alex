@@ -1992,7 +1992,6 @@ function dailyFarmEvents() {
 	}
 	if (V.alex_countdown >= 1) V.alex_countdown--;
 
-	delete V.farm_work;
 	delete V.farm_count;
 	if (V.farm_stage < 7) delete V.farm_naked;
 	delete V.farm_event;
