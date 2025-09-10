@@ -147,6 +147,7 @@
 	requested: []
 }>>
 <<set $avery_mansion.kitchen_made to 0>>
+<<set $avery_mansion.recipe to []>>
 
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
@@ -192,9 +193,9 @@
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
 
-	<<if $gift.name isnot $avery_mansion.food_last>>
+	<<if $gift.name isnot $avery_requested_food>>
 		<<for _i range setup.plants[$avery_requested_food].ingredients>>
-			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
+			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name)>>
 				<<set _missingIngredients to true>>
 			<</if>>
 		<</for>>
@@ -2142,7 +2143,7 @@
 		<<case "hallway_1_e">>
 			<<rng 4>>
 			<<if $rng is 4>>
-				<<set $avery_mansion.case.avery_bus to "hallway_1_w">>
+				<<set $avery_mansion.chase.avery_bus to "hallway_1_w">>
 			<<elseif $rng is 3>>
 				<<set $avery_mansion.chase.avery_bus to "hallway_1">>
 			<<elseif $rng is 2>>
@@ -3269,7 +3270,7 @@
 				<</if>>
 				<br><br>
 
-				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
+				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "work">>
 					<<set _extralinebreak to true>>
 					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder Avery]]>><<trauma 6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
@@ -3461,15 +3462,14 @@
 						<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
 						<br>
 					<</if>>
-					<<if $avery_mansion.food.name isnot "none" and $plants[$avery_mansion.food.name].recipe isnot true>>
+					<<if $avery_mansion.recipe.length gte 1>>
 						<<set _extralinebreak to true>>
-						<<tendingicon setup.plants[$avery_mansion.food.name].icon>><<link [[Learn recipe for <<recipe_name $avery_mansion.food.name>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.food.name>><<pass 120>><</link>>
-						<br>
-					<</if>>
-					<<if $avery_mansion.recipe>>
-						<<set _extralinebreak to true>>
-						<<tendingicon $avery_mansion.recipe>><<link [[Learn recipe for <<recipe_name $avery_mansion.recipe>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.recipe>><<pass 120>><</link>>
-						<br>
+						<<for _i range $avery_mansion.recipe>>
+							<<capture _i>>
+								<<tendingicon _i>><<link [[Learn recipe for <<recipe_name _i>> (2:00)|Mansion Study Learn]]>><<set $phase to _i>><<pass 120>><</link>>
+							<</capture>>
+							<br>
+						<</for>>
 					<</if>>
 					<<if $avery_mansion.schedule isnot "study" or $avery_mansion.schedule is "away">>
 						<<if $avery_mansion.study_secret is 1>>
@@ -3795,6 +3795,10 @@
 		<<link [[Say you took $_pronoun to sell|Mansion Housework Antiques Sell]]>><</link>>
 		<br>
 		<<link [[Say you took $_pronoun to the museum|Mansion Housework Antiques Museum]]>><</link>>
+		<<if $avery_mansion.baileyStealLie>>
+			<br>
+			<<link [[Say Bailey stole them during the party (lie)|Mansion Housework Antiques Bailey]]>><</link>>
+		<</if>>
 	<</if>>
 	<br>
 <</widget>>
