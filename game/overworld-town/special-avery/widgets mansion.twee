@@ -147,6 +147,7 @@
 	requested: []
 }>>
 <<set $avery_mansion.kitchen_made to 0>>
+<<set $avery_mansion.recipe to []>>
 
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
@@ -192,9 +193,9 @@
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
 
-	<<if $gift.name isnot $avery_mansion.food_last>>
+	<<if $gift.name isnot $avery_requested_food>>
 		<<for _i range setup.plants[$avery_requested_food].ingredients>>
-			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name) and !$plants[_i].recipe>>
+			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name)>>
 				<<set _missingIngredients to true>>
 			<</if>>
 		<</for>>
@@ -236,9 +237,6 @@
 	<<set $avery_mansion.rage.apologetic to true>>
 	<<set $avery_mansion.rage.work to true>>
 <<elseif $avery_mansion.schedule isnot "away">>
-	<<if $avery_mansion.bedroom_state is "locked" or $avery_mansion.bedroom_state is "off-limits">>
-		<<set $avery_mansion.bedroom_state to "ignored">>
-	<</if>>
 	<<switch Time.weekDay>>
 		<<case 1>>/* Sunday */
 			<<if Time.hour lte 4>>
@@ -359,6 +357,19 @@
 				<<set $avery_mansion.schedule to "drink">>
 			<</if>>
 	<</switch>>
+	<<if $avery_mansion.schedule is "sleep">>
+		<<if $avery_mansion.bedroom_state is "off-limits away">>
+			<<set $avery_mansion.bedroom_state to "off-limits">>
+		<</if>>
+	<<else>>
+		<<if $avery_mansion.bedroom_state is "off-limits" or $avery_mansion.bedroom_state is "locked">>
+			<<set $avery_mansion.bedroom_state to "off-limits away">>
+		<<elseif $avery_mansion.bedroom_state is "ignored insisted">>
+			<<set $avery_mansion.bedroom_state to "ignored">>
+		<<elseif $avery_mansion.bedroom_state is "insisted">>
+			<<unset $avery_mansion.bedroom_state>>
+		<</if>>
+	<</if>>
 <</if>>
 <<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "date" and $avery_mansion.schedules isnot "sleep" and $avery_mansion.schedule isnot "work">>
 	<<set _avery_available to true>>
@@ -381,13 +392,22 @@
 <<if _args[0] is "housework">>
 	<<avery_housework_check>>
 	<<if _avery_housework_count gte 1>>
-		<<icon "housekeeping.png">><<link [[Continue|Mansion Housework]]>><</link>>
+		<<icon "housekeeping.png">><<link [[Continue cleaning|Mansion Housework]]>><</link>>
 		<br>
+		<<ind>><<link [[Stop|$avery_passage]]>><</link>>
 	<<else>>
-		<span class="green">The mansion is spick and span.</span>
+		<<if $avery_mansion.bedroom gte 1>>
+			<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom.</span>
+			<<if $avery_mansion.bedroom_state isnot "locked">>
+				<br>
+				<<link [[Ignore Avery's warning and clean the bedroom|Mansion Housework]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
+			<</if>>
+		<<else>>
+			<span class="green">The mansion is spick and span.</span>
+		<</if>>
 		<br><br>
+		<<link [[Next|$avery_passage]]>><</link>>
 	<</if>>
-	<<ind>><<link [[Stop|$avery_passage]]>><</link>>
 	<br>
 <<else>>
 	<<if $bus is "avery_dungeon">>
@@ -424,31 +444,10 @@
 	<<if !$avery_mansion.jobs.includes("garden")>>
 		<<set $avery_mansion.garden to 0>>
 	<</if>>
-	<<set _avery_housework_count to $avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bedroom + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden>>
-	<<set _avery_housework_count_type to 0>>
-	<<if $avery_mansion.pool gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.kitchen gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.lounge gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.display gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.bedroom gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.bathroom gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.dining gte 1>>
-		<<set _avery_housework_count_type++>>
-	<</if>>
-	<<if $avery_mansion.garden gte 1>>
-		<<set _avery_housework_count_type++>>
+	<<set _avery_housework_count to $avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden>>
+	<<if $avery_mansion.bedroom gte 1 and $avery_mansion.bedroom_state isnot "locked" and $avery_mansion.bedroom_state isnot "off-limits">>
+		<<set _avery_housework_bedroom to true>>
+		<<set _avery_housework_count += $avery_mansion.bedroom>>
 	<</if>>
 <</widget>>
 
@@ -458,7 +457,7 @@
 <<set _avery_tending to Math.floor(10 - $tending / 200)>>
 <<set _avery_mansion_time to 0 + $avery_mansion.pool * _avery_housekeeping + $avery_mansion.kitchen * _avery_housekeeping + $avery_mansion.lounge * _avery_housekeeping + $avery_mansion.display * _avery_housekeeping + $avery_mansion.bathroom * _avery_housekeeping + $avery_mansion.dining * _avery_housekeeping + $avery_mansion.garden * _avery_tending>>
 
-<<if $avery_mansion.bedroom_state isnot "ignored" and $avery_mansion.bedroom_state isnot "locked">>
+<<if $avery_mansion.bedroom_state isnot "locked" and $avery_mansion.bedroom_state isnot "off-limits">>
 	<<set _avery_mansion_time to _avery_mansion_time + $avery_mansion.bedroom * _avery_housekeeping>>
 <</if>>
 
@@ -553,10 +552,16 @@
 	<<else>>
 		<span class="green">Everything is in its right place.</span>
 	<</if>>
-	<<if $avery_mansion.bedroom_state is "off-limits">>
-		<span class="blue">Avery slumbers, and doesn't like you cleaning the bedroom while <<nnpc_he Avery>> sleeps.</span> <<link [[Clean it anyway|$passage]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
-	<<elseif $avery_mansion.bedroom_state is "locked">>
-		<span class="bedroom">The bedroom door is locked.</span>
+	<<if  $avery_mansion.bedroom gte 1>>
+		<<if $avery_mansion.bedroom_state is "off-limits">>
+			<br>
+			<span class="blue">Avery slumbers, and doesn't like you cleaning the bedroom while <<nnpc_he Avery>> sleeps.</span>
+			<br>
+			<<link [[Ignore <<nnpc_his Avery>> warning|$passage]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
+		<<elseif $avery_mansion.bedroom_state is "locked">>
+			<br>
+			<span class="bedroom">The bedroom door is locked.</span>
+		<</if>>
 	<</if>>
 <</if>>
 <<if _args[0] is "all" and $avery_mansion.jobs.includes("bedroom")>>
@@ -626,16 +631,22 @@
 <</widget>>
 
 <<widget "avery_mansion_links">>
-
 	<<if $avery_mansion.jobs.length gte 1>>
 		<<avery_housework_check>>
 		<<if !_avery_housework_count>>
-			<span class="green">The mansion is spick and span.</span>
-			<br><br>
+			<<if $avery_mansion.bedroom gte 1>>
+				<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom.</span>
+				<<if $bus isnot "avery_bedroom" and $avery_mansion.bedroom_state isnot "locked">>
+					<br>
+					<<link [[Ignore Avery's warning|$passage]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
+				<</if>>
+			<<else>>
+				<span class="green">The mansion is spick and span.</span>
+			<</if>>
 		<<else>>
-			<<icon "housekeeping.png">><<link [[Assess the state of the house|Mansion Housework Assess]]>><<handheldon 1>><</link>>
-			<br><br>
+			<<icon "housekeeping.png">><<link [[Assess the states of the house|Mansion Housework Assess]]>><<handheldon 1>><</link>>
 		<</if>>
+		<br><br>
 	<</if>>
 
 	Downstairs
@@ -671,7 +682,11 @@
 	<br>
 
 	<<if $bus isnot "avery_bedroom">>
-		<<icon "avery_bedroom.png">><<link [[Bedroom (0:01)|Mansion Bedroom]]>><<handheldon 1>><<pass 1>><</link>>
+		<<if $avery_mansion.bedroom_state is "locked">>
+			<span class="blue">Avery has locked you out of the bedroom for the night.</span>
+		<<else>>
+			<<icon "avery_bedroom.png">><<link [[Bedroom (0:01)|Mansion Bedroom]]>><<handheldon 1>><<pass 1>><</link>>
+		<</if>>
 		<br>
 	<</if>>
 
@@ -1695,7 +1710,7 @@
 
 <<widget "this_saturday">>
 	<<if Time.weekDay is 7>>
-		<<set $_text to "next Saturday">>
+		<<set $_text to "tonight">>
 	<<elseif Time.weekDay is 6>>
 		<<set $_text to "tomorrow">>
 	<<else>>
@@ -2128,7 +2143,7 @@
 		<<case "hallway_1_e">>
 			<<rng 4>>
 			<<if $rng is 4>>
-				<<set $avery_mansion.case.avery_bus to "hallway_1_w">>
+				<<set $avery_mansion.chase.avery_bus to "hallway_1_w">>
 			<<elseif $rng is 3>>
 				<<set $avery_mansion.chase.avery_bus to "hallway_1">>
 			<<elseif $rng is 2>>
@@ -2640,6 +2655,9 @@
 		<br>
 	<<elseif $avery_mansion.guest is "Quinn">>
 		<<if ($avery_tower.progress gte 40 or $world_corruption_hard gte 3) and !$avery_mansion.jordan_intro>>
+			<<if !C.npc.Jordan.init>>
+				<<set $avery_party.jordan_init to true>>
+			<</if>>
 			<<npc "Jordan" 2>>
 			<<if $per_npc.bishop_right_hand>>
 				<<loadNPC 2 "bishop_right_hand">><<loadNPC 3 "bishop_left_hand">>
@@ -3252,7 +3270,7 @@
 				<</if>>
 				<br><br>
 
-				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "away">>
+				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "work">>
 					<<set _extralinebreak to true>>
 					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder Avery]]>><<trauma 6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
@@ -3307,17 +3325,15 @@
 					<br>
 					<<bathroomicon "bath">><<link [[Bathe with Avery (0:20)|Mansion Bathe Avery]]>><<clothesstrip>><<pass 20>><</link>>
 					<br>
-					<<bathroomicon "sink">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
+					<<bathroomicon "toothbrush">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
 					<br>
 					<<pregnancyTest "Mansion Bathroom">>
-					<br>
 				<<else>>
 					<<bathroomicon "bath">><<link [[Bathe (0:20)|Mansion Bathe]]>><<clothesstrip>><<pass 20>><</link>>
 					<br>
-					<<bathroomicon "sink">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
+					<<bathroomicon "toothbrush">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Mansion Bathroom">><</link>>
 					<br>
 					<<pregnancyTest "Mansion Bathroom">>
-					<br>
 				<</if>>
 				<br>
 			<</if>>
@@ -3446,15 +3462,14 @@
 						<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
 						<br>
 					<</if>>
-					<<if $avery_mansion.food.name isnot "none" and $plants[$avery_mansion.food.name].recipe isnot true>>
+					<<if $avery_mansion.recipe.length gte 1>>
 						<<set _extralinebreak to true>>
-						<<tendingicon setup.plants[$avery_mansion.food.name].icon>><<link [[Learn recipe for <<recipe_name $avery_mansion.food.name>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.food.name>><<pass 120>><</link>>
-						<br>
-					<</if>>
-					<<if $avery_mansion.recipe>>
-						<<set _extralinebreak to true>>
-						<<tendingicon $avery_mansion.recipe>><<link [[Learn recipe for <<recipe_name $avery_mansion.recipe>> (2:00)|Mansion Study Learn]]>><<set $phase to $avery_mansion.recipe>><<pass 120>><</link>>
-						<br>
+						<<for _i range $avery_mansion.recipe>>
+							<<capture _i>>
+								<<tendingicon _i>><<link [[Learn recipe for <<recipe_name _i>> (2:00)|Mansion Study Learn]]>><<set $phase to _i>><<pass 120>><</link>>
+							<</capture>>
+							<br>
+						<</for>>
 					<</if>>
 					<<if $avery_mansion.schedule isnot "study" or $avery_mansion.schedule is "away">>
 						<<if $avery_mansion.study_secret is 1>>
@@ -3618,6 +3633,7 @@
 <</widget>>
 
 <<widget "avery_mansion_clean">>
+	<<avery_mansion>>
 	<<switch _args[0]>>
 		<<case "lounge">>
 			<<avery_mansion_clean_lounge>>
@@ -3752,7 +3768,7 @@
 		<<link [[Work the bolts free|Mansion Housework Antiques]]>><<set $avery_antiques.bolt_progress += 1>><</link>>
 		<br>
 		<<link [[Ignore them|Mansion Housework Antiques Ignore]]>><</link>>
-	<<elseif $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_antiques.stolen>>
+	<<elseif $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_antiques.stolen.length gte 1>>
 		<<npc "Avery">><<person1>>
 		<<set _event_triggered to true>>
 		<br><br>
@@ -3762,33 +3778,44 @@
 		<<set $_pronoun to pluralise(_items.length, "it", "them")>>
 
 		<<run _items.forEach(item => {
-			$avery_antiques.noticed.pushUnique(item)
-			$avery_antiques.stolen.delete(item)
+			$avery_antiques.noticed.pushUnique(item);
+			$avery_antiques.stolen.delete(item);
 		})>>
 
-		<<He>> arrives at the display that once housed the <<print _items.join(", ").replace(/, ([^,]*)$/, " and $1")>>. <<He>> stares at it a moment.
+		<<He>> arrives at the display that once housed the <<print formatList(_items, "and")>>. <<He>> stares at it a moment.
 		<br><br>
 
 		"My <<pluralise _items.length "antique">>," <<he>> says, turning to you. "Where did you put $_pronoun?"
 		<br><br>
 
-		<<link [[Say you didn't take "+ $_pronoun + " (lie)|Mansion Housework Antiques Lie]]>><</link>>
+		<<link [[Say you didn't take $_pronoun (lie)|Mansion Housework Antiques Lie]]>><</link>>
 		<br>
 		<<link [[Remain silent|Mansion Housework Antiques Silent]]>><</link>>
 		<br>
-		<<link [[Say you took "+ $_pronoun + " to sell|Mansion Housework Antiques Sell]]>><</link>>
+		<<link [[Say you took $_pronoun to sell|Mansion Housework Antiques Sell]]>><</link>>
 		<br>
-		<<link [[Say you took "+ $_pronoun + " to the museum|Mansion Housework Antiques Museum]]>><</link>>
+		<<link [[Say you took $_pronoun to the museum|Mansion Housework Antiques Museum]]>><</link>>
+		<<if $avery_mansion.baileyStealLie>>
+			<br>
+			<<link [[Say Bailey stole them during the party (lie)|Mansion Housework Antiques Bailey]]>><</link>>
+		<</if>>
 	<</if>>
 	<br>
 <</widget>>
 
 <<widget "avery_mansion_clean_bedroom">>
-	<<if ["locked", "off-limits"].contains($avery_mansion.bedroom_state)>>
+	<<if $avery_mansion.bedroom_state is "off-limits">>
+		<<if _avery_housework_bedroom>>
+			Avery went to bed while you were cleaning. <span class="blue">You decide to skip the bedroom for now.</span>
+			<br>
+		<</if>>
+
+		<<exit>>
+	<<elseif $avery_mansion.bedroom_state is "locked">>
 		<<exit>>
 	<</if>>
 
-	<<if $avery_mansion.schedule is "sleep" and not _args[0] is true>>
+	<<if $avery_mansion.schedule is "sleep" and not _args[0] is true and $avery_mansion.bedroom_state isnot "ignored insisted" and $avery_mansion.bedroom_state isnot "insisted">>
 		<<set _event_triggered to true>>
 		<<npc "Avery">><<person1>>
 		You enter the bedroom and start your chore. Avery tosses and turns while you work. <<His>> eyes snap open, and <<he>> observes you with a frown.
@@ -3804,7 +3831,7 @@
 				"I told you not to bother me while I slept," <<he>> growls. "Get the fuck out. Now."
 				<br><br>
 
-				<<link [[Comply|Mansion Housework Bedroom Comply]]>><<set $avery_mansion.bedroom_state to "locked">><</link>>
+				<<link [[Comply|Mansion Housework Bedroom Comply]]>><</link>>
 				<br>
 				<<link [[Refuse|Mansion Housework Bedroom Refuse]]>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<garage>><<llove>>
 			<</if>>
@@ -3817,6 +3844,14 @@
 			<<link [[Agree to clean later|Mansion Housework Bedroom Agree]]>><<set $avery_mansion.bedroom_state to "off-limits">><</link>>
 		<</if>>
 	<<else>>
+		<<if _args[0] is true>>
+			<<if $avery_mansion.bedroom_state is "ignored">>
+				<<set $avery_mansion.bedroom_state to "ignored insisted">>
+			<<else>>
+				<<set $avery_mansion.bedroom_state to "insisted">>
+			<</if>>
+		<</if>>
+
 		<<if $avery_mansion.bedroom gte 4>>
 			You move the bed back to its proper place, and clean up the mess it was concealing.
 		<<elseif $avery_mansion.bedroom gte 3>>

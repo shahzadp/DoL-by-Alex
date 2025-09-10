@@ -1227,7 +1227,7 @@ function dailyNPCEffects() {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
 			V.avery_party_skipped = false;
-			if (Time.weekDay === 3) {
+			if (Time.weekDay === 3 && !V.avery_mansion.injury) {
 				if (V.avery_mansion.guest === "Bailey_skip") {
 					V.avery_mansion.guest = "Bailey";
 				} else if (V.avery_mansion.guest === "Bailey") {
@@ -1320,6 +1320,10 @@ function dailyNPCEffects() {
 			}
 			if (V.avery_mansion.jobs.includes("garden") && V.avery_mansion.garden < 4) {
 				V.avery_mansion.garden++;
+			}
+
+			if (V.avery_mansion.bedroom_state === "locked") {
+				V.avery_mansion.bedroom_state = "off-limits";
 			}
 		}
 	} else {
