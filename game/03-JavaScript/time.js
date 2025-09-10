@@ -1321,6 +1321,10 @@ function dailyNPCEffects() {
 			if (V.avery_mansion.jobs.includes("garden") && V.avery_mansion.garden < 4) {
 				V.avery_mansion.garden++;
 			}
+
+			if (V.avery_mansion.bedroom_state === "locked") {
+				V.avery_mansion.bedroom_state = "off-limits";
+			}
 		}
 	} else {
 		delete V.averyDismissalSceneWait;
