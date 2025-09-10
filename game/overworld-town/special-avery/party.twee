@@ -330,7 +330,7 @@ Avery greets all the guests as they filter through. You draw many curious eyes, 
 <</if>>
 <br><br>
 
-<<if $fake_artefact isnot "Avery" and $transformationParts.traits.sharpEyes isnot "disabled" or $skulduggery gte 600 or $fame.social gte 500>>
+<<if $fake_artefact isnot "Avery" and ($transformationParts.traits.sharpEyes isnot "disabled" or $skulduggery gte 600 or $fame.social gte 500)>>
 	<<set $avery_party.fox_spotted to true>>
 	<<if $fame.social gte 500>>
 		<span class="blue">Your eyes suddenly catch on one of the guests as the queue thins out.</span> They look completely uninteresting, but that only makes them stick out more to you.
@@ -674,6 +674,8 @@ You leave the display room, and look around the lounge. It's busy, but Avery isn
 			<<He>> does just that, and steps in front of you. <<His>> face is concealed by a brown fox mask, and a hooded green cloak covers <<his>> upper body.
 			<<if $fake_artefact is "pc">>
 				<span class="green">The same fox-masked <<personsimple>> you saw with Landry.</span>
+			<<else>>
+				The mask is almost identical to the ones you saw at Remy's party.
 			<</if>>
 			<br><br>
 
@@ -735,7 +737,7 @@ You leave the display room, and look around the lounge. It's busy, but Avery isn
 <</if>>
 
 :: Mansion Party Bailey Expose Intruder
-<<effects>><<set $avery_mansion.fox.cover_blown to true>>
+<<effects>><<set $avery_mansion.fox.progress -= 1>>
 You head back into the lounge and grab the attention of some servants.
 <<if $speech_attitude is "meek" or $speech_attitude_avery>>
 	"I found the uninvited guest," you say.
@@ -780,13 +782,15 @@ You listen intently, but only hear the drone of the party. You wait. They don't 
 The servants stand completely stiff. The intruder stands in front of them, donning a brown fox mask. A hooded green cloak covers their upper body.
 <<if $fake_artefact is "pc">>
 	<span class="red">The same fox-masked person you saw with Landry.</span>
+<<else>>
+	The mask is almost identical to the ones you saw at Remy's party.
 <</if>>
 <br><br>
 
 They lean forward and whisper something into the servants' ears. Slowly and clumsily, they turn around and walk past you, returning to the party. As they pass, you notice small grains of blue powder on their lips. Their eyes are lightless.
 <br><br>
 
-The brown fox turns to look at you. Their eyes are entirely darkened by the mask. You feel your breath catch in your throat, and your fingers and toes start to tingle.
+The intruder turns to look at you. Their eyes are entirely darkened by the mask. You feel your breath catch in your throat, and your fingers and toes start to tingle.
 <br><br>
 
 <<person6>>A <<personsimple>>'s voice greets you. "How troublesome." <<He>> steps towards you, <<his>> voice soothing like gentle birdsong.
@@ -844,7 +848,7 @@ Your limbs feel heavy. <<He>> steps next to you, putting an arm around your shou
 <<He>> places a finger to <<his>> chin in thought.
 <<if $fake_artefact is "pc">>
 	"You passed my little test.
-	<<if $avery_mansion.fox?.cover_blown>>
+	<<if $avery_party.fox_warned>>
 		Even if you did nearly blow my cover.
 	<</if>>
 	I had to be sure you were the right one for this. You already know this is dangerous, <span class="purple">but it's so much worse than you know</span>."
@@ -891,9 +895,9 @@ Your limbs feel heavy. <<He>> steps next to you, putting an arm around your shou
 <</if>>
 With one last look and a short wave, <<he>> escapes the mansion.
 <br><br>
-<<set $avery_mansion.fox.known to true>><<set $avery_mansion.fox.progress++>><<set $avery_mansion.fox.timer to new DateTime(Time.date).addDays(9)>>
+<<set $avery_mansion.fox.known to true>><<set $avery_mansion.fox.met ||= "Bailey">><<set $avery_mansion.fox.progress++>>
 
-You return to the party.
+You decide to return to the party before Avery sends someone to search for you.
 <br><br>
 
 <<link [[Next|Mansion Party Bailey Avery]]>><<set $phase to 1>><</link>>
@@ -912,6 +916,7 @@ You return to the party.
 	<<else>>
 		"What did <<nnpc_he "Bailey">> say?" Avery asks without looking at you.
 	<</if>>
+	<<set $phase to 0>>
 	<br><br>
 <<elseif $avery_party.current_speech is "fool">>
 	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
@@ -990,7 +995,6 @@ You return to the party.
 	Avery relaxes. "Then we've nothing to worry about. If Bailey really is stealing those trinkets, <<nnpc_he Bailey>> can have them. I'll buy more."
 	<br><br>
 <</if>>
-<<set $phase to 0>>
 
 <<if $avery_party.current_speech isnot "intro">>
 	<<if $avery_party.mood_avery gte 1>>
@@ -1670,13 +1674,13 @@ You leave the $phase, and search the mansion. You spy the temple's people in the
 	"A spy."
 	<br><br>
 
-	They turn to face you in unison.
+	They turn to face you in unison. <<if $temple_confessor_intro>><span class="gold">It's the Bishop's Hands.</span><</if>>
 	<br><br>
 
 	<<link [[Accuse|Mansion Party Investigate Accuse]]>><</link>>
 	<br>
 	<<if $avery_mansion.jobs.includes("dungeon")>>
-		<<link [[Tell them about the dungeon|Mansion Party Investigate Dungeon]]>><<avery_mansion_party_speech guest "dungeon">><<avery_mansion_party_mood guest -2>><</link>>
+		<<link [[Tell them about the dungeon|Mansion Party Investigate Dungeon]]>><<avery_mansion_party_speech guest "dungeon">><<avery_mansion_party_mood guest -2>><<grace 5 monk>><</link>><<gggrace monk>>
 		<br>
 	<</if>>
 	<<link [[Run to Avery|Mansion Party Investigate Run]]>><</link>>
@@ -1705,7 +1709,7 @@ They glance at each other, then back at you.
 	<br>
 	"Or keeping your <<person1>><<personsimple>> warm."
 	<br>
-	"Too far, <<if $NPCList[3].pronoun is "m">>brother<<else>>sister<</if>>!"
+	"Too far, beloved!"
 	<br><br>
 <<elseif $temple_rank is "monk">>
 	"Are we so unsubtle?"
@@ -1758,8 +1762,27 @@ You run from the pair, into the garden. You don't hear them move, but feel their
 <</if>>
 <br><br>
 
-The pair look at each other, than back at you. They bow as one, then slip into the darkness.
+The pair look at each other, than back at you.
 <br><br>
+
+<<if $temple_confessor_intro>>
+	"Be safe, <<sister>>."
+	<br>
+	"Be swift, <<sister>>."
+	<br>
+	"Virgo guide us."
+<<else>>
+	"Honesty."
+	<br>
+	"Such a precious virtue."
+	<br>
+	"Virgo bless you."
+<</if>>
+<br><br>
+
+They bow as one, then slip into the darkness.
+<br><br>
+
 <<link [[Next|Mansion Party Investigate Avery]]>><</link>>
 <br>
 
@@ -1797,7 +1820,7 @@ They look at you. "We're looking for a hiding place. Have you seen anything like
 <br><br>
 
 <<if $avery_mansion.jobs.includes("dungeon")>>
-	<<link [[Tell them about the dungeon|Mansion Party Investigate Kitchen Dungeon]]>><<avery_mansion_party_speech guest "dungeon">><<avery_mansion_party_mood guest -2>><</link>>
+	<<link [[Tell them about the dungeon|Mansion Party Investigate Kitchen Dungeon]]>><<avery_mansion_party_speech guest "dungeon">><<avery_mansion_party_mood guest -2>><<grace 5 monk>><</link>><<gggrace monk>>
 	<br>
 <</if>>
 <<link [[Shake your head|Mansion Party Investigate Kitchen Shake]]>><</link>>
@@ -1823,7 +1846,6 @@ Another initiate enters the room, and gives you a bow. "Your partner has request
 
 <<link [[Next|Mansion Party Investigate Avery]]>><</link>>
 <br>
-
 
 :: Mansion Party Investigate Kitchen Shake
 <<effects>>
@@ -1856,7 +1878,6 @@ You find Avery in the garden, walking towards you with a rose in <<person1>><<hi
 <</if>>
 <<link [[Say you found nothing|Mansion Party Investigate Avery Nothing]]>><</link>>
 <br>
-
 
 :: Mansion Party Investigate Avery Eavesdrop
 <<effects>>
@@ -2028,8 +2049,10 @@ Jordan bows <<his>> head. Everyone follows suit, including Avery. Jordan begins 
 <br>
 <<link [[Wait for the end of the prayer|Mansion Party Jordan Wait]]>><<pass 5>><</link>>
 <br>
-/* ToDo: Avery - option to pray with them if member of temple or angel. Option to lead the prayer if angel */
-
+<<if $angel gte 6>>
+	<<link [[Lead the prayer yourself|Mansion Party Jordan Angel]]>><<pass 5>><<grace 3 monk>><</link>><<ggrace monk>><<angel>>
+	<br>
+<</if>>
 
 :: Mansion Party Jordan Sneak
 <<effects>>
@@ -2046,11 +2069,32 @@ The prayer finishes, and the <<person6>><<monks_and_nuns>> tuck in.
 <<link [[Next|Mansion Party Jordan 6]]>><</link>>
 <br>
 
-
 :: Mansion Party Jordan Wait
 <<effects>>
 
 You wait for Jordan to finish the prayer. When <<person2>><<he>> does, the <<person6>><<monks_and_nuns>> tuck in at once.
+<br><br>
+
+You spoon some soup into your mouth. It's warm and comforting, though the flavour's a little bland. "We avoid spices that impair the flavour of the local ingredients," the <<person6>><<monk>> beside you says, as if reading your mind. "It won't seem bland once your tastebuds are trained. There are important subtleties."
+<br><br>
+
+The <<person3>><<priest>> beside Jordan hushes the <<person6>><<monk>> with a glare.
+<br><br>
+
+<<link [[Next|Mansion Party Jordan 6]]>><</link>>
+<br>
+
+:: Mansion Party Jordan Angel
+<<effects>>
+
+You wait for Jordan to reach a lull in the prayer. As <<person2>><<he>> takes a breath to continue, you speak up first from where <<he>> left off.
+You perform an ever so slightly more concise version of the same prayer, and speak rapidly.
+<br><br>
+
+Jordan blinks at you, but smiles and seems impressed that you know the whole thing. You orate gracefully. Avery eyes you with a mixture of confusion and gratitude, relieved that the prayer will be over sooner.
+<br><br>
+
+When you finish, the <<person6>><<monks_and_nuns>> tuck in at once.
 <br><br>
 
 You spoon some soup into your mouth. It's warm and comforting, though the flavour's a little bland. "We avoid spices that impair the flavour of the local ingredients," the <<person6>><<monk>> beside you says, as if reading your mind. "It won't seem bland once your tastebuds are trained. There are important subtleties."
@@ -2086,7 +2130,6 @@ Avery doesn't seem interested in drinking.
 <<link [[Refrain|Mansion Party Jordan Drink Refrain]]>><<pass 6>><</link>>
 <br>
 
-
 :: Mansion Party Jordan Drink
 <<effects>>
 
@@ -2096,7 +2139,6 @@ The <<monk>> passes you a mug of beer. It tastes a bit like strawberries. The in
 <<link [[Next|Mansion Party Jordan 7]]>><<pass 10>><</link>>
 <br>
 
-
 :: Mansion Party Jordan Drink Refrain
 <<effects>>
 
@@ -2105,7 +2147,6 @@ You decide not to drink. The <<monks_and_nuns>> are more chatty now. The initiat
 
 <<link [[Next|Mansion Party Jordan 7]]>><<pass 10>><</link>>
 <br>
-
 
 :: Mansion Party Jordan 7
 <<effects>>
@@ -2189,14 +2230,14 @@ The initiates return the empty jugs and baskets to the kitchen, then arrange the
 Avery runs <<his>> fingers over the table in thought. "I'll invite <span class="gold">Quinn</span> again next week. Right now, I need to unwind." <<He>> clicks and points at <<his>> groin.
 <br><br>
 
-<<if $promiscuity gte 15>>
+<<if hasSexStat("promiscuity", 2)>>
 	<<link [[Perform oral reluctantly|Mansion Party Jordan End Reluctant]]>><<set $phase to 0>><</link>>
 	<br>
 <<else>>
 	<<link [[Perform oral reluctantly|Mansion Party Jordan End Reluctant]]>><<stress 6>><<trauma 6>><</link>><<gtrauma>><<gstress>>
 	<br>
 <</if>>
-<<if $promiscuity gte 55>>
+<<if hasSexStat("promiscuity", 4)>>
 	<<link [[Perform oral eagerly|Mansion Party Jordan End Eager]]>><</link>><<promiscuous4>>
 	<br>
 <</if>>
@@ -2567,7 +2608,7 @@ Avery greets the other guests. You hear a splash from the pool, which gets every
 
 <<link [[Go get changed|Mansion Party Quinn Change]]>><<pass 5>><</link>>
 <br>
-<<if $exhibitionism gte 75>>
+<<if hasSexStat("exhibitionism", 5)>>
 	<<link [[Suggest swimming naked|Mansion Party Quinn Change Naked]]>><<avery_mansion_party_speech guest "exposed_true">><<pass 5>><</link>><<exhibitionist5>>
 	<br>
 <</if>>
@@ -2657,8 +2698,8 @@ You step outside the wardrobe, and examine yourself in the mirror.
 	<br><br>
 	<<link [[Go to the pool|Mansion Party Quinn Change 3]]>><</link>>
 	<br>
-<<elseif _swim_check is "topless" and $exhibitionism gte 55>>
-	<<if $exhibitionism gte 55>>
+<<elseif _swim_check is "topless" and hasSexStat("exhibitionism", 4)>>
+	<<if hasSexStat("exhibitionism", 4)>>
 		You're topless, which would draw eyes, but this is otherwise suitable for the party.
 		<br><br>
 		<<link [[Go topless to the pool|Mansion Party Quinn Change Topless]]>><</link>><<exhibitionist4>>
@@ -2670,7 +2711,7 @@ You step outside the wardrobe, and examine yourself in the mirror.
 		<br>
 	<</if>>
 <<elseif _swim_check is "naked">>
-	<<if $exhibitionism gte 75>>
+	<<if hasSexStat("exhibitionism", 5)>>
 		Your nudity would cause a stir, but it'd be fine to swim like this.
 		<br><br>
 		<<link [[Go naked to the pool|Mansion Party Quinn Change Naked]]>><</link>><<exhibitionist5>>
@@ -3457,7 +3498,7 @@ You accompany Avery to the atrium, where <<he>> bids each guest farewell in turn
 	<</if>>
 <</if>>
 
-I've invited my friend, <span class="gold">Remy,</span> to the party next week. You remember them from their party on the moor? It's our turn to host. Be on your best behaviour."
+I've invited my friend, <span class="gold">Remy,</span> to the party next week. You remember <<nnpc_him "Remy">> from <<nnpc_his "Remy">> party on the moor? It's our turn to host. Be on your best behaviour."
 <br><br>
 
 Avery walks away.
@@ -3534,12 +3575,37 @@ Remy enters the lounge, and you remain by Avery's side as <<person1>><<he>> gree
 <br><br>
 
 The servants peel off to tend to the guests, with the last shutting the door behind the final arrival.
+<<if $auriga_artefact is "Avery" and !$avery_mansion.fox.unlocked and !$avery_mansion.fox.wounded and !$avery_fate>>
+	<<set $avery_party.fox_here to true>>
+	<<person2>>
+	You notice Remy continually fixing <<his>> gaze on one of the other guests. <<He>> rests <<his>> hand on <<his>> hip, as if prepared for something.
+	<br><br>
+
+	You follow <<his>> gaze,
+	<<if $avery_mansion.fox.known or $transformationParts.traits.sharpEyes isnot "disabled" or $skulduggery gte 600 or $fame.social gte 500>>
+		<<set $avery_party.fox_spotted to true>>
+		and realise who <<hes>> looking at right away.
+		<<if $avery_mansion.fox.known>>
+			<span class="blue">The brown fox is here, blending in with the crowd,</span>
+		<<else>>
+			<span class="blue">An uninvited guest is here, blending in with the others,</span>
+		<</if>>
+		slowly working <span class="blue">towards the display room</span>. <span class="red">And Remy sees.</span>
+	<<else>>
+		but don't see anyone out of the ordinary.
+	<</if>>
+	Avery frowns.
+<</if>>
+<<person1>>
 <br><br>
 
 "I need to speak with Remy," Avery says while walking towards the lounge, arms linked. "You'll have to see to the other guests. Just smile and nod when they speak, laugh at their jokes, and make sure their glasses stay full."
 <br><br>
 
 You enter the lounge. Many guests are here, and several crowd around Remy. Avery breaks off from you, and approaches Remy with a smile.
+<<if $avery_party.fox_here>>
+	They begin to whisper about something.
+<</if>>
 <br><br>
 
 <<avery_mansion_party_guests_links>>
@@ -3627,7 +3693,13 @@ Some of the guests mutter jokes at the <<person>>'s expense. Avery turns back to
 You enter the display room. Guests peer at Avery's antiques. The servants are forbidden from entering, so you fetch a bottle of wine, and make sure everyone's glasses are topped up.
 <br><br>
 
-You spot a <<person4>><<person>> snatch a fossil from a display, and hide it in their clothes. <<He>> notices you watching <<him>>, and dons a guilty smile.
+<<if $avery_party.fox_here and $avery_party.stage is 1>>
+	<<set $avery_party.fox_theft to "seen">>
+	You spot <span class="blue"><<if $avery_mansion.fox.known>>the brown fox<<else>>someone suspicious<</if>> leave, heading towards the garden</span>. One of the displays is empty. You also spot a <<person4>><<person>>, emboldened by the theft,
+<<else>>
+	You spot a <<person4>><<person>>
+<</if>>
+snatch a fossil from a display, and hide it in <<his>> clothes. <<He>> notices you watching <<him>>, and dons a guilty smile.
 <br><br>
 
 <<if $historytrait gte 3>>
@@ -3659,6 +3731,12 @@ You ignore the <<person>>, and see to the other guests. It's Avery's problem.
 You keep an eye on the <<person>>. You're discreet, so that only <<he>> notices. <<He>> doesn't steal anything else.
 <br><br>
 
+<<He>> leaves the room.
+<<if $avery_party.fox_here and $avery_party.stage gte 2>>
+	<<set $avery_party.fox_theft to "suspected">>
+	Only then do you realise that <span class="red">one of the other displays is empty, too</span>. You wonder if <<he>> made off with something else before you got here.
+<</if>>
+
 <<avery_mansion_party_guests_links>>
 
 :: Mansion Party Remy Display Accuse
@@ -3676,6 +3754,10 @@ You keep an eye on the <<person>>. You're discreet, so that only <<he>> notices.
 <br><br>
 
 You keep an eye on <<him>> until <<he>> leaves the room.
+<<if $avery_party.fox_here and $avery_party.stage gte 2>>
+	<<set $avery_party.fox_theft to "suspected">>
+	Only then do you realise that <span class="red">one of the other displays is empty, too</span>. You wonder if <<he>> made off with something else before you got here.
+<</if>>
 <br><br>
 
 <<avery_mansion_party_guests_links>>
@@ -3684,6 +3766,10 @@ You keep an eye on <<him>> until <<he>> leaves the room.
 <<effects>><<set $outside to 1>>
 
 You enter the garden, where the guests stand in small groups, or walk alone, admiring the plants.
+<<if $avery_party.fox_here and $avery_party.stage is 2>>
+	<<set $avery_party.fox_suspicious to true>>
+	<span class="blue">You spot <<if $avery_mansion.fox.known>>the brown fox<<else>>someone suspicious<</if>> slipping into the shadows.</span>
+<</if>>
 <br><br>
 
 You move from group to group, making sure everyone is enjoying themselves. The guests seem eager to see you.
@@ -4049,16 +4135,162 @@ The <<person>> nods, then leaves the atrium.
 
 <<avery_mansion_party_guests_links>>
 
+:: Mansion Party Remy Brown Fox
+<<effects>><<clearsinglenpc 5>><<summon_brown_fox 6>><<person6>>
+You crouch into the shadows, where you last saw
+<<if $avery_mansion.fox.known>>
+	the brown fox.
+<<else>>
+	the suspicious guest.
+<</if>>
+<br><br>
+
+<<if $skulduggery gte 800>>
+	You quietly search around for any sign. You quickly realise that <span class="blue">there's a second pair of footsteps each time you move</span>.
+<<else>>
+	You quietly search around for any sign. After a few minutes of this, you hear a giggle from <span class="red">directly behind you</span>.
+<</if>>
+You turn around, and come face to face with 
+<<if $avery_mansion.fox.known>>
+	<<him>>.
+<<elseif $fake_artefact is "pc">>
+	a person in a brown fox mask. The same one you saw speaking to Landry at the pub.
+<<else>>
+	a person in a brown fox mask. It's almost identical to the one you wore at Remy's party out in the moor.
+<</if>>
+<br><br>
+
+"You caught me. Well done." <<He>> smiles.
+<<if !$avery_mansion.fox.known>>
+	It's a <<personsimple>>'s voice, soothing and gentle like birdsong as it whispers.
+<</if>>
+<<if $skulduggery gte 800>>
+	"Your hearing is sharp."
+<<else>>
+	"Although, in a way, I caught you first."
+<</if>>
+<<He>> stays low to the ground next to a hedge, and motions for you to do the same.
+<br><br>
+
+<<link [[Next|Mansion Party Remy Brown Fox Talk]]>><<set $avery_party.current_speech to "intro">><</link>>
+<br>
+
+:: Mansion Party Remy Brown Fox Talk
+<<effects>>
+
+<<if $avery_party.current_speech is "intro">>
+	<<His>> head tilts curiously as <<he>> looks you over. "Well? You must have hunted me down for a reason."
+<<elseif $avery_party.current_speech is "fox_known">>
+	<<set $avery_mansion.fox.known to true>>
+	"<span class="green">I'm the brown fox.</span> Because I jump over the lazy hounds. I already know you, though.
+	<span class="teal"><<overworld_nickname "cap">></span> to the layperson, or <span class="pink"><<underworld_nickname "cap">></span> to those underneath. It's hard not to know about someone so interesting."
+<<elseif $avery_party.current_speech is "fox_why">>
+	<<if $avery_mansion.landry lte 1>>
+		"To deliver a message. To you. A friend at the pub wants to see you."
+		<<if $avery_mansion.landry is 1 and !$avery_mansion.fox.known>>
+			<<He>> frowns. "<<nnpc_He "Landry">> sent a letter, but it must not have arrived."
+		<</if>>
+		<<He>> quickly looks around. "That's not all, though. I'm here to <span class="blue">help Avery</span>. If you want to know more, come by the pub."
+	<<else>>
+		"To search for the clutching bones. Big gatherings like this are the only time I can slip in. I didn't expect the High Elk <<nnpc_himself "Remy">> to be here, though. It's complicating things."
+	<</if>>
+<<elseif $avery_party.current_speech is "fox_warn">>
+	<<set $avery_mansion.fox.progress += 1>>
+	<<He>> nods. "I suspected as much. <<nnpc_Hes "Remy">> sharp." <<He>> pauses. "Thank you, though. Now I know for sure."
+<<elseif $avery_party.current_speech is "fox_demand">>
+	"Oh?" <<He>> smiles. "I'm afraid I don't know what you're talking about."
+<</if>>
+<br><br>
+
+<<if !$avery_party.speech_guest.includes("fox_known") and !$avery_mansion.fox.known>>
+	<<link [[Ask who <<he>> is|Mansion Party Remy Brown Fox Talk]]>><<avery_mansion_party_speech guest "fox_known">><</link>>
+	<br>
+<</if>>
+<<if !$avery_party.speech_guest.includes("fox_why")>>
+	<<link [[Ask why <<hes>> here|Mansion Party Remy Brown Fox Talk]]>><<avery_mansion_party_speech guest "fox_why">><</link>>
+	<br>
+<</if>>
+<<if !$avery_party.speech_guest.includes("fox_warn")>>
+	<<link [[Warn <<him>> that Remy knows <<hes>> here|Mansion Party Remy Brown Fox Talk]]>><<avery_mansion_party_speech guest "fox_warn">><</link>>
+	<br>
+<</if>>
+<<if !$avery_party.speech_guest.includes("fox_demand") and $avery_party.fox_theft>>
+	<<if $avery_party.fox_theft is "seen">>
+		<<link [[Demand <<he>> return whatever <<he>> stole from the displays|Mansion Party Remy Brown Fox Talk]]>><<avery_mansion_party_speech guest "fox_demand">><</link>>
+	<<else>>
+		<<link [[Ask if <<he>> was the one who stole from the displays|Mansion Party Remy Brown Fox Talk]]>><<avery_mansion_party_speech guest "fox_demand">><</link>>
+	<</if>>
+	<br>
+<</if>>
+<<if !$avery_party.speech_guest.includes("fox_dungeon") and $avery_mansion.jobs.includes("dungeon") and $fake_stones and $avery_mansion.fox.known>>
+	<<link [[Tell <<him>> about the dungeon|Mansion Party Remy Brown Fox Caught]]>><<set $phase to 2>><<set $avery_mansion.fox.dungeon to true>><<set $avery_mansion.fox.progress += 3>><</link>>
+	<br>
+<</if>>
+<<if !$avery_party.speech_guest.includes("fox_warn") and $avery_mansion.fox.known>>
+	<<link [[Scream and blow <<his>> cover|Mansion Party Remy Brown Fox Caught]]>><<set $phase to 1>><<set $avery_mansion.fox.cover_blown_wounded to true>><<set $avery_mansion.fox.progress -= 5>><<set $avery_mansion.fox.unlocked to true>><</link>>
+	<br>
+<</if>>
+<br>
+
+<<if $avery_mansion.fox.known>>
+	<<link [[Wish <<him>> luck and return to the party|Mansion Party Remy Brown Fox Caught]]>><<set $phase to 0>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Party Remy Brown Fox Caught
+<<effects>>
+<<if $phase is 1>>
+	You scream. <<He>> puts a hand over your mouth, but it's too late. <<He>> glares at you, teeth clenched. "Why? Are you already so married to the Elks?"
+	<br><br>
+
+	<<He>> looks around quickly. "Or are you simply brainwashed? No matter. If you ever get sick of being a puppet, <span class="blue">find us at the pub-</span>"
+<<elseif $phase is 2>>
+	<<He>> listens intently to your explanation. "This is a great lead. Well done. If we can just sneak down there-"
+<<else>>
+	You start to stand, but <<he>> pulls you back down to the ground and puts a hand over your mouth. You struggle briefly.
+<</if>>
+<br><br>
+
+You hear footsteps approaching. "I knew I smelled a rat." <span class="red">It's Remy.</span> The footsteps get closer. <<person2>><<He>> breathes in heavily. "The stench of a piss-stained coward. Come out. Now."
+<br><br>
+
+The brown fox holds you down. <<person6>><<He>> looks in the direction of Remy's voice, then back to you. <<He>> seems to come to a decision, takes a deep breath, and closes <<his>> eyes. <<He>> mouths two words to you.
+<br><br>
+
+'Stay down.'
+<br><br>
+
+<<He>> releases you, and jumps out of the shrubbery. "I've won this game hundreds of times, little fox. You're not getting away." Remy gives chase. You don't dare expose yourself.
+<br><br>
+
+You lay still, until you faintly hear <span class="red">someone cry out in pain</span> in the distance. <<stress 12>><<ggstress>>
+<br><br>
+
+You continue to lay still for a time, your heart pounding. Finally, you stand up. There's no sign of either of them.
+<br><br>
+
+<<avery_mansion_party_guests_links>>
+
+
 :: Mansion Party Remy 2
 <<effects>><<set $outside to 0>>
-
-You arrive at the dining room at the same time as Remy. <<person2>><<His>> eyes meet yours. There's a small queue while servants show guests their seats. You have a few moments.
+<<person2>>
+You arrive at the dining room at the same time as Remy.
+<<if $avery_party.fox_here and $avery_mansion.fox.known>>
+	<<set $avery_mansion.fox.wounded to Time.date.timeStamp>><<avery_mansion_party_mood guest -1>>
+	<<He>> adjusts <<his>> jacket, <span class="red">and you catch the briefest glimpse of a freshly blood-stained bandage underneath.</span>
+<</if>>
+<<His>> eyes meet yours. There's a small queue while servants show guests their seats. You have a few moments.
 <br><br>
 
 <<if $remySeen.includes("livestock") or $debug>>
 	Your thoughts turn to <<nnpc_his "Remy">> farm.
 	<br><br>
 	<<link [[Accuse|Mansion Party Remy Accuse]]>><<avery_mansion_party_speech guest "accuse">><<avery_mansion_party_mood guest -1>><</link>>
+	<br>
+<</if>>
+<<if $avery_party.fox_here and $avery_mansion.fox.wounded>>
+	<<link [[Ask if <<hes>> alright|Mansion Party Remy Intruder]]>><</link>>
 	<br>
 <</if>>
 <<link [[Be polite|Mansion Party Remy Polite]]>><<avery_mansion_party_mood guest 1>><</link>>
@@ -4090,6 +4322,32 @@ You arrive at the dining room at the same time as Remy. <<person2>><<His>> eyes 
 You soon arrive at the head of the queue. A guest directs Remy towards one end of the table, and you to the other.
 <br><br>
 
+<<link [[Next|Mansion Party Remy 3]]>><</link>>
+<br>
+
+:: Mansion Party Remy Intruder
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I saw that bandage," you say. "Are you hurt?"
+<<elseif $speech_attitude is "bratty">>
+	"That looked bad," you say. "What happened?"
+<<else>>
+	"You were bleeding. What happened?"
+<</if>>
+<br><br>
+
+<<if $avery_party.speech_guest.includes("drink_3")>>
+	Remy wrinkles <<person2>><<his>> nose and eyes you with suspicion. "I know it's a party," <<he>> says. "But you've had too much to drink. Mind your own business."
+	<<avery_mansion_party_mood guest -1>>
+<<else>>
+	Remy smiles. "A pest snuck in. I handled it. I expected Avery's housepets to be able to handle such trifles, but I shouldn't be surprised."
+<</if>>
+<<He>> winces in pain as <<he>> adjusts <<his>> jacket again.
+<br><br>
+
+You soon arrive at the head of the queue. A guest directs Remy towards one end of the table, and you to the other.
+<br><br>
 
 <<link [[Next|Mansion Party Remy 3]]>><</link>>
 <br>
@@ -4466,7 +4724,7 @@ Avery wears a satisfied smile as <<he>> examines <<his>> phone. "We did fine wor
 <<effects>>
 
 You give Avery a half-hearted push while moving away from <<him>>. This emboldens <<him>>, and <<he>> grabs you again with more force.
-<br><bR>
+<br><br>
 
 <<link [[Accept|Mansion Party Remy Sex]]>><<set $sexstart to 1>><</link>><<promiscuous1>>
 <br>
