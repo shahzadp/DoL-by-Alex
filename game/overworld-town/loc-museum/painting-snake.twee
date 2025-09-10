@@ -746,6 +746,9 @@ A long stone staircase connects it to the temple's dungeon.
 <<if $stress gte $stressmax>>
 	<<hopelessCyclePassout>>
 <<elseif !hcItemLitTorch() and !_torchInSconce>>
+	<<if !$hc.disposalDarkCount>>
+		<<set $hc.disposalDarkCount to 0>>
+	<</if>>
 	<span class="red">It's pitch black. You can't see where you're going!</span>
 	<br><br>
 
@@ -794,7 +797,11 @@ A long stone staircase connects it to the temple's dungeon.
 		<</if>>
 	<</addinlineevent>>
 
-	<<if !$hcChallenge.forestNoShortcut or $hc.shortcutCount gte 1>>
+	<<if $hc.disposalDarkCount gte 3 or !$hcChallenge.forestNoShortcut or $hc.shortcutCount gte 1>>
+		<<if $hc.disposalDarkCount gte 3 and !$hc.forestPassage>>
+			<<set _forcedPassage to true>>
+			<<cleareventpool>>
+		<</if>>
 		<<addinlineevent "forest">>
 			Your hands press against something hard and cold. You push, and it clatters to the ground noisily. You see light further beyond.
 			<br><br>
@@ -805,7 +812,7 @@ A long stone staircase connects it to the temple's dungeon.
 			You emerge in the forest.
 			<br><br>
 
-			<<if $hc.shortcutCount isnot undefined>>
+			<<if $hc.shortcutCount isnot undefined and !_forcedPassage>>
 				<<set $hc.shortcutCount to 0>>
 				You feel a pair of eyes watching you, and hear a piercing screech of glass rubbing against glass. <span class="red">You no longer have permission to travel this path,</span> and must make another offering if you wish to pass.
 			<</if>>
@@ -816,6 +823,7 @@ A long stone staircase connects it to the temple's dungeon.
 	<</if>>
 
 	<<runeventpool>>
+	<<set $hc.disposalDarkCount++>>
 <<else>>
 	<<if !$hc.disposalState and $hc.disposals gte 5>>
 		<<set $hc.disposalState to 1>>
@@ -1406,7 +1414,7 @@ You sit with your brothers and sisters to eat your meal. It's hearty and flavour
 		<</addinlineevent>>
 	<</if>>
 	<<if $hc.chatter.includes("hc_disposal_hint") and !$hc.chatter.includes("hc_disposal_hint2")>>
-		<<addinlineevent "hc_disposal_hint2">>
+		<<addinlineevent "hc_disposal_hint2" 2>>
 			<<set $hc.chatter.pushUnique("hc_disposal_hint2")>>
 			"Have you ever been down in the disposal channel yourself?"
 			<br>
@@ -1415,6 +1423,18 @@ You sit with your brothers and sisters to eat your meal. It's hearty and flavour
 			"Be glad. Always feels like you're being watched down there. It's something about the dark, and the sound of the rushing water. Found myself staring often, feeling the strange urge to toss my torch into the waterway."
 			<br>
 			"Maybe you just have a guardian angel watching you."
+		<</addinlineevent>>
+	<</if>>
+	<<if $hc.chatter.includes("hc_disposal_hint2") and !$hc.chatter.includes("hc_disposal_hint3")>>
+		<<addinlineevent "hc_disposal_hint3">>
+			<<set $hc.chatter.pushUnique("hc_disposal_hint3")>>
+			"Have you ever gone to the disposal channel and just... snuffed all the torches? Let yourself be bathed in the darkness?"
+			<br>
+			"Yes. Once. Never again."
+			<br>
+			"Coward. I've peered into the darkness twice and nothing's happened. It's a nice place to gather my thoughts."
+			<br>
+			"I don't even need to report you to the priests, you'll end up stumbling into your own punishment. Third time's the charm."
 		<</addinlineevent>>
 	<</if>>
 	<<if !$hc.chatter.includes("hc_lake_hint")>>
@@ -1527,7 +1547,7 @@ When the prayers are finished, the Bishop's Hand steps forward and clears his th
 	"All who enter or leave the dungeon are to be sanctified before and after, to prevent contamination. All faithful within the dungeon are to leave before nightfall."
 <<elseif $hc.daysPassed is 2>>
 	"The laymen have begun to make their displeasure at our capture of the witch known. The night watch will be moved from interior to exterior patrols for the foreseeable future."
-<<elseif $hc.daysPassed is 5>>
+<<elseif $hc.daysPassed is 5 and !$hcChallenge.dogsEarly>>
 	"Representatives from House dogbotherer- apologies, House Romilly, will be taking residence with us for a number of days." Some members of the flock laugh.
 	<br><br>
 
@@ -2126,18 +2146,25 @@ You jump from the fire. The cool earth feels wonderful on your feet.
 		<span class="red">You'll need a torch to traverse it.</span>
 	<</if>>
 	<br>
-<<elseif between($hcForest, 15, 19) and !$hc.forestPassage and hcItemLitTorch()>>
-	<<set $hc.forestPassage to true>>
-	<br>
-	By the light of your torch, you spot the opening of a cave.
-	<span class="gold">It looks like it leads to the disposal channel.</span>
-	<br>
-	<<if $hcChallenge.forestNoShortcut and $hc.shortcutCount lt 1>>
-		<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 5>><</link>>
-	<<else>>
-		<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 20>><<set $hcForest to 0>><</link>>
+<<elseif between($hcForest, 15, 19) and !$hc.forestPassage>>
+	<<if hcItemLitTorch()>>
+		<<set $hc.forestPassage to true>>
+		<br>
+		By the light of your torch, you spot the opening of a cave.
+		<span class="gold">It looks like it leads to the disposal channel.</span>
+		<br>
+		<<if $hcChallenge.forestNoShortcut and $hc.shortcutCount lt 1>>
+			<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 5>><</link>>
+		<<else>>
+			<<sewericon>><<link [[Passage to disposal channel (0:20)|Hopeless Cycle Shortcut]]>><<pass 20>><<set $hcForest to 0>><</link>>
+		<</if>>
+		<br>
+	<<elseif !$hc.forestHint>>
+		<<set $hc.forestHint to true>>
+		You can make out the shape of something, but it leads into darkness.
+		<span class="blue">Maybe if you had a torch, you would be able to tell what it was.</span>
+		<br>
 	<</if>>
-	<br>
 <<elseif $hcForest lte 0>>
 	<<templeicon "garden">><<link [[Temple garden (0:10)|Hopeless Cycle Garden]]>><<pass 10>><<set $hcForest to 0>><</link>>
 	<br>
@@ -2927,6 +2954,10 @@ You sit on the cushion, and pray. The incense makes you feel light and dizzy. <<
 <<elseif $hc.handLocation is "prayerroom">>
 	The door to the prayer room swings open. The Bishop's Hand stands there. "Out," he commands.
 	<br><br>
+	<<if $prisonerEvents.includes("raped") and !$prisonerEvents.includes("rapedReported")>>
+		<<lockicon "unlock">><<link [[Tell the Hand that one of your brothers is tainted|Hopeless Cycle Prayer Report]]>><<set $prisonerEvents.pushUnique("rapedReported")>><</link>>
+		<br>
+	<</if>>
 <<else>>
 	<<templeicon "pray">><<link [[Meditate <<hcTimeTaskDisplay>>|Hopeless Cycle Prayer]]>><<stress -6>><<willpower 2>><<hcTimeTaskPass>><</link>><<lstress>><<gwillpower>>
 	<br><br>

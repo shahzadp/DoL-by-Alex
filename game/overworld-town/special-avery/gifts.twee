@@ -36,7 +36,7 @@ What would you like to serve <<him>>?
 	<<skinicon "give">><<link [[Serve (0:10)|Avery Gifts 3]]>><<pass 10>><<give_gift Avery>><</link>>
 	<br>
 <</if>>
-<<refuseicon>><<link [[Reconsider|Mansion Dining]]>><</link>>
+<<refuseicon>><<link [[Reconsider|Mansion Dining]]>><<endevent>><</link>>
 <br>
 
 :: Avery Gifts
@@ -377,7 +377,7 @@ You place the <<recipe_name $gift.name>> in front of Avery.
 <<else>>
 	"I don't know how to make that," you say.
 <</if>>
-<<set $avery_mansion.study_unlocked to 1>>
+<<set $avery_mansion.study_unlocked to 1>><<set $avery_mansion.recipe.pushUnique($phase)>>
 <br><br>
 Avery produces a key, and hands it to you. "There are recipe books in my study. I'm sure you'll find what you need."
 <br><br>
@@ -389,7 +389,7 @@ Avery finishes <<his>> meal, and rises to <<his>> feet.
 <br>
 
 :: Avery Gifts Ingredients
-<<effects>>
+<<effects>><<set $phase2 to 0>>
 
 <<if $speech_attitude is "meek" or $speech_attitude_avery>>
 	"I'm sorry I couldn't make <<recipe_name $avery_requested_food "article">> like you wanted," you say. "But the kitchen didn't have everything I needed."
@@ -444,31 +444,71 @@ clicks <<his>> tongue. "An aspiring chef should be able to acquire necessary ing
 	"Ungrateful, idiotic brat," <<he>> growls, squeezing your arm painfully. "If you're going to be so incompetent, could you at least not be forgetful to match?" <<He>> finally lets go, letting out a deep breath and striding off without a word.
 	<br><br>
 
-	<<link [[Next|Mansion Dining]]>><<endevent>><</link>>
+	<<link [[Next|Mansion Dining]]>><<endevent>><<set $phase2 to 0>><</link>>
 	<br>
 	<<exit>>
 <<elseif $plants[$phase].supermarket isnot undefined>>
 	<<money 5000>>
 	Avery chuckles. "Oh, <<recipe_name $phase>>? That should be within your abilities." <<He>> pulls out <<his>> wallet and tosses <<printmoney 5000>> onto the table. "<span class="gold">The supermarket in the High Street shopping centre stocks that.</span> The next time you need <<recipe_name $phase "plural">>, acquire it there."
 <<elseif setup.plants[$phase].ingredients.length>>
-	Avery raises an eyebrow. "<<recipe_name $phase "cap">>? Why buy that, when you could make it yourself?"
+	<<if $phase2 gte 1>>
+		Avery seems irritated. "<<recipe_name $phase "cap">> too? Something else you could just cook yourself."
+	<<else>>
+		Avery raises an eyebrow. "<<recipe_name $phase "cap">>? Why buy that, when you could make it yourself?"
+	<</if>>
 	<<if $plants[$phase].recipe>>
 		<<He>> gives you an unimpressed look.
 	<<else>>
-		<<set $avery_mansion.study_unlocked to 1>><<set $avery_mansion.recipe to $phase>>
+		<<set $avery_mansion.study_unlocked to 1>><<set $avery_mansion.recipe.pushUnique($phase)>>
 		Avery produces a key, and hands it to you. "There are recipe books in my study. I'm sure you'll find what you need."
 	<</if>>
-<<else>>
-	<<set $avery_mansion.kitchen_stock.requested.pushUnique($phase)>>
-	<<if $avery_mansion.kitchen_stock.requested.length gte 4>>
-		<<set _removed_ingredient to $avery_mansion.kitchen_stock.requested.shift()>>
+
+	<<for _i range setup.plants[$phase].ingredients>>
+		<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name)>>
+			<<set _missingIngredients to true>>
+		<</if>>
+	<</for>>
+	<<if _missingIngredients>>
+		<br><br>
+		<<for _i range setup.plants[$phase].ingredients>>
+			<<if !$avery_mansion.kitchen_stock.normal.includes(_i)>>
+				<<capture _i>>
+					<<tendingicon setup.plants[_i].icon>><<link [[Say you can't make <<recipe_name $phase>> either because you're missing <<recipe_name $plants[_i].name>>|Avery Gifts Ingredients 2]]>><<set $phase to $plants[_i].name>><<set $phase2++>><</link>>
+				<</capture>>
+				<br>
+			<</if>>
+		<</for>>
+		<<exit>>
 	<</if>>
-	Avery nods, as if expecting your words. "Very well. <span class="green">I'll start stocking <<recipe_name $phase "plural">> in the kitchen.</span>" <<He>> gestures at you with <<his>> fork. "So let's hope you can make what I ask for next time, yes?"
+<<else>>
+	<<if ["ghostshroom","wolfshroom"].includes($phase) or $phase is "wild_honeycomb" and ($beedisable is "t" or $bestialitydisable is "t")>>
+		Avery frowns. "I'm sorry,
+		<<if $phase is "wild_honeycomb">>
+			you want honeycomb? Fresh honeycomb?
+		<<else>>
+			what-shrooms?
+		<</if>>
+		<span class="purple">You're on your own for that.</span>."
+	<<else>>
+		<<set $avery_mansion.kitchen_stock.requested.pushUnique($phase)>>
+		<<if $avery_mansion.kitchen_stock.requested.length gte 4>>
+			<<set _removed_ingredient to $avery_mansion.kitchen_stock.requested.shift()>>
+		<</if>>
+		<<if $phase2 gte 1>>
+			Avery seems irritated, but nods.
+		<<else>>
+			Avery nods, as if expecting your words.
+		<</if>>
+		"Very well. <span class="green">I'll start stocking <<recipe_name $phase "plural">> in the kitchen.</span>" <<He>> gestures at you with <<his>> fork. "So let's hope you can make what I ask for next time, yes?"
+	<</if>>
+	<<if _removed_ingredient>>
+		<span class="purple">Avery's kitchen will no longer provide <<recipe_name _removed_ingredient>>.
+	<</if>>
 <</if>>
 <br><br>
 
 <<He>> finishes <<his>> meal, and rises to <<his>> feet.
 <br><br>
 
-<<link [[Next|Mansion Dining]]>><<endevent>><</link>>
+<<link [[Next|Mansion Dining]]>><<endevent>><<set $phase2 to 0>><</link>>
 <br>
