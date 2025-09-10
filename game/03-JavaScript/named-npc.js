@@ -230,3 +230,14 @@ function edenFreedomStatus() {
 	return -1; // Player not allowed to leave (hasn't asked for freedom/pre-stockholm/hasn't met Eden)
 }
 window.edenFreedomStatus = edenFreedomStatus;
+
+function averyMansionScore() {
+	if (C.npc.Avery.love < 50) return 0; // 50 love is hard requirement
+	let score = 0;
+	score += Math.floor(V.housekeeping / 20); // 1 point for every 20 housekeeping skill
+	score += C.npc.Avery.love - 50; // 1 point for every point of love above 50
+	score += Object.values(V.plants).filter(food => food.recipe).length * 2; // 2 points for each known recipe
+	if (Object.values(V.plants).some(food => food.knownFavorite?.includes("Avery"))) score += 50; // 50 points if has ever given Avery a favourite food
+	return score;
+}
+window.averyMansionScore = averyMansionScore;
