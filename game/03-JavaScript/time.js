@@ -1230,28 +1230,26 @@ function dailyNPCEffects() {
 				if (V.avery_mansion.party_state === "waiting") {
 					V.avery_mansion.party_state = "missed";
 					V.avery_mansion.party_missed_guest = V.avery_mansion.guest;
-				} else {
-					V.avery_mansion.party_state = "waiting";
+				}
 
-					if (V.avery_mansion.party_state === "first sunday skip") {
-						V.avery_mansion.guest = "Bailey";
-					} else if (V.avery_mansion.guest === "Bailey" && V.avery_mansion.party_state !== "skipped") {
-						V.avery_mansion.guest = "Quinn";
-					} else if (V.avery_mansion.guest === "Jordan") {
-						V.avery_mansion.guest = "Quinn";
-					} else if (V.avery_mansion.guest === "Quinn") {
-						V.avery_mansion.guest = "Remy";
-					} else if (V.avery_mansion.guest === "Remy") {
-						V.avery_mansion.guest = "Briar";
-					} else if (V.avery_mansion.guest === "Briar") {
-						V.avery_mansion.guest = "Harper";
-					} else if (V.avery_mansion.guest === "Harper") {
-						if (V.avery_mansion.jordan_intro) {
-							V.avery_mansion.guest = "Jordan";
-						} else {
-							V.avery_mansion.guest = "Quinn";
-						}
-					}
+				// We skipped/missed, if the party is finished properly we handle the next guest SOMEWHERE ELSE
+				if (V.avery_mansion.party_state !== "finished") {
+					// If Bailey is the guest we repeat Bailey, otherwise we rotate, skipping Jordan as appropriate
+					const rotation = {
+						Bailey: "Bailey",
+						Quinn: "Remy",
+						Remy: "Briar",
+						Briar: "Harper",
+						Harper: V.avery_mansion.jordan_intro ? "Jordan" : "Quinn",
+						Jordan: "Quinn",
+					};
+
+					V.avery_mansion.guest = rotation[V.avery_mansion.guest];
+				}
+
+				// If the state is still "missed" we don't reset the state. We still need to trigger Avery being angry we missed a party
+				if (V.avery_mansion.party_state !== "missed") {
+					V.avery_mansion.party_state = "waiting";
 				}
 			}
 
