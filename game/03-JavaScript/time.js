@@ -1088,7 +1088,6 @@ function noonCheck() {
 			V.avery_mansion.rage.work = true;
 		}
 		V.avery_mansion.sleep_interrupt = 0;
-		V.avery_mansion.party_done = false;
 	}
 }
 
@@ -1227,47 +1226,31 @@ function dailyNPCEffects() {
 		if (V.avery_mansion) {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
-			V.avery_party_skipped = false;
-			if (Time.weekDay === 3 && !V.avery_mansion.injury) {
-				if (V.avery_mansion.guest === "Bailey_skip") {
-					V.avery_mansion.guest = "Bailey";
-				} else if (V.avery_mansion.guest === "Bailey") {
-					V.avery_mansion.guest = "Bailey_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Bailey_done") {
-					if (V.avery_mansion.jordan_intro) {
-						V.avery_mansion.guest = "Jordan";
-					} else {
+			if (Time.weekDay === 2 && !V.avery_mansion.injury) {
+				if (V.avery_mansion.party_state === "waiting") {
+					V.avery_mansion.party_state = "missed";
+					V.avery_mansion.party_missed_guest = V.avery_mansion.guest;
+				} else {
+					V.avery_mansion.party_state = "waiting";
+
+					if (V.avery_mansion.party_state === "first sunday skip") {
+						V.avery_mansion.guest = "Bailey";
+					} else if (V.avery_mansion.guest === "Bailey" && V.avery_mansion.party_state !== "skipped") {
 						V.avery_mansion.guest = "Quinn";
-					}
-				} else if (V.avery_mansion.guest === "Jordan") {
-					V.avery_mansion.guest = "Jordan_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Jordan_done") {
-					V.avery_mansion.guest = "Quinn";
-				} else if (V.avery_mansion.guest === "Quinn") {
-					V.avery_mansion.guest = "Quinn_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Quinn_done") {
-					V.avery_mansion.guest = "Remy";
-				} else if (V.avery_mansion.guest === "Remy") {
-					V.avery_mansion.guest = "Remy_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Remy_done") {
-					V.avery_mansion.guest = "Briar";
-				} else if (V.avery_mansion.guest === "Briar") {
-					V.avery_mansion.guest = "Briar_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Briar_done") {
-					V.avery_mansion.guest = "Harper";
-				} else if (V.avery_mansion.guest === "Harper") {
-					V.avery_mansion.guest = "Harper_missed";
-					V.avery_mansion.rage.party_missed = true;
-				} else if (V.avery_mansion.guest === "Harper_done") {
-					if (V.avery_mansion.jordan_intro) {
-						V.avery_mansion.guest = "Jordan";
-					} else {
+					} else if (V.avery_mansion.guest === "Jordan") {
 						V.avery_mansion.guest = "Quinn";
+					} else if (V.avery_mansion.guest === "Quinn") {
+						V.avery_mansion.guest = "Remy";
+					} else if (V.avery_mansion.guest === "Remy") {
+						V.avery_mansion.guest = "Briar";
+					} else if (V.avery_mansion.guest === "Briar") {
+						V.avery_mansion.guest = "Harper";
+					} else if (V.avery_mansion.guest === "Harper") {
+						if (V.avery_mansion.jordan_intro) {
+							V.avery_mansion.guest = "Jordan";
+						} else {
+							V.avery_mansion.guest = "Quinn";
+						}
 					}
 				}
 			}

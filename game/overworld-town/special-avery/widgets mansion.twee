@@ -45,7 +45,6 @@
 
 	Avery rage work: <<print $avery_mansion.rage.work>><br>
 	Avery rage apologetic: <<print $avery_mansion.rage.apologetic>><br>
-	Avery rage party missed : <<print $avery_mansion.rage.party_missed>><br>
 	Avery rage dinner missed: <<print $avery_mansion.rage.dinner_missed>><br>
 	Avery rage dinner done: <<print $avery_mansion.rage.dinner_done>><br>
 	Avery rage dinner wrong: <<print $avery_mansion.rage.dinner_wrong>><br>
@@ -53,7 +52,7 @@
 	Rage assess: <<print $avery_mansion.rage.assess>><br>
 
 	Avery mansion date seen: <<print $avery_mansion.date_seen>><br>
-	Avery mansion party done: <<print $avery_mansion.party_done>><br>
+	Avery mansion party state: <<print $avery_mansion.party_state>><br>
 	Avery mansion landry: <<print $avery_mansion.landry>><br>
 	Avery mansion vault progress: <<print $avery_mansion.vault_progress>><br>
 	<<if $avery_tower>>
@@ -105,6 +104,8 @@
 
 <<widget "avery_mansion_init">>
 <<set $avery_mansion to {}>>
+<<set $avery_mansion.version to 1>>
+
 <<set $avery_mansion.pool to 0>>
 <<set $avery_mansion.kitchen to 0>>
 <<set $avery_mansion.lounge to 0>>
@@ -130,7 +131,6 @@
 <<set $avery_mansion.rage to {}>>
 <<set $avery_mansion.rage.work to false>>
 <<set $avery_mansion.rage.apologetic to false>>
-<<set $avery_mansion.rage.party_missed to false>>
 <<set $avery_mansion.rage.dinner_missed to 0>>
 <<set $avery_mansion.rage.dinner_done to 0>>
 <<set $avery_mansion.rage.dinner_wrong to false>>
@@ -143,7 +143,12 @@
 <<set $avery_mansion.fox.unlocked to false>>
 
 <<set $avery_mansion.date_seen to false>>
-<<set $avery_mansion.party_done to false>>
+<<if Time.weekDay is 1>>
+	<<set $avery_mansion.party_state to "first sunday skip">>
+<<else>>
+	<<set $avery_mansion.party_state to "waiting">>
+<</if>>
+<<set $avery_mansion.guest to "Bailey">>
 <<set $avery_mansion.landry to 0>>
 <<set $avery_mansion.vault_progress to 0>>
 
@@ -231,13 +236,17 @@
 <</widget>>
 
 <<widget "avery_mansion">>
+<<if $avery_mansion.party_state is "started">>
+	<<run throw new Error("avery_mansion_party_end was run when current guest was already marked as 'done'! Please report this error.")>>
+<</if>>
+
 <<if $avery_mansion.schedule is "away" and $avery_skyscraper_fire_time lte 0 and $avery_mansion.injury>>
 	<<set $avery_mansion.schedule to "return">>
 <<elseif $avery_mansion.schedule is "away" and $avery_mansion.away_timer lte 0 and !$avery_mansion.injury>>
 	<<set $avery_mansion.schedule to "return">>
 	<<set $avery_mansion.rage.apologetic to true>>
 	<<set $avery_mansion.rage.work to true>>
-<<elseif $avery_mansion.schedule is "away" and Time.weekday is 1 and Time.hour gte 18 and $avery_mansion.party_done is false and !$avery_mansion.injury>>
+<<elseif $avery_mansion.schedule is "away" and Time.weekday is 1 and Time.hour gte 18 and $avery_mansion.party_state is "waiting" and !$avery_mansion.injury>>
 	<<set $avery_mansion.schedule to "return">>
 	<<set $avery_mansion.rage.apologetic to true>>
 	<<set $avery_mansion.rage.work to true>>
@@ -254,9 +263,9 @@
 				<<set $avery_mansion.schedule to "work">>
 			<<elseif Time.hour lte 17 and $avery_mansion.rage.work is true>>
 				<<set $avery_mansion.schedule to "return">>
-			<<elseif Time.hour lte 17 and $avery_mansion.party_done is false and $avery_mansion.guest isnot "Bailey_skip">>
+			<<elseif Time.hour lte 17 and $avery_mansion.party_state is "waiting">>
 				<<set $avery_mansion.schedule to "party_prepare">>
-			<<elseif $avery_mansion.party_done is false and $avery_mansion.guest isnot "Bailey_skip" and !$avery_party_skipped>>
+			<<elseif $avery_mansion.party_state is "waiting">>
 				<<set $avery_mansion.schedule to "party">>
 			<<else>>
 				<<set $avery_mansion.schedule to "drink">>
@@ -885,68 +894,21 @@
 		<<if $avery_mansion.rage.assess gte random(1, 12)>>
 			<<He>> strides up to you.
 			<br><br>
+
 			<<if _args[0] is "work">>
 				"I work so fucking hard for you," <<he>> says. "And this is how you repay me." <span class="red"><<He>> grasps your arm.</span>
 			<<else>>
 				"Where the fuck have you been?" <<he>> asks. "Hiding from me, no doubt." <span class="red"><<He>> grasps your arm.</span>
 			<</if>>
-			<<if $avery_mansion.rage.party_missed>>
-				<<if $avery_mansion.guest is "Bailey_missed">>
-					<<set $avery_mansion.guest to "Bailey">>
-					"You missed the party. Imagine how humiliated I felt when the guests showed up, and you weren't here. Bailey walked out, didn't even fucking say anything. <<nnpc_He "Bailey">> agreed to return <span class="gold"><<this_sunday>>.</span> You better fucking be there.
-					<<avery_mansion_tower_negative_effects "Bailey">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<<elseif $avery_mansion.guest is "Jordan_missed">>
-					<<set $avery_mansion.guest to "Quinn">>
-					"You missed the party. I had to deal with those religious crazies alone. <span class="gold">The mayor will be here <<this_sunday>>.</span> Don't you dare leave me alone with <<nnpc_him Quinn>>
-					<<avery_mansion_tower_negative_effects "Jordan">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<<elseif $avery_mansion.guest is "Quinn_missed">>
-					<<set $avery_mansion.guest to "Remy">>
-					"You missed the party. That oaf of a mayor spent the whole evening cracking jokes, insinuating that you were out fucking someone. <span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Be there. Don't insult me again, or else."
-					<<avery_mansion_tower_negative_effects "Quinn">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<<elseif $avery_mansion.guest is "Remy_missed">>
-					<<set $avery_mansion.guest to "Briar">>
-					"You missed the party. I had to make humiliating excuses for you in front of some of the only people around worth knowing. <span class="gold">That local whoremonger, Briar, will be attending <<this_sunday>>.</span> More on your vulgar level, so be sure to show up."
-					<<avery_mansion_tower_negative_effects "Remy">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<<elseif $avery_mansion.guest is "Briar_missed">>
-					<<set $avery_mansion.guest to "Harper">>
-					"You missed the party. I had to handle that rodent Briar alone. <<nnpc_He Briar>> had the gall to try flirting with me. <span class="gold">Harper the Doctor will be attending <<this_sunday>>.</span>
-					Make sure you fucking show up."
-					<<avery_mansion_tower_negative_effects "Briar">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<<elseif $avery_mansion.guest is "Harper_missed">>
-					<<if $avery_mansion.jordan_intro>>
-						<<set $avery_mansion.guest to "Jordan">>
-					<<else>>
-						<<set $avery_mansion.guest to "Quinn">>
-					<</if>>
+			<br><br>
 
-					"You missed the party. The Doctor was expecting you, and was disappointed when you didn't show.
-					<<if $avery_mansion.jordan_intro>>
-						<span class="gold">Jordan will be attending <<this_sunday>>.</span> You better be there."
-					<<else>>
-						<span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't you dare leave me to deal with <<nnpc_him Quinn>> alone."
-					<</if>>
-					<<avery_mansion_tower_negative_effects "Harper">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br>
-				<</if>>
-				<<set $avery_mansion.rage.party_missed to false>>
-			<</if>>
-
+			<<avery_mansion_rage_party "revealed chase">>
 			<<avery_mansion_rage_housework>>
 			<<avery_mansion_chase_init>>
 
 			<span class="red"><<He>> wants to hurt you.</span>
 			<br><br>
+
 			<<link [[Apologise|Mansion Chase Apologise]]>><<trauma 6>><<npcincr Avery dom 5>><</link>><<gtrauma>><<ggdom>>
 			<br>
 			<<link [[Brace yourself|Mansion Chase Brace]]>><</link>>
@@ -956,59 +918,15 @@
 		<<else>>
 			<<He>> walks up to you. <<His>> smile is forced.
 			<br><br>
-			<<if _args[0] is "work">>
-				"Work was terrible," <<he>> says. "As usual.
-			<<else>>
-				"There you are," <<he>> says. "I've missed you.
-			<</if>>
-			<<if $avery_mansion.rage.party_missed>>
-				<<if $avery_mansion.guest is "Bailey_missed">>
-					<<set $avery_mansion.guest to "Bailey">>
-					You missed the party," <<he>> says. "Bailey was there. <<nnpc_He Bailey>> left when you didn't show, but agreed to return <span class="gold"><<this_sunday>>.</span> Don't humiliate me again."<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Jordan_missed">>
-					<<set $avery_mansion.guest to "Quinn">>
-					You missed the party," <<he>> says. "Jordan brought the usual entourage, and they were the usual headache. <span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't show me up."
-					<<avery_mansion_tower_negative_effects "Jordan">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Quinn_missed">>
-					<<set $avery_mansion.guest to "Remy">>
-					You missed the party," <<he>> says. "The mayor was a handful. Kept making jokes, insinuating that you were being unfaithful. <span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Don't put me in this position again.
-					<<avery_mansion_tower_negative_effects "Quinn">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Remy_missed">>
-					<<set $avery_mansion.guest to "Briar">>
-					You missed the party," <<he>> says. "I had to explain to Remy that you weren't attending. It wasn't pleasant. <span class="gold">The local business owner, Briar, will be attending <<this_sunday>>.</span> Don't make me look a fool. Be there.
-					<<avery_mansion_tower_negative_effects "Remy">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Briar_missed">>
-					<<set $avery_mansion.guest to "Harper">>
-					You missed the party," <<he>> says. "Briar asked about you personally. I made excuses, but I dislike being questioned by one so low. <span class="gold">The Doctor, Harper, will be attending <<this_sunday>>.</span> An important person, and I'd like to avoid being questioned about you yet again. Make sure you're here.
-					<<avery_mansion_tower_negative_effects "Briar">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Harper_missed">>
-					<<if $avery_mansion.jordan_intro>>
-						<<set $avery_mansion.guest to "Jordan">>
-					<<else>>
-						<<set $avery_mansion.guest to "Quinn">>
-					<</if>>
-					You missed the party," <<he>> says. "The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer.
-					<<if $avery_mansion.jordan_intro>>
-						<span class="gold">Jordan will be attending <<this_sunday>>.</span> Don't leave me alone with <<nnpc_his "Jordan">> ilk."
-					<<else>>
-						<span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't show me up again. Be there."
-					<</if>>
-					<<avery_mansion_tower_negative_effects "Harper">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<</if>>
 
-				<<set $avery_mansion.rage.party_missed to false>>
+			<<if _args[0] is "work">>
+				"Work was terrible," <<he>> says. "As usual."
+			<<else>>
+				"There you are," <<he>> says. "I've missed you."
 			<</if>>
+			<br><br>
+
+			<<avery_mansion_rage_party "revealed">>
 			<<avery_mansion_dom_events>>
 		<</if>>
 	<<else>>
@@ -1021,51 +939,7 @@
 			<</if>>
 			<br><br>
 
-			<<if $avery_mansion.guest is "Bailey_missed">>
-				<<set $avery_mansion.guest to "Bailey">>
-				"You fucking humiliated me on Sunday. All the guests arrived, and you were nowhere to be seen. Bailey walked out when <<he>> learned you weren't here. <<nnpc_He "Bailey">>'s agreed to return <span class="gold"><<this_sunday>>.</span> Don't show me up again."<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<<elseif $avery_mansion.guest is "Jordan_missed">>
-				<<set $avery_mansion.guest to "Quinn">>
-				"You missed the fucking party. Do you know how it felt to be left alone with those nutters? Jordan and company. <span class="gold">The mayor's coming <<this_sunday>>.</span> You'd better fucking show up."
-				<<avery_mansion_tower_negative_effects "Jordan">>
-				<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<<elseif $avery_mansion.guest is "Quinn_missed">>
-				<<set $avery_mansion.guest to "Remy">>
-				"There was a party, or did you forget? You missed it. The mayor spent the whole evening cracking jokes about you fucking people behind my back. I've never felt so humiliated. <span class="gold">Remy the farmer's coming <<this_sunday>>.</span> If you show me up again, you'll regret it.
-				<<avery_mansion_tower_negative_effects "Quinn">>
-				<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<<elseif $avery_mansion.guest is "Remy_missed">>
-				<<set $avery_mansion.guest to "Briar">>
-				"You missed the fucking party. Remy was expecting you. I had to make excuses. Everyone knew I was lying. <span class="gold">If you don't show up for that whoremonger, Briar, <<this_sunday>>,</span> you'll be sorry."
-				<<avery_mansion_tower_negative_effects "Remy">>
-				<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<<elseif $avery_mansion.guest is "Briar_missed">>
-				<<set $avery_mansion.guest to "Harper">>
-				"You missed the fucking party. I had to deal with low-class vermin like Briar on my own. I needed you so I could pretend to relate to them. <span class="gold">Harper, the Doctor, is coming <<this_sunday>>.</span> If you don't show, you'll be sorry."
-				<<avery_mansion_tower_negative_effects "Briar">>
-				<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<<elseif $avery_mansion.guest is "Harper_missed">>
-				<<if $avery_mansion.jordan_intro>>
-					<<set $avery_mansion.guest to "Jordan">>
-				<<else>>
-					<<set $avery_mansion.guest to "Quinn">>
-				<</if>>
-				"You missed the fucking party. The Doctor was expecting you. I had to make excuses, and do you know what I saw when Harper looked at me? Pity.
-				<<if $avery_mansion.jordan_intro>>
-					<span class="gold">Jordan's coming <<this_sunday>>.</span> Probably won't be alone. I'll need you there, and you'll show if you know what's good for you."
-				<<else>>
-					<span class="gold">The mayor's coming <<this_sunday>>.</span> Don't humiliate me again."
-				<</if>>
-				<<avery_mansion_tower_negative_effects "Harper">>
-				<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-				<br>
-			<</if>>
-
+			<<avery_mansion_rage_party "chase">>
 			<<avery_mansion_rage_housework>>
 			<<avery_mansion_chase_init>>
 
@@ -1079,55 +953,8 @@
 			<br>
 		<<else>>
 			"Long day," <<he>> says, managing a weak smile.
-			<<if $avery_mansion.rage.party_missed>>
-				<<if $avery_mansion.guest is "Bailey_missed">>
-					<<set $avery_mansion.guest to "Bailey">>
-					"I missed you on Sunday. I mean the party. We all did. Especially Bailey. <<nnpc_He "Bailey">> walked out when you didn't show, but has agreed to return <span class="gold"><<this_sunday>>.</span> Don't miss it again. You made me feel a fool."<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Jordan_missed">>
-					<<set $avery_mansion.guest to "Quinn">>
-					"I missed you on Sunday. I mean the party. Jordan wasn't alone, and they were a handful. <span class="gold">The mayor's coming <<this_sunday>>.</span> Try to be there. <<nnpc_He "Quinn">> can be a handful too."
-					<<avery_mansion_tower_negative_effects "Jordan">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Quinn_missed">>
-					<<set $avery_mansion.guest to "Remy">>
-					"I missed you on Sunday. I mean the party. The mayor asked about you. It would have been nice to show you off. <span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> A friend of mine. I hope you can make it."
-					<<avery_mansion_tower_negative_effects "Quinn">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Remy_missed">>
-					<<set $avery_mansion.guest to "Briar">>
-					"I missed you on Sunday. I mean the party. As much as I enjoy Remy's company, your absence put a damper on things. <span class="gold">A local businessperson, Briar, will be attending <<this_sunday>>.</span> Try to be there."
-					<<avery_mansion_tower_negative_effects "Remy">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Briar_missed">>
-					<<set $avery_mansion.guest to "Harper">>
-					"I missed you on Sunday. I mean the party. Briar is a bit uncouth for my tastes. <<nnpc_Hes "Briar">> a rough history, like you, and it would have been nice to have you around. <span class="gold">A local Doctor, Harper, will be attending next week.</span> <<nnpc_Hes "Harper">> very young for such a pillar of the community. Try to be there."
-					<<avery_mansion_tower_negative_effects "Briar">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<<elseif $avery_mansion.guest is "Harper_missed">>
-					<<if $avery_mansion.jordan_intro>>
-						<<set $avery_mansion.guest to "Jordan">>
-					<<else>>
-						<<set $avery_mansion.guest to "Quinn">>
-					<</if>>
-					"I missed you on Sunday. I mean the party. Doctor Harper asked after you. It was a shame you weren't there.
-					<<if $avery_mansion.jordan_intro>>
-						<span class="gold">Jordan will be attending next week.</span> There'll likely be a whole entourage. I'd prefer if I didn't have to deal with them alone."
-					<<else>>
-						<span class="gold">The mayor will be attending next week.</span> I know <<nnpc_he Quinn>>'ll likely ask after you too. Try to be there."
-					<</if>>
-					<<avery_mansion_tower_negative_effects "Harper">>
-					<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-					<br><br>
-				<</if>>
-
-				<<set $avery_mansion.rage.party_missed to false>>
-			<</if>>
-
+			
+			<<avery_mansion_rage_party "normal">>
 			<<avery_mansion_dom_events>>
 		<</if>>
 	<</if>>
@@ -2794,7 +2621,7 @@
 	<<set $avery_party.current_speech to "intro">>
 	<<set $avery_party.mood_guest to 0>>
 	<<set $avery_party.mood_avery to 0>>
-	<<set $avery_mansion.party_done to true>>
+	<<set $avery_mansion.party_state to "started">>
 	<<famesocial 15>>
 
 	/* The party intro scenes always involve Avery bringing the player to the atrium */
@@ -2803,11 +2630,12 @@
 
 <<widget "avery_mansion_party_end">>
 	<<unset $avery_party>>
-	<<if $avery_mansion.guest.includes("_done")>>
-		<<run throw new Error("avery_mansion_party_end was run when current guest was already marked as 'done'! Please report this error.")>>
-	<<else>>
-		<<set $avery_mansion.guest to $avery_mansion.guest + "_done">>
+	<<set $avery_mansion.party_state to "finished">>
+	<<if !$avery_mansion.party_guests_seen>>
+		<<set $avery_mansion.party_guests_seen to []>>
 	<</if>>
+
+	<<set $avery_mansion.party_guests_seen.pushUnique($avery_mansion.guest)>>
 <</widget>>
 
 <<widget "avery_mansion_party_speech">>
@@ -3317,10 +3145,8 @@
 					<br>
 					<<if $nextPassageCheck is "Mansion Talk">>
 						<span class="nextLink"><<socialiseicon>><<link [[Avery.|Mansion Talk]]>><</link>></span>
-					<<else>>
-						<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
+						<br>
 					<</if>>
-					<br>
 				<</if>>
 			<</if>>
 
@@ -3570,7 +3396,7 @@
 		<<set _avery_interrupt to "injury">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "return">>
 		<<set _avery_interrupt to "work">>
-	<<elseif $_avery_present is true and $avery_mansion.rage.party_missed is true>>
+	<<elseif $_avery_present is true and $avery_mansion.party_state is "missed">>
 		<<set _avery_interrupt to "party_missed">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "party_prepare" and !$avery_mansion.outfit_warning>>
 		<<set _avery_interrupt to "party_prepare">>
@@ -3981,4 +3807,163 @@
 	<<set $_slot to _args[0] || 1>>
 	<<set $_npc to V.NPCNameList[7]>>
 	<<npc $_npc $_slot>>
+<</widget>>
+
+<<widget "avery_mansion_rage_party">>
+	<<if $avery_mansion.party_state is "missed">>
+		<<set $avery_mansion.party_state to "waiting">>
+		<<set $_dialog_type to _args[0]>>
+		<<switch $_dialog_type>>
+			<<case "normal">>
+				"I missed you on Sunday. I mean the party.
+			<<case "chase">>
+				"You missed the fucking party. 
+			<<case "revealed">>
+				"You missed the party," <<he>> says.
+			<<case "revealed chase">>
+				"You missed the party.
+		<</switch>>
+		/* Reaction on the guest you missed (and scheduling Bailey again if the missed guest was Bailey) */
+		<<switch $avery_mansion.party_missed_guest>>
+			<<case "Bailey">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						We all did. Especially Bailey. <<nnpc_He "Bailey">> walked out when you didn't show, <span class="gold">but has agreed to return <<this_sunday>>.</span> Don't miss it again. You made me feel a fool."
+					<<case "chase">>
+						All the guests arrived, and you were nowhere to be seen. Bailey walked out when <<he>> learned you weren't here. <<nnpc_He "Bailey">>'s agreed to return <span class="gold"><<this_sunday>>.</span> Don't show me up again."
+					<<case "revealed">>
+						"Bailey was there. <<nnpc_He Bailey>> left when you didn't show, but agreed to return <span class="gold"><<this_sunday>>.</span> Don't humiliate me again."
+					<<case "revealed chase">>
+						Imagine how humiliated I felt when the guests showed up, and you weren't here. Bailey walked out, didn't even fucking say anything. <<nnpc_He "Bailey">> agreed to return <span class="gold"><<this_sunday>>.</span> You better fucking be there."
+				<</switch>>
+			<<case "Quinn">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						The mayor asked about you. It would have been nice to show you off.
+					<<case "chase">>
+						The mayor spent the whole evening cracking jokes about you fucking people behind my back. I've never felt so humiliated.
+					<<case "revealed">>
+						"The mayor was a handful. Kept making jokes, insinuating that you were being unfaithful.
+					<<case "revealed chase">>
+						That oaf of a mayor spent the whole evening cracking jokes, insinuating that you were out fucking someone.
+				<</switch>>
+			<<case "Remy">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						As much as I enjoy Remy's company, your absence put a damper on things.
+					<<case "chase">>
+						Remy was expecting you. I had to make excuses. Everyone knew I was lying.
+					<<case "revealed">>
+						"I had to explain to Remy that you weren't attending. It wasn't pleasant.
+					<<case "revealed chase">>
+						I had to make humiliating excuses for you in front of some of the only people around worth knowing.
+				<</switch>>
+			<<case "Briar">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						Briar is a bit uncouth for my tastes. <<nnpc_Hes "Briar">> a rough history, like you, and it would have been nice to have you around.
+					<<case "chase">>
+						I had to deal with low-class vermin like Briar on my own. I needed you so I could pretend to relate to them.
+					<<case "revealed">>
+						"Briar asked about you personally. I made excuses, but I dislike being questioned by one so low.
+					<<case "revealed chase">>
+						I had to handle that rodent Briar alone. <<nnpc_He Briar>> had the gall to try flirting with me.
+				<</switch>>
+			<<case "Harper">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						Doctor Harper asked after you. It was a shame you weren't there.
+					<<case "chase">>
+						The Doctor was expecting you. I had to make excuses, and do you know what I saw when Harper looked at me? Pity.
+					<<case "revealed">>
+						"The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer. 
+					<<case "revealed chase">>
+						The Doctor was expecting you, and was disappointed when you didn't show.
+				<</switch>>
+			<<case "Jordan">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						Jordan wasn't alone, and they were a handful.
+					<<case "chase">>
+						Do you know how it felt to be left alone with those nutters? Jordan and company.
+					<<case "revealed">>
+						"Jordan brought the usual entourage, and they were the usual headache.
+					<<case "revealed chase">>
+						I had to deal with those religious crazies alone.
+				<</switch>>
+		<</switch>>
+		/* Announcing next guest (if not bailey) */
+		<<switch $avery_mansion.guest>>
+			<<case "Quinn">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						<<if random(0,1)>>
+							<span class="gold">The mayor's coming <<this_sunday>>.</span> Try to be there. <<nnpc_He "Quinn">> can be a handful too."
+						<<else>>
+							<span class="gold">The mayor will be attending next week.</span> I know <<nnpc_he Quinn>>'ll likely ask after you too. Try to be there."
+						<</if>>
+					<<case "chase">>
+						<span class="gold">The mayor's coming <<this_sunday>>.
+						<<if random(0,1)>>
+							You'd better fucking show up."
+						<<else>>
+							Don't humiliate me again."
+						<</if>>
+					<<case "revealed">>
+						<span class="gold">The mayor will be attending <<this_sunday>>.</span> Don't show me up again. Be there."
+					<<case "revealed chase">>
+						<<if random(0,1)>>
+							<span class="gold">The mayor will be here <<this_sunday>>.</span> Don't you dare leave me alone with <<nnpc_him Quinn>>."
+						<<else>>
+							<span class="gold">The mayor will be attending <<this_sunday>>. Don't you dare leave me alone with <<nnpc_him Quinn>>."</span>
+						<</if>>
+				<</switch>>
+			<<case "Remy">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						<span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> A friend of mine. I hope you can make it."
+					<<case "chase">>
+						<span class="gold">Remy the farmer's coming <<this_sunday>>.</span> If you show me up again, you'll regret it."
+					<<case "revealed">>
+						<span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Don't put me in this position again."
+					<<case "revealed chase">>
+						<span class="gold">Remy the farmer will be attending <<this_sunday>>.</span> Be there. Don't insult me again, or else."
+				<</switch>>
+			<<case "Briar">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						<span class="gold">A local businessperson, Briar, will be attending <<this_sunday>>.</span> Try to be there."
+					<<case "chase">>
+		 				<span class="gold">If you don't show up for that whoremonger, Briar, <<this_sunday>>,</span> you'll be sorry."
+					<<case "revealed">>
+						<span class="gold">The local business owner, Briar, will be attending <<this_sunday>>.</span> Don't make me look a fool. Be there."
+					<<case "revealed chase">>
+						<span class="gold">That local whoremonger, Briar, will be attending <<this_sunday>>.</span> More on your vulgar level, so be sure to show up."
+				<</switch>>
+			<<case "Harper">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						<span class="gold">A local Doctor, Harper, will be attending next week.</span> <<nnpc_Hes "Harper">> very young for such a pillar of the community. Try to be there."
+					<<case "chase">>
+						<span class="gold">Harper, the Doctor, is coming <<this_sunday>>.</span> If you don't show, you'll be sorry."
+					<<case "revealed">>
+						<span class="gold">The Doctor, Harper, will be attending <<this_sunday>>.</span> An important person, and I'd like to avoid being questioned about you yet again. Make sure you're here."
+					<<case "revealed chase">>
+					<span class="gold">Harper the Doctor will be attending <<this_sunday>>.</span> Make sure you fucking show up."
+				<</switch>>
+			<<case "Jordan">>
+				<<switch $_dialog_type>>
+					<<case "normal">>
+						<span class="gold">Jordan will be attending next week.</span> There'll likely be a whole entourage. I'd prefer if I didn't have to deal with them alone."
+					<<case "chase">>
+						<span class="gold">Jordan's coming <<this_sunday>>.</span> Probably won't be alone. I'll need you there, and you'll show if you know what's good for you."
+					<<case "revealed">>
+						<span class="gold">Jordan will be attending <<this_sunday>>.</span> Don't leave me alone with <<nnpc_his "Jordan">> ilk."
+					<<case "revealed chase">>
+						<span class="gold">Jordan will be attending <<this_sunday>>.</span> You better be there."
+				<</switch>>
+		<</switch>>
+		<<avery_mansion_tower_negative_effects $avery_mansion.party_missed_guest>><<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
+		<br><br>
+	<</if>>
 <</widget>>
