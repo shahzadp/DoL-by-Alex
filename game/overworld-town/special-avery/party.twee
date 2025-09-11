@@ -1685,10 +1685,67 @@ You leave the $phase, and search the mansion. You spy the temple's people in the
 	<</if>>
 	<<link [[Run to Avery|Mansion Party Investigate Run]]>><</link>>
 	<br>
+	<<if $avery_mansion.fox.task is "Jordan" and !$avery_mansion.fox.task_complete and !$avery_fate>>
+		<<link [[Give them the brown fox's message|Mansion Party Investigate Message]]>><</link>>
+		<br>
+	<</if>>
 <<else>>
 	<<link [[Return to Avery|Mansion Party Investigate Avery]]>><</link>>
 	<br>
 <</if>>
+
+:: Mansion Party Investigate Message
+<<effects>>
+<<if $speech_attitude is "meek">>
+	"The brown fox would like your attention," you say.
+<<elseif $speech_attitude is "bratty">>
+	"The brown fox has something to say to you," you say.
+<<else>>
+	"The brown fox has a message for you," you say.
+<</if>>
+<<if $avery_mansion.fox.task_detail is "ascend">>
+	"<span class="gold">The tower will fall as fast as it rises. The weight of the world will drag down the opulent.</span>"
+<<else>>
+	"<span class="gold">The tower will dethrone heaven, unless the weight of faith binds it to the earth in shackles of brightest gold.</span>"
+<</if>>
+<br><br>
+
+They turn to each other. Neither says anything for a long moment. You feel as though they're having an entire conversation without you despite not speaking a single word.
+<br><br>
+
+Finally, they turn back to you.
+<br><br>
+
+"The apostate calls."
+<br>
+"The fox unburrows."
+<br>
+"To what end?"
+<br><br>
+
+You have no answer for them, but you think they already knew that. They bow to you.
+<br><br>
+
+<<if $avery_mansion.fox.task_detail is "ascend">>
+	"Falling."
+	<br>
+	"Fallen."
+	<br>
+	"Fall."
+<<else>>
+	"Shackles of gold."
+	<br>
+	"Sins foretold."
+	<br>
+	"To be so bold."
+<</if>>
+<br><br>
+
+They walk towards the garden.
+<<set $avery_mansion.fox.task_complete to "succeeded">>
+
+<<link [[Next|Mansion Party Investigate Avery]]>><</link>>
+<br>
 
 :: Mansion Party Investigate Accuse
 <<effects>>
@@ -2042,7 +2099,7 @@ The <<person6>><<monks_and_nuns>> take the other seats. Jordan sits at the foot 
 :: Mansion Party Jordan 5
 <<effects>>
 
-Jordan bows <<his>> head. Everyone follows suit, including Avery. Jordan begins to recite a prayer. It sounds like it will take a while.
+Jordan bows <<person2>><<his>> head. Everyone follows suit, including Avery. Jordan begins to recite a prayer. It sounds like it will take a while.
 <br><br>
 
 <<link [[Sneak some spoonfuls of soup|Mansion Party Jordan Sneak]]>><<pass 5>><<npcincr Avery love 1>><<purity -1>><</link>><<lpurity>><<glove>>
@@ -2155,6 +2212,7 @@ The initiates return the empty jugs and baskets to the kitchen, then arrange the
 <br><br>
 <<person2>>
 <<if $avery_party.speech_guest.includes("badly")>>
+	<<if $avery_mansion.fox.task_complete>><<set $avery_mansion.fox.task_complete to "failed">><</if>>
 	Jordan stares across the table at Avery. "I wanted to talk with you about your building project on Elk Street," <<he>> says. <<His>> voice is cold. "However, I've heard all I need to hear." The cowled figures on either side of <<person2>><<him>> frown in surprise.
 	<br><br>
 	Jordan takes a deep breath. "You are a despicable person, Avery. We condemn your works. May God help you find the peace you need." <<person2>><<He>> rises to <<his>> feet, and the <<person6>><<monks_and_nuns>> follow suit. They leave in single file.
@@ -2166,7 +2224,8 @@ The initiates return the empty jugs and baskets to the kitchen, then arrange the
 	<<link [[Next|Mansion Party Jordan End Bad]]>><<set $avery_tower.effects.pushUnique("temple")>><</link>>
 	<br>
 <<else>>
-	<<if $avery_party.speech_guest.includes("dungeon")>>
+	<<if $avery_party.speech_guest.includes("dungeon") or ($avery_mansion.fox.task_complete is "succeeded" and $avery_mansion.fox.task_detail is "descend")>>
+		<<if $avery_mansion.fox.task_complete and $avery_mansion.fox.task_detail is "ascend">><<set $avery_mansion.fox.task_complete to "failed">><</if>>
 		Jordan stares across the table at Avery. "I wanted to talk with you about your building project on Elk Street," <<he>> says. "The bishop and I have concerns about your intentions. You know the site you've chosen is on holy ground? Not to mention the height of the building. It violates scriptural law."
 		<br>
 		Avery fails to hide <<person1>><<his>> impatience. "I don't share your religion. I can't be expected to follow your rules."
@@ -2182,7 +2241,28 @@ The initiates return the empty jugs and baskets to the kitchen, then arrange the
 		<<link [[Next|Mansion Party Jordan End Bad]]>><<set $avery_tower.effects.pushUnique("temple")>><</link>>
 		<br>
 	<<else>>
-		<<if $avery_party.speech_avery.includes("caught_warned") or $avery_party.speech_avery.includes("eavesdrop_warned")>>
+		<<if $avery_mansion.fox.task is "Jordan" and $avery_mansion.fox.task_complete is "succeeded" and $avery_mansion.fox.task_detail is "ascend">>
+			Jordan stares across the table at Avery. "I wanted to talk with you about your building project on Elk Street," <<he>> says. "The bishop and I have concerns about your intentions. You know the site you've chosen is on holy ground? Not to mention the height of the building. It violates scriptural law."
+			<br>
+			Avery fails to hide <<person1>><<his>> impatience. "I don't share your religion. I can't be expected to follow your rules."
+			<br>
+			Jordan hesitates. The <<person3>><<priest>> beside <<person2>><<him>> leans close, and whispers in <<his>> ear. The <<person4>><<priest>> follows. <span class="blue">Jordan's eyes widen ever so slightly,</span> and <<person2>><<he>> nods.
+			<br>
+			"I believe salvation may still await you. We hope that a small donation from the order will encourage you to... rethink your motivations." <<person2>><<He>> rises to <<his>> feet, and the <<person6>><<monks_and_nuns>> follow suit.
+			<br><br>
+			"Beware, Avery. The weight of gold can only support itself for so long." Jordan bows, and they all leave in single file.
+			<br><br>
+			<<if $avery_tower.stage lte 2>>
+				<<if $avery_tower.effects.includes("temple")>>
+					<<set $avery_tower.effects.delete("temple")>>
+					<<set $avery_tower.progress += 4>>
+					<span class="gold"><<Monks_and_Nuns>> from the temple will no longer obstruct the construction of Avery's project, and have instead granted it a donation.</span>
+					<br><br>
+				<</if>>
+			<</if>>
+			<<link [[Next|Mansion Party Jordan End Very Good]]>><</link>>
+			<br>
+		<<elseif $avery_party.speech_avery.includes("caught_warned") or $avery_party.speech_avery.includes("eavesdrop_warned")>>
 			Jordan stares across the table at Avery. "I wanted to talk with you about your building project on Elk Street," <<he>> says. "The bishop and I have concerns about your intentions. You know the site you've chosen is on holy ground? Not to mention the height of the building. It violates scriptural law."
 			<br>
 			A flicker of a smile cross Avery's lips. "Is that why you were sneaking around my home? You're guests here. If you had wanted to see something, you could have asked."
@@ -2408,13 +2488,32 @@ You drop beneath the table, and move so fast that Avery jumps in surprise when y
 <br>
 
 
-
 :: Mansion Party Jordan End Good
 <<effects>>
 <<endevent>>
 <<npc "Avery">><<person1>>
 
 "That wasn't so bad," Avery says, running <<his>> fingers over the table in thought. "We'll have <span class="gold">Quinn</span> over next week."
+<br><br>
+
+<<He>> smiles, rises to <<his>> feet, and pushes you flat on the table. "As well as it went, keeping an eye on those temple miscreants takes a lot out of me." <<He>> eyes your body. "I deserve a reward."
+<br><br>
+
+<<link [[Lie still|Mansion Party Jordan End Still]]>><</link>>
+<br>
+<<if $promiscuity gte 15>>
+	<<link [["Pull " + $NPCList[0].pronouns.him + " closer"|Mansion Party Jordan End Pull]]>><<npcincr Avery love 1>><</link>><<glove>>
+	<br>
+<</if>>
+<<link [[Refuse|Mansion Party Jordan End Sex Refuse]]>><<npcincr Avery rage 1>><</link>><<garage>>
+<br>
+
+:: Mansion Party Jordan End Very Good
+<<effects>>
+<<endevent>>
+<<npc "Avery">><<person1>>
+
+Avery's jaw is practically on the floor. "A donation. From them."<<He>> runs <<his>> fingers over the table in thought. "There must be a catch. We'll have <span class="gold">Quinn</span> over next week."
 <br><br>
 
 <<He>> smiles, rises to <<his>> feet, and pushes you flat on the table. "As well as it went, keeping an eye on those temple miscreants takes a lot out of me." <<He>> eyes your body. "I deserve a reward."
@@ -4195,7 +4294,7 @@ You turn around, and come face to face with
 		"To search for the clutching bones. Big gatherings like this are the only time I can slip in. I didn't expect the High Elk <<nnpc_himself "Remy">> to be here, though. It's complicating things."
 	<</if>>
 <<elseif $avery_party.current_speech is "fox_warn">>
-	<<set $avery_mansion.fox.progress += 1>>
+	<<set $avery_mansion.fox.progress += 1>><<set $avery_mansion.fox.remy_warn to true>>
 	<<He>> nods. "I suspected as much. <<nnpc_Hes "Remy">> sharp." <<He>> pauses. "Thank you, though. Now I know for sure."
 <<elseif $avery_party.current_speech is "fox_demand">>
 	"Oh?" <<He>> smiles. "I'm afraid I don't know what you're talking about."
