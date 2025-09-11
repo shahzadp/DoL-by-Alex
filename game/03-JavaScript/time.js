@@ -955,8 +955,9 @@ function hourPassed(hours) {
 				V.avery_mansion.away_timer--;
 			}
 		}
-
-		V.home_gone++;
+		if (!V.avery_mansion || ["fallen", "kicked"].includes(V.avery_fate)) {
+			V.home_gone++;
+		}
 	}
 	calchairlengthstage();
 
