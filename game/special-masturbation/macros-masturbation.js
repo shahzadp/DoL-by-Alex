@@ -79,6 +79,7 @@ function masturbationEdenPush() {
 
 	return false;
 }
+window.masturbationEdenPush = masturbationEdenPush;
 
 function masturbationDetentionPaddle() {
 	if (V.orgasmdown >= 1) {
