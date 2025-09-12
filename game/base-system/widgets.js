@@ -629,7 +629,6 @@ DefineMacro("calculateallure", calculateallure);
 // check exposure, tags, and wetness
 function itemExposure(slot) {
 	const item = setup.clothes[slot][V.worn[slot].index];
-	if (item.type.includes("covered")) return 0;
 	// if you're looking to delete $overupperwetstage, $upperwetstage, $underupperwetstage, $overlowerwetstage, $lowerwetstage, or $underlowerwetstage - look here, too
 	if (item.type.includes("naked") || V[slot.replace("_", "") + "wetstage"] >= 3) return 2;
 	return item.exposed;
@@ -640,7 +639,6 @@ function exposure() {
 
 	V.exposed = 0;
 	V.exposedRaw = 0;
-	V.topless = 0;
 
 	// wraith cares not of your exposure
 	if (V.possessed) {
@@ -675,7 +673,11 @@ function exposure() {
 	*/
 	if (["over_upper", "upper"].every(slot => itemExposure(slot) >= 1)) {
 		const bra = setup.clothes.under_upper[V.worn.under_upper.index];
-		if ((bra.femininity && bra.femininity > 0) || bra.type.includes("fetish")) {
+		if (
+			((bra.femininity && bra.femininity > 0) || bra.type.includes("fetish")) &&
+			(!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2) &&
+			(!V.worn.under_upper.type.includes("covered") || itemExposure("under_upper") >= 1)
+		) {
 			V.exposed = 1;
 		}
 	}
@@ -683,21 +685,24 @@ function exposure() {
 	/*
 		chest unobscured by clothes. inapropriate at all times for girls, or when booba too big for boys
 	*/
-	if (["over_upper", "upper"].every(slot => itemExposure(slot) >= 2) && itemExposure("under_upper") >= 1) {
+	if (
+		["over_upper", "upper", "under_upper"].every(slot => itemExposure(slot) >= 1) &&
+		(!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2)
+	) {
 		if (V.player.gender_appearance !== "m" || V.player.perceived_breastsize > 3) V.exposed = 1;
 	}
 
 	/*
 		panties
 	*/
-	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 1)) {
+	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 1) && !V.worn.under_lower.type.includes("covered")) {
 		V.exposed = 1;
 	}
 
 	/*
 		genitals
 	*/
-	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 2) && itemExposure("under_lower") >= 1) {
+	if (["over_lower", "lower", "under_lower"].every(slot => itemExposure(slot) >= 1)) {
 		V.exposed = 2;
 	}
 
