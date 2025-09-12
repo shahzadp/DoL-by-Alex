@@ -1227,7 +1227,7 @@ function dailyNPCEffects() {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
 			if (Time.weekDay === 2 && !V.avery_mansion.injury) {
-				if (V.avery_mansion.party_state === "waiting") {
+				if (["waiting", "skipped"].includes(V.avery_mansion.party_state)) {
 					V.avery_mansion.party_state = "missed";
 					V.avery_mansion.party_missed_guest = V.avery_mansion.guest;
 				}
