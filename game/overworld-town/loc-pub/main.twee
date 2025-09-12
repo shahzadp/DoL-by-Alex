@@ -57,16 +57,34 @@
 		<<techicon "usb">><<link [[Offer USB from the farmland manor|Pub Farm USB]]>><<unset $farm_manors_usb>><</link>>
 		<br>
 	<</if>>
+
 	<<if $avery_mansion>>
-
-
-		<<if (!$avery_mansion.landry_told or $avery_mansion.landry_told is 1) and ($avery_fate is "fallen" or $avery_fate is "kicked" or $avery_fate is "saved")>>
-			<<ind>><<link [[Tell Landry about what happened in the skyscraper|Pub Avery Stones Tell 2]]>><<set $avery_mansion.landry_told to 2>><</link>>
-			<br>
-			<<ind>><<link [[Get angry with Landry about what happened in the skyscraper|Pub Avery Stones Angry]]>><<set $avery_mansion.landry_told to 2>><</link>>
-			<br>
+		<<if (!$avery_mansion.landry_told or $avery_mansion.landry_told is 1) and $avery_fate>>
+			<<if $avery_fate is "fallen" or $avery_fate is "kicked" or $avery_fate is "saved">>
+				<<socialiseicon>><<link [[Tell Landry about what happened in the skyscraper|Pub Avery Stones Tell 2]]>><<set $avery_mansion.landry_told to 2>><</link>>
+				<br>
+				<<socialiseicon "angry">><<link [[Get angry with Landry about what happened in the skyscraper|Pub Avery Stones Angry]]>><<set $avery_mansion.landry_told to 2>><</link>>
+				<br>
+			<<elseif $fake_artefact is "pc" and $avery_fate is "ascended">>
+				<<socialiseicon>><<link [[Tell Landry about what happened in the skyscraper|Pub Avery Stones Ascend]]>><<set $avery_mansion.landry_told to 2>><</link>>
+				<br>
+			<</if>>
 		<<elseif !$avery_mansion.landry_told and $fake_artefact is "Avery">>
-			<<ind>><<link [[Tell Landry you've replaced the stones|Pub Avery Stones Tell]]>><<set $avery_mansion.landry_told to 1>><</link>>
+			<<icon "bones.png">><<link [[Tell Landry you've replaced the stones|Pub Avery Stones Tell]]>><<set $avery_mansion.landry_told to 1>><</link>>
+			<br>
+		<</if>>
+		<<if $avery_mansion.fox.known and $avery_mansion.guest and !$avery_fate>>
+			<<icon "clothes/foxmask.png">>
+			<<if $daily.brownFox>>
+				<<link [[Ask for the brown fox (0:01)|Pub Brown Fox]]>><<pass 1>><</link>>
+			<<elseif $avery_mansion.fox.wounded>>
+				<<link [[Ask for the brown fox (0:20)|Pub Brown Fox]]>><<pass 20>><</link>>
+			<<else>>
+				<<link [[Ask for the brown fox (0:10)|Pub Brown Fox]]>><<pass 10>><</link>>
+			<</if>>
+			<br>
+		<<elseif $avery_mansion.fox.known and $avery_mansion.fox.progress gte 3 and !$avery_mansion.fox.end_landry and $avery_fate>>
+			<<icon "clothes/foxmask.png">><<link [[Ask for the brown fox|Pub Avery Stones Fox End]]>><</link>>
 			<br>
 		<</if>>
 		/*
@@ -80,6 +98,62 @@
 		<<ind>><<link [[Tell Landry you need a way to get back in Avery's good graces|Pub Avery Card]]>><</link>>
 		<br>
 	<</if>>
+	<br>
+<</widget>>
+
+<<widget "brownFoxOptions">>
+	<<if $avery_mansion.fox.progress gte 15>>
+		The brown fox smiles warmly. <span class="gold"><<He>> fully trusts you.</span>
+	<<elseif $avery_mansion.fox.progress gte 12 or $avery_mansion.fox.friend>>
+		The brown fox leans forward. <span class="green"><<Hes>> willing to take risks for you.</span>
+	<<elseif $avery_mansion.fox.progress gte 9>>
+		The brown fox sits back casually. <span class="teal"><<He>> trusts you.</span>
+	<<elseif $avery_mansion.fox.progress gte 6>>
+		The brown fox sits quietly. <span class="blue"><<Hes>> beginning to trust you.</span>
+	<<elseif $avery_mansion.fox.progress gte 3>>
+		The brown fox looks you up and down. <span class="purple"><<He>> still needs you to prove yourself.</span>
+	<<elseif $avery_mansion.fox.progress gte 0>>
+		The brown fox is on-guard and sharp. <span class="pink"><<He>> seems unsure of your loyalties.</span>
+	<<else>>
+		The brown fox crosses <<his>> arms as <<he>> regards you. <span class="red"><<He>> doest't trust you.</span>
+	<</if>>
+	<br><br>
+
+	/* ToDo: Avery - direct heist of the stones with the brown fox */
+	<<if !$avery_mansion.fox.stones and $avery_mansion.fox.task isnot "heist" and $avery_mansion.fox.progress gte 12 and !$avery_mansion.fox.wounded and false>>
+		<<set $avery_mansion.fox.task to "heist">>
+		"<span class="blue">I think it's time for us to make our move.</span> I'm healed up, and we have the information we need. The next time Avery's not in the way, I'll sneak in, and we'll find those bones at last."
+		<br><br>
+
+		<<He>> cups <<his>> hands to <<his>> mouth, and whistles six <span class="teal">faintly familiar</span> notes. "Whistle that in the garden when the way is clear, and I'll enter. The time is upon us."
+	<<elseif $avery_mansion.fox.stones and !$avery_mansion.fox.friend and $avery_mansion.fox.progress gte 12>>
+		<<set $avery_mansion.fox.friend to true>>
+		"You've done well by me." <<He>> stops to think for a moment. "When the day comes for the stones to be used..."
+		<br><br>
+
+		<<He>> looks away briefly. "I'll come sneak into the mansion after Avery leaves for the tower. We can share a drink over your victory. Promise." <<He>> smiles at you.
+		<br><br>
+	<</if>>
+
+	<<if !$avery_mansion.fox.task>>
+		<<link [["Tell <<him>> that " + $avery_mansion.guest + " will be the next guest of honour"|Pub Brown Fox Task]]>><</link>>
+		<br>
+	<<elseif $avery_mansion.fox.task_complete is "success" and $avery_mansion.fox.task isnot "heist">>
+		<<link [[Tell <<him>> you completed <<his>> task|Pub Brown Fox Task]]>><<set $phase to "success">><</link>>
+		<br>		
+	<<elseif $avery_mansion.fox.task isnot $avery_mansion.guest and $avery_mansion.fox.task isnot "heist" or $avery_mansion.fox.task_complete is "fail">>
+		<<link [[Tell <<him>> you weren't able to complete <<his>> task|Pub Brown Fox Task]]>><<set $phase to "fail">><</link>>
+		<br>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("dungeon") and !$avery_mansion.fox.dungeon and !$fake_artefact is "Avery">>
+		<<link [[Tell <<him>> about the dungeon|Pub Brown Fox Dungeon]]>><<set $avery_mansion.fox.dungeon to true>><<set $avery_mansion.fox.progress += 3>><</link>>
+		<br>
+	<</if>>
+	<<if $fake_artefact is "Avery" and !$avery_mansion.fox.stones>>
+		<<link [[Tell <<him>> that you found the stones yourself|Pub Brown Fox Stones]]>><<set $avery_mansion.fox.stones to true>><<set $avery_mansion.fox.progress += 3>><</link>>
+		<br>
+	<</if>>
+	<<getouticon>><<link [[Say goodbye|Pub]]>><<endevent>><</link>>
 	<br>
 <</widget>>
 
@@ -256,7 +330,7 @@ Deciding there's no chance of danger in public like this, you agree. <<He>> lead
 	<<landryoptions>>
 	<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
 	<br>
-<<elseif $fake_artefact is undefined and $skulduggery gte 600 and C.npc.Avery.init is 1 and !$avery_fate or ($avery_mansion and $avery_mansion.landry is 1)>>
+<<elseif $fake_artefact is undefined and $skulduggery gte 600 and C.npc.Avery.init is 1 and !$avery_fate or ($avery_mansion and $avery_mansion.landry is 1 and !$avery_fate)>>
 	<<npc Landry 1>><<person1>>
 	You ask the bartender for Landry, who nods and beckons you over to your usual table. Someone's sitting in your usual spot, hunched forwards and speaking in a hushed tone. They wear a dark green cloak with a hood.
 	<<if $transformationParts.fox.ears isnot "disabled" or $transformationParts.wolf.ears isnot "disabled" or $transformationParts.cat.ears isnot "disabled">>
@@ -267,6 +341,7 @@ Deciding there's no chance of danger in public like this, you agree. <<He>> lead
 	<br><br>
 	They suddenly stop.
 	<<if $avery_mansion?.fox?.known>>
+		<<set $daily.brownFox to true>>
 		Their head tilts in your direction. It's the brown fox. "Wonderful timing. I'll leave you two to discuss business." Landry tilts <<his>> head questioningly as the brown fox stands and strides past you, briefly placing a hand on your shoulder before leaving the pub.
 		<br><br>
 		Landry clears <<his>> throat. "Good to see you're already acquainted."
@@ -1013,20 +1088,35 @@ You shake your head. Landry nods with satisfaction, and takes the USB. "Somethin
 <<effects>>
 <<if $avery_mansion and $avery_mansion.landry is 1>>
 	<<set $avery_mansion.landry to 2>>
-	<<if $speech_attitude is "meek">>
-		"Someone bumped into me near Danube Street," you say. "They dropped a note, telling me to find a friend here. Is that you?"
-	<<elseif $speech_attitude is "bratty">>
-		"Someone gave me a note near Danube Street," you say. "Telling me to come here. You wouldn't happen to have anything to do with it, would you?"
+	<<if $avery_mansion.fox.known>>
+		<<if $speech_attitude is "meek">>
+			"That person you were just speaking with, I found them during one of Avery's parties," you say. "They spoke to me, telling me to find a friend here. Is that you?"
+		<<elseif $speech_attitude is "bratty">>
+			"That person you were just speaking with, I found them during one of Avery's parties," you say. "Telling me to come here. You wouldn't happen to have anything to do with it, would you?"
+		<<else>>
+			"That person you were just speaking with, I found them during one of Avery's parties," you say. "Someone sent them. That wouldn't happen to be you, would it?"
+		<</if>>
+		<br><br>
+
+		Landry smiles. "Avery? I hear you've a home with <<nnpc_him "Avery">> now. Moving up in the world." <<He>> leans forward. "Now that you mention it, <span class="gold">I have a proposition for you.</span>"
 	<<else>>
-		"Someone bumped into me near Danube Street," you say. "Someone sent them. That wouldn't happen to be you, would it?"
+		<<if $speech_attitude is "meek">>
+			"Someone bumped into me near Danube Street," you say. "They dropped a note, telling me to find a friend here. Is that you?"
+		<<elseif $speech_attitude is "bratty">>
+			"Someone gave me a note near Danube Street," you say. "Telling me to come here. You wouldn't happen to have anything to do with it, would you?"
+		<<else>>
+			"Someone bumped into me near Danube Street," you say. "Someone sent them. That wouldn't happen to be you, would it?"
+		<</if>>
+		<br><br>
+
+		Landry smiles. "Danube Street? I hear you've a home there now. Hooking up with Avery. Moving up in the world." <<He>> leans forward. "Now that you mention it, <span class="gold">I have a proposition for you.</span>"
 	<</if>>
 	<br><br>
 
-	Landry smiles. "Danube Street? I hear you've a home there now. Hooking up with Avery. Moving up in the world." <<He>> leans forward. "Now that you mention it, <span class="gold">I have a proposition for you.</span>"
-	<br><br>
-	<<He>> smiles. "Somewhere in that mansion is a vault." <<He>> leans closer. "It protects one thing only. This."
+	 <<He>> leans closer. "Somewhere in that mansion is a vault. It protects one thing only. This."
 	<br><br>
 <<else>>
+	<<set $avery_mansion.landry to 2>>
 	"I've a proposition for you." <<He>> smiles. "There's this local <<if C.npc.Avery.pronoun is "m">>businessman<<else>>businesswoman<</if>>, <span class="red">Avery,</span> that I've had my eye on for a while. So imagine my surprise when I heard <<nnpc_he Avery>>'d gained an interest in someone as sly as you."
 	<br><br>
 	"You know <<nnpc_he Avery>> has a very attractive mansion off Danube Street. Somewhere in that mansion is a vault." <<He>> leans closer. "It protects one thing only. This."
@@ -1165,6 +1255,204 @@ Landry smiles. "Excellent. Avery runs in esoteric circles. They've trusted <<nnp
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
 <br>
 
+:: Pub Brown Fox
+<<effects>><<summon_brown_fox 2>><<person2>>
+Landy pulls out a flip phone, manually dials a number, lets it ring three times, and hangs up. <<He>> points to a different table.
+<<if $daily.brownFox>>
+	Right on queue, the brown fox saunters back into the pub, beating you to the other table.
+<<elseif $avery_mansion.fox.wounded>>
+	"Twenty minutes."
+	<br><br>
+
+	You lounge around for twenty minutes at the other table. You never hear <<him>> enter, but the brown fox approaches your table and sits next to
+	<<if $avery_mansion.fox.friend>>
+		you,
+	<<else>>
+		Landry,
+	<</if>>
+	already disguised.
+<<else>>
+	"Ten minutes."
+	<br><br>
+
+	You lounge around for ten minutes at the other table. You never hear <<him>> enter, but the brown fox approaches your table and
+	<<if $avery_mansion.fox.friend>>
+		sits next to you,
+	<<else>>
+		sits opposite you,
+	<</if>>
+	already disguised.
+<</if>>
+<<set $daily.brownFox to true>>
+<br><br>
+
+<<if $avery_mansion.fox.wounded and Time.date.dayDifference(new DateTime($avery_mansion.fox.wounded)) lte -30>>
+	<<run delete $avery_mansion.fox.wounded>>
+	<span class="green">His stride is much more smooth, no longer strained.</span> <<He>> smiles at you. "I'm ready to get back into the thick of it, at last."
+	<br><br>
+<<elseif $avery_mansion.fox.wounded and !$avery_mansion.fox.wounded_talk>>
+	<<set $avery_mansion.wounded_talk to true>>
+	<<if $avery_mansion.fox.cover_blown_wounded>>
+		<<He>> doesn't look very happy to see you.
+		<br><br>
+	<<else>>
+		"Sorry for the delay. It's not as easy to move around since the High Elk stuck me."
+		<br><br>
+	<</if>>
+<</if>>
+
+"Alright, hit me."
+<br><br>
+
+<<brownFoxOptions>>
+
+:: Pub Brown Fox Task
+<<effects>>
+<<if $phase is "success">>
+	<<set $avery_mansion.fox.progress++>>
+	"I did what you asked. I hope it helps."
+	<br><br>
+
+	<<He>> smiles.
+	<<switch $avery_mansion.fox.task>>
+		<<case "Jordan">>"I trust those two will be able to handle what comes next."
+		<<case "Quinn">>"Thank you. It was important to Landry to get that sorted."<<set $avery_mansion.fox.progress++>>
+		<<case "Remy">>"Good work. <<if $avery_mansion.fox.task_detail is "ascend">>The High Elk will have a nasty surprise waiting for <<nnpc_him "Remy">> soon.<<else>>The High Elk bows <<nnpc_his "Remy">> antlers in shame.<</if>>"
+		<<case "Briar">>"Briar's already contacted me. I trust <<nnpc_he "Briar">> wasn't too much to handle?"
+		<<case "Harper">>"I hope their revenge was as sweet as the wolfbrew."
+	<</switch>>
+	<<set $avery_mansion.fox.task to false>>
+	<<set $avery_mansion.fox.task_complete to false>>
+	<<set $avery_mansion.fox.task_detail to false>>
+<<elseif $phase is "fail">>
+	"I wasn't able to do what you asked, I'm sorry."
+	<br><br>
+
+	<<He>> frowns. "We'll just have to move on and try again. There's no time to wallow."
+	<<set $avery_mansion.fox.task to false>>
+	<<set $avery_mansion.fox.task_complete to false>>
+	<<set $avery_mansion.fox.task_detail to false>>
+<<else>>
+	<<switch $avery_mansion.guest>>
+		<<case "Jordan">>
+			"The next guest of honor will be Jordan and a procession from the temple."
+			<br><br>
+
+			<<He>> puts a hand to <<his>> chin.
+			<<if $fake_artefact is "Avery">>
+				"We can't have them obstructing the site anymore. We need that tower done sooner rather than later. We might be able to use their zeal against them.
+			<<else>>
+				"It should be easy to keep the Cloister protesting, but we can do more.
+			<</if>>
+			If Jordan is going, the Bishop's Hands are likely to follow. Likely disguised. If you can, find them, and deliver them this message." <<He>> clears <<his>> throat.
+			<br><br>
+
+			<<if $fake_artefact is "Avery">>
+				"<span class="gold">The tower will fall as fast as it rises. The weight of the world will drag down the opulent.</span>"
+			<<else>>
+				"<span class="gold">The tower will dethrone heaven, unless the weight of faith binds it to the earth in shackles of brightest gold.</span>"
+			<</if>>
+			<br><br>
+
+			You stare at each other for a moment.
+			<br><br>
+
+			"No, I don't work with the temple," <<he>> says unprompted.
+		<<case "Quinn">>
+			"The next guest will be the mayor. It sounds important."
+			<br><br>
+
+			<<He>> perks up. "Perfect. Landry has someone on the inside, but they may have been compromised by personal attachment to Quinn."
+			<<He>> shivers. "How anyone could grow attached to that porkslab is beyond me, but that's not important. They'll be in hiding.
+			<span class="blue">You'll need to do something to get their attention first.</span> I loathe to ask this, but if you're very blunt with your intentions towards the mayor, you might get a reaction. You'll have to be sharp. No distractions."
+			<br><br>
+
+			<<He>> raises a hand. "When you see them, give them this hand signal."
+			<<if $fake_artefact is "Avery">>
+				<<He>> curves <<his>> hand upwards, before letting it fall in an arch.
+			<<else>>
+				<<He>> puts <<his>> thumb between each of <<his>> fingers in sequence, before flattening <<his>> hand and turning it.
+			<</if>>
+			"They just need a quick reminder of who they are, and who they're really working for."
+		<<case "Remy">>
+			"The next guest will be Remy, the farmer. From all the way out east."
+			<br><br>
+
+			<<if !$avery_mansion.fox.unlocked>>
+				<<He>> cups <<his>> hands together, and thinks for a long moment.
+				<br><br>
+
+				"The High Elk <<nnpc_himself "Remy">>." Another moment of silence. "<span class="blue">I'll be there.</span> I can't keep idling around here while they operate so boldly in the open."
+			<<else>>
+				<<He>> looks ashamed for a moment. "I was reckless last time. I won't make that mistake again."
+				<<if $fake_artefact is "Avery">>
+					"It's time to let the elks get overconfident. The High Elk will likely have a pair of retainers with <<nnpc_him "Remy">>. <span class="blue">Make sure they don't leave the party,</span> no matter what."
+				<<else>>
+					"It's time to let the elks get overconfident. The High Elk will likely have a pair of retainers with <<nnpc_him "Remy">>. <span class="blue">Make sure they leave the party early.</span> It should be easy to upset those snobbish types."
+				<</if>>
+			<</if>>
+		<<case "Briar">>
+			"The next guest will be Briar. Avery doesn't seem too happy about it."
+			<br><br>
+
+			<<if $fake_artefact is "Avery">>
+				<<He>> thinks for a moment. "Briar has many underworld contacts. We might be able to convince <<nnpc_him "Briar">> to 'donate' some of <<nnpc_his "Briar">> stolen goods back." <<He>> smiles.
+				"<span class="blue">Remind Briar that the most clever predators let their prey glut themselves first.</span>"
+			<<else>>
+				<<He>> thinks for a moment. "It'd be in our best interest to let Briar continue exactly as they are. But... maybe we can give <<nnpc_him "Briar">> a push to go even further." <<He>> smiles.
+				"<span class="blue">Stoke Briar's ego a little. Let Avery know just what <<nnpc_he "Avery">> thinks of <<nnpc_him "Briar">>,</span> then build <<nnpc_him "Briar">> back up.
+				Try to use subtle language, and talk like a criminal. Think you can pull that off?"
+				<br><br>
+
+				<<He>> looks over <<his>> shoulder at Landry, who gives a thumbs up. "Tell Briar to look for me <span class="gold">right under <<nnpc_his "Briar">> tail</span>. <<nnpc_He "Briar">>'ll know what it means."
+			<</if>>
+		<<case "Harper">>
+			"The next guest will be doctor Harper."
+			<br><br>
+
+			A look of pure disdain crosses the third of <<his>> face that you can see. "The Cannibal Fox. There's almost no way we can convince <<nnpc_him "Harper">> to cease support." <<His>> hands scratch at the table.
+			<br><br>
+
+			"I won't lie to you. This request is a personal one. I'm putting a lot of trust in you." <<He>> reaches under <<his>> cloak, and produces two phials. One is filled with a murky green substance, while the other is a vibrant red.
+			"The rabid fox will, as <<nnpc_he "Harper">> always does, make a meal out of <<nnpc_his "Harper">> kin. We're going to poison the meal. Whatever <<nnpc_he "Harper">> gives you, don't play along. Make sure whoever's in charge uses these."
+			<br><br>
+
+			<<He>> holds up the green phial. "This one is for the appetiser." <<He>> holds up the red in turn. "This is for the main course. One is a sedative and chemical marker, the other is concentrated wolfbrew.
+			There's nothing we can do to stop <<nnpc_him "Harper">>. But we can at least grant the victims revenge. You'll understand soon, unfortunately."
+	<</switch>>
+	<br><br>
+	<<set $avery_mansion.fox.task to $avery_mansion.guest>>
+	<<set $avery_mansion.fox.task_detail to $fake_artefact is "Avery" ? "ascend" : "descend">>
+	<span class="gold">The brown fox's request has been added to your journal.</span>
+<</if>>
+<br><br>
+
+<<set $phase to 0>>
+
+<<brownFoxOptions>>
+
+:: Pub Brown Fox Dungeon
+<<effects>>
+"I found the vault. It's in a dungeon, the entrance of which is hidden in Avery's study."
+<br><br>
+
+<<His>> green eyes widen behind <<his>> mask. "Perfect. We're that much closer, then."
+<br><br>
+
+<<brownFoxOptions>>
+
+:: Pub Brown Fox Stones
+<<effects>>
+"Take a look." You hold out the stones.
+<br><br>
+
+<<He>> stares down at them. After a moment, <<he>> grows a wide smile. "You've done a very good thing. Whatever comes next will be up to you.
+I can still help, though. With the right subterfuge, we can <span class="green">speed up the construction of the tower</span>, and get this whole ordeal over with sooner."
+<br><br>
+
+<<He>> looks down. "I've heard stories. I can't imagine it's been easy living with Avery. You'll have your pound of flesh soon." <<He>> covers <<his>> mouth. "I'm sorry, that was a terrible choice of words."
+
+<<brownFoxOptions>>
 
 /*
 :: Pub Avery Nod Note
@@ -1212,7 +1500,6 @@ You reach for the stones. A strength runs through your fingers as you touch them
 <<link [[Reconsider|Pub Avery Stones Reconsider]]>><</link>>
 <br>
 
-
 :: Pub Avery Stones Reconsider
 <<effects>>
 
@@ -1222,7 +1509,6 @@ You shake your head. Landry observes you, <<his>> face giving nothing away.
 <<landryoptions>>
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
 <br>
-
 
 :: Pub Avery Stones 2
 <<effects>>
@@ -1243,8 +1529,6 @@ Landry seals the wishing stones within a plastic bag. "I'll need help to analyse
 <<landryoptions>>
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
 <br>
-
-
 
 :: Pub Avery Fake Stones
 <<effects>>
@@ -1299,10 +1583,19 @@ You reach for the fake stones. Landry's smile falters as you touch them. "Be gen
 <</if>>
 <br><br>
 
-Landry smiles. "Very nice work. Now we just need to wait for Avery to finish that building of <<nnpc_his Avery>> on Elk Street. <<nnpc_He Avery>>'ll need the stones for the opening ceremony. When <<nnpc_he Avery>> can't produce them, <<nnpc_his Avery>> plans will blow up in <<nnpc_his Avery>> face."
+Landry smiles as <<he>> pulls out a flip phone and dials something into it. "Very nice work. Now we just need to wait for Avery to finish that building of <<nnpc_his Avery>> on Elk Street. <<nnpc_He Avery>>'ll need the stones for the opening ceremony. When <<nnpc_he Avery>> can't produce them, <<nnpc_his Avery>> plans will blow up in <<nnpc_his Avery>> face."
 <br><br>
 
-"Anything else?"
+<<He>> looks you over for a moment. "Would you mind showing the real ones to me?" You look around, and hold them out to Landry.
+<br><br>
+
+Landry just looks at the stones for a moment, transfixed as if in wonder. "To be honest," <<he>> says. "I didn't think you'd find them. I'll put in a good word for you." <<He>> smiles. "You've done a very good thing."
+<br><br>
+
+<<He>> reaches for the bones, but hesitates. "Those really are bones." <<He>> peers at them. "Let's hope they're from an animal, eh?" <<He>> reaches into <<his>> pocket, and produces a magnifying glass. <<His>> smile broadens. "There's a code etched into the bone. As I thought. Wish they had hidden it somewhere less gristly."
+<br><br>
+
+Landry hands the stones back to you. "The brown fox insisted that you should hold onto those when you find them. Speaking of, you should tell them yourself. I'd love to see the look on their face."
 <br><br>
 
 <<landryoptions>>
@@ -1321,9 +1614,10 @@ Landry smiles. "Very nice work. Now we just need to wait for Avery to finish tha
 		"Your bomb went off," you say. "Like you wanted."
 	<</if>>
 	<br><br>
-	"So I hear," Landry says. "Avery and those friends of <<nnpc_his Avery>> will think twice before stirring up more trouble. I'm under no illusions, though. The war is far from over, but this is the first significant blow we've struck."
+	"So I hear," Landry says. "Avery and those friends of <<nnpc_his Avery>> will think twice before stirring up more trouble. I'm under no illusions, though. The war is far from over, but this is the first significant blow we've struck. I'm sorry about the unforseen complications. You weren't meant to be that close when they went off."
 	<br><br>
 
+	<<He>> smiles. "You're a good kid. I don't think anyone else would have put their life on the line for someone like Avery. Not willingly, at least."
 <<else>>
 	<<if $speech_attitude is "meek">>
 		"Avery won't trouble you again," you say.
@@ -1334,9 +1628,12 @@ Landry smiles. "Very nice work. Now we just need to wait for Avery to finish tha
 	<</if>>
 	<br><br>
 
-	"So I heard. You've done a good thing," Landry says. "Sorry I left out some details. The less you knew, the safer you were. Those friends of <<nnpc_his Avery>> will be cowed, but I'm under no illusions. This war is far from over, but this is the first significant blow we've struck."
+	"So I heard. You've done a good thing," Landry says. "Sorry I left out some details. The less you knew, the safer you were. Those friends of <<nnpc_his Avery>> will be cowed, but I'm under no illusions. This war is far from over, but this is the first significant blow we've struck." 
 	<br><br>
+
+	<<He>> pauses, but continues. "I'm sorry about the unforseen complications. You weren't meant to be that close when they went off."
 <</if>>
+<br><br>
 
 <<link [["Ask who " + $NPCList[0].pronouns.he + " means by 'we'"|Pub Avery Stones Tell Ask]]>><</link>>
 <br>
@@ -1355,8 +1652,16 @@ Landry smiles. "Very nice work. Now we just need to wait for Avery to finish tha
 <</if>>
 <br><br>
 
-Landry throws up <<his>> hands in mock surrender. "I'm sorry," <<he>> says. "It wasn't my decision. Still, you were safer this way. Imagine if you knew the fake stones were a bomb. What you'd now be accessory to."
+Landry throws up <<his>> hands in mock surrender. "I'm sorry," <<he>> says. "It wasn't my decision. Still, you were safer this way. Imagine if you knew the fake stones were a bomb. What you'd now be accessory to. Besdies, you weren't meant to be that close when they went off."
 <br><br>
+
+<<if $avery_state is "saved">>
+	"You said this would save Avery. Bombs don't save people."
+	<br><br>
+
+	That prompts <<him>> to frown. "No. They don't."
+	<br><br>
+<</if>>
 
 <<link [[Threaten to tell the police|Pub Avery Stones Threaten]]>><</link>>
 <br>
@@ -1396,12 +1701,8 @@ A moment passes. "While you consider involving the authorities, is there anythin
 <</if>>
 <br><br>
 
-Landry gives you an embarrassed smile. "Did I say that? Your good work got my lips flapping. I'll say you've made some powerful people happy, and leave it at that."
+Landry gives you an embarrassed smile. "Did I say that? Your good work got my lips flapping. I'll say you've made some powerful people happy, and leave it at that. Now, is there anything else you have for me?"
 <br><br>
-
-"Now, is there anything else you have for me?"
-<br><br>
-
 
 <<landryoptions>>
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
@@ -1410,11 +1711,114 @@ Landry gives you an embarrassed smile. "Did I say that? Your good work got my li
 :: Pub Avery Stones Silent
 <<effects>>
 
-You remain silent. Landry looks unsure for a moment. "Cheer up. You've made some powerful people happy. That could be useful."
+You remain silent. Landry looks unsure for a moment. "Cheer up. You've made some powerful people happy. That could be useful. Now, is there anything else you have for me?"
 <br><br>
 
-"Now, is there anything else you have for me?"
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Ascend
+<<effects>>
+<<if $speech_attitude is "meek">>
+	"I didn't replace your stones."
+<<elseif $speech_attitude is "bratty">>
+	"I never replaced the stones."
+<<else>>
+	"I didn't replace the stones."
+<</if>>
+
+<<He>> frowns. "I know. Things just became a lot more difficult. This war is far from over, but we're on the back foot now. Avery's more powerful than ever, and has thrown <<nnpc_his "Avery">> lot in with very bad people. It's not looking good."
 <br><br>
+
+<<link [[Ask who <<he>> means by 'we'|Pub Avery Stones Ascend Ask]]>><</link>>
+<br>
+<<link [[Remain silent|Pub Avery Stones Silent]]>><</link>>
+<br>
+
+:: Pub Avery Stones Ascend Ask
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Who's 'we'?" you ask. "You and me? Leave me out of your war."
+<<elseif $speech_attitude is "bratty">>
+	"'We'?" you ask. "You talking about those friends of yours? I'm not fighting a war."
+<<else>>
+	"Who do you mean by 'we'?" you ask. "I never agreed to a war."
+<</if>>
+<br><br>
+
+Landry leans forward. "You're already involved, and you're dangerously close to being on the wrong side. Now, is there anything else you have for me?"
+<br><br>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
+
+:: Pub Avery Stones Fox End
+<<effects>><<summon_brown_fox 2>><<person2>>
+<<if $avery_mansion.fox.saved and !$avery_mansion.fox.end>>
+	<<if $speech_attitude is "meek">>
+		"What happened to our friend, the <<personsimple>> in the fox mask? I never saw <<him>> escape the fire."
+	<<elseif $speech_attitude is "bratty">>
+		"Where's your masked accomplice? I had something I wanted to say to <<him>>, but I never saw <<him>> escape."
+	<<else>>
+		"Where's your accomplice? The brown fox. I was at least hoping to say goodbye. Did <<he>> escape the fire?"
+	<</if>>
+<<else>>
+	<<if $speech_attitude is "meek">>
+		"What happened to your friend, the <<personsimple>> in the fox mask?"
+	<<elseif $speech_attitude is "bratty">>
+		"Where's your masked accomplice?"
+	<<else>>
+		"Where's your accomplice? The brown fox."
+	<</if>>
+<</if>>
+<br><br>
+
+<<person1>>
+<<if $avery_fate is "ascended">>
+	Landry's brow furrows. <<He>> seems to be in deep thought for a moment. <<His>> mouth opens, but <<he>> stops <<himself>>.
+	<br><br>
+
+	Finally, <<he>> looks to you with uncertainty.
+	<br><br>
+
+	<span class="red">"Who?"</span>
+<<elseif $avery_fate is "saved">>
+	<<He>> smiles. <<person2>> 
+	<<if $avery_mansion.fox.saved and !$avery_mansion.fox.end>>
+		"<<Hes>> alright, but <<hes>> gone off the grid.
+	<<else>>
+		"<<Hes>> gone off the grid.
+	<</if>>
+	You left quite the impression on <<him>>. Said you were very brave. <span class="green">I have a feeling that you two are going to be seeing a lot more of each other very soon.</span>"
+<<else>>
+	<<He>> smiles. <<person2>> 
+	<<if $avery_mansion.fox.saved and !$avery_mansion.fox.end>>
+		"<<Hes>> alright, but <<hes>> gone off the grid.
+	<<else>>
+		"<<Hes>> gone off the grid.
+	<</if>>
+	<<if $avery_mansion.fox.friend>>
+		You left quite the impression on <<him>>.
+		<<if !$avery_mansion.fox.end>>
+			<<if $avery_mansion_fire_time>>
+				If you want to say goodbye, <span class="blue">wait for the fire at Avery's mansion to burn out, and look around there at night.</span> <<Hes>> bound to skulk around the ruins looking for something or another.
+			<<else>>
+				If you want to say goodbye, <span class="blue">take a look around the ruins of the manor at night.</span> <<Hes>> bound to skulk around there, looking for something or another.
+			<</if>>
+			<span class="green">I have a feeling that you two are going to be seeing a lot more of each other very soon.</span>"
+		<<else>>
+			<<He>> was pretty torn up about you getting hurt, but <span class="green">I have a feeling that you two are going to be seeing a lot more of each other very soon.</span>"
+		<</if>>
+	<<else>>
+		Didn't say much, but seemed happy enough that the job was done. <span class="teal">Maybe you'll see each other again soon.</span>"
+	<</if>>
+<</if>>
+<br><br>
+
+<<endevent>><<npc Landry>><<person1>>
 
 <<landryoptions>>
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
