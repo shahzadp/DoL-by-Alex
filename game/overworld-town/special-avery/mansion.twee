@@ -1,54 +1,122 @@
 :: Mansion Enter
 <<set $location to "avery_mansion">><<set $bus to "garden">><<set $outside to 1>><<effects>><<avery_mansion>>
-
+<<avery_mansion_interrupt>>
 You walk up the hill towards Avery's mansion. The gates rattle open as you approach, allowing you entry.
 <br><br>
-<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.rage.work is true>>
-	<<set $avery_mansion.rage.work to false>>
-	<<npc "Avery">><<person1>>
 
-	Avery walks outside, <<his>> eyes locked on you.
+
+<<if _avery_interrupt>>
+	<<npc "Avery">><<person1>>
+<</if>>
+
+<<if _avery_interrupt is "injury">>
+	<<npc Avery>><<person1>>
+	You hear glass shattering in the garage. Someone is in there.
 	<br><br>
 
-	<<avery_housework_assess home>>
-<<elseif $avery_mansion.party_state is "missed">>
-	<<set $avery_mansion.party_state to "waiting">>
-	<<npc "Avery">><<person1>>
+	<<link [[Next|Mansion Return Broken Bed]]>><</link>>
+	<br>
 
-	Avery walks outside, <<his>> eyes locked on you.
+<<elseif _avery_interrupt is "work">>
+	<<npc Avery>><<person1>>
+
+	Avery walks outside, <<his>> eyes locked on yours.
 	<br><br>
 
-	"You missed the party," <<he>> says.
-	<<if $avery_mansion.guest is "Bailey">>
-		"Bailey wasn't impressed. <<nnpc_He "Bailey">> walked out when <<nnpc_he "Bailey">> learned, but agreed to return <span class="gold"><<this_sunday>>.</span> Don't miss it again."
-	<<elseif $avery_mansion.guest is "Quinn">>
-		<<if $avery_mansion.jordan_intro>>
-			"The temple people are a lot to handle, and I'd have felt better with you by my side. <span class="gold">The mayor has agreed to attend <<this_sunday>>'s party.</span> Try to be present."<<avery_mansion_tower_negative_effects "Jordan">>
+	<<link [[Next|Mansion Return Bed Work]]>><</link>>
+	<br>
+
+<<elseif _avery_interrupt is "party_missed">>
+	<<npc Avery>><<person1>>
+	Avery walks outside, <<his>> eyes locked on yours.
+	<br><br>
+	<<link [[Next|Mansion Return Bed Assess]]>><</link>>
+	<br>
+
+<<elseif _avery_interrupt is "date_ready">>
+	<<set $avery_mansion.date_ready to true>>
+	<<npc Avery>><<person1>>
+	Avery walks outside, and approaches you. It's Avery, wearing <<his>> best. "I'm ready when you are," <<he>> says. "For the date. I'll be waiting in the garage."
+	<br><br>
+
+	<<link [[Next|Mansion Garage]]>><<endevent>><</link>>
+	<br>
+
+<<elseif _avery_interrupt is "party_prepare">>
+	<<npc Avery>><<person1>>
+	Avery walks outside, <<his>> eyes locked on yours.
+	<br><br>
+	<<link [[Next|Mansion Return Bed Party Prepare]]>><</link>>
+	<br>
+
+<<elseif _avery_interrupt is "party">>
+	<<npc Avery>><<person1>>
+	Avery walks outside, <<his>> eyes locked on yours.
+	<br><br>
+
+	<<link [[Next|Mansion Return Bed Party]]>><</link>>
+	<br>
+
+<<elseif _avery_interrupt is "skyscraper_approach">>
+	<<set $avery_tower.stage to 3>>
+	<<npc Avery>><<person1>>
+	<<set $avery_tower.stage to 3>>
+	Avery walks outside, <<his>> eyes locked on yours.
+	<br><br>
+	"I've just had the call," Avery says. <<He>>'s smiling. <span class="gold">"My skyscraper is finished at last."</span>
+	<br><br>
+	<<skyscraper_time>>
+
+	<<if _skyscraper_time is "now">>
+		"The blood moon is high, and the time is nigh," <<he>> rhymes.
+		<<if $worn.upper.type.includes("formal") and $worn.lower.type.includes("formal")>>
+			<<He>> examines your outfit, and smiles. "Good," <<he>> says, linking <<his>> arm with yours. "Come. Remy and Harper will be meeting us here. We journey to the skyscraper together."
+			<br><br>
+			<<link [[Go with Avery|Mansion Skyscraper Formal]]>><</link>>
+			<br>
+			<<link [[Visit the wardrobe first|Mansion Skyscraper Dress]]>><<pass 5>><</link>>
+			<br>
 		<<else>>
-			"I had to deal with such verminous guests on my own. <span class="gold">The mayor will be visiting next week.</span> Don't humiliate me by not showing."<<avery_mansion_tower_negative_effects "Harper">>
+			<<He>> examines your outfit. "Remy and Harper will soon be here. We journey to the skyscraper together." <<He>> grasps your hand. "Come on. I'll dress you myself."
+			<br><br>
+			<<link [[Go with Avery (0:05)|Mansion Skyscraper Dress]]>><<pass 5>><</link>>
+			<br>
+			<<link [[Refuse|Mansion Skyscraper Dress Refuse]]>><</link>>
+			<br>
 		<</if>>
-	<<elseif $avery_mansion.guest is "Remy">>
-		"They wouldn't stop telling jokes about how you'd run off on me. They weren't funny, but of course everyone laughed. The sycophants. <span class="gold">Remy the farmer will be visiting <<this_sunday>>.</span> Don't disappoint me again."<<avery_mansion_tower_negative_effects "Quinn">>
-	<<elseif $avery_mansion.guest is "Briar">>
-		"You showed me up in front of some important people. Maybe you were shy? <span class="gold">The guest of honour <<this_sunday>> will be the whoremonger, Briar.</span> Perhaps <<nnpc_he Briar>>'ll be more on your level."<<avery_mansion_tower_negative_effects "Remy">>
-	<<elseif $avery_mansion.guest is "Harper">>
-		"I was relying on your presence. Briar had the gall to try flirting with me. <span class="gold">Harper the Doctor will be attending <<this_sunday>>.</span> Don't let <<nnpc_his "Harper">> work fool you. <<nnpc_Hes "Harper">> very respectable. Be there."<<avery_mansion_tower_negative_effects "Briar">>
-	<<elseif $avery_mansion.guest is "Jordan">>
-		"I had to deal with such verminous guests on my own. <span class="gold">The crazies from the temple will be visiting <<this_sunday>>.</span> Don't leave me to handle them alone."<<avery_mansion_tower_negative_effects "Harper">>
+	<<else>>
+		<<if _skyscraper_time is "tonight">>
+			<span class="gold">"The opening ceremony is tonight.</span> When the moon is blood red.
+		<<elseif _skyscraper_time is "tomorrow">>
+			<span class="gold">"The opening ceremony will be tomorrow.</span> When the moon is blood red.
+		<<else>>
+			<span class="gold">"The opening ceremony will be on the last day of the month.</span> When the moon is blood red.
+		<</if>>
+		They're inducting me into their circle, and it's vital you attend. There can be no ceremony without you."
+		<br><br>
+		Avery walks way, more animated than you've yet seen <<him>>. "Meet me here when the time comes. We'll arrive there in style."
+		<br><br>
+
+		<<link [[Next|Mansion Garden]]>><<endevent>><</link>>
+		<br>
 	<</if>>
-	<<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
-	<br><br>
-
-	<<link [[Next|Mansion Garden]]>><<endevent>><</link>>
-	<br>
-<<elseif $avery_mansion.schedule is "garden">>
+<<elseif _avery_interrupt is "skyscraper_ready">>
 	<<npc "Avery">><<person1>>
-	Avery works in the garden. <<He>> flashes you a smile.
-	<br><br>
-
-	<<endevent>>
-	<<link [[Next|Mansion Garden]]>><</link>>
-	<br>
+	<<if $worn.upper.type.includes("formal") and $worn.lower.type.includes("formal")>>
+		Avery examines your outfit, and smiles. "Good," <<he>> says, linking <<his>> arm with yours. "Come. Remy and Harper will be meeting us here. We journey to the skyscraper together."
+		<br><br>
+		<<link [[Go with Avery|Mansion Skyscraper Formal]]>><</link>>
+		<br>
+		<<link [[Visit the wardrobe first|Mansion Skyscraper Dress]]>><<pass 5>><</link>>
+		<br>
+	<<else>>
+		Avery examines your outfit. "The guests are arriving." <<He>> grasps your hand. "Come on. I'll dress you myself."
+		<br><br>
+		<<link [[Go with Avery (0:05)|Mansion Skyscraper Dress]]>><<pass 5>><</link>>
+		<br>
+		<<link [[Refuse|Mansion Skyscraper Dress Refuse]]>><</link>>
+		<br>
+	<</if>>
 <<else>>
 	<<link [[Next|Mansion Garden]]>><</link>>
 	<br>
@@ -2464,4 +2532,41 @@ May your triumphs and troubles shape you into diamond."
 <<else>>
 	<<link [[Next|Mansion Lounge]]>><<endevent>><</link>>
 <</if>>
+<br>
+
+
+
+:: Mansion Leave
+<<effects>>
+
+You peer through the mansion gates. Seeing no one around, you step outside, and hurry down the path along the side of the road. You stop whenever a car approaches the bend up ahead, and stay still behind one of the spruces.
+<br><br>
+
+<<if Time.dayState is "night">>
+	You see no other pedestrians, and make it to Danube Street unmolested.
+<<else>>
+	More than once, you're forced to take the side paths to hide from pedestrians, but you make it to Danube Street unmolested.
+<</if>>
+<br><br>
+
+<<if $daily.ex.mansion isnot 1>>
+	<<set $daily.ex.mansion to 1>>
+	<<if $exposed gte 2>>
+		<<if Time.dayState is "night">>
+			<<exhibitionism4>>
+		<<else>>
+			<<exhibitionism5>>
+		<</if>>
+	<<else>>
+		<<if Time.dayState is "night">>
+			<<exhibitionism2>>
+		<<else>>
+			<<exhibitionism3>>
+		<</if>>
+	<</if>>
+<<else>>
+	<br><br>
+<</if>>
+
+<<link [[Next|Danube Street]]>><</link>>
 <br>

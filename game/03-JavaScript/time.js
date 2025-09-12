@@ -1226,7 +1226,7 @@ function dailyNPCEffects() {
 		if (V.avery_mansion) {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
-			if (Time.weekDay === 2 && !V.avery_mansion.injury) {
+			if (Time.weekDay === 2 && !V.avery_injury) {
 				if (["waiting", "skipped"].includes(V.avery_mansion.party_state)) {
 					V.avery_mansion.party_state = "missed";
 					V.avery_mansion.party_missed_guest = V.avery_mansion.guest;
@@ -1671,6 +1671,7 @@ function yearlyEventChecks() {
 	if (Time.monthName === "November" && Time.monthDay >= 2) {
 		delete V.halloween_kylar;
 		delete V.halloween_kylar_proposed;
+		delete V.halloween_kylar_whitney;
 		delete V.halloween_lake;
 		delete V.halloweenWolves;
 	}
