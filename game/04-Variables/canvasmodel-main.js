@@ -522,7 +522,12 @@ Renderer.CanvasModels.main = {
 			//weather
 			"precipitation_back": "",
 			"precipitation_front": "",
-			"player_temp_effect": "",
+			"cold_breath": "",
+			"water_back": "",
+			"water_front": "",
+			"water_breath": "",
+			"fire_back": "",
+			"fire_front": "",
 			// misc
 			"tanningEnabled": true,
 			"genitals_chastity": false, // generated option
@@ -3784,12 +3789,18 @@ Renderer.CanvasModels.main = {
 			},
 			z: ZIndices.head + 2,
 		},
-		/***
-		 *    ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
-		 *    ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-		 *    ██  █  ██ █████   ███████    ██    ███████ █████   ██████
-		 *    ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-		 *     ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+		/**
+		 *     ██████  █████  ███    ██ ██    ██  █████  ███████
+		 *    ██      ██   ██ ████   ██ ██    ██ ██   ██ ██
+		 *    ██      ███████ ██ ██  ██ ██    ██ ███████ ███████
+		 *    ██      ██   ██ ██  ██ ██  ██  ██  ██   ██      ██
+		 *     ██████ ██   ██ ██   ████   ████   ██   ██ ███████
+		 *
+		 *    ███████ ███████ ███████ ███████  ██████ ████████ ███████
+		 *    ██      ██      ██      ██      ██         ██    ██
+		 *    █████   █████   █████   █████   ██         ██    ███████
+		 *    ██      ██      ██      ██      ██         ██         ██
+		 *    ███████ ██      ██      ███████  ██████    ██    ███████
 		 */
 		"precipitation_back": {
 			animationfn() {
@@ -3802,7 +3813,7 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/precipitation/${type}/${intensity}Back.png`
 			},
 			showfn(options) {
-				return !T.hideSidebarWeather && !!options.precipitation;
+				return !T.hideSidebarEffects && !!options.precipitation;
 			},
 			z: ZIndices.bg,
 		},
@@ -3817,11 +3828,11 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/precipitation/${type}/${intensity}Front.png`
 			},
 			showfn(options) {
-				return !T.hideSidebarWeather && !!options.precipitation;
+				return !T.hideSidebarEffects && !!options.precipitation && !T.modeloptions.fire;
 			},
 			z: ZIndices.precipitationFront,
 		},
-		"player_temp_effect": {
+		"cold_breath": {
 			animationfn() {
 				if (V.arousal >= 6000 || V.pain >= 40) return "coldBreathFast";
 				return "coldBreath";
@@ -3830,7 +3841,70 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/playerBreath.png`
 			},
 			showfn(options) {
-				return !!options.temperature;
+				return !T.hideSidebarEffects && !!options.temperature;
+			},
+			z: ZIndices.precipitationFront,
+		},
+		"water_back": {
+			animationfn() {
+				return "waterBack";
+			},
+			srcfn() {
+				return `img/misc/ambient/underwater/back.png`
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.water;
+			},
+			z: ZIndices.bg,
+		},
+		"water_front": {
+			animationfn() {
+				return "waterFront";
+			},
+			srcfn() {
+				return `img/misc/ambient/underwater/front.png`
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.water;
+			},
+			z: ZIndices.precipitationFront,
+		},
+		"water_breath": {
+			animationfn() {
+				if (V.arousal >= 6000 || V.pain >= 40) return "waterBreathFast";
+				return "waterBreath";
+			},
+			srcfn() {
+				return `img/misc/ambient/underwater/breath.png`
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.waterBreath;
+			},
+			z: ZIndices.precipitationFront,
+		},
+		"fire_back": {
+			animationfn() {
+				const intensity = V.farm_assault ? 2 : T.tempEffects?.fire || V.fire;
+				return `fireBack${intensity}`;
+			},
+			srcfn() {
+				const intensity = V.farm_assault ? 2 : T.tempEffects?.fire || V.fire;
+				return `img/misc/ambient/fire/back${intensity}.png`
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.fire;
+			},
+			z: ZIndices.bg,
+		},
+		"fire_front": {
+			animationfn() {
+				return "fireFront";
+			},
+			srcfn() {
+				return `img/misc/ambient/fire/front.png`
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.fire;
 			},
 			z: ZIndices.precipitationFront,
 		},
