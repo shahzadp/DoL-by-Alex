@@ -7,13 +7,13 @@
 		<span class="red">Both of your arms are bound</span>, so you are unable to take an assignment.
 		<br>
 	<<else>>
-		<<if !$averySeen?.includes("office") and C.npc.Avery.init is 1 and C.npc.Avery.state isnot "dismissed" and $dateCount.Avery is 0 and $managerLove gte 10>>
+		<<if !$averySeen?.includes("office") and C.npc.Avery.init is 1 and C.npc.Avery.state isnot "dismissed" and $dateCount.Avery is 0 and $managerLove gte 10 and !$avery_injury>>
 			<span class="gold">There is a sticky note attached to the assignment board by the desk. It says you should report to <<office_manager>> between <<ampm 08 00>> and <<ampm 10 00>> at your earliest convenience.</span>
 			<br><br>
 		<</if>>
 		<<assignmenticon>><<link [[Take assignment|Office Assignment Start]]>><</link>>
 		<br>
-		<<if $averySeen?.includes("office") and C.npc.Avery.state isnot "dismissed">>
+		<<if $averySeen?.includes("office") and C.npc.Avery.state isnot "dismissed" and !$avery_injury>>
 			<<icon "projectMaths.png">><<link [[Work as Avery's Personal Assistant|Avery Office Assistant]]>><</link>>
 			<br>
 		<</if>>
@@ -175,8 +175,21 @@ You don't feel quite comfortable telling <<office_manager>> about your problems.
 
 	<<endevent>>
 	<<if Time.hour gte 6 and Time.hour lte 21>>
-		<<assignmenticon>><<link [[Take assignment (1:00)|Office Assignment Start]]>><</link>>
-		<br>
+		<<if pcAreArmsBound("both")>>
+			<span class="red">Both of your arms are bound</span>, so you are unable to take an assignment.
+			<br>
+		<<else>>
+			<<if !$averySeen?.includes("office") and C.npc.Avery.init is 1 and C.npc.Avery.state isnot "dismissed" and $dateCount.Avery is 0 and $managerLove gte 10>>
+				<span class="gold">There is a sticky note attached to the assignment board by the desk. It says you should report to <<office_manager>> between <<ampm 08 00>> and <<ampm 10 00>> at your earliest convenience.</span>
+				<br><br>
+			<</if>>
+			<<assignmenticon>><<link [[Take assignment|Office Assignment Start]]>><</link>>
+			<br>
+			<<if $averySeen?.includes("office") and C.npc.Avery.state isnot "dismissed">>
+				<<icon "projectMaths.png">><<link [[Work as Avery's Personal Assistant|Avery Office Assistant]]>><</link>>
+				<br>
+			<</if>>
+		<</if>>
 		<<couchicon>><<link [[Continue break (0:10)|Office Agency Break]]>><<stress -3>><<tiredness -2>><<pass 10>><</link>><<ltiredness>><<lstress>>
 		<br>
 		<<officeicon>><<link [[$per_npc.manager.name + "'s office"|Office Agency Manager]]>><</link>>

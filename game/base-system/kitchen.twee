@@ -194,57 +194,59 @@
 <<widget "kitchenDisplayRecipeMake">>
 	<<set $_setupItem to setup.plants[$lastRecipeViewed]>>
 	<<set $_group to _recipeKeys.find((obj) => obj.key is $lastRecipeViewed).group>>
-	<<if $_setupItem?.ingredients.length>>
-		<<switch $_group>>
-			<<case "Restricted Ingredients">>
-				<span class="purple">Some required ingredients are banned in this kitchen.</span>
-			<<case "Missing Ingredients">>
-				<span class="purple">You do not have all the required ingredients.</span>
-			<<default>>
-				<<if $tiredness gte C.tiredness.max>>
-					<span class="purple">You're too tired to cook!</span>
-				<<elseif $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 1 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
-					Make:
-					<<set _hours to Math.floor($_setupItem.days / 60)>>
-					<<set _minutes to $_setupItem.days % 60>>
-					<<set _timeString to " (" + (_hours lt 10 ? "0": "") +_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")">>
-					<<link [["1" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 1>><</link>>
-					<<if $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 3 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
-						<<set _hours to Math.floor($_setupItem.days * 3 / 60)>>
-						<<set _minutes to ($_setupItem.days * 3) % 60>>
+	<div style="margin-top: 16px">
+		<<if $_setupItem?.ingredients.length>>
+			<<switch $_group>>
+				<<case "Restricted Ingredients">>
+					<span class="purple">Some required ingredients are banned in this kitchen.</span>
+				<<case "Missing Ingredients">>
+					<span class="purple">You do not have all the required ingredients.</span>
+				<<default>>
+					<<if $tiredness gte C.tiredness.max>>
+						<span class="purple">You're too tired to cook!</span>
+					<<elseif $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 1 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
+						Make:
+						<<set _hours to Math.floor($_setupItem.days / 60)>>
+						<<set _minutes to $_setupItem.days % 60>>
 						<<set _timeString to " (" + (_hours lt 10 ? "0": "") +_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")">>
+						<<link [["1" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 1>><</link>>
+						<<if $_setupItem.ingredients.every(ingredient => $plants[ingredientUsed(ingredient, $lastRecipeViewed)].amount gte 3 or _ingredientsSupplied?.includes(ingredientUsed(ingredient, $lastRecipeViewed)))>>
+							<<set _hours to Math.floor($_setupItem.days * 3 / 60)>>
+							<<set _minutes to ($_setupItem.days * 3) % 60>>
+							<<set _timeString to " (" + (_hours lt 10 ? "0": "") +_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")">>
 
-						/* Prevent passing too much time */
-						<<set _futureTime to new DateTime(Time.date.timeStamp)>>
-						<<set _futureTime to _futureTime.addHours(_hours)>>
-						<<set _futureTime to _futureTime.addMinutes(_minutes)>>
+							/* Prevent passing too much time */
+							<<set _futureTime to new DateTime(Time.date.timeStamp)>>
+							<<set _futureTime to _futureTime.addHours(_hours)>>
+							<<set _futureTime to _futureTime.addMinutes(_minutes)>>
 
-						<<if !_hourRestriction or _futureTime.hour lt _hourRestriction or _futureTime.minute lte 15>>
-							| <<link [["3" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 3>><</link>>
+							<<if !_hourRestriction or _futureTime.hour lt _hourRestriction or _futureTime.minute lte 15>>
+								| <<link [["3" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 3>><</link>>
+							<</if>>
 						<</if>>
+						<br>
+						<<if $_group is "Provided Ingredients">><span class="purple">This kitchen gives you access to an infinite supply of this item.</span><</if>>
+					<<elseif $_group is "Provided Ingredients">>
+						<span class="purple">You do not have the ingredients to make this item, but you have access to an infinite supply of it in this kitchen.</span>
+					<<else>>
+						<span class="purple">You are missing an ingredient, but may be able to use a substitute.</span>
 					<</if>>
-					<br>
-					<<if $_group is "Provided Ingredients">><span class="purple">This kitchen gives you access to an infinite supply of this item.</span><</if>>
-				<<elseif $_group is "Provided Ingredients">>
-					<span class="purple">You do not have the ingredients to make this item, but you have access to an infinite supply of it in this kitchen.</span>
-				<<else>>
-					<span class="purple">You are missing an ingredient, but may be able to use a substitute.</span>
-				<</if>>
-		<</switch>>
-	<<else>>
-		<<switch $_group>>
-			<<case "Provided">>
-				<span class="purple">This kitchen provides you with an infinite supply of this ingredient.</span>
-			<<case "Restricted Ingredients">>
-				<span class="purple">This ingredient is banned in this kitchen.</span>
-			<<case "Missing Ingredients">>
-				<<if $_setupItem.shop>>
-					<span class="purple">You need to find a means to buy or access these.</span>
-				<<else>>
-					<span class="purple">You need to find a means to access these.</span>
-				<</if>>
-		<</switch>>
-	<</if>>
+			<</switch>>
+		<<else>>
+			<<switch $_group>>
+				<<case "Provided">>
+					<span class="purple">This kitchen provides you with an infinite supply of this ingredient.</span>
+				<<case "Restricted Ingredients">>
+					<span class="purple">This ingredient is banned in this kitchen.</span>
+				<<case "Missing Ingredients">>
+					<<if $_setupItem.shop>>
+						<span class="purple">You need to find a means to buy or access these.</span>
+					<<else>>
+						<span class="purple">You need to find a means to access these.</span>
+					<</if>>
+			<</switch>>
+		<</if>>
+	</div>
 <</widget>>
 
 <<widget "requiredForRecipe">>
@@ -277,7 +279,6 @@
 				</div>
 			<</for>>
 		</div>
-		<hr>
 	<</if>>
 <</widget>>
 
@@ -336,15 +337,17 @@
 <<widget "knownFoodRecipes">>
 	<<if _args[0]>>
 		<<set _knownRecipes to []>>
+		<<set _possibleRecipes to 0>>
 		<<run Object.keys(setup.plants).forEach(item => {
 			if (setup.plants[item]?.ingredients.includes(_args[0])) {
+				_possibleRecipes++;
 				if ($plants[item].recipe) _knownRecipes.pushUnique(item);
 			}
 		})>>
 
 		<<if _knownRecipes.length>>
 			<hr>
-			Known Recipes:
+			Known Recipes (_knownRecipes.length / _possibleRecipes):
 			<br>
 			<<for $_recipe range _knownRecipes>>
 				<div class="recipe">
@@ -371,16 +374,17 @@
 					</div>
 				</div>
 			<</for>>
-		<<else>>
+		<<elseif _possibleRecipes isnot 0>>
+			<hr>
 			You don't know any recipes that use this item.
 		<</if>>
 		<<if setup.plants[_args[0]]?.type is "food" and Array.isArray($plants[_args[0]].knownFavorite) and $plants[_args[0]].knownFavorite.length>>
+			<hr>
 			Known Favourite:
-			<ul>
 				<<for $_npc range $plants[_args[0]].knownFavorite>>
-					<li><<print $_npc>></li>
+					<br>
+					<<iconUi "sym_love.png">><<print $_npc>>
 				<</for>>
-			</ul>
 		<</if>>
 	<</if>>
 <</widget>>

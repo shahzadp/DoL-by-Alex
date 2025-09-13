@@ -240,13 +240,13 @@
 	<<run throw new Error("avery_mansion_party_end was run when current guest was already marked as 'done'! Please report this error.")>>
 <</if>>
 
-<<if $avery_mansion.schedule is "away" and $avery_skyscraper_fire_time lte 0 and $avery_mansion.injury>>
+<<if $avery_mansion.schedule is "away" and $avery_skyscraper_fire_time lte 0 and $avery_injury>>
 	<<set $avery_mansion.schedule to "return">>
-<<elseif $avery_mansion.schedule is "away" and $avery_mansion.away_timer lte 0 and !$avery_mansion.injury>>
+<<elseif $avery_mansion.schedule is "away" and $avery_mansion.away_timer lte 0 and !$avery_injury>>
 	<<set $avery_mansion.schedule to "return">>
 	<<set $avery_mansion.rage.apologetic to true>>
 	<<set $avery_mansion.rage.work to true>>
-<<elseif $avery_mansion.schedule is "away" and Time.weekday is 1 and Time.hour gte 18 and $avery_mansion.party_state is "waiting" and !$avery_mansion.injury>>
+<<elseif $avery_mansion.schedule is "away" and Time.weekday is 1 and Time.hour gte 18 and $avery_mansion.party_state is "waiting" and !$avery_injury>>
 	<<set $avery_mansion.schedule to "return">>
 	<<set $avery_mansion.rage.apologetic to true>>
 	<<set $avery_mansion.rage.work to true>>
@@ -738,6 +738,29 @@
 	<</if>>
 	<<if $possessed and $nextPassageCheck is "Danube Street">>
 		<span class="nextLink"><<icon "front_gate.png">><<link [[Leave (0:02)|Danube Street]]>><<handheldon 1>><<pass 2>><<endevent>><</link>></span>
+	<<elseif $exposedRaw gte 1>>
+		<<set _ex to ($exposed >= 2 ? (Time.dayState == "night" ? 4 : 5) : (Time.dayState == "night" ? 2 : 3))>>
+		<<if hasSexStat("exhibitionism", _ex)>>
+			<<if Time.dayState is "night">>
+				<<dooricon "front_gate">><<link [[Sneak away from the mansion (0:10)|Mansion Leave]]>><<handheldon 1>><<pass 10>><<endevent>><</link>>
+			<<else>>
+				<<dooricon "front_gate">><<link [[Sneak away from the mansion (0:20)|Mansion Leave]]>><<handheldon 1>><<pass 20>><<endevent>><</link>>
+			<</if>>
+			<<if $daily.ex.mansion isnot 1>>
+				<<switch _ex>>
+					<<case 2>>
+						<<exhibitionist2>>
+					<<case 3>>
+						<<exhibitionist3>>
+					<<case 4>>
+						<<exhibitionist4>>
+					<<case 5>>
+						<<exhibitionist5>>
+				<</switch>>
+			<</if>>
+		<<else>>
+			<span class="blue">You can't leave the mansion dressed like this!</span>
+		<</if>>
 	<<elseif $avery_mansion.landry is 0 and $auriga_artefact is "Avery" and !$avery_fate and !$fake_artefact>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Landry Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
 	<<elseif $avery_mansion.days gte 7 and $avery_tower.intro is 1 and $mickeyPub gte 2 and $auriga_artefact is "Avery" and $fake_artefact is "pc" and !$avery_fate and !$avery_mansion.mickey>>
@@ -953,7 +976,7 @@
 			<br>
 		<<else>>
 			"Long day," <<he>> says, managing a weak smile.
-			
+
 			<<avery_mansion_rage_party "normal">>
 			<<avery_mansion_dom_events>>
 		<</if>>
@@ -2859,9 +2882,9 @@
 			You hear another car door open, and close, in the garage. You investigate, and find Avery sat behind the wheel of <<his>> sports car. One arm is encased in a white cast, held aloft by a sling around <<his>> neck. The other clutches a bottle of cheap bourbon. <<He>> takes a swig.
 			<br><br>
 
-			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_mansion.injury to false>><<set $avery_mansion.injury_timer to 90>><</link>>
+			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><</link>>
 			<br>
-			<<link [[Just Watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_mansion.injury to false>><<set $avery_mansion.injury_timer to 90>><<pass 10>><</link>>
+			<<link [[Just Watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<pass 10>><</link>>
 			<br>
 		<<elseif _avery_interrupt is "party_missed">>
 			<<set $avery_mansion.rage.work to false>>
@@ -3133,11 +3156,11 @@
 
 				<<if $avery_mansion.folder gte 12 and !$daily.mansion_folder and $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "sleep" and $avery_mansion.schedule isnot "work">>
 					<<set _extralinebreak to true>>
-					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder Avery]]>><<trauma 6>><<stress 6>><</link>><<gstress>><<ltrauma>>
+					<<icon "manilaenvelope.png">><<link [[Read the folder from the orphanage (1:00)|Mansion Folder Avery]]>><<trauma 6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<<elseif $avery_mansion.folder gte 1 and !$daily.mansion_folder>>
 					<<set _extralinebreak to true>>
-					<<ind>><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<set $avery_mansion.folder++>><<set $daily.mansion_folder to true>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
+					<<icon "manilaenvelope.png">><<link [[Read the folder from the orphanage (1:00)|Mansion Folder]]>><<set $avery_mansion.folder++>><<set $daily.mansion_folder to true>><<pass 60>><<trauma -6>><<stress 6>><</link>><<gstress>><<ltrauma>>
 					<br>
 				<</if>>
 				<<if $avery_mansion.schedule is "sleep">>
@@ -3406,7 +3429,7 @@
 	<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_mansion.schedule isnot "sleep">>
 		<<set $_avery_present to true>>
 	<</if>>
-	<<if $_avery_present is true and $avery_mansion.injury>>
+	<<if $_avery_present is true and $avery_injury>>
 		<<set _avery_interrupt to "injury">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "return">>
 		<<set _avery_interrupt to "work">>
@@ -3431,6 +3454,7 @@
 	<<elseif $avery_mansion.schedule is "sleep" and !$avery_mansion.fox.end and Time.dayState is "night" and ($avery_fate is "ascended" or $avery_fate is "saved")>>
 		<<set _avery_interrupt to "fox">>
 	<</if>>
+	<<handheldon 1>>
 <</widget>>
 
 <<widget "avery_mansion_start_clothes">>
@@ -3831,7 +3855,7 @@
 			<<case "normal">>
 				"I missed you on Sunday. I mean the party.
 			<<case "chase">>
-				"You missed the fucking party. 
+				"You missed the fucking party.
 			<<case "revealed">>
 				"You missed the party," <<he>> says.
 			<<case "revealed chase">>
@@ -3890,7 +3914,7 @@
 					<<case "chase">>
 						The Doctor was expecting you. I had to make excuses, and do you know what I saw when Harper looked at me? Pity.
 					<<case "revealed">>
-						"The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer. 
+						"The Doctor asked about you, and I had to give <<nnpc_him Harper>> an unconvincing answer.
 					<<case "revealed chase">>
 						The Doctor was expecting you, and was disappointed when you didn't show.
 				<</switch>>
