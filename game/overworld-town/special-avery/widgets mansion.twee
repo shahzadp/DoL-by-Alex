@@ -979,7 +979,7 @@
 	<</if>>
 	<<if $avery_mansion.display gte 1>>
 		<br>
-		"The display room likes like a fucking tomb."
+		"The display room lookes like a fucking tomb."
 	<</if>>
 	<<if $avery_mansion.bedroom gte 1>>
 		<br>
@@ -1103,7 +1103,14 @@
 		<<link [[Refuse|Mansion Return Meek Refuse]]>><<set $speech_attitude_avery to false>><</link>>
 		<br>
 	<</if>>
-<<elseif C.npc.Avery.dom gte 75 and !$avery_mansion.jobs.includes("display")>>
+<<elseif C.npc.Avery.dom gte 75 and !$avery_mansion.jobs.includes("dungeon")>>
+	<<set $avery_mansion.jobs.pushUnique("dungeon")>>
+	"Come. I've something to show you. There's a room you haven't seen yet."
+	<br><br>
+
+	<<link [[Next|Mansion Return Dungeon]]>><</link>>
+	<br>
+<<elseif C.npc.Avery.dom gte 70 and !$avery_mansion.jobs.includes("display")>>
 	<<set $avery_mansion.jobs.push("display")>>
 	"I'd like you to keep the display room dusted," Avery says. "Be careful. The objects there are more valuable than you."
 	<br><br>
@@ -1113,7 +1120,7 @@
 
 	<<endevent>>
 	<<avery_mansion_end_links>>
-<<elseif C.npc.Avery.dom gte 70 and !$avery_mansion.jobs.includes("knees")>>
+<<elseif C.npc.Avery.dom gte 65 and !$avery_mansion.jobs.includes("knees")>>
 	<<set $avery_mansion.jobs.push("knees")>>
 	"Kneel."
 	<br><br>
@@ -1121,7 +1128,7 @@
 	<br>
 	<<link [[Refuse|Mansion Return Kneel Refuse]]>><<npcincr Avery rage 1>><</link>><<garage>>
 	<br>
-<<elseif C.npc.Avery.dom gte 65 and !$avery_mansion.jobs.includes("garden")>>
+<<elseif C.npc.Avery.dom gte 60 and !$avery_mansion.jobs.includes("garden")>>
 	<<set $avery_mansion.jobs.push("garden")>>
 	"I never thought I'd trust you with this, but I want you to keep the garden tidy. Prune the bushes and pull the weeds I can't be bothered with."
 	<br><br>
@@ -1131,13 +1138,6 @@
 
 	<<endevent>>
 	<<avery_mansion_end_links>>
-<<elseif C.npc.Avery.dom gte 60 and !$avery_mansion.jobs.includes("dungeon")>>
-	<<set $avery_mansion.jobs.pushUnique("dungeon")>>
-	"Come. I've something to show you. There's a room you haven't seen yet."
-	<br><br>
-
-	<<link [[Next|Mansion Return Dungeon]]>><</link>>
-	<br>
 <<elseif C.npc.Avery.dom gte 55 and !$avery_mansion.jobs.includes("bathroom")>>
 	<<set $avery_mansion.jobs.push("bathroom")>>
 	"I want you to start cleaning the bathroom. Make sure it's spotless."
@@ -2626,6 +2626,10 @@
 
 	/* The party intro scenes always involve Avery bringing the player to the atrium */
 	<<set $outside to 0>>
+
+	<<if $avery_mansion.fox.task is $avery_mansion.guest and !$avery_mansion.fox.task_complete and !$avery_fate>>
+		<<set $avery_party.task to true>>
+	<</if>>
 <</widget>>
 
 <<widget "avery_mansion_party_end">>
@@ -2752,7 +2756,7 @@
 		<<icon "avery_vault.png">><<link [[Approach the vault|Mansion Dungeon Vault Approach]]>><<set $avery_mansion.vault_progress += 1>><</link>>
 		<br>
 	<<elseif $avery_mansion.vault_progress lt 100 and $auriga_artefact is "Avery">>
-		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 6>><<if $avery_dungeon>><<set $avery_dungeon.timer -= 30>><</if>><<pass 30>><</link>><<avery_mansion_vault_progress>>
+		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 5>><<if $avery_dungeon>><<set $avery_dungeon.timer -= 30>><</if>><<pass 30>><</link>><<avery_mansion_vault_progress>>
 		<br>
 	<<elseif $avery_mansion.vault_progress gte 100 and $auriga_artefact is "Avery">>
 		<<icon "avery_vault.png">><<link [[Open the vault|Mansion Dungeon Vault]]>><</link>>
@@ -3424,7 +3428,7 @@
 		<<set _avery_interrupt to "skyscraper_ready">>
 	<<elseif $avery_tower.stage gte 1 and getRobinLocation() is "orphanage" and $avery_mansion and $avery_mansion_robin is 1 and Time.hour gte 6 and Time.hour lte 21 and !$fromRobinRoom and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
 		<<set _avery_interrupt to "robin">>
-	<<elseif $avery_mansion.schedule is "sleep" and $avery_fate is "ascended" and !$avery_mansion.fox.end and Time.dayState is "night">>
+	<<elseif $avery_mansion.schedule is "sleep" and !$avery_mansion.fox.end and Time.dayState is "night" and ($avery_fate is "ascended" or $avery_fate is "saved")>>
 		<<set _avery_interrupt to "fox">>
 	<</if>>
 <</widget>>
@@ -3815,8 +3819,8 @@
 
 <<widget "summon_brown_fox">>
 	<<set $_slot to _args[0] || 1>>
-	<<set $_npc to V.NPCNameList[7]>>
-	<<npc $_npc $_slot>>
+	<<set $_npc to clone(C.npc[$NPCNameList[7]])>>
+	<<generateNPC $_slot t $_npc.pronoun $_npc.gender 10>>
 <</widget>>
 
 <<widget "avery_mansion_rage_party">>
