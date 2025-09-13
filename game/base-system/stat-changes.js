@@ -707,14 +707,16 @@ const statChange = (() => {
 		}
 		if (V.player.gender === "m" && type === "breasts_small") type = "breasts_big";
 
-		return [{
-			penis_small: V.player.penisExist && V.player.penissize <= 1,
-			penis_big: V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3),
-			breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
-			breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
-			pregnancy: playerBellySize() >= 8
-		}[type] && V["acceptance_" + type] < 1000,
-		type];
+		return [
+			{
+				penis_small: V.player.penisExist && V.player.penissize <= 1,
+				penis_big: V.player.penisExist && V.player.penissize >= (V.player.gender === "m" ? 4 : 3),
+				breasts_small: V.player.gender === "f" && between(V.player.breastsize, 0, 4),
+				breasts_big: V.player.breastsize >= (V.player.gender === "m" ? 1 : 8),
+				pregnancy: playerBellySize() >= 8,
+			}[type] && V["acceptance_" + type] < 1000,
+			type,
+		];
 	}
 
 	function insecurity(type, amount) {
@@ -1131,6 +1133,7 @@ const statChange = (() => {
 				case "office":
 				case "office_building":
 				case "officeBuilding":
+				case "avery_skyscraper":
 					source = "office" + mod;
 					break;
 				case "canal":
