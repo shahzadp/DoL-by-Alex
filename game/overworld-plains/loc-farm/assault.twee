@@ -60,7 +60,7 @@
 
 <<if $farm_destroyed is true>>
 	<<farm_assault_unbind>>
-	<<if $fields_damaged is 0>>
+	<<if $fields_damaged.length is 0>>
 		<span class="purple">With no fields to burn, the thugs flee the field.</span><<lcontrol>><<gtrauma>><<control -10>><<trauma 6>>
 		<br><br>
 		<<npc Remy>><<person1>>
@@ -84,9 +84,9 @@
 <<elseif _farm_assault_active isnot true>>
 	<<farm_assault_unbind>>
 	<span class="green">Driven back, the thugs flee the farm.</span>
-	<<if $fields_damaged gte 2>>
-		<span class="pink">They managed to torch <<number $fields_damaged>> fields.</span><<llcontrol>><<ggtrauma>><<control -25>><<trauma 12>>
-	<<elseif $fields_damaged gte 1>>
+	<<if $fields_damaged.length gte 2>>
+		<span class="pink">They managed to torch the <<ordinalList $fields_damaged.toSorted()>> fields.</span><<llcontrol>><<ggtrauma>><<control -25>><<trauma 12>>
+	<<elseif $fields_damaged.length gte 1>>
 		<span class="blue">They managed to torch a field.</span><<lcontrol>><<gtrauma>><<control -10>><<trauma 6>>
 	<<else>>
 		<span class="green">They failed to torch a single field.</span><<ggcontrol>><<lltrauma>><<control 25>><<trauma -25>>
@@ -168,8 +168,6 @@ You find Alex lying on <<his>> face, an empty bottle beside <<him>>. <<Hes>> unc
 	<br><br>
 <</if>>
 
-<<unset $fields_damaged>>
-<<unset $farm_destroyed>>
 <<farm_assault_end>>
 
 <<link [[Next|Farm Bedroom]]>><<endevent>><</link>>
@@ -183,7 +181,7 @@ You find Alex lying on <<his>> face, an empty bottle beside <<him>>. <<Hes>> unc
 <<if $farm_destroyed is true>>
 	"You better stay the fuck away," Alex shouts after them. <<He>> turns to you. "I'm glad they wasted their time, but we shouldn't let them run rampant through the farm."
 	<br><br>
-<<elseif $fields_damaged gte 1>>
+<<elseif $fields_damaged.length gte 1>>
 	"You better stay the fuck away," Alex shouts after them. <<He>> turns to you, then to the smouldering field behind <<him>>. "We limited the damage," <<he>> says. "We'll be more prepared next time."
 	<br><br>
 <<else>>
@@ -249,8 +247,6 @@ You walk back to the cottage.
 <span class="red">Remy will attack again in <<number $farm_attack_timer>> days.</span>
 <br><br>
 
-<<unset $fields_damaged>>
-<<unset $farm_destroyed>>
 <<farm_assault_end>>
 
 <<link [[Next|Farm Cottage]]>><<endevent>><</link>>
@@ -381,7 +377,6 @@ You hear shouting outside.
 			<<set $farm_assault.teams[_assault_keys[_s]].type to "remy">>
 		<</if>>
 	<</for>>
-	<<set $fields_damaged to 0>>
 	<<if $farm.kennel gte 1>>
 		<<set $farm_assault.dogs to 2>>
 	<<else>>
@@ -398,8 +393,8 @@ You hear shouting outside.
 
 <<widget "farm_assault_end">>
 	<<unset $farm_assault>>
-	<<unset $fields_damaged>>
 	<<unset $farm_destroyed>>
+	<<set $fields_damaged to []>>
 <</widget>>
 
 <<widget "farm_assault_progress">>
@@ -605,9 +600,9 @@ You hear shouting outside.
 	<<if _fighting is true or _guard_won is true or _guard_lost is true>>
 		Your walkie talkie picks up another signal. <span class="red">You hear a struggle, punctuated by static.</span>
 		<<if _guard_won is true>>
-			You peer at the watchtower. A body falls from the top. <span class="green">It's not $farm.tower_guard.</span> Seems they got the better of one of their attackers.
+			You peer at the watchtower. A body falls from the top. <span class="green">It's not $farm.tower_guard.</span> Seems $per_npc.farm_tower_guard.pronouns.he got the better of one of $per_npc.farm_tower_guard.pronouns.his attackers.
 		<<elseif _guard_lost is true>>
-			You peer at the watchtower. A body falls from the top. <span class="red">It's $farm.tower_guard.</span> They won't be helping for the rest of the assault.
+			You peer at the watchtower. A body falls from the top. <span class="red">It's $farm.tower_guard.</span> <<print toTitleCase($per_npc.farm_tower_guard.pronouns.he)>> won't be helping for the rest of the assault.
 		<</if>>
 		<br><br>
 	<<else>>
@@ -875,6 +870,9 @@ You hear shouting outside.
 		<<case 8>>
 			You are near the ninth field.
 	<</switch>>
+	<<if $fields_damaged.includes($bus)>>
+		<span class="red">It's engulfed in flames.</span>
+	<</if>>
 	<br>
 	<<if $farm_assault.bindings gte 1>>
 		You lie in the dirt, unable to move much.

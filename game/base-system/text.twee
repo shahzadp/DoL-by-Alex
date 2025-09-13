@@ -2349,8 +2349,8 @@
 <</widget>>
 
 <<widget "openinghours">>
-	A sign reads: "Opening hours: 
-		<<ampm `_args[0] ? _args[0] : 8` 00>> - 
+	A sign reads: "Opening hours:
+		<<ampm `_args[0] ? _args[0] : 8` 00>> -
 		<<ampm `_args[1] ? _args[1] : 21` 00>>"
 <</widget>>
 
@@ -6161,10 +6161,32 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 	<</if>>
 <</silently>><<if $_text_output>><span @class="$_color"><<print $_text_output>></span><</if>><</widget>>
 
-<<widget "anxiety_disorder_text">>
+<<widget "anxiety_disorder_text">><<if $statdisable is "f">>
 	| <span class="red">Anxiety Disorder</span>
-<</widget>>
+<</if>><</widget>>
 
-<<widget "severe_anxiety_disorder_text">>
+<<widget "severe_anxiety_disorder_text">><<if $statdisable is "f">>
 	| <span class="red">Severe Anxiety Disorder</span>
-<</widget>>
+<</if>><</widget>>
+
+<<widget "ordinalList">><<silently>>
+	<<if _args[1] is "cap">>
+		<<set $_and to _args[2] or "and">>
+		<<set $_comma to _args[3] isnot undefined ? _args[3] : true>>
+	<<else>>
+		<<set $_and to _args[1] or "and">>
+		<<set $_comma to _args[2] isnot undefined ? _args[2] : true>>
+	<</if>>
+	<<if typeof _args[0] isnot "object">>
+		<<set _text_output to '<span class="red">Syntax Error: args0 "' + _args[0] + '" is not array.</span>'>>
+	<<elseif !_args[0].length>>
+		<<set _text_output to '<span class="red">Syntax Error: args0 "' + _args[0] + '" is either an object or an empty array.</span'>>
+	<<else>>
+		<<set $_list to []>>
+		<<for _i range _args[0]>>
+			<<set $_list.push(ordinalWritten(_i))>>
+		<</for>>
+		<<set _text_output to formatList($_list, $_and, $_comma)>>
+		<<if _args[1] is "cap">><<capitalise>><</if>>
+	<</if>>
+<</silently>><<print _text_output>><</widget>>
