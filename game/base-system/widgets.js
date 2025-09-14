@@ -646,9 +646,10 @@ function exposure() {
 	}
 
 	// calculate libertine factors.
-	const safeLocations = ["Wardrobe", "Bedroom", "Sleep", "Bird Tower", "Bird Hunt", "Spa Tan Underwear", "Spa Tan Curtains", "Spa Tan Naked", "Mirror"];
+	const safeLocations = ["Bedroom", "Sleep", "Bird Tower", "Bird Hunt", "Spa Tan Underwear", "Spa Tan Curtains", "Spa Tan Naked", "Mirror"];
 	if (
 		// the check for safe locations might be too generous with included passage names, but seems to be working as of 0.5.4.9
+		// wardrobes should not be safe locations though, as they must show what clothes are appropriate outside. if you wanna stop pc from covering themselves - use "don't cover yourself" link in the wardrobes instead of altering the libertine score.
 		safeLocations.some(location => V.passage.includes(location)) &&
 		V.NPCList.every(npc => !npc.fullDescription || Object.values(V.loveInterest).includes(npc.fullDescription)) &&
 		V.audiencepresent === 0
@@ -666,30 +667,32 @@ function exposure() {
 	}
 
 	/*
-		is bra visible? inappropriate if any of:
-		- considered girly. (tom)boys can get away with using chest wraps/binders and such
-		- is fetish wear
-		- too revealing to offer any protection from inappropriate exposure, basically topless (handled later)
+		is bra visible?
 	*/
-	if (["over_upper", "upper"].every(slot => itemExposure(slot) >= 1)) {
-		const bra = setup.clothes.under_upper[V.worn.under_upper.index];
-		if (
-			((bra.femininity && bra.femininity > 0) || bra.type.includes("fetish")) &&
-			(!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2) &&
-			(!V.worn.under_upper.type.includes("covered") || itemExposure("under_upper") >= 1)
-		) {
-			V.exposed = 1;
+	// "covered" is a strange beast and might need splitting into separate tags
+	// when applied to lower - it covers under_upper. when applied to under_upper - it makes it okay to be seen. when applied to face - it doesn't cover under_upper and doesn't make face okay to be seen...
+	if (["over_upper", "upper"].every(slot => itemExposure(slot) >= 1) && (!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2)) {
+		// the answer is yes
+		const bra = V.worn.under_upper;
+		if (V.player.gender_appearance === "m") {
+			// boys can sport their naked all the live long day. but not wear bra. unless it's manly bra. and their booba is not too conspicuous
+			if (bra.gender === "f" || bra.type.includes("fetish") || V.player.perceived_breastsize >= 3) {
+				// this check differs from the girls' one in that it allows for arm sleeves and bare chest, while excluding sports bra and camisole
+				V.exposed = 1;
+			}
+		} else {
+			// girls can only wear "covered" upperwear
+			if (!bra.type.includes("covered")) {
+				V.exposed = 1;
+			}
+			/*
+				is chest visible?
+			*/
+			// the check here is a bit stricter and overrides "covered" state
+			else if (["over_upper", "upper"].every(slot => itemExposure(slot) >= 2) && itemExposure("under_upper") >= 1) {
+				V.exposed = 1;
+			}
 		}
-	}
-
-	/*
-		chest unobscured by clothes. inapropriate at all times for girls, or when booba too big for boys
-	*/
-	if (
-		["over_upper", "upper", "under_upper"].every(slot => itemExposure(slot) >= 1) &&
-		(!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2)
-	) {
-		if (V.player.gender_appearance !== "m" || V.player.perceived_breastsize > 3) V.exposed = 1;
 	}
 
 	/*
@@ -700,9 +703,9 @@ function exposure() {
 	}
 
 	/*
-		genitals
+		genitals. again, stricter check. exposed === 2 is not just lewd - it's super lewd
 	*/
-	if (["over_lower", "lower", "under_lower"].every(slot => itemExposure(slot) >= 1)) {
+	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 2) && itemExposure("under_lower") >= 1) {
 		V.exposed = 2;
 	}
 
