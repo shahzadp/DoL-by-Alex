@@ -7783,7 +7783,7 @@ function initLower() {
 			cursed: 0,
 			notuck: 0,
 			location: 0,
-			iconFile: 0,
+			iconFile: "jumpsuit.png",
 			accIcon: 0,
 			outfitSecondary: ["upper", "jumpsuit"],
 		},

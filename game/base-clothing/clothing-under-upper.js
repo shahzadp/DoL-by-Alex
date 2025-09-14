@@ -932,7 +932,7 @@ function initUnderUpper() {
 			pattern_caption: true,
 			sleeve_colour: "pattern",
 			sleeve_img: 1,
-			breast_img: { 0: 1, 1: 1, 2: 1, 3: 3, 4: 6, 5: 6, 6: 6 },
+			breast_img: { 0: 1, 1: 1, 2: 1, 3: 3, 4: 3, 5: 5, 6: 6 },
 			mainImage: 0,
 			cursed: 0,
 			location: 0,
