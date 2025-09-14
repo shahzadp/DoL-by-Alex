@@ -3904,7 +3904,7 @@ Renderer.CanvasModels.main = {
 				return `img/misc/ambient/fire/front.png`
 			},
 			showfn(options) {
-				return !T.hideSidebarEffects && !!options.fire;
+				return !T.hideSidebarEffects && (!!options.fire || !!options.fireFront);
 			},
 			z: ZIndices.precipitationFront,
 		},
