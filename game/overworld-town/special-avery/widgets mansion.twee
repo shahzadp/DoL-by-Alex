@@ -1337,7 +1337,7 @@
 			<<link [[Give Avery a massage (0:30)|Mansion Return Massage Accept]]>><<pass 30>><<npcincr Avery dom -1>><</link>><<gdom>>
 			<br>
 		<<else>>
-			<<link [[Go with Avery to the bathroom (0:30)|Mansion Return Massage Accept]]>><<pass 30>><<npcincr Avery dom -1>><</link>><<gdom>>
+			<<link [[Go with Avery to the bathroom (0:30)|Mansion Return Massage Accept]]>><<pass 30>><<npcincr Avery dom 1>><</link>><<gdom>>
 			<br>
 		<</if>>
 		<<link [[Refuse politely|Mansion Return Massage Polite]]>><<npcincr Avery rage 1>><</link>><<garage>>
@@ -2788,7 +2788,7 @@
 		<<icon "avery_vault.png">><<link [[Approach the vault|Mansion Dungeon Vault Approach]]>><<set $avery_mansion.vault_progress += 1>><</link>>
 		<br>
 	<<elseif $avery_mansion.vault_progress lt 100 and $auriga_artefact is "Avery">>
-		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 5>><<if $avery_dungeon>><<set $avery_dungeon.timer -= 30>><</if>><<pass 30>><</link>><<avery_mansion_vault_progress>>
+		<<icon "avery_vault.png">><<link [[Try to open the vault (0:30)|Mansion Dungeon Vault Brute]]>><<set $avery_mansion.vault_progress += 4>><<if $avery_dungeon>><<set $avery_dungeon.timer -= 30>><</if>><<pass 30>><</link>><<avery_mansion_vault_progress>>
 		<br>
 	<<elseif $avery_mansion.vault_progress gte 100 and $auriga_artefact is "Avery">>
 		<<icon "avery_vault.png">><<link [[Open the vault|Mansion Dungeon Vault]]>><</link>>
@@ -3095,6 +3095,19 @@
 					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
 					<br><br>
 				<</if>>
+				<<if !($avery_mansion.schedule is "lounge" and $daily.pianoPlayBlocked)>>
+					<<set $_pianobr to true>>
+					<<birdicon "sing">><<link [[Play the piano (0:20)|Mansion Lounge Piano]]>><<pass 20>><</link>>
+					<br>
+				<</if>>
+				<<if $avery_mansion.fox.task is "heist" and ($avery_mansion.schedule is "away" or $avery_mansion.schedule is "sleep" or $avery_mansion.schedule is "work")>>
+					<<set $_pianobr to true>>
+					<<birdicon "sing">><<link [[Play the brown fox's signal on the piano|Mansion Fox Heist]]>><<endevent>><<pass 10>><<set $phase to 1>><</link>>
+					<br>
+				<</if>>
+				<<if $_pianobr>>
+					<br>
+				<</if>>
 			<</if>>
 
 			<<if $bus is "avery_display">>
@@ -3312,6 +3325,9 @@
 					<<endevent>>
 					<br><br>
 					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
+					<br><br>
+				<<elseif $avery_mansion.fox.task is "heist" and ($avery_mansion.schedule is "away" or $avery_mansion.schedule is "sleep" or $avery_mansion.schedule is "work")>>
+					<<birdicon "sing">><<link [[Whistle the signal to the brown fox|Mansion Fox Heist]]>><<endevent>><<pass 10>><</link>>
 					<br><br>
 				<</if>>
 			<</if>>

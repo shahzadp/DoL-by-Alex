@@ -155,6 +155,76 @@ You walk up the hill towards Avery's mansion. The gates rattle open as you appro
 
 <<avery_mansion_contents>>
 
+:: Mansion Lounge Piano
+<<set $location to "avery_mansion">><<set $bus to "avery_lounge">><<set $avery_passage to $passage>><<set $outside to 0>><<effects>><<avery_mansion>>
+<<set $daily.pianoPlayed ||= 0>>
+<<if currentSkillValue("handskill") gte 1000>>
+	<<set _pianoSkill to 5>>
+	<<if random(1, 5) is 5 and $seabird_lullaby>>
+		On a whim, you play the <span class="teal">familiar melody</span>. As if hearing it again would stir up some long-lost memory. No such revelation comes.
+		<br><br>
+
+		You hum it to yourself as you play.
+		<br><br>
+
+		Unsatisfied, you repeat the words you heard. They don't sound right coming out of your mouth. However, as you do, you find yourself adding new notes subconsciously.
+	<<else>>
+		<span class="green">You play the piano with masterful grace.</span>
+	<</if>>
+<<elseif currentSkillValue("handskill") gte 800>>
+	<<set _pianoSkill to 4>>
+	<span class="teal">You play some songs on the piano, expertly performing some more advanced compositions.</span>
+<<elseif currentSkillValue("handskill") gte 600>>
+	<<set _pianoSkill to 3>>
+	<span class="blue">You play the piano with competence, managing a few full songs without error.</span>
+<<elseif currentSkillValue("handskill") gte 400>>
+	<<set _pianoSkill to 2>>
+	<span class="purple">You play some simple songs, only hitting awkward notes occasionally.</span>
+<<elseif currentSkillValue("handskill") gte 200>>
+	<<set _pianoSkill to 1>>
+	<span class="pink">You don't really know what you're doing, and send shrill notes throughout the mansion.</span>
+<<else>>
+	<<set _pianoSkill to 0>>
+	<span class="red">You clumsily slam your fingers into the keys.</span>
+<</if>>
+<<set $daily.pianoPlayed++>>
+
+<<if $avery_mansion.schedule is "lounge">>
+	<<if _pianoSkill gte Math.floor(C.npc.Avery.rage / 20) and _pianoSkill gte 2>>
+		<<if $averyragerevealed and C.npc.Avery.rage gte 60>>
+			<span class="blue">Avery tolerates it.</span>
+		<<else>>
+			<<if _pianoSkill gte 3>>
+				<span class="teal">Avery seems to enjoy your performance.</span>
+			<<else>>
+				<span class="teal">Avery laughs, seeming to think your attempts are endearing.</span>
+			<</if>>
+		<</if>>
+	<<elseif $averyragerevealed>>
+		<<set $daily.pianoPlayedRage ||= 0>>
+		<<if $daily.pianoPlayedRage gte 3>>
+			<<set $daily.pianoPlayBlocked to true>>
+			Avery stomps over to the piano, and <span class="red">slams the key cover shut on your fingers</span>. <<gggpain>><<pain 15>><<npcincr Avery rage 1>><<garage>>
+		<<elseif $daily.pianoPlayedRage gte 2>>
+			"Last warning." <<npcincr Avery rage 1>><<garage>>
+		<<elseif $daily.pianoPlayedRage gte 1>>
+			"I said stop." <<npcincr Avery rage 1>><<garage>>
+		<<else>>
+			"Knock it off, that noise is distracting me." <<npcincr Avery rage 1>><<garage>>
+		<</if>>
+		<<set $daily.pianoPlayedRage++>>
+	<<else>>
+		<<if _pianoSkill gte 3>>
+			<span class="teal">Avery seems to enjoy your performance.</span>
+		<<else>>
+			<span class="teal">Avery laughs, seeming to think your attempts are endearing.</span>
+		<</if>>
+	<</if>>
+<</if>>
+<br><br>
+
+<<avery_mansion_contents>>
+
 :: Mansion Display
 <<set $location to "avery_mansion">><<set $bus to "avery_display">><<set $avery_passage to $passage>><<set $outside to 0>><<effects>><<avery_mansion>>
 
@@ -312,7 +382,7 @@ You take the gold mask. Dark eyes stare up at you. The metal around them is dama
 	It's surrounded by trees, all bending inwards, and floating above a lake. Everything moves around you, and you find yourself hanging above a large ruin. You can't breathe.
 	<br><br>
 
-	You slowly open your eyes, and sluggishly stand from the bed. <<if $avery_schedule is "sleep">>You make sure not to wake Avery.<</if>> Your ears are ringing.
+	You slowly open your eyes, and sluggishly stand from the bed. <<if $avery_mansion.schedule is "sleep">>You make sure not to wake Avery.<</if>> Your ears are ringing.
 	<br><br>
 
 	<<wraithPossess "mansion">>
@@ -492,7 +562,7 @@ You take the gold mask. Dark eyes stare up at you. The metal around them is dama
 			<br>
 		<</if>>
 	<<else>>
-		<<if $avery_schedule is "sleep">>
+		<<if $avery_mansion.schedule is "sleep">>
 			Avery lies beside you.
 		<<else>>
 			<<if Time.hour lte 5>>
@@ -1324,6 +1394,10 @@ From this close up, you also notice that what little of <<his>> face you can see
 "Unfortunately, I won't be able to help much more like this. I'm sorry."
 <br><br>
 
+<<set $avery_mansion.fox.task to false>>
+<<set $avery_mansion.fox.task_complete to false>>
+<<set $avery_mansion.fox.task_detail to false>>
+
 <<link [[Ask what you should do now|Mansion Brown Fox Wounded Ask]]>><</link>>
 <br>
 <<link [[Ask how <<he>> escaped Remy|Mansion Brown Fox Wounded Ask Remy]]>><</link>>
@@ -1413,7 +1487,7 @@ I bit <<nnpc_him "Remy">>. A lot. Once I squirmed free, I started throwing anyth
 	<</if>>
 	<br><br>
 
-	<<He>> looks away from you, <<his>> face still very red. <<note "+ ???" "green">><<set $avery_mansion.fox.progress++>><<set $avery_mansion.fox.aid to true>>
+	<<He>> looks away from you, <<his>> face still very red. <<note "+ ???" "green">><<set $avery_mansion.fox.progress += 2>><<set $avery_mansion.fox.aid to true>>
 	<br><br>
 
 	You walk <<him>> down the boulevard, keeping out of sight. "You're taking a big risk helping me, you know."
@@ -2079,6 +2153,764 @@ You remain silent, and stare at your lap.
 <<link [[Next|Mansion Bedroom]]>><</link>>
 <br>
 
+:: Mansion Fox Heist
+<<effects>><<summon_brown_fox 1>><<person1>>
+<<set $avery_mansion.heist_suspicion to 0>>
+<<if $phase is 1>>
+	You play the six familiar notes on the piano, and wait.
+<<else>>
+	<<set $avery_mansion.heist_suspicion++>>
+	You whistle the six familiar notes, and wait.
+<</if>>
+<br><br>
+
+You continue waiting for a while. You wonder if the brown fox is even close enough to have heard you.
+<br><br>
+
+You're about to stand up, when you hear a rustle from outside the mansion grounds. <span class="green">A brown fox mask peeks up from over the wall, and a pair of green eyes lock onto you.</span>
+<br><br>
+
+<<He>> hoists <<himself>> over and lands gracefully,
+<<if $phase is 1>>
+	before skulking into the lounge with you. "Creative. Playing it on the piano is much less out of place.
+<<else>>
+	before skulking over to you. "I was camping out nearby.
+<</if>>
+Let's get moving, before Avery gets wise."
+<br><br>
+
+<<if $exposedRaw gte 2>>
+	<<He>> stands in front of you for another brief moment, notably not looking down at your <<lewdness>>. "Must be chilly in here."
+	<br><br>
+<</if>>
+
+<<link [[Next|Mansion Fox Heist 2]]>><<pass 5>><</link>>
+<br>
+
+:: Mansion Fox Heist 2
+<<effects>>
+You sneak up towards Avery's study. The brown fox whispers to you. "It feels much different in here without guests around. Larger." <<He>> frowns. "No one person needs all of this."
+<br><br>
+
+<<if currentSkillValue("skulduggery") gte 600>>
+	<span class="green">You keep up with <<his>> stealthy stride.</span>
+<<else>>
+	<<set $avery_mansion.heist_suspicion++>>
+	<span class="red">It's hard for you to keep up with <<his>> stealthy stride.</span>
+<</if>>
+<br><br>
+
+<<He>> leans against the wall around a corner, and you join <<him>>. "Would you be willing to leave this all behind? Is Avery worth it?"
+<br><br>
+
+<<link [[Yes|Mansion Fox Heist 3]]>><<set $phase to 1>><</link>>
+<br>
+<<link [[No|Mansion Fox Heist 3]]>><<set $phase to 2>><</link>>
+<br>
+
+:: Mansion Fox Heist 3
+<<effects>>
+<<if $phase is 1>>
+	You nod.
+	<br><br>
+
+	"Wait, yes you'd be willing to leave it all behind? Or yes that Avery is worth it?"
+<<else>>
+	You shake your head.
+	<br><br>
+
+	"Wait, no you wouldn't be willing to leave it all behind? Or no that Avery isn't worth it?"
+<</if>>
+<<He>> scratches <<his>> head. "Sorry, let me try that again.
+<<if $averyragerevealed>>
+	<span class="red">Are those bruises worth it?</span> Are they worth this life of luxury? I would ask if a safe home is worth it, but it's plain to see this is neither safe, nor a home."
+<<else>>
+	Is doing Avery's every whim worth it? Is this plastic house a life you find fulfilling?"
+<</if>>
+<<He>> pauses. "I'm not trying to guide your answer. I'm just curious."
+<br><br>
+
+<<link [[Say you like it here|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 0>><</link>>
+<br>
+<<link [[Say it's better than the orphanage|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 1>><</link>>
+<br>
+<<if $soldcount gte 2>>
+	<<link [[Say it's better than being sold as a sex slave|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 2>><</link>>
+	<br>
+<</if>>
+<<link [[Say it's Hell|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 3>><</link>>
+<br>
+<<link [[Say you're doing this to get back at Avery|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 4>><</link>>
+<br>
+<<link [[Say nothing|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 5>><</link>>
+<br>
+
+:: Mansion Fox Heist 4
+<<effects>>
+
+<<if $phase is 0>>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"I'm quite comfortable here. It's a pleasure to serve my betters," you say in a dignified tone.
+	<<elseif $speech_attitude is "bratty">>
+		"I don't want for much here. The food is good, there's a pool, everything I could ever want," you say.
+	<<else>>
+		"It's comfortable here. I don't mind serving to pay for it," you say.
+	<</if>>
+	<br><br>
+
+	<<if $speech_attitude isnot "meek" and $speech_attitude_avery>>
+		"I don't like the way your attitude changed when you said that. You're speaking as if Avery were listening."
+	<</if>>
+	<<He>> frowns. "I hope this changes Avery for the better. Truly. But, sometimes..."
+	<br><br>
+
+	<<He>> slowly reaches a hand towards your face, and caresses your cheek. There's a deep, tired sadness behind what little you can see of <<his>> eyes for a moment.
+	<br><br>
+
+	"Sometimes, the only way to save a flower is to cut it away from the rotten roots that bind it, and replant it for a fresh start." <<He>> pulls away. "That isn't my choice to make, though."
+<<elseif $phase is 1>>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Avery treats me well, much better than Bailey."
+	<<elseif $speech_attitude is "bratty">>
+		"If I'm going to suffer, I'd rather suffer in comfort. It's better than Bailey."
+	<<else>>
+		"Avery treats me better than Bailey does," you say.
+	<</if>>
+	<br><br>
+
+	<<He>> winces.
+	<<if $speech_attitude isnot "meek" and $speech_attitude_avery>>
+		"I don't like the way your attitude changed when you said that. You're speaking as if <<nnpc_he "Avery">> were listening."
+	<</if>>
+	There's a long silence.
+	<br><br>
+
+	"Is Bailey..." <<He>> stops <<himself>>, and shakes <<his>> head. "Never mind."
+<<elseif $phase is 2>>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"At least I'm not being sold to others anymore, like Bailey was doing," you say.
+	<<elseif $speech_attitude is "bratty">>
+		"At least I'm not Bailey's property anymore, to be sold off to the highest bidder," you say.
+	<<else>>
+		"At least I'm not being sold into sex slavery anymore," you say,
+	<</if>>
+	<br><br>
+
+	<<if $speech_attitude isnot "meek" and $speech_attitude_avery>>
+		"I don't like the way your attitude changed when you said that. You're speaking as if Avery were listening."
+	<</if>>
+	<<He>> frowns. "But... isn't that exactly what happened? Did Bailey not sell you to Avery? Like a piece of merchandise?"
+	<br><br>
+
+	You open your mouth to respond, but you can't formulate any argument to the contrary. <span class="red"><<Hes>> right.</span> <<trauma 3>><<gtrauma>>
+	<br><br>
+
+	"I'm sorry, but a cage remains a cage, no matter how gilded. The bird always yearns for freedom."
+<<elseif $phase is 3>>
+	<<if $speech_attitude is "meek">>
+		"This is awful," you say. "I... hate it here."
+	<<elseif $speech_attitude is "bratty">>
+		"This place is a living hell. I want out."
+	<<else>>
+		"If hell is real, I imagine it's something like this."
+	<</if>>
+	<br><br>
+
+	<<He>> puts a hand on your shoulder. "It'll be over soon. I promise. I'm not just doing this to end Avery's occult ambitions. I'm doing it for you, too." <<He>> smiles. "Let's keep moving,
+	<<if $harpy gte 6>>
+		birdie,
+	<<elseif $cat gte 6>>
+		kitty,
+	<<elseif $wolfgirl gte 6>>
+		puppy,
+	<<elseif $fox gte 6>>
+		kin,
+	<<else>>
+		dear,
+	<</if>>
+	the keys to freedom await."
+<<elseif $phase is 4>>
+	<<if $speech_attitude is "meek">>
+		"I'm doing this to teach Avery a lesson," you say. "Even if we're saving <<nnpc_him "Avery">>, it will humble <<nnpc_him "Avery">>." You pause. "I hope."
+	<<elseif $speech_attitude is "bratty">>
+		"I'm doing this out of spite. Avery deserves to have <<nnpc_his "Avery">> ambitions ruined, whether it's for <<nnpc_his "Avery">> own good or not."
+	<<else>>
+		"We might be doing this to save Avery from <<nnpc_himself "Avery">>, but I'm hoping it will teach <<nnpc_him "Avery">> a lesson too."
+	<</if>>
+	<br><br>
+
+	<<He>> smiles. "That's the spirit. Hold onto that. We're doing a good thing. For you, for Avery, for everyone."
+<<else>>
+	You look down silently. <<He>> frowns, but doesn't press the question.
+<</if>>
+<br><br>
+
+You reach the third floor.
+<<if $avery_mansion.study_unlocked>>
+	The door to the study is already unlocked.
+	<br><br>
+
+	<<link [[Next|Mansion Fox Heist Unlock]]>><<set $phase to 2>><</link>>
+	<br>
+<<else>>
+	<<set $lock to 1000>>
+	The door to the study is locked tight.
+	<br><br>
+
+	<<if currentSkillValue('skulduggery') gte $lock>>
+		<<if $leftarm is "bound" and $rightarm is "bound">>
+			You think you'd be able to pick the lock, <span class="blue">if your arms weren't bound.</span>
+		<<else>>
+			<<wearProp "lockpick">>
+			<span class="green">The lock looks easy to pick.</span>
+			<br><br>
+			<<lockicon "pick">><<link [[Break in (0:05)|Mansion Fox Heist Unlock]]>><<set $phase to 1>><<handheldon>><<pass 5>><</link>>
+		<</if>>
+	<<else>>
+		<span class="red">The lock looks beyond your ability to pick.</span><<skulduggeryrequired>>
+	<</if>>
+	<br>
+	<<link [[Let the brown fox handle it|Mansion Fox Heist Unlock]]>><<set $phase to 2>><<handheldon>><<pass 10>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Fox Heist Unlock
+<<effects>>
+<<if $phase is 1>>
+	You deftly pick the lock to the study. The brown fox giggles. "Are you sure you needed my help?"
+<<else>>
+	<<set $avery_mansion.heist_suspicion += 1>>
+	The brown fox kneels, and examines the lock. "This is advanced. I wouldn't be able to pick it." <<He>> produces a strange phial from under <<his>> cloak, along with a lighter. The phial has a small metal rod driven through the bottom, and is filled with a thick wax.
+	<br><br>
+
+	<<He>> pops open the phial, and holds the open end over the lock. <<He>> then ignites the lighter and holds it to the glass. Over the course of a minute, the wax expands, pushing itself into the lock. Once it's in place, <<he>> removes the lighter.
+	<br><br>
+
+	"The lock will be sticky for a while. Avery might notice." <<He>> jiggles the phial, and turns the metal rod. <span class="green">You hear a click.</span> <<He>> opens the door, and waits for the strange wax to shrink again. It crackles as it disengages from the lock.
+<</if>>
+You enter.
+<br><br>
+
+<<if $avery_mansion.study_secret is 2>>
+	You lead the brown fox over to the red leather-bound book. <<He>> frowns when <<he>> sees what Avery did to the pages within.
+	<br><br>
+
+	You take the remote, and press the button. You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
+<<elseif $avery_mansion.study_secret is 1>>
+	<<set $avery_mansion.study_secret to 2>>
+	You feel along the bookshelf, right where Avery stood when <<nnpc_he Avery>> opened the way to the dungeon. There are tiny scratches in the wood. You remember hearing <<nnpc_his Avery>> watch scrape against it.
+	<br><br>
+
+	You check the book beneath the scratches, bound in red leather.
+	<br>
+	<i>"The Cult of Auriga: An Esoteric History"</i>
+	<br>
+	You open it. A rectangle has been gouged into the pages, removing the paper, and creating a space large enough to conceal a remote. There's a single button. You press it.
+	<br><br>
+
+	You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
+	<br><br>
+
+	The brown fox remains staring at the book, frowning at what Avery did to the pages within.
+<<else>>
+	<<set $avery_mansion.study_secret to 2>><<set $avery_mansion.heist_suspicion += 2>>
+	"So, you know it's somewhere in here." <<He>> begins to look around, inspecting everything.
+	<br><br>
+
+	<<He>> runs <<his>> hands along the desk. <<He>> moves back, and sits on top of it. <<He>> sways left to right, lightly shaking it. "Aha!"
+	<<He>> hops off, and crawls underneath. "There are some... stains under here. But there's something else, too. The desk is segmented, as if..." <<He>> knocks on the ground. "It's here. We just need to figure out how to open it."
+	<br><br>
+
+	<<He>> inspects the bookshelves, running <<his>> hands along them next. <<He>> stops. "Here. Scratch marks." <<He>> takes a book from underneath them, bound in red leather.
+	<br>
+	<i>"The Cult of Auriga: An Esoteric History"</i>
+	<br>
+	<<He>> opens it. A rectangle has been gouged into the pages, removing the paper, and creating a space large enough to conceal a remote. There's a single button. <<He>> startes at the violated pages, frowning.
+	<br><br>
+
+	You step closer and press the button yourself. You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
+	<br><br>
+
+	The brown fox remains staring at the book.
+<</if>>
+<br><br>
+
+You snap your fingers in front of <<him>>, which gets <<his>> attention. "Sorry."
+<br><br>
+
+<<link [[Next|Mansion Fox Heist Dungeon]]>><<pass 5>><</link>>
+<br>
+
+:: Mansion Fox Heist Dungeon
+<<effects>>
+
+You walk down the spiral staircase, down the ominous hallway, and into Avery's dungeon. The brown fox is right behind you, holding one of your shoulders.
+<br><br>
+
+You're bathed in eerie red light. <<He>> stops, looking around at the tools.
+<br><br>
+
+You try to walk forwards, but <<hes>> still holding your shoulder.
+<br><br>
+
+<<link [[Ask if <<hes>> alright|Mansion Fox Heist Dungeon 2]]>><<set $phase to 1>><</link>>
+<br>
+<<link [[Pull <<his>> hand away|Mansion Fox Heist Dungeon 2]]>><<set $phase to 2>><</link>>
+<br>
+
+:: Mansion Fox Heist Dungeon 2
+<<effects>>
+<<if $phase is 1>>
+	You gently put you hand on <<hers>>.
+	<<if $speech_attitude is "meek">>
+		"Are you okay? You're all stiff."
+	<<elseif $speech_attitude is "bratty">>
+		"Hey, are you broken?"
+	<<else>>
+		"Are you alright? You're holding on pretty tightly."
+	<</if>>
+<<else>>
+	You pull <<his>> hand off of you.
+<</if>>
+<br><br>
+
+<<He>> shakes <<his>> head. "Sorry, again. Just a bad memory." <<His>> gaze is fixed on the whips. <<He>> forces <<himself>> to look elsewhere, and sees the vault beyond.
+<br><br>
+
+The two of you approach the thick, silvery metal door of the vault. Beside it is a keypad.
+<br><br>
+
+The brown fox kneels down and opens a satchel under <<his>> cloak. <<He>> produces a small spray bottle and uses it on the keypad. The smell of the mist stings your nostrils.
+<br><br>
+
+<<He>> unrolls a plastic-looking film, holds it against the keypad, and sprays the opposite side with the same bottle. <span class="gold">Smudges appear over four of the keys.</span>
+<br><br>
+
+"Nine, eight, seven, and five. Now we just need the order." <<He>> begins trying every combination of those four digits.
+<br><br>
+
+<<link [[Wait quietly|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 1>><</link>>
+<br>
+<<link [[Ask if you can know who <<he>> really is now|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 2>><</link>>
+<br>
+<<link [[Ask what personal stake <<he>> has in all this|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 3>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault
+<<effects>>
+<<if $phase is 1>>
+	You watch the brown fox work, keeping a professional silence between you.
+<<elseif $phase is 2>>
+	<<if $speech_attitude is "meek">>
+		"Do you trust me enough to tell me who you are?
+	<<elseif $speech_attitude is "bratty">>
+		"So, who are you really?
+	<<else>>
+		"We've been working together for a while. Will you tell me who you really are?
+	<</if>>
+	<<if $wrenSeen?.includes("cards") or $temple_confessor_intro>>
+		I haven't met many others who are so willing to cross these people."
+	<<else>>
+		I haven't met anyone else so willing to cross these people."
+	<</if>>
+	<br><br>
+
+	<<He>> continues working. "It's safer for you to not know. Maybe, when this is all over, I'll tell you. Or maybe you'll figure it out for yourself before then."
+	<<He>> pauses, and looks back to you. "It's not that I don't trust you. It really is better this way."
+	<br><br>
+<<else>>
+	<<if $speech_attitude is "meek">>
+		"So, why are you helping Landry?
+	<<elseif $speech_attitude is "bratty">>
+		"So, why are you helping me?
+	<<else>>
+		"So, why are you helping us?
+	<</if>>
+	This all seems pretty personal. There must be a story behind it."
+	<br><br>
+
+	<<He>> pauses. "You aren't wrong. Part of it is personal. Not all of it." <<He>> stands up. "The skyscraper is an affront to nature. Its shadow over the town will spread ill.
+	The High Elk and Cannibal Fox seek to turn Avery into their third, the Scarlet Hound, through a ritual during the blood moon."
+	<br><br>
+
+	<<He>> paces. "That kind of power would ruin <<nnpc_him "Avery">>, and that ruin, that <i>poison</i>, would seep into the world. Everything would become worse. It would be a slow, strangling death."
+	<br><br>
+
+	<<He>> stops. "My personal reasons are unimportant." <<He>> kneels back down before the keypad.
+<</if>>
+<<He>> continues punching in combinations.
+<br><br>
+
+"Do you believe someone like Avery could ever redeem <<nnpc_himself "Avery">>?" <<He>> doesn't wait for you to answer. "<<nnpc_Hes "Avery">> a disgusting <<nnpc_gender "Avery">>. <<nnpc_He "Avery">> deserves Hell and high water."
+The dull beep of the keypad rings out in between <<his>> words. "We aren't just saving <<nnpc_him "Avery">> from <<nnpc_himself "Avery">>. We're making sure <<nnpc_he "Avery">> doesn't drag us all down with <<nnpc_him "Avery">>."
+<<He>> stops after another dull beep. <<He>> stays silent, as if listening for something.
+<br><br>
+
+<<if $avery_mansion.schedule is "return" or $avery_mansion.schedule is "sleep" and $avery_mansion.heist_suspicion gte 3>>
+	<<if $avery_mansion.schedule is "return">>
+		<span class="red">You hear the screech of tires, and the rattle of the front gates. Avery has returned, and will be looking for you.</span>
+	<<else>>
+		<span class="red">You hear the walls creak, as if in warning. Avery is approaching the study.</span>
+	<</if>>
+	<br><br>
+
+	The brown fox quickly removes the film from the keypad, looking towards the stairs. "Do you trust me?"
+	<br><br>
+
+	<<link [[Yes|Mansion Fox Heist Vault Caught]]>><<set $phase to 1>><</link>>
+	<br>
+	<<link [[No|Mansion Fox Heist Vault Caught]]>><<set $phase to 2>><</link>>
+	<br>
+<<else>>
+	When <<he>> doesn't hear anything, <<he>> continues again.
+	<br><br>
+
+	<<link [[Next|Mansion Fox Heist Vault 2]]>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Fox Heist Vault Caught
+<<effects>>
+<<if $phase is 1>>
+	<<He>> smiles. "Good. Come here." <span class="red"><<He>> pulls you over to the rack, and starts to strap you into it.</span> "Play along. Get <<nnpc_him "Avery">> to let <<nnpc_his "Avery">> guard down."
+<<else>>
+	<<He>> smiles. "Unfortunate. I'll leave it to you, then. Get <<nnpc_him "Avery">> to let <<nnpc_his "Avery">> guard down."
+<</if>>
+<br><br>
+
+<<He>> skulks away into a corner, and vanishes in the shadows.
+<br><br>
+
+<<endevent "phaseless">><<npc Avery>><<person1>>
+Avery stomps into the room.
+<<if $avery_mansion.schedule is "return">>
+	"I knew it."
+<<else>>
+	"I knew I heard something."
+<</if>>
+<<npcincr Avery rage 10>><<ggarage>>
+<br><br>
+
+<<if $phase is 1>>
+	<<He>> pauses upon seeing you already strapped in.
+	<br><br>
+
+	<<link [[Play along|Mansion Fox Heist Vault Whip]]>><<set $phase2 to 1>><</link>>
+	<br>
+	<<link [[Stay quiet|Mansion Fox Heist Vault Whip]]>><<set $phase2 to 2>><</link>>
+	<br>
+<<else>>
+	<<He>> spots you right away, <<his>> teeth grinding together. "What do you think you're doing?" <<He>> makes a grab for you.
+	<br><br>
+
+	<<link [[Next|Mansion Fox Heist Vault Fight]]>><<set $fightstart to 1>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Fox Heist Vault Whip
+<<effects>>
+
+<<if $phase2 is 1>>
+	<<set $seductiondifficulty to (8000 - ((C.npc.Avery.lust * 100) + (C.npc.Avery.dom * 100)))>>
+	<<seductioncheck>>
+	<<seductionskilluptext>>
+	<<seductionskilluse>>
+
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"I wanted to surprise you," you say quietly. "Please, go ahead."
+	<<elseif $speech_attitude is "bratty">>
+		"Come on, let out some of that anger," you say.
+	<<else>>
+		"Surprise," you say. "I wanted to do something nice for you."
+	<</if>>
+	<br><br>
+
+	<<if $seductionrating gte $seductionrequired>>
+		<<set $phase2 to 3>>
+		<<Hes>> silent for a moment, then starts to laugh. "What a lovely treat, <<pcpetname "Avery">>." <<He>> starts to browse the various tools, before deciding on the whip.
+	<<else>>
+		<span class="red"><<His>> expression doesn't change.</span> "You've forgotten your place." <<He>> starts to browse the various tools, before deciding on the whip.
+	<</if>>
+<<else>>
+	"You've forgotten your place." <<He>> starts to browse the various tools, before deciding on the whip.
+<</if>>
+<br><br>
+
+<<He>> cracks it in <<his>> hands. "When this is over, you're going to tell me how you got in to begin with. Not now. The pain will make you more honest."
+<br><br>
+
+<<if $phase2 is 3>>
+	You grunt as pain erupts in your back. Avery lashes you again. And again. <span class="green"><<Hes>> holding back, ever so slightly.</span>
+	<<masopain 10>>
+<<else>>
+	You cry out as pain erupts in your back. Avery lashes you again. And again. <<He>> puts so much energy into it that <<he>> grunts with exertion.
+	<<masopain 20>>
+<</if>>
+<br><br>
+
+<<if (currentSkillValue('willpower') / 10) gte (($pain - 100) + random(1, 100))>>
+	After the initial shock, <span class="green">you find that you're able to bear it.</span> For now.
+	<br><br>
+
+	<<link [[Endure it|Mansion Fox Heist Vault Whip 2]]>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Pretend to be in intolerable pain|Mansion Fox Heist Vault Whip 2]]>><<set $phase to 1>><<npcincr Avery dom 1>><</link>><<gdom>>
+	<br>
+	<<link [[Mock Avery|Mansion Fox Heist Vault Whip 2]]>><<set $phase to 2>><</link>><<ggpain>>
+	<br>
+<<else>>
+	<span class="red">It's too much for you.</span> You find yourself screaming for Avery to stop, words coming unbeckoned, tripping over each other in their haste to escape. Avery responds with laughter, and another crack of the whip.<<gdom>><<npcincr Avery dom 1>>
+	<br><br>
+
+	<<link [[Next|Mansion Fox Heist Vault Whip 2]]>><<set $phase to 1>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Fox Heist Vault Whip 2
+<<effects>>
+
+<<if $phase is 0>>
+	You bear the pain as best you can. Avery speeds up. You feel drops of liquid land on your shoulders. Droplets of Avery's sweat? Something else? You can't turn to see.
+<<elseif $phase is 1>>
+	You scream and strain against the ropes binding you. But the ropes are too strong for your limbs, and Avery's cruelty too strong for your cries. <<He>> speeds up, lashing you even faster.
+<<elseif $phase is 2>>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"I thought you'd hit harder," you say. "It's okay. I'm sure you'll do better next time."
+	<<elseif $speech_attitude is "bratty">>
+		"Is that all?" you ask. "You're even weaker than you look."
+	<<else>>
+		"Is that all you can do?" you ask. "Bailey would eat you for breakfast."
+	<</if>>
+	<<masopain 10>>
+	<br><br>
+	Avery's next lash is the hardest yet. <<He>> follows it up with a terrible flurry of blows. "I'm indeed going easy on you," Avery says. <<He>> sounds exhausted. "Don't test me."
+<</if>>
+<<masopain 20>>
+<br><br>
+<<if (currentSkillValue('willpower') / 10) gte (($pain - 100) + random(1, 100))>>
+	Avery doesn't slow. A continuous wave of pain washes over your back, <span class="green">but you endure.</span>
+<<else>>
+	<span class="red">The pain overwhelms you.</span> You scream for Avery to stop, and strain at the ropes binding your limbs. All to no avail. Avery gives no sign of even hearing you.<<gdom>><<npcincr Avery dom 1>>
+<</if>>
+<br><br>
+
+You hold your breath and brace yourself for the next strike. It doesn't come. Avery steps around you, looking into your eyes.
+<br><br>
+
+<<He>> leans in. <<His>> expression is darker. "How did you strap yourself in?"
+<br><br>
+
+<span class="blue">You see the brown fox emerge from the corner, now that Avery's back is turned.</span>
+<br><br>
+
+<<link [[Mock Avery|Mansion Fox Heist Vault Whip 3]]>><<npcincr Avery rage 1>><<set $phase to 1>><</link>><<garage>>
+<br>
+<<link [[Spit in Avery's face|Mansion Fox Heist Vault Whip 3]]>><<npcincr Avery rage 5>><<set $phase to 2>><</link>><<ggarage>>
+<br>
+<<link [[Tell Avery to look behind <<him>>|Mansion Fox Heist Vault Whip 3]]>><<set $phase to 3>><</link>>
+<br>
+<<link [[Stay quiet|Mansion Fox Heist Vault Whip 3]]>><<set $phase to 4>><<npcincr Avery rage 1>><<npcincr Avery dom 1>><</link>><<garage>><<gdom>>
+<br>
+
+:: Mansion Fox Heist Vault Whip 3
+<<effects>><<summon_brown_fox 2>><<person1>>
+<<if $phase is 1>>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"You were so excited that you only just now realised it?"
+	<<elseif $speech_attitude is "bratty">>
+		"Took you long enough to figure it out, jackass."
+	<<else>>
+		"That should have been the first question you asked."
+	<</if>>
+	<br><br>
+
+	<<He>> raises <<his>> hand to slap you.
+<<elseif $phase is 2>>
+	You spit right in <<his>> face. <<He>> recoils as if wounded.
+	<br><br>
+
+	"You insolent little stain!" <<He>> raises <<his>> hand to slap you.
+<<elseif $phase is 3>>
+	"Look behind you."
+	<br><br>
+
+	<<He>> scoffs. "I'm not falling for that." <<He>> raises <<his>> hand to slap you.
+<<else>>
+	You say nothing, averting your eyes. That seems to only make <<him>> angrier. <<He>> raises <<his>> hand to slap you.
+<</if>>
+<br><br>
+
+Another hand grabs <<him>> by the wrist. "Who the-" <<He>> turns to face the brown fox. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span> The whip falls to the ground.
+<br><br>
+
+The brown fox leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. The brown fox looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
+Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the dungeon.<<person2>>
+<br><br>
+
+<<He>> doesn't unbind you before leaving.
+<br><br>
+
+<<link [[Next|Mansion Fox Heist Vault Whip 4]]>><<pass 10>><<endevent>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault Whip 4
+<<effects>><<summon_brown_fox 1>><<person1>>
+
+You wait, bound to the rack, left to your thoughts and the pain in your back.
+<br><br>
+
+You hear someone coming back down the stairs. You tense up. The brown fox doesn't usually make that much noice.
+<br><br>
+
+Your worries vanish upon hearing <<his>> voice, though. "Sorry for making you wait. I've made sure Avery won't remember this, although <<nnpc_he "Avery">> might remember being angry."
+<<He>> steps around you, caressing your cheek. "That all looked painful. Hold still." As if you could move if you wanted to.
+<br><br>
+
+<<He>> pulls something from another satchel under <<his>> cloak. You hear a short click, and feel something cool get poured over your back. A pair of gentle hands begin to rub it in.
+It stings briefly, but a soothing chill spreads immediately after. <<pain -50>><<lllpain>>
+<br><br>
+
+You sigh in relief. <<He>> giggles. "Here, I know a few tricks." <<He>> begins pressing <<his>> thumbs into your back. <<He>> moves them in small circles, expertly finding every tense spot and forcing it to loosen.
+You nearly moan at <<his>> touch, but manage to hold it in. <<stress -6>><<lstress>>
+<br><br>
+
+<<He>> starts to unbind you before you can get too comfortable. "Thank you for trusting me." <<He>> helps you stand, and returns to the keypad.
+<br><br>
+
+<<link [[Next|Mansion Fox Heist Vault 2]]>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault Fight
+<<if $fightstart is 1>>
+	<<set $fightstart to 0>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemytrust -= 100>>
+	<<set $enemyanger += 200>>
+	<<npcidlegenitals>>
+	<<set $timer to 4>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0) or $timer lte 0>>
+	<span id="next"><<link [[Next|Mansion Fox Heist Vault Fight Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Mansion Fox Heist Vault Fight]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Mansion Fox Heist Vault Fight Finish
+<<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation "short">>
+	A hand grabs Avery's wrist as <<he>> groggily recovers.
+<<elseif $enemyhealth lte 0>>
+	Avery stumbles away from you. A hand grabs <<him>> by the wrist.
+<<else>>
+	Right as Avery is about to strike you again, a hand grabs <<his>> wrist.
+<</if>>
+"Who the-" <<He>> turns to face the brown fox. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span>
+<br><br>
+
+The brown fox leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. The brown fox looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
+Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the dungeon.
+<br><br>
+
+<<clotheson>>
+<<endcombat>>
+
+<<link [[Next|Mansion Fox Heist Fight Finish 2]]>><<pass 10>><<endevent>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault Fight Finish 2
+<<effects>><<summon_brown_fox 1>><<person1>>
+
+You wait, left to your thoughts.
+<br><br>
+
+The brown fox walks back down the stairs. "Sorry for making you wait. I've made sure Avery won't remember this, although <<nnpc_he "Avery">> might remember being angry." <<He>> returns to the keypad.
+<br><br>
+
+<<link [[Next|Mansion Fox Heist Vault 2]]>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault 2
+<<effects>>
+
+It lets out a few more dull beeps, before they give way to a higher-pitched one. <span class="green">The vault door opens.</span> A purple smoke billows out, filling your lungs with an intense sweetness.<<garousal>><<arousal 600>>
+<br><br>
+
+You enter the vault with <<him>>, surrounded by metal walls, floor, and ceiling. It's empty save a purple cushion on a plinth.
+<br><br>
+
+Resting on the cushion, <span class="pink">a white so pale.</span> The wishing stones.
+<br><br>
+
+<<His>> hand moves, as if to reach for them, but <<he>> stops <<himself>>. "You're the reason we've come this far. It should be you who becomes their new keeper." <<He>> gestures forward.
+<br><br>
+
+You take the wishing stones. An energy rushes through your arm. For a moment, your vision is filled with a pale light, and a sensation of floating, as if underwater. <span class="green">You feel stronger.</span>
+<br><br>
+
+You leave the fake stones in their place. The two of you exit the vault. It seals shut behind you with a hiss.
+<br><br>
+
+<<set $auriga_artefact to "pc">><<set $fake_artefact to "Avery">>
+<<set $avery_mansion.fox.friend to true>><<set $avery_mansion.fox.stones to true>><<set $avery_mansion.fox.dungeon to true>><<set $avery_mansion.fox.progress += 3>>
+<<He>> lets out a deep breath. "We did it."
+<<He>> stares down at the stones in your hand. After a moment, <<he>> grows a wide smile. "You've done a very good thing. The plan is set, and their ritual will backfire.
+With the right subterfuge, we can <span class="green">speed up the construction of the tower</span>, and get this whole ordeal over with sooner."
+<br><br>
+
+<<link [[Thank <<him>> for <<his>> help|Mansion Fox Heist Vault 3]]>><<set $phase to 1>><</link>>
+<br>
+<<link [[Hug <<him>>|Mansion Fox Heist Vault 3]]>><<set $phase to 2>><</link>>
+<br>
+<<link [[Say nothing|Mansion Fox Heist Vault 3]]>><<set $phase to 3>><</link>>
+<br>
+
+:: Mansion Fox Heist Vault 3
+<<effects>>
+<<if $phase is 1>>
+	<<if $speech_attitude is "meek">>
+		"Thank you for your help." You bow. "I couldn't have done it without you."
+	<<elseif $speech_attitude is "bratty">>
+		"Thanks for the help. It would have been a lot harder without you."
+	<<else>>
+		"Thank you for the help," you say. "I hope this will be over soon, too."
+	<</if>>
+	<br><br>
+
+	"You did most of the work. This was your victory." <<He>> waves <<his>> hand. 
+	<br><br>
+<<elseif $phase is 2>>
+	You hug <<him>> tightly. <<He>> squeaks in surprise. After a moment of hesitation, <<he>> returns it.
+	<br><br>
+<</if>>
+
+"You've done well by me. When the day comes for the bones to be used..."
+<<He>> looks away briefly. "I'll come sneak into the mansion after Avery leaves for the tower. We can share a drink over your victory. Promise." <<He>> smiles at you.
+<br><br>
+
+The two of you leave the dungeon, sealing it behind you.
+<br><br>
+
+The brown fox waves and climbs back over the garden wall.
+<br><br>
+
+<<set $avery_mansion.fox.task to false>>
+<<set $avery_mansion.fox.task_complete to false>>
+<<set $avery_mansion.fox.task_detail to false>>
+
+<<link [[Next|Mansion Garden]]>><<endevent>><</link>>
+<br>
+
+
 :: Mansion Piano Fox
 <<effects>><<summon_brown_fox 1>><<person1>>
 You creep down the stairs, towards the lounge. Each footfall makes you nervous. You consider looking for something to use as a weapon, but there's a paradoxical sense of calm washing over you. Your fingers feel loose. You have no grip strength.
@@ -2124,7 +2956,7 @@ Whispered name on the wind,<br>
 All the weight of our sin.<br><br>
 </span>
 
-The notes of the final word are much louder. It shakes you to your core, nearly bringing you to your knees.
+The note of the final word is much louder. It shakes you to your core, nearly bringing you to your knees.
 <br><br>
 
 <span class="narration">
@@ -2151,7 +2983,7 @@ For our names, cast aside,<br>
 Lay unspoken, brookside.<br><br>
 </span>
 
-<<He>> steps into the <<if Time.isBloodMoon()>>red<</if>> light. <<His>> face remains in the dark, but a <span class="tentacle">crackling antler</span> of sheer emptiness pokes free from the gloom. Moonlight reflects off of its three terrible prongs.
+<<He>> steps into the <<if Time.isBloodMoon()>>red<</if>> light. <<His>> face remains in the dark, but a <span class="tentacle">crackling antler</span> of pure emptiness pokes free from the gloom. Moonlight reflects off of its three terrible prongs.
 <br><br>
 
 <span class="narration">
@@ -2164,7 +2996,7 @@ The claws of an elongated, blackened arm stretch towards you, one pointing right
 <br><br>
 
 <<if $avery_mansion.fox.progress gte 5>>
-	A creature you once knew the name stands before you.
+	A creature you once knew the name of stands before you.
 <<else>>
 	A creature with no name stares you down.
 <</if>>
@@ -2267,7 +3099,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 <<effects>>
 
 <<switch $mansion_fox_talk>>
-	<<case "intro">>"I'm sorry," <<he>> says.
+	<<case "intro">>"I'm sorry," <<he>> says, in a tone even more gentle than usual.
 	<<case "apology">>
 		<<if !$mansion_fox_followup.includesAny("apologyAccept", "apologyDeny")>>
 			<<His>> head tilts.
@@ -2277,7 +3109,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 				"You denied my apology without even knowing what it was for?" <<He>> pouts.
 			<</if>>
 		<</if>>
-		"You weren't meant to be that close to the bones when they activated. You weren't meant to be in the tower at all. I know their rituals. The Silver Fox changed it. <<nnpc_He "Harper">> knew something."
+		"You weren't meant to be that close to the bones when they activated. You weren't meant to be in the tower at all. I know their rituals. The Cannibal Fox changed it. <<nnpc_He "Harper">> knew something."
 		<br><br>
 
 		<<He>> lets out a dry, sad laugh. "<<nnpc_Hes "Harper">> still one step ahead of everyone else."
@@ -2385,7 +3217,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 	<<case "piano">>
 		"You know the melody, don't you?" <<He>> smiles. "Perhaps I'll share the words with you, some day."
 	<<case "flirt">>
-		<<set $seductiondifficulty to 8000>>
+		<<set $seductiondifficulty to 10000>>
 		<<seductioncheck>>
 		<<seductionskilluptext>>
 		<<seductionskilluse>>
@@ -2522,10 +3354,14 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 <<else>>
 	"Until we meet again.
 <</if>>
-May your triumphs and troubles shape you into diamond."
+I'll be going dark for a time. May your triumphs and troubles shape you into diamond."
 <br><br>
 
-<<He>> brushes by you, and vanishes into the night.
+<<if $avery_mansion.fox.progress gte 15 and $mansion_fox_talk isnot "never" and $mansion_fox_followup.includes("drink")>>
+	<<He>> starts to walk by you, but stops. <<He>> places a hand on your shoulder. "You are so very curious. I look forward to the next time we meet." <<He>> vanishes into the night.
+<<else>>
+	<<He>> brushes by you, and vanishes into the night.
+<</if>>
 <<unset $mansion_fox_followup>><<unset $mansion_fox_talk>>
 <<set $avery_mansion.fox.end to true>>
 <br><br>
