@@ -125,18 +125,23 @@ Weather.Thermometer = (() => {
 
 		Weather.Tooltips.thermometer();
 
-		if (V.options.showSidebarPrecipitation === false || Weather.precipitation === "none" || Weather.overcast <= 0.25 || V.outside === 0 || V.underwater)
-			return;
+		if (V.options.showSidebarEffects === false) return;
 		tooltipElement.on("click", () => {
-			if (!T.hideSidebarWeather) {
-				T.hideSidebarWeather = true;
+			if (!T.hideSidebarEffects) {
+				T.hideSidebarEffects = true;
 			} else {
-				T.hideSidebarWeather = false;
+				T.hideSidebarEffects = false;
 			}
 			const canvasModel = Renderer.locateModel("main", "sidebar");
 			if (canvasModel.canvas) {
 				Renderer.refreshLayer(canvasModel, "precipitation_back");
 				Renderer.refreshLayer(canvasModel, "precipitation_front");
+				Renderer.refreshLayer(canvasModel, "cold_breath");
+				Renderer.refreshLayer(canvasModel, "water_back");
+				Renderer.refreshLayer(canvasModel, "water_front");
+				Renderer.refreshLayer(canvasModel, "water_breath");
+				Renderer.refreshLayer(canvasModel, "fire_back");
+				Renderer.refreshLayer(canvasModel, "fire_front");
 			}
 		});
 	}

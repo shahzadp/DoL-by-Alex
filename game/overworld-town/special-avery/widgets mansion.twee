@@ -104,7 +104,7 @@
 
 <<widget "avery_mansion_init">>
 <<set $avery_mansion to {}>>
-<<set $avery_mansion.version to 1>>
+<<set $avery_mansion.version to 2>>
 
 <<set $avery_mansion.pool to 0>>
 <<set $avery_mansion.kitchen to 0>>
@@ -158,6 +158,8 @@
 }>>
 <<set $avery_mansion.kitchen_made to 0>>
 <<set $avery_mansion.recipe to []>>
+
+<<set $daily.avery.housekeeping_events to {}>>
 
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
@@ -411,11 +413,13 @@
 		<<refuseicon>><<link [[Stop|$avery_passage]]>><</link>>
 	<<else>>
 		<<if $avery_mansion.bedroom gte 1>>
-			<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom.</span>
+			<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom<<if $avery_mansion.pool gte 1>> and the pool<</if>>.</span>
 			<<if $avery_mansion.bedroom_state isnot "locked">>
 				<br>
 				<<socialiseicon "angry">><<link [[Ignore Avery's warning and clean the bedroom|Mansion Housework]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
 			<</if>>
+		<<elseif $avery_mansion.pool gte 1>>
+			<span class="blue">The mansion is spick and span except for the pool.</span>
 		<<else>>
 			<span class="green">The mansion is spick and span.</span>
 		<</if>>
@@ -458,7 +462,10 @@
 	<<if !$avery_mansion.jobs.includes("garden")>>
 		<<set $avery_mansion.garden to 0>>
 	<</if>>
-	<<set _avery_housework_count to $avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden>>
+	<<set _avery_housework_count to $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden>>
+	<<if !($avery_mansion.schedule is "pool" and $daily.avery.housekeeping_events.pool)>>
+		<<set _avery_housework_count += $avery_mansion.pool>>
+	<</if>>
 	<<if $avery_mansion.bedroom gte 1 and $avery_mansion.bedroom_state isnot "locked" and $avery_mansion.bedroom_state isnot "off-limits">>
 		<<set _avery_housework_bedroom to true>>
 		<<set _avery_housework_count += $avery_mansion.bedroom>>
@@ -566,7 +573,7 @@
 	<<else>>
 		<span class="green">Everything is in its right place.</span>
 	<</if>>
-	<<if  $avery_mansion.bedroom gte 1>>
+	<<if $avery_mansion.bedroom gte 1>>
 		<<if $avery_mansion.bedroom_state is "off-limits">>
 			<br>
 			<span class="blue">Avery slumbers, and doesn't like you cleaning the bedroom while <<nnpc_he Avery>> sleeps.</span>
@@ -649,11 +656,13 @@
 		<<avery_housework_check>>
 		<<if !_avery_housework_count>>
 			<<if $avery_mansion.bedroom gte 1>>
-				<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom.</span>
+				<span class="blue">The mansion is spick and span except for the<<if $avery_mansion.bedroom_state is "locked">> locked<</if>> bedroom<<if $avery_mansion.pool gte 1>> and the pool<</if>>.</span>
 				<<if $bus isnot "avery_bedroom" and $avery_mansion.bedroom_state isnot "locked">>
 					<br>
 					<<link [[Ignore Avery's warning|$passage]]>><<set $avery_mansion.bedroom_state to "ignored">><</link>>
 				<</if>>
+			<<elseif $avery_mansion.pool gte 1>>
+				<span class="blue">The mansion is spick and span except for the pool.</span>
 			<<else>>
 				<span class="green">The mansion is spick and span.</span>
 			<</if>>
@@ -1002,7 +1011,7 @@
 	<</if>>
 	<<if $avery_mansion.display gte 1>>
 		<br>
-		"The display room lookes like a fucking tomb."
+		"The display room looks like a fucking tomb."
 	<</if>>
 	<<if $avery_mansion.bedroom gte 1>>
 		<br>
@@ -1584,7 +1593,7 @@
 			Avery trips and falls over the table in the centre of the room.
 			<<avery_housework_change "lounge" 1>>
 		<<case "study">>
-			Avery collides with a bookcase, and is almost buried by an avalanch of books.
+			Avery collides with a bookcase, and is almost buried by an avalanche of books.
 		<<case "bedroom">>
 			Avery stumbles onto the balcony, and only manages to keep from falling by tearing the curtains off their hinges.
 			<<avery_housework_change "bedroom" 1>>
@@ -2087,13 +2096,13 @@
 <</widget>>
 
 <<widget "avery_mansion_chase_sound">>
-	<<if _args[0] is "garage">>
+	<<if _args[0] is "garage" and $avery_mansion.chase.trap.includes("garage")>>
 		Avery roars in anguish. <<He>> found your handiwork in the garage.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
 		<<set $avery_mansion.chase.trap.delete("garage")>>
-	<<elseif _args[0] is "pool">>
+	<<elseif _args[0] is "pool" and $avery_mansion.chase.trap.includes("pool")>>
 		Avery cries out. It's soon followed by a loud splash. <<He>> slipped on your oil, and fell into the pool.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
 		<<set $avery_mansion.chase.trap.delete("pool")>>
-	<<elseif _args[0] is "hallway_2">>
+	<<elseif _args[0] is "hallway_2" and $avery_mansion.chase.trap.includes("hallway_2")>>
 		Avery shouts in surprise. It's followed by a succession of thuds as <<he>> tumbles down the main stair. Your marbles did the trick.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
 		<<set $avery_mansion.chase.trap.delete("hallway_2")>>
 	<<elseif _args[0] is "main_stair">>
@@ -2963,11 +2972,11 @@
 				<</if>>
 			<<else>>
 				<<if Time.monthDay is Time.lastDayOfMonth>>
-					<span class="gold">"The opening ceremony is tonight.</span> When the moon is blood red.
+					"<span class="gold">The opening ceremony is tonight.</span> When the moon is blood red.
 				<<elseif Time.monthDay is Time.lastDayOfMonth - 1>>
-					<span class="gold">"The opening ceremony will be tomorrow.</span> When the moon is blood red.
+					"<span class="gold">The opening ceremony will be tomorrow.</span> When the moon is blood red.
 				<<else>>
-					<span class="gold">"The opening ceremony will be on the last day of the month.</span> When the moon is blood red.
+					"<span class="gold">The opening ceremony will be on the last day of the month.</span> When the moon is blood red.
 				<</if>>
 				They're inducting me into their circle, and it's vital you attend. There can be no ceremony without you."
 				<br><br>
@@ -3568,8 +3577,9 @@
 	<<avery_housework_change "lounge" -1>>
 	<<pass _housekeeping_time>>
 
-	<<if $avery_mansion.schedule is "lounge">>
+	<<if $avery_mansion.schedule is "lounge" and !$daily.avery.housekeeping_events.lounge>>
 		<<set _event_triggered to true>>
+		<<set $daily.avery.housekeeping_events.lounge to true>>
 		<<npc "Avery">><<person1>>
 		<br><br>
 
@@ -3581,8 +3591,9 @@
 		<<link [[Ignore|Mansion Housework Ignore]]>><</link>>
 		<br>
 		<<link [[Be rude|Mansion Housework Rude]]>><<def 1>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<llove>><<garage>>
-	<<elseif $avery_mansion.schedule is "drink">>
+	<<elseif $avery_mansion.schedule is "drink" and !$daily.avery.housekeeping_events.drink>>
 		<<set _event_triggered to true>>
+		<<set $daily.avery.housekeeping_events.drink to true>>
 		<<npc "Avery">><<person1>>
 		<br><br>
 
@@ -3628,8 +3639,9 @@
 	<<avery_housework_change "dining" -1>>
 	<<pass _housekeeping_time>>
 
-	<<if $avery_mansion.schedule is "breakfast">>
+	<<if $avery_mansion.schedule is "breakfast" and !$daily.avery.housekeeping_events.breakfast>>
 		<<set _event_triggered to true>>
+		<<set $daily.avery.housekeeping_events.breakfast to true>>
 		<<npc "Avery">><<person1>>
 		<br><br>
 
@@ -3796,8 +3808,9 @@
 	<<avery_housework_change "garden" -1>>
 	<<pass _tending_time>>
 
-	<<if $avery_mansion.schedule is "garden">>
+	<<if $avery_mansion.schedule is "garden" and !$daily.avery.housekeeping_events.garden>>
 		<<set _event_triggered to true>>
+		<<set $daily.avery.housekeeping_events.garden to true>>
 		<<npc "Avery">><<person1>>
 		<br><br>
 
@@ -3821,24 +3834,14 @@
 <</widget>>
 
 <<widget "avery_mansion_clean_pool">>
-	<<if $avery_mansion.pool gte 4>>
-		You unfurl a hose, and vacuum the pool clear of algae.
-	<<elseif $avery_mansion.pool is 3>>
-		You retrieve chlorine from a nearby shed, and add a healthy dose to the pool.
-	<<elseif $avery_mansion.pool is 2>>
-		You remove the bugs floating on the pool with a net.
-	<<elseif $avery_mansion.pool is 1>>
-		You clear the bugs floating on the pool with a net, leaving it pristine.
-	<</if>>
-	<<avery_housework_change "pool" -1>>
-	<<pass _housekeeping_time>>
-
-	<<if $avery_mansion.schedule is "pool">>
-		<<npc "Avery">><<person1>>
+	<<if $avery_mansion.schedule is "pool" and $daily.avery.housekeeping_events.pool>>
+		Avery is still using the pool. You decide to leave <<nnpc_him "Avery">> to it.
+	<<elseif $avery_mansion.schedule is "pool" and !$daily.avery.housekeeping_events.pool>>
 		<<set _event_triggered to true>>
-		<br><br>
-
-		Avery strides outside, <span class="lewd">wearing nothing.</span>
+		<<set $daily.avery.housekeeping_events.pool to true>>
+		<<npc "Avery">><<person1>>
+		<br>
+		You head to the pool and start your chore. Avery strides outside, <span class="lewd">wearing nothing.</span>
 		<<if Weather.temperature <= 10>>
 			The cold doesn't seem to bother <<him>>.
 		<</if>>
@@ -3853,6 +3856,18 @@
 		<<link [[Tell Avery to wait until you've finished|Mansion Housework Pool Tell]]>><<npcincr Avery rage 1>><</link>><<garage>>
 		<br>
 		<<link [[Stop cleaning for now|Mansion Pool]]>><<avery_housework_change "pool" 1>><</link>>
+	<<else>>
+		<<if $avery_mansion.pool gte 4>>
+			You unfurl a hose, and vacuum the pool clear of algae.
+		<<elseif $avery_mansion.pool is 3>>
+			You retrieve chlorine from a nearby shed, and add a healthy dose to the pool.
+		<<elseif $avery_mansion.pool is 2>>
+			You remove the bugs floating on the pool with a net.
+		<<elseif $avery_mansion.pool is 1>>
+			You clear the bugs floating on the pool with a net, leaving it pristine.
+		<</if>>
+		<<avery_housework_change "pool" -1>>
+		<<pass _housekeeping_time>>
 	<</if>>
 	<br>
 <</widget>>

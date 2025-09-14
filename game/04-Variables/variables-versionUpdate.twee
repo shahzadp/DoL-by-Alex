@@ -6022,9 +6022,11 @@
 	<</if>>
 
 	<!-- 0.5.4.9 precipitation in player canvas -->
+	/* showSidebarPrecipitation replaced by showSidebarEffects in 0.5.5.4
 	<<if $options.showSidebarPrecipitation is undefined>>
 		<<set $options.showSidebarPrecipitation to true>>
 	<</if>>
+	*/
 
 	<!-- 0.5.4.9 Fox additions -->
 	<<if $transformationParts.traits.chase is undefined>>
@@ -6182,7 +6184,7 @@
 		<<else>>
 			<<set $avery_mansion.party_state to "waiting">>
 		<</if>>
-		
+
 		<<run delete V.avery_mansion.rage.party_missed>>
 		<<run delete V.avery_party_skipped>>
 
@@ -6205,5 +6207,40 @@
 		<<if $avery_mansion.injury is true>>
 			<<set $avery_injury to true>>
 		<</if>>
+	<</if>>
+
+	<<if $daily.avery is undefined>>
+		<<set $daily.avery to {}>>
+	<</if>>
+
+	<!-- 0.5.5.5, housekeeping events only once a day -->
+	<<if $avery_mansion and $avery_mansion.version is 1>>
+		<<set $avery_mansion.version to 2>>
+		<<set $daily.avery.housekeeping_events to {}>>
+	<</if>>
+
+	<!-- 0.5.5.5 non-precipitation effects in player canvas -->
+	<<if $options.showSidebarEffects is undefined>>
+		<<set $options.showSidebarEffects to $options.showSidebarPrecipitation or true>>
+		<<unset $options.showSidebarPrecipitation>>
+	<</if>>
+
+	<!-- 0.5.5.5, farm assault fields_damaged -->
+	<<if $farm and $plots.farm and ($fields_damaged is undefined or typeof $fields_damaged is "number")>>
+		<<if $farm_assault>>
+			<span class="orange italic small-description">Due to changes to the way damaged fields are tracked in update 0.5.5.4, we could not accurately determine which fields were damaged during the assault and which were damaged before the assault or left empty.
+			Because of this, the message at the end of this scene will not accurately portray the outcome. This is purely a cosmetic discrepancy; the farm plots themselves have not changed in any way.</span>
+			<br><br>
+		<<elseif $farm_attacked>>
+			<span class="orange italic small-description">Due to changes to the way damaged fields are tracked in update 0.5.5.4, we could not accurately determine which fields of Alex's farm were damaged during missed assaults and which were damaged before the assault or left empty.
+			Because of this, the message the next time you visit the farm will not accurately portray the outcome. This is purely a cosmetic discrepancy; the farm plots themselves have not changed in any way.</span>
+			<br><br>
+		<</if>>
+		<<set $fields_damaged to []>>
+		<<for _i to 0; _i lt $plots.farm.length; _i++>>
+			<<if $plots.farm[_i].stage is 0>>
+				<<set $fields_damaged.pushUnique(_i)>>
+			<</if>>
+		<</for>>
 	<</if>>
 <</widget>>

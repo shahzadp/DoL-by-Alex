@@ -823,6 +823,8 @@
 	<<set $farm.clearing to 100>>
 
 	<<farm_update>>
+
+	<<set $fields_damaged to []>>
 <</widget>>
 
 <<widget "farm_update">>
@@ -2591,7 +2593,7 @@
 		You owe <<him>> <<printmoney _owed>> in wages.
 		<br>
 		<<if $money gte _owed>>
-			<<link [[Pay|Farm Tower Pay]]>><<money `-_owed` "farm">><<set $NPCList[0].trust += 1>><<farm_guard_paid>><</link>><<gtrust>><<note "+ Security skill" "green">><<note "+ Wage" "red">>
+			<<ind>><<link [[Pay|Farm Tower Pay]]>><<money `-_owed` "farm">><<set $NPCList[0].trust += 1>><<farm_guard_paid>><</link>><<gtrust>><<note "+ Security skill" "green">><<note "+ Wage" "red">>
 			<br>
 		<</if>>
 	<</if>>
@@ -2777,7 +2779,7 @@
 			<<set _farm_damage to (5 - _farm_fight)>>
 		<<default>>
 			<<set _farm_damage to (4 - _farm_fight)>>
-	<</switch>><<set $farm_test to _farm_fight>>
+	<</switch>>
 	<<if _farm_damage is 0 and $farm_stage gte 12>>
 		<<run $timeMessages.pushUnique("heroicVictory")>>
 	<</if>>
@@ -2788,18 +2790,18 @@
 
 <<widget "damage_farm">>
 	<<if $fields_damaged is undefined>>
-		<<set $fields_damaged to 0>>
+		<<set $fields_damaged to []>>
 	<</if>>
 	<<if _args[0] is "target">>
 		<<clear_plot farm _args[1]>>
-		<<set $fields_damaged++>>
+		<<set $fields_damaged.push(_args[1])>>
 	<<elseif _args[0] is "loop">>
 		<<set _field_number to _args[1]>>
 		<<for _i to 0; _i lt _field_number; _i++>>
 			<<if $plots.farm[_i]>>
 				<<if $plots.farm[_i].stage gte 1>>
 					<<clear_plot farm _i>>
-					<<set $fields_damaged++>>
+					<<set $fields_damaged.push(_i)>>
 				<<else>>
 					<<set _field_number++>>
 				<</if>>
@@ -2812,21 +2814,21 @@
 <</widget>>
 
 <<widget "farm_damage_report">>
-	<<if $fields_damaged is 0>>
+	<<if $fields_damaged.length is 0>>
 		<<if $farm_destroyed is true>>
 			The farm was attacked while you were gone, <span class="blue">but there were no fields to burn.</span>
 		<<else>>
 			The farm was attacked while you were gone, <span class="green">but the defenders fought valiantly, and not a single field was lost.</span>
 		<</if>>
-	<<elseif $fields_damaged is 1>>
+	<<elseif $fields_damaged.length is 1>>
 		The farm was attacked while you were gone, <span class="purple">and a field torched</span> before the defenders drove them off.<<gtrauma>><<trauma 6>>
-	<<elseif $fields_damaged is 9>>
+	<<elseif $fields_damaged.length is 9>>
 		The farm was attacked while you were gone, the defenders defeated, <span class="red">and all the fields torched.</span><<gggtrauma>><<trauma 24>>
 	<<else>>
-		The farm was attacked while you were gone, <span class="pink">and <<number $fields_damaged>> fields torched</span> before the defenders drove them off.<<ggtrauma>><<trauma 12>>
+		The farm was attacked while you were gone, <span class="pink">and the <<ordinalList $fields_damaged.toSorted()>> fields torched</span> before the defenders drove them off.<<ggtrauma>><<trauma 12>>
 	<</if>>
 	<br><br>
-	<<unset $fields_damaged>>
+	<<set $fields_damaged to []>>
 	<<unset $farm_destroyed>>
 	<<unset $farm_attacked>>
 <</widget>>

@@ -1121,15 +1121,23 @@
 				<</if>>
 				<<if $itemActionObject and $itemActionObject.dirty gte 2>>
 					<<set $hc.disposals += 2>>
-					<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount++>><</if>>
+					<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount += 2>><</if>>
 				<<elseif $itemActionObject.state isnot "snuffed" and $itemActionObject.state isnot "lit">>
 					<<set $hc.disposals ++>>
 					<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount++>><</if>>
+				<<elseif $hcChallenge.forestNoShortcut>>
+					You feel that <span class="blue">$itemActionObject.state torches are not accepted as offerings</span>.
 				<</if>>
 
 			<<case "putInBucket">>You put $_itemText in a bucket. <<if ["snuffer"].includes($itemActionObject.type)>>It rattles around noisily.<</if>>
 			<<case "fromBucket">>You take $_itemText from the bucket.
-			<<case "emptyDisposal">>You dump $_itemText into the disposal channel.
+			<<case "emptyDisposal">>
+				You dump $_itemText into the disposal channel.
+				<<if $torchOffering>>
+					/* it should not be possible to put lit torches in a bucket, so no need to account for them */
+					<<unset $torchOffering>>
+					You feel that <span class="blue">snuffed torches are not accepted as offerings</span>.
+				<</if>>
 			<<case "emptyWell">>
 				<<if $bus is "lake">>
 					You empty $_itemText into the lake.
@@ -1583,7 +1591,7 @@
 							<<else>>
 								<<set $hc.disposals++>>
 							<</if>>
-							<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount++>><</if>>
+							<<if $hc.shortcutCount isnot undefined>><<if $_waterInThisContainer.dirty gte 2>><<set $hc.shortcutCount += 2>><<else>><<set $hc.shortcutCount++>><</if>><</if>>
 							<<run hcItemRemove($_waterInThisContainer, "emptyDisposal")>>
 						<</link>>
 					<<else>>
@@ -1595,8 +1603,10 @@
 									<<set $hc.disposals += 2>>
 								<<elseif $_valueTrash.state isnot "snuffed" and $_valueTrash.state isnot "lit">>
 									<<set $hc.disposals++>>
+								<<elseif $hcChallenge.forestNoShortcut>>
+									<<set $torchOffering to true>>
 								<</if>>
-								<<if $hc.shortcutCount isnot undefined>><<set $hc.shortcutCount++>><</if>>
+								<<if $hc.shortcutCount isnot undefined>><<if $_valueTrash.dirty gte 2>><<set $hc.shortcutCount += 2>><<else>><<set $hc.shortcutCount++>><</if>><</if>>
 								<<run hcItemRemove($_valueTrash)>>
 							<</for>>
 							<<set $itemAction to "emptyDisposal">><<set $itemActionObject to $_item>>

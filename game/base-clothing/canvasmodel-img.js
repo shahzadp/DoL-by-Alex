@@ -315,7 +315,7 @@ DefineMacro("modelprepare-player-body", function () {
 	T.modeloptions.brows_position = V.browsposition;
 
 	// Mouth
-	if (V.worn.handheld.type.includes("food") && !T.gift) {
+	if ((V.worn.handheld.type.includes("food") && !T.gift) || V.underwater === 1 || (T.tempEffects?.underwater && T.tempEffects.underwater !== "noMouth")) {
 		T.modeloptions.mouth = "chew";
 	} else if (V.trauma >= V.traumamax) {
 		T.modeloptions.mouth = "neutral";
@@ -573,9 +573,26 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.follower = V.follower;
 	}
 
+	/**
+	 *     ██████  █████  ███    ██ ██    ██  █████  ███████
+	 *    ██      ██   ██ ████   ██ ██    ██ ██   ██ ██
+	 *    ██      ███████ ██ ██  ██ ██    ██ ███████ ███████
+	 *    ██      ██   ██ ██  ██ ██  ██  ██  ██   ██      ██
+	 *     ██████ ██   ██ ██   ████   ████   ██   ██ ███████
+	 *
+	 *    ███████ ███████ ███████ ███████  ██████ ████████ ███████
+	 *    ██      ██      ██      ██      ██         ██    ██
+	 *    █████   █████   █████   █████   ██         ██    ███████
+	 *    ██      ██      ██      ██      ██         ██         ██
+	 *    ███████ ██      ██      ███████  ██████    ██    ███████
+	 */
+
 	T.modeloptions.precipitation =
-		V.options.showSidebarPrecipitation && Weather.precipitation !== "none" && Weather.overcast > 0.25 && V.outside === 1 && !V.underwater;
-	T.modeloptions.temperature = V.outside === 1 && Weather.temperature <= 5 && !V.underwater;
+		V.options.showSidebarEffects && Weather.precipitation !== "none" && Weather.overcast > 0.25 && V.outside === 1 && !V.underwater;
+	T.modeloptions.water = V.options.showSidebarEffects && (V.underwater === 1 || T.tempEffects?.underwater);
+	T.modeloptions.waterBreath = V.options.showSidebarEffects && T.modeloptions.water && T.tempEffects?.underwater !== "noMouth";
+	T.modeloptions.fire = V.options.showSidebarEffects && (V.fire || T.tempEffects?.fire || (V.farm_assault && V.fields_damaged.includes(V.bus)));
+	T.modeloptions.temperature = V.options.showSidebarEffects && !T.modeloptions.fire && !T.modeloptions.water && V.outside === 1 && Weather.temperature <= 5;
 });
 
 DefineMacro("modelprepare-player-clothes", function () {
