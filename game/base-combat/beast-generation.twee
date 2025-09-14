@@ -156,8 +156,9 @@
 	<<elseif _beast_monster is "beast">>
 		<!-- got explicit request to generate a beast, not a monster -->
 		<<set $NPCList[_n].monster to 0>>
-	<<elseif $bestialitydisable is "t">>
-		<!-- if bestiality is disabled, all beasts are converted to monsters unless explicitly overridden by the check just above -->
+	<<elseif $bestialitydisable is "t" && $NPCList[0] is "monster">>
+		<!-- if bestiality is disabled, some scenes check if the first beast is generated as a monster to see if the encounter can proceed to be lewd. if so - all subsequent beasts must also be converted to monsters unless explicitly told not to -->
+		<!-- TODO: rewrite such encounters with a clearer distinction between lewd and non-lewd generated beasts -->
 		<<set $NPCList[_n].monster to "monster">>
 	<<elseif $monsterchance gte $rng and ($hallucinations gte 1 or $monsterhallucinations is "f") or _beast_monster is "monster">>
 		<<set $NPCList[_n].monster to "monster">>
@@ -171,6 +172,8 @@
 			<<set $NPCList[_n].type to "centaur">>
 		<<elseif $NPCList[_n].type is "hawk">>
 			<<set $NPCList[_n].type to "harpy">>
+		<<elseif $NPCList[_n].type is "creature">>
+			<!-- do nothing so creatures don't become creatureboys -->
 		<<elseif $NPCList[_n].gender is "f">>
 			<<set $NPCList[_n].type to $NPCList[_n].type + "girl">>
 		<<else>>
