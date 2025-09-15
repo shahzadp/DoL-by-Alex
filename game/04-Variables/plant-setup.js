@@ -1766,7 +1766,7 @@ function initPlants() {
 			special: ["vegetarian", "sweet"],
 			season: [],
 			ingredients: ["chicken_egg", "cream", "sugar", "butter", "flour", "lemon"],
-			icon: "soufflé.png",
+			icon: "souffle.png",
 		},
 
 		tart: {
