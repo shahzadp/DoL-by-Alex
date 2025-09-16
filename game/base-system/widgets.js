@@ -628,10 +628,10 @@ DefineMacro("calculateallure", calculateallure);
 
 // check exposure, tags, and wetness
 function itemExposure(slot) {
-	const item = setup.clothes[slot][V.worn[slot].index];
+	const item = V.worn[slot];
 	// if you're looking to delete $overupperwetstage, $upperwetstage, $underupperwetstage, $overlowerwetstage, $lowerwetstage, or $underlowerwetstage - look here, too
 	if (item.type.includes("naked") || V[slot.replace("_", "") + "wetstage"] >= 3) return 2;
-	return V.worn[slot].exposed;
+	return item.exposed;
 }
 
 function exposure() {
@@ -667,7 +667,7 @@ function exposure() {
 	}
 
 	/*
-		is bra visible?
+		is bra or breasts visible?
 	*/
 	// "covered" is a strange beast and might need splitting into separate tags
 	// when applied to lower - it covers under_upper. when applied to under_upper - it makes it okay to be seen. when applied to face - it doesn't cover under_upper and doesn't make face okay to be seen...
@@ -687,14 +687,14 @@ function exposure() {
 	/*
 		panties
 	*/
-	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 1) && !V.worn.under_lower.type.includes("covered")) {
+	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 1) && (!V.worn.under_lower.type.includes("covered") || itemExposure("under_lower") >= 1)) {
 		V.exposed = 1;
 	}
 
 	/*
 		genitals
 	*/
-	if (["over_lower", "lower", "under_lower"].every(slot => itemExposure(slot) >= 1)) {
+	if (["over_lower", "lower"].every(slot => itemExposure(slot) >= 2) && itemExposure("under_lower") >= 1) {
 		V.exposed = 2;
 	}
 
