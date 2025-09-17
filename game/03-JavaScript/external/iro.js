@@ -722,7 +722,7 @@
 		handleRadius = props.handleRadius,
 		padding = props.padding,
 		sliderShape = props.sliderShape;
-	var ishorizontal = props.layoutDirection === 'horizontal'; // automatically calculate sliderSize if its not defined
+	var ishorizontal = props.layoutDirection === 'horizontal'; // automatically calculate sliderSize if it's not defined
 
 	sliderSize = (_sliderSize = sliderSize) != null ? _sliderSize : padding * 2 + handleRadius * 2;
 

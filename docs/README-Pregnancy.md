@@ -48,7 +48,7 @@ Will return `true` if the player knows they are pregnant.
 
 #### playerPregnancyProgress(percent)
 
-Will return between 0.00 and 1.00 based on how far the players pregnancy is. Providing false, will return the raw value, tho not expected to be used this way normally.
+Will return between 0.00 and 1.00 based on how far the player's pregnancy is. Providing false will return the raw value, though it's not expected to be used this way normally.
 
 -   `<<if playerPregnancyProgress() gte 0.5>>`
 -   `<<if between(playerPregnancyProgress(), 0.1, 0.4)>>`
@@ -83,7 +83,7 @@ Will return `true` if the players non-parasite pregnancy is ending.
 
 #### playerNormalPregnancyType()
 
-Will return the players pregnancy type as long as its not `parasite`.
+Will return the players pregnancy type as long as it's not `parasite`.
 
 -   `<<set _type to playerNormalPregnancyType()>>`
 -   `<<if playerNormalPregnancyType() is "human">>`
@@ -159,8 +159,8 @@ These are a series of functions which are there to track who knows about what pr
 
 Used to check if the `whoToCheck` knows about the current or an existing pregnancy of the `mother`.
 
--   `<<if knowsAboutPregnancy("pc","Whitney")>>` - Check if whitney is already aware of the players's current pregnancy
--   `<<if knowsAboutPregnancy("pc", "Whitney", 0)>>` - Check if whitney is aware of the players's first pregnancy
+-   `<<if knowsAboutPregnancy("pc","Whitney")>>` - Check if Whitney is already aware of the players's current pregnancy
+-   `<<if knowsAboutPregnancy("pc", "Whitney", 0)>>` - Check if Whitney is aware of the players's first pregnancy
 -   `<<if knowsAboutPregnancy("Whitney","pc")>>` - Check if the player is already aware of Whitney's current pregnancy
 -   `<<if knowsAboutPregnancy("Whitney", "pc", 0)>>` - Check if the player is aware of Whitney's first pregnancy
 
@@ -168,8 +168,8 @@ Used to check if the `whoToCheck` knows about the current or an existing pregnan
 
 Used to set `whoNowKnows` as someone who knows about the `mother`'s current or past pregnancy. Be sure to double check the usage when your providing an ID rather than "pc" or named npc's name. `track` is used to record the pregnancy for `V.babyIntro`, see current usage in `function giveBirthToChildren(mother, birthLocation, location, pregnancyOverride)`. `pregnancyOverride` is for random npc's specifically and normally should not be used outside of current usage.
 
--   `<<setKnowsAboutPregnancy "pc" "Whitney">>` - When whitney is aware of the players's current pregnancy
--   `<<setKnowsAboutPregnancy "pc" "Whitney" 0>>` - When whitney is aware of the players's first pregnancy
+-   `<<setKnowsAboutPregnancy "pc" "Whitney">>` - When Whitney is aware of the players's current pregnancy
+-   `<<setKnowsAboutPregnancy "pc" "Whitney" 0>>` - When Whitney is aware of the players's first pregnancy
 -   `<<setKnowsAboutPregnancy "Whitney" "pc">>` - When the player is aware of Whitney's current pregnancy
 -   `<<setKnowsAboutPregnancy "Whitney" "pc" 0>>` - When the player is aware of Whitney's first pregnancy
 

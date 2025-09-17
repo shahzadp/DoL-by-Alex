@@ -76,7 +76,7 @@ function masturbationActions() {
 				fragment.append(document.createElement("br"));
 			}
 
-			// Attempt to ensure an action is selected, set to "mrest" or the first available action if it doesnt exist
+			// Attempt to ensure an action is selected, set to "mrest" or the first available action if it doesn't exist
 			if (action.options.find(option => option.action === V[action.actionVariable + "default"])) {
 				V[action.actionVariable] = V[action.actionVariable + "default"];
 			} else if (!V.corruptionMasturbation && action.options.find(option => option.action === "mrest")) {
