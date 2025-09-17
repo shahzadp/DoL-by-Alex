@@ -112,7 +112,7 @@ Macro.add("numberStepper", {
 		let currentValue = initialValue !== undefined ? Math.min(Math.max(initialValue, min), max) : min;
 
 		const convertToPercentage = value => {
-			// Ensures it doesn't return the 0/100 when its not the min or max value
+			// Ensures it doesn't return the 0/100 when it's not the min or max value
 			if (value === min) return 0;
 			if (value === max) return 100;
 			return min === max ? 0 : Math.clamp(((value - min) / (max - min)) * 100, 1, 99);

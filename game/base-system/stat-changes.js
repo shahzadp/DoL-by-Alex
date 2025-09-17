@@ -1246,7 +1246,7 @@ const statChange = (() => {
 		if (V.replayScene) return false;
 		let lastBadEnd = V.badEndStats.last();
 
-		// Attempted to end tracking, but either tracking doesnt exist, the trackingEnd has already been set or the source doesn't match
+		// Attempted to end tracking, but either tracking doesn't exist, the trackingEnd has already been set or the source doesn't match
 		if (!lastBadEnd || lastBadEnd.source !== source || lastBadEnd.trackedEnd) {
 			badEndTracking(source, {
 				reason: "unknown",
