@@ -35,7 +35,7 @@ function shopClothingFilterToggleTrait(trait) {
 window.shopClothingFilterToggleTrait = shopClothingFilterToggleTrait;
 
 function toggleAllHairTraitsFilter() {
-	const chboxes = $("#hairContainerTraits  input:not(:checked)");
+	const chboxes = $("#hairContainerTraits input:not(:checked)");
 	if (chboxes.length > 0) chboxes.click();
 	else $("#hairContainerTraits input:checked").click();
 }
