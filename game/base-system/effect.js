@@ -621,12 +621,12 @@ function effects() {
 
 		if (V.speech_attitude_bratty_message) {
 			delete V.speech_attitude_bratty_message;
-			element("span", "You've become too submissive to adopt a bratty demeanor in conversation.", "purple");
+			element("span", "You've become too submissive to adopt a bratty demeanour in conversation.", "purple");
 		}
 
 		if (V.speech_attitude_meek_message) {
 			delete V.speech_attitude_meek_message;
-			element("span", "You've become too defiant to adopt a meek demeanor in conversation.", "purple");
+			element("span", "You've become too defiant to adopt a meek demeanour in conversation.", "purple");
 		}
 
 		if (V.sunscreenAutoApplied) {
