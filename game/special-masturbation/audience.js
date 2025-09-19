@@ -249,7 +249,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			if (V.masturbationActions.leftaction === "mrest" && V.masturbationActions.rightaction === "mrest") {
 				if (V.audiencearousal <= 0 && V.exposed <= 0) {
 					// Likely needs to be re-written to fit the context, should not show in the first release
-					return [`Are you feeling ok?`, `Do you need some help?`].random();
+					return [`Are you feeling okay?`, `Do you need some help?`].random();
 				} else {
 					return [
 						`Why did you stop? Keep playing with yourself in front of ${V.masturbationAudience > 1 ? "us" : "me"}.`,
