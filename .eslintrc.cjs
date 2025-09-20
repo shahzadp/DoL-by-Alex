@@ -132,6 +132,7 @@ module.exports = {
 		getCustomClothesColourCanvasFilter: "readonly",
 		getCustomColourRGB: "readonly",
 		getCustomColourStyle: "readonly",
+		getFormattedDate: "readonly",
 		getKylarLibraryState: "readonly",
 		getPregnancyObject: "readonly",
 		getRandomIntInclusive: "readonly",

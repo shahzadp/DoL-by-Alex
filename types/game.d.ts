@@ -132,6 +132,7 @@ declare module "twine-sugarcube" {
 			coop: number;
 			kennel: number;
 			still_timer: {};
+			tower: number;
 			tower_guard: boolean;
 			tower_guard_unpaid: number;
 			tower_guard_patience: number;
@@ -153,6 +154,22 @@ declare module "twine-sugarcube" {
 		world_corruption_hard: number;
 		world_corruption_soft: number;
 		world_corruption_reduced: number;
+
+		bus: string;
+		sublocation: string;
+		chef_state: number;
+		adultshopstate: string;
+
+		avery_fate: string;
+		avery_mansion_fire_time: number;
+		avery_skyscraper_fire_time: number;
+		avery_tower: {
+			progress: number;
+		};
+
+		weatherObj: {
+			snow: number;
+		};
 
 		/**
 		 * Controls when mousetrap should activate or not.

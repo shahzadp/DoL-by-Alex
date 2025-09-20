@@ -113,9 +113,7 @@ function schoolTerm() {
 				return "School term finishes today.";
 			} else {
 				const nextDate = Time.getNextSchoolTermStartDate(date.addDays(1));
-				return (
-					"School term has finished. Next term starts on " + getFormattedDate(nextDate, true) + "."
-				);
+				return "School term has finished. Next term starts on " + getFormattedDate(nextDate, true) + ".";
 			}
 		} else {
 			return "School term finishes on " + getFormattedDate(date, true) + ".";

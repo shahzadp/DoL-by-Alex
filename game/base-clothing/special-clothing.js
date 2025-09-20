@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 function lustfulUpdate() {
 	// if no progress is made - nothing to update
 	if (!V.specialClothesEffects.bimbo.progress && !V.specialClothesEffects.pimp.progress) return;

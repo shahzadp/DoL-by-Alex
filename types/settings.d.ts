@@ -81,6 +81,7 @@ declare global {
 		combatAnimations: boolean;
 		showDebugRenderer: boolean;
 		showCombatTools: boolean;
+		reflections: boolean;
 	}
 }
 

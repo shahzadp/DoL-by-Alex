@@ -324,7 +324,7 @@ setup.LocationImages = {
 			},
 			burnt: {
 				image: "base_burnt.png",
-				condition: () => V.avery_fate === "saved" || V.avery_fate === "fallen" || V.avery_fate === "kicked" && !V.avery_skyscraper_fire_time,
+				condition: () => (V.avery_fate === "saved" || V.avery_fate === "fallen" || V.avery_fate === "kicked") && !V.avery_skyscraper_fire_time,
 			},
 			winter: {
 				image: "winter.png",
@@ -338,7 +338,12 @@ setup.LocationImages = {
 		emissive: {
 			lights: {
 				image: "lights.png",
-				condition: () => Time.dayState === "night" && V.avery_tower.progress >= 100 && V.avery_fate != "saved" && V.avery_fate != "fallen" && V.avery_fate != "kicked",
+				condition: () =>
+					Time.dayState === "night" &&
+					V.avery_tower.progress >= 100 &&
+					V.avery_fate !== "saved" &&
+					V.avery_fate !== "fallen" &&
+					V.avery_fate !== "kicked",
 				color: "#deae66",
 				size: 5,
 			},
