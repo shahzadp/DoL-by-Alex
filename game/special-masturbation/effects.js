@@ -169,7 +169,7 @@ function masturbationEffects() {
 	if (otherVariables.additionalEffect.hands === "ballplayeffects" && V.worn.genitals.name !== "chastity parasite") {
 		if (V.arousal >= V.arousalmax * (4 / 5) || (V.earSlime.focus === "impregnation" && V.earSlime.growth >= 100)) {
 			if (genitalsExposed()) {
-				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum leaps from the tip</span>.');
+				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum leaks from the tip</span>.');
 			} else {
 				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum seeps through your <<exposedlower>>.</span>');
 			}
@@ -198,7 +198,7 @@ function masturbationEffects() {
 		if (V.arousal >= V.arousalmax * (4 / 5) || (V.earSlime.focus === "impregnation" && V.earSlime.growth >= 100)) {
 			if (genitalsExposed()) {
 				sWikifier(
-					`Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum leaps from the tip${
+					`Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum leaks from the tip${
 						V.bugsinside && V.player.penissize >= 0 ? " covering some of the insects crawling over you" : ""
 					}.</span>`
 				);
