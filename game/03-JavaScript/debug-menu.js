@@ -400,7 +400,7 @@ setup.debugMenu.eventList = {
 			widgets: [`<<namedNpcPregnancy "Robin" "pc" "human" true undefined true>>`],
 		},
 		{
-			link: [`Get Whitney Pregnant with Black wolf pups`, stayOnPassageFn],
+			link: [`Get Whitney Pregnant with Black Wolf pups`, stayOnPassageFn],
 			widgets: [`<<namedNpcPregnancy "Whitney" "Black Wolf" "wolf" true undefined true>>`],
 		},
 		{
