@@ -1021,7 +1021,7 @@ function initHandheld() {
 			type: ["prop", "food"],
 			shop: [],
 			gender: "n",
-			description: "For when your mom comes home and makes the spaghet. If you had one.",
+			description: "For when your mum comes home and makes the spaghet. If you had one.",
 			accessory: 0,
 			accessory_colour: 0,
 			accessory_colour_options: [],
