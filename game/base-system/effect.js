@@ -294,7 +294,18 @@ function effects() {
 		V.underwatercheck--;
 	} else if (V.underwater === 1) {
 		V.underwater = 0;
-		sWikifier("<<oxygenrefresh>>");
+		V.oxygen = Math.clamp(V.oxygen, 0, V.oxygenmax);
+		if (V.oxygen < V.oxygenmax) {
+			V.oxygenRecovery = true;
+		}
+	}
+	if (V.oxygenRecovery && V.underwater === 0 && V.combat === 0) {
+		sWikifier(
+			`<span class="lblue">Air (recovering):</span>
+			<<dynamicblock id=oxygen-caption>>
+				<<oxygencaption>>
+			<</dynamicblock>>`
+		);
 	}
 
 	sWikifier("<<updateHallucinations>>");
