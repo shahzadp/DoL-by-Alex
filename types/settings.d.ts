@@ -28,7 +28,7 @@ declare module "twine-sugarcube" {
 			lurkersEnabled: true | false;
 			fertilityCycleEnabled: true | false;
 			toyMultiplePenetrationEnabled: true | false;
-			multipleWardrobes: true | false;
+			multipleWardrobes: "all" | "isolated" | false;
 			maleChanceSplit: true | false;
 			npcPregnancyEnabled: true | false;
 			monsterHallucinationsOnly: true | false;
