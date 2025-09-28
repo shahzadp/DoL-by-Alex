@@ -2760,7 +2760,7 @@ function insecurityExists(type) {
 window.insecurityExists = insecurityExists;
 
 function isBeastSceneAllowed() {
-	return V.settings.bestialityEnabled || ((!V.settings.monsterHallucinationsEnabled || V.hallucinations > 0) && V.settings.monsterChance >= random(1, 100));
+	return V.settings.bestialityEnabled || ((!V.settings.monsterHallucinationsOnly || V.hallucinations > 0) && V.settings.monsterChance >= random(1, 100));
 }
 window.isBeastSceneAllowed = isBeastSceneAllowed;
 
