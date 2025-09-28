@@ -128,6 +128,14 @@ class DateTime {
 		this.second = second % 60;
 	}
 
+	clone() {
+		return new DateTime(this);
+	}
+
+	toJSON() {
+		return JSON.reviveWrapper("new DateTime($ReviveData$)", this.timeStamp);
+	}
+
 	/**
 	 * Compares this DateTime object with another DateTime object and returns the difference.
 	 * Gives an approximate comparison only when working with higher numbers (several years), since it doesn't take leap years into account for simplicity
@@ -177,8 +185,12 @@ class DateTime {
 	 * @returns {number} The number of days between the two objects
 	 */
 	dayDifference(otherDateTime) {
-		const startOfDay = this.timeStamp - (this.hour * TimeConstants.secondsPerHour) - (this.minute * TimeConstants.secondsPerMinute) - this.second;
-		const startOfOtherDay = otherDateTime.timeStamp - (otherDateTime.hour * TimeConstants.secondsPerHour) - (otherDateTime.minute * TimeConstants.secondsPerMinute) - otherDateTime.second;
+		const startOfDay = this.timeStamp - this.hour * TimeConstants.secondsPerHour - this.minute * TimeConstants.secondsPerMinute - this.second;
+		const startOfOtherDay =
+			otherDateTime.timeStamp -
+			otherDateTime.hour * TimeConstants.secondsPerHour -
+			otherDateTime.minute * TimeConstants.secondsPerMinute -
+			otherDateTime.second;
 		return (startOfOtherDay - startOfDay) / TimeConstants.secondsPerDay;
 	}
 
