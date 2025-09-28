@@ -72,11 +72,11 @@ Renderer.defaultListener = {
 	composeLayers(layers) {
 		Renderer.Stats.loadErrors = 0;
 		if (Renderer.Stats.trace) {
-			console.log(DOL.Perflog.millitime().toFixed(3), "Composing " + layers.length + " layers...");
+			console.log(Perflog.millitime().toFixed(3), "Composing " + layers.length + " layers...");
 		}
 	},
 	processingStep(layer, processing, canvas, dt) {
-		DOL.Perflog.logWidgetTime("_render:" + processing, dt);
+		Perflog.logWidgetTime("_render:" + processing, dt);
 	},
 	loadError(layer, src) {
 		// logged to console by Renderer itself
@@ -89,7 +89,7 @@ Renderer.defaultListener = {
 		if (Renderer.Stats.loadErrors > 0) msg += " (" + Renderer.Stats.loadErrors + " failed)";
 		Renderer.Stats.logmsgLoad.value = msg;
 		if (Renderer.Stats.trace) {
-			console.log(DOL.Perflog.millitime().toFixed(3), msg);
+			console.log(Perflog.millitime().toFixed(3), msg);
 		}
 	},
 	beforeRender(layers) {
@@ -103,14 +103,14 @@ Renderer.defaultListener = {
 		Renderer.Stats.lastRenderTime = time;
 		const msg = "Rendered " + Renderer.Stats.nlayers + " layers" + " (" + Renderer.Stats.ncached + " cached)" + " in " + time.toFixed(3) + " ms";
 		if (Renderer.Stats.trace) {
-			console.log(DOL.Perflog.millitime().toFixed(3), msg);
+			console.log(Perflog.millitime().toFixed(3), msg);
 		}
 		Renderer.Stats.logmsgRender.value = msg;
 	},
 	keyframe(animation, keyframeIndex, keyframe) {
 		if (Renderer.Stats.traceAnim) {
 			console.log(
-				DOL.Perflog.millitime().toFixed(3),
+				Perflog.millitime().toFixed(3),
 				"animation",
 				animation,
 				"keyframe",
@@ -125,7 +125,7 @@ Renderer.defaultListener = {
 	keyframeRender(spec, cacheHit, cacheRenderTime) {
 		if (Renderer.Stats.traceAnim) {
 			console.log(
-				DOL.Perflog.millitime().toFixed(3),
+				Perflog.millitime().toFixed(3),
 				"KeyframeRender",
 				spec,
 				cacheHit ? "cache hit, render time " + cacheRenderTime.toFixed(3) + " ms" : "cache miss"
@@ -137,7 +137,7 @@ Renderer.defaultListener = {
 	},
 	animationStop() {
 		if (Renderer.Stats.traceAnim) {
-			console.log(DOL.Perflog.millitime().toFixed(3), "Animation stopped");
+			console.log(Perflog.millitime().toFixed(3), "Animation stopped");
 		}
 	},
 };

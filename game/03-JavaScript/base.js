@@ -104,7 +104,7 @@ function DefineMacro(macroName, macroFunction, tags, skipArgs) {
 		tags,
 		skipArgs,
 		handler() {
-			DOL.Perflog.logWidgetStart(macroName);
+			Perflog.logWidgetStart(macroName);
 			try {
 				const oldArgs = State.temporary.args;
 				State.temporary.args = this.args.slice();
@@ -115,7 +115,7 @@ function DefineMacro(macroName, macroFunction, tags, skipArgs) {
 					State.temporary.args = oldArgs;
 				}
 			} finally {
-				DOL.Perflog.logWidgetEnd(macroName);
+				Perflog.logWidgetEnd(macroName);
 			}
 		},
 	});
@@ -185,7 +185,7 @@ window.wetnessKeyword = wetnessKeyword;
 
 /**
  * Returns an optional wetness prefix for the article of clothing.
-
+ 
  * @param {string} slot clothing article slot used
  * @returns {string} printable integrity prefix
  */
