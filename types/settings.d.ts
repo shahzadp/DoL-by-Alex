@@ -31,7 +31,7 @@ declare module "twine-sugarcube" {
 			multipleWardrobes: true | false;
 			maleChanceSplit: true | false;
 			npcPregnancyEnabled: true | false;
-			monsterHallucinationsEnabled: true | false;
+			monsterHallucinationsOnly: true | false;
 			parasitePregnancyEnabled: true | false;
 			parasitesEnabled: true | false;
 			beastMaleChance: true | false;

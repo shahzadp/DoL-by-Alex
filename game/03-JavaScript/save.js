@@ -620,7 +620,7 @@ function compatibilityConversion(rawData) {
 		maleChanceSplit: { key: "maleChanceSplit", invert: false },
 		malevictimchance: { key: "maleVictimChance", invert: false },
 		monsterchance: { key: "monsterChance", invert: false },
-		monsterhallucinations: { key: "monsterHallucinationsEnabled", invert: false },
+		monsterhallucinations: { key: "monsterHallucinationsOnly", invert: false },
 		multipleWardrobes: { key: "multipleWardrobes", invert: false },
 		npcPregnancyDisable: { key: "npcPregnancyEnabled", invert: true },
 		npcVirginityChance: { key: "npcVirginChance", invert: false },
@@ -1190,7 +1190,7 @@ function settingsObjects(type) {
 							2: "NPCs will judge your gender based on your genitals",
 						},
 					},
-					monsterHallucinationsEnabled: {
+					monsterHallucinationsOnly: {
 						bool: true,
 						displayName: "Only replace beasts with monsters while hallucinating:",
 						randomize: "encounter",

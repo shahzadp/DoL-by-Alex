@@ -233,7 +233,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Make all beasts monster people`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 100>>`, `<<set $settings.monsterHallucinationsEnabled to false>>`],
+			widgets: [`<<set $settings.monsterChance to 100>>`, `<<set $settings.monsterHallucinationsOnly to false>>`],
 		},
 		{
 			text_only: `\n`,
