@@ -143,6 +143,17 @@ const Time = (() => {
 		const prevDate = new DateTime(currentDate);
 		set(V.timeStamp + seconds);
 
+		if (V.oxygenRecovery && !T.oxygenRecoveryBlocked && V.underwater === 0 && V.combat === 0) {
+			/* 8 minute oxygen recovery */
+			const recoveryTime = 480;
+			const recoveryIncrements = V.oxygenmax / recoveryTime;
+			V.oxygen += recoveryIncrements*seconds;
+			if (V.oxygen >= V.oxygenmax) {
+				V.oxygen = V.oxygenmax;
+				delete V.oxygenRecovery;
+			}
+		}
+
 		const minutes = Math.floor((currentDate.timeStamp - prevDate.timeStamp) / 60) || (60 + (currentDate.minute - prevDate.minute)) % 60;
 		if (!minutes) return;
 
