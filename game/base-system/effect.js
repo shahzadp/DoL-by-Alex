@@ -1228,11 +1228,11 @@ function effects() {
 					element("span", "Your mouth feels different. You explore your mouth and wince as your tongue presses against your new fangs.", "gold");
 					break;
 				case "wolfUp3":
-					element("span", `Your scalp ${V.pbdisable === "f" ? "and pubic area itch" : "itches"}.`, "gold");
+					element("span", `Your scalp ${V.settings.pubicHairEnabled === true ? "and pubic area itch" : "itches"}.`, "gold");
 					break;
 				case "wolfUp4":
 					element("span", "You feel something on your head. You reach up and tug, but it hurts. You have a new pair of wolf ears.", "gold");
-					if (V.pbdisable === "f") element("span", "You also notice long and fluffy hair has grown in your pubic area.");
+					if (V.settings.pubicHairEnabled === true) element("span", "You also notice long and fluffy hair has grown in your pubic area.");
 					break;
 				case "wolfUp5":
 					element("span", "Your lower back itches.", "gold");
@@ -1248,10 +1248,10 @@ function effects() {
 					element("span", "Your fangs have turned into regular teeth.", "gold");
 					break;
 				case "wolfDown2":
-					element("span", `Your scalp ${V.pbdisable === "f" ? "and pubic area no longer itch" : "no longer itches"}.`, "gold");
+					element("span", `Your scalp ${V.settings.pubicHairEnabled === true ? "and pubic area no longer itch" : "no longer itches"}.`, "gold");
 					break;
 				case "wolfDown3":
-					element("span", `Your wolf ears ${V.pbdisable === "f" ? "and extra body hair " : ""}have disappeared.`, "gold");
+					element("span", `Your wolf ears ${V.settings.pubicHairEnabled === true ? "and extra body hair " : ""}have disappeared.`, "gold");
 					break;
 				case "wolfDown4":
 					element("span", "Your lower back has stopped itching.", "gold");
@@ -1391,13 +1391,13 @@ function effects() {
 					element("span", "Your bottom feels lighter. You reach behind you, and grasp a feathered tail. Small feathers cover your neck.", "gold");
 					break;
 				case "harpyUp5":
-					element("span", `Your back ${V.pbdisable === "f" ? "and pubic area itch" : "itches"}.`, "gold");
+					element("span", `Your back ${V.settings.pubicHairEnabled === true ? "and pubic area itch" : "itches"}.`, "gold");
 					break;
 				case "harpyUp6":
 					element(
 						"span",
 						`You feel light as a feather. Wings caress your face.${
-							V.pbdisable === "f" ? " You also notice that short, feathery hair has grown in your pubic area." : ""
+							V.settings.pubicHairEnabled === true ? " You also notice that short, feathery hair has grown in your pubic area." : ""
 						}`,
 						"gold"
 					);
@@ -1416,10 +1416,14 @@ function effects() {
 					element("span", "Your feathered tail has disappeared, along with the feathers on your neck.", "gold");
 					break;
 				case "harpyDown4":
-					element("span", `You feel heavier${V.pbdisable === "f" ? ", and your pubic area no longer itches" : ""}.`, "gold");
+					element("span", `You feel heavier${V.settings.pubicHairEnabled === true ? ", and your pubic area no longer itches" : ""}.`, "gold");
 					break;
 				case "harpyDown5":
-					element("span", `You feel heavier. Your feathered wings${V.pbdisable === "f" ? " and feathery pubes" : ""} have disappeared.`, "gold");
+					element(
+						"span",
+						`You feel heavier. Your feathered wings${V.settings.pubicHairEnabled === true ? " and feathery pubes" : ""} have disappeared.`,
+						"gold"
+					);
 					break;
 				case "foxUp1":
 					element("span", "You have a strange toothache, and your eyes feel a little sharper. You have the urge to steal something.", "gold");

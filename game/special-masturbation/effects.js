@@ -610,7 +610,7 @@ function masturbationEffectsArms(
 			// The text output currently does not care which hand is used or if both hands are used
 			if (V.worn.over_upper.exposed >= 2 && V.worn.upper.exposed >= 2 && V.worn.under_upper.exposed >= 1) {
 				wikifier("arousal", 100 * handsOn, "masturbationBreasts");
-				if (V.lactating && V.breastfeedingdisable === "f" && V.bugsinside) {
+				if (V.lactating && V.settings.breastFeedingEnabled === true && V.bugsinside) {
 					if (V.arousal >= (V.arousalmax / 5) * 4) {
 						sWikifier(
 							"You squeeze your <<breasts>> as much as you can stand, milking yourself as much as you can for the insects crawling over you."
@@ -699,7 +699,7 @@ function masturbationEffectsArms(
 				}
 			}
 			fragment.append(" ");
-			if (V.lactating === 1 && V.breastfeedingdisable === "f" && handsOn > 0) {
+			if (V.lactating === 1 && V.settings.breastFeedingEnabled === true && handsOn > 0) {
 				if (V.milk_amount >= 1) {
 					if (V.worn.over_upper.exposed === 0 || V.worn.upper.exposed === 0 || V.worn.under_upper.exposed === 0) {
 						fragment.append(span("Milk leaks from your buds, flowing into your top.", "lewd"));
@@ -736,7 +736,7 @@ function masturbationEffectsArms(
 				wikifier("arousal", 100 * handsOn, "masturbationBreasts");
 				if (V.worn.over_upper.exposed >= 2 && V.worn.upper.exposed >= 2 && V.worn.under_upper.exposed >= 1) {
 					wikifier("arousal", 150 * handsOn, "masturbationBreasts");
-					if (V.lactating && V.breastfeedingdisable === "f" && V.bugsinside) {
+					if (V.lactating && V.settings.breastFeedingEnabled === true && V.bugsinside) {
 						if (V.arousal >= (V.arousalmax / 5) * 4) {
 							sWikifier(
 								"You squeeze your cupped <<breasts>> as much as you can stand, milking yourself as much as you can for the insects crawling over you."
@@ -775,7 +775,7 @@ function masturbationEffectsArms(
 
 				if (V.mouth !== "mbreast") {
 					fragment.append(" ");
-					if (V.lactating === 1 && V.breastfeedingdisable === "f" && handsOn > 0) {
+					if (V.lactating === 1 && V.settings.breastFeedingEnabled === true && handsOn > 0) {
 						if (V.milk_amount >= 1) {
 							if (V.worn.over_upper.exposed === 0 || V.worn.upper.exposed === 0 || V.worn.under_upper.exposed === 0) {
 								fragment.append(span("Milk leaks from your buds, flowing into your top.", "lewd"));
@@ -1929,7 +1929,7 @@ function masturbationEffectsArms(
 				}
 			}
 			fragment.append(" ");
-			if (V.lactating === 1 && V.breastfeedingdisable === "f" && handsOn > 0) {
+			if (V.lactating === 1 && V.settings.breastFeedingEnabled === true && handsOn > 0) {
 				if (V.milk_amount >= 1) {
 					if (V.worn.over_upper.exposed === 0 || V.worn.upper.exposed === 0 || V.worn.under_upper.exposed === 0) {
 						fragment.append(span("Milk leaks from your buds, flowing into your top.", "lewd"));
@@ -2950,7 +2950,7 @@ function masturbationEffectsMouth({
 				fragment.append(Wikifier.wikifyEval(`You lick your exposed ${breastsHeld > 1 ? "<<nipples>>" : "<<nipple>>"}.`));
 			}
 
-			if (V.lactating === 1 && V.breastfeedingdisable === "f") {
+			if (V.lactating === 1 && V.settings.breastFeedingEnabled === true) {
 				fragment.append(" ");
 				if (V.milk_amount >= 1) {
 					fragment.append(span("Milk leaks from your buds. It tastes sweet.", "lewd"));
@@ -2984,7 +2984,7 @@ function masturbationEffectsMouth({
 			} else {
 				fragment.append(Wikifier.wikifyEval(`You suck on your exposed ${breastsHeld > 1 ? "<<nipples>>" : "<<nipple>>"}.`));
 			}
-			if (V.lactating === 1 && V.breastfeedingdisable === "f") {
+			if (V.lactating === 1 && V.settings.breastFeedingEnabled === true) {
 				fragment.append(" ");
 				if (V.milk_amount >= 1) {
 					fragment.append(wikifier("breastfeed", breastsHeld, "drunk", false));

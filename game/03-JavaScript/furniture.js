@@ -603,7 +603,7 @@ const Furniture = (() => {
 		}
 		switch (versions.furniture) {
 			case 0:
-				if (!V.furniturePriceFactor) V.furniturePriceFactor = 1;
+				if (!V.settings.furnitureCostModifier) V.settings.furnitureCostModifier = 1;
 				V.furniture = {
 					bedroom: {
 						bed: {
@@ -717,7 +717,7 @@ const Furniture = (() => {
 	}
 
 	function setPrice(pounds, pence = 0) {
-		return Math.floor((pounds * 100 + pence) * V.furniturePriceFactor);
+		return Math.floor((pounds * 100 + pence) * V.settings.furnitureCostModifier);
 	}
 
 	function updaterLogAll() {

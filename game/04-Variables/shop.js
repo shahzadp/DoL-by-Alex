@@ -123,12 +123,14 @@ setup.shopDetails = {
 	eerie: {
 		name: "Eerie",
 		get desc() {
-			return V.transformdisable === "f"
+			return V.settings.transformAnimalEnabled === true
 				? "Protects a specific transformation. Transformations progress and decay at midnight."
 				: "There's something peculiar about this object.";
 		},
 		get details() {
-			return V.transformdisable === "f" ? "Prevents its associated transformation from decaying." : "Enable transformations to make use of this trait.";
+			return V.settings.transformAnimalEnabled === true
+				? "Prevents its associated transformation from decaying."
+				: "Enable transformations to make use of this trait.";
 		},
 	},
 	shade: {

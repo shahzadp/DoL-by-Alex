@@ -6,7 +6,7 @@
 		<<set $speechcum to 1>><<set $speechorgasmcount += 1>>
 	<</if>>
 	<<tinyPenisDryOrgasmChance>>
-	<<if $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) and !$possessed and $ruinedorgasmdisable is "f">>
+	<<if $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) and !$possessed and $settings.ruinedOrgasmEnabled>>
 		<span class="red">You are almost overcome by sensation, but it ends prematurely.</span><<pain 10>><<stress 10>><<gpain>><<gstress>>
 		<br>
 		<<set _deniedOrgasm to true>>
@@ -78,14 +78,14 @@
 						/*ToDo: Pregnancy, figure out how the Wraith, plantpeople, etc will handle pregnancy.*/
 					<<elseif $npcrow.includes($penistarget)>>
 						<<recordSperm `{target: $NPCList[$penistarget].fullDescription, spermOwner: "pc", spermType: "human", rngModifier: _orgasmSpermRng}`>>
-					<<elseif $NPCList[$penistarget].pregnancy is 0 and ["realistic", "fetish"].includes($pregnancytype)>>
+					<<elseif $NPCList[$penistarget].pregnancy is 0 and ["realistic", "fetish"].includes($settings.pregnancyType)>>
 						/* Pregnancy Count */
 						<<set $_count to Object.values($storedNPCs).reduce((prev, curr) => {
 							if(curr.pregnancy) return prev + 1;
 							return prev;
 						},0)>>
 						/* Pregnancy chance checks */
-						<<set $_impregnatedChance to 200 / (20 - $baseNpcPregnancyChance)>>
+						<<set $_impregnatedChance to 200 / (20 - $settings.baseNpcPregnancyChance)>>
 						<<if V.sexStats.pills.pills["fertility booster"].doseTaken gt 0>>
 							<<set $_impregnatedChance to Math.ceil($_impregnatedChance * (1 + (V.sexStats.pills.pills["fertility booster"].doseTaken * 0.5)))>>
 						<</if>>
@@ -105,7 +105,7 @@
 									<<storeNPC $penistarget "pregnancy">>
 									<<set $storedNPCs[_lastStoredName].pregnancy to $_pregnancy>>
 								<</if>>
-								<<if $pregnancytype is "fetish">><<set _npcIsNowPregnant to $NPCList[$penistarget].fullDescription>><</if>>
+								<<if $settings.pregnancyType is "fetish">><<set _npcIsNowPregnant to $NPCList[$penistarget].fullDescription>><</if>>
 								<<set $NPCList[$penistarget].pregnancy to 1>>
 							<</if>>
 						<</if>>
@@ -270,7 +270,7 @@
 			<</if>>
 			<span class="pink">Milk $_milkText from your <<breasts>> into your $_milkedName.</span>
 			<<if $combat is 1>><<set $speechmilk to 1>><</if>>
-		<<elseif $combat is 1 and ($cheststate is "chest" or $cheststate is "chestimminent") and $breastfeedingdisable is "f">>
+		<<elseif $combat is 1 and ($cheststate is "chest" or $cheststate is "chestimminent") and $settings.breastFeedingEnabled>>
 			<<for $_i = 0; $_i lt $enemynomax; $_i++>>
 				<<if $NPCList[$_i].mouth is "chest">>
 					<<personselect $_i>>

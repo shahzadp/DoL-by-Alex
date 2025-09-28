@@ -1,16 +1,16 @@
 function getClothingCost(item, slot) {
-	let cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.clothesPrice;
+	let cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.settings.clothingCostModifier;
 
 	if (
 		setup.clothes.under_lower.findIndex(x => x.name === item.name && x.modder === item.modder) >= 0 ||
 		setup.clothes.under_upper.findIndex(x => x.name === item.name && x.modder === item.modder) >= 0
 	)
-		cost *= V.clothesPriceUnderwear;
-	else if (item.type.includes("school")) cost *= V.clothesPriceSchool;
+		cost *= V.settings.underwearCostModifier;
+	else if (item.type.includes("school")) cost *= V.settings.schoolClothingCostModifier;
 
 	// the lewder item is, the more affected by the multiplier it is
 	const lewdness = Math.clamp((item.reveal - 400) / 500, 0, 1);
-	const lewdCoef = 1 + (V.clothesPriceLewd - 1) * lewdness;
+	const lewdCoef = 1 + (V.settings.lewdClothingCostModifier - 1) * lewdness;
 	cost *= lewdCoef;
 
 	if (V.passage === "School Library Shop") {
@@ -29,23 +29,23 @@ function tailorClothingCost(item, slot) {
 	if (setup.clothes[slot][clothesIndex(slot, item)].outfitSecondary) {
 		const upperSlot = setup.clothes[slot][clothesIndex(slot, item)].outfitSecondary[0];
 		const upperItem = setup.clothes[upperSlot].findIndex(x => x.name === setup.clothes[slot][clothesIndex(slot, item)].outfitSecondary[1]);
-		if (upperItem >= 0) cost = setup.clothes[upperSlot][upperItem].cost * V.clothesPrice * 0.2;
+		if (upperItem >= 0) cost = setup.clothes[upperSlot][upperItem].cost * V.settings.clothingCostModifier * 0.2;
 	} else if (setup.clothes[slot][clothesIndex(slot, item)].outfitPrimary) {
-		cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.clothesPrice * 0.8;
+		cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.settings.clothingCostModifier * 0.8;
 	} else {
-		cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.clothesPrice;
+		cost = setup.clothes[slot][clothesIndex(slot, item)].cost * V.settings.clothingCostModifier;
 	}
 
 	if (
 		setup.clothes.under_lower.findIndex(x => x.name === item.name && x.modder === item.modder) >= 0 ||
 		setup.clothes.under_upper.findIndex(x => x.name === item.name && x.modder === item.modder) >= 0
 	)
-		cost *= V.clothesPriceUnderwear;
-	else if (item.type.includes("school")) cost *= V.clothesPriceSchool;
+		cost *= V.settings.underwearCostModifier;
+	else if (item.type.includes("school")) cost *= V.settings.schoolClothingCostModifier;
 
 	// the lewder item is, the more affected by the multiplier it is
 	const lewdness = Math.clamp((item.reveal - 400) / 500, 0, 1);
-	const lewdCoef = 1 + (V.clothesPriceLewd - 1) * lewdness;
+	const lewdCoef = 1 + (V.settings.lewdClothingCostModifier - 1) * lewdness;
 	cost *= lewdCoef;
 
 	return Math.round(cost);
@@ -334,8 +334,8 @@ function findOutfitPair(garment, layer) {
 	if (garment.name !== "naked" && (garment.outfitPrimary || garment.outfitSecondary)) {
 		const tempSet = setup.clothes[layer][garment.index].set;
 		let costMod;
-		if (layer.includes("under")) costMod = V.clothesPriceUnderwear;
-		else costMod = V.clothesPrice;
+		if (layer.includes("under")) costMod = V.settings.underwearCostModifier;
+		else costMod = V.settings.clothingCostModifier;
 
 		if (layer.includes("upper")) {
 			// We are looking for lower items in this section

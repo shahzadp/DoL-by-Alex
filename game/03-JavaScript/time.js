@@ -975,7 +975,7 @@ function hourPassed(hours) {
 	if (
 		V.sexStats.vagina.menstruation.running &&
 		(V.sexStats.vagina.menstruation.currentState === "pregnant" ||
-			(V.sexStats.vagina.menstruation.currentState === "normal" && (V.playerPregnancyHumanDisable === "f" || V.playerPregnancyBeastDisable === "f")))
+			(V.sexStats.vagina.menstruation.currentState === "normal" && (V.settings.playerPregnancyHumanEnabled === true || V.settings.playerPregnancyBeastEnabled === true)))
 	) {
 		V.pregnancyDailyEvent = true;
 	}
@@ -1060,7 +1060,7 @@ function minutePassed(minutes) {
 
 	if (
 		V["\x6f\x62\x6a" + "\x65\x63\x74\x56\x65\x72" + "\x73\x69\x6f\x6e"]["\x74\x65\x73" + "\x74"] ||
-		V["\x63" + "\x68\x65" + "\x61\x74\x64\x69" + "\x73\x61\x62\x6c\x65"] === "\x66" ||
+		V["\x63" + "\x68\x65" + "\x61\x74\x73\x45" + "\x6e\x61\x62\x6c\x65\x64"] !== !"\x66" ||
 		V["\x64\x65\x62" + "\x75\x67"]
 	) {
 		V["\x66\x65" + "\x61\x74\x73"]["\x6c\x6f" + "\x63\x6b\x65\x64"] = !"\x20"["\x74\x72" + "\x69\x6d"]();
@@ -1498,7 +1498,7 @@ function dailyPlayerEffects() {
 	else if (V.skulduggery >= 100 && V.skulduggeryday < 100) V.skulduggerymessage = 10;
 	if (V.skulduggerymessage) V.effectsmessage = 1;
 
-	if (V.pbdisable === "f") {
+	if (V.settings.pubicHairEnabled === true) {
 		V.pbgrowth++;
 		if (V.pbgrowth >= 24) V.pblevel = 9;
 		else if (V.pbgrowth >= 19) V.pblevel = 8;
@@ -1620,7 +1620,7 @@ function dailyLiquidEffects() {
 			V.lactationmessage = 1;
 		}
 	} else {
-		if (V.lactation_pressure >= 30 && V.breastfeedingdisable === "f" && V.player.breastsize >= 1) {
+		if (V.lactation_pressure >= 30 && V.settings.breastFeedingEnabled === true && V.player.breastsize >= 1) {
 			V.lactating = 1;
 			V.effectsmessage = 1;
 			V.lactationmessage = 1;

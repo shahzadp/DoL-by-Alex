@@ -217,23 +217,23 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Make all beasts male`, stayOnPassageFn],
-			widgets: [`<<set $monsterchance to 0>>`, `<<set $beastMaleChanceMale to 100>>`, `<<set $beastMaleChanceFemale to 100>>`],
+			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 100>>`, `<<set $settings.beastMaleChanceFemale to 100>>`],
 		},
 		{
 			link: [`Make all beasts female`, stayOnPassageFn],
-			widgets: [`<<set $monsterchance to 0>>`, `<<set $beastMaleChanceMale to 0>>`, `<<set $beastMaleChanceFemale to 0>>`],
+			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 0>>`, `<<set $settings.beastMaleChanceFemale to 0>>`],
 		},
 		{
 			link: [`Make all beasts cuntboys`, stayOnPassageFn],
-			widgets: [`<<set $beastMaleChanceMale to 100>>`, `<<set $beastMaleChanceFemale to 100>>`, `<<set $cbchance to 100>>`],
+			widgets: [`<<set $settings.beastMaleChanceMale to 100>>`, `<<set $settings.beastMaleChanceFemale to 100>>`, `<<set $settings.maleNPCVaginaChance to 100>>`],
 		},
 		{
 			link: [`Make all beasts dickgirls`, stayOnPassageFn],
-			widgets: [`<<set $beastMaleChanceMale to 0>>`, `<<set $beastMaleChanceFemale to 0>>`, `<<set $dgchance to 100>>`],
+			widgets: [`<<set $settings.beastMaleChanceMale to 0>>`, `<<set $settings.beastMaleChanceFemale to 0>>`, `<<set $settings.femaleNPCPenisChance to 100>>`],
 		},
 		{
 			link: [`Make all beasts monster people`, stayOnPassageFn],
-			widgets: [`<<set $monsterchance to 100>>`, `<<set $monsterhallucinations to "f">>`],
+			widgets: [`<<set $settings.monsterChance to 100>>`, `<<set $settings.monsterHallucinationsEnabled to false>>`],
 		},
 		{
 			text_only: `\n`,
