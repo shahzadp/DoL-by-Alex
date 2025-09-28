@@ -131,7 +131,7 @@
 					<<playerPregnancyHawkAttempt $_pregLocation>>
 					<<if $_pregnancy.type is "hawk">><<exit>><</if>>
 				<</if>>
-				<<if $cycledisable is "t">>
+				<<if !$settings.fertilityCycleEnabled>>
 					<<if _menstruation.nonCycleRng[0] is 0>><<giveHarpyEggs>><</if>>
 					<<playerPregnancyAttempt `Math.pow(4,_menstruation.nonCycleRng[0])` $_pregLocation>>
 				<<elseif _menstruation.currentDay lt _menstruation.currentDaysMax>>
@@ -481,7 +481,7 @@
 
 <<widget "wakingEffects">><<silently>>
 	<<if !$sexStats.vagina.menstruation.running>>
-	<<elseif _args[0] and $sexStats.vagina.menstruation.currentState is "pregnant" or ($sexStats.vagina.menstruation.currentState is "normal" and ($playerPregnancyHumanDisable is "f" or $playerPregnancyBeastDisable is "f"))>>
+	<<elseif _args[0] and $sexStats.vagina.menstruation.currentState is "pregnant" or ($sexStats.vagina.menstruation.currentState is "normal" and ($settings.playerPregnancyHumanEnabled or $settings.playerPregnancyBeastEnabled))>>
 		<<set $_pregnancy to getPregnancyObject()>>
 		<<set _wakingEffect to wakingPregnancyEvent()>>
 		<<if Array.isArray(_wakingEffect)>>
@@ -798,9 +798,9 @@
 			<<case "remy">>
 				<<if $outside is 1>>
 					A
-					<<if ($monsterchance gte 1 and ($hallucinations gte 1 or $monsterhallucinations is "f"))>>
+					<<if ($settings.monsterChance gte 1 and ($hallucinations gte 1 or !$settings.monsterHallucinationsEnabled))>>
 						<<set $monster to 1>>
-						<<if $malevictimchance lt random(1, 100)>>cowgirl<<else>>bullboy<</if>>
+						<<if $settings.maleVictimChance lt random(1, 100)>>cowgirl<<else>>bullboy<</if>>
 					<<else>>
 						cow
 					<</if>>
@@ -1111,7 +1111,7 @@
 
 					"I told you I heard someone over here!" a <<person1>><<person>> says. "Hey, <<girl>>! Are you alright!?"
 					<br>
-					<<if $watersportsdisable is "f">>
+					<<if $settings.watersportsEnabled>>
 						One of <<his>> friends, a <<person2>><<person>>, laughs. "Did <<pshe>> fuckin' piss <<pherself>>?"
 					<<else>>
 						"Why's <<pshe>> all wet?" a <<person2>><<person>> asks.
@@ -1895,9 +1895,9 @@
 	<<set _morningAfterPillResult to "no pregnant">> /* This variable returns the result of taking the pill */
 	<<if $_menstruation.currentState is "pregnant">>
 		<<if $_pregnancy.type is "human">>
-			<<set _currentDay to $_pregnancy.timer / (1 / ((1 / 9) * $humanPregnancyMonths))>>
+			<<set _currentDay to $_pregnancy.timer / (1 / ((1 / 9) * $settings.humanPregnancyMonths))>>
 		<<elseif $_pregnancy.type is "wolf">>
-			<<set _currentDay to $_pregnancy.timer / (1 / ((1 / 12) * $wolfPregnancyWeeks))>>
+			<<set _currentDay to $_pregnancy.timer / (1 / ((1 / 12) * $settings.wolfPregnancyWeeks))>>
 		<<else>>
 			<<set _currentDay to 1000>>
 			<<set _morningAfterPillResult to "unknown type">>
@@ -1947,7 +1947,7 @@
 			<<set $sexStats[($player.vaginaExist ? "vagina" : "anus")].sperm to []>>
 			<<set $_menstruation.currentDay to .5>>
 			<<set $_menstruation.currentState to "recovering">>
-			<<set $_menstruation.recoveryTime to ($_pregnancy.type === "human" ? random(2, 3) * $humanPregnancyMonths : random(1, 2) * $wolfPregnancyWeeks)>>
+			<<set $_menstruation.recoveryTime to ($_pregnancy.type === "human" ? random(2, 3) * $settings.humanPregnancyMonths : random(1, 2) * $settings.wolfPregnancyWeeks)>>
 			<<set $_menstruation.recoveryTimeStart to $_menstruation.recoveryTime>>
 			<<set $_menstruation.recoveryStage to 0>>
 			<<set $_menstruation.periodEnabled to false>>
@@ -2083,7 +2083,7 @@
 		<</if>>
 		<<set $_pregnancy to C.npc[$_name].pregnancy>>
 		<<if !setup.pregnancy.infertile.includes($_name) and setup.pregnancy.typesEnabled.includes(C.npc[$_name].type) and
-		(($incompletePregnancyDisable is "f" and C.npc[$_name].pregnancy.enabled is undefined and !setup.pregnancy.ignoresIncompleteCheck.includes($_name)) or
+		(($settings.incompletePregnancyEnabled and C.npc[$_name].pregnancy.enabled is undefined and !setup.pregnancy.ignoresIncompleteCheck.includes($_name)) or
 		(setup.pregnancy.canBePregnant.includes($_name) and C.npc[$_name].pregnancy.enabled is undefined))>>
 			<<set $_pregnancy.fetus to []>>
 			<<set $_pregnancy.givenBirth to 0>>
@@ -2112,7 +2112,7 @@
 					<<set $_pregnancy.pills to null>>
 				<<default>><<set $_pregnancy.pills to null>>
 			<</switch>>
-		<<elseif setup.pregnancy.infertile.includes($_name) or (!setup.pregnancy.canBePregnant.includes($_name) and $incompletePregnancyDisable isnot "f")>>
+		<<elseif setup.pregnancy.infertile.includes($_name) or (!setup.pregnancy.canBePregnant.includes($_name) and !$settings.incompletePregnancyEnabled)>>
 			/*For saves that have the variables set, but have no need to be there*/
 			<<set C.npc[$_name].pregnancy to {}>>
 		<</if>>

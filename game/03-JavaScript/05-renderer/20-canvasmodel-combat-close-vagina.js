@@ -267,7 +267,7 @@ function vaginaPubes(pubes, level, overrideOptions = {}) {
 			return `${options.src}vagina/${options.position}/hair/${state}-${pubes + V[pubes]}.png`;
 		},
 		showfn(options) {
-			return !!options.showVagina && V.pbdisable === "f" && V[pubes] >= level;
+			return !!options.showVagina && V.settings.pubicHairEnabled === true && V[pubes] >= level;
 		},
 		animationfn(options) {
 			return options.animKeyVagina;

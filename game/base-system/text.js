@@ -2,7 +2,7 @@
 const statDisplay = {
 	statChange(statType, amount, colorClass, condition = () => true) {
 		amount = Number(amount);
-		if (V.statdisable === "t" || !condition()) return document.createDocumentFragment();
+		if (V.settings.blindStatsEnabled || !condition()) return document.createDocumentFragment();
 
 		const fragment = document.createDocumentFragment();
 		const span = document.createElement("span");
@@ -17,7 +17,7 @@ const statDisplay = {
 	},
 	grace(amount, expectedRank) {
 		amount = Number(amount);
-		if (!amount || V.statdisable === "t") return "";
+		if (!amount || V.settings.blindStatsEnabled) return "";
 
 		let displayGrace = true;
 

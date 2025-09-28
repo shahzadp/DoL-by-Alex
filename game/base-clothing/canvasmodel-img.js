@@ -466,7 +466,7 @@ DefineMacro("modelprepare-player-body", function () {
 
 	T.modeloptions.crotch_visible = true;
 
-	if (V.pbdisable === "f") {
+	if (V.settings.pubicHairEnabled === true) {
 		T.modeloptions.pbhair_level = V.pblevel;
 		T.modeloptions.pbhair_strip = V.pbstrip;
 		T.modeloptions.pbhair_balls = V.pblevelballs;

@@ -16,12 +16,12 @@ var IronMan = (Save => {
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
-	const schema = 4;
+	const schema = 5;
 	const keys = [
 		"ironmanmode",
 		"debug",
 		"options.autosaveDisabled",
-		"cheatdisable",
+		"cheatsEnabled",
 		"ironmanautosaveschedule",
 		"player.virginity",
 		"enemyhealth",
@@ -156,29 +156,31 @@ var IronMan = (Save => {
 			if (mode === "normal") {
 				V.ironmanmode = checkbox.checked;
 				if (checkbox.checked) {
-					if (V.alluremod < 1) V.alluremod = 1;
-					if (V.rentmod < 1) V.rentmod = 1;
-					if (V.tending_yield_factor > 5) V.tending_yield_factor = 5;
+					if (V.settings.allureModifier < 1) V.settings.allureModifier = 1;
+					if (V.settings.rentCostModifier < 1) V.settings.rentCostModifier = 1;
+					if (V.settings.tendingYieldModifier > 5) V.settings.tendingYieldModifier = 5;
 					if (document.getElementById("sliderTendingYieldFactor")) {
 						Wikifier.wikifyEval(
-							'<<replace #sliderTendingYieldFactor>><<numberslider "$tending_yield_factor" $tending_yield_factor 1 10 1 $ironmanmode>><</replace>>'
+							'<<replace #sliderTendingYieldFactor>><<numberslider "$settings.tendingYieldModifier" $settings.tendingYieldModifier 1 10 1 $ironmanmode>><</replace>>'
 						);
 					}
 					if (document.getElementById("sliderRentMode")) {
-						Wikifier.wikifyEval('<<replace #sliderRentMode>><<numberslider "$rentmod" $rentmod 0.1 3 0.1 $ironmanmode>><</replace>>');
+						Wikifier.wikifyEval('<<replace #sliderRentMode>><<numberslider "$settings.rentCostModifier" $settings.rentCostModifier 0.1 3 0.1 $ironmanmode>><</replace>>');
 					}
 					if (document.getElementById("sliderAllureMode")) {
-						Wikifier.wikifyEval('<<replace #sliderAllureMode>><<numberslider "$alluremod" $alluremod 0.2 2 0.1 $ironmanmode>><</replace>>');
+						Wikifier.wikifyEval('<<replace #sliderAllureMode>><<numberslider "$settings.allureModifier" $settings.allureModifier 0.2 2 0.1 $ironmanmode>><</replace>>');
 					}
 					V.options.maxStates = 1;
-					V.cheatdisabletoggle = "t";
+					V.settings.cheatsEnabledToggle = false;
 					V.options.autosaveDisabled = true;
 					$(".ironman-slider input")
 						.on("input change", e => sliderPerc(e))
 						.trigger("change");
 				} else {
-					if (document.getElementById("numberslider-input-alluremod")) document.getElementById("numberslider-input-alluremod").disabled = false;
-					if (document.getElementById("numberslider-input-rentmod")) document.getElementById("numberslider-input-rentmod").disabled = false;
+					if (document.getElementById("numberslider-input-settingsalluremodifier"))
+						document.getElementById("numberslider-input-settingsalluremodifier").disabled = false;
+					if (document.getElementById("numberslider-input-settingsrentcostmodifier"))
+						document.getElementById("numberslider-input-settingsrentcostmodifier").disabled = false;
 					if (document.getElementById("numberslider-input-tending-yield-factor"))
 						document.getElementById("numberslider-input-tending-yield-factor").disabled = false;
 				}

@@ -305,7 +305,7 @@ const Skin = (() => {
 	}
 
 	function tanningGainOutput(modifier, minutes) {
-		if (V.statdisable !== "f") return "";
+		if (V.settings.blindStatsEnabled) return "";
 		const factor = modifier * minutes;
 		if (factor === 0) {
 			return statDisplay.statChange("No tanning effect", 0, "blue");

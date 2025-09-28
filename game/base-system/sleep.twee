@@ -487,7 +487,7 @@
 		<<set _eventsList.push("fully expose yourself while working as a model in town")>>
 	<</if>>
 	<<if ["alex_cottage"].includes($location) and Time.dayState is "night" and between(Time.hour, 20, 24)>>
-		<<if $earSlime.deviancy gte 2 and $breastfeedingdisable is "f" and $lactating and $milk_amount gte 1000 and $earSlime.focus isnot "impregnation">>
+		<<if $earSlime.deviancy gte 2 and $settings.breastFeedingEnabled and $lactating and $milk_amount gte 1000 and $earSlime.focus isnot "impregnation">>
 			<<set _eventsList.push("use the farm equipment to empty your breasts of milk")>>
 		<</if>>
 		<<if $earSlime.deviancy gte 2 and $player.penisExist and $player.penissize gte 0 and !playerChastity("penis") and $semen_amount gte 1000 and $earSlime.focus isnot "pregnancy" and $earSlime.defyCooldown is 0>>
@@ -495,22 +495,22 @@
 		<</if>>
 	<</if>>
 	<<if $earSlime.growth gt 50>>
-		<<if $earSlime.focus is "pregnancy" and $forcedcrossdressingdisable is "f" and !$earSlime.forcedDressing>>
+		<<if $earSlime.focus is "pregnancy" and $settings.forcedCrossdressingEnabled and !$earSlime.forcedDressing>>
 			<<set _eventsList.push("only wear feminine clothes for a while")>>
 			<<if playerIsPregnant() and playerBellySize(true) gte 5>>
 				<<set _eventsList.push("only wear feminine clothes for a while")>>
 				<<set _eventsList.push("only wear feminine clothes for a while")>>
 			<</if>>
 		<</if>>
-		<<if $earSlime.focus is "impregnation" and $forcedcrossdressingdisable is "f" and !$earSlime.forcedDressing>>
+		<<if $earSlime.focus is "impregnation" and $settings.forcedCrossdressingEnabled and !$earSlime.forcedDressing>>
 			<<set _eventsList.push("only wear masculine clothes for a while")>>
 			<<if !playerIsPregnant()>>
 				<<set _eventsList.push("only wear masculine clothes for a while")>>
 				<<set _eventsList.push("only wear masculine clothes for a while")>>
 			<</if>>
 		<</if>>
-		<<if ["pregnancy", "mixed"].includes($earSlime.focus) and ($player.vaginaExist or $analdisable is "f") and !playerIsPregnant()>>
-			<<if maleChance() gt 0 or beastMaleChance() gt 0 or $dgchance gt 0>>
+		<<if ["pregnancy", "mixed"].includes($earSlime.focus) and ($player.vaginaExist or $settings.analEnabled) and !playerIsPregnant()>>
+			<<if maleChance() gt 0 or beastMaleChance() gt 0 or $settings.femaleNPCPenisChance gt 0>>
 				<<set _task to `get sperm into your ${$player.vaginaExist ? "vagina" : "anus"}`>>
 				<<run _eventsList.push(_task)>>
 				<<run _eventsList.push(_task)>>
@@ -532,7 +532,7 @@
 			<</if>>
 		<</if>>
 		<<if $player.penisExist and ["impregnation", "mixed"].includes($earSlime.focus)>>
-			<<if maleChance() lt 100 or beastMaleChance() lt 100 or $cbchance gt 0>>
+			<<if maleChance() lt 100 or beastMaleChance() lt 100 or $settings.maleNPCVaginaChance gt 0>>
 				<<run _eventsList.push("ejaculate into someone's vagina")>>
 				<<run _eventsList.push("ejaculate into someone's vagina")>>
 				<<if random(0,100) gte 50>>
@@ -543,9 +543,9 @@
 			<</if>>
 		<</if>>
 	<</if>>
-	<<if $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) + 4 and $ruinedorgasmdisable is "f">>
+	<<if $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) + 4 and $settings.ruinedOrgasmEnabled>>
 		<<set $earSlimeEvent to "masturbate and orgasm at least ten times">>
-	<<elseif $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) - 4 and $ruinedorgasmdisable is "f">>
+	<<elseif $earSlime.growth gte 100 and $earSlime.defyCooldown gte Math.clamp(30 - Math.floor($earSlime.growth / 9), 2, 20) - 4 and $settings.ruinedOrgasmEnabled>>
 		<<set $earSlimeEvent to "masturbate and orgasm at least five times">>
 	<<elseif _eventsList.length>>
 		<<set _maxEvents to _eventsList.length - 1>>
@@ -554,7 +554,7 @@
 <</widget>>
 
 <<widget "slimeSleepEvents">>
-	<<if $earSlimeEvent is "masturbate to orgasm" and ["pregnancy", "mixed"].includes($earSlime.focus) and ($player.vaginaExist or $analdisable is "f") and !playerIsPregnant() and $player.penisExist and $player.penissize gte 0 and $semen_volume gte 300 and !$earSlime.defyCooldown and $awareness gte 200>>
+	<<if $earSlimeEvent is "masturbate to orgasm" and ["pregnancy", "mixed"].includes($earSlime.focus) and ($player.vaginaExist or $settings.analEnabled) and !playerIsPregnant() and $player.penisExist and $player.penissize gte 0 and $semen_volume gte 300 and !$earSlime.defyCooldown and $awareness gte 200>>
 		<<set $earSlimeEvent to `get your own sperm into your ${$player.vaginaExist ? "vagina" : "anus"}`>>
 	<</if>>
 	<<set _tempEventHide to true>>
@@ -719,7 +719,7 @@
 	/* This event cannot run endevent or make changes to loaded npc's in anyway */
 	<<set _prevLocation to $location>>
 	<<set $location to "tentworld">><<set $outside to 0>>
-	<<set _pregnancyEnabled to $playerPregnancyHumanDisable is "f" or $playerPregnancyBeastDisable is "f">>
+	<<set _pregnancyEnabled to $settings.playerPregnancyHumanEnabled or $settings.playerPregnancyBeastEnabled>>
 	<<if $earSlime.dreamRejected>>
 		You awake to a familiar feeling of paralysis. The pressure on your body isn't as intense as last time, but still brings you a sense of unease.
 		<<if $earSlime.dreamRejected gte 5>>
@@ -736,7 +736,7 @@
 
 	The voice from the left whispers in your ear. Its words overlap themselves, promising you many things at once. It claims it will bring you fulfilment by granting you
 	<<if _pregnancyEnabled>>
-		<span class="lewd">a womb filled with life<<if $breastfeedingdisable is "f">> and breasts filled with milk<</if>></span>.
+		<span class="lewd">a womb filled with life<<if $settings.breastFeedingEnabled>> and breasts filled with milk<</if>></span>.
 		<<if !$player.vaginaExist and !(playerIsPregnant() and playerAwareTheyArePregnant()) and Object.values($children).find(child => child.mother === "pc")>>
 			It also promises that the limits of your current body will not hold you back.
 		<</if>>
@@ -745,7 +745,7 @@
 	<</if>>
 	<br>
 	The first voice is interrupted by the one on your right, grabbing your attention. Your mind is assaulted with more promises. It tells you that it will help you fulfil yourself through
-	<<if $npcPregnancyDisable is "f">>
+	<<if $settings.npcPregnancyEnabled>>
 		<span class="lewd">filling others with your seed</span>,
 	<<else>>
 		<span class="lewd">filling the holes of others</span>,
@@ -758,7 +758,7 @@
 	The voices invading your mind start to subside. The peace is short-lived as they start to talk over one another. Your own thoughts are drowned out as they argue about what your fate should be. <<gstress>><<stress 6>>
 	<br><br>
 
-	<<link [[Agree with the voice on the left|$passage]]>><<set $location to _prevLocation>><<set $earSlime.focus to "pregnancy">><<set $earSlime.growth++>><</link>><<if $player.sex is "m" and $analdisable is "t" and _pregnancyEnabled>><<note "With anal being disabled, pregnancy cannot occur for you" "italic">><</if>>
+	<<link [[Agree with the voice on the left|$passage]]>><<set $location to _prevLocation>><<set $earSlime.focus to "pregnancy">><<set $earSlime.growth++>><</link>><<if $player.sex is "m" and !$settings.analEnabled and _pregnancyEnabled>><<note "With anal being disabled, pregnancy cannot occur for you" "italic">><</if>>
 	<br>
 	<<link [[Agree with the voice on the right|$passage]]>><<set $location to _prevLocation>><<set $earSlime.focus to "impregnation">><<set $earSlime.growth++>><</link>><<if $whitneypantiescheck is 2>><<note "Not recommended without disabling 'forced crossdressing'">><</if>>
 	<br>

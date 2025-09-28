@@ -449,7 +449,7 @@ const statChange = (() => {
 	function minPain() {
 		let result = 0;
 
-		if (V.lactating && V.breastfeedingdisable === "f" && V.milkFullPain > 200) {
+		if (V.lactating && V.settings.breastFeedingEnabled === true && V.milkFullPain > 200) {
 			result += Math.ceil((V.milkFullPain - 200) / 5);
 			if (!V.daily.milkFullPainMessage) {
 				V.milkFullPainMessage = 1;

@@ -2032,7 +2032,7 @@ function featsMerge() {
 DefineMacro("featsMerge", featsMerge);
 
 function earnFeat(featName) {
-	if (!featName || V.feats.locked || V.cheatdisable !== "t" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.statFreeze) return;
+	if (!featName || V.feats.locked || V.cheatsEnabled === true || V.debug || V.gamemode === "soft" || V.settings.allureModifier < 1 || V.statFreeze) return;
 
 	if (
 		V.feats.currentSave[featName] !== undefined ||
@@ -2103,7 +2103,7 @@ DefineMacro("displayFeat", displayFeat);
 
 // eslint-disable-next-line no-unused-vars
 function earnHourlyFeats() {
-	if (V.feats.locked || V.cheatdisable === "f" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.replayScene) return false;
+	if (V.feats.locked || V.cheatsEnabled === true || V.debug || V.gamemode === "soft" || V.settings.allureModifier < 1 || V.replayScene) return false;
 
 	const fragment = document.createDocumentFragment();
 
@@ -2141,7 +2141,7 @@ function earnHourlyFeats() {
 		(!V.player.vaginaExist || V.vaginalskill >= 1000) &&
 		(!V.player.penisExist || V.penileskill >= 1000) &&
 		V.oralskill >= 1000 &&
-		(V.analskill >= 1000 || V.analdisable === "t") &&
+		(V.analskill >= 1000 || V.settings.analEnabled === false) &&
 		V.handskill >= 1000 &&
 		V.feetskill >= 1000 &&
 		V.bottomskill >= 1000 &&
@@ -2264,7 +2264,7 @@ function earnHourlyFeats() {
 
 	if (
 		V.liquidoutsidecount >= 100 &&
-		(V.analdisable === "t" || setup.bodyliquid.combined("anus") >= 5) &&
+		(V.settings.analEnabled === false || setup.bodyliquid.combined("anus") >= 5) &&
 		(!V.player.vaginaExist || setup.bodyliquid.combined("vagina") >= 5) &&
 		setup.bodyliquid.combined("mouth") >= 5
 	) {

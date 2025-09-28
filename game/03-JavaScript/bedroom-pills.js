@@ -667,7 +667,7 @@ window.onHomePillItemClick = onHomePillItemClick;
 
 function addIndicators(item) {
 	// Indicators are the "++Control" and "+Awareness" etc. We add them under the pill icon.
-	if (item.indicators != null && item.indicators.length > 0 && V.statdisable !== "t") {
+	if (item.indicators != null && item.indicators.length > 0 && !V.settings.blindStatsEnabled) {
 		for (const indicator of item.indicators) document.getElementById("hpi_indicator").innerHTML += indicator;
 	}
 }
