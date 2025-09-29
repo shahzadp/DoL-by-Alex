@@ -974,7 +974,7 @@ Renderer.CanvasModels.main = {
 						// Generate final tanning layers
 						// Separate the base with the arms, since they can overlap
 						// Base layer has disabled animations
-						const alpha = layerGroup.value * (["gyaru", "ygyaru"].includes(options.skin_type) ? 0.3 : 1);
+						const alpha = layerGroup.value * (["gyaru", "rgyaru", "ygyaru", "ggyaru", "bgyaru"].includes(options.skin_type) ? 0.3 : 1);
 						if (layers.body.length) {
 							options.generatedLayers[`tan_base${i}`] = (genlayer_tanning("base", i, layers.body, alpha, null));
 							options.generatedLayers[`tan_breasts${i}`] = (genlayer_tanning("breasts", i, layers.body, alpha));
@@ -5003,15 +5003,24 @@ function makeupAdjustment(options) {
     let limit = [0, -0.1];
     switch (options.skin_type) {
         case "medium":
+		case "rmedium":
         case "ymedium":
+		case "gmedium":
+		case "bmedium":
             limit = [-0.1, -0.3];
             break;
         case "dark":
+		case "rdark":
         case "ydark":
+		case "gdark":
+		case "bdark":
             limit = [-0.3, -0.4];
             break;
         case "gyaru":
+		case "rgyaru":
         case "ygyaru":
+		case "ggyaru":
+		case "bgyaru":
             limit = [0, -0.2];
             break;
         default:
