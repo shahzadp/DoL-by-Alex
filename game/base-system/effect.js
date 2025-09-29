@@ -1,5 +1,5 @@
 function effectsWater(waterType = "liquid") {
-	Perflog.logWidgetStart("effectsWaterJs");
+	DOL.Perflog.logWidgetStart("effectsWaterJs");
 	const fragment = document.createDocumentFragment();
 
 	const sWikifier = text => {
@@ -190,7 +190,7 @@ function effectsWater(waterType = "liquid") {
 		}
 	}
 
-	Perflog.logWidgetEnd("effectsWaterJs");
+	DOL.Perflog.logWidgetEnd("effectsWaterJs");
 	return fragment;
 }
 
@@ -202,7 +202,7 @@ Macro.add("effectswater", {
 });
 
 function effectsMakeup() {
-	Perflog.logWidgetStart("effectsMakeupJs");
+	DOL.Perflog.logWidgetStart("effectsMakeupJs");
 	const fragment = document.createDocumentFragment();
 
 	const span = (text, colour) => {
@@ -222,7 +222,7 @@ function effectsMakeup() {
 		V.makeup.mascara_running = painToTearsLvl(V.pain);
 	}
 
-	Perflog.logWidgetEnd("effectsMakeupJs");
+	DOL.Perflog.logWidgetEnd("effectsMakeupJs");
 	return fragment;
 }
 
@@ -1596,9 +1596,9 @@ function effects() {
 
 Macro.add("effects", {
 	handler() {
-		Perflog.logWidgetStart("effectsJs");
+		DOL.Perflog.logWidgetStart("effectsJs");
 		const fragment = effects();
 		this.output.append(fragment);
-		Perflog.logWidgetEnd("effectsJs");
+		DOL.Perflog.logWidgetEnd("effectsJs");
 	},
 });

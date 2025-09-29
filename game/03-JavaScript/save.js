@@ -337,7 +337,7 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} state
 	 */
 	function compressState(state) {
-		Perflog.logWidgetStart("__DoLSave.compressState");
+		DOL.Perflog.logWidgetStart("__DoLSave.compressState");
 		try {
 			const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
 			const compressor = new JsonCompressor(dictionary);
@@ -355,7 +355,7 @@ const DoLSave = ((Story, Save) => {
 			}
 			return zstate;
 		} finally {
-			Perflog.logWidgetEnd("__DoLSave.compressState");
+			DOL.Perflog.logWidgetEnd("__DoLSave.compressState");
 		}
 	}
 
@@ -366,7 +366,7 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} zstate
 	 */
 	function decompressState(zstate) {
-		Perflog.logWidgetStart("__DoLSave.decompressState");
+		DOL.Perflog.logWidgetStart("__DoLSave.decompressState");
 		try {
 			if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
 			const dicid = zstate.dictionary;
@@ -380,7 +380,7 @@ const DoLSave = ((Story, Save) => {
 			const decompressor = new JsonDecompressor(dictionary);
 			return decompressor.decompress(zstate);
 		} finally {
-			Perflog.logWidgetEnd("__DoLSave.decompressState");
+			DOL.Perflog.logWidgetEnd("__DoLSave.decompressState");
 		}
 	}
 	function enableCompression() {
