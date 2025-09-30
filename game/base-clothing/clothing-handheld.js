@@ -4924,7 +4924,7 @@ function initHandheld() {
 			name: "chainsaw",
 			name_cap: "Chainsaw",
 			variable: "chainsaw",
-			holdPosition: "right_cover",
+			holdPosition: "cover_both",
 			state: 0,
 			state_base: 0,
 			warmth: 0,
