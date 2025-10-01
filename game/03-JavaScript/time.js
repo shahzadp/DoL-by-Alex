@@ -34,9 +34,9 @@
 
 	Time.yesterday - Returns Date object of day before today
 
-	Time.schoolTerm - Returns true if current day is during a school term, and false if a holiday.
+	Time.schoolTerm - Returns true if current day is during a school term and false if a holiday.
 
-	Time.schoolDay - Returns true if current day is a school day, and false otherwise
+	Time.schoolDay - Returns true if current day is a school day and false otherwise
 
 	Time.schoolTime - Returns true if current time is between 8-15 and is a school day
 
@@ -783,7 +783,7 @@ function dayPassed() {
 	if (V.randomNNPCStraponsToClear) {
 		V.NPCName.forEach(npc => {
 			if (npc.strapons && npc.strapons.length >= 1) {
-				/* This removes all strapons that have the temp tag, and ignores any that lack this variable */
+				/* This removes all strapons that have the temp tag and ignores any that lack this variable */
 				npc.strapons = npc.strapons.filter(strapon => !strapon.temp);
 				console.debug("Removed temp strap-ons");
 			}
@@ -2045,7 +2045,7 @@ function passArousalWetness(passMinutes) {
 	// It also dries slower at high arousal, in an inverse relationship.
 	wetnessChange -= 0.1 * V.timeSinceArousal * (1 - arousalPercent);
 
-	// If wetnessChange would go negative, and arousal is high enough, wetness instead does not change.
+	// If wetnessChange would go negative and arousal is high enough, wetness instead does not change.
 	if (V.arousal >= V.arousalmax * (3 / 5) && wetnessChange < 0) wetnessChange = 0;
 	V.vaginaArousalWetness += Math.round(wetnessChange * passMinutes);
 

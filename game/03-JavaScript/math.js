@@ -93,7 +93,7 @@ function between(x, min, max) {
 window.between = between;
 
 /**
- * This function takes a value, and weights it by exponential curve.
+ * This function takes a value and weights it by exponential curve.
  *
  * Value should be between 0.0 and 1.0 (use normalise to get a percentage of a max).
  *
@@ -101,7 +101,7 @@ window.between = between;
  *
  * Exponents between 1.0 and 2.0 return a curve favoring higher results (closer to 1)
  *
- * An exponent of 2.0 will return a flat line distribution, and is identical to random()
+ * An exponent of 2.0 will return a flat line distribution and is identical to random()
  *
  * Exponents greater than 2.0 return a curve favoring lower results (closer to 0), reaching to 0 at infinity.
  *
@@ -124,7 +124,7 @@ window.expCurve = expCurve;
  *
  * Values between 1.0 and 2.0 return a curve favoring higher results (closer to 1)
  *
- * A value of 2.0 will return a flat line distribution, and is identical to random()
+ * A value of 2.0 will return a flat line distribution and is identical to random()
  *
  * Values greater than 2.0 return a curve favoring lower results (closer to 0), reaching to 0 at infinity.
  *

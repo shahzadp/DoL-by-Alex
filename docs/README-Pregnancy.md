@@ -175,7 +175,7 @@ Used to set `whoNowKnows` as someone who knows about the `mother`'s current or p
 
 #### setKnowsAboutPregnancyCurrentLoaded()
 
-Used for current named npc's loaded into `V.NPCList`, and lets them learn about the players's current pregnancy if its visible. Used in widgets where the players state of dress changes.
+Used for current named npc's loaded into `V.NPCList` and lets them learn about the players's current pregnancy if its visible. Used in widgets where the players state of dress changes.
 
 -   `<<setKnowsAboutPregnancyCurrentLoaded>>`
 
@@ -346,7 +346,7 @@ Returns a baby object in the expected format, using the many inputs.
 
 Requires update to add new species. The main functions that generates the children objects, one function per species type. This configures the setup of each child, including parasites and how many area created at one time.
 
-Current usage is in the following function, and required to be modified to add new species:
+Current usage is in the following function and required to be modified to add new species:
 
 -   `DefineMacro("playerPregnancy", playerPregnancy);` - to specifically get the player pregnant. Will need to be updated when a new species is added.
 -   `DefineMacro("namedNpcPregnancy", namedNpcPregnancy);` - to specifically get a named npc pregnant. Will need to be updated when a new species is added.

@@ -1930,7 +1930,7 @@ window.colorWheelContactLenses = function() {
 					if (setup.colours.eyes[s_colours].variable == eyes[eye]){ // When we found the right colour object that matches the eye colour
 						check_condition = 1
 						tempEditEyeName(eye, "colorWheelTemporary"+eye, s_colours) // we replace its colour by "colorWheelTemporary" and have this temporary colour match player's one
-						tmp_object = tempEditPlayerEyeValues(tmp_object, eye, "colorWheelTemporary"+eye, color[(V.pharmacy_order_colours == 1 ? 0 : eye)], s_colours); // we temporarily change the player eye colour, and save the original values, as to set them back afterward.
+						tmp_object = tempEditPlayerEyeValues(tmp_object, eye, "colorWheelTemporary"+eye, color[(V.pharmacy_order_colours == 1 ? 0 : eye)], s_colours); // we temporarily change the player eye colour and save the original values, setting them back afterward.
 						save_index[eye] = s_colours;
 						break;
 					}

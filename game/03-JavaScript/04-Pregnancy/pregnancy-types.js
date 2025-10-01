@@ -501,7 +501,7 @@ window.pregnancyGenerator = {
 				fertilised: whether it's fertilised or not. Parasites need to be fertilised before they can be birthed
 				daysLeft: how long until it can be birthed. Birthing is possible when it's 3 or less, but significantly more likely at 0
 				timeLeft: how long until it prompts a daily event. Speed impacts how fast it goes down
-				stats.growth: how long it takes to birth, and how much the parasite is worth when selling
+				stats.growth: how long it takes to birth and how much the parasite is worth when selling
 				stats.speed: how often it prompts a daily event. Also determines the parasite's activity
 			*/
 			const result = { fetus: clone(pregnancy.fetus), type: "parasite" };

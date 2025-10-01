@@ -935,7 +935,7 @@ Renderer.CanvasModels.main = {
 						const layerGroup = tanningGroups[i];
 						if (layerGroup.layers.length === 0) continue;
 
-						// For every item in tanning layers, create a new entry in options.worn, and setup the filters
+						// For every item in tanning layers, create a new entry in options.worn and set up the filters
 						for (const [slot, props] of Object.entries(layerGroup.slots)) {
 							const item = {
 								index: Number(props.index),
@@ -3987,7 +3987,7 @@ function createHairColourGradient(hairPart, gradient, hairType, hairLength, pref
 }
 
 function isPartEnabled(type) {
-	/* TODO: Enable this check, and fix cases that have fallen prey to this design flaw of returning true for undefined.
+	/* TODO: Enable this check and fix cases that have fallen prey to this design flaw of returning true for undefined.
 		It is better to catch potential errors and ensure a standard is kept. */
 	/* Check for undefined in case the object given was a typo. 06/10/22 Sneaky incident :trolldispair: */
 	if (typeof type !== "string") {

@@ -144,7 +144,7 @@ declare namespace Renderer {
     }
     /**
      * Abstraction of layer processing steps.
-     * All steps are stored in RenderingPipeline array, and can be changed externally
+     * All steps are stored in RenderingPipeline array and can be changed externally
      */
     export interface RenderingStep {
         name: string;

@@ -162,7 +162,7 @@ Renderer.Animations["idle"] = {
 ```
 
 Durations are in milliseconds and `frame` refers to sub-sprite in the layer sprite.
-Animations are referenced by its name in the model layer's `animation` property, and can be functions (`animationfn(options) { ... }`).
+Animations are referenced by its name in the model layer's `animation` property and can be functions (`animationfn(options) { ... }`).
 
 ### Animating layer properties
 

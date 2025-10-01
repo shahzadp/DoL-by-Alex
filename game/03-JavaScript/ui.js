@@ -973,7 +973,7 @@ function getLargestSexStatModifierCssClasses(input, requiredLevel = 0) {
 	const drunkSexStatModifierValue = drunkSexStatModifier(V[statName]);
 	const heatRutSexStatModifierValue = heatRutSexStatModifier(statName);
 
-	// If there is a modifier, and either requiredLevel is 0 or the modifiers put the player up a level of the sexStat.
+	// If there is a modifier and either requiredLevel is 0 or the modifiers put the player up a level of the sexStat.
 	if (
 		drunkSexStatModifierValue + heatRutSexStatModifierValue > 0 &&
 		(requiredLevel === 0 || (!hasSexStat(statName, requiredLevel, false) && hasSexStat(statName, requiredLevel, true)))

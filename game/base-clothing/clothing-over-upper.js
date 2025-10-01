@@ -1,7 +1,7 @@
 // @ts-check
 /* For any item that has a colour_combat tag, set it to 0 if that item ever gets its own combat sprites. */
-/* word - widget will output "a" if "a", and nothing if "n". eg - You are wearing <<a>> hat. You are wearing <<a>> shorts.
-plural - widget will output "are" if 1, and "is" if 0. eg - Your hat <<upperplural>> wet. Your shorts <<upperplural>> wet. */
+/* word - widget will output "a" if "a" and nothing if "n". eg - You are wearing <<a>> hat. You are wearing <<a>> shorts.
+plural - widget will output "are" if 1 and "is" if 0. eg - Your hat <<upperplural>> wet. Your shorts <<upperplural>> wet. */
 function initOverUpper() {
 	/** @type {ClothesItem[]} */
 	const clothing = [

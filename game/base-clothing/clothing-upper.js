@@ -1,7 +1,7 @@
 // @ts-check
 /* For any item that has a colour_combat tag, set it to 0 if that item ever gets its own combat sprites. */
-/* word - widget will output "a" if "a", and nothing if "n". eg - You are wearing <<a>> hat. You are wearing <<a>> shorts.
-plural - widget will output "are" if 1, and "is" if 0. eg - Your hat <<upperplural>> wet. Your shorts <<upperplural>> wet.
+/* word - widget will output "a" if "a" and nothing if "n". eg - You are wearing <<a>> hat. You are wearing <<a>> shorts.
+plural - widget will output "are" if 1 and "is" if 0. eg - Your hat <<upperplural>> wet. Your shorts <<upperplural>> wet.
 
 Warmth checklist:
 	Base: 0
@@ -1802,7 +1802,7 @@ function initUpper() {
 			femininity: 300,
 			warmth: 1,
 			cost: 12000,
-			description: "Exotic, and sturdier than it looks.",
+			description: "Exotic and sturdier than it looks.",
 			shop: ["forest"],
 			accessory: 0,
 			accessory_colour: 0,
@@ -3306,7 +3306,7 @@ function initUpper() {
 			femininity: -100,
 			warmth: 7,
 			cost: 9000,
-			description: "Not a real letterman jacket, but looks the part, and made from high-quality materials.",
+			description: "Not a real letterman jacket, but looks the part and made from high-quality materials.",
 			shop: ["clothing"],
 			accessory: 0,
 			accessory_colour: 0,
@@ -4238,7 +4238,7 @@ function initUpper() {
 			gender: "n",
 			warmth: 3,
 			cost: 3000,
-			description: "Popular in the past, and making a comeback.",
+			description: "Popular in the past and making a comeback.",
 			shop: ["clothing"],
 			accessory: 1,
 			accessory_colour: 0,
@@ -8249,7 +8249,7 @@ function initUpper() {
 			femininity: -200,
 			warmth: 2,
 			cost: 12000,
-			description: "Exotic, and sturdier than it looks.",
+			description: "Exotic and sturdier than it looks.",
 			shop: ["forest"],
 			accessory: 0,
 			accessory_colour: 0,

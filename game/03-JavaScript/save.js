@@ -220,7 +220,7 @@ const DoLSave = ((Story, Save) => {
 					dolSaveDetails.autosave.metadata.saveName = "";
 				}
 			}
-			/* Check whether SugarCube's save slots exist, and populate save details with them. */
+			/* Check whether SugarCube's save slots exist and populate save details with them. */
 			for (let i = 0; i < scSaveDetails.slots.length; i++) {
 				if (scSaveDetails.slots[i] !== null) {
 					dolSaveDetails.slots[i] = {
