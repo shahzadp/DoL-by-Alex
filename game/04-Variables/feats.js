@@ -1114,7 +1114,7 @@ setup.feats = {
 	},
 	"A Thunderous Response": {
 		title: "A Thunderous Response",
-		desc: "Caused a brawl on the High Street.",
+		desc: "Caused a brawl on High Street.",
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Discoveries-Town"],
