@@ -8,7 +8,7 @@ const setChildFirstWord = (childId, word, playerAbsent = false) => {
 	if (child.localVariables.firstWord) return false;
 
 	if (!word) {
-		const wordList = ["mama", "mommy", "dada", "daddy", "papa", "no", "nana", "yes", "uh oh", "bye", "bye-bye", "hello"];
+		const wordList = ["mama", "mummy", "dada", "daddy", "papa", "no", "nana", "yes", "uh oh", "bye", "bye-bye", "hello"];
 
 		// Should be last
 		if (random(0, Math.ceil(2000 / wordList.length)) === 0) {

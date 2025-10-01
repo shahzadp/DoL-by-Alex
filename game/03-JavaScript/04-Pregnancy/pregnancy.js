@@ -124,7 +124,7 @@ function fetishPregnancy({ genital = "vagina", target = null, spermOwner = null,
 		if (V.earSlime.growth >= 100 && V.earSlime.focus === "pregnancy") chance *= 2;
 		if (V.earSlime.growth >= 100 && V.earSlime.focus === "impregnation") chance /= 2;
 
-		// Reduce the chance for standard impregnation of great hawk children
+		// Reduce the chance for standard impregnation of Great Hawk children
 		if (["hawk", "harpy"].includes(spermType)) chance /= 4;
 
 		if (!forcePregnancy && chance * quantity * (rngModifier / 100) * (1 + fertility + magicTattoo) * multi < random(1, 100)) return false;
@@ -182,7 +182,7 @@ function playerPregnancyAttempt(baseMulti = 1, genital = "vagina") {
 	if (spermArray[rng]) {
 		const fatherKnown = Object.keys(trackedNPCs).length === 1;
 
-		// Reduce the chance for standard impregnation of great hawk children
+		// Reduce the chance for standard impregnation of Great Hawk children
 		if (["hawk", "harpy"].includes(spermArray[rng].type) && !random(0, 3)) return false;
 
 		// Player becomes pregnant
@@ -486,7 +486,7 @@ function npcPregnancyCycle() {
 				pregnancy.npcAwareOf = true;
 			}
 			if (pregnancy.timer > pregnancy.timerEnd) {
-				// Disabled automatic ending of pregnancy for the great hawk, remove if an event is added to support it
+				// Disabled automatic ending of pregnancy for the Great Hawk, remove if an event is added to support it
 				if (pregnancy.type === "hawk") continue;
 
 				if (pregnancy.timer >= pregnancy.timerEnd + 14 * multiplier) {
