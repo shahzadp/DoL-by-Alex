@@ -1882,7 +1882,7 @@ buildColourMap("tentacle");
 
 /**
  * Tries to guess colour in the map by removing spaces or replacing them with '-' and checking against name.
- * Return colour record if found, and null if no.
+ * Return colour record if found and null if no.
  *
  * @param {any} map
  * @param {any} colour

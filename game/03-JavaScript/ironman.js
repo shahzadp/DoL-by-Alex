@@ -53,7 +53,7 @@ var IronMan = (Save => {
 		return obj;
 	}
 
-	// Don't worry about cleaning up this variable as it's already tightly controlled, and will be disposed of via restarting.
+	// Don't worry about cleaning up this variable as it's already tightly controlled and will be disposed of via restarting.
 	const internals = {};
 
 	function ironmanLock() {
@@ -112,7 +112,7 @@ var IronMan = (Save => {
 		}
 		// Check signatures, return true if match. Loads the game normally.
 		if (saveSignature === metaSignature) return true;
-		// Last part for error checking. Returns false to indicate failure, and to not load the game. Implies cheating.
+		// Last part for error checking. Returns false to indicate failure and to not load the game. Implies cheating.
 		if (V.debug) {
 			Errors.report("Ironman signatures failed to match.", {
 				saveSig: saveSignature,

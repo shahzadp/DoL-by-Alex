@@ -923,7 +923,7 @@ function backCompPillsInventory() {
 window.backCompPillsInventory = backCompPillsInventory;
 
 function pillsObjectRepair(oPills, pills) {
-	/* if the variable already exist, and is not of the new version(new version has "mostTaken" property that's why we check it),
+	/* if the variable already exist and is not of the new version(new version has "mostTaken" property that's why we check it),
 	then we try to port the old one to the new one */
 	if (typeof oPills.bottom === "object") {
 		Object.assign(pills, {

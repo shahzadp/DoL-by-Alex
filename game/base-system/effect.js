@@ -251,10 +251,10 @@ function effects() {
 	if (V.speechcycle >= 7) V.speechcycle = 0;
 
 	if (Weather.bodyTemperature < setup.WeatherTemperature.minTemperature + 1 && !Weather.BodyTemperature.isIncreasing()) {
-		element("span", `You're very cold, and about to get hypothermia!`, "red");
+		element("span", `You're very cold and about to get hypothermia!`, "red");
 		br();
 	} else if (Weather.bodyTemperature > setup.WeatherTemperature.maxTemperature - 1 && !Weather.BodyTemperature.isDecreasing()) {
-		element("span", `You're extremely hot, and about to get heatstroke!`, "red");
+		element("span", `You're extremely hot and about to get heatstroke!`, "red");
 		br();
 	}
 
@@ -281,7 +281,7 @@ function effects() {
 	if (V.innocencemessage === "start") {
 		delete V.innocencemessage;
 		element("span", "A profound sense of peace falls on your mind. You were upset a moment ago, but you can't remember why.", "red");
-		element("i", "Your trauma has been replaced with innocence. Trauma will continue to accumulate, and will return should you run out of innocence.");
+		element("i", "Your trauma has been replaced with innocence. Trauma will continue to accumulate and will return should you run out of innocence.");
 	} else if (V.innocencemessage === "end") {
 		delete V.innocencemessage;
 		element("span", "You have a terrible epiphany. The abuse you've endured can be ignored no longer.", "red");
@@ -547,7 +547,7 @@ function effects() {
 					break;
 				case 10:
 				case 9:
-					element("span", "Your breasts feel light, and are looking less impressive.", "purple");
+					element("span", "Your breasts feel light and are looking less impressive.", "purple");
 					break;
 				case 8:
 				case 7:
@@ -662,7 +662,7 @@ function effects() {
 
 		if (V.exhibitionism_message) {
 			sWikifier(
-				`<span class="lblue">You've spent time in public with no underwear on. You wonder if people can tell, and shiver at the thought.</span> <<exhibitionism1>>`
+				`<span class="lblue">You've spent time in public with no underwear on. You wonder if people can tell and shiver at the thought.</span> <<exhibitionism1>>`
 			);
 			delete V.exhibitionism_message;
 		}
@@ -723,15 +723,15 @@ function effects() {
 					element("i", "You are no longer a masochist.", "lblue");
 					break;
 				case "down 1":
-					element("span", "You are no longer so masochistic, and can only be considered a", "blue");
+					element("span", "You are no longer so masochistic and can only be considered a", "blue");
 					element("i", "guilty masochist.", "blue");
 					break;
 				case "down 2":
-					element("span", "You are no longer so masochistic, and can only be considered a", "purple");
+					element("span", "You are no longer so masochistic and can only be considered a", "purple");
 					element("i", "normal masochist.", "purple");
 					break;
 				case "down 3":
-					element("span", "You are no longer so masochistic, and can only be considered a", "pink");
+					element("span", "You are no longer so masochistic and can only be considered a", "pink");
 					element("i", "hardened masochist.", "pink");
 					break;
 			}
@@ -760,15 +760,15 @@ function effects() {
 					element("i", "You are no longer a sadist.", "lblue");
 					break;
 				case "down 1":
-					element("span", "You are no longer so sadistic, and can only be considered a", "blue");
+					element("span", "You are no longer so sadistic and can only be considered a", "blue");
 					element("i", "guilty sadist.", "blue");
 					break;
 				case "down 2":
-					element("span", "You are no longer so sadistic, and can only be considered a", "purple");
+					element("span", "You are no longer so sadistic and can only be considered a", "purple");
 					element("i", "normal sadist.", "purple");
 					break;
 				case "down 3":
-					element("span", "You are no longer so sadistic, and can only be considered a", "pink");
+					element("span", "You are no longer so sadistic and can only be considered a", "pink");
 					element("i", "hardened sadist.", "pink");
 					break;
 			}
@@ -786,7 +786,7 @@ function effects() {
 					element("span", `Rumours of your ${crossdressing} are spreading throughout the school.`, "pink");
 					break;
 				case 3:
-					element("span", `Rumours of your ${crossdressing} are spreading, and have become a popular topic of conversation at school.`, "purple");
+					element("span", `Rumours of your ${crossdressing} are spreading and have become a popular topic of conversation at school.`, "purple");
 					break;
 				case 2:
 					element("span", `Whispers of your ${crossdressing} are spreading through the school.`, "blue");
@@ -862,7 +862,7 @@ function effects() {
 					break;
 				case "withdrawals":
 					sWikifier(
-						'<span class="red">Your body craves nectar, and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique_loss 4>><<lphysique>>'
+						'<span class="red">Your body craves nectar and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique_loss 4>><<lphysique>>'
 					);
 					br();
 					break;
@@ -935,7 +935,7 @@ function effects() {
 				element("span", "You have a book severely overdue, and the police have been informed.", "red");
 			} else {
 				sWikifier(`<<delinquency ${3 / 4}>>`);
-				element("span", "You have a book overdue, and have incurred delinquency.", "red");
+				element("span", "You have a book overdue and have incurred delinquency.", "red");
 			}
 			delete V.bookoverduemessage;
 		}
@@ -1285,12 +1285,12 @@ function effects() {
 					element("span", "Your eyes water from a burning sensation around the pupil.", "gold");
 					break;
 				case "catUp9":
-					element("span", "Your eyes burn, likely due to some sort of allergy, you can barely keep them open.", "gold");
+					element("span", "Your eyes burn, likely due to some sort of allergy. You can barely keep them open.", "gold");
 					break;
 				case "catUp10":
 					element(
 						"span",
-						"Your eyes no longer burn, and despite the darkness of the early morning, you are able to pick up every detail of the scenery around you.",
+						"Your eyes no longer burn. Despite the darkness of the early morning, you are able to pick up every detail of the scenery around you.",
 						"gold"
 					);
 					break;
@@ -1325,7 +1325,7 @@ function effects() {
 					element("span", "You have a strange urge to munch grass.", "gold");
 					break;
 				case "cowUp2":
-					element("span", "Your scalp itches. You reach up, and find that a pair of small horns have sprouted.", "gold");
+					element("span", "Your scalp itches. You reach up and find that a pair of small horns have sprouted.", "gold");
 					break;
 				case "cowUp3":
 					element("span", "Your ears tingle.", "gold");
@@ -1333,7 +1333,7 @@ function effects() {
 				case "cowUp4":
 					element(
 						"span",
-						"Your ears itch. You reach up to scratch them, and find them much bigger than you expected. You've grown a pair of cow ears.",
+						"Your ears itch. You reach up to scratch them and find them much bigger than you expected. You've grown a pair of cow ears.",
 						"gold"
 					);
 					break;
@@ -1388,7 +1388,7 @@ function effects() {
 					);
 					break;
 				case "harpyUp4":
-					element("span", "Your bottom feels lighter. You reach behind you, and grasp a feathered tail. Small feathers cover your neck.", "gold");
+					element("span", "Your bottom feels lighter. You reach behind you and grasp a feathered tail. Small feathers cover your neck.", "gold");
 					break;
 				case "harpyUp5":
 					element("span", `Your back ${V.settings.pubicHairEnabled === true ? "and pubic area itch" : "itches"}.`, "gold");

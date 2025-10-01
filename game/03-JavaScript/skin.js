@@ -77,23 +77,23 @@ const Skin = (() => {
 	 * TANNING GAIN/DECAY:
 	 * - Linear gain is linear over time.
 	 * - Tanning decay is linear over time.
-	 * - If the total tanning value exceeds 100, the gain will be capped at 100, and any excess will be treated as tanning loss (to all groups except the one that gets the tanning gain)
-	 * - If a group gains tanning during the same time - only that group won't lose tanning.
+	 * - If the total tanning value exceeds 100, the gain will be capped at 100, and any excess will be treated as tanning loss (to all groups except the one that gets the tanning gain).
+	 * - If a group gains tanning during the same time, only that group won't lose tanning.
 	 * - If a group loses tanning to below 0, that group will be removed.
 	 * - If tanning loss is higher than a group's value (causing it to be removed), the remainder will be distributed as a loss to the other layers.
-	 * - If more than 60 minutes pass at once - divide the tanning calculations into 60-minute chunks.
-	 * - Limit of 10 layer groups. If 10 groups exist, and we want to add another one, remove the group with the lowest value, and distribute its value to the remaining groups.
+	 * - If more than 60 minutes pass at once, divide the tanning calculations into 60-minute chunks.
+	 * - Limit of 10 layer groups. If 10 groups exist and we want to add another one, remove the group with the lowest value and distribute its value to the remaining groups.
 	 *
 	 * RENDERING:
-	 * - Canvas needs to be rendered once in order for the layers to be saved for the tanning masks. (see limitations below)
-	 * - Layer groups are created after the canvas has been readied for renderering (but before its rendered), in a new postprocess function.
-	 * - Each layer group consist of the clothes being worn at the time of tanning - minus head, and handheld.
+	 * - Canvas needs to be rendered once in order for the layers to be saved for the tanning masks (see limitations below).
+	 * - Layer groups are created after the canvas has been readied for renderering (but before its rendered) in a new postprocess function.
+	 * - Each layer group consist of the clothes being worn at the time of tanning, minus head and handheld.
 	 * - Layer groups are converted to their own canvas masks.
-	 * - Animations are removed for all layers except for arms, and upper. (to avoid moving tan-lines)
+	 * - Animations are removed for all layers except for arms and upper (to avoid moving tan-lines).
 	 * - Canvas masks are cached to avoid reloading them unecessarily.
-	 * - They are re-cached only if the src layer has been changed. (E.g. if hand position goes from idle to cover)
-	 * - If no clothes are applied when tanning - an empty layer group (with an empty mask) will be applied instead - causing the whole body to get tanned.
-	 * - If there are multiple layer groups - apply the one with the highest value first. The remaining layers are applied on top, with their respective alpha value.
+	 * - They are re-cached only if the src layer has been changed (e.g., if hand position goes from idle to cover).
+	 * - If no clothes are applied when tanning, an empty layer group (with an empty mask) will be applied instead, causing the whole body to get tanned.
+	 * - If there are multiple layer groups, apply the one with the highest value first. The remaining layers are applied on top with their respective alpha value.
 	 *
 	 * @param {number} minutes
 	 */

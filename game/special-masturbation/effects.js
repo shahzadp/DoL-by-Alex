@@ -209,7 +209,7 @@ function masturbationEffects() {
 			if (genitalsExposed()) {
 				sWikifier(
 					`Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum beads at the tip${
-						V.bugsinside && V.player.penissize >= 0 ? " covering some of the insects crawling over you" : ""
+						V.bugsinside && V.player.penissize >= 0 ? ", covering some of the insects crawling over you" : ""
 					}.</span>`
 				);
 			} else {
@@ -2132,7 +2132,7 @@ function masturbationEffectsArms(
 			}
 			altText.fingers = handsOn === 2 ? "fingers" : "finger";
 			if (genitalsExposed() && V.bugsinside) {
-				sWikifier(`<span class="blue">You run your ${altText.fingers} over your exposed <<pussy>>, and feel some bugs running around.</span>`);
+				sWikifier(`<span class="blue">You run your ${altText.fingers} over your exposed <<pussy>> and feel some bugs running around.</span>`);
 				wikifier("addVaginalWetness", 2 * handsOn);
 			} else if (genitalsExposed()) {
 				sWikifier(`<span class="blue">You run your ${altText.fingers} over your exposed <<pussy>> and shiver in anticipation.</span>`);
@@ -2288,7 +2288,7 @@ function masturbationEffectsArms(
 			wikifier("arousal", 200 * handsOn, "masturbationVagina");
 			altText.fingers = handsOn === 2 ? "fingers" : "finger";
 			if (genitalsExposed() && V.bugsinside) {
-				sWikifier(`You run your ${altText.fingers} over your exposed <<pussy>>, and feel some bugs running around.`);
+				sWikifier(`You run your ${altText.fingers} over your exposed <<pussy>> and feel some bugs running around.`);
 				wikifier("addVaginalWetness", 2 * handsOn);
 			} else if (genitalsExposed()) {
 				sWikifier(`You run your ${altText.fingers} over your exposed <<pussy>> and shiver in anticipation.`);
@@ -3644,7 +3644,7 @@ function masturbationEffectsVaginaAnus({ span, otherElement, additionalEffect, s
 					case 1:
 						fragment.append(
 							span(
-								"You nearly impale yourself on the plant, as a sudden burst of desire hits you. You stop yourself at the last moment, and gently circle the plant around your entrance."
+								"You nearly impale yourself on the plant as a sudden burst of desire hits you. You stop yourself at the last moment and gently circle the plant around your entrance."
 							)
 						);
 						break;

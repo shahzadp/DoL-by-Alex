@@ -104,7 +104,7 @@ setup.feats = {
 	},
 	Billboard: {
 		title: "Billboard",
-		desc: "Wear an advert, and have it pay off.",
+		desc: "Wear an advert and have it pay off.",
 		difficulty: 1,
 		series: "",
 		filter: ["All", "General"],
@@ -1235,7 +1235,7 @@ setup.feats = {
 	},
 	"Buried Treasure": {
 		title: "Buried Treasure",
-		desc: "Followed the treasure map, and made a discovery.",
+		desc: "Followed the treasure map and made a discovery.",
 		difficulty: 3,
 		series: "beach cave",
 		filter: ["All", "Discoveries-Town"] /* unsure if this should be in both town and other */,
@@ -1305,7 +1305,7 @@ setup.feats = {
 	},
 	"Employee Benefits": {
 		title: "Employee Benefits",
-		desc: "Discovered a shipment of gold by day, and took it by night.",
+		desc: "Discovered a shipment of gold by day and took it by night.",
 		difficulty: 3,
 		series: "",
 		filter: ["All", "Discoveries-Town"],

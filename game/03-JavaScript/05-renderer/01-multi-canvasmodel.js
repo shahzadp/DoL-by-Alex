@@ -99,7 +99,7 @@ class MultiCanvasModel {
 	}
 
 	/**
-	 * Recompiles the canvas models' layers, and schedules them on the renderer system.
+	 * Recompiles the canvas models' layers and schedules them on the renderer system.
 	 */
 	redraw() {
 		if (!this.canvas) {

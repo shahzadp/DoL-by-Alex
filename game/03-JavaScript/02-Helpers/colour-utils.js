@@ -11,7 +11,7 @@ const ColourUtils = (() => {
 	 * recalculate at every step.
 	 *
 	 * Otherwise we would have many property variables up here,
-	 * and they would be prone to state changes, and possible
+	 * and they would be prone to state changes and possible
 	 * cascading errors.
 	 */
 	class ConversionObject {
