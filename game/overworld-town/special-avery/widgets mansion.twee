@@ -847,7 +847,7 @@
 			<i>No formal clothes</i><br>
 		<</if>>
 	<</if>>
-	<<if $avery_mansion.jobs.includes("hairstyle") and $hairstyle isnot "neat">>
+	<<if $avery_mansion.jobs.includes("hairstyle") and $hairtype isnot "neat">>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairstyle_failed to true>>
 		<<if $debug is 1>>
@@ -858,7 +858,7 @@
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairlength_failed to true>>
 		<<if $debug is 1>>
-			<i>Hair too short</i><br>
+			<i>Hair too long</i><br>
 		<</if>>
 	<</if>>
 	<<if $debug is 1>>
@@ -2894,7 +2894,31 @@
 		<br><br>
 	<</if>>
 	<<avery_mansion_interrupt>>
-	<<if C.npc.Avery.state isnot "dismissed">>
+	<<if $stress gte $stressmax>>
+		You pushed yourself too much. Everything fades to black.
+		<br><br>
+		<<passout>>
+		<<pass 60>>
+		<<avery_mansion_interrupt>>
+		<<if $avery_mansion.schedule is "away" or $avery_mansion.schedule is "work" or $avery_mansion.schedule is "sleep">>
+			<<link [[Next|Mansion Passout Pair]]>><<set $stress -= 2000>><<pass 60>><</link>>
+			<br>
+		<<elseif $avery_fate is "saved">>
+			<<link [[Next|Mansion Passout Saved]]>><<set $stress -= 2000>><<pass 60>><</link>>
+			<br>
+		<<elseif $avery_fate is "ascended">>
+			<<link [[Next|Mansion Passout Ascended]]>><<set $stress -= 2000>><<pass 60>><</link>>
+			<br>
+		<<else>>
+			<<if C.npc.Avery.rage gte random(20, 100) and $averyragerevealed>>
+				<<link [[Next|Mansion Passout Rage]]>><<set $stress -= 2000>><<pass 60>><</link>>
+				<br>
+			<<else>>
+				<<link [[Next|Mansion Passout Avery]]>><<set $stress -= 2000>><<pass 60>><</link>>
+				<br>
+			<</if>>
+		<</if>>
+	<<elseif C.npc.Avery.state isnot "dismissed">>
 		<<if _avery_interrupt is "injury">>
 			<<npc Avery>><<person1>>
 			You hear the front gates rattle open, and an unfamiliar car drive through. It stops outside the mansion. A door opens, closes, then the car drives away.
