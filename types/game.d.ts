@@ -260,10 +260,22 @@ declare module "twine-sugarcube" {
 			medium: SkinColourConfig;
 			dark: SkinColourConfig;
 			gyaru: SkinColourConfig;
+			rlight: SkinColourConfig;
+			rmedium: SkinColourConfig;
+			rdark: SkinColourConfig;
+			rgyaru: SkinColourConfig;
 			ylight: SkinColourConfig;
 			ymedium: SkinColourConfig;
 			ydark: SkinColourConfig;
 			ygyaru: SkinColourConfig;
+			glight: SkinColourConfig;
+			gmedium: SkinColourConfig;
+			gdark: SkinColourConfig;
+			ggyaru: SkinColourConfig;
+			blight: SkinColourConfig;
+			bmedium: SkinColourConfig;
+			bdark: SkinColourConfig;
+			bgyaru: SkinColourConfig;
 			slime: SkinColourConfig;
 			ghost: SkinColourConfig;
 		};
@@ -275,7 +287,7 @@ declare module "twine-sugarcube" {
 
 declare global {
 	export type SkinColoursSimple = "custom" | "light" | "medium" | "dark" | "gyaru";
-	export type SkinColours = SkinColoursSimple | "ylight" | "ymedium" | "ydark" | "ygyaru" | "slime" | "ghost";
+	export type SkinColours = SkinColoursSimple | "rlight" | "rmedium" | "rdark" | "rgyaru" | "ylight" | "ymedium" | "ydark" | "ygyaru" | "glight" | "gmedium" | "gdark" | "ggyaru" | "blight" | "bmedium" | "bdark" | "bgyaru" | "slime" | "ghost";
 
 	export interface SkinColourConfig {
 		hStart: number;

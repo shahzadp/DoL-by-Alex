@@ -747,7 +747,7 @@ Macro.add("canvasModelEditor", {
 						selectOption("arm_right", ["none", "idle", "cover", "hold"]),
 
 						optionCategory("Skin"),
-						selectOption("skin_type", ["light", "medium", "dark", "gyaru", "ylight", "ymedium", "ydark", "ygyaru"]),
+						selectOption("skin_type", ["light", "medium", "dark", "gyaru", "rlight", "rmedium", "rdark", "rgyaru", "ylight", "ymedium", "ydark", "ygyaru", "glight", "gmedium", "gdark", "ggyaru", "blight", "bmedium", "bdark", "bgyaru"]),
 						numberOption("skin_tone", 0, 100, 1, true),
 
 						optionCategory("Hair"),

@@ -1052,7 +1052,7 @@ function settingsObjects(type) {
 					},
 					skin: {
 						color: {
-							strings: ["light", "medium", "dark", "gyaru", "ylight", "ymedium", "ydark", "ygyaru"],
+							strings: ["light", "medium", "dark", "gyaru", "rlight", "rmedium", "rdark", "rgyaru", "ylight", "ymedium", "ydark", "ygyaru", "glight", "gmedium", "gdark", "ggyaru", "blight", "bmedium", "bdark", "bgyaru"],
 							randomize: "characterAppearance",
 							displayName: "Natural Skintone:",
 						},

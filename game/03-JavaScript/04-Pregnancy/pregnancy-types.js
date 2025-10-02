@@ -252,7 +252,7 @@ function skinColourCalc(colour) {
 	if (colour === "black") return "dark";
 	if (colour === "white") return "light";
 	if (colour) return colour;
-	return ["light", "medium", "dark", "gyaru", "ylight", "ymedium", "ydark", "ygyaru"].random();
+	return ["light", "medium", "dark", "gyaru", "rlight", "rmedium", "rdark", "rgyaru", "ylight", "ymedium", "ydark", "ygyaru", "glight", "gmedium", "gdark", "ggyaru", "blight", "bmedium", "bdark", "bgyaru"].random();
 }
 
 // Only applies to the pc
