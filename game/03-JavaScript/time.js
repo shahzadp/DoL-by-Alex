@@ -2007,8 +2007,8 @@ function passWater(passMinutes) {
 		const dryingFactor = 0.1 + (temperature / 25) * ((1 + Weather.sunIntensity) * 2);
 		if (V.upperwet) statChange.wet("upper", -passMinutes * dryingFactor);
 		if (V.lowerwet) statChange.wet("lower", -passMinutes * dryingFactor);
-		if (V.underlowerwet) statChange.wet("underlower", -passMinutes * (V.worn.lower.type.includes("naked") ? dryingFactor : dryingFactor * 0.5));
-		if (V.underupperwet) statChange.wet("underupper", -passMinutes * (V.worn.upper.type.includes("naked") ? dryingFactor : dryingFactor * 0.5));
+		if (V.underlowerwet) statChange.wet("under_lower", -passMinutes * (V.worn.lower.type.includes("naked") ? dryingFactor : dryingFactor * 0.5));
+		if (V.underupperwet) statChange.wet("under_upper", -passMinutes * (V.worn.upper.type.includes("naked") ? dryingFactor : dryingFactor * 0.5));
 	} else if (V.outside && Weather.precipitation === "rain" && !V.worn.head.type.includes("rainproof") && !V.worn.handheld.type.includes("rainproof")) {
 		passMinutes *= Weather.precipitationIntensity;
 		if (!V.worn.upper.type.includes("naked") && !waterproofCheck(V.worn.upper) && !waterproofCheck(V.worn.over_upper)) {
@@ -2019,11 +2019,11 @@ function passWater(passMinutes) {
 		}
 		// eslint-disable-next-line prettier/prettier
 		if (!V.worn.under_lower.type.includes("naked") && !waterproofCheck(V.worn.under_lower) && !waterproofCheck(V.worn.lower) && !waterproofCheck(V.worn.over_lower)) {
-			statChange.wet("underlower", passMinutes);
+			statChange.wet("under_lower", passMinutes);
 		}
 		// eslint-disable-next-line prettier/prettier
 		if (!V.worn.under_upper.type.includes("naked") && !waterproofCheck(V.worn.under_upper) && !waterproofCheck(V.worn.upper) && !waterproofCheck(V.worn.over_upper)) {
-			statChange.wet("underupper", passMinutes);
+			statChange.wet("under_upper", passMinutes);
 		}
 	}
 }
@@ -2057,8 +2057,8 @@ function passArousalWetness(passMinutes) {
 		// Expected rate: between 1 and 2.61, usually around 1.8
 		const change = Math.clamp(1 + Math.log10(V.vaginaArousalWetness - 59), 1, 3);
 		if (!V.worn.under_lower.type.includes("naked") && !V.worn.under_lower.type.includes("swim")) {
-			statChange.wet("underlower", Math.round(change * passMinutes));
-			statChange.wet("underlower", Math.clamp(V.underlowerwet, 0, 100 + passMinutes));
+			statChange.wet("under_lower", Math.round(change * passMinutes));
+			statChange.wet("under_lower", Math.clamp(V.underlowerwet, 0, 100 + passMinutes));
 			V.pantiesSoaked = V.underlowerwet >= 100;
 		}
 	}
