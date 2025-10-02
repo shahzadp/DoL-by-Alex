@@ -72,7 +72,7 @@ function compile() {
 	else
 		if [ "$TARGET" != "Degrees of Lewdity.html" ]; then
 			# android builder expects to find a file by this name. this is a symbolic link, not a full copy
-			ln -fs "$TARGET" "Degrees of Lewdity.html";
+			ln -fs "$TARGET" "Degrees of Lewdity.html" || cp -f "$TARGET" "Degrees of Lewdity.html"
 		fi
 		echo "Done: \"$TARGET\""
 		exit 0

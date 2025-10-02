@@ -87,7 +87,7 @@
 
 <!-- Named NPC aka NNPC notes -->
 <!-- $NPCNameList.indexOf("Eden") returns the index value of Eden array, allowing name-friendly calls -->
-<!-- To call NNPC Eden, use <<npc Eden>>, and <<endnpc>> to put them away. -->
+<!-- To call NNPC Eden, use <<npc Eden>>. To put them away, use <<endnpc>>. -->
 
 /*Gender neutral names for future reference
 Aiden
@@ -215,7 +215,7 @@ Zohar
 <<widget "initnpcskinsingle">>
 	<<set _i to _args[0]>>
 	<<if !$NPCName[_i].skincolour or $NPCName[_i].skincolour is "none" or _args[1] is "skincolour">>
-		<<if random(0, 99) lte $blackchance>>
+		<<if random(0, 99) lte $settings.darkSkinChance>>
 			<<set $NPCName[_i].skincolour to "black">>
 		<<else>>
 			<<set $NPCName[_i].skincolour to "white">>
@@ -261,13 +261,13 @@ Zohar
 		<<set $NPCName[_i].gender to "f">>
 	<<elseif !$NPCName[_i].gender or $NPCName[_i].gender is "none" or _args[1] is "genders">>
 		<<if $NPCName[_i].pronoun is "m">>
-			<<if random(0, 99) gte $cbchance>>
+			<<if random(0, 99) gte $settings.maleNPCVaginaChance>>
 				<<set $NPCName[_i].gender to "m">>
 			<<else>>
 				<<set $NPCName[_i].gender to "f">>
 			<</if>>
 		<<elseif $NPCName[_i].pronoun is "f">>
-			<<if random(0, 99) gte $dgchance>>
+			<<if random(0, 99) gte $settings.femaleNPCPenisChance>>
 				<<set $NPCName[_i].gender to "f">>
 			<<else>>
 				<<set $NPCName[_i].gender to "m">>
@@ -289,8 +289,8 @@ Zohar
 
 	<!-- Set breast defaults-->
 
-	<<set _b_mod_lower to Math.clamp($breast_mod, 0, 12)>>
-	<<set _b_mod_upper to Math.clamp($breast_mod + 12, 0, 12)>>
+	<<set _b_mod_lower to Math.clamp($settings.breastModifier, 0, 12)>>
+	<<set _b_mod_upper to Math.clamp($settings.breastModifier + 12, 0, 12)>>
 
 	<!-- can't use breastsize, since that would either break the numberslider
 	or make one of the sizes always be randomised,
@@ -320,32 +320,32 @@ Zohar
 
 	/*
 	<<set _p_mod_upper to 8>><<set _p_mod_lower to 1>>
-	<<if $penis_mod gt 0>>
-		<<set _p_mod_lower += $penis_mod - 1>>
-	<<elseif $penis_mod lt 0>>
-		<<set _p_mod_upper += $penis_mod + 1>>
+	<<if $settings.penisModifier gt 0>>
+		<<set _p_mod_lower += $settings.penisModifier - 1>>
+	<<elseif $settings.penisModifier lt 0>>
+		<<set _p_mod_upper += $settings.penisModifier + 1>>
 	<</if>>
 
 	alternative way to write that:
-	<<set _p_mod_lower to ($penis_mod > 0 ? $penis_mod : 1)>>
-	<<set _p_mod_upper to ($penis_mod < 0 ? 9 + $penis_mod : 8)>>
+	<<set _p_mod_lower to ($settings.penisModifier > 0 ? $settings.penisModifier : 1)>>
+	<<set _p_mod_upper to ($settings.penisModifier < 0 ? 9 + $settings.penisModifier : 8)>>
 	*/
 
-	<<if $penis_mod is 8>>/*Clumsy way to get average penis size setting working for NNPCs.*/
+	<<if $settings.penisModifier is 8>>/*Clumsy way to get average penis size setting working for NNPCs.*/
 		<<set _p_mod_upper to 8>><<set _p_mod_lower to 8>>
-	<<elseif $penis_mod gte 6>>
+	<<elseif $settings.penisModifier gte 6>>
 		<<set _p_mod_upper to 8>><<set _p_mod_lower to 7>>
-	<<elseif $penis_mod gte 4>>
+	<<elseif $settings.penisModifier gte 4>>
 		<<set _p_mod_upper to 8>><<set _p_mod_lower to 5>>
-	<<elseif $penis_mod gte 2>>
+	<<elseif $settings.penisModifier gte 2>>
 		<<set _p_mod_upper to 8>><<set _p_mod_lower to 3>>
-	<<elseif $penis_mod gte 0>>
+	<<elseif $settings.penisModifier gte 0>>
 		<<set _p_mod_upper to 8>><<set _p_mod_lower to 1>>
-	<<elseif $penis_mod gte -2>>
+	<<elseif $settings.penisModifier gte -2>>
 		<<set _p_mod_upper to 7>><<set _p_mod_lower to 1>>
-	<<elseif $penis_mod gte -4>>
+	<<elseif $settings.penisModifier gte -4>>
 		<<set _p_mod_upper to 5>><<set _p_mod_lower to 1>>
-	<<elseif $penis_mod gte -6>>
+	<<elseif $settings.penisModifier gte -6>>
 		<<set _p_mod_upper to 3>><<set _p_mod_lower to 1>>
 	<<else>>
 		<<set _p_mod_upper to 1>><<set _p_mod_lower to 1>>
@@ -414,7 +414,7 @@ Zohar
 		<<set $NPCName[_i].chastity to {penis:"", vagina:"", anus:""}>>
 		<<set $NPCName[_i].name_known to 1>>
 		<<if !$NPCName[_i].skincolour>>
-			<<if random(1, 100) lte $blackchance>>
+			<<if random(1, 100) lte $settings.darkSkinChance>>
 				<<set $NPCName[_i].skincolour to "black">>
 			<<else>>
 				<<set $NPCName[_i].skincolour to "white">>
@@ -928,7 +928,7 @@ Zohar
 	<<set $NPCList[_npcno].breastdesc to $NPCName[_i].breastdesc>>
 	<<set $NPCList[_npcno].vagina to $NPCName[_i].vagina>>
 
-	<<if $breastfeedingdisable is "f" and _nam is "Morgan" and $NPCName[_i].pronoun is "f" and $NPCName[_i].breastsize gt 0>>
+	<<if $settings.breastFeedingEnabled and _nam is "Morgan" and $NPCName[_i].pronoun is "f" and $NPCName[_i].breastsize gt 0>>
 		<<set $NPCList[_npcno].lactation to 1>>
 	<</if>>
 
@@ -940,7 +940,7 @@ Zohar
 	<<set $NPCList[_npcno].clothes to clone($NPCName[_i].clothes)>>
 	<<set $NPCList[_npcno].chest to clone($NPCName[_i].chest)>>
 
-	<<if $NPCList[_npcno].penis is "none" and $NPCName[_i].strapons and $NPCName[_i].strapons.length gt 0 and random(0,99) lt $straponchance>>
+	<<if $NPCList[_npcno].penis is "none" and $NPCName[_i].strapons and $NPCName[_i].strapons.length gt 0 and random(0,99) lt $settings.straponChance>>
 		<<set $NPCList[_npcno].penis to $NPCList[_npcno].vagina>>
 		<<set $NPCList[_npcno].vagina to "none">>
 		<<set $NPCList[_npcno].gender to "m">>
@@ -969,7 +969,7 @@ Zohar
 	<<set $NPCList[_npcno].pregnancyAvoidance to $NPCName[_i].pregnancyAvoidance>>
 	<<set $NPCList[_npcno].name_known to $NPCName[_i].name_known>>
 
-	<<if $condomLvl gte 2>>
+	<<if $settings.condomLevel gte 2>>
 		<!-- 50 is the threshold for named NPCs bringing their own condoms, do not change -->
 		<<if ($NPCList[_npcno].pregnancyAvoidance gte 50 and !_condomIgnore)>>
 			<<set $NPCList[_npcno].condom to {
@@ -992,7 +992,7 @@ Zohar
 	<</if>>
 
 	<!-- Whitney and Avery should wear strap-ons based on strap-on chance -->
-	<<if $NPCList[_npcno].penis is "none" and (_nam is "Whitney" or _nam is "Avery") and !_strapIgnore and random(0,99) lt $straponchance>>
+	<<if $NPCList[_npcno].penis is "none" and (_nam is "Whitney" or _nam is "Avery") and !_strapIgnore and random(0,99) lt $settings.straponChance>>
 		<<npcstrapon _npcno>>
 	<</if>>
 
@@ -1023,7 +1023,7 @@ Zohar
 				<<set $NPCList[_npcno].claws to "claws">>
 			<</if>>
 		<<elseif $blackwolfmonster gte 1>>
-			<<if ($monsterchance gte $rng and ($hallucinations gte 1 or $monsterhallucinations is "f")) or ($blackwolfmonster is 2)>>
+			<<if ($settings.monsterChance gte $rng and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or ($blackwolfmonster is 2)>>
 				<<set $daily.bwMonsterRoll to true>>
 				<<set $NPCList[_npcno].monster to "monster">>
 				<<set $monster to 1>><<set _monsterOverride to true>>
@@ -1064,8 +1064,8 @@ Zohar
 				<<set $NPCList[_npcno].pronoun to "i">>
 				<<set $NPCList[_npcno].claws to "talons">>
 			<</if>>
-		<<elseif $greathawkmonster gte 1 or $bestialitydisable is "t">>
-			<<if ($monsterchance gte $rng and ($hallucinations gte 1 or $monsterhallucinations is "f")) or ($greathawkmonster is 2) or ($bestialitydisable is "t")>>
+		<<elseif $greathawkmonster gte 1 or !$settings.bestialityEnabled>>
+			<<if ($settings.monsterChance gte $rng and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or ($greathawkmonster is 2) or (!$settings.bestialityEnabled)>>
 				<<set $daily.ghMonsterRoll to true>>
 				<<set $NPCList[_npcno].monster to "monster">>
 				<<set $monster to 1>><<set _monsterOverride to true>>
@@ -2149,12 +2149,12 @@ Zohar
 			Zephyr
 			<<if $NPCName[_i].love gte 75>>
 				<<if $pirate_rank is 1>>
-					wants you to see the world.
+					wants you to <span class="green">see the world</span>.
 				<<else>>
-					will show you the world.
+					will <span class="green">show you the world</span>.
 				<</if>>
 			<<elseif $NPCName[_i].love gte 50>>
-				enjoys <<nnpc_his "Zephyr">> adventures with you.
+				enjoys <span class="teal"><<nnpc_his "Zephyr">> adventures with you</span>.
 			<<else>>
 				thinks you're sheltered.
 			<</if>>

@@ -21,7 +21,7 @@
 		<<rng>>
 		<<if _generate_victim is 1>>
 			<<unset _generate_victim>>
-			<<set $NPCList[_n].pronoun to ($rng lte $malevictimchance ? "m" : "f")>>
+			<<set $NPCList[_n].pronoun to ($rng lte $settings.maleVictimChance ? "m" : "f")>>
 		<<elseif !isNaN(_generate_partner) and $NPCList[_generate_partner].fullDescription>>
 			<!-- This determines if the couple is homo or not. The generated NPC's partner is, by default, the NPC directly before them in NPCList. The partner can be selected manually with an argument. -->
 			<<set $NPCList[_n].pronoun to maleChance($NPCList[_generate_partner].pronoun) gte random(1, 100) ? "m" : "f">>
@@ -658,11 +658,11 @@
 	<<else>>
 		<<rng>>
 		<<if $NPCList[_n].pronoun is "m">>
-			<<if $rng lte $cbchance and $debugEnableHerms is 1>>
+			<<if $rng lte $settings.maleNPCVaginaChance and $debugEnableHerms is 1>>
 				<<set $NPCList[_n].penis to "clothed">>
 				<<set $NPCList[_n].vagina to "clothed">>
 				<<set $NPCList[_n].gender to "h">>
-			<<elseif $rng lte $cbchance>>
+			<<elseif $rng lte $settings.maleNPCVaginaChance>>
 				<<set $NPCList[_n].vagina to "clothed">>
 				<<set $NPCList[_n].gender to "f">>
 			<<else>>
@@ -670,11 +670,11 @@
 				<<set $NPCList[_n].gender to "m">>
 			<</if>>
 		<<elseif $NPCList[_n].pronoun is "f">>
-			<<if $rng lte $dgchance and $debugEnableHerms is 1>>
+			<<if $rng lte $settings.femaleNPCPenisChance and $debugEnableHerms is 1>>
 				<<set $NPCList[_n].vagina to "clothed">>
 				<<set $NPCList[_n].penis to "clothed">>
 				<<set $NPCList[_n].gender to "h">>
-			<<elseif $rng lte $dgchance>>
+			<<elseif $rng lte $settings.femaleNPCPenisChance>>
 				<<set $NPCList[_n].penis to "clothed">>
 				<<set $NPCList[_n].gender to "m">>
 			<<else>>
@@ -696,7 +696,7 @@
 				<<set $NPCList[_n].chastity.vagina to ($NPCList[_n].chastity.penis isnot "" ? $NPCList[_n].chastity.penis : "chastity belt")>>
 			<</if>>
 			<<set $_beltPresent to ($NPCList[_n].chastity.penis is "chastity belt" or $NPCList[_n].chastity.vagina is "chastity belt")>>
-			<<if $analdisable is "f" and random(-100, 150) gte $world_corruption_soft and $_beltPresent>>
+			<<if $settings.analEnabled and random(-100, 150) gte $world_corruption_soft and $_beltPresent>>
 				<<set $NPCList[_n].chastity.anus to "anal shield">>
 			<</if>>
 		<</if>>
@@ -708,13 +708,13 @@
 	/* Sex toys become more popular over time after the adult shop opens */
 	<<if !_strapIgnore and $enemytype isnot "beast" and ($NPCList[_n].teen isnot 1 or random(1,20) is 1) and ($position isnot "wall" or $walltype isnot "front")>>
 		<<if $adultshopdegree gte random(0, 100) or random(0,100) lt 5>>
-			<<if $toywhipdisable is "f" and $toydildodisable is "f" and $player.gender_appearance isnot "f">>
+			<<if $settings.toyWhipEnabled and $settings.toyDildoEnabled and $player.gender_appearance isnot "f">>
 				<<set _sexToy to randomSexToy()>>
-			<<elseif $toywhipdisable is "f" and $toydildodisable is "f">>
+			<<elseif $settings.toyWhipEnabled and $settings.toyDildoEnabled>>
 				<<set _sexToy to randomSexToy("dildos and whips")>>
-			<<elseif $toywhipdisable is "f" and $toydildodisable is "t">>
+			<<elseif $settings.toyWhipEnabled and !$settings.toyDildoEnabled>>
 				<<set _sexToy to randomSexToy("whip")>>
-			<<elseif $toywhipdisable is "t" and $toydildodisable is "f">>
+			<<elseif !$settings.toyWhipEnabled and $settings.toyDildoEnabled>>
 				<<set _sexToy to randomSexToy("dildo")>>
 			<</if>>
 			<<if _sexToy isnot undefined>>
@@ -731,7 +731,7 @@
 	<</if>>
 	<<set $NPCList[_n].chest to ($NPCList[_n].clothes.upper.name is "naked" ? 0 : "clothed")>>
 
-	<<if random(1, 100) lte $blackchance>>
+	<<if random(1, 100) lte $settings.darkSkinChance>>
 		<<set $NPCList[_n].skincolour to "black">>
 	<<else>>
 		<<set $NPCList[_n].skincolour to "white">>
@@ -815,20 +815,20 @@
 	<<set $NPCList[_n].description to $_desc[_i]>>
 
 	<<if $NPCList[_n].penis isnot "none">><!-- set pp size based on the upper and lower bounds for the selected description -->
-		<<if $penis_mod gte $_penisMin[_i]>><<set $_penisMin[_i] to $penis_mod>><</if>>
-		<<if $penis_mod gte $_penisMax[_i]>><<set $_penisMax[_i] to $penis_mod>><</if>>
-		<<if $penis_mod lt 0>> <!-- Why is this only when $penis_mod is negative? -->
-			<<set $_penisMin[_i] to Math.clamp($_penisMin[_i]+$penis_mod, 0, 8)>>
-			<<set $_penisMax[_i] to Math.clamp($_penisMax[_i]+$penis_mod, 0, 8)>>
+		<<if $settings.penisModifier gte $_penisMin[_i]>><<set $_penisMin[_i] to $settings.penisModifier>><</if>>
+		<<if $settings.penisModifier gte $_penisMax[_i]>><<set $_penisMax[_i] to $settings.penisModifier>><</if>>
+		<<if $settings.penisModifier lt 0>> <!-- Why is this only when $settings.penisModifier is negative? -->
+			<<set $_penisMin[_i] to Math.clamp($_penisMin[_i]+$settings.penisModifier, 0, 8)>>
+			<<set $_penisMax[_i] to Math.clamp($_penisMax[_i]+$settings.penisModifier, 0, 8)>>
 		<</if>>
 	<</if>>
 
 	<<if $NPCList[_n].pronoun is "f">><!-- set breast size based on the upper and lower bounds for the selected description-->
-		<<if $breast_mod gte $_breastMin[_i]>><<set $_breastMin[_i] to $breast_mod>><</if>>
-		<<if $breast_mod gte $_breastMax[_i]>><<set $_breastMax[_i] to $breast_mod>><</if>>
-		<<if $breast_mod lt 0>> <!-- Why is this only when $breast_mod is negative? -->
-			<<set $_breastMin[_i] to Math.clamp($_breastMin[_i]+$breast_mod, 0, 12)>>
-			<<set $_breastMax[_i] to Math.clamp($_breastMax[_i]+$breast_mod, 0, 12)>>
+		<<if $settings.breastModifier gte $_breastMin[_i]>><<set $_breastMin[_i] to $settings.breastModifier>><</if>>
+		<<if $settings.breastModifier gte $_breastMax[_i]>><<set $_breastMax[_i] to $settings.breastModifier>><</if>>
+		<<if $settings.breastModifier lt 0>> <!-- Why is this only when $settings.breastModifier is negative? -->
+			<<set $_breastMin[_i] to Math.clamp($_breastMin[_i]+$settings.breastModifier, 0, 12)>>
+			<<set $_breastMax[_i] to Math.clamp($_breastMax[_i]+$settings.breastModifier, 0, 12)>>
 		<</if>>
 	<</if>>
 
@@ -925,7 +925,7 @@
 
 	<!-- Sets females with strap-ons as adjustment-->
 	<<if $NPCList[_n].gender is "f" and !_strapIgnore and !npcHasStrapon(_n)>>
-		<<if random(0, 99) lt $straponchance>>
+		<<if random(0, 99) lt $settings.straponChance>>
 			<<npcstrapon _n>>
 		<</if>>
 	<</if>>
@@ -968,8 +968,8 @@
 		<<set $NPCList[_n].type to "human">>
 	<</if>>
 
-	<<if $condomLvl gte 2 and !_condomIgnore>>
-		<<if $NPCList[_n].pregnancyAvoidance gte (100 - $condomChance)>>
+	<<if $settings.condomLevel gte 2 and !_condomIgnore>>
+		<<if $NPCList[_n].pregnancyAvoidance gte (100 - $settings.condomChance)>>
 			<<set $NPCList[_n].condom to {
 				willUse: random(0,100),
 				state: (random(0,100) gt 98 ? "defective" : "normal"),
@@ -1291,7 +1291,7 @@
 		"kiss": false
 	}>>
 
-	<<set $_virginChance to ($_npc.adult is 1 ? $npcVirginityChanceAdult : $npcVirginityChance)>>
+	<<set $_virginChance to ($_npc.adult is 1 ? $settings.npcVirginChanceAdult : $settings.npcVirginChanceStudent)>>
 	<<if _npcPlant and $_virginChance lt 100>>
 		<<set $_virginChance /= 20>>
 	<</if>>
@@ -1311,7 +1311,7 @@
 	<!-- this is quadratic, but basically it approaches 100% faster than regular virgin chance. -->
 	<<set $_uncommonVirginChance to $_virginChance * (2 - ($_virginChance/100))>>
 
-	<<if $analdisable is "f">>
+	<<if $settings.analEnabled>>
 		<<set $_npc.virginity.anal to (random(1,100) lte $_uncommonVirginChance)>>
 	<</if>>
 
@@ -1322,14 +1322,14 @@
 	<<set $_n to _args[0]>>
 	<<set $_g to maleChance() gte random(1, 100) ? "m" : "f">>
 
-	<<if $player.vaginaExist and $straponchance is 0 and !unableTakeVirginity("vaginal")>>
-		<<if $dgchance gte 1>>
+	<<if $player.vaginaExist and $settings.straponChance is 0 and !unableTakeVirginity("vaginal")>>
+		<<if $settings.femaleNPCPenisChance gte 1>>
 			<<generateNPC $_n a $_g m>>
 		<<else>>
 			<<generateNPC $_n a m m>>
 		<</if>>
-	<<elseif $player.penisExist and $analdisable isnot "f" and !unableTakeVirginity("penile")>>
-		<<if $cbchance gte 1>>
+	<<elseif $player.penisExist and !$settings.analEnabled and !unableTakeVirginity("penile")>>
+		<<if $settings.maleNPCVaginaChance gte 1>>
 			<<generateNPC $_n a $_g f>>
 		<<else>>
 			<<generateNPC $_n a f f>>

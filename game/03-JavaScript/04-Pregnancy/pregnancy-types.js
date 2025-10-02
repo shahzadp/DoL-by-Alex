@@ -12,7 +12,7 @@ function maxParasites(genital = "anus") {
 window.maxParasites = maxParasites;
 
 function canImpregnateParasite(genital = "anus") {
-	if (V.parasitepregdisable === "t" || (genital === "vagina" && !V.player.vaginaExist)) return false;
+	if (V.settings.parasitePregnancyEnabled === false || (genital === "vagina" && !V.player.vaginaExist)) return false;
 	if (V.sexStats.pills.pills["Anti-Parasite Cream"] && V.sexStats.pills.pills["Anti-Parasite Cream"].doseTaken) return false;
 	const pregnancy = V.sexStats[genital].pregnancy;
 
@@ -77,7 +77,7 @@ function npcPregObject(person, mother) {
 				name: person,
 				type: "unknown",
 				parentId: Array.isArray(parentId) ? parentId[0] : parentId,
-				skinColour: random(0, 100) >= V.blackchance ? "dark" : "light",
+				skinColour: random(0, 100) >= V.settings.darkSkinChance ? "dark" : "light",
 			};
 		}
 	} else {
@@ -150,7 +150,7 @@ function pregPrep({ motherObject, fatherObject, parasiteType = null, genital = n
 		fertility += Math.clamp(V.sexStats.pills.pills["fertility booster"].doseTaken || 0, 0, Infinity);
 		contraceptive += Math.clamp(V.sexStats.pills.pills.contraceptive.doseTaken || 0, 0, 2);
 	} else if (!parasiteType) {
-		if (V.npcPregnancyDisable === "t") return ["NPC pregnancy disabled"];
+		if (V.settings.npcPregnancyEnabled === false) return ["NPC pregnancy disabled"];
 
 		// Male or Unknown NPC pregnancies unsupported right now
 		if (!motherObject.gender || motherObject.gender === "m") return ["Pregnancy not supported for NPC input"];
@@ -308,7 +308,7 @@ const babyBase = ({
 		fatherKnown: father && fatherKnown,
 		born: { day: null, month: null, year: null },
 		conceived: { day: Time.monthDay, month: Time.monthName, year: Time.year },
-		conceivedLocation: mother === "pc" || (father === "pc" && (V.pregnancytype === "fetish" || T.npcForceImpregnation)) ? V.location : null,
+		conceivedLocation: mother === "pc" || (father === "pc" && (V.settings.pregnancyType === "fetish" || T.npcForceImpregnation)) ? V.location : null,
 		gender,
 		features: {
 			size,
@@ -342,7 +342,7 @@ window.pregnancyGenerator = {
 		if (typeof fatherObject === "string" || fatherObject instanceof String) return fatherObject;
 
 		if (
-			V.incompletePregnancyDisable !== "f" &&
+			V.settings.incompletePregnancyEnabled === false &&
 			motherObject.name === "pc" &&
 			C.npc[fatherObject.name] &&
 			!setup.pregnancy.canImpregnatePlayer.includes(fatherObject.name)
@@ -351,7 +351,7 @@ window.pregnancyGenerator = {
 		}
 
 		if (
-			V.incompletePregnancyDisable !== "f" &&
+			V.settings.incompletePregnancyEnabled === false &&
 			fatherObject.name === "pc" &&
 			C.npc[motherObject.name] &&
 			!setup.pregnancy.canBePregnant.includes(motherObject.name)
@@ -427,7 +427,7 @@ window.pregnancyGenerator = {
 		if (typeof fatherObject === "string" || fatherObject instanceof String) return fatherObject;
 
 		if (
-			V.incompletePregnancyDisable !== "f" &&
+			V.settings.incompletePregnancyEnabled === false &&
 			motherObject.name === "pc" &&
 			C.npc[fatherObject.name] &&
 			!setup.pregnancy.canImpregnatePlayer.includes(fatherObject.name)
@@ -436,7 +436,7 @@ window.pregnancyGenerator = {
 		}
 
 		if (
-			V.incompletePregnancyDisable !== "f" &&
+			V.settings.incompletePregnancyEnabled === false &&
 			fatherObject.name === "pc" &&
 			C.npc[motherObject.name] &&
 			!setup.pregnancy.canBePregnant.includes(motherObject.name)
@@ -501,7 +501,7 @@ window.pregnancyGenerator = {
 				fertilised: whether it's fertilised or not. Parasites need to be fertilised before they can be birthed
 				daysLeft: how long until it can be birthed. Birthing is possible when it's 3 or less, but significantly more likely at 0
 				timeLeft: how long until it prompts a daily event. Speed impacts how fast it goes down
-				stats.growth: how long it takes to birth, and how much the parasite is worth when selling
+				stats.growth: how long it takes to birth and how much the parasite is worth when selling
 				stats.speed: how often it prompts a daily event. Also determines the parasite's activity
 			*/
 			const result = { fetus: clone(pregnancy.fetus), type: "parasite" };

@@ -104,7 +104,7 @@ setup.feats = {
 	},
 	Billboard: {
 		title: "Billboard",
-		desc: "Wear an advert, and have it pay off.",
+		desc: "Wear an advert and have it pay off.",
 		difficulty: 1,
 		series: "",
 		filter: ["All", "General"],
@@ -1114,7 +1114,7 @@ setup.feats = {
 	},
 	"A Thunderous Response": {
 		title: "A Thunderous Response",
-		desc: "Caused a brawl on the High Street.",
+		desc: "Caused a brawl on High Street.",
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Discoveries-Town"],
@@ -1235,7 +1235,7 @@ setup.feats = {
 	},
 	"Buried Treasure": {
 		title: "Buried Treasure",
-		desc: "Followed the treasure map, and made a discovery.",
+		desc: "Followed the treasure map and made a discovery.",
 		difficulty: 3,
 		series: "beach cave",
 		filter: ["All", "Discoveries-Town"] /* unsure if this should be in both town and other */,
@@ -1305,7 +1305,7 @@ setup.feats = {
 	},
 	"Employee Benefits": {
 		title: "Employee Benefits",
-		desc: "Discovered a shipment of gold by day, and took it by night.",
+		desc: "Discovered a shipment of gold by day and took it by night.",
 		difficulty: 3,
 		series: "",
 		filter: ["All", "Discoveries-Town"],
@@ -2032,7 +2032,7 @@ function featsMerge() {
 DefineMacro("featsMerge", featsMerge);
 
 function earnFeat(featName) {
-	if (!featName || V.feats.locked || V.cheatdisable !== "t" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.statFreeze) return;
+	if (!featName || V.feats.locked || V.cheatsEnabled === true || V.debug || V.gamemode === "soft" || V.settings.allureModifier < 1 || V.statFreeze) return;
 
 	if (
 		V.feats.currentSave[featName] !== undefined ||
@@ -2103,7 +2103,7 @@ DefineMacro("displayFeat", displayFeat);
 
 // eslint-disable-next-line no-unused-vars
 function earnHourlyFeats() {
-	if (V.feats.locked || V.cheatdisable === "f" || V.debug || V.gamemode === "soft" || V.alluremod < 1 || V.replayScene) return false;
+	if (V.feats.locked || V.cheatsEnabled === true || V.debug || V.gamemode === "soft" || V.settings.allureModifier < 1 || V.replayScene) return false;
 
 	const fragment = document.createDocumentFragment();
 
@@ -2141,7 +2141,7 @@ function earnHourlyFeats() {
 		(!V.player.vaginaExist || V.vaginalskill >= 1000) &&
 		(!V.player.penisExist || V.penileskill >= 1000) &&
 		V.oralskill >= 1000 &&
-		(V.analskill >= 1000 || V.analdisable === "t") &&
+		(V.analskill >= 1000 || V.settings.analEnabled === false) &&
 		V.handskill >= 1000 &&
 		V.feetskill >= 1000 &&
 		V.bottomskill >= 1000 &&
@@ -2264,7 +2264,7 @@ function earnHourlyFeats() {
 
 	if (
 		V.liquidoutsidecount >= 100 &&
-		(V.analdisable === "t" || setup.bodyliquid.combined("anus") >= 5) &&
+		(V.settings.analEnabled === false || setup.bodyliquid.combined("anus") >= 5) &&
 		(!V.player.vaginaExist || setup.bodyliquid.combined("vagina") >= 5) &&
 		setup.bodyliquid.combined("mouth") >= 5
 	) {

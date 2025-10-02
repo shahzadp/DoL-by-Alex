@@ -38,7 +38,7 @@ function desaturate(image, params=[2,1,1,1,1]) {
 }
 
 /**
- * Convert one file, and save result with "_gray" suffix
+ * Convert one file and save result with "_gray" suffix
  * @param path Relative path to PNG file
  * @param params Processing params: [r_factor, g_factor, b_factor, scale, gamma]
  * @param skipexisting Do nothing if "_gray" file exists (does not check contents)

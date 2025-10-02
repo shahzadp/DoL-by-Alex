@@ -156,11 +156,11 @@
 	<<elseif _beast_monster is "beast">>
 		<!-- got explicit request to generate a beast, not a monster -->
 		<<set $NPCList[_n].monster to 0>>
-	<<elseif $bestialitydisable is "t" && $NPCList[0] is "monster">>
+	<<elseif !$settings.bestialityEnabled && $NPCList[0].monster is "monster">>
 		<!-- if bestiality is disabled, some scenes check if the first beast is generated as a monster to see if the encounter can proceed to be lewd. if so - all subsequent beasts must also be converted to monsters unless explicitly told not to -->
 		<!-- TODO: rewrite such encounters with a clearer distinction between lewd and non-lewd generated beasts -->
 		<<set $NPCList[_n].monster to "monster">>
-	<<elseif $monsterchance gte $rng and ($hallucinations gte 1 or $monsterhallucinations is "f") or _beast_monster is "monster">>
+	<<elseif $settings.monsterChance gte $rng and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly) or _beast_monster is "monster">>
 		<<set $NPCList[_n].monster to "monster">>
 	<</if>>
 
@@ -194,11 +194,11 @@
 			<</if>>
 			<<set _brdes to ["nipple","budding","tiny","small","pert","modest","full","large","ample","massive","huge","gigantic","enormous"]>>
 			<<set _brlvl to random(0,20)>> <!-- select a random index in the arrays -->
-			<<if $breast_mod gte $_breastMin[_brlvl]>><<set $_breastMin[_brlvl] to $breast_mod>><</if>>
-			<<if $breast_mod gte $_breastMax[_brlvl]>><<set $_breastMax[_brlvl] to $breast_mod>><</if>>
-			<<if $breast_mod lt 0>>
-				<<set $_breastMin[_brlvl] to Math.clamp($_breastMin[_brlvl]+$breast_mod, 0, 12)>>
-				<<set $_breastMax[_brlvl] to Math.clamp($_breastMax[_brlvl]+$breast_mod, 0, 12)>>
+			<<if $settings.breastModifier gte $_breastMin[_brlvl]>><<set $_breastMin[_brlvl] to $settings.breastModifier>><</if>>
+			<<if $settings.breastModifier gte $_breastMax[_brlvl]>><<set $_breastMax[_brlvl] to $settings.breastModifier>><</if>>
+			<<if $settings.breastModifier lt 0>>
+				<<set $_breastMin[_brlvl] to Math.clamp($_breastMin[_brlvl]+$settings.breastModifier, 0, 12)>>
+				<<set $_breastMax[_brlvl] to Math.clamp($_breastMax[_brlvl]+$settings.breastModifier, 0, 12)>>
 			<</if>>
 			<<set _rngbr to random($_breastMin[_brlvl], $_breastMax[_brlvl])>>
 			<<set $NPCList[_n].breastsize to _rngbr>>
@@ -216,7 +216,7 @@
 				<<set $NPCList[_n].lactation to 0>>
 			<</if>>
 		<</if>>
-		<<if random(1, 100) lte $blackchance>>
+		<<if random(1, 100) lte $settings.darkSkinChance>>
 			<<set $NPCList[_n].skincolour to "black">>
 		<<else>>
 			<<set $NPCList[_n].skincolour to "white">>
@@ -270,19 +270,19 @@
 
 		<<rng>>
 		<<if $NPCList[_n].gender is "m">>
-			<<if $rng lte $cbchance and $debugEnableHerms>>
+			<<if $rng lte $settings.maleNPCVaginaChance and $debugEnableHerms>>
 				<<set $NPCList[_n].penis to 0>>
 				<<set $NPCList[_n].vagina to 0>>
-			<<elseif $rng lte $cbchance>>
+			<<elseif $rng lte $settings.maleNPCVaginaChance>>
 				<<set $NPCList[_n].vagina to 0>>
 			<<else>>
 				<<set $NPCList[_n].penis to 0>>
 			<</if>>
 		<<elseif $NPCList[_n].gender is "f">>
-			<<if $rng lte $dgchance and $debugEnableHerms>>
+			<<if $rng lte $settings.femaleNPCPenisChance and $debugEnableHerms>>
 				<<set $NPCList[_n].vagina to 0>>
 				<<set $NPCList[_n].penis to 0>>
-			<<elseif $rng lte $dgchance>>
+			<<elseif $rng lte $settings.femaleNPCPenisChance>>
 				<<set $NPCList[_n].penis to 0>>
 			<<else>>
 				<<set $NPCList[_n].vagina to 0>>

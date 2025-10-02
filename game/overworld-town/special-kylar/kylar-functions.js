@@ -156,7 +156,7 @@ window.isDoubleRehearsalAvailable = isDoubleRehearsalAvailable;
  * Randomly decides based primarily on Kylar's jealousy, secondarily on Sydney's love,
  * whether to stalk the PC in the library.
  *
- * At max jealousy, and max love, there should only be a 20% chance for this to be true.
+ * At max jealousy and max love, there should only be a 20% chance for this to be true.
  *
  * @returns {boolean}
  */

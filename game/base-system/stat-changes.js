@@ -449,7 +449,7 @@ const statChange = (() => {
 	function minPain() {
 		let result = 0;
 
-		if (V.lactating && V.breastfeedingdisable === "f" && V.milkFullPain > 200) {
+		if (V.lactating && V.settings.breastFeedingEnabled === true && V.milkFullPain > 200) {
 			result += Math.ceil((V.milkFullPain - 200) / 5);
 			if (!V.daily.milkFullPainMessage) {
 				V.milkFullPainMessage = 1;
@@ -484,7 +484,7 @@ const statChange = (() => {
 		amount = Number(amount);
 		if (amount) {
 			if (source === "bonus") {
-				// find how many visible, non-mandatory school clothes are equipped, and add 1
+				// find how many visible, non-mandatory school clothes are equipped and add 1
 				const multi = getVisibleClothesList().reduce(
 					(mult, slot) => mult + (slot.type && slot.type.includes("school") && !["upper", "lower"].includes(slot.name)),
 					1
@@ -505,7 +505,7 @@ const statChange = (() => {
 		if (amount > 0) {
 			V.cool += amount;
 
-			// ind how many visible clothes have "cool" in their type (if they have type), and add 1
+			// ind how many visible clothes have "cool" in their type (if they have type) and add 1
 			const multi = getVisibleClothesList().reduce((mult, slot) => mult + (slot.type && slot.type.includes("cool")), 1);
 			V.cool += amount * multi;
 		} else if (amount < 0) {

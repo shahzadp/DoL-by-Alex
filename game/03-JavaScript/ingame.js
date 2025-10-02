@@ -293,7 +293,7 @@ DefineMacroS("combatDefaults", combatDefaults);
  * ($enemytrust * 10) is simply how much the NPC trust the player. Since $enemytrust can be negative, a bad trust can result in an increase in difficulty.
  * (($enemyarousalmax / ($enemyarousal + 1)) * 100) is the relative NPC arousal. This value can never be 100, except on the last turn.
  * The current arousal being divided by the max arousal means the higher the arousal (and by consequence the arousal percentage) the more difficult the action becomes (since the value will be lower).
- * This also means actions are more likely to succeed during the start of the combat, and get harder as the combat goes on.
+ * This also means actions are more likely to succeed during the start of the combat and get harder as the combat goes on.
  * ($rng * 10) is simply the random part of the equation, so the chance is not always locked into one result. This value varies between 0 and 1000, at a base 10 (so it can't be anything that's not a multiple of 10).
  * 1000 is the base difficulty. This rules how high the skill needs to be if all other values are 0. The higher the base difficulty, the harder the action. This is usually the main factor determining the success of the action.
  * $enemyanger is just like the trust part, but not multiplied. This means anger has 10x less impact in the action than trust, however $enemyanger cannot be negative and could be much higher than trust.
@@ -316,7 +316,7 @@ DefineMacroS("combatDefaults", combatDefaults);
  * So skillname is a string, and skill is an integer. Why not simply pass the skill value as the argument? Because of possible future variants, such as moor luck, affecting some variable and not the other.
  * targetid is an optional value, that doesn't see use currently but can possibly be required in the future in case any of the "enemy" variables (such as $enemyarousal or $enemytrust) become individual values ("per NPC", as health currently is).
  *
- * The output is simply: true if the action is a success, and false if the action fails.
+ * The output is simply: true if the action is a success, false if the action fails.
  */
 /**
  * Checks skill value against combat math to determine success of an action.
@@ -1016,13 +1016,13 @@ function clothesDataTrimmer(item) {
 window.clothesDataTrimmer = clothesDataTrimmer;
 
 function clothesReturnLocation(item, type) {
-	if (!V.multipleWardrobes) return "wardrobe";
+	if (!V.settings.multipleWardrobes) return "wardrobe";
 	const isolated = ["asylum", "prison"];
 	let lastTaken = item.lastTaken;
 	// prettier-ignore
 	if (
 		!lastTaken ||
-		(V.multipleWardrobes !== "all" && !isolated.includes(lastTaken)) ||
+		(V.settings.multipleWardrobes !== "all" && !isolated.includes(lastTaken)) ||
 		!V.wardrobes[lastTaken] ||
 		!V.wardrobes[lastTaken].unlocked
 	) {
@@ -1684,8 +1684,8 @@ function validateTransformations() {
 			parts: [
 				{ name: "cheeks", tfRequired: 2, default: "hidden" },
 				{ name: "ears", tfRequired: 4 },
-				{ name: "pubes", tfRequired: 4, default: V.pbdisable === "f" ? "default" : "hidden" },
-				{ name: "pits", tfRequired: 4, default: V.pbdisable === "f" ? "default" : "hidden" },
+				{ name: "pubes", tfRequired: 4, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
+				{ name: "pits", tfRequired: 4, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
 				{ name: "tail", tfRequired: 6 },
 			],
 			traits: [{ name: "fangs", tfRequired: 2 }],
@@ -1726,7 +1726,7 @@ function validateTransformations() {
 				{ name: "tail", tfRequired: 4 },
 				{ name: "plumage", tfRequired: 4 },
 				{ name: "wings", tfRequired: 6 },
-				{ name: "pubes", tfRequired: 6, default: V.pbdisable === "f" ? "default" : "hidden" },
+				{ name: "pubes", tfRequired: 6, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
 			],
 			traits: [
 				{ name: "sharpEyes", tfRequired: 2 },
@@ -1807,15 +1807,15 @@ DefineMacro("validateTransformations", validateTransformations);
 // prettier-ignore
 function getSexesFromRandomGroup() {
 	if (maleChance() <= 0) { /* Only females. */
-		if (V.dgchance <= 0) return SexTypes.ALL_FEMALES;		/* All females, no dickgirls. Always vaginal. */
-		if (V.dgchance >= 100) return SexTypes.ALL_DICKGIRLS;	/* All females, all dickgirls. Always penises. */
+		if (V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_FEMALES;		/* All females, no dickgirls. Always vaginal. */
+		if (V.settings.femaleNPCPenisChance >= 100) return SexTypes.ALL_DICKGIRLS;	/* All females, all dickgirls. Always penises. */
 	}
 	if (maleChance() >= 100) { /* Only males. */
-		if (V.cbchance <= 0) return SexTypes.ALL_MALES;			/* All males, no cuntboys. Always males. */
-		if (V.cbchance >= 100) return SexTypes.ALL_CUNTBOYS;	/* All males, all cuntboys. Always vaginal. */
+		if (V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_MALES;			/* All males, no cuntboys. Always males. */
+		if (V.settings.maleNPCVaginaChance >= 100) return SexTypes.ALL_CUNTBOYS;	/* All males, all cuntboys. Always vaginal. */
 	}
-	if (V.cbchance >= 100 && V.dgchance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but all males are cuntboys, and there are no dickgirls. */
-	if (V.dgchance >= 100 && V.cbchance <= 0) return SexTypes.ALL_DICKS;	/* Both females and males, but all females are dickgirls, and there are no cuntboys. */
+	if (V.settings.maleNPCVaginaChance >= 100 && V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but all males are cuntboys, and there are no dickgirls. */
+	if (V.settings.femaleNPCPenisChance >= 100 && V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_DICKS;	/* Both females and males, but all females are dickgirls, and there are no cuntboys. */
 	return SexTypes.BOTH;
 }
 window.getSexesFromRandomGroup = getSexesFromRandomGroup;
@@ -2272,10 +2272,10 @@ function npcSemenMod(penisSize) {
 window.npcSemenMod = npcSemenMod;
 
 function maleChance(override) {
-	if (V.maleChanceSplit === "f") return V.malechance;
+	if (V.settings.maleChanceSplit === false) return V.settings.maleChance;
 	const appearence = override || V.player.gender_appearance;
-	if (appearence === "m") return V.maleChanceMale;
-	if (appearence === "f") return V.maleChanceFemale;
+	if (appearence === "m") return V.settings.maleChanceMale;
+	if (appearence === "f") return V.settings.maleChanceFemale;
 	return 50;
 }
 window.maleChance = maleChance;
@@ -2288,10 +2288,10 @@ function attractedToBothChance(gender, rng) {
 window.attractedToBothChance = attractedToBothChance;
 
 function beastMaleChance(override) {
-	if (V.beastMaleChanceSplit === "f") return V.beastmalechance;
+	if (V.settings.beastMaleChanceSplit === false) return V.settings.beastMaleChance;
 	const appearence = override || V.player.gender_appearance;
-	if (appearence === "m") return V.beastMaleChanceMale;
-	if (appearence === "f") return V.beastMaleChanceFemale;
+	if (appearence === "m") return V.settings.beastMaleChanceMale;
+	if (appearence === "f") return V.settings.beastMaleChanceFemale;
 	return 50;
 }
 window.beastMaleChance = beastMaleChance;
@@ -2496,17 +2496,17 @@ function unableTakeVirginity(virginity) {
 	switch (virginity) {
 		case "penile":
 			return (
-				V.analdisable !== "f" &&
-				((V.cbchance === 0 && V.dgchance === 100) ||
-					(maleChance() === 100 && V.cbchance === 0) ||
-					(maleChance() === 0 && V.dgchance === 100) ||
-					(maleChance() === 100 && V.cbchance === 100 && V.straponchance === 100) ||
-					(maleChance() === 0 && V.dgchance === 0 && V.straponchance === 100))
+				V.settings.analEnabled === false &&
+				((V.settings.maleNPCVaginaChance === 0 && V.settings.femaleNPCPenisChance === 100) ||
+					(maleChance() === 100 && V.settings.maleNPCVaginaChance === 0) ||
+					(maleChance() === 0 && V.settings.femaleNPCPenisChance === 100) ||
+					(maleChance() === 100 && V.settings.maleNPCVaginaChance === 100 && V.settings.straponChance === 100) ||
+					(maleChance() === 0 && V.settings.femaleNPCPenisChance === 0 && V.settings.straponChance === 100))
 			);
 		case "vaginal":
 			return (
-				V.straponchance === 0 &&
-				((V.cbchance === 100 && V.dgchance === 0) || (maleChance() === 100 && V.cbchance === 100) || (maleChance() === 0 && V.dgchance === 0))
+				V.settings.straponChance === 0 &&
+				((V.settings.maleNPCVaginaChance === 100 && V.settings.femaleNPCPenisChance === 0) || (maleChance() === 100 && V.settings.maleNPCVaginaChance === 100) || (maleChance() === 0 && V.settings.femaleNPCPenisChance === 0))
 			);
 		default:
 			return false;
@@ -2760,7 +2760,7 @@ function insecurityExists(type) {
 window.insecurityExists = insecurityExists;
 
 function isBeastSceneAllowed() {
-	return V.bestialitydisable === "f" || ((V.monsterhallucinations === "f" || V.hallucinations > 0) && V.monsterchance >= random(1, 100));
+	return V.settings.bestialityEnabled || ((!V.settings.monsterHallucinationsOnly || V.hallucinations > 0) && V.settings.monsterChance >= random(1, 100));
 }
 window.isBeastSceneAllowed = isBeastSceneAllowed;
 

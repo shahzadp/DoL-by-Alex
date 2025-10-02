@@ -707,7 +707,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 			result.text = `Your ${arm} arm is bound.`;
 			break;
 		case "possessed":
-			if (V.lactating && V.breastfeedingdisable === "f" && arm === "right") {
+			if (V.lactating && V.settings.breastFeedingEnabled === true && arm === "right") {
 				result.text =
 					actiondefault === "mbreastW"
 						? `You pinch and squeeze your <<breasts>> with your ${arm} hand, unbidden.`

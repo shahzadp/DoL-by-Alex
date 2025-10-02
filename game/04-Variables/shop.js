@@ -6,7 +6,7 @@ setup.shopDetails = {
 	},
 	formal: {
 		name: "Formal",
-		desc: "Suitable for important occasions, and for good etiquette among certain company.",
+		desc: "Suitable for important occasions and for good etiquette among certain company.",
 		details: "Required attire for specific events and fancy dates.",
 	},
 	school: {
@@ -86,7 +86,7 @@ setup.shopDetails = {
 	},
 	sticky_fingers: {
 		name: "Sticky fingers",
-		desc: "More likely to get your way, and keep that which isn't yours.",
+		desc: "More likely to get your way and keep that which isn't yours.",
 		details: "Helps you succeed at skulduggery skill checks.",
 	},
 	rainproof: {
@@ -118,17 +118,19 @@ setup.shopDetails = {
 	chest_bind: {
 		name: "Chest binding",
 		desc: "Fits tight around your chest, concealing your breasts.",
-		details: `Reduces your apparent breast size. Breast sizes above "modest" won't appear perfectly flat, and will instead appear to be five sizes smaller.`,
+		details: `Reduces your apparent breast size. Breast sizes above "modest" won't appear perfectly flat and will instead appear to be five sizes smaller.`,
 	},
 	eerie: {
 		name: "Eerie",
 		get desc() {
-			return V.transformdisable === "f"
+			return V.settings.transformAnimalEnabled === true
 				? "Protects a specific transformation. Transformations progress and decay at midnight."
 				: "There's something peculiar about this object.";
 		},
 		get details() {
-			return V.transformdisable === "f" ? "Prevents its associated transformation from decaying." : "Enable transformations to make use of this trait.";
+			return V.settings.transformAnimalEnabled === true
+				? "Prevents its associated transformation from decaying."
+				: "Enable transformations to make use of this trait.";
 		},
 	},
 	shade: {

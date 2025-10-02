@@ -75,7 +75,7 @@ function parasiteProgressTime(pass, genital = "anus") {
 }
 
 function impregnateParasite(parasiteType, chance, genital = "anus", hermParasite) {
-	if (V.parasitepregdisable === "t" || !parasiteType || (!V.player.vaginaExist && genital === "vagina")) return false;
+	if (V.settings.parasitePregnancyEnabled === false || !parasiteType || (!V.player.vaginaExist && genital === "vagina")) return false;
 	if (V.sexStats.pills.pills["Anti-Parasite Cream"] && V.sexStats.pills.pills["Anti-Parasite Cream"].doseTaken && !hermParasite) return false;
 
 	const pregnancy = V.sexStats[genital].pregnancy;

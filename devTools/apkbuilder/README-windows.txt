@@ -13,7 +13,7 @@ cordova apk builder for primarily DOL
 
 ## android commandline-tools latest
 - download from https://developer.android.com/studio#cmdline-tools, links for tools-only are at the bottom of the page, ~146mb
-- in the folder with this README, open androidsdk\cmdline-tools\latest, and extract "bin", "lib", and "source.properties" from the downloaded archive from the previous step into it. there should be no other sub-folders
+- in the folder with this README, open androidsdk\cmdline-tools\latest and extract "bin", "lib", and "source.properties" from the downloaded archive from the previous step into it. there should be no other sub-folders
 
 ## gradle 7.4.2
 - download from https://gradle.org/next-steps/?version=7.4.2&format=bin, ~110mb

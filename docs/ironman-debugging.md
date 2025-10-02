@@ -34,7 +34,7 @@ The data given to you will be a JSON object with two parts:
 
 **Details**: This is the full details object, which contains metadata about your save.
 
-When ironman was created, the save details structure was chosen to house the signatures of the ironman games, which are calculated using a hashing algorithm. Save details are never exported to the player to look at, and require them to access localstorage to even view. Therefore, we package the save details object with the export to ensure all information regarding ironman is available to the developer.
+When ironman was created, the save details structure was chosen to house the signatures of the ironman games, which are calculated using a hashing algorithm. Save details are never exported to the player to look at and require them to access localstorage to even view. Therefore, we package the save details object with the export to ensure all information regarding ironman is available to the developer.
 
 ##### Import functions
 

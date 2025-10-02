@@ -173,7 +173,7 @@
 			<</if>>
 		</div>
 		<div class="settingsToggleItem">
-			<span class="gold">Body</span> <mouse class="tooltip linkBlue">(?)<span>Changing the player's genitalia will wash the player of lewd fluids, and remove genital parasites, to prevent them from lingering on nonexisting body parts.</span></mouse>
+			<span class="gold">Body</span> <mouse class="tooltip linkBlue">(?)<span>Changing the player's genitalia will wash the player of lewd fluids and remove genital parasites to prevent them from lingering on nonexisting body parts.</span></mouse>
 			<br>
 			Genitals:
 			<span id="statsGender">
@@ -1106,7 +1106,7 @@
 			}>>
 		</div>
 	</div>
-	<<if $parasitedisable is "f">>
+	<<if $settings.parasitesEnabled>>
 		<hr>
 		<div class="settingsGrid">
 			<div class="settingsHeader options">Parasites</div>
@@ -1154,25 +1154,26 @@
 			<<tficon "bird">>Bird: <<link "Set">><<clearAnimalTransformations>><<harpyTransform>><<updatesidebarimg>><</link>> | <<link "Clear">><<harpyTransform 99>><<updatesidebarimg>><</link>><br>
 			<<tficon "fox">>Fox: <<link "Set">><<clearAnimalTransformations>><<foxTransform>><<updatesidebarimg>><</link>> | <<link "Clear">><<foxTransform 99>><<updatesidebarimg>><</link>>
 		</div>
-	<div class="settingsToggleItem">
-		<span class="gold">Transformation Points</span>
-		<br>
-		<span class="description">Angel and Cat require 50 points to reach their full transformation, while all others require 30 points. Fallen Angel requires 30 points for Acceptance.</span>
-		<<for _tf range ["angel", "fallenangel", "demon", "wolf", "cat", "cow", "bird", "fox"]>>
-			<<capture _tf>>
-				<<set _name to (_tf is "fallenangel" ? "Fallen Angel" : _tf)>>
-				<<set _title to `<<tficon _tf>> ${toTitleCase(_name)}`>>
-				<<set _varName to `${_tf}build`>>
-				<<numberStepper _title `V[T.varName]` {
-					callback: (value, arr) => {
-						V[arr[0]] = value;
-						Wikifier.wikifyEval("<<transformationAlteration>><<updatesidebarimg>>");
-					},
-					max: 100, percentage: false, colorArr: ["--teal", "--purple"], values: [T.varName]
-				}>>
-			<</capture>>
-		<</for>>
-		<<unset _cr>>
+		<div class="settingsToggleItem">
+			<span class="gold">Transformation Points</span>
+			<br>
+			<span class="description">Angel and Cat require 50 points to reach their full transformation, while all others require 30 points. Fallen Angel requires 30 points for Acceptance.</span>
+			<<for _tf range ["angel", "fallenangel", "demon", "wolf", "cat", "cow", "bird", "fox"]>>
+				<<capture _tf>>
+					<<set _name to (_tf is "fallenangel" ? "Fallen Angel" : _tf)>>
+					<<set _title to `<<tficon _tf>> ${toTitleCase(_name)}`>>
+					<<set _varName to `${_tf}build`>>
+					<<numberStepper _title `V[T.varName]` {
+						callback: (value, arr) => {
+							V[arr[0]] = value;
+							Wikifier.wikifyEval("<<transformationAlteration>><<updatesidebarimg>>");
+						},
+						max: 100, percentage: false, colorArr: ["--teal", "--purple"], values: [T.varName]
+					}>>
+				<</capture>>
+			<</for>>
+			<<unset _cr>>
+		</div>
 	</div>
 <</widget>>
 
@@ -1472,7 +1473,7 @@
 			<<switch $schoolrep.crossdress>>
 				<<case 5>><span class="red">Your _crossdressing has become common knowledge at school. Everyone _knows, including the teachers.</span>
 				<<case 4>><span class="pink">Rumours of your _crossdressing are spreading throughout the school.</span>
-				<<case 3>><span class="purple">Rumours of your _crossdressing are spreading, and have become a popular topic of conversation at school.</span>
+				<<case 3>><span class="purple">Rumours of your _crossdressing are spreading and have become a popular topic of conversation at school.</span>
 				<<case 2>><span class="blue">Whispers of your _crossdressing are spreading through the school.</span>
 				<<case 1>><span class="lblue">A few cliques at school have begun whispering of your _crossdressing.</span>
 				<<default>><span class="green">No one is spreading rumours about you at school.</span>
@@ -1729,7 +1730,7 @@
 	<hr>
 	<div class="settingsGrid">
 		<div class="settingsHeader options">Pregnancy</div>
-			<<if $parasitepregdisable is "t">>
+			<<if !$settings.parasitePregnancyEnabled>>
 				<div class="settingsToggleItemWide">
 					<span class="gold">Parasitic Pregnancy</span>
 					<br>
@@ -1757,7 +1758,7 @@
 					</div>
 				<</if>>
 			<</if>>
-		<<if ($playerPregnancyBeastDisable is "f" or $playerPregnancyHumanDisable is "f")>>
+		<<if ($settings.playerPregnancyBeastEnabled or $settings.playerPregnancyHumanEnabled)>>
 			<div class="settingsToggleItem" id="cheatsPregnancyOptions">
 				<<cheatsPregnancyOptions>>
 			</div>
@@ -1898,9 +1899,9 @@
 	<<if $player.vaginaExist or canBeMPregnant()>>
 		<<set _menstruation to $sexStats.vagina.menstruation>>
 		<<set $_pregnancy to getPregnancyObject()>>
-		<<if !playerIsPregnant() and $cycledisable == "f">>
+		<<if !playerIsPregnant() and $settings.fertilityCycleEnabled>>
 			You aren't pregnant.
-			<<if $pregnancytype is "realistic">>
+			<<if $settings.pregnancyType is "realistic">>
 				You have <span id="cheatSpermSources"><span class="gold"><span class="gold">$sexStats[_womb].sperm.length</span></span> <<pluralise $sexStats[_womb].sperm.length "sperm source">></span> contributing to your chances of getting pregnant.
 			<</if>>
 			<br><br>
@@ -1952,17 +1953,17 @@
 			<</link>>
 			<span class="description">This is a cheat, not an abortion.</span>
 		<<else>>
-			<<if ($playerPregnancyHumanDisable == "f" or $playerPregnancyBeastDisable == "f") and !playerIsPregnant()>>
+			<<if ($settings.playerPregnancyHumanEnabled or $settings.playerPregnancyBeastEnabled) and !playerIsPregnant()>>
 				Get pregnant from:
 				<br>
-				<<if $playerPregnancyHumanDisable == "f">>
+				<<if $settings.playerPregnancyHumanEnabled>>
 					<<link [[A random person|$passage]]>> /* checks if males or females have penises, if there is no people with penises a foreigner impregnates PC */
 					<<set _impregnator to either("arbitrary", "aimless", "by-the-way", "casual", "driftless", "hit-or-miss", "fluky", "promiscuous", "slapdash", "irresponsible", "careless", "negligent") + " cheater ">>
-					<<if $dgchance gt 0 and $cbchance lt 100>>
+					<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 						<<set _impregnator += either("man", "boy", "woman", "girl")>>
-					<<elseif $dgchance gt 0 and $cbchance gt 99>>
+					<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
 						<<set _impregnator += either("woman", "girl")>>
-					<<elseif $dgchance lt 1 and $cbchance lt 100>>
+					<<elseif $settings.femaleNPCPenisChance lt 1 and $settings.maleNPCVaginaChance lt 100>>
 						<<set _impregnator += either("man", "boy")>>
 					<<else>>
 						<<set _impregnator += "foreigner">>
@@ -1970,17 +1971,17 @@
 					<<playerPregnancy _impregnator "human" true _womb undefined true>>
 					<</link>>
 				<</if>>
-				<<if $playerPregnancyBeastDisable == "f">>
-					<<if $playerPregnancyHumanDisable == "f">>
+				<<if $settings.playerPregnancyBeastEnabled>>
+					<<if $settings.playerPregnancyHumanEnabled>>
 						|
 					<</if>>
 					<<link [[A wolf|$passage]]>>
-					<<if $monsterchance gte random(1, 100) and ($hallucinations gte 1 or $monsterhallucinations is "f")>>
-						<<if $dgchance gt 0 and $cbchance lt 100>>
+					<<if $settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+						<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 							<<set _impregnator to either("cheater wolfboy", "cheater wolfgirl")>>
-						<<elseif $dgchance gt 0 and $cbchance gt 99>>
+						<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
 							<<set _impregnator to "cheater wolfgirl">>
-						<<elseif $dgchance lt 1 and $cbchance lt 100>>
+						<<elseif $settings.femaleNPCPenisChance lt 1 and $settings.maleNPCVaginaChance lt 100>>
 							<<set _impregnator to "cheater wolfboy">>
 						<<else>>
 							<<set _impregnator to "foreign cheater wolfperson">>
@@ -2029,21 +2030,21 @@
 					<</link>>
 				<</if>>
 				<br><br>
-				<<if $pregnancytype is "realistic">>
+				<<if $settings.pregnancyType is "realistic">>
 					Add sperm from:
 					<br>
-					<<if $playerPregnancyHumanDisable == "f">>
+					<<if $settings.playerPregnancyHumanEnabled>>
 						<<link "An anonymous donor">> /* The sperm owner is always the same, anonymous donor, so it helps pregnancy from only one source */
 							<<recordSperm `{target: "pc", spermOwner: "anonymous donor", spermType: "human", genital: _womb}`>>
 							<<replace "#cheatSpermSources">><span class="gold">$sexStats[_womb].sperm.length</span> <<= $sexStats[_womb].sperm.length is 1 ? "sperm source" : "sperm sources">><</replace>>
 						<</link>>
 						| <<link "A random person">> /* checks if males or females have penises, if there is no people with penises a foreigner inseminates PC */
 							<<set _impregnator to either("arbitrary", "aimless", "by-the-way", "casual", "driftless", "hit-or-miss", "fluky", "promiscuous", "slapdash", "irresponsible", "careless", "negligent") + " cheater ">>
-							<<if $dgchance gt 0 and $cbchance lt 100>>
+							<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 								<<set _impregnator += either("man", "boy", "woman", "girl")>>
-							<<elseif $dgchance gt 0 and $cbchance gt 99>>
+							<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
 								<<set _impregnator += either("woman", "girl")>>
-							<<elseif $dgchance lt 1 and $cbchance lt 100>>
+							<<elseif $settings.femaleNPCPenisChance lt 1 and $settings.maleNPCVaginaChance lt 100>>
 								<<set _impregnator += either("man", "boy")>>
 							<<else>>
 								<<set _impregnator += "foreigner">>
@@ -2052,17 +2053,17 @@
 							<<replace "#cheatSpermSources">><span class="gold">$sexStats[_womb].sperm.length</span> <<= $sexStats[_womb].sperm.length is 1 ? "sperm source" : "sperm sources">><</replace>>
 						<</link>>
 					<</if>>
-					<<if $playerPregnancyBeastDisable == "f">>
-						<<if $playerPregnancyHumanDisable == "f">>
+					<<if $settings.playerPregnancyBeastEnabled>>
+						<<if $settings.playerPregnancyHumanEnabled>>
 							|
 						<</if>>
 						<<link "A wolf">>
-							<<if $monsterchance gte random(1, 100) and ($hallucinations gte 1 or $monsterhallucinations is "f")>>
-								<<if $dgchance gt 0 and $cbchance lt 100>>
+							<<if $settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+								<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 									<<set _impregnator to either("cheater wolfboy", "cheater wolfgirl")>>
-								<<elseif $dgchance gt 0 and $cbchance gt 99>>
+								<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
 									<<set _impregnator to "cheater wolfgirl">>
-								<<elseif $dgchance lt 1 and $cbchance lt 100>>
+								<<elseif $settings.femaleNPCPenisChance lt 1 and $settings.maleNPCVaginaChance lt 100>>
 									<<set _impregnator to "cheater wolfboy">>
 								<<else>>
 									<<set _impregnator to "foreign cheater wolfperson">>
@@ -2142,7 +2143,7 @@
 				<<link [[_linkText|$passage]]>>
 					<<namedNpcPregnancy _actor.nam "pc" "human" true undefined true>>
 				<</link>>
-				<<if $pregnancytype is "realistic">>
+				<<if $settings.pregnancyType is "realistic">>
 					<<set _linkText to "Inseminate">>
 					- <<link _linkText>>
 						<<recordSperm `{target: _actor.nam, spermOwner: "pc", spermType: "human", genital: "vagina"}`>>
@@ -2150,7 +2151,7 @@
 					<</link>>
 					<span @id="'cheatSpermSources' + _actorNameNoSpace" class="description">(<<= _actor.pregnancy.sperm.length>> doses)</span>
 				<</if>>
-				<<if $cycledisable == "f">>
+				<<if $settings.fertilityCycleEnabled>>
 					- <<link [[Set cycle to fertile days|$passage]]>>
 						<<set _actor.pregnancy.cycleDay to _actor.pregnancy.cycleDangerousDay - 1>>
 					<</link>>

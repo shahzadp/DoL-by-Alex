@@ -148,12 +148,15 @@ There's a sheltered space atop one of the rocks, above a deep pool.
 <<if $smuggler_location is "beach" and $smuggler_timer is 0 and Time.dayState is "night" and Time.hour gte 18>>
 	<<smugglerdifficultytext>>
 <</if>>
+<<if $phase is "oxygenrecovery">>
+	<<set $phase to 0>>
+<</if>>
 <<if $phase is 1>>
 	<<set $phase to 0>>
 	You search for pieces of seaweed long and sturdy enough to build an improvised garment. You find some suitable specimens and tie them together around your chest. It's fragile and revealing, and you don't think you could take it off without breaking it, but it's better than nothing.
 	<<plantupper "seaweed">>
 	<br><br>
-	<<if $rng gte 91 and $parasite.nipples.name is undefined and $parasitedisable is "f">>
+	<<if $rng gte 91 and $parasite.nipples.name is undefined and $settings.parasitesEnabled>>
 		Your satisfaction is interrupted by a pinching sensation on your <<nipples>>. Shocked, you pull down your top to find the culprit. Two small sea urchins have latched to your teats. They massage and suck your nipples as if trying to nurse. They don't hurt at all, but the sensations are arousing you. You tug them in a bid to be free of their molestation, but they cling too tightly. What's more, touching them with any amount of force makes them suck more intensely. You'll need help to remove them.
 		<<parasite nipples urchin>><<garousal>><<arousal 600 "breasts">>
 		<br><br>
@@ -166,11 +169,11 @@ There's a sheltered space atop one of the rocks, above a deep pool.
 	<br><br>
 	<<if $parasite.penis.name is "parasite" or $parasite.clit.name is "parasite">>
 		/* Prevents the 2 types of parasites from interacting */
-	<<elseif $rng gte 91 and $parasite.penis.name is undefined and $player.penisExist and $parasitedisable is "f" and !playerChastity("penis")>>
+	<<elseif $rng gte 91 and $parasite.penis.name is undefined and $player.penisExist and $settings.parasitesEnabled and !playerChastity("penis")>>
 		Your satisfaction is interrupted by a pinching sensation on your <<penis>>. Shocked, you lift your skirt to find the culprit. A small sea urchin has latched on. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
 		<<parasite penis urchin>><<garousal>><<arousal 600 "genitals">>
 		<br><br>
-	<<elseif $rng gte 91 and $parasite.clit.name is undefined and $player.vaginaExist and $parasitedisable is "f" and !playerChastity("hidden") and !$player.penisExist>>
+	<<elseif $rng gte 91 and $parasite.clit.name is undefined and $player.vaginaExist and $settings.parasitesEnabled and !playerChastity("hidden") and !$player.penisExist>>
 		Your satisfaction is interrupted by a pinching sensation on your <<pussy>>. Shocked, you lift your skirt to find the culprit. A small sea urchin has latched onto your clit. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
 		<<parasite clit urchin>><<garousal>><<arousal 600 "genitals">>
 		<br><br>
@@ -200,6 +203,7 @@ There's a sheltered space atop one of the rocks, above a deep pool.
 	<</if>>
 	<<swimicon "down">><<link [[Slip into the pool (0:01)|Rocks Pool]]>><<pass 1>><</link>>
 	<br>
+	<<oxygenrecovery>>
 	<br>
 	<<swimicon>><<link [[Swim into the sea (0:02)|Sea Rocks]]>><<pass 2>><</link>>
 	<br>
@@ -219,11 +223,11 @@ You <<= $passagePrev.includes("Up") ? "break the pool's surface" : "slip into th
 <<else>>
 <</if>>
 
-<<if $swarmdisable is "f" and hasSexStat("deviancy", 5) and $daily.rocksPoolInvite isnot 1>>
+<<if $settings.swarmsEnabled and hasSexStat("deviancy", 5) and $daily.rocksPoolInvite isnot 1>>
 	<<ind>><<link [[Invite the fish (0:05)|Rocks Swarm Invite]]>><<set $daily.rocksPoolInvite to 1>><<pass 5>><</link>><<deviant5>>
 	<br>
 <</if>>
-<<swimicon "dive">><<link [[Dive (0:01)|Rocks Dive]]>><<pass 1>><<set $phase to 0>><</link>>
+<<swimicon "dive">><<link [[Dive (0:01)|Rocks Dive]]>><<set _oxygenRecoveryBlocked to true>><<pass 1>><<set $phase to 0>><</link>>
 <br>
 <<swimicon "leave">><<link [[Climb out (0:01)|Rocks]]>><<pass 1>><</link>>
 <br>
@@ -295,7 +299,7 @@ You <<= $passagePrev.includes("Up") ? "break the pool's surface" : "slip into th
 
 <<if $phase is 10>>
 	<<if $rng lte 10>>
-		<<if $voredisable is "f">>
+		<<if $settings.voreEnabled>>
 			<<if $museumAntiques.antiques.antiquediamond isnot "found" and $museumAntiques.antiques.antiquediamond isnot "talk" and $museumAntiques.antiques.antiquediamond isnot "museum">>
 				You reach for the light but the sand shifts under it. You swim upwards but feel something clamps down on your leg. You twist around to find a giant oyster intent on devouring you!
 				<br><br>

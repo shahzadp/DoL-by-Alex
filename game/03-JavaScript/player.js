@@ -8,7 +8,7 @@ function isGenitalMismatch() {
 	if (V.player.sex === "h") {
 		return "herm";
 	}
-	if (V.player.sex !== V.player.gender && V.NudeGenderDC === 0) {
+	if (V.player.sex !== V.player.gender && V.settings.nudeGenderPerception === 0) {
 		return true;
 	}
 	return false;

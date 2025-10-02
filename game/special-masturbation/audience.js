@@ -358,7 +358,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 				`"Showing off how easy it is to suck on your own large breasts? You really are a pervert."`,
 				`"Can I suck on those tits too?"`
 			);
-			if (V.lactating && V.breastfeedingdisable === "f") {
+			if (V.lactating && V.settings.breastFeedingEnabled === true) {
 				resultArray.push(`"Look at how hard <<pshe>> is trying to milk <<pherself>>."`);
 			}
 			return resultArray.random();

@@ -1,8 +1,8 @@
 // @ts-check
 
 /**
- * Normalises Sydney's love stat, if 150 love, and max is 150,
- * will output 1.0.
+ * Normalises Sydney's love stat.
+ * If at 150 love and max is 150, will output 1.0.
  *
  * @returns {number} Between 0.0 and 1.0
  */

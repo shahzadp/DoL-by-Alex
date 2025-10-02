@@ -132,14 +132,14 @@ function npcPregnancyEnding(npc) {
 window.npcPregnancyEnding = npcPregnancyEnding;
 
 function birdEggsReady(npc) {
-	if (V.playerPregnancyEggLayingDisable === "t" || !C.npc[npc] || C.npc[npc].vagina === "none") return undefined;
+	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc] || C.npc[npc].vagina === "none") return undefined;
 	const pregnancy = C.npc[npc].pregnancy;
 	if (npcPregnancyEnding(npc) || pregnancy.timer > pregnancy.timerEnd) return "fertilised";
 	if (npc === "Great Hawk" && V.daily.hawkUnfertilisedEggs) return undefined;
 	if (
 		!npcIsPregnant(npc) &&
-		((V.cycledisable === "f" && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) ||
-			(V.cycledisable !== "f" && pregnancy.nonCycleRng[0] >= 1 && pregnancy.nonCycleRngHasEggs))
+		((V.settings.fertilityCycleEnabled === true && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) ||
+			(V.settings.fertilityCycleEnabled === false && pregnancy.nonCycleRng[0] >= 1 && pregnancy.nonCycleRngHasEggs))
 	)
 		return "unfertilised";
 }
@@ -203,7 +203,7 @@ function wakingPregnancyEvent() {
 	if (playerBellySize(true) >= 8 && !pregnancy.awareOf) {
 		return "bellySize";
 	} else if (
-		V.cycledisable === "f" &&
+		V.settings.fertilityCycleEnabled === true &&
 		!menstruation.awareOfPeriodDelay &&
 		V.awareness >= 200 &&
 		!pregnancy.awareOf &&
@@ -217,7 +217,7 @@ function wakingPregnancyEvent() {
 		["genitals", "under_upper", "upper", "under_lower", "lower"].find(slot => V.worn[slot].type.includes("constricting"))
 	) {
 		return "clothesRemoval";
-	} else if (V.playerPregnancyEggLayingDisable === "f" && ((pregnancy.type === "hawk" && pregnancyStage >= 1) || V.harpyEggs?.daysTillLaying <= 0)) {
+	} else if (V.settings.playerPregnancyEggLayingEnabled === true && ((pregnancy.type === "hawk" && pregnancyStage >= 1) || V.harpyEggs?.daysTillLaying <= 0)) {
 		return "eggLaying";
 	} else if (normalPregnancyEvents && between(pregnancyStage, 0.9, 1)) {
 		wakingEffects = "nearBirthEvent";
@@ -313,7 +313,7 @@ function dailyPregnancyEvent() {
 	} else if ((pills.pills.contraceptive.doseTaken >= 1 || pills.pills["fertility booster"].doseTaken >= 1) && rng >= 95) {
 		dailyEffects = "mildIssues";
 	} else if (
-		V.cycledisable === "f" &&
+		V.settings.fertilityCycleEnabled === true &&
 		menstruation.currentState === "normal" &&
 		(menstruation.currentDay < 3 || (menstruation.currentDay >= menstruation.currentDaysMax - 1 && rng >= 80)) &&
 		menstruation.periodEnabled
@@ -389,18 +389,18 @@ function pregnancyNameCorrection(name, caps = false) {
 window.pregnancyNameCorrection = pregnancyNameCorrection;
 
 function playerPregnancyRisk() {
-	if (V.playerPregnancyHumanDisable === "t" && V.playerPregnancyBeastDisable === "t") return 6; // Player Pregnancy Disabled
+	if (V.settings.playerPregnancyHumanEnabled === false && V.settings.playerPregnancyBeastEnabled === false) return 6; // Player Pregnancy Disabled
 	if (!V.player.vaginaExist && !canBeMPregnant()) return 6; // Player is male and can't become MPregnant
 	const menstruation = V.sexStats.vagina.menstruation;
 
-	if (V.cycledisable === "t") return menstruation.nonCycleRng[0];
+	if (V.settings.fertilityCycleEnabled === false) return menstruation.nonCycleRng[0];
 
 	const pills = V.sexStats.pills;
 
 	let risk;
 	let daysTillEnd;
 	let multi = 1;
-	switch (V.pregnancytype) {
+	switch (V.settings.pregnancyType) {
 		case "realistic":
 			// Was a pain to calculate, has already been adjusted once
 			daysTillEnd = menstruation.stages[3] - menstruation.currentDay;
@@ -555,9 +555,9 @@ function pregnancyDaysEta(pregnancyObject) {
 	const timerLeft = pregnancyObject.timerEnd - pregnancyObject.timer;
 	switch (pregnancyObject.type) {
 		case "human":
-			return Math.floor(timerLeft / (9 / V.humanPregnancyMonths));
+			return Math.floor(timerLeft / (9 / V.settings.humanPregnancyMonths));
 		case "wolf":
-			return Math.floor(timerLeft / (12 / V.wolfPregnancyWeeks));
+			return Math.floor(timerLeft / (12 / V.settings.wolfPregnancyWeeks));
 		case "hawk":
 			return Math.floor(timerLeft);
 		default:

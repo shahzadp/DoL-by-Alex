@@ -136,28 +136,28 @@ window.zoom = zoom;
 
 function beastTogglesCheck() {
 	T.beastVars = [
-		"bestialitydisable",
-		"swarmdisable",
-		"parasitedisable",
-		"parasitepregdisable",
-		"tentacledisable",
-		"slimedisable",
-		"voredisable",
-		"spiderdisable",
-		"slugdisable",
-		"waspdisable",
-		"beedisable",
-		"lurkerdisable",
-		"horsedisable",
-		"plantdisable",
+		"bestialityEnabled",
+		"swarmsEnabled",
+		"parasitesEnabled",
+		"parasitePregnancyEnabled",
+		"tentaclesEnabled",
+		"slimesEnabled",
+		"voreEnabled",
+		"spidersEnabled",
+		"slugsEnabled",
+		"waspsEnabled",
+		"beesEnabled",
+		"lurkersEnabled",
+		"horsesEnabled",
+		"plantsEnabled",
 	];
-	T.anyBeastOn = T.beastVars.some(x => V[x] === "f");
+	T.anyBeastOn = T.beastVars.some(x => V.settings[x] === true);
 }
 window.beastTogglesCheck = beastTogglesCheck;
 
 function settingsAsphyxiation() {
 	const updateText = () => {
-		let val = V.asphyxiaLvl;
+		let val = V.settings.asphyxiaLevel;
 		let text = null;
 		switch (val) {
 			case 0:
@@ -180,12 +180,12 @@ function settingsAsphyxiation() {
 				text = "Error: bad value: " + val;
 				val = 0;
 		}
-		jQuery("#numberslider-value-asphyxialvl").text("").append(text).addClass("small-description");
+		jQuery("#numberslider-value-settingsasphyxialevel").text("").append(text).addClass("small-description");
 	};
 
 	$(() => {
 		updateText();
-		$("#numberslider-input-asphyxialvl").on("input change", function (e) {
+		$("#numberslider-input-settingsasphyxialevel").on("input change", function (e) {
 			updateText();
 		});
 	});
@@ -194,7 +194,7 @@ window.settingsAsphyxiation = settingsAsphyxiation;
 
 function settingsCondoms() {
 	const updateText = () => {
-		let val = V.condomLvl;
+		let val = V.settings.condomLevel;
 		let text = null;
 		switch (val) {
 			case 0:
@@ -213,12 +213,12 @@ function settingsCondoms() {
 				text = "Error: bad value: " + val;
 				val = 0;
 		}
-		jQuery("#numberslider-value-condomlvl").text("").append(text).addClass("small-description");
+		jQuery("#numberslider-value-settingscondomlevel").text("").append(text).addClass("small-description");
 	};
 
 	$(() => {
 		updateText();
-		$("#numberslider-input-condomlvl").on("input change", function (e) {
+		$("#numberslider-input-settingscondomlevel").on("input change", function (e) {
 			updateText();
 		});
 	});
@@ -227,7 +227,7 @@ window.settingsCondoms = settingsCondoms;
 
 function settingsNudeGenderAppearance() {
 	const updateText = () => {
-		let val = V.NudeGenderDC;
+		let val = V.settings.nudeGenderPerception;
 		let text = null;
 		switch (val) {
 			case 0:
@@ -243,12 +243,12 @@ function settingsNudeGenderAppearance() {
 				text = "Error: bad value: " + val;
 				val = 0;
 		}
-		$("#numberslider-value-nudegenderdc").text("").append(text).addClass("small-description");
+		$("#numberslider-value-settingsnudegenderperception").text("").append(text).addClass("small-description");
 	};
 
 	$(() => {
 		updateText();
-		jQuery("#numberslider-input-nudegenderdc")
+		jQuery("#numberslider-input-settingsnudegenderperception")
 			.on("input change", function (e) {
 				updateText();
 			})
@@ -259,7 +259,7 @@ window.settingsNudeGenderAppearance = settingsNudeGenderAppearance;
 
 function settingsBodywriting() {
 	const updateText = () => {
-		let val = V.bodywritingLvl;
+		let val = V.settings.bodyWritingLevel;
 		let text = null;
 		switch (val) {
 			case 0:
@@ -282,12 +282,12 @@ function settingsBodywriting() {
 		V.bodywritingdisable = "f";
 		if (val === 0) V.bodywritingdisable = "t";
 
-		$("#numberslider-value-bodywritinglvl").text("").append(text).addClass("small-description");
+		$("#numberslider-value-settingsbodywritinglevel").text("").append(text).addClass("small-description");
 	};
 
 	$(() => {
 		updateText();
-		$("#numberslider-input-bodywritinglvl").on("input change", function (e) {
+		$("#numberslider-input-settingsbodywritinglevel").on("input change", function (e) {
 			updateText();
 		});
 	});
@@ -332,38 +332,38 @@ function settingsGenericGenders(id) {
 		let women = null;
 
 		if (id === "beasts") {
-			val = V.beastmalechance;
-			slider = "beastmalechance";
+			val = V.settings.beastMaleChance;
+			slider = "settingsbeastmalechance";
 		} else if (id === "NPCs") {
-			val = V.malechance;
-			slider = "malechance";
+			val = V.settings.maleChance;
+			slider = "settingsmalechance";
 		} else if (id === "mlm") {
-			val = V.maleChanceMale;
-			slider = "malechancemale";
+			val = V.settings.maleChanceMale;
+			slider = "settingsmalechancemale";
 			attraction = "<span class='blue inline-colour'>attracted to men</span>";
 			men = "men";
 			women = "women";
 		} else if (id === "wlw") {
-			val = V.maleChanceFemale;
-			slider = "malechancefemale";
+			val = V.settings.maleChanceFemale;
+			slider = "settingsmalechancefemale";
 			attraction = "<span class='pink inline-colour'>attracted to women</span>";
 			men = "men";
 			women = "women";
 		} else if (id === "blm") {
-			val = V.beastMaleChanceMale;
-			slider = "beastmalechancemale";
+			val = V.settings.beastMaleChanceMale;
+			slider = "settingsbeastmalechancemale";
 			attraction = "<span class='blue inline-colour'>attracted to men</span>";
 			men = "male beasts";
 			women = "female beasts";
 		} else if (id === "blw") {
-			val = V.beastMaleChanceFemale;
-			slider = "beastmalechancefemale";
+			val = V.settings.beastMaleChanceFemale;
+			slider = "settingsbeastmalechancefemale";
 			attraction = "<span class='pink inline-colour'>attracted to women</span>";
 			men = "male beasts";
 			women = "female beasts";
 		} else {
-			val = V.malevictimchance;
-			slider = "malevictimchance";
+			val = V.settings.maleVictimChance;
+			slider = "settingsmalevictimchance";
 		}
 
 		let text = null;
@@ -417,7 +417,7 @@ window.settingsGenericGenders = settingsGenericGenders;
 
 function settingsMonsterChance() {
 	const updateText = () => {
-		const val = V.monsterchance;
+		const val = V.settings.monsterChance;
 		let text = null;
 
 		switch (val) {
@@ -435,12 +435,12 @@ function settingsMonsterChance() {
 				break;
 		}
 
-		jQuery("#numberslider-value-monsterchance").text("").append(text).addClass("small-description");
+		jQuery("#numberslider-value-settingsmonsterchance").text("").append(text).addClass("small-description");
 	};
 
 	$(() => {
 		updateText();
-		$("#numberslider-input-monsterchance").on("input change", function (e) {
+		$("#numberslider-input-settingsmonsterchance").on("input change", function (e) {
 			updateText();
 		});
 	});
@@ -450,25 +450,25 @@ window.settingsMonsterChance = settingsMonsterChance;
 
 function settingsBeastGenders(singleUpdate) {
 	const updateText = () => {
-		const val = T.beastmalechance;
+		const val = T.settingsbeastmalechance;
 		let text = null;
 		switch (val) {
 			case 100:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>All</span> beasts will prefer the <span class='gold inline-colour'>opposite sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>All</span> beasts will be <span class='blue inline-colour'>male</span>.";
 				}
 				break;
 			case 75:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>75%</span> of beasts will prefer the <span class='gold inline-colour'>opposite sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>75%</span> of beasts will be <span class='blue inline-colour'>male.</span>";
 				}
 				break;
 			case 50:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "Beast sexual preferences will be <span class='gold inline-colour'>randomly</span> split.";
 				} else {
 					text =
@@ -476,34 +476,34 @@ function settingsBeastGenders(singleUpdate) {
 				}
 				break;
 			case 25:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>75%</span> of beasts will prefer the <span class='gold inline-colour'>same sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>75%</span> of beasts will be <span class='pink inline-colour'>female.</span>";
 				}
 				break;
 			case 0:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>All</span> beasts will prefer the <span class='gold inline-colour'>same sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>All</span> beasts will be <span class='pink inline-colour'>female.</span>";
 				}
 				break;
 			default:
-				if (T.beastMaleChanceSplit === "t") {
+				if (T.beastMaleChanceSplit === true) {
 					text = "Beast sexual preferences will be <span class='gold inline-colour'>randomly</span> split.";
 				} else {
-					text = "<span class='gold inline-colour'>" + V.beastmalechance + "%</span> of beasts will be <span class='blue inline-colour'>male.</span>";
+					text = "<span class='gold inline-colour'>" + V.settings.beastMaleChance + "%</span> of beasts will be <span class='blue inline-colour'>male.</span>";
 				}
 				break;
 		}
-		jQuery("#numberslider-value--beastmalechance").text("").append(text).addClass("small-description");
+		jQuery("#numberslider-value--settingsbeastmalechance").text("").append(text).addClass("small-description");
 	};
 
 	if (!singleUpdate) {
 		$(() => {
 			updateText();
-			$("#numberslider-input--beastmalechance").on("input change", function (e) {
+			$("#numberslider-input--settingsbeastmalechance").on("input change", function (e) {
 				updateText();
 			});
 		});
@@ -515,25 +515,25 @@ window.settingsBeastGenders = settingsBeastGenders;
 
 function settingsNpcGenders(singleUpdate) {
 	const updateText = () => {
-		const val = T.malechance;
+		const val = T.settingsmalechance;
 		let text = null;
 		switch (val) {
 			case 100:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>All</span> NPCs will prefer the <span class='gold inline-colour'>opposite sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>All</span> NPCs will be <span class='blue inline-colour'>male</span>.";
 				}
 				break;
 			case 75:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>75%</span> of NPCs will prefer the <span class='gold inline-colour'>opposite sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>75%</span> of NPCs will be <span class='blue inline-colour'>male.</span>";
 				}
 				break;
 			case 50:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "NPC sexual preferences will be <span class='gold inline-colour'>randomly</span> split.";
 				} else {
 					text =
@@ -541,34 +541,34 @@ function settingsNpcGenders(singleUpdate) {
 				}
 				break;
 			case 25:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>75%</span> of NPCs will prefer the <span class='gold inline-colour'>same sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>75%</span> of NPCs will be <span class='pink inline-colour'>female.</span>";
 				}
 				break;
 			case 0:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "<span class='gold inline-colour'>All</span> NPCs will prefer the <span class='gold inline-colour'>same sex</span>.";
 				} else {
 					text = "<span class='gold inline-colour'>All</span> NPCs will be <span class='pink inline-colour'>female.</span>";
 				}
 				break;
 			default:
-				if (T.maleChanceSplit === "t") {
+				if (T.maleChanceSplit === true) {
 					text = "NPC sexual preferences will be <span class='gold inline-colour'>randomly</span> split.";
 				} else {
-					text = "<span class='gold inline-colour'>" + V.malechance + "%</span> of NPCs will be <span class='blue inline-colour'>male.</span>";
+					text = "<span class='gold inline-colour'>" + V.settings.maleChance + "%</span> of NPCs will be <span class='blue inline-colour'>male.</span>";
 				}
 				break;
 		}
-		jQuery("#numberslider-value--malechance").text("").append(text).addClass("small-description");
+		jQuery("#numberslider-value--settingsmalechance").text("").append(text).addClass("small-description");
 	};
 
 	if (!singleUpdate) {
 		$(() => {
 			updateText();
-			$("#numberslider-input--malechance").on("input change", function (e) {
+			$("#numberslider-input--settingsmalechance").on("input change", function (e) {
 				updateText();
 			});
 		});
@@ -646,7 +646,7 @@ function updatehistorycontrols() {
 	else Config.history.maxStates = V.options.maxStates; // update engine config
 
 	// enable fast rng re-roll on "keypad *" for debug and testing
-	if (V.debug || V.cheatdisable === "f" || V.testing) Links.disableRNGReload = false;
+	if (V.debug || V.cheatsEnabled === true || V.testing) Links.disableRNGReload = false;
 	else Links.disableRNGReload = true;
 
 	// option to still record history without showing the controls, for better debugging
@@ -973,7 +973,7 @@ function getLargestSexStatModifierCssClasses(input, requiredLevel = 0) {
 	const drunkSexStatModifierValue = drunkSexStatModifier(V[statName]);
 	const heatRutSexStatModifierValue = heatRutSexStatModifier(statName);
 
-	// If there is a modifier, and either requiredLevel is 0 or the modifiers put the player up a level of the sexStat.
+	// If there is a modifier and either requiredLevel is 0 or the modifiers put the player up a level of the sexStat.
 	if (
 		drunkSexStatModifierValue + heatRutSexStatModifierValue > 0 &&
 		(requiredLevel === 0 || (!hasSexStat(statName, requiredLevel, false) && hasSexStat(statName, requiredLevel, true)))

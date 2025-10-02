@@ -20,7 +20,7 @@ Dynamic.render = (...ids) => {
  * Dynamic.eventBinder.
  *
  * Will cause events on the bound element to re-render dynamic elements on the current passage.
- * Also allows you to immediately evaluate SugarCube variables, and use those value in the event handler
+ * Also allows you to immediately evaluate SugarCube variables and use those values in the event handler
  * (manual string concat is no longer required).
  *
  * Note: currently only supports onclick events.
@@ -85,7 +85,7 @@ Dynamic.eventBinderWithId = (id, ...valuesToInject) => {
  * Underlying implementation of the <<dynamic>> widget. You probably want to use that instead.
  * Slightly more powerful in that any arbitrary sugarcube content is allowed.
  *
- * Usage: <div id="Dynamic.bind('Any sugarcube content can go here, and will be manually be evaluated. <<myDynamicContent>>')></div>".
+ * Usage: <div id="Dynamic.bind('Any sugarcube content can go here and will be manually be evaluated. <<myDynamicContent>>')></div>".
  *
  * @param {any} content
  * @param {string} customId

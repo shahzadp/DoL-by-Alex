@@ -1014,8 +1014,8 @@ What will you hunt for?
 					size: ["tiny", "small", "normal", "normal"][random(0, 3)],
 					eyeColour: ["purple", "dark blue", "light blue", "amber", "hazel", "green", "lime green", "red", "pink", "grey", "light grey"][random(0, 10)],
 					hairColour: ["white", "brown"][random(0,1)],
-					skinColour: random(1, 100) lte $blackchance ? "dark" : "light",
-					monster: ((V.monsterchance > random(0, 100) && (V.hallucinations >= 1 || V.monsterhallucinations === "f")) || V.greathawkmonster === 2) ? "monster" : 0
+					skinColour: random(1, 100) lte $settings.darkSkinChance ? "dark" : "light",
+					monster: ((V.settings.monsterChance > random(0, 100) && (V.hallucinations >= 1 || !V.settings.monsterHallucinationsOnly)) || V.greathawkmonster === 2) ? "monster" : 0
 				},
 				conceived: {day: _conceivedTime.day, month: _conceivedTime.monthName, year: _conceivedTime.year},
 				conceivedLocation: "unknown",
@@ -1381,7 +1381,7 @@ What will you hunt for?
 
 		<<link [[Dodge|Bird Hunt Lurker Dodge]]>><</link>><<dancedifficulty 1 1200>>
 		<br>
-		<<if $bestialitydisable is "f" and $lurkerdisable is "f">>
+		<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
 			<<if hasSexStat("deviancy", 4)>>
 				<<link [[Stand still|Bird Hunt Lurker Stand Still]]>><</link>><<deviant4>>
 				<br>
@@ -1465,7 +1465,7 @@ What will you hunt for?
 	<<link [[Try to take two|Bird Hunt Sticks 2]]>><<set $phase to 3>><</link>><<athleticsdifficulty _athlDiffMin _athlDiffMax>>
 	<br>
 <<else>>
-	<<if $bestialitydisable is "f" and $lurkerdisable is "f">>
+	<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
 		You try to jump aside, <span class="red">but you fail to move in time, and the lurker lands on your face.</span>
 		<br><br>
 
@@ -1705,7 +1705,7 @@ You land near the dying plants. They look fragile. You'll have to choose which p
 		<<flight_hunt_return>>
 	<<else>>
 		A <<beasttype>> pounces!
-		<<if $bestialitydisable is "f">>
+		<<if $settings.bestialityEnabled>>
 			<br><br>
 
 			<<link [[Next|Bird Hunt Underbrush Rape]]>><<handheldon>><<set $molestationstart to 1>><</link>>
@@ -2151,7 +2151,7 @@ You arrest your dive and use the momentum to circle the group, looking for the p
 	With only one hand for each lurker, staying stable is difficult. You grab the first one, but its struggling prevents you from flying true. Your arm collides with the ground as you reach for the second, throwing off your balance and <span class="red">sending you tumbling</span>. <<pain 3>><<gpain>>
 	<br><br>
 
-	<<if $bestialitydisable is "f" and $lurkerdisable is "f">>
+	<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
 		The first lurker squirms in your grasp as the second pounces at you!
 		<br><br>
 
@@ -2470,7 +2470,7 @@ You land near it and begin running. The lurker sees you immediately and starts t
 	<<flight_hunt_get "lurkers" 1>>
 	<<flight_hunt_return>>
 <<else>>
-	<<if $bird.hunts.duo is false and $rng gte 61 and $voredisable is "f">>
+	<<if $bird.hunts.duo is false and $rng gte 61 and $settings.voreEnabled>>
 		<span class="red">The lurker is simply too fast.</span> It begins skittering away even faster, but you don't give up. You chase the lurker all the way to a large crack in the earth, which it slips into.
 		<br><br>
 
@@ -2505,7 +2505,7 @@ You land near it and begin running. The lurker sees you immediately and starts t
 	<<set $combat to 1>>
 	<<molested>>
 	<<controlloss>>
-	<<if $tentacledisable is "f" and $hallucinations gte 1>>
+	<<if $settings.tentaclesEnabled and $hallucinations gte 1>>
 		<<set $enemytype to "tentacles">>
 		<<tentaclestart 2 15>>
 		<<set $voretentacles to 1>>
@@ -2520,7 +2520,7 @@ You land near it and begin running. The lurker sees you immediately and starts t
 	<<getCombatDefaultsType>>
 <</if>>
 
-<<if $tentacledisable is "f" and $hallucinations gte 1 and $enemytype is "tentacles">>
+<<if $settings.tentaclesEnabled and $hallucinations gte 1 and $enemytype is "tentacles">>
 	<<voreeffects>><<effectstentacles>>
 	<<vore>><<tentacles>>
 	<<statetentacles>>
@@ -2889,7 +2889,7 @@ You fly lower to the ground and spend some time watching the <<beasttype>> from 
 				<<link [[Take the object|Bird Hunt Fox Take]]>><</link>>
 				<br>
 			<</if>>
-			<<if ($bestialitydisable is "f" or $monster is 1) and hasSexStat("deviancy", 3)>>
+			<<if ($settings.bestialityEnabled or $monster is 1) and hasSexStat("deviancy", 3)>>
 				<<link [[Push over|Bird Hunt Fox Sex]]>><<set $sexstart to 1>><</link>><<deviant3>>
 				<br>
 			<</if>>
@@ -2942,7 +2942,7 @@ You fly lower to the ground and spend some time watching the <<beasttype>> from 
 
 			<<flight_hunt_return>>
 		<<else>>
-			<<if $bestialitydisable is "f">>
+			<<if $settings.bestialityEnabled>>
 				You don't have time to flee before <<bhe>> springs forward.
 				<br><br>
 
@@ -3014,7 +3014,7 @@ You hold out your hand, motioning for <<bhim>> to give you whatever <<bhes>> hid
 <<wearProp _prop>>
 <br><br>
 
-<<if ($bestialitydisable is "f" or $monster is 1) and hasSexStat("deviancy", 3)>>
+<<if ($settings.bestialityEnabled or $monster is 1) and hasSexStat("deviancy", 3)>>
 	<<link [[Reward|Bird Hunt Fox Sex]]>><<set $sexstart to 1>><</link>><<deviant3>>
 	<br>
 <</if>>
@@ -3254,7 +3254,7 @@ You watch the couple with interest.
 <<if ($NPCList[0].penis isnot "none" and $NPCList[1].vagina isnot "none") or ($NPCList[0].vagina isnot "none" and $NPCList[1].penis isnot "none")>>
 	<!-- Penile/Vaginal -->
 	<<set $phase to 1>>
-<<elseif ($NPCList[0].penis isnot "none" or $NPCList[1].penis isnot "none") and $analdisable is "f">>
+<<elseif ($NPCList[0].penis isnot "none" or $NPCList[1].penis isnot "none") and $settings.analEnabled>>
 	<!-- Penile/Anal -->
 	<<set $phase to 2>>
 <<elseif $NPCList[0].penis isnot "none" or $NPCList[1].penis isnot "none">>
@@ -5061,7 +5061,7 @@ You start to make the trap. You scrounge up leaves and sticks to cover the hole.
 				<br>
 			<</if>>
 		<<else>>
-			<<if $bestialitydisable is "f" and $lurkerdisable is "f">>
+			<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
 				As you stand up, you notice movement in the grass near you. You turn to face it, but something leaps on your back and lands on your <<bottom>>.
 				<br><br>
 
@@ -5250,7 +5250,7 @@ You fly back to the top of the pillar once you're sure they're gone. Your trap i
 	<<controlloss>>
 	<<violence 1>>
 	<<molested>>
-	<<if $analdisable is "f">>
+	<<if $settings.analEnabled>>
 		<<set $struggle.anus.creature to "lurker">><<set $anususe to "struggle">><<set $anusstate to "struggle">><<set $struggle.enemy[0].location to "anus">>
 	<</if>>
 	<<unset $struggle_start>>
@@ -6080,7 +6080,7 @@ Your stomach rises as you plummet. You try to get your bearings, and your attack
 
 	The Great Hawk adjusts <<bhis 1>> grip on the outsider painfully. "Great Hawk is not alone anymore. Great Hawk finally has family." <<bHe 1>> looks to you with a smile, and the outsider's gaze follows <<bhis 1>>.
 	<br>
-	"<<if $pregnancyspeechdisable is "f">>Breeding<<else>>Mating<</if>> with a landbound? You've sunken low—" <<bhes 0>> interrupted as the Great Hawk's talon pushes <<bhis 0>> head into the dirt.
+	"<<if $settings.pregnancySpeechEnabled>>Breeding<<else>>Mating<</if>> with a landbound? You've sunken low—" <<bhes 0>> interrupted as the Great Hawk's talon pushes <<bhis 0>> head into the dirt.
 	<br>
 	"Begone. You have your own home," <<bhe 1>> says with the slightest hint of sadness. <<bHe>> releases the other <<beasttype>>, who flies off quickly without another word.
 <<else>>
@@ -6249,7 +6249,7 @@ Abandoned again. You weren't so different. <<trauma 100>><<gggtrauma>>
 
 :: Bird Hunt Chick Adopt
 <<effects>>
-Your eyes lock with <<childhis>>. You bring your face closer, seeing your reflection in them. You know that look. Confusion. Fear. An orphan, just like you. You're not so different.
+Your eyes lock with <<childhers>>. You bring your face closer, seeing your reflection in them. You know that look. Confusion. Fear. An orphan, just like you. You're not so different.
 <br><br>
 
 You gently <<if $tendingSuccess>>hold<<else>>pick up<</if>> the <<childtype>>, and take to the skies alongside your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>>.

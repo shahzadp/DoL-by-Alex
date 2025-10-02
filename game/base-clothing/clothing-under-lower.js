@@ -704,7 +704,7 @@ function initUnderLower() {
 			femininity: 300,
 			warmth: 1,
 			cost: 0,
-			description: "Waitress attire. Tougher than it looks. Part of a bunny outfit, and has a tufty white tail on the back to prove it.",
+			description: "Waitress attire. Tougher than it looks. Part of a bunny outfit, and it has a tufty white tail on the back to prove it.",
 			shop: ["adult"],
 			accessory: 0,
 			accessory_colour: 0,
