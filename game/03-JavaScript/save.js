@@ -337,7 +337,7 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} state
 	 */
 	function compressState(state) {
-		DOL.Perflog.logWidgetStart("__DoLSave.compressState");
+		Perflog.logWidgetStart("__DoLSave.compressState");
 		try {
 			const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
 			const compressor = new JsonCompressor(dictionary);
@@ -355,7 +355,7 @@ const DoLSave = ((Story, Save) => {
 			}
 			return zstate;
 		} finally {
-			DOL.Perflog.logWidgetEnd("__DoLSave.compressState");
+			Perflog.logWidgetEnd("__DoLSave.compressState");
 		}
 	}
 
@@ -366,7 +366,7 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} zstate
 	 */
 	function decompressState(zstate) {
-		DOL.Perflog.logWidgetStart("__DoLSave.decompressState");
+		Perflog.logWidgetStart("__DoLSave.decompressState");
 		try {
 			if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
 			const dicid = zstate.dictionary;
@@ -380,7 +380,7 @@ const DoLSave = ((Story, Save) => {
 			const decompressor = new JsonDecompressor(dictionary);
 			return decompressor.decompress(zstate);
 		} finally {
-			DOL.Perflog.logWidgetEnd("__DoLSave.decompressState");
+			Perflog.logWidgetEnd("__DoLSave.decompressState");
 		}
 	}
 	function enableCompression() {
@@ -1052,7 +1052,28 @@ function settingsObjects(type) {
 					},
 					skin: {
 						color: {
-							strings: ["light", "medium", "dark", "gyaru", "rlight", "rmedium", "rdark", "rgyaru", "ylight", "ymedium", "ydark", "ygyaru", "glight", "gmedium", "gdark", "ggyaru", "blight", "bmedium", "bdark", "bgyaru"],
+							strings: [
+								"light",
+								"medium",
+								"dark",
+								"gyaru",
+								"rlight",
+								"rmedium",
+								"rdark",
+								"rgyaru",
+								"ylight",
+								"ymedium",
+								"ydark",
+								"ygyaru",
+								"glight",
+								"gmedium",
+								"gdark",
+								"ggyaru",
+								"blight",
+								"bmedium",
+								"bdark",
+								"bgyaru",
+							],
 							randomize: "characterAppearance",
 							displayName: "Natural Skintone:",
 						},
