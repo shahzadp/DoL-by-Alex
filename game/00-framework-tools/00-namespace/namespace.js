@@ -19,7 +19,6 @@ window.DOL = {
 	 * See {@link ./02-version/.init.js} for more.
 	 */
 	Versions: {},
-	Perflog: {},
 	/**
 	 * General purpose call stack containing the widget names as they are called.
 	 */
