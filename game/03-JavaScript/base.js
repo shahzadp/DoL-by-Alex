@@ -104,7 +104,6 @@ function DefineMacro(macroName, macroFunction, tags, skipArgs) {
 		tags,
 		skipArgs,
 		handler() {
-			Perflog.logWidgetStart(macroName);
 			try {
 				const oldArgs = State.temporary.args;
 				State.temporary.args = this.args.slice();
@@ -114,8 +113,8 @@ function DefineMacro(macroName, macroFunction, tags, skipArgs) {
 				} else {
 					State.temporary.args = oldArgs;
 				}
-			} finally {
-				Perflog.logWidgetEnd(macroName);
+			} catch (e) {
+				console.warn("Something went wrong", e);
 			}
 		},
 	});
