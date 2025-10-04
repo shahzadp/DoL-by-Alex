@@ -246,7 +246,7 @@ Instead of fixed color string, layer's `blend` property can define a linear or r
 A gradient specification is a JSON object of structure:
 * `gradient: "linear"|"radial"` - type of the gradient.
 * `values: number[]` - gradient coordinates. For linear gradient: `[x0, y0, x1, y1]`; for radial gradient: `[x0, y0, r0, x1, y1, r1]`. The coordinates are in pixels, relative to canvas top left corner.
-* `colors` - color stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops). 
+* `colors` - color stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops).
 
 Example:
 ```js
