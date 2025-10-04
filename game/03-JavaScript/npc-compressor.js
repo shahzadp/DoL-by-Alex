@@ -178,7 +178,7 @@ const { npcDecompressor } = (function () {
 
 	/* npcDecompressor should not be deleted or edited, is to be kept for legacy saves */
 	/**
-	 * @description Takes in a passed coded string and turns them into a NPC with the required key values.
+	 * @description Takes in a passed coded string and turns them into an NPC with the required key values.
 	 * @param {string} passedNPC The npc code as a string that you want returned as an object.
 	 * @returns {object} The passed npc as an object with all relevent key's filled.
 	 */
