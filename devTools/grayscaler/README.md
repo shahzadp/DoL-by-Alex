@@ -1,6 +1,6 @@
 # Grayscale image converters
 
-Utilities to convert legacy red-based sprites to grayscale sprites fit to hard-light blending in new renderer. 
+Utilities to convert legacy red-based sprites to grayscale sprites fit to hard-light blending in new renderer.
 
 ## Browser version
 
