@@ -657,7 +657,7 @@ window.getRobinCrossdressingStatus = getRobinCrossdressingStatus;
 
 /*
 	TEMPORARY - remove once obsolete
-	Temporary function until location framework is in place - to detect if a NPC is in the park
+	Temporary function until location framework is in place - to detect if an NPC is in the park
 	Uses same checks as other Park NPC checks
  */
 function isInPark(name) {

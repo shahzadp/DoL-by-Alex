@@ -192,6 +192,13 @@ Config.navigation.override = function (dest) {
 			case "Forest Shop Legs":
 			case "Forest Shop Feet":
 				return "Forest Shop";
+				
+			case "Residential alleyways":
+				return "Residential Alleyways";
+			case "Commercial alleyways":
+				return "Commercial alleyways";
+			case "Industrial alleyways":
+				return "Industrial alleyways";
 
 			case "Cafe Fruit Salad":
 			case "Cafe Autumn Ale":
