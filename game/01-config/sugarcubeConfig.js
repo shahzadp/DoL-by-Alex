@@ -196,9 +196,9 @@ Config.navigation.override = function (dest) {
 			case "Residential alleyways":
 				return "Residential Alleyways";
 			case "Commercial alleyways":
-				return "Commercial alleyways";
+				return "Commercial Alleyways";
 			case "Industrial alleyways":
-				return "Industrial alleyways";
+				return "Industrial Alleyways";
 
 			case "Cafe Fruit Salad":
 			case "Cafe Autumn Ale":
