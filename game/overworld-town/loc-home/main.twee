@@ -848,7 +848,91 @@ You are in the bathroom.
 <</switch>>
 <<canvas-model-override "mouth" "chew">>
 
-You squirt a dollop of toothpaste on your toothbrush and brush your teeth. When finished, you spit into the sink, then rinse out your mouth.
+<<if $location is "home">> /* simple toothbrushing events at the orphanage */
+	<<cleareventpool>>
+
+	<<addinlineevent "orphanage_toothbrushing_normal">>
+		You squirt a dollop of toothpaste on your toothbrush and brush your teeth. <<if $transformationParts.traits.fangs isnot "disabled">>You take care to brush over and behind your fangs. <</if>>When finished, you spit into the sink, then rinse out your mouth.
+	<</addinlineevent>>
+
+	<<addinlineevent "orphanage_toothbrushing_pasteless" 0.25>>
+		You are about to brush your teeth, but someone used all the toothpaste without replacing it. Annoyed, you dig through a cabinet in the bathroom and find a new tube. You quickly brush your teeth, then spit in the sink and rinse out your mouth.
+	<</addinlineevent>>
+
+	<<addinlineevent "orphanage_toothbrushing_brushless" 0.25>>
+		You are about to brush your teeth, but you can't find your toothbrush. You search for it and find it stowed away in a cabinet. Someone must have moved it. You brush your teeth, then spit in the sink and rinse out your mouth.
+	<</addinlineevent>>
+
+	<<if Time.isBloodMoon()>>
+		<<addinlineevent "orphanage_toothbrushing_bloodmoon">>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. The silence of the orphanage is suffocating. You feel uneasy.<<gstress>><<stress 6>>
+			<br><br>
+			When finished, you spit into the sink, then rinse out your mouth.
+		<</addinlineevent>>
+	<<elseif Time.dayState is "night">>
+		<<addinlineevent "orphanage_toothbrushing_night">>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. The orphanage is quiet at night, allowing you to relax and still your thoughts.<<lstress>><<stress -6>>
+			<br><br>
+			When finished, you spit into the sink, then rinse out your mouth.
+		<</addinlineevent>>
+
+		<<addinlineevent "orphanage_toothbrushing_night_distracted" 0.5>>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. The orphanage is quiet at night. You try to relax, but are distracted by <<print either("some stray dogs barking", "a couple arguing", "someone shouting", "someone revving their engine", "someone playing loud music", "the sound of glass shattering")>> outside. When finished, you spit into the sink, then rinse out your mouth.
+		<</addinlineevent>>
+	<<else>>
+		<<addinlineevent "orphanage_toothbrushing_loud" 0.5>>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. There's a loud <<print either("bang against the bathroom door, but nobody enters", "crashing sound outside")>>. You wonder what caused the noise.<<gstress>><<stress 6>>
+			<br><br>
+			When finished, you spit into the sink, then rinse out your mouth.
+		<</addinlineevent>>
+
+		<<addinlineevent "orphanage_toothbrushing_orphan" 0.5>>
+			<<generateyv1>>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. You hear <<print either("two", "a group of")>> orphans talking outside before one enters the bathroom.
+			<br><br>
+			<<person1>><<He>> notices you with a small shock. "<<if $orphan_reb lt random(1, 50)>>Sorry, <</if>><<print either("I'll wait outside", "I'll give you some space", "I should have knocked")>>," <<he>> says before closing the door again.
+			<br><br>
+			When finished, you spit in the sink, then rinse out your mouth.<<endevent>>
+		<</addinlineevent>>
+
+		<<if $orphan_hope gte random(1, 50)>>
+			<<addinlineevent "orphanage_toothbrushing_hope">>
+				You squirt a dollop of toothpaste on your toothbrush. As you brush, you hear two orphans talking just outside the bathroom. They sound hopeful about being able to meet Bailey's demands <<print either("without prostituting themselves", "without resorting to skulduggery", "through their day jobs", "through odd jobs around the city", "through tips from their work as temps")>>.<<lstress>><<stress -6>>
+				<br><br>
+				When finished, you spit into the sink, then rinse out your mouth.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if $orphan_reb gte random(1, 50)>>
+			<<addinlineevent "orphanage_toothbrushing_reb">>
+				<<generateyv1>>
+				You squirt a dollop of toothpaste on your toothbrush when an orphan suddenly barges in. You are shouldered away to make room for <<person1>><<him>> and brush your teeth at the same time.<<gstress>><<stress 6>>
+				<br><br>
+				When finished, you spit into the sink, then rinse out your mouth.<<endevent>>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	<<if Weather.precipitation is "rain">>
+		<<addinlineevent "orphanage_toothbrushing_rain">>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. The <<if Time.isBloodMoon()>>rain outside drowns out your thoughts. You feel uneasy.<<gstress>><<stress 6>><<else>>muffled sound of the rain outside calms your nerves.<<lstress>><<stress -6>><</if>>
+			<br><br>
+			When finished, you spit into the sink, then rinse out your mouth.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if $tiredness gte (C.tiredness.max / 5) * 4>>
+		<<addinlineevent "orphanage_toothbrushing_tired">>
+			You squirt a dollop of toothpaste on your toothbrush and brush your teeth. You suddenly realize that you're using someone else's toothbrush.<<gstress>><<stress 6>>
+			<br><br>
+			You spit in the sink, then quickly rinse out your mouth. You need to get more sleep.
+		<</addinlineevent>>
+	<</if>>
+
+	<<runeventpool>>
+<<else>> /* normal toothbrushing message in places other than the orphanage */
+	You squirt a dollop of toothpaste on your toothbrush and brush your teeth. <<if $transformationParts.traits.fangs isnot "disabled">>You take care to brush over and behind your fangs. <</if>>When finished, you spit into the sink, then rinse out your mouth.
+<</if>>
 <<wash_mouth>>
 <br><br>
 
