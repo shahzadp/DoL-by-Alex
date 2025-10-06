@@ -1783,7 +1783,7 @@ function dailySchoolEffects() {
 	}
 
 	// Reset inspections before every term
-	if (!Time.isSchoolTerm && V.schoolevent > 0) {
+	if (!Time.isSchoolTerm(Time.date) && V.schoolevent > 0) {
 		V.schoolevent = 0;
 		V.schooleventtimer = 10;
 	}
