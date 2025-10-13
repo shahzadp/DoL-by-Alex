@@ -62,7 +62,7 @@ Will return the number of times the pc has gotten pregnant.
 
 #### playerBellySize(pregnancyOnly)
 
-Will return the players belly size, ranges from 0 to 24. Include true to make it pregnancy specific.
+Will return the player's belly size, ranges from 0 to 24. Include true to make it pregnancy specific.
 
 -   `<<set _bellySize to playerBellySize()>>`
 -   `<<set _bellySizeFromPregnancy to playerBellySize(true)>>`
@@ -77,13 +77,13 @@ Will return `true` if the player's belly is visible. Include true to make it pre
 
 #### isPregnancyEnding()
 
-Will return `true` if the players non-parasite pregnancy is ending.
+Will return `true` if the player's  non-parasite pregnancy is ending.
 
 -   `<<if isPregnancyEnding()>>`
 
 #### playerNormalPregnancyType()
 
-Will return the players pregnancy type as long as it's not `parasite`.
+Will return the player's  pregnancy type as long as it's not `parasite`.
 
 -   `<<set _type to playerNormalPregnancyType()>>`
 -   `<<if playerNormalPregnancyType() is "human">>`
@@ -159,8 +159,8 @@ These are a series of functions which are there to track who knows about what pr
 
 Used to check if the `whoToCheck` knows about the current or an existing pregnancy of the `mother`.
 
--   `<<if knowsAboutPregnancy("pc","Whitney")>>` - Check if Whitney is already aware of the players's current pregnancy
--   `<<if knowsAboutPregnancy("pc", "Whitney", 0)>>` - Check if Whitney is aware of the players's first pregnancy
+-   `<<if knowsAboutPregnancy("pc","Whitney")>>` - Check if Whitney is already aware of the player's  current pregnancy
+-   `<<if knowsAboutPregnancy("pc", "Whitney", 0)>>` - Check if Whitney is aware of the player's  first pregnancy
 -   `<<if knowsAboutPregnancy("Whitney","pc")>>` - Check if the player is already aware of Whitney's current pregnancy
 -   `<<if knowsAboutPregnancy("Whitney", "pc", 0)>>` - Check if the player is aware of Whitney's first pregnancy
 
@@ -168,14 +168,14 @@ Used to check if the `whoToCheck` knows about the current or an existing pregnan
 
 Used to set `whoNowKnows` as someone who knows about the `mother`'s current or past pregnancy. Be sure to double check the usage when your providing an ID rather than "pc" or named npc's name. `track` is used to record the pregnancy for `V.babyIntro`, see current usage in `function giveBirthToChildren(mother, birthLocation, location, pregnancyOverride)`. `pregnancyOverride` is for random npc's specifically and normally should not be used outside of current usage.
 
--   `<<setKnowsAboutPregnancy "pc" "Whitney">>` - When Whitney is aware of the players's current pregnancy
--   `<<setKnowsAboutPregnancy "pc" "Whitney" 0>>` - When Whitney is aware of the players's first pregnancy
+-   `<<setKnowsAboutPregnancy "pc" "Whitney">>` - When Whitney is aware of the player's  current pregnancy
+-   `<<setKnowsAboutPregnancy "pc" "Whitney" 0>>` - When Whitney is aware of the player's  first pregnancy
 -   `<<setKnowsAboutPregnancy "Whitney" "pc">>` - When the player is aware of Whitney's current pregnancy
 -   `<<setKnowsAboutPregnancy "Whitney" "pc" 0>>` - When the player is aware of Whitney's first pregnancy
 
 #### setKnowsAboutPregnancyCurrentLoaded()
 
-Used for current named npc's loaded into `V.NPCList` and lets them learn about the players's current pregnancy if its visible. Used in widgets where the players state of dress changes.
+Used for current named npc's loaded into `V.NPCList` and lets them learn about the player's  current pregnancy if its visible. Used in widgets where the player's  state of dress changes.
 
 -   `<<setKnowsAboutPregnancyCurrentLoaded>>`
 
@@ -416,11 +416,11 @@ Requires update to add new species. Runs the relevant `Pregnancy Generator` and 
 
 #### pregnancyProgress(genital = "vagina")
 
-Requires update to add new species. Progresses the players pregnancy and enabling specific effects if applicable. At the end of the pregnancy, may increase the players breast size and start lactation.
+Requires update to add new species. Progresses the player's  pregnancy and enabling specific effects if applicable. At the end of the pregnancy, may increase the player's  breast size and start lactation.
 
 #### playerEndWaterProgress()
 
-At the end of the players pregnancy, runs a countdown timer till the `Water's broken` message is shown to the player and when the player can give birth.
+At the end of the player's  pregnancy, runs a countdown timer till the `Water's broken` message is shown to the player and when the player can give birth.
 
 #### playerEndWaterBreaking()
 
@@ -428,7 +428,7 @@ Disabled the `Water's broken` message and effects. Used only when the player is 
 
 #### endPlayerPregnancy(birthLocation, location)
 
-Requires update to add new species. Ends the players pregnancy and put's their menstruation cycle into recovery.
+Requires update to add new species. Ends the player's  pregnancy and put's their menstruation cycle into recovery.
 
 ### NPC specific pregnancy function
 
