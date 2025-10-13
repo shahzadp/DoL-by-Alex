@@ -1797,22 +1797,37 @@ I need someone to handle the fields, at least. I don't" — <<he>> finishes <<hi
 <<set $outside to 0>><<effects>>
 You are inside the shed with the shower.
 <br><br>
-<<bathroomicon "shower">><<link [[Take shower (0:10)|Farm Shower]]>><<pass 10>><</link>>
+
+<<if pcAreArmsBound("both")>>
+	<<set _clothed = ![V.worn.upper.name, V.worn.lower.name, V.worn.under_upper.name, V.worn.under_lower.name, V.worn.over_upper.name, V.worn.over_lower.name].every(x => x == 'naked')>>
+	<<bathroomicon "shower">><<link [["Have a shower " + (_clothed ? " in clothes " : "") + "(0:30)"->Farm Shower]]>><<water>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>
+<<else>>
+	<<bathroomicon "shower">><<link [[Have a shower (0:30)->Farm Shower]]>><<strip>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>
+	<br>
+	<<bathroomicon "toothbrush">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Farm Shed">><</link>>
+<</if>>
 <br>
+<!-- Check if there's any hair-->
 <<if $settings.pubicHairEnabled and ($pblevel gte 2 or $pbstrip gte 1 or $pblevelballs gte 2)>>
-	<<bathroomicon "shave">><<link [[Groom pubic hair|Farm Shave]]>><</link>>
+	<<bathroomicon "shave">><<link [[Groom pubic hair->Farm Shave]]>><</link>>
 	<br>
 <</if>>
-<<bathroomicon "toothbrush">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Farm Shed">><</link>>
-<br>
 <<pregnancyTest "Farm Shed">>
-
+<br>
 <<getouticon>><<link [[Leave (0:01)|Farm Work]]>><<endevent>><<pass 1>><</link>>
 <br>
 
 :: Farm Shave
 <<effects>>
-<<dontHideForNow>><<shavestrip>>
+<<dontHideForNow>>
+<<if pcAreArmsBound("both")>>
+	<span class="red">Both of your arms are bound</span>, and you find it difficult to do anything about your pubes this way.
+	<br>
+	<<link [[Back->Bathroom]]>><<dontHideRevert>><</link>>
+	<<exit>>
+<</if>>
+
+<<shavestrip>>
 <<wearProp "razor">>
 You take off your clothes and look at your <<genitals>>.
 <br><br>
@@ -1952,6 +1967,12 @@ After several minutes, you rinse your private area with water and behold your <<
 You remove your clothes, and wash until you're squeaky clean.<<wash>>
 <br><br>
 
+<<if Weather.wetness > 0.5>>
+	Your clothes are drenched. Water drips from you onto the floor.
+<<else>>
+	Your skin is still damp.
+<</if>>
+<br><br>
 
 <<if dangerEvent(0.5) and Time.dayState isnot "night">>
 	<<npc Alex>><<person1>>

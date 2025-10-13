@@ -156,7 +156,7 @@ function masturbationEffects() {
 		fragment.append(possessedMasturbation(span, br, sWikifier));
 	}
 
-	// Reset the record of the players current actions
+	// Reset the record of the player's  current actions
 	V.masturbationActions = {};
 
 	fragment.append(masturbationEffectsVaginaAnus(otherVariables));
@@ -341,7 +341,7 @@ function masturbationEffectsArms(
 		return fragment;
 	}
 
-	// Dealing with the players clothes, needs work; what if layer above is not exposed?
+	// Dealing with the player's  clothes, needs work; what if layer above is not exposed?
 	switch (V[armAction]) {
 		case "moverupper":
 			clearAction("mrest");
@@ -593,7 +593,7 @@ function masturbationEffectsArms(
 	wikifier("testicles");
 	balls += T.text_output;
 
-	// Dealing with the players actions
+	// Dealing with the player's  actions
 	switch (V[armAction]) {
 		case "msemencover":
 			clearAction("mrest");
@@ -848,7 +848,7 @@ function masturbationEffectsArms(
 				fragment.append(span(`You let go of your ${arm} breast.`));
 			}
 
-			// Deal with the players mouth actions
+			// Deal with the player's  mouth actions
 			if (V[otherArm + "arm"] !== "mbreasthold") {
 				if (V.mouth === "mbreast") {
 					V.mouth = 0;
@@ -2260,9 +2260,9 @@ function masturbationEffectsArms(
 			if (V.arousal >= (V.arousalmax / 5) * 4) {
 				if (V.vaginaArousalWetness >= 60) {
 					wikifier("vaginaFluidActive");
-					sWikifier(`You forcibly pound your tingling <<pussy>> with your entire hand. Your fluids drip down your wrist.`);
+					sWikifier(`You forcibly pound your <<pussy>> with your entire hand. Your fluids drip down your wrist.`);
 				} else {
-					sWikifier(`You forcibly pound your tingling <<pussy>> with your entire hand.`);
+					sWikifier(`You forcibly pound your <<pussy>> with your entire hand.`);
 				}
 			} else if (V.arousal >= (V.arousalmax / 5) * 2) {
 				sWikifier(`You thrust your entire hand inside your <<pussy>>. Your inner walls twitch around it.`);
@@ -2909,7 +2909,7 @@ function masturbationEffectsMouth({
 
 	const altText = {};
 
-	// Dealing with the players actions
+	// Dealing with the player's  actions
 	switch (V.mouthaction) {
 		case "mbreastentrance":
 			clearAction("mbreastlick");
