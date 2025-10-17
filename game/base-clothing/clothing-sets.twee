@@ -194,15 +194,31 @@
 <</widget>>
 
 <<widget "radiooutfits">>
-	<<for _index, $_outfit range $outfit>>
-		<<if $_outfit.location and $_outfit.location isnot $wardrobe_location>>
-			<<continue>>
-		<</if>>
-		<<capture _index>>
-			<label>Wear $_outfit.name <<radiobutton "$wear_outfit" _index>></label> |
-		<</capture>>
-	<</for>>
-	<label>Dress like you were <<radiobutton "$wear_outfit" "clotheson" checked>></label>
+	<<if $options.listboxOutfitsEnabled>>
+	    <<set _dropdownOptions = {}>>
+	
+	    <<for _index, $_outfit range $outfit>>
+	        <<if $_outfit.location and $_outfit.location isnot $wardrobe_location>>
+	            <<continue>>
+	        <</if>>
+	        <<set _dropdownOptions[$_outfit.name] = _index>>
+	    <</for>>
+	    Get dressed:
+	    <<listbox "$wear_outfit">>
+	        <<option "Dress like you were" "clotheson" selected>>
+	        <<optionsfrom _dropdownOptions>>
+	    <</listbox>>
+	<<else>>
+		<<for _index, $_outfit range $outfit>>
+			<<if $_outfit.location and $_outfit.location isnot $wardrobe_location>>
+				<<continue>>
+			<</if>>
+			<<capture _index>>
+				<label>Wear $_outfit.name <<radiobutton "$wear_outfit" _index>></label> |
+			<</capture>>
+		<</for>>
+		<label>Dress like you were <<radiobutton "$wear_outfit" "clotheson" checked>></label>
+	<</if>>
 <</widget>>
 
 <<widget "deleteoutfit">>
