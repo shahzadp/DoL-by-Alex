@@ -165,7 +165,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 	Following the slime's command, you leave the towel for Alex to find.
 	<br><br>
 	<<link [[Next|Farm Work]]>><</link>>
-<<elseif (Time.hour lte 5 or Time.hour gte 22 or (Time.hour is 21 and $farm_end is 1)) and $farm_stage lt 7>>
+<<elseif (Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)) and $farm_stage lt 7>>
 	<<sneakicon>><<link [[Sneak into the barn (0:05)|Farm Barn]]>><<pass 5>><</link>>
 	<br><br>
 	<<farmicon>><<link [[Leave|Farmland]]>><</link>>
@@ -192,7 +192,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 		<<if _trauma is 40>><<ggtrauma>><<elseif _trauma is 5>><<gtrauma>><</if>>
 		<br>
 	<</if>>
-	<<if $farm_work.alex isnot undefined and $farm_work.alex isnot "shower" and Time.hour gte 6 and Time.hour lte 20 and $slimeFarmNakedStored is undefined>>
+	<<if $farm_work.alex isnot undefined and $farm_work.alex isnot "shower" and Time.betweenHours(6, 20) and $slimeFarmNakedStored is undefined>>
 		<<outfitChecks>>
 		<<if (_shirtless and $player.gender_appearance is "f") or _bottomExposed>>
 			<<shopicon "clothing">><<link [[Ask Alex for clothes (0:05)|Farm Alex Clothes]]>><<pass 5>><<farm_yield -1>><<npcincr Alex dom 1>><<npcincr Alex lust 1>><</link>><<exhibitionist1>><<lfarm>><<gdom "Alex">><<glust>>
@@ -206,7 +206,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 	<<getouticon>><<link [[Leave|Farmland]]>><</link>>
 	<br>
 
-<<elseif !npcIsPregnant("Alex") and Time.hour gte 6 and Time.hour lt 7 and !$weekly.alexHungOver and $rng gte 76 and !$daily.farmAlexShowerSpy and $farm_work.alex isnot "shower">>
+<<elseif !npcIsPregnant("Alex") and Time.hour is 6 and !$weekly.alexHungOver and $rng gte 76 and !$daily.farmAlexShowerSpy and $farm_work.alex isnot "shower">>
 	<<set $weekly.alexHungOver to 1>>
 
 	You notice that Alex isn't in the shower shed. The animals are all in their holdings. Alex must still be in the farmhouse.
@@ -230,7 +230,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 	<<farmStage6>>
 <<elseif $farm_stage is 6 and ($farm_countdown lte 0 or $farm.clearing lte 50)>>
 	<<farmStage7>>
-<<elseif $farm_stage gte 7 and C.npc.Alex.love gte 50 and $alex_countdown lte 0 and Time.hour lt 21 and Time.hour gte 5>>
+<<elseif $farm_stage gte 7 and C.npc.Alex.love gte 50 and $alex_countdown lte 0 and Time.betweenHours(5, 20)>>
 	<<npc Alex>><<person1>>
 	You return to the courtyard in front of the farmhouse. You hear footsteps fast approaching. You turn just in time to see Alex. With a laugh, <<he>> grapples and drags you off your feet.
 	<br><br>
@@ -692,10 +692,10 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 
 		<<link [[Next|Farm Alex Orphanage Trip]]>><</link>>
 
-	<<elseif $exposed lte 0 and (Object.values($children).find(child => child.mother === "Alex" && child.location === "alex_cottage") or Object.values($children).find(child => child.father === "Alex" && child.location === "alex_cottage")) and !$daily.farmBabyInteraction and $rng gte 56 and (Time.hour gte 8 and Time.hour lte 15)>>
+	<<elseif $exposed lte 0 and (Object.values($children).find(child => child.mother === "Alex" && child.location === "alex_cottage") or Object.values($children).find(child => child.father === "Alex" && child.location === "alex_cottage")) and !$daily.farmBabyInteraction and $rng gte 56 and Time.betweenHours(8, 15)>>
 		<<alex_baby_interactions>>
 
-	<<elseif $farm_yield_alex gte 1 and not (Time.hour lte 5 or Time.hour gte 22 or (Time.hour is 21 and $farm_end is 1)) and $farm_work.alex isnot "shower">>
+	<<elseif $farm_yield_alex gte 1 and !(Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)) and $farm_work.alex isnot "shower">>
 		<<npc Alex>><<person1>>
 		<<set _alex to C.npc.Alex>>
 		"Hey," shouts Alex, striding towards you. "We've had a better yield than expected lately," <<he>> says, grasping your hand in <<his>> own and pressing something into your palm.
@@ -753,7 +753,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 				<br>
 			<</if>>
 			/* Go to farm barn passage if outside of farming hours, go to cattle milking passage otherwise. */
-			<<if Time.hour lte 5 or Time.hour gte 22 or (Time.hour is 21 and $farm_end is 1)>>
+			<<if Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)>>
 				/* Determine whether you can access the barn normally with Alex's consent. */
 				<<if $farm.milking isnot undefined and $farm.milking.dayMilking>>
 					<<farmicon "barn">><<link [[Barn (0:02)|Farm Barn]]>><<pass 2>><</link>>
@@ -2713,7 +2713,7 @@ You are in the barn. The <<farm_text_many cattle>> sleep sound.
 	<br><br>
 	<<passoutfarmroad>>
 <<else>>
-	<<if Time.hour gte 6 and Time.hour lte 20>>
+	<<if Time.betweenHours(6, 20)>>
 		<br><br>
 		The sun breaks through the high windows, and the <<farm_text_many cattle>> stir. You sneak from the building.
 		<br><br>
@@ -2833,7 +2833,7 @@ The machine continues its devilish work, sucking with more intensity. You feel a
 	<<set $earSlime.noSleep to false>>
 <</if>>
 
-<<if $farm.milking.dayMilking is true and Time.hour gte 7 and Time.hour lte 21 and $farm_end is undefined>>
+<<if $farm.milking.dayMilking is true and Time.betweenHours(7, 21) and $farm_end is undefined>>
 	You remove the suction tube with a shaking hand, and rise to your feet.
 	<<deviancy2>>
 
@@ -2982,7 +2982,7 @@ The machine continues its devilish work, sucking with more intensity. You feel a
 <<barn_img penis>>
 
 
-<<if $farm.milking.dayMilking is true and Time.hour gte 7 and Time.hour lte 21 and $farm_end is undefined>>
+<<if $farm.milking.dayMilking is true and Time.betweenHours(7, 21) and $farm_end is undefined>>
 	You remove the suction tube with a shaking hand, and rise to your feet.
 	<<deviancy2>>
 
