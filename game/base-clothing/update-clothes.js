@@ -126,9 +126,6 @@ function updateClothingColours(item, itemRef) {
 			if (!item.colour || item.colour === 0) item.colour = item.name === "nurse socks" ? "red" : "hospital pink";
 			if ((!item.pattern || item.pattern === 0) && ["upper", "lower"].includes(itemRef.slot)) item.pattern = "zipper";
 			break;
-		case "necktie":
-			if (!item.altposition) item.altposition = "none";
-			break;
 		case "witch hat":
 			if (!item.pattern || item.pattern === 0) item.pattern = "buckle";
 			break;
@@ -249,8 +246,10 @@ function updateClothesItem(slot, item, debug) {
 	// transfer new properties from itemRef to the item
 	const itemRef = setup.clothes[slot][clothesIndex(slot, item)];
 	for (const key in itemRef) {
+		// don't clone skipped keys onto the item
 		if (skip.includes(key)) continue;
-		if (key === "hoodposition" && V.objectVersion.updateClothes >= 31) continue;
+		// migrate some properties only if they are not already on the item
+		if (["hoodposition", "altposition"].includes(key) && item[key]) continue;
 		if (key === "outfitPrimary") {
 			if (itemRef.outfitPrimary !== undefined) {
 				if (item.outfitPrimary === undefined) item.outfitPrimary = clone(itemRef.outfitPrimary);
@@ -454,10 +453,6 @@ function updateClothesItem(slot, item, debug) {
 		case "pink nurse hat":
 			item.name = "nurse hat";
 			item.name_cap = "Nurse hat";
-			break;
-		case "sexy priest's vestments":
-			item.exposed = 1;
-			item.exposed_base = 1;
 			break;
 		case "leather miniskirt":
 			item.one_piece = 0;
