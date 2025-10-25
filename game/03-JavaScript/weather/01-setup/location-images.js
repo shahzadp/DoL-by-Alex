@@ -537,7 +537,7 @@ setup.LocationImages = {
 		},
 		layerTop: {
 			snow: {
-				condition: () => V.weatherObj.snow > 450 && !(localStorage.getItem("worldCorruption") >= 25),
+				condition: () => V.weatherObj.snow > 450 && !(Number(localStorage.getItem("worldCorruption")) >= 25),
 				image: "snow.png",
 			},
 			snowTentacle: {
