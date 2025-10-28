@@ -280,10 +280,6 @@
 			<<replace #settingsExit>><<settingsExit>><</replace>>
 			<<displaySettings "gameSettings">>
 			/* Resets Quick edit temporary values, to make them reflect current settings as closely as they can */
-			<<unset _settingsmalechance>>
-			<<unset _settingsbeastmalechance>>
-			<<unset _maleChanceSplit>>
-			<<unset _beastMaleChanceSplit>>
 			<<unset _pregnancytype>>
 			<<unset _incompletePregnancyDisable>>
 		<</button>>
@@ -408,52 +404,19 @@
 				</div>
 			<<case "adjusted">>
 				<div class="my-1"><span class="gold bold">Current Settings:</span> <i>Adjustable</i></div>
+				/* Reset these settings if going back to moderate/adjusted tab */
+				<<set $settings.maleChanceSplit to false>>
+				<<set $settings.maleChance to 50>>
+				<<set $settings.maleChanceMale to 50>>
+				<<set $settings.maleChanceFemale to 50>>
+				<<set $settings.beastMaleChanceSplit to false>>
+				<<set $settings.beastMaleChance to 50>>
+				<<set $settings.beastMaleChanceMale to 50>>
+				<<set $settings.beastMaleChanceFemale to 50>>
 				<<button "Start Game!">>
 					<<presets _kinkPreset "save">>
 					<<presets _namedNpcPreset "save">>
 					<<presets _monstersPreset "save">>
-					<<set $settings.maleChance to _settingsmalechance is undefined ? $settings.maleChance : _settingsmalechance>>
-					<<set $settings.beastMaleChance to _settingsbeastmalechance is undefined ? $settings.beastMaleChance : _settingsbeastmalechance>>
-					<<set $settings.maleChanceSplit to _maleChanceSplit or false>>
-					<<set $settings.beastMaleChanceSplit to _beastMaleChanceSplit or false>>
-					<<if _maleChanceSplit is true>>
-						<<switch _settingsmalechance>>
-							<<case 100>> /* All opposite sex */
-								<<set $settings.maleChanceMale to 0>>
-								<<set $settings.maleChanceFemale to 100>>
-							<<case 75>> /* 75% opposite sex */
-								<<set $settings.maleChanceMale to 25>>
-								<<set $settings.maleChanceFemale to 75>>
-							<<case 25>> /* 75% same sex */
-								<<set $settings.maleChanceMale to 75>>
-								<<set $settings.maleChanceFemale to 25>>
-							<<case 0>> /* All same sex */
-								<<set $settings.maleChanceMale to 100>>
-								<<set $settings.maleChanceFemale to 0>>
-							<<default>> /* Random sex */
-								<<set $settings.maleChanceMale to random(1, 99)>>
-								<<set $settings.maleChanceFemale to random(1, 99)>>
-						<</switch>>
-					<</if>>
-					<<if _beastMaleChanceSplit is true>>
-						<<switch _settingsbeastmalechance>>
-							<<case 100>> /* All opposite sex */
-								<<set $settings.beastMaleChanceMale to 0>>
-								<<set $settings.beastMaleChanceFemale to 100>>
-							<<case 75>> /* 75% opposite sex */
-								<<set $settings.beastMaleChanceMale to 25>>
-								<<set $settings.beastMaleChanceFemale to 75>>
-							<<case 25>> /* 75% same sex */
-								<<set $settings.beastMaleChanceMale to 75>>
-								<<set $settings.beastMaleChanceFemale to 25>>
-							<<case 0>> /* All same sex */
-								<<set $settings.beastMaleChanceMale to 100>>
-								<<set $settings.beastMaleChanceFemale to 0>>
-							<<default>> /* Random sex */
-								<<set $settings.beastMaleChanceMale to random(1, 99)>>
-								<<set $settings.beastMaleChanceFemale to random(1, 99)>>
-						<</switch>>
-					<</if>>
 					<<if _pregnancytype is "disabled">>
 						<<set $settings.playerPregnancyHumanEnabled to false>>
 						<<set $settings.playerPregnancyBeastEnabled to false>>
@@ -792,8 +755,53 @@
 			<div class="settingsToggleItem">
 				<<if $passage is "Start">>
 				<span class="gold">Generic NPC Genders</span>
-					<<numberslider "_settingsmalechance" `_settingsmalechance is undefined ? $settings.maleChance : _settingsmalechance` 0 100 25>>
-					<<run settingsNpcGenders()>>
+				<<numberslider "$settings.maleChance" $settings.maleChance 0 100 25 {
+					onInputChange: v => {
+						if (V.settings.maleChanceSplit === true && v === 50) {
+							V.settings.maleChanceMale = random (1, 99);
+							V.settings.maleChanceFemale = random (1, 99);
+							return;
+						} 
+						if (V.settings.maleChanceSplit === true) {
+							V.settings.maleChanceMale = 100 - v;
+							V.settings.maleChanceFemale = v;
+							return;
+						}
+					},
+					value: v => {
+						if (V.settings.maleChanceSplit === true) {
+							switch (v) {
+								case 100:
+									return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+								case 75:
+									return `<span class="small-description"><span class='gold inline-colour'>75%</span> of NPCs will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+								case 50:
+									return `<span class="small-description">NPC sexual preferences will be <span class='gold inline-colour'>randomly</span> split.</span>`;
+								case 25:
+									return `<span class="small-description"><span class='gold inline-colour'>75%</span> of NPCs will prefer the <span class='gold inline-colour'>same sex</span>.</span>`;
+								case 0:
+									return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will prefer the <span class='gold inline-colour'>same sex</span>.</span>`;
+								default:
+									return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of NPCs will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+							}
+						} else {
+							switch (v) {
+								case 100:
+									return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will be <span class='blue inline-colour'>male</span>.</span>`;
+								case 75:
+									return `<span class="small-description"><span class='gold inline-colour'>75%</span> of NPCs will be <span class='blue inline-colour'>male</span>.</span>`;
+								case 50:
+									return `<span class="small-description">NPCs will be <span class='gold inline-colour'>evenly</span> split between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span> genders.</span>`;
+								case 25:
+									return `<span class="small-description"><span class='gold inline-colour'>75%</span> of NPCs will be <span class='pink inline-colour'>female</span>.</span>`;
+								case 0:
+								  	return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will be <span class='pink inline-colour'>female</span>.</span>`;
+								default:
+									return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of NPCs will be <span class='blue inline-colour'>male</span>.</span>`;
+							}
+						}
+					},
+				}>>
 					<span id="humanSplitBy"><<humanSplitBy>></span>
 				<<else>>
 					<<npcAttractionSettings>>
@@ -803,8 +811,53 @@
 			<div class="settingsToggleItem">
 				<<if $passage is "Start">>
 					<span class="gold">Beast Genders</span>
-					<<numberslider "_settingsbeastmalechance" `_settingsbeastmalechance is undefined ? $settings.beastMaleChance : _settingsbeastmalechance` 0 100 25>>
-					<<run settingsBeastGenders()>>
+					<<numberslider "$settings.beastMaleChance" $settings.beastMaleChance 0 100 25 {
+						onInputChange: v => {
+							if (V.settings.beastMaleChanceSplit === true && v === 50) {
+								V.settings.beastMaleChanceMale = random (1, 99);
+								V.settings.beastMaleChanceFemale = random (1, 99);
+								return;
+							} 
+							if (V.settings.beastMaleChanceSplit === true) {
+								V.settings.beastMaleChanceMale = 100 - v;
+								V.settings.beastMaleChanceFemale = v;
+								return;
+							}
+						},
+						value: v => {
+							if (V.settings.beastMaleChanceSplit === true) {
+								switch (v) {
+									case 100:
+										return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+									case 75:
+										return `<span class="small-description"><span class='gold inline-colour'>75%</span> of beasts will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+									case 50:
+										return `<span class="small-description">Beast sexual preferences will be <span class='gold inline-colour'>randomly</span> split.</span>`;
+									case 25:
+										return `<span class="small-description"><span class='gold inline-colour'>75%</span> of beasts will prefer the <span class='gold inline-colour'>same sex</span>.</span>`;
+									case 0:
+										return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will prefer the <span class='gold inline-colour'>same sex</span>.</span>`;
+									default:
+										return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of beasts will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
+								}
+							} else {
+								switch (v) {
+									case 100:
+										return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will be <span class='blue inline-colour'>male</span>.</span>`;
+									case 75:
+										return `<span class="small-description"><span class='gold inline-colour'>75%</span> of beasts will be <span class='blue inline-colour'>male</span>.</span>`;
+									case 50:
+										return `<span class="small-description">Beasts will be <span class='gold inline-colour'>evenly</span> split between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span> genders.</span>`;
+									case 25:
+										return `<span class="small-description"><span class='gold inline-colour'>75%</span> of beasts will be <span class='pink inline-colour'>female</span>.</span>`;
+									case 0:
+									  	return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will be <span class='pink inline-colour'>female</span>.</span>`;
+									default:
+										return `<span class="small-description"><span class='gold inline-colour'>" + ${v} + "%</span> of beasts will be <span class='blue inline-colour'>male</span>.</span>`;
+								}
+							}
+						},
+					}>>
 					<span id="beastSplitBy"><<beastSplitBy>></span>
 				<<else>>
 					<<beastAttractionSettings>>
@@ -858,18 +911,18 @@
 <</widget>>
 
 <<widget "humanSplitBy">>
-	<<link `_maleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
-		<<set _maleChanceSplit to _maleChanceSplit is true ? false : true>>
+	<<link `$settings.maleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
+		<<set $settings.maleChanceSplit to $settings.maleChanceSplit is true ? false : true>>
 		<<replace "#humanSplitBy">><<humanSplitBy>><</replace>>
-		<<run settingsNpcGenders(true)>>
+		<<run $("#numberslider-input-settingsmalechance").trigger("input");>>
 	<</link>>
 <</widget>>
 
 <<widget "beastSplitBy">>
-	<<link `_beastMaleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
-		<<set _beastMaleChanceSplit to _beastMaleChanceSplit is true ? false : true>>
+	<<link `$settings.beastMaleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
+		<<set $settings.beastMaleChanceSplit to $settings.beastMaleChanceSplit is true ? false : true>>
 		<<replace "#beastSplitBy">><<beastSplitBy>><</replace>>
-		<<run settingsBeastGenders(true)>>
+		<<run $("#numberslider-input-settingsbeastmalechance").trigger("input");>>
 	<</link>>
 <</widget>>
 
@@ -1476,23 +1529,63 @@
 
 <<widget "genericGenders">>
 	<div class="numberslider-inline maleChance">
-		<<numberslider "$settings.maleChance" $settings.maleChance 0 100 1>>
-		<<run settingsGenericGenders("NPCs")>>
+		<<numberslider "$settings.maleChance" $settings.maleChance 0 100 1 {
+			value: v => {
+				switch (v) {
+					case 0:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will be <span class='pink inline-colour'>female</span>.</span>`;
+					case 50:
+						return `<span class="small-description">NPCs will be <span class='gold inline-colour'>evenly</span> split between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span> genders.</span>`;
+					case 100:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> NPCs will be <span class='blue inline-colour'>male</span>.</span>`;
+					default:
+						return v > 50 
+							? `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of NPCs will be <span class='blue inline-colour'>male</span>.</span>` 
+							: `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of NPCs will be <span class='pink inline-colour'>female</span>.</span>`
+				}
+			},
+		}>>
 	</div>
 <</widget>>
 
 <<widget "beastGenders">>
 	<div class="numberslider-inline beastmalechance">
-		<<numberslider "$settings.beastMaleChance" $settings.beastMaleChance 0 100 1>>
-		<<run settingsGenericGenders("beasts")>>
+		<<numberslider "$settings.beastMaleChance" $settings.beastMaleChance 0 100 1 {
+			value: v => {
+				switch (v) {
+					case 0:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will be <span class='pink inline-colour'>female</span>.</span>`;
+					case 50:
+						return `<span class="small-description">Beasts will be <span class='gold inline-colour'>evenly</span> split between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span> genders.</span>`;
+					case 100:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> beasts will be <span class='blue inline-colour'>male</span>.</span>`;
+					default:
+						return v > 50 
+							? `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of beasts will be <span class='blue inline-colour'>male</span>.</span>` 
+							: `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of beasts will be <span class='pink inline-colour'>female</span>.</span>`
+				}
+			},
+		}>>
 	</div>
 <</widget>>
 
 <<widget "monsterSettings">>
 	<div class="numberslider-inline">
 		<span class="gold">Monster People</span>
-		<<numberslider "$settings.monsterChance" $settings.monsterChance 0 100 1>>
-		<<run settingsMonsterChance()>>
+		<<numberslider "$settings.monsterChance" $settings.monsterChance 0 100 1 {
+			value: v => {
+				switch (v) {
+					case 0:
+						return `<span class="small-description">Beasts will <span class='gold inline-colour'>never</span> appear as monster girls and boys, unless allowed while hallucinating.</span>`;
+					case 50:
+						return `<span class="small-description"><span class='gold inline-colour'>Half</span> of all beasts will be replaced by monster girls and boys.</span>`;
+					case 100:
+						return `<span class="small-description">Beasts will <span class='gold inline-colour'>always</span> be monster girls and boys.</span>`;
+					default:
+						return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of beasts will be replaced by monster girls and boys.</span>` 
+				}
+			},
+		}>>
 	</div>
 	<label>
 		<<checkbox "$settings.monsterHallucinationsOnly" false true autocheck>> Monster people can only appear during hallucinations
@@ -1535,8 +1628,22 @@
 					<span class="gold">Other Victims
 						<mouse class="tooltip linkBlue">(?)<span>Adjust the genders of NPCs you encounter who have been forced into compromising or abusive situations.</span></mouse>
 					</span>
-					<<numberslider "$settings.maleVictimChance" $settings.maleVictimChance 0 100 1>>
-					<<run settingsGenericGenders("other victims you encounter")>>
+					<<numberslider "$settings.maleVictimChance" $settings.maleVictimChance 0 100 1 {
+						value: v => {
+							switch (v) {
+								case 0:
+									return `<span class="small-description"><span class='gold inline-colour'>All</span> other victims you encounter will be <span class='pink inline-colour'>female</span>.</span>`;
+								case 50:
+									return `<span class="small-description">Other victims you encounter will be <span class='gold inline-colour'>evenly</span> split between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span> genders.</span>`;
+								case 100:
+									return `<span class="small-description"><span class='gold inline-colour'>All</span> other victims you encounter will be <span class='blue inline-colour'>male</span>.</span>`;
+								default:
+									return v > 50 
+										? `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of other victims you encounter will be <span class='blue inline-colour'>male</span>.</span>` 
+										: `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of other victims you encounter will be <span class='pink inline-colour'>female</span>.</span>`
+							}
+						},
+					}>>
 				</div>
 			</div>
 		</div>
@@ -1599,16 +1706,36 @@
 	<div class="numberslider-inline maleChanceMale">
 		<span class="gold">Generic NPCs Attracted to Men <mouse class="tooltip linkBlue">(?)<span>Affects the number of male/male NPC couples seen around town. <i class="blue none">If you appear to be male, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<<numberslider "$settings.maleChanceMale" $settings.maleChanceMale 0 100 1>>
-			<<run settingsGenericGenders("mlm")>>
+			<<numberslider "$settings.maleChanceMale" $settings.maleChanceMale 0 100 1 {
+			value: v => {
+				switch (v) {
+					case 0:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>men</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+					case 100:
+						return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>men</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+					default:
+						return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>men</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+				}
+			},
+		}>>
 		</div>
 	</div>
 
 	<div class="numberslider-inline maleChanceFemale">
 		<span class="gold">Generic NPCs Attracted to Women <mouse class="tooltip linkBlue">(?)<span>Affects the number of female/female couples seen around town. <i class="pink none">If you appear to be female, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<<numberslider "$settings.maleChanceFemale" $settings.maleChanceFemale 0 100 1>>
-			<<run settingsGenericGenders("wlw")>>
+			<<numberslider "$settings.maleChanceFemale" $settings.maleChanceFemale 0 100 1 {
+			value: v => {
+				switch (v) {
+					case 0:
+						return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>men</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+					case 100:
+						return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>men</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+					default:
+						return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>women</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>men</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+				}
+			},
+		}>>
 		</div>
 	</div>
 <</widget>>
@@ -1718,15 +1845,35 @@
 	<div class="numberslider-inline beastMaleChanceMale">
 		<span class="gold">Beasts Attracted to Men <mouse class="tooltip linkBlue">(?)<span>Affects the number of male/male beast pairings seen. <i class="blue none">If you appear to be male, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<<numberslider "$settings.beastMaleChanceMale" $settings.beastMaleChanceMale 0 100 1>>
-			<<run settingsGenericGenders("blm")>>
+			<<numberslider "$settings.beastMaleChanceMale" $settings.beastMaleChanceMale 0 100 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>male beasts</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+						case 100:
+							return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>male beasts</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+						default:
+							return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>male beasts</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+					}
+				},
+			}>>
 		</div>
 	</div>
 	<div class="numberslider-inline beastMaleChanceFemale">
 		<span class="gold">Beasts Attracted to Women <mouse class="tooltip linkBlue">(?)<span>Affects the number of female/female beast pairings seen. <i class="pink none">If you appear to be female, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<span class="control"><<numberslider "$settings.beastMaleChanceFemale" $settings.beastMaleChanceFemale 0 100 1>></span>
-			<<run settingsGenericGenders("blw")>>
+			<<numberslider "$settings.beastMaleChanceFemale" $settings.beastMaleChanceFemale 0 100 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>male beasts</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+						case 100:
+							return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>male beasts</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+						default:
+							return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>female beasts</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>male beasts</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+					}
+				},
+			}>>
 		</div>
 	</div>
 <</widget>>
@@ -1842,21 +1989,63 @@
 
 		<div class="settingsToggleItem">
 			Bodywriting:
-			<<numberslider "$settings.bodyWritingLevel" $settings.bodyWritingLevel 0 3 1>>
-			<<run settingsBodywriting()>>
+			<<numberslider "$settings.bodyWritingLevel" $settings.bodyWritingLevel 0 3 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description">NPCs may <span class='green inline-colour'>not</span> write on you.</span>`;
+						case 1:
+							return `<span class="small-description">NPCs may <span class='blue inline-colour'>ask</span> to write on you.</span>`;
+						case 2:
+							return `<span class="small-description">NPCs may <span class='purple inline-colour'>forcibly</span> write on you.</span>`;
+						case 3:
+							return `<span class="small-description">NPCs may <span class='red inline-colour'>forcibly</span> write on and <span class='red inline-colour'>tattoo</span> you.</span>`;
+						default:
+							return `<span class="small-description">Error: bad value: " + ${v}`;
+					}
+				}
+			}>>
 		</div>
 
 		<div class="settingsToggleItem">
 			Asphyxiation:
-			<<numberslider "$settings.asphyxiaLevel" $settings.asphyxiaLevel 0 4 1>>
-			<<run settingsAsphyxiation()>>
+			<<numberslider "$settings.asphyxiaLevel" $settings.asphyxiaLevel 0 4 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description">Don't touch my neck!</span>`;
+						case 1:
+							return `<span class="small-description">NPCs may <span class='blue inline-colour'>grab</span> you by the neck. Doesn't impede breathing.</span>`;
+						case 2:
+							return `<span class="small-description">NPCs may try to <span class='purple inline-colour'>choke</span> you during consensual intercourse.</span>`;
+						case 3:
+							return `<span class="small-description">NPCs may try to <span class='red inline-colour'>strangle</span> you during non-consensual intercourse.</span>`;
+						case 4:
+							return `<span class="small-description">NPCs will <span class='red inline-colour'>often</span> try to <span class='red inline-colour'>strangle</span> you during non-consensual intercourse.</span>`;
+						default:
+							return `<span class="small-description">Error: bad value: " + ${v}`;
+					}
+				}
+			}>>
 		</div>
 
 		<div class="settingsToggleItem">
 			<<if !$femininityModifier>><<set $femininityModifier to {}>><</if>>
 			Nude Gender Appearance:
-			<<numberslider "$settings.nudeGenderPerception" $settings.nudeGenderPerception 0 2 1>>
-			<<run settingsNudeGenderAppearance()>>
+			<<numberslider "$settings.nudeGenderPerception" $settings.nudeGenderPerception 0 2 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description">NPCs will <span class='blue inline-colour'>ignore</span> your genitals when perceiving your gender.</span>`;
+						case 1:
+							return `<span class="small-description">NPCs will <span class='purple inline-colour'>consider</span> your genitals when perceiving your gender.</span>`;
+						case 2:
+							return `<span class="small-description">NPCs will <span class='red inline-colour'>judge</span> your gender based on your genitals.</span>`;
+						default:
+							return `<span class="small-description">Error: bad value: " + ${v}`;
+					}
+				}
+			}>>
 		</div>
 		</div>
 	</div>
@@ -2058,8 +2247,22 @@
 			</div>
 			<div class="settingsToggleItem">
 				Condoms
-				<<numberslider "$settings.condomLevel" $settings.condomLevel 0 3 1>>
-				<<run settingsCondoms()>>
+				<<numberslider "$settings.condomLevel" $settings.condomLevel 0 3 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description"><span class='red inline-colour'>Everyone is allergic to latex and safe sex.</span></span>`;
+						case 1:
+							return `<span class="small-description">Only <span class='green inline-colour'>you</span> may use condoms. You may still give condoms to NPCs.</span>`;
+						case 2:
+							return `<span class="small-description">NPCs will only have condoms if <span class='blue inline-colour'>pregnancy</span> between them and the player is possible.</span>`;
+						case 3:
+							return `<span class="small-description">NPCs may have and use condoms <span class='pink inline-colour'>whenever they please</span>.</span>`;
+						default:
+							return `<span class="small-description">Error: bad value: " + ${v}`;
+					}
+				}
+			}>>
 			</div>
 			<div class="settingsToggleItem">
 				<label>
@@ -2508,8 +2711,15 @@
 		<div class="settingsToggleItem">
 		<span class="gold">Breast size:</span>
 		<br>
-		<<numberslider "$NPCName[_npcId].breastsize" $NPCName[_npcId].breastsize 0 12 1>>
-		<<run settingsNamedNpcBreastSize(Util.slugify('$NPCName[_npcId].breastsize'), false)>>
+		<<numberslider "$NPCName[_npcId].breastsize" $NPCName[_npcId].breastsize 0 12 1 {
+			onInputChange: v => {
+				V.NPCName[_npcId].breastdesc = (v > 0) ? setup.breastsizes[v] + " breast" : "nipple";
+				V.NPCName[_npcId].breastsdesc = (v > 0) ? setup.breastsizes[v] + " breasts" : "nipples";
+			},
+			value: v => {
+				return (v > 0) ? setup.breastsizes[v] + " breasts" : "nipples";
+			}
+		}>>
 		</div>
 
 		<div class="settingsToggleItem">
@@ -2670,8 +2880,15 @@
 		</div>
 		<div class="settingsToggle" style="display: inline-flex;">
 			Breast size:
-			<<numberslider "$per_npc[_pNPCId].breastsize" $per_npc[_pNPCId].breastsize 0 12 1>>
-			<<run settingsNamedNpcBreastSize(Util.slugify('$per_npc[_pNPCId].breastsize'), true)>>
+			<<numberslider "$per_npc[_pNPCId].breastsize" $per_npc[_pNPCId].breastsize 0 12 1 {
+				onInputChange: v => {
+					V.per_npc[_pNPCId].breastdesc = (v > 0) ? setup.breastsizes[v] + " breast" : "nipple";;
+					V.per_npc[_pNPCId].breastsdesc = (v > 0) ? setup.breastsizes[v] + " breasts" : "nipples";
+				},
+				value: v => {
+					return (v > 0) ? setup.breastsizes[v] + " breasts" : "nipples";
+				}
+			}>>
 		</div>
 		<div class="settingsToggle">
 			Skin colour:
