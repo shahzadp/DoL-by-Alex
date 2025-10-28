@@ -52,21 +52,41 @@ const combatCloseVagina = {
 		},
 		penis: {
 			srcfn(options) {
-				if (V.position === "missionary" && options.vagina.state === "penetrated" && V.player.ballsExist) {
-					options.pcPenis = options.penis.size + "-" + options.penis.type + "-penetrated";
+				if (V.position === "missionary" && options.vagina.state === "penetrated") {
+					options.pcPenis = `${options.penis.type}-penetrated`;
 				} else {
-					options.pcPenis = options.penis.size + "-" + options.penis.type;
+					options.pcPenis = options.penis.type;
 				}
-				return `${options.src}vagina/${options.position}/${options.pcPenis}.png`;
+				return `${options.src}vagina/${options.position}/${options.penis.size}-${options.pcPenis}.png`;
 			},
 			showfn(options) {
-				return !!options.showVagina && V.player.penisExist && V.worn.genitals.name !== "chastity parasite";
+				return !!options.showVagina && !!options.showPenis && !options.penis.concealed;
 			},
 			animationfn(options) {
 				return options.animKeyVagina;
 			},
-			filters: ["body"],
-			z: CombatRenderer.indices.closeGenitals + 2,
+			filtersfn(options) {
+				if (playerHasStrapon()) {
+					return ["worn_under_lower_main"];
+				}
+				if (options.penis.type === "parasite") {
+					return [];
+				}
+				return ["body"];
+			},
+			z: CombatRenderer.indices.closeGenitals + 4,
+		},
+		strapon: {
+			srcfn(options) {
+				return `${options.src}vagina/${options.position}/${options.penis.size}-${options.penis.type}-acc.png`;
+			},
+			showfn(options) {
+				return !!options.showVagina && !!options.showPenis && !options.penis.concealed && options.penis.type.includes("strap");
+			},
+			animationfn(options) {
+				return options.animKeyVagina;
+			},
+			z: CombatRenderer.indices.closeGenitals + 4,
 		},
 		vaginaCum: {
 			srcfn(options) {
@@ -133,18 +153,20 @@ const combatCloseVagina = {
 		},
 		chastity: {
 			srcfn(options) {
-				return `${options.src}vagina/${options.position}/${options.vagina.chastityDevice || "chastity-belt"}.png`;
+				return `${options.src}vagina/${options.position}/${options.chastity || "chastity-belt"}.png`;
 			},
 			showfn(options) {
-				return !!options.showVagina && playerChastity("vagina");
+				return !!options.showVagina && playerChastity();
 			},
 			animationfn(options) {
 				return options.animKeyVagina;
 			},
 			filtersfn(options) {
-				return options.vagina.chastityDevice.includes("parasite") ? ["parasitePanties"] : [];
+				return options.chastity && options.chastity.includes("parasite") ? ["parasitePanties"] : [];
 			},
-			z: CombatRenderer.indices.closeWorn,
+			zfn() {
+				return playerChastity("penis") && !playerHasStrapon() ? CombatRenderer.indices.closeWorn + 3 : CombatRenderer.indices.closeWornUnder;
+			},
 		},
 		npcCum: {
 			srcfn(options) {

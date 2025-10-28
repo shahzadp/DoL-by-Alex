@@ -177,8 +177,12 @@ class DateTime {
 	 * @returns {number} The number of days between the two objects
 	 */
 	dayDifference(otherDateTime) {
-		const startOfDay = this.timeStamp - (this.hour * TimeConstants.secondsPerHour) - (this.minute * TimeConstants.secondsPerMinute) - this.second;
-		const startOfOtherDay = otherDateTime.timeStamp - (otherDateTime.hour * TimeConstants.secondsPerHour) - (otherDateTime.minute * TimeConstants.secondsPerMinute) - otherDateTime.second;
+		const startOfDay = this.timeStamp - this.hour * TimeConstants.secondsPerHour - this.minute * TimeConstants.secondsPerMinute - this.second;
+		const startOfOtherDay =
+			otherDateTime.timeStamp -
+			otherDateTime.hour * TimeConstants.secondsPerHour -
+			otherDateTime.minute * TimeConstants.secondsPerMinute -
+			otherDateTime.second;
 		return (startOfOtherDay - startOfDay) / TimeConstants.secondsPerDay;
 	}
 

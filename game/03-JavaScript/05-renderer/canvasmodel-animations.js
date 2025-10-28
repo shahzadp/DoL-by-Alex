@@ -706,7 +706,7 @@ Renderer.Animations.snowBack = {
 		{ frame: 39, duration: 100 },
 	],
 };
-Renderer.Animations.coldBreath = {
+Renderer.Animations.playerBreath = {
 	keyframes: [
 		{ frame: 3, duration: 2000 },
 		{ frame: 0, duration: 200 },
@@ -715,7 +715,7 @@ Renderer.Animations.coldBreath = {
 		{ frame: 3, duration: 1400 },
 	],
 };
-Renderer.Animations.coldBreathFast = {
+Renderer.Animations.playerBreathFast = {
 	keyframes: [
 		{ frame: 0, duration: 200 },
 		{ frame: 1, duration: 200 },
@@ -847,5 +847,50 @@ Renderer.Animations.fireBack2 = {
 		{ frame: 11, duration: 100 },
 		{ frame: 12, duration: 100 },
 		{ frame: 13, duration: 100 },
+	],
+};
+Renderer.Animations.petalsFalling = {
+	keyframes: [
+		{ frame: 0, duration: 150 },
+		{ frame: 1, duration: 150 },
+		{ frame: 2, duration: 150 },
+		{ frame: 3, duration: 150 },
+		{ frame: 4, duration: 150 },
+		{ frame: 5, duration: 150 },
+		{ frame: 6, duration: 150 },
+		{ frame: 7, duration: 150 },
+		{ frame: 8, duration: 150 },
+		{ frame: 9, duration: 150 },
+		{ frame: 10, duration: 150 },
+		{ frame: 11, duration: 150 },
+		{ frame: 12, duration: 150 },
+		{ frame: 13, duration: 150 },
+		{ frame: 14, duration: 150 },
+		{ frame: 15, duration: 150 },
+		{ frame: 16, duration: 150 },
+		{ frame: 17, duration: 150 },
+	],
+};
+
+Renderer.Animations.petalsFloating = {
+	keyframes: [
+		{ frame: 17, duration: 100 },
+		{ frame: 16, duration: 100 },
+		{ frame: 15, duration: 100 },
+		{ frame: 14, duration: 100 },
+		{ frame: 13, duration: 100 },
+		{ frame: 12, duration: 100 },
+		{ frame: 11, duration: 100 },
+		{ frame: 10, duration: 100 },
+		{ frame: 9, duration: 100 },
+		{ frame: 8, duration: 100 },
+		{ frame: 7, duration: 100 },
+		{ frame: 6, duration: 100 },
+		{ frame: 5, duration: 100 },
+		{ frame: 4, duration: 100 },
+		{ frame: 3, duration: 100 },
+		{ frame: 2, duration: 100 },
+		{ frame: 1, duration: 100 },
+		{ frame: 0, duration: 100 },
 	],
 };

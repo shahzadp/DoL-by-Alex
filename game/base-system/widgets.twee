@@ -272,9 +272,15 @@
 			<<else>>
 				<<set _possessMod to 1>>
 			<</if>>
+			<!-- after combat rewrite, should only reduce pain on covered bodyparts -->
+			<<if $worn.upper.type.includes("heavy") and $worn.lower.type.includes("heavy")>>
+				<<set _clothesMod to 1.5>>
+			<<else>>
+				<<set _clothesMod to 1>>
+			<</if>>
 			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
 			<<combattrauma `_violence * _traumaMod`>>
-			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)) / _possessMod)>>
+			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)) / _possessMod / _clothesMod)>>
 			<<set _arousal to (_violence * (0 + ($masochism / 18)))>>
 			<<arousal _arousal/_possessMod "maso">>
 			<<if $orgasmdown gte 1>>
@@ -507,19 +513,20 @@
 
 				<<if ["thievery", "petty"].includes(_crimeType) and
 				$foxbuild gte 1 and
+				($foxCrimeLimit is undefined or $foxCrimeLimit lt 3) and
 				Math.max($wolfbuild, $catbuild, $cowbuild, $birdbuild, $foxbuild) is $foxbuild>>
-					<!-- If the player steals enough and fox is their highest beast TF (and above 0), apply fox TF pressure -->
-					<<if !$foxCrimeProgress>>
-						<!-- Resets daily at 6AM, in dawnCheck, time.js -->
-						<<set $foxCrimeProgress to 0>>
-					<</if>>
+					<!-- If the player steals enough, and fox is their highest beast TF (and above 0), apply fox TF pressure -->
+					<!-- Resets daily at 6AM, in dawnCheck, time.js -->
+					<<set $foxCrimeProgress ||= 0>>
+					<<set $foxCrimeLimit ||= 0>>
 					<<set $foxCrimeProgress += $_crimemod>>
-					<<set $_foxCrimeRequired = Math.floor(50 * (1 + $foxbuild))>>
+					<<set $_foxCrimeRequired = Math.floor(25 * (1 + $foxbuild))>>
 					<<if $foxCrimeProgress gte $_foxCrimeRequired>>
 						<<transform fox 1>>
 						<<set $effectsmessage to true>>
 						<<set $foxCrimeMessage to true>>
 						<<set $foxCrimeProgress to Math.clamp($foxCrimeProgress, 0, ($foxCrimeProgress - $_foxCrimeRequired))>>
+						<<set $foxCrimeLimit++>>
 					<</if>>
 				<</if>>
 
@@ -2250,8 +2257,10 @@
 <</widget>>
 
 <<widget "shackle_feet">>
-	<<feetwear 3>>
-	<<legbind>>
+	<<switch _args[0]>>
+		<<case "vines">><<feetwear 50>>
+		<<default>><<feetwear 3>>
+	<</switch>>
 <</widget>>
 
 <<widget "headbind">>
@@ -2612,14 +2621,26 @@
 		<<washRecordedSperm "anus" "pc">>
 	<</if>>
 
-	<<if $waterwash gte 10>>
-		<span class="lewd">Copious amounts of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
-	<<elseif $waterwash gte 5>>
-		<span class="lewd">Lots of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
-	<<elseif $waterwash gte 2>>
-		<span class="lewd">Lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
-	<<elseif $waterwash is 1>>
-		<span class="lewd">Some lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+	<<if _waterDoesNotAttractAttention>>
+		<<if $waterwash gte 10>>
+			<span class="lewd">Copious amounts of lewd fluid washes into the water.</span><br>
+		<<elseif $waterwash gte 5>>
+			<span class="lewd">Lots of lewd fluid washes into the water.</span><br>
+		<<elseif $waterwash gte 2>>
+			<span class="lewd">Lewd fluid washes into the water.</span><br>
+		<<elseif $waterwash is 1>>
+			<span class="lewd">Some lewd fluid washes into the water.</span><br>
+		<</if>>
+	<<else>>
+		<<if $waterwash gte 10>>
+			<span class="lewd">Copious amounts of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+		<<elseif $waterwash gte 5>>
+			<span class="lewd">Lots of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+		<<elseif $waterwash gte 2>>
+			<span class="lewd">Lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+		<<elseif $waterwash is 1>>
+			<span class="lewd">Some lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+		<</if>>
 	<</if>>
 	<<set $waterwash to 0>>
 
@@ -2677,6 +2698,15 @@
 	<<bodyliquid "mouth" "semen" -5>>
 	<<bodyliquid "mouth" "goo" -5>>
 	<<bodyliquid "mouth" "nectar" -5>>
+<</widget>>
+
+<<widget "wash_hands">>
+	<<bodyliquid "leftarm" "semen" -5>>
+	<<bodyliquid "leftarm" "goo" -5>>
+	<<bodyliquid "leftarm" "nectar" -5>>
+	<<bodyliquid "rightarm" "semen" -5>>
+	<<bodyliquid "rightarm" "goo" -5>>
+	<<bodyliquid "rightarm" "nectar" -5>>
 <</widget>>
 
 <<widget "tipset">>
@@ -2914,6 +2944,15 @@
 	<</if>>
 <</widget>>
 
+<<widget "safehouseEvents">>
+	<<if $yearningLetter is 1>>
+		<<set $yearningLetterExit to $passage>>
+		You hear something tapping on glass. There's a bird pecking at the window...<br>
+		<<windowicon>><<link [[Investigate|Gwylan Yearning Letter]]>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
 <<widget "christmas_options">>
 	<<if $christmas_wrap is 1>>
 		<<switch $christmas_gift_robin>>
@@ -2979,9 +3018,9 @@
 		<<spray 1>>
 		<span class="green">You steal a charge for your pepper spray.</span>
 		<<crimeUp 50 "petty">><<combatskulduggeryskilluse>><<combatcontrol 10>><<gcombatcontrol>>
-	<<elseif $rng gte 91 and !$compoundcard>>
-		<<set $compoundcard to 1>>
-		You steal a strange card. There's an address on it, for a location on <span class="gold">Elk Street</span>.
+	<<elseif $rng gte 91 and !$compound.card>>
+		<<set $compound.card to 1>>
+		You steal a strange card. There's an address on it, for a location on <span class="gold">Elk Street.</span>
 	<<else>>
 		<<rng 5 100>>
 		You steal <<moneyGain $rng>>.
@@ -3610,6 +3649,10 @@
 	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, 0, 150)>>
 	<<set $NPCName[_i].harmony = Math.clamp($wolfpackharmony || 0, 0, 100)>>
 	<<set $NPCName[_i].ferocity = Math.clamp($wolfpackferocity || 0, 0, 100)>>
+	<<set _i to $NPCNameList.indexOf("Gwylan")>>
+	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, 0, (getSpecialSets(sets => sets.shop.includes("forest")).length * 2))>>
+	<<set $NPCName[_i].lust = Math.clamp($NPCName[_i].lust, 0, 100)>>
+	<<set $NPCName[_i].dom = Math.clamp($NPCName[_i].dom, -50, 150)>>
 
 	<<set _i to $NPCNameList.indexOf("Darryl")>>
 	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, -50, 50)>>
@@ -3637,9 +3680,6 @@
 	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, -100, 100)>>
 	<<set $NPCName[_i].dom = Math.clamp($NPCName[_i].dom, -50, 50)>>
 	<<set _i to $NPCNameList.indexOf("Doren")>>
-	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, -100, 100)>>
-	<<set $NPCName[_i].dom = Math.clamp($NPCName[_i].dom, -50, 50)>>
-	<<set _i to $NPCNameList.indexOf("Gwylan")>>
 	<<set $NPCName[_i].love = Math.clamp($NPCName[_i].love, -100, 100)>>
 	<<set $NPCName[_i].dom = Math.clamp($NPCName[_i].dom, -50, 50)>>
 	<<set _i to $NPCNameList.indexOf("Harper")>>

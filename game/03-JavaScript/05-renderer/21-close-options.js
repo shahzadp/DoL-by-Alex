@@ -19,6 +19,7 @@
  * @property {string} pcPenis Computed sprite for player penis, taking size/chastity/type into account.
  * @property {"beast"|"penis"|"tentacle"} breastsNpc Type of npc giving boobjob.
  * @property {object} filters The filters for layers.
+ * @property {string|false} chastity
  * @property {string} pbhairColour
  * @property {string} condomColour
  * @property {string} parasitePanties
@@ -40,6 +41,23 @@ class CloseCombatMapper {
 			animKeyArse: "sex-1f-idle",
 			animKeyChest: "sex-1f-idle",
 			filters: {},
+			vagina: {
+				state: "",
+				npc: "",
+			},
+			anus: {
+				state: "",
+				npc: "",
+			},
+			penis: {
+				type: "",
+				size: 1,
+				state: "",
+				npc: "",
+				condom: false,
+				concealed: false,
+			},
+			chastity: false,
 		};
 	}
 
@@ -67,6 +85,14 @@ class CloseCombatMapper {
 		options.showArse = V.worn.under_lower.anus_exposed === 1 && V.worn.lower.anus_exposed === 1;
 
 		// Genitals
+		const penisType = V.player.sex === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
+		options.penis = {
+			type: penisType,
+			size: 1,
+			condom: V.player.condom && !playerChastity() && options.penis.size === 1,
+			concealed: playerChastity("hidden") && !playerHasStrapon(),
+		};
+
 		if (options.showArse) {
 			CloseCombatMapper.mapClosePenetrators("anus", options);
 		}
@@ -78,6 +104,21 @@ class CloseCombatMapper {
 		}
 		if (options.showChest) {
 			CloseCombatMapper.mapCloseChest(options);
+		}
+
+		// Chastity
+		const chastityTypes = {
+			"chastity belt": "belt",
+			"gold chastity belt": "belt-gold",
+			"chastity parasite": `parasite-${V.player.penissize + 2}`,
+			"flat chastity cage": "flat",
+			"small chastity cage": "small",
+		};
+		const chastityDevice = playerChastity() ? chastityTypes[V.worn.genitals.name] || "base" : false;
+		options.chastity = `chastity-${chastityDevice}`;
+		if (playerChastity("cage")) {
+			options.chastity = `chastity-cage-${chastityDevice}`;
+			options.penis.size = `chastity-${chastityDevice}`;
 		}
 
 		// Colours
@@ -126,7 +167,6 @@ class CloseCombatMapper {
 		const activeEnemy = V.NPCList[V.active_enemy].type;
 		const npc = ["horse", "centaur"].includes(activeEnemy) ? "horse" : ["beast", "machine", "tentacles"].includes(V.enemytype) ? V.enemytype : "npc";
 		const chastity = (playerChastity("hidden") || V.worn.genitals.name === "chastity parasite") && slot === "vagina" && !["horse", "machine"].includes(npc);
-		const belt = V.worn.genitals.name === "gold chastity belt" ? "gold-belt" : "belt";
 		options[slot] = {};
 
 		/* check $anusstate or $vaginastate */
@@ -175,11 +215,6 @@ class CloseCombatMapper {
 			/* match drippy cum sprites to corresponding vagina state */
 			const entrance = ["entrance", "doubleentrance", "tentacleentrance", "imminent"].includes(V.vaginastate.toString()) ? "entrance" : "vagina";
 			options[slot].cumState = options.vagina.state === "penetrated" ? "penetrated" : entrance;
-			/* select appropriate chastity sprite */
-			if (chastity) {
-				options[slot].chastityDevice =
-					V.worn.genitals.name === "chastity parasite" ? `chastity-parasite-${V.player.penissize + 2}` : `chastity-${belt}`;
-			}
 			/* hirsute pubes */
 			options[slot].hirsute =
 				!["hidden", "disabled"].includes(V.transformationParts.wolf.pubes) || !["hidden", "disabled"].includes(V.transformationParts.bird.pubes);
@@ -220,24 +255,17 @@ class CloseCombatMapper {
 	 * @returns {object}
 	 */
 	static mapClosePenis(options) {
-		const chastityTypes = {
-			"chastity belt": "belt",
-			"gold chastity belt": "belt-gold",
-			"chastity parasite": `parasite-${V.player.penissize + 2}`,
-			"flat chastity cage": "flat",
-			"small chastity cage": "small",
-		};
-		const chastityDevice = chastityTypes[V.worn.genitals.name] || "base";
 		const penisType = V.player.sex === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
+		options.penis.type = penisType;
+		options.penis.condom = V.player.condom && !playerChastity();
+		options.penis.concealed = playerChastity("hidden") && !playerHasStrapon();
 
-		options.penis = {
-			type: penisType,
-			// size should be replaced with V.player.penissize if we ever get visual representation of other penis sizes in the closeups
-			size: 1,
-			condom: V.player.condom && !playerChastity(),
-			chastityDevice: `chastity-${V.worn.genitals.name.includes("cage") ? "cage-" + chastityDevice : chastityDevice}`,
-			chastityPenis: `chastity-${penisType + "-"}${chastityDevice}`,
-		};
+		if (playerHasStrapon()) {
+			const strapon = setup.sextoys.find(strap => strap.name === (V.worn.under_lower.name || "strap-on"));
+			if (!strapon) throw new Error("no strap-on found in setup.sextoys");
+			options.penis.type = `strapon-${strapon.shape?.replace(/\s/g, "-")}`;
+			options.penis.size = strapon.size;
+		}
 
 		/* npc targeting player penis */
 		switch (V.penisstate) {
@@ -267,7 +295,7 @@ class CloseCombatMapper {
 			case "othermouthentrance":
 			case "othermouthimminent":
 				/* penis penetrating beast mouth */
-				if (V.enemytype === "beast" && V.monster !== 1) {
+				if (V.enemytype === "beast" && !(V.monster === 1)) {
 					options.penis.state = V.penisstate === "othermouth" ? "penetrated" : V.penisstate === "othermouthimminent" ? "imminent" : "entrance";
 					options.penis.npc = "beast-oral";
 				} else {

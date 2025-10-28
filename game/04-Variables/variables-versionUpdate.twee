@@ -1358,7 +1358,7 @@
 		<<set $closinghour to 21>>
 	<</if>>
 
-	<!-- specialClothesSetup was moved to <<backComp>> -->
+	<!-- specialClothesUpdate was moved to <<backComp>> -->
 
 	<<if $objectVersion.uncomfortable lt 2 or $objectVersion.uncomfortable is undefined>>
 		<<if $uncomfortable is undefined>>
@@ -3510,7 +3510,7 @@
 	/* Code that should not be moved into a check like above */
 	<<set $runWardrobeSanityChecker to true>>
 
-	<<if $objectVersion.updateClothes lt 70 or $objectVersion.updateClothes is undefined>>
+	<<if $objectVersion.updateClothes lt 72 or $objectVersion.updateClothes is undefined>>
 		<<updateClothes>>
 		<<if $objectVersion.updateClothes lt 38>>
 			<!-- V0.4.0.7 return items stuck in $store without proper .location -->
@@ -3535,7 +3535,8 @@
 		<</if>>
 
 		<!-- do NOT forget to bump this version in variables-start.twee, too -->
-		<<set $objectVersion.updateClothes to 70>>
+
+		<<set $objectVersion.updateClothes to 72>>
 	<</if>>
 
 	<<if !$specialClothesEffects?.pimp>>
@@ -3545,23 +3546,45 @@
 		}>>
 	<</if>>
 
-	<<if $objectVersion.specialClothes lt 19 or $objectVersion.specialClothes is undefined>>
-		<<specialClothesSetup>>
-		<<specialClothesUpdate>>
-		<<if !$specialClothesEffects.pimp>>
-			<<set $specialClothesEffects to {
-				bimbo: { progress: $specialClothesEffects.bimbo, total: $specialClothesEffects.bimboTotal, message: $specialClothesEffects.bimboMessage },
-				pimp: { progress: 0, total: 0, message: 0 }
-			}>>
+	<<if $objectVersion.specialClothes lt 20 or $objectVersion.specialClothes is undefined>>
+
+		<!-- Old special clothing system conversion code, DO NOT INCREMENT -->
+		<<if $objectVersion.specialClothes lt 20 and !Array.isArray($specialClothes)>>
+			<!-- Save any unlocked clothes from old system -->
+			<<set _oldSpecialClothesObject to {}>>
+			<<run Object.keys($specialClothes).filter(oldClothes => $specialClothes[oldClothes] is "unlocked").forEach(item => _oldSpecialClothesObject[item] = "unlocked")>>
+			<<set _oldSpecialClothesUnlocked to updateSpecialClothesNames(_oldSpecialClothesObject)>>
+			<<specialClothesUpdate>>
+			<<if _oldSpecialClothesUnlocked>>
+				/* Forward previous unlocked items to new system. For items with requirements that could have become false in the meantime, grant true unlock as long as cheats aren't on. */
+				<<run $specialClothes.filter(newItem => _oldSpecialClothesUnlocked.includes(newItem.name)).forEach(item => {
+					/* Cheat unlock */
+					item.unlocked = 1;
+					/* Bypass unlocked (feat boost etc.) needs to check old cheat variable for compatibility reasons */
+					if (V.cheatdisable === "t" || V.settings && !V.settings?.cheatsEnabled) item.unlocked = 2;
+					/*Requirement unlock */
+					if (["spirit mask", "rag top", "rag skirt", "holy stole"].includes(item.name) && (V.cheatdisable === "t" || V.settings && !V.settings?.cheatsEnabled)) item.unlocked = 3;
+				})>>
+				/* Holy stole condition is grace >= 100, could have become false in the meantime */
+				<<set $specialClothes.find(item => item.name === "long holy stole").unlocked to $specialClothes.find(item => item.name === "holy stole").unlocked>>
+				/* Previous spirit mask condition was V.fox >= 6, could have become false in the meantime */
+				<<set $specialClothes.find(item => item.name === "shrine maiden robes").unlocked to $specialClothes.find(item => item.name === "spirit mask").unlocked>>
+			<</if>>
+
+			<<if $fedora_unlock>>
+				<<unset $fedora_unlock>>
+				<<set $specialClothesEvents.pushUnique("smuggling")>>
+			<</if>>
+			<!-- Conversion code end -->
+		<<else>>
+			<<specialClothesUpdate>>
 		<</if>>
 
-		<<if $specialClothesEffects.bimbo.total is undefined>>
-			<!-- Fix broken objects caused by running above code twice in old version -->
-			<<set $specialClothesEffects.bimbo to { progress: 0, total: 0, message: 0 }>>
-		<</if>>
+		<<specialClothesRefresh>>
+		<<updateFeats>>
 
-		<!-- do NOT forget to bump this version in variables-start.twee, too -->
-		<<set $objectVersion.specialClothes to 19>>
+		<!-- DO increment this, and don't forget to do it in variables-start.twee, too -->
+		<<set $objectVersion.specialClothes to 20>>
 	<</if>>
 
 	<<if $objectVersion.wardrobes lt 13 or $objectVersion.wardrobes is undefined>>
@@ -3576,6 +3599,15 @@
 		/*Moved undefined checks for new antiques to the widget below*/
 		<<updateMuseumAntiques>>
 		<<set $objectVersion.museumAntiques to 20>>
+	<</if>>
+
+	<<if $objectVersion.sexToys lt 2 or $objectVersion.sexToys is undefined>>
+		/* Removal of clothes_index from inventory items, as it should be referenced via setup */
+		<<run Object.values(V.player.inventory.sextoys).forEach(arr =>
+				arr.forEach(toy => delete toy.clothes_index)
+			)
+		>>
+		<<set $objectVersion.sexToys to 2>>
 	<</if>>
 
 	<<pregnancyVar>>
@@ -4527,7 +4559,7 @@
 	<</if>>
 
 	<!-- Fixing broken transformation stuff -->
-	<<if $tfFIX is undefined or $tfFIX lte 5>>
+	<<if $tfFIX is undefined or $tfFIX lte 6>>
 		<<if $tfFIX is undefined>>
 			<!-- V0.4.0.5 repair transformationParts object after damage from mid-prayer room or nightmare saves -->
 			<<if $transformationParts.fox is undefined>>
@@ -4602,11 +4634,11 @@
 		<</if>>
 
 		<!-- 0.5.4.0 Update chimera parts -->
-		<<if $tfFIX is undefined or $tfFIX lte 5>>
+		<<if $tfFIX is undefined or $tfFIX lte 6>>
 			<<setupTransformationPiecesObject>>
 		<</if>>
 
-		<<set $tfFIX to 6>>
+		<<set $tfFIX to 7>>
 	<</if>>
 
 	<!-- V0.4.0.5 Old saves with untyped named NPCs -->
@@ -5929,7 +5961,7 @@
 	<<unset $mobileZoomFix>>
 
 	<!-- 0.5.3.0; option to disable text effect from drunk and heat/rut lewd options-->
-	<<if $options.textAnimations is undefined>>
+	<<if $options.textAnimations is undefined and !$options.textAnimsAll>>
 		<<set $options.textAnimations to true>>
 	<</if>>
 
@@ -6119,7 +6151,6 @@
 	<<if $weekly.maze is undefined>>
 		<<set $weekly.maze to {}>>
 	<</if>>
-
 	<!-- 0.5.4.6 pbdisable never defined if the player started from the 'quick start' tab -->
 	<<if $pbdisable is undefined>>
 		<<set $pbdisable to "t">>
@@ -6225,7 +6256,6 @@
 		<<else>>
 			<<set $harper_appointments.exam to 0>>
 		<</if>>
-
 		<<set $harper_appointments.hypnosis to $hypnosis>>
 		<<set $hypnosis_traits.suggestion to $hypnosis>>
 
@@ -6278,7 +6308,6 @@
 		<<set $avery_mansion.fox to {}>>
 		<<set $avery_mansion.fox.progress to 0>>
 		<<set $avery_mansion.fox.known to false>>
-		<<set $avery_mansion.fox.unlocked to false>>
 	<</if>>
 
 	<!-- 0.5.5.4, party states overhaul -->
@@ -6356,17 +6385,19 @@
 	<</if>>
 
 	<!-- 0.5.5.5, NPC title changes -->
-	<<if $avery_fate is "ascended" and C.npc.Avery.title isnot "crimson hound">>
+	<<if $avery_fate is "ascended" and C.npc.Harper.title isnot "silver fox">>
 		<<set C.npc.Avery.title to "crimson hound">>
-	<</if>>
-	<<if $avery_fate and $avery_fate isnot "ascended" and C.npc.Remy.title isnot "scarred">>
+		<<set C.npc.Harper.title to "silver fox">>
+		<<set C.npc.Remy.title to "high elk">>
+	<<elseif $avery_fate and $avery_fate isnot "ascended" and C.npc.Remy.title isnot "scarred">>
 		<<set C.npc.Remy.title to "scarred">>
 	<</if>>
 	<<if $auriga_scar is undefined>>
-		<<set $auriga_scar to 0>>
-	<</if>>
-	<<if $avery_fate is "ascended" and $auriga_scar is 0>>
-		<<set $auriga_scar to 1>>
+		<<if $avery_fate is "ascended">>
+			<<set $auriga_scar to 1>>
+		<<else>>
+			<<set $auriga_scar to 0>>
+		<</if>>
 	<</if>>
 
 	<!-- 0.5.5.8 fix being able to swap out the stones after skyscraper completion -->
@@ -6376,8 +6407,183 @@
 			<<set $fake_artefact to "pc">>
 		<</if>>
 	<</if>>
+
 	<!-- 0.5.5.9 fix map.available object on older saves -->
 	<<if $availableMapsVersion isnot 4>>
 		<<mapLocations>>
+	<</if>>
+
+	<!-- 0.5.6.0 Gwylan content -->
+	<<if !$daily.gwylan>>
+		<<set $daily.gwylan to {}>>
+		<<set $hypnosisTimers to {}>>
+	<</if>>
+
+	/* Fixing some clumsy BF code and var nesting */
+	<<if $avery_mansion?.fox?.wounded>>
+		<<if $avery_mansion.fox.cover_blown_wounded>>
+			<<set $brownFoxCoverBlown to true>>
+			<<run delete $avery_mansion.fox.cover_blown_wounded>>
+			<<set $_woundDays to 40>>
+		<<elseif $avery_mansion.fox.remy_warn>>
+			<<set $_woundDays to 20>>
+		<<else>>
+			<<set $_woundDays to 30>>
+		<</if>>
+		<<set $_woundTimeRemaining to $_woundDays + Time.date.dayDifference(new DateTime($avery_mansion.fox.wounded))>>
+		<<set $brownFoxWoundedTimer to new DateTime(Time.date).addDays($_woundTimeRemaining).timeStamp>>
+		<<run delete $avery_mansion.fox.wounded>>
+		<<if $avery_mansion.fox.unlocked>>
+			<<set $brownFoxWounded to true>>
+			<<run delete $avery_mansion.fox.unlocked>>
+		<</if>>
+	<</if>>
+
+	<<if C.npc.Gwylan.init is 1 and !$gwylan>>
+		<<set $gwylanSeen to []>>
+		<<set $gwylanTalked to []>>
+		<<set $gwylan to {
+			progress: 0,
+			stage: 0,
+			sea: 0,
+			wary: 0,
+			robin: 0,
+			purged: 0,
+			timer: {},
+			request: {},
+			requestCount: 0,
+			requestDone: false,
+		}>>
+		<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+		<<if $robin_forest_visited>>
+			<<set $gwylanSeen.pushUnique("robin_halloween")>>
+			<<set $gwylan.robinShop to true>>
+			<<set $gwylan.robin += 5>>
+		<</if>>
+		<<if $gwylanTea>>
+			<<set $gwylanSeen.pushUnique("passout_hot_cold")>>
+		<</if>>
+		<<if C.npc.Gwylan.outfits>>
+			<<initNNPCClothes "Gwylan" "update">>
+		<</if>>
+		<<specialClothesRefresh>>
+		<<set C.npc.Gwylan.pregnancyAvoidance to 0>>
+
+		/* Convert some brown fox vars to Gwylan vars, if applicable, and apply consequences for previous decisions */
+		<<if $avery_mansion?.fox>>
+			<<if $avery_mansion.fox.flirt>>
+				<<run delete $avery_mansion.fox.flirt>>
+				<<set $gwylanSeen.pushUnique("bf_flirt")>>
+				<<npcincr Gwylan lust 15>><<npcincr Gwylan dom 2>>
+			<</if>>
+			<<if $avery_mansion.fox.harper_sabotage>>
+				<<run delete $avery_mansion.fox.harper_sabotage>>
+				<<set $gwylanSeen.pushUnique("bf_harper")>>
+				<<npcincr Gwylan dom 1>>
+			<</if>>
+			<<if $avery_mansion.fox.aid>>
+				<<run delete $avery_mansion.fox.aid>>
+				<<set $gwylanSeen.pushUnique("bf_aid")>>
+				<<npcincr Gwylan dom 2>>
+			<</if>>
+			<<if $avery_mansion.fox.drink>>
+				<<run delete $avery_mansion.fox.drink>>
+				<<set $gwylanSeen.pushUnique("bf_drink")>>
+				<<npcincr Gwylan dom 2>>
+			<</if>>
+			<<if $brownFoxCoverBlown>>
+				<<npcincr Gwylan dom -10>>
+				<<if !$avery_fate or $avery_fate is "ascended">>
+					<<set $gwylan.wary += 2>>
+				<</if>>
+			<</if>>
+			<<if $avery_fate is "ascended">>
+				<<set $gwylan.wary += 3>>
+			<<elseif $avery_fate and $avery_mansion.fox.end>>
+				<<npcincr Gwylan dom 3>>
+			<</if>>
+			<<if $avery_mansion?.heist_suspicion isnot undefined>>
+				<<set $gwylan.progress += 2>>
+			<</if>>
+		<</if>>
+
+		<<if !$gwylanRescue and ($gwylan_aborted isnot undefined or $gwylan_eden_coop)>>
+			<<set $gwylanRescue to {
+				seen: [],
+				failed: ["","Eden","Black Wolf","Wraith"][$gwylan_aborted] || "",
+				count: 0,
+				eden: $gwylan_eden_coop || 0,
+			}>>
+		<</if>>
+		<<unset $gwylan_aborted>><<unset $gwylan_eden_coop>>
+	<</if>>
+	<<if $dateCount.Gwylan is undefined>>
+		<<set $dateCount.Gwylan to 0>>
+		<<set $dateCount.GwylanBeast to 0>>
+		<<set $dateCount.GwylanSex to 0>>
+	<</if>>
+
+	<!-- Increment in variables-start.twee as well whenever new tending objects are added -->
+	<<if !$objectVersion.plants or $objectVersion.plants lt 1>>
+		<<updatePlants>>
+		<<set $objectVersion.plants to 1>>
+	<</if>>
+
+	/* Text animation accessibility options */
+	<<if $options.textAnimations isnot undefined>>
+		<<set $options.textAnimsAll to $options.textAnimations>>
+		<<set $options.textAnimsDrunk to $options.textAnimations>>
+		<<set $options.textAnimsHeat to $options.textAnimations>>
+		<<set $options.textAnimsHypno to $options.textAnimations>>
+		<<run delete $options.textAnimations>>
+	<</if>>
+
+	/* Forest hunt refactor */
+	<<if $edenforesthunt isnot undefined or $blackwolfhunt isnot undefined>>
+		<<if $edenforesthunt>>
+			<<set $forestHunter to "Eden">>
+		<</if>>
+		<<if $blackwolfhunt>>
+			<<set $forestHunter to "Black Wolf">>
+		<</if>>
+		<<unset $edenforesthunt>><<unset $blackwolfhunt>>
+	<</if>>
+
+	<!-- compound variable cleanup -->
+	<<if !$compound>>
+		<<set $compound to {
+			alarm: $compoundalarm || 0,
+			bluff: $compoundbluff is 1 ? true : false,
+			card: $compoundcard || 0,
+			symbol: [],
+			interrogation: {},
+			theft: {
+				centre: $compoundcentre is 1 ? true : false,
+				smoke: $compoundsmoke is 1 ? true : false,
+				pipes: $compoundpipes is 1 ? true : false,
+			}
+		}>>
+		<<if $compoundmock>>
+			<<set $compound.interrogation to {
+				beg: $compoundbeg || 0,
+				flirt: $compoundflirt || 0,
+				honest: $compoundhonest || 0,
+				lie: $compoundlie || 0,
+				mock: $compoundmock || 0,
+			}>>
+		<</if>>
+		<<if $compoundcentre is 1>>
+			<<set $weekly.compoundCentre to true>>
+		<</if>>
+		<<if $compoundWraith>>
+			<<set $compound.wraith to $compoundWraith>>
+		<</if>>
+		<<if $wraithCompoundSeen>>
+			<<set $compound.wraithSeen to true>>
+		<</if>>
+		<<if $compound_breakout>>
+			<<set $compound.breakout to true>>
+		<</if>>
+		<<run ["compoundalarm", "compoundbluff", "compoundcard", "compoundcentre", "compoundsmoke", "compoundpipes", "compoundbeg", "compoundflirt", "compoundhonest", "compoundlie", "compoundmock", "compoundWraith", "wraithCompoundSeen", "compound_breakout"].forEach(v => delete V[v]);>>
 	<</if>>
 <</widget>>

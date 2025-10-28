@@ -43,12 +43,20 @@
 	<<if _recalledFeats.specialClothes isnot undefined>>
 		<<set $feats.allSaves.specialClothes to _recalledFeats.specialClothes>>
 	<<elseif $feats.allSaves.specialClothes is undefined>>
-		<<set $feats.allSaves.specialClothes to {}>>
+		<<set $feats.allSaves.specialClothes to []>>
 	<</if>>
+
+	<<if !Array.isArray(V.feats.allSaves.specialClothes)>>
+		<!-- Update old special clothes system to new system -->
+		<<set V.feats.allSaves.specialClothes to getUnlockedSpecialSets(updateSpecialClothesNames(V.feats.allSaves.specialClothes)).filter(set => setup.specialClothesSets[set].feat)>>
+	<</if>>
+
 	<<if $specialClothes and $feats.locked is false and $cheatsEnabled is false>>
-		<<for $_label, $_value range $specialClothes>>
-			<<if $_value is "unlocked">>
-				<<set $feats.allSaves.specialClothes[$_label] to $_value>>
+		<<set $_unlockedSets to getUnlockedSpecialSets().filter(set => setup.specialClothesSets[set].feat)>>
+		<<for $_label, $_value range $_unlockedSets>>
+			<!-- value.unlocked being 3 or greater means the requirements to unlock the clothing was actually met -->
+			<<if $_value>>
+				<<set $feats.allSaves.specialClothes.pushUnique($_value)>>
 			<</if>>
 		<</for>>
 	<</if>>
@@ -61,114 +69,165 @@
 
 <<widget "setupFeats">>
 	<<if $featsBoosts is undefined or _args[0] is true>>
-		<<set _keys to Object.keys($feats.allSaves)>>
-
-		<<set _moneyFeats to _keys.count("Pocket Change") + _keys.count("Money Maker") + _keys.count("Tycoon") + _keys.count("Millionaire")>>
-		<<set _moneyFeatsLimit to (_moneyFeats * 10)>>
-		<<set _purityFeats to _keys.count("Angel") + _keys.count("Fallen Angel")>>
-
-		<<set _newLife to _keys.count("Broodmother Host") + _keys.count("Top Broodmother Host")>>
-		<<set _newLifeLimit to (_newLife * 20)>>
-
-		<<set _earSlimeFeats to _keys.count("Ear Slime Lover") + _keys.count("Ear Slime Amalgam")>>
-
-		<<set _tattoosFeats to _keys.count("A Living Canvas") + _keys.count("Billboard")>>
-
-		<<set _sexToysFeats to _keys.count("Opened Pandoras Box") + _keys.count("Opened Pandoras Cocks")>>
-
-		<<set $featsBoosts to {
-			upgrades:{
-				money:0,
-				grades:0,
-				skulduggery:0,
-				dancing:0,
-				swimming:0,
-				athletics:0,
-				tending:0,
-				greenThumb:0,
-				housekeeping:0,
-				seduction:0,
-				purity:0,
-				impurity:0,
-				newLife:0,
-				aNewBestFriend:0,
-				tattoos:0,
-				randomClothing:0,
-				specialClothing:0,
-				sexToys:0,
-			},
-			upgradeDetails:{
-				money:{cost:5, limit: _moneyFeatsLimit, minCount: 1, count:_moneyFeats, exclusive:""},
-				grades:{cost:15, limit: 30, minCount: 1, count:_keys.count("Perfect Record"), exclusive:""},
-				skulduggery:{cost:5, limit: 20, minCount: 1, count:_keys.count("Thief"), exclusive:""},
-				dancing:{cost:5, limit: 20, minCount: 1, count:_keys.count("May I have this Dance?"), exclusive:""},
-				swimming:{cost:5, limit: 20, minCount: 1, count:_keys.count("Aquanaut"), exclusive:""},
-				athletics:{cost:5, limit: 20, minCount: 1, count:_keys.count("Swift"), exclusive:""},
-				tending:{cost:5, limit: 20, minCount: 1, count:_keys.count("Green Fingered"), exclusive:""},
-				greenThumb:{cost:40, limit: 40, minCount: 1, count:_keys.count("Green Fingered"), exclusive:"", hidden:true},
-				housekeeping:{cost:5, limit: 20, minCount: 1, count:_keys.count("Majordomo"), exclusive:""},
-				seduction:{cost:5, limit: 20, minCount: 1, count:_keys.count("Seductress"), exclusive:""},
-				purity:{cost:20, limit: 100, minCount: 2, count:_purityFeats, exclusive:"impurity"},
-				impurity:{cost:20, limit: 100, minCount: 1, count:_keys.count("Demon"), exclusive:"purity"},
-				newLife:{cost:20, limit: _newLifeLimit, minCount: 1, count:_newLife, exclusive:""},
-				aNewBestFriend:{cost:10, limit: 10 * _earSlimeFeats, minCount: 1, count:_earSlimeFeats, exclusive:""},
-				tattoos:{cost:5, limit: 25, minCount: 2, count:_tattoosFeats, exclusive:""},
-				randomClothing:{cost:1, limit: 20, minCount: 0, count:0, exclusive:""},
-				specialClothing:{cost:40, limit: 40, minCount: 1, count:_keys.count("Curious Attire"), exclusive:""},
-				sexToys:{cost:30, limit: 30 * _sexToysFeats, minCount: 1, count:_sexToysFeats, exclusive:""},
-			},
-			missing:{
-				money:"Unlock this boost by obtaining the 'Pocket Change' feat",
-				grades:"Unlock this boost by obtaining the 'Perfect Record' feat",
-				skulduggery:"Unlock this boost by obtaining the 'Thief' feat",
-				dancing:"Unlock this boost by obtaining the 'May I have this Dance?' feat",
-				swimming:"Unlock this boost by obtaining the 'Aquanaut' feat",
-				athletics:"Unlock this boost by obtaining the 'Swift' feat",
-				tending:"Unlock this boost by obtaining the 'Green Fingered' feat",
-				housekeeping:"Unlock this boost by obtaining the 'Majordomo' feat",
-				seduction:"Unlock this boost by obtaining the 'Seductress' feat",
-				purity:"Unlock this boost by obtaining the 'Walk Like an Angel' and 'Falling, Falling, Falling...' feats",
-				impurity:"Unlock this boost by obtaining the 'Devilish Looks' feat",
-				newLife:"Unlock this boost by obtaining a hidden feat (" + setup.feats["Broodmother Host"].hint + ")",
-				aNewBestFriend:"Unlock this boost by obtaining a hidden feat (" + setup.feats["Ear Slime Lover"].hint + ")",
-				tattoos:"Unlock this boost by obtaining the 'Billboard' and 'A Living Canvas' feats",
-				randomClothing:"",
-				specialClothing:"Unlock this boost by obtaining a hidden feat (" + setup.feats["Curious Attire"].hint + ")",
-				sexToys:"Unlock this boost by obtaining a hidden feat (" + setup.feats["Opened Pandoras Box"].hint + ")",
-			},
-			name:{
-				money:"Starting Money",
-				grades:"School Grades",
-				skulduggery:"Skulduggery Grade",
-				dancing:"Dancing Grade",
-				swimming:"Swimming Grade",
-				athletics:"Athletics Grade",
-				tending:"Tending Grade",
-				greenThumb:"Green Thumb Trait",
-				housekeeping:"Housekeeping Grade",
-				seduction:"Seduction Grade",
-				purity:"Daily Purity Boost",
-				impurity:"Daily Impurity Boost",
-				newLife:"A New Life",
-				aNewBestFriend:"A New Best Friend",
-				tattoos:"Starting Tattoos",
-				randomClothing:"Random Clothing",
-				specialClothing:"Special Clothing",
-				sexToys:"Sex Toys",
-			},
-			pointsUsed: 0,
+		<<set _earnedFeats = new Set(Object.keys($feats.allSaves))>>
+		<<set $featsBoosts = {
+			upgrades: {}, /* coins spent on upgrades */
+			upgradeDetails: {}, /* junk data */
+			purchased: {}, /* amount of upgrades purchased */
+			missing: {}, /* ugh */
+			name: {}, /* why */
+			pointsUsed:0, /* hatred and also suffering */
 			clothingGender:"Either",
 			clothingCustomColors:false,
+			hidden: { greenThumb: true },
 			tattoos:{
 				1:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"},
 				2:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"},
 				3:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"},
 				4:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"},
-				5:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"},
+				5:{bodypart:"Random",tattoo:"Random",pen:"Tattoo"}
 			},
 			sexToys:[{},{},{},{},{},{}],
-			earSlimeType: "immaturePassive",
+			specialClothesSets:{},
+			earSlimeType:"immaturePassive"
 		}>>
+
+		<<set _featData = {
+			money: {
+				name: "Starting Money",
+				required: ["Pocket Change", "Money Maker", "Tycoon", "Millionaire"],
+				cost: 5,
+				maxMultiplier: 2,
+				missing: "Unlock this boost by obtaining the 'Pocket Change' feat"
+			},
+			grades: {
+				name: "School Grades",
+				required: ["Perfect Record"],
+				cost: 15,
+				max: 2,
+				missing: "Unlock this boost by obtaining the 'Perfect Record' feat"
+			},
+			skulduggery: {
+				name: "Skulduggery Grade",
+				required: ["Thief"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Thief' feat"
+			},
+			dancing: {
+				name: "Dancing Grade",
+				required: ["May I have this Dance?"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'May I have this Dance?' feat"
+			},
+			swimming: {
+				name: "Swimming Grade",
+				required: ["Aquanaut"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Aquanaut' feat"
+			},
+			athletics: {
+				name: "Athletics Grade",
+				required: ["Swift"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Swift' feat"
+			},
+			tending: {
+				name: "Tending Grade",
+				required: ["Green Fingered"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Green Fingered' feat"
+			},
+			greenThumb: {
+				name: "Green Thumb Trait",
+				required: ["Green Fingered"],
+				cost: 40,
+				max: 1,
+				missing: "Unlock this boost by obtaining the 'Green Fingered' feat"
+			},
+			housekeeping: {
+				name: "Housekeeping Grade",
+				required: ["Majordomo"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Majordomo' feat"
+			},
+			seduction: {
+				name: "Seduction Grade",
+				required: ["Seductress"],
+				cost: 5,
+				max: 4,
+				missing: "Unlock this boost by obtaining the 'Seductress' feat"
+			},
+			purity: {
+				name: "Daily Purity Boost",
+				required: ["Angel", "Fallen Angel"],
+				cost: 20,
+				max: 5,
+				exclusive: "impurity",
+				missing: "Unlock this boost by obtaining the 'Walk Like an Angel' and 'Falling, Falling, Falling...' feats"
+			},
+			impurity: {
+				name: "Daily Impurity Boost",
+				required: ["Demon"],
+				cost: 20,
+				max: 5,
+				exclusive: "purity",
+				missing: "Unlock this boost by obtaining the 'Devilish Looks' feat"
+			},
+			newLife: {
+				name: "A New Life",
+				required: ["Broodmother Host", "Top Broodmother Host"],
+				cost: 20,
+				missing: "Unlock this boost by obtaining a hidden feat (" + setup.feats["Broodmother Host"].hint + ")"
+			},
+			aNewBestFriend: {
+				name: "A New Best Friend",
+				required: ["Ear Slime Lover", "Ear Slime Amalgam"],
+				cost: 10,
+				missing: "Unlock this boost by obtaining a hidden feat (" + setup.feats["Ear Slime Lover"].hint + ")"
+			},
+			tattoos: {
+				name: "Starting Tattoos",
+				required: ["A Living Canvas", "Billboard"],
+				cost: 5,
+				max: 5,
+				missing: "Unlock this boost by obtaining the 'Billboard' and 'A Living Canvas' feats"
+			},
+			randomClothing: {
+				name: "Random Clothing",
+				required: [],
+				cost: 1,
+				max: 20,
+				missing: ""
+			},
+			specialClothing: {
+				name: "Special Clothing",
+				required: ["Curious Attire", "Wicked Wardrobe"],
+				cost: 0,
+				missing: "Unlock this boost by obtaining a hidden feat (" + setup.feats["Curious Attire"].hint + ")"
+			},
+			sexToys: {
+				name: "Sex Toys",
+				required: ["Opened Pandoras Box", "Opened Pandoras Cocks"],
+				cost: 30,
+				missing: "Unlock this boost by obtaining a hidden feat (" + setup.feats["Opened Pandoras Box"].hint + ")"
+			}
+		}>>
+
+		<<run Object.entries(_featData).forEach(([k,f])=>{
+			const maxEarned = !f.required.length ? 1 : f.required.filter(x => _earnedFeats.has(x)).length;
+			const max = !maxEarned ? 0 : (f.max ?? (f.maxMultiplier * maxEarned || maxEarned));
+
+			$featsBoosts.upgrades[k] = 0;
+			$featsBoosts.upgradeDetails[k] = {cost:f.cost, max:max, purchased:0, ...(f.exclusive?{exclusive:f.exclusive}:{})};
+			$featsBoosts.missing[k] = f.missing;
+			$featsBoosts.name[k] = max > 0 ? f.name : "?????";
+		})>>
 	<</if>>
 <</widget>>
 
@@ -195,7 +254,7 @@
 		<<earnFeat "A New Life">>
 	<</if>>
 	<<if _upgrades.money gt 0>>
-		<<money `_upgrades.money * _details.money.count / _details.money.cost * 5000` "startingMoney">>
+		<<money `_details.money.purchased * _details.money.max * 2500` "startingMoney">>
 	<</if>>
 	<<if _upgrades.grades gt 0>>
 		<<set $sciencetrait += _upgrades.grades / _details.grades.cost * 1>>
@@ -265,6 +324,8 @@
 			<<default>>
 				<<set $earSlime.corruption to 0>>
 		<</switch>>
+	<<else>>
+		<<run delete $featsBoosts.earSlimeType>>
 	<</if>>
 	<<if _upgrades.aNewBestFriend gt 10>>
 		<<parasite right_ear slime>>
@@ -430,15 +491,34 @@
 	<</if>>
 	<<if _upgrades.specialClothing gt 0>>
 		<<set _unlocked to $feats.allSaves.specialClothes>>
-		<<specialClothesSetup>>
-		<<for $_label, $_value range _unlocked>>
-			<<set $specialClothes[$_label] to $_value>>
-		<</for>>
+		<<specialClothesUpdate>>
+		<<if (_upgrades.specialClothing / _details.specialClothing.cost) is 3>>
+			/* Level 3 upgrade - everything is remembered. */
+			<<for $_labelC, $_valueC range _unlocked>>
+				<<if $featsBoosts.specialClothesSets[$_labelC] is true>>
+					<<run specialClothesUnlock("set", $_labelC, 3)>>
+				<</if>>
+			<</for>>
+		<<elseif (_upgrades.specialClothing / _details.specialClothing.cost) is 2>>
+			/* Level 2 upgrade - unlock all special clothes unlocked in any other save. */
+			<<for $_labelC, $_valueC range _unlocked>>
+				<<if $featsBoosts.specialClothesSets[$_labelC] is true>>
+					<<run specialClothesUnlock("set", $_labelC, 2)>>
+				<</if>>
+			<</for>>
+		<<else>>
+			/* Level 1 upgrade - unlock previosuly unlocked special clothing sets by selection. */
+			<<for $_labelC, $_valueC range $featsBoosts.specialClothesSets>>
+				<<if $featsBoosts.specialClothesSets[$_labelC] is true>>
+					<<run specialClothesUnlock("set", $_labelC, 2)>>
+				<</if>>
+			<</for>>
+		<</if>>
 	<</if>>
 	<<if _upgrades.sexToys gt 0>>
 		<<set _totalToys to _upgrades.sexToys / 10>>
 		<<set _indexList to []>>
-		<<run Object.values(setup.sextoys).forEach(toy => T.indexList.push(toy.index))>>
+		<<run Object.values(setup.sextoys.filter(item => !item.shop.includes("forest"))).forEach(toy => T.indexList.push(toy.index))>>
 		<<for _i to 0; _i lt _totalToys; _i++>>
 			<<if $featsBoosts.sexToys[_i].index isnot undefined and $featsBoosts.sexToys[_i].index isnot -1>>
 				<<set _sexToyIndex to $featsBoosts.sexToys[_i].index>>
@@ -447,7 +527,6 @@
 			<<else>>
 				<<set _sexToyIndex to _indexList.pluck()>>
 			<</if>>
-			<<run console.log(_sexToyColour)>>
 			<<if !_sexToyColour or _sexToyColour is -1>>
 				<<set _sexToyColourOptions to Object.values(setup.sextoys).find(toy => toy.index is _sexToyIndex).colour_options>>
 				<<set _sexToyColour to _sexToyColourOptions[random(0, _sexToyColourOptions.length - 1)]>>
@@ -464,6 +543,9 @@
 	<<run delete $featsBoosts.upgradeDetails>>
 	<<run delete $featsBoosts.tattoos>>
 	<<run delete $featsBoosts.sexToys>>
+	<<run delete $featsBoosts.hidden>>
+	<<run delete $featsBoosts.purchased>>
+	<<run delete $featsBoosts.specialClothesSets>>
 <</widget>>
 
 <!--

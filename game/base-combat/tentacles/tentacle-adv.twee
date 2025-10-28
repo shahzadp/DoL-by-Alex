@@ -57,11 +57,13 @@
 	<</if>>
 
 	<<if _tentacle.tentaclehealth lte 0 and _tentacle.shaft isnot "finished">>
-		<<if ["leftarm","rightarm"].includes(_tentacle.head)>>
-			Worn out, _the _tentacle.fullDesc writhes around your hand and squeezes, before retracting from you.
+		<<if _tentacle.tentaclehealth lte -250>>
+			<span class="red">_The _tentacle.fullDesc crumbles to dust.</span>
+		<<elseif ["leftarm","rightarm"].includes(_tentacle.head)>>
+			<span class="green">Worn out, _the _tentacle.fullDesc writhes around your hand and squeezes, before retracting from you.</span>
 			<<takeHandholdingVirginity `$abomination is 1 ? $NPCList[0].fullDescription + "'s " + _tentacle.fullDesc : _tentacle.fullDesc` "tentacle" _tentacle.type true>>
 		<<else>>
-			Worn out, _the _tentacle.fullDesc retracts from you.
+			<span class="green">Worn out, _the _tentacle.fullDesc retracts from you.</span>
 		<</if>>
 		<<tentacleadvdisable _tentacle>>
 		<<set _tentacle.shaft to "finished">><<set _tentacle.head to "finished">>
@@ -175,7 +177,7 @@
 		<<tentacle_skin "mouth">>
 		<<purity -1>><<internalejac>><<sex 5 "mouth">>
 		<<if _fluid is "nectar">><<nectarfed 5>><<else>><<drugs 3>><</if>><<bodyliquid "mouth" _fluid>>
-		<<set _tentacle.tentaclehealth -= 1>>
+		<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "fluid" 1>>
 		<<if _tentacle.desc.includes("pale")>>
 			<<hallucinogen 5>>
 		<</if>>
@@ -250,7 +252,7 @@
 		<<tentacle_skin "vagina">>
 		<<purity -1>><<internalejac>><<sex 5 "genitals">>
 		<<drugs 3>><<bodyliquid "vagina" _fluid>><<pain $vaginalPain>>
-		<<set _tentacle.tentaclehealth -= 1>>
+		<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "fluid" 1>>
 		<<if _tentacle.desc.includes("pale")>>
 			<<hallucinogen 5>>
 		<</if>>
@@ -332,7 +334,7 @@
 
 	<<if _tentacle.head is "penisdeep">>
 		and continues thrusting against your <<penis>>, caressing and kneading your length.
-		<<sex 5 "genitals">><<set _tentacle.tentaclehealth -= 1>>
+		<<sex 5 "genitals">><<set _tentacle.tentaclehealth -= 1>><<tentacle_record "arousal" 1>>
 		<<if $abomination is 1>>
 			<<set $enemyarousal += 3>>
 		<</if>>
@@ -403,7 +405,7 @@
 		<</if>>
 		<<purity -1>><<internalejac>><<sex 5 "anus">>
 		<<drugs 3>><<bodyliquid "anus" _fluid>>
-		<<set _tentacle.tentaclehealth -= 1>><<pain $analPain>>
+		<<set _tentacle.tentaclehealth -= 1>><<pain $analPain>><<tentacle_record "fluid" 1>>
 		<<if _tentacle.desc.includes("pale")>>
 			<<hallucinogen 5>>
 		<</if>>
@@ -568,15 +570,17 @@
 			<span class="pink">where it shines with eldritch light.</span>
 		<</if>>
 		<span class="pink">You feel something shift in your consciousness.</span>
-		<<if !$hypnosis_traits.scream>>
+		<<if ($hypnosis_traits.devotion gte 5 or $hypnosis_traits.devotion is 4 and random(1, 100) gte 50) and $NPCList[0].fullDescription isnot "Gwylan">>
+			Whatever it is, it's blotted out by something else. <span class="forest-green">Instead, in your mind's eye, Gwylan gently holds your face in front of <<nnpc_his "Gwylan">> own. The slightest sting of a thorn keeps your mind focused.</span>
+		<<elseif !$hypnosis_traits.scream>>
 			You've gained the <span class="pink">Hypnotic Yearning</span> trait.
 			<<set $hypnosis_traits.scream to 1>>
 		<<elseif $hypnosis_traits.scream lt 5>>
 			Your hypnotic yearning has deepened.
 			<<set $hypnosis_traits.scream += 1>>
 		<</if>>
-		<<hypnotised 1>>
-		<<set _tentacle.tentaclehealth -= 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
+		<<hypnotised 1>><<set $combat_hypnosis to "scream">>
+		<<set _tentacle.tentaclehealth -= 6>><<tentacle_record "hypnosis" 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
 		<br>
 	<</if>>
 
@@ -591,15 +595,17 @@
 			<span class="pink">where it shines with eldritch light.</span>
 		<</if>>
 		<span class="pink">You feel something shift in your consciousness.</span>
-		<<if !$hypnosis_traits.cover>>
+		<<if ($hypnosis_traits.devotion gte 5 or $hypnosis_traits.devotion is 4 and random(1, 100) gte 50) and $NPCList[0].fullDescription isnot "Gwylan">>
+			Whatever it is, it's blotted out by something else. <span class="forest-green">Instead, in your mind's eye, Gwylan gently holds your face in front of <<nnpc_his "Gwylan">> own. The slightest sting of a thorn keeps your mind focused.</span>
+		<<elseif !$hypnosis_traits.cover>>
 			You've gained the <span class="pink">Hypnotic Flaunting</span> trait.
 			<<set $hypnosis_traits.cover to 1>>
 		<<elseif $hypnosis_traits.cover lt 5>>
 			Your hypnotic flaunting has deepened.
 			<<set $hypnosis_traits.cover += 1>>
 		<</if>>
-		<<hypnotised 1>>
-		<<set _tentacle.tentaclehealth -= 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
+		<<hypnotised 1>><<set $combat_hypnosis to "cover">>
+		<<set _tentacle.tentaclehealth -= 6>><<tentacle_record "hypnosis" 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
 		<br>
 	<</if>>
 
@@ -614,7 +620,32 @@
 			<span class="pink">where it shines with eldritch light.</span>
 		<</if>>
 		<span class="pink">You feel something shift in your consciousness.</span> Alluring sensations of unspeakable matings fill your mind,
-		<<if $uncomfortable.hypnosis is false>>
+		<<if $hypnosis_traits.devotion gte 5 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="lblue">only to be snuffed out</span>.<br>
+			<span class="forest-green">Instead, in your mind's eye, Gwylan's arms hold you in a naked embrace. Strange purple petals flutter around you.</span><br>
+			It feels so real, leaving you contented when the vision fades away. You yearn only for one mate in this brief moment.
+			<<if _tentacle.type is "vine">>
+				<span class="red">_The _tentacle.fullDesc rapidly decays.</span>
+			<<elseif _tentacle.fullDesc.includes("metal")>>
+				<span class="red">_The _tentacle.fullDesc rapidly rusts.</span>
+			<<else>>
+				<span class="red">_The _tentacle.fullDesc rapidly withers.</span>
+			<</if>>
+			<<if $abomination is 1>>
+				The <<person>> clutches <<his>> head in pain. <<defiance 5>>
+			<</if>>
+			<<arousal -500>><<pain -4>><<larousal>><<lpain>>
+			<<set _tentacle.tentaclehealth -= 300>><<tentacle_record "hypnosis_backlash" 300>><<tentacleadvdisable _tentacle>>
+		<<elseif $hypnosis_traits.devotion is 4 and random(1, 100) gte 50 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="forest-green">only to fade as you feel a pair of gentle hands cover your eyes, blocking out the compulsion</span>.
+			<<if $abomination is 1>>
+				<<if $NPCList[0].fullDescription is "Gwylan">>
+					Gwylan growls in an otherworldly tone.
+				<<else>>
+					The <<person>> looks irritated.
+				<</if>>
+			<</if>>
+		<<elseif $uncomfortable.hypnosis is false>>
 			<span class="red">devouring all contrary thoughts.</span>
 			<<if !$hypnosis_traits.deviancy>>
 				You've gained the <span class="pink">Hypnotic Deviancy</span> trait.
@@ -637,7 +668,7 @@
 			<</if>>
 			<<willpower 1>><<gwillpower>>
 		<</if>>
-		<<set _tentacle.tentaclehealth -= 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
+		<<set _tentacle.tentaclehealth -= 6>><<tentacle_record "hypnosis" 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
 		<br>
 	<</if>>
 
@@ -652,15 +683,40 @@
 			<span class="pink">where it shines with eldritch light.</span>
 		<</if>>
 		A deep yearning blooms,
-		<<if $uncomfortable.hypnosis is false>>
+		<<if $hypnosis_traits.devotion gte 5 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="lblue">only to be plucked</span>.<br>
+			<span class="forest-green">Instead, in your mind's eye, Gwylan gently holds both of your wrists together, before pulling you into an embrace. Red rose petals flutter around you.</span><br>
+			It feels so real, leaving you at peace when the vision fades away. You yearn only for <<nnpc_his "Gwylan">> comfort in this brief moment.<br>
+			<<if _tentacle.type is "vine">>
+				<span class="red">_The _tentacle.fullDesc rapidly decays.</span>
+			<<elseif _tentacle.fullDesc.includes("metal")>>
+				<span class="red">_The _tentacle.fullDesc rapidly rusts.</span>
+			<<else>>
+				<span class="red">_The _tentacle.fullDesc rapidly withers.</span>
+			<</if>>
+			<<if $abomination is 1>>
+				The <<person>> clutches <<his>> head in pain. <<defiance 5>>
+			<</if>>
+			<<arousal -500>><<pain -4>><<larousal>><<lpain>>
+			<<set _tentacle.tentaclehealth -= 300>><<tentacle_record "hypnosis_backlash" 300>><<tentacleadvdisable _tentacle>>
+		<<elseif $hypnosis_traits.devotion is 4 and random(1, 100) gte 50 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="forest-green">only to wither as you feel a pair of gentle hands cover your eyes, blocking out the compulsion</span>.
+			<<if $abomination is 1>>
+				<<if $NPCList[0].fullDescription is "Gwylan">>
+					Gwylan growls in an otherworldly tone.
+				<<else>>
+					The <<person>> looks irritated.
+				<</if>>
+			<</if>>
+		<<elseif $uncomfortable.hypnosis is false>>
 			nurtured by a lewd part of you. <span class="lewd">Your mind immediately accepts it.</span> You long for the suffering of others. <<sadism 10>>
 		<<elseif $willpower gte random(1, 1000)>>
 			nurtured by a traitorous part of you. <span class="lblue">You will it away.</span>
 		<<else>>
 			unbeckoned. <span class="pink">You can't resist it.</span> You long for the suffering of others. <<sadism 10>><<willpower 1>><<gwillpower>>
 		<</if>>
-		<<hypnotised 1>>
-		<<set _tentacle.tentaclehealth -= 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
+		<<hypnotised 1>><<set $combat_hypnosis to "sadism">>
+		<<set _tentacle.tentaclehealth -= 6>><<tentacle_record "hypnosis" 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
 		<br>
 	<</if>>
 
@@ -675,15 +731,40 @@
 			<span class="pink">where it shines with eldritch light.</span>
 		<</if>>
 		A deep yearning blooms,
-		<<if $uncomfortable.hypnosis is false>>
+		<<if $hypnosis_traits.devotion gte 5 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="lblue">only to be plucked</span>.<br>
+			<span class="forest-green">Instead, in your mind's eye, Gwylan cups your cheeks with gentle hands and smiles down at you. Red rose petals flutter around you.</span><br>
+			It feels so real, leaving you empty when the vision fades away. You yearn only for <<nnpc_him "Gwylan">> in this brief moment.
+			<<if _tentacle.type is "vine">>
+				<span class="red">_The _tentacle.fullDesc rapidly decays.</span>
+			<<elseif _tentacle.fullDesc.includes("metal")>>
+				<span class="red">_The _tentacle.fullDesc rapidly rusts.</span>
+			<<else>>
+				<span class="red">_The _tentacle.fullDesc rapidly withers.</span>
+			<</if>>
+			<<if $abomination is 1>>
+				The <<person>> clutches <<his>> head in pain. <<defiance 5>>
+			<</if>>
+			<<arousal -500>><<pain -4>><<larousal>><<lpain>>
+			<<set _tentacle.tentaclehealth -= 300>><<tentacle_record "hypnosis_backlash" 300>><<tentacleadvdisable _tentacle>>		
+		<<elseif $hypnosis_traits.devotion is 4 and random(1, 100) gte 50 and $NPCList[0].fullDescription isnot "Gwylan">>
+			<span class="forest-green">only to wither as you feel a pair of gentle hands cover your eyes, blocking out the compulsion</span>.
+			<<if $abomination is 1>>
+				<<if $NPCList[0].fullDescription is "Gwylan">>
+					Gwylan growls in an otherworldly tone.
+				<<else>>
+					The <<person>> looks irritated.
+				<</if>>
+			<</if>>
+		<<elseif $uncomfortable.hypnosis is false>>
 			nurtured by a lewd part of you. <span class="lewd">Your mind immediately accepts it.</span> Feelings of arousal overwhelm you. <<arousal 10000>>
 		<<elseif $willpower gte random(1, 1000)>>
 			nurtured by a traitorous part of you. <span class="lblue">You will it away.</span>
 		<<else>>
 			unbeckoned. <span class="pink">You can't resist it.</span> Feelings of arousal overwhelm you. <<arousal 10000>><<willpower 1>><<gwillpower>>
 		<</if>>
-		<<hypnotised 1>>
-		<<set _tentacle.tentaclehealth -= 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
+		<<hypnotised 1>><<set $combat_hypnosis to "orgasm">>
+		<<set _tentacle.tentaclehealth -= 6>><<tentacle_record "hypnosis" 6>><<set _tentacle.head to 0>><<set _tentacle.tempBusy to true>>
 		<br>
 	<</if>>
 
@@ -958,9 +1039,15 @@
 		<<elseif $rng lte 60>>
 			<<if $position isnot "wall">>
 				<<if $head is 0 and $nochoke isnot 1 and $settings.asphyxiaLevel gte 1>>
-					_The _tentacle.fullDesc winds its way around your neck, <span class="blue">restraining your head.</span>
-					<<neutral 1>><<set _tentacle.shaft to "neck">><<set $head to "grappled">>
-					<<tentacle_skin "left_cheek" "right_cheek">>
+					<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+						<<set $nochoke to 1>>
+						_The _tentacle.fullDesc winds its way around your neck, <span class="green">but immediately recoils as the golden heart on your collar shocks it.</span>
+						<<tentacleadvdisable _tentacle>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "damage" 3>>
+					<<else>>
+						_The _tentacle.fullDesc winds its way around your neck, <span class="blue">restraining your head.</span>
+						<<neutral 1>><<set _tentacle.shaft to "neck">><<set $head to "grappled">>
+						<<tentacle_skin "left_cheek" "right_cheek">>
+					<</if>>
 				<<else>>
 					_The _tentacle.fullDesc winds its way around your shoulders.
 					<<neutral 1>><<set _tentacle.shaft to "shoulders">>
@@ -1082,7 +1169,7 @@
 		then squirts a warm _fluid over your feet.
 		<<bodyliquid "feet" _fluid>><<feetejacstat>>
 	<</if>>
-	<<neutral 1>><<set _tentacle.tentaclehealth -= 1>><<ejacstat>>
+	<<neutral 1>><<set _tentacle.tentaclehealth -= 1>><<tentacle_record "fluid" 1>><<ejacstat>>
 	<<if $abomination is 1>>
 		<<set $enemyarousal += 3>>
 	<</if>>
@@ -1468,9 +1555,9 @@
 		<<set $speechhit to 1 * _multi>><<set $attackstat += 1 * _multi>>
 		<<if $rng lte (currentSkillValue('physique') / 200)>>
 			<span class="green">It trembles before your strength.</span>
-			<<set _tentacle.tentaclehealth -= 1 * _multi>>
+			<<set _tentacle.tentaclehealth -= 1 * _multi>><<tentacle_record "damage" 1 * _multi>>
 		<</if>>
-		<<set _tentacle.tentaclehealth -= 1 * _multi>>
+		<<set _tentacle.tentaclehealth -= 1 * _multi>><<tentacle_record "damage" 1 * _multi>>
 		<<tentacleadvdisable _tentacle>>
 		<<if $abomination is 1>>
 			The <<person>> winces in pain.
@@ -1501,13 +1588,13 @@
 		<<if $purity gte 1000>>
 			<<set _multi ++>>
 		<</if>>
-		<<defiance `($purity / 100) * _multi`>>
-		<<set $speechhit to 1 * _multi>><<set $attackstat += 1 * _multi>>
-		<<if $rng lte ($purity / 20)>><<set _tentacle.tentaclehealth -= 10 * _multi>><</if>>
-		<<set _tentacle.tentaclehealth -= 10 * _multi>>
+		<<defiance `Math.floor($purity / 150) * _multi`>>
+		<<set $speechbanish to 1 * _multi>><<set $attackstat += 1 * _multi>>
+		<<if $rng lte ($purity / 20)>><<set _tentacle.tentaclehealth -= 10 * _multi>><<tentacle_record "banish" 10 * _multi>><</if>>
+		<<set _tentacle.tentaclehealth -= 10 * _multi>><<tentacle_record "banish" 10 * _multi>>
 		<<tentacleadvdisable _tentacle>>
 		<<if $abomination is 1>>
-			The <<person>> recoils from the light.
+			<<combatPerson>> recoils from the light.
 		<</if>>
 	<</if>>
 
@@ -1539,7 +1626,7 @@
 
 		<<if currentSkillValue("handskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip</span>.
-			<<set _tentacle.tentaclehealth -= 3>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -1854,10 +1941,10 @@
 		<<set $feetaction to 0>><<set $feetactiondefault to "feethit">>
 		You kick _the _tentacle.fullDesc and it reels away from you.
 		<<defiance 2>><<set $speechhit to 1>><<tentacleadvdisable _tentacle>><<set $attackstat += 1>>
-		<<set _tentacle.tentaclehealth -= 1>>
+		<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "damage" 1>>
 		<<if $rng lte (currentSkillValue('physique') / 200)>>
 			<span class="green">It trembles before your strength.</span>
-			<<set _tentacle.tentaclehealth -= 1>>
+			<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "damage" 1>>
 		<</if>>
 		<<if $abomination is 1>>
 			<<defiance 3>>
@@ -1875,7 +1962,7 @@
 		You <<feettext>> squeeze _the _tentacle.fullDesc between your feet and rub up and down its length.
 		<<if currentSkillValue("feetskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip</span>.
-			<<bodyliquid "feet" _fluid>><<set _tentacle.tentaclehealth -= 3>><<feetejacstat>><<ejacstat>>
+			<<bodyliquid "feet" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<feetejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2015,10 +2102,10 @@
 		<<set $mouthaction to 0>><<set $mouthactiondefault to "mouthlull"+_tentacle.id>>
 		<<brat 1>>
 		You hum a soothing lullaby at _the _tentacle.fullDesc, sapping its strength. <span class="green">It recoils.</span>
-		<<tentacleadvdisable _tentacle>><<set _tentacle.tentaclehealth -= 1>>
+		<<tentacleadvdisable _tentacle>><<set _tentacle.tentaclehealth -= 1>><<tentacle_record "soothe" 1>>
 		<<if $rng lte (currentSkillValue('willpower') / 10)>>
 			<span class="green">It trembles before your will.</span>
-			<<set _tentacle.tentaclehealth -= 1>>
+			<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "soothe" 1>>
 		<</if>>
 	<</if>>
 
@@ -2028,7 +2115,7 @@
 		You <<oraltext>> lick the tip of _the _tentacle.fullDesc.
 		<<if currentSkillValue("oralskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your face</span>.
-			<<bodyliquid "face" _fluid>><<set _tentacle.tentaclehealth -= 3>><<faceejacstat>><<ejacstat>>
+			<<bodyliquid "face" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<faceejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2041,7 +2128,7 @@
 		You <<oraltext>> kiss the tip of _the _tentacle.fullDesc.
 		<<if currentSkillValue("oralskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your face</span>.
-			<<bodyliquid "face" _fluid>><<set _tentacle.tentaclehealth -= 3>><<faceejacstat>><<ejacstat>>
+			<<bodyliquid "face" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<faceejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2059,7 +2146,7 @@
 		You <<oraltext>> suck the _tentacle.fullDesc invading your mouth.
 		<<if currentSkillValue("oralskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip and into your mouth</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<if _fluid is "nectar">><<nectarfed 5>><<else>><<drugs 3>><</if>><<bodyliquid "mouth" _fluid>><<oralejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<if _fluid is "nectar">><<nectarfed 5>><<else>><<drugs 3>><</if>><<bodyliquid "mouth" _fluid>><<oralejacstat>><<ejacstat>>
 			<<if _tentacle.desc.includes("pale")>>
 				<<hallucinogen 5>>
 			<</if>>
@@ -2087,10 +2174,10 @@
 	<<if $mouthaction is "mouthbite"+_tentacle.id>>
 		<<set $mouthaction to 0>><<set $mouthactiondefault to "mouthbite"+_tentacle.id>><<defiance 5>>
 		You bite down on the _tentacle.fullDesc invading your mouth. <span class="teal">It recoils immediately.</span>
-		<<tentacleadvdisable _tentacle>><<set $attackstat += 1>><<set _tentacle.tentaclehealth -= 1>>
+		<<tentacleadvdisable _tentacle>><<set $attackstat += 1>><<set _tentacle.tentaclehealth -= 1>><<tentacle_record "damage" 1>>
 		<<if $rng lte (currentSkillValue('physique') / 200)>>
 			<span class="green">It trembles before your strength.</span>
-			<<set _tentacle.tentaclehealth -= 1>>
+			<<set _tentacle.tentaclehealth -= 1>><<tentacle_record "damage" 1>>
 		<</if>>
 		<<if $abomination is 1>>
 			The <<person>> grunts in pain. <<defiance 10>>
@@ -2107,7 +2194,7 @@
 		You <<vaginaltext>> rub the tip of _the _tentacle.fullDesc with your <<pussy>>.
 		<<if currentSkillValue("vaginalskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip</span>.
-			<<bodyliquid "vaginaoutside" _fluid>><<set _tentacle.tentaclehealth -= 3>><<vaginalentranceejacstat>><<ejacstat>>
+			<<bodyliquid "vaginaoutside" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<vaginalentranceejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2125,7 +2212,7 @@
 		You <<vaginaltext>> push back against the _tentacle.fullDesc invading your <<pussy>>.
 		<<if currentSkillValue("vaginalskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, flooding your womb with its warmth</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<drugs 3>><<bodyliquid "vagina" _fluid>><<vaginalejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<drugs 3>><<bodyliquid "vagina" _fluid>><<vaginalejacstat>><<ejacstat>>
 			<<if _tentacle.desc.includes("pale")>>
 				<<hallucinogen 5>>
 			<</if>>
@@ -2147,7 +2234,7 @@
 		You <<peniletext>> rub the tip of the _tentacle.fullDesc with your <<penis>>.
 		<<if currentSkillValue("penileskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip</span>.
-			<<bodyliquid "penis" _fluid>><<set _tentacle.tentaclehealth -= 3>>
+			<<bodyliquid "penis" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2165,7 +2252,7 @@
 		You <<peniletext>> push back against the _tentacle.fullDesc engulfing your <<penis>>.
 		<<if currentSkillValue("penileskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your groin</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<bodyliquid "penis" _fluid>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<bodyliquid "penis" _fluid>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2184,7 +2271,7 @@
 		You <<analtext>> rub the tip of _the _tentacle.fullDesc with your <<bottom>>.
 		<<if currentSkillValue("analskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your <<bottom>>.</span>
-			<<bodyliquid "bottom" _fluid>><<set _tentacle.tentaclehealth -= 3>><<bottomejacstat>><<ejacstat>>
+			<<bodyliquid "bottom" _fluid>><<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<bottomejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2202,7 +2289,7 @@
 		You <<analtext>> push back against the _tentacle.fullDesc invading your <<bottom>>.
 		<<if currentSkillValue("analskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, flooding your bowels with its warmth</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<drugs 3>><<bodyliquid "anus" _fluid>><<analejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<drugs 3>><<bodyliquid "anus" _fluid>><<analejacstat>><<ejacstat>>
 			<<if _tentacle.desc.includes("pale")>>
 				<<hallucinogen 5>>
 			<</if>>
@@ -2224,7 +2311,7 @@
 		You <<thightext>> rub _the _tentacle.fullDesc between your thighs.
 		<<if currentSkillValue("thighskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your tummy</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<bodyliquid "tummy" _fluid>><<tummyejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<bodyliquid "tummy" _fluid>><<tummyejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2249,7 +2336,7 @@
 		You <<bottomtext>> rub _the _tentacle.fullDesc between your cheeks.
 		<<if currentSkillValue("bottomskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your <<bottom>>.</span>
-			<<set _tentacle.tentaclehealth -= 3>><<bodyliquid "bottom" _fluid>><<bottomejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<bodyliquid "bottom" _fluid>><<bottomejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2262,7 +2349,7 @@
 		You <<chesttext>> rub _the _tentacle.fullDesc between your <<breasts>>.
 		<<if currentSkillValue("chestskill") gte (800 - ($rng * 10))>>
 			<span class="lblue">_Slimy _fluid erupts from the tip, covering your chest</span>.
-			<<set _tentacle.tentaclehealth -= 3>><<bodyliquid "chest" _fluid>><<chestejacstat>><<ejacstat>>
+			<<set _tentacle.tentaclehealth -= 3>><<tentacle_record "fluid" 3>><<bodyliquid "chest" _fluid>><<chestejacstat>><<ejacstat>>
 			<<if $abomination is 1>>
 				<<set $enemyarousal += 6>>
 			<</if>>
@@ -2272,7 +2359,8 @@
 
 <<widget "tentacle_skin">>
 	<<if $skin[_args[0]] and $skin[_args[0]].special is "holy" or $skin[_args[1]] and $skin[_args[1]].special is "holy" and !$banishDisable>>
-		The holy symbol on your skin burns with a white light, <span class="pink">searing you,</span> <span class="teal">and _the _tentacle.fullDesc.</span><<pain 8>><<set _tentacle.tentaclehealth -= 12>><<tentacleadvdisable _tentacle>>
+		The holy symbol on your skin burns with a white light, <span class="pink">searing you,</span> <span class="teal">and _the _tentacle.fullDesc.</span><<pain 8>><<set _tentacle.tentaclehealth -= 12>><<tentacle_record "banish" 12>><<tentacleadvdisable _tentacle>>
+		<<set $speechbanish to 1>>
 	<<elseif _tentacle.traits.includes("pain") and _args[0] isnot "pubic">>
 		<<if _args[0].includes("_")>>
 			<<set _bodypart to _args[0].split("_").pop()>>
@@ -2284,4 +2372,24 @@
 			<<pain 1>><<gpain>>
 		<</if>>
 	<</if>>
+<</widget>>
+
+<<widget "tentacle_record">>
+	/* Records total tentacle health reductions from various sources */
+	<<set $_type to _args[0] or "fluid">>
+	<<set $_amount to _args[1] or 1>>
+
+	<<if !$combat_tentacle_record>>
+		<<set $combat_tentacle_record to {
+			arousal: 0,
+			fluid: 0,
+			damage: 0,
+			banish: 0,
+			hypnosis: 0,
+			hypnosis_backlash: 0,
+			soothe: 0,
+			attrition: 0,
+		}>>
+	<</if>>
+	<<set $combat_tentacle_record[$_type] += $_amount>>
 <</widget>>

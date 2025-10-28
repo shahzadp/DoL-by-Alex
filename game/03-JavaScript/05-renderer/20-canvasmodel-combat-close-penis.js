@@ -52,20 +52,13 @@ const combatClosePenis = {
 		},
 		penis: {
 			srcfn(options) {
-				if (window.playerHasStrapon()) {
-					options.pcPenis = V.worn.under_lower.name === "strap-on knotted cock" ? "strapon-knotted" : "strapon-dick";
-				} else if (playerChastity("cage")) {
-					options.pcPenis = options.penis.chastityPenis;
-				} else if (["beast-oral"].includes(options.penis.npc)) {
-					options.pcPenis = `${options.penis.size}-${options.penis.type}-${options.penis.state}`;
-				} else {
-					options.pcPenis = `${options.penis.size}-${options.penis.type}`;
+				if (["beast-oral"].includes(options.penis.npc) && !playerChastity() && !playerHasStrapon()) {
+					return `${options.src}penis/${options.position}/${options.penis.size}-${options.penis.type}-${options.penis.state}.png`;
 				}
-				return `${options.src}penis/${options.position}/${options.pcPenis}.png`;
+				return `${options.src}penis/${options.position}/${options.penis.size}-${options.penis.type}.png`;
 			},
 			showfn(options) {
-				const concealed = (V.worn.genitals.type.includes("hidden") || V.worn.genitals.name === "chastity parasite") && !window.playerHasStrapon();
-				return !!options.showPenis && !concealed;
+				return !!options.showPenis && !options.penis.concealed;
 			},
 			animationfn(options) {
 				return options.animKeyPenis;
@@ -81,12 +74,24 @@ const combatClosePenis = {
 			},
 			z: CombatRenderer.indices.closeGenitals + 4,
 		},
+		strapon: {
+			srcfn(options) {
+				return `${options.src}penis/${options.position}/${options.penis.size}-${options.penis.type}-acc.png`;
+			},
+			showfn(options) {
+				return !!options.showPenis && options.penis.type.includes("strap");
+			},
+			animationfn(options) {
+				return options.animKeyPenis;
+			},
+			z: CombatRenderer.indices.closeGenitals + 4,
+		},
 		condom: {
 			srcfn(options) {
 				return `${options.src}penis/${options.position}/${options.penis.size}-condom.png`;
 			},
 			showfn(options) {
-				return !!options.showPenis && !!options.penis.condom;
+				return !!options.showPenis && !!options.penis.condom && options.penis.size === 1;
 			},
 			animationfn(options) {
 				return options.animKeyPenis;
@@ -131,21 +136,23 @@ const combatClosePenis = {
 		},
 		chastity: {
 			srcfn(options) {
-				return `${options.src}penis/${options.position}/${options.penis.chastityDevice}.png`;
+				return `${options.src}penis/${options.position}/${options.chastity}.png`;
 			},
 			showfn(options) {
-				return !!options.showPenis && !!playerChastity("penis");
+				return !!options.showPenis && !!playerChastity();
 			},
 			animationfn(options) {
 				return options.animKeyPenis;
 			},
 			filtersfn(options) {
-				if (options.penis.chastityDevice.includes("parasite")) {
+				if (options.chastity && options.chastity.includes("parasite")) {
 					return ["parasitePanties"];
 				}
 				return ["worn_genitals_main"];
 			},
-			z: CombatRenderer.indices.closeWorn + 3,
+			zfn() {
+				return playerChastity("penis") && !playerHasStrapon() ? CombatRenderer.indices.closeWorn + 3 : CombatRenderer.indices.closeWornUnder;
+			},
 		},
 		penetratedNpc: {
 			srcfn(options) {

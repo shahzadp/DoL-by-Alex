@@ -89,8 +89,8 @@
 		<<set $transformationParts.fallenAngel.wings to "disabled">>
 	<</if>>
 	<<if $transformationParts.wolf.cheeks is undefined>>
-		<<if $wolfgirl gte 6>>
-			<<set $transformationParts.wolf.cheeks to "hidden">>
+		<<if $wolfgirl gte 5>>
+			<<set $transformationParts.wolf.cheeks to "feral">>
 		<<else>>
 			<<set $transformationParts.wolf.cheeks to "disabled">>
 		<</if>>
@@ -129,6 +129,10 @@
 		demonwolf: {
 			tail: true
 		},
+		demonfox: {
+			tail: true,
+			ears: true
+		},
 		demonharpy: {
 			wings: true
 		},
@@ -163,7 +167,7 @@
 			<<case "demon">> <<set $demonbuild = Math.clamp($demonbuild + _args[1], 0, 100)>>
 		<</switch>>
 	<</if>>
-	<<if !["angel", "fallen", "demon"].includes(_args[0]) and _args[1] gte 1>>
+	<<if !["angel", "fallen", "demon"].includes(_args[0]) and _args[1] gte 1 and !($worn.neck.name is "familiar collar" and $worn.neck.cursed is 1)>>
 		<<if _args[0] isnot "wolf" and $worn.neck.name isnot "spiked collar" and $worn.neck.name isnot "spiked collar with leash">>
 			<<set $wolfbuild = Math.clamp($wolfbuild - _args[1], 0, 100)>>
 		<</if>>
@@ -173,10 +177,10 @@
 		<<if _args[0] isnot "cow" and $worn.neck.name isnot "cow bell">>
 			<<set $cowbuild  = Math.clamp($cowbuild  - _args[1], 0, 100)>>
 		<</if>>
-		<<if _args[0] isnot "bird" and $worn.head.name isnot "feathered hair clip">>
+		<<if _args[0] isnot "bird" and $worn.head.name isnot "feathered hair clip" and $worn.neck.name isnot "feather necklace">>
 			<<set $birdbuild = Math.clamp($birdbuild - _args[1], 0, 100)>>
 		<</if>>
-		<<if _args[0] isnot "fox" and $worn.head.name isnot "spirit mask">>
+		<<if _args[0] isnot "fox" and $worn.head.name isnot "spirit mask" and $worn.neck.name isnot "jasper pendant">>
 			<<set $foxbuild = Math.clamp($foxbuild - _args[1], 0, 100)>>
 		<</if>>
 	<</if>>
@@ -184,24 +188,26 @@
 
 
 <<widget "transformationStateUpdate">>
-	<<if $wolfbuild gte 1 and $worn.neck.name isnot "spiked collar" and $worn.neck.name isnot "spiked collar with leash" and playerNormalPregnancyType() isnot "wolf">>
-		<<transform wolf -1>>
-	<</if>>
+	<<if !($worn.neck.name is "familiar collar" and $worn.neck.cursed is 1)>>
+		<<if $wolfbuild gte 1 and $worn.neck.name isnot "spiked collar" and $worn.neck.name isnot "spiked collar with leash" and playerNormalPregnancyType() isnot "wolf">>
+			<<transform wolf -1>>
+		<</if>>
 
-	<<if $catbuild gte 1 and $worn.neck.name isnot "cat bell collar" and playerNormalPregnancyType() isnot "cat">>
-		<<transform cat -1>>
-	<</if>>
+		<<if $catbuild gte 1 and $worn.neck.name isnot "cat bell collar" and playerNormalPregnancyType() isnot "cat">>
+			<<transform cat -1>>
+		<</if>>
 
-	<<if $cowbuild gte 1 and $worn.neck.name isnot "cow bell" and playerNormalPregnancyType() isnot "cow">>
-		<<transform cow -1>>
-	<</if>>
+		<<if $cowbuild gte 1 and $worn.neck.name isnot "cow bell" and playerNormalPregnancyType() isnot "cow">>
+			<<transform cow -1>>
+		<</if>>
 
-	<<if $birdbuild gte 1 and $worn.head.name isnot "feathered hair clip" and playerNormalPregnancyType() isnot "hawk">>
-		<<transform bird -1>>
-	<</if>>
+		<<if $birdbuild gte 1 and $worn.head.name isnot "feathered hair clip" and $worn.neck.name isnot "feather necklace" and playerNormalPregnancyType() isnot "hawk">>
+			<<transform bird -1>>
+		<</if>>
 
-	<<if $foxbuild gte 1 and $worn.head.name isnot "spirit mask" and playerNormalPregnancyType() isnot "fox">>
-		<<transform fox -1>>
+		<<if $foxbuild gte 1 and $worn.head.name isnot "spirit mask" and $worn.neck.name isnot "jasper pendant" and playerNormalPregnancyType() isnot "fox">>
+			<<transform fox -1>>
+		<</if>>
 	<</if>>
 
 	<<if $wolfgirl gte 6>>
@@ -215,7 +221,7 @@
 	<<else>>
 		<<set $physicalTransform to 0>>
 	<</if>>
-	<<if $physicalTransform is 1 or $specialTransform is 1>>
+	<<if ($physicalTransform is 1 or $specialTransform is 1) and !($hypnosis_traits.peace and $settings.hypnosisEnabled)>>
 		<<if $harpy gte 6 and ($angel gte 6 or $fallenangel gte 2 or $demon gte 6)>>
 			<<if $transformationParts.bird.wings is "hidden" and ($transformationParts.demon.wings is "hidden" or $transformationParts.angel.wings is "hidden" or $transformationParts.fallenAngel.wings is "hidden")>>
 			<<else>>
@@ -223,30 +229,23 @@
 			<</if>>
 		<</if>>
 		<<set _keys to Object.keys($transformationParts)>>
-		<<if $panicattacks gte 2>>
-			<<for _i to 0; _i lt _keys.length; _i++>>
-				<<set _key to _keys[_i]>>
-				<<for _label, _value range $transformationParts[_key]>>
-					<<if _value is "hidden" and !["pubes", "pits", "cheeks", "flaunting"].includes(_label) and !(_label is "wings" and _excludeWings is true)>>
+		<<for _i to 0; _i lt _keys.length; _i++>>
+			<<set _key to _keys[_i]>>
+			<<for _label, _value range $transformationParts[_key]>>
+				<<if _value is "hidden" and _key isnot "traits" and !["pubes", "pits"].includes(_label) and !(_label is "wings" and _excludeWings is true)>>
+					<<if $panicattacks gte 2>>
 						<<set $transformationParts[clone(_key)][clone(_label)] to "default">>
 						<<set _hidingFailed to true>>
 						<<set $effectsmessage to 1>>
 						<<set $hiddenTransformMessage to 1>>
-					<</if>>
-				<</for>>
-			<</for>>
-		<<else>>
-			<<for _i to 0; _i lt _keys.length; _i++>>
-				<<set _key to _keys[_i]>>
-				<<for _label, _value range $transformationParts[_key]>>
-					<<if _value is "hidden" and !["pubes", "pits", "cheeks", "flaunting"].includes(_label) and !(_label is "wings" and _excludeWings is true)>>
+					<<else>>
 						<<trauma 15>>
 						<<set $effectsmessage to 1>>
 						<<set $hiddenTransformMessage to 2>>
 					<</if>>
-				<</for>>
+				<</if>>
 			<</for>>
-		<</if>>
+		<</for>>
 	<</if>>
 <</widget>>
 
@@ -332,6 +331,7 @@
 		<<set $fallenangel to 2>>
 		<<set $transformationParts.fallenAngel.halo to ($transformationParts.angel.halo is "hidden" ? "default" : $transformationParts.angel.halo)>>
 		<<set $transformationParts.fallenAngel.wings to ($transformationParts.angel.wings is "classic" ? "classic" : "default")>>
+		<<set _freshFallen to true>>
 		<<earnFeat "Fallen Angel">>
 	<<elseif $angel gte 4>>
 		<span class="red">Your halo shatters and fades.</span>
@@ -564,7 +564,6 @@
 					<<set $wolfgirl to 2>>
 					<<run $timeMessages.pushUnique("wolfUp2")>>
 					<<set $transformationParts.traits.fangs to "default">>
-					<<set $transformationParts.wolf.cheeks to "hidden">>
 				<<elseif $wolfbuild lt 5>>
 					<<set $wolfgirl to 0>>
 					<<run $timeMessages.pushUnique("wolfDown0")>>
@@ -578,7 +577,6 @@
 					<<set $wolfgirl to 1>>
 					<<run $timeMessages.pushUnique("wolfDown1")>>
 					<<set $transformationParts.traits.fangs to "disabled">>
-					<<set $transformationParts.wolf.cheeks to "disabled">>
 				<</if>>
 			<<case 3>>
 				<<if $wolfbuild gte 20>>
@@ -595,6 +593,7 @@
 				<<if $wolfbuild gte 25>>
 					<<set $wolfgirl to 5>>
 					<<run $timeMessages.pushUnique("wolfUp5")>>
+					<<set $transformationParts.wolf.cheeks to "feral">>
 				<<elseif $wolfbuild lt 20>>
 					<<set $wolfgirl to 3>>
 					<<run $timeMessages.pushUnique("wolfDown3")>>
@@ -610,6 +609,7 @@
 				<<elseif $wolfbuild lt 25>>
 					<<set $wolfgirl to 4>>
 					<<run $timeMessages.pushUnique("wolfDown4")>>
+					<<set $transformationParts.wolf.cheeks to "disabled">>
 				<</if>>
 			<<case 6>>
 				<<if $wolfbuild lt 30>>
@@ -634,7 +634,7 @@
 		<<set $wolfgirl to 6>>
 		<<set $wolfbuild to 100>>
 		<<set $transformationParts.traits.fangs to "default">>
-		<<set $transformationParts.wolf.cheeks to "hidden">>
+		<<set $transformationParts.wolf.cheeks to "feral">>
 		<<set $transformationParts.wolf.ears to "default">>
 		<<set $transformationParts.wolf.pubes to ($settings.pubicHairEnabled? "default" : "hidden")>>
 		<<set $transformationParts.wolf.pits to ($settings.pubicHairEnabled? "default" : "hidden")>>
@@ -1116,4 +1116,41 @@
 	<<demonTransform 99>>
 	<<angelTransform 99>>
 	<<fallenButNotOut 99>>
+<</widget>>
+
+<<widget "revealTransformations">>
+	/* DO NOT USE without calling rehideTransformations before scene end */
+	<<set $tfPartsHidden to clone($transformationParts)>>
+	<<if $harpy gte 6 and ($angel gte 6 or $fallenangel gte 2 or $demon gte 6)>>
+		<<if $transformationParts.bird.wings is "hidden" and ($transformationParts.demon.wings is "hidden" or $transformationParts.angel.wings is "hidden" or $transformationParts.fallenAngel.wings is "hidden")>>
+		<<else>>
+			<<set $_excludeWings to true>>
+		<</if>>
+	<</if>>
+	<<set $_keys to Object.keys($transformationParts)>>
+	<<for $_i to 0; $_i lt $_keys.length; $_i++>>
+		<<set $_key to $_keys[$_i]>>
+		<<for $_label, $_value range $transformationParts[$_key]>>
+			<<if $_value is "hidden" and $_key isnot "traits" and !["pubes", "pits"].includes($_label) and !($_label is "wings" and $_excludeWings is true)>>
+				<<set $transformationParts[clone($_key)][clone($_label)] to "default">>
+				<<set $tfPartsHidden[clone($_key)][clone($_label)] to "hideLater">>
+				<<set _unhidden to true>>
+			<</if>>
+		<</for>>
+	<</for>>
+<</widget>>
+
+<<widget "rehideTransformations">>
+	<<if $tfPartsHidden>>
+		<<set $_keys to Object.keys($tfPartsHidden)>>
+		<<for $_i to 0; $_i lt $_keys.length; $_i++>>
+			<<set $_key to $_keys[$_i]>>
+			<<for $_label, $_value range $tfPartsHidden[$_key]>>
+				<<if $_value is "hideLater">>
+					<<set $transformationParts[clone($_key)][clone($_label)] to "hidden">>
+				<</if>>
+			<</for>>
+		<</for>>
+		<<unset $tfPartsHidden>>
+	<</if>>
 <</widget>>

@@ -3314,6 +3314,14 @@
 			][random(0,2)]>>
 		<</if>>
 
+	<<elseif $speechapologiseunforgiving is 1>>
+		<<He>> speaks.
+		<<print [
+			`"Shut up, <<bitch>>."`,
+			`"Shut up before I give you something to choke on."`,
+			`"Do you have permission to speak, <<slut>>?"`,
+		][random(0,2)]>>
+
 	<<elseif $speechfacesit is 1>>
 		<<if (($enemyarousal / $enemyarousalmax) * 100) gte 70>>
 			<<if (($enemyanger / $enemyangermax) * 100) gte 10>>
@@ -4875,7 +4883,7 @@
 				<</switch>>
 			<</if>>
 		<</if>>
-	<<elseif $alarm is 1 and isLoveInterest("Eden") and $location is $forest>>
+	<<elseif $alarm is 1 and isLoveInterest("Eden") and $location is "forest">>
 		<<He>> yelps. "What are you doing, shouting for the freak? Don't you know how dangerous <<nnpc_he "Eden">> is?!"
 		<<set $enemytrust -= 30>>
 	<<elseif $speechnamedrop is 1 and _loveInterest is "Eden" and $location is "forest">>
@@ -4887,6 +4895,9 @@
 		<<He>> grins. "A farmer, huh? Maybe I'll cultivate you, cow<<girl>>."
 	<<elseif $speechnamedrop is 1 and _loveInterest is "Great Hawk" and $location is "moor">>
 		<<He>> flinches at your words. "Oh shit, you know the sky terror? This is... dangerous."
+		<<set $enemytrust -= 20>>
+	<<elseif $speechnamedrop is 1 and _loveInterest is "Gwylan">>
+		<<His>> vegetation turns pale. "Th-the witch? You're <<nnpc_his "Gwylan">> charge? Shit."
 		<<set $enemytrust -= 20>>
 	<<elseif random(1,10) is 10 and $NPCList[_n].penis isnot "chest" and $NPCList[_n].location.genitals isnot "head" and $mouthstate is 0 and !$worn.face.type.includes("covered") and !$worn.face.type.includes("gag")>>
 		<span class="blue"><<He>> moves <<his>> lips close to yours, about to kiss.</span>
@@ -4932,6 +4943,8 @@
 						<<He>> examines your $worn.lower.name and beams. "We match!"
 					<<elseif $worn.head.name is "flower crown" and random(0,1) is 1>>
 						<<He>> examines your $worn.head.name and gasps. "Oh, that's so cute! I need to make one of those for myself!"
+					<<elseif $worn.neck.name is "familiar collar" and random(0,1) is 1>>
+						<<He>> examines your $worn.neck.name and winces. "I'm... going to try not to think about the implications of that."
 					<<elseif $rng gte 51>>
 						<<He>> speaks. "I bet nobody in the town has vines like mine!"
 					<<else>>
@@ -5179,6 +5192,8 @@
 				<<switch _loveInterest>>
 					<<case "Black Wolf" "Great Hawk">>
 						<<set $_text_output to `<<He>> speaks. "That thing will tear you apart the first chance it gets! Stay away from it."`>>
+					<<case "Gwylan">>
+						<<set $_text_output to `<<He>> freezes. "That damned witch is trying to steal you from me, too?"`>>
 					<<default>>
 						<<set $_text_output to `<<He>> speaks. "Whoever that is, forget them." <<He>> sounds hurt.`>>
 				<</switch>>
@@ -5390,6 +5405,16 @@
 				<<set $_text_output to `<<He>> smiles. "Say 'Ahh'..."`>>
 			<<elseif $speechkissvirgin is 1 and $player.virginity.kiss is _args[0]>>
 				<<set $_text_output to `<<He>> smiles. "How's my bedside manner?"`>>
+			<<elseif $speechnamedrop is 1>>
+				<<set $speechnamedrop to 0>>
+				<<switch _loveInterest>>
+					<<case "Gwylan">>
+						<<set $_text_output to `<<He>> speaks. "Interesting. You've a very healthy imagination, to give your hallucination such a name."`>>
+					<<case "Black Wolf" "Great Hawk">>
+						<<set $_text_output to `<<He>> shakes <<his>> head. "As I've said, such animals do not exist."`>>
+					<<default>>
+						<<set $_text_output to `<<He>> nods. "Prior attachments. Noted."`>>
+				<</switch>>
 			<</if>>
 		<<case "Morgan">>
 			<<if $possessed>>
@@ -5445,6 +5470,16 @@
 				<<else>>
 					<<set $_text_output to `<<He>> stares you down, silent.`>>
 				<</if>>
+			<<elseif $speechnamedrop is 1>>
+				<<set $speechnamedrop to 0>>
+				<<switch _loveInterest>>
+					<<case "Gwylan">>
+						<<set $_text_output to `<<He>> speaks. "Hah! How's little seabird doing?"`>>
+					<<case "Black Wolf" "Great Hawk">>
+						<<set $_text_output to `<<He>> chortles. "Oh, you're full of tales."`>>
+					<<default>>
+						<<set $_text_output to `<<He>> smirks. "A lover on land or a heart at sea, pick one."`>>
+				<</switch>>
 			<</if>>
 		<<case "Bailey">>
 			<<set $_stringsPre to ($enemyanger lte 60 ? "<<He>> snickers. ":"<<He>> snarls. ")>>
@@ -5463,6 +5498,10 @@
 						<<set $_text_output to $_stringsPre + `"That worthless brat can't save you."`>>
 					<<case "Black Wolf" "Great Hawk">>
 						<<set $_text_output to $_stringsPre + `"People would pay extra to see you ${$player.penisExist ? "fuck" : "get fucked by"} some beast."`>>
+					<<case "Eden">>
+						<<set $_text_output to $_stringsPre + `"You'll be going right back to <<nnpc_him 'Eden'>> if you keep this up."`>>
+					<<case "Gwylan">>
+						<<set $_text_output to `<<He>> pauses, then speaks. "Careful where you bring that name."`>>
 					<<default>>
 						<<set $_text_output to $_stringsPre + `"If <<nnpc_he _loveInterest>> cared about you, <<nnpc_he _loveInterest>> would pay for you."`>>
 				<</switch>>
@@ -5517,6 +5556,11 @@
 			<<speech-sydney>>
 			<<if _sydneyText and $speechdisable isnot 1>>
 				<<set $_text_output to _sydneyText>>
+			<</if>>
+		<<case "Gwylan">>
+			<<speech-gwylan>>
+			<<if _gwyText and $speechdisable isnot 1>>
+				<<set $_text_output to _gwyText>>
 			<</if>>
 		<<case "Ivory Wraith">>
 			<<if !_speechWraith>>

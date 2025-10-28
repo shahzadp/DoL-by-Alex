@@ -249,6 +249,39 @@ setup.shopDetails = {
 		desc: "Makes it more difficult to hide.",
 		details: "Increases the amount of crime gained during thievery.",
 	},
+	heavy: {
+		name: "Heavy",
+		desc: "Cumbersome and tiring.",
+		details:
+			"Durable and reduces damage from incoming attacks, but slows you down and increases fatigue gains. These penalties are reduced with high physique, relative to your body size's limits. Too heavy to steal.",
+	},
+	curious: {
+		name: "Curious",
+		get desc() {
+			return V.gwylanSeen?.includes("hypnosis_first")
+				? V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1
+					? "Nurtures your bottomless <span class='red'>Devotion</span>."
+					: "Feeds your hungry <span class='blue'>Curiosity</span>."
+				: "<span class='blue'>???</span>";
+		},
+		get details() {
+			return V.gwylanSeen?.includes("hypnosis_first")
+				? V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1
+					? "Prevents <span class='red'>Hypnotic Devotion</span> from decaying over time."
+					: "Prevents <span class='blue'>Hypnotic Curiosity</span> from decaying over time."
+				: "<span class='blue'>???</span>";
+		},
+	},
+	enchanting: {
+		name: "Enchanting",
+		desc: "Must be bound to you before its other effects can become active.",
+		details: "This item's other traits are only active when it can't be removed easily.",
+	},
+	hat: {
+		name: "Hat",
+		desc: "Something to wear atop your head.",
+		details: "none",
+	},
 };
 
 setup.hairDetails = {

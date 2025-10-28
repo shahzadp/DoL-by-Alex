@@ -205,6 +205,7 @@ You shake your head. <<He>> freezes in an unnatural position, and grins. Your pu
 	<<violence 1>>
 	<<molested>>
 	<<unset $struggle_start>>
+	<<set $forest to 0>>
 <<elseif $molestationstart is 1>>
 	<<set $molestationstart to 0>>
 	<<controlloss>>
@@ -530,6 +531,8 @@ This isn't $wraith.mimic. <<trauma 24>><<gggtrauma>><<set $wraith.revealed to tr
 		"<span class="wraith">Vulture.</span>"
 	<<elseif $wraith.mimic is "Robin">>
 		"<span class="wraith">We all have something to protect.</span>"
+	<<elseif $wraith.mimic is "Gwylan">>
+		"<span class="wraith">Bodies. Vessels.</span>"
 	<<else>>
 		"<span class="wraith">Give it back.</span>"
 	<</if>>
@@ -866,7 +869,7 @@ It moves in a hypnotic pattern, leaving phantom shapes in the air. A warmth buil
 <<else>>
 	The figure begins to rapidly dissipate into white mist from the bottom up. You find your mouth hanging open. You can't feel anything.
 	<br><br>
-	The mist trails into your mouth, making your entire body feel cold and rigid. The figure is gone.
+	<span class="red">The mist trails into your mouth, making your entire body feel cold and rigid.</span> The figure is gone.
 	<<if $location is "lake_ruin">>
 		You right yourself in the water, but can't feel your arms.
 	<<else>>
@@ -893,6 +896,7 @@ It moves in a hypnotic pattern, leaving phantom shapes in the air. A warmth buil
 	<</switch>>
 	<br><br>
 	<<set $wraith.hunt to 6>>
+	<<set $forestHunter to "Ivory Wraith">>
 	<<set $wraith.evaded++>>
 	<<exitWraith>>
 <<else>>
@@ -942,6 +946,7 @@ Your eyes snap open. The figure is gone, but you hear laughter echo in your head
 <</switch>>
 <br><br>
 <<set $wraith.hunt to 8>>
+<<set $forestHunter to "Ivory Wraith">>
 <<set $wraith.evaded++>>
 <<exitWraith>>
 
@@ -1038,7 +1043,80 @@ Your eyes snap open. The figure is gone, but you hear laughter echo in your head
 	<<clotheson>>
 	<<endcombat>>
 	<<exitWraith>>
-<<elseif $enemyarousal gte $enemyarousalmax or $pain gte 100 and $willpowerpain is 0 or ($wraith.type is "tentacles" and $tentacles.active lte ($tentacles.max / 2)) or ($wraith.type is "slime" and $struggle.done gte $struggle.number)>>
+<<elseif $location is "forest" and $rescue is 1 and gwylanCanRescueFromWraith()>>
+	The figure growls as <<he>> looks to the treeline.
+	<<He>> begins to rapidly dissipate into white mist from the bottom up. You find your mouth hanging open. You can't feel anything.
+	<br><br>
+	<span class="red">The mist trails into your mouth, making your entire body feel cold and rigid.</span> The figure is gone. You stand up, but can't feel your legs.
+	<br><br>
+
+	<<silently>><<clotheson>><<endcombat>><</silently>><<wraithPossess>>
+
+	<<if $gwylanRescue?.seen.includes("Wraith")>>
+		<<set $wraith.exit to "forest">>
+		<<npc Gwylan>><<person1>>
+		Three green eyes stare from the shadows. A shape like a massive fox darts away, before reappearing somewhere else. It's all around you.
+		<br><br>
+
+		A branch breaks, and your body turns just in time to be tackled by something. <span class="green">It's Gwylan.</span>
+		Your body rolls with <<him>>, before kicking both of your legs into Gwylan's gut. <<Hes>> sent reeling, but recovers quickly.
+		<br><br>
+
+		Your body and Gwylan stare each other down. The storm becomes more intense, and lightning strikes a tree off in the distance.
+		<br><br>
+
+		"I know you can hear me in there, <<pcpetname "Gwylan" "name">>. I'll do my best, but..." <<His>> voice trembles. "I won't be able to get you out by myself. I need you to fight it, however you can."
+		<br><br>
+
+		<<if $hypnosis_traits.devotion gte 4>>
+			You feel like a fly trapped between two spiders.
+			<br><br>
+		<</if>>
+
+		Gwylan runs towards you!
+		<br><br>
+
+		<<if !$wraithWillMessage>>
+			<<set $wraithWillMessage to true>>
+			<i><span class="red">Fully restore your </span><span class="green">control</span><span class="red"> to take back your body.</span></i>
+			<br><br>
+		<</if>>
+
+		<span class="nextLink"><<link [[Fight|Wraith Snatched Gwylan Fight]]>><<set $fightstart to 1>><</link>></span>
+		<br>
+	<<else>>
+		<<set $wraith.exit to "Gwylan">>
+		Gwylan emerges from the treeline. <<nnpc_Hes "Gwylan">> wearing a green hooded cloak. "There you are!
+		<<if $gwylan.timer.bloodVisit>>
+			I got worried after you left the shop earlier. Then I heard you scream.
+		<<elseif $gwylan.timer.bloodKnock>>
+			I heard someone knocking at the shop, and I thought it might have been you. Then I heard you scream.
+		<<else>>
+			I heard you scream.
+		<</if>>
+		I dropped everything and..." <<nnpc_He "Gwylan">> looks you over, and steps closer. "Oh dear."
+		<br><br>
+
+		You stare at <<nnpc_him "Gwylan">>. You try to open your mouth, <span class="red">but your body doesn't obey</span>.
+		<br><br>
+
+		<<include "Wraith Snatched Intro">>
+	<</if>>
+<<elseif $pain gte 95 and $willpowerpain is 0>>
+	<<set $wraith.hunt to 0>>
+	<span class="red">You're too battered and bruised to resist.</span>
+	The figure begins to rapidly dissipate into white mist from the bottom up. You find your mouth hanging open. You can't feel anything.
+	<br><br>
+	<span class="red">The mist trails into your mouth, making your entire body feel cold and rigid.</span> The figure is gone.
+	<<if $location is "lake_ruin">>
+		You right yourself in the water, but can't feel your arms.
+	<<else>>
+		You stand up, but can't feel your legs.
+	<</if>>
+	<br><br>
+	<<link [[Next|Wraith Snatched Intro]]>><<endWraith>><<clotheson>><<endcombat>><<wraithPossess>><</link>>
+	<br>
+<<elseif $enemyarousal gte $enemyarousalmax or ($wraith.type is "tentacles" and $tentacles.active lte ($tentacles.max / 2)) or ($wraith.type is "slime" and $struggle.done gte $struggle.number)>>
 	<<set $wraithCount++>>
 	<<ejacW>>
 	<<if $wraithCount gte $wraithMax>>
@@ -1056,16 +1134,12 @@ Your eyes snap open. The figure is gone, but you hear laughter echo in your head
 			<<endcombat>>
 			<<exitWraith>>
 			<<clearWraith>>
-		<<elseif $pain gte 100 or $stress gte $stressmax>>
+		<<elseif $stress gte $stressmax>>
 			<<set $wraith.hunt to 0>>
-			<<if $pain gte 100>>
-				<span class="red">You're too battered and bruised to resist.</span>
-			<<else>>
-				This is too much for you. You feel your consciousness slipping.
-			<</if>>
+			This is too much for you. You feel your consciousness slipping.
 			The figure begins to rapidly dissipate into white mist from the bottom up. You find your mouth hanging open. You can't feel anything.
 			<br><br>
-			The mist trails into your mouth, making your entire body feel cold and rigid. The figure is gone.
+			<span class="red">The mist trails into your mouth, making your entire body feel cold and rigid.</span> The figure is gone.
 			<<if $location is "lake_ruin">>
 				You right yourself in the water, but can't feel your arms.
 			<<else>>
@@ -1157,7 +1231,12 @@ You reach forward, taking the hand in yours. <<takeHandholdingVirginity "Ivory W
 <br><br>
 The skin ripples, changing between a ghastly pale and a normal tone.
 <br><br>
-<span class="teal"><<He>> hums a familiar tune.</span>
+<<if $seabird_lullaby gte 2>>
+	<span class="teal"><<He>> hums Seabird's Lullaby.</span>
+<<else>>
+	<<set $seabird_lullaby to 1>>
+	<span class="teal"><<He>> hums a familiar tune.</span>
+<</if>>
 <br><br>
 <<Hes>> cloaked in a white robe, standing under a red moon. <<He>> has <<his>> other arm spread out to you in a welcoming gesture. You feel profoundly calm as you take a step forward.
 <br><br>

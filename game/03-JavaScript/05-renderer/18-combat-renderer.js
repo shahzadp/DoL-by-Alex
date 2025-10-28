@@ -1,5 +1,5 @@
 // @ts-check
-/* globals FilterMap, CompositeLayerSpec, Condom, CondomOptions, Partial, ClothedSlots, ClothingState, PositionStates, TransformationKeys, TransformationParts, Transformations, CombatClothingTypes, CombatPlayerOptions, CharacterTypes */
+/* globals FilterMap, CompositeLayerSpec, Condom, CondomOptions, Partial, ClothedSlots, ClothingState, PositionStates, TransformationKeys, TransformationParts, Transformations, CombatClothingTypes, CombatPlayerOptions, CharacterTypes, SexToySlots */
 
 /**
  * @typedef CombatZIndices
@@ -499,7 +499,7 @@ class CombatRenderer {
 	}
 
 	/**
-	 * @param {ClothedSlots} slot
+	 * @param {ClothedSlots | SexToySlots} slot
 	 * @returns {ClothesItem}
 	 */
 	static getClothingBySlot(slot) {
@@ -507,7 +507,7 @@ class CombatRenderer {
 		if (active == null) {
 			return CombatRenderer.emptyClothing;
 		}
-		const setupCategory = setup.clothes[slot];
+		const setupCategory = setup.sextoys.find(t => t.category === slot) ? setup.sextoys : setup.clothes[slot];
 		const defaults = setupCategory == null ? CombatRenderer.emptyClothing : setupCategory[active.index];
 		if (defaults == null) {
 			// Player likely used a modded item ported back to vanilla.
@@ -520,7 +520,7 @@ class CombatRenderer {
 	}
 
 	/**
-	 * @param {ClothedSlots} slot
+	 * @param {ClothedSlots | SexToySlots} slot
 	 * @returns {ClothesItem}
 	 */
 	static getClothingSetupBySlot(slot) {
@@ -528,7 +528,7 @@ class CombatRenderer {
 		if (active == null) {
 			return CombatRenderer.emptyClothing;
 		}
-		const category = setup.clothes[slot];
+		const category = setup.sextoys.some(t => t.category === slot) ? setup.sextoys : setup.clothes[slot];
 		return category == null ? CombatRenderer.emptyClothing : category[active.index];
 	}
 

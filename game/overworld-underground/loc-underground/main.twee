@@ -48,7 +48,9 @@
 <</if>>
 <br><br>
 
-<<if $worn.neck.collared isnot 1>>
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	Someone struggles with your collar, trying to remove it. When that fails, they try to hook a leash to it, with no success. They yank it in frustration.
+<<elseif $worn.neck.collared isnot 1 or $worn.neck.name is "familiar collar">>
 	<<neckwear 21>>
 	Your neck is freed only briefly. Someone closes something hard and cold around it before you are yanked to your feet and pulled away.
 <<else>>
@@ -72,10 +74,18 @@
 	<br><br>
 
 	<<if _virginityShow>>You're helplessly watching Robin being taken away by the <<person>>.<<set $undergroundbrothelwithRobin to true>><</if>>
-	A <<person3>><<person>> holds the other end of your leash<<if !_virginityShow>> in one hand, and Robin's in the other<</if>>. <<He>> leads you towards a door at the far end of the room.
+	<<if $worn.neck.type.includes("leash")>>
+		A <<person3>><<person>> holds the other end of your leash<<if !_virginityShow>> in one hand, and Robin's in the other<</if>>. <<He>> leads you towards a door at the far end of the room.
+	<<else>>
+		A <<person3>><<person>> holds you by the collar<<if !_virginityShow>> with one hand, and Robin's leash in the other<</if>>. <<He>> leads you towards a door at the far end of the room.
+	<</if>>
 <<else>>
 	<<generate2>><<person2>>
-	A <<person>> holds the other end of your leash. <<He>> leads you towards a door at the far end of the room.
+	<<if $worn.neck.type.includes("leash")>>
+		A <<person>> holds the other end of your leash. <<He>> leads you towards a door at the far end of the room.
+	<<else>>
+		A <<person>> holds you by your collar. <<He>> leads you towards a door at the far end of the room.
+	<</if>>
 <</if>>
 <br><br>
 
@@ -97,9 +107,9 @@
 
 <<if $phase is 2>>
 	<<if $player.virginity.penile is true and $player.virginity.vaginal is true>>
-		Someone grabs your leash and tugs harshly, causing you to stumble and the crowd to laugh.<<pain 4>><<gpain>>
+		Someone <<pull_leash "grabs">> and tugs harshly, causing you to stumble and the crowd to laugh.<<pain 4>><<gpain>>
 	<<else>>
-		You look around the room, but to your astonishment, no one else is trying to rape you. You try to sit up but slip in a puddle of cum, causing the crowd to laugh. Before you can finish getting up, someone pulls on your leash. They drag you on your back for several paces while you stumble to try and stand up.<<pain 2>><<gpain>>
+		You look around the room, but to your astonishment, no one else is trying to rape you. You try to sit up but slip in a puddle of cum, causing the crowd to laugh. Before you can finish getting up, someone <<pull_leash "pulls on">>. They drag you on your back for several paces while you stumble to try and stand up.<<pain 2>><<gpain>>
 	<</if>>
 	<br><br>
 <</if>>
@@ -261,19 +271,19 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 <<elseif $undergroundbrothel.time is 4>>
 	<<run delete $undergroundbrothel.robinSpoke>>
 	<<generate1>><<person1>>
-	<<if C.npc.Avery.init is 1 and $averyUndergroundBrothelReunion is undefined>>
-		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, yanking your leash.
+	<<if C.npc.Avery.init is 1 and $averyUndergroundBrothelReunion is undefined and $avery_fate isnot "fallen" and $avery_fate isnot "kicked" and !$avery_injury>>
+		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, <<pull_leash "yanking">>.
 		<<if $undergroundbrothel.robin>>
 			"Your friend won't be needed."
 		<</if>>
 		<br><br>
 		<<link [[Go quietly|Underground Avery Reunion]]>><<endevent>><</link>>
 	<<elseif $undergroundbrothel.robin>>
-		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, yanking your leash. "Your friend will be accompanying us. Hope you're feeling lucky."
+		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, <<pull_leash "yanking">>. "Your friend will be accompanying us. Hope you're feeling lucky."
 		<br><br>
 		<<link [[Go quietly|Underground Robin Dice Intro]]>><<endevent>><</link>>
 	<<else>>
-		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for your performance," <<he>> says, <<pull_leash "yanking">>.
 		"Make sure you dance sexy. If you don't attract a customer we'll just let the whole audience have a piece." <<He>> tries to pull you from the room.
 		<br><br>
 		<<link [[Go quietly|Underground Dance Intro]]>><<endevent>><</link>>
@@ -285,7 +295,7 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 	<<run delete $undergroundbrothel.robinSpoke>>
 	<<generate1>><<person1>><<saveNPC 0 handler>>
 	<<if $undergroundbrothel.robin>>
-		The lights turn on once more, and a <<person1>><<person>> enters. "Time for another performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person1>><<person>> enters. "Time for another performance," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<if !$settings.tentaclesEnabled>>
 			<<link [[Go quietly|Underground Robin Stage Intro]]>><<endevent>><</link>>
@@ -293,7 +303,7 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 			<<link [[Go quietly|Underground Robin Tentacles Intro]]>><<endevent>><</link>>
 		<</if>>
 	<<else>>
-		The lights turn on once more, and a <<person>> enters. "You're needed," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "You're needed," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Presentation]]>><<endevent>><</link>>
 	<</if>>
@@ -304,11 +314,11 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 	<<run delete $undergroundbrothel.robinSpoke>>
 	<<generate1>><<person1>>
 	<<if $undergroundbrothel.robin>>
-		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Robin Machine Intro]]>><<endevent>><</link>>
 	<<else>>
-		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Stage Intro]]>><<endevent>><</link>>
 	<</if>>
@@ -319,11 +329,11 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 	<<run delete $undergroundbrothel.robinSpoke>>
 	<<generate1>><<person1>>
 	<<if $undergroundbrothel.robin>>
-		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Robin Kiss Intro]]>><<endevent>><</link>>
 	<<else>>
-		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for another performance," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Film Intro]]>><<endevent>><</link>>
 	<</if>>
@@ -334,11 +344,11 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 	<<run delete $undergroundbrothel.robinSpoke>>
 	<<generate1>><<person1>>
 	<<if $undergroundbrothel.robin>>
-		The lights turn on once more, and a <<person>> enters. "Time for some fresh air," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for some fresh air," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Robin Hunt Intro]]>><<endevent>><</link>>
 	<<else>>
-		The lights turn on once more, and a <<person>> enters. "Time for some fresh air," <<he>> says, yanking your leash.
+		The lights turn on once more, and a <<person>> enters. "Time for some fresh air," <<he>> says, <<pull_leash "yanking">>.
 		<br><br>
 		<<link [[Go quietly|Underground Hunt Intro]]>><<endevent>><</link>>
 	<</if>>
@@ -361,6 +371,7 @@ You are in an underground cell. You can't see a thing but can tell that the wall
 		<<endevent>>
 		<<badEndTrackingEnd "Underground Dungeon" { reason: "uDungeonDumped" }>>
 		<<dungeonescape>>
+		<<specialClothesUnlock "set" "underground_brothel">>
 		<<link [[Next|Underground Lake]]>><</link>>
 	<<else>>
 		<<generate1>>
@@ -538,6 +549,7 @@ You slink into the room and round the side. No one notices you. You make it to t
 <br><br>
 <<badEndTrackingEnd "Underground Dungeon" { reason: _robin ? "uDungeonLakeRobin" : "uDungeonLake" }>>
 <<dungeonescape>>
+<<specialClothesUnlock "set" "underground_brothel">>
 
 <<if _robin>>
 	<<link [[Next|Underground Robin Escape Orphanage]]>><<set $phase to 1>><<set $stress -= 1000>><</link>>
@@ -629,6 +641,7 @@ The stone gives way and you fall several feet into cold water.
 <<if _fromUB>>
 	<<badEndTrackingEnd "Underground Dungeon" { reason: _robin ? "uDungeonLakeRobin" : "uDungeonLake" }>>
 	<<dungeonescape>>
+	<<specialClothesUnlock "set" "underground_brothel">>
 <</if>>
 <<if _wraithEvent and !_withRobin>>
 	<<ind>><<ind>><<ind>><<ind>><<ind>><<ind>><span class="wraith-flicker">_drown</span>

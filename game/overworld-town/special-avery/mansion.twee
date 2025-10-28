@@ -156,7 +156,13 @@ You walk up the hill towards Avery's mansion. The gates rattle open as you appro
 <<if currentSkillValue("handskill") gte 1000>>
 	<<set _pianoSkill to 5>>
 	<<if random(1, 5) is 5 and $seabird_lullaby>>
-		On a whim, you play the <span class="teal">familiar melody</span>. As if hearing it again would stir up some long-lost memory. No such revelation comes.
+		On a whim, you play
+		<<if $seabird_lullaby gte 2>>
+			<span class="teal">Seabird's Lullaby</span>.
+		<<else>>
+			the <span class="teal">familiar melody</span>.
+		<</if>>
+		As if hearing it again would stir up some long-lost memory. No such revelation comes.
 		<br><br>
 
 		You hum it to yourself as you play.
@@ -537,7 +543,13 @@ You take the gold mask. Dark eyes stare up at you. The metal around them is dama
 			You rub the tiredness from your eyes and focus. Your hair stands on end as you listen.
 			<br><br>
 
-			Six <span class="teal">faintly familiar</span> notes echo through the mansion, dulling the walls with their soothing hue. You feel anxious, like you want to go back to sleep while wide awake.
+			<<if $seabird_lullaby gte 2>>
+				The first six notes of <span class="teal">Seabird's Lullaby</span>
+			<<else>>
+				<<set $seabird_lullaby to 1>>
+				Six <span class="teal">faintly familiar</span> notes
+			<</if>>
+			echo through the mansion, dulling the walls with their soothing hue. You feel anxious, like you want to go back to sleep while wide awake.
 			<br><br>
 
 			<<set $wardrobe_location to "mansion_wardrobe">>
@@ -1297,19 +1309,33 @@ Mickey pauses, and looks anywhere but your eyes, as if ashamed. "I haven't found
 Mickey shakes their hands, as if removing something filthy. "There must be another way, but it's beyond me. I'm sorry. Avery has a plan for them. The stones. <span class="pink">If <<nnpc_he Avery>> finishes <<nnpc_his Avery>> skyscraper,</span> then it could be too late."
 <br><br>
 
-A hand reaches out from behind the tree and ruffles Mickey's hair, making them jump.
-<<if $avery_mansion.fox.known>>
-	The brown fox emerges. "When the hand nears midnight, the world will tremble."
+<<if isGwylanAbsent()>>
+	"Your approach is up to you. You're the field agent. The one in the thick of it. I'll keep doing what I can." Mickey glances over their shoulder. "Good luck." They turn and leave, weaving between the trees.
+	<br><br>
+
+	<<set $avery_mansion.mickey to 1>>
+
+	<<link [[Next|Danube Street]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $avery_mansion.fox.known>>
+	A hand reaches out from behind the tree and ruffles Mickey's hair, making them jump.
+	<<if $brownFoxRevealed>>
+		<<say_brown_fox "cap">> emerges, disguised behind <<his>> cloak and fox mask.
+	<<else>>
+		<<say_brown_fox "cap">> emerges.
+	<</if>>
+	"When the hand nears midnight, the world will tremble."
 	Mickey swats <<his>> hand away. "Your approach is up to you. You're the field agents. The ones in the thick of it. I'll keep doing what I can." Mickey glances over their shoulder. "Good luck." They turn and leave, weaving between the trees.
 	<br><br>
 
-	The brown fox only lingers for a moment. "You'll hear from me soon. I may have a lead, thanks to the little one." <<He>> folds <<his>> hands in front of <<himself>> and bows, before following Mickey.
+	<<say_brown_fox "cap">> only lingers for a moment. "You'll hear from me soon. I may have a lead, thanks to the little one." <<He>> folds <<his>> hands in front of <<himself>> and bows, before following Mickey.
 	<<set $avery_mansion.mickey to 1>><<set $avery_mansion.fox.progress++>>
 	<br><br>
 
 	<<link [[Next|Danube Street]]>><<endevent>><<set $eventskip to 1>><</link>>
 	<br>
 <<else>>
+	A hand reaches out from behind the tree and ruffles Mickey's hair, making them jump.
 	A figure in a green hooded cloak emerges, their face obscured by a brown fox mask. The same one you saw talking with Landry.
 	"When the hand nears midnight, the world will tremble." It's a <<personsimple>>'s voice, soothing like gentle birdsong despite the weight of <<his>> words.
 	<br><br>
@@ -1395,7 +1421,7 @@ A <<personsimple>>'s voice makes you jump. You look towards the direction it cam
 You feel the hairs on the back of your neck stand up as you walk down Danube Boulevard. A rustle from a nearby tree grabs your attention.
 <br><br>
 
-A figure drops out of it gracefully, but stumbles after a moment. It's the brown fox. <<He>> waves you over.
+A figure drops out of it gracefully, but stumbles after a moment. It's <<say_brown_fox>>. <<He>> waves you over.
 <br><br>
 
 "<<if !$avery_mansion.fox.dungeon>>Listen. I've got a lead on the bones, but it cost me. <</if>>I'm compromised." <span class="red">There's some fresh bandages wrapped around <<his>> upper right leg. The centre is still dark with blood.</span>
@@ -1474,8 +1500,14 @@ From this close up, you also notice that what little of <<his>> face you can see
 	"As I said, you could play the part of the pet. Make Avery overconfident."
 <</if>>
 <<He>> pauses.
-<<if $worn.neck.type.includes("collar")>>
-	"If it makes you feel any better, you look very cute in a collar." <<He>> smiles innocently.
+<<if $worn.neck.name is "familiar collar" and $brownFoxRevealed>>
+	"If it makes you feel any better, you look very cute in your collar." <<He>> smiles innocently.
+<<elseif $worn.neck.type.includes("collar")>>
+	<<if $brownFoxRevealed>>
+		"If it makes you feel any better, you look very cute in a collar, <<pcpetname "Gwylan" "simple">>." <<He>> smiles innocently.
+	<<else>>
+		"If it makes you feel any better, you look very cute in a collar." <<He>> smiles innocently.
+	<</if>>
 <<else>>
 	"If it makes you feel any better, I think you'd look cute in a collar." <<He>> smiles innocently.
 <</if>>
@@ -1526,7 +1558,12 @@ I bit <<nnpc_him "Remy">>. A lot. Once I squirmed free, I started throwing anyth
 	<</if>>
 	<br><br>
 
-	<<He>> looks away from you, <<his>> face still very red. <<note "+ ???" "green">><<set $avery_mansion.fox.progress += 2>><<set $avery_mansion.fox.aid to true>>
+	<<He>> looks away from you, <<his>> face still very red. <<if $brownFoxRevealed>><<gyearning>><<else>><<note "+ ???" "forest-green">><</if>>
+	<<set $avery_mansion.fox.progress += 2>>
+	<<if $gwylanSeen>>
+		<<npcincr Gwylan dom 2>>
+		<<set $gwylanSeen.pushUnique("bf_aid")>>
+	<</if>>
 	<br><br>
 
 	You walk <<him>> down the boulevard, keeping out of sight. "You're taking a big risk helping me, you know."
@@ -1566,7 +1603,7 @@ I bit <<nnpc_him "Remy">>. A lot. Once I squirmed free, I started throwing anyth
 <</if>>
 <br><br>
 
-<<set $avery_mansion.fox.unlocked to true>>
+<<set $brownFoxWounded to true>>
 
 <<link [[Next|Danube Street]]>><<endevent>><<set $eventskip to 1>><</link>>
 <br>
@@ -1810,8 +1847,15 @@ You hear the gates rattle open. A limousine drives through. "We'll arrive in sty
 You approach the burnt out ruin of Avery's mansion. One gate stands open, the other lies detached from the wall. The garden grows wild.
 <br><br>
 
-<<if $avery_mansion.fox.known and !$avery_mansion.fox.end and Time.dayState is "night">>
-	<span class="teal">You hear the lounge's piano playing a faintly familiar melody from inside.</span>
+<<if $avery_mansion.fox.known and !$avery_mansion.fox.end and Time.dayState is "night" and !isGwylanAbsent()>>
+	<span class="teal">You hear the lounge's piano playing
+	<<if $seabird_lullaby gte 2>>
+		Seabird's Lullaby
+	<<else>>
+		<<set $seabird_lullaby to 1>>
+		a faintly familiar melody
+	<</if>>
+	from inside.</span>
 	<br><br>
 
 	<<link [[Investigate|Mansion Piano Fox 2]]>><<endevent>><</link>>
@@ -2202,7 +2246,7 @@ You remain silent, and stare at your lap.
 <</if>>
 <br><br>
 
-You continue waiting for a while. You wonder if the brown fox is even close enough to have heard you.
+You continue waiting for a while. You wonder if <<say_brown_fox>> is even close enough to have heard you.
 <br><br>
 
 You're about to stand up, when you hear a rustle from outside the mansion grounds. <span class="green">A brown fox mask peeks up from over the wall, and a pair of green eyes lock onto you.</span>
@@ -2227,7 +2271,7 @@ Let's get moving, before Avery gets wise."
 
 :: Mansion Fox Heist 2
 <<effects>>
-You sneak up towards Avery's study. The brown fox whispers to you. "It feels much different in here without guests around. Larger." <<He>> frowns. "No one person needs all of this."
+You sneak up towards Avery's study. <<say_brown_fox "cap">> whispers to you. "It feels much different in here without guests around. Larger." <<He>> frowns. "No one person needs all of this."
 <br><br>
 
 <<if currentSkillValue("skulduggery") gte 600>>
@@ -2272,7 +2316,7 @@ You sneak up towards Avery's study. The brown fox whispers to you. "It feels muc
 <br>
 <<link [[Say it's better than the orphanage|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 1>><</link>>
 <br>
-<<if $soldcount gte 2>>
+<<if $soldCount gte 2>>
 	<<link [[Say it's better than being sold as a sex slave|Mansion Fox Heist 4]]>><<pass 5>><<set $phase to 2>><</link>>
 	<br>
 <</if>>
@@ -2354,19 +2398,7 @@ You sneak up towards Avery's study. The brown fox whispers to you. "It feels muc
 	<</if>>
 	<br><br>
 
-	<<He>> puts a hand on your shoulder. "It'll be over soon. I promise. I'm not just doing this to end Avery's occult ambitions. I'm doing it for you, too." <<He>> smiles. "Let's keep moving,
-	<<if $harpy gte 6>>
-		birdie,
-	<<elseif $cat gte 6>>
-		kitty,
-	<<elseif $wolfgirl gte 6>>
-		puppy,
-	<<elseif $fox gte 6>>
-		kin,
-	<<else>>
-		dear,
-	<</if>>
-	the keys to freedom await."
+	<<He>> puts a hand on your shoulder. "It'll be over soon. I promise. I'm not just doing this to end Avery's occult ambitions. I'm doing it for you, too." <<He>> smiles. "Let's keep moving, <<pcpetname "Gwylan" "simple">>, the keys to freedom await."
 <<elseif $phase is 4>>
 	<<if $speech_attitude is "meek">>
 		"I'm doing this to teach Avery a lesson," you say. "Even if we're saving <<nnpc_him "Avery">>, it will humble <<nnpc_him "Avery">>." You pause. "I hope."
@@ -2408,17 +2440,17 @@ You reach the third floor.
 		<span class="red">The lock looks beyond your ability to pick.</span><<skulduggeryrequired>>
 	<</if>>
 	<br>
-	<<link [[Let the brown fox handle it|Mansion Fox Heist Unlock]]>><<set $phase to 2>><<handheldon>><<pass 10>><</link>>
+	<<link [[Let <<say_brown_fox>> handle it|Mansion Fox Heist Unlock]]>><<set $phase to 2>><<handheldon>><<pass 10>><</link>>
 	<br>
 <</if>>
 
 :: Mansion Fox Heist Unlock
 <<effects>>
 <<if $phase is 1>>
-	You deftly pick the lock to the study. The brown fox giggles. "Are you sure you needed my help?"
+	You deftly pick the lock to the study. <<say_brown_fox "cap">> giggles. "Are you sure you needed my help?"
 <<else>>
 	<<set $avery_mansion.heist_suspicion += 1>>
-	The brown fox kneels, and examines the lock. "This is advanced. I wouldn't be able to pick it." <<He>> produces a strange phial from under <<his>> cloak, along with a lighter. The phial has a small metal rod driven through the bottom, and is filled with a thick wax.
+	<<say_brown_fox "cap">> kneels, and examines the lock. "This is advanced. I wouldn't be able to pick it." <<He>> produces a strange phial from under <<his>> cloak, along with a lighter. The phial has a small metal rod driven through the bottom, and is filled with a thick wax.
 	<br><br>
 
 	<<He>> pops open the phial, and holds the open end over the lock. <<He>> then ignites the lighter and holds it to the glass. Over the course of a minute, the wax expands, pushing itself into the lock. Once it's in place, <<he>> removes the lighter.
@@ -2430,7 +2462,7 @@ You enter.
 <br><br>
 
 <<if $avery_mansion.study_secret is 2>>
-	You lead the brown fox over to the red leather-bound book. <<He>> frowns when <<he>> sees what Avery did to the pages within.
+	You lead <<say_brown_fox>> over to the red leather-bound book. <<He>> frowns when <<he>> sees what Avery did to the pages within.
 	<br><br>
 
 	You take the remote, and press the button. You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
@@ -2449,7 +2481,7 @@ You enter.
 	You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
 	<br><br>
 
-	The brown fox remains staring at the book, frowning at what Avery did to the pages within.
+	<<say_brown_fox "cap">> remains staring at the book, frowning at what Avery did to the pages within.
 <<else>>
 	<<set $avery_mansion.study_secret to 2>><<set $avery_mansion.heist_suspicion += 2>>
 	"So, you know it's somewhere in here." <<He>> begins to look around, inspecting everything.
@@ -2469,7 +2501,7 @@ You enter.
 	You step closer and press the button yourself. You hear a mechanical whirring, and the desk splits in two, revealing the spiral staircase down to the dungeon.
 	<br><br>
 
-	The brown fox remains staring at the book.
+	<<say_brown_fox "cap">> remains staring at the book.
 <</if>>
 <br><br>
 
@@ -2482,7 +2514,7 @@ You snap your fingers in front of <<him>>, which gets <<his>> attention. "Sorry.
 :: Mansion Fox Heist Dungeon
 <<effects>>
 
-You walk down the spiral staircase, down the ominous hallway, and into Avery's dungeon. The brown fox is right behind you, holding one of your shoulders.
+You walk down the spiral staircase, down the ominous hallway, and into Avery's dungeon. <<say_brown_fox "cap">> is right behind you, holding one of your shoulders.
 <br><br>
 
 You're bathed in eerie red light. <<He>> stops, looking around at the tools.
@@ -2518,7 +2550,7 @@ You try to walk forwards, but <<hes>> still holding your shoulder.
 The two of you approach the thick, silvery metal door of the vault. Beside it is a keypad.
 <br><br>
 
-The brown fox kneels down and opens a satchel under <<his>> cloak. <<He>> produces a small spray bottle and uses it on the keypad. The smell of the mist stings your nostrils.
+<<say_brown_fox "cap">> kneels down and opens a satchel under <<his>> cloak. <<He>> produces a small spray bottle and uses it on the keypad. The smell of the mist stings your nostrils.
 <br><br>
 
 <<He>> unrolls a plastic-looking film, holds it against the keypad, and sprays the opposite side with the same bottle. <span class="gold">Smudges appear over four of the keys.</span>
@@ -2529,8 +2561,15 @@ The brown fox kneels down and opens a satchel under <<his>> cloak. <<He>> produc
 
 <<link [[Wait quietly|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 1>><</link>>
 <br>
-<<link [[Ask if you can know who <<he>> really is now|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 2>><</link>>
-<br>
+<<if $brownFoxRevealed>>
+	<<if !$brownFoxMaskTalk>>
+		<<link [[Ask about <<his>> mask|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 2>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	<<link [[Ask if you can know who <<he>> really is now|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 2>><</link>>
+	<br>
+<</if>>
 <<link [[Ask what personal stake <<he>> has in all this|Mansion Fox Heist Vault]]>><<pass 10>><<set $phase to 3>><</link>>
 <br>
 
@@ -2538,24 +2577,51 @@ The brown fox kneels down and opens a satchel under <<his>> cloak. <<He>> produc
 <<avery_mansion>>
 <<effects>>
 <<if $phase is 1>>
-	You watch the brown fox work, keeping a professional silence between you.
+	You watch <<say_brown_fox>> work, keeping a professional silence between you.
 <<elseif $phase is 2>>
-	<<if $speech_attitude is "meek">>
-		"Do you trust me enough to tell me who you are?
-	<<elseif $speech_attitude is "bratty">>
-		"So, who are you really?
-	<<else>>
-		"We've been working together for a while. Will you tell me who you really are?
-	<</if>>
-	<<if $wrenSeen?.includes("cards") or $temple_confessor_intro>>
-		I haven't met many others who are so willing to cross these people."
-	<<else>>
-		I haven't met anyone else so willing to cross these people."
-	<</if>>
-	<br><br>
+	<<if $brownFoxRevealed>>
+		<<set $brownFoxMaskTalk to true>>
+		<<if $speech_attitude is "meek">>
+			"Why are you hiding your face like that?
+		<<elseif $speech_attitude is "bratty">>
+			"So, what's with all the cloak and dagger?
+		<<else>>
+			"Why are you hiding your identity like this?
+		<</if>>
+		Do they really not know who you are by now?"
+		<br><br>
 
-	<<He>> continues working. "It's safer for you to not know. Maybe, when this is all over, I'll tell you. Or maybe you'll figure it out for yourself before then."
-	<<He>> pauses, and looks back to you. "It's not that I don't trust you. It really is better this way."
+		<<He>> giggles. "No. I'm quite easy to forget. It's easier if they suspect some masked vigilante. If they started suspecting otherwise..." <<he>> pauses. "They might start making some connections. Dangerous ones."
+		<br><br>
+
+		"So why a fox mask?" you ask.
+		<br><br>
+
+		<<He>> stops touching the keypad, and looks down. "It's symbolic. I want them to see the face of their victims biting back." <<He>> removes the mask, and rubs the cheek.
+		"When I wear this, I'm not Gwylan. I'm every single victim of the elks and hounds. I'm their vengeance." <<His>> hands clench slightly. "No one else will give it to them. The Cloister will just make them suffer more, use them as... vessels.
+		Us foxes only have each other."
+		<br><br>
+
+		<<He>> puts the mask back on. "That's what the brown fox symbolises. The Children of Auriga have a lot to pay for, and all Avery's fake money couldn't pay for a single one."
+		<<He>> looks at you over <<his>> shoulder with a sad smile. "I'm glad you're here. We're stronger together."
+	<<else>>
+		<<if $speech_attitude is "meek">>
+			"Do you trust me enough to tell me who you are?
+		<<elseif $speech_attitude is "bratty">>
+			"So, who are you really?
+		<<else>>
+			"We've been working together for a while. Will you tell me who you really are?
+		<</if>>
+		<<if $wrenSeen?.includes("cards") or $temple_confessor_intro>>
+			I haven't met many others who are so willing to cross these people."
+		<<else>>
+			I haven't met anyone else so willing to cross these people."
+		<</if>>
+		<br><br>
+
+		<<He>> continues working. "It's safer for you to not know. Maybe, when this is all over, I'll tell you. Or maybe you'll figure it out for yourself before then."
+		<<He>> pauses, and looks back to you. "It's not that I don't trust you. It really is better this way."
+	<</if>>
 	<br><br>
 <<else>>
 	<<if $speech_attitude is "meek">>
@@ -2593,7 +2659,7 @@ The dull beep of the keypad rings out in between <<his>> words. "We aren't just 
 	<</if>>
 	<br><br>
 
-	The brown fox quickly removes the film from the keypad, looking towards the stairs. "Do you trust me?"
+	<<say_brown_fox "cap">> quickly removes the film from the keypad, looking towards the stairs. "Do you trust me?"
 	<br><br>
 
 	<<link [[Yes|Mansion Fox Heist Vault Caught]]>><<set $phase to 1>><</link>>
@@ -2739,7 +2805,7 @@ You hold your breath and brace yourself for the next strike. It doesn't come. Av
 <<He>> leans in. <<His>> expression is darker. "How did you strap yourself in?"
 <br><br>
 
-<span class="blue">You see the brown fox emerge from the corner, now that Avery's back is turned.</span>
+<span class="blue">You see <<say_brown_fox>> emerge from the corner, now that Avery's back is turned.</span>
 <br><br>
 
 <<link [[Mock Avery|Mansion Fox Heist Vault Whip 3]]>><<npcincr Avery rage 1>><<set $phase to 1>><</link>><<garage>>
@@ -2779,11 +2845,11 @@ You hold your breath and brace yourself for the next strike. It doesn't come. Av
 <</if>>
 <br><br>
 
-Another hand grabs <<him>> by the wrist. "Who the—" <<He>> turns to face the brown fox. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span> The whip falls to the ground.
+Another hand grabs <<him>> by the wrist. "Who the—" <<He>> turns to face <<say_brown_fox>>. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span> The whip falls to the ground.
 <br><br>
 
-The brown fox leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. The brown fox looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
-Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the dungeon.<<person2>>
+<<say_brown_fox "cap">> leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. <<say_brown_fox "cap">> looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
+Still holding <<his>> wrist, <<say_brown_fox>> starts dragging <<him>> out of the dungeon.<<person2>>
 <br><br>
 
 <<He>> doesn't unbind you before leaving.
@@ -2798,7 +2864,7 @@ Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the du
 You wait, bound to the rack, left to your thoughts and the pain in your back.
 <br><br>
 
-You hear someone coming back down the stairs. You tense up. The brown fox doesn't usually make that much noise.
+You hear someone coming back down the stairs. You tense up. <<say_brown_fox "cap">> doesn't usually make that much noise.
 <br><br>
 
 Your worries vanish upon hearing <<his>> voice, though. "Sorry for making you wait. I've made sure Avery won't remember this, although <<nnpc_he "Avery">> might remember being angry."
@@ -2853,11 +2919,11 @@ You nearly moan at <<his>> touch, but manage to hold it in. <<stress -6>><<lstre
 <<else>>
 	Right as Avery is about to strike you again, a hand grabs <<his>> wrist.
 <</if>>
-"Who the—" <<He>> turns to face the brown fox. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span>
+"Who the—" <<He>> turns to face <<say_brown_fox>>. A sparkling blue powder flutters through the air past <<him>>. <span class="blue"><<His>> arms go limp.</span>
 <br><br>
 
-The brown fox leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. The brown fox looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
-Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the dungeon.
+<<say_brown_fox "cap">> leans forward, and whispers into Avery's ear. "Nap time." Avery's body shudders, <span class="blue">but nods</span>. <<say_brown_fox "cap">> looks past <<him>> and smiles at you. "Let me go put the big baby to bed."
+Still holding <<his>> wrist, <<say_brown_fox>> starts dragging <<him>> out of the dungeon.
 <br><br>
 
 <<clotheson>>
@@ -2872,7 +2938,7 @@ Still holding <<his>> wrist, the brown fox starts dragging <<him>> out of the du
 You wait, left to your thoughts.
 <br><br>
 
-The brown fox walks back down the stairs. "Sorry for making you wait. I've made sure Avery won't remember this, although <<nnpc_he "Avery">> might remember being angry." <<He>> returns to the keypad.
+<<say_brown_fox "cap">> walks back down the stairs. "Sorry for making you wait. I've made sure Avery won't remember this, although <<nnpc_he "Avery">> might remember being angry." <<He>> returns to the keypad.
 <br><br>
 
 <<link [[Next|Mansion Fox Heist Vault 2]]>><</link>>
@@ -2940,12 +3006,15 @@ With the right subterfuge, we can <span class="green">speed up the construction 
 The two of you leave the dungeon, sealing it behind you.
 <br><br>
 
-The brown fox waves and climbs back over the garden wall.
+<<say_brown_fox "cap">> waves and climbs back over the garden wall.
 <br><br>
 
 <<set $avery_mansion.fox.task to false>>
 <<set $avery_mansion.fox.task_complete to false>>
 <<set $avery_mansion.fox.task_detail to false>>
+<<if $gwylan>>
+	<<set $gwylan.progress += 2>>
+<</if>>
 
 <<link [[Next|Mansion Garden]]>><<endevent>><</link>>
 <br>
@@ -3035,7 +3104,7 @@ Stole our black hearts to keep.<br><br>
 The claws of an elongated, blackened arm stretch towards you, one pointing right over your heart. The spot where Avery was holding the dagger. It burns.
 <br><br>
 
-<<if $avery_mansion.fox.progress gte 5>>
+<<if $avery_mansion.fox.progress gte 5 or $brownFoxRevealed>>
 	A creature you once knew the name of stands before you.
 <<else>>
 	A creature with no name stares you down.
@@ -3084,10 +3153,16 @@ The claws of an elongated, blackened arm stretch towards you, one pointing right
 You hear the straining and stretching of sinew as its arm moves. It places its hand flat against your chest. <span class="purple">Your heartbeat grows louder.</span>
 <br><br>
 
-<<if $avery_mansion.fox.progress gte 5>>
-	Its eye closes, and you hear something like a sigh of relief as it feels your heart. Its hand retracts back into the shadows.
+<<if $gwylanSeen?.includes("ritual_sex")>>
+	Its hand then moves, gently grabbing your arm. Its sharp fingers scratch you as it pulls you into an embrace. Despite everything else, it's warm. Comforting.
+	Its eye closes, and you hear something like a sigh of relief as it feels your heart beating. You feel something leaving you. Its eye opens and it quickly withdraws from you as it realises this. <<purity -15>><<llpurity>>
+	<br><br>
 <<else>>
-	Its eye closes, satisfied by what it felt, and its hand retracts back into the shadows.
+	<<if $avery_mansion.fox.progress gte 5 or $brownFoxRevealed>>
+		Its eye closes, and you hear something like a sigh of relief as it feels your heart. Its hand retracts back into the shadows.
+	<<else>>
+		Its eye closes, satisfied by what it felt, and its hand retracts back into the shadows.
+	<</if>>
 <</if>>
 It turns away and walks towards the mask on the floor, exposing itself fully to the moon. Its skin shines, marked by countless old scars. All is dead silent.
 <br><br>
@@ -3109,6 +3184,7 @@ When they open again, <<he>> is gone. Nobody is here.
 <br><br>
 
 <<set $avery_mansion.fox.end to true>>
+<<gwylanNobody>>
 
 <<link [[Next|Mansion Lounge]]>><<endevent>><</link>>
 <br>
@@ -3129,17 +3205,33 @@ A brown fox mask lies on the seat next to <<him>>.
 <<if $avery_fate isnot "saved">>
 	Despite the surrounding ash and ruin, the piano looks miraculously untouched.
 <</if>>
-With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you, <<his>> face obscured by the darkness.
+With a flourish, <<he>> finishes the composition.
+<<if $brownFoxRevealed>>
+	<<say_brown_fox "cap">> stands and turns to you.
+<<else>>
+	<<He>> stands and turns to you, <<his>> face obscured by the darkness.
+<</if>>
 <br><br>
 
 <<link [[Next|Mansion Piano Fox Talk]]>><<set $mansion_fox_followup to []>><<set $mansion_fox_talk to "intro">><</link>>
 <br>
 
 :: Mansion Piano Fox Talk
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 
 <<switch $mansion_fox_talk>>
-	<<case "intro">>"I'm sorry," <<he>> says, in a tone even more gentle than usual.
+	<<case "intro">>
+		"I'm sorry," <<he>> says, in a tone even more gentle than usual.
+		<<if !$brownFoxRevealed and _gwylanStatus.includes("met") and ($avery_mansion.fox.progress gte 15 or $gwylanSeen?.includes("ritual_sex"))>>
+			<<set $brownFoxRevealed to true>><<set $mansion_fox_followup.pushUnique("reveal")>>
+			<<He>> steps into the light. For the first time, you see <<his>> lightly freckled face in perfect clarity. <<His>> mousy brown hair catches the moonlight.
+			<br><br>
+			
+			<span class="green">It's Gwylan.</span> <<He>> smiles apologetically.
+		<</if>>
+		<<if $brownFoxRevealed>>
+			<<set $mansion_fox_followup.pushUnique("mask")>>
+		<</if>>
 	<<case "apology">>
 		<<if $mansion_fox_followup.includesAny("apologyAccept", "apologyDeny")>>
 			<<His>> head tilts.
@@ -3149,7 +3241,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 				"You denied my apology without even knowing what it was for?" <<He>> pouts.
 			<</if>>
 		<</if>>
-		"You weren't meant to be that close to the bones when they activated. You weren't meant to be in the tower at all. I know their rituals. The Cannibal Fox changed it. <<nnpc_He "Harper">> knew something."
+		"You weren't meant to be that close to the fake bones when they activated. You weren't meant to be in the tower at all. I know their rituals. The Cannibal Fox changed it. <<nnpc_He "Harper">> knew something."
 		<br><br>
 
 		<<He>> lets out a dry, sad laugh. "<<nnpc_Hes "Harper">> still one step ahead of everyone else."
@@ -3173,10 +3265,23 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 			<<set $mansion_fox_followup.pushUnique("can_drink")>>
 			<br><br>
 			You hear something slide against the top of the piano.
-			<<if !(playerIsPregnant() and playerAwareTheyArePregnant())>>
-				Moonlight reflects off of two wine glasses, and a bottle of wine. "I keep my promises."
-			<<else>>
+			<<if playerIsPregnant() and npcIsPregnant("Gwylan")>>
+				Moonlight reflects off of two wine glasses, and a bottle of sparkling grape juice. "I keep my promises."
+			<<elseif playerIsPregnant() or npcIsPregnant("Gwylan")>>
 				Moonlight reflects off of two wine glasses, a bottle of wine, and a bottle of sparkling grape juice. "I keep my promises."
+			<<else>>
+				Moonlight reflects off of two wine glasses, and a bottle of wine. "I keep my promises."
+			<</if>>
+		<</if>>
+
+		<<if $mansion_fox_followup.includes("reveal")>>
+			<br><br>
+
+			<<He>> looks away. "I'm also sorry for not telling you who I was sooner.
+			<<if $gwylanSeen.includes("ritual_sex")>>
+				It's not that I didn't trust you. It was just safer for you that way."
+			<<else>>
+				I had to make sure I could trust you with something this serious. Besides, it was safer for you this way."
 			<</if>>
 		<</if>>
 	<<case "apologyAccept">>
@@ -3184,20 +3289,23 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 	<<case "apologyDeny">>
 		<<He>> frowns and nods. "As is your right. I failed in my part, and it cost you dearly. I only hope that, one day, you'll find it in your heart to forgive me."
 	<<case "drink">>
-		<<set $avery_mansion.fox.drink to true>>
-		<<if !$mansion_fox_followup.includes("mask")>>
+		<<if !$mansion_fox_followup.includes("mask") and !$brownFoxRevealed>>
 			<<set $mansion_fox_followup.pushUnique("mask")>>
 			<<He>> dons <<his>> mask and steps into the light.
 		<</if>>
 		<<He>> pours your drinks.
 		<<if $avery_fate is "saved">>
-			The two of you cheer, your glasses clinking together just a little louder than you had intended. You both wince, looking up the stairs towards the bedroom. No noise comes from it. The brown fox giggles, and you drink.
+			The two of you cheer, your glasses clinking together just a little louder than you had intended. You both wince, looking up the stairs towards the bedroom. No noise comes from it. <<say_brown_fox "Gwylan">> giggles, and you drink.
 		<<else>>
 			The two of you cheer, your glasses clinking together. You drink.
 		<</if>>
 		<br><br>
 
-		<<He>> lets out a satisfied huff after downing <<his>> glass. "It tastes so much better with a partner, doesn't it?" <<note "+ ???" "green">>
+		<<He>> lets out a satisfied huff after downing <<his>> glass. "It tastes so much better with a partner, doesn't it?" <<if $brownFoxRevealed>><<gyearning>><<else>><<note "+ ???" "forest-green">><</if>>
+		<<if $gwylanSeen>>
+			<<npcincr Gwylan dom 2>>
+			<<set $gwylanSeen.pushUnique("bf_drink")>>
+		<</if>>
 	<<case "bonesReal">>
 		<<if !$mansion_fox_followup.includes("bonesFake")>>
 			"I suppose I owe you answers. I don't normally speak so freely." <<He>> paces.
@@ -3239,7 +3347,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 		I hope you stay clear of it. You've done so much already. More than you know."
 	<<case "help">>
 		<<He>> doesn't respond at first, only looking down and covering <<his>> mouth.
-		<<if !$mansion_fox_followup.includes("mask")>>
+		<<if !$mansion_fox_followup.includes("mask") and !$brownFoxRevealed>>
 			<<set $mansion_fox_followup.pushUnique("mask")>>
 			<<He>> dons <<his>> mask and steps into the light.
 		<<else>>
@@ -3247,34 +3355,70 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 		<</if>>
 		<br><br>
 
-		"Oh, my dear child." <<He>> hugs you. "You must have had a hard life, to give of yourself so willingly." <<He>> pulls back, smiling.
-		"I'm still not used to working with others, but perhaps I've worked alone for too long. <span class="green">Some day soon, we will again.</span> I promise."
+		"Oh, my dear child." <<He>> hugs you.
+		<<if $brownFoxRevealed>>
+			"You've already helped me with so much. If you're certain..." <<He>> pulls away after a moment, smiling.
+			"There's much work to be done, and I can't think of anyone else I'd rather have by my side." <<npcincr Gwylan dom 5>><<ggyearning>>
+		<<else>>
+			"You must have had a hard life, to give of yourself so willingly." <<He>> pulls back, smiling.
+			"I'm still not used to working with others, but perhaps I've worked alone for too long. <span class="green">Some day soon, we will again.</span> I promise."
+		<</if>>
 	<<case "mask">>
 		You try to get a closer look at <<his>> face. Every time you do, it seems as though a cloud blocks the light of the moon just enough to obscure it.
 		<br><br>
 
 		"You're just going to give yourself eye strain doing that, dear." <<He>> dons <<his>> mask.
 	<<case "piano">>
-		"You know the melody, don't you?" <<He>> smiles. "Perhaps I'll share the words with you, some day."
+		<<if $brownFoxRevealed and $seabird_lullaby gte 2>>
+			<<He>> smiles. "I knew you would recognise my song. Isn't the melody soothing?"
+		<<else>>
+			"You know the melody, don't you?" <<He>> smiles. "Perhaps I'll share the words with you, some day."
+		<</if>>
 	<<case "flirt">>
-		<<set $seductiondifficulty to 10000>>
-		<<seductioncheck>>
-		<<seductionskilluptext>>
-		<<seductionskilluse>>
-		<<promiscuity1>>
+		<<if $brownFoxRevealed and $gwylanSeen?.includes("ritual_sex")>>
+			<<set $seductiondifficulty to (10000 - ((C.npc.Gwylan.lust * 50) + (C.npc.Gwylan.dom * 50)))>>
+			<<seductioncheck>>
+			<<seductionskilluptext>>
+			<<seductionskilluse>>
+			<<promiscuity1>>
 
-		<<if $seductionrating gte $seductionrequired>>
-			<<set $avery_mansion.fox.flirt to true>>
-			<<He>> giggles.
-			<<if $avery_fate is "saved">>
-				"I don't think Avery would like that very much."
-				<<He>> leans in. "Perhaps I'll sneak in some day while <<nnpc_hes "Avery">> away." <<He>> places a finger under your chin. "Or maybe you should keep such thoughts to yourself." <<He>> smiles sweetly. <<glust>>
+			<<if $seductionrating gte $seductionrequired>>
+				<<He>> giggles and blushes.
+				<<if $avery_fate isnot "saved">>
+					"Oh, <<pcpetname "Gwylan" "simple">>, you want to indulge here of all places? Why not? In fact, I think that pile of charcoal over there was Avery's bed. Do you think it's still comfortable? How about you go lay down and test it for me?"
+				<<else>>
+					"Oh, <<pcpetname "Gwylan" "simple">>, I don't think Avery would like you fooling around with someone like me right under <<nnpc_his "Avery">> nose. What if <<nnpc_he "Avery">> heard?"
+				<</if>>
+				<<set $gwylanSeen.pushUnique("bf_flirt")>>
+				<br><br>
+
+				<<He>> steps forward and puts a finger under your chin, and uses <<his>> other hand to pat your head.
+				"Save it for the ritual. We can have some fun then, alright? You've gotten me worked up now, so you best be ready for it." <<npcincr Gwylan lust 25>><<npcincr Gwylan dom 2>><<ggglust>><<gyearning>>
 			<<else>>
-				"I suppose you're open now that Avery's gone, aren't you?"
-				<<He>> leans in. "Perhaps I'll come find you sooner that anticipated, for pleasure before business." <<He>> places a finger under your chin. "Or maybe you should keep such thoughts to yourself." <<He>> smiles sweetly. <<glust>>
+				<<He>> giggles. "I appreciate the attempt, <<pcpetname "Gwylan" "simple">>, but there's a time and a place for such courtship." <<He>> hesitates. "Maybe I'll help you temper your seductive abilities some time."
 			<</if>>
 		<<else>>
-			<<He>> giggles. "I'm flattered, dear, but I'm far too much for you."
+			<<set $seductiondifficulty to 10000>>
+			<<seductioncheck>>
+			<<seductionskilluptext>>
+			<<seductionskilluse>>
+			<<promiscuity1>>
+
+			<<if $seductionrating gte $seductionrequired>>
+				<<He>> giggles.
+				<<if $avery_fate is "saved">>
+					"I don't think Avery would like that very much."
+					<<He>> leans in. "Perhaps I'll sneak in some day while <<nnpc_hes "Avery">> away." <<He>> places a finger under your chin. "Or maybe you should keep such thoughts to yourself." <<He>> smiles sweetly. <<gglust>>
+				<<else>>
+					"I suppose you're open now that Avery's gone, aren't you?"
+					<<He>> leans in. "Perhaps I'll come find you sooner that anticipated, for pleasure before business." <<He>> places a finger under your chin. "Or maybe you should keep such thoughts to yourself." <<He>> smiles sweetly. <<gglust>>
+				<</if>>
+				<<if $gwylanSeen>>
+					<<set $gwylanSeen.pushUnique("bf_flirt")>>
+				<</if>>
+			<<else>>
+				<<He>> giggles. "I'm flattered, <<pcpetname "Gwylan" "simple">>, but I'm far too much for you."
+			<</if>>
 		<</if>>
 	<<case "leave">>
 		<<if !$mansion_fox_followup.includes("mask")>>
@@ -3312,7 +3456,7 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 	<br>
 <</if>>
 <<if $mansion_fox_followup.includes("can_drink") and !$mansion_fox_followup.includes("drink")>>
-	<<if !(playerIsPregnant() and playerAwareTheyArePregnant())>>
+	<<if playerIsPregnant()>>
 		<<link [[Drink with <<him>>|Mansion Piano Fox Talk]]>><<set $mansion_fox_talk to "drink">><</link>>
 		<br>
 	<<else>>
@@ -3364,46 +3508,58 @@ With a flourish, <<he>> finishes the composition. <<He>> stands and turns to you
 <br>
 
 <<if $mansion_fox_followup.includesAny("apologyAccept", "apologyDeny")>>
-	<<link [[Say goodbye to the brown fox|Mansion Piano Fox Talk End]]>><</link>>
+	<<link [[Say goodbye to <<say_brown_fox>>|Mansion Piano Fox Talk End]]>><</link>>
 	<br>
-	<<if $avery_mansion.fox.friend or $mansion_fox_followup.includes("help")>>
+	<<if $avery_mansion.fox.friend or $mansion_fox_followup.includes("help") and !$brownFoxRevealed>>
 		<<link [[Say goodbye, and that you hope to meet again soon|Mansion Piano Fox Talk End]]>><<set $mansion_fox_talk to "soon">><</link>>
 		<br>
 	<</if>>
-	<<if !$mansion_fox_followup.includes("help")>>
+	<<if !$mansion_fox_followup.includes("help") and !$brownFoxRevealed>>
 		<<link [[Say you hope you never have to meet each other again|Mansion Piano Fox Talk End]]>><<set $mansion_fox_talk to "never">><</link>>
 		<br>
 	<</if>>
-<<elseif !$mansion_fox_followup.includes("leave")>>
+<<elseif !$mansion_fox_followup.includes("leave") and !$brownFoxRevealed>>
 	<<link [[Just leave|Mansion Piano Fox Talk End]]>><<set $mansion_fox_talk to "leave">><</link>>
 	<br>
 <</if>>
 
 :: Mansion Piano Fox Talk End
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 <<if $mansion_fox_followup.includes("can_drink") and !$mansion_fox_followup.includes("drink")>>
 	<<He>> frowns, sliding the wine and glasses back into the shadows.
 <</if>>
-<<if !$mansion_fox_followup.includes("mask")>>
+<<if !$mansion_fox_followup.includes("mask") or $brownFoxRevealed>>
 	<<He>> dons <<his>> mask.
 <</if>>
-<<if $mansion_fox_talk is "soon">>
-	"It may be sooner than you think.
-<<elseif $mansion_fox_talk is "never">>
-	"I'm afraid I have no control over that, my dear.
+<<if $brownFoxRevealed>>
+	"I'll be at the shop. Come see me soon, <<pcpetname "Gwylan">>."
 <<else>>
-	"Until we meet again.
+	<<if $mansion_fox_talk is "soon">>
+		"It may be sooner than you think.
+	<<elseif $mansion_fox_talk is "never">>
+		"I'm afraid I have no control over that, my dear.
+	<<else>>
+		"Until we meet again.
+	<</if>>
+	I'll be going dark for a time. May your triumphs and troubles shape you into diamond."
 <</if>>
-I'll be going dark for a time. May your triumphs and troubles shape you into diamond."
 <br><br>
 
-<<if $avery_mansion.fox.progress gte 15 and $mansion_fox_talk isnot "never" and $mansion_fox_followup.includes("drink")>>
-	<<He>> starts to walk by you, but stops. <<He>> places a hand on your shoulder. "You are so very curious. I look forward to the next time we meet." <<He>> vanishes into the night.
+<<if $brownFoxRevealed and $gwylanSeen.includes("partners")>>
+	<<He>> starts to walk by you, but stops. <<He>> quickly pulls you into a kiss. <<gwylanKiss>>
+	<br><br>
+
+	"Thank you again for everything, my dear." With one last quick peck on the lips, <<he>> vanishes into the night. <<npcincr Gwylan dom 15>><<gggyearning>>
+<<elseif $avery_mansion.fox.progress gte 15 and $mansion_fox_talk isnot "never" and $mansion_fox_followup.includes("drink")>>
+	<<He>> starts to walk by you, but stops. <<He>> places a hand on your shoulder. "You are so very curious. I look forward to working together like this again." <<He>> vanishes into the night. <<npcincr Gwylan dom 5>><<if $brownFoxRevealed>><<ggyearning>><<else>><<note "+ + ???" "forest-green">><</if>>
 <<else>>
-	<<He>> brushes by you, and vanishes into the night.
+	<<He>> brushes by you, and vanishes into the night. <<npcincr Gwylan dom 2>><<if $brownFoxRevealed>><<gyearning>><<else>><<note "+ ???" "forest-green">><</if>>
 <</if>>
 <<unset $mansion_fox_followup>><<unset $mansion_fox_talk>>
 <<set $avery_mansion.fox.end to true>>
+<<if $gwylan?.wary gte 1>>
+	<<set $gwylan.wary to 0>>
+<</if>>
 <br><br>
 
 <<if $avery_fate isnot "saved">>
@@ -3412,7 +3568,6 @@ I'll be going dark for a time. May your triumphs and troubles shape you into dia
 	<<link [[Next|Mansion Lounge]]>><<endevent>><</link>>
 <</if>>
 <br>
-
 
 
 :: Mansion Leave
@@ -3447,5 +3602,9 @@ You peer through the mansion gates. Seeing no one around, you step outside, and 
 	<br><br>
 <</if>>
 
-<<link [[Next|Danube Street]]>><</link>>
+<<if $avery_mansion.fox.known and $brownFoxWoundedTimer and !$brownFoxWounded and !isGwylanAbsent()>>
+	<<link [[Next|Mansion Brown Fox Wounded]]>><</link>>
+<<else>>
+	<<link [[Next|Danube Street]]>><</link>>
+<</if>>
 <br>

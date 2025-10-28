@@ -1162,6 +1162,13 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#0132ff" },
 	},
 	{
+		variable: "lake blue",
+		name: "lake blue",
+		name_cap: "Lake Blue",
+		csstext: "navy blue",
+		canvasfilter: { blend: "#223d8f" },
+	},
+	{
 		variable: "light blue",
 		name: "light blue",
 		name_cap: "Light Blue",
@@ -1179,6 +1186,13 @@ setup.colours.clothes = [
 		variable: "white",
 		name: "white",
 		name_cap: "White",
+		csstext: "white",
+		canvasfilter: { blend: "#ffffff" },
+	},
+	{
+		variable: "purest white",
+		name: "purest white",
+		name_cap: "Purest White",
 		csstext: "white",
 		canvasfilter: { blend: "#ffffff" },
 	},
@@ -1239,6 +1253,13 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#353535" },
 	},
 	{
+		variable: "confessor black",
+		name: "confessor black",
+		name_cap: "Confessor Black",
+		csstext: "black",
+		canvasfilter: { blend: "#353535" },
+	},
+	{
 		variable: "pink",
 		name: "pink",
 		name_cap: "Pink",
@@ -1274,6 +1295,15 @@ setup.colours.clothes = [
 		name_cap: "Lilac",
 		csstext: "lilac",
 		canvasfilter: { blend: "#d692fc" },
+	},
+	{
+		variable: "witchbloom",
+		name: "witchbloom",
+		name_cap: "witchbloom",
+		csstext: "witchbloom",
+		canvasfilter: {
+			blend: "#743499",
+		},
 	},
 	{
 		variable: "violet",
@@ -1323,6 +1353,13 @@ setup.colours.clothes = [
 		name_cap: "Brown",
 		csstext: "brown",
 		canvasfilter: { blend: "#703000" },
+	},
+	{
+		variable: "bucket brown",
+		name: "bucket brown",
+		name_cap: "Bucket Brown",
+		csstext: "brownish",
+		canvasfilter: { blend: "#87634a" },
 	},
 	{
 		variable: "soft brown",
@@ -1416,6 +1453,20 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#65252d" },
 	},
 	{
+		variable: "blood moon red",
+		name: "blood moon red",
+		name_cap: "Blood Moon Red",
+		csstext: "wine",
+		canvasfilter: { blend: "#5c0707" },
+	},
+	{
+		variable: "branded red",
+		name: "branded red",
+		name_cap: "Branded Red",
+		csstext: "wine",
+		canvasfilter: { blend: "#d4273b" },
+	},
+	{
 		variable: "russet",
 		name: "russet",
 		name_cap: "Russet",
@@ -1465,6 +1516,13 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#ffbf00", brightness: 0.1 },
 	},
 	{
+		variable: "virgo gold",
+		name: "virgo gold",
+		name_cap: "Virgo Gold",
+		csstext: "virgo gold",
+		canvasfilter: { blend: "#ffbf00", brightness: 0.1 },
+	},
+	{
 		variable: "silver",
 		name: "silver",
 		name_cap: "Silver",
@@ -1475,6 +1533,13 @@ setup.colours.clothes = [
 		variable: "sterling silver",
 		name: "sterling silver",
 		name_cap: "Sterling silver",
+		csstext: "sterling-silver",
+		canvasfilter: { blend: "#8b9fc4" },
+	},
+	{
+		variable: "shackle silver",
+		name: "shackle silver",
+		name_cap: "Shackle silver",
 		csstext: "sterling-silver",
 		canvasfilter: { blend: "#8b9fc4" },
 	},

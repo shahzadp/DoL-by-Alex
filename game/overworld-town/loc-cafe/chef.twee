@@ -551,6 +551,8 @@ You enter the Ocean Breeze. Sam approaches you and clasps your hands in <<his>> 
 You follow the <<person>> out the back, and cross the street. <<He>> takes you to an old house at the edge of the residential district.
 <br><br>
 
+<<specialClothesUnlock "set" "chef">>
+
 <<link [[Next|Chef Opening 2]]>><</link>>
 <br>
 
@@ -723,7 +725,7 @@ It's a picture of you, smiling beneath a chef's hat and pouring <<if $chef_pictu
 	The limo halts, and a <<print either("waiter", "waitress")>> opens the door. You're met by applause.
 	<<llltrauma>><<trauma -24>>
 	<br><br>
-	You walk down the red carpet. You recognise Niki among them.
+	You walk down the red carpet. Several photographers snap pictures. You recognise Niki among them.
 	<<npc Sam>><<person1>> Sam meets you at the entrance, wearing <<his>> <<if $pronoun is "m">>suit and tie<<else>>red dress<</if>>.
 	<br><br>
 	"This is everything I've wished for," <<he>> says. "Thank you for making it come true." <<He>> hugs you, eliciting a greater cheer from the audience.
@@ -890,6 +892,7 @@ Bailey leans in. "When you deliver your speech," <<he>> whispers. "Don't say any
 <br><br>
 <<endevent>>
 <<link [[Look|Chef Opening 7]]>><</link>>
+<br>
 
 :: Chef Opening 7
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
@@ -998,10 +1001,40 @@ The mayor chuckles, and pulls <<himself>> away from the conversation.
 
 :: Chef Opening 9
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
+<<run statusCheck("Gwylan")>>
+<<if C.npc.Gwylan.state is "active" and _gwylanStatus?.includes("met") and !isGwylanAbsent()>>
+	<<set $chef_gwylan to true>>
+<</if>>
 
 You wait as the remaining guests take their seats. It's a large room, and the tables have been packed together quite tightly.
 Others watch from the second floor, glasses in hand. There are a lot of people here, all dressed for the fanciest of occasions.
 <br><br>
+
+<<if $chef_gwylan>>
+	<<set $gwylanSeen.pushUnique("cafe_opening")>>
+	<<npc Gwylan>><<person1>>
+	You spot Gwylan on the second floor, leaning over the railing. <<Hes>> wearing a <<if $pronoun is "m">>vintage suit<<else>>vintage skirtsuit<</if>> and a very large feathered hat.
+	No one else seems to be paying <<him>> any mind. <<His>> eyes are on the door to the kitchen, where Sam just disappeared to. <<He>> looks like a proud <<father>> watching <<his>> child receive an award.
+	<br><br>
+
+	<<He>> seems to sense your gaze, as <<he>> quickly looks to you.
+	<<if $gwylanSeen.includes("romance")>>
+		<<He>> gives you a warm smile and blows you a kiss.
+		<<if $hypnosis_traits.devotion gte 4>>
+			<span class="pink">The mere gesture fills you with heat.</span> <<arousal 2000>><<ggarousal>>
+		<<elseif $hypnosis_traits.devotion gte 1>>
+			<span class="witchbloom">The gesture makes you tingly.</span> <<trauma -6>><<ltrauma>>
+		<<else>>
+			<<trauma -3>><<ltrauma>>
+		<</if>>
+	<<elseif _gwylanLovePercent gte 50>>
+		That same look of pride washes over you as <<he>> smiles at you. <<stress -3>><<lstress>>
+	<<else>>
+		<<He>> smiles and waves at you.
+	<</if>>
+	<<endevent>>
+	<br><br>
+<</if>>
 
 <<npc Quinn>><<person1>>Quinn steps up to the podium, and the room falls silent.
 <br><br>
@@ -1012,6 +1045,7 @@ Your mind wanders, but snaps back to attention when <<he>> gestures at you.
 <br><br>
 
 <<link [[Next|Chef Opening 10]]>><</link>>
+<br>
 
 :: Chef Opening 10
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
@@ -1030,6 +1064,7 @@ Quinn quiets the audience with a wave.
 
 <<endevent>>
 <<link [[Next|Chef Opening 11]]>><</link>>
+<br>
 
 :: Chef Opening 11
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
@@ -1045,7 +1080,7 @@ Everyone watches you, waiting.
 <br>
 <<link [[Tell them of Bailey's tyranny|Chef Opening Bailey]]>><<set $chef_speech to "bailey">><<hope 10>><</link>><<ggghope>>
 <br>
-<<link [[Praise Sam|Chef Opening Sam]]>><<set $chef_speech to "sam">><<npcincr Sam love 10>><</link>><<ggglove>>
+<<link [[Praise Sam|Chef Opening Sam]]>><<set $chef_speech to "sam">><<npcincr Sam love 10>><</link>><<ggglove "sam">>
 <br>
 <<link [[Praise yourself|Chef Opening Self]]>><<set $chef_speech to "yourself">><<famebusiness 100 "pic">><<trauma -24>><</link>><<llltrauma>>
 <br>
@@ -1089,6 +1124,7 @@ The mayor turns to you, away from the microphone. "Good thinking," <<he>> says a
 You imagine they'll be talking about this for a while. You join the party. What do you want to do?
 <br><br>
 
+<<endevent>>
 <<chefspeechoptions>>
 
 :: Chef Opening Bailey
@@ -1143,14 +1179,12 @@ You step away from the podium, and the party begins in earnest. What do you want
 
 <<if $speech_attitude is "meek">>
 	"I made my buns," you begin, "because I wanted to make people happy..."
-	<br><br>
 <<elseif $speech_attitude is "bratty">>
 	"From the first time I saw the result of my cooking on another's face," you begin, "I knew I was destined for greatness..."
-	<br><br>
 <<else>>
 	"The secret to my buns," you begin, "is hard work, determination..."
-	<br><br>
 <</if>>
+<br><br>
 
 It's shameless self-aggrandisement, but it goes down well. They must agree you earned it.
 <br><br>
@@ -1172,7 +1206,107 @@ The mayor steps away from the podium, and the party begins in earnest. How do yo
 <br><br>
 
 <<endevent>>
+<<chefspeechoptions>>
 
+:: Chef Opening Gwylan
+<<set $outside to 0>><<set $location to "cafe">><<effects>><<run statusCheck("Gwylan")>>
+<<set $gwylanSeen.pushUnique("chef_chat")>><<set $gwylan_cafe_intro to true>>
+<<npc Gwylan>><<person1>>
+You go to the second floor, and find Gwylan still leaning on the same railing, looking down to the first floor. There's no one else around <<him>>.
+<<if $speech_attitude is "meek">>
+	"Y-you look lonely," you say. "Do you mind if I join you?"
+<<elseif $speech_attitude is "bratty">>
+	"You look like you could use some company," you say. "I hope there's room for me."
+<<else>>
+	"Do you mind if I join you?" you ask. "You look lonely."
+<</if>>	
+<br><br>
+
+<<He>> cracks a smile.
+<<if $gwylanSeen.includes("cafe")>>
+	"You've already used that line on me," <<he>> says with a giggle as <<he>> turns to you. "Most don't pay me any mind around here. Sometimes I think I'm invisible."
+<<else>>
+	"Most don't pay me any mind around here. Sometimes I think I'm invisible," <<he>> says as <<he>> turns to you.
+<</if>>
+<<if C.npc.Gwylan.state is "scorned">>
+	<<He>> pulls you into a hug, but pushes you away just as fast. "I'm still not happy with you, but I can put that aside for now. I'd hate to spoil this for you." <<He>> turns back, looking down to the first floor again.
+<<elseif $gwylanSeen.includes("yearning")>>
+	<<if _gwylanStatus.includes("heat") or $gwylanSeen.includes("romance")>>
+		<<He>> pulls you into a hungry kiss when you get close, penetrating your lips with <<his>> tongue. <<gwylanKiss>>
+		<br><br>
+
+		<<He>> doesn't seem to mind the glances the two of you are getting. <<He>> quickly withdraws and covers <<his>> face with <<his>> hat, however, once people start taking pictures. <<He>> clears <<his>> throat.
+	<<elseif $gwylanSeen.includes("partners")>>
+		<<He>> gives you a peck on the lips when you get close. <<gwylanKiss 0>>
+		<br><br>
+	<<else>>
+		<<He>> kisses you on the cheek when you get close.
+	<</if>>
+<<elseif _gwylanLovePercent gte 40 and $gwylanTalked.length gte 8>>
+	<<He>> hugs you when you get close.
+<<else>>
+	<<He>> turns back, looking down to the first floor again.
+<</if>>
+"There's too many cameras around. I don't like all the bright flashes, or having my picture taken for that matter."
+You lean against the railing with <<him>>, watching patrons schmooze down below.
+<<if $gwylanSeen.includes("yearning")>>
+	"I'm glad you remembered me, despite all the attention on you."
+<<elseif _gwylanLovePercent gte 40 and $gwylanTalked.length gte 8>>
+	"I'm glad you still have time for little old me despite being the star of the show."
+<<else>>
+	"I wouldn't mind the company."
+<</if>>
+<<npcincr Gwylan dom 3>><<ggyearning>>
+<br><br>
+
+<<switch $chef_speech>>
+	<<case "truth">>
+		You can faintly hear people talking about you and your 'secret ingredient' through the murmur of voices. Gwylan turns to you.
+		<<if $gwylanSeen.includes("cafe_chef") and !$gwylanSeen.includes("cafe_chef_truth")>>
+			"Congratulations. I confess, I feel a tad jilted. You wouldn't tell me your secret, yet now you've gone and told everyone!
+			It makes no difference to me, I got my answer in the end. I just hope this doesn't become dangerous for you."
+		<<elseif $gwylanSeen.includes("cafe_chef_truth")>>
+			"Congratulations. You're awfully bold, telling everyone your secret like that."
+		<<else>>
+			"Congratulations. I had my suspicions about your technique."
+		<</if>>
+		<<if !$gwylanSeen.includes("cafe_chef_truth")>>
+			<<set $gwylanSeen.pushUnique("cafe_chef_truth")>>
+			<<He>> ruffles your hair, and looks away. "I'll probably still eat them, too." <<He>> grills you about your diet, and any medications you might be on, trying to narrow down on the cause of the taste.
+			<span class="pink">"I may ask you for samples in the future."</span> <<npcincr Gwylan lust 5>><<gglust>>
+		<<else>>
+			<<He>> ruffles your hair.
+		<</if>>
+	<<case "bailey">>
+		<<set $gwylan.progress += 2>>
+		You can faintly hear people talking about you, and what you said about the orphanage, through the murmur of voices. Gwylan's grip on the railing is white-knuckled as <<his>> eyes lock on Bailey.
+		"You were very brave," <<he>> says. "If it makes you feel any better, I believe you. Every word." <<He>> backs away from the railing. "I can't stand seeing <<nnpc_him "Bailey">>. <<nnpc_He "Bailey">> was supposed to protect all of you."
+		<br><br>
+
+		<<He>> takes a deep breath. "I'm sorry." You're not sure if you're the one <<hes>> apologising to. <<He>> quickly shakes it off, returning to a more chipper demeanour, but you can still see something else underneath it.
+	<<case "sam">>
+		You can faintly hear people talking about you and Sam through the murmur of voices. Gwylan turns to you.
+		"You were very kind, letting Sammy take so much credit. You could have said anything, but you chose to share your triumph with someone else. You have a beautiful heart." <<He>> kisses you on the forehead. It makes you feel warm.
+		<<trauma -24>><<lltrauma>>
+	<<case "yourself">>
+		You can faintly hear people talking about you through the murmur of voices. Gwylan turns to you.
+		"Congratulations. You've earned all of this."
+	<<default>>
+		The murmur of voices is indistinct, and you can't pick out anything in particular. Gwylan turns to you. "I don't blame you for stepping away from the podium. I wouldn't want that kind of attention on me either.
+		These aren't the sorts of people you want to entertain with pretty words."
+<</switch>>
+<br><br>
+
+The two of you spend some more time chatting. "I've never seen Sammy so happy." <<He>> gazes back down to the first floor, watching Sam. <<nnpc_Hes "Sam">> practically glowing. "Thank you. You've made a life worth living for someone.
+That doesn't come easy in this town. Things are a little brighter<<if $gwylanSeen.includes("cafe_chef_truth")>>, even if your technique is quite lewd<<if $gwylanSeen.includesAny("caught", "sex")>>. It's not like I can judge<</if>><</if>>."
+<br><br>
+
+<<He>> folds <<his>> hands in front of <<him>>. "Don't mind me. I'm just glad I'll finally be able to go back to my old routine. I'm sure you have better things to do than keep me company. Go on," <<he>> says, waving you off.
+<br><br>
+
+There's still plenty of time left. How do you want to conduct yourself?
+<br><br>
+<<endevent>>
 <<chefspeechoptions>>
 
 :: Chef Opening Local
@@ -1201,8 +1335,9 @@ You talk to the foreign visitors, ingratiating yourself with them. They're eager
 <<else>>
 	They're intrigued by some of the local customs, which are apparently strange to them.
 <</if>>
-<br><br>
 <<endevent>>
+<br><br>
+
 <<link [[Next|Chef Opening End]]>><</link>>
 <br>
 
@@ -1236,18 +1371,38 @@ Despite being secluded, several people stop by to chat.
 :: Chef Opening End
 
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
+<<if $chef_gwylan>>
+	<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+<</if>>
 <<if $chef_speech is "bailey">>
 	<<npc Bailey>><<person1>>
 	The party winds down after a few hours. You head to the exit, but Bailey intercepts you.
 	<br><br>
 	"You're a brave little shit," <<he>> says. <<He>> grasps your shoulders and turns you to face the guests, now drunkenly shuffling out the cafe.
-	"They all want a piece of orphan ass now that you've screamed about it. You've made things difficult."
-	<<gstress>><<stress 6>>
+	<<if $chef_gwylan>>
+		<<npc Gwylan 2>><<person1>>
+		"They all want a piece of orphan ass now that you've screamed about it. You've made things diff-"
+		<br><br>
+
+		<span class="purple"><<Hes>> cut off as a drink is splashed into <<his>> face.</span>
+		<br><br>
+
+		You turn to look at the culprit. <span class="red">It's Gwylan,</span> marching out of the cafe with the crowd after placing a now-empty wine glass on the nearest table.
+		<br><br>
+
+		Bailey moves to go after <<person2>><<him>>, but something about Gwylan gives <<person1>><<him>> pause.
+		<br><br>
+
+		"Difficult," Bailey finishes. "Fucking drunkards."
+	<<else>>
+		"They all want a piece of orphan ass now that you've screamed about it. You've made things difficult."
+		<<gstress>><<stress 6>>
+	<</if>>
 	<br><br>
 	<<He>> releases you, and walks away.
 	<br><br>
 	<<endevent>>
-	<<link [[Next|Chef Opening End 2]]>><</link>>
+	<<link [[Next|Chef Opening End 2]]>><<unset $chef_gwylan>><</link>>
 	<br>
 <<elseif $chef_speech is "sam">>
 	<<npc Sam>><<person1>>
@@ -1262,7 +1417,7 @@ Despite being secluded, several people stop by to chat.
 	<<He>> waves you goodbye, and you exit onto Cliff Street.
 	<br><br>
 	<<endevent>>
-	<<link [[Next|Cliff Street]]>><<set $eventskip to 1>><</link>>
+	<<link [[Next|Cliff Street]]>><<unset $chef_gwylan>><<set $eventskip to 1>><</link>>
 	<br>
 <<elseif $chef_speech is "truth">>
 	<<npc Sam>><<person1>>
@@ -1278,7 +1433,7 @@ Despite being secluded, several people stop by to chat.
 	<<He>> waves you goodbye, and you exit onto Cliff Street.
 	<br><br>
 	<<endevent>>
-	<<link [[Next|Cliff Street]]>><<set $eventskip to 1>><</link>>
+	<<link [[Next|Cliff Street]]>><<unset $chef_gwylan>><<set $eventskip to 1>><</link>>
 	<br>
 <<else>>
 	<<npc Sam>><<person1>>
@@ -1291,7 +1446,7 @@ Despite being secluded, several people stop by to chat.
 	<<He>> waves you goodbye, and you exit onto Cliff Street.
 	<br><br>
 	<<endevent>>
-	<<link [[Next|Cliff Street]]>><<set $eventskip to 1>><</link>>
+	<<link [[Next|Cliff Street]]>><<unset $chef_gwylan>><<set $eventskip to 1>><</link>>
 	<br>
 <</if>>
 
@@ -1551,14 +1706,24 @@ The <<person3>><<person>> shakes hand with the police officers, while the <<pers
 "This the one," the <<person1>><<person>> responds.
 <br>
 "Dunno what I was expecting. Here's the money."
-<<He>> nods at the <<person4>><<person>>, now stood behind you, and you lurch back as <<he>> ties a collar around your neck.
-<<leash 21>>
-<br><br>
-The police leave as the <<person3>><<person>> takes your leash. "Gonna make a killing from this one," <<he>> whispers as <<he>> tugs. You're pulled forward.
-<br><br>
-<<badEndTracking "Underground Farm" { reason: "arrested" }>>
-<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
-<br>
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	<<He>> nods at the <<person4>><<person>>, now stood behind you, and you lurch back as <<he>> ties a leash around your collar. As soon as <<he>> tries to tug it, <span class="green">it unties itself</span>.
+	<br><br>
+
+	They look down at the leash, and the <<person3>><<person>> shakes <<his>> head. "We'll deal with it later." The police leave as <<he>> pushes you forward. "Gonna make a killing from this one," <<he>> whispers.
+	<br><br>
+	<<link [[Next|Livestock Intro Familiar Collar]]>><<endevent>><</link>>
+	<br>
+<<else>>
+	<<He>> nods at the <<person4>><<person>>, now stood behind you, and you lurch back as <<he>> ties a collar around your neck.
+	<<leash 21>>
+	<br><br>
+	The police leave as the <<person3>><<person>> takes your leash. "Gonna make a killing from this one," <<he>> whispers as <<he>> tugs. You're pulled forward.
+	<br><br>
+	<<badEndTracking "Underground Farm" { reason: "arrested" }>>
+	<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
+	<br>
+<</if>>
 
 :: Chef Blackmail Car 2
 

@@ -253,6 +253,7 @@
 	<<unset $nextPassageCheck>>
 	<<unset $phaseWraith>>
 	<<unset $wraithBedSpeech>>
+	<<unset $gwylanDoesALittleTrolling>>
 <</widget>>
 
 <<widget "rainWraith">>
@@ -338,7 +339,7 @@
 
 <<widget "clearWraith">>
 	<<if $wraith>>
-		<<if $foresthunt gte 1 and $blackwolfhunt is 0 and $edenforesthunt is 0>>
+		<<if $foresthunt gte 1>>
 			<<set $foresthunt to 0>>
 		<</if>>
 		<<set $wraith.mimic to "">>
@@ -383,8 +384,8 @@
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "wraithShamble">><<silently>>
-	<<if $compoundWraith>>
-		<<set _text_output to ($compoundWraith is "willing" ? "walk" : "shamble")>>
+	<<if $compound.wraith>>
+		<<set _text_output to ($compound.wraith is "willing" ? "walk" : "shamble")>>
 	<<else>>
 		<<set _text_output to "shamble">>
 	<</if>>
@@ -598,6 +599,49 @@
 				<<run _linePool.pushUnique("Count the feathers. Uncountable feathers.")>>
 			<</if>>
 		<</if>>
+		<<if $npc.includes("Gwylan") or $_npcWraith is "Gwylan">>
+			<<run _linePool.pushUnique(
+				"Carcass.",
+				"Remains.",
+				"Fox. Hound. Serpent.",
+				"Sing with me, seabird.",
+				"Doomed to an eternity alone.",
+				"The gull poisons its own nest.",
+				"Bereft of name. Bereft of hope.",
+				"Always your eyes on the sea's horizon.",
+				"You've flown for so long. Your legs have withered.",
+				"Like a snake shedding its skin. Devour your offspring.",
+				"Those who lay with beasts must be prepared for the bite.",
+				"The arrow of time struck midnight long after you were born.",
+				"You will never leave the forest. The forest will never leave you.",
+				"Collect and hoard time itself, before it slips through your fingers.",
+				"You've built your cage, phoenix. Gilded with ashes, helpless to watch them vanish in the wind."
+			)>>
+			<<if $gwylanSeen?.includes("ritual_sex")>>
+				<<run _linePool.pushUnique(
+					"Purges. Urges.",
+					"Howl in sorrow.",
+					"Dry, dead roses, waiting to burn.",
+					"The kiss of the thorn, stained red.",
+					"To pluck the buds before they bloom."
+				)>>
+			<</if>>
+			<<if $gwylanSeen?.includes("yearning")>>
+				<<run _linePool.pushUnique(
+					"Is <<pshe>> any different?",
+					"You'll forget <<phim>> too.",
+					"That your black heart might love again.",
+					"Love will grind hearts of stone to dust.",
+					"The chains tighten as the tide rolls in.",
+					"Love. Memory. Burdens you carry willingly.",
+					"You're so afraid to say you love <<phim>>. You may never get the chance.",
+					"Again. And again. And again. And again. And again. And again. And again. And again. And..."
+				)>>
+				<<if !$gwylanSeen.includes("romance")>>
+					<<run _linePool.pushUnique("The gull scorns its mate again.")>>
+				<</if>>
+			<</if>>
+		<</if>>
 		<<if $npc.includes($spear_vessel)>>
 			<<run _linePool.pushUnique(
 				"Crossways, ablaze.",
@@ -608,57 +652,22 @@
 			)>>
 		<</if>>
 
-		<!-- Ideally, this part would be a for loop. I can't figure out how to generate a new temporary variable for each loop iteration,
-		and if I use the same temp variable for each loop, only the last named NPC's name and title will be added to the pool.
-		Temp arrays don't work either. -->
-		<<if $npc[0]>>
-			<<set _npc0 to clone($npc[0])>>
-			<<set _title0 to C.npc[$npc[0]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc0 _npc0 _npc0 _npc0 _npc0 _npc0 _npc0 _npc0.",
-				"Hie away, _title0 mine, hie away."
-			)>>
-		<</if>>
-		<<if $npc[1]>>
-			<<set _npc1 to clone($npc[1])>>
-			<<set _title1 to C.npc[$npc[1]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc1 _npc1 _npc1 _npc1 _npc1 _npc1 _npc1 _npc1.",
-				"Hie away, _title1 mine, hie away."
-			)>>
-		<</if>>
-		<<if $npc[2]>>
-			<<set _npc2 to clone($npc[2])>>
-			<<set _title2 to C.npc[$npc[2]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc2 _npc2 _npc2 _npc2 _npc2 _npc2 _npc2 _npc2.",
-				"Hie away, _title2 mine, hie away."
-			)>>
-		<</if>>
-		<<if $npc[3]>>
-			<<set _npc3 to clone($npc[3])>>
-			<<set _title3 to C.npc[$npc[3]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc3 _npc3 _npc3 _npc3 _npc3 _npc3 _npc3 _npc3.",
-				"Hie away, _title3 mine, hie away."
-			)>>
-		<</if>>
-		<<if $npc[4]>>
-			<<set _npc4 to clone($npc[4])>>
-			<<set _title4 to C.npc[$npc[4]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc4 _npc4 _npc4 _npc4 _npc4 _npc4 _npc4 _npc4.",
-				"Hie away, _title4 mine, hie away."
-			)>>
-		<</if>>
-		<<if $npc[5]>>
-			<<set _npc5 to clone($npc[5])>>
-			<<set _title5 to C.npc[$npc[5]].title.split(" ").pop()>>
-			<<run _linePool.pushUnique(
-				"_npc5 _npc5 _npc5 _npc5 _npc5 _npc5 _npc5 _npc5.",
-				"Hie away, _title5 mine, hie away."
-			)>>
-		<</if>>
+		<<set _npc to {0:0,1:1,2:2,3:3,4:4,5:5}>><<set _title to {0:0,1:1,2:2,3:3,4:4,5:5}>>
+		<<for $_g to 0; $_g lt 6; $_g++>>
+			<<if $npc[$_g]>>
+				<<set _npc[$_g] to clone($npc[$_g])>>
+				<<if _npc[$_g] is "Gwylan">>
+					<<set _npc[$_g] to "Seabird">>
+					<<set _title[$_g] to "witch">>
+				<<else>>
+					<<set _title[$_g] to C.npc[$npc[$_g]].title.split(" ").pop()>>
+				<</if>>
+				<<run _linePool.pushUnique(
+					_npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + " " + _npc[$_g] + ".",
+					"Hie away, " + _title[$_g] + " mine, hie away."
+				)>>
+			<</if>>
+		<</for>>
 
 		<<set _speak to _speakPool.pluck()>>
 		<<set _line1 to "<span class=\"wraith\">" + _linePool.pluck() + "</span>">>
@@ -723,7 +732,6 @@
 			].pluck()>>
 		<</if>>
 		<<if $alarm is 1>>
-			<<set $alarm to 0>>
 			<<set _speaks to "<<He>> repeats your screams for help in a mocking tone, in your own voice">>
 		<</if>>
 
@@ -864,21 +872,21 @@
 				"It's happening again. It's happened again."
 			)>>
 		<</if>>
-		<<if $awareness gte 400>>
+		<<if $awarelevel gte 2>>
 			<<run _linePool.pushUnique(
 				"The Elk fancies itself the predator.",
 				"To be blind again. You'll miss your ignorance.",
 				"The arrow of time struck midnight long before you were born."
 			)>>
 		<</if>>
-		<<if $awareness gte 600>>
+		<<if $awarelevel gte 3>>
 			<<run _linePool.pushUnique(
 				"The shattered lie under the edge of blue.",
 				"The chained are bound, by countless chains. The chains are bound to countless chained.",
 				"Under bloody moon, under faithless sun. Dancing to my tune, standing here <span class=\"tentacle\">As One</span>."
 			)>>
 		<</if>>
-		<<if $awareness gte 900>>
+		<<if $awareness gte 500>>
 			<<run _linePool.pushUnique(
 				"As Two, As One, yet the Third remains unfound.",
 				"Reach out, with your six dreams.",
@@ -939,6 +947,11 @@
 				"Behind silver masks, a thief on a string. Beside the Elk basks, <span class=\"tentacle\">As One</span> broken wing.",
 			)>>
 		<</if>>
+		<<if $harpy gte 6>>
+			<<run _linePool.pushUnique(
+				"Clipped wings and a song no one hears."
+			)>>
+		<</if>>
 		<<if $avery_fate is "ascended">>
 			<<run _linePool.pushUnique(
 				"The fox feeds the elk willingly.",
@@ -964,6 +977,9 @@
 					"The world cannot become clean without one's hands becoming dirty."
 				)>>
 			<</if>>
+		<</if>>
+		<<if $museumAntiques?.paintings?.paintingward is "museum" or $gwylanSeen?.includes("preen")>>
+			<<run _linePool.pushUnique("Beings thrice damned, you dance on their strings. Two rotten black hearts, birds of a feather. One still missing, plucked from great beast's wings. As Three. As Two. <span class=\"tentacle\">As One.</span> Forever.")>>
 		<</if>>
 
 		<<if _rngWraithLineChance is 1>>
@@ -1148,19 +1164,23 @@
 <</widget>>
 
 <<widget "rescueWraith">>
-	<<if $location is "forest">>
-		<<if $alarm is 1 and $forest lte 20 and $gwylan_aborted isnot 3>>
-		<<set $gwylan_aborted to 3>>
-			<<if $forest_shop_intro isnot 1 and $gwylan_rescue isnot 1>>
-				You see a mousy <<nnpc_gendery "Gwylan">> burst through the treeline, alarmed by your shout.
+	<<if $alarm is 1>>
+		<<if $location is "forest">>
+			<<if $forest lte gwylanForestRescueRange() and (!$gwylanRescue?.failed.includes("Wraith") or gwylanCanRescueFromWraith() and $passage is "Wraith Caught")>>
+				<<if gwylanCanRescueFromWraith() and $passage is "Wraith Caught">>
+					<<set $rescue to 1>>
+					<span class="forest-green">You hear rustling in the trees nearby.</span>
+					<br><br>
+				<<else>>
+					<<gwylanRescueStats false "Wraith">>
+					You see <<gwylanDesc>> burst through the treeline, alarmed by your shout. <<nnpc_He "Gwylan">> looks around, puzzled. <<nnpc_His "Gwylan">> gaze passes right over you, as if you weren't there, <span class="red">then <<nnpc_he "Gwylan">> turns and walks away.</span>
+					<br><br>
+				<</if>>
 			<<else>>
-				You see Gwylan burst through the treeline, alarmed by your shout.
+				<<set $canRescue to []>>
+				<<forestRescueCheck>>
+				<br><br>
 			<</if>>
-			<<nnpc_He "Gwylan">> looks around, puzzled. <<nnpc_His "Gwylan">> gaze passes right over you, as if you weren't there, <span class="red">then turns and walks away.</span>
-			<br><br>
-		<<elseif $alarm is 1 and $forest gte 21>>
-			<<forestRescueFail>>
-			<br><br>
 		<</if>>
 	<</if>>
 <</widget>>
@@ -1254,12 +1274,13 @@
 	<<if !$possessed>>
 		<<switch _args[0]>>
 			<<case "town">>
-				<<if wraithCanHunt() and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 50))>>
+				<<if npcCanHunt("Ivory Wraith") and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 50))>>
 					<br><br>
 					<<set $wraith.hunt to 1>>
 					A wave of dizziness and confusion washes over you. Every time you blink, you see a blurred image.
 					<br>
-					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
+					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too.
+					The sound of a chain breaking echoes in your ears. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
 					<br>
 					<<if $wraith.state is "haunt">>
 						<span class="red">You are being hunted.</span>
@@ -1294,33 +1315,31 @@
 					<<set $rng2 to random(1, 3)>>
 					<<if $rng2 is 1 and $edenfreedom gte 1>>
 						A chill runs up your spine, a warning from some primal instinct. <span class="red">Something is hunting you.</span>
-						<<set $edenforesthunt to 1>>
-						<<set $blackwolfhunt to 0>>
+						<<set $forestHunter to "Eden">>
 					<<else>>
 						A wave of dizziness and confusion washes over you. Every time you blink, you see a blurred image.
 						<br>
-						You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
+						You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too.
+						The sound of a chain breaking echoes in your ears. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
 						<br>
 						<span class="red">Something is hunting you.</span>
-						<<set $edenforesthunt to 0>>
-						<<set $blackwolfhunt to 0>>
 					<</if>>
 					<<set $wraith.hunt to 1>>
 				<<else>>
 					You begin to see strange shapes in the air around you. A chill runs up your spine. <span class="red">Something is still hunting you.</span>
-					<<set $edenforesthunt to 0>>
-					<<set $blackwolfhunt to 0>>
 				<</if>>
+				<<set $forestHunter to "Ivory Wraith">>
 				<<set $foresthunt to $wraith.hunt>>
 				<br><br>
 				<<link [[Next|Forest]]>><<set $eventskip to 1>><</link>>
 			<<case "drain">>
-				<<if wraithCanHunt() and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 60))>>
+				<<if npcCanHunt("Ivory Wraith") and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 60))>>
 					<<set $wraith.hunt to 1>>
 					<br><br>
 					A wave of dizziness and confusion washes over you. Every time you blink, you see a blurred image.
 					<br>
-					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
+					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too.
+					The sound of a chain breaking echoes in your ears. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
 					<br>
 					<<if $wraith.state is "haunt">>
 						<span class="red">You are being hunted.</span>
@@ -1347,12 +1366,13 @@
 					<</if>>
 				<</if>>
 			<<case "sewers">>
-				<<if wraithCanHunt() and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 60))>>
+				<<if npcCanHunt("Ivory Wraith") and $wraith.state and $wraith.hunt is 0 and $wraith.timer gte (random(0, 60))>>
 					<<set $wraith.hunt to 1>>
 					<br><br>
 					A wave of dizziness and confusion washes over you. Every time you blink, you see a blurred image.
 					<br>
-					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
+					You hold your eyes shut, and it begins to come into focus. You see a tall robed figure, bathed in red moonlight, its skin as pale as ivory. As soon as you see it, you can't help but think that it sees you too.
+					The sound of a chain breaking echoes in your ears. <<stress 6>><<gstress>><<trauma 6>><<gtrauma>>
 					<br>
 					<<if $wraith.state is "haunt">>
 						<span class="red">You are being hunted.</span>
@@ -1392,8 +1412,7 @@
 					<br><br>
 				<</if>>
 				<span class="red">You're trespassing. Something is hunting you.</span>
-				<<set $edenforesthunt to 0>>
-				<<set $blackwolfhunt to 0>>
+				<<set $forestHunter to "Ivory Wraith">>
 				<<set $wraith.hunt to 1>>
 				<<set $foresthunt to $wraith.hunt>>
 				<br><br>
@@ -1413,15 +1432,16 @@
 
 <<widget "wPersist">>
 	<<if $wraith.state and !$possessed>>
-		<<if $wraith.hunt and wraithCanHunt()>>
+		<<if $wraith.hunt and npcCanHunt("Ivory Wraith")>>
 			<<if _args[0] is "forest">>
 				<<if $foresthunt gte 1>>
 					<<set $wraith.hunt to $foresthunt>>
+					<<set $forestHunter to "Ivory Wraith">>
 					<<if !$wPersist>>
 						<<set $wPersist to 1>>
 					<</if>>
 				<<else>>
-					<<set $foresthunt to $wraith.hunt>>
+					<<set $foresthunt to $wraith.hunt>><<set $forestHunter to "Ivory Wraith">>
 					You enter the treeline, <span class="red">but can't shake the feeling that something's still coming for you.</span>
 				<</if>>
 				<<if ($location is "lake" or $location is "lake_ruin") and !$possessed>>
@@ -1446,7 +1466,7 @@
 					<</if>>
 				<</if>>
 			<</if>>
-		<<elseif wraithCanHunt() and !$possessed>>
+		<<elseif npcCanHunt("Ivory Wraith") and !$possessed>>
 			<<wTimerProgress>>
 		<</if>>
 	<</if>>
@@ -1466,54 +1486,60 @@
 <<widget "exitWraith">>
 	<<switch $wraith.exit>>
 		<<case "home">>
-			<<link [[Next|Bedroom]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Bedroom]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "sleep">>
 			<<set $wardrobe_location to "wardrobe">>
 			<<wardrobeSelection true>>
 			<<radiooutfits>>
 			<br><br>
-			<<link [[Next|Bedroom]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Bedroom]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "cabin">>
-			<<link [[Next|Eden Cabin]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Eden Cabin]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "alex_cottage">>
-			<<link [[Next|Farm Cottage]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Farm Cottage]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "tower">>
-			<<link [[Next|Bird Tower]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Bird Tower]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "town">>
 			<<destinationeventend>>
-			<<endevent>>
+			<<endevent>><<if _args[0]>><<set $phase2 to 1>><</if>>
 		<<case "forest">>
-			<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
+			<br>
+		<<case "Gwylan">>
+			<<link [[...|Forest Wraith Gwylan]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
+			<br>
+		<<case "forest_shop">>
+			<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><<set $forest to 0>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "lake_ruin">>
 			<<destinationlakeruin>>
-			<<endevent>><<set $eventskip to 1>>
+			<<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>>
 		<<case "lake">>
 			<<if Weather.isSnow and ($bus is "lakedepths" or $bus is "lakeshallows")>>
 				<<destination_lake_ice>>
 			<<else>>
 				<<destinationlake>>
 			<</if>>
-			<<endevent>><<set $eventskip to 1>>
+			<<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>>
 		<<case "wolf_cave">>
-			<<link [[Next|Wolf Cave]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Wolf Cave]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "moor">>
-			<<link [[Next|Moor]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Moor]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "farm_assault">>
-			<<link [[Next|Farm Assault]]>><<endevent>><</link>>
+			<<link [[Next|Farm Assault]]>><<endevent>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "sewers">>
 			<<destinationsewers>>
 			<<endevent>><<set $eventskip to 1>>
 		<<case "pirates">>
-			<<link [[Next|Pirate Deck]]>><<endevent>><<set $eventskip to 1>><</link>>
+			<<link [[Next|Pirate Deck]]>><<endevent>><<set $eventskip to 1>><<if _args[0]>><<set $phase2 to 1>><</if>><</link>>
 			<br>
 		<<case "mansion">>
 			<<link [[Next|Mansion Bedroom]]>><<endevent>><<set $eventskip to 1>><</link>>
@@ -2074,6 +2100,9 @@
 	<<set $possessed to true>><<canvas-model-override "blink" false>>
 	<<set $controlSaved to $control>><<set $control to 0>>
 	<<set $wraith.hunt to 0>>
+	<<if $forestHunter is "Wraith">>
+		<<set $foresthunt to 0>>
+	<</if>>
 
 	<<if _args[0]>>
 		<<set $wraith.exit to _args[0]>>

@@ -317,62 +317,131 @@
 	<<set _anyItemsInRoom to _store_check is 1 and $store.upper.find(item => item.location is "Robin's Room") and $store.lower.find(item => item.location is "Robin's Room")>>
 	<<if Time.schoolDay and Time.hour gte 8 and Time.hour lte 12>>
 		/* Only checks up to noon because if there's a set of actions that can lead past noon there's something else wrong and it shouldn't be masked by this case */
-		<<if _robin.trauma gte 80>>
-			Robin looks at the clock on the wall.
-			<<if Time.hour gte 9>>
-				"We're late for school," <<he>> says.
-			<<else>>
-				"It's school soon," <<he>> says.
-			<</if>>
-			"I don't want to go."
-			<br><br>
-			<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
-				You hug <<him>>. "Everything will be fine," you say. "I'll give you room to get changed."
-			<<else>>
-				You hug <<him>>. "Everything will be fine," you say.
-			<</if>>
-			<br><br>
+		<<if $gwylan.robin gte 10 and !between($chef_state, 7, 8) and false>> /* WARNING! Re-enable later for Gwybin cafe */
+			<<if _robin.trauma gte 80>>
+				Robin looks at the clock on the wall.
+				<<if Time.minute gte 30>>
+					"Gwylan's probably left already," <<he>> says.
+				<<else>>
+					"Gwylan should be here soon," <<he>> says.
+				<</if>>
+				"I don't want to go to school."
+				<br><br>
+				<<if $trauma gte ($traumamax / 5) * 4>>
+					Neither do you. You both sit in silence for a few moments, staring at the floor. "But I guess we have no choice." <<He>> sighs.
+				<<else>>
+					<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
+						You hug <<him>>. "Everything will be fine," you say. "I'll give you room to get changed."
+					<<else>>
+						You hug <<him>>. "Everything will be fine," you say.
+					<</if>>
+				<</if>>
+				<br><br>
 
-			<<if $robinromance and !$daily.robin.traumarequest and $rng gte 51>>
-				<<set $daily.robin.traumarequest to 1>>
-				<<set _robinrequest to 1>>
-				"D-do you think you could walk with me<<if $exposed gte 1 and _anyItemsInRoom>> after you get changed<</if>>?" <<he>> asks, rubbing <<his>> arm.
+				<<if $robinromance and !$daily.robin.traumarequest and $rng gte 51>>
+					<<set $daily.robin.traumarequest to 1>>
+					<<set _robinrequest to 1>>
+					"D-do you think you could <<if Time.minute gte 30>>walk with me<<else>>accompany me<</if>><<if $exposed gte 1 and _anyItemsInRoom>> after you get changed<</if>>?" <<he>> asks, rubbing <<his>> arm.
+					<br><br>
+					<<if $exposed lte 0>>
+						<<cafeicon>><<link [[Walk to the cafe (0:10)|Gwylan Walk Cafe Robin]]>><<pass 10>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
+					<<elseif _anyItemsInRoom>>
+						<<cafeicon>><<link [[Get dressed and walk to the cafe (0:10)|Gwylan Walk Cafe Robin]]>><<storeon "Robin's Room">><<pass 10>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
+					<</if>>
+				<<else>>
+					<<if $exposed lte 0>>
+						<<cafeicon>><<link [[Walk to the cafe (0:10)|Gwylan Walk Cafe Robin]]>><<pass 10>><<handheldon 1>><</link>>
+					<<elseif _anyItemsInRoom>>
+						<<cafeicon>><<link [[Get dressed and walk to the cafe (0:10)|Gwylan Walk Cafe Robin]]>><<storeon "Robin's Room">><<pass 10>><<handheldon 1>><</link>>
+					<</if>>
+				<</if>>
+				<br>
+			<<else>>
+				Robin looks at the clock on the wall.
+				<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
+					<<if Time.minute gte 30>>
+						"Oh no! Gwylan's probably waiting for us! I need to get changed," <<he>> says. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed too!" <<He>> blushes.<</if>>
+					<<else>>
+						"Gwylan should arrive any minute now. I'd better get changed," <<he>> says. <<if $exposed lte 0>>"Would you like to accompany us?"<<else>>"You should probably get dressed too." <<He>> blushes.<</if>>
+					<</if>>
+				<<else>>
+					<<if Time.minute gte 30>>
+						"Oh no! Gwylan's probably waiting for us!" <<he>> exclaims. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed!" <<He>> blushes.<</if>>
+					<<else>>
+						"Gwylan should arrive any minute now," <<he>> says. <<if $exposed lte 0>>"Would you like to accompany us?"<<else>>"You should probably get dressed." <<He>> blushes.<</if>>
+					<</if>>
+				<</if>>
 				<br><br>
 				<<if $exposed lte 0>>
-					<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
+					<<cafeicon>><<link [[Walk to the cafe (0:05)|Gwylan Walk Cafe Robin]]>><<pass 5>><<handheldon 1>><</link>>
+					<br>
 				<<elseif _anyItemsInRoom>>
-					<<schoolicon "building">><<link [[Get dressed and walk to school (0:40)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 40>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
-				<</if>>
-			<<else>>
-				<<if $exposed lte 0>>
-					<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<handheldon 1>><</link>>
-				<<elseif _anyItemsInRoom>>
-					<<schoolicon "building">><<link [[Get dressed and walk to school (0:40)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 40>><<handheldon 1>><</link>>
+					<<cafeicon>><<link [[Get dressed and walk to the cafe (0:05)|Gwylan Walk Cafe Robin]]>><<storeon "Robin's Room">><<pass 5>><<handheldon 1>><</link>>
+					<br>
 				<</if>>
 			<</if>>
-			<br>
 		<<else>>
-			Robin looks at the clock on the wall.
-			<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
+			<<if _robin.trauma gte 80>>
+				Robin looks at the clock on the wall.
 				<<if Time.hour gte 9>>
-					"We're late for school! I need to get changed," <<he>> says. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed too!" <<He>> blushes.<</if>>
+					"We're late for school," <<he>> says.
 				<<else>>
-					"It's school soon. I'd better get changed," <<he>> says. <<if $exposed lte 0>>"Would you like to walk with me?"<<else>>"You should probably get dressed too." <<He>> blushes.<</if>>
+					"It's school soon," <<he>> says.
 				<</if>>
+				"I don't want to go."
+				<br><br>
+				<<if $trauma gte ($traumamax / 5) * 4>>
+					Neither do you. You both sit in silence for a few moments, staring at the floor. "But I guess we have no choice." <<He>> sighs.
+				<<else>>
+					<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
+						You hug <<him>>. "Everything will be fine," you say. "I'll give you room to get changed."
+					<<else>>
+						You hug <<him>>. "Everything will be fine," you say.
+					<</if>>
+				<</if>>
+				<br><br>
+
+				<<if $robinromance and !$daily.robin.traumarequest and $rng gte 51>>
+					<<set $daily.robin.traumarequest to 1>>
+					<<set _robinrequest to 1>>
+					"D-do you think you could walk with me<<if $exposed gte 1 and _anyItemsInRoom>> after you get changed<</if>>?" <<he>> asks, rubbing <<his>> arm.
+					<br><br>
+					<<if $exposed lte 0>>
+						<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
+					<<elseif _anyItemsInRoom>>
+						<<schoolicon "building">><<link [[Get dressed and walk to school (0:40)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 40>><<npcincr Robin trauma -2>><<npcincr Robin love 1>><<handheldon 1>><</link>><<glove>><<lrtrauma>>
+					<</if>>
+				<<else>>
+					<<if $exposed lte 0>>
+						<<schoolicon "building">><<link [[Walk to school (0:40)|Robin Walk School]]>><<pass 40>><<handheldon 1>><</link>>
+					<<elseif _anyItemsInRoom>>
+						<<schoolicon "building">><<link [[Get dressed and walk to school (0:40)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 40>><<handheldon 1>><</link>>
+					<</if>>
+				<</if>>
+				<br>
 			<<else>>
-				<<if Time.hour gte 9>>
-					"We're late for school!" <<he>> exclaims. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed!" <<He>> blushes.<</if>>
+				Robin looks at the clock on the wall.
+				<<if _robin.crossdress gte 2 and _robin.crossdress lte 4>>
+					<<if Time.hour gte 9>>
+						"We're late for school! I need to get changed," <<he>> says. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed too!" <<He>> blushes.<</if>>
+					<<else>>
+						"It's school soon. I'd better get changed," <<he>> says. <<if $exposed lte 0>>"Would you like to walk with me?"<<else>>"You should probably get dressed too." <<He>> blushes.<</if>>
+					<</if>>
 				<<else>>
-					"It's school soon," <<he>> says. <<if $exposed lte 0>>"Would you like to walk with me?"<<else>>"You should probably get dressed." <<He>> blushes.<</if>>
+					<<if Time.hour gte 9>>
+						"We're late for school!" <<he>> exclaims. <<if $exposed lte 0>>"Come on, we have to hurry!"<<else>>"Hurry, you need to get dressed!" <<He>> blushes.<</if>>
+					<<else>>
+						"It's school soon," <<he>> says. <<if $exposed lte 0>>"Would you like to walk with me?"<<else>>"You should probably get dressed." <<He>> blushes.<</if>>
+					<</if>>
 				<</if>>
-			<</if>>
-			<br><br>
-			<<if $exposed lte 0>>
-				<<schoolicon "building">><<link [[Walk to school (0:20)|Robin Walk School]]>><<pass 20>><<handheldon 1>><</link>>
-				<br>
-			<<elseif _anyItemsInRoom>>
-				<<schoolicon "building">><<link [[Get dressed and walk to school (0:20)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 20>><<handheldon 1>><</link>>
-				<br>
+				<br><br>
+				<<if $exposed lte 0>>
+					<<schoolicon "building">><<link [[Walk to school (0:20)|Robin Walk School]]>><<pass 20>><<handheldon 1>><</link>>
+					<br>
+				<<elseif _anyItemsInRoom>>
+					<<schoolicon "building">><<link [[Get dressed and walk to school (0:20)|Robin Walk School]]>><<storeon "Robin's Room">><<pass 20>><<handheldon 1>><</link>>
+					<br>
+				<</if>>
 			<</if>>
 		<</if>>
 		<<if _robinrequest is 1>>
@@ -562,7 +631,13 @@
 		"It's like there's a gap in my memory where they're supposed to be. In my dream, they were in the youth ward. Someone was crying, and they started humming this... this tune. It went like..."
 		<br><br>
 
-		Robin hums a short melody. <span class="teal">It's faintly familiar.</span>
+		Robin hums a short melody.
+		<<if $seabird_lullaby gte 2>>
+			<span class="teal">It's Seabird's Lullaby.</span>
+		<<else>>
+			<<set $seabird_lullaby to 1>>
+			<span class="teal">It's faintly familiar,</span> but you're not sure where you've heard it.
+		<</if>>
 		<br><br>
 
 		<<robinoptions>>

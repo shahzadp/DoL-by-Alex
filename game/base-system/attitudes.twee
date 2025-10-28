@@ -131,6 +131,7 @@
 		</div>
 		<<set _loveIntStart1 to $loveInterest.primary>>
 		<<set _loveIntStart2 to $loveInterest.secondary>>
+		<<set _loveIntStart3 to $loveInterest.tertiary>>
 		<div id="loveInterest" class="settingsToggleItem">
 			<div class="gold bold">Who do you consider to be your love interest?</div>
 			<<loveInterest>>
@@ -814,34 +815,8 @@
 	Primary Love Interest:
 	<br>
 	<<set _npc = ["None"].concat(setup.loveInterestNpc)>>
-	<<set _potentialLoveInterests = ["None"]>>
-	<<if $robinromance is 1>>
-		<<run _potentialLoveInterests.push("Robin")>>
-	<</if>>
-	<<if $whitneyromance is 1 and C.npc.Whitney.state isnot "dungeon">>
-		<<run _potentialLoveInterests.push("Whitney")>>
-	<</if>>
-	<<if $kylarenglish gte 1 and C.npc.Kylar.state isnot "prison">>
-		<<run _potentialLoveInterests.push("Kylar")>>
-	<</if>>
-	<<if $sydneyromance is 1>>
-		<<run _potentialLoveInterests.push("Sydney")>>
-	<</if>>
-	<<if $syndromeeden is 1>>
-		<<run _potentialLoveInterests.push("Eden")>>
-	<</if>>
-	<<if $auriga_artefact and C.npc.Avery.state isnot "dismissed">>
-		<<run _potentialLoveInterests.push("Avery")>>
-	<</if>>
-	<<if $syndromewolves is 1 and hasSexStat("deviancy", 3)>>
-		<<run _potentialLoveInterests.push("Black Wolf")>>
-	<</if>>
-	<<if $syndromebird is 1>>
-		<<run _potentialLoveInterests.push("Great Hawk")>>
-	<</if>>
-	<<if $farm_stage gte 7 and $alex_countdown is undefined>>
-		<<run _potentialLoveInterests.push("Alex")>>
-	<</if>>
+	/* Love interest requirements defined in function isPossibleLoveInterest() */
+	<<set _potentialLoveInterests = ["None"].concat(setup.loveInterestNpc.filter(LI => isPossibleLoveInterest(LI)))>>
 	<<if _potentialLoveInterests.length lte 1>>
 		<span class="black"><i>You haven't developed feelings for anyone yet.</i></span>
 	<<else>>
@@ -859,21 +834,105 @@
 				<<set $loveInterest.secondary to "None">>
 				<span class="black">You need to choose a primary love interest before you can choose a secondary.</span>
 			<<else>>
-			<<listbox "$loveInterest.secondary" autoselect>>
-				<<optionsfrom _potentialLoveInterests>>
-			<</listbox>>
+				<<listbox "$loveInterest.secondary" autoselect>>
+					<<optionsfrom _potentialLoveInterests>>
+				<</listbox>>
+				<<if $loveInterest.secondary isnot "None">>
+					<<run _potentialLoveInterests.delete($loveInterest.secondary)>>
+				<</if>>
 			<</if>>
 		<<else>>
 			<span class="black">You don't consider it possible to have more than one love interest.</span>
 			<<set $loveInterest.secondary to "None">>
 		<</if>>
+		<br><br>
+		Tertiary Love Interest:
+		<br>
+		<<if $awarelevel gte 3>>
+			<<if $loveInterest.secondary is "None">>
+				<<set $loveInterest.tertiary to "None">>
+				<span class="black">You need to choose a secondary love interest before you can choose a tertiary.</span>
+			<<else>>
+				<<listbox "$loveInterest.tertiary" autoselect>>
+					<<optionsfrom _potentialLoveInterests>>
+				<</listbox>>
+			<</if>>
+		<<else>>
+			<span class="black">You don't consider it possible to have more than two love interests.</span>
+			<<set $loveInterest.tertiary to "None">>
+		<</if>>
 	<</if>>
-	<<if $transformationParts.traits.mateForLife isnot "disabled" and (!isLoveInterest(_loveIntStart1) or (_loveIntStart2 isnot "None" and !isLoveInterest(_loveIntStart2)))>>
+	<<if $transformationParts.traits.mateForLife isnot "disabled" and (!isLoveInterest(_loveIntStart1) or (_loveIntStart2 isnot "None" and !isLoveInterest(_loveIntStart2)) or (_loveIntStart3 isnot "None" and !isLoveInterest(_loveIntStart3)))>>
 		<<set $LIChanged to true>>
 		<br>
 		<span class="red">Changing your partners goes against your instincts to mate for life. It will take a toll on your mental state.</span>
 	<<else>>
 		<<unset $LIChanged>>
+	<</if>>
+<</widget>>
+
+<<widget "loveInterestAdd">>
+	<<set $_LI to _args[0]>>
+	<<if setup.loveInterestNpc.includes($_LI)>>
+		<span class="gold">
+		<<if $loveInterest.primary is "None">>
+			<<set $loveInterest.primary to $_LI>><<set $_assigned to true>>
+		<<elseif $loveInterest.secondary is "None" and $awarelevel gte 2>>
+			<<set $loveInterest.secondary to $_LI>><<set $_assigned to true>>
+		<<elseif $loveInterest.tertiary is "None" and $awarelevel gte 3>>
+			<<set $loveInterest.tertiary to $_LI>><<set $_assigned to true>>
+		<</if>>
+		<<if $_assigned>>
+			<<= $_LI>> is now your love interest!
+		<<else>>
+			<<= $_LI>> can now be claimed as your love interest!
+		<</if>>
+		<<switch $_LI>>
+			<<case "Robin">>The thought makes you feel warm.
+			<<case "Whitney">>It seems you don't have a choice in the matter.
+			<<case "Kylar">>
+				<<if _args[1] is "consensual">>
+					You know <<nnpc_he "Kylar">>'ll always be watching your back. Always.
+				<<else>>
+					You aren't sure if you agreed to this.
+				<</if>>
+			<<case "Sydney">>Will you keep <<nnpc_him "Sydney">> pure, or fall from grace together?
+			<<case "Eden">>The feeling of danger has passed, and you feel safer here.
+			<<case "Avery">>You feel yourselves moving up in the world.
+			<<case "Black Wolf">><<nnpc_He "Black Wolf">> seems happy to have found a mate.
+			<<case "Great Hawk">>This isn't how you expected to find a <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>>, but you feel uplifted all the same.
+			<<case "Alex">>You can live together, after all.
+			<<case "Gwylan">>
+				<<if $gwylanSeen?.includes("romance")>>
+					You feel ready for forever, and so does <<nnpc_he "Gwylan">>.
+				<<else>>
+					Not forever, but for right now. Right now is all that matters.
+				<</if>>
+		<</switch>>
+		<br>
+		You can change your love interest<<if $awarelevel gte 2>>s<</if>> in the "Attitudes" menu.
+		</span>
+	<</if>>
+<</widget>>
+
+<<widget "loveInterestRemove">>
+	<<set $_LI to _args[0]>>
+	<<if setup.loveInterestNpc.includes($_LI) and isLoveInterest($_LI)>>
+		<<if $loveInterest.primary is $_LI>>
+			<<set $loveInterest.primary to "None">>
+		<<elseif $loveInterest.secondary is $_LI>>
+			<<set $loveInterest.secondary to "None">>
+		<<elseif $loveInterest.tertiary is $_LI>>
+			<<set $loveInterest.tertiary to "None">>
+		<</if>>
+		<<if $loveInterest.primary is "None" and $loveInterest.secondary isnot "None">>
+			<<set $loveInterest.primary to $loveInterest.secondary>>
+			<<set $loveInterest.secondary to "None">>
+		<</if>>
+		<<if $loveInterest.secondary is "None" and $loveInterest.tertiary isnot "None">>
+			<<set $loveInterest.secondary to $loveInterest.tertiary>>
+			<<set $loveInterest.tertiary to "None">>
+		<</if>>
 	<</if>>
 <</widget>>
 
@@ -892,6 +951,7 @@
 		V.attitudesControl.unlockLoveInterest1 = V.loveInterest.primary !== "None";
 		/* there's no point in highlighting that you can assign the second LI if you've not assigned the first one */
 		V.attitudesControl.unlockLoveInterest2 = V.awarelevel >= 2 && V.loveInterest.primary !== "None" && V.loveInterest.secondary === "None";
+		V.attitudesControl.unlockLoveInterest3 = V.awarelevel >= 3 && V.loveInterest.primary !== "None" && V.loveInterest.secondary !== "None" && V.loveInterest.tertiary === "None";
 		V.attitudesControl.unlockDefaultActions = V.moleststat > 0;
 		V.attitudesControl.unlockLewd = V.exhibitionism >= 35 || V.promiscuity >= 35 || V.deviancy >= 35;
 		V.attitudesControl.unlockHypnosis = Object.keys(V.hypnosis_traits).length >= 1;

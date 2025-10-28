@@ -554,6 +554,14 @@ class PlayerCanvasHelper {
 				if (part === "halo" && options.position === "doggy" && layer === "front") {
 					return 85;
 				}
+				if (
+					part === "ears" &&
+					["fox", "wolf", "cat"].includes(transformation) &&
+					options.transformations[transformation][part].show &&
+					options.clothes.head?.name === "witchsage"
+				) {
+					return 84;
+				}
 				/** @type {TransformationPartOptions} */
 				const value = options.transformations[transformation][part];
 				let z = CombatRenderer.indices[layer + part.toUpperFirst()];

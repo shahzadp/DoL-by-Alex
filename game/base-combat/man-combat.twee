@@ -799,7 +799,30 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<<rng>>
 	<<set _tool to (_args[0] is "left" ? $NPCList[_n].lefttool : $NPCList[_n].righttool)>>
 	<<set $_hand to _args[0] + "hand">>
-	<<if $rng gte 76 and ($hypnosis_traits.scream is undefined or $hypnosis_traits.scream lt 5)>>
+	<<if $NPCList[_n].fullDescription is "Gwylan">>
+		<<if _tool is "light">>
+			The small green light sways and dances in front of you, like a firefly.
+		<<else>>
+			The crystal dangles from a pendant in front of you.
+		<</if>>
+		<<gwylanHypnoName "cap">>'s soft voice echoes in your mind.
+		<<set $_toolAction to _tool is "light" ? "snuff this light" : "cover this necklace">>
+		<<if $rng lt C.npc.Gwylan.dom - 50 and !($hypnosis_traits.devotion gte gwylanHypnoMax("trait") and $hypnosis_traits.devotion lt 5)>>
+			<<if $hypnosis_traits.devotion gte gwylanHypnoMax("trait") and $hypnosis_traits.devotion gte 5>>
+				<span class="witch"><i>When I $_toolAction and click my fingers, we will plunge into depths unknown together.</i></span>
+			<<elseif $hypnosis_traits.devotion gte 3>>
+				<span class="witch"><i>When I $_toolAction and click my fingers, you will relax in my embrace, and reflect upon the questions in your mind.</i></span>
+			<<elseif $hypnosis_traits.devotion gte 1>>
+				<span class="witch"><i>When I $_toolAction and click my fingers, your curiosity will deepen.</i></span>
+			<<else>>
+				<span class="witch"><i>When I $_toolAction and click my fingers, a question will make itself known to you. You will forget it in time, but ponder it while you can.</i></span>
+			<</if>>
+			<<set $NPCList[_n][$_hand] to "hypnosis_devotion">>
+		<<else>>
+			<span class="witch"><i>When I $_toolAction and click my fingers, the cauldron of your lust will boil, and you will climax for me.</i></span>
+			<<set $NPCList[_n][$_hand] to "hypnosis_orgasm">>
+		<</if>>
+	<<elseif $rng gte 76 and ($hypnosis_traits.scream is undefined or $hypnosis_traits.scream lt 5)>>
 		<<He>> waves the _tool at you.
 		<<set $NPCList[_n][$_hand] to "hypnosis_scream">>
 		<<His>> voice echoes in your mind. <span class="purple"><i><span class="red">From when I click my fingers,</span> should you try to scream, you will beg for rougher treatment instead.</i></span>
@@ -819,12 +842,39 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<</if>>
 <</widget>>
 
+<<widget "combat-hand-hypnosis-devotion">>
+	<<set _tool to (_args[0] is "left" ? $NPCList[_n].lefttool : $NPCList[_n].righttool)>>
+	<<He>> clasps <<his>> palm around the _tool, and clicks <<his>> fingers.
+
+	A deep curiosity blooms,
+	<<if $hypnosis_traits.devotion gte 5 and $hypnosis_traits.devotion gte gwylanHypnoMax("trait")>>
+		and you take the plunge into depths unknown together. <<gwylanHypnosis "devotion" 15>><br>
+		<<hypnosisText "Leviathan dreams of conjunction and decay flow through your mind, daring to plunge deeper into your <<= $gwylanSeen.includes('devotion') ? 'Devotion' : 'Curiosity'>> and plucking answers from infinity beneath you. Each answer blooms and embraces you in its warm glow. This must be Heaven, whispered to you through the Angel before you.">>
+		You have to come back up for air, and your breach is beautiful. You tremble together. <<set $enemyarousal += 1200>><<arousal 10000>><<pain -50>><<gggarousal>><<lllpain>><br>
+	<<elseif $uncomfortable.hypnosis is false>>
+		nurtured by a shared yearning. <span class="lewd">Your mind immediately accepts it.</span> <<gwylanHypnosis "devotion" 10>><br>
+	<<elseif $willpower gte random(1, 1000)>>
+		nurtured by an unwelcome part of you. <span class="lblue">You will it away.</span> <<He>> pouts.
+	<<else>>
+		unbeckoned. <span class="pink">You can't resist it.</span> <<gwylanHypnosis "devotion" 10>><<willpower 1>><<gwillpower>><br>
+	<</if>>
+	<<set $combat_hypnosis to "devotion">>
+	<<combat-reset-tool _args[0]>>
+	<<combat-reset-hand _args[0]>>
+<</widget>>
+
 <<widget "combat-hand-hypnosis-orgasm">>
 	<<set _tool to (_args[0] is "left" ? $NPCList[_n].lefttool : $NPCList[_n].righttool)>>
 	<<He>> clasps <<his>> palm around the _tool and clicks <<his>> fingers.
 
 	A deep yearning blooms,
-	<<if $uncomfortable.hypnosis is false>>
+	<<if $hypnosis_traits.devotion gte 5 and $NPCList[_n].fullDescription isnot "Gwylan">>
+		<span class="lblue">only to be plucked</span>. <span class="forest-green">Instead, in your mind's eye, Gwylan cups your cheeks with gentle hands and smiles down at you. Red rose petals flutter around you.</span>
+		It feels so real, leaving you empty when the vision fades away. You yearn only for <<nnpc_him "Gwylan">> in this brief moment. The <<person>> clutches <<his>> head in pain.
+		<<arousal -1000>><<llarousal>><<defiance 5 _n>>
+	<<elseif $hypnosis_traits.devotion is 4 and random(1, 100) gte 50 and $NPCList[_n].fullDescription isnot "Gwylan">>
+		<span class="forest-green">only to wither as you feel a pair of gentle hands cover your ears, blocking out the compulsion</span>. <<He>> frowns.
+	<<elseif $uncomfortable.hypnosis is false>>
 		nurtured by a lewd part of you. <span class="lewd">Your mind immediately accepts it.</span> Feelings of arousal overwhelm you. <<He>> flashes you a satisfied smile.
 		<<arousal 10000>>
 	<<elseif $willpower gte random(1, 1000)>>
@@ -833,7 +883,7 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		unbeckoned. <span class="pink">You can't resist it.</span> Feelings of arousal overwhelm you. <<He>> flashes you a satisfied smile.
 		<<arousal 10000>><<willpower 1>><<gwillpower>>
 	<</if>>
-	<<hypnotised 1>>
+	<<hypnotised 1>><<set $combat_hypnosis to "orgasm">>
 	<<combat-reset-tool _args[0]>>
 	<<combat-reset-hand _args[0]>>
 <</widget>>
@@ -843,7 +893,13 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<<He>> clasps <<his>> palm around the _tool and clicks <<his>> fingers.
 
 	A deep yearning blooms,
-	<<if $uncomfortable.hypnosis is false>>
+	<<if $hypnosis_traits.devotion gte 5 and $NPCList[_n].fullDescription isnot "Gwylan">>
+		<span class="lblue">only to be plucked</span>. <span class="forest-green">Instead, in your mind's eye, Gwylan cradles your head in <<nnpc_his "Gwylan">> lap. White rose petals flutter around you.</span>
+		It feels so real, leaving you aglow when the vision fades away. You yearn only for <<nnpc_his "Gwylan">> touch in this brief moment. The <<person>> clutches <<his>> head in pain.
+		<<pain -8>><<llpain>><<defiance 5 _n>>
+	<<elseif $hypnosis_traits.devotion is 4 and random(1, 100) gte 50 and $NPCList[_n].fullDescription isnot "Gwylan">>
+		<span class="forest-green">only to wither as you feel a pair of gentle hands cover your ears, blocking out the compulsion</span>. <<He>> frowns.
+	<<elseif $uncomfortable.hypnosis is false>>
 		nurtured by a lewd part of you. <span class="lewd">Your mind immediately accepts it.</span> You long for pain. <<He>> flashes you a satisfied smile.
 		<<masochism 10>>
 	<<elseif $willpower gte random(1, 1000)>>
@@ -852,7 +908,7 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		unbeckoned. <span class="pink">You can't resist it.</span> You long for pain. <<He>> flashes you a satisfied smile.
 		<<masochism 10>><<willpower 1>><<gwillpower>>
 	<</if>>
-	<<hypnotised 1>>
+	<<hypnotised 1>><<set $combat_hypnosis to "masochism">>
 	<<combat-reset-tool _args[0]>>
 	<<combat-reset-hand _args[0]>>
 <</widget>>
@@ -862,14 +918,16 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<<He>> clasps <<his>> palm around the _tool and clicks <<his>> fingers.
 
 	<span class="pink">You feel something shift in your consciousness.</span>
-	<<if !$hypnosis_traits.scream>>
+	<<if ($hypnosis_traits.devotion gte 5 or $hypnosis_traits.devotion is 4 and random(1, 100) gte 50) and $NPCList[_n].fullDescription isnot "Gwylan">>
+		Whatever it is, it's blotted out by something else. <span class="forest-green">Instead, in your mind's eye, Gwylan gently holds your face in front of <<nnpc_his "Gwylan">> own. The slightest sting of a thorn keeps your mind focused.</span>
+	<<elseif !$hypnosis_traits.scream>>
 		You've gained the <span class="pink">Hypnotic Yearning</span> trait.
 		<<set $hypnosis_traits.scream to 1>>
 	<<elseif $hypnosis_traits.scream lt 5>>
 		Your hypnotic yearning has deepened.
 		<<set $hypnosis_traits.scream += 1>>
 	<</if>>
-	<<hypnotised 1>>
+	<<hypnotised 1>><<set $combat_hypnosis to "scream">>
 	<<combat-reset-tool _args[0]>>
 	<<combat-reset-hand _args[0]>>
 <</widget>>
@@ -879,14 +937,16 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<<He>> clasps <<his>> palm around the _tool and clicks <<his>> fingers.
 
 	<span class="pink">You feel something shift in your consciousness.</span>
-	<<if !$hypnosis_traits.cover>>
+	<<if ($hypnosis_traits.devotion gte 5 or $hypnosis_traits.devotion is 4 and random(1, 100) gte 50) and $NPCList[_n].fullDescription isnot "Gwylan">>
+		Whatever it is, it's blotted out by something else. <span class="forest-green">Instead, in your mind's eye, Gwylan gently holds your face in front of <<nnpc_his "Gwylan">> own. The slightest sting of a thorn keeps your mind focused.</span>
+	<<elseif !$hypnosis_traits.cover>>
 		You've gained the <span class="pink">Hypnotic Flaunting</span> trait.
 		<<set $hypnosis_traits.cover to 1>>
 	<<elseif $hypnosis_traits.cover lt 5>>
 		Your hypnotic flaunting has deepened.
 		<<set $hypnosis_traits.cover += 1>>
 	<</if>>
-	<<hypnotised 1>>
+	<<hypnotised 1>><<set $combat_hypnosis to "cover">>
 	<<combat-reset-tool _args[0]>>
 	<<combat-reset-hand _args[0]>>
 <</widget>>
@@ -1716,12 +1776,12 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<<giveNPCsextoy _n $NPCList[_n].heldSexToy _args[0]>>
 		<<combat-reveal-sextoy _args[0]>>
 
-	<<elseif $rng lte 7 and ($consensual isnot 1 or ["Whitney", "Kylar", "Sydney"].includes($npc[$npcrow.indexOf(_n)])) and $settings.bodyWritingLevel gte 2 and $enemytype isnot "beast" and !$noBodyWriting>>
+	<<elseif $rng lte 7 and ($consensual isnot 1 or ["Whitney", "Kylar", "Sydney", "Gwylan"].includes($npc[$npcrow.indexOf(_n)])) and $settings.bodyWritingLevel gte 2 and $enemytype isnot "beast" and !$noBodyWriting>>
 		<<set _rng to random(1, 5)>>
 		<<if (_rng is 5 and $NPCList[_n].type isnot "plant" and $role isnot "islander") or $npc.includes("Sydney")>>
 			<span class="purple"><<He>> pulls a <span class="pink">permanent</span> marker pen from <<his>> pocket, flicking off the lid.</span>
 			<<set $tooltarget to "marker">>
-		<<elseif _rng is 4 and $NPCList[_n].type isnot "plant" and $NPCList[_n].pronoun is "f" and $role isnot "islander">>
+		<<elseif _rng is 4 and $NPCList[_n].type isnot "plant" and $NPCList[_n].pronoun is "f" and $role isnot "islander" and !$npc.includes("Gwylan")>>
 			<span class="purple"><<He>> pulls lipstick from <<his>> pocket and pushes out the tip.</span>
 			<<set $tooltarget to "lipstick">>
 		<<elseif (_rng is 3 and $outside is 1 and ["forest","moor","farmlands","farm"].includes($location)) or $NPCList[_n].type is "plant" or $role is "islander">>
@@ -1739,17 +1799,33 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 			<<set $NPCList[_n].righthand to "pen">>
 		<</if>>
 		<<neutral 1 _n>>
-	<<elseif $enemyanger + $rng lte 15 and $NPCList[_n].traits.includes("hypnotist") and $settings.hypnosisEnabled>>
-		<<set _tool to $role is "islander" ? "bundle of herbs" : "pendant">>
+	<<elseif $enemyanger + $rng lte 15 and $NPCList[_n].traits.includes("hypnotist") and $settings.hypnosisEnabled and !$noHypnosis>>
+		<<if $NPCList[_n].fullDescription is "Gwylan">>
+			<<set _tool to $hallucinations gte 2 and $hypnosis_traits.devotion gte 3 ? "light" : "jasper pendant">>
+		<<else>>
+			<<set _tool to $role is "islander" ? "bundle of herbs" : "pendant">>
+		<</if>>
 		<<He>> produces a
 		<<if _args[0] is "left">>
 			<<set $NPCList[_n].lefthand to "hypnosis">>
 			<<set $NPCList[_n].lefttool to _tool>>
-			<<print $NPCList[_n].lefttool>>,
+			<<if $NPCList[_n].lefttool is "light">>
+				small green light on the tip of <<his>> finger,
+			<<elseif $NPCList[_n].lefttool is "jasper pendant">>
+				jasper pendant<<if $NPCName[_i].clothes.upper.name isnot "naked">> from <<his>> <<= $NPCName[_i].clothes.upper.name>><</if>>,
+			<<else>>
+				<<print $NPCList[_n].lefttool>>,
+			<</if>>
 		<<else>>
 			<<set $NPCList[_n].righthand to "hypnosis">>
 			<<set $NPCList[_n].righttool to _tool>>
-			<<print $NPCList[_n].righttool>>,
+			<<if $NPCList[_n].righttool is "light">>
+				small green light on the tip of <<his>> finger,
+			<<elseif $NPCList[_n].righttool is "jasper pendant">>
+				jasper pendant<<if $NPCName[_i].clothes.upper.name isnot "naked">> from <<his>> <<= $NPCName[_i].clothes.upper.name>><</if>>,
+			<<else>>
+				<<print $NPCList[_n].righttool>>,
+			<</if>>
 		<</if>>
 		<span class="purple">and <<print $role is "islander" ? "waves" : "swings">> it in front of your face.</span>
 	<<elseif $enemyanger + $rng lte 20>>
@@ -2173,8 +2249,14 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 				<span class="purple"><<He>> grasps your $worn.upper.name with <<his>> _args[0] hand.</span>
 				<<combat-set-hand-target _args[0] "upperclothes">><<neutral 1 _n>>
 			<<elseif $settings.asphyxiaLevel gte 1 and $nochoke isnot 1 and ($neckuse isnot "hand" or $otherNPChand is "throat")>>
-				<span class="purple"><<He>> grabs your throat.</span>
-				<<violence 2>><<combat-set-hand-target _args[0] "throat">><<set $neckuse to "hand">>
+				<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 and $NPCList[_n].fullDescription isnot "Gwylan">>
+					<<set $nochoke to 1>>
+					<span class="purple"><<He>> grabs your throat,</span> <span class="green">but immediately recoils as the golden heart on your collar shocks <<him>>.</span>
+					<<defiance 2 _n>><<combat-reset-hand _args[0]>>
+				<<else>>
+					<span class="purple"><<He>> grabs your throat.</span>
+					<<violence 2>><<combat-set-hand-target _args[0] "throat">><<set $neckuse to "hand">>
+				<</if>>
 			<<else>>
 				<<He>> tugs your hair.
 				<<violence 1>>
@@ -2281,8 +2363,14 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<</if>>
 	<<elseif $enemyanger + $rng lte 160>>
 		<<if $settings.asphyxiaLevel gte 4 and $nochoke isnot 1 and ($neckuse isnot "hand" or $otherNPChand is "throat") and random(1,2) is 1>>
-			<span class="purple"><<He>> grabs your throat.</span>
-			<<violence 2>><<combat-set-hand-target _args[0] "throat">><<set $neckuse to "hand">>
+			<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 and $NPCList[_n].fullDescription isnot "Gwylan">>
+				<<set $nochoke to 1>>
+				<span class="purple"><<He>> grabs your throat,</span> <span class="green">but immediately recoils as the golden heart on your collar shocks <<him>>.</span>
+				<<defiance 2 _n>><<combat-reset-hand _args[0]>>
+			<<else>>
+				<span class="purple"><<He>> grabs your throat.</span>
+				<<violence 2>><<combat-set-hand-target _args[0] "throat">><<set $neckuse to "hand">>
+			<</if>>
 		<<elseif $leftarm isnot "bound" and $rightarm isnot "bound" and $leftarm isnot "grappled" and $rightarm isnot "grappled" and $NPCList[_n].lefthand isnot "arms" and $NPCList[_n].righthand isnot "arms">>
 			<span class="purple"><<He>> pins down your arms.</span>
 			<<combat-set-hand-target _args[0] "arms">><<disablearms>><<set $leftarm to "grappled">><<set $rightarm to "grappled">><<set $lefttarget to _n>><<set $righttarget to _n>><<violence 2>><<bruise leftarm>><<bruise rightarm>><<set $speecharms to 1>>
@@ -4811,6 +4899,10 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 
 		<!-- MOUTH START -->
 
+		<<if $NPCList[_n].fullDescription is "Gwylan" and (!$gwylanSeen.includes("partners"))>>
+			<<set $_preventKiss to true>>
+		<</if>>
+
 		<<rng>>
 		<<if $NPCList[_n].mouth is "thigh">>
 			<<He>> kisses and licks your thigh.
@@ -5131,7 +5223,11 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<<rng>>
 		<<if $NPCList[_n].mouth is "kiss">>
 			<<if $speechvaginavirgin isnot 1 and $speechpenisvirgin isnot 1 and $speechanusvirgin isnot 1 and $speechmouthvirgin isnot 1>>
-				<<if $rng gte 101>>
+				<<if $_preventKiss>>
+					<span class="red"><<He>> pulls <<his>> mouth away from yours and looks angry.</span>
+					<<set $enemytrust -= 200>><<set $enemyanger += 200>><<set $mouthuse to 0>><<set $NPCList[_n].mouth to 0>><<set $mouthstate to 0>>
+					<<set $NPCList[_n].location.head to 0>>
+				<<elseif $rng gte 101>>
 					<span class="lblue"><<He>> pulls <<his>> mouth away from yours.</span>
 					<<set $NPCList[_n].mouth to 0>><<set $mouthuse to 0>><<set $mouthstate to 0>>
 					<<set $NPCList[_n].location.head to 0>>
@@ -5150,6 +5246,8 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 					<<if $NPCList[_n].type is "plant" and $mouthactiondefault isnot "kissback">>
 						<span class="pink">Sweet nectar drips from <<his>> tongue and fills your mouth.</span>
 						<<nectarfed 20>>
+					<<elseif $NPCList[_n].fullDescription is "Gwylan">>
+						<<gwylanKiss 1>>
 					<</if>>
 				<</if>>
 			<<else>>
@@ -5160,7 +5258,7 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<</if>>
 		<<rng>>
 		<<if $NPCList[_n].mouth is "kissimminent">>
-			<<if $speechvaginavirgin isnot 1 and $speechpenisvirgin isnot 1 and $speechanusvirgin isnot 1 and $speechmouthvirgin isnot 1>>
+			<<if $speechvaginavirgin isnot 1 and $speechpenisvirgin isnot 1 and $speechanusvirgin isnot 1 and $speechmouthvirgin isnot 1 and !$_preventKiss>>
 				<<if $rng gte 101>>
 					<span class="lblue"><<He>> pulls <<his>> mouth away from yours.</span>
 					<<set $NPCList[_n].mouth to 0>><<set $mouthuse to 0>><<set $mouthstate to 0>>
@@ -5186,6 +5284,8 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 					<<if $NPCList[_n].type is "plant" and $mouthactiondefault isnot "kissback">>
 						<span class="pink">Sweet nectar fills your mouth.</span>
 						<<nectarfed 20>>
+					<<elseif $NPCList[_n].fullDescription is "Gwylan">>
+						<<gwylanKiss 1>>
 					<</if>>
 				<<else>>
 					<<if $enemyanger lte 20>>
@@ -5204,7 +5304,7 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<</if>>
 		<<rng>>
 		<<if $NPCList[_n].mouth is "kissentrance">>
-			<<if $speechvaginavirgin isnot 1 and $speechpenisvirgin isnot 1 and $speechanusvirgin isnot 1 and $speechmouthvirgin isnot 1>>
+			<<if $speechvaginavirgin isnot 1 and $speechpenisvirgin isnot 1 and $speechanusvirgin isnot 1 and $speechmouthvirgin isnot 1 and !$_preventKiss>>
 				<<if $rng gte 101>>
 					<span class="lblue"><<He>> pulls <<his>> mouth away from yours.</span>
 					<<set $NPCList[_n].mouth to 0>><<set $mouthuse to 0>><<set $mouthstate to 0>>
@@ -5214,6 +5314,8 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 					<<if $NPCList[_n].type is "plant" and !$player.virginity.kiss>>
 						<span class="pink">Sweet nectar drips from <<his>> tongue and fills your mouth.</span>
 						<<nectarfed 50>>
+					<<elseif $NPCList[_n].fullDescription is "Gwylan">>
+						<<gwylanKiss>>
 					<</if>>
 					<<if $player.virginity.kiss is true>>
 						<<set $speechkissvirgin to 1>>
@@ -5505,7 +5607,7 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 						<<if $mouthuse is 0 and !$worn.face.type.includes("covered") and !$worn.face.type.includes("gag")>>
 							<<if $NPCList[_n].penis is "chest">>
 								<<combatspeech _n>><<neutral 1 _n>>
-							<<elseif $NPCList[_n].location.genitals isnot "head">>
+							<<elseif $NPCList[_n].location.genitals isnot "head" and $NPCList[_n].fullDescription isnot "Gwylan">>
 								<span class="blue"><<He>> moves <<his>> lips close to yours, about to kiss.</span>
 								<<set $mouthuse to "kiss">><<set $mouthstate to "kissentrance">><<set $NPCList[_n].mouth to "kissentrance">><<sex 1 "mouth" _n>>
 								<<set $NPCList[_n].location.head = "head">><<set $mouthtarget to _n>>

@@ -1454,9 +1454,9 @@ You sit together for several minutes, before packing up the picnic and walking b
 			<br>
 		<</if>>
 	<</if>>
-	<<link [[Continue shopping|Forest Shop]]>><</link>>
+	<<link [[Continue shopping|Forest Shop Entrance]]>><<endevent>><</link>>
 	<br>
-	<<link [[Walk home with Robin (0:10)|Robin Forest Shop Home]]>><<pass 10>><</link>>
+	<<link [[Walk home with Robin (0:10)|Robin Forest Shop Home]]>><<endevent>><<pass 10>><</link>>
 	<br>
 <</widget>>
 
@@ -1483,7 +1483,7 @@ You sit together for several minutes, before packing up the picnic and walking b
 	<br><br>
 	Robin's eyes light up. <<He>> nods.
 	<br><br>
-	You walk through the town's streets and into the forest, to the small shop hidden beneath the boughs.
+	You walk through the town's streets and into the forest, to the castle-like shop hidden in the boughs.
 	<br><br>
 	<<link [[Next|Robin Forest Shop 4]]>><</link>>
 	<br>
@@ -1524,14 +1524,15 @@ You arrive at Wolf Street just in time to see the <<personsimple>> disappear int
 
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>>
 <<set $robin_in_forest_shop to true>><<set $forest_costume to {}>>
-<<npc "Gwylan" 2>>
+<<npc "Gwylan" 2>><<run statusCheck("Gwylan")>>
 
+/* ToDo: Gwylan - account for Gwylan being absent or nobody */
 <<if !$robin_forest_visited>>
 	<<set $robin_forest_visited to 1>>
 	You catch occasional glimpses of the <<person2>><<personsimple>> through the trees, until at last you come to a strange building.
 	<<person1>>
 	<<if $forest_shop_intro isnot 1>>
-		<<if $gwylan_rescue isnot 1>>
+		<<if !_gwylanStatus.includes("met")>>
 			You hear shuffling inside. A sign on the door says "Open."
 			<br><br>
 
@@ -1545,11 +1546,11 @@ You arrive at Wolf Street just in time to see the <<personsimple>> disappear int
 		<br><br>
 
 		The interior is dark and crowded by tall shelves holding all manner of items. The quiet is broken by a scraping, then a thud. A <<person2>><<personsimple>> holding a stepladder appears at the end of the closest aisle.
-		<<if $gwylan_rescue isnot 1>>
+		<<if !_gwylanStatus.includes("met")>>
 			"Customers!" <<he>> says, dropping the ladder and walking over. <<He>> wipes <<his>> hands on <<his>> apron. "Welcome to my shop."
 			<br><br>
 
-			<<He>> looks about your age, with mousy hair and a hint of freckles. "I'm older than I look," <<he>> says, as if reading your mind. "I'm Gwylan." <<He>> reaches forward and shakes both your and Robin's hand. "Pleased to meet you. I sell—" <<He>> pauses. "My grand<<father>> sells—" Another pause. "I sell knick-knacks here. Things you won't find in normal shops. Even I don't know what I have in stock!" <<He>> sounds proud.
+			<<He>> looks about your age, with mousy hair and a hint of freckles. "I'm older than I look," <<he>> says, as if reading your mind. "<span class="green">I'm Gwylan.</span>." <<He>> reaches forward and shakes both your and Robin's hand. "Pleased to meet you. I sell—" <<He>> pauses. "My grand<<father>> sells—" Another pause. "I sell clothes and knick-knacks here. <span class="blue">Things you won't find in normal shops.</span> Even I don't know what I have in stock!" <<He>> sounds proud.
 		<<else>>
 			It's Gwylan.
 		<</if>>
@@ -1563,38 +1564,39 @@ You arrive at Wolf Street just in time to see the <<personsimple>> disappear int
 		You follow Robin into the shop. Your eyes adjust to the gloom just as Gwylan appears at the end of an aisle.
 	<</if>>
 
-	<<if $forest_shop_intro is 1 or $gwylan_rescue is 1>>
+	<<if _gwylanStatus.includes("met")>>
 		<br><br>
 
 		"You brought a friend!" <<person2>><<he>> says, rushing over and grasping Robin's hand in both <<his>> own. "I'm Gwylan. Welcome to my shop."
-		<<if $gwylan_aborted gte 1>>
-			<<gwylanRescueApologyShop "Robin">>
-			<<set $gwylan_aborted to 0>>
+		<<if $gwylanRescue?.failed>>
+			<<gwylanRescueApology "shop" "Robin">>
 		<</if>>
 	<</if>>
 	<<set $forest_shop_intro to 1>>
 	<br><br>
 	<<link [[Next|Robin Forest Shop 5]]>><</link>>
-
+	<br>
 <<else>>
 	Gwylan greets you as you enter. "I'm glad to see you again," <<person2>><<he>> says, shaking both your and Robin's hand. "Let me know if you need anything."
 
-	<<if $gwylan_aborted gte 1>>
-		<<gwylanRescueApologyShop "Robin">>
-		<<set $gwylan_aborted to 0>>
+	<<if $gwylanRescue?.failed>>
+		<<gwylanRescueApology "shop" "Robin">>
 	<</if>>
 	<br><br>
 
 	Robin beelines towards the dark screen.
 	<br><br>
 
-	<<link [[Next|Forest Shop]]>><<endevent>><</link>>
+	<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
+	<br>
 <</if>>
 
 :: Robin Forest Shop 5
 
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>>
 <<endevent>><<npc "Robin" 1>><<npc "Gwylan" 2>>
+<<set $gwylanSeen.pushUnique("robin_halloween")>>
+<<set $gwylan.robinShop to true>><<set $gwylan.robin += 5>>
 "Pleased to meet you," Robin says. <<person1>><<He>> holds out the witch hat. "You dropped this."
 <br><br>
 Gwylan smiles. "Thank you," <<person2>><<he>> says. "I just picked up some new clothes."
@@ -1604,11 +1606,12 @@ Gwylan smiles. "Thank you," <<person2>><<he>> says. "I just picked up some new c
 Gwylan pauses. "You could wear them as such," <<he>> decides. "They're behind the dark screen over—" Robin doesn't wait for Gwylan to finish. <<person1>><<He>> rushes over, almost knocking over a shelf on the way.
 <br><br>
 
-<<link [[Next|Forest Shop]]>><</link>>
+<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
 
 :: Robin Forest Shop Home
 
 <<set $outside to 0>><<set $location to "home">><<effects>>
+<<npc "Robin">><<person1>>
 You bid Gwylan farewell. Together you and Robin walk back to the orphanage.
 <<if $forest_costume.bought>>
 	Robin is <<if $forest_costume.cd>>nervous but<</if>> excited, and clutches the $forest_costume.name costume close to <<his>> chest the entire time.
@@ -1782,7 +1785,7 @@ Robin disappears behind the screen to dress. Despite <<his>> misgivings, you tak
 Robin doesn't say anything more as <<he>> sets out the food. You keep glancing at the tree line.
 <br><br>
 
-<<if currentSkillValue("skulduggery") gte 500>>
+<<if hasSharpSenses("sight")>>
 	<span class="pink">You see movement. It's sharp and quick.</span>
 <<elseif $transformationParts.traits.sharpEyes isnot "disabled">>
 	<span class="red">Something shines in the depths of the forest. There are bullet casings on the ground. You think you hear heavy footsteps, though that could just be your imagination.</span>
@@ -1806,7 +1809,7 @@ Robin clears <<his>> throat. "Thank you for coming out with me," <<he>> says. "I
 You break a piece of bread in half and hand <<him>> the bigger piece. <<He>> smiles at you with gratitude.<<npcincr Robin love 1>><<glove "Robin">>
 <br><br>
 <<if C.npc.Robin.dom gte 60>>
-	"You know," <<he>> says,"I used to be really scared all the time. I'm not scared anymore."
+	"You know," <<he>> says, "I used to be really scared all the time. I'm not scared anymore."
 	<br><br>
 	"You're not?" you ask.
 	<br><br>
@@ -1953,8 +1956,13 @@ Eden casts a dark look at Robin. <<person2>><<He>> tightens <<his>> grip. "Forge
 
 	"You need a reminder about who really cares about you," Eden says,
 	<<if $settings.asphyxiaLevel gte 3>>
-		<<set $NPCList[0].righthand to "throat">><<set $NPCList[0].lefthand to "throat">><<set $neckuse to "hand">>
-		wrapping <<his>> hands around your throat. <span class="red">You're being strangled!</span>
+		<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+			<<set $enemyanger += 50>><<set $enemyhealth -= 20>>
+			wrapping <<his>> hands around your throat to strangle you. <span class="blue">The collar around your neck thrums with power.</span> <<He>> pulls <<his>> hands back with a curse, then <<he>> produces a length of rope. <span class="red">You're about to be tied up!</span>
+		<<else>>
+			<<set $NPCList[0].righthand to "throat">><<set $NPCList[0].lefthand to "throat">><<set $neckuse to "hand">>
+			wrapping <<his>> hands around your throat. <span class="red">You're being strangled!</span>
+		<</if>>
 	<<else>>
 		pulling out a length of rope. <span class="red">You're about to be tied up!</span>
 	<</if>>

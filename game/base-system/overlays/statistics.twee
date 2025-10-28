@@ -46,10 +46,7 @@
 
 	<<foldout false "_virginitiesTakenFoldout">>
 		<span class="gold">Virginities taken</span>
-		<!-- For the total virginities taken, iterate over every virginity type and sum up the number of entries belonging to each. -->
-		<<set _total to 0>>
-		<<run Object.values($virginTaken).forEach(type => _total += type.length)>>
-		Total: _total
+		Total: <<print Object.values(V.virginTaken).flat().length>>
 		<br>
 
 		<!-- For each individual virginity type, the number is named and unnamed combined, but the list of names has unnamed npcs filtered out. -->
@@ -405,6 +402,14 @@
 				Dates with Sydney: $dateCount.Sydney
 				<br>
 			<</if>>
+			<<if $dateCount.Gwylan gte 1>>
+				Dates with Gwylan: $dateCount.Gwylan
+				<br>
+			<</if>>
+			<<if $dateCount.GwylanSex gte 1>>
+				Intimate rituals with Gwylan: $dateCount.GwylanSex
+				<br>
+			<</if>>
 		<</if>>
 		<br>
 	<</foldout>>
@@ -585,6 +590,14 @@
 		<</if>>
 		<<if $bird and $bird.lurkersEaten>>
 			Lurkers eaten: $bird.lurkersEaten
+			<br>
+		<</if>>
+		<<if $gwylan?.requestCount>>
+			Gwylan's requests fulfilled: $gwylan.requestCount
+			<br>
+		<</if>>
+		<<if $world_corruption_reduced and ($temple_confessor_intro or $gwylanSeen?.includes("ritual_beast"))>>
+			Total world corruption purged: $world_corruption_reduced
 			<br>
 		<</if>>
 		Total paid to Bailey: <<printmoney `$moneyStats.baileyRent?.spent or 0`>>
@@ -1705,6 +1718,8 @@
 				<</if>>
 			<<case "Moor Phallus Plant Masturbation">>
 				<<set $_special to "Driven mad with pleasure">>
+			<<case "Forest Shop Caught Distract">>
+				<<set $_special to "Helped Gwylan get out of a mouthful">>
 			<<default>>
 				<<if _args[0].npcPenisSize gte 5>>
 					<<set $_special to `${_args[3] is "vaginal" ? "Broken" : "Taken"} in the most brutal of ways`>>

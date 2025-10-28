@@ -229,16 +229,16 @@ class NpcCanvasHelper {
 				if (penetrator.position === "mouth") {
 					return penetrator.type === "human" && penetrator.state !== "penetrating" ? options.animKeyStill : options.animKey;
 				}
-				if (options.position === "missionary" && penetrator.position === "vagina") {
+				if (options.position === "missionary" && penetrator.type !== "human" && penetrator.position === "vagina") {
 					return `vagina-missionary-${speed}`;
 				}
-				if (penetrator.position != null && ["vagina", "anus", "thighs"].includes(penetrator.position)) {
+				if (penetrator.type !== "human" && penetrator.position != null && ["vagina", "anus", "thighs"].includes(penetrator.position)) {
 					return `equal-oscillation-${speed}`;
 				}
 				if (penetrator.position === "butt") {
 					return `butt-rubbing-${speed}`;
 				}
-				if (penetrator.position === "chest") {
+				if (penetrator.type !== "human" && penetrator.position === "chest") {
 					return `boobjob-${speed}`;
 				}
 				if (penetrator.position === "feet") {
@@ -386,24 +386,19 @@ class NpcCanvasHelper {
 				if (penetrator == null) {
 					return options.animKey;
 				}
-				if (options.position === "missionary") {
-					switch (penetrator.position) {
-						case "vagina":
-							return `vagina-missionary-${speed}`;
-						case "mouth":
-							return `blowjob-missionary-${speed}`;
-					}
+				if (penetrator.position === "mouth") {
+					return penetrator.type === "human" && penetrator.state !== "penetrating" ? options.animKeyStill : options.animKey;
 				}
-				if (penetrator.position != null && ["vagina", "anus", "thighs"].includes(penetrator.position)) {
+				if (options.position === "missionary" && penetrator.type !== "human" && penetrator.position === "vagina") {
+					return `vagina-missionary-${speed}`;
+				}
+				if (penetrator.type !== "human" && penetrator.position != null && ["vagina", "anus", "thighs"].includes(penetrator.position)) {
 					return `equal-oscillation-${speed}`;
 				}
 				if (penetrator.position === "butt") {
 					return `butt-rubbing-${speed}`;
 				}
-				if (penetrator.position === "mouth") {
-					return `blowjob-${speed}`;
-				}
-				if (penetrator.position === "chest") {
+				if (penetrator.type !== "human" && penetrator.position === "chest") {
 					return `boobjob-${speed}`;
 				}
 				if (penetrator.position === "feet") {

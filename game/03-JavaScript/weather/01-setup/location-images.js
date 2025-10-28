@@ -1435,6 +1435,64 @@ setup.LocationImages = {
 	forest_shop: {
 		folder: "forest_shop",
 		base: {
+			spring: {
+				condition: () => !Weather.isSnow && Time.season === "spring",
+				image: "spring.png",
+			},
+			summer: {
+				condition: () => !Weather.isSnow && Time.season === "summer",
+				image: "summer.png",
+			},
+			autumn: {
+				condition: () => !Weather.isSnow && Time.season === "autumn",
+				image: "autumn.png",
+			},
+			winter: {
+				condition: () => !Weather.isSnow && Time.season === "winter",
+				image: "winter.png",
+			},
+			snow: {
+				condition: () => Weather.isSnow,
+				image: "snow.png",
+			},
+			front_spring: {
+				condition: () => Time.season === "spring",
+				image: "front_spring.png",
+			},
+			front_summer: {
+				condition: () => Time.season === "summer",
+				image: "front_summer.png",
+			},
+			front_autumn: {
+				condition: () => Time.season === "autumn",
+				image: "front_autumn.png",
+			},
+			front_winter: {
+				condition: () => Time.season === "winter",
+				image: "front_winter.png",
+			},
+			smoke: {
+				condition: () => !Weather.bloodMoon && !Weather.lightsOn,
+				image: "smoke.png",
+				animation: {
+					frameDelay: 200,
+				},
+			},
+		},
+		emissive: {
+			lights: {
+				image: "emissive.png",
+				condition: () => Weather.lightsOn && !V.gwylan?.timer?.nobody && !V.yearningLetter,
+			},
+			tower: {
+				image: "emissive_tower_only.png",
+				condition: () => Weather.lightsOn && !V.gwylan?.timer?.nobody && V.yearningLetter,
+			},
+		},
+	},
+	forest_shop_garden: {
+		folder: "forest_shop_garden",
+		base: {
 			default: {
 				condition: () => !Weather.isSnow,
 				image: "base.png",
@@ -1443,10 +1501,23 @@ setup.LocationImages = {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
 			},
+			smoke: {
+				condition: () => !Weather.bloodMoon && !Weather.lightsOn,
+				image: "smoke.png",
+				animation: {
+					frameDelay: 200,
+				},
+			},
 		},
 		emissive: {
 			image: "emissive.png",
-			condition: () => Weather.lightsOn,
+			condition: () => Weather.lightsOn && !V.gwylan?.timer?.nobody,
+			animation: {
+				frameDelay: 190,
+			},
+			color: "#89CFF0",
+			intensity: 1.2,
+			size: 2,
 		},
 	},
 	home: {

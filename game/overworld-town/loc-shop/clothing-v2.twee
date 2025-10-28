@@ -61,7 +61,7 @@
 			<<shopCategoryReplace `clothingSlotToIconName($clothingShopSlot, _outfits)`>>
 		<</button>>
 	</span>
-	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gt 0) or ($earSlime.forcedDressing and $earSlime.forcedDressing.days) or playerBellySize() gte 12>>
+	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gt 0) or ($earSlime.forcedDressing and $earSlime.forcedDressing.days) or playerBellySize() gte 12 or $location is "forest_shop">>
 	<<if _unavailableItems>>
 		<label><<checkbox "$shopClothingFilter.availableOnly" false true autocheck>> Hide unavailable items</label>
 	<<else>>
@@ -94,7 +94,8 @@
 		and (!V.shopClothingFilter.availableOnly or !(
 			(setup.clothingLayer.torso.includes(V.clothingShopSlot) and x.reveal < earSlimeCorruptionClothes() and !x.type.includesAny("school", "event")) or
 			(V.earSlime.forcedDressing and V.earSlime.forcedDressing.days gt 0 and x.gender isnot V.earSlime.forcedDressing.type and x.gender isnot "n" and !x.type.includesAny("event")) or
-			(playerBellySize() >= 12 and x.type.includes("constricting"))
+			(playerBellySize() >= 12 and x.type.includes("constricting")) or
+			$specialClothes.find(item => item.name === x.name)?.unlocked is 0
 		))
 	)>>
 	<<set _items = applyClothingShopFilters(_items)>>
@@ -286,8 +287,9 @@
 			<<set _item = clone(_itemTemp)>>
 			<<set $_realSlot to ($clothingShopSlot is "all" ? _item.slot : $clothingShopSlot)>>
 			<<set _itemData = setup.clothes[$_realSlot][clothesIndex($_realSlot,_item)]>>
-			<<set _locked = $specialClothes[_item.name.replace(/[- ]/g,"")] is "locked">>
-			<<set _unlocked = $specialClothes[_item.name.replace(/[- ]/g,"")] is "unlocked">>
+			<<set _special to $specialClothes.find(item => item.name === _item.name)>>
+			<<set _locked = _special?.unlocked is 0>>
+			<<set _unlocked = _special?.unlocked gte 1>>
 			<div class="clothing-item div-link">
 				<!-- Clothing icon -->
 				<div @class="'clothing-icon ' + _compact">
@@ -387,15 +389,20 @@
 								</span>
 							<</if>>
 							<<if _unlocked>>
-								<span class="gold">&nbsp;| Unlocked</span>
+								<<if _special.unlocked gte 3>>
+									<span class="gold">&nbsp;| Unlocked</span>
+								<<elseif _special.unlocked is 2>>
+									<span class="blue">&nbsp;| Bypassed</span>
+								<<else>>
+									<span class="pink">&nbsp;| Cheated</span>
+								<</if>>
 							<</if>>
 						<</if>>
 					</span>
 
 					<<if _locked>>
 						<div class="locked-hint">
-							<<specialClothesHint>>
-							<<print _specialClothesHint[_item.name.replace(/[- ]/g,"")]>>
+							<<specialClothesHint _item.name>>
 						</div>
 					<<else>>
 						<!-- Price tag -->
@@ -502,12 +509,18 @@
 		<<set _temp_choice to clone(setup.clothes[$clothingShopSlot][$clothes_choice])>>
 		<<set _realSlot to ($clothingShopSlot is "all" ? _item.slot : $clothingShopSlot)>>
 		<<set _realIndex to _temp_choice.index>>
+		<<set $_special to $specialClothes.find(item => item.name === _item.name)>>
 
 		<!-- Unlocked text -->
-		<<if $specialClothes[_temp_choice.name.replace(/[- ]/g,"")] is "unlocked">>
-			<<specialClothesHint>>
+		<<if $_special?.unlocked gte 1>>
 			<div class="unlocked-hint">
-				<span class="gold">Unlocked | </span><span class="grey"><<print _specialClothesHint[_temp_choice.name.replace(/[- ]/g,"")]>></span>
+				<<if $_special.unlocked gte 3>>
+					<span class="gold">Unlocked | </span><span class="grey"><<specialClothesHint _temp_choice.name>></span>
+				<<elseif $_special.unlocked gte 2>>
+					<span class="blue">Unlock Bypassed | </span><span class="grey"><<specialClothesHint _temp_choice.name>></span>
+				<<else>>
+					<span class="pink">Cheated | </span><span class="grey"><<specialClothesHint _temp_choice.name>></span>
+				<</if>>
 			</div>
 			<br>
 		<</if>>
@@ -641,6 +654,12 @@
 				<<set _preggyPrevent to true>>
 			<</if>>
 
+			<!-- Check for 'heavy' trait to prevent stealing -->
+			<<unset _heavyPrevent>>
+			<<if _temp_choice.type.includes("heavy")>>
+				<<set _heavyPrevent to true>>
+			<</if>>
+
 			<span>Warmth:</span>
 			<<warmthscale>>
 			<div id="warmth-description">
@@ -677,12 +696,14 @@
 			<<if _spaceLeft < 1>>
 				<span class="red">Your wardrobe is full.</span>
 				<br>
-			<<elseif (Time.dayState is "night" and $passage isnot "Forest Shop") or _shopCloseOverride>>
+			<<elseif (Time.dayState is "night" and $shopName isnot "forest") or _shopCloseOverride>>
 				<<if $clothingShop.stolenClothes lte 20>>
 					<<if $worn[_realSlot].cursed is 1>>
 						<<printcursed>>
 					<<elseif _preggyPrevent>>
 						<<printpreggy _temp_choice>>
+					<<elseif _heavyPrevent>>
+						<span class="red">Too heavy to steal!</span>
 					<<elseif !_wearingBlocked>>
 						<<link "Steal and wear">>
 							<<clothingReset _realSlot>>
@@ -712,24 +733,26 @@
 						<</link>><<crime "thievery">>
 						<br>
 					<</if>>
-					<<link "Steal and take home">>
-						<<clothingReset _realSlot>>
-						<<shopbuyv2 _realSlot "steal" "send" _realIndex>><<crimeUp `getClothingCost(_temp_choice,$clothingShopSlot) / 100` "thievery">>
-						<<if $shopName is "adult">>
-							<<set $adultShop.stolenClothes++>>
-							<<set $adultShop.totalStolenClothes++>>
-						<<else>>
-							<<set $clothingShop.stolenClothes++>>
-							<<set $clothingShop.totalStolenClothes++>>
-						<</if>>
-						<<if $shopDefaults.disableReturn is false>>
-							<<unset $clothes_choice>>
-						<</if>>
-						<<updateclotheslist>>
-						<<updatesidebarimg>>
-						<<run updateMoment()>>
-					<</link>><<crime "thievery">>
-					<br>
+					<<if !_heavyPrevent>>
+						<<link "Steal and take home">>
+							<<clothingReset _realSlot>>
+							<<shopbuyv2 _realSlot "steal" "send" _realIndex>><<crimeUp `getClothingCost(_temp_choice,$clothingShopSlot) / 100` "thievery">>
+							<<if $shopName is "adult">>
+								<<set $adultShop.stolenClothes++>>
+								<<set $adultShop.totalStolenClothes++>>
+							<<else>>
+								<<set $clothingShop.stolenClothes++>>
+								<<set $clothingShop.totalStolenClothes++>>
+							<</if>>
+							<<if $shopDefaults.disableReturn is false>>
+								<<unset $clothes_choice>>
+							<</if>>
+							<<updateclotheslist>>
+							<<updatesidebarimg>>
+							<<run updateMoment()>>
+						<</link>><<crime "thievery">>
+						<br>
+					<</if>>
 				<<else>>
 					<span class="red">You can't carry any more clothes with you.</span> You should take them to your wardrobe.
 					<br>
@@ -845,6 +868,21 @@
 			<</if>>
 		<</if>>
 	<</if>>
+<</widget>>
+
+<<widget "specialClothesHint">>
+	<<set $_item to _args[0]>>
+	<<set $_setupItem to setup.specialClothes.find(item => item.name === $_item)>>
+	<<set $_hints to []>>
+	<<run $_setupItem.sets.forEach(set => {
+		if (setup.specialClothesSets[set].hint) {
+			$_hints.pushUnique(setup.specialClothesSets[set].hint);
+		}
+	})>>
+	<<if $_setupItem.hint>>
+		<<set $_hints.push($_setupItem.hint)>>
+	<</if>>
+	<<print formatList($_hints, "or", true).toUpperFirst() + ".">>
 <</widget>>
 
 <<widget "printbuysendhome">>

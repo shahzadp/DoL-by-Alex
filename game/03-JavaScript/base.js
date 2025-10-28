@@ -695,7 +695,7 @@ Macro.add("icon", {
 		const iconImg = document.createElement("img");
 		iconImg.className = [
 			"icon",
-			this.name === "iconUi" && "icon-container",
+			this.name === "iconUi" && (this.args?.[1] === "with-text" ? "icon-container-with-text" : "icon-container"),
 			this.args.includes("infront") && "infront",
 			this.args.includes("flip") && "flip",
 		]

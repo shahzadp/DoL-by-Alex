@@ -97,7 +97,7 @@ There's a path leading down to the beach.
 <<if $stress gte $stressmax and !$possessed>>
 	<<passoutstreet>>
 <<elseif $chef_event gte random(1, 100) and $exposed lte 0 and !$possessed>>
-	<<rng>>
+	<<rng>><<run statusCheck("Gwylan")>>
 	<<if $chef_sus gte 100>>
 		<<set $chef_sus to 30>>
 		<<generatePolice 1>><<person1>>A police car pulls up beside you, and a <<person>> steps out. "You're in trouble <<girl>>," <<he>> says. "Heard some disturbing stories about your cream business. About you making a mockery of health and safety. We take that very seriously, so we did some tests." <<He>> opens the passenger door.
@@ -108,6 +108,66 @@ There's a path leading down to the beach.
 		<<link [[Get in|Chef Blackmail Car]]>><<sub 1>><</link>>
 		<br>
 		<<link [[Refuse|Chef Blackmail Car Refuse]]>><<crimeUp 3000 "resisting">><<def 1>><</link>><<crime "resisting">>
+	<<elseif _gwylanStatus?.includes("met") and !_gwylanStatus?.includes("reunion") and !$gwylanSeen?.includes("cafe_chef_truth") and $chef_speech isnot "truth" and !$weekly.gwylanCafeConfront and $rng lte 50>>
+		<<set $weekly.gwylanCafeConfront to true>>
+		<<npc Gwylan>><<person1>>
+		<<if gwylanSchedule() is "cafe">>
+			"Hold on a moment," comes a familiar voice. You turn to see Gwylan leaving the cafe after you. <<Hes>> gently smiling.
+		<<else>>
+			"There you are," comes a familiar voice. You turn to see Gwylan sitting at one of the outside tables. <<He>> stands up and approaches you with a gentle smile.
+		<</if>>
+		It's disarming.
+		<br><br>
+
+		<<if !$gwylanSeen.includes("cafe_chef")>>
+			<<set $gwylanSeen.pushUnique("cafe_chef")>>
+			"This cafe has been part of my routine for a very long time," <<he>> says. "Yet, the buns have never been this good." <<He>> steps closer to you.
+			<br><br>
+
+			"Things don't suddenly improve like this. Not this much, and not in such a short span of time.
+			<<if !$gwylan_cafe_intro>>
+				<<set $gwylan_cafe_intro to true>>
+				Everywhere I looked, it came back to you.
+			<</if>>
+			You've got a secret." <<He>> steps even closer, leaning forward.
+			<br><br>
+
+			"<<gwylanCommand "Won't you tell me?">> I won't say a word to anyone else. I promise."
+			<<if $hypnosis_traits.devotion gte 1>>
+				<span class="witchbloom"><<His>> request reverberates in your mind. Your lips feel loose. The sounds of the town all die down, and your peripheral vision becomes dark, leaving only Gwylan's freckled, smiling face.</span>
+			<</if>>
+		<<else>>
+			<<if _gwylanLastSeenDays gte 14>>
+				"Have you been avoiding me to keep your secret safe?
+			<<else>>
+				"So, have you changed your mind yet?
+			<</if>>
+			I'm awfully curious as to how you make those buns so well." <<He>> steps closer to you.
+			<br><br>
+
+			<<if C.npc.Gwylan.dom gte 15>>
+				"Come on. <<gwylanCommand "Be a <<pcpetname 'Gwylan' 'good'>> and tell me.">>"
+				<<if $hypnosis_traits.devotion gte 1>>
+					<span class="witchbloom"><<His>> gentle demand reverberates in your mind. The sounds of the town all die down, and your peripheral vision becomes dark, leaving only Gwylan's freckled, smiling face.</span>
+				<<else>>
+					<<He>> pokes at your cheek.
+				<</if>>
+			<<else>>
+				"<<gwylanCommand "Won't you tell me?">> I won't say a word to anyone else. I promise."
+				<<if $hypnosis_traits.devotion gte 1>>
+					<span class="witchbloom"><<His>> request reverberates in your mind. Your lips feel loose. The sounds of the town all die down, and your peripheral vision becomes dark, leaving only Gwylan's freckled, smiling face.</span>
+				<<else>>
+					<<He>> pokes at your cheek.
+				<</if>>
+			<</if>>
+		<</if>>
+		<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+		<br><br>
+
+		<<link [[Tell Gwylan how the buns are made|Gwylan Chef Cream]]>><<set $phase to 1>><<npcincr Gwylan lust 5>><<npcincr Gwylan dom 2>><</link>><<gglust>><<gyearning>>
+		<br>
+		<<link [[Do not|Gwylan Chef Cream]]>><<set $phase to 2>><</link>><<gwylanWillpowerDifficulty>>
+		<br>
 	<<elseif $chef_sus gte 10 and $rng gte 51>>
 		<<generate1>><<person1>>"Hey you," a voice says to the side. "The chef." You turn to see a <<person>> leaning against a wall beside an alley. "Nice cream you have. Tastes good. I bet I can guess the ingredients though." <<He>> grins. "You're a naughty one. Not something you want the authorities to find out, that's for sure."
 		<br><br>
@@ -116,7 +176,6 @@ There's a path leading down to the beach.
 		<br>
 		<<link [[Refuse to be blackmailed|Chef Blackmail Refuse]]>><<def 1>><<set $chef_sus += 10>><</link>><<ggsuspicion>>
 		<br>
-
 	<<else>>
 		<<generate1>><<person1>>A <<person>> approaches you. "I tasted one of your buns," <<he>> says. "The cream is the best!" <<His>> eyes light up, and <<he>> scoops something off your arm. "You spilled some," <<he>> says. Before you can stop <<him>>, <<he>> licks it.
 		<br><br>
@@ -183,13 +242,15 @@ There's a path leading down to the beach.
 			<<ind>><<link [[Take off your clothes (0:07)|Cliff Challenge]]>><</link>>
 			<br>
 		<</if>>
-		<<if $chef_state is 8 and Time.dayState is "dusk">>
-			<<cafeicon>><<link [[Attend opening event (5:00)|Chef Opening]]>><</link>>
+		<<if $chef_state is 8>>
+			<<if Time.dayState is "dusk">>
+				<<cafeicon>><<link [[Attend opening event (5:00)|Chef Opening]]>><</link>>
+			<<else>>
+				<<cafeicon>><span class="blue">The cafe is preparing for the grand reopening.</span>
+			<</if>>
 			<br>
-		<<elseif $chef_state is 7 and $chef_rework gte 1 and $chef_rework lte 30>>
-
-		<<elseif $chef_state is 7 and $chef_rework lte 0>>
-			<<if $exposed lte 0 and $openinghours is 1>>
+		<<elseif $chef_state is 7>>
+			<<if $chef_rework lte 0 and $exposed lte 0 and $openinghours is 1>>
 				<<cafeicon>><<link [[Cafe (0:01)|Ocean Breeze Rework]]>><<pass 1>><</link>>
 				<br>
 			<</if>>
@@ -204,6 +265,13 @@ There's a path leading down to the beach.
 			<br>
 		<<else>>
 			<<cafeicon>><<link [[Cafe (0:01)|Ocean Breeze Lock]]>><<pass 1>><</link>>
+			<br>
+		<</if>>
+		<<run statusCheck("Gwylan")>>
+		<<if _gwylanStatus?.includes("met") and gwylanSchedule() is "cliff" and $exposed lte 0>>
+			You spot Gwylan a long way's down the street, leaning against a railing and watching the ocean.
+			<br>
+			<<socialiseicon>><<link [[Join <<nnpc_him "Gwylan">>|Gwylan Cliff]]>><</link>>
 			<br>
 		<</if>>
 		<br>
@@ -790,7 +858,7 @@ As time starts to stretch, you hear a rising murmur from the crowd. Starting to 
 		<br><br>
 		<<endevent>>
 		<<link [[Next|Bus Station]]>><<pass 5>><</link>>
-	<<elseif $rng gte 61 and $harpy gte 6 and $birdFly gte 1>> /* harpies get a bit more chance */
+	<<elseif $rng gte 61 and $harpy gte 6 and $birdFly gte 1 and !$plucked>> /* harpies get a bit more chance */
 		Your lungs are burning and you're close to collapse, when you hear <<him>> trip on something and stagger.<br>
 		A rush of adrenaline boosts your lead. Dashing around a corner and speeding downhill, you spread your wings and soar into the sky.
 		<br><br>

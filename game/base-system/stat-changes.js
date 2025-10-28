@@ -113,9 +113,21 @@ const statChange = (() => {
 	DefineMacro("traumaclamp", traumaClamp);
 
 	function updateHallucinations() {
-		if (V.trauma >= (V.traumamax / 10) * 5 || V.awareness >= 400 || V.hallucinogen > 0 || Time.isBloodMoon() || V.worn.face.type.includes("esoteric")) {
+		if (
+			V.trauma >= (V.traumamax / 10) * 5 ||
+			(V.awareness >= 400 && !(V.hypnosis_traits.insight && V.settings.hypnosisEnabled)) ||
+			(V.awareness < 200 && V.hypnosis_traits.insight && V.settings.hypnosisEnabled) ||
+			V.hallucinogen > 0 ||
+			Time.isBloodMoon() ||
+			V.worn.face.type.includes("esoteric") ||
+			V.worn.head.type.includes("esoteric")
+		) {
 			V.hallucinations = 2;
-		} else if (V.trauma >= (V.traumamax / 10) * 3 || V.awareness >= 300) {
+		} else if (
+			V.trauma >= (V.traumamax / 10) * 3 ||
+			(V.awareness >= 300 && !(V.hypnosis_traits.insight && V.settings.hypnosisEnabled)) ||
+			(V.awareness < 300 && V.hypnosis_traits.insight && V.settings.hypnosisEnabled)
+		) {
 			V.hallucinations = 1;
 		} else {
 			V.hallucinations = 0;
@@ -393,6 +405,9 @@ const statChange = (() => {
 	function tiredness(amount, source) {
 		if (isNaN(amount)) paramError("tiredness", "amount", amount, "Expected a number.");
 		amount = Number(amount);
+		if (amount > 0 && (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) && !V.statFreeze) {
+			amount *= 1.5;
+		}
 		if (amount) {
 			V.tiredness += Math.round(amount * Weather.BodyTemperature.fatigueModifier * (amount > 0 ? 15 : 20));
 		}
@@ -1006,7 +1021,7 @@ const statChange = (() => {
 			paramError("wet", "type", type, 'Expected values include "upper", "lower", "under_upper" and "under_lower"');
 			return;
 		}
-		if (!waterproofCheck(V["worn"][type])) {
+		if (!waterproofCheck(V.worn[type])) {
 			type = type.replace(/_/g, "");
 			if (amount) {
 				V[type + "wet"] = Math.clamp(V[type + "wet"] + amount, 0, 200);

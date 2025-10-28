@@ -612,7 +612,7 @@ class NpcCombatMapper {
 			return "equine";
 		}
 		// Previously called 'pointed'
-		if (["cat", "catgirl", "catboy", "hawk", "harpy"].includes(npc.type)) {
+		if (["cat", "catgirl", "catboy", "hawk", "harpy", "dolphin", "dolphinboy", "dolphingirl"].includes(npc.type)) {
 			return "feline";
 		}
 		if (["pig", "piggirl", "pigboy", "boar", "boargirl", "boarboy"].includes(npc.type)) {

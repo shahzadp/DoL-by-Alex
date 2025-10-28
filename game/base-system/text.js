@@ -730,6 +730,77 @@ statDisplay.create("gadeviancy", () => statDisplay.statChange("Alex's Deviancy",
 statDisplay.create("ggadeviancy", () => statDisplay.statChange("Alex's Deviancy", 2, "red"));
 statDisplay.create("gggadeviancy", () => statDisplay.statChange("Alex's Deviancy", 3, "red"));
 
+statDisplay.create("lyearning", () => {
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", -1, "witchbloom");
+	return statDisplay.statChange("???", -1, "witchbloom");
+});
+statDisplay.create("llyearning", () => {
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", -2, "witchbloom");
+	return statDisplay.statChange("???", -2, "witchbloom");
+});
+statDisplay.create("lllyearning", () => {
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", -3, "witchbloom");
+	return statDisplay.statChange("???", -3, "witchbloom");
+});
+statDisplay.create("gyearning", (overrideStage = false) => {
+	const stage = Math.floor(C.npc.Gwylan.dom / 25);
+	if (
+		(stage >= 1 && !V.gwylanSeen?.includes("yearning") && !overrideStage) ||
+		(stage >= 3 && !V.gwylanSeen?.includes("partners") && !overrideStage) ||
+		V.gwylan?.wary > 1
+	)
+		return "";
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", 1, "forest-green");
+	return statDisplay.statChange("???", 1, "forest-green");
+});
+statDisplay.create("ggyearning", (overrideStage = false) => {
+	const stage = Math.floor(C.npc.Gwylan.dom / 25);
+	if (
+		(stage >= 1 && !V.gwylanSeen?.includes("yearning") && !overrideStage) ||
+		(stage >= 3 && !V.gwylanSeen?.includes("partners") && !overrideStage) ||
+		V.gwylan?.wary > 1
+	)
+		return "";
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", 2, "forest-green");
+	return statDisplay.statChange("???", 2, "forest-green");
+});
+statDisplay.create("gggyearning", (overrideStage = false) => {
+	const stage = Math.floor(C.npc.Gwylan.dom / 25);
+	if (
+		(stage >= 1 && !V.gwylanSeen?.includes("yearning") && !overrideStage) ||
+		(stage >= 3 && !V.gwylanSeen?.includes("partners") && !overrideStage) ||
+		V.gwylan?.wary > 1
+	)
+		return "";
+	if (V.gwylanSeen?.includes("yearning")) return statDisplay.statChange("Yearning", 3, "forest-green");
+	return statDisplay.statChange("???", 3, "forest-green");
+});
+
+statDisplay.create("lworldcorruption", () =>
+	statDisplay.statChange("World Corruption", -1, "gold", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("llworldcorruption", () =>
+	statDisplay.statChange("World Corruption", -2, "gold", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("lllworldcorruption", () =>
+	statDisplay.statChange("World Corruption", -3, "gold", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("gworldcorruption", () =>
+	statDisplay.statChange("World Corruption", 1, "tentacle", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("ggworldcorruption", () =>
+	statDisplay.statChange("World Corruption", 2, "tentacle", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("gggworldcorruption", () =>
+	statDisplay.statChange("World Corruption", 3, "tentacle", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("lworldcorruptionhard", () =>
+	statDisplay.statChange("A hole in the world is sealed...", 0, "gold", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+statDisplay.create("gworldcorruptionhard", () =>
+	statDisplay.statChange("A new hole forms in the world...", 0, "tentacle", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
+);
+
 // These rely on the 'statChange' function in 'stat-changes.js'
 statDisplay.create("gharmony", (amount = 1) => statChange.harmony(amount));
 statDisplay.create("lharmony", (amount = 1) => statChange.harmony(-amount));
@@ -741,3 +812,4 @@ statDisplay.create("incgbreastinsecurity", amount => statChange.gainBreastInsecu
 statDisplay.create("gpenisacceptance", statChange.gainPenisAcceptance);
 statDisplay.create("wolfpacktrust", statChange.wolfpacktrust);
 statDisplay.create("wolfpackfear", statChange.wolfpackfear);
+statDisplay.create("gwarmth", () => statDisplay.statChange("Warmth", 1, "orange"));

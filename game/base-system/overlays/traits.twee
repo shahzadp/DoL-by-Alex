@@ -351,10 +351,17 @@
 					text: "Your headbutts are vicious. Headbutts are four times as powerful and no longer hurt you.",
 				},
 				{
-					name: "Strong Wings",
-					colour: "gold",
+					name: () => V.plucked ? "Thoroughly Preened Wings" : "Strong Wings",
+					colour: () => V.plucked ? "grey" : "gold",
 					has: $harpy gte 6 and $birdFly gte 1,
-					text: "Can glide from high locations. Can fly where the wind is willing.",
+					text: () => V.plucked ? "You're missing some feathers, but your wings feel sleek. Can glide, but flight is temporarily disabled." : "Can glide from high locations. Can fly where the wind is willing.",
+					meter: {
+						has: V.plucked,
+						value: V.plucked,
+						min: 0,
+						max: 14,
+						colour: "bluebar",
+					},
 				},
 				{
 					name: "Wings",
@@ -823,11 +830,11 @@
 			title: "Trauma Traits",
 			traits: [
 				{
-					name: () => V.controlled === 0 ? "Insomnia" : "Controlled Insomnia",
-					colour: () => V.controlled === 0 ? "red" : "blue",
+					name: () => V.hypnosis_traits.slumber ? "Suppressed Insomnia" : V.controlled === 0 ? "Insomnia" : "Controlled Insomnia",
+					colour: () => V.hypnosis_traits.slumber ? "black" : V.controlled === 0 ? "red" : "blue",
 					has: $sleeptrouble gte 1,
 					text: "Sleep less effective.",
-					textColour: () => V.controlled === 0 ? "red" : "black",
+					textColour: () =>  V.controlled === 0 && !V.hypnosis_traits.slumber ? "red" : "black",
 				},
 				{
 					name: () => V.controlled === 0 ? "Nightmares" : "Controlled Nightmares",
@@ -956,25 +963,25 @@
 					text: "Doctor Harper told you to do something, but it's a bit hazy.",
 				},
 				{
-					name: "Hypnotic Suggestion",
+					name: "Bewitched Suggestion",
 					colour: "blue",
 					has: $hypnosis_traits.suggestion is 2,
 					text: "Doctor Harper told you to do something, but you have trouble remembering what.",
 				},
 				{
-					name: "Hypnotic Suggestion",
+					name: "Beguiled Suggestion",
 					colour: "purple",
 					has: $hypnosis_traits.suggestion is 3,
 					text: "Doctor Harper told you to do something, but you can't remember what.",
 				},
 				{
-					name: "Hypnotic Suggestion",
+					name: "Mesmeric Suggestion",
 					colour: "pink",
 					has: $hypnosis_traits.suggestion is 4,
 					text: "Doctor Harper told you to do something, but your mind is blank.",
 				},
 				{
-					name: "Hypnotic Suggestion",
+					name: "Sublime Suggestion",
 					colour: "red",
 					has: $hypnosis_traits.suggestion is 5,
 					text: "Doctor Harper told you to do something, but you can't remember anything at all.",
@@ -1069,6 +1076,149 @@
 					has: $hypnosis_traits.deviancy is 5,
 					text: "Will provoke beasts at the start of encounters.",
 				},
+
+				{
+					name: "Bewitched",
+					colour: basicHypnoCss(),
+					has: $hc?.bewitched,
+					text: "Your Angel.",
+					textColour: "red",
+				},
+
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Hypnotic Devotion" : "Hypnotic Curiosity",
+					colour: "lblue",
+					has: V.hypnosis_traits.devotion === 1,
+					text: "You find your mind wandering to the forest every now and then. Gwylan's requests feel strangely compelling.",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						value: V.hypnosisTimers.devotion?.time,
+						min: 0,
+						max: 15,
+						colour: "lbluebar glowbar",
+					},
+				},
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Bewitched Devotion" : "Bewitched Curiosity",
+					colour: "blue",
+					has: V.hypnosis_traits.devotion === 2,
+					text: "Gwylan's presence makes you feel safe. <<nnpc_His 'Gwylan'>> requests are hard to resist. Beneficial hypnosis traits last longer.",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						value: V.hypnosisTimers.devotion?.time,
+						min: 15,
+						max: 35,
+						colour: "bluebar glowbar",
+					},
+				},
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Beguiled Devotion" : "Beguiled Curiosity",
+					colour: "purple",
+					has: V.hypnosis_traits.devotion === 3,
+					text: "Gwylan's presence is comforting. <<nnpc_His 'Gwylan'>> requests are harder to resist. Beneficial hypnosis traits last longer. School grades do not decay.",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						value: V.hypnosisTimers.devotion?.time,
+						min: 35,
+						max: 55,
+						colour: "purplebar glowbar",
+					},
+				},
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Mesmeric Devotion" : "Mesmeric Curiosity",
+					colour: "pink",
+					has: V.hypnosis_traits.devotion === 4,
+					text: "Gwylan's presence makes you feel warm. <<nnpc_His 'Gwylan'>> requests are even harder to resist. Anyone else's attempts to hypnotise you might fail. Beneficial hypnosis traits last longer. School grades do not decay.",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						value: V.hypnosisTimers.devotion?.time,
+						min: 55,
+						max: 75,
+						colour: "pinkbar glowbar",
+					},
+				},
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Sublime Devotion" : "Sublime Curiosity",
+					colour: "red",
+					has: V.hypnosis_traits.devotion === 5,
+					text: "Gwylan makes you feel whole. <<nnpc_His 'Gwylan'>> requests are <span class='red'>impossible</span> to resist. Anyone else's attempts to hypnotise you will fail, and may harm them. <span class='gold'>Beneficial hypnosis traits and school grades do not decay.</span>",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						hide: V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 && V.hypnosisTimers.devotion?.time >= gwylanHypnoMax("value"),
+						value: V.hypnosisTimers.devotion?.time,
+						min: 75,
+						max: 95,
+						colour: "redbar glowbar",
+					},
+				},
+				{
+					name: () => V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 ? "Frenzied Devotion" : "Frenzied Curiosity",
+					colour: basicHypnoCss(),
+					has: V.hypnosis_traits.devotion >= 6,
+					text: "???",
+					meter: {
+						has: V.hypnosisTimers.devotion,
+						hide: V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1 && V.hypnosisTimers.devotion?.time >= gwylanHypnoMax("value"),
+						value: V.hypnosisTimers.devotion?.time,
+						min: 95,
+						max: 100,
+						colour: "redbar glowbar",
+					},
+				},
+				{
+					name: "Hypnotic Peace",
+					colour: "forest-green",
+					has: V.hypnosis_traits.peace gte 1,
+					text: "You are at peace with your inner self. Hiding transformation parts no longer inflicts trauma.",
+					meter: {
+						has: V.hypnosisTimers.peace,
+						hide: V.hypnosis_traits.devotion >= 5,
+						value: V.hypnosisTimers.peace?.time,
+						max: V.hypnosisTimers.peace?.max,
+						colour: "greenbar glowbar",
+					},
+				},
+				{
+					name: "Hypnotic Silence",
+					colour: "purple",
+					has: V.hypnosis_traits.silence gte 1,
+					text: "Your thoughts are solitary and tranquil. Ear slimes are temporarily silenced.",
+					meter: {
+						has: V.hypnosisTimers.silence,
+						hide: V.hypnosis_traits.devotion >= 5,
+						value: V.hypnosisTimers.silence?.time,
+						max: V.hypnosisTimers.silence?.max,
+						colour: "purplebar glowbar",
+					},
+				},
+				{
+					name: "Hypnotic Slumber",
+					colour: "",
+					style: `background: linear-gradient(to right,rgb(31, 121, 196) 0%,rgb(77, 74, 247) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;`,
+					has: V.hypnosis_traits.slumber gte 1,
+					text: "Sleep is more restful when traumatised, and the 'insomnia' trait is suppressed, if present.",
+					meter: {
+						has: V.hypnosisTimers.slumber,
+						hide: V.hypnosis_traits.devotion >= 5,
+						value: V.hypnosisTimers.slumber?.time,
+						max: V.hypnosisTimers.slumber?.max,
+						colour: "darkbluebar glowbar",
+					},
+				},
+				{
+					name: () => V.awareness >= 300 ? "Hypnotic Ignorance" : "Hypnotic Insight",
+					colour: "",
+					style: `background: linear-gradient(to right,rgb(187, 214, 221) 0%,rgb(255, 252, 217) 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;`,
+					has: V.hypnosis_traits.insight gte 1,
+					text: "High awareness no longer causes hallucinations. Low awareness causes hallucinations instead.",
+					meter: {
+						has: V.hypnosisTimers.insight,
+						hide: V.hypnosis_traits.devotion >= 5,
+						value: V.hypnosisTimers.insight?.time,
+						max: V.hypnosisTimers.insight?.max,
+						colour: "bluebar glowbar",
+					},
+				},
 			],
 		},
 		{
@@ -1136,8 +1286,36 @@
 				{
 					name: "Elk-scarred",
 					colour: "red",
-					has: $auriga_scar gte 1,
+					has: $auriga_scar is 1,
 					text: "An invisible wound hangs over your heart.",
+					textColour:  "red",
+				},
+				{
+					name: "Elk-marked",
+					colour: "red",
+					has: $auriga_scar is 2,
+					text: "A crackling wound surrounds your heart. You're harder to notice, and to recognise as human.",
+					textColour: "red",
+				},
+				{
+					name: "Elk-bitten",
+					colour: "red",
+					has: $auriga_scar is 3,
+					text: "A hole threatens to swallow your black heart. Something seeks to escape.",
+					textColour: "red",
+				},
+				{
+					name: "Elk-ruptured",
+					colour: "red",
+					has: $auriga_scar is 4,
+					text: "A rupture severs your black, unbeating heart. Damnation is imminent.",
+					textColour: "red",
+				},
+				{
+					name: "Elk-spawned",
+					colour: "red",
+					has: $auriga_scar gte 5,
+					text: "Damnation.",
 					textColour: "red",
 				},
 			],
@@ -1211,14 +1389,31 @@
 						<<set $_style to typeof $_trait.style is "function" ? $_trait.style() : $_trait.style>>
 						<<set $_text to typeof $_trait.text is "function" ? $_trait.text() : $_trait.text>>
 						<<set $_textColour to typeof $_trait.textColour is "function" ? $_trait.textColour() : $_trait.textColour>>
+						<<set $_meter to $_trait.meter>>
 						<span @class="$_colour" @style="$_style">
 							<<print $_name>>
 						</span>
 						<<if !$_text>>
 						<<elseif $options.traitOverlayFormat is "table">>
 							- <small @class="$_textColour"><<print $_text>></small>
+							<<if $_meter?.has and !$_meter.hide>>
+								<<set $_floor to $_meter.min || 0>>
+								<<set $_timeTotal to ($_meter.max - $_floor)>>
+								<<set $_percent to Math.floor(($_meter.value - $_floor) / $_timeTotal * 100)>>
+								<div class="meter">
+									<<print '<div @class="$_meter.colour" style="width:' + $_percent + '%"></div>'>>
+								</div>
+							<</if>>
 						<<else>>
 							<mouse class="tooltip linkBlue">Info (?)<span @class="$_textColour"><<print $_text>></span></mouse>
+							<<if $_meter?.has and !$_meter.hide>>
+								<<set $_floor to $_meter.min || 0>>
+								<<set $_timeTotal to ($_meter.max - $_floor)>>
+								<<set $_percent to Math.floor($_meter.value / $_timeTotal * 100)>>
+								<div class="meter">
+									<<print '<div @class="$_meter.colour" style="width:' + $_percent + '%"></div>'>>
+								</div>
+							<</if>>
 						<</if>>
 					</div>
 				<</for>>
@@ -1244,11 +1439,21 @@
 						<<set $_style to typeof $_trait.style is "function" ? $_trait.style() : $_trait.style>>
 						<<set $_text to typeof $_trait.text is "function" ? $_trait.text() : $_trait.text>>
 						<<set $_textColour to typeof $_trait.textColour is "function" ? $_trait.textColour() : $_trait.textColour>>
+						<<set $_meter to $_trait.meter>>
 						<span @class="$_colour" @style="$_style">
 							<<print $_name>>
 						</span>
 						<<if $_text>>
 							- <span @class="$_textColour"><<print $_text>></span>
+							<<if $_meter?.has and !$_meter.hide>>
+								<<set $_floor to $_meter.min || 0>>
+								<<set $_timeTotal to ($_meter.max - $_floor)>>
+								<<set $_percent to Math.floor($_meter.value / $_timeTotal * 100)>>
+								<<run console.log($_percent)>>
+								<div class="meter">
+									<<print '<div @class="$_meter.colour" style="width:' + $_percent + '%"></div>'>>
+								</div>
+							<</if>>
 						<</if>>
 					</div>
 				<</for>>

@@ -370,7 +370,7 @@ function effects() {
 		if (V.hypnosis_deviancy_message) {
 			delete V.hypnosis_deviancy_message;
 			sWikifier(
-				`<<hypnosisicon>> You weren't very deviant yesterday. ${
+				`<<hypnosisText "You weren't very deviant yesterday.">> ${
 					V.hypnosis_traits.deviancy < 5 ? "The thought fills you with " : "The thought sends your mind "
 				}`
 			);
@@ -391,7 +391,99 @@ function effects() {
 					element("span", "whirring with guilt and anxiety.", "red");
 					break;
 			}
-			sWikifier("<<gggtrauma>><<hypnosisicon>>");
+			sWikifier("<<gggtrauma>>");
+		}
+
+		if (V.hypnosis_devotion_message) {
+			switch (V.hypnosis_devotion_message) {
+				case "ritual":
+					sWikifier(`<<hypnosisText "You didn't meet with Gwylan to help with <<nnpc_his 'Gwylan'>> ritual this week.">> `);
+					break;
+				case "request":
+					if (V.gwylan.request.missed) {
+						sWikifier(`<<hypnosisText "You still haven't completed Gwylan's request.">> `);
+					} else {
+						sWikifier(`<<hypnosisText "You didnt't complete Gwylan's request yesterday.">> `);
+					}
+					break;
+				case "meetAtShop":
+					if (V.gwylan.request.missed) {
+						sWikifier(`<<hypnosisText "You still haven't met with Gwylan at the shop.">> `);
+					} else {
+						sWikifier(`<<hypnosisText "You didn't meet with Gwylan at the shop yesterday.">> `);
+					}
+					break;
+				case "meetAtCafe":
+					if (V.gwylan.request.missed) {
+						sWikifier(`<<hypnosisText "You still haven't met with Gwylan at the cafe.">> `);
+					} else {
+						sWikifier(`<<hypnosisText "You didn't meet with Gwylan at the cafe yesterday.">> `);
+					}
+					break;
+				default:
+					if (V.gwylan.request.missed) {
+						sWikifier(`<<hypnosisText "You still haven't fulfilled Gwylan's request.">> `);
+					} else {
+						sWikifier(`<<hypnosisText "You didn't fulfil Gwylan's request yesterday.">> `);
+					}
+					break;
+			}
+			sWikifier(`${V.hypnosis_traits.devotion < 5 ? "The thought fills you with " : "The thought sends your mind "}`);
+			switch (V.hypnosis_traits.devotion) {
+				case 1:
+					element("span", "shame.", "lblue");
+					sWikifier(`<<gtrauma>><<ghallucinogens>>`);
+					break;
+				case 2:
+					element("span", "regret.", "blue");
+					sWikifier(`<<ggtrauma>><<ghallucinogens>>`);
+					break;
+				case 3:
+					element("span", "guilt.", "purple");
+					sWikifier(`<<ggtrauma>><<gghallucinogens>>`);
+					break;
+				case 4:
+					element("span", "intense guilt.", "pink");
+					sWikifier(`<<gggtrauma>><<gghallucinogens>>`);
+					break;
+				case 5:
+					element("span", "whirring with guilt and anxiety.", "red");
+					sWikifier(`<<gggtrauma>><<ggghallucinogens>>`);
+					break;
+			}
+			delete V.hypnosis_devotion_message;
+		}
+
+		if (V.hypnosis_timer_messages?.length) {
+			V.hypnosis_timer_messages.forEach(trait => {
+				switch (trait) {
+					case "devotion":
+						sWikifier("<<gwylanHypnosis 'devotion' -1>>");
+						break;
+					case "peace":
+						sWikifier('<span class="purple">A familiar uncertainty fills your being. Your Hypnotic Peace has faded.</span>');
+						delete V.hypnosis_traits[trait];
+						delete V.hypnosisTimers[trait];
+						break;
+					case "silence":
+						sWikifier(
+							`${
+								numberOfEarSlime()
+									? "<span class='purple'>Familiar whispers fill your ears. Your Hypnotic Silence has faded.</span>"
+									: "<span class='purple'>Your Hypnotic Silence has faded.</span>"
+							}`
+						);
+						delete V.hypnosis_traits[trait];
+						delete V.hypnosisTimers[trait];
+						break;
+					default:
+						sWikifier(`<span class="purple">Your Hypnotic ${trait.toUpperFirst()} has faded.</span>`);
+						delete V.hypnosis_traits[trait];
+						delete V.hypnosisTimers[trait];
+						break;
+				}
+			});
+			delete V.hypnosis_timer_messages;
 		}
 
 		// expects the use of $science_up_message, $maths_up_message, $english_up_message, $history_up_message, $science_down_message, $maths_down_message, $english_down_message, $history_down_message
@@ -896,9 +988,17 @@ function effects() {
 			delete V.loveInterest_message;
 			delete V.loveInterestAwareMessage;
 		} else if (V.loveInterest_message === 2 && !V.loveInterestAwareMessage) {
-			element("i", "Your mind is open to the possibility of multiple lovers. You may now choose a second love interest.", "pink");
+			element("i", "Your mind is open to the possibility of another lover. You may now choose a second love interest.", "pink");
 			delete V.loveInterest_message;
 			V.loveInterestAwareMessage = 1;
+		} else if (V.loveInterest_message === 3 && V.loveInterestAwareMessage === 2) {
+			element("i", "You feel that it's wrong to have so many lovers. You can no longer choose more than two love interests.", "blue");
+			delete V.loveInterest_message;
+			V.loveInterestAwareMessage = 1;
+		} else if (V.loveInterest_message === 4 && V.loveInterestAwareMessage === 1) {
+			element("i", "Your mind is open to the possibility of multiple lovers. You may now choose a third love interest.", "pink");
+			delete V.loveInterest_message;
+			V.loveInterestAwareMessage = 2;
 		}
 
 		if (V.fallenangelmessage) {
@@ -938,6 +1038,21 @@ function effects() {
 		if (V.wraithcompoundmessage) {
 			element("span", "A fell mist hangs over Elk Street.", "red");
 			delete V.wraithcompoundmessage;
+		}
+
+		if (V.halloweenClothesMessage) {
+			sWikifier(`<<specialClothesUnlock "set" "halloween">>`);
+			delete V.halloweenClothesMessage;
+		}
+
+		if (V.christmasClothesMessage) {
+			sWikifier(`<<specialClothesUnlock "set" "christmas">>`);
+			delete V.christmasClothesMessage;
+		}
+
+		if (V.valentinesClothesMessage) {
+			sWikifier(`<<specialClothesUnlock "set" "valentines">>`);
+			delete V.valentinesClothesMessage;
 		}
 
 		if (V.earSlimebreastsParasite || V.earSlimePenisParasite || V.earSlimeClitParasite) {
@@ -1137,6 +1252,7 @@ function effects() {
 						"gold"
 					);
 					fragment.append(wikifier("garousal"));
+					fragment.append(wikifier("specialClothesUnlock", "'set'", "'succubus'"));
 					fragment.append(wikifier("earnFeat", "'Demon'"));
 					break;
 				case "angelUp1":
@@ -1192,7 +1308,9 @@ function effects() {
 					sWikifier('<span class="gold">You feel a burning sensation in your back.</span><<garousal>>');
 					break;
 				case "demonUp6":
-					sWikifier('<span class="gold">You feel lighter. Your new wings caress your face.</span><<garousal>><<earnFeat "Demon">>');
+					sWikifier(
+						'<span class="gold">You feel lighter. Your new wings caress your face.</span><<garousal>><<earnFeat "Demon">><<specialClothesUnlock "set" "succubus">>'
+					);
 					break;
 				case "demonDown0":
 					element("span", "You feel an invisible light burn away your impurity.", "gold");
@@ -1461,6 +1579,7 @@ function effects() {
 						"Your bottom feels heavier than usual. You give it a wiggle and feel your new fox tail. It's extremely comforting to touch.",
 						"gold"
 					);
+					fragment.append(wikifier("specialClothesUnlock", "'set'", "'shrine'"));
 					fragment.append(wikifier("earnFeat", "'Fox'"));
 					break;
 				case "foxDown0":

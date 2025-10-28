@@ -10,9 +10,9 @@ Changes to this directory are watched automatically, along with the regular `/ga
 
 ### Supported files
 
-- .css
-- .js
-- .otf
-- .ttf
-- .woff
-- .woff2
+-   .css
+-   .js
+-   .otf
+-   .ttf
+-   .woff
+-   .woff2

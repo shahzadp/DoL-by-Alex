@@ -1,6 +1,8 @@
 declare module "twine-sugarcube" {
 	export interface SugarCubeStoryVariables {
 		worn: {
+			butt_plug?: SexToy;
+		} & {
 			[x in ClothedSlots]: ClothesItem;
 		};
 		store: {
@@ -52,6 +54,7 @@ declare module "twine-sugarcube" {
 		}[];
 		lowerwetstage: number;
 		underlowerwetstage: number;
+		specialClothes: specialClothesItem[];
 	}
 
 	export interface SugarCubeSetupObject {
@@ -63,11 +66,16 @@ declare module "twine-sugarcube" {
 		};
 		clothes_all_slots: ClothedSlots[];
 		clothingStates: ZeroedClothingStates[];
+		specialClothes: SpecialClothesSetup[];
+		specialClothesSets: {
+			[x: string]: SpecialClothesSetsSetup;
+		};
+		sextoys: SexToy[];
 	}
 }
 
 declare global {
-	export type ClothingStates = "chest" | "midriff" | "waist" | "thighs" | "knees" | "ankles" | "totheside";
+	export type ClothingStates = "chest" | "midriff" | "waist" | "thighs" | "knees" | "ankles" | "totheside" | "worn";
 
 	export type ZeroedClothingStates = 0 | ClothingStates;
 
@@ -92,6 +100,32 @@ declare global {
 		| "feet"
 		| "genitals";
 
+	export type SexToySlots = "strap-on" | "vibrator" | "dildo" | "butt_plug" | "lube" | "stroker" | "aphrodisiacpill" | "breastpump";
+
+	export interface SexToy {
+		index: number;
+		name: string;
+		name_cap: string;
+		name_underscore: string;
+		description: string;
+		cost: number;
+		wearable: 0 | 1;
+		size: number;
+		shape?: string;
+		category: SexToySlots;
+		type: string[];
+		icon: string;
+		colour: 0 | 1;
+		colour_options: string[];
+		default_colour: string[];
+		owned: setup.sextoyFunctions.owned;
+		isCarried: setup.sextoyFunctions.isCarried;
+		isWorn: setup.sextoyFunctions.isWorn;
+		unWear: setup.sextoyFunctions.unWear;
+		unCarry: setup.sextoyFunctions.unCarry;
+		shop: string[];
+		display_condition: function;
+	}
 	export interface ClothesItem {
 		index: number;
 		slot: ClothedSlots;
@@ -319,6 +353,32 @@ declare global {
 		shopSend: boolean;
 		transfer: boolean;
 		unlocked: boolean;
+	}
+
+	export interface specialClothesItem {
+		name: string;
+		unlocked: number;
+	}
+	export interface SpecialClothesSetup {
+		name: string;
+		sets: string[];
+		requirements?(): boolean;
+		hint?: string;
+	}
+
+	export interface SpecialClothesSetsSetup {
+		text: string;
+		requirements?(): boolean;
+		hint?: string;
+		shop: string[];
+		subsetOf?: string[];
+		feat: boolean;
+		featCost?: number;
+		icon: string;
+		iconSlot?: string;
+		iconIndex?: number;
+		iconColor?: string;
+		iconAccColor?: string;
 	}
 
 	function getCustomClothesColourCanvasFilter(hue: number, saturation: number, brightness: number, contrast: number, sepia = 0): CompositeLayerSpec;

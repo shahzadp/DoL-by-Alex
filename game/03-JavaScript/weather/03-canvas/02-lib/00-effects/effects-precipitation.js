@@ -69,6 +69,7 @@ Weather.Renderer.Effects.add({
 		this.frameTotalWidth = precipitationSheet.element.width / numFrames;
 
 		const animationOptions = {
+			name: "precipitation",
 			image: precipitationSheet.element,
 			canvas: this.canvas,
 			frameDelay: this.frameDelay, // Will never be lower than the layer updateRate
