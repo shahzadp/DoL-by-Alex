@@ -108,7 +108,8 @@ function nudeGenderAppearance() {
 		if (V.player.vaginaExist) T.apparent_femininity_nude += 450;
 	}
 	if (!(V.sexStats === undefined || !playerBellyVisible() || V.settings.nudeGenderPerception === 0)) {
-		if (V.settings.nudeGenderPerception === 1) T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0, Infinity);
+		if (V.settings.nudeGenderPerception === 1)
+			T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0, Infinity);
 		else if (playerBellySize() >= 18) T.apparent_femininity_nude += Math.clamp(10000, 0, Infinity);
 		else if (playerBellySize() >= 8) T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * 250, 0, Infinity);
 	}
@@ -587,11 +588,11 @@ function calculateallure() {
 	if (V.demon >= 6) attractiveness += 500 - 100 * partsHidden("demon", ["horns", "tail", "wings"]);
 	if (V.angel >= 6) attractiveness += 500 - 150 * partsHidden("angel", ["halo", "wings"]);
 	if (V.fallenangel >= 2) attractiveness += 500 - 150 * partsHidden("fallenAngel", ["halo", "wings"]);
-	if (V.wolfgirl >= 6) attractiveness += 500 - 150 * partsHidden("wolf", ["tail", "ears"]);
+	if (V.wolfgirl >= 6) attractiveness += 500 - 100 * partsHidden("wolf", ["tail", "ears", "cheeks"]);
 	if (V.cat >= 6) attractiveness += 500 - 150 * partsHidden("cat", ["tail", "ears"]);
 	if (V.cow >= 6) attractiveness += 500 - 100 * partsHidden("cow", ["ears", "horns", "tail"]);
 	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird", ["tail", "eyes", "wings", "malar", "plumage"]);
-	if (V.fox >= 6) attractiveness += 750 - 225 * partsHidden("fox", ["ears", "tail"]);
+	if (V.fox >= 6) attractiveness += 750 - 175 * partsHidden("fox", ["ears", "tail", "cheeks"]);
 	/* makeup */
 	for (const makeup of ["lipstick", "mascara", "eyeshadow", "blusher"]) {
 		if (V.makeup[makeup]) attractiveness += 100;
@@ -616,6 +617,8 @@ function calculateallure() {
 	}
 	/* bloodmoon */
 	if (Time.isBloodMoon()) allure += 2000;
+	/* Elk-scarred trait */
+	if (V.auriga_scar) allure += V.auriga_scar * 500;
 	allure = Math.clamp(allure, 0, 8000);
 	V.baseAllure = allure;
 	/* extra modifiers */
@@ -702,3 +705,84 @@ function exposure() {
 	if (V.libertine >= V.exposed) V.exposed = 0;
 }
 DefineMacro("exposure", exposure);
+
+/**
+ * Primarily for checks in events involving children
+ *
+ * @param {Array <"clothes" | "bodywriting" | "fluids" | "drugs" | "all">} check / Which types to check, defaults to "all"
+ * @returns {true | false} / If player's current state is inappropriate
+ */
+function inappropriatePlayerState(check = ["all"]) {
+	if (["all", "clothes"].includes(check)) {
+		if (V.exposed > 0 || V.exposedRaw > 0) return true;
+		if (!V.worn.lower.type.includes("covered")) {
+			if (["slut shirt", "prison shirt", "prison jumpsuit", "unbound straightjacket"].includes(V.worn.upper.name)) {
+				return true;
+			} else if (
+				!V.worn.under_upper.type.includes("covered") ||
+				V.worn.under_upper.reveal >= 700 ||
+				integrityKeyword(V.worn.under_upper, "under_upper") === "tattered" ||
+				["leotard", "unitard", "skimpy leotard", "turtleneck leotard"].includes(V.worn.under_upper.name)
+			) {
+				if (
+					["naked", "fetish"].includes(V.worn.upper.type) ||
+					V.worn.upper.reveal >= 700 ||
+					integrityKeyword(V.worn.upper, "upper") === "tattered" ||
+					["large towel", "towel top", "catsuit"].includes(V.worn.upper.name)
+				)
+					return true;
+			}
+		}
+		if (["prison trousers", "prison jumpsuit trousers", "unbound straightjacket bottom"].includes(V.worn.lower.name)) return true;
+		if (
+			!V.worn.under_lower.type.includes("covered") ||
+			V.worn.under_lower.reveal >= 700 ||
+			integrityKeyword(V.worn.under_lower, "under_lower") === "tattered" ||
+			["leotard bottom", "unitard bottom", "skimpy leotard bottom", "turtleneck leotard bottom"].includes(V.worn.under_lower.name)
+		) {
+			if (
+				["naked", "fetish"].includes(V.worn.lower.type) ||
+				V.worn.lower.reveal >= 700 ||
+				integrityKeyword(V.worn.lower, "lower") === "tattered" ||
+				[
+					"large towel bottom",
+					"towel skirt",
+					"bathrobe bottom",
+					"catsuit bottoms",
+					"oversized button-down bottom",
+					"oversized sweater bottom",
+				].includes(V.worn.lower.name)
+			)
+				return true;
+		}
+		if (V.worn.face.type.includes("gag")) return true;
+	}
+	if (["all", "bodywriting"].includes(check)) {
+		// May not catch every single instance of inappropriate writing, but it should catch most
+		T.lewd_bodywriting_visible = false;
+		bodywritingExposureCheck(true);
+		Object.keys(V.skin).forEach(label => {
+			if (T.skin_array.includes(label)) {
+				if (
+					(!["none", "Robin", "Whitney", "Kylar", "Sydney", "Avery", "Eden", "Gwylan", "Black Wolf", "Alex", "Great Hawk"].includes(
+						V.skin[label].special
+					) &&
+						V.skin[label].lewd === 1) ||
+					["slut", "bitch", "whore", "sex", "fuck", "rape", "cock", "cum", "size queen"].some(text =>
+						V.skin[label].writing.toLowerCase().includes(text)
+					)
+				)
+					T.lewd_bodywriting_visible = true;
+			}
+		});
+		return T.lewd_bodywriting_visible;
+	}
+	if (["all", "fluids"].includes(check)) {
+		if (V.liquidcount >= 1) return true;
+	}
+	if (["all", "drugs"].includes(check)) {
+		if (V.drunk >= 240 || V.drugged >= 200) return true;
+	}
+	return false;
+}
+window.inappropriatePlayerState = inappropriatePlayerState;

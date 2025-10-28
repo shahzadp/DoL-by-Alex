@@ -165,10 +165,14 @@ var IronMan = (Save => {
 						);
 					}
 					if (document.getElementById("sliderRentMode")) {
-						Wikifier.wikifyEval('<<replace #sliderRentMode>><<numberslider "$settings.rentCostModifier" $settings.rentCostModifier 0.1 3 0.1 $ironmanmode>><</replace>>');
+						Wikifier.wikifyEval(
+							'<<replace #sliderRentMode>><<numberslider "$settings.rentCostModifier" $settings.rentCostModifier 0.1 3 0.1 $ironmanmode>><</replace>>'
+						);
 					}
 					if (document.getElementById("sliderAllureMode")) {
-						Wikifier.wikifyEval('<<replace #sliderAllureMode>><<numberslider "$settings.allureModifier" $settings.allureModifier 0.2 2 0.1 $ironmanmode>><</replace>>');
+						Wikifier.wikifyEval(
+							'<<replace #sliderAllureMode>><<numberslider "$settings.allureModifier" $settings.allureModifier 0.2 2 0.1 $ironmanmode>><</replace>>'
+						);
 					}
 					V.options.maxStates = 1;
 					V.settings.cheatsEnabledToggle = false;

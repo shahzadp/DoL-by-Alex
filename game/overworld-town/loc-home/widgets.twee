@@ -155,10 +155,12 @@
 <<widget "orphanageWard">>
 	<<if $debug is 1 or $ward_unlocked>>
 		<br>
-		<<if $exposed gt 0 or $exposedRaw gt 0 or ["split dress", "short ballgown", "large towel", "cropped hoodie", "slut shirt,", "tie-front top", "towel top"].includes($worn.upper.name) or ["split dress skirt", "short ballgown skirt", "micro pleated skirt", "miniskirt", "towel skirt"].includes($worn.lower.name)>>
+		<<if inappropriatePlayerState("clothes")>>
 			<<childicon "blocks">><span class="pink">You're dressed too indecently to enter the youth ward.</span>
-		<<elseif $liquidcount gte 1>>
+		<<elseif inappropriatePlayerState("fluids")>>
 			<<childicon "blocks">><span class="pink">You should clean yourself before entering the youth ward.</span>
+		<<elseif inappropriatePlayerState("drugs")>>
+			<<childicon "blocks">><span class="pink">You're too intoxicated to enter the youth ward.</span>
 		<<else>>
 			<<if !$orphanageWardIntro>>
 				<<childicon "blocks">><<link [[Ward (0:01)|Orphanage Ward Intro]]>><<pass 1>><</link>>
@@ -204,7 +206,7 @@
 
 <<widget "generateSleepLinks">>
 	<<set _sleep_passage to _args[0]>>
-	<<set _maxHours to ($sleeptrouble is 1 and $controlled is 0) ? 10 : 8>>
+	<<set _maxHours to ($sleeptrouble is 1 and $controlled is 0 and !$hypnosis_traits.slumber) ? 10 : 8>>
 	<<for _i = _maxHours; _i > 0; _i-->>
 		<<if _i is 1>>
 			<<link [[Sleep for 1 hour|_sleep_passage]]>><<set $sleephour to 1>><</link>> &#8194;(<<timeAfterXHours 1>>)<<ltiredness>>

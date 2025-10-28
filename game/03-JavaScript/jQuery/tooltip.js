@@ -211,7 +211,7 @@ const createTooltip = ($element, settings) => {
 	}
 	const $body = $("<div>").addClass("tooltip-body").appendTo(tooltip);
 	if (settings.style) $body.addClass(settings.style);
-	$body.html(settings.message); // or use `.append(settings.message)` if it's HTML
+	$body.html(settings.message); // or use `.append(settings.message)` if it’s HTML
 
 	if (settings.width) tooltip.css("width", settings.width);
 	if (settings.maxWidth) tooltip.css("max-width", settings.maxWidth);

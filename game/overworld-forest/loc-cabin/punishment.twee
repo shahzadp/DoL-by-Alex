@@ -138,6 +138,7 @@ Fearing whatever Eden has in store for you, you pull hard.
 	<<if $location is "forest">>
 		You're in the clear, but you know Eden's already on your trail. <span class="red">Something is hunting you.</span>
 		<<set $foresthunt to 1>>
+		<<set $forestHunter to "Eden">>
 		<br><br>
 
 		<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
@@ -177,6 +178,7 @@ Fearing whatever Eden has in store for you, you pull hard.
 		<br>
 		You're in the clear, but you know Eden's already on your trail. <span class="red">Something is hunting you.</span>
 		<<set $foresthunt to 1>>
+		<<set $forestHunter to "Eden">>
 		<<set $edenCagedEscape to true>>
 	<<else>>
 		<<His>> grip remains almost bone-crunching. <span class="red">You can't tear away.</span> Eden silently glares as <<he>> pulls you closer.
@@ -219,33 +221,28 @@ Fearing whatever Eden has in store for you, you pull hard.
 	<</if>>
 	<<set $enemyanger += 200>>
 	<<if $settings.asphyxiaLevel gte 3>>
-		<<set $NPCList[0].righthand to "throat">><<set $NPCList[0].lefthand to "throat">><<set $neckuse to "hand">>
-		"I don't want to do this," Eden says as <<he>> shifts <<his>> hands over your throat. <span class="red">You're being strangled!</span>
+		<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+			<<set $enemyanger += 50>><<set $enemyhealth -= 20>>
+			Eden lifts <<his>> hands to strangle you. <span class="blue">The collar around your neck thrums with power.</span> <<He>> snatches <<his>> hands away with a curse. <span class="red"><<He>> slaps you across the face instead.</span>
+			<br><br>
+
+			"I'm going to remind you of your place," <<he>> says. <<violence 3>>
+		<<else>>
+			<<set $NPCList[0].righthand to "throat">><<set $NPCList[0].lefthand to "throat">><<set $neckuse to "hand">>
+			"I don't want to do this," Eden says as <<he>> shifts <<his>> hands over your throat. <span class="red">You're being strangled!</span>
+		<</if>>
 	<<else>>
 		<span class="red">Eden slaps you across the face.</span> "You're only making things harder on yourself," <<he>> snarls.
 		<<violence 6>>
 	<</if>>
+	<<forestRescueSetup>>
 	<br><br>
 <</if>>
 
 <<effects>>
 <<effectsman>>
 
-<<if $location is "forest">>
-	<<if $alarm is 1 and $rescue is 0>>
-		<<if $forest lte 20 and $gwylan_aborted isnot 1>>
-			<<set $alarm to 0>>
-			<<set $gwylan_aborted to 1>>
-
-			You see <<if $forest_shop_intro is 1 or $gwylan_rescue is 1>>Gwylan<<else>>a <<nnpc_gendery "Gwylan">><</if>> burst through the treeline, alarmed by your shout.
-			<<nnpc_He "Gwylan">> takes one look at the assailant, <span class="red">then turns and runs away.</span>
-			<br><br>
-		<<elseif $forest gt 20>>
-			<<forestRescueFail "hunter">>
-			<br><br>
-		<</if>>
-	<</if>>
-<</if>>
+<<forestRescueCheck "Eden">>
 
 <<man>>
 <<stateman>>
@@ -356,54 +353,6 @@ Eden slams the door shut behind <<him>>. The usual familiarity and comfort of th
 <<link [[Next|Eden Caged Intro]]>><<set $phase to 2>><</link>>
 <br>
 
-:: Street Eden Rage
-<<set $outside to 1>><<set $location to "town">><<effects>>
-
-<<if $phase is 1>>
-	Eden's right. You've been away for far too long. You probably couldn't break free, anyway.
-	<br><br>
-
-	<<He>> guides you towards the forest. Most people ignore you. It's a struggle to keep up with <<his>> quick steps.
-<<else>>
-	Fearing whatever Eden has in store for you, you pull hard.
-	<<if $physiqueSuccess>>
-		Eden resists, turning to you with a warning glare. After some back and forth, <span class="green"><<his>> grasp loosens enough for you to slip out and begin a full-sprint away.</span> Your arm stings, but you push past the feeling.<<pain 2>><<gpain>>
-		<br><br>
-
-		Eden gives chase, narrowly on your heels for a few minutes. <<He>> calls after you as you pull ahead, <<his>> anger palpable.
-		<br><br>
-
-		After a few minutes, the sounds of <<his>> voice fades away, until it disappears completely. You're safe. For now.
-		<br>
-		<i><span class="red">Going back to the cabin might be dangerous with Eden this mad.</span></i>
-		<<set $edenCagedEscape to true>>
-	<<else>>
-		Eden's grip remains almost bone-crunching. <span class="red">You can't tear away.</span> Eden silently glares as <<he>> pulls you closer.
-		<br><br>
-
-		<<He>> guides you towards the forest. People look on as you pass, but none intervene, despite your cries for help.<<trauma 3>><<gtrauma>>
-		<br><br>
-
-		Eden doesn't relax as <<he>> drags you through the woods, even once you're past the outskirts of town. The sounds of civilisation gradually give way to nature's deathly silence.
-		<<set $phase to 1>>
-	<</if>>
-<</if>>
-<br><br>
-
-<<if $phase is 1>>
-	<<set $outside to 0>><<set $location to "cabin">>
-	You're pulled into the cabin. Eden slams the door shut behind you. Everything is as you left it. Apart from the cage near the sleeping area.
-	<br><br>
-
-	<<link [[Struggle|Eden Caged Intro]]>><<set $phase to 0>><<def 1>><<npcincr Eden dom -1>><</link>><<physiquedifficulty 2000 18000>><<ldom>>
-	<br>
-	<<link [[Submit|Eden Caged Intro]]>><<set $phase to 1>><<sub 1>><<stress 6>><<npcincr Eden dom 1>><</link>><<gstress>><<gdom>>
-	<br>
-<<else>>
-	<<endevent>>
-	<<destinationeventend>>
-<</if>>
-
 :: Eden Caged Intro
 <<set $outside to 0>><<set $location to "cabin">><<effects>>
 
@@ -428,7 +377,7 @@ Eden slams the door shut behind <<him>>. The usual familiarity and comfort of th
 		<br>
 		Even though you're alone, a familiar chill runs up your spine. <span class="red">Something is hunting you.</span>
 		<<set $edenCagedEscape to true>>
-		<<set $edenforesthunt to 1>>
+		<<set $forestHunter to "Eden">>
 		<<set $foresthunt to 1>>
 		<br><br>
 	<<else>>
@@ -1006,11 +955,20 @@ You are locked in a cage in Eden's cabin. It's small and cramped, impossible to 
 <<tearful>> you crawl out of the cage. The stiffness slowly leaves your body as you rise to your feet.
 <br><br>
 
-<<if $worn.neck.collared isnot 1>>
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	<<He>> looks at your neck and presses <<his>> lips into a thin line. <<npcincr Eden trust -5>><<ltrust>>
+	<br><br>
+
+	"If you even think of running, it won't end well for you," <<he>> threatens
+<<elseif $worn.neck.collared isnot 1>>
 	While you're standing and stretching, you feel something cold wrap around your neck, with a familiar clicking sound. It's a new collar.
 	<<leash 21>>
+<<elseif $worn.neck.collared is 1 and !$worn.neck.type.includes("leash")>>
+	While you're standing and stretching, you feel something click to your collar. It's a leash.
+	<<attach_leash>>
 <</if>>
-"Come on." Eden tugs on your leash as <<he>> heads towards the door. You follow <<him>> outside, breathing in the fresh air. The <<nnpc_title "Eden">> keeps your leash in <<his>> hand as you walk around the clearing. <<He>> watches your every move.<<stress -6>><<lstress>>
+"Come on." Eden tugs on your <<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>wrist<<else>>leash<</if>> as <<he>> heads towards the door. You follow <<him>> outside, breathing in the fresh air.
+The <<nnpc_title "Eden">> keeps <<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>close to you<<else>>your leash in <<his>> hand<</if>> as you walk around the clearing. <<He>> watches your every move.<<stress -6>><<lstress>>
 <br><br>
 
 After a few minutes, <<he>> calls out for you again. "That's enough. Come on, time for bed now."

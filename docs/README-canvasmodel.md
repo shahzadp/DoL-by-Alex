@@ -7,22 +7,28 @@
 Example code that displays a single layer.
 
 **JavaScript**:
+
 ```js
 var canvas = Renderer.createCanvas(256, 256);
-Renderer.composeLayers(canvas, [{
-    src: "img/hair/sides/default/chest.png",
-    desaturate: true,
-    brightness: -0.3,
-    blendMode: 'hard-light',
-    blend: '#e49b67'
-}]);
+Renderer.composeLayers(canvas, [
+	{
+		src: "img/hair/sides/default/chest.png",
+		desaturate: true,
+		brightness: -0.3,
+		blendMode: "hard-light",
+		blend: "#e49b67",
+	},
+]);
 ```
+
 **SugarCube**:
+
 ```
 <<canvasstart 256 256 1>>
 <<canvaslayer 1 "img/hair/sides/default/chest.png" `{ desaturate: true, brightness: -0.3, blendMode: 'hard-light', blend: '#e49b67' }`>>
 <<canvasdraw>>
 ```
+
 The image will be processed in the following way:
 ![result](canvasmodel-demo1.png)
 
@@ -46,6 +52,7 @@ Explanation of layer processing options:
 </dl>
 
 In addition to processing, layer has composition-related options that govern how multiple layers are composed into single image:
+
 <dl>
     <dt>z: number</dt>
     <dd>Display order, layers with higher numbers are rendered above others. Optional, default 0.</dd>
@@ -65,7 +72,7 @@ and several others covered in [Animations](#Animations) section.
 
 ## CanvasModel
 
-Instead of composing layers manually from game state, the recommended way to render is to use *CanvasModel* – a reusable set of layers that uses externally supplied options object to configure its layers. CanvasModel layers can have computable properties that take model options and return layer property value.
+Instead of composing layers manually from game state, the recommended way to render is to use _CanvasModel_ – a reusable set of layers that uses externally supplied options object to configure its layers. CanvasModel layers can have computable properties that take model options and return layer property value.
 
 For example, `hair_sides` layer is defined as:
 
@@ -91,26 +98,29 @@ Renderer.CanvasModels["demo_model"] = {
         },
 ```
 
-Here, `filters` property is constant, while `src`, `z`, and `show` are computed from options. *Options* for this model would be: `hair`, `hair_sides_type`, and `hair_sides_position`.
+Here, `filters` property is constant, while `src`, `z`, and `show` are computed from options. _Options_ for this model would be: `hair`, `hair_sides_type`, and `hair_sides_position`.
 
 If model layer has no `show` or `showfn` property, it will be hidden by default and has to be explicitly displayed with `<<showlayer LAYER_NAME>>`.
 
-*Model filters* are used to set same set of properties to multiple layers at once, for example, hair or clothing colours. They have same type of layer properties object and are stored in `filters` object in model options.
+_Model filters_ are used to set same set of properties to multiple layers at once, for example, hair or clothing colours. They have same type of layer properties object and are stored in `filters` object in model options.
 
 So, a model with 1 layer as described above could be used as
 
 **JavaScript**
+
 ```js
 var model = Renderer.locateModel("demo_model");
 var options = model.defaultOptions();
 options.hair = true;
 options.hair_sides_type = "default";
 options.hair_sides_position = "front";
-options.filters.hair = { desaturate: true, brightness: -0.3, blendMode: 'hard-light', blend: '#e49b67' }
+options.filters.hair = { desaturate: true, brightness: -0.3, blendMode: "hard-light", blend: "#e49b67" };
 var canvas = model.createCanvas();
 model.render(options);
 ```
+
 SugarCube
+
 ```
 <<selectmodel "demo_model">>
 <<set _modeloptions.hair to true>>
@@ -121,10 +131,13 @@ SugarCube
 ```
 
 Known hair colours are stored in setup.colours.hair_map and could be referenced like this instead:
+
 ```js
 options.filters.hair = setup.colours.hair_map["lightbrown"].canvasfilter;
 ```
+
 Or the model can have hair_colour option and do the lookup itself in its preprocess function:
+
 ```js
 Renderer.CanvasModels["demo_model"] = {
     ...
@@ -142,23 +155,29 @@ For example, if most layers have 2-frame idle animation, but as an exception, ey
 Static 1-frame images need no conversion or configuration for animation, they will be repeated for all frames.
 
 JavaScript animations are stored in `Renderer.Animations` object:
+
 ```js
 Renderer.Animations["idle"] = {
-    keyframes: [{
-        frame: 0,
-        duration: 1000
-    }, {
-        frame: 1,
-        duration: 1000
-    }]
+	keyframes: [
+		{
+			frame: 0,
+			duration: 1000,
+		},
+		{
+			frame: 1,
+			duration: 1000,
+		},
+	],
 };
 ```
+
 or, for animations with same frame count:
+
 ```js
 Renderer.Animations["idle"] = {
-    frames: 2,
-    duration: 1000
-}
+	frames: 2,
+	duration: 1000,
+};
 ```
 
 Durations are in milliseconds and `frame` refers to sub-sprite in the layer sprite.
@@ -169,6 +188,7 @@ Animations are referenced by its name in the model layer's `animation` property 
 Animatable layer properties are: `show`, `alpha`, `blend`, `brightness`, `contrast`, `dx`, `dy`. They should be specified in animation keyframes.
 
 Example:
+
 ```js
 Renderer.Animations["idle_redblue"] = {
     keyframes: [{
@@ -188,52 +208,66 @@ Renderer.Animations["idle_redblue"] = {
 ### Model API
 
 #### \<\<selectmodel NAME \[INSTANCE]>>
+
 Select model and prepare for rendering
 Parameter `INSTANCE` is id for caching between passages.
 Do not render instance multiple times on same passage.
 
 #### \<\<showlayer LAYERNAME \[...FILTERS]>>
+
 Show layer and optionaly add filters
 
 #### \<\<hidelayer LAYERNAME>>
+
 Hide layer
 
 #### \<\<modelfilter FILTERNAME FILTER>>
+
 Set model filter object.
 Will do a copy, so you can safely edit filter options
 
 #### \<\<modelfilterset FILTERNAME OPTIONNAME OPTIONVALUE>>
+
 Set model filter option
 
 #### \<\<animatemodel \[CSSCLASS]>>
+
 Render model and JS-animate it
 
 #### \<\<rendermodel \[CSSCLASS] \[CSSANIM]>>
+
 Render model as a static image
 If `CSSANIM` is true (default false), render multiple frames for CSS animation
 
 ### Low-level API
 
 #### \<\<canvasstart WIDTH HEIGHT FRAMES>>
+
 Creates an off-screen `<canvas>` element and empty layers array.
 
-#### \<\<canvaslayer Z SRC \[OPTIONS...]*>>
+#### \<\<canvaslayer Z SRC \[OPTIONS...]\*>>
+
 Prepares a layer to be rendered
-* `Z`: layer z property
-* `SRC`: layer src property
-* `OPTIONS`: Extra layer option objects - they are merged, last has most priority
+
+-   `Z`: layer z property
+-   `SRC`: layer src property
+-   `OPTIONS`: Extra layer option objects - they are merged, last has most priority
 
 Alternative way to call:
+
 ```
 <<run canvaslayer(...z|src|options)>>
-````
+```
+
 Arguments are processed depending on their type: string is `src`, number is `z`, and object is layer options. Leftmost arguments have more priority.
 
 #### \<\<canvasanimate \[CSS_CLASSES]>>
+
 Insert HTML `<canvas>` element right here.
 Render and animate previously prepared images into it.
 
 #### \<\<canvasdraw \[FRAMECOUNT] \[CSS_CLASSES]>>
+
 Insert HTML `<canvas>` element right here.
 Render previously prepared images into it.
 
@@ -244,24 +278,27 @@ Instead of fixed color string, layer's `blend` property can define a linear or r
 ### Gradients
 
 A gradient specification is a JSON object of structure:
-* `gradient: "linear"|"radial"` - type of the gradient.
-* `values: number[]` - gradient coordinates. For linear gradient: `[x0, y0, x1, y1]`; for radial gradient: `[x0, y0, r0, x1, y1, r1]`. The coordinates are in pixels, relative to canvas top left corner.
-* `colors` - color stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops).
+
+-   `gradient: "linear"|"radial"` - type of the gradient.
+-   `values: number[]` - gradient coordinates. For linear gradient: `[x0, y0, x1, y1]`; for radial gradient: `[x0, y0, r0, x1, y1, r1]`. The coordinates are in pixels, relative to canvas top left corner.
+-   `colors` - color stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops).
 
 Example:
+
 ```js
 T.modeloptions.hair_colour = "custom";
 T.modeloptions.filters.hair = {
-    blend: {
-        gradient: "linear",
-        values: [64, 64, 192, 192],
-        colors: [ 'red', [0.25,'green'], 'blue' ]
-        // ==   [ [0.0,'red'], [0.25,'green'], [1.0,'blue']]
-    },
-    blendMode: "hard-light",
-    desaturate: true
-}
+	blend: {
+		gradient: "linear",
+		values: [64, 64, 192, 192],
+		colors: ["red", [0.25, "green"], "blue"],
+		// ==   [ [0.0,'red'], [0.25,'green'], [1.0,'blue']]
+	},
+	blendMode: "hard-light",
+	desaturate: true,
+};
 ```
+
 will apply following gradient coloring to the layer:
 ![result](canvasmodel-demo2.png)
 
@@ -274,10 +311,11 @@ Patterns are images that are tiled horizontally and vertically, and applied to t
 ```js
 T.modeloptions.worn.upper_colour = "custom";
 T.modeloptions.filters.worn_lower_custom = {
-    blend: { pattern:"wolfharmony" }, 
-    blendMode:"hard-light"
-}
+	blend: { pattern: "wolfharmony" },
+	blendMode: "hard-light",
+};
 ```
+
 Result:
 
 ![result](canvasmodel-demo3.png)

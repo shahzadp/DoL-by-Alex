@@ -3216,6 +3216,10 @@ You follow the slime's urging and approach the <<person>>.
 	<<else>>
 		<<maninit>>
 	<</if>>
+	<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+		/* NPCs got shocked by collar during leadup */
+		<<defiance 4>>
+	<</if>>
 <</if>>
 <<effects>>
 <<effectsman>><<man>>
@@ -5281,7 +5285,7 @@ You are in a <<if $NPCList[0].monster is "monster">>strange, monstrous <<if $NPC
 			<<link [[Make sheet rope (1:00)|Monster Tower Sheet]]>><<pass 60>><</link>>
 			<br>
 		<</if>>
-		<<if $harpy gte 6 and $birdFly gte 1>>
+		<<if $harpy gte 6 and $birdFly gte 1 and !$plucked>>
 			<<link [[Fly to safety (0:02)|Monster Tower Fly]]>><<pass 2>><</link>><<flight_text>>
 			<br>
 		<</if>>
@@ -6554,12 +6558,18 @@ The <<person3>><<person>> tries to grab you.
 	<<clotheson>>
 	<br><br>
 
-	You're powerless to stop them. They fix a collar and chain around your neck, pull you to your feet, and force you to walk behind them.
-	<br><br>
-	<<leash 21>>
-	<<endcombat>>
-	<<badEndTracking "Underground Farm" { reason: "uFarmLost" }>>
-	<<link [[Next|Livestock Intro]]>><</link>>
+	You're powerless to stop them.
+	<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+		<<endcombat>>
+		<<link [[Next|Livestock Intro Familiar Collar]]>><</link>>
+	<<else>>
+		They fix a collar and chain around your neck, pull you to your feet, and force you to walk behind them.
+		<br><br>
+		<<leash 21>>
+		<<endcombat>>
+		<<badEndTracking "Underground Farm" { reason: "uFarmLost" }>>
+		<<link [[Next|Livestock Intro]]>><</link>>
+	<</if>>
 
 <</if>>
 
@@ -6587,12 +6597,21 @@ You hear their footsteps stop, unwilling to follow into the wilds.
 
 :: Street Van Submit
 <<effects>>
-<<leash 21>>
-You submit to the collar placed around your neck. <<He>> tugs on the attached chain, forcing you along.
-<br><br>
-<<badEndTracking "Underground Farm" { reason: "uFarmBetrayed" }>>
-<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
-<br>
+You submit to the collar placed around your neck.
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	<<He>> can't get your current collar off, though. <<He>> swaers and recoils as <<he>> touches the golden heart. "We'll deal with that when we get there."
+	<br><br>
+
+	<<link [[Next|Livestock Intro Familiar Collar]]>><<endevent>><</link>>
+	<br>
+<<else>>
+	<<leash 21>>
+	<<He>> tugs on the attached chain, forcing you along.
+	<br><br>
+	<<badEndTracking "Underground Farm" { reason: "uFarmBetrayed" }>>
+	<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
+	<br>
+<</if>>
 
 :: Street Van Refuse
 <<effects>>

@@ -10,7 +10,6 @@ Despite <<his>> distraction, <<he>> would spot you if you approached. There's a 
 		You think you'd be able to pick the lock, <span class="blue">if your arms weren't bound.</span>
 		<br><br>
 	<<else>>
-		<<wearProp "lockpick">>
 		<span class="green">The lock looks easy to pick.</span>
 		<br><br>
 		<<lockicon "pick">><<link [[Break in (0:05)|Docks Sneak Pick]]>><<pass 5>><<crimeUp 5 "trespassing">><<endevent>><</link>><<crime "trespassing">>
@@ -27,10 +26,10 @@ Despite <<his>> distraction, <<he>> would spot you if you approached. There's a 
 
 :: Docks Sneak Pick
 
-<<effects>>
+<<effects>><<wearProp "lockpick">>
 You successfully pick the lock, and sneak into restricted area of the docks.
 <br><br>
-<<link [[Next|Docks Sneak]]>><</link>>
+<<link [[Next|Docks Sneak]]>><<handheldon>><</link>>
 <br>
 
 
@@ -105,8 +104,7 @@ You are on the docks.
 			You think you'd be able to break into the containers, <span class="blue">if your arms weren't bound.</span>
 			<br><br>
 		<<else>>
-			<<wearProp "lockpick">>
-			<<swimicon "break">><<link [[Break into the containers (0:30)|Docks Search]]>><<handheldon>><<pass 30>><<crimeUp 5 "trespassing">><<dock_security 1>><</link>><<crime "trespassing">><<gsecurity>><<skul_dock_state $bus>>
+			<<icon "cargo.png">><<link [[Break into the containers (0:30)|Docks Search]]>><<handheldon>><<pass 30>><<crimeUp 5 "trespassing">><<dock_security 1>><</link>><<crime "trespassing">><<gsecurity>><<skul_dock_state $bus>>
 			<br><br>
 		<</if>>
 	<</if>>
@@ -121,7 +119,7 @@ You are on the docks.
 
 
 :: Docks Search
-<<effects>>
+<<effects>><<wearProp "lockpick">>
 <<skul_dock_init>>
 The containers are virtually identical. One by one, you pick the padlocks and enter the containers.
 <br><br>
@@ -153,15 +151,15 @@ The containers are virtually identical. One by one, you pick the padlocks and en
 		You know there's gold here somewhere. You break into another. It's full of brown packages. You recognise them. You search among them, and then you find it. It's heavier than the others. You tear it open, and find the small bar of gold.
 		<br><br>
 		<<earnFeat "Employee Benefits">>
-		<<link [[Take it (0:05)|Docks Gold]]>><<pass 5>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><</link>><<crime "thievery">>
+		<<link [[Take it (0:05)|Docks Gold]]>><<handheldon>><<pass 5>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><</link>><<crime "thievery">>
 		<br>
 	<<else>>
 		You keep searching, and come to a container full of brown packages.
 		<br><br>
 
-		<<link [[Search carefully (1:00)|Docks Gold Careful]]>><<pass 60>><</link>>
+		<<link [[Search carefully (1:00)|Docks Gold Careful]]>><<handheldon>><<pass 60>><</link>>
 		<br>
-		<<link [[Tear into them (0:05)|Docks Gold Tear]]>><<crimeUp 100 "thievery">><<pass 5>><</link>><<crime "thievery">>
+		<<link [[Tear into them (0:05)|Docks Gold Tear]]>><<handheldon>><<crimeUp 100 "thievery">><<pass 5>><</link>><<crime "thievery">>
 		<br>
 	<</if>>
 
@@ -174,8 +172,31 @@ The containers are virtually identical. One by one, you pick the padlocks and en
 		<br><br>
 	<</if>>
 
+	<<link [[Take it (0:05)|Docks Aphrodisiacs]]>><<handheldon>><<pass 5>><<crimeUp 1200 "thievery">><<set $blackmoney += 1200>><</link>><<crime "thievery">>
+	<br>
 
-	<<link [[Take it (0:05)|Docks Aphrodisiacs]]>><<pass 5>><<crimeUp 1200 "thievery">><<set $blackmoney += 1200>><</link>><<crime "thievery">>
+<<elseif $skul_dock[$bus].contents is "mechanisms">>
+	<<if $skul_dock[$bus].state is "known">>
+		You know that custom-made mechanisms meant for <<= $compound.symbol.includesAny("wraith", "machine") ? "the compound" : "a local company">> are here somewhere. You break into another container. It's full of crates stamped with a <<= $compound.symbol.length ? "familiar" : "pink">> symbol.
+		<br><br>
+	<<else>>
+		You search another. The interior is full of crates stamped with a <<= $compound.symbol.length ? "familiar" : "pink">> symbol.
+		<br><br>
+	<</if>>
+	<<if !$compound.symbol.length and $catsuit_found>>
+		<<run $compound.symbol.pushUnique("docks")>>
+		<<run $compound.symbol.pushUnique("catsuit")>>
+		<span class="blue">It looks vaguely familiar.</span> You didn't get a good look at the time, but you recall finding a catsuit in a container full of crates with a similar pink symbol.
+		<br><br>
+		You tilt your head as you try to decipher the intricate shape. Three concentric arcs, bisected by a column of bone. Three interlaced arcs nestled within. Prongs that splinter outward from the innermost ring. It looks more esoteric than practical.
+	<<elseif $compound.symbol.includes("catsuit")>>
+		It looks like the one you saw when you found the catsuit.
+	<</if>>
+	<br><br>
+	You pry open the crates. They're filled with complicated machinery, most of it too heavy to carry. Some of the smaller mechanisms look like they could be worth something on the black market.
+	<br><br>
+
+	<<link [[Take them (0:05)|Docks Machinery Parts]]>><<handheldon>><<world_corruption "soft" -5>><<pass 5>><<crimeUp 1000 "thievery">><<set $blackmoney += 1000>><</link>><<crime "thievery">>
 	<br>
 <<elseif $skul_dock[$bus].contents is "electronics">>
 	<<if $skul_dock[$bus].state is "known">>
@@ -186,7 +207,7 @@ The containers are virtually identical. One by one, you pick the padlocks and en
 		<br><br>
 	<</if>>
 
-	<<link [[Take them (0:05)|Docks Electronics]]>><<pass 5>><<crimeUp 300 "thievery">><<set $blackmoney += 300>><</link>><<crime "thievery">>
+	<<link [[Take them (0:05)|Docks Electronics]]>><<handheldon>><<pass 5>><<crimeUp 300 "thievery">><<set $blackmoney += 300>><</link>><<crime "thievery">>
 	<br>
 <<elseif $skul_dock[$bus].contents is "fertiliser">>
 	<<if currentSkillValue('tending') gte 400>>
@@ -197,7 +218,7 @@ The containers are virtually identical. One by one, you pick the padlocks and en
 			You search another. The interior is loaded with bags of fertiliser. While you know you can't carry much, having some on hand might be useful.
 			<br><br>
 		<</if>>
-		<<link [[Take some (0:05)|Docks fertiliser]]>><<pass 5>><<crimeUp 200 "thievery">><<set $fertiliser.current++>><</link>><<crime "thievery">>
+		<<link [[Take some (0:05)|Docks fertiliser]]>><<handheldon>><<pass 5>><<crimeUp 200 "thievery">><<set $fertiliser.current++>><</link>><<crime "thievery">>
 	<<else>>
 		You search another. The interior is loaded with bags of what looks like dirt filled inside.
 		<br><br>
@@ -212,17 +233,15 @@ The containers are virtually identical. One by one, you pick the padlocks and en
 		<br><br>
 	<</if>>
 
-	<<link [[Examine|Docks Catsuit]]>><</link>>
+	<<link [[Examine|Docks Catsuit]]>><<handheldon>><</link>>
 	<br>
-
-
 <<else>>
 	You open the final container. It's empty.
 	<br><br>
 <</if>>
 
 
-<<link [[Leave|Docks Sneak]]>><<set $eventskip to 1>><</link>>
+<<link [[Leave|Docks Sneak]]>><<handheldon>><<set $eventskip to 1>><</link>>
 <br>
 
 <<set $skul_dock[$bus].state to "empty">>
@@ -237,7 +256,7 @@ You pocket the gold, and leave the container. It'll be worth a lot on the black 
 <br>
 
 :: Docks Gold Careful
-<<effects>><<wearProp "gold bar">>
+<<effects>>
 
 You try to guess at the contents of each package. You don't want to draw more attention than necessary, after all. Most are light. Mostly cheap plastic tat, you think. Until you lift a small parcel that's heavier than the others.
 <br><br>
@@ -246,13 +265,13 @@ You open it, just enough to peek inside. A yellow glint greets you. It's a small
 <br><br>
 
 
-<<link [[Take it|Docks Gold]]>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><<handheldon>><</link>><<crime "thievery">>
+<<link [[Take it|Docks Gold]]>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><</link>><<crime "thievery">>
 <br>
-<<link [[Leave it|Docks Sneak]]>><<set $eventskip to 1>><<handheldon>><</link>>
+<<link [[Leave it|Docks Sneak]]>><<set $eventskip to 1>><</link>>
 <br>
 
 :: Docks Gold Tear
-<<effects>><<wearProp "gold bar">>
+<<effects>>
 
 You tear into the first package. Cheap toys. You tear into the next, and the next. Mostly cheap plastic tat. Nothing of value. At first.
 <br><br>
@@ -260,9 +279,9 @@ You tear into the first package. Cheap toys. You tear into the next, and the nex
 You open a heavy parcel. The contents clatter to the floor. It's a small bar of gold.
 <br><br>
 
-<<link [[Take it|Docks Gold]]>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><<handheldon>><</link>><<crime "thievery">>
+<<link [[Take it|Docks Gold]]>><<crimeUp 3000 "thievery">><<set $blackmoney += 3000>><</link>><<crime "thievery">>
 <br>
-<<link [[Leave it|Docks Sneak]]>><<set $eventskip to 1>><<handheldon>><</link>>
+<<link [[Leave it|Docks Sneak]]>><<set $eventskip to 1>><</link>>
 <br>
 
 :: Docks Aphrodisiacs
@@ -403,10 +422,12 @@ It's tight, but you pull on the catsuit. It hugs your skin, and shows off your f
 
 <i>You'll leave fewer traces of yourself while wearing the catsuit. Crime will increase more slowly.</i>
 <br><br>
+<<specialClothesUnlock "item" "catsuit">>
 
-<<link [[Next|Docks Sneak]]>><<set $eventskip to 1>><</link>>
+<<link [[Examine the crates|Docks Catsuit Crates]]>><</link>>
 <br>
-
+<<link [[Leave|Docks Sneak]]>><<set $eventskip to 1>><</link>>
+<br>
 
 :: Docks Catsuit Take
 <<effects>>
@@ -419,11 +440,32 @@ You take the catsuit. It might be handy later.
 
 <i>You'll leave fewer traces of yourself while wearing the catsuit. Crime will increase more slowly.</i>
 <br><br>
+<<specialClothesUnlock "item" "catsuit">>
+
+<<link [[Examine the crates|Docks Catsuit Crates]]>><</link>>
+<br>
+<<link [[Leave|Docks Sneak]]>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Docks Catsuit Crates
+<<effects>>
+<<run $compound.symbol.pushUnique("catsuit")>>
+You study the crates. They're stamped with a lurid pink symbol. You tilt your head as you try to decipher the intricate shape. Three concentric arcs, bisected by a column of bone. Three interlaced arcs nestled within. Prongs that splinter outward from the innermost ring. It looks more esoteric than practical.
+<br><br>
+
+Several crates have already been pried open and rifled through. Wren's handiwork, you presume. You peek inside. They're filled with complicated machinery, most of it too heavy to carry. Some of the smaller mechanisms look like they could be worth something on the black market.
+<br><br>
+
+<<link [[Take them (0:05)|Docks Machinery Parts]]>><<world_corruption "soft" -5>><<pass 5>><<crimeUp 1000 "thievery">><<set $blackmoney += 1000>><</link>><<crime "thievery">>
+
+:: Docks Machinery Parts
+<<effects>>
+
+You scoop up as many of the machinery parts as you can carry and leave the container.
+<br><br>
 
 <<link [[Next|Docks Sneak]]>><<set $eventskip to 1>><</link>>
 <br>
-
-
 
 :: Docks Hide
 <<effects>><<wearProp "lockpick">>

@@ -11,9 +11,9 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.5.9",
-	versionName: `"Pride Cometh" edition`,
-	sneaky: false,
+	version: "0.5.6.0",
+	versionName: `"Love Bites" edition`,
+	sneaky: true,
 	socialMediaEnabled: true,
 	sourceLinkEnabled: false,
 };
@@ -32,7 +32,7 @@ Config.saves.isAllowed = () => {
 };
 
 if (idb.updateSettings) idb.updateSettings("useDelta", true);
-idb.footerHTML = `Support the developers! <a target="_blank" class="link-external" href="https://vrelnir.fanbox.cc/" tabindex="0">Vrelnir</a> <a target="_blank" class="link-external" href="https://subscribestar.adult/purityguy" tabindex="0">PurityGuy</a>`;
+idb.footerHTML = `Support the developers! <a target="_blank" class="link-external" href="https://vrelnir.fanbox.cc/" tabindex="0">Vrelnir</a> <a target="_blank" class="link-external" href="https://purity.fanbox.cc/" tabindex="0">PurityGuy</a>`;
 
 function onLoad(save) {
 	// some flags for version update. ideally, all updating should be done here in onLoad, but we don't live in an ideal world
@@ -192,7 +192,7 @@ Config.navigation.override = function (dest) {
 			case "Forest Shop Legs":
 			case "Forest Shop Feet":
 				return "Forest Shop";
-				
+
 			case "Residential alleyways":
 				return "Residential Alleyways";
 			case "Commercial alleyways":
@@ -684,6 +684,22 @@ Config.navigation.override = function (dest) {
 				return "Wolf Cave Refuse";
 			case "Wolf Cave Hand Finish":
 				return "Wolf Cave Accept Finish";
+
+			case "Forest Coop Rescue":
+				switch (V.phase) {
+					case 1:
+						return "Forest Wolf Finish";
+					case 2:
+						return "Forest Slime Rape Finish";
+					case 3:
+						return "Forest Slime Wolf Rape Finish";
+					case 4:
+						return "Forest Swim Molestation Finish";
+					default:
+						return "Forest Molestation Finish";
+				}
+			case "Street Eden Rage":
+				return "Eden Caged Caught";
 
 			default:
 				return false;

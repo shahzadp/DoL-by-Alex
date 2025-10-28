@@ -100,8 +100,8 @@
 				You pass out from the cold.
 				<br><br>
 
-				<<if $forest lte 20>>
-					<<addinlineevent "gwylan" .2>>
+				<<if $forest lte 25 and !isGwylanAbsent() and C.npc.Gwylan.state isnot "scorned">>
+					<<addinlineevent "gwylan" .6>>
 						<<link [[Everything fades to black...|Passout Gwylan Hot Cold]]>><<set $passoutReason to "hypothermia">><</link>>
 					<</addinlineevent>>
 				<</if>>
@@ -370,8 +370,8 @@
 				You pass out from the heat.
 				<br><br>
 
-				<<if $forest lte 20>>
-					<<addinlineevent "gwylan" .2>>
+				<<if $forest lte 25 and !isGwylanAbsent() and C.npc.Gwylan.state isnot "scorned">>
+					<<addinlineevent "gwylan" .6>>
 						<<link [[Everything fades to black...|Passout Gwylan Hot Cold]]>><<set $passoutReason to "hyperthermia">><</link>>
 					<</addinlineevent>>
 				<</if>>
@@ -1892,7 +1892,7 @@ You realise you're sitting in the fountain, soaked, although the cool water make
 	<br><br>
 	<<He>> lights a cigarette under <<his>> usual tree, ignoring you.
 <<else>>
-	<<if $phase is 0>> /* Refus */
+	<<if $phase is 0>> /* Refuse */
 		"Good, that's what an ungrateful idiot like you deserves." <<He>> gives you a hard shove. You stumble over the edge of the fountain and fall back into the water.<<stress 6>><<gstress>>
 		<br><br>
 		<<He>> looks down at you. "Next time you act like a moron, you're on your own," <<he>> says.
@@ -1952,19 +1952,46 @@ You realise you're sitting in the fountain, soaked, although the cool water make
 
 :: Passout Gwylan Hot Cold
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>><<outfitChecks>>
-<<npc Gwylan>><<person1>>
+<<npc Gwylan>><<person1>><<run statusCheck("Gwylan")>>
 
 As you slowly come to, you realise that you're in <<= $forest_shop_intro ? "the forest shop." : "a strange shop you've seen on the outskirts of the forest.">>
 
-<<if $forest_shop_intro is 1 or $gwylan_rescue gte 1>>
+<<if _gwylanLovePercent gte 50 and _gwylanStatus.includes("met")>>
+	<<if $passoutReason is "hypothermia">>
+		You feel warm. There's someone clinging to you tightly. It's Gwylan. "Oh, you're awake!" <<He>> quickly separates from you. "Sorry, I was trying to restore your body temperature.
+	<<else>>
+		You hear a gentle repeating whisper, like someone counting. There's a cool, damp cloth on your forehead, and a slight weight pushing down on your body. You look down. It's Gwylan, pressing <<his>> ear against your
+		<<if !$worn.upper.type.includes("naked")>>
+			<<set _upperStrippedHere to $worn.upper>>
+			<span class="lewd">exposed</span>
+		<</if>>
+		chest and half-straddling you.
+		<<He>> looks up at you, and <<his>> eyes widen. "Oh, you're awake!" <<He>> quickly climbs off of you. "Sorry, I was trying to check your breathing.
+	<</if>>
+<<elseif _gwylanStatus.includes("met")>>
 	Gwylan beams at you. "Phew! Are you alright?
 <<else>>
-	A <<personsimple>> beams at you. <<He>> looks about your age, with mousy hair and a hint of freckles. "I'm older than I look," <<he>> says, as if reading your mind. "I'm Gwylan." <<He>> reaches forward, lifts your hand, and shakes it in both <<his>> own. "Pleased to meet you. I sell—" <<He>> pauses. "My grand<<father>> sells—" Another pause. "I sell knick-knacks here. Things you won't find in normal shops. Even I don't know what I have in stock!" <<He>> sounds proud.
+	<<set $daily.gwylan.firstMet to true>>
+	A <<personsimple>> beams at you. <<He>> looks about your age, with mousy hair and a hint of freckles. "I'm older than I look," <<he>> says, as if reading your mind. "<span class="green">I'm Gwylan.</span>" <<He>> reaches forward, lifts your hand, and shakes it in both <<his>> own. "Pleased to meet you. I sell—" <<He>> pauses. "My grand<<father>> sells—" Another pause. "I sell clothes and knick-knacks here. <span class="blue">Things you won't find in normal shops.</span> Even I don't know what I have in stock!" <<He>> sounds proud.
 	<br><br>
 
 	"But enough of that," <<he>> continues. "More importantly, are you alright?
 <</if>>
-I found you fainted outside while I was picking berries. You had me worried! <<= $forest_shop_intro is 1 ? "You're my best customer," : $gwylan_rescue gte 1 ? "We're friends," : "These woods can be dangerous,">> after all."
+I found you fainted outside while I was picking berries. You had me worried sick!
+<<if _gwylanLastSeenDays gte 21>>
+	I haven't seen you in ages,
+<<elseif $gwylanSeen.includes("partners")>>
+	I can't do this without you anymore,
+<<elseif $gwylanSeen.includes("yearning")>>
+	I know I was harsh a little while ago, I'm sorry. I still... care about you,
+<<elseif $forest_shop_intro is 1>>
+	You're my best customer,
+<<elseif $gwylan_rescue gte 1>>
+	We're friends,
+<<else>>
+	These woods can be dangerous,
+<</if>>
+after all." <<He>> almost sounds like <<hes>> trying to scold you.
 <br><br>
 
 <<He>> quickly gives you a once-over.
@@ -1982,8 +2009,11 @@ I found you fainted outside while I was picking berries. You had me worried! <<=
 	<</if>>
 <</if>>
 
+<<if _upperStrippedHere>>
+	<span class="blue"><<He>> places your <<= _upperStrippedHere.name>> next to you, neatly folded.</span>
+<</if>>
 <<if $upperwetstage gte 3 or $lowerwetstage gte 3 or $underupperwetstage gte 3 or $underlowerwetstage gte 3>>
-	<<He>> suddenly seems to realise that your clothes are wet. <<He>> insists on drying them by the fire. Thankfully, they dry quickly. <<dry_full>>
+	<<He>> suddenly seems to remember that your clothes are wet. <<He>> insists on drying them by the fire. Thankfully, they dry quickly. <<dry_full>>
 <<elseif _shirtless or _bottomExposed>>
 	<<He>> suddenly seems to realise the implications of your state of dress. "Oh, clothes! You need clothes." <<He>> quickly rummages through an antique wardrobe nearby and hands you
 	<<if $player.gender_appearance is "f">>
@@ -1997,6 +2027,9 @@ I found you fainted outside while I was picking berries. You had me worried! <<=
 	It feels strangely nostalgic. You change into the provided clothes.
 	<<if $passoutReason is "hypothermia">>
 		"Sorry I don't have anything warmer," <<he>> says apologetically. There's a pause as you glance around the shop. "That I can give for free," <<he>> clarifies with a smile.
+		<<if $gwylanSeen.icnludes("yearning")>>
+			"You know how the shop is."
+		<</if>>
 	<</if>>
 <</if>>
 <br><br>
@@ -2010,13 +2043,21 @@ I found you fainted outside while I was picking berries. You had me worried! <<=
 <</if>>
 <br><br>
 
-Once you're settled, <<he>> disappears into the back of the shop. You can still faintly hear some loud clinking sounds coming from that direction, which you assume is <<his>> way of brewing the tea. Perhaps <<hes>> simply a tad clumsy?
+Once you're settled, <<he>> disappears into the back of the shop. You can still faintly hear some loud clinking sounds coming from that direction, which you assume is <<his>> way of brewing the tea.
+<<if $gwylanSeen.includes("butterfly_pea_flower_tea")>>
+	You suppress the urge to offer help.
+<<elseif $gwylanSeen.includes("ritual_beast")>>
+	You know better than to question it by now.
+<<else>>
+	Perhaps <<hes>> simply a tad clumsy?
+<</if>>
 <br><br>
 
 <<link [[Next|Passout Gwylan Hot Cold Tea]]>><</link>>
 
 :: Passout Gwylan Hot Cold Tea
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>>
+<<set $gwylanTea to $gwylanTea || 0>>
 <<if $passoutReason is "hyperthermia">>
 	<<set Weather.Temperature.override.increase.inside(-5, "The fan keeps you cool.")>>
 <<else>>
@@ -2026,19 +2067,27 @@ Once you're settled, <<he>> disappears into the back of the shop. You can still 
 <<He>> returns, balancing a tray laden with a variety of ingredients: several herbs, a basket of freshly washed berries and lemons, and a honey jar. Alongside them rest a knife, a ladle, a patterned tea set, and some biscuits. <<He>> carries a glass pot of hot water<<if $passoutReason is "hyperthermia">> and a container of ice cubes as well<</if>>, ready to prepare the tea.
 <br><br>
 
-"I realised I didn't ask what kind of tea you wanted<<if $gwylanTea gte 1>> again<</if>>." <<He>> sets the tray down in front of you with an apologetic smile. "Sorry about that. Do you want berry herbal tea or lemon honey tea? <<if $passoutReason is "hyperthermia">>With or without ice?<</if>> Honey or no honey?<<if $gwylanTea gte 2>> Or Perhaps butterfly pea flower tea?<</if>>" <<He>> tilts <<his>> head to the side with each question asked.
+"I realised I didn't ask what kind of tea you wanted<<if $gwylanTea gte 1>> again<</if>>." <<He>> sets the tray down in front of you with an apologetic smile. "Sorry about that. Do you want berry herbal tea or lemon honey tea? <<if $passoutReason is "hyperthermia">>With or without ice?<</if>> Honey or no honey?<<if $gwylanTea gte 2 or $gwylanSeen.includes("butterfly_pea_flower_tea")>> Or Perhaps butterfly pea flower tea?<</if>>" <<He>> tilts <<his>> head to the side with each question asked.
 <br><br>
 
 <<link [[Berry herbal tea|Passout Gwylan Hot Cold Order]]>><<set $phase to 0>><</link>>
 <br>
 <<link [[Lemon honey tea|Passout Gwylan Hot Cold Order]]>><<set $phase to 1>><</link>>
 <br>
-<<if $gwylanTea gte 1>><<link [[Butterfly pea flower tea|Passout Gwylan Hot Cold Order]]>><<set $phase to 2>><<set $gwylanTea++>><</link>><</if>>
+<<if $gwylanTea gte 1 or $gwylanSeen.includes("butterfly_pea_flower_tea")>>
+	<<link [[Butterfly pea flower tea|Passout Gwylan Hot Cold Order]]>>
+		<<set $phase to 2>>
+		<<if $gwylanSeen.includes("butterfly_pea_flower_tea") and $gwylanTea lt 3>>
+			<<set $gwylanTea to 3>>
+		<<else>>
+			<<set $gwylanTea++>>
+		<</if>>
+	<</link>>
+<</if>>
 
 
 :: Passout Gwylan Hot Cold Order
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>>
-<<set $gwylanTea to $gwylanTea || 0>>
 <<if $passoutReason is "hyperthermia">>
 	<<set Weather.Temperature.override.increase.inside(-5, "The fan keeps you cool.")>>
 <<else>>
@@ -2055,8 +2104,8 @@ Humming cheerfully, <<he>> begins preparing the tea to your specifications.
 "Here you go!" <<he>> exclaims with a smile, presenting you with your teacup and saucer.
 <br><br>
 <<if $phase is 2>>
-	<<He>> pours <<himself>> a cup of butterfly pea flower tea as well
-.<<else>>
+	<<He>> pours <<himself>> a cup of butterfly pea flower tea as well.
+<<else>>
 	<<He>> pours <<himself>> a cup of bright blue tea.
 <</if>>
 <br><br>
@@ -2064,12 +2113,13 @@ Humming cheerfully, <<he>> begins preparing the tea to your specifications.
 <<link [[Take a sip|Passout Gwylan Hot Cold Sip]]>><</link>>
 
 :: Passout Gwylan Hot Cold Sip
-<<set $outside to 0>><<set $location to "forest_shop">><<effects>>
+<<set $outside to 0>><<set $location to "forest_shop">><<effects>><<run statusCheck("Gwylan")>>
 <<if $passoutReason is "hyperthermia">>
 	<<set Weather.Temperature.override.increase.inside(-5, "The fan keeps you cool.")>>
 <<else>>
 	<<set Weather.Temperature.override.increase.inside(5, "The thick blanket keeps you warm.")>>
 <</if>>
+<<set $gwylanSeen.pushUnique("passout_hot_cold")>>
 
 You take a sip.
 <<if $gwylanTea is 0>>
@@ -2114,7 +2164,12 @@ You take a sip.
 		Despite knowing its taste well, you opt for the butterfly pea flower tea again. "Yeah, it's still earthy," you say with a wry smile, adding some berries to temper the flavour.
 	<</if>>
 <</if>>
-You both enjoy the refreshing tea and biscuits. It's a peaceful moment, one that you find yourself pleasantly lost in. <<lstress>><<ltrauma>><<trauma -6>><<stress -6>>
+<<if _gwylanStatus.includes("badEndReady")>>
+	You both enjoy the refreshing tea and biscuits, although you notice a strange aftertaste.
+<<else>>
+	You both enjoy the refreshing tea and biscuits.
+<</if>>
+It's a peaceful moment, one that you find yourself pleasantly lost in. <<lstress>><<ltrauma>><<trauma -6>><<stress -6>>
 <br><br>
 "How are you feeling? Better?" <<he>> asks.
 <br><br>
@@ -2128,15 +2183,45 @@ You both enjoy the refreshing tea and biscuits. It's a peaceful moment, one that
 <</if>>
 <br><br>
 
-"Aw, it's no big deal!" <<He>> waves <<his>> hand dismissively. "Of course I'd help you, and I'd do it again."
-<br><br>
+<<if _gwylanStatus.includes("badEndReady")>>
+	<<hypnosisText "Your vision starts to blur. Gwylan stays in perfect focus, though.">> <<hallucinogen 120>><<drugs 40>><<ggghallucinogens>><<gdrugged>>
+	<br><br>
 
-<<link [[Next|Passout Gwylan Hot Cold End]]>><</link>>
+	"<<pcPetname "Gwylan">>... you don't need to thank me. Of course I'd come to your rescue." <<He>> waves <<his>> hand dismissively. "I'd do it again in a heartbeat."
+	<br><br>
+
+	<<He>> leans forward, and slowly crawls toward you. "And again. And again." <<He>> pushes against your chest. <span class="red">You fall backwards with no resistance.</span> <<He>> giggles, crawling atop you and hugging you tightly.
+	"Just think. What would I do if you didn't wake up? It hasn't been forever, yet. Your life, your promise... aren't yours to break."
+	<br><br>
+
+	<<His>> voice fades away with the rest of the room. "Let me take care of you."
+	<br><br>
+
+	<<if _gwylanStatus.includes("aurigaScarConfront")>>
+		<<link [[Once more, everything fades to black...|Forest Shop Nowhere Passout]]>><<set $forest to 0>><<pass 30>><<endevent>><</link>>
+	<<else>>
+		<<link [[Once more, everything fades to black...|Forest Shop Taken Start]]>><<set $forest to 0>><<pass 30>><<endevent>><</link>>
+	<</if>>
+<<else>>
+	<<if $gwylanSeen.includes("partners")>>
+		"<<pcPetname "Gwylan">>... you don't need to thank me. Of course I'd come to your rescue." <<He>> waves <<his>> hand dismissively. "I'd do it again in a heartbeat."
+	<<else>>
+		"Aw, it's no big deal!" <<He>> waves <<his>> hand dismissively. "Of course I'd help you, and I'd do it again."
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Passout Gwylan Hot Cold End]]>><</link>>
+<</if>>
 
 :: Passout Gwylan Hot Cold End
 <<set $outside to 0>><<set $location to "forest_shop">><<effects>>
-
+<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
 You finish your tea, and Gwylan looks out the window. "Hopefully you'll fare a little better out there now. You know, <<= $passoutReason>> can be fatal, so don't die on me, alright?"
+<<if $gwylanSeen.includes("romance")>>
+	<<His>> smile becomes just a little sad. "I mean it. You need to keep your promise to me."
+<<elseif $gwylanSeen.includes("partners")>>
+	<<His>> smile becomes just a little sad. "I mean it. I'm not ready to say goodbye yet."
+<</if>>
 <br><br>
 
 You nod and wave goodbye to Gwylan before leaving the shop.
@@ -2751,19 +2836,34 @@ Your voice falls on deaf ears as they close in.
 <<link [[Next|Lake Shore]]>><<endevent>><</link>>
 
 :: Passout Estate Remy Hot Cold
-<<effects>><<generate1>><<generate2>><<leash 21>>
+<<effects>><<generate1>><<generate2>>
 
-You awaken on a wooden floor, a cold heavy weight around your neck. Two figures loom over you.
-<br><br>
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	You awaken on a wooden floor. Two figures loom over you.
+	<br><br>
 
-"You weren't lying," a <<person1>><<person>> says. "Good stock.<<if $settings.pregnancySpeechEnabled>> Would make a fine breeder.<</if>>"
-<br><br>
+	"You weren't lying," a <<person1>><<person>> says. "Good stock.<<if $settings.pregnancySpeechEnabled>> Would make a fine breeder.<</if>>"
+	<br><br>
 
-"<<= $settings.pregnancySpeechEnabled ? "Breeder?" : "Personally,">>" the <<person2>><<person>> replies, "I'm more interested in the produce. Gonna make a killing." <<He>> grasps the leash attached to your collar, and forces you to your feet. You're in a small barn. The <<person>> tugs you behind <<him>>.
-<br><br>
-<<badEndTracking "Underground Farm" { reason: "tempPassout" }>>
-<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
-<br>
+	"<<= $settings.pregnancySpeechEnabled ? "Breeder?" : "Personally,">>" the <<person2>><<person>> replies, "I'm more interested in the produce. Gonna make a killing. Need to do something about that stubborn collar, though." <<He>> grasps your familiar collar, and forces you to your feet. You're in a small barn.
+	The <<person>> recoils as you hear a small zap. "A shock collar? Maybe we can keep it after all." <<He>> pushes you along.
+	<br><br>
+	<<link [[Next|Livestock Intro Familiar Collar]]>><<endevent>><</link>>
+	<br>
+<<else>>
+	<<leash 21>>
+	You awaken on a wooden floor, a cold heavy weight around your neck. Two figures loom over you.
+	<br><br>
+
+	"You weren't lying," a <<person1>><<person>> says. "Good stock.<<if $settings.pregnancySpeechEnabled>> Would make a fine breeder.<</if>>"
+	<br><br>
+
+	"<<= $settings.pregnancySpeechEnabled ? "Breeder?" : "Personally,">>" the <<person2>><<person>> replies, "I'm more interested in the produce. Gonna make a killing." <<He>> grasps the leash attached to your collar, and forces you to your feet. You're in a small barn. The <<person>> tugs you behind <<him>>.
+	<br><br>
+	<<badEndTracking "Underground Farm" { reason: "tempPassout" }>>
+	<<link [[Next|Livestock Intro]]>><<endevent>><</link>>
+	<br>
+<</if>>
 
 :: Passout Estate Wren Hot Cold
 <<set $outside to 0>><<effects>>

@@ -77,7 +77,6 @@ declare module "twine-sugarcube" {
 		};
 		sydneyGlassesNotice: undefined | 1;
 
-		compoundcentre: number;
 		park_fame: number;
 
 		syndromewolves: 1;
@@ -287,7 +286,26 @@ declare module "twine-sugarcube" {
 
 declare global {
 	export type SkinColoursSimple = "custom" | "light" | "medium" | "dark" | "gyaru";
-	export type SkinColours = SkinColoursSimple | "rlight" | "rmedium" | "rdark" | "rgyaru" | "ylight" | "ymedium" | "ydark" | "ygyaru" | "glight" | "gmedium" | "gdark" | "ggyaru" | "blight" | "bmedium" | "bdark" | "bgyaru" | "slime" | "ghost";
+	export type SkinColours =
+		| SkinColoursSimple
+		| "rlight"
+		| "rmedium"
+		| "rdark"
+		| "rgyaru"
+		| "ylight"
+		| "ymedium"
+		| "ydark"
+		| "ygyaru"
+		| "glight"
+		| "gmedium"
+		| "gdark"
+		| "ggyaru"
+		| "blight"
+		| "bmedium"
+		| "bdark"
+		| "bgyaru"
+		| "slime"
+		| "ghost";
 
 	export interface SkinColourConfig {
 		hStart: number;

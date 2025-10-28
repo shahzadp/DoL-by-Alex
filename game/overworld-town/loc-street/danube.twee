@@ -50,7 +50,49 @@ Some homes host extravagant Halloween displays.
 	<<passoutstreet>>
 <<else>>
 
-	<<if (dangerEvent() or $eventforced) and $eventskip is 0>>
+	<<if C.npc.Gwylan.state is "active" and !$daily.gwylan.cafe and !$daily.gwylan.cafeSkip and !$daily.gwylan.SchoolDropOff and !["reunion", "badEndReady"].includes(statusCheck("Gwylan")) and C.npc.Avery.state is "active" and $avery_mansion and !between(V.chef_state, 7, 8) and Time.schoolDay and Time.hour is 7 and $exposed lte 0 and ($gwylan.sea + ($gwylanTalked.count("fox_mask") * 20) + ($gwylanTalked.count("dark_pendant") * 20) gte 40)>>
+			<<run statusCheck("Gwylan")>><<npc Gwylan>><<person1>>
+			<<set $daily.gwylan.SchoolDropOff to true>>
+			<<if ["Mansion Lounge", "Mansion Kitchen", "Mansion Dining", "Mansion Display", "Mansion Bedroom", "Mansion Study", "Mansion Pool", "Mansion Garage", "Mansion Garden"].includes($passagePrev)>>
+				As you head outside Avery's mansion and walk off Danube Boulevard,
+			<<else>>
+				As you pass by Danube Boulevard,
+			<</if>>
+			<<if !$gwylanSeen.includes("cafe_walk")>>
+				you hear a familiar voice call out to you from across the street. It's Gwylan.
+				<br><br>
+
+				<<He>> makes his way over. "Good morning, <<pcpetname "Gwylan">>. I was just heading out for breakfast, but decided to take a detour to ask if you'd like to join me? I can take you to school afterwards if you'd like."
+
+				<<if !$gwylanSeen.includes("cafe")>>
+					<<set $gwylanSeen.pushUnique("cafe")>>
+					<br><br>
+					You look a little confused, which Gwylan picks up on. "Oh, silly me! I guess I never told you, I go to the cafe every morning for breakfast. It's become sort of a routine. But routines can get pretty boring after a while, and I really enjoy your company."
+				<</if>>
+				<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 or $gwylanSeen.includes("petplay") and $worn.neck.type.includes("leash")>>
+					<<set _magicLeash to true>>
+					You feel a tug on your collar <<if $worn.neck.name is "familiar collar">>as a glowing leash appears in Gwylan's hand<<else>>and look down to see Gwylan holding your leash<</if>>. "So how about it, <<pcpetname "Gwylan" "my">>. You'd like some walkies, would't you?" <<he>> speaks softly.
+				<<else>>
+					<<He>> smiles. "So how about it?"
+				<</if>>
+			<<else>>
+				you spot Gwylan waiting for you. <<He>> waves you over. "<<print either("Good morning", "Fine morning", "Nice to see you", "Hello", "There you are")>>, <<pcpetname "Gwylan">>. Sleep well?"
+				<br><br>
+
+				<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 or $gwylanSeen.includes("petplay") and $worn.neck.type.includes("leash")>>
+					<<set _magicLeash to true>>
+					You feel a tug on your collar <<if $worn.neck.name is "familiar collar">>as a glowing leash appears in Gwylan's hand<<else>>and look down to see Gwylan holding your leash<</if>>. "Does my favourite <<pcpetname "Gwylan" "simple">> want some morning walkies? I'm heading to the cafe, and your company would really make my day." <<He>> smiles and scratches you behind the ear.
+				<<else>>
+					<<He>> smiles. "I'm heading out for breakfast. Would you like to accompany me?"
+				<</if>>
+			<</if>>
+			<br><br>
+
+			<<cafeicon>><<link [[Walk with Gwylan (0:05)|Gwylan Walk Cafe Solo]]>><<pass 5>><<set $phase to 0>><<set $daily.gwylan.cafe to true>><</link>>
+			<br>
+			<<refuseicon>><<link [[Decline the offer|Gwylan Walk Cafe Solo]]>><<set $phase to 1>><</link>>
+			<br>
+	<<elseif (dangerEvent() or $eventforced) and $eventskip is 0>>
 		<<eventsstreet>>
 	<<else>>
 		<<if $options.mapTop is true>>

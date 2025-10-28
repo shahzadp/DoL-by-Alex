@@ -59,7 +59,7 @@ Object.defineProperty(Array.prototype, "formatList", {
 			return "";
 		}
 		conjunction += " ";
-		if (this.length <= 2) return this.join(" " + conjunction);
+		if ((this.length <= 2 && conjunction !== "or ") || this.length <= 1) return this.join(" " + conjunction);
 		const oxConj = (useOxfordComma ? separator : " ") + conjunction;
 		return this.slice(0, -1).join(separator) + oxConj + this.last();
 	},

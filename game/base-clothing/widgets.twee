@@ -887,9 +887,29 @@
 	<<buttplugon>>
 	<<outfitChecks>>
 	<<if !_fullyNaked>>
-		You fix your clothing<<if !pcAreArmsBound("right") and $worn.handheld.name isnot "naked">> and <<= $worn.handheld.name.includes("balloon") ? "retrieve" : "pick up">> your $worn.handheld.name<</if>>.<br><br>
+		<<set $_clothesbr to true>>
+		You fix your clothing<<if !pcAreArmsBound("right") and $worn.handheld.name isnot "naked">> and <<= $worn.handheld.name.includes("balloon") ? "retrieve" : "pick up">> your $worn.handheld.name<</if>>.
 	<<elseif !pcAreArmsBound("right") and $worn.handheld.name isnot "naked">>
-		You <<= $worn.handheld.name.includes("balloon") ? "retrieve" : "pick up">> your $worn.handheld.name.<br><br>
+		<<set $_clothesbr to true>>
+		You <<= $worn.handheld.name.includes("balloon") ? "retrieve" : "pick up">> your $worn.handheld.name.
+	<</if>>
+	<<if !pcAreArmsBound("both") and !_rubbedNecklace>>
+		<<if $worn.neck.name is "ivory necklace">>
+			<<set $_clothesbr to true>><<set _rubbedNecklace to true>>
+			You hold your necklace.
+		<<elseif $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+			<<set $_clothesbr to true>><<set _rubbedNecklace to true>>
+			You rub the heart on your collar.
+			<<if $hypnosis_traits.devotion gte 5>>
+				<<stress -1>><<lstress>>
+				<<if $npc.includes("Gwylan")>>
+					<<arousal 200>><<garousal>>
+				<</if>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $_clothesbr>>
+		<br><br>
 	<</if>>
 
 	<<exposure>>
@@ -1052,13 +1072,13 @@
 	<<if _args[0]>>
 		<<set $_wornTarget to $worn[_args[0]]>>
 		<<set $_carriedTarget to $carried[_args[0]]>>
-		<<if $_wornTarget.name isnot "naked" and $_wornTarget.cursed isnot 1 and _args[1] is "strip">>
+		<<if $_wornTarget.name isnot "naked" and !$_wornTarget.type.includes("heavy") and $_wornTarget.cursed isnot 1 and _args[1] is "strip">>
 			<<if $stealtextskip isnot 1>>
 				<<if $enemyno gte 2>>They tear<<else>><<He>> tears<</if>> your <<print $_wornTarget.name>> off your body.
 				<br>
 			<</if>>
 			<<generalRuined _args[0]>>
-		<<elseif $_carriedTarget.name isnot "naked">>
+		<<elseif $_carriedTarget.name isnot "naked" and !$_carriedTarget.type.includes("heavy")>>
 			<<if $stealtextskip isnot 1>>
 				<<if $enemyno gte 2>>They keep<<else>><<He>> keeps<</if>> your <<print $_carriedTarget.name>> as a souvenir.
 				<br>
@@ -1163,9 +1183,9 @@
 	<</for>>
 <</widget>>
 
-<<widget "undressKeepFace">>
+<<widget "undressKeepSlot">>
 	<<set $_location to _args[0]>>
-	<<for $_slot range setup.clothingLayer.all.except("face")>>
+	<<for $_slot range setup.clothingLayer.all.except(_args[1])>>
 		<<generalUndress $_location $_slot>>
 	<</for>>
 <</widget>>
@@ -1210,86 +1230,82 @@
 
 <<widget "generalUndress">>
 	<<if _args[0] and _args[1]>>
-		<<if _args[1] == "under_lower" and $worn.under_lower.type.includes("strap-on")>>
-			<<run window.wardrobeStripStraponException($worn.under_lower.name)>>
-		<<else>>
-			<<if _storeItemSkip is undefined>>
-				<<set _storeItemSkip to {"over_upper":false, "over_lower":false, "upper":false, "lower":false, "under_upper":false, "under_lower":false, "over_head":false, "head":false, "face":false, "neck":false, "hands":false, "handheld":false, "legs":false, "feet":false, "butt_plug":true}>>
+		<<if _storeItemSkip is undefined>>
+			<<set _storeItemSkip to {"over_upper":false, "over_lower":false, "upper":false, "lower":false, "under_upper":false, "under_lower":false, "over_head":false, "head":false, "face":false, "neck":false, "hands":false, "handheld":false, "legs":false, "feet":false, "butt_plug":true}>>
+		<</if>>
+		<<unset _undressSlot>>
+		/*Checks if the current slot is part of an outfit and switches to the main piece if that is the case*/
+		<<if $worn[_args[1]].outfitSecondary isnot undefined>>
+			<<if $worn[$worn[_args[1]].outfitSecondary[0]].name is $worn[_args[1]].outfitSecondary[1]>>
+				<<set _undressSlot to $worn[_args[1]].outfitSecondary[0]>>
 			<</if>>
-			<<unset _undressSlot>>
-			/*Checks if the current slot is part of an outfit and switches to the main piece if that is the case*/
-			<<if $worn[_args[1]].outfitSecondary isnot undefined>>
-				<<if $worn[$worn[_args[1]].outfitSecondary[0]].name is $worn[_args[1]].outfitSecondary[1]>>
-					<<set _undressSlot to $worn[_args[1]].outfitSecondary[0]>>
+		<</if>>
+		<<if _undressSlot is undefined>>
+			<<set _undressSlot to _args[1]>>
+		<</if>>
+		<<set $_cursedPrevent to false>>
+		<<set _outfitPrimaryUndress to $worn[_undressSlot].outfitPrimary>>
+		<<if _outfitPrimaryUndress isnot undefined>>
+			<<for _labelUndress, _valueUndress range _outfitPrimaryUndress>>
+				<<if $worn[_labelUndress].cursed is 1 and $worn[_labelUndress].name is _valueUndress>>
+					<<set $_cursedPrevent to true>>
 				<</if>>
-			<</if>>
-			<<if _undressSlot is undefined>>
-				<<set _undressSlot to _args[1]>>
-			<</if>>
-			<<set $_cursedPrevent to false>>
-			<<set _outfitPrimaryUndress to $worn[_undressSlot].outfitPrimary>>
-			<<if _outfitPrimaryUndress isnot undefined>>
-				<<for _labelUndress, _valueUndress range _outfitPrimaryUndress>>
-					<<if $worn[_labelUndress].cursed is 1 and $worn[_labelUndress].name is _valueUndress>>
-						<<set $_cursedPrevent to true>>
-					<</if>>
-				<</for>>
-			<</if>>
-			<<if $_cursedPrevent isnot true and _strip_restrict isnot 1 and $worn[_undressSlot].cursed isnot 1>>
-				<<set _slots to []>>
-				<<if _args[0] is "wardrobe" or Object.keys($wardrobes).includes(_args[0])>>
-					<<set $_selectedWardrobe to selectWardrobe()>>
+			<</for>>
+		<</if>>
+		<<if $_cursedPrevent isnot true and _strip_restrict isnot 1 and $worn[_undressSlot].cursed isnot 1>>
+			<<set _slots to []>>
+			<<if _args[0] is "wardrobe" or Object.keys($wardrobes).includes(_args[0])>>
+				<<set $_selectedWardrobe to selectWardrobe()>>
+				<<if _outfitPrimaryUndress isnot undefined>>
+					<<for _labelUndress, _valueUndress range _outfitPrimaryUndress>>
+						<<if _valueUndress isnot "broken" and _valueUndress isnot "split" and $worn[_labelUndress].name is _valueUndress>>
+							<<if !setup.wardrobeSkip.includes($worn[_labelUndress].name)>>
+								<<set $_selectedWardrobe[_labelUndress].push(clone($worn[_labelUndress]))>>
+								<<run _slots.push(_labelUndress)>>
+							<</if>>
+							<<set $worn[_labelUndress] to clone(setup.clothes[_labelUndress][0])>>
+						<</if>>
+					<</for>>
+				<</if>>
+				<<if !setup.wardrobeSkip.includes($worn[_undressSlot].name)>>
+					<<set $_selectedWardrobe[_undressSlot].push(clone($worn[_undressSlot]))>>
+				<</if>>
+				<<set $worn[_undressSlot] to clone(setup.clothes[_undressSlot][0])>>
+				<<run _slots.push(_undressSlot)>>
+			<<elseif _args[0] and !_storeItemSkip[_undressSlot]>>
+				<<if $worn[_undressSlot].name isnot "naked">>
 					<<if _outfitPrimaryUndress isnot undefined>>
 						<<for _labelUndress, _valueUndress range _outfitPrimaryUndress>>
-							<<if _valueUndress isnot "broken" and _valueUndress isnot "split" and $worn[_labelUndress].name is _valueUndress>>
-								<<if !setup.wardrobeSkip.includes($worn[_labelUndress].name)>>
-									<<set $_selectedWardrobe[_labelUndress].push(clone($worn[_labelUndress]))>>
+							<<if $worn[_labelUndress].outfitSecondary isnot undefined>>
+								<<if $worn[_labelUndress].outfitSecondary[1] is $worn[_undressSlot].name>>
+									<<storeItem _args[0] _labelUndress>>
 									<<run _slots.push(_labelUndress)>>
+									<<set _storeItemSkip[_labelUndress] to true>>
 								<</if>>
-								<<set $worn[_labelUndress] to clone(setup.clothes[_labelUndress][0])>>
 							<</if>>
 						<</for>>
 					<</if>>
-					<<if !setup.wardrobeSkip.includes($worn[_undressSlot].name)>>
-						<<set $_selectedWardrobe[_undressSlot].push(clone($worn[_undressSlot]))>>
-					<</if>>
-					<<set $worn[_undressSlot] to clone(setup.clothes[_undressSlot][0])>>
+					<<storeItem _args[0] _undressSlot>>
 					<<run _slots.push(_undressSlot)>>
-				<<elseif _args[0] and !_storeItemSkip[_undressSlot]>>
-					<<if $worn[_undressSlot].name isnot "naked">>
-						<<if _outfitPrimaryUndress isnot undefined>>
-							<<for _labelUndress, _valueUndress range _outfitPrimaryUndress>>
-								<<if $worn[_labelUndress].outfitSecondary isnot undefined>>
-									<<if $worn[_labelUndress].outfitSecondary[1] is $worn[_undressSlot].name>>
-										<<storeItem _args[0] _labelUndress>>
-										<<run _slots.push(_labelUndress)>>
-										<<set _storeItemSkip[_labelUndress] to true>>
-									<</if>>
-								<</if>>
-							<</for>>
-						<</if>>
-						<<storeItem _args[0] _undressSlot>>
-						<<run _slots.push(_undressSlot)>>
-					<<elseif $outfit[$wear_outfit] and $outfit[$wear_outfit][_undressSlot] isnot "naked">>
-						<<set _makeTempClothing to 1>>
-						<<storeItem _args[0] _undressSlot>>
-					<</if>>
-				<</if>>
-				<<if _slots.includes("upper")>>
-					<<set $upperwet to 0>><<set $upperwetstage to 0>>
-				<</if>>
-				<<if _slots.includes("lower")>>
-					<<set $lowerwet to 0>><<set $lowerwetstage to 0>>
-				<</if>>
-				<<if _slots.includes("under_upper")>>
-					<<set $underupperwet to 0>><<set $underupperwetstage to 0>>
-				<</if>>
-				<<if _slots.includes("under_lower")>>
-					<<set $underlowerwet to 0>><<set $underlowerwetstage to 0>>
+				<<elseif $outfit[$wear_outfit] and $outfit[$wear_outfit][_undressSlot] isnot "naked">>
+					<<set _makeTempClothing to 1>>
+					<<storeItem _args[0] _undressSlot>>
 				<</if>>
 			<</if>>
-			<<unset _outfitPrimaryUndress>>
+			<<if _slots.includes("upper")>>
+				<<set $upperwet to 0>><<set $upperwetstage to 0>>
+			<</if>>
+			<<if _slots.includes("lower")>>
+				<<set $lowerwet to 0>><<set $lowerwetstage to 0>>
+			<</if>>
+			<<if _slots.includes("under_upper")>>
+				<<set $underupperwet to 0>><<set $underupperwetstage to 0>>
+			<</if>>
+			<<if _slots.includes("under_lower")>>
+				<<set $underlowerwet to 0>><<set $underlowerwetstage to 0>>
+			<</if>>
 		<</if>>
+		<<unset _outfitPrimaryUndress>>
 	<</if>>
 	<<unset _strip_restrict>>
 <</widget>>

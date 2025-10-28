@@ -121,6 +121,20 @@ function npcBellyVisible(npc) {
 }
 window.npcBellyVisible = npcBellyVisible;
 
+function npcPregnancyProgress(npc, percent = true) {
+	if (C.npc[npc] && C.npc[npc].pregnancy && C.npc[npc].pregnancy.enabled !== undefined) {
+		const pregnancy = C.npc[npc].pregnancy;
+		if (percent) {
+			if (pregnancy.timerEnd) return Math.clamp(pregnancy.timer / pregnancy.timerEnd, 0, 1);
+		} else {
+			if (pregnancy.timerEnd) return pregnancy.timer;
+		}
+	}
+
+	return null;
+}
+window.npcPregnancyProgress = npcPregnancyProgress;
+
 function npcIsPregnant(npc) {
 	return C.npc[npc] && C.npc[npc].pregnancy && C.npc[npc].pregnancy.enabled !== undefined && C.npc[npc].pregnancy.type;
 }
@@ -217,7 +231,10 @@ function wakingPregnancyEvent() {
 		["genitals", "under_upper", "upper", "under_lower", "lower"].find(slot => V.worn[slot].type.includes("constricting"))
 	) {
 		return "clothesRemoval";
-	} else if (V.settings.playerPregnancyEggLayingEnabled === true && ((pregnancy.type === "hawk" && pregnancyStage >= 1) || V.harpyEggs?.daysTillLaying <= 0)) {
+	} else if (
+		V.settings.playerPregnancyEggLayingEnabled === true &&
+		((pregnancy.type === "hawk" && pregnancyStage >= 1) || V.harpyEggs?.daysTillLaying <= 0)
+	) {
 		return "eggLaying";
 	} else if (normalPregnancyEvents && between(pregnancyStage, 0.9, 1)) {
 		wakingEffects = "nearBirthEvent";

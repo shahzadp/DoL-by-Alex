@@ -300,7 +300,7 @@
 	You aren't left hanging there for long.
 	Your hood is yanked off your head as a<<if $syndromeeden gte 1>> familiar<</if>> <<personsimple>>'s voice appears beside you.
 
-	<<if $edenCagedEscape>>
+	<<if $edenCagedEscape or edenFreedomStatus() gte 2>>
 		"I told you I'd find you again," Eden growls as <<he>> pulls you to the ground. <<He>> doesn't untie you. "This time the lesson better stick."
 		<br><br>
 
@@ -339,6 +339,35 @@
 		<<endevent>>
 
 		<<link [[Next|Forest Hunter Intro]]>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "rentGwylanTrade">>
+	<<npc Gwylan>><<person1>>
+	You aren't left hanging there for long. Your hood is gingerly lowered, and a <<personsimple>>'s gentle voice wistfully appears beside you. "Oh, <<pcpetname "Gwylan">>."
+	<br><br>
+
+	<<if $gwylan.taken>>
+		/* ToDo: Gwylan - soft bad end */
+		<span class="red">It's Gwylan.</span>. <<He>> steps around you, revealing <<his>> sad smile.
+		<br><br>
+
+		"Do you have any idea how worried I was?" <<He>> hugs you. "Naughty little runaway. Come, a warm bed is waiting for us at home." <<He>> raises <<his>> hand, and your leash appears in it.
+		You're led into the forest, and to Gwylan's shop.
+		<br><br>
+
+		<<link [[Next|Forest Shop Entrance]]>><<endevent>><<pass 15>><</link>>
+		<br>
+	<<else>>
+		<span class="forest-green">It's Gwylan.</span>. <<He>> steps around you, revealing <<his>> bright smile.
+		<br><br>
+
+		"You're lucky you still have your collar, otherwise I wouldn't have found you." <<He>> hugs you. "Let's go, before someone sees."
+		You're led into the forest, and to Gwylan's shop.
+		<br><br>
+
+		<<link [[Next|Forest Shop Entrance]]>><<endevent>><<pass 15>><</link>>
 		<br>
 	<</if>>
 <</widget>>
@@ -742,7 +771,6 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<br>
 <<elseif $rentsale is 2>>
 	<<set $rentsale += 1>>
-	<<leash 21>>
 	<<if _robinIsPresent>>
 		You journey for some time until you feel solid concrete beneath your feet. Another set of footsteps approach.
 		You think you hear the rustle of an officer's belt.
@@ -765,23 +793,34 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<else>>
 		You journey for some time,
 	<</if>>
-	until you hear the sound of engines up ahead. The sound echoes, becoming closer, until you hear it all around you.
-	"Good stock," says an unfamiliar voice. "Would make a fine breeder."
-	<br>
-	"The money," Bailey responds, impatient.
-	<br>
-	"Ah. Here." There's a rustle to one side, then someone tugs on your leash, pulling you forward.
-	<br>
-	"A pleasure," Bailey says, already walking away.
-	<br><br>
+	<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+		until you hear wind rustling through leaves. "I had something else lined up for you," Bailey starts as <<nnpc_he "Bailey">> lifts you and hooks your bindings on something behind you, leaving you suspended in the air.
+		"But you've attracted some very peculiar attention. Someone made me a better offer. Don't go anywhere, you'll be picked up shortly." You feel <<his>> hands run along your collar. "You're in way over your head."
+		You hear <<him>> walk away, leaving you alone.
+		<br><br>
 
-	"Watch the step," says the unfamiliar voice. Whatever you've stepped onto is rumbling. "Sit."
-	You fumble around your knees, and find what feels like a bench.
-	You sit, then hear the slam of doors, and a few moments later you lurch as the floor moves beneath you. You're in a vehicle.
-	<br><br>
+		<<endevent>>
+		<<rentGwylanTrade>>
+	<<else>>
+		<<leash 21>>
+		until you hear the sound of engines up ahead. The sound echoes, becoming closer, until you hear it all around you.
+		"Good stock," says an unfamiliar voice. "Would make a fine breeder."
+		<br>
+		"The money," Bailey responds, impatient.
+		<br>
+		"Ah. Here." There's a rustle to one side, then someone tugs on your leash, pulling you forward.
+		<br>
+		"A pleasure," Bailey says, already walking away.
+		<br><br>
 
-	<<link [[Next|Street Van Bailey]]>><<set $baileySold to true>><</link>>
-	<br>
+		"Watch the step," says the unfamiliar voice. Whatever you've stepped onto is rumbling. "Sit."
+		You fumble around your knees, and find what feels like a bench.
+		You sit, then hear the slam of doors, and a few moments later you lurch as the floor moves beneath you. You're in a vehicle.
+		<br><br>
+
+		<<link [[Next|Street Van Bailey]]>><<set $baileySold to true>><</link>>
+		<br>
+	<</if>>
 <<elseif $rentsale is 1>>
 	<<set $rentsale += 1>>
 	<<if _robinIsPresent>>
@@ -796,11 +835,20 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<</if>>
 	You hear wind rustling through leaves.
 	Bailey lifts you and hooks your bindings on something behind you, leaving you suspended in the air.
-	"Don't go anywhere, you'll be picked up shortly," <<he>> says. You hear <<him>> walk away, leaving you alone.
-	<br><br>
+	<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+		"I had something else lined up for you, but you've attracted some very peculiar attention. Someone made me a better offer. Don't go anywhere, you'll be picked up shortly."
+		You feel <<his>> hands run along your collar. "You're in way over your head." You hear <<him>> walk away, leaving you alone.
+		<br><br>
 
-	<<endevent>>
-	<<rentEdenTrade>>
+		<<endevent>>
+		<<rentGwylanTrade>>
+	<<else>>
+		"Don't go anywhere, you'll be picked up shortly," <<he>> says. You hear <<him>> walk away, leaving you alone.
+		<br><br>
+
+		<<endevent>>
+		<<rentEdenTrade>>
+	<</if>>
 <<else>>
 	<<set $rentsale to 1>>
 	<<generate2>><<person2>>
@@ -1130,13 +1178,13 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<if $timer gte 1>>
 		<<switch $baileySpoke>>
 			<<case 2>>
-				<<if $speechplead is 1 or $speechapologiseno is 1 or $speechscream is 1 or $speechdemand is 1>>
+				<<if $speechplead is 1 or $speechapologiseno is 1 or $speechscream is 1 or $speechdemand is 1 or $speechapologiseunforgiving is 1>>
 					"Save your breath," Bailey says. "If you really want to save <<nnpc_him "Robin">>, it's not too late to pay."
 				<<else>>
 					"I told you, all that time ago," Bailey says. "Get me my money... or I'll find a way to extract value from you."
 				<</if>>
 			<<case 1>>
-				<<if $speechplead is 1 or $speechapologiseno is 1>>
+				<<if $speechplead is 1 or $speechapologiseno is 1 or $speechapologiseunforgiving is 1>>
 					Bailey rolls <<his>> eyes. "If you'd paid me on time, maybe you wouldn't be crying your eyes out now."
 					<<set $baileySpoke++>>
 				<<elseif $speechscream is 1 or $speechdemand is 1>>
@@ -1146,7 +1194,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 					"Don't know why you took this waif's debt in the first place if you weren't ready to pay it," Bailey sneers.
 				<</if>>
 			<<default>>
-				<<if $speechplead is 1 or $speechapologiseno is 1>>
+				<<if $speechplead is 1 or $speechapologiseno is 1 or $speechapologiseunforgiving is 1>>
 					Bailey scoffs at you. "Oh, now you're sorry? Now that there's consequences?"
 					<<set $baileySpoke++>>
 				<<elseif $speechscream is 1 or $speechdemand is 1>>

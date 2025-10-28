@@ -69,7 +69,13 @@ You are in the Ocean Breeze Cafe.
 	<<set $bun_cut to 0.3>>
 	<br><br>
 
-	Sam returns to work, humming some tune.
+	Sam returns to work, humming
+	<<if $seabird_lullaby gte 2>>
+		the first few notes of <span class="teal">Seabird's Lullaby</span>.
+	<<else>>
+		<<set $seabird_lullaby to 1>>
+		some <span class="teal">faintly familiar</span> tune.
+	<</if>>
 	<br><br>
 	<<endevent>>
 
@@ -98,7 +104,7 @@ You are in the Ocean Breeze Cafe.
 	<<link [[Next|Ocean Breeze]]>><</link>>
 	<br>
 
-<<elseif !$daily.earSlimeOceanBreezeCafeEat and $openinghours is 1 and $exposed lt 1 and !$daily.cafeEaten and $money gte 200 and numberOfEarSlime() and earSlimeMakingMundaneRequests() and random(0,100) gte 92>>
+<<elseif !$daily.earSlimeOceanBreezeCafeEat and $openinghours is 1 and $exposed lt 1 and !$daily.cafeEaten and $money gte 200 and numberOfEarSlime() and ((earSlimeMakingMundaneRequests() and random(0,100) gte 90) or random(0,100) gte 96)>>
 	<<set _cafeOptions to []>>
 	<<if $money gte 200>>
 		<<run _cafeOptions.push("coffee")>>
@@ -121,8 +127,10 @@ You are in the Ocean Breeze Cafe.
 		<<run _cafeOptions.push("deluxe cream bun")>>
 	<</if>>
 	<<set $daily.earSlimeOceanBreezeCafeEat to _cafeOptions.random()>>
-	<span @class="$earSlime.startedThreats ? 'lewd' : 'lblue'">You feel the slime in your head command you to have a $daily.earSlimeOceanBreezeCafeEat.</span> It promises rewards if you comply<<if $earSlime.startedThreats>> and threatens consequences if you do not<</if>>.
+	<span @class="$earSlime.startedThreats ? 'lewd' : 'lblue'">You feel the slime in your head command you to have <<= (["a","e","i","o","u"].some(letter => $daily.earSlimeOceanBreezeCafeEat.startsWith(letter))) ? "an" : "a">> $daily.earSlimeOceanBreezeCafeEat.</span>
+	It promises rewards if you comply<<if $earSlime.startedThreats>> and threatens consequences if you do not<</if>>.
 	<br><br>
+
 	<<earSlimeCafeLinks "Obey">>
 	<br>
 	<<if $earSlime.startedThreats>>
@@ -163,6 +171,8 @@ You are in the Ocean Breeze Cafe.
 	<</if>>
 
 	<<if $openinghours is 1 and $exposed lt 1 and $oceanbreezejob is 1>>
+		You see Sam attending to the customers. <<nnpc_He "Sam">> looks like <<nnpc_he "Sam">> could use some help.
+		<br>
 		<<if $chef_state is 0>>
 			<<ind>><<link [[Accept job offer|Chef Work Accept]]>><</link>>
 			<br>
@@ -186,9 +196,31 @@ You are in the Ocean Breeze Cafe.
 		<br>
 	<</if>>
 
+	<<if gwylanSchedule() is "cafe" and $openinghours is 1 and $exposed lt 1>>
+		<<run statusCheck("Gwylan")>>
+		<<if _gwylanStatus?.includes("met")>>
+			<<if getRobinLocation() is "cafe">>
+				<br>
+				Gwylan and Robin sit on the exterior balcony, gazing out to the sea.
+				<br>
+				<<socialiseicon>><<link [[Join them|Gwylan Ocean Breeze]]>><<set $phase to 3>><</link>>
+				<br>
+			<<else>>
+				<br>
+				Gwylan sits alone on the exterior balcony, gazing out to the sea.
+				<br>
+				<<socialiseicon>><<link [[Join <<nnpc_him 'Gwylan'>>|Gwylan Ocean Breeze]]>><<set $phase to 0>><</link>>
+				<br>
+			<</if>>
+		<</if>>
+	<</if>>
+
 <<if $openinghours is 1 and $exposed lt 1 and $daily.cafeEaten isnot 1>>
 
 	<<if $money gte 200>>
+		<br>
+		A menu lists what's currently being served.
+		<br>
 		<<foodicon "coffee">><<link [[Buy coffee (0:02 £2)|Cafe Coffee]]>>
 			<<set $daily.cafeEaten to 1>><<money -200 "cafe">><<stress -3>><<tiredness -4>><<pass 2>>
 		<</link>><<lstress>><<ltiredness>>
@@ -248,7 +280,10 @@ You are in the Ocean Breeze Cafe.
 	<</if>>
 	<<if $money gte 1000>>
 		<<foodicon "pancakes">>
-		<<link [[Buy pancakes (0:20 £10)|Cafe Pancakes]]>><<set $daily.cafeEaten to 1>><<money -1000 "cafe">><<tiredness -6>><<pass 20>><</link>><<ltiredness>>
+		<<link [[Buy pancakes (0:20 £10)|Cafe Pancakes]]>><<set $phase to "pancakes">><<set $daily.cafeEaten to 1>><<money -1000 "cafe">><<tiredness -6>><<pass 20>><</link>><<ltiredness>>
+		<br>
+		<<foodicon "crepes">>
+		<<link [[Buy crepes (0:20 £10)|Cafe Pancakes]]>><<set $phase to "crepes">><<set $daily.cafeEaten to 1>><<money -1000 "cafe">><<tiredness -6>><<pass 20>><</link>><<ltiredness>>
 		<br>
 	<</if>>
 	<<if $money gte 5000>>
@@ -337,103 +372,374 @@ Please be patient with them; they don't mean nothing by it! We're always underst
 :: Ocean Breeze Work
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
 <<set C.npc.Sam.love = Math.clamp(C.npc.Sam.love, -50, 50)>>
-<<rng 121>>
+<<set _gwylanLocation to gwylanSchedule()>>
 
-<<if $rng gte 111 and !$weekly.robinCafeVisit and C.npc.Robin.init gte 1 and $robinmissing is 0 and !["school", "sleep"].includes(getRobinLocation())>>
-	<<set $weekly.robinCafeVisit to 1>>
-	<<npc "Robin">>
-
-	<<if C.npc.Robin.trauma gte 40>>
-		<<generateRole 1 0 "waiter/waitress">>
-
-		You are cleaning off a table after a previous customer when you see a familiar face in the corner of your eye. It's Robin. <<Hes>> sitting at a table all alone, being served by another <<person2>><<personsimple>>.
-		<br><br>
-
-		You overhear their conversation. "Sorry, but you're gonna have to buy something if you want a glass of water. It's company policy. We are running a business after all," the <<personsimple>> says.
-		<br><br>
-
-		Robin looks up at the <<personsimple>>. "I-I'm sorry... I don't think I can eat anything right now." <<person1>><<He>> stands up and walks out the door.<<gstress>><<stress 6>>
-		<br><br>
-
-		The <<person2>><<personsimple>> walks towards you and scoffs. "Bunch of freeloaders around here. They'll try and put on an act to make you feel bad, but don't let em." <<He>> continues walking past you and into the kitchen.
-		<br><br>
-
-		Before you can say anything Sam calls you to clean up another table. The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<pass 60>><<endevent>><</link>>
-
+<<if (_gwylanLocation is "walking_to_cafe" or _gwylanLocation is "sulking") and $gwylan_cafe_intro and !$daily.gwylan.cafe>>
+	<<set $daily.gwylan.cafe to true>>
+	<<if $gwylanSeen?.includes("cafe") and C.npc.Gwylan.love gte 30>>
+		You leave a plate of <<seagullFood>> next to the register for Gwylan, and start your shift.
+		<<if _gwylanLocation is "sulking">>
+			<span class="red"><<nnpc_He "Gwylan">> never shows up to take it.</span>
+		<</if>>
 	<<else>>
-		<<set _beverage to Time.season is "winter" ? "eggnog" : "milkshake">>
-		You are cleaning off a table after a previous customer when you see a familiar face in the corner of your eye. It's Robin. <<Hes>> waiting near the front to be seated. You approach <<him>> and <<he>> smiles.
-		<br><br>
+		As you start your shift, you see a plate of unattended <<seagullFood>> near the register. Gwylan enters a moment later, picking up the plate and leaving exact change neatly on the countertop before heading out to the balcony.
+	<</if>>
+	<br><br>
+<</if>>
 
-		<<if $robinromance gte 1>>
-			<<if C.npc.Robin.dom gte 50>>
-				"Hello! How's work? You look really nice today. I hope the customers have been treating you well. If you get the time, we should go see a movie." <<He>> proceeds to tell you about the genres <<hes>> interested in.
-			<<else>>
-				"H-hey! I really wanted to see you and I heard you were working here today! There isn't a lot to do at the orphanage, I hope I'm not too much of a distraction," <<he>> says.
-			<</if>>
+<<if !$gwylan_cafe_intro and ["cafe", "walking_to_cafe"].includes(_gwylanLocation)>>
+	<<npc Gwylan 1>><<npc Sam 2>><<person1>>
+	<<set $daily.gwylan.cafe to true>>
+	<<run statusCheck("Gwylan")>>
+	As you're serving tables, you notice a plate of <<seagullFood>> sitting unattended near the register.
+	<br><br>
 
-		<<else>>
-			"Hello! I didn't know you were working today! I was just stopping by for a drink, it's nice to see you."
+	You look around. No one seems to be paying it any mind.
+	<br><br>
 
+	<<if _gwylanStatus.includes("met") and _gwylanLocation is "cafe">>
+		As you wonder what to do with it, you see Gwylan stand up from <<his>> seat out on the balcony and step in front of the register.
+	<<else>>
+		As you wonder what to do with it, a <<nnpc_gendery "Gwylan">> with mousy hair steps in front of the register. <<Hes>> wearing an oversized sun hat.
+		<<if _gwylanStatus.includes("met")>>
+			It's Gwylan.
 		<</if>>
-		<br><br>
-
-		You gleefully chat with Robin for a few minutes before taking <<his>> order. <<He>> orders <<if _beverage is "eggnog">>an<<else>>a<</if>> _beverage. You prepare <<his>> beverage and bring it to <<his>> table. <<He>> sips the _beverage and smiles. "It's really good!"
-		<br><br>
-
-		<<He>> finishes <<his>> drink, and then stands up. <<He>> <<if $robinromance gte 1>>kisses<<else>>hugs<</if>> you before leaving.
-		<br><br>
-
-		<<if $robinmoney gte 5>>
-			<<set $tip to 500>>
-			<<set $robinmoney -= 5>>
-			The rest of the shift passes uneventfully. Robin left you a tip. You earn <<printmoney 1000>>.
-			<<silently>><<money 500 "cafeWaiter">><<tipreceive "cafeWaiter">><</silently>>
-
-		<<else>>
-			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-
-		<</if>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<pass 60>><<endevent>><</link>>
-
 	<</if>>
 
-
-<<elseif $rng gte 101>>
-	Sam asks you to bring plates of food out to a large table of customers.
+	<<if $gwylanSeen?.includes("cafe")>>
+		<<He>> neatly leaves a few bills and coins on the counter, stacked by coin size.
+		<<He>> notices you, and gives you a smile and a wave before taking the plate
+		<<if _gwylanLocation is "cafe">>
+			back to the balcony
+		<<else>>
+			to <<his>> usual table on the balcony.
+		<</if>>
+	<<else>>
+		<<He>> neatly leaves a few bills and coins on the counter, stacked by coin size, before taking the plate
+		<<if _gwylanStatus.includes("met") and _gwylanLocation is "cafe">>
+			back to the balcony.
+		<<else>>
+			to a table on the exterior balcony.
+		<</if>>
+	<</if>>
 	<br><br>
-	<<link [[Make multiple trips|Ocean Breeze Plates]]>><<set $phase to 0>><</link>>
-	<br>
-	<<link [[Take them all out at once|Ocean Breeze Plates]]>><<set $phase to 1>><</link>><<dancedifficulty 200 800>>
-<<elseif $rng gte 81 and Weather.precipitation is "none">>
 
-	<<if dangerEvent()>>
-		<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
-			As you're serving tables outside the cafe, a strong breeze blows in from the ocean, lifting your skirt and exposing your <<undies>> for anyone who looks.
-			<<undiestrauma>>
+	<<if $gwylanSeen?.includes("cafe")>>
+		"Looks like our little seagull found a friend,"
+	<<else>>
+		"That's just our little seagull,"
+	<</if>>
+	Sam's voice says from behind you. "<<Hes>> a real sweetheart, just like <<his>> <<father>>." <<person2>><<He>> smiles, before handing you a glass of orange juice.
+	"Could you bring this to <<person1>><<him>>? Tell <<him>> it's on the house. <<He>> could use the vitamin C. <<He>> never gets any sunlight, always hiding under those big hats."
+	<br><br>
+
+	<<if $sciencetrait gte 1>>
+		You decide against correcting <<person2>><<him>> about sunlight helping with vitamin D, not vitamin C.
+		<br><br>
+	<</if>>
+	<<person1>>
+
+	<<link [[Take it to <<him>>|Ocean Breeze Gwylan Juice]]>><</link>>
+	<br>
+<<else>>
+	<<cleareventpool>>
+
+	<<if !$weekly.robinCafeVisit and C.npc.Robin.init gte 1 and $robinmissing is 0 and !["school", "sleep"].includes(getRobinLocation())>>
+		<<if _gwylanLocation is "cafe" and $gwylanSeen?.includes("cafe") and $gwylan_cafe_intro and $gwylan?.robin gte 5>>
+			<<addinlineevent "robin_cafe_gwylan" 4>>
+				<<npc Robin 1>><<npc Gwylan 2>><<person1>>
+				You are cleaning off a table after a previous customer when you see a familiar face in the corner of your eye. It's Robin. <<person1>><<Hes>> sitting at a table on the balcony, talking to someone.
+				<br><br>
+
+				<<if C.npc.Robin.trauma gte 40>>
+					<<set $gwylanSeen.pushUnique("robin_cafe_trauma")>>
+					<<if $gwylan.robin lt 25>><<set $gwylan.robin += 3>><</if>>
+					You can't quite hear their conversation, as Robin speaks in hushed tones.
+					You crane your neck to get a look at the other person. It's Gwylan. There's a look of mixed sadness and fascination on <<person2>><<his>> face as <<he>> listens to Robin.
+					<br><br>
+
+					<<generateRole 2 0 "waiter/waitress">>
+					A <<person3>><<personsimple>> approaches them and addresses Robin. "I saw you switch tables, kid. Sorry, but you're still gonna have to buy something. It's company policy. We are running a-"
+					<br><br>
+
+					<<person1>>
+					"<<Hes>> with me," Gwylan interrupts. "<<He>> will have a deluxe cream bun. Now, please, you're interrupting an important story." <<person2>><<He>> waves the <<person3>><<personsimple>> away, who shrugs.
+					<br><br>
+
+					"I-I can't afford that," Robin says.
+					<br><br>
+
+					"You're not paying for it," Gwylan responds with a smile. "Now, from where you left off?"
+					<br><br>
+
+					They continue speaking in hushed tones. You leave the two of them to their talk. By the end, Robin looks happier. <<npcincr Robin trauma -5>><<llrtrauma>>
+					<br><br>
+
+					The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+				<<else>>
+					<<set $gwylanSeen.pushUnique("robin_cafe")>>
+					<<if $gwylan.robin lt 25>><<set $gwylan.robin++>><</if>>
+					<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+					It's Gwylan. You overhear their conversation.
+					<<if $robinromance gte 1 and $rng gte 50>>
+						<<if C.npc.Robin.dom gte 50>>
+							"I used to feel so helpless, but <<pshe>> makes me feel... less small? I can't find the right words,"
+						<<else>>
+							"I feel like a burden on <<phim>>,"
+						<</if>>
+						Robin says. "Without <<phim>>, Bailey would have..."
+						<br><br>
+
+						Gwylan briefly tenses up, but it fades as soon as the two of them notice you.
+					<<else>>
+						"I don't remember the youth ward all that well," Robin says. "<<pShe>> and I knew each other even back then. I feel like I should remember more, but whenever I try to think about it..."
+						<br><br>
+
+						<<person1>><<He>> stops when the two of them notice you.
+					<</if>>
+					They both smile and wave you over.
+					<br><br>
+
+					"Robin was telling me about you," Gwylan says. "Now I know all your terrible secrets."
+					<br><br>
+
+					Robin blushes and starts shaking <<person1>><<his>> head. "I-I didn't tell <<person2>><<him>> anything embarassing! I was just-"
+					<br><br>
+
+					Gwylan giggles and waves <<person1>><<him>> off. "I'm only playing. <<Hes>> been quite discreet, despite my prodding."
+					<br><br>
+
+					The three of you chat for as long as you can get away with, before Sam calls you to clean up another table. <<stress -3>><<trauma -3>><<lstress>><<ltrauma>>
+					<br><br>
+
+					The rest of the shift passes uneventfully.
+					<<set $tipmod to 0.2>><<tipset "serving">>
+					<<set $tip += 500>>
+					<<if $robinmoney gte 5>>
+						<<set $tip += 500>>
+						<<set $robinmoney -= 5>>
+						Gwylan and Robin both left you a tip. <<tipreceive "cafeWaiter">>
+					<<else>>
+						Gwylan left you a tip. <<tipreceive "cafeWaiter">>
+					<</if>>
+				<</if>>
+				<br><br>
+
+				<<link [[Next|Ocean Breeze]]>><<pass 60>><<endevent>><</link>>
+				<br>
+			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent "robin_cafe_visit" 2>>
+				<<if C.npc.Robin.trauma gte 40>>
+					<<npc Robin>><<person1>><<generateRole 1 0 "waiter/waitress">>
+
+					You are cleaning off a table after a previous customer when you see a familiar face in the corner of your eye. It's Robin. <<person1>><<Hes>> sitting at a table all alone, being served by another <<person2>><<personsimple>>.
+					<br><br>
+
+					You overhear their conversation. "Sorry, but you're gonna have to buy something if you want a glass of water. It's company policy. We are running a business after all," the <<personsimple>> says.
+					<br><br>
+
+					Robin looks up at the <<personsimple>>. "I-I'm sorry... I don't think I can eat anything right now." <<person1>><<He>> stands up and walks out the door.<<gstress>><<stress 6>>
+					<br><br>
+
+					The <<person2>><<personsimple>> walks towards you and scoffs. "Bunch of freeloaders around here. They'll try and put on an act to make you feel bad, but don't let em." <<He>> continues walking past you and into the kitchen.
+					<br><br>
+
+					Before you can say anything Sam calls you to clean up another table. The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+					<br><br>
+
+					<<link [[Next|Ocean Breeze]]>><<pass 60>><<endevent>><</link>>
+					<br>
+				<<else>>
+					<<set _beverage to Time.season is "winter" ? "eggnog" : "milkshake">>
+					<<npc Robin>><<person1>>You are cleaning off a table after a previous customer when you see a familiar face in the corner of your eye. It's Robin. <<person1>><<Hes>> waiting near the front to be seated. You approach <<him>> and <<he>> smiles.
+					<br><br>
+
+					<<if $robinromance gte 1>>
+						<<if C.npc.Robin.dom gte 50>>
+							"Hello! How's work? You look really nice today. I hope the customers have been treating you well. If you get the time, we should go see a movie." <<He>> proceeds to tell you about the genres <<hes>> interested in.
+						<<else>>
+							"H-hey! I really wanted to see you and I heard you were working here today! There isn't a lot to do at the orphanage, I hope I'm not too much of a distraction," <<he>> says.
+						<</if>>
+
+					<<else>>
+						"Hello! I didn't know you were working today! I was just stopping by for a drink, it's nice to see you."
+
+					<</if>>
+					<br><br>
+
+					You gleefully chat with Robin for a few minutes before taking <<his>> order. <<He>> orders <<if _beverage is "eggnog">>an<<else>>a<</if>> _beverage. You prepare <<his>> beverage and bring it to <<his>> table. <<He>> sips the _beverage and smiles. "It's really good!"
+					<br><br>
+
+					<<He>> finishes <<his>> drink, and then stands up. <<He>> <<if $robinromance gte 1>>kisses<<else>>hugs<</if>> you before leaving.
+					<br><br>
+
+					<<if $robinmoney gte 5>>
+						<<set $tip to 500>>
+						<<set $robinmoney -= 5>>
+						The rest of the shift passes uneventfully. Robin left you a tip. You earn <<printmoney 1000>>.
+						<<silently>><<money 500 "cafeWaiter">><<tipreceive "cafeWaiter">><</silently>>
+
+					<<else>>
+						The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+
+					<</if>>
+					<br><br>
+
+					<<link [[Next|Ocean Breeze]]>><<pass 60>><<endevent>><</link>>
+					<br>
+				<</if>>
+			<</addinlineevent>>
+		<</if>>
+	<<elseif _gwylanLocation is "cafe" and $gwylan_cafe_intro and !$daily.gwylan.cafeServe>>
+		<<addinlineevent "cafe_serve_gwylan" 2>>
+			<<run statusCheck("Gwylan")>>
+			<<set $daily.gwylan.cafeServe to true>>
+			You clean the tables out on the balcony.
 			<br><br>
 
-			<<if !$worn.under_lower.type.includes("naked")>>
-				<<link [[Own it|Ocean Breeze Own]]>><<set $phase to 0>><</link>><<exhibitionist1>>
-				<br>
-			<<elseif hasSexStat("exhibitionism", 3)>>
-				<<link [[Own it|Ocean Breeze Own]]>><<set $phase to 1>><</link>><<exhibitionist3>>
-				<br>
-			<</if>>
-			<<link [[Cover yourself|Ocean Breeze Cover]]>><</link>>
-			<<if !$worn.under_lower.type.includes("naked")>>
-				<<fameexhibitionism 5>>
+			Gwylan waves you over when you're done.
+			<<if $gwylanSeen.includes("partners")>>
+				The two of you chat for a short while, before Sam calls you back in. As you turn, Gwylan grabs you by your
+				<<if $worn.upper.type.includes("naked")>>
+					$worn.lower.name and pulls you back
+				<<else>>
+					$worn.upper.name and pulls you down
+				<</if>>
+				into a deep kiss. <<His>> tongue slips between your lips. <<gwylanKiss>>
+				<br><br>
+
+				<<if _gwylanLastSeenDays gte 21>>
+					"You went and vanished on me, dear. I was getting so worried. You owe me for this."
+					<<He>> gives you one more quick peck on the lips before pushing you away. "My shop. Later. We have work to do." <<arousal 1000>><<garousal>><<npcincr Gwylan lust 2>><<npcincr Gwylan dom 1>><<glust>><<gyearning>>
+				<<elseif $gwylan.timer.ritual and (Time.date.dayDifference(new DateTime(V.gwylan.timer.ritual)) <= -7)>>
+					"You've been neglecting me, dear. I hunger for you. Will you continue letting me starve?"
+					<<He>> gives you one more quick peck on the lips before pushing you away. "My shop. Later. I'll be waiting." <<arousal 1500>><<ggarousal>><<npcincr Gwylan lust 2>><<npcincr Gwylan dom 1>><<glust>><<gyearning>>
+				<<elseif $gwylan.timer.ritual and Time.date.dayDifference(new DateTime(V.gwylan.timer.ritual)) <= 0>>
+					<<He>> releases you and pushes you away with a sly smile. "Be sure to stop by the shop later, dear. We have work to do." <<arousal 1000>><<garousal>>
+				<<else>>
+					<<He>> releases you and pushes you away with a sly smile. <<arousal 500>><<garousal>>
+				<</if>>
 			<<else>>
-				<<fameexhibitionism 10>>
+				<<if _gwylanLastSeenDays gte 21>>
+					"I haven't seen you in ages. I was starting to wonder what happened to you." The two of you chat for a short while, before Sam calls you back in. <<stress -3>><<lstress>>
+				<<else>>
+					The two of you chat for a short while, before Sam calls you back in. <<stress -3>><<lstress>>
+				<</if>>
 			<</if>>
+			<br><br>
+
+			<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+			The rest of the shift passes uneventfully. Gwylan left you a tip.
+			<<set $tipmod to 0.2>><<tipset "serving">>
+			<<set $tip += 500>>
+			<<set $tip += 100>>
+			<<tipreceive "cafeWaiter">>
+			<<pass 1 hour>>
+			<br><br>
+
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
+		<</addinlineevent>>
+	<</if>>
+
+	<<addinlineevent "cafe_plates" 1.2>>
+		Sam asks you to bring plates of food out to a large table of customers.
+		<br><br>
+		<<link [[Make multiple trips|Ocean Breeze Plates]]>><<set $phase to 0>><</link>>
+		<br>
+		<<link [[Take them all out at once|Ocean Breeze Plates]]>><<set $phase to 1>><</link>><<dancedifficulty 200 800>>
+		<br>
+	<</addinlineevent>>
+
+	<<if Weather.precipitation is "none">>
+		<<addinlineevent "cafe_breeze" 1.2>>
+			<<if dangerEvent()>>
+				<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
+					As you're serving tables outside the cafe, a strong breeze blows in from the ocean, lifting your skirt and exposing your <<undies>> for anyone who looks.
+					<<undiestrauma>>
+					<br><br>
+
+					<<if !$worn.under_lower.type.includes("naked")>>
+						<<link [[Own it|Ocean Breeze Own]]>><<set $phase to 0>><</link>><<exhibitionist1>>
+						<br>
+					<<elseif hasSexStat("exhibitionism", 3)>>
+						<<link [[Own it|Ocean Breeze Own]]>><<set $phase to 1>><</link>><<exhibitionist3>>
+						<br>
+					<</if>>
+					<<link [[Cover yourself|Ocean Breeze Cover]]>><</link>>
+					<br>
+					<<if !$worn.under_lower.type.includes("naked")>>
+						<<fameexhibitionism 5>>
+					<<else>>
+						<<fameexhibitionism 10>>
+					<</if>>
+				<<else>>
+					As you're serving tables outside the cafe, a strong breeze blows in from the ocean, pleasantly caressing your skin.
+					<<lstress>><<stress -4>>
+					<br><br>
+
+					The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+					<<pass 1 hour>>
+					<br><br>
+
+					<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+					<br>
+				<</if>>
+			<<else>>
+				You spend most of the shift serving the tables outside, overlooking the ocean.
+				<br><br>
+
+				The rest of the shift passes uneventfully.
+				<<if _gwylanLocation is "cafe" and $gwylan_cafe_intro>>
+					<<set $tipmod to 0.2>><<tipset "serving">>
+					<<set $tip += 500>>
+					Gwylan left you a tip. <<tipreceive "cafeWaiter">>
+				<<else>>
+					You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+				<</if>>
+				<<pass 1 hour>>
+				<br><br>
+
+				<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+				<br>
+			<</if>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<addinlineevent "cafe_bun" 1>>
+		<<if playerBellyVisible() and $lactating is 1 and $settings.breastFeedingEnabled>>
+			<<generate1>><<generate2>><<person1>>
+			A voice calls out to you. "Oi, <<if $player.gender_appearance is "m">>waiter<<else>>waitress<</if>>!" you hear from a corner of the cafe. You approach the table, and find the voice belonging to a <<person>> who regards you with rage once you arrive. A <<person2>><<person>> sits in front of <<him>>.
+			<br><br>
+
+			"I asked for a deluxe cream bun, and instead I got this!" the <<person1>><<person>> says. "You call this deluxe? There's barely any cream on them! I paid fifty quid for this! Are you all fucking stupid or are you just taking the piss?" <<He>> continues with <<his>> rant, forcing you to listen whenever you try to look away.
+			<br><br>
+
+			The <<person2>><<person>> stays quiet during <<his>> friend's verbal onslaught, but <<his>> eyes remain fixated on your breasts. "Hold on, you're pregnant aren't you?" <<he>> asks, finally interrupting the tirade. "Those tits must be full right about now, why don't you add your own special touch to the buns so my friend here will stop complaining?" The <<person1>><<person>> simmers down, seemingly content with the proposition.
+			<br><br>
+
+			<<if $milk_amount gte 1>>
+				<<link [[Agree|Ocean Breeze Pregnant Milk Accept]]>><<npcincr Sam love 2>><</link>><<glove Sam>><<promiscuous1>>
+				<br>
+			<<else>>
+				<span class = "pink">You don't have enough milk left.</span>
+				<br>
+			<</if>>
+			<<link [[Refuse|Ocean Breeze Pregnant Milk Refuse]]>><</link>>
+			<br>
+
+		<<elseif dangerEvent()>>
+			<<generate1>><<person1>>You serve a <<person>> who orders a bun. <<He>> licks the cream. "That's so good," <<he>> gasps.
+			<<He>> pulls back a chair and slides the plate in front of it. "Please, sit and try some. My treat." The cafe isn't very busy.
+			<br><br>
+
+			<<link [[Sit|Ocean Breeze Sit]]>><</link>>
+			<br>
+			<<link [[Refuse|Ocean Breeze Sit Refuse]]>><</link>>
+			<br>
 		<<else>>
-			As you're serving tables outside the cafe, a strong breeze blows in from the ocean, pleasantly caressing your skin.
-			<<lstress>><<stress -4>>
+			<<generate1>><<person1>>You serve a <<person>> who orders a bun. <<He>> stares at you as <<he>> licks the cream.
 			<br><br>
 
 			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
@@ -441,9 +747,38 @@ Please be patient with them; they don't mean nothing by it! We're always underst
 			<br><br>
 
 			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
 		<</if>>
-	<<else>>
-		You spend most of the shift serving the tables outside, overlooking the ocean.
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_oral" 1>>
+		<<generate1>><<person1>>A <<person>> sits at a table alone with <<his>> head back and eyes closed.
+		<<if $awareness gte 400>>
+			<<generates2>>From the way <<hes>> grinding, it's quite obvious <<hes>> getting oral. <<Hes>> barely trying to hide it.
+			Covertly checking, you notice a <<person2>><<person>> under the table,
+			<<print either("gently","eagerly","energetically","sensually","clumsily","vigorously","dutifully","skilfully")>>
+			<<person1>>
+			<<if $NPCList[0].penis isnot "none">>
+				sucking the <<personsimple>> off.
+			<<else>>
+				eating the <<personsimple>> out.
+			<</if>>
+			<<garousal>><<arousal 200>>
+		<<elseif $awareness gte 200>>
+			<<if !Weather.isOvercast>>
+				<<He>> seems to take almost sexual pleasure from sunbathing.
+			<<else>>
+				If not for the rhythmic squirming, you'd think <<he>> was asleep.
+			<</if>>
+			At one point <<he>> shudders in a way that seems almost orgasmic.
+		<<else>>
+			<<if !Weather.isOvercast>>
+				It's a beautiful day - <<hes>>
+			<<else>>
+				<<Hes>>
+			<</if>>
+			probably dozed off.
+		<</if>>
 		<br><br>
 
 		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
@@ -451,340 +786,351 @@ Please be patient with them; they don't mean nothing by it! We're always underst
 		<br><br>
 
 		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
+		<br>
+	<</addinlineevent>>
 
-<<elseif $rng gte 81>>
+	<<addinlineevent "cafe_pair" 1>>
+		<<if dangerEvent()>>
+			<<generatey1>><<generatey2>>You serve a young pair, a <<fullGroup>>.
+			<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
+				<<if $worn.under_lower.type.includes("naked")>>
+					As you turn to leave, the <<person1>><<person>> lifts the hem of your $worn.lower.name, revealing your bare <<bottom>> to the cafe.
+					"No underwear?" <<he>> says with incredulity. "You're a little slut, aren't you?"
+					<<fameexhibitionism 10>><<stress 6>><<arousal 600>><<gstress>><<garousal>>
+					<br><br>
 
-	<<if playerBellyVisible() and $lactating is 1 and $settings.breastFeedingEnabled>>
-		<<generate1>><<generate2>><<person1>>
-		A voice calls out to you. "Oi, <<if $player.gender_appearance is "m">>waiter<<else>>waitress<</if>>!" you hear from a corner of the cafe. You approach the table, and find the voice belonging to a <<person>> who regards you with rage once you arrive. A <<person2>><<person>> sits in front of <<him>>.
-		<br><br>
+					<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+					<br>
+					<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 6>><<stress 6>><<set $phase to 2>><</link>><<gtrauma>><<gstress>>
+					<br>
+				<<else>>
+					As you turn to leave, the <<person1>><<person>> lifts the hem of your $worn.lower.name, revealing your $worn.under_lower.name to the cafe.
+					<<He>> and the <<person2>><<person>> both laugh, drawing more attention to you.
+					<<fameexhibitionism 1>><<stress 3>><<arousal 300>><<gstress>><<garousal>>
+					<br><br>
 
-		"I asked for a deluxe cream bun, and instead I got this!" the <<person1>><<person>> says. "You call this deluxe? There's barely any cream on them! I paid fifty quid for this! Are you all fucking stupid or are you just taking the piss?" <<He>> continues with <<his>> rant, forcing you to listen whenever you try to look away.
-		<br><br>
+					<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+					<br>
+					<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 3>><<stress 3>><<set $phase to 1>><</link>><<gtrauma>><<gstress>>
+					<br>
+				<</if>>
+			<<else>>
+				<<if $worn.under_lower.type.includes("naked")>>
+					As you turn to leave, the <<person1>><<person>> pulls down the back of your $worn.lower.name, revealing your bare <<bottom>> to the cafe.
+					"No underwear!" <<he>> says with incredulity. "Bet you regret that now."
+					<<fameexhibitionism 5>><<stress 3>><<arousal 300>><<gstress>><<garousal>>
+					<br><br>
 
-		The <<person2>><<person>> stays quiet during <<his>> friend's verbal onslaught, but <<his>> eyes remain fixated on your breasts. "Hold on, you're pregnant aren't you?" <<he>> asks, finally interrupting the tirade. "Those tits must be full right about now, why don't you add your own special touch to the buns so my friend here will stop complaining?" The <<person1>><<person>> simmers down, seemingly content with the proposition.
-		<br><br>
+					<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+					<br>
+					<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 3>><<stress 3>><<set $phase to 1>><</link>><<gtrauma>><<gstress>>
+					<br>
+				<<else>>
+					As you turn to leave, the <<person1>><<person>> pulls down the back of your $worn.lower.name, revealing your $worn.under_lower.name to the cafe.
+					<<fameexhibitionism 1>><<stress 2>><<arousal 200>><<gstress>><<garousal>>
+					<br><br>
 
-		<<if $milk_amount gte 1>>
-			<<link [[Agree|Ocean Breeze Pregnant Milk Accept]]>><<npcincr Sam love 2>><</link>><<glove Sam>><<promiscuous1>>
+					<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+					<br>
+					<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 2>><<stress 2>><<set $phase to 0>><</link>><<gtrauma>><<gstress>>
+					<br>
+				<</if>>
+			<</if>>
+		<<else>>
+			<<generatey1>><<generatey2>>You serve a young pair, a <<fullGroup>>.
+			You think you catch the <<person1>><<person>> checking you out, but they don't say anything.
+			<br><br>
+
+			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+			<<pass 1 hour>>
+			<br><br>
+
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
 			<br>
-		<<else>>
-			<span class = "pink">You don't have enough milk left.</span>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_tourists" 1>>
+		A couple of tourists are sat at one of your tables.
+		<<if dangerEvent()>>
+			<<generate1>><<generate2>>
+			<<person1>>You overhear the <<person>> telling the <<person2>><<person>> about the town in a hushed voice.
 			<br>
-		<</if>>
-		<<link [[Refuse|Ocean Breeze Pregnant Milk Refuse]]>><</link>>
-		<br>
+			<<person1>>"I swear," <<he>> says. "This town is a dream for people like us. You can do whatever you like here. No one stops you."
+			<br>
+			"Is it true that even the police won't—"
+			<br>
+			"The police? They're worse than the rest! Slip 'em a few quid, and they'll probably cuff a <<girl>> down for you."
+			<br>
+			"Wow. Like, anyone? It doesn't matter how—"
+			<br>
+			"Anyone. Hey." <<He>> looks at you. "You. <<if playerBellyVisible()>>You're pregnant.<<elseif $beauty gte($beautymax / 7) * 2>>You're cute.<</if>> You've been raped, right?"
+			<br><br>
 
-	<<elseif dangerEvent()>>
-		<<generate1>><<person1>>You serve a <<person>> who orders a bun. <<He>> licks the cream. "That's so good," <<he>> gasps.
-		<<He>> pulls back a chair and slides the plate in front of it. "Please, sit and try some. My treat." The cafe isn't very busy.
-		<br><br>
-
-		<<link [[Sit|Ocean Breeze Sit]]>><</link>>
-		<br>
-		<<link [[Refuse|Ocean Breeze Sit Refuse]]>><</link>>
-		<br>
-	<<else>>
-		<<generate1>><<person1>>You serve a <<person>> who orders a bun. <<He>> stares at you as <<he>> licks the cream.
-		<br><br>
-
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
-
-<<elseif $rng gte 71>>
-	<<generate1>><<person1>>A <<person>> sits at a table alone with <<his>> head back and eyes closed.
-	<<if $awareness gte 400>>
-		<<generates2>>From the way <<hes>> grinding, it's quite obvious <<hes>> getting oral. <<Hes>> barely trying to hide it.
-		Covertly checking, you notice a <<person2>><<person>> under the table,
-		<<print either("gently","eagerly","energetically","sensually","clumsily","vigorously","dutifully","skilfully")>>
-		<<person1>>
-		<<if $NPCList[0].penis isnot "none">>
-			sucking the <<personsimple>> off.
-		<<else>>
-			eating the <<personsimple>> out.
-		<</if>>
-		<<garousal>><<arousal 200>>
-	<<elseif $awareness gte 200>>
-		<<if !Weather.isOvercast>>
-			<<He>> seems to take almost sexual pleasure from sunbathing.
-		<<else>>
-			If not for the rhythmic squirming, you'd think <<he>> was asleep.
-		<</if>>
-		At one point <<he>> shudders in a way that seems almost orgasmic.
-	<<else>>
-		<<if !Weather.isOvercast>>
-			It's a beautiful day - <<hes>>
-		<<else>>
-			<<Hes>>
-		<</if>>
-		probably dozed off.
-	<</if>>
-
-	<br><br>
-	The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-	<<pass 1 hour>>
-	<br><br>
-
-	<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-
-<<elseif $rng gte 61>>
-
-	<<if dangerEvent()>>
-		<<generate1>><<generate2>>You serve a young pair, a <<fullGroup>>.
-		<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
-			<<if $worn.under_lower.type.includes("naked")>>
-				As you turn to leave, the <<person1>><<person>> lifts the hem of your $worn.lower.name, revealing your bare <<bottom>> to the cafe.
-				"No underwear?" <<he>> says with incredulity. "You're a little slut, aren't you?"
-				<<fameexhibitionism 10>><<stress 6>><<arousal 600>><<gstress>><<garousal>>
-				<br><br>
-
-				<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+			<<if ($rapestat + $beastrapestat + $tentaclerapestat) gt 0>>
+				<<link [[Nod|Ocean Breeze Tourist]]>><<set $phase to 1>><</link>>
 				<br>
-				<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 6>><<stress 6>><<set $phase to 2>><</link>><<gtrauma>><<gstress>>
+				<<link [[Deny (lie)|Ocean Breeze Tourist]]>><<set $phase to 2>><</link>>
+				<br>
+				<<link [[Refuse to answer|Ocean Breeze Tourist]]>><<set $phase to 3>><</link>>
 				<br>
 			<<else>>
-				As you turn to leave, the <<person1>><<person>> lifts the hem of your $worn.lower.name, revealing your $worn.under_lower.name to the cafe.
-				<<He>> and the <<person2>><<person>> both laugh, drawing more attention to you.
-				<<fameexhibitionism 1>><<stress 3>><<arousal 300>><<gstress>><<garousal>>
-				<br><br>
-
-				<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+				<<link [[Nod (lie)|Ocean Breeze Tourist]]>><<set $phase to 1>><</link>>
 				<br>
-				<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 3>><<stress 3>><<set $phase to 1>><</link>><<gtrauma>><<gstress>>
+				<<link [[Deny|Ocean Breeze Tourist]]>><<set $phase to 2>><</link>>
+				<br>
+				<<link [[Refuse to answer|Ocean Breeze Tourist]]>><<set $phase to 3>><</link>>
 				<br>
 			<</if>>
 		<<else>>
-			<<if $worn.under_lower.type.includes("naked")>>
-				As you turn to leave, the <<person1>><<person>> pulls down the back of your $worn.lower.name, revealing your bare <<bottom>> to the cafe.
-				"No underwear!" <<he>> says with incredulity. "Bet you regret that now."
-				<<fameexhibitionism 5>><<stress 3>><<arousal 300>><<gstress>><<garousal>>
-				<br><br>
+			They talk at length about
+			<<print either(
+				"the beach", "surfing", "the museum", "boys", "girls", "the food", "the news",
+				"the ultimate unity of life", "their plans for next weekend", "the political situation"
+			)>>.
+			<br><br>
+			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+			<<pass 1 hour>>
+			<br><br>
 
-				<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_freeloader" 1>>
+		<<generate1>><<person1>> A <<person>> enters the cafe and sits alone in the corner.
+		<<if dangerEvent()>>
+			<<He>> keeps stealing glances at you, and when you go to take <<his>> order <<he>> asks only for a glass of water.
+			As you turn to leave <<he>> grabs your wrist.
+			"You don't happen to be on the menu, do you?" <<He>> smiles.
+			"How about you and I find somewhere quiet and have some fun? I'll make it worth your while." <<He>> taps <<his>> <<wallet>>.
+			<<His>> intentions are clearly lewd in nature.
+			<br><br>
+			<<if hasSexStat("promiscuity", 2)>>
+				<<link [[Accept the offer|Ocean Breeze Whore]]>><<set $sexstart to 1>><</link>><<promiscuous2>>
 				<br>
-				<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 3>><<stress 3>><<set $phase to 1>><</link>><<gtrauma>><<gstress>>
+			<<elseif $uncomfortable.prostituting is false>>
+				<<His>> offer repulses you, but you need the money.
+				<br><br>
+				<<link [[Reluctantly accept the offer|Ocean Breeze Whore]]>><<set $desperateaction to 1>><<set $sexstart to 1>><</link>><<promiscuous2>>
 				<br>
 			<<else>>
-				As you turn to leave, the <<person1>><<person>> pulls down the back of your $worn.lower.name, revealing your $worn.under_lower.name to the cafe.
-				<<fameexhibitionism 1>><<stress 2>><<arousal 200>><<gstress>><<garousal>>
+				<<insufficientStat "promiscuity" "to take up such an offer">>
+				<br><br>
+			<</if>>
+			<<link [[Refuse|Ocean Breeze Whore Refuse]]>><</link>>
+		<<else>>
+			<<He>> keeps stealing glances at you. However, <<he>> refuses to make eye contact when you take <<his>> order.
+			<br><br>
+			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+			<<pass 1 hour>>
+			<br><br>
+
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_collision" 1>>
+		<<if dangerEvent()>>
+			<<generateRole 0 0 "waiter/waitress">><<person1>>
+			A <<person>> collides with you as you exit the kitchen, spilling warm soup over your
+			<<if $worn.upper.type.includes("naked")>>chest<<else>>$worn.upper.name.<</if>>
+			"I am so sorry," <<he>> says, reaching for a towel. Customers turn to watch.
+			<br><br>
+
+			<<link [[Ignore|Ocean Breeze Soup Ignore]]>><<npcincr Sam love 2>><<stress 6>><<pain 20>><</link>><<glove Sam>><<gpain>><<gstress>>
+			<br>
+			<<link [[Confront|Ocean Breeze Soup Confront]]>><<npcincr Sam love -1>><<stress -6>><<trauma -6>><</link>><<llove Sam>><<ltrauma>><<lstress>>
+			<br>
+			<<if !$worn.upper.type.includes("naked")>>
+				<<if $player.gender_appearance is "m" and $player.breastsize lte 2>>
+					<<link [[Remove top|Ocean Breeze Remove]]>><<npcincr Sam love 2>><</link>><<glove Sam>>
+					<br>
+				<<elseif hasSexStat("exhibitionism", 4)>>
+					<<link [[Remove top|Ocean Breeze Remove Lewd]]>><<npcincr Sam love 2>><</link>><<glove Sam>><<exhibitionist4>>
+					<br>
+				<</if>>
+			<</if>>
+		<<else>>
+			<<generateRole 0 0 "waiter/waitress">><<person1>>
+			<<wearProp "tray">>
+			A <<person>> almost collides with you as you exit the kitchen.
+			<br><br>
+
+			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+			<<pass 1 hour>>
+			<br><br>
+
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_crowd" 1>>
+		<<if dangerEvent()>>
+			<<generate1>><<generate2>><<generate3>><<generate4>>
+			A large group enters the cafe, taking up several tables by themselves.
+			You try to ask for their order, but a <<person1>><<person>> sitting at the head interrupts you.
+			"It's my birthday today, you know. How about something special?" <<He>> openly ogles your body. "Wanna climb up on the table and give us a dance?"
+			<br><br>
+
+			<<link [[Dance for them|Ocean Breeze Dance]]>>
+				<<danceinit>><<set $dancing to 1>><<set $audience to 4>><<set $venuemod to 2>><<set $timer to 12>><<set $dancelocation to "cafe">>
+			<</link>><<exhibitionist1>><<gstress>><<gtiredness>>
+			<br><br>
+
+			<<link [[Refuse|Ocean Breeze Dance Refuse]]>><</link>>
+		<<else>>
+			A large group enters the cafe, taking up several tables by themselves. They don't give you any trouble though.
+			<br><br>
+			The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+			<<pass 1 hour>>
+			<br><br>
+
+			<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "cafe_dog" 1>>
+		<!-- Modified for Monster People -->
+		<<beastNEWinit 1 dog>>
+		<<if $rng gte 51 and ($monster is 1 or $settings.bestialityEnabled)>>
+			Sam asks you to take some trash to the dumpster beside the cafe. Stood beside the dumpster, however, is a stray <<beasttype>>. It growls as you approach.
+			<br><br>
+
+			<<link [[Continue regardless|Ocean Breeze Dumpster Dog]]>><<stress 6>><</link>><<gstress>>
+			<br>
+			<<link [[Forget your task and go back inside|Ocean Breeze Dumpster Refuse]]>><</link>>
+		<<else>>
+			<<endevent>>
+			<<generate1>><<generate2>>
+			Sam asks you to take some trash to the dumpster beside the cafe.
+			Stood beside the dumpster, however, are a <<fullGroup>>. They have a dangerous look about them.
+			<br><br>
+
+			<<link [[Continue regardless|Ocean Breeze Dumpster]]>><<stress 6>><</link>><<gstress>>
+			<br>
+			<<link [[Forget your task and go back inside|Ocean Breeze Dumpster Refuse]]>><</link>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<if $chef_state is undefined>>
+		<<if C.npc.Sam.love gte 10>>
+			<<addinlineevent "cafe_chef_start" 2>>
+				<<npc Sam>><<person1>>Sam rushes out of the kitchen, looking flustered.
+				<<He>> glances in your direction, <span class="green">then hastens over.</span>
+				"I'm in a bit of a pickle," <<he>> says.
+				"Our chef's stormed off again. I need someone to fill in. Don't worry, it's not hard, and I'll pay you double. Will you help me out?"
 				<br><br>
 
-				<<link [[Get angry|Ocean Breeze Angry]]>><</link>>
+				<<link [[Accept|Chef Help]]>><<npcincr Sam love 2>><</link>><<glove Sam>>
 				<br>
-				<<link [[Ignore|Ocean Breeze Ignore]]>><<trauma 2>><<stress 2>><<set $phase to 0>><</link>><<gtrauma>><<gstress>>
+				<<link [[Refuse|Ocean Breeze Chef Refuse]]>><<npcincr Sam love -1>><</link>><<llove Sam>>
 				<br>
-			<</if>>
-		<</if>>
-	<<else>>
-		<<generate1>><<generate2>>You serve a young pair, a <<fullGroup>>.
-		You think you catch the <<person1>><<person>> checking you out, but they don't say anything.
-		<br><br>
-
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-		<br>
-	<</if>>
-
-<<elseif $rng gte 51>>
-
-	A couple of tourists are sat at one of your tables.
-	<<if dangerEvent()>>
-		<<generate1>><<generate2>>
-		<<person1>>You overhear the <<person>> telling the <<person2>><<person>> about the town in a hushed voice.
-		<br>
-		<<person1>>"I swear," <<he>> says. "This town is a dream for people like us. You can do whatever you like here. No one stops you."
-		<br>
-		"Is it true that even the police won't—"
-		<br>
-		"The police? They're worse than the rest! Slip 'em a few quid, and they'll probably cuff a <<girl>> down for you."
-		<br>
-		"Wow. Like, anyone? It doesn't matter how—"
-		<br>
-		"Anyone. Hey." <<He>> looks at you. "You. <<if playerBellyVisible()>>You're pregnant.<<elseif $beauty gte($beautymax / 7) * 2>>You're cute.<</if>> You've been raped, right?"
-		<br><br>
-
-		<<if ($rapestat + $beastrapestat + $tentaclerapestat) gt 0>>
-			<<link [[Nod|Ocean Breeze Tourist]]>><<set $phase to 1>><</link>>
-			<br>
-			<<link [[Deny (lie)|Ocean Breeze Tourist]]>><<set $phase to 2>><</link>>
-			<br>
-			<<link [[Refuse to answer|Ocean Breeze Tourist]]>><<set $phase to 3>><</link>>
-			<br>
+			<</addinlineevent>>
 		<<else>>
-			<<link [[Nod (lie)|Ocean Breeze Tourist]]>><<set $phase to 1>><</link>>
-			<br>
-			<<link [[Deny|Ocean Breeze Tourist]]>><<set $phase to 2>><</link>>
-			<br>
-			<<link [[Refuse to answer|Ocean Breeze Tourist]]>><<set $phase to 3>><</link>>
-			<br>
-		<</if>>
-	<<else>>
-		They talk at length about
-		<<print either(
-			"the beach", "surfing", "the museum", "boys", "girls", "the food", "the news",
-			"the ultimate unity of life", "their plans for next weekend", "the political situation"
-		)>>.
-		<br><br>
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
+			<<addinlineevent "cafe_chef_denied" 1>>
+				<<npc Sam>><<person1>>Sam rushes out of the kitchen, looking flustered.
+				<<He>> glances in your direction, <span class="red">but passes over you.</span>
+				<<He>> approaches another member of staff, and offers them better pay to fill in for the chef this shift.
+				<i>Perhaps Sam would be willing to give you a chance if <<he>> liked you more.</i>
+				<br><br>
 
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
+				The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+				<<pass 1 hour>>
+				<br><br>
 
-<<elseif $rng gte 41>>
-
-
-	<<generate1>><<person1>> A <<person>> enters the cafe and sits alone in the corner.
-	<<if dangerEvent()>>
-		<<He>> keeps stealing glances at you, and when you go to take <<his>> order <<he>> asks only for a glass of water.
-		As you turn to leave <<he>> grabs your wrist.
-		"You don't happen to be on the menu, do you?" <<He>> smiles.
-		"How about you and I find somewhere quiet and have some fun? I'll make it worth your while." <<He>> taps <<his>> <<wallet>>.
-		<<His>> intentions are clearly lewd in nature.
-		<br><br>
-		<<if hasSexStat("promiscuity", 2)>>
-			<<link [[Accept the offer|Ocean Breeze Whore]]>><<set $sexstart to 1>><</link>><<promiscuous2>>
-			<br>
-		<<elseif $uncomfortable.prostituting is false>>
-			<<His>> offer repulses you, but you need the money.
-			<br><br>
-			<<link [[Reluctantly accept the offer|Ocean Breeze Whore]]>><<set $desperateaction to 1>><<set $sexstart to 1>><</link>><<promiscuous2>>
-			<br>
-		<<else>>
-			<<insufficientStat "promiscuity" "to take up such an offer">>
-			<br><br>
-		<</if>>
-		<<link [[Refuse|Ocean Breeze Whore Refuse]]>><</link>>
-	<<else>>
-		<<He>> keeps stealing glances at you. However, <<he>> refuses to make eye contact when you take <<his>> order.
-		<br><br>
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
-
-<<elseif $rng gte 31>>
-
-	<<if dangerEvent()>>
-		<<generateRole 0 0 "waiter/waitress">><<person1>>
-		A <<person>> collides with you as you exit the kitchen, spilling warm soup over your
-		<<if $worn.upper.type.includes("naked")>>chest<<else>>$worn.upper.name.<</if>>
-		"I am so sorry," <<he>> says, reaching for a towel. Customers turn to watch.
-		<br><br>
-
-		<<link [[Ignore|Ocean Breeze Soup Ignore]]>><<npcincr Sam love 2>><<stress 6>><<pain 20>><</link>><<glove Sam>><<gpain>><<gstress>>
-		<br>
-		<<link [[Confront|Ocean Breeze Soup Confront]]>><<npcincr Sam love -1>><<stress -6>><<trauma -6>><</link>><<llove Sam>><<ltrauma>><<lstress>>
-		<br>
-		<<if !$worn.upper.type.includes("naked")>>
-			<<if $player.gender_appearance is "m" and $player.breastsize lte 2>>
-				<<link [[Remove top|Ocean Breeze Remove]]>><<npcincr Sam love 2>><</link>><<glove Sam>>
+				<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
 				<br>
-			<<elseif hasSexStat("exhibitionism", 4)>>
-				<<link [[Remove top|Ocean Breeze Remove Lewd]]>><<npcincr Sam love 2>><</link>><<glove Sam>><<exhibitionist4>>
-				<br>
-			<</if>>
+			<</addinlineevent>>
 		<</if>>
-	<<else>>
-		<<generateRole 0 0 "waiter/waitress">><<person1>>
-		<<wearProp "tray">>
-		A <<person>> almost collides with you as you exit the kitchen.
-		<br><br>
-
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
 	<</if>>
 
-<<elseif $rng gte 21>>
-
-	<<if dangerEvent()>>
-		<<generate1>><<generate2>><<generate3>><<generate4>>
-		A large group enters the cafe, taking up several tables by themselves.
-		You try to ask for their order, but a <<person1>><<person>> sitting at the head interrupts you.
-		"It's my birthday today, you know. How about something special?" <<He>> openly ogles your body. "Wanna climb up on the table and give us a dance?"
-		<br><br>
-
-		<<link [[Dance for them|Ocean Breeze Dance]]>>
-			<<danceinit>><<set $dancing to 1>><<set $audience to 4>><<set $venuemod to 2>><<set $timer to 12>><<set $dancelocation to "cafe">>
-		<</link>><<exhibitionist1>><<gstress>><<gtiredness>>
-		<br><br>
-
-		<<link [[Refuse|Ocean Breeze Dance Refuse]]>><</link>>
-	<<else>>
-		A large group enters the cafe, taking up several tables by themselves. They don't give you any trouble though.
-		<br><br>
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
-
-<<elseif $rng gte 11 and $chef_state is undefined>>
-	<<npc Sam>><<person1>>Sam rushes out of the kitchen, looking flustered.
-
-	<<if C.npc.Sam.love gte 10>>
-		<<He>> glances in your direction, <span class="green">then hastens over.</span>
-		"I'm in a bit of a pickle," <<he>> says.
-		"Our chef's stormed off again. I need someone to fill in. Don't worry, it's not hard, and I'll pay you double. Will you help me out?"
-		<br><br>
-
-		<<link [[Accept|Chef Help]]>><<npcincr Sam love 2>><</link>><<glove Sam>>
-		<br>
-		<<link [[Refuse|Ocean Breeze Chef Refuse]]>><<npcincr Sam love -1>><</link>><<llove Sam>>
-		<br>
-
-	<<else>>
-		<<He>> glances in your direction, <span class="red">but passes over you.</span>
-		<<He>> approaches another member of staff, and offers them better pay to fill in for the chef this shift.
-		<i>Perhaps Sam would be willing to give you a chance if <<he>> liked you more.</i>
-		<br><br>
-
-		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-		<<pass 1 hour>>
-		<br><br>
-
-		<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
-	<</if>>
-
-<<else>>
-	<<rng>>
-	<!-- Modified for Monster People -->
-	<<beastNEWinit 1 dog>>
-	<<if $rng gte 51 and ($monster is 1 or $settings.bestialityEnabled)>>
-		Sam asks you to take some trash to the dumpster beside the cafe. Stood beside the dumpster, however, is a stray <<beasttype>>. It growls as you approach.
-		<br><br>
-
-		<<link [[Continue regardless|Ocean Breeze Dumpster Dog]]>><<stress 6>><</link>><<gstress>>
-		<br>
-		<<link [[Forget your task and go back inside|Ocean Breeze Dumpster Refuse]]>><</link>>
-	<<else>>
-		<<endevent>>
-		<<generate1>><<generate2>>
-		Sam asks you to take some trash to the dumpster beside the cafe.
-		Stood beside the dumpster, however, are a <<fullGroup>>. They have a dangerous look about them.
-		<br><br>
-
-		<<link [[Continue regardless|Ocean Breeze Dumpster]]>><<stress 6>><</link>><<gstress>>
-		<br>
-		<<link [[Forget your task and go back inside|Ocean Breeze Dumpster Refuse]]>><</link>>
-	<</if>>
-
+	<<runeventpool>>
 <</if>>
+
+:: Ocean Breeze Gwylan Juice
+<<effects>><<run statusCheck("Gwylan")>><<wearProp "juice" "tangerine">>
+<<person1>>You bring the glass of orange juice to the balcony.
+<<if Weather.precipitation isnot "none">>
+	The roof of the cafe extends far enough to shield it from the <<print Weather.precipitation>>.
+<</if>>
+<<if _gwylanStatus.includes("met")>>
+	Gwylan
+<<else>>
+	The mousy <<nnpc_gendery "Gwylan">>
+<</if>>
+seems to be lost in thought as <<he>> stares out at the ocean. You place the drink on <<his>> table.
+<br><br>
+
+"I didn't pay for that, dear," <<he>> says without looking at you. <<His>> tone is distant, but polite.
+<br><br>
+
+<<if $speech_attitude is "meek">>
+	"I-it's on the house," you say. "My boss is worried about you. <<person2>><<He>> thinks you need more vitamin C."
+<<elseif $speech_attitude is "bratty">>
+	"I didn't ask you to pay for it," you say. "Sam is worried about you. <<person2>><<He>> thinks you're going to get scurvy."
+<<else>>
+	"It's on the house," you say. "My boss is worried about you, and said you need more vitamin C."
+<</if>>
+<br><br>
+
+<<if _gwylanStatus.includes("met")>>
+	<<person1>><<He>> perks up upon hearing your voice, and turns to you. "I didn't know you worked here, what a pleasant surprise!"
+	<<He>> gives you a warm smile.
+<<else>>
+	<<person1>><<He>> sighs.
+<</if>>
+"I'm grateful, but I don't know what Sammy is worried about. I eat plenty of fruit," <<he>> says. "Did <<person2>><<he>> get vitamin C and vitamin D mixed up again?"
+<br><br>
+
+<<person1>><<He>> takes a small sip of the juice.
+<<if !_gwylanStatus.includes("met")>>
+	<<set $daily.gwylan.firstMet to true>>
+	After setting <<his>> drink down, <<he>> turns to you and eyes your clothes.
+	<<if $worn.upper.type.includes("serving")>>
+		"It's nice to see you representing Sam so well."
+	<<elseif $worn.upper.type.includes("costume")>>
+		"You have good taste. Not everyone would wear that while working."
+	<<else>>
+		"If you don't mind some advice, you may find your customers more willing to pay extra if you dress up for the job. It would help Sam out, too."
+	<</if>>
+	<<He>> smiles, standing up.
+	<br><br>
+
+	<<He>> looks about your age, with mousy hair and a hint of freckles. "I'm older than I look," <<he>> says, as if reading your mind.
+	"<span class="green">I'm Gwylan.</span>" <<He>> reaches forward, lifts your hand, and shakes it in both <<his>> own. "Pleased to meet you. I have a shop in the outskirts of the forest. You can't miss it. I sell-"
+	<<He>> pauses. "My grand<<father>> sells-" Another pause. "I sell clothes and knick-knacks there. <span class="blue">Things you won't find in normal shops.</span> Even I don't know what I have in stock!" <<He>> sounds proud.
+	<br><br>
+
+	"But enough of that. Thank you for the drink, dear."
+<<elseif !$forest_shop_intro>>
+	"Thank you. I'm still looking forward to you visiting my shop," <<he>> says.
+<<elseif $gwylan.request.event is "meetAtShop">>
+	"Thank you. Don't forget to stop by the forest shop later. You still need to make up for breaking into my garden."
+<<else>>
+	"Thank you."
+<</if>>
+<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+<<He>> returns to gazing at the ocean.
+<br><br>
+
+<<set $gwylan_cafe_intro to true>>
+<<set $tipmod to 0.2>><<tipset "serving">>
+
+<<set $tip += 500>>
+<<set $tip += 100>>
+
+The rest of the shift passes uneventfully. Gwylan left you a tip.
+<<tipreceive "cafeWaiter">>
+<<pass 1 hour>>
+<br><br>
+
+<<link [[Next|Ocean Breeze]]>><<handheldon>><<endevent>><</link>>
+<br>
 
 :: Ocean Breeze Plates
 <<wearProp "tray">>
@@ -900,21 +1246,73 @@ The rest of the shift passes uneventfully. Someone left you a tip.
 
 :: Ocean Breeze Angry
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
+<<npcincr Sam love -1>><<run statusCheck("Gwylan")>>
 
 You turn on the spot and glare at the <<person1>><<person>>.
 The grin falls off <<his>> face. "Just having a laugh. No need to pout." Sam looks over at you disapprovingly.<<npcincr Sam love -1>><<llove Sam>>
 <br><br>
 
-The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
-<<pass 1 hour>>
+<<if gwylanSchedule() is "cafe" and $gwylan_cafe_intro>>
+	You carefully watch the two of them leave some time later. As soon as they're outside, before the front door even closes, <span class="teal">the <<person1>><<person>> is struck in the head with half-eaten <<seagullFood>></span>.
+	Some of it sticks to <<him>>, and some falls to the floor.
+	<br><br>
+
+	<<He>> recoils and turns to the source. "Careful. It's unwise to feed the seagulls," comes Gwylan's voice as <<nnpc_he "Gwylan">> skirts past <<him>> and hastily closes the door.
+	<br><br>
+
+	The moment the door fully closes, the pair is <span class="red">swarmed by seagulls</span>. Muffled screams and bird screeches fill the cafe, causing most of the patrons to look.
+	The seagulls peck at the <<person>>'s head and at the food all around them on the ground, tripping them both up as they attempt to flee. You hear a few laughs, including from Sam.
+	<<nnpc_He "Sam">> tries masking it with another disapproving glare, this time aimed at Gwylan. <<stress -6>><<lstress>>
+	<br><br>
+
+	<<set $tipmod to 0.2>><<tipset "serving">>
+
+	<<set $tip += 500>>
+	<<set $tip += 100>>
+
+	The rest of the shift passes uneventfully. Gwylan left you a tip.
+	<<tipreceive "cafeWaiter">>
+<<else>>
+	The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+	<<pass 1 hour>>
+<</if>>
 <br><br>
 
 <<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+<br>
 
 :: Ocean Breeze Ignore
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
+<<run statusCheck("Gwylan")>>
 
-<<if $phase is 0>>
+<<if gwylanSchedule() is "cafe" and $gwylan_cafe_intro>>
+	<<if $phase is 0 or $phase is 1>>
+		You rearrange your $worn.lower.name and continue as if nothing happened.
+	<<else>>
+		You rearrange your $worn.lower.name and continue as if nothing happened, blushing at being exposed and humiliated in public like this.
+	<</if>>
+	<br><br>
+
+	You carefully watch the two of them leave some time later. As soon as they're outside, before the front door even closes, <span class="teal">the <<person1>><<person>> is struck in the head with half-eaten <<seagullFood>></span>.
+	Some of it sticks to <<him>>, and some falls to the floor.
+	<br><br>
+
+	<<He>> recoils and turns to the source. "Careful. It's unwise to feed the seagulls," comes Gwylan's voice as <<nnpc_he "Gwylan">> skirts past <<him>> and hastily closes the door.
+	<br><br>
+
+	The moment the door fully closes, the pair is <span class="red">swarmed by seagulls</span>. Muffled screams and bird screeches fill the cafe, causing most of the patrons to look.
+	The seagulls peck at the <<person>>'s head and at the food all around them on the ground, tripping them both up as they attempt to flee. You hear a few laughs, including from Sam.
+	<<nnpc_He "Sam">> tries masking it with a disapproving glare towards Gwylan. <<stress -6>><<lstress>>
+	<br><br>
+
+	<<set $tipmod to 0.2>><<tipset "serving">>
+
+	<<set $tip += 500>>
+	<<set $tip += 100>>
+
+	The rest of the shift passes uneventfully. Gwylan left you a tip.
+	<<tipreceive "cafeWaiter">>
+<<elseif $phase is 0>>
 	You rearrange your $worn.lower.name and continue as if nothing happened.
 	<br><br>
 
@@ -925,7 +1323,6 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 
 	The rest of the shift passes uneventfully. Someone left you a tip.
 	<<tipreceive "cafeWaiter">>
-
 <<elseif $phase is 1>>
 	You rearrange your $worn.lower.name and continue as if nothing happened.
 	<br><br>
@@ -937,7 +1334,6 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 
 	The rest of the shift passes uneventfully. Someone left you a tip.
 	<<tipreceive "cafeWaiter">>
-
 <<else>>
 	You rearrange your $worn.lower.name and continue as if nothing happened, blushing at being exposed and humiliated in public like this.
 	<br><br>
@@ -949,12 +1345,12 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 
 	The rest of the shift passes uneventfully. Someone left you a tip.
 	<<tipreceive "cafeWaiter">>
-
 <</if>>
 <br><br>
-<<pass 1 hour>>
 
+<<pass 1 hour>>
 <<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
+<br>
 
 :: Ocean Breeze Whore
 <<if $sexstart is 1>>
@@ -1169,8 +1565,36 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 	<br><br>
 
 <<elseif $alarm gte 1>>
-	Sam bursts through the cafe's back entrance to see what the fuss is about. The pair flee the scene, pushing you to the ground as they do.
-	Sam helps you up and gently steers you back inside.
+	<<run statusCheck("Gwylan")>>
+	<<if ["cafe", "walking_to_cafe"].includes(gwylanSchedule()) and _gwylanLovePercent gte 50 and $hallucinations gte 2>>
+		<<set $daily.gwylan.cafeSkip to true>>
+		The door to the cafe's back entrance slowly creaks open. The pair freeze. No one comes out, but the hairs on the back of your neck stand on end.
+		"Go check it out," the <<person1>><<person>> says. <<He>> holds you still while the <<person2>><<person>> investigates.
+		<br><br>
+
+		"There's no one he-" <<He>> stops, staring down at something. "What the hell? How did you get in there?" <<He>> steps aside, revealing a small brown fox sitting at the door.
+		<br><br>
+
+		It stares up at the <<person2>><<person>> for a moment, before letting out a brief scream. They both jump at the noise. "Little shit, get out of here! Shoo!" <<He>> starts waving <<his>> arms about in an attempt to startle it.
+		<br><br>
+
+		The <<person1>><<person>> is looking upwards. "Stop. Stop fucking moving. Now," <<he>> says to the <<person2>><<person>>.
+		<br><br>
+
+		"Why? What's your prob-" <<He>> stops as <<he>> follows the <<person1>><<person>>'s gaze. You follow it, too. Above you, on every roof, is what must be <span class="red">hundreds of seagulls. All staring at the pair.</span>
+		<br><br>
+
+		The fox screams again. The seagulls all screech in return, and take flight. The noise is deafening. They swarm the two, entirely ignoring you. They flee, swatting around their heads as the birds mercilessly harass them.
+		<br><br>
+
+		The fox prances over to you and headbutts your leg, before scampering off after the pair, making a noise that sounds a lot like laughter while doing so.
+		<br><br>
+
+		<<tearful>> you return to the cafe, unsure of what you just saw.
+	<<else>>
+		Sam bursts through the cafe's back entrance to see what the fuss is about. The pair flee the scene, pushing you to the ground as they do.
+		Sam helps you up and gently steers you back inside.
+	<</if>>
 	<<set $rescued += 1>><<famerape 1>>
 	<br><br>
 <</if>>
@@ -1249,8 +1673,27 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 	<br><br>
 
 <<elseif $alarm gte 1>>
-	Sam bursts through the cafe back entrance to see what the fuss is about.
-	Startled, the <<beasttype>> flees. You feel humiliated, but Sam helps you up and gently steers you back inside.
+	<<run statusCheck("Gwylan")>>
+	<<if ["cafe", "walking_to_cafe"].includes(gwylanSchedule()) and $gwylanSeen?.includes("ritual_beast")>>
+		The door to the cafe's back entrance slowly creaks open. The <<beasttype>> freezes. No one comes out, but the hairs on the back of your neck stand on end.
+		<br><br>
+
+		A faint whisper meets your ears.
+		<br><br>
+
+		<<if $hypnosis_traits.devotion gte 4>>
+			<b>"<span class="witch">Go home.</span>"</b> You feel the slightest pull of compulsion, but it quickly fades. It wasn't aimed at you.
+		<<else>>
+			"Go home."
+		<</if>>
+		<br><br>
+
+		The <<beasttype>>'s head lulls down. It clumsily disengages from you, and trots off. The cafe's back door slowly closes again.
+		<<tearful>> you finish your task and head back into the cafe.
+	<<else>>
+		Sam bursts through the cafe back entrance to see what the fuss is about.
+		Startled, the <<beasttype>> flees. You feel humiliated, but Sam helps you up and gently steers you back inside.
+	<</if>>
 	<<famebestiality 1>><<set $rescued += 1>>
 	<br><br>
 <</if>>
@@ -1519,16 +1962,62 @@ The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<
 <br>
 
 :: Ocean Breeze Slime Defy
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 <<if $earSlime.corruption gte (currentSkillValue('willpower') / 10)>>
 	<<set $earSlime.defyCooldown += 2>>
 	The slime tries to assert control. <span class="red">It overpowers your will,</span> forcing you to buy the $daily.earSlimeOceanBreezeCafeEat.
 	<<ggwillpower>><<willpower 1>>
 	<br><br>
+
+	<<if ["cafe", "walking_to_cafe"].includes(gwylanSchedule()) and ($gwylanSeen?.includes("cafe") or $gwylan_cafe_intro) and !$gwylanSeen?.includes("ear_slime_intro")>>
+		<<npc Gwylan>><<person1>>
+		<<set $gwylanSeen.pushUnique("ear_slime_intro")>><<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+		"Are you having trouble deciding?" a familiar voice says from behind you. You try to turn your head, <span class="red">but the effort is painful. The slime doesn't want you to.</span>
+		<br><br>
+
+		"Or is it merely... <i>intrusive</i> thoughts?" the voice says as someone walks around you.
+		<<if !$daily.gwylan.cafe>>
+			It's Gwylan, holding a plate of <<seagullFood>>.
+		<<else>>
+			It's Gwylan.
+		<</if>>
+		"Forgive me for being presumptuous, but you look like you're struggling." The slime writhes.
+		<br><br>
+
+		<<He>> slowly reaches for one of your ears. <span class="red">Your arms twitch, and instinctively swat Gwylan's hand away.</span>
+		<<He>> frowns. "I see. I may be able to help. <span class="blue">Come see me at the shop later, if you're not feeling like yourself.</span>"
+		<<He>> leaves for the balcony.
+		<<set $daily.gwylan.cafe to true>>
+		<<endevent>>
+		<br><br>
+	<</if>>
 	<<earSlimeCafeLinks>>
 <<else>>
 	You try to ignore the command from the slime and continue on. You feel it try, <span class="green">but fail,</span> to force you to buy the $daily.earSlimeOceanBreezeCafeEat.
 	<br><br>
+
+	<<if ["cafe", "walking_to_cafe"].includes(gwylanSchedule()) and ($gwylanSeen?.includes("cafe") or $gwylan_cafe_intro) and !$gwylanSeen?.includes("ear_slime_intro")>>
+		<<npc Gwylan>><<person1>>
+		<<set $gwylanSeen.pushUnique("ear_slime_intro")>><<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
+		"Are you having trouble deciding?" a familiar voice says from behind you. You turn.
+		<<if !$daily.gwylan.cafe>>
+			It's Gwylan, holding a plate of <<seagullFood>>.
+		<<else>>
+			It's Gwylan.
+		<</if>>
+		<br><br>
+
+		"Or is it merely... <i>intrusive</i> thoughts?" <<he>> says as <<he>> walks around you.
+		"Forgive me for being presumptuous, but you looked like you were struggling for a moment."
+		<br><br>
+
+		<<He>> slowly reaches for one of your ears. <span class="red">Your arms twitch, as if they were about to instinctively swat Gwylan's hand away.</span>
+		<<He>> notices, and withdraws. "I may be able to help. <span class="blue">Come see me at the shop later, if you're not feeling like yourself.</span>"
+		<<He>> leaves for the balcony.
+		<<set $daily.gwylan.cafe to true>>
+		<br><br>
+	<</if>>
+
 	<<link [[Next|Ocean Breeze]]>><<endevent>><</link>>
 	<br>
 <</if>>
@@ -1871,23 +2360,31 @@ You feel a little more refreshed with the caffeine in your system.
 <<else>>
 	You
 <</if>>
-<<if Weather.precipitation is "rain">>
-	take a seat and order pancakes. They arrive soon after, along with a cup of coffee.
-	It's tastier than anything you've had at the orphanage. You stare out the window at the rain-filled street, and feel comfy.
-	<br><br>
-<<elseif Weather.isSnow>>
-	take a seat and order pancakes. They arrive soon after, along with a cup of coffee.
-	It's tastier than anything you've had at the orphanage. You stare out the window at the snowy street, and feel comfy.
-	<br><br>
+take a seat and order $phase. They arrive soon after,
+<<if $phase is "pancakes">>
+	along with a cup of coffee.
 <<else>>
-	take a seat and order pancakes. They arrive soon after, along with a cup of coffee.
-	It's tastier than anything you've had at the orphanage. You stare out over the sea, and enjoy the breeze.
-	<br><br>
+	covered in powdered sugar and
+	<<if playerBellyVisible()>>
+		diced plums.
+	<<elseif $arousal gte 5000>>
+		cherries.
+	<<else>>
+		strawberries.
+	<</if>>
 <</if>>
+<<if Weather.precipitation is "rain">>
+	It's tastier than anything you've had at the orphanage. You stare out the window at the rain-filled street, and feel comfy.
+<<elseif Weather.isSnow>>
+	It's tastier than anything you've had at the orphanage. You stare out the window at the snowy street, and feel comfy.
+<<else>>
+	It's tastier than anything you've had at the orphanage. You stare out over the sea, and enjoy the breeze.
+<</if>>
+<br><br>
 
 <<rng 10>>
 <<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1 and $rng gte 6>>
-	<<endevent>>
+	<<endevent "phaseless">>
 	You notice a <<generate1>><<person1>><<person>> staring at you from across the cafe.
 	Suddenly you realise you've let your legs drift apart slightly, and the <<person>> is trying to look up your skirt.
 	<<if $worn.under_lower.exposed>>
@@ -1910,7 +2407,7 @@ You feel a little more refreshed with the caffeine in your system.
 				<br>
 			<<else>>
 				You close your legs carefully so <<he>> doesn't see any more than <<he>> already has.
-				As you carry on eating your delicious pancakes you can't help imagining what it would feel like to spread your legs
+				As you carry on eating your delicious $phase you can't help imagining what it would feel like to spread your legs
 				and expose everything to <<his>> wandering eyes.
 				<<arousal 15>><<garousal>>
 				<br><br>
@@ -1936,7 +2433,7 @@ You feel a little more refreshed with the caffeine in your system.
 <</if>>
 
 :: Cafe Exhibitionism Legs Part
-You pretend to occupy yourself with your pancakes as you gently part your legs as naturally as you can.
+You pretend to occupy yourself with your $phase as you gently part your legs as naturally as you can.
 
 /* are we stealthy enough to pretend not to be putting on a show? */
 <<rng 50>>
@@ -1954,7 +2451,7 @@ You pretend to occupy yourself with your pancakes as you gently part your legs a
 	and knowing <<he>> caught you doing it on purpose fills you with a mixture of nervousness and exhilaration.
 	<<exhibitionism3>>
 
-	You decide to stop before things get out of hand, finishing up your pancakes before carefully getting out of your seat and leaving.
+	You decide to stop before things get out of hand, finishing up your $phase before carefully getting out of your seat and leaving.
 	<<His>> eyes and knowing smirk follow you as you make your way to the door, but <<he>> seems happy to leave you alone.
 	<br><br>
 	<<CafeExhibitionismLegsPartNormalTerminate>>
@@ -1969,7 +2466,7 @@ You pretend to occupy yourself with your pancakes as you gently part your legs a
 	and knowing <<he>> caught you doing it on purpose fills you with a mixture of nervousness and exhilaration.
 	<<exhibitionism2>>
 
-	Embarrassed, you finish up your pancakes before getting out of your seat and leaving.
+	Embarrassed, you finish up your $phase before getting out of your seat and leaving.
 	<<His>> eyes and knowing smirk follow you as you make your way to the door, but <<he>> seems happy to leave you alone.
 	<br><br>
 	<<CafeExhibitionismLegsPartNormalTerminate>>
@@ -1989,7 +2486,7 @@ A mildly disappointed but clearly aroused <<person>> pockets their phone while y
 :: Cafe Exhibitionism Legs Part No Photo
 Not wanting photos of your $worn.under_lower.name in the hands of a stranger you clasp your legs shut before <<he>> can take the photo.
 The <<person>> curses under their breath and pockets their phone, no doubt wondering if you caught them peeking or if luck is just not on their side today.
-You polish off the last of your pancakes before heading out the door.
+You polish off the last of your $phase before heading out the door.
 <br><br>
 <<CafeExhibitionismLegsPartNormalTerminate>>
 
@@ -2000,11 +2497,11 @@ With your $worn.under_lower.name off you unlatch the door to head back to your p
 <br><br>
 The <<person>> looks up at you discreetly as you seat yourself,
 and not wanting to ruin the surprise you make sure your skirt hem is safely covering your exposed <<genitals>> as you take your seat.
-You decide to play a little at first, fidgeting with your legs as you slowly savour your pancakes.
+You decide to play a little at first, fidgeting with your legs as you slowly savour your $phase.
 You want <<his>> full attention for what you plan next.
 <br><br>
 Slowly, you part your knees a little. At first just enough to make <<him>> wonder if <<hes>> seeing things,
-and then as you lean down to help yourself to a particularly tasty looking piece of pancake you part them completely,
+and then as you lean down to help yourself to a particularly tasty looking piece of <<if $phase is "pancakes">>pancake<<else>>crepe<</if>> you part them completely,
 giving <<him>> a complete unobstructed view of your inner thighs and everything in between.
 The <<persons>> eyes visibly widen in shock as <<he>> stares at your bare <<genitals>>, unsure of how to react to your clearly deliberate act of exhibitionism.
 <<if isHermOrCrossdresser()>>
@@ -2029,7 +2526,7 @@ With one last mouthful of your food you make your exit, passing the now rather d
 <<CafeExhibitionismLegsPartNormalTerminate>>
 
 :: Cafe Exhibitionism Legs Part Pantiless
-You pretend to occupy yourself with your pancakes as you gently part your legs as naturally as you can.
+You pretend to occupy yourself with your $phase as you gently part your legs as naturally as you can.
 
 /* are we stealthy enough to pretend not to be putting on a show? */
 <<rng 50>>
@@ -2059,7 +2556,7 @@ You pretend to occupy yourself with your pancakes as you gently part your legs a
 	and knowing <<he>> caught you doing it on purpose fills you with a mixture of nervousness and exhilaration.
 	<<exhibitionism5>>
 
-	You decide to stop before things get out of hand, finishing up your pancakes before carefully getting out of your seat and leaving.
+	You decide to stop before things get out of hand, finishing up your $phase before carefully getting out of your seat and leaving.
 	<<His>> eyes and knowing smirk follow you as you make your way to the door, but <<he>> seems happy to leave you alone.
 	<br><br>
 	<<CafeExhibitionismLegsPartNormalTerminate>>
@@ -2074,7 +2571,7 @@ You pretend to occupy yourself with your pancakes as you gently part your legs a
 	and knowing <<he>> caught you doing it on purpose fills you with a mixture of nervousness and exhilaration.
 	<<exhibitionism4>>
 
-	Embarrassed, you finish up your pancakes before getting out of your seat and leaving.
+	Embarrassed, you finish up your $phase before getting out of your seat and leaving.
 	<<His>> eyes and knowing smirk follow you as you make your way to the door, but <<he>> seems happy to leave you alone.
 	<br><br>
 	<<CafeExhibitionismLegsPartNormalTerminate>>
@@ -2097,7 +2594,7 @@ where exactly those lewd photos of you and your exposed <<genitals>> might event
 :: Cafe Exhibitionism Legs Part Pantiless No Photo
 Not wanting photos of your <<genitals>> in the hands of a stranger you clasp your legs shut before <<he>> can take the photo.
 The <<person>> curses under their breath and pockets their phone, no doubt wondering if you caught them peeking or if luck is just not on their side today.
-You polish off the last of your pancakes before heading out the door.
+You polish off the last of your $phase before heading out the door.
 <br><br>
 <<CafeExhibitionismLegsPartNormalTerminate>>
 
@@ -2112,7 +2609,7 @@ The act of blatantly exposing yourself to a total stranger in a cafe gives you a
 <<exhibitionism5>>
 
 Eventually you decide the <<person>> has seen enough for now and let your legs come to a natural close.
-The mildly disappointed but clearly quite aroused <<person>> stares at you as you make your way out chewing the last of your pancakes.
+The mildly disappointed but clearly quite aroused <<person>> stares at you as you make your way out chewing the last of your $phase.
 <br><br>
 <<CafeExhibitionismLegsPartNormalTerminate>>
 
@@ -2199,7 +2696,7 @@ You ignore the <<person>> and finish licking the plate clean. You lean back, sat
 	<<case "fruity ale">>
 		<<wearProp "alcohol" 0 "fruity ale">><<set _food to "a fruity ale. It arrives quickly, served in a regular beer glass. It's very sweet and light. It's delicious">>
 	<<case "winter ale">>
-		<<wearProp "alcohol" 0 "winter ale">><<set _food to "winter ale.	It arrives promptly, served in a beautifully curved glass. It's sweet, rather than bitter. It's delicious">>
+		<<wearProp "alcohol" 0 "winter ale">><<set _food to "winter ale. It arrives promptly, served in a beautifully curved glass. It's sweet, rather than bitter. It's delicious">>
 	<<case "shandy">>
 		<<wearProp "alcohol" 0 "shandy">><<set _food to "a shandy. It arrives quickly. It's served in a can with a beer glass; you're clearly meant to pour it yourself. It's lemon flavoured and very refreshing">>
 	<<case "autumn ale">>
@@ -2435,7 +2932,6 @@ People from all over the world are coming, so the town's movers and shakers will
 <<else>>
 	"It looks okay," you say. "It does stand out."
 <</if>>
-
 <br><br>
 
 Sam nods. "I've always wanted a place like this."

@@ -38,7 +38,11 @@ function spermObjectToArray(spermObject = [], player, disableRng) {
 	const spermArray = [];
 	const trackedNPCs = [];
 	for (const sperm of spermObject) {
-		if (V.settings.incompletePregnancyEnabled === false && V.NPCNameList.includes(sperm.source) && !setup.pregnancy.canImpregnatePlayer.includes(sperm.source)) {
+		if (
+			V.settings.incompletePregnancyEnabled === false &&
+			V.NPCNameList.includes(sperm.source) &&
+			!setup.pregnancy.canImpregnatePlayer.includes(sperm.source)
+		) {
 			continue;
 		}
 
@@ -865,6 +869,7 @@ function recordSperm({
 	quantity = 1,
 }) {
 	if (!target || !spermOwner || !setup.pregnancy.typesEnabled.includes(spermType)) return null;
+	if ([target, spermOwner].includes("Gwylan") && ["kiss", "hand"].includes(genital)) return null; // Have to hardcode this or else story content will irreversibly break down from silly pregnancy mode
 	if (V.activeNightmare) return false; // Should not work if the player is in a nightmare
 
 	// Deal with earslime tasks, the player is not told about it being completed on purpose
@@ -1126,7 +1131,10 @@ function playerPregnancyPossibleWith(NPC) {
 		case "wolfgirl":
 		case "hawk":
 		case "harpy":
-			if (V.settings.playerPregnancyBeastEnabled === false || (V.settings.playerPregnancyEggLayingEnabled === false && ["hawk", "harpy"].includes(NPCObject.type))) {
+			if (
+				V.settings.playerPregnancyBeastEnabled === false ||
+				(V.settings.playerPregnancyEggLayingEnabled === false && ["hawk", "harpy"].includes(NPCObject.type))
+			) {
 				T.pregFalseReason = "pregnantDisabled";
 				return false;
 			} else break;

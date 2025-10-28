@@ -298,29 +298,21 @@
 <</widget>>
 
 <<widget "dismissKylar">>
-	<<npcset Kylar state "prison">>
-	<<if $loveInterest.primary is "Kylar">>
-		<<if $loveInterest.secondary isnot "None">>
-			<<set $loveInterest.primary to $loveInterest.secondary>>
-			<<set $loveInterest.secondary to "None">>
-		<<else>>
-			<<set $loveInterest.primary to "None">>
-		<</if>>
+	<<if isLoveInterest("Kylar")>>
 		<span class="red">Kylar has been imprisoned. <<nnpc_He "Kylar">> is no longer your love interest.</span>
-	<<elseif $loveInterest.secondary is "Kylar">>
-		<<set $loveInterest.secondary to "None">>
-		<span class="red">Kylar has been imprisoned. <<nnpc_He "Kylar">> is no longer your love interest.</span>
-	<<elseif $kylarenglish gte 1>>
-		<span class="red">Kylar has been imprisoned. <<nnpc_He "Kylar">> can no longer be claimed as your love interest.</span>
+	<<elseif isPossibleLoveInterest("Kylar")>>
+		<span class="red">Kylar has been imprisoned. <<nnpc_He "Kylar">> is no longer a possible love interest.</span>
 	<<else>>
 		<span class="red">Kylar has been imprisoned.</span>
 	<</if>>
+	<<npcset Kylar state "prison">>
 	<<if $englishPlay is "ongoing">>
 		<<if $englishPlayRoles.Kylar isnot "none">>
 			<<set $englishPlayKylarReplace to true>>
 			<<set $englishPlayRoles.Kylar to "none">>
 		<</if>>
 	<</if>>
+	<<loveInterestRemove "Kylar">>
 	<br><br>
 <</widget>>
 
@@ -1046,7 +1038,7 @@ They place it on a table, then step around it into view. It's Kylar. <<His>> hai
 	"We're going to do this every day," <<he>> says. "Forever."
 
 	<<if !$worn.face.type.includes("gag")>>
-		<<He>> kisses your mouth. <<takeKissVirginity "Kylar" `($loveInterest.primary is "Kylar" or $loveInterest.secondary is "Kylar"?"loveRape":"rape")`>>
+		<<He>> kisses your mouth. <<takeKissVirginity "Kylar" `(isLoveInterest("Kylar")?"loveRape":"rape")`>>
 		<<if _npcKissVirginTemp>>
 			"That was my first kiss," <<he>> whispers. "After so long. We have so many other firsts ahead of us, my love."
 		<</if>>
@@ -1201,6 +1193,7 @@ They arrest Kylar. They untie you too, after you make a bit of noise. They decid
 
 <<endcombat>>
 <<dismissKylar>>
+<<specialClothesUnlock "set" "rose_wedding">>
 
 <<link [[Next|Oxford Street]]>><<set $eventskip to 1>><</link>>
 <br>
@@ -1224,6 +1217,7 @@ Kylar watches as you are led away. <<person1>><<He>> weeps harder.
 <<lllksuspicion>><<npcincr Kylar rage -50>>
 <br><br>
 <<endcombat>>
+<<specialClothesUnlock "set" "rose_wedding">>
 
 <<link [[Next (0:30)|Kylar Basement Car]]>><<pass 30>><<clothesontowel>><</link>>
 <br>
@@ -1974,14 +1968,7 @@ Kylar's grip on your hand tightens, before <<he>> lunges forward and kisses you 
 <<ggglove>><<gglust>><<llksuspicion>>
 <br><br>
 
-<<if $loveInterest.primary is "None">>
-	<<set $loveInterest.primary to "Kylar">>
-	<span class="gold">Kylar is now your love interest! You know <<he>>'ll always be watching your back. Always.</span>
-<<else>>
-	<span class="gold">Kylar can now be claimed as your love interest! You know <<he>>'ll always be watching your back. Always.
-	<br>
-	You can change your love interest in the "Attitudes" menu.</span>
-<</if>>
+<<loveInterestAdd "Kylar" "consensual">>
 <br><br>
 <<link [[Next|Kylar Orphanage Cuddle 2]]>><<set $phase to 1>><</link>>
 
@@ -5192,7 +5179,7 @@ You push Kylar away from you.
 
 <<if $phase is "pry">>
 	<<if $physiqueSuccess>>
-		With enough muscle, you manage to peel <<him>> away, but <<he>> still grips at your clothes, refusing to let you go. <<His>> face is wet with mucus and tears. "W-what happened? Where did you go? I looked everywhere for you!" <<He>> takes your hands in <<his>>. "P-please don't leave me like that again!"
+		With enough muscle, you manage to peel <<him>> away, but <<he>> still grips at your clothes, refusing to let you go. <<His>> face is wet with mucus and tears. "W-what happened? Where did you go? I looked everywhere for you!" <<He>> takes your hands in <<hers>>. "P-please don't leave me like that again!"
 	<<else>>
 		You attempt to pull <<him>> off, but <<he>> only latches on tighter. Mucus and tears run down <<his>> face as <<he>> bawls, soaking your shirt. "W-what happened? Where did you go? I looked everywhere for you!" <<He>> clutches you painfully tight<<if !$worn.upper.type.includes("naked") and !$worn.under_upper.type.includes("naked")>>, and in doing so rips your clothes<</if>>.<<pain 6>><<gpain>>
 		<br><br>

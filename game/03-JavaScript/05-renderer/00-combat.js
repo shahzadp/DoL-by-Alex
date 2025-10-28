@@ -1,7 +1,7 @@
 // @ts-check
 /* globals Partial, PenetratorPositions */
 
-setup.clothingStates = [0, "chest", "midriff", "waist", "thighs", "knees", "ankles"];
+setup.clothingStates = [0, "chest", "midriff", "waist", "thighs", "knees", "ankles", "worn"];
 setup.positions = [0, "doggy", "missionary", "wall", "stalk", "wall"];
 setup.legPositions = ["up", "down", "footjob"];
 

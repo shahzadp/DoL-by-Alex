@@ -996,7 +996,7 @@ class PlayerCombatMapper {
 			table: createProp("table"),
 			web: createProp("web"),
 			leash: {
-				show: V.worn.neck.collared === 1,
+				show: V.worn.neck.type?.includes("leash"),
 			},
 		};
 
@@ -1457,7 +1457,7 @@ class PlayerCombatMapper {
 	static isBellyExposed(options) {
 		const upper = options.clothes.upper;
 		const upperExposed = !upper?.show || PlayerCombatMapper.isClothingExposed(options, upper);
-		const lower = options.clothes.lower;
+		const lower = options.clothes?.lower;
 		const lowerExposed = !lower?.show || PlayerCombatMapper.isClothingExposed(options, lower);
 
 		if (options.bellySize <= 7 && !V.worn.upper?.type.includesAny("naked", "bellyShow") && !upperExposed && !lowerExposed) {
@@ -1584,6 +1584,10 @@ class PlayerCombatMapper {
 		}
 
 		if (slot === "under_upper" && (state === 0 || (typeof state === "string" && !["midriff", "chest", "waist"].includes(state)))) {
+			show = false;
+		}
+
+		if (slot === "under_lower" && clothing.type.includes("strap-on") && !options.clothes?.lower?.isExposed) {
 			show = false;
 		}
 

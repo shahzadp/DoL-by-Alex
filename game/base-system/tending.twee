@@ -222,7 +222,7 @@
 		<<gardenicon "water">>
 		<<link "Water ($_time)" $passage>>
 			<<tending _tStatup>><<pass _tPass>><<set _plantbed.water to 1>><<set $tendingvars.plot_watered to true>>
-			<<tiredness _tStatup>><<physique _tStatup>><<set $phase to Number(dangerEvent())>>
+			<<tiredness _tStatup>><<physique _tStatup>><<set $phase to Number(dangerEvent())>><<set $phase2 to "watered">>
 		<</link>><<gtiredness>><<gtending>>
 	<</if>>
 <</widget>>
@@ -234,7 +234,7 @@
 	<<for $_plot range $_plotsToWater>>
 		<<set $_plot.water to 1>>
 		<<set _waterTime to setup.tending.wateringTimes[$_plot.size]>>
-		<<pass _waterTime>><<set $phase to Number(dangerEvent())>>
+		<<pass _waterTime>><<set $phase to Number(dangerEvent())>><<set $phase2 to "watered">>
 	<</for>>
 	<<set $tendingvars.all_plots_watered to true>>
 <</widget>>
@@ -514,4 +514,16 @@
 		<<set $_seasons to formatList($_plant.season)>>
 		<<print $_plant.plural.toLocaleUpperFirst()>> can only be planted in $_seasons.
 	</span>
+<</widget>>
+
+<<widget "updatePlants">>
+	<<set $_food_keys to Object.keys(setup.plants)>>
+	<<for _i to 0; _i lt $_food_keys.length; _i++>>
+		<<set $_type to $_food_keys[_i]>>
+		<<if $plants[$_type] is undefined>>
+			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
+		<<elseif $plants[$_type].name is undefined>>
+			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+		<</if>>
+	<</for>>
 <</widget>>

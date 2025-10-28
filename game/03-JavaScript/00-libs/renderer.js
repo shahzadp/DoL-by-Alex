@@ -477,11 +477,11 @@ var Renderer;
         }
     }
     Renderer.adjustBrightness = adjustBrightness;
-    function adjustLevels(image, 
+    function adjustLevels(image,
     /**
      * scale factor, 1 - no change, >1 - higher contrast, <1 - lower contrast.
      */
-    factor, 
+    factor,
     /**
      * shift, 0 - no change, >0 - brighter, <0 - darker
      */
@@ -1196,7 +1196,7 @@ var Renderer;
             return JSON.stringify(j);
         }
         function scheduleNextKeyframe(animation) {
-            if (animation.keyframe.duration <= 0)
+            if (animation.keyframe.duration <= 0 || T.canvasFrozen?.includes(animation.name) || T.canvasFrozen?.includes("all"))
                 return;
             let t1 = animation.time + animation.keyframe.duration;
             let tasks = schedule[t1];

@@ -73,11 +73,13 @@
 			<<icon "bones.png">><<link [[Tell Landry you've replaced the stones|Pub Avery Stones Tell]]>><<set $avery_mansion.landry_told to 1>><</link>>
 			<br>
 		<</if>>
-		<<if $avery_mansion.fox.known and $avery_mansion.guest and !$avery_fate>>
+		<<if $avery_mansion.fox.known and $avery_mansion.guest and !$avery_fate and !$daily.noBrownFox>>
 			<<icon "clothes/foxmask.png">>
-			<<if $daily.brownFox>>
+			<<if isGwylanAbsent()>>
+				<<link [[Ask for the brown fox|Pub Brown Fox Unavailable]]>><</link>>
+			<<elseif $daily.brownFox or gwylanSchedule() is "pub">>
 				<<link [[Ask for the brown fox (0:01)|Pub Brown Fox]]>><<pass 1>><</link>>
-			<<elseif $avery_mansion.fox.wounded>>
+			<<elseif $brownFoxWoundedTimer>>
 				<<link [[Ask for the brown fox (0:20)|Pub Brown Fox]]>><<pass 20>><</link>>
 			<<else>>
 				<<link [[Ask for the brown fox (0:10)|Pub Brown Fox]]>><<pass 10>><</link>>
@@ -102,34 +104,54 @@
 <</widget>>
 
 <<widget "brownFoxOptions">>
-	<<if $avery_mansion.fox.progress gte 15>>
-		The brown fox smiles warmly. <span class="gold"><<He>> fully trusts you.</span>
-	<<elseif $avery_mansion.fox.progress gte 12 or $avery_mansion.fox.friend>>
-		The brown fox leans forward. <span class="green"><<Hes>> willing to take risks for you.</span>
-	<<elseif $avery_mansion.fox.progress gte 9>>
-		The brown fox sits back casually. <span class="teal"><<He>> trusts you.</span>
-	<<elseif $avery_mansion.fox.progress gte 6>>
-		The brown fox sits quietly. <span class="blue"><<Hes>> beginning to trust you.</span>
-	<<elseif $avery_mansion.fox.progress gte 3>>
-		The brown fox looks you up and down. <span class="purple"><<He>> still needs you to prove yourself.</span>
-	<<elseif $avery_mansion.fox.progress gte 0>>
-		The brown fox is on guard and sharp. <span class="pink"><<He>> seems unsure of your loyalties.</span>
+	<<if $brownFoxRevealed>>
+		<<if ["pub", "sulking"].includes(gwylanSchedule())>>
+			<span class="purple"><<His>> emotions are hard to get a read on right now.</span>
+		<<elseif $avery_mansion.fox.progress gte 15>>
+			<<He>> smiles warmly. <span class="gold"><<He>> has full confidence you.</span>
+		<<elseif $avery_mansion.fox.progress gte 12 or $avery_mansion.fox.friend>>
+			<<He>> leans forward. <span class="green"><<Hes>> willing to take risks for you.</span>
+		<<elseif $avery_mansion.fox.progress gte 9>>
+			<<He>> sits back casually. <span class="teal"><<He>> trusts you to get things done.</span>
+		<<elseif $avery_mansion.fox.progress gte 6>>
+			<<He>> sits quietly. <span class="blue"><<Hes>> beginning to trust your abilities.</span>
+		<<elseif $avery_mansion.fox.progress gte 3>>
+			<<He>> looks you up and down. <span class="purple"><<Hes>> still concerned about your ability to help.</span>
+		<<elseif $avery_mansion.fox.progress gte 0>>
+			<<He>> is on guard and sharp. <span class="pink"><<He>> seems unsure of your abilities.</span>
+		<<else>>
+			<<He>> crosses <<his>> arms as <<he>> regards you. <span class="red"><<He>> doesn't seem to think you have what it takes.</span>
+		<</if>>
 	<<else>>
-		The brown fox crosses <<his>> arms as <<he>> regards you. <span class="red"><<He>> doesn't trust you.</span>
+		<<if $avery_mansion.fox.progress gte 15>>
+			<<He>> smiles warmly. <span class="gold"><<He>> fully trusts you.</span>
+		<<elseif $avery_mansion.fox.progress gte 12 or $avery_mansion.fox.friend>>
+			<<He>> leans forward. <span class="green"><<Hes>> willing to take risks for you.</span>
+		<<elseif $avery_mansion.fox.progress gte 9>>
+			<<He>> sits back casually. <span class="teal"><<He>> trusts you.</span>
+		<<elseif $avery_mansion.fox.progress gte 6>>
+			<<He>> sits quietly. <span class="blue"><<Hes>> beginning to trust you.</span>
+		<<elseif $avery_mansion.fox.progress gte 3>>
+			<<He>> looks you up and down. <span class="purple"><<He>> still needs you to prove yourself.</span>
+		<<elseif $avery_mansion.fox.progress gte 0>>
+			<<He>> is on guard and sharp. <span class="pink"><<He>> seems unsure of your loyalties.</span>
+		<<else>>
+			<<He>> crosses <<his>> arms as <<he>> regards you. <span class="red"><<He>> doesn't trust you.</span>
+		<</if>>
 	<</if>>
 	<br><br>
 
 	<<if $avery_mansion.fox.task isnot "heist" and $avery_mansion.fox.progress gte 12 and $fake_artefact is "pc">>
-		<<if $avery_mansion.fox.wounded or !$avery_mansion.fox.dungeon>>
+		<<if $brownFoxWoundedTimer or !$avery_mansion.fox.dungeon>>
 			<<if !$avery_mansion.fox.heist_intro>>
 				<<set $avery_mansion.fox.heist_intro to true>>
 				"I have a proposal for you," <<he>> starts. "You've done much. I don't want you putting yourself in more danger than is necessary."
 				<br><br>
 
 				<<He>> palms <<his>> hands together.
-				<<if $avery_mansion.fox.wounded and !$avery_mansion.fox.dungeon>>
+				<<if $brownFoxWoundedTimer and !$avery_mansion.fox.dungeon>>
 					"Once my leg is healed, and once you find the vault, <span class="green">we can work together to steal the bones</span>."
-				<<elseif $avery_mansion.fox.wounded>>
+				<<elseif $brownFoxWoundedTimer>>
 					"Once my leg is healed, <span class="green">we can work together to steal the bones</span>."
 				<<else>>
 					"Once you find the vault, <span class="green">we can work together to steal the bones</span>."
@@ -141,7 +163,14 @@
 			"<span class="blue">I think it's time for us to make our move.</span> I'm healed up, and we have the information we need. The next time Avery's not in the way, I'll sneak in, and we'll get the bones at last."
 			<br><br>
 
-			<<He>> cups <<his>> hands to <<his>> mouth, and whistles six <span class="teal">faintly familiar</span> notes. "Whistle that in the garden when the way is clear, and I'll enter."
+			<<He>> cups <<his>> hands to <<his>> mouth, and whistles
+			<<if $seabird_lullaby gte 2>>
+				the first six notes of <span class="teal">Seabird's Lullaby</span>.
+			<<else>>
+				<<set $seabird_lullaby to 1>>
+				six <span class="teal">faintly familiar</span> notes.
+			<</if>>
+			"Whistle that in the garden when the way is clear, and I'll enter."
 			<br><br>
 		<</if>>
 	<<elseif $avery_mansion.fox.stones and !$avery_mansion.fox.friend and $avery_mansion.fox.progress gte 12>>
@@ -169,6 +198,14 @@
 	<</if>>
 	<<if $fake_artefact is "Avery" and !$avery_mansion.fox.stones>>
 		<<icon "bones.png">><<link [[Tell <<him>> that you found the stones yourself|Pub Brown Fox Stones]]>><<set $avery_mansion.fox.stones to true>><<set $avery_mansion.fox.progress += 3>><</link>>
+		<br>
+	<</if>>
+	<<if !$brownFoxRevealed and ($brownFoxWoundedHint or $gwylanSeen?.includes("yearning"))>>
+		<<link [[Tell <<him>> you know who <<he>> is|Pub Brown Fox Revealed]]>><<set $brownFoxRevealed to true>><</link>>
+		<br>
+	<</if>>
+	<<if $brownFoxRevealed and ["pub", "sulking"].includes(gwylanSchedule()) and !$gwylanSeen?.includes("pub_yearning") and !$avery_mansion.fox.yearning>>
+		<<link [[Apologise|Pub Brown Fox Apologise]]>><<set $avery_mansion.fox.yearning to true>><</link>>
 		<br>
 	<</if>>
 	<<getouticon>><<link [[Say goodbye|Pub]]>><<endevent>><</link>>
@@ -285,6 +322,16 @@
 		<br>
 		<<investigateicon>><<link [[Look for someone else (0:01)|Pub]]>><<endevent>><<pass 1>><</link>>
 		<br>
+
+		<<if C.npc.Gwylan.state is "scorned">>
+			<<if gwylanSchedule() is "pub">>
+				<br>
+				You see Gwylan sulking in a secluded corner. No one seems to be paying <<nnpc_him "Gwylan">> any mind.
+				<br>
+				<<socialiseicon>><<link [[Approach|Gwylan Pub Sulking]]>><<endevent>><</link>>
+				<br>
+			<</if>>
+		<</if>>
 
 		<<if Time.weekDay is 1 and Time.hour gte 21 and C.npc.Whitney.state is "active">>
 			<br>
@@ -467,7 +514,7 @@ You put the goods on the table. Landry appraises them with the relaxed demeanour
 You make <span class="gold">£<<print $blackmoney>></span>.
 <<money `$blackmoney * 100` "pubStolenGoods">><<set $blackmoney to 0>>
 <br><br>
-<<getouticon>><<link [[Pub]]>><<endevent>><</link>>
+<<getouticon>><<link [[Pub|Pub]]>><<endevent>><</link>>
 <br>
 
 :: Pub Task
@@ -1274,17 +1321,28 @@ Landry smiles. "Excellent. Avery runs in esoteric circles. They've trusted <<nnp
 <br>
 
 :: Pub Brown Fox
-<<effects>><<summon_brown_fox 2>><<person1>>
+<<effects>><<summon_brown_fox 2>><<person1>><<run statusCheck("Gwylan")>>
 Landry pulls out a flip phone, manually dials a number, lets it ring three times, and hangs up. <<He>> points to a different table.
 <<person2>>
 <<if $daily.brownFox>>
-	Right on queue, the brown fox saunters back into the pub, beating you to the other table.
-<<elseif $avery_mansion.fox.wounded>>
+	Right on queue, <<say_brown_fox>> saunters back into the pub, beating you to the other table.
+<<elseif gwylanSchedule() is "pub">>
+	<br><br>
+
+	From across the pub, <span class="blue">you see Gwylan stand, stretch, and don a brown fox mask before pulling a green hood over <<his>> head.</span>
+	<br><br>
+
+	<<He>> saunters over to your table and flops down into the seat.
+	<<if !$brownFoxRevealed>>
+		<<set $brownFoxRevealed to true>>
+		<<He>> doesn't seem to care that <<he>> just revealed <<his>> identity to you.
+	<</if>>
+<<elseif $brownFoxWoundedTimer>>
 	"Twenty minutes."
 	<br><br>
 
-	You lounge around for twenty minutes at the other table. You never hear <<him>> enter, but the brown fox approaches your table and
-	<<if $avery_mansion.fox.friend>>
+	You lounge around for twenty minutes at the other table. You never hear <<him>> enter, but <<say_brown_fox>> approaches your table and
+	<<if $avery_mansion.fox.friend or $brownFoxRevealed and _gwylanLovePercent gte 75>>
 		sits next to you,
 	<<else>>
 		sits opposite you,
@@ -1294,8 +1352,8 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 	"Ten minutes."
 	<br><br>
 
-	You lounge around for ten minutes at the other table. You never hear <<him>> enter, but the brown fox approaches your table and
-	<<if $avery_mansion.fox.friend>>
+	You lounge around for ten minutes at the other table. You never hear <<him>> enter, but <<say_brown_fox>> approaches your table and
+	<<if $avery_mansion.fox.friend or $brownFoxRevealed and _gwylanLovePercent gte 75>>
 		sits next to you,
 	<<else>>
 		sits opposite you,
@@ -1305,20 +1363,12 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 <<set $daily.brownFox to true>>
 <br><br>
 
-<<if $avery_mansion.fox.cover_blown_wounded>>
-	<<set _healTime to -40>>
-<<elseif $avery_mansion.fox.remy_warn>>
-	<<set _healTime to -20>>
-<<else>>
-	<<set _healTime to -30>>
-<</if>>
-
-<<if $avery_mansion.fox.wounded and Time.date.dayDifference(new DateTime($avery_mansion.fox.wounded)) lte _healTime>>
-	<<run delete $avery_mansion.fox.wounded>>
+<<if !_gwylanStatus.includes("wounded") and $brownFoxWoundedTimer>>
+	<<unset $brownFoxWoundedTimer>>
 	<span class="green"><<His>> stride is much more smooth, no longer strained.</span> <<He>> smiles at you. "I'm ready to get back into the thick of it, at last."
-<<elseif $avery_mansion.fox.wounded and !$avery_mansion.fox.wounded_talk>>
-	<<set $avery_mansion.wounded_talk to true>>
-	<<if $avery_mansion.fox.cover_blown_wounded>>
+<<elseif $brownFoxWoundedTimer and !$avery_mansion.fox.wounded_talk>>
+	<<set $avery_mansion.fox.wounded_talk to true>>
+	<<if $brownFoxCoverBlown>>
 		<<He>> doesn't look very happy to see you.
 	<<else>>
 		"Sorry for the delay. It's not as easy to move around since the High Elk stuck me."
@@ -1326,12 +1376,15 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 <<else>>
 	"Alright, hit me."
 <</if>>
+<<if gwylanSchedule() is "pub">>
+	<<His>> face is flushed, and <<he>> looks quite upset.
+<</if>>
 <br><br>
 
 <<brownFoxOptions>>
 
 :: Pub Brown Fox Task
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 <<if $phase is "success">>
 	<<set $avery_mansion.fox.progress++>>
 	<<switch $avery_mansion.fox.task>>
@@ -1413,12 +1466,22 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 			<</if>>
 			<br><br>
 
-			<<He>> lets out a long breath. "I hope their revenge was as sweet as the wolfbrew. Thank you for doing this for me. It won't help our end goal, but it will help me sleep at night." <<note "+ ???" "green">>
-			<<set $avery_mansion.fox.progress++>><<set $avery_mansion.fox.harper_sabotage to true>>
+			<<He>> lets out a long breath. "I hope their revenge was as sweet as the wolfbrew. Thank you for doing this for me. It won't help our end goal, but it will help me sleep at night." <<if $brownFoxRevealed>><<gyearning>><<else>><<note "+ ???" "forest-green">><</if>>
+			<<set $avery_mansion.fox.progress++>>
+			<<if $gwylanSeen>>
+				<<npcincr Gwylan dom 1>>
+				<<set $gwylanSeen.pushUnique("bf_harper")>>
+			<</if>>
 	<</switch>>
 	<<set $avery_mansion.fox.task to false>>
 	<<set $avery_mansion.fox.task_complete to false>>
 	<<set $avery_mansion.fox.task_detail to false>>
+	<<if $brownFoxRevealed and _gwylanStatus.includesAny("aroused", "lust", "dom")>>
+		<br><br>
+
+		<<He>> reaches over and pats you on the head. "<<pcPetname "Gwylan" "good">>." You feel warm. <<trauma -1>><<ltrauma>>
+		<br><br>
+	<</if>>
 <<elseif $phase is "fail">>
 	"I wasn't able to do what you asked, I'm sorry."
 	<br><br>
@@ -1447,9 +1510,10 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 			<<else>>
 				"<span class="gold">The tower will dethrone heaven, unless the weight of faith binds it to the earth in shackles of brightest gold.</span>"
 			<</if>>
-			<br><br>
 
 			<<if $fake_artefact is "Avery">>
+				<br><br>
+
 				<<He>> seems to remember something. "Oh! Be careful what you say to Jordan. If you're too honest with <<nnpc_him "Jordan">>, <span class="blue"><<nnpc_he "Jordan">> might burn bridges with Avery regardless</span>. The Cloister has a habit of missing the forest for the fire."
 			<</if>>
 		<<case "Quinn">>
@@ -1472,7 +1536,7 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 			"The next guest will be Remy, the farmer. From all the way out east."
 			<br><br>
 
-			<<if !$avery_mansion.fox.unlocked and $fake_artefact isnot "Avery">>
+			<<if !$brownFoxWounded and $fake_artefact isnot "Avery">>
 				<<He>> cups <<his>> hands together, and thinks for a long moment.
 				<br><br>
 
@@ -1520,19 +1584,21 @@ Landry pulls out a flip phone, manually dials a number, lets it ring three times
 			<<He>> holds up the green phial. "This one is for the appetiser." <<He>> holds up the red in turn. "This is for the main course. One is a sedative and chemical marker, the other is concentrated wolfbrew.
 			There's nothing we can do to stop <<nnpc_him "Harper">>. But we can at least grant the victims revenge. You'll understand soon, unfortunately."
 	<</switch>>
-	<br><br>
 	<<set $avery_mansion.fox.task to $avery_mansion.guest>>
 	<<set $avery_mansion.fox.task_detail to $fake_artefact is "Avery" ? "ascend" : "descend">>
-	<span class="gold">The brown fox's request has been added to your journal.</span>
+	<<if $avery_mansion.guest is "Remy" and !$brownFoxWounded and $fake_artefact isnot "Avery">>
+	<<else>>
+		<span class="gold">The brown fox's request has been added to your journal.</span>
+		<br><br>
+	<</if>>
 <</if>>
-<br><br>
 
 <<set $phase to 0>>
 
 <<brownFoxOptions>>
 
 :: Pub Brown Fox Dungeon
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 <<if $speech_attitude is "meek">>
 	"I found the vault. It's in a... dungeon. The entrance is hidden somewhere in Avery's study.
 <<elseif $speech_attitude is "bratty">>
@@ -1545,7 +1611,7 @@ It's locked by a keypad with a four-digit combination."
 
 <<His>> green eyes widen behind <<his>> mask. "Perfect. We're that much closer."
 <<if $avery_mansion.fox.progress lt 12>>
-	<<if $avery_mansion.fox.wounded>>
+	<<if $brownFoxWoundedTimer>>
 		<<He>> looks down at <<his>> leg in annoyance.
 	<<else>>
 		<<He>> thinks for a moment.
@@ -1557,7 +1623,7 @@ It's locked by a keypad with a four-digit combination."
 <<brownFoxOptions>>
 
 :: Pub Brown Fox Stones
-<<effects>>
+<<effects>><<run statusCheck("Gwylan")>>
 "Take a look." You hold out the stones.
 <br><br>
 
@@ -1566,8 +1632,88 @@ With the right subterfuge, we can <span class="green">speed up the construction 
 <br><br>
 
 <<He>> looks down. "I've heard stories. I can't imagine it's been easy living with Avery. You'll have your pound of flesh soon." <<He>> covers <<his>> mouth. "I'm sorry, that was a terrible choice of words."
+<br><br>
 
 <<brownFoxOptions>>
+
+:: Pub Brown Fox Revealed
+<<effects>><<run statusCheck("Gwylan")>>
+<<if $speech_attitude is "meek">>
+	"Is that you, Gwylan?"
+<<elseif $speech_attitude is "bratty">>
+	"I know it's you, Gwylan."
+<<else>>
+	"I didn't think this was how you operated, Gwylan."
+<</if>>
+<br><br>
+
+<<He>> stares at you for a moment, then giggles. "I thought you'd never catch on. What gave it away?"
+<br><br>
+
+<<if $gwylanSeen.includes("romance")>>
+	"I could practically feel it," you say. "I know your smell, too."
+	<br><br>
+
+	<<He>> blushes, and tries to suppress looking giddy with limited success. "Aww, aren't you a sweetheart."
+<<elseif $brownFoxWoundedHint>>
+	"I saw the <<if _gwylanStatus.includes("wounded")>>bandages<<else>>scar<</if>> on your leg," you say. "It's a bit too much of a coincidence."
+	<br><br>
+
+	<<He>> nods. "I knew you were sharp. It's not like I could hide it forever."
+<<else>>
+	"I know you," you say simply. "Did you think I'd forget?"
+	<br><br>
+
+	<<He>> frowns. "Most do." <<He>> places <<his>> hand on <<his>> head. "So it was the hypnosis, then. How troublesome."
+<</if>>
+<<He>> leans back in <<his>> seat. "Regardless, that's not who I am right now. Keep it secret for me, would you, <<pcpetname "Gwylan">>?"
+<br><br>
+
+<<if $brownFoxCoverBlown>>
+	You open your mouth to speak, but <<he>> interrupts you.
+	<<if _gwylanStatus.includes("cautious")>>
+		"Surely you don't want to blow my cover again. You'll owe me for that, dear. My leg still aches where the High Elk stabbed me."
+	<<else>>
+		"Surely you don't want to blow my cover again. My leg still aches where the High Elk stabbed me." <<He>> looks serious for only a moment, and starts smiling again. "It's alright. You've already more than made up for it."
+	<</if>>
+	<br><br>
+<</if>>
+
+<<brownFoxOptions>>
+
+:: Pub Brown Fox Apologise
+<<effects>><<run statusCheck("Gwylan")>>
+"Look, I'm sorry about-"
+<br><br>
+
+<<He>> shushes you.
+<br><br>
+
+"Not right now. Let's keep such things out of business. This is bigger than both of us." A long moment of silence passes. "If... if you want to talk after we're done, I'll be over there." <<He>> points back to <<his>> original table.
+<br><br>
+
+<<brownFoxOptions>>
+
+:: Pub Brown Fox Unavailable
+<<effects>>
+<<if isGwylanAbsent() is "nobody">>
+	You ask for nobody.
+	<br><br>
+
+	Landry gives you a confused look.
+<<else>>
+	You ask for the brown fox.
+	<br><br>
+
+	Landry shakes <<his>> head. "Haven't heard from <<nnpc_him Gwylan>>. <<nnpc_He Gwylan>> might have been compromised. You may just have to continue on without <<nnpc_him Gwylan>>."
+<</if>>
+<br><br>
+
+<<set $daily.noBrownFox to true>>
+
+<<landryoptions>>
+<<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
+<br>
 
 /*
 :: Pub Avery Nod Note
@@ -1710,7 +1856,7 @@ Landry just looks at the stones for a moment, transfixed as if in wonder. "To be
 <<He>> reaches for the bones, but hesitates. "Those really are bones." <<He>> peers at them. "Let's hope they're from an animal, eh?" <<He>> reaches into <<his>> pocket, and produces a magnifying glass. <<His>> smile broadens. "There's a code etched into the bone. As I thought. Wish they had hidden it somewhere less gristly."
 <br><br>
 
-Landry hands the stones back to you. "The brown fox insisted that you should hold onto those when you find them.<<if !$avery_mansion.fox.stones>> Speaking of, you should tell them yourself. I'd love to see the look on their face.<</if>>"
+Landry hands the stones back to you. "The brown fox insisted that you should hold onto those when you find them.<<if !$avery_mansion.fox.stones>> Speaking of, you should tell <<nnpc_him Gwylan>> yourself. I'd love to see the look on <<nnpc_his Gwylan>> face.<</if>>"
 <br><br>
 
 <<landryoptions>>
@@ -1883,7 +2029,7 @@ Landry leans forward. "You're already involved, and you're dangerously close to 
 
 :: Pub Avery Stones Fox End
 <<effects>><<summon_brown_fox 2>><<person2>>
-<<if $avery_mansion.fox.saved and !$avery_mansion.fox.end>>
+<<if $avery_mansion.fox.saved and !$avery_mansion.fox.end and !$brownFoxRevealed>>
 	<<if $speech_attitude is "meek">>
 		"What happened to our friend, the <<personsimple>> in the fox mask? I never saw <<him>> escape the fire."
 	<<elseif $speech_attitude is "bratty">>

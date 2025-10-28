@@ -190,7 +190,6 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 			<<person2>><<person>> and <<person3>><<person>>.
 		<</if>>
 		"I've come to check up on you," <<person1>><<he>> says, a practised, enthralling smile on <<his>> face. <<His>> grip tightens, and <<he>> leans closer so that only you can hear. "Time to pay up."
-		<<rent_avery>>
 		<br>
 		"The temple must support the community."
 		<br>
@@ -199,6 +198,8 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 
 		Bailey winces at the latter's words.
 		<br><br>
+
+		<<rent_avery>>
 
 		<<temple_bailey_options>>
 	<</if>>
@@ -602,6 +603,7 @@ You leave the <<person>> to their duties.
 	<span class="gold">You've discovered the soup kitchen on Wolf Street.</span>
 	<br><br>
 	<<set $soup_kitchen_known to 1>>
+	<<specialClothesUnlock "item" "holy pendant">>
 	<<if $sydneyPresent>>
 		Sydney puts a hand on your shoulder and nods. "That was very generous of you."
 		<br><br>
@@ -1460,6 +1462,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 			"I'll let the others know you've joined us," <<he>> continues, smiling. "It's an honour to have you."
 			<br><br>
 			<<endevent>>
+			<<specialClothesUnlock "set" "temple_initiate">>
 			<<link [[Next|Temple]]>><<clotheson>><</link>>
 		<<else>>
 			"You are unblemished, and may it stay that way. You are now an initiate of the temple. Welcome, <<sister>>."
@@ -1480,6 +1483,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 			"I'll let the others know you've joined us," <<he>> continues, smiling. "I'm pleased to have you."
 			<br><br>
 			<<endevent>>
+			<<specialClothesUnlock "set" "temple_initiate">>
 			<<link [[Next|Temple]]>><<clotheson>><</link>>
 		<</if>>
 	<<else>>
@@ -1747,11 +1751,45 @@ You look down to examine it yourself. It doesn't feel as tight or uncomfortable 
 <<else>>
 	<br><br>
 	<<if $worn.genitals.name is "chastity parasite">>
+		<<set _handsApproach to true>>
 		<<He>> looks at you with a confused expression. "I'm sorry, but I can't remove that. It looks like a parasite of some kind. Maybe the hospital can help you?"
 	<<else>>
 		<<He>> looks at you with a confused expression. "I'm sorry, but I can't remove your $worn.genitals.name. We only have keys to belts or cages that you get directly from here."
 	<</if>>
 	<br><br>
+<</if>>
+
+<<if _handsApproach>>
+	You step away, and think about what to do now. From opposite sides, two black-robed priests approach you.
+	<<if $temple_confessor_intro and $per_npc.bishop_right_hand>>
+		The Bishop's Hands.
+	<</if>>
+	<br><br>
+
+	"<<Sister>>." They both bow.
+	<br><br>
+
+	"The creature that constricts you," one starts.<br>
+	"It can't be shriven by Jordan's holy hands," the other says.<br>
+	"Filthy."<br>
+	"Unclean."<br>
+	They both nod at their own words.<br><br>
+
+	"There exists one with hands sufficiently dirty."<br>
+	"You will find <<nnpc_him "Gwylan">> in the forest."<br>
+	"An apostate."<br>
+	"A heretic."<br>
+	Their tones are flat, as if they were stating a simple fact.<br><br>
+
+	"Search for the <span class="blue">castle</span>."<br>
+	"Search for the <span class="blue">shop</span>."<br><br>
+
+	They bow, and leave in opposite directions.
+	<br><br>
+
+	<<if !$gwylanSeen?.includes("chastity")>>
+		<<set $gwylanJordanChastity to true>>
+	<</if>>
 <</if>>
 
 <<link [[Next|Temple]]>><<endevent>><</link>>
@@ -2084,7 +2122,6 @@ You stare at the <<person>>. <<His>> smile falters. "They'll believe me," you sa
 <<prayoptions>>
 
 :: Temple Slime
-
 <<set $outside to 0>><<set $location to "temple">><<temple_effects>><<effects>>
 
 You describe the problems you've had and how they started when a slime entered your ear. Jordan listens with a blank look.
@@ -2094,6 +2131,13 @@ You describe the problems you've had and how they started when a slime entered y
 <br><br>
 
 "It doesn't matter though," <<he>> adds. "The old temple <i>sank beneath the lake</i> centuries ago. Students sometimes go out there after school. Entering the forest alone is a bad idea, and the ruin is... tainted."
+<br><br>
+
+<<He>> closes <<his>> eyes, and takes a deep breath. "There is someone who may be able to aid you in the short term. <span class="blue">From our garden, a much shorter walk into the forest, is the home of a clothier and collector.</span>
+<<nnpc_He "Gwylan">> has remedies and methods long lost to the public, and to us." <<He>> sounds the slightest bit ashamed at the last part.
+<<if !$gwylanSeen?.includes("ear_slime")>>
+	<<set $gwylanJordanSlime to true>>
+<</if>>
 <br><br>
 
 <<endevent>>
@@ -2410,11 +2454,12 @@ You follow Jordan back inside as the <<person2>><<monk>> smothers the coal with 
 <br><br>
 <<if C.npc.Sydney.init is 1 and _sydney_location is "temple" and !$sydneySeen.includes("initiate")>>
 	<<set $sydneySeen.pushUnique("initiate")>>
-	Someone hugs you from behind. It's Sydney. "Congratulations... initiate!" <<nnpc_Hes "Sydney">> overflowing with joy. <<npcincr Sydney love 3>><<gglove>>
+	Someone hugs you from behind. It's Sydney. "Congratulations... initiate!" <<nnpc_Hes "Sydney">> overflowing with joy. <<npcincr Sydney love 3>><<gglove "Sydney">>
 	<br><br>
 <</if>>
 <<clotheson>>
 <<endevent>>
+<<specialClothesUnlock "set" "temple_initiate">>
 <<link [[Next|Temple]]>><</link>>
 
 :: Temple Book Ask
@@ -2568,8 +2613,14 @@ Head bowed, Jordan leaves the room as a <<monk>> pulls a gag from <<his>> habit.
 :: Temple Arcade Submit
 <<effects>>
 <<pass 20>>
-<<facewear 4>><<leash 21>>
-The <<person1>><<monk>> pushes the gag into your mouth and ties it firm behind your head. Any sound you make will be muffled and unintelligible. A <<person2>><<monk>> to <<person1>><<his>> side wraps a collar around your neck. <<He>> holds the attached leash and tugs.
+<<facewear 4>>
+The <<person1>><<monk>> pushes the gag into your mouth and ties it firm behind your head. Any sound you make will be muffled and unintelligible.
+<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+	A <<person2>><<monk>> to <<person1>><<his>> side fiddles with your collar for a moment, before abruptly stopping. Wordlessly, <<he>> attaches the leash to your arms instead.
+<<else>>
+	<<leash 21>>
+	A <<person2>><<monk>> to <<person1>><<his>> side wraps a collar around your neck. <<He>> holds the attached leash, and tugs.
+<</if>>
 <br><br>
 <<pass 3>>
 You're led through the marked door and down a cramped passage. There are no lights bar the occasional torch on the wall.
@@ -2764,8 +2815,10 @@ Stern-faced <<monks>> cluster you and the other victims together.
 <</if>>
 <<set $worn.face.type.push("broken")>>
 <<faceruined>>
-<<set $worn.neck.type.push("broken")>>
-<<neckruined>>
+<<if !($worn.neck.name is "familiar collar" and $worn.neck.cursed is 1)>>
+	<<set $worn.neck.type.push("broken")>>
+	<<neckruined>>
+<</if>>
 <<unset $temple_arcade_phase>>
 <<unset $temple_wall_victim>>
 <<set $temple_arcade_known to true>>
@@ -3570,6 +3623,7 @@ Then the flame vanishes. The light vanishes. You're on your knees in the centre 
 	<<set $temple_monk_days to 0>>
 	<<set $wardrobes.temple.unlocked to true>>
 	<<earnFeat "Defy the Night">>
+	<<specialClothesUnlock "set" "temple_monk_and_nun">>
 
 	<<link [[Next|Temple Vigil 15 Sydney]]>><<clotheson>><<endevent>><</link>>
 	<br>
@@ -3590,6 +3644,7 @@ Then the flame vanishes. The light vanishes. You're on your knees in the centre 
 	<<set $temple_monk_days to 0>>
 	<<set $wardrobes.temple.unlocked to true>>
 	<<earnFeat "Defy the Night">>
+	<<specialClothesUnlock "set" "temple_monk_and_nun">>
 
 	<<link [[Next|Temple Vigil 15]]>><<clotheson>><<endevent>><</link>>
 	<br>

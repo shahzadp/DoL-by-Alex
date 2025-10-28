@@ -624,7 +624,7 @@
 					"serpent"
 				)>>
 			<</if>>
-			/* tfs */
+			/* tfs, intended to not check for part visibility */
 			<<if $angel gte 6>>
 				<<set _names.push(
 					"messenger",
@@ -650,13 +650,126 @@
 			<<if random(1,100) lte 15>>
 				<<set _text_output to _pre.pluck() + _text_output>>
 			<</if>>
+		<<case "gwylan" "Gwylan">>
+			<<set _yearning to C.npc.Gwylan.dom>>
+			<<if ["good", "dear", "bad", "naughty"].includes(_args[1])>>
+				<<set _names.push(_gender is "m" ? "boy" : "girl")>>
+			<</if>>
+			/* tfs, intended to not check for part visibility */
+			<<if $cat gte 6>>
+				<<set _names.push("kitty")>>
+				<<if ["name"].includes(_args[1])>>
+					<<set _names.push("paws")>>
+					<<if $gwylanSeen?.includes("cream_lick")>>
+						<<set _names.push("rough-tongue")>>
+					<</if>>
+				<</if>>
+			<<elseif $wolfgirl gte 6>>
+				<<set _names.push("puppy")>>
+				<<if _yearning gte 100>>
+					<<set _names.push("dog")>>
+					<<if $angel gte 6 or $fallenangel gte 2 or or $dryad gte 6>>
+						<<set _names.push("mutt")>>
+					<</if>>
+					<<if $demon gte 6>>
+						<<set _names.push("hellpup")>>
+					<</if>>
+				<</if>>
+			<<elseif $harpy gte 6>>
+				<<set _names.push("birdie", "canary")>>
+				<<if $demon gte 6>>
+					<<set _names.push("siren")>>
+				<</if>>
+				<<if ["name"].includes(_args[1])>>
+					<<set _names.push("chirp")>>
+				<</if>>
+			<<elseif $fox gte 6>>
+				<<set _names.push("kit")>>
+				<<if ["name"].includes(_args[1])>>
+					<<set _names.push("vix")>>
+					<<if $gwylanSeen?.includes("gwylan_tf_revealed")>>
+						<<set _names.push("kin")>>
+					<</if>>
+					<<if $demon gte 6>>
+						<<set _names.push("foxfire")>>
+					<</if>>
+				<</if>>
+			<<elseif $cow gte 6>>
+				<<set _names.push("calf")>>
+				<<if ["name"].includes(_args[1])>>
+					<<set _names.push("bright eyes")>>
+				<</if>>
+			<<elseif _yearning gte 35>>
+				<<set _names.push("puppy")>>
+			<</if>>
+			<<if $angel gte 6 or $fallen_angel gte 2>>
+				<<if ["name"].includes(_args[1])>>
+					<<set _names.push("angel eyes", "twinkle-top")>>
+				<</if>>
+			<<elseif $demon gte 6>>
+			<<elseif $dryad gte 6>>
+				<<set _names.push("seedling", "sprout")>>
+			<</if>>
+
+			/* clothing */
+			<<if $worn.upper.name is "pumpkin dress">>
+				<<set _names.push("pumpkin")>>
+			<</if>>
+
+			/* other */
+			<<if (_yearning gte 75 or $hypnosis_traits.devotion gte 4) and ["simple", undefined].includes(_args[1]) or ["my"].includes(_args[1])>>
+				<<set _names.push("pet")>>
+			<</if>>
+			<<if $gwylanSeen?.includes("romance") and ["simple", "name", undefined].includes(_args[1])>>
+				<<set _names.push("love", "dearest")>>
+			<</if>>
+			<<if _names.length is 0 or ["simple", "name", undefined].includes(_args[1])>>
+				<<set _names.push("dear")>>
+			<</if>>
+
+			/* pick and decorate */
+			<<set _text_output to _names.pluck()>>
+			<<if !["simple", "bad", "naughty", "good", "dear", "name"].includes(_args[1]) and (_args[1] is "my" or _yearning gte 75 and random(0, 150) lt _yearning - 50 or _text_output.includes("pet"))>>
+				<<set $_addMyToStart to true>>
+			<</if>>
+			<<if !["simple", "name"].includes(_args[1]) and random(0, 150) lt _yearning - 50 and !["boy","girl","dear","love","dearest"].includes(_text_output)>>
+				<<set _text_output to "little " + _text_output>>
+			<</if>>
+			<<if !["simple", "bad", "naughty", "name"].includes(_args[1]) and (["good", "dear"].includes(_args[1]) or _yearning gte 60 and random(0, 150) lt _yearning - 50 and !$gwylan.punishment and $_addMyToStart) and !["dear","love","dearest"].includes(_text_output)>>
+				<<if ["good", "dear"].includes(_args[1])>>
+					<<if _args[1] is "good">>
+						<<set _text_output to "good " + _text_output>>
+					<<else>>
+						<<set _text_output to "dear " + _text_output>>
+					<</if>>
+				<<elseif random(0, 1)>>
+					<<set _text_output to "good " + _text_output>>
+				<<else>>
+					<<set _text_output to "dear " + _text_output>>
+				<</if>>
+			<<elseif !["simple", "good", "dear", "name"].includes(_args[1]) and (["bad", "naughty"].includes(_args[1]) or $gwylan.punishment and $_addMyToStart) and !["dear","love","dearest"].includes(_text_output)>>
+				<<if ["bad", "naughty"].includes(_args[1])>>
+					<<if _args[1] is "bad">>
+						<<set _text_output to "bad " + _text_output>>
+					<<else>>
+						<<set _text_output to "naughty " + _text_output>>
+					<</if>>
+				<<elseif random(0, 1)>>
+					<<set _text_output to "bad " + _text_output>>
+				<<else>>
+					<<set _text_output to "naughty " + _text_output>>
+				<</if>>
+			<</if>>
+			<<if $_addMyToStart>>
+				<<set _text_output to "my " + _text_output>>
+			<</if>>
 		<<default>>
 			<<girl>>
 	<</switch>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "pcPetname">><<silently>>
-	<<pcpetname _args[0]>><<capitalise>>
+	<<pcpetname _args[0] _args[1]>><<capitalise>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "foxnickname">><<silently>>
@@ -664,7 +777,7 @@
 		<<set _text_output to "kit">>
 	<<elseif $cat gte 6>>
 		<<set _text_output to "stray">>
-	<<elseif $wolf gte 6>>
+	<<elseif $wolfgirl gte 6>>
 		<<set _text_output to "pup">>
 	<<else>>
 		<<set _text_output to "meat">>

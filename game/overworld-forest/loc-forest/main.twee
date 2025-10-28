@@ -2,19 +2,46 @@
 
 <<location "forest">><<effects>><<wPersist "forest">><<getTarget true>>
 <<if $foresthunt gte 1>>
-	<<if $edenforesthunt is 1>>
+	<<if $forestHunter is "Eden" and (hasSharpSenses() or $foresthunt gte 7)>>
 		<<print either(
 			`<span class="red">You are being hunted. You see spent bullet casings lying on the ground.</span>`,
 			`<span class="red">You are being hunted. You see boot prints on the ground.</span>`,
 			`<span class="red">You are being hunted. You hear a gun firing from afar.</span>`
 		)>>
-	<<elseif $blackwolfhunt is 1>>
+	<<elseif $forestHunter is "Black Wolf" and (hasSharpSenses() or $foresthunt gte 7)>>
 		<<print either(
 			`<span class="red">You are being hunted. You see wolf fur tangled in the trees.</span>`,
 			`<span class="red">You are being hunted. You see wolf prints on the ground.</span>`,
 			`<span class="red">You are being hunted. You hear a growl in the distance.</span>`
 		)>>
-	<<elseif $wraith.hunt>>
+	<<elseif $forestHunter is "Gwylan" and (hasSharpSenses() or $foresthunt gte 7 or $gwylan?.lureSong)>>
+		<<if isGwylanAbsent() is "nobody">>
+			<<set $eventskip to 1>>
+			<<print either(
+				`<span class="red">You are being hunted. You hear nothing.</span>`,
+				`<span class="red">You are being hunted. The forest is empty.</span>`,
+				`<span class="red">You are being hunted. You see nobody.</span>`,
+				`<span class="red">Nobody is hunting you.</span>`
+			)>>
+		<<else>>
+			<<if $gwylan?.lureSong>>
+				<span class="red">You are being hunted. <<if $gwylan.lureSong is 1>>You hear singing in the distance.<</if>></span>
+				<<if $gwylan.lureSong is 1 and $islander_language gte 100>>
+					You recognise the language. <span class="blue">It's the islander tongue.</span>
+					<br><br>
+				<<elseif $islander_language gte 100>>
+					<br><br>
+				<</if>>
+				<<gwylanSong>>
+			<<else>>
+				<<print either(
+					`<span class="red">You are being hunted. You hear a soothing voice singing in the distance.</span>`,
+					`<span class="red">You are being hunted. The forest is unusually silent.</span>`,
+					`<span class="red">You are being hunted. You feel curious eyes on you.</span>`
+				)>>
+			<</if>>
+		<</if>>
+	<<elseif $wraith.hunt and $forestHunter is "Wraith">>
 		<<if $moonstate is "morning" and Time.hour gte 6>>
 			With the rising of the sun, you feel a sense of relief. The dread passes. <span class="blue"><i>You're safe until the next blood moon.</i></span>
 			<<clearWraith>>
@@ -26,7 +53,7 @@
 			)>>
 		<</if>>
 	<<else>>
-		<!-- generic text for when a hunt is happening but we haven't written a more specific version of the text. -->
+		<!-- generic text for when a hunt is happening but we haven't written a more specific version of the text, or the player's senses aren't sharp enough to know who's hunting them. -->
 		<span class="red">You are being hunted.</span>
 	<</if>>
 	<br><br>
@@ -83,11 +110,31 @@
 		You are in the forest outskirts. You can make out the town between the trees.
 		<br><br>
 
-		<<if $exposed lte 1>>
+		<<if $exposed lte 1 or $gwylanSeen?.includes("lights")>>
 			<<if $forest_shop_intro is 1>>
-				<<shopicon "forest">><<link [[Forest shop|Forest Shop]]>><</link>>
+				<<if $hypnosis_traits.devotion gte 5 and $gwylanSeen?.includes("romance")>>
+					<<set _forestShopText to "Your home is here, cradled in the treeline.">>
+					<<set _forestShopLinkText to "Home">>
+				<<elseif $gwylanSeen?.includes("yearning") and isGwylanAbsent() isnot "nobody">>
+					<<set _forestShopText to "Gwylan's shop is here, cradled in the treeline.">>
+					<<set _forestShopLinkText to "Gwylan's shop">>
+				<<else>>
+					<<set _forestShopText to "The forest shop is here, cradled in the treeline.">>
+					<<set _forestShopLinkText to "Forest shop">>
+				<</if>>
+				<<= _forestShopText>><br>
+				<<if $daily.gwylan.locked or Time.isBloodMoon() or C.npc.Gwylan.state is "scorned">>
+					<<shopicon "forest">><<link [[_forestShopLinkText|Forest Shop Locked]]>><<endevent>><</link>>
+				<<else>>
+					<<shopicon "forest">><<link [[_forestShopLinkText|Forest Shop Entrance]]>><<endevent>><<set $enteringForestShop to true>><</link>>
+				<</if>>
 			<<else>>
-				<<shopicon "forest">><<link [[Strange shop|Forest Shop]]>><</link>>
+				A strange, castle-like shop is cradled in the treeline.<br>
+				<<if Time.isBloodMoon() or isGwylanAbsent() and C.npc.Gwylan.init isnot 0>>
+					<<shopicon "forest">><<link [[Strange shop|Forest Shop Locked]]>><<endevent>><</link>>
+				<<else>>
+					<<shopicon "forest">><<link [[Strange shop|Forest Shop Entrance]]>><<endevent>><<set $enteringForestShop to true>><</link>>
+				<</if>>
 			<</if>>
 			<br><br>
 		<</if>>
@@ -121,6 +168,7 @@
 			<<link [[Take secret path deeper into the woods (0:10)|Forest]]>>
 				<<set $forestmod to 1.5>><<set $forest += 50>><<set $forestmove to "secretin">><<pass 10>>
 				<<if $foresthunt gte 1>><<set $foresthunt += 1>><</if>>
+				<<if $forestHunter is "Gwylan" and $foresthunt gte 1>><<set $foresthunt += 5>><</if>>
 			<</link>>
 			<br>
 		<</if>>
@@ -211,6 +259,7 @@
 			<<link [[Take secret path out of the woods (0:10)|Forest]]>>
 				<<set $forestmod to 1.5>><<set $forest -= 50>><<set $forestmove to "secretout">><<pass 10>>
 				<<if $foresthunt gte 1>><<set $foresthunt += 1>><</if>>
+				<<if $forestHunter is "Gwylan" and $foresthunt gte 1>><<set $foresthunt += 5>><</if>>
 			<</link>>
 			<br>
 		<</if>>

@@ -210,6 +210,10 @@ There is a thermometer outside your window. It reads <span class="teal"><<print 
 
 /* Bed */
 Your bed takes up most of the room.
+<<if $gwylanSeen?.includes("fox_plushie")>>
+	/* ToDo: Gwylan - convert to use furniture system */
+	The large fox plushie acts as an additional pillow.
+<</if>>
 <<set _bed to Furniture.get('bed')>>
 <<if $nextPassageCheck is "Bed">>
 	<br>
@@ -241,6 +245,7 @@ Your bed takes up most of the room.
 <</if>>
 
 <<roomoptions>>
+<<safehouseEvents>>
 <br>
 /* Wardrobe */
 <<set _wardrobe to Furniture.get('wardrobe')>>
@@ -2615,10 +2620,11 @@ and !$fromRobinRoom and _robin.cdquest is 2 and _robin.trauma lte 20 and !$daily
 	<br>
 	<<link [[Ignore|Orphanage]]>><<endevent>><</link>>
 <<else>>
-	<<if StartConfig.sneaky and !$avery_mansion and $auriga_artefact isnot "Avery">>
-		A girl in a white dress sits in the corner, sipping tea.
+	<<if StartConfig.sneaky>>
+		/* ToDo: Gwylan */
+		A blonde girl in a chain tunic stands in the corner, holding a paddle.
 		<br><br>
-		<<ind>><<link [[Approach|Orphanage Sneaky Mansion]]>><</link>> <i>Sneaky update: Enable Avery's mansion</i>
+		<<wolficon>><<link [[Approach|Orphanage Sneaky Bad Ends]]>><</link>> <i>Sneaky update: bad end shortcuts</i>
 		<br>
 	<</if>>
 	<<if $halloween is 1 and Time.monthDay is 31 and !$fromRobinRoom and $robinmissing is 0 and Time.hour gte 16 and Time.hour lt 19 and _robin.init is 1>>
@@ -3904,6 +3910,14 @@ You open the locket around your neck.
 				<<set _locket_text to "There's a photo inside of the Black Wolf, sleeping peacefully.">>
 			<<case "Great Hawk">>
 				<<set _locket_text to "There's a photo inside of the Great Hawk, looking statuesque.">>
+			<<case "Gwylan">>
+				<<if $gwylan?.timer?.nobody gte Time.date.timeStamp>>
+					<<set _locket_text to "The picture within is distorted and unrecognisable.">>
+				<<elseif $hypnosis_traits.devotion gte 4>>
+					<<set _locket_text to "Gwylan's seductive smile greets you. The picture almost seems to be shining.">>
+				<<else>>
+					<<set _locket_text to "Gwylan's cheery smile greets you, although the rest of <<nnpc_his 'Gwylan'>> face is blurry.">>
+				<</if>>
 			<<default>>
 				<<set _locket_text to "It's empty, but there's space for a single photograph.">>
 		<</switch>>
@@ -3918,7 +3932,7 @@ You open the locket around your neck.
 
 <<for _npc range setup.NPCNameList>>
 	<<capture _npc>>
-		<<if $carried.neck.photo != _npc and ($loveInterest.primary is _npc or $loveInterest.secondary is _npc)>>
+		<<if $carried.neck.photo != _npc and (isLoveInterest(_npc))>>
 			<span @class="'clothes-'+$carried.neck.colour.replace(' ', '-')"><<icon "locket.png">></span>
 			<<if $carried.neck.photo>>
 				<<link [[`Replace the picture with a photo of ${_npc}`|Mirror Locket 2]]>><<set $carried.neck.photo to _npc>><</link>>
@@ -3956,6 +3970,14 @@ You open the locket around your neck.
 		You insert a small photograph of the Black Wolf, slumbering peacefully.
 	<<case "Great Hawk">>
 		You insert a small photograph of the Great Hawk, striking a statuesque pose.
+	<<case "Gwylan">>
+		<<if $gwylan?.timer?.nobody gte Time.date.timeStamp>>
+			You insert a small photograph of nobody.
+		<<elseif $hypnosis_traits.devotion gte 4>>
+			You insert a small photograph of Gwylan, smiling seductively with a belted collar in <<nnpc_his "Gwylan">> hand.
+		<<else>>
+			You insert a small photograph of Gwylan, smiling and waving cheerfully.
+		<</if>>
 <</switch>>
 <br><br>
 
@@ -4608,3 +4630,108 @@ A tall blonde girl in a crisp black outfit walks by, carrying a sack over her sh
 <br><br>
 <<link [[Next|Orphanage]]>><<endevent>><</link>>
 <br>
+
+:: Orphanage Sneaky Bad Ends
+<<effects>>
+The girl puts the head of the paddle on your shoulder, as if to knight you. "Hey there. Like my outfit?" She fleeces down the skirt of the chain tunic. "You can get one of these too, now. All you need to do is raid the castle and lay the pr-"
+<br><br>
+
+She clears her throat. "The shop. It's at the forest shop. It'll be a bitch to find, though. Unless you cheat. No judgement." She shrugs. "Probably the hardest thing to find there, unless you've cozied up to Winter lately for old <<nnpc_gender "Winter">> story time.
+God, the things I would do to that dusty old fuck, if not for this." She shivers, flicking the halo above her head. "The shopkeep has some interesting things to say too, you know. If you really earn the stuff there, <<nnpc_he "Gwylan">> might just start to like you.
+Some of those clothes will be hard to reach. Now, I can't skip you to the end, but I can set you on the right path. Escaping any of those places will be on you, but it'll unlock those clothes for you all the same."
+<br><br>
+
+"So, what'll it be?"
+<br><br>
+
+<<link [[Underground Brothel Start (Slut Shirt)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "ubrothel">><</link>>
+<br>
+<<link [[Underground Farm Start (Cow Print Set and Cow Bell)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "ufarm">><</link>>
+<br>
+<<link [[Prison Start (Prison Set)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "prison">><</link>>
+<br>
+<<link [[Asylum (Unbound Straightjacket)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "asylum">><</link>>
+<br>
+<<link [[Eden/Black Wolf (Loincloth)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "forest">><</link>>
+<br>
+<<link [[Great Hawk (Feathered Accessories)|Orphanage Sneaky Bad Ends 2]]>><<endevent>><<set $phase to "hawk">><</link>>
+<br>
+<<link [[Walk away and consider calling the police|Orphanage]]>><<endevent>><</link>>
+<br>
+
+:: Orphanage Sneaky Bad Ends 2
+<<effects>>
+<<switch $phase>>
+	<<case "ubrothel">>
+		"Interesting choice," she says. "A timeless classic, that. I'll tell Bailey. This wil count as <span class="blue">you being sold</span>. Try to have fun." She holds the paddle in both hands, and brings it crashing down on your head.
+		<br><br>
+
+		You're sent directly through the crust of the earth, take multiple harsh turns, and land in some kind of underground river. It spits you out into a dark room, where a <<generate1>><<generate2>><<generate3>><<person1>><<person>> waits, as though expecting you.
+		<br><br>
+
+		<<link [[Next|Underground Intro]]>><<badEndTracking "Underground Dungeon" { reason: "soldBailey" }>><</link>>
+		<br>
+	<<case "ufarm">>
+		"Touch the cow, they said." She smirks. "Have fun with Remy."
+		<br><br>
+
+		She steps behind you, winding up the paddle and smacking you on the ass with incredible force. You fly out the nearest window and soar all the way to the moor.
+		<br><br>
+
+		<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+			<<link [[Next|Livestock Intro Familiar Collar]]>><<endevent>><</link>>
+		<<else>>
+			You land with perfect grace, and a collar is clamped around your neck.
+			<br><br>
+
+			<<link [[Next|Livestock Intro]]>><<endevent>><<leash 21>><<badEndTracking "Underground Farm" { reason: "abductedMoor" }>><</link>>
+		<</if>>
+		<br>
+	<<case "prison">>
+		"Hey, try passing out in the rut. It'll be fun. I promise." She holds the paddle in both hands, and uppercuts you with it. You fly through the orphanage roof, and land in the police station, aware that you've somehow committed an unforgivable crime.
+		<br><br>
+
+		You sit in your tiny cell and wonder what to do.
+		<br><br>
+		
+		<<link [[Next|Police Cell]]>><<set $stat_police.pillory += 1>><<crimeUp 7000 "prostitution" "debug">><</link>>
+		<br>
+	<<case "asylum">>
+		She lighty taps you on the head with her paddle. "Bonk."
+		<br><br>
+
+		<span class="red">You remember something embarassing you did as a kid.</span> <<trauma 5000>><<note "+ + + + + + + + + + + + + Trauma" "red">>
+		<br><br>
+
+		<<controlloss>><<controlloss>><<controlloss>><<controlloss>>
+		<br><br>
+
+		"Wow, you look like shit," she says. "You should go see a doctor." She points in the direction of Nightingale Street. You decide it's a good idea and walk there now. <<ginsecurity "penis_small">>
+		<br><br>
+
+		<<endevent>>
+		
+		<<link [[Next|Asylum Intro]]>><<badEndTracking "Asylum" { reason: "asylumHospital" }>><<pass 120>><</link>>
+		<br>
+
+	<<case "forest">>
+		She snickers. "Okay, come on now. That's a fifteen minute walk from here. You can manage that one yourself."
+		<br><br>
+
+		<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<br>
+
+	<<case "hawk">>
+		"Okay, now this is <i>beak</i>."
+		<br><br>
+
+		She steps behind you, winding up the paddle and smacking you on the ass with incredible force. You fly out the nearest window and soar all the way to the moor.
+		<br><br>
+
+		You're spotted mid-air by a pair of sharp eyes. <span class="red">Terror descends.</span>
+		<br><br>
+
+		<<link [[Next|Moor]]>><<set $moor to 50>><<set $eventskip to 1>><<moor_hunt_start>><<set $moor_hunt to 10>><</link>>
+		<br>
+<</switch>>
+

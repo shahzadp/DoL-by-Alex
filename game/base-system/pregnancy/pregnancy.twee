@@ -394,12 +394,12 @@
 <<widget "birthChildElement">>
 	<<if _args[0]?.childId>>
 		<<capture _args>>
-			<div class="settingsToggleItem m-0 childName">
+			<div class="childItem m-0 childName">
 				<div>
 					<label><div>Name:</div><div><<print '<<textbox "_args[0].name" `_args[0].name or ""`>>'>></div></label>
 				</div>
 			</div>
-			<div class="settingsToggleItem m-0 childDetails">
+			<div class="childItem m-0 childDetails">
 				<<if _args[0].type isnot "human">>
 					<<childTypeDisplay _args[0]>>
 				<<else>>
@@ -954,6 +954,7 @@
 				<</if>>
 				<br><br>
 				Your vision fades as the door screeches open <<= $undergroundbrothel.robin ? "at last" : "once more">>.
+				<<specialClothesUnlock "set" "underground_brothel">>
 			<<case "alley">>
 				<<generate1>><<person1>>
 				<<if $bus is "residential" and $town_projects.thicket gte 4 and random(1,2) is 1>>
@@ -1871,6 +1872,43 @@
 						<br><br>
 
 						<<link [[Next|Pregnancy Birth Wolf Rescue]]>><<set $stress -= 5000>><<endevent>><</link>>
+					<<elseif $hallucinations gte 2 and $forest_shop_intro>>
+						You hear faint singing.
+						<br><br>
+
+						A brown blur crests along your peripheral vision. By the time you muster the strength to turn and look where it went, it's gone.
+						<br><br>
+
+						You turn back, and see three glowing green eyes staring at you from within the treeline. The head they belong to tilts, and some branches in the treeline tilt with it.
+						It steps out from the shadows cautiously, revealing that those branches are actually a rack of antlers. You expect a deer or elk, but instead you see a colossal brown fox with long legs, and an even longer body.
+						You take a step back, unnerved by its three-eyed gaze. A strangely shaped tail drags along the ground behind it. It vaguley reminds you of a whale's fluke, if it were split into three instead of two.
+						<br><br>
+
+						This creature is extremely hard to look at. The air around it blurs as it moves.
+						Its silhouette is certainly much more like an elk, especially with the antlers that seem to briefly grow every time you blink. <<awareness 12>><<ggawareness>>
+						<br><br>
+
+						Your mind screams for your body to move, to run, to do anything, but you're rooted to the spot.
+						It trots over, slowing just before reaching you. It slowly lowers its head, and presses it against your <<bellyDescription>>. <span class="blue">Your weakness fades, but the pain doesn't.</span>
+						It looks up at you, all three of its eyes blinking before rotating in position around its face. It stands up straight.
+						<<switch $bodysize>>
+							<<case 0>>Even on all fours, it completely dwarfs you in height.
+							<<case 1 2 3>>Even on all fours, it's taller than you are.
+						<</switch>>
+						<br><br>
+
+						It opens its mouth and grabs you by the nape of your neck, swinging you over its back.
+						You instinctively hold on to its brown fur. There's two streaks of bare skin along its back, which you thought were stripes at first. It sticks its head up, alert, as if searching for something.
+						A moment later, it starts to bound through the forest with you.
+						<br><br>
+
+						It gets faster the longer it runs. The wind rushes by. It's oddly peaceful. You bury your face in giant fox's fur. It smells of fresh rain.
+						<br><br>
+
+						Your journey leaves no tracks in the forest. You find your eyes closing by themselves, despite your pain. The singing stops.
+						<br><br>
+
+						<<link [[Next|Pregnancy Birth Forest Shop Rescue]]>><<endevent>><</link>>
 					<<else>>
 						<<endevent>>
 						<<generate1>><<person1>>
@@ -1894,6 +1932,72 @@
 						<<link [[Next|Pregnancy Birth Hospital Passout]]>><<set $stress -= 5000>><<endevent>><</link>>
 					<</if>>
 					-->
+				<<case "forestShop" "forestShopGarden">>
+					<<endevent>><<npc Gwylan>><<person1>>
+					<<if isGwylanAbsent()>>
+						You hear rapid footsteps. Nobody is here.
+						<br><br>
+
+						You scream in pain and fear. Nobody tells you everything will be okay.
+						<br><br>
+
+						Nobody can help you.
+						<br><br>
+
+						Nobody helps you stand.
+						<br><br>
+
+						Nobody apologises for not being able to be here with you.
+						<br><br>
+
+						Nobody leads you out of the forest shop.
+						<br><br>
+
+						Nobody holds you up as your consciousness slips.
+						<br><br>
+
+						<<link [[Next|Pregnancy Birth Hospital Rescue]]>><<set $stress -= 5000>><<endevent>><</link>>
+					<<else>>
+						<<if $location is "forest_shop">>
+							You hear rapid footsteps. "Oh. Oh!" Gwylan stares at you. "I knew I smelled something strange. Here, come here, quickly! You'll need fresh air, come on!"
+							<br><br>
+
+							<<if $gwylanSeen.includes("garden_seen")>>
+								<<if C.npc.Gwylan.dom gte 20>>
+									<<He>> takes your hand and leads you to the garden, towards the quilted room. <<takeHandholdingVirginity "Gwylan" "consensual">>
+								<<else>>
+									<<He>> leads you to the garden, towards the quilted room.
+								<</if>>
+							<<else>>
+								<<He>> places a black blindfold over your eyes. "Sorry, but my garden is usually off-limits. I can't have anyone knowing how to get in, even in extreme circumstances like this."
+								<br><br>
+
+								<<if $gwylanSeen.includes("garden")>>
+									<<He>> steadily walks you to the garden before removing it, and leads you to the quilted room.
+								<<else>>
+									<<set $gwylanSeen.pushUnique("garden")>>
+									<<He>> steadily walks you somewhere. You hear doors open and shut. Eventually, you smell roses and feel the fresh air on your skin. <<He>> removes your blindfold.
+									A large expanse of square stone tiles stretch along the ground, connecting patches of grass and raised sections filled with dirt, flowers and herbs.
+									Surrounding it all is an impressive weaving of crossed wooden stakes well over two metres high, with gaps just large enough to allow vines to grab and climb through, shielding the whole area from prying outside eyes.
+									<br><br>
+
+									There's another raised section, but this one is different. It's covered by a wooden roof,
+									<<if Weather.precipitation is "rain" or Weather.precipitation is "snow">>
+										untouched by the <<print Weather.precipitation>>,
+									<</if>>
+									and the inside is padded with various cushions and quilts. <<He>> leads you over to it.
+								<</if>>
+							<</if>>
+						<<else>>
+							You hear rapid footsteps. "Oh. Oh!" Gwylan stares at you. "I knew I smelled something strange. Here, come here, quickly!"
+						<</if>>
+						<br><br>
+
+						<<He>> guides you into sitting down with your legs spread. "Stay here, don't forget to breathe. You're going to be alright. I promise." <<He>> takes your hand and squeezes it before running off again. <<takeHandholdingVirginity "Gwylan" "consensual">>
+						<br><br>
+					
+						<<link [[Next|Pregnancy Birth Forest Shop]]>><<endevent>><</link>>
+					<</if>>
 				<<case "remy" "remyAbduction" "remyHarperExam" "remyNiki">>
 					<<link [[Next|Pregnancy Birth Livestock]]>><<set $stress -= 5000>><<endevent>><</link>>
 				<<case "farmroad">>
@@ -2152,7 +2256,7 @@
 			*/
 		<<if !C.npc[$_name].pregnancyAvoidance or $objectVersion.pregnancyAvoidance is undefined>>
 			<<switch $_name>>
-				<<case "Kylar" "Black Wolf" "Great Hawk" "Eden" "Ivory Wraith">><<set C.npc[$_name].pregnancyAvoidance to 0>>
+				<<case "Kylar" "Black Wolf" "Great Hawk" "Eden" "Ivory Wraith" "Gwylan">><<set C.npc[$_name].pregnancyAvoidance to 0>>
 				<<case "Robin" "Whitney" "Alex" "Wren" "Avery">><<set C.npc[$_name].pregnancyAvoidance to 50>>
 				<<default>><<set C.npc[$_name].pregnancyAvoidance to 100>>
 			<</switch>>

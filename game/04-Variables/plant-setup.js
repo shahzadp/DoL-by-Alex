@@ -1286,6 +1286,7 @@ function initPlants() {
 		rice: {
 			index: 72,
 			name: "rice",
+			seed_name: "rice",
 			singular: "cup of rice",
 			plural: "cups of rice",
 			plant_cost: 50,
@@ -2727,6 +2728,23 @@ function initPlants() {
 			season: [],
 			ingredients: ["turnip", "potato", "onion", "vegetable_oil", "salt"],
 			icon: "turnip_soup.png",
+		},
+
+		pink_rose: {
+			index: 147,
+			name: "pink_rose",
+			plural: "pink roses",
+			handheld: "rose|pink",
+			plant_cost: 1200,
+			difficulty: 3,
+			bed: "earth",
+			type: "flower",
+			days: 14,
+			multiplier: 1,
+			special: [],
+			season: ["spring", "autumn"],
+			ingredients: [],
+			icon: "pink_rose.png",
 		},
 	};
 

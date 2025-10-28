@@ -923,14 +923,14 @@
 
 			<<if $monster is 1>>
 				"Come, <<wife>>. Fly with me." <<bHis>> voice carries a tender plea as <<he>>
-				<<if $harpy gte 6 and $birdFly is 1>>
+				<<if $harpy gte 6 and $birdFly is 1 and !$plucked>>
 					extends <<his>> massive talon toward you.
 				<<else>>
 					crouches down, making room for you to climb onto <<bhis>> back.
 				<</if>>
 			<<else>>
 				<<bHe>> lets out a low trill, nodding out to the moor. <<bHe>> wants you to fly with <<bhim>>.
-				<<if $harpy lt 6 or $birdFly isnot 1>>
+				<<if $harpy lt 6 or $birdFly isnot 1 and !$plucked>>
 					<<bHe>> gets low to the ground, motioning for you to climb onto <<bhis>> back.
 				<</if>>
 			<</if>>
@@ -972,7 +972,9 @@
 			<<birdicon "preen">><<link [[Groom (0:15)|Bird Tower Groom]]>><<bird_pass 15>><<trauma -6>><<transform bird 1>><<npcincr "Great Hawk" love 1>><<endevent>><</link>><<ltrauma>><<glove>><br>
 		<</if>>
 		<<if $harpy gte 6 and $birdFly is 1 and $bird.injured is 0 and $bird.upgrades.decor gte 1 and !$daily.birdCasualFlight>>
-			<<if Weather.precipitation is "rain">>
+			<<if $plucked>>
+				<span class="red">Your wings haven't recovered from Gwylan's thorough preening yet.</span>
+			<<elseif Weather.precipitation is "rain">>
 				<span class="purple">It's too rainy to go flying casually.</span>
 			<<elseif $tiredness gte (C.tiredness.max / 5) * 4>>
 				<span class="red">You're too exhausted to go on a casual flight.</span>
@@ -1001,7 +1003,9 @@
 			<<pregnancyicon "Great Hawk">><<link "Rub <<bhis>> pregnant belly (0:30)" "Bird Tower Pregnant Belly Rub">><<transform bird 1>><<bird_pass 30>><<stress -6>><<trauma -6>><<endevent>><</link>><<llstress>><<lltrauma>><br>
 		<</if>>
 		<<if $harpy gte 6 and $birdFly is 1 and $bird.injured is 0 and $bird.upgrades.decor gte 1 and !$daily.birdCasualFlight>>
-			<<if Weather.precipitation is "rain">>
+			<<if $plucked>>
+				<span class="red">Your wings haven't recovered from Gwylan's thorough preening yet.</span>
+			<<elseif Weather.precipitation is "rain">>
 				<span class="purple">It's too rainy to go flying casually.</span>
 			<<elseif $tiredness gte (C.tiredness.max / 5) * 4>>
 				<span class="red">You're too exhausted to go on a casual flight.</span>
@@ -1063,7 +1067,11 @@
 
 <<widget "bird_fly_options">>
 	<<if $harpy gte 6>>
-		<<if $birdFly isnot 1>>
+		<<if $plucked>>
+			The wind could carry you a long way, <span class="red">but your wings haven't recovered from Gwylan's thorough preening.</span> They should at least carry you down safely.
+			<br>
+			<<birdicon "fly_down">><<link [[Glide to the base of the tower (0:01)|Bird Tower Glide 2]]>><<unset $birdPerch>><<bird_pass 1>><<endevent>><</link>><<flight_text>><br>
+		<<elseif $birdFly isnot 1>>
 			The wind could carry you a long way, <span class="red">but you don't know how to fly.</span> Your wings should at least carry you down safely.
 			<br>
 			<<if ($bird.activity is "sing" or $bird.activity is "groom") and $bird.state is "home">>
@@ -2406,7 +2414,7 @@
 						}>>
 						<<set $_upgrade.housekeeping to 0>>
 					<<case 3>>
-						<span class="green">Bonfire (3)</span>: Burns for a long time. Cooks and dries lurkers quickly. Cozy.
+						<span class="green">Bonfire (3)</span>: Burns for a long time. Cooks and dries lurkers quickly. Cosy.
 				<</switch>>
 			<<case "pot">>
 				<!-- This is set up as intended, I know it looks weird but the upgrade value gets set to 1 when the player finds the cooking pot -->

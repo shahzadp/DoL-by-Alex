@@ -147,7 +147,7 @@ const Time = (() => {
 			/* 8 minute oxygen recovery */
 			const recoveryTime = 480;
 			const recoveryIncrements = V.oxygenmax / recoveryTime;
-			V.oxygen += recoveryIncrements*seconds;
+			V.oxygen += recoveryIncrements * seconds;
 			if (V.oxygen >= V.oxygenmax) {
 				V.oxygen = V.oxygenmax;
 				delete V.oxygenRecovery;
@@ -235,6 +235,12 @@ const Time = (() => {
 		const start = new DateTime(date.year, 1, 1);
 		const diff = date.timeStamp - start.timeStamp;
 		return Math.floor(diff / TimeConstants.secondsPerDay);
+	}
+
+	function hasDatePassed(month, day) {
+		let eventDate = new DateTime(Time.startDate.year, month, day);
+		if (eventDate.timeStamp < Time.startDate.timeStamp) eventDate = new DateTime(Time.startDate.year + 1, month, day);
+		return eventDate.timeStamp <= Time.date.timeStamp;
 	}
 
 	function getSecondsSinceMidnight(date) {
@@ -420,6 +426,7 @@ const Time = (() => {
 		getNextWeekdayDate: weekDay => currentDate.getNextWeekdayDate(weekDay),
 		getPreviousWeekdayDate: weekDay => currentDate.getPreviousWeekdayDate(weekDay),
 		isWeekEnd: () => currentDate.weekEnd,
+		hasDatePassed,
 		betweenHours,
 	});
 })();
@@ -477,7 +484,7 @@ function weekPassed() {
 		V.history_down_message = 1;
 		wikifier("school_skill_down", "history");
 	}
-	if (Time.schoolTerm) {
+	if (Time.schoolTerm && !(V.hypnosis_traits.devotion >= 3)) {
 		V.science_exam = Math.clamp(V.science_exam - 7, -107, 200);
 		V.maths_exam = Math.clamp(V.maths_exam - 7, -107, 200);
 		V.english_exam = Math.clamp(V.english_exam - 7, -107, 200);
@@ -498,7 +505,6 @@ function weekPassed() {
 	}
 	V.robinmoney += (V.robin.stayup >= 1 ? 250 : 300) + V.robin.moneyModifier;
 	if (V.robinmoney > 4000) V.robinmoney = 4000;
-	V.compoundcentre = 0;
 	if (V.edenfreedom >= 1 && V.edenshopping === 2) V.edenshopping = 0;
 	if (V.loft_kylar) V.loft_spray = 0;
 	if (V.farm) {
@@ -618,7 +624,13 @@ function dayPassed() {
 	if (V.chef_rework > 0) V.chef_rework--;
 	if (V.chef_sus > 0) V.chef_sus--;
 	if (V.stall_rejected >= 1) V.stall_rejected = Math.clamp(V.stall_rejected - 1, 0, 100);
-	if (V.temple_garden >= 1) V.temple_garden = Math.clamp(V.temple_garden - 10, 0, 100);
+	if (V.temple_garden >= 1) {
+		if (V.gwylan?.ritual >= Time.date.timeStamp) {
+			V.temple_garden = Math.clamp(V.temple_garden - 2, 0, 100);
+		} else {
+			V.temple_garden = Math.clamp(V.temple_garden - 10, 0, 100);
+		}
+	}
 	if (V.temple_quarters >= 1) V.temple_quarters = Math.clamp(V.temple_quarters - 10, 0, 100);
 	if (V.temple_chastity_timer > 0) V.temple_chastity_timer--;
 	if (V.temple_rank !== "prospective" && V.temple_rank !== "initiate") {
@@ -675,7 +687,9 @@ function dayPassed() {
 		delete V.community_service_done;
 	}
 
-	if (V.awareness >= 300) V.awarelevel = 2;
+	if (V.awareness >= 500) V.awarelevel = 4;
+	else if (V.awareness >= 400) V.awarelevel = 3;
+	else if (V.awareness >= 300) V.awarelevel = 2;
 	else if (V.awareness >= 200) V.awarelevel = 1;
 	else if (V.awareness <= -1) V.awarelevel = -1;
 	else V.awarelevel = 0;
@@ -683,9 +697,17 @@ function dayPassed() {
 	if (V.awarelevel <= 1 && V.loveInterest.secondary !== "None") {
 		V.loveInterest_message = 1;
 		V.loveInterest.secondary = "None";
+		V.loveInterest.tertiary = "None";
 		V.effectsmessage = 1;
 	} else if (V.awarelevel >= 2 && V.loveInterest.primary !== "None" && V.loveInterest.secondary === "None" && !V.loveInterestAwareMessage) {
 		V.loveInterest_message = 2;
+		V.effectsmessage = 1;
+	} else if (V.awarelevel <= 2 && V.loveInterest.tertiary !== "None" && V.loveInterestAwareMessage === 2) {
+		V.loveInterest_message = 3;
+		V.loveInterest.tertiary = "None";
+		V.effectsmessage = 1;
+	} else if (V.awarelevel >= 3 && V.loveInterest.secondary !== "None" && V.loveInterest.tertiary === "None" && V.loveInterestAwareMessage === 1) {
+		V.loveInterest_message = 4;
 		V.effectsmessage = 1;
 	}
 	if (V.pound) {
@@ -946,7 +968,7 @@ function hourPassed(hours) {
 			});
 		});
 
-		if (V.ejactrait >= 1) V.stress -= (V.goocount + V.semencount) * 10;
+		if (V.ejactrait >= 1 && V.tiredness < C.tiredness.max) V.stress -= (V.goocount + V.semencount) * 10;
 		if (V.kylarwatched) V.kylarwatchedtimer--;
 		if (V.parasite.nipples.name) statChange.milkvolume(1);
 		if (V.worn.head.name === "hairpin" || V.sexStats.pills.pills["Hair Growth Formula"].doseTaken) {
@@ -955,7 +977,7 @@ function hourPassed(hours) {
 			V.hairlength += count;
 			V.fringelength += count;
 		}
-		if (V.earSlime.defyCooldown) {
+		if (V.earSlime.defyCooldown && !V.hypnosis_traits.silence) {
 			V.earSlime.defyCooldown--;
 			if (numberOfEarSlime() > 1 && V.earSlime.growth < 100) V.earSlime.defyCooldown--;
 			if (V.earSlime.defyCooldown <= 0) V.earSlime.defyCooldown = 0;
@@ -989,12 +1011,13 @@ function hourPassed(hours) {
 	if (
 		V.sexStats.vagina.menstruation.running &&
 		(V.sexStats.vagina.menstruation.currentState === "pregnant" ||
-			(V.sexStats.vagina.menstruation.currentState === "normal" && (V.settings.playerPregnancyHumanEnabled === true || V.settings.playerPregnancyBeastEnabled === true)))
+			(V.sexStats.vagina.menstruation.currentState === "normal" &&
+				(V.settings.playerPregnancyHumanEnabled === true || V.settings.playerPregnancyBeastEnabled === true)))
 	) {
 		V.pregnancyDailyEvent = true;
 	}
 
-	V.openinghours = Time.hour >= 8 && Time.hour < 21 ? 1 : 0;
+	V.openinghours = Time.hour >= 7 && Time.hour < 21 ? 1 : 0;
 	V.timeMessages.pushUnique("feats");
 
 	if (!V.wolfevent) V.wolfevent = 1;
@@ -1136,6 +1159,7 @@ function dawnCheck() {
 	if (V.schoolBlocked) delete V.schoolBlocked;
 
 	delete V.foxCrimeProgress;
+	delete V.foxCrimeLimit;
 	for (const crimeKeys of Object.keys(setup.crimeNames)) {
 		if (V.crime[crimeKeys].daily >= C.crime.spree) {
 			// If the player commits too much of the same type of crime in one day, they leave behind more evidence.
@@ -1419,7 +1443,7 @@ function dailyNPCEffects() {
 			}
 		}
 		V.wraith.days++;
-		if (V.wraith.days >= 31 && V.wraithIntro && !V.wraithCompoundCooldown && !V.wraithCompoundEvent && V.compoundcard === 2) {
+		if (V.wraith.days >= 31 && V.wraithIntro && !V.wraithCompoundCooldown && !V.wraithCompoundEvent && V.compound.card === 2) {
 			if (!V.wraithCompoundChance) {
 				V.wraithCompoundChance = 0;
 				if (V.wraith.offspring === "sold") V.wraithCompoundChance += 10;
@@ -1433,6 +1457,64 @@ function dailyNPCEffects() {
 			}
 		} else if (V.wraithCompoundCooldown > 0) V.wraithCompoundCooldown--;
 		else if (V.wraithCompoundCooldown < 1) delete V.wraithCompoundCooldown;
+	}
+
+	// Gwylan
+	if (C.npc.Gwylan.init === 1 && V.gwylan) {
+		if (C.npc.Gwylan.state === "active" && !isGwylanAbsent() && !V.daily.gwylan.noTalk && !V.daily.gwylan.locked) {
+			if (V.gwylan.request.event && V.gwylan.request.timer) {
+				if (V.hypnosis_traits.devotion >= 1 && V.gwylan.request.timer < Time.date.timeStamp) {
+					V.gwylan.request.timer = V.gwylan.request.missed
+						? new DateTime(Time.date).addDays(4).timeStamp
+						: new DateTime(Time.date).addDays(2).timeStamp;
+					const traumaDevotion = 15 * V.hypnosis_traits.devotion;
+					const hallucinogenDevotion = 40 * V.hypnosis_traits.devotion;
+					statChange.trauma(traumaDevotion);
+					statChange.hallucinogen(hallucinogenDevotion);
+					if (["meetAtShop", "meetAtCafe"].includes(V.gwylan.request.event)) {
+						V.hypnosis_devotion_message = V.gwylan.request.event;
+					} else {
+						V.hypnosis_devotion_message = "request";
+					}
+					V.effectsmessage = 1;
+					V.gwylan.request.missed = 1;
+				}
+				if (V.gwylan.request.timer < Time.date.timeStamp && ["meetAtShop", "meetAtCafe"].includes(V.gwylan.request.event)) {
+					V.gwylan.hunting = 1;
+				}
+			}
+			if (V.gwylan.timer.ritual && Time.date.dayDifference(new DateTime(V.gwylan.timer.ritual)) <= 0 && V.gwylanSeen.includes("ritual_sex")) {
+				if (Time.date.dayDifference(new DateTime(V.gwylan.timer.ritual)) <= -7 && !V.gwylan.ritualMissed) {
+					V.gwylan.ritualMissed = true;
+					if (V.hypnosis_traits.devotion >= 1) {
+						V.effectsmessage = 1;
+						V.hypnosis_devotion_message = "ritual";
+					}
+				}
+				if (V.gwylanSeen.includes("partners") && V.gwylan.ritualMissed) C.npc.Gwylan.lust += 1;
+				if (
+					V.gwylanSeen.includes("yearning") &&
+					C.npc.Gwylan.dom >= 50 &&
+					V.gwylan.ritualMissed &&
+					random(1, 200) <= C.npc.Gwylan.dom + C.npc.Gwylan.lust &&
+					V.gwylan.wary <= 1
+				) {
+					if (V.gwylanSeen.includes("romance") && Time.date.dayDifference(new DateTime(V.gwylan.timer.ritual)) <= -14) V.gwylan.hunting = 3;
+					else V.gwylan.hunting = 2;
+				}
+			}
+		}
+		if (V.gwylan.timer.wrap && Time.date.dayDifference(V.gwylan.timer.wrap) <= 0) delete V.gwylan.timer.wrap;
+		if (V.gwylan.timer.randomOrgasm && Time.date.dayDifference(V.gwylan.timer.randomOrgasm) <= 0) delete V.gwylan.timer.randomOrgasm;
+		if (V.gwylan.timer.bloodVisit && Time.date.dayDifference(new DateTime(V.gwylan.timer.bloodVisit)) <= 0) delete V.gwylan.timer.bloodVisit;
+		if (V.gwylan.timer.bloodKnock && Time.date.dayDifference(new DateTime(V.gwylan.timer.bloodKnock)) <= 0) delete V.gwylan.timer.bloodKnock;
+		if (V.gwylan.timer.nobody && Time.date.dayDifference(V.gwylan.timer.nobody) <= 0) delete V.gwylan.timer.nobody;
+		if (C.npc.Gwylan.state === "scorned" && V.gwylan.timer.scorned && V.gwylan.request.event !== "yearning") {
+			if (Time.date.dayDifference(new DateTime(V.gwylan.timer.scorned)) <= 0) {
+				V.yearningLetter = 1;
+				delete V.gwylan.timer.scorned;
+			}
+		}
 	}
 
 	wikifier("relationshipclamp");
@@ -1564,6 +1646,35 @@ function dailyPlayerEffects() {
 	for (const bodypart of setup.bodyparts) {
 		if (V.skin[bodypart].pen === "marker" && random(0, 1)) wikifier("bodywriting_clear", bodypart);
 	}
+
+	if (Object.keys(V.hypnosisTimers)?.length) {
+		for (const key in V.hypnosisTimers) {
+			if (
+				(key !== "devotion" && !(V.hypnosis_traits.devotion >= 5)) ||
+				(key === "devotion" && !(V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1))
+			) {
+				V.hypnosisTimers[key].time--;
+			}
+			if (key !== "devotion" && V.hypnosisTimers[key].time <= 0) {
+				V.hypnosis_timer_messages ||= [];
+				V.hypnosis_timer_messages.pushUnique(key);
+				V.effectsmessage = 1;
+			} else if (key === "devotion" && V.hypnosisTimers.devotion.time <= gwylanHypnoMax("value", V.hypnosis_traits.devotion - 1)) {
+				V.hypnosis_timer_messages ||= [];
+				V.hypnosis_timer_messages.pushUnique(key);
+				V.effectsmessage = 1;
+			}
+		}
+	}
+
+	if (V.auriga_scar && V.location !== "asylum") {
+		const scarTrauma = V.auriga_scar * 50;
+		const scarAwareness = V.auriga_scar;
+		const scarPurity = V.auriga_scar * -5;
+		if (V.trauma <= (V.traumamax / 5) * 3) statChange.trauma(scarTrauma);
+		statChange.awareness(scarAwareness);
+		statChange.purity(scarPurity);
+	}
 }
 
 function dailyTransformationEffects() {
@@ -1604,6 +1715,11 @@ function dailyTransformationEffects() {
 		V.angelBanish = V.angelBanishMax;
 	} else {
 		V.angelBanish = 0;
+	}
+
+	if (V.plucked) {
+		V.plucked--;
+		if (V.plucked <= 0) delete V.plucked;
 	}
 
 	wikifier("transformationStateUpdate");
@@ -1671,6 +1787,7 @@ function yearlyEventChecks() {
 	// Valentines
 	if (Time.monthName === "February" && Time.monthDay >= 6 && Time.monthDay <= 14) {
 		V.valentines = 1;
+		V.valentinesClothesMessage = 1;
 	} else if (V.valentines) {
 		delete V.valentines;
 		delete V.valentines_eden;
@@ -1682,6 +1799,7 @@ function yearlyEventChecks() {
 	// Halloween
 	if (Time.monthName === "October" && Time.monthDay >= 21) {
 		V.halloween = 1;
+		V.halloweenClothesMessage = 1;
 	} else if (V.halloween) {
 		if (V.halloween_robin_costume && C.npc.Robin.outfits && C.npc.Robin.outfits.includes(V.halloween_robin_costume))
 			wikifier("removeNNPCOutfit", "Robin", V.halloween_robin_costume);
@@ -1708,6 +1826,7 @@ function yearlyEventChecks() {
 	// Christmas
 	if (Time.monthName === "December" && Time.monthDay >= 18 && Time.monthDay <= 25) {
 		V.christmas = 1;
+		V.christmasClothesMessage = 1;
 	} else if (V.christmas) {
 		delete V.christmas;
 		delete V.christmas_event;
@@ -2108,14 +2227,17 @@ function getArousal(passMinutes) {
 	if (V.parasite.right_thigh.name) addedArousal += minuteMultiplier;
 	if (V.drugged > 1) addedArousal += minuteMultiplier;
 	if (playerHasButtPlug()) addedArousal += minuteMultiplier;
-	if (V.parasite.left_ear.name === "slime" && random(1, 10) >= 9) statChange.drugs(Math.min(60, passMinutes));
-	if (V.parasite.right_ear.name === "slime" && random(1, 10) >= 9) statChange.drugs(Math.min(60, passMinutes));
+	if (numberOfEarSlime()) {
+		if (V.parasite.left_ear.name === "slime" && random(1, 10) >= 9) statChange.drugs(Math.min(60, passMinutes));
+		if (V.parasite.right_ear.name === "slime" && random(1, 10) >= 9) statChange.drugs(Math.min(60, passMinutes));
+	}
 	if (V.earSlime.growth > 100 && random(1, 10) >= 9) statChange.drugs(Math.min(60, passMinutes));
 
 	if (
-		V.worn.genitals.name === "chastity parasite" ||
-		(V.parasite.penis.name && V.parasite.penis.name === "parasite") ||
-		(V.parasite.clit.name && V.parasite.clit.name === "parasite")
+		!V.hypnosis_traits.silence &&
+		(V.worn.genitals.name === "chastity parasite" ||
+			(V.parasite.penis.name && V.parasite.penis.name === "parasite") ||
+			(V.parasite.clit.name && V.parasite.clit.name === "parasite"))
 	) {
 		if (!V.masturbating) {
 			if (V.earSlime.corruption >= 100 && !V.earSlime.defyCooldown && !V.earSlime.vibration && !V.earSlime.event) {

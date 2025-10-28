@@ -537,6 +537,22 @@ Zohar
 				<<if $nikiSeen is undefined>>
 					<<set $nikiSeen to []>>
 				<</if>>
+			<<case Gwylan>>
+				<<set $gwylanSeen to []>>
+				<<set $gwylanTalked to []>>
+				<<set $gwylan to {
+					progress: 0,
+					stage: 0,
+					sea: 0,
+					wary: 0,
+					robin: 0,
+					purged: 0,
+					timer: {},
+					request: {},
+					requestCount: 0,
+					requestDone: false,
+				}>>
+				<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
 			<<default>>
 		<</switch>>
 	<</if>>
@@ -573,6 +589,11 @@ Zohar
 					"maleSchoolLong", "femaleSchoolLong",
 					"maleSchoolSwimShirt", "femaleSchoolSwim",
 					"neutralRobe", "coldTrench"
+				)>>
+			<<case Gwylan>>
+				<<set $NPCName[_i].outfits.pushUnique(
+					"gwylanTown", "gwylanCold", "maleWarm2", "femaleWarmTank",
+					"witch", "gloomyTunic", "ritualRobes", "vintageMale", "vintageFemale"
 				)>>
 			<<case Alex>><<set $NPCName[_i].outfits.pushUnique("wildsFlannel", "AlexJorts", "AlexSkirt", "coldCoat")>>
 			<<case Avery>><<set $NPCName[_i].outfits.pushUnique("business", "maleFormal1", "femaleFormal1", "pyjamas")>>
@@ -667,6 +688,20 @@ Zohar
 				<<else>>
 					<<generateNPCClothes $NPCName[_i]>>
 				<</if>>
+			<<case Gwylan>>
+				<<if gwylanSchedule() is "shop">>
+					<<if $location is "forest_shop_garden" and ($beastRitual or $sexRitual)>>
+						<<npcClothesName $NPCName[_i] "ritualRobes">>
+					<<else>>
+						<<npcClothesName $NPCName[_i] "gloomyTunic">>
+					<</if>>
+				<<else>>
+					<<if Time.season is "winter">>
+						<<npcClothesType $NPCName[_i] "cold">>
+					<<else>>
+						<<generateNPCClothes $NPCName[_i]>>
+					<</if>>
+				<</if>>
 			<<case Eden Morgan Briar Landry Remy>>
 				<<npcClothesType $NPCName[_i] _nam>>
 			<<case Darryl>>
@@ -733,7 +768,7 @@ Zohar
 			}>>
 		<<elseif !$NPCName[_i].outfits>>
 			<<error {
-				message	: `NPC (${_nam}) attempted to remove outfit (Outfit name: ${$_newNPCOutfit}) while having no outfits. Why don't you remove that pesky skin of yours? Please inform PurityGuy.`,
+				message	: `NPC (${_nam}) attempted to remove outfit (Outfit name: ${$_newNPCOutfit}) while having no outfits. Please inform PurityGuy.`,
 				source	: Utils.GetStack()
 			}>>
 		<<elseif !$NPCName[_i].outfits.some(x => x.includes($_newNPCOutfit))>>
@@ -890,6 +925,7 @@ Zohar
 	<<case "Bailey">>
 		<<set $NPCList[_npcno].health to 400>>
 		<<set $NPCList[_npcno].healthmax to 400>>
+		<<set $NPCList[_npcno].traits.push("unforgiving")>>
 	<<case "Avery">>
 		<<if $auriga_artefact is "Avery">>
 			<<set $NPCList[_npcno].health to 600>>
@@ -897,6 +933,9 @@ Zohar
 		<<else>>
 			<<set $NPCList[_npcno].health to 200>>
 			<<set $NPCList[_npcno].healthmax to 200>>
+		<</if>>
+		<<if $avery_fate isnot "saved">>
+			<<set $NPCList[_npcno].traits.push("unforgiving")>>
 		<</if>>
 	<<case "Harper">>
 		<<set $NPCList[_npcno].health to 200>>
@@ -917,7 +956,19 @@ Zohar
 		<<set $NPCList[_npcno].health to 200>>
 		<<set $NPCList[_npcno].healthmax to 200>>
 		/* I'm so sorry.*/
-		<<set $NPCName[_i].pregnancyAvoidance to random(0,100)>>
+		<<set $NPCName[_npcno].pregnancyAvoidance to random(0,100)>>
+	<<case "Gwylan">>
+		<<set $NPCList[_npcno].health to 250>>
+		<<set $NPCList[_npcno].healthmax to 250>>
+		<<set $NPCName[_npcno].pregnancyAvoidance to 0>>
+		<<set $NPCList[_npcno].traits.push("hypnotist", "willful", "deviant", "drug resistant")>>
+		<<if $gwylan?.wary gte 5>>
+			<<set $NPCList[_npcno].traits.push("unforgiving")>>
+		<</if>>
+		<<set $NPCList[_npcno].skills to {}>>
+		<<set $NPCList[_npcno].skills.security to 800>>
+		<<set $NPCList[_npcno].skills.athletics to 800>>
+		<<set _condomIgnore to true>><<set _strapIgnore to true>>
 	<<default>>
 		<<set $NPCList[_npcno].health to 200>>
 		<<set $NPCList[_npcno].healthmax to 200>>
@@ -928,7 +979,7 @@ Zohar
 	<<set $NPCList[_npcno].breastdesc to $NPCName[_i].breastdesc>>
 	<<set $NPCList[_npcno].vagina to $NPCName[_i].vagina>>
 
-	<<if $settings.breastFeedingEnabled and _nam is "Morgan" and $NPCName[_i].pronoun is "f" and $NPCName[_i].breastsize gt 0>>
+	<<if $settings.breastFeedingEnabled and (_nam is "Morgan" or _nam is "Gwylan" or npcIsPregnant(_nam)) and $NPCName[_i].pronoun is "f" and $NPCName[_i].breastsize gt 0>>
 		<<set $NPCList[_npcno].lactation to 1>>
 	<</if>>
 
@@ -1138,7 +1189,16 @@ Zohar
 	<<case love>>
 		<<set $NPCName[_i].love += _val>>
 	<<case dom>>
-		<<set $NPCName[_i].dom += _val>>
+		<<if _nam is "Gwylan" and _val gt 0>>
+			<<set $_stage to Math.floor($NPCName[_i].dom / 25)>>
+			<<if $_stage gte 1 and !$gwylanSeen?.includes("yearning") or $_stage gte 3 and !$gwylanSeen?.includes("partners") or $gwylan?.wary gt 1>>
+				<!-- No increase -->
+			<<else>>
+				<<set $NPCName[_i].dom += _val>>
+			<</if>>
+		<<else>>
+			<<set $NPCName[_i].dom += _val>>
+		<</if>>
 	<<case trust>>
 		<<set $NPCName[_i].trust += _val>>
 	<<case lust>>
@@ -1717,6 +1777,120 @@ Zohar
 					<</if>>
 				<</if>>
 			<</if>>
+		<<case Gwylan>>
+			<<run statusCheck("Gwylan")>>
+			<<if isGwylanAbsent() is "nobody">><span class="red">Nobody</span><<else>>Gwylan<</if>>
+			<<if C.npc.Gwylan.state is "scorned">>
+				<<if $yearningLetter is 2>>
+					is <span class="blue">waiting for you at the forest shop</span>.
+				<<elseif $gwylanSeen?.includes("yearning_pub")>>
+					is <span class="pink">sulking</span>.
+				<<else>>
+					has <span class="red">scorned your affections</span>.
+				<</if>>
+			<<elseif $gwylanSeen?.includes("ritual_sex") and $gwylan?.timer.ritual and Time.date.dayDifference(new DateTime($gwylan.timer.ritual)) lte 0>>
+				<<if $gwylan.hunting gte 2>>
+					<<if $gwylanSeen?.includes("romance")>>
+						<span class="red">can't do this without you anymore</span>.
+					<<else>>
+						is <span class="red">looking for you</span>.
+					<</if>>
+				<<elseif _gwylanStatus.includesAny("heat") and _gwylanTF.known>>
+					is <span class="lewd">eager to mate with you</span>.
+				<<elseif _gwylanStatus.includesAny("aroused", "lust")>>
+					<span class="lewd">eagerly awaits you at the forest shop</span>.
+				<<else>>
+					is <span class="blue">ready to enact the ritual with you</span>.
+				<</if>>
+			<<elseif $gwylanSeen?.includes("romance")>>
+				<<if isGwylanAbsent() is "nobody">>
+					is home.
+				<<elseif $gwylan.taken>>
+					<<if $gwylan.taken is "scarred">>
+						will <span class="red">protect you from the world, and protect the world from you</span>.
+					<<elseif C.npc.Gwylan.yearning gte 140>>
+						wants to <span class="lewd">pamper you forever</span>.
+					<<else>>
+						will <span class="lewd">care for you</span>.
+					<</if>>
+				<<elseif $gwylan?.wary gte 2 && ($brownFoxRevealed or $gwylanSeen?.includes("auriga_scar"))>>
+					<<if $avery_fate is "ascended" and $auriga_scar gte 1>>
+						has been <span class="red">broken by your betrayal</span>.
+					<<else>>
+						is <span class="red">disappointed in you</span>.
+					<</if>>
+				<<elseif C.npc.Gwylan.dom gte 140>>
+					<span class="forest-green">won't stop thinking of you</span>.
+				<<elseif C.npc.Gwylan.dom gte 110>>
+					<span class="green">can't stop thinking of you</span>.
+				<<elseif C.npc.Gwylan.dom gte 80>>
+					<span class="green">thinks of you all the time</span>.
+				<<elseif C.npc.Gwylan.dom gte 50>>
+					<span class="green">thinks of you often</span>.
+				<<else>>
+					<span class="teal">thinks of you fondly</span>.
+				<</if>>
+			<<elseif $gwylanSeen?.includes("partners")>>
+				<<if $gwylan?.wary gte 2 && ($brownFoxRevealed or $gwylanSeen?.includes("auriga_scar"))>>
+					<<if $avery_fate is "ascended" and $auriga_scar gte 1>>
+						feels <span class="red">betrayed</span>.
+					<<else>>
+						is <span class="red">disappointed in you</span>.
+					<</if>>
+				<<elseif _gwylanStatus.includes("wantsPregnancy")>>
+					is <span class="pink">lost in you</span>.
+				<<elseif C.npc.Gwylan.dom gte 140>>
+					seems <span class="witchbloom">conflicted</span>.
+				<<elseif _gwylanStatus.includes("heat")>>
+					<<if _gwylanTF.known>>
+						is <span class="pink">in <<if C.npc.Gwylan.gender is "m">>rut<<else>>heat<</if>></span>.
+					<<else>>
+						is <span class="pink">acting strange around you</span>.
+					<</if>>
+				<<elseif C.npc.Gwylan.dom gte 110>>
+					<span class="green">can't stop thinking of you</span>.
+				<<elseif C.npc.Gwylan.dom gte 80>>
+					<span class="green">thinks of you all the time</span>.
+				<<elseif C.npc.Gwylan.dom gte 50>>
+					<span class="green">thinks of you often</span>.
+				<<else>>
+					<span class="teal">thinks of you fondly</span>.
+				<</if>>
+			<<elseif $gwylanSeen?.includes("yearning") and C.npc.Gwylan.dom gte 25>>
+				<<if $gwylan?.wary gte 2 && ($brownFoxRevealed or $gwylanSeen?.includes("auriga_scar"))>>
+					<<if $avery_fate is "ascended" and $auriga_scar gte 1>>
+						feels <span class="red">betrayed</span>.
+					<<else>>
+						is <span class="red">wary of you</span>.
+					<</if>>
+				<<elseif C.npc.Gwylan.dom gte 75 and $dateCount?.GwylanSex gte 5>>
+					is <span class="pink">giving in to your advances</span>.
+				<<elseif _gwylanStatus.includes("lust")>>
+					is <span class="pink">wavering</span>.
+				<<elseif C.npc.Gwylan.dom gte 50>>
+					<span class="teal">enjoys your companionship</span>.
+				<<else>>
+					wants things to go <span class="purple">back to the way they were</span>.
+				<</if>>
+			<<else>>
+				<<if $gwylan?.wary gt 1 && ($brownFoxRevealed or $gwylanSeen?.includes("auriga_scar"))>>
+					is <span class="red">wary of you</span>.
+				<<elseif _gwylanStatus.includes("aroused")>>
+					is <span class="pink">nervous about how close you are becoming</span>.
+				<<elseif _gwylanLovePercent gte 80>>
+					<span class="green">knows there's something special about you</span>.
+				<<elseif _gwylanLovePercent lt 65 and $gwylanTalked?.length gte 6 and !$daily.gwylan.clothesTalk>>
+					is <span class="blue">eager to hear more of your stories</span>.
+				<<elseif _gwylanLovePercent gte 60>>
+					<span class="teal">thinks there's something special about you</span>.
+				<<elseif _gwylanLovePercent gte 40>>
+					is <span class="lblue">fascinated by you</span>.
+				<<elseif _gwylanLovePercent gte 20 or $avery_mansion>>
+					is <span class="blue">curious about you</span>.
+				<<else>>
+					has no strong opinion of you.
+				<</if>>
+			<</if>>
 
 		<!-- Persons of interest -->
 
@@ -2201,25 +2375,3 @@ Zohar
 	<</if>>
 <</widget>>
 
-/* <<widget "NPCStatusCheck">>	[OBSOLETE; use statusCheck(name)]
-	<!-- When NPCs are updated and made compatible with statusCheck-style widgets, add them to here. Make a new if statement, NOT an elseif -->
-	<!-- Usage: call a SINGLE argument with every relevant NPC. <<NPCStatusCheck("Kylar Sydney")>> will call <<kylarStatusCheck>> and <<sydneyStatusCheck>> --> [DOES NOT WORK WITH statusCheck(name)]
-	<<if _args[0].includes("Robin")>>
-		<<set _robin to C.npc.Robin>>
-		<<if _robin.init is 1>>
-			<<robinStatusCheck>>
-		<</if>>
-	<</if>>
-	<<if _args[0].includes("Kylar")>>
-		<<set _kylar to C.npc.Kylar>>
-		<<if _kylar.init is 1>>
-			<<kylarStatusCheck>>
-		<</if>>
-	<</if>>
-	<<if _args[0].includes("Sydney")>>
-		<<set _sydney to C.npc.Sydney>>
-		<<if _sydney.init is 1>>
-			<<sydneyStatusCheck>>
-		<</if>>
-	<</if>>
-<</widget>> */

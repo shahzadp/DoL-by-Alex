@@ -423,11 +423,28 @@ You decide not to investigate the source of the noise; you have your own things 
 	<br><br>
 <</if>>
 
+<<set _robin to statusCheck("Robin")>>
 <<if $phase is 1>>
 	<<set $phase to 0>>
-	<<set _robin to statusCheck("Robin")>>
-	<<if $rng gte 51 and _robin_location is "orphanage" and _robin.trauma lt 80 and $daily.robin.tending isnot 1>>
-	<<set $daily.robin.tending to 1>>
+	/* TODO: eventpool */
+	<<if $rng gte 61 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
+		Something brushes against your leg. You shake it off, assuming it an insect, but it happens again. You look down and see a stem curling around your ankle.
+		<br><br>
+
+		<<link [[Shake it off|Garden Stem Shake]]>><</link>>
+		<br>
+		<<link [[Look closer|Garden Stem Look]]>><</link>>
+		<br>
+	<<else>>
+		<<hallucinogen 60>>
+		A strange scent rises from the plants as you water. You feel lightheaded. <<ghallucinogens>><<if $backgroundTraits.includes("plantlover")>><<arousal 6>><<garousal>><</if>>
+		<br><br>
+
+		<<link [[Next|Garden Flowers]]>><</link>>
+		<br>
+	<</if>>
+<<elseif $phase2 is "watered" and $rng lte (C.npc.Robin.love - 50) and _robin_location is "orphanage" and _robin.trauma lt 80 and $daily.robin.tending isnot 1>>
+	<<set $daily.robin.tending to 1>><<set $phase2 to 0>>
 	<<npc Robin>><<person1>>
 	<<if _robin.trauma gte 40>>
 		You hear a gentle patter of footsteps disturbing the grass. It's Robin.
@@ -454,23 +471,6 @@ You decide not to investigate the source of the noise; you have your own things 
 		<<link [[Say you're finished|Garden Robin Finished]]>><</link>>
 		<br>
 	<</if>>
-	/* TODO: eventpool */
-	<<elseif $rng gte 31 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
-		Something brushes against your leg. You shake it off, assuming it an insect, but it happens again. You look down and see a stem curling around your ankle.
-		<br><br>
-
-		<<link [[Shake it off|Garden Stem Shake]]>><</link>>
-		<br>
-		<<link [[Look closer|Garden Stem Look]]>><</link>>
-		<br>
-	<<else>>
-		<<hallucinogen 60>>
-		A strange scent rises from the plants as you water. You feel lightheaded. <<ghallucinogens>><<if $backgroundTraits.includes("plantlover")>><<arousal 6>><<garousal>><</if>>
-		<br><br>
-
-		<<link [[Next|Garden Flowers]]>><</link>>
-		<br>
-	<</if>>
 <<else>>
 	<<display_plot garden>>
 	<<if !$plants_known.includes("daisy")>>
@@ -478,7 +478,7 @@ You decide not to investigate the source of the noise; you have your own things 
 		<br>
 	<</if>>
 	<br>
-	<<getouticon>><<link [[Leave|Garden]]>><<handheldon>><</link>>
+	<<getouticon>><<link [[Leave|Garden]]>><<handheldon>><<endevent>><</link>>
 	<br>
 <</if>>
 
@@ -493,6 +493,7 @@ You find some seeding daisies growing within a tuft of wild grass near the back 
 
 <span class="gold">You can now grow <<icon "tending/daisy.png">> daisies.</span>
 <br><br>
+<<specialClothesUnlock "item" "daisy">>
 
 <<if $worn.head.name is "naked">>
 	You pull away from the grass and find a daisy stuck in your hair.
@@ -874,9 +875,9 @@ You sit on the grass beside Robin and rummage among the wild flowers for suitabl
 	You ask Robin what <<his>> favourite flowers are.
 	<<if $robinromance is 1 and _robin.dom gte 40>>
 		<<if $worn.head.name is "naked">><<He>> tucks a daisy behind your ear.<<headwear 47>><</if>> "Daisies and you." <<Hes>> a bit bashful after saying that and even more when you return the gesture. <<wearProp "daisy">>With a daisy tucked in your hair, you two can't help but giggle.<</if>>
-	<<elseif _robin.trauma gte 40>>
+	<<elseif C.npc.Robin.trauma gte 40>>
 		"Daisies are nice," <<he>> mumbles. <<if $robinromance is 1>>You tuck a daisy behind <<his>> ear. <<He>> lowers <<his>> face, smiling softly the gesture.<</if>>
-	<<elseif _robin.trauma gte 70>>
+	<<elseif C.npc.Robin.trauma gte 70>>
 		Unfeelingly, <<he>> points at the cheery flowers. <<if $robinromance is 1>>You tuck a daisy behind <<his>> ear. <<He>> gives you a smile. It doesn't reach <<his>> eyes.<</if>>
 	<<else>>
 		With a smile as cheery as the flowers, <<he>> points at them. "Daisies are my favourite." <<if $robinromance is 1>>You tuck a daisy behind <<his>> ear, which turns red as <<he>> blushes and mumbles a soft "Th-thanks."
@@ -899,6 +900,8 @@ Soon, you both have flower crowns ready. <<if currentSkillValue('tending') lt 20
 
 You hear shouting within the orphanage. "Those two are at it again," Robin says, rising to <<his>> feet. "I need to investigate. Thanks for letting me help."
 <br><br>
+
+<<specialClothesUnlock "item" "flower crown">>
 
 <<link [[Next|Garden Flowers]]>><<endevent>><</link>>
 <br>

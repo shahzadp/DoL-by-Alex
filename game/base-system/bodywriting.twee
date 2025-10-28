@@ -237,7 +237,7 @@
 		<<bodywriting_npc_kylar _args[0] _args[1]>>
 	<<elseif $npc[$npcrow.indexOf(_n)] is "Sydney">>
 		<<bodywriting_npc_sydney _args[0] _args[1]>>
-	<<elseif $NPCList[_n].type is "plant" or $role is "islander">>
+	<<elseif $NPCList[_n].type is "plant" or $role is "islander" or $npc[$npcrow.indexOf(_n)] is "Gwylan">>
 		<<bodywriting_npc_picture _args[0] _args[1]>>
 	<<elseif $rng gte 51>>
 		<<bodywriting_npc_special _args[0] _args[1]>>
@@ -1679,7 +1679,7 @@
 		<<case "Black Wolf" "Great Hawk">>
 			<<His>> eyes narrow. "I can be an animal, too. Watch!"
 			<<set $enemyanger += 30>><<set $enemytrust -= 30>><<npcincr Kylar rage 3>>
-		<<case "Eden" "Avery" "Alex">>
+		<<case "Eden" "Avery" "Alex" "Gwylan">>
 			<<if _kylarStatus.includes("Rage")>>
 				<<He>> snarls. "Whoever they are, they're worthless!"
 			<<else>>
@@ -1794,6 +1794,14 @@
 						<<set _text_output to "Whose pet do you think you are?">>
 					<<else>>
 						<<set _text_output to "Maybe I'll start treating you like an animal, then.">>
+					<</if>>
+					<<set $enemyanger += 20>><<set $enemytrust -= 20>>
+				<<case "Gwylan">>
+					<<He>> scowls.
+					<<if random(1)>>
+						<<set _text_output to "That witch has gotten in your head.">>
+					<<else>>
+						<<set _text_output to "<<nnpc_He 'Gwylan'>> doesn't own you. I do.">>
 					<</if>>
 					<<set $enemyanger += 20>><<set $enemytrust -= 20>>
 				<<default>>
@@ -1930,6 +1938,18 @@
 							<</if>>
 							<<set _text_output to "Don't worry, I'll be paying <<nnpc_him 'Robin'>> a visit soon.">>
 					<</switch>>
+				<<case "Gwylan">>
+					<<switch $skin[_args[0]].writing>>
+						<<case "Witch's Ward" "Witch's Familiar">>
+							<<He>> sneers.
+							<<set _text_output to "What's this nonsense?">>
+						<<case "Gwylan's Treasure" "Gwylan's Apprentice">>
+							<<He>> sneers.
+							<<set _text_output to "A foolish name to mark yourself with.">>
+						<<default>>
+							<<He>> scoffs.
+							<<set _text_output to "You're in over your head.">>
+					<</switch>>
 				<<case "prostitution">>
 					<<if $skin[_args[0]].degree gte 10000>>
 						<<He>> nods.
@@ -2023,6 +2043,51 @@
 					<<set _text_output to "You're more valuable than you know.">>
 				<<default>>
 					<<bodypart_admire_generic _args[0]>>
+			<</switch>>
+		<<case "Gwylan">>
+			<<switch $skin[_args[0]].special>>
+				<<case "Gwylan">>
+					<<switch $skin[_args[0]].writing>>
+						<<case "Witch's Familiar">>
+							<<He>> giggles. <<set _text_output to "You're my perfect little companion.">>
+							<<npcincr Gwylan lust 1>>
+						<<case "Gwylan's Apprentice">>
+							<<He>> giggles.
+							<<if $worn.head.name is "sage witch hat">>
+								<<set _text_output to "You even have the hat to match!">>
+							<<else>>
+								<<set _text_output to "I couldn't ask for a better one.">>
+							<</if>>
+						<<default>>
+							<<He>> giggles. <<set _text_output to "Oh, <<pcpetname 'Gwylan' 'simple'>>, you're adorable.">>
+					<</switch>>
+					<<set $enemyanger -= 10>><<set $enemytrust += 10>>
+				<<case "Robin">>
+					<<if $gwylan.robin gte 50>>
+						<<He>> giggles. <<set _text_output to "Oh, that's precious. We should invite <<nnpc_him 'Robin'>> to join us.">>
+					<<else>>
+						/*Do nothing.*/
+						<<set _admireNothing to true>>
+					<</if>>
+				<<case "Eden">>
+					<<He>> frowns.
+					<<if random(1)>>
+						<<set _text_output to "I'll just have to be the better master.">>
+					<<else>>
+						<<set _text_output to "Nature versus nurture, I suppose.">>
+					<</if>>
+				<<case "Black Wolf">>
+					<<He>> giggles.
+					<<if random(1)>>
+						<<set _text_output to "Should we call some wolves to join us, <<pcpetname 'Gwylan' 'simple'>>?">>
+					<<else>>
+						<<set _text_output to "Are you having exotic cravings?">>
+					<</if>>
+				<<case "islander" "esoteric">>
+					<<He>> hums in satisfaction.
+				<<default>>
+					/*Do nothing.*/
+					<<set _admireNothing to true>>
 			<</switch>>
 		<<case "Mason" "Sydney">>
 			/*Do nothing.*/

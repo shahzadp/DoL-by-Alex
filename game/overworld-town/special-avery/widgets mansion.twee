@@ -140,7 +140,6 @@
 <<set $avery_mansion.fox to {}>>
 <<set $avery_mansion.fox.progress to 0>>
 <<set $avery_mansion.fox.known to false>>
-<<set $avery_mansion.fox.unlocked to false>>
 
 <<set $avery_mansion.date_seen to false>>
 <<if Time.weekDay is 1>>
@@ -780,9 +779,9 @@
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Landry Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
 	<<elseif $avery_mansion.days gte 7 and $avery_tower.intro is 1 and $mickeyPub gte 2 and $auriga_artefact is "Avery" and $fake_artefact is "pc" and !$avery_fate and !$avery_mansion.mickey>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Mickey Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
-	<<elseif $avery_mansion.days gte 9 and $avery_tower.intro is 1 and $auriga_artefact is "Avery" and $fake_artefact is "pc" and !$avery_fate and !$avery_mansion.fox.known>>
+	<<elseif $avery_mansion.days gte 9 and $avery_tower.intro is 1 and $auriga_artefact is "Avery" and $fake_artefact is "pc" and !$avery_fate and !$avery_mansion.fox.known and !isGwylanAbsent()>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Brown Fox Interrupt]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
-	<<elseif $avery_mansion.fox.known and $avery_mansion.fox.wounded and !$avery_mansion.fox.unlocked>>
+	<<elseif $avery_mansion.fox.known and $brownFoxWoundedTimer and !$brownFoxWounded and !isGwylanAbsent()>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Mansion Brown Fox Wounded]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
 	<<else>>
 		<<icon "front_gate.png">><<link [[Leave (0:02)|Danube Street]]>><<handheldon 1>><<pass 2>><<endevent>><</link>>
@@ -2778,7 +2777,7 @@
 	<</if>>
 	<<if !$avery_party.guests.includes("fox") and $avery_party.fox_here and $avery_party.stage is 2 and $avery_party.fox_suspicious>>
 		<<if $avery_party.fox_spotted>>
-			<<link [[Search for the brown fox|Mansion Party Remy Brown Fox]]>><<dry>><<pass 20>><<set $avery_party.stage += 1>><<set $avery_party.guests.push("fox")>><</link>>
+			<<link [[Search for <<say_brown_fox>>|Mansion Party Remy Brown Fox]]>><<dry>><<pass 20>><<set $avery_party.stage += 1>><<set $avery_party.guests.push("fox")>><</link>>
 		<<elseif $avery_party.fox_thief>>
 			<<link [[Search for the thief|Mansion Party Remy Brown Fox]]>><<dry>><<pass 20>><<set $avery_party.stage += 1>><<set $avery_party.guests.push("fox")>><</link>>
 		<<else>>
@@ -3141,9 +3140,11 @@
 					<br>
 				<</if>>
 				<<if $avery_mansion.fox.task is "heist" and ($avery_mansion.schedule is "away" or $avery_mansion.schedule is "sleep" or $avery_mansion.schedule is "work") and !$avery_fate and $auriga_artefact is "Avery">>
-					<<set $_pianobr to true>>
-					<<icon "piano.png">><<link [[Play the brown fox's signal on the piano|Mansion Fox Heist]]>><<endevent>><<pass 10>><<set $phase to 1>><</link>>
-					<br>
+					<<if !isGwylanAbsent()>>
+						<<set $_pianobr to true>>
+						<<icon "piano.png">><<link [[Play <<say_brown_fox>>'s signal on the piano|Mansion Fox Heist]]>><<endevent>><<pass 10>><<set $phase to 1>><</link>>
+						<br>
+					<</if>>
 				<</if>>
 				<<if $_pianobr>>
 					<br>
@@ -3367,8 +3368,10 @@
 					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
 					<br><br>
 				<<elseif $avery_mansion.fox.task is "heist" and ($avery_mansion.schedule is "away" or $avery_mansion.schedule is "sleep" or $avery_mansion.schedule is "work") and !$avery_fate and $auriga_artefact is "Avery">>
-					<<birdicon "sing">><<link [[Whistle the signal to the brown fox|Mansion Fox Heist]]>><<endevent>><<pass 10>><</link>>
-					<br><br>
+					<<if !isGwylanAbsent()>>
+						<<birdicon "sing">><<link [[Whistle the signal to <<say_brown_fox>>|Mansion Fox Heist]]>><<endevent>><<pass 10>><</link>>
+						<br><br>
+					<</if>>
 				<</if>>
 			<</if>>
 
@@ -3521,7 +3524,9 @@
 	<<elseif $avery_tower.stage gte 1 and getRobinLocation() is "orphanage" and $avery_mansion and $avery_mansion_robin is 1 and Time.hour gte 6 and Time.hour lte 21 and !$fromRobinRoom and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
 		<<set _avery_interrupt to "robin">>
 	<<elseif $avery_mansion.schedule is "sleep" and !$avery_mansion.fox.end and Time.dayState is "night" and ($avery_fate is "ascended" or $avery_fate is "saved")>>
-		<<set _avery_interrupt to "fox">>
+		<<if $avery_fate is "ascended" or !isGwylanAbsent()>>
+			<<set _avery_interrupt to "fox">>
+		<</if>>
 	<</if>>
 	<<handheldon 1>>
 <</widget>>
@@ -3916,8 +3921,20 @@
 <<widget "summon_brown_fox">>
 	<<set $_slot to _args[0] || 1>>
 	<<set $_npc to clone(C.npc[$NPCNameList[7]])>>
-	<<generateNPC $_slot t $_npc.pronoun $_npc.gender 10>>
+	<<npc $NPCNameList[7] $_slot>>
 <</widget>>
+
+<<widget "say_brown_fox">><<silently>>
+	<<if $brownFoxRevealed>>
+		<<set $_brown_fox to "Gwylan">>
+	<<else>>
+		<<if _args[0] is "cap">>
+			<<set $_brown_fox to "The brown fox">>
+		<<else>>
+			<<set $_brown_fox to "the brown fox">>
+		<</if>>
+	<</if>>
+<</silently>><<print $_brown_fox>><</widget>>
 
 <<widget "avery_mansion_rage_party">>
 	<<if $avery_mansion.party_state is "missed">>

@@ -287,7 +287,7 @@
 		<div class="settingsHeader options">Clothes</div>
 		<div class="settingsToggleItemWide">
 			<<link "Unlock all special clothing">>
-				<<run for(const c in V.specialClothes) V.specialClothes[c] = "unlocked">>
+				<<run for(const c in V.specialClothes) {if (V.specialClothes[c].unlocked === 0) V.specialClothes[c].unlocked = 1}>>
 			<</link>>
 			<br>
 			<span class="description">If clothing health is set to zero, it will break. Leaving the cheats menu will destroy it, and you will not be able to get it back.</span>
@@ -1268,6 +1268,17 @@
 				Setting Sydney's <<= _purity is "purity" ? "purity to below 0%" : "corruption to above 0%">> will switch it to <<= _purity is "purity" ? "corruption" : "purity">>.
 			</span>
 		</div>
+		/* Gwylan's love is a calculated value and any change added here would not stick. */
+		<<if $gwylanSeen?.includes("yearning")>>
+			<div class="settingsToggleItemWide">
+				<span class="gold">Gwylan</span>
+				<span id="gwylandesc" class="description">
+					Gwylan's love is calculated as a total from a list of events and can not be set with cheats.
+				</span>
+				<<numberStepper "<<symbol lust>> Lust" `C.npc.Gwylan.lust` { callback: value => { C.npc.Gwylan.lust = value } }>>
+				<<numberStepper "<<symbol yearning>> Yearning" `C.npc.Gwylan.dom` { callback: value => { C.npc.Gwylan.dom = value }, max: 150 }>>
+			</div>
+		<</if>>
 	</div>
 	<hr>
 	<div class="settingsGrid">
@@ -1550,7 +1561,7 @@
 					<<landfillicon>><<link [[Landfill|Trash Gate Enter]]>><<cheats-teleport-function>><</link>>
 					<br>
 				<</if>>
-				<<if $compoundcard or $farm_stage gte 9>>
+				<<if $compound.card or $farm_stage gte 9>>
 					<<landfillicon>><<link [[Elk Compound]]>><<cheats-teleport-function>><</link>>
 					<br>
 				<</if>>
@@ -1951,7 +1962,6 @@
 				<<run delete C.npc.Alex.pregnancy.sample>>
 				<<run delete C.npc.Alex.pregnancy.ultraSoundPics>>
 			<</link>>
-			<span class="description">This is a cheat, not an abortion.</span>
 		<<else>>
 			<<if ($settings.playerPregnancyHumanEnabled or $settings.playerPregnancyBeastEnabled) and !playerIsPregnant()>>
 				Get pregnant from:

@@ -41,6 +41,9 @@ Weather.Renderer.Animation = class Animation {
 		if (this.waitForAnimation && parentAnimationGroup.isAnimationRunning(this.waitForAnimation)) {
 			return false;
 		}
+		if (T.canvasFrozen?.includes(this.name) || T.canvasFrozen?.includes("all")) {
+			return false;
+		}
 		if (this.condition) {
 			return this.condition(parentAnimationGroup);
 		}

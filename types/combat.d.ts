@@ -51,6 +51,7 @@ declare module "twine-sugarcube" {
 		lefttarget: number;
 		leftuse: number;
 		leftstate: string | 0;
+		leftaction: string | 0;
 		mouthtarget: number;
 		mouthuse: number;
 		mouthstate: string | 0;
@@ -60,6 +61,7 @@ declare module "twine-sugarcube" {
 		righttarget: number;
 		rightuse: number;
 		rightstate: string | 0;
+		rightaction: string | 0;
 		stealtarget: number;
 		stealuse: number;
 		stealstate: string | 0;

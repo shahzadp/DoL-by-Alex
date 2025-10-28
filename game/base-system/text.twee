@@ -1993,7 +1993,11 @@
 <<widget "flight_text">>
 	<<if !$settings.blindStatsEnabled>> |
 		<<if $harpy gte 6 and $birdFly gte 1>>
-			<span class="gold">Strong wings</span>
+			<<if $plucked>>
+				<span class="grey">Preened wings</span>
+			<<else>>
+				<span class="gold">Strong wings</span>
+			<</if>>
 		<<elseif $angel gte 6 or $demon gte 6 or $fallenangel gte 2 or $harpy gte 6>>
 			<span class="gold">Wings</span>
 		<</if>>
@@ -2352,7 +2356,7 @@
 
 <<widget "openinghours">>
 	A sign reads: "Opening hours:
-		<<ampm `_args[0] ? _args[0] : 8` 00>> -
+		<<ampm `_args[0] ? _args[0] : 7` 00>> -
 		<<ampm `_args[1] ? _args[1] : 21` 00>>"
 <</widget>>
 
@@ -2654,7 +2658,7 @@
 	<<set $_plural = $_torn.length gt 1 ? 1 : $_plural || 0>>
 
 	<<if $_torn.length gte 1>>
-		<span class="lewd">Your <<= $_torn.length gte 3 ? "clothing" : $_torn.join(" and ")>> <<= $_plural gte 1 ? "snag" : "snags">> on a $stripobject and <<= $_plural gte 1 ? "are" : "is">> torn from your body.</span>
+		<span class="lewd">Your <<= $_torn.length gte 3 ? "clothing" : $_torn.join(" and ")>> <<= $_plural gte 1 ? "snag" : "snags">> on <<= (["a","e","i","o","u"].some(letter => $stripobject.startsWith(letter))) ? "an" : "a">> $stripobject and <<= $_plural gte 1 ? "are" : "is">> torn from your body.</span>
 		<<integritycheck no_text>>
 		<<exposure>>
 
@@ -3826,6 +3830,12 @@
 					Your whole body hurts as
 				<<elseif $pain gte 40>>
 					You wipe away your tears as
+				<<elseif $worn.neck.name is "ivory necklace" and !pcAreArmsBound("both") and !_rubbedNecklace>>
+					<<set _rubbedNecklace to true>>
+					You hold your necklace as
+				<<elseif $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 and !pcAreArmsBound("both") and !_rubbedNecklace>>
+					<<set _rubbedNecklace to true>>
+					You rub the heart on your collar as
 				<<else>>
 					You waste no time as
 				<</if>>
@@ -4532,6 +4542,42 @@
 	<<set _text_output to ($NPCList[_na].pronoun is "m" ? "boy" : "girl")>>
 <</silently>>_text_output<</widget>>
 
+<<widget "beastSimple">>
+	<<if typeof _args[0] is "string">>
+		<<set $_type to _args[0]>>
+	<<elseif typeof _args[0] is "number">>
+		<<set $_type to $NPCList[_args[0]].type>>
+	<<else>>
+		<<set $_type to $NPCList[0].type>>
+	<</if>>
+	<<set $_plural to _args[1]>>
+	<<switch $_type>>
+		<<case "wolfboy" "wolfgirl">>
+			<<if $_plural>>
+				<<set $_plural to false>>
+				<<set _text_output to "wolves">>
+			<<else>>
+				<<set _text_output to "wolf">>
+			<</if>>
+		<<case "foxboy" "foxgirl">>
+			<<if $_plural>>
+				<<set $_plural to false>>
+				<<set _text_output to "foxes">>
+			<<else>>
+				<<set _text_output to "fox">>
+			<</if>>
+		<<case "harpy">>
+			<<set _text_output to "bird">>
+		<<default>>
+			/* Centaurs still get called centaurs because they're unique compared to other beasts */
+			<<set _text_output to $_type.replace("boy","").replace("girl","")>>
+	<</switch>>
+	<<if $_plural>>
+		<<set _text_output += "s">>
+	<</if>>
+	<<exit _text_output>>
+<</widget>>
+
 <<widget "slut">><<silently>>
 	<<set _text_output to ($player.gender_appearance is "m" ? "pervert" : "slut")>>
 <</silently>><<print _text_output>><</widget>>
@@ -5191,6 +5237,11 @@
 	<<nnpc_brother _args[0]>><<capitalise>>
 <</silently>><<print _text_output>><</widget>>
 
+<<widget "nnpc_daughter">><<silently>>
+	<<set _npcPronoun to C.npc[_args[0]].pronoun>>
+	<<set _text_output to (_npcPronoun is "m" ? "son" : "daughter")>>
+<</silently>><<print _text_output>><</widget>>
+
 <<widget "nnpc_title">><<silently>>
 	<<set _text_output to C.npc[_args[0]].title>>
 <</silently>><<print _text_output>><</widget>>
@@ -5198,6 +5249,11 @@
 <<widget "nnpc_Title">><<silently>>
 	<<nnpc_title _args[0]>><<capitalise>>
 <</silently>><<print _text_output>><</widget>>
+
+<<widget "nnpc_master">><<silently>>
+	<<set _npcPronoun to C.npc[_args[0]].pronoun>>
+	<<set _text_output to (_npcPronoun is "m" ? "master" : "mistress")>>
+<</silently>>_text_output<</widget>>
 
 <<widget "daylight">>
 	<<if Weather.dayState is "day">>
@@ -5284,14 +5340,19 @@
 <</widget>>
 
 <<widget "beast_growls_text">>
-	<<if $NPCList[_n].type is "hawk">>
+	<<set $_type to _args[0] ? _args[0] : $NPCList[_n].type>>
+	<<if ["hawk","harpy"].includes($_type)>>
 		<<set _text_output to "squawks">>
-	<<elseif $NPCList[_n].type is "pig">>
+	<<elseif $_type.includes("pig")>>
 		<<set _text_output to "oinks">>
-	<<elseif $NPCList[_n].type is "dolphin">>
+	<<elseif $_type.includes("dolphin")>>
 		<<set _text_output to "clicks">>
-	<<elseif $NPCList[_n].type is "spider">>
+	<<elseif $_type.includes("spider")>>
 		<<set _text_output to "chitters">>
+	<<elseif $_type.includes("lizard")>>
+		<<set _text_output to "hisses">>
+	<<elseif ["boar","horse","centaur"].includes($_type)>>
+		<<set _text_output to "huffs">>
 	<<else>>
 		<<set _text_output to "growls">>
 	<</if>>
@@ -5299,12 +5360,19 @@
 <</widget>>
 
 <<widget "beast_growling_text">>
-	<<if $NPCList[_n].type is "hawk">>
+	<<set $_type to _args[0] ? _args[0] : $NPCList[_n].type>>
+	<<if ["hawk","harpy"].includes($_type)>>
 		<<set _text_output to "squawking">>
-	<<elseif $NPCList[_n].type is "pig">>
+	<<elseif $_type.includes("pig")>>
 		<<set _text_output to "oinking">>
-	<<elseif $NPCList[_n].type is "dolphin">>
+	<<elseif $_type.includes("dolphin")>>
 		<<set _text_output to "clicking">>
+	<<elseif $_type.includes("spider")>>
+		<<set _text_output to "chittering">>
+	<<elseif $_type.includes("lizard")>>
+		<<set _text_output to "hissing">>
+	<<elseif ["boar","horse","centaur"].includes($_type)>>
+		<<set _text_output to "huffing">>
 	<<else>>
 		<<set _text_output to "growling">>
 	<</if>>
@@ -6095,6 +6163,24 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 	<</script>>
 <</widget>>
 
+<<widget "badEndProse">><<silently>>
+	<<switch _args[0]>>
+		<<case "Underground Farm">><<set _text_output to "Remy's farm">><<if _args[1] is "at">><<set _text_output to "at " + _text_output>><</if>>
+		<<case "Eden">><<set _text_output to "Eden's cabin">><<if _args[1] is "at">><<set _text_output to "at " + _text_output>><</if>>
+		<<case "Kylar Abduction">><<set _text_output to "Kylar's manor">><<if _args[1] is "at">><<set _text_output to "at " + _text_output>><</if>>
+		<<case "Underground Dungeon">><<set _text_output to "the underground brothel">><<if _args[1] is "at">><<set _text_output to "in " + _text_output>><</if>>
+		<<case "Mines">><<set _text_output to "the caves below the flats">><<if _args[1] is "at">><<set _text_output to "in " + _text_output>><</if>>
+		<<case "Asylum">><<set _text_output to "the asylum in the forest">><<if _args[1] is "at">><<set _text_output to "at " + _text_output>><</if>>
+		<<case "Prison">><<set _text_output to "prison">><<if _args[1] is "at">><<set _text_output to "in " + _text_output>><</if>>
+		<<case "Pound">><<set _text_output to "the dog pound">><<if _args[1] is "at">><<set _text_output to "in " + _text_output>><</if>>
+		<<case "Island">><<set _text_output to "the nearby island">><<if _args[1] is "at">><<set _text_output to "on " + _text_output>><</if>>
+		<<case "Pirate Ship">><<set _text_output to "the pirate ship">><<if _args[1] is "at">><<set _text_output to "on " + _text_output>><</if>>
+		<<case "Wolf Cave">><<set _text_output to "the cave of wolves">><<if _args[1] is "at">><<set _text_output to "in " + _text_output>><</if>>
+		<<default>><<set _text_output to "the " + _args[0].toLowerCase()>><<if _args[1] is "at">><<set _text_output to "at " + _text_output>><</if>>
+	<</switch>>
+	<<if _args[2] is "cap">><<capitalise>><</if>>
+<</silently>><<print _text_output>><</widget>>
+
 <<widget "insufficientStat">><<silently>>
 	/* Args 0-3 are Stat, Task, Color (optional), and Custom Stat (optional, only use when Stat arg is 'custom')*/
 	/* Example: <<insufficientStat "promiscuity" "to accept such an offer">> 	---------------------->	would print (in blue): 	'You are not promiscuous enough to accept such an offer'*/
@@ -6192,3 +6278,8 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 		<<if _args[1] is "cap">><<capitalise>><</if>>
 	<</if>>
 <</silently>><<print _text_output>><</widget>>
+
+<<widget "hypnosisText">>
+	<<if V.options.textAnimsAll && V.options.textAnimsHypno>><<exit '<span @class="basicHypnoCss()">' + _args[0] + '</span>'>><</if>>
+	<span @class="basicHypnoCss()"><<hypnosisicon "inline">><<= _args[0]>><<hypnosisicon "inline">></span>
+<</widget>>

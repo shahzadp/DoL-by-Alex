@@ -428,6 +428,7 @@ function moneyStatsProcess(stats) {
 					case "robin":
 					case "sydney":
 					case "whitney":
+					case "gwylan":
 						compressTo = "peopleOfInterest";
 						break;
 					case "hairdressers":
@@ -566,7 +567,10 @@ function getLargestSexStatModifierCssClasses(input, requiredLevel = 0) {
 		// Gets the base class for effect.
 		let modifierClasses = `${largestModifier.class}-text`;
 
-		if (V.options.textAnimations) {
+		if (
+			V.options.textAnimsAll &&
+			((largestModifier.class === "jitter" && V.options.textAnimsHeat) || (largestModifier.class === "drunk" && V.options.textAnimsDrunk))
+		) {
 			// Sets the animation based on how large the modifier is.
 			if (largestModifier.value > 20) {
 				modifierClasses += ` ${largestModifier.class}-3`;
@@ -587,21 +591,31 @@ function getLargestSexStatModifierCssClasses(input, requiredLevel = 0) {
 window.getLargestSexStatModifierCssClasses = getLargestSexStatModifierCssClasses;
 
 /**
- * Used to display the drunk text, with with animations if enabled, otherwise just the glow effect.
+ * Used to display the drunk text, with animations if enabled, otherwise just the glow effect.
  *
  * @returns {string}
  */
 function basicDrunkCss() {
-	return V.options.textAnimations ? "drunk-text drunk-1" : "drunk-text";
+	return V.options.textAnimsAll && V.options.textAnimsDrunk ? "drunk-text drunk-1" : "drunk-text";
 }
 window.basicDrunkCss = basicDrunkCss;
 
 /**
- * Used to display the jitter text, with with animations if enabled, otherwise just the glow effect.
+ * Used to display the jitter text, with animations if enabled, otherwise just the glow effect.
  *
  * @returns {string}
  */
 function basicJitterCss() {
-	return V.options.textAnimations ? "jitter-text jitter-1" : "jitter-text";
+	return V.options.textAnimsAll && V.options.textAnimsHeat ? "jitter-text jitter-1" : "jitter-text";
 }
 window.basicJitterCss = basicJitterCss;
+
+/**
+ * Used to display the hypnosis text, with animations if enabled, otherwise just the gradient.
+ *
+ * @returns {string}
+ */
+function basicHypnoCss() {
+	return V.options.textAnimsAll && V.options.textAnimsHypno ? "hypno-text hypno" : "hypno-text";
+}
+window.basicHypnoCss = basicHypnoCss;

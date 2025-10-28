@@ -725,6 +725,51 @@ You are at the Firepit.
 <<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
 <<set $forest to 50>><<set $bus to "lakecampsite">>
 
+<<if $phase is "extinguish">>
+	<<unset $phase>>
+
+	<<cleareventpool>>
+	<<addinlineevent "campsite_extinguish" 2>>
+		You extinguish the embers.
+	<</addinlineevent>>
+	<<if $settings.watersportsEnabled and hasSexStat("deviancy", 2)>>
+		<<addinlineevent "campsite_extinguish_urination" 0.5>>
+			<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt is 1>>
+				<<if $player.penisExist>>
+					You lift your $worn.lower.name over your <<penis>>.
+				<<else>>
+					You lift your $worn.lower.name.
+				<</if>>
+			<<else>>
+				You lower your $worn.lower.name.
+			<</if>>
+			After a brief pause, you start to <<print either("piss", "urinate", "pee")>> over the fireplace.
+			<<if $arousal gte $arousalmax>>
+				<br><br>
+				Your depravity fills you with a mixture of disgust and arousal, as you finish urinating you are hit with another urge.				
+				<<orgasmstat>><<orgasmcount 1>><<set $orgasmdown to 3>>
+				<<if $player.penisExist>>
+					<span class="pink">Your body shudders as a surge of <<semen>> erupts from your <<penis>>.</span>
+					<<semenOrgasm>>
+				<</if>>
+				<<if $player.vaginaExist>>
+					<span class="pink">Fluids stream from your <<pussy>>, with each jolt spraying over the fire.</span>
+					<<vaginaFluidOrgasm>>
+				<</if>>
+				<<arousal -10000>>
+				<<set $orgasmcurrent += 1>>
+				<<wetnessCalculate>>
+				<br><br>
+				The embers have been extinguished from the combination of <<print either("piss", "urine")>> and other fluids.
+			<<else>>
+				By the time you're finished, all of the embers have been extinguished.
+			<</if>>
+		<</addinlineevent>>
+	<</if>>
+	<<runeventpool>>
+	<br><br>
+<</if>>
+
 You are at the campsite.
 <<if Time.dayState is "night">>
 	<<if Weather.precipitation is "none" and Time.hour gte 18 and $daily.lakeCouple isnot 1>>
@@ -766,6 +811,13 @@ You are at the campsite.
 	<<if Weather.precipitation is "none" and Time.hour gte 18 and $exposed lte 0 and $daily.lakeCouple isnot 1>>
 		<<socialiseicon "ask">><<link [[Approach the couple|Lake Couple]]>><</link>>
 		<br>
+	<<elseif Weather.precipitation is "none">>
+		<<if $housekeeping >= 400>>
+			<<lakeicon "campfire">><<link [[Ignite the fireplace (0:02)|Lake Campsite Warmth Ignite]]>><<set $phase to "quickly">><</link>>
+		<<else>>
+			<<lakeicon "campfire">><<link [[Ignite the fireplace (0:10)|Lake Campsite Warmth Ignite]]>><<set $phase to "normally">><</link>>
+		<</if>>
+		<br>
 	<</if>>
 	<<if $nextPassageCheck is "Lake Fishing Rock">>
 		<<lakeicon>><span class="nextLink"><<link [[The lake.|Lake Fishing Rock]]>><</link>></span>
@@ -782,6 +834,71 @@ You are at the campsite.
 	<br>
 	<<set $eventskip to 0>>
 <</if>>
+
+:: Lake Campsite Warmth Ignite
+
+<<effects>><<lakeeffects>>
+
+You collect pieces of dry tinder, and other kindling. You manage to build up a sizeable fireplace of wood.
+<br><br>
+
+<<if $phase is "quickly">>
+	/* May want to remove span-green as this is usually for checks. */
+	<span class="green">You succeed in creating embers which begin to engulf your firewood.</span>
+<<else>>
+	It takes several minutes of trying, but you eventually manage to ignite your firewood.
+<</if>>
+<<unset $phase>>
+<br><br>
+
+<<link [[Rest (0:15)|Lake Campsite Warmth]]>><<pass 15>><</link>><<gwarmth>>
+<br>
+<<link [[Leave|Lake Campsite]]>><<set $phase to "extinguish">><</link>>
+
+:: Lake Campsite Warmth
+
+<<effects>><<lakeeffects>>
+
+<<set _outsideTemp to Weather.Temperature.getCelsius()>>
+<<set _tempIncrease to sigmoid(3, 37, 0.25, -4, _outsideTemp)>>
+<<set _tempOverride to _outsideTemp + _tempIncrease>>
+/* Increases ambient temp by ~3c to ~40c based on current ambient temp */
+/* This allows people to make use of it as a source for warmth */
+/* without causing massive exhaustion during warm days */
+/* Update the parameters as needed to improve user experience */
+<<set Weather.Temperature.override.outside = _tempOverride>>
+<<dry>>
+
+You warm yourself against the heat emanating from the fireplace.
+<br><br>
+
+<<cleareventpool>>
+
+<<addinlineevent "campfire_rustling_wind">>
+	The trees around the campfire rustle from the wind.
+	<<if Time.dayState is "night">>
+		<<gstress>><<stress 2>>
+	<</if>>
+<</addinlineevent>>
+
+<<if Time.dayState is "day" and Time.season isnot "winter">>
+	<<addinlineevent "campfire_butterfly" 0.5>>
+		You see an occasional butterfly. <<lstress>><<ltrauma>><<stress -2>><<trauma -1>>
+	<</addinlineevent>>
+<</if>>
+
+<<if Weather.bodyTemperature < setup.WeatherTemperature.minTemperature + 1>>
+	<<addinlineevent "campfire_hypothermia" 5>>
+		You shiver in front of the open fire. You focus on breathing to ease the piercing coldness.
+	<</addinlineevent>>
+<</if>>
+
+<<runeventpool>>
+<br><br>
+
+<<link [[Continue resting (0:15)|Lake Campsite Warmth]]>><<pass 15>><</link>><<gwarmth>>
+<br>
+<<link [[Leave|Lake Campsite]]>><<set $phase to "extinguish">><</link>>
 
 :: Lake Shallows
 
