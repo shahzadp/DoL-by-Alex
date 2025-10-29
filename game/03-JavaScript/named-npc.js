@@ -428,7 +428,7 @@ function npcCanHunt(npc) {
 			// Hunts in the outskirts normally, but will go beyond if they are actively looking for the player
 			return (
 				V.forest > 0 &&
-				(V.forest <= 25 || V.gwylan?.hunting || T.gwylanStatus.includesAny("reunion", "heat")) &&
+				(V.forest <= 25 || V.gwylan?.hunting || T.gwylanStatus?.includesAny("reunion", "heat")) &&
 				!V.daily.gwylan.noHunt &&
 				!V.weekly.gwylanNoHunt &&
 				!V.daily.gwylan.noTalk &&
