@@ -540,6 +540,8 @@
 				<<if !$gwylanSeen.includes("clothes_talk_savescum") and _saveLoaded>>
 					<<if localStorage.getItem("gwylanTalk") is "seen">>
 						<<set $gwylanSeen.pushUnique("clothes_talk_savescum")>>
+					<<elseif localStorage.getItem("gwylanTalk") is "nobody">>
+						<!-- Do nothing. Don't trigger savescum message if nobody happens -->
 					<<elseif !localStorage.getItem("gwylanTalk")>>
 						<<run localStorage.setItem("gwylanTalk", 0)>>
 					<<else>>
@@ -2175,11 +2177,24 @@
 	<<runeventpool>>
 <</widget>>
 
-<<widget "witch">><<silently>>
+<<widget "witch">>
 	<<if C.npc.Gwylan.pronoun is "m">>
 		<<set _text_output to "witch">>
 	<<else>>
 		<<set _text_output to "witch">>
 	<</if>>
-<</silently>>_text_output<</widget>>
 
+	<<exit _text_output>>
+<</widget>>
+
+<<widget "gwylanRobin">>
+	<<set $_incr to _args[0] or 1>>
+	<<set $_cap to _args[1] or 0>>
+	/* Note: $_cap could be used to add automatic breakpoints based on `$gwylanSeen` properties. For now, they're done manually with argument */
+
+	<<if !$_cap or $gwylan.robin + $_incr lte $_cap>>
+		<<set $gwylan.robin += $_incr>>
+	<<elseif $gwylan.robin lt $_cap and $gwylan.robin + $_incr gte $_cap>>
+		<<set $gwylan.robin to $_cap>>
+	<</if>>
+<</widget>>

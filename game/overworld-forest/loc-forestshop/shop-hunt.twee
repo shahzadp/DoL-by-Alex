@@ -3448,13 +3448,11 @@
 	<<for $_i to 0; $_i lt $shopHunt.actors.length; $_i++>>
 		<<if !!$shopHunt.actors[$_i].state and !$shopHunt.actors[$_i].stun.all and $shopHunt.actors[$_i].health gte 1>>
 			<<set $_found to Object.values($actorFound[$_i]).flat()>>
-			<<if $_found.filter(x => typeof x is "number" and $shopHunt.actors[x].role isnot $shopHunt.actors[$_i].role).length gte 1>>
-				/* Todo: Gwylan hunt (critical), fighting other actors */
-				<<switch $shopHunt.actors[$_i].type>>
-					<<case "eden">>
-				<</switch>>
-			<<elseif $_found.includes("player")>>
-				<<if $shopHunt.player.hide is 4 and _loc.special.includes("hat")>>
+			<<if $_found.includes("player")>>
+				<<if $shopHunt.actors.find(x => x.state is "drag")>>
+					/* Todo: Gwylan hunt, remove when interactions between actors on the same tile are added */
+					<<set $_foundSkip to true>>
+				<<elseif $shopHunt.player.hide is 4 and _loc.special.includes("hat")>>
 					<<set $_context to "hat">>
 				<<elseif $shopHunt.player.hide gte 1>>
 					<<set $_context to "hide">>
@@ -3473,6 +3471,11 @@
 					<<shopHuntActorFound $_i $_context>>
 				<</if>>
 				<<set $_foundSkip to false>>
+			<<elseif $_found.filter(x => typeof x is "number" and $shopHunt.actors[x].role isnot $shopHunt.actors[$_i].role).length gte 1>>
+				/* Todo: Gwylan hunt (critical), fighting other actors */
+				<<switch $shopHunt.actors[$_i].type>>
+					<<case "eden">>
+				<</switch>>
 			<</if>>
 		<</if>>
 	<</for>>
