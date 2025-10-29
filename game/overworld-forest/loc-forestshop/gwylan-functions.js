@@ -816,10 +816,10 @@ function gwylanRequestClothingSlotCheck(slot) {
 			(thing.acc_colour_requirement === "any" || V.worn[slot].accessory_colour === thing.acc_colour_requirement) &&
 			(thing.pattern_requirement === "any" || V.worn[slot].pattern === thing.pattern_requirement) &&
 			(thing.integrity_requirement === "any" ||
-				(thing.integrity_word === "full" && V.worn[slot].integrity > thing.integrity_max * 0.9) ||
+				(thing.integrity_word === "full" && V.worn[slot].integrity >= thing.integrity_max * 0.9) ||
 				(thing.integrity_word === "frayed" && between(V.worn[slot].integrity, thing.integrity_max * 0.5, thing.integrity_max * 0.9)) ||
 				(thing.integrity_word === "torn" && between(V.worn[slot].integrity, thing.integrity_max * 0.2, thing.integrity_max * 0.5)) ||
-				(thing.integrity_word === "tattered" && V.worn[slot].integrity < thing.integrity_max * 0.2))
+				(thing.integrity_word === "tattered" && V.worn[slot].integrity <= thing.integrity_max * 0.2))
 	);
 }
 window.gwylanRequestClothingSlotCheck = gwylanRequestClothingSlotCheck;
