@@ -10275,7 +10275,7 @@ function initUpper() {
 			accessory_colour_options: [],
 			accessory_colour_sidebar: 0,
 			sleeve_img: 0,
-			breast_img: { 0: 1, 1: 1, 2: 1, 3: 3, 4: 3, 5: 5, 6: 5 },
+			breast_img: { 0: null, 1: 1, 2: 1, 3: 3, 4: 3, 5: 5, 6: 5 },
 			cursed: 0,
 			location: 0,
 			iconFile: "pumpkin_dress.png",
