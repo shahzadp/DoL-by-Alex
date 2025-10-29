@@ -2719,6 +2719,50 @@ Renderer.CanvasModels.main = {
 				return options.acc_layer_under ? ZIndices.lower_high + 1 : ZIndices.lower_high;
 			},
 		}),
+		"lower_fitted_left": genlayer_clothing_fitted_left_acc("lower", {
+			zfn(options) {
+				return options.zupper;
+			},
+			masksrcfn(options) {
+				return options.upper_fitted_left_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? 2 : -2;
+			},
+		}),
+		"lower_fitted_right": genlayer_clothing_fitted_right_acc("lower", {
+			zfn(options) {
+				return options.zupper;
+			},
+			masksrcfn(options) {
+				return options.upper_fitted_right_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? -2 : 2;
+			},
+		}),
+		"lower_fitted_acc_left": genlayer_clothing_fitted_left("lower", {
+			zfn(options) {
+				return options.zupper;
+			},
+			masksrcfn(options) {
+				return options.upper_fitted_left_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? 2 : -2;
+			},
+		}),
+		"lower_fitted_acc_right": genlayer_clothing_fitted_right("lower", {
+			zfn(options) {
+				return options.zupper;
+			},
+			masksrcfn(options) {
+				return options.upper_fitted_right_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? -2 : 2;
+			},
+		}),
 		"lower_acc": genlayer_clothing_accessory("lower", {
 			srcfn(options) {
 				const secondary = options.worn.upper.setup.name === "school blouse" && options.worn.lower.setup.name.includes("pinafore") ? '_under' : '';
@@ -4152,10 +4196,12 @@ function genlayer_clothing_main(slot, overrideOptions) {
 function genlayer_clothing_fitted_left(slot, overrideOptions) {
 	return genlayer_clothing_main(slot, Object.assign({
 		showfn(options) {
-			return options.show_clothes
+			const checks = options.show_clothes
 				&& options.worn[slot].index > 0
 				&& options.worn[slot].setup.mainImage !== 0
-				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || options.body_type === "soft");
+				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || options.body_type === "soft")
+				&& !between(options.belly, 8, 24);
+			return checks;
 		},
 	}, overrideOptions));
 }
@@ -4163,10 +4209,12 @@ function genlayer_clothing_fitted_left(slot, overrideOptions) {
 function genlayer_clothing_fitted_right(slot, overrideOptions) {
 	return genlayer_clothing_main(slot, Object.assign({
 		showfn(options) {
-			return options.show_clothes
+			const checks = options.show_clothes
 				&& options.worn[slot].index > 0
 				&& options.worn[slot].setup.mainImage !== 0
-				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || options.body_type === "soft");
+				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || options.body_type === "soft")
+				&& !between(options.belly, 8, 24);
+			return checks;
 		},
 	}, overrideOptions));
 }
@@ -4174,10 +4222,12 @@ function genlayer_clothing_fitted_right(slot, overrideOptions) {
 function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 	return genlayer_clothing_accessory(slot, Object.assign({
 		showfn(options) {
-			return options.worn[slot].index > 0
+			const checks = options.worn[slot].index > 0
 				&& options.worn[slot].setup.accImage !== 0
 				&& options.worn[slot].setup.accessory === 1
-				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || options.body_type === "soft");
+				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || options.body_type === "soft")
+				&& !between(options.belly, 8, 24);
+			return checks;
 		},
 
 		srcfn(options) {
@@ -4203,10 +4253,12 @@ function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 function genlayer_clothing_fitted_right_acc(slot, overrideOptions) {
 	return genlayer_clothing_accessory(slot, Object.assign({
 		showfn(options) {
-			return options.worn[slot].index > 0
+			const checks = options.worn[slot].index > 0
 				&& options.worn[slot].setup.accImage !== 0
 				&& options.worn[slot].setup.accessory === 1
-				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || options.body_type === "soft");
+				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || options.body_type === "soft")
+				&& !between(options.belly, 8, 24);
+			return checks;
 		},
 
 		srcfn(options) {

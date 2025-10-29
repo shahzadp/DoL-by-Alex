@@ -181,7 +181,7 @@
 			</span>
 			<br>
 			<<set _gender_body_words to {"m": "Masculine", "f": "Feminine", "a": "Androgynous"}>>
-			Body type <mouse class="tooltip linkBlue">(?)<span>Contributes to how feminine or masculine you appear. In normal gameplay, the player's body type does not contribute to gender appearance, unless it has been feminised or masculinised via special clothing.</span></mouse>:
+			Body type: <mouse class="tooltip linkBlue">(?)<span>Contributes to how feminine or masculine you appear. In normal gameplay, the player's body type does not contribute to gender appearance, unless it has been feminised or masculinised via special clothing.</span></mouse>:
 			<span id="statsBodyType">
 				<<cheatsBody>>
 			</span>
@@ -190,6 +190,23 @@
 			Body size:
 			<span id="statsBodySize">
 				<<cheatsBodySize>>
+			</span>
+			<br>
+			Body shape:
+			<span id="statsBodyShape">
+				<<cheatsBodyShape>>
+			</span>
+			<<if setup.faceStyleOptions.length gt 1>>
+				<br>
+				Face style:
+				<span id="statsFaceStyle">
+					<<cheatsFaceStyle>>
+				</span>
+			<</if>>
+			<br>
+			Demeanour:
+			<span id="statsDemeanour">
+				<<cheatsDemeanour>>
 			</span>
 		</div>
 		<div class="settingsToggleItem">
@@ -2294,7 +2311,48 @@
 		<</for>>
 	<</capture>>
 <</widget>>
+<<widget "cheatsBodyShape">>
+	<<capture _i>>
+		<<for _i = 0; _i < setup.bodyShapes.length; _i++>>
+			<span @class="$player.bodyshape is setup.bodyShapes[_i] ? 'goldLink' : 'unselected'">
+				<<link setup.bodyShapes[_i].toUpperFirst()>>
+					<<set $player.bodyshape to setup.bodyShapes[_i]>>
+					<<replace "#statsBodyShape">><<cheatsBodyShape>><</replace>><<updatesidebarimg>>
+				<</link>>
+			</span>	<<= _i lt setup.bodyShapes.length - 1 ? "|" : "">>
+		<</for>>
+	<</capture>>
+<</widget>>
+<<widget "cheatsFaceStyle">>
+	<<set _faceStyles to Object.values(setup.faceStyleOptions)>>
 
+	<<capture _i>>
+		<<for _i = 0; _i < _faceStyles.length; _i++>>
+			<span @class="$facestyle is _faceStyles[_i] ? 'goldLink' : 'unselected'">
+				<<link _faceStyles[_i].toUpperFirst()>>
+					<<set $facestyle to _faceStyles[_i]>>
+					<<set $facevariant to "default">>
+					<<replace "#statsFaceStyle">><<cheatsFaceStyle>><</replace>><<updatesidebarimg>>
+					<<replace "#statsDemeanour">><<cheatsDemeanour>><</replace>><<updatesidebarimg>>
+				<</link>>
+			</span>	<<= _i lt _faceStyles.length - 1 ? "|" : "">>
+		<</for>>
+	<</capture>>
+<</widget>>
+<<widget "cheatsDemeanour">>
+	<<set _faceVariants to Object.values(setup.faceVariantOptions[V.facestyle])>>
+
+	<<capture _i>>
+		<<for _i = 0; _i < _faceVariants.length; _i++>>
+			<span @class="$facevariant is _faceVariants[_i] ? 'goldLink' : 'unselected'">
+				<<link _faceVariants[_i].toUpperFirst()>>
+					<<set $facevariant to _faceVariants[_i]>>
+					<<replace "#statsDemeanour">><<cheatsDemeanour>><</replace>><<updatesidebarimg>>
+				<</link>>
+			</span>	<<= _i lt _faceVariants.length - 1 ? "|" : "">>
+		<</for>>
+	<</capture>>
+<</widget>>
 <<widget "cheatsSpeechAttitude">>
 	<<set _submissiveness = [1500, 1000, 500]>>
 	<<set _attitude = ["meek", "neutral", "bratty"]>>
