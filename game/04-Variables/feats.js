@@ -633,7 +633,7 @@ setup.feats = {
 		desc: "You gave your virginity to them.",
 		difficulty: 2,
 		series: "gwylanVirginity",
-		hint: "Curiosity killed the virgin.",
+		hint: "Hint: Curiosity killed the virgin.",
 		filter: ["All", "Social"],
 	},
 	"Coven Comforts": {
@@ -641,7 +641,7 @@ setup.feats = {
 		desc: "You gifted Gwylan a favourite food.",
 		difficulty: 2,
 		series: "",
-		hint: "Food for the wicked.",
+		hint: "Hint: Food for the wicked.",
 		filter: ["All", "Social"],
 		hidden: true,
 	},
@@ -776,7 +776,7 @@ setup.feats = {
 		desc: "Witnessed Eden's worst nightmare.",
 		difficulty: 2,
 		series: "",
-		hint: "Have a friend help you escape a hunter.",
+		hint: "Hint: Have a friend help you escape a hunter.",
 		filter: ["All", "Social"],
 	},
 	Neko: {
@@ -1922,7 +1922,7 @@ setup.feats = {
 	},
 	"Wicked Wardrobe": {
 		title: "Wicked Wardrobe",
-		desc: "Unlocked all of the forest shop's clothes.",
+		desc: "Unlocked all of the forest shop's clothing sets.",
 		difficulty: 3,
 		series: "specialClothes",
 		filter: ["All", "Special"],
