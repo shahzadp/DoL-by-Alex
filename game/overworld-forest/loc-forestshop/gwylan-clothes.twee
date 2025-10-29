@@ -1352,7 +1352,7 @@ You show Gwylan the cow print set and cow bell.
 <<else>>
 	"Someone named Remy
 <</if>>
-<<if $cow gte 6>>turned me<<else>>tried to turn me<</if>> into human cattle," you explain. Gwylan's nose scrunches, <<his>> delighted look wiped away immediately, but you continue.
+<<if $cow gte 6 or $transformationHistory.includes("cow")>>turned me<<else>>tried to turn me<</if>> into human cattle," you explain. Gwylan's nose scrunches, <<his>> delighted look wiped away immediately, but you continue.
 <<if _uFarmStats?.reasonStart is "arrested">>
 	<<set $gwylanSeen.pushUnique("cafe_chef_truth")>>
 	"I got caught adding fluids to the cream buns at the cafe. They shipped me off to the farm right after."
@@ -3042,7 +3042,7 @@ You show Gwylan the spirit mask and shrine maiden's robes.
 	<br><br>
 <</if>>
 
-<<if $fox gte 6>>
+<<if $fox gte 6 or $transformationHistory.includes("fox")>>
 	<<link [[Say it appeared after you became a fox|Gwylan Talk Clothes Shrine 2]]>><<set $phase to 1>><</link>>
 	<br>
 <</if>>
@@ -3050,7 +3050,7 @@ You show Gwylan the spirit mask and shrine maiden's robes.
 	<<link [[Say it appeared after you prayed at a shrine in the moor|Gwylan Talk Clothes Shrine 2]]>><<set $phase to 2>><</link>>
 	<br>
 <</if>>
-<<if !($fox gte 6 and $moorLuck isnot undefined)>>
+<<if !(($fox gte 6 or $transformationHistory.includes("fox")) and $moorLuck isnot undefined)>>
 	<span class="blue">There might be an alternative story to tell about this outfit...</span>
 	<br>
 <</if>>
@@ -3061,44 +3061,70 @@ You show Gwylan the spirit mask and shrine maiden's robes.
 <<effects>><<run statusCheck("Gwylan")>><<set _tf to checkTFparts()>><<set $daily.gwylan.clothesTalk++>>
 <<set $gwylanTalked.pushUnique("shrine")>>
 <<if $phase is 1>>
-	<<set $gwylan.progress += 2>>
-	<<if _tf.foxTail>>
-		You swish your tail. "It showed up around the same time this did," you explain.
-		<br><br>
-
-		Gwylan walks behind you, and lifts it. The contact sends a jolt up your spine. <<arousal 800>><<garousal>>
-		<br><br>
-	<<else>>
-		"It showed up after I started feeling like a fox," you explain. "That sounds strange, but—"
-		<br><br>
-
-		Gwylan walks behind you. You suddenly feel a jolt as <<he>> lifts your fox tail. You were certain that you were hiding it. <<arousal 800>><<garousal>>
-		<br><br>
-
-		"It's a shame to hide something so beautiful, isn't it?"
-	<</if>>
-	<<if _gwylanTF.known>>
-		<<He>> gently fluffs the fur, knowing exactly where to press to make it feel good. "I haven't been able to talk with someone like myself in a long time, you know. I hope you stay like this," <<he>> says.
-	<<else>>
-		<<He>> gently pets the fur. "Very soft," <<he>> says.
-	<</if>>
-	<<if $gwylanSeen.includes("hypnosis_peace")>>
-		"Are you at peace with it now?"
-	<<elseif !$gwylanSeen.includes("player_tf")>>
-		<<set $gwylanSeen.pushUnique("player_tf")>>
+	<<if $fox gte 6>>
+		<<set $gwylan.progress += 2>>
 		<<if _tf.foxTail>>
-			"I can show you how to take care of it properly, if you would like. If you find that you're <span class="blue">doubting or resenting these expressions of your inner self</span>, come talk to me."
+			You swish your tail. "It showed up around the same time this did," you explain.
+			<br><br>
+
+			Gwylan walks behind you, and lifts it. The contact sends a jolt up your spine. <<arousal 800>><<garousal>>
+			<br><br>
 		<<else>>
-			"It must be difficult. If you need help coming to terms with your inner self, <span class="blue">come talk to me about it.</span> I know how to help."
+			"It showed up after I started feeling like a fox," you explain. "That sounds strange, but-"
+			<br><br>
+
+			Gwylan walks behind you. You suddenly feel a jolt as <<he>> lifts your fox tail. You were certain that you were hiding it. <<arousal 800>><<garousal>>
+			<br><br>
+
+			"It's a shame to hide something so beautiful, isn't it?"
+		<</if>>
+		<<if _gwylanTF.known>>
+			<<He>> gently fluffs the fur, knowing exactly where to press to make it feel good. "I haven't been able to talk with someone like myself in a long time, you know. I hope you stay like this," <<he>> says.
+		<<else>>
+			<<He>> gently pets the fur. "Very soft," <<he>> says.
+		<</if>>
+		<<if $gwylanSeen.includes("hypnosis_peace")>>
+			"Are you at peace with it now?"
+		<<elseif !$gwylanSeen.includes("player_tf")>>
+			<<set $gwylanSeen.pushUnique("player_tf")>>
+			<<if _tf.foxTail>>
+				"I can show you how to take care of it properly, if you would like. If you find that you're <span class="blue">doubting or resenting these expressions of your inner self</span>, come talk to me."
+			<<else>>
+				"It must be difficult. If you need help coming to terms with your inner self, <span class="blue">come talk to me about it.</span> I know how to help."
+			<</if>>
+		<<else>>
+			"You take good care of it."
+		<</if>>
+		<<npcincr Gwylan dom 2>><<gyearning>>
+		<br><br>
+
+		<<if !_tf.foxTail>>
+			<<He>> releases it, and it disappears the next time you blink. "Don't worry, your secret is safe with me." <<He>> giggles.
+			<br><br>
 		<</if>>
 	<<else>>
-		"You take good care of it."
-	<</if>>
-	<<npcincr Gwylan dom 2>><<gyearning>>
-	<br><br>
+		"It first showed up during a time I felt like a fox," you explain. "That sounds strange, but it's the easiest way for me to describe it."
+		<br><br>
 
-	<<if !_tf.foxTail>>
-		<<He>> releases it, and it disappears the next time you blink. "Don't worry, your secret is safe with me." <<He>> giggles.
+		<<He>> pauses, and leans to the side, as if expecting to find something behind you. "So you don't feel that way anymore?"
+		<br><br>
+
+		You nod.
+		<<if _gwylanTF.known>>
+			"That's a shame, I haven't known someone like myself in a long time.
+		<<else>>
+			There's a hint of what looks like disappointment in <<his>> eyes. "I see.
+		<</if>>
+		Well, as long as that was a decision you reached on your own, not one forced upon you by others.
+
+		<<if $gwylanSeen.includes("hypnosis_peace")>>
+			Feeling at peace with yourself is important."
+		<<elseif !$gwylanSeen.includes("player_tf")>>
+			<<set $gwylanSeen.pushUnique("player_tf")>>
+			If you ever have doubts or resentments over these expressions of your inner self, <span class="blue">come talk to me about it.</span> I know how to help."
+		<<else>>
+			In any case, I think you'd look cute as a fox!"
+		<</if>>
 		<br><br>
 	<</if>>
 <<else>>
