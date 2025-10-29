@@ -946,6 +946,8 @@ function dayPassed() {
 	if (V.avery_mansion_fire_time >= 1) {
 		V.avery_mansion_fire_time--;
 	}
+
+	localStorage.removeItem("gwylanTalk");
 }
 
 function hourPassed(hours) {
