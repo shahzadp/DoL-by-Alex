@@ -10734,7 +10734,7 @@ function initUpper() {
 			femininity: 200,
 			warmth: 1,
 			cost: 10000,
-			description: "Debasement and despoilation put on display for all to enjoy.",
+			description: "Debasement and despoliation put on display for all to enjoy.",
 			shop: ["forest"],
 			accessory: 1,
 			accessory_colour: 0,
