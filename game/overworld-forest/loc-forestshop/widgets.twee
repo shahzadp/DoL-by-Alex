@@ -537,6 +537,15 @@
 					<<clothingicon $_catsuit "upper">><<link [[Tell <<him>> about your criminal adventures|Gwylan Talk Heists]]>><<set $phase to "silver">><</link>>
 					<br>
 				<</if>>
+				<<if !$gwylanSeen.includes("clothes_talk_savescum") and _saveLoaded>>
+					<<if localStorage.getItem("gwylanTalk") is "seen">>
+						<<set $gwylanSeen.pushUnique("clothes_talk_savescum")>>
+					<<elseif !localStorage.getItem("gwylanTalk")>>
+						<<run localStorage.setItem("gwylanTalk", 0)>>
+					<<else>>
+						<<run localStorage.setItem("gwylanTalk", Number(localStorage.getItem("gwylanTalk")) + 1)>>
+					<</if>>
+				<</if>>
 				<<for $_label, _value range $_setsUnlocked>>
 					<<set $_subsetVals to Object.keys(setup.specialClothesSets).filter(set => setup.specialClothesSets[set].subsetOf?.includes(_value))>>
 					<<if $gwylanTalked.includesAll($_subsetVals)>>
@@ -557,7 +566,10 @@
 						/* Passage names are "Gwylan Talk Clothes " + the set name from setup in title case with underscores removed */
 						<<set _incomingPassageText to toTitleCase(_value.replace(/_/g," "))>>
 						<<capture _value, _incomingPassageText, _timeToPass>>
-							<<if !$_setsAtForestShop.includes(_value) or !setup.specialClothesSets[_value]>>
+							<<if Number(localStorage.getItem("gwylanTalk")) gte 1>>
+								<<link [[`Show <<him>> the $_clothingObject.text`|Gwylan Talk Clothes Savescum]]>><<set $clothesBeingTalkedAbout to _value>><</link>>
+								<br>
+							<<elseif !$_setsAtForestShop.includes(_value) or !setup.specialClothesSets[_value]>>
 								<<link [[`Show <<him>> the $_clothingObject.text`|Gwylan Talk Clothes Error]]>><<set $clothesBeingTalkedAbout to _value>><</link>>
 								<br>
 							<<elseif $_setsCheated?.includes(_value)>>
