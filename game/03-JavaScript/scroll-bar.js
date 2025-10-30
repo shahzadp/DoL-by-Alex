@@ -1,9 +1,12 @@
 // Sidebar scroll resetting fix
 // When a passage is finished loading:
 $(document).on(":passageend", function (event) {
-	// simplified fix, iteration 2
+	// simplified fix, iteration 3
+	if (!V.options.scrollRemember) requestAnimationFrame(() => window.scroll(0, 0));
+	/* iteration 2
 	if (window.scrollUIBar) document.querySelector("#storyCaptionDiv").scroll(0, window.scrollUIBar);
 	if (V.options.scrollRemember && V.passage === V.passagePrev) document.scrollingElement.scroll(0, window.scrollMain);
+	*/
 	/* previous version
 	// get sidebar dom element, assign it to variable for convenience
 	let sidebar = document.querySelector("#storyCaptionDiv");
