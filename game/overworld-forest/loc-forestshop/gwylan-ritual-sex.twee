@@ -3876,7 +3876,6 @@ You feel empty, but in a comforting way.
 
 :: Gwylan Ritual Sex End 2
 <<effects>><<run statusCheck("Gwylan")>>
-
 You get dressed, and enjoy the sounds of the forest from the garden for a while. Gwylan's humming adds to the chorus.
 <br><br>
 
@@ -3922,25 +3921,29 @@ You get dressed, and enjoy the sounds of the forest from the garden for a while.
 	<br><br>
 
 	<<set _purgeCount to $sexRitual.playerOrgasms -2>>
-	"After we became One, we purged
-	<<if _purgeCount is 1>>
-		<span class="purple">only once</span>.
-		<<if $sexRitual.playerOrgasms is $sexRitual.orgasmTarget>>
-			I don't know if you can handle more yet, and I didn't want to take any risks this time." <<He>> places a hand under <<his>> chin in thought.
+	<<if _purgeCount gt 1>>
+		"After we became One, we purged
+		<<if _purgeCount is 1>>
+			<span class="purple">only once</span>.
+			<<if $sexRitual.playerOrgasms is $sexRitual.orgasmTarget>>
+				I don't know if you can handle more yet, and I didn't want to take any risks this time." <<He>> places a hand under <<his>> chin in thought.
+			<<else>>
+				We should work on your stamina and willpower." <<He>> giggles.
+			<</if>>
+		<<elseif _purgeCount is 2>>
+			<span class="blue">twice</span>.
+			<<if $sexRitual.playerOrgasms is $sexRitual.orgasmTarget>>
+				I don't know if you can handle more yet, and I didn't want to take any risks this time." <<He>> places a hand under <<his>> chin in thought.
+			<<else>>
+				We should work on your stamina and willpower." <<He>> giggles.
+			<</if>>
+		<<elseif _purgeCount lte 5>>
+			<span class="teal"><<number _purgeCount>> times</span>. Your performance was... satisfactory." <<He>> giggles.
 		<<else>>
-			We should work on your stamina and willpower." <<He>> giggles.
+			<span class="green"><<number _purgeCount>> times</span>. Your performance was impressive, to say the least. You really know how to give a <<personsimple>> a good time." <<He>> giggles. <<npcincr Gwylan dom 1>><<gyearning>>
 		<</if>>
-	<<elseif _purgeCount is 2>>
-		<span class="blue">twice</span>.
-		<<if $sexRitual.playerOrgasms is $sexRitual.orgasmTarget>>
-			I don't know if you can handle more yet, and I didn't want to take any risks this time." <<He>> places a hand under <<his>> chin in thought.
-		<<else>>
-			We should work on your stamina and willpower." <<He>> giggles.
-		<</if>>
-	<<elseif _purgeCount lte 5>>
-		<span class="teal"><<number _purgeCount>> times</span>. Your performance was... satisfactory." <<He>> giggles.
 	<<else>>
-		<span class="green"><<number _purgeCount>> times</span>. Your performance was impressive, to say the least. You really know how to give a <<personsimple>> a good time." <<He>> giggles. <<npcincr Gwylan dom 1>><<gyearning>>
+		"After we became One, <span class="red">we weren't able to purge any further</span>. Something blocked the connection."
 	<</if>>
 	<<if ["exorcism", "banish", "expunge", "abomination"].includes($phase)>>
 		<br>
@@ -3981,6 +3984,7 @@ You both take the chance to relax in the fading afterglow.
 <br><br>
 
 <<specialClothesUnlock "item" "sage witch hat">>
+<<gwylanRitualPenetrate "withdraw">>
 <<gwylanRitualEnd>>
 
 <<if $gwylan.forgiven>>
@@ -4147,6 +4151,7 @@ Gwylan's fists are clenched. <<He>> turns around, <<his>> face full of rage, and
 :: Gwylan Ritual Sex Scorned
 <<effects>><<run statusCheck("Gwylan")>>
 
+<<gwylanRitualPenetrate "withdraw">>
 <<gwylanRitualEnd>>
 <<set $orgasmdown to 0>><<arousal -500>>
 <<if $phase is 0>>
@@ -5809,7 +5814,7 @@ Perhaps you haven't been entirely cast out.
 		<<elseif $sexRitual.position is "service" and $sexRitual.playerOrgasms gte 1 and C.npc.Gwylan.lust gte 15 and $player.penisExist and !$sexRitual.penetrated and !($sexRitual.virginityProtected and $player.virginity.penile is true and $virginitytest is 1)>>
 			Gwylan takes a deep breath, and <span class="pink">takes your <<penis>> into <<his>> mouth properly</span>.
 			<<gwylanRitualPenetrate "mouth" "penis">>
-		<<elseif $sexRitual.position is "service" and $sexRitual.sealed and C.npc.Gwylan.lust gte 25 and !(C.npc.Gwylan.penis isnot "none" and (!$player.vaginaExist and !$settings.analEnabled or $player.vaginaExist and $sexRitual.virginityProtected))>>
+		<<elseif $sexRitual.position is "service" and $sexRitual.sealed and C.npc.Gwylan.lust gte 25 and C.npc.Gwylan.penis is "none" and ($player.vaginaExist or $settings.analEnabled and !($player.vaginaExist and $sexRitual.virginityProtected))>>
 			<span class="pink">
 			<<if $player.penisExist>>
 				<<He>> releases your <<penis>> with a gasp, and crawls up.
@@ -7681,6 +7686,7 @@ Perhaps you haven't been entirely cast out.
 				<<sex 100 "genitals">><<takeVirginity "Gwylan" "penile">>
 				<<raped>><<penisraped>>
 			<</if>>
+			<<takeTempleVirginity "Gwylan" "penile">>
 		<<elseif $_playerPart is "anus">>
 			<<analstat>><<set $anustarget to 0>><<sex 30 "anus">>
 			<<set $anususe to "penis">>
@@ -7726,7 +7732,7 @@ Perhaps you haven't been entirely cast out.
 				<</if>>
 				<<sex 100 "genitals">><<takeVirginity "Gwylan" "vaginal">>
 			<</if>>
-			<<raped>><<vaginaraped>>
+			<<raped>><<vaginaraped>><<takeTempleVirginity "Gwylan" "vaginal">>
 		<</if>>
 	<</if>>
 	<<if $_virginityNotif and $sexRitual.hypnosis isnot "Gwylan">>
