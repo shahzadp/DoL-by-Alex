@@ -1099,60 +1099,53 @@
 			<br>
 			Total days knowingly being pregnant: <<print Math.floor($pregnancyStats.totalDaysPregnancyKnown)>>
 			<br>
-			<<if canBeMPregnant()>>
-
-			<<elseif !$player.vaginaExist or !$_menstruation.running>>
-				Cannot currently get pregnant.
-			<<elseif $_vPregnancy.type is "parasite">>
-				Parasites in the womb are preventing normal pregnancy from occurring.
-			<<elseif $_menstruation.currentState is "recovering">>
-				You are not quite ready to get pregnant so soon after your last one.
-			<<elseif $_vPregnancy.type isnot null>>
-				Currently pregnant with: <<print $_vPregnancy.fetus.length>>
-					<<extraStatisticsPregnancyType $_vPregnancy.type>>
-				<br>
-				<<set $_days to pregnancyDaysEta($_vPregnancy)>>
-				<<if $_days lt 1>>
-					ETA: Anytime.
-				<<elseif $_days>>
-					ETA: <<print $_days>> <<pluralise $_days "day">>.
-				<</if>>
-				<br>
-			<<else>>
-				Not currently pregnant.
-				<br>
-				<<if $settings.pregnancyType is "realistic">>
-					<<set [_trackedNPCs, _spermArray] to spermObjectToArray($sexStats.vagina.sperm, true, true)>>
-					Number of sources of sperm that can get you pregnant: <<print _spermArray.length>>
+			<<if !canBeMPregnant() and $_aPregnancy.type is null>>
+				<<if $_vPregnancy.type isnot null>>
+					Currently pregnant with: <<print $_vPregnancy.fetus.length>>
+						<<extraStatisticsPregnancyType $_vPregnancy.type>>
 					<br>
-					<<if _trackedNPCs.length>>
-						Those whose sperm you have inside you currently:
-						<ul>
-							<<for _name range _trackedNPCs>>
-								<<set $_count to _spermArray.filter(s => s.source === T.name.source).length>>
-								<li>
-									<<print pregnancyNameCorrection(_name.source)>>
-									<<if $_count gt 1>>
-										(x<<print $_count>>)
-									<</if>>
-								</li>
-							<</for>>
-						</ul>
-					<<else>>
-						<br> /* For formating the break after the foldout if realistic but no list*/
+					<<set $_days to pregnancyDaysEta($_vPregnancy)>>
+					<<if $_days lt 1>>
+						ETA: Anytime.
+					<<elseif $_days>>
+						ETA: <<print $_days>> <<pluralise $_days "day">>.
 					<</if>>
-				<<else>>
-					<br> /* For formating the break after the foldout if not realistic */
-				<</if>>
-			<</if>>
-			<<if canBeMPregnant()>>
-				<<if $_aPregnancy.type is "parasite">>
-					Parasites in the womb are preventing normal pregnancy from occurring.
-				<<elseif !$_menstruation.running>>
+					<br>
+				<<elseif !$player.vaginaExist or !$_menstruation.running>>
 					You cannot currently get pregnant.
+				<<elseif $_vPregnancy.type is "parasite">>
+					Parasites in the womb are preventing normal pregnancy from occurring.
 				<<elseif $_menstruation.currentState is "recovering">>
 					You are not quite ready to get pregnant so soon after your last one.
-				<<elseif $_aPregnancy.type isnot null>>
+				<<else>>
+					Not currently pregnant.
+					<br>
+					<<if $settings.pregnancyType is "realistic">>
+						<<set [_trackedNPCs, _spermArray] to spermObjectToArray($sexStats.vagina.sperm, true, true)>>
+						Number of sources of sperm that can get you pregnant: <<print _spermArray.length>>
+						<br>
+						<<if _trackedNPCs.length>>
+							Those whose sperm you have inside you currently:
+							<ul>
+								<<for _name range _trackedNPCs>>
+									<<set $_count to _spermArray.filter(s => s.source === T.name.source).length>>
+									<li>
+										<<print pregnancyNameCorrection(_name.source)>>
+										<<if $_count gt 1>>
+											(x<<print $_count>>)
+										<</if>>
+									</li>
+								<</for>>
+							</ul>
+						<<else>>
+							<br> /* For formating the break after the foldout if realistic but no list*/
+						<</if>>
+					<<else>>
+						<br> /* For formating the break after the foldout if not realistic */
+					<</if>>
+				<</if>>
+			<<else>>
+				<<if $_aPregnancy.type isnot null>>
 					Currently pregnant with: <<print $_aPregnancy.fetus.length>>
 					<<extraStatisticsPregnancyType $_aPregnancy.type>>
 					<br>
@@ -1163,6 +1156,12 @@
 						ETA: <<print $_days>> <<pluralise $_days "day">>.
 					<</if>>
 					<br>
+				<<elseif !$_menstruation.running>>
+					You cannot currently get pregnant.
+				<<elseif $_aPregnancy.type is "parasite">>
+					Parasites in the womb are preventing normal pregnancy from occurring.
+				<<elseif $_menstruation.currentState is "recovering">>
+					You are not quite ready to get pregnant so soon after your last one.
 				<<else>>
 					Not currently pregnant.
 					<br>
