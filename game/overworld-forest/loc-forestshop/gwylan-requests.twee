@@ -1247,7 +1247,7 @@ You stretch your wings out again. They feel noticably lighter, but look magnific
 :: Gwylan Request Feathers
 <<effects>><<run statusCheck("Gwylan")>>
 <<if $phase is 1>>
-	<<set _featherCount to 15>>
+	<<set _featherCount to 10>>
 	You hand Gwylan a big bundle of feathers. <<He>> looks surprised, and gently takes them.
 	<br><br>
 
@@ -2755,6 +2755,91 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 
 <<gwylanOptions>>
 
+:: Gwylan Dog Bed Request
+<<effects>><<run statusCheck("Gwylan")>>
+
+<<if !$gwylanSeen.includes("doggy_bed")>>
+	<<set $gwylanSeen.pushUnique("doggy_bed")>>
+	<<switch $speech_attitude>>
+		<<case "meek">>"Gwylan, I..." you hesitate. Gwylan gives you a patient smile. "I feel comfortable here, and I'm really tired. Do you have somewhere I could rest?"
+		<<case "bratty">>"I'm exhausted. Do you have somewhere I could shut my eyes? I'd even take a chair at this point."
+		<<default>>"Gwylan, I'm exhausted. Do you have somewhere I could rest? I feel safe here."
+	<</switch>>
+	<br><br>
+
+	Gwylan's head tilts. "You don't have a safe place to..." <<he>> stops <<himself>>. "Oh, where are my manners? Of course <<pcpetname "Gwylan" "my">> is welcome to sleep here!" <<He>> pulls you in by your collar and kisses you on the cheek. "Wait here a moment."
+	<br><br>
+
+	<<He>> looks around, framing <<his>> hands in front of <<his>> face as if trying to visualise something. "There." <<He>> walks through a dark doorway. You hear something dragging along the ground.
+	<br><br>
+
+	Gwylan emerges, pulling a large cushioned object. <span class="lewd">It's a pet bed.</span> It looks luxurious. <<hypnosisText "You imagine falling asleep in it, and your eyes start to feel heavy.">>
+	<br><br>
+
+	<<He>> looks to the counter, and moves the bed a little more. "There. So I can see you while you're asleep. You should know, though. <span class="blue">You might have trouble falling asleep unless you're wearing your collar.</span>" <<He>> smiles, and pets the top of your head. "Anything for you, <<pcpetname "Gwylan" "my">>." <<hypnosisText "You melt at <<his>> touch.">> <<stress -3>><<trauma -1>><<tiredness 2>><<lstress>><<ltrauma>><<gtiredness>>
+	<br><br>
+
+	<span class="gold">You can now sleep at the forest shop while wearing your familiar collar.</span>
+	<br><br>
+
+	"I can't have you getting too comfortable here, though," <<he>> says. "I'll give you a week, but after that, <span class="blue">I'll make you work for pet bed privileges.</span>"
+	<<set $gwylan.timer.petBed to new DateTime(Time.date).addDays(7).timeStamp>>
+<<else>>
+	<<if $gwylan.timer.petBed>>
+		<<switch $speech_attitude>>
+			<<case "meek">>"I like sleeping here. Could you keep that bed out for me for a while longer?"
+			<<case "bratty">>"Could you keep my bed out longer? It's convenient to have here."
+			<<default>>"Can you keep my bed out for another week?"
+		<</switch>>
+	<<else>>
+		<<switch $speech_attitude>>
+			<<case "meek">>"Gwylan, could you... drag my bed out again, please?"
+			<<case "bratty">>"Where's my bed? I need to rest."
+			<<default>>"Can I have my pet bed back please?"
+		<</switch>>
+	<</if>>
+	<br><br>
+
+	<<if $gwylan.requestDone>>
+		<<He>> smiles. "Of course, <<pcpetname "Gwylan" "simple">>. I like seeing you sleep over there."
+		<<if !$gwylan.timer.petBed>>
+			<<set $gwylan.timer.petBed to new DateTime(Time.date).addDays(7).timeStamp>>
+			<<He>> giggles, and drags your pet bed into place.
+		<<else>>
+			<<set $gwylan.timer.petBed to new DateTime($gwylan.timer.petBed).addDays(7).timeStamp>>
+		<</if>>
+	<<elseif $tiredness gte 1700 and !$weekly.gwylanPetBedHold>>
+		<<set $weekly.gwylanPetBedHold to true>>
+		<<He>> looks you over. "Sure, but I need you to..." <<he>> stops <<himself>>, and frowns. "Oh. You look exhausted."
+		<br><br>
+
+		<<He>> puts a hand to <<his>> chin. "Alright. You can have it for <span class="blue">one day</span>, but after that I'll need a favour from you." <<He>> smiles. "I can't hope to turn you down looking like that."
+		<<if !$gwylan.timer.petBed>>
+			<<set $gwylan.timer.petBed to new DateTime(Time.date).addDays(1).timeStamp>>
+			<<He>> drags your bed out, and kisses you on the cheek. "Sleep well, <<pcpetname "Gwylan" "name">>."
+		<<else>>
+			<<set $gwylan.timer.petBed to new DateTime($gwylan.timer.petBed).addDays(1).timeStamp>>
+			<<He>> kisses you on the cheek. "Sleep well, <<pcpetname "Gwylan" "name">>."
+		<</if>>
+	<<elseif $gwylan.request.event>>
+		Gwylan thinks for a moment. "I suppose I can let you rest here, but only after <span class="blue">you do what I asked of you.</span>"
+	<<else>>
+		<<if !$gwylanSeen.includes("request_intro")>>
+			Gwylan thinks for a moment. "Sure, but I need you to do something for me first. It'll be nice and simple, don't worry." <<He>> smiles sweetly.
+			<<run gwylanRequest("tutorial")>>
+			<<gwylanRequestText>>
+		<<else>>
+			Gwylan thinks for a moment. "Sure, but I need you to do something for me first." <<He>> smiles sweetly.
+			<<run gwylanRequest()>>
+			<<gwylanRequestText>>
+		<</if>>
+		<<set $gwylan.request.hold to "petBed">>
+	<</if>>
+<</if>>
+<br><br>
+
+<<gwylanOptions>>
+
 
 :: Gwylan Request Widgets [widget]
 <<widget "gwylanRequestText">>
@@ -3118,6 +3203,7 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 						<<else>>
 							"You said you wanted me to release your collar, right? It looks like you don't need help with that anymore."
 						<</if>>
+					<<case "petBed">>"I'll drag your bed back out right away, if you'd like."
 					<<default>>"You already had something in mind, right?"
 				<</switch>>
 			<</if>>

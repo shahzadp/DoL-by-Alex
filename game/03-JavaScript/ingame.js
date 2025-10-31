@@ -1242,7 +1242,7 @@ function currentSkillValue(skill, disableModifiers = 0) {
 			if (V.fox >= 6) result = Math.floor(result * 1.1);
 			break;
 		case "physique":
-			if (["forest", "moor", "farm"].includes(V.location)) {
+			if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
 				if (V.worn.feet.type.includes("heels")) {
 					result = Math.floor(result * (1 - V.worn.feet.reveal / 5000));
 				}
@@ -1294,7 +1294,7 @@ function currentSkillValue(skill, disableModifiers = 0) {
 			}
 			break;
 		case "athletics":
-			if (["forest", "moor", "farm"].includes(V.location)) {
+			if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
 				if (V.worn.feet.type.includes("heels")) {
 					result = Math.floor(result * (1 - V.worn.feet.reveal / 5000));
 				}
