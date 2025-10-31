@@ -397,8 +397,8 @@
 					<<set $_reqbr to true>>
 					<<tficon "bird">><<link [[Let <<him>> preen your wings (0:40)|Gwylan Request Preen]]>><</link>><<lstress>><<garousal>>
 					<br>
-					<<if $bird?.materials?.feathers gte 15>>
-						<<birdicon "feather">><<link [[Give <<him>> 15 feathers instead|Gwylan Request Feathers]]>><<set $phase to 1>><</link>>
+					<<if $bird?.materials?.feathers gte 10>>
+						<<birdicon "feather">><<link [[Give <<him>> 10 feathers instead|Gwylan Request Feathers]]>><<set $phase to 1>><</link>>
 						<br>
 					<</if>>
 				<<elseif $bird?.materials?.feathers gte $gwylan.request.items.find(feather => feather.name === "feathers").need or $harpy gte 6>>
@@ -434,7 +434,7 @@
 <</widget>>
 
 <<widget "gwylanOptionsService">>
-	<<if playerChastity() and $gwylan.request.hold isnot "chastity" and ($gwylanSeen.includes("chastity") or $gwylanJordanChastity or $gwylan.request.event is "chastity" and !$gwylan.request.items?.length)>>
+	<<if playerChastity() and $gwylan.request.hold isnot "chastity" and ($gwylanSeen.includesAny("chastity", "partners") or $gwylanJordanChastity or $gwylan.request.event is "chastity" and !$gwylan.request.items?.length)>>
 		<<if $gwylan.requestLast?.hold is "chastity" and (!$gwylan.request.event or $gwylan.request.event is "chastity")>>
 			<<lockicon>><<link [[Ask for help removing your chastity device|Gwylan Chastity Removal]]>><<set $phase to "skip">><</link>>
 		<<else>>
@@ -447,6 +447,16 @@
 			<<icon "clothes/familiar_collar.png">><<link [[Ask Gwylan to unlock your familiar collar|Gwylan Familiar Collar Unlock]]>><</link>>
 		<<else>>
 			<<icon "clothes/familiar_collar.png">><<link [[Ask Gwylan to lock your familiar collar|Gwylan Familiar Collar Lock]]>><</link>><<gwylanHypnoNote>>
+		<</if>>
+		<br>
+	<</if>>
+	<<if $gwylanSeen.includesAll("partners", "familiar_collar") and (!$gwylan.timer.petBed or $gwylan.timer.petBed and Time.date.dayDifference(new DateTime(V.gwylan.timer.petBed)) <= 1) and $gwylan.request.hold isnot "petBed" and ($tiredness gte 1000 or $gwylanSeen.includes("doggy_bed"))>>
+		<<if $gwylan.timer.petBed and Time.date.dayDifference(new DateTime(V.gwylan.timer.petBed)) <= 1>>
+			<<bedicon "default">><<link [[Ask Gwylan to keep your pet bed out for another week|Gwylan Dog Bed Request]]>><</link>>
+		<<elseif $gwylanSeen.includes("doggy_bed")>>
+			<<bedicon "default">><<link [[Ask Gwylan to drag your pet bed out again|Gwylan Dog Bed Request]]>><</link>>
+		<<else>>
+			<<bedicon "default">><<link [[Ask Gwylan if you can sleep here|Gwylan Dog Bed Request]]>><</link>>
 		<</if>>
 		<br>
 	<</if>>
@@ -501,9 +511,6 @@
 
 	/* ToDo: Gwylan - basic service unrelated to hypno that can be done without cooldown? */
 
-	/* ToDo: Gwylan - high fatigue PC can ask to sleep in a dog bed with locked familiar collar.
-	Bonus points if Gwylan makes you ask for the dog bed in your own words on repeat requests.
-	They don't force you to with the collar, they just won't let you stay until you say, of your own will, "please let me sleep in the dog bed again"  */
 <</widget>>
 
 <<widget "gwylanOptionsClothing">>

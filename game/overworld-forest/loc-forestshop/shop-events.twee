@@ -136,6 +136,16 @@
 			<</if>>
 		<</if>>
 
+		<<if !$robin_in_forest_shop and $gwylanSeen.includes("doggy_bed")>>
+			<<if !$gwylan.timer.petBed>>
+				<<bedicon "default">><span class="purple">You can't find <<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>your pet bed<<else>>the bed Gwylan left out for you<</if>>.</span>
+			<<else>>
+				<<set _doggyBedText to $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1 ? "Your pet bed" : "Pet bed">>
+				<<bedicon "default">><<link [[_doggyBedText|Forest Shop Dog Bed]]>><</link>>
+			<</if>>
+			<br>
+		<</if>>
+
 		<<if $christmas_gift_robin is undefined and $christmas is 1 and C.npc.Robin.init is 1>>
 			<<if isLoveInterest("Robin")>><<gifticon "love">><<else>><<gifticon "christmas">><</if>><<link [[Find a gift for Robin (0:10)|Forest Christmas Robin]]>><<pass 10>><</link>>
 			<br>
@@ -3529,7 +3539,7 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 	As <<he>> finishes <<his>> words, you find your vision blurring. "What would I do without you here, <<pcpetname "Gwylan">>?" <<He>> giggles.
 	<br><br>
 
-	You fall out of your seat, but <<he>> catches you.
+	You fall out of your seat, but <<he>> catches you. "What... would I do without you?"
 	<br><br>
 
 	<<if _gwylanStatus.includes("aurigaScarConfront")>>
@@ -3543,4 +3553,129 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 
 	<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
 	<br>
+<</if>>
+
+:: Forest Shop Dog Bed
+<<effects>>
+<<if $bedGuest is "Gwylan">>
+	Gwylan spoons you in the pet bed, idly stroking your hair. <<hypnosisText "<<nnpc_He 'Gwylan'>> hums gently, making your body feel heavy and tired.">>
+<<else>>
+	You curl up in the pet bed. There's a big fuzzy blanket folded next to it, which you pull over yourself.
+<</if>>
+<br><br>
+
+<<if Time.isBloodMoon() or Time.monthDay is Time.lastDayOfMonth and !$bedGuest is "Gwylan">>
+	<span class="red">The shop groans and creaks, preventing you from getting to sleep.</span> You feel a sudden sense of danger.
+	<br><br>
+
+	<<if Time.isBloodMoon()>>
+		A beam of red moonlight lands on your face.
+	<<else>>
+		You remember that it's the last day of the month.
+	<</if>>
+	You stand.
+	<br><br>
+
+	<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
+	<br>
+<<elseif isGwylanAbsent() is "nobody" and !$bedGuest is "Gwylan">>
+	You toss and turn for a few moments, before standing back up. <span class="red">You can't hope to sleep while nobody's here.</span>
+	<br><br>
+
+	<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
+	<br>
+<<elseif !($worn.neck.name is "familiar collar" and $worn.neck.cursed is 1) and !$bedGuest is "Gwylan">>
+	You toss and turn for a few moments, your mind unable to quiet down.
+	<br><br>
+
+	<<if $worn.neck.name is "familiar collar">>
+		You brush your hands against your collar. <<hypnosisText "You can't get comfortable unless you know it's safely locked.">>
+	<<else>>
+		You brush your hands against your neck. <<hypnosisText "You can't get comfortable without Gwylan's collar safely locked around your neck.">>
+	<</if>>
+	This is a bed for a pet, after all.
+	<br><br>
+
+	You stand back up.
+	<br><br>
+
+	<<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
+	<br>
+<<else>>
+	It's very comfortable, fitting you <<if $bedGuest is "Gwylan">>both<</if>> easily. You let out a contented sigh and rub the heart on your collar.
+	<br><br>
+
+	<<nightmareCheck "Forest Shop Dog Bed Sleep">>
+	<<generateSleepLinks "Forest Shop Dog Bed Sleep">>
+	<<if !$bedGuest is "Gwylan">>
+		<<link [[Climb out|Forest Shop Entrance]]>><<endevent>><</link>>
+	<</if>>
+<</if>>
+
+:: Forest Shop Dog Bed Sleep
+<<set _autosavehere to true>>
+<<run statusCheck("Gwylan")>>
+<<sleep>>
+
+<<effects>>
+<<sleepeffects>>
+
+<<if isPregnancyEnding()>>
+	<<pregnancyPassout "forestShop">>
+<<elseif _gwylanCafeWake>>
+	<<npc Gwylan>><<person1>>
+	You wake up to Gwylan gently petting your head. "<<pcPetname "Gwylan" "simple">>, it's breakfast time. Come on, let's go for a walk!" <<He>> kisses you on the cheek.
+	<br><br>
+	<<unset $gwylanbed>>
+
+	<<hypnosisText "The word 'walk' fills you with vigor and excitement.">> You stand and stretch, and your head ends up finding Gwylan's hand again. <<tiredness -2>><<ltiredness>>
+	<br><br>
+
+	<<link [[Walk with Gwylan to the cafe|Gwylan Walk Cafe Solo]]>><</link>>
+	<br>
+<<elseif _gwylanWake>>
+	<<set $bedGuest to "Gwylan">><<set $gwylanbed to true>>
+	<<npc Gwylan>><<person1>>You feel your blanket briefly get lifted, and someone crawls into the pet bed with you. Gwylan spoons you. "Shh... go back to sleep, <<pcpetname "Gwylan" "simple">>."
+	<br><br>
+
+	<<nightmareCheck "Forest Shop Dog Bed Sleep">>
+	<<generateSleepLinks "Forest Shop Dog Bed Sleep">>
+<<else>>
+	<<if $nightmares is 1 and $controlled is 0>>
+		<<wakingEffects $sleepHoursTotal>>
+		<<nightmareWake>> You quickly forget the specifics, but the sense of dread lingers.
+		<br><br>
+	<<else>>
+		<<if !_wakingEffect>>
+			<<wakingEffects $sleepHoursTotal>>
+		<</if>>
+		<<if ["dryheaving","nausea"].includes(_wakingEffect)>>
+			<br><br>
+			You slept soundly, but now feel a little rough.
+			<<if $gwylanbed>>
+				Gwylan rubs your back for comfort.
+			<</if>>
+			<br><br>
+		<<elseif ($specialClothesEffects.bimbo.total gte random(100,1000) || $specialClothesEffects.pimp.total gte random(100,1000)) or $arousal gte ($arousalmax / 10) * 9>>
+			<<wetDream>>
+			<<if $gwylanbed>>
+				Gwylan giggles. "Oh my, someone was pent up." <<npcincr Gwylan lust 3>><<gglust>>
+				<br><br>
+
+				<<He>> returns with some towels and helps you clean up.
+			<</if>>
+			<br><br>
+		<<elseif !_wakingEffect>>
+			You sleep soundly, and wake up refreshed.
+			<<if $gwylanbed>>
+				Gwylan kisses you on the cheek, and leaves you alone in the bed.
+			<</if>>
+			<br><br>
+		<<else>>
+			<br><br>
+		<</if>>
+	<</if>>
+	<<getouticon>><<link [[Get out of bed|Forest Shop Entrance]]>><<endevent>><</link>>
+	<br>
+	<<unset $gwylanbed>>
 <</if>>
