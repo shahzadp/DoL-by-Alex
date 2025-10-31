@@ -68,7 +68,7 @@ function initSpecialClothes() {
 		{ name: "prison trousers", 				sets: ["bad_end", "prison"] },
 		{ name: "prison jumpsuit", 				sets: ["bad_end", "prison"] },
 		{ name: "unbound straightjacket", 		sets: ["bad_end", "asylum"] },
-		
+
 		{ name: "initiate's robe", 				sets: ["temple", "temple_initiate"] },
 		{ name: "monk's habit", 				sets: ["temple", "temple_monk_and_nun"] },
 		{ name: "nun's habit", 					sets: ["temple", "temple_monk_and_nun"] },
@@ -137,7 +137,7 @@ function initSpecialClothes() {
 		{ name: "fedora", 						sets: ["fedora"] },
 
 		{ name: "catsuit", 						sets: ["catsuit"] },
-	
+
 		{ name: "daisy", 						sets: ["flowers"], requirements: () => V.plants_known?.includes("daisy"), hint: "find daisy seeds" },
 		{ name: "flower crown", 				sets: ["flowers"], requirements: () => V.robinSeen?.includes("flowerCrown") || V.specialClothesEvents?.includes("flowerCrownGH"), hint: "make one with someone special to you" },
 
@@ -335,7 +335,7 @@ function initSpecialClothes() {
 			featCost: 5,
 			icon: "clothes",
 			iconSlot: "upper",
-			iconIndex: 27,			
+			iconIndex: 27,
 			iconColor: "pink",
 			iconAccColor: "black",
 		},
@@ -359,7 +359,7 @@ function initSpecialClothes() {
 			featCost: 2,
 			icon: "clothes",
 			iconSlot: "under_lower",
-			iconIndex: 21,			
+			iconIndex: 21,
 			iconColor: "white",
 		},
 		bird: {
@@ -372,7 +372,7 @@ function initSpecialClothes() {
 			featCost: 15,
 			icon: "clothes",
 			iconSlot: "head",
-			iconIndex: 31,			
+			iconIndex: 31,
 			iconColor: "tan",
 		},
 		prison: {
@@ -461,7 +461,7 @@ function initSpecialClothes() {
 			subsetOf: ["temple"],
 			feat: true,
 			featCost: 12,
-			icon: "clothes/monk's_sparring_habit.png",	
+			icon: "clothes/monk's_sparring_habit.png",
 		},
 		temple_sexy: {
 			text: "lewd religious attire",
@@ -483,7 +483,7 @@ function initSpecialClothes() {
 			featCost: 4,
 			icon: "clothes",
 			iconSlot: "neck",
-			iconIndex: 19,			
+			iconIndex: 19,
 			iconColor: "purple",
 		},
 
@@ -702,7 +702,7 @@ function initSpecialClothes() {
 			feat: false,
 			icon: "clothes/familiar_collar.png",
 		},
-		
+
 		// Misc
 		shrine: {
 			text: "spirit mask and shrine robe",
