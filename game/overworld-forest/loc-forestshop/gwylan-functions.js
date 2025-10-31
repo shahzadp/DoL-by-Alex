@@ -152,7 +152,7 @@ function gwylanRequest(override = null) {
 			return V.gwylan.request;
 		case "preen":
 			V.gwylan.request.event = "preen";
-			V.gwylan.request.items = [{ category: "other", name: "feathers", need: seedrng.randomInt(6, 12) }];
+			V.gwylan.request.items = [{ category: "other", name: "feathers", need: seedrng.randomInt(4, 8) }];
 			V.gwylan.request.timer =
 				V.harpy >= 6 && V.birdFly >= 1 ? new DateTime(Time.date).addDays(1).timeStamp : new DateTime(Time.date).addDays(10).timeStamp; // 10 day timer if no bird tf
 			V.gwylan.request.special = V.harpy >= 6 ? "harpy" : "feathers";
@@ -718,7 +718,7 @@ function gwylanRequestSample(override) {
 		if (V.settings.bestialityEnabled && complexity > 3) {
 			availableSpecies.push(["wolf", 2], ["fox", 2], ["cat", 1], ["lizard", 1], ["dog", 1]);
 			if (complexity > 4) availableSpecies.push(["boar", 1], ["dolphin", 1]);
-			if (complexity > 6) availableSpecies.push(["bear", 2]);
+			if (complexity > 6) availableSpecies.push(["bear", 1]);
 		}
 		if (V.settings.plantsEnabled && complexity > 6) availableSpecies.push(["plant", 3]);
 

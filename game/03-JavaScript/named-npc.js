@@ -391,7 +391,7 @@ function gwylanSchedule() {
 		} else {
 			return "cafe";
 		}
-	} else if (!Time.isBloodMoon() && (Time.hour >= 23 || Time.hour <= 5) && !V.gwylan?.hunting) {
+	} else if (!Time.isBloodMoon() && (Time.hour >= 23 || Time.hour <= 5) && (!V.gwylan?.hunting || V.location === "forest_shop")) {
 		return "sleep";
 	}
 	return "shop";

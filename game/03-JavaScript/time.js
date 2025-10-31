@@ -1157,6 +1157,8 @@ function dawnCheck() {
 	delete V.alexSomnoAngry;
 	delete V.connudatus_stripped;
 	delete V.robin_kicked_out;
+	delete V.gwylanWake;
+	delete V.gwylanCafeWake;
 
 	if (V.schoolBlocked) delete V.schoolBlocked;
 
@@ -1517,6 +1519,7 @@ function dailyNPCEffects() {
 				delete V.gwylan.timer.scorned;
 			}
 		}
+		if (V.gwylan.timer.petBed && Time.date.dayDifference(V.gwylan.timer.petBed) <= 0) delete V.gwylan.timer.petBed;
 	}
 
 	wikifier("relationshipclamp");

@@ -9719,6 +9719,7 @@ function initLower() {
 			name_cap: "Gift wrap bottom",
 			variable: "giftwrap",
 			combat: {
+				reference: "shorts",
 				renderType: "shorts",
 			},
 			integrity: 20,

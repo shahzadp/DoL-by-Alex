@@ -2398,7 +2398,7 @@ function initUnderLower() {
 			anal_shield: 0,
 			gender: "n",
 			warmth: 0,
-			cost: 1000,
+			cost: 0,
 			description: "No one will need to guess what the gift is.",
 			shop: ["forest"],
 			accessory: 0,
