@@ -43,7 +43,81 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 }>>
 
 <<set $hcEndings ||= []>>
-<<if $hcEndings.includes("S")>>
+<<if localStorage.getItem("hopelessCycle") is null or $hcEndings.length gte localStorage.getItem("hopelessCycle").split(",").length>>
+	<<run localStorage.setItem("hopelessCycle", $hcEndings)>>
+<</if>>
+<<if $museumAntiques.paintings.paintingsnake is "talk" and localStorage.getItem("hopelessCycle").length gte 1
+	or $museumAntiques.paintings.paintingsnake is "museum" and localStorage.getItem("hopelessCycle").split(",").length gt $hcEndings.length + 1>>
+	<<set $hcEndings to $hcEndings.concatUnique(localStorage.getItem("hopelessCycle").split(","))>>
+	<<run localStorage.setItem("hopelessCycle", $hcEndings)>>
+	Looking at the painting, <span class="lblue">a foreign memory strikes you</span>.
+	<<if $museumAntiques.paintings.paintingsnake is "talk">>
+		"I think I know this one," you say. "This is <span class="gold">'Hopeless Cycle'</span>, right? The story of the witch and the gaolor."
+		<br><br>
+
+		Winter smiles. "I see you've done your research. Yes, that's exactly right. Out of curiosity, what variations of this tale have you heard? There are a number of them."
+		<br><br>
+
+		You recount the foggy memories you have of the painting's story. As you speak, and as Winter coaxes you, <span class="gold">the memories become clearer, more detailed, until you remember...</span>
+	<<else>>
+		"I think I remember some versions of this," you say. "Versions you never told me."
+		<br><br>
+
+		Winter's eyebrows raise. "Oh? Doing some reading in your own time, are you? Out of curiosity, what variations of this tale have you heard? Including the ones I've told."
+		<br><br>
+
+		You go through the foggy memories you have of the painting's story, comparing them to the stories you remember hearing from Winter. As you speak, and as Winter coaxes you, <span class="gold">the memories become clearer, more detailed, until you remember...</span>
+	<</if>>
+	<br><br>
+
+	<<hopelessCycleEndings>>
+	You finish.
+	<<if $hcEndings.includes("S")>>
+		Winter looks proud. "Well, I don't know what else I could tell you. Though, if you want to hear it again, I would hardly be opposed."
+		<br><br>
+
+		<<He>> walks off for a moment, returning with a chair and inviting you to sit. The painting hangs on the wall next to you, the figure's weeping gaze bearing down.
+		<br><br>
+
+		Winter sits down too. "The title is written on the back of the frame in an older tongue, and the translation could also mean 'desperate spiral' or similar.
+		It evokes the feeling of being trapped in self-fulfilling loops. It's at least three centuries old. Though you know all this by now, of course."
+		<br><br>
+
+		<<link [[Ask Winter if there are any other variations on the story|Museum Hopeless Cycle Story Challenge]]>><</link>> | <span class="blue"><i>Challenge options</i></span> <!-- Appears even with blind stats enabled. Intentional -->
+		<br>
+	<<elseif $hcEndings.includesAll("F","E","D","C","B","A") and !$hcEndings.includes("S")>>
+		Winter looks impressed. "That's quite a few of them. There's only one commonly-accepted ending left, in fact.
+		<<if $museumAntiques.paintings.paintingsnake is "talk">>
+			It involves a few supernatural elements I would've excluded as to not dilute the story, but it's clear you're ready for them.
+		<<else>>
+			It involves a few supernatural elements I've previously excluded as to not dilute the story, but it's clear you're ready for them.
+		<</if>>
+		It involves cross-referencing some other legends."
+		<br><br>
+
+		<<He>> walks off for a moment, returning with a chair and inviting you to sit. The painting hangs on the wall next to you, the figure's weeping gaze bearing down.
+		<br><br>
+
+		"There's two that are relevant. The first is a tale of an entity in the part of the old sewers that was once the temple's disposal channel.
+		<span class="gold">This version supposes that the gaoler received a gift from it after 'feeding' it many objects, especially 'tainted' ones, by dumping them into the waterway.
+		Part of the legend involves throwing a lit torch into the channel to get its attention.</span>"
+		<br><br>
+
+		<<He>> looks to the painting. "The other legend comes into play when the gaoler <span class="gold">brings that gift to the lake before the day the witch was branded with crosses</span>, but I'm getting ahead of myself.
+		Let's work our way to that part of the story first."
+		<br><br>
+	<<else>>
+		Winter nods. "I see. That skips some of the stories, then. If you're willing to listen, I'm always glad to share history. Folklore or otherwise."
+		<br><br>
+
+		<<He>> walks off for a moment, returning with a chair and inviting you to sit. The painting hangs on the wall next to you, the figure's weeping gaze bearing down.
+		<br><br>
+	<</if>>
+	<<link [[Let <<him>> continue|Museum Hopeless Cycle Story Continue]]>><<set $phase to 1>><</link>>
+	<br>
+	<<link [[Back out|Museum Hopeless Cycle Story Back]]>><</link>>
+	<<exit>>
+<<elseif $hcEndings.includes("S")>>
 	<<hopelessCycleEndings>>
 	"Could you tell me the story behind this painting again?" you ask Winter.
 	<br><br>
@@ -207,6 +281,19 @@ Or so they claim. This painting represents the story of a beloved wise woman the
 <br><br>
 
 <<link [[...the injustice of which immortalised her in myth.|Hopeless Cycle]]>><<pass 30>><<endevent>><</link>>
+<br>
+
+:: Museum Hopeless Cycle Story Back
+<<effects>>
+You tell Winter you changed your mind, now that you remembered you already knew the story. Winter grumbles good-naturedly. "And I got my nice chair out for this, too..."
+<br><br>
+
+<<He>> stands up, turning around to grab the chair once more. "Well, let me know if you change your mind."
+<br><br>
+
+<<set $museumAntiques.paintings.paintingsnake to "museum">>
+
+<<link [[Next|Museum]]>><<unset $hcChallenge>><<endevent>><</link>>
 <br>
 
 /* Event start */
@@ -2353,9 +2440,9 @@ Your hands clench and open over and over.
 <br><br>
 
 <<if $prisonerBrands.includesAny("lower back", "left arm", "right arm", "left shoulder", "right shoulder")
-or $prisonerBrands.filter(brands => ["left leg", "left thigh", "left foot"].includes(brands)).length gte 2
-or $prisonerBrands.filter(brands => ["right leg", "right thigh", "right foot"].includes(brands)).length gte 2
-or between($prisonerBrands.length,1,2)>>
+	or $prisonerBrands.filter(brands => ["left leg", "left thigh", "left foot"].includes(brands)).length gte 2
+	or $prisonerBrands.filter(brands => ["right leg", "right thigh", "right foot"].includes(brands)).length gte 2
+	or between($prisonerBrands.length,1,2)>>
 	<span class="red">You freeze.</span> Your mind ripples like water, and memories float to the surface.
 	A searing brand pressed to flesh. Screams, both stifled and released. Beauty forever marked by a hubris made in divinity's image, guided by a cruel Hand.
 	The sweet air now tastes bitter and stagnant.
@@ -5944,9 +6031,9 @@ Her soft snoring lulls you into a blissful trance.
 	"Ignoring the supernatural elements," Winter continues, "there's a lot of evidence that this was the true chain of events.
 	There's no burial or cremation records for Nona or the gaoler in the temple's records, which is something they take very seriously.
 	<<if $museumAntiques.antiques.antiquesnuffer is "found" or
-	$museumAntiques.antiques.antiquewhip is "found" or
-	$museumAntiques.antiques.antiquesilvermanacle is "found" or
-	$museumAntiques.antiques.antiquebucket is "found">>
+		$museumAntiques.antiques.antiquewhip is "found" or
+		$museumAntiques.antiques.antiquesilvermanacle is "found" or
+		$museumAntiques.antiques.antiquebucket is "found">>
 		Additionally, <span class="gold">some of the antiques you've found lend themselves to the gaoler and Nona living on after escaping the cloister.</span>"
 	<</if>>
 	<br><br>
@@ -5999,6 +6086,7 @@ Her soft snoring lulls you into a blissful trance.
 <</if>>
 <br><br>
 <<set $hcEndings.pushUnique(_endingSeen)>>
+<<run localStorage.setItem("hopelessCycle", $hcEndings.concatUnique(localStorage.getItem("hopelessCycle")))>>
 <<hopelessCycleEndings>>
 <<if _endingSeen is "S">>
 	<<specialClothesUnlock "set" "chain_tunic">>
