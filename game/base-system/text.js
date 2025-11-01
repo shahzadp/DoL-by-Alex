@@ -813,3 +813,8 @@ statDisplay.create("gpenisacceptance", statChange.gainPenisAcceptance);
 statDisplay.create("wolfpacktrust", statChange.wolfpacktrust);
 statDisplay.create("wolfpackfear", statChange.wolfpackfear);
 statDisplay.create("gwarmth", () => statDisplay.statChange("Warmth", 1, "orange"));
+statDisplay.create("ggwarmth", () => statDisplay.statChange("Warmth", 2, "orange"));
+statDisplay.create("gggwarmth", () => statDisplay.statChange("Warmth", 3, "orange"));
+statDisplay.create("lwarmth", () => statDisplay.statChange("Warmth", -1, "teal"));
+statDisplay.create("llwarmth", () => statDisplay.statChange("Warmth", -2, "teal"));
+statDisplay.create("lllwarmth", () => statDisplay.statChange("Warmth", -3, "teal"));
