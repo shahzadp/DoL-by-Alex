@@ -317,7 +317,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			if (between(V.fingersInVagina, 1, 3))
 				resultArray.push(
 					`"Is that all ${V.masturbationAudience > 1 ? "<<pshe>>" : "the fingers you"} can fit in${
-						V.masturbationAudience > 1 ? " <<pher>>? Must be a virgin." : "?"
+						V.masturbationAudience > 1 ? " <<phim>>? Must be a virgin." : "?"
 					}"`,
 					`"Come on, add another finger already. I know you can fit more than that in there."`,
 					`"I can give you more than some fingers if you come here."`
@@ -333,7 +333,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			return resultArray.random();
 		case "anusEntrance":
 			resultArray.push(
-				`"I got a nice view of ${V.masturbationAudience > 1 ? "<<pher>>" : "you"} touching ${V.masturbationAudience > 1 ? "<<pher>>" : "your"} ass."`,
+				`"I got a nice view of ${V.masturbationAudience > 1 ? "<<phim>>" : "you"} touching ${V.masturbationAudience > 1 ? "<<pher>>" : "your"} ass."`,
 				`"I've never seen such a spankable ass."`,
 				`"C'mon, shove in some fingers already."`,
 				`"Show ${V.masturbationAudience > 1 ? "us" : "me"} how you play with your ass, slut."`

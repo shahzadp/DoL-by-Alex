@@ -479,6 +479,128 @@ You stumble.
 <<if _continueStrippingUnder>>
 	<br><br>
 <</if>>
+
+<<if $worn.head.name isnot "naked" or $worn.face.name isnot "naked">>
+	You come to a sudden stop as your face is introduced to the hard surface of a support beam,
+	<<if $worn.face.name isnot "naked">>
+		<<if ["glasses", "cool"].includesAny($worn.face.type)>>
+			your $worn.face.name <span class="red">making a sickening crack</span> before falling to the floor.
+		<<else>>
+			your $worn.face.name snagging on a piece of metal before <span class="red">being ripped off</span>.
+		<</if>>
+		<<if $worn.head.name isnot "naked">>
+			Your $worn.head.name follow<<if $worn.head.plural is 0>>s<</if>> suit, a sudden gust of wind <span class="red">taking it god knows where</span>.
+			<<headruined true>>
+		<</if>>
+		<<faceruined true>>
+	<<else>>
+		<<if $worn.head.type.includes("hat")>>
+			the force of which knocks your $worn.head.name clean off, a sudden gust of wind <span class="red">taking it god knows where</span>.
+		<<else>>
+			<span class="red">ripping away your $worn.head.name</span> with ease.
+		<</if>>
+		<<headruined true>>
+	<</if>>
+	<<pain 8>><<stress 12>><<gpain>><<ggstress>>
+	<br>
+	<<set _strippedAmount++>>
+	<<set _continueStrippingAcc to true>>
+<</if>>
+
+<<if $worn.neck.name isnot "naked">>
+	<<if _continueStrippingAcc>>
+		As you begin to fall backwards,
+	<<else>>
+		Tripping your way past a support beam,
+	<</if>>
+	your $worn.neck.name <<is $worn.neck>> caught
+	<<if ["collar", "choker"].some(keyword => $worn.neck.name.includes(keyword))>>
+		on a protruding nail,
+	<<else>>
+		in one of the cracks,
+	<</if>>
+	<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+		<span class="forest-green">but immediately comes loose unscathed</span>.
+	<<else>>
+		<<if $settings.asphyxiaLevel gte 2>>
+			tightening around your neck
+			<<if $masochism_level gte 1>>
+				<span class="lewd">until you can hardly breathe</span>
+			<<else>>
+				<span class="red">until you can hardly breathe</span>
+			<</if>>
+		<<else>>
+			threatening to choke you
+		<</if>>
+		<<if $worn.neck.cursed is 1>>
+			before suddenly coming loose.
+		<<else>>
+			<span class="red">before being violently ripped away</span>.
+			<<neckruined true>>
+		<</if>>
+		<<if $settings.asphyxiaLevel gte 2 and $masochism_level gte 1>><<stress 24>><<arousal 400>><<ggstress>><<garousal>><<else>><<stress 12>><<gstress>><</if>>
+	<</if>>
+	<br>
+	<<set _strippedAmount++>>
+	<<set _continueStrippingAcc to true>>
+<</if>>
+<<if _continueStrippingAcc>>
+	<br>
+<</if>>
+
+<<if $worn.feet.name isnot "naked">>
+	Your legs flail desperately, trying to find a semblance of balance.
+	<<if $worn.feet.cursed is 1>>
+		The $worn.feet.name only seem to make this task harder as you collide with various furniture.
+	<<else>>
+		One after another, your $worn.feet.name are <span class="red">flung through the air</span>, one of which comes crashing down on your head.
+		<<feetruined true>>
+	<</if>>
+	<<set _strippedAmount++>>
+	<<set _continueStrippingFeet to true>>
+<</if>>
+
+<<if $worn.legs.name isnot "naked">>
+	<<if _continueStrippingFeet>>
+		Meanwhile, your
+	<<else>>
+		Your
+	<</if>>
+	$worn.legs.name drag across the floor,
+	<<if $worn.legs.cursed is 1>>
+		until they hook on a broken plank,
+	<<else>>
+		steadily coming loose before hooking onto a broken plank, <span class="red">tearing them off completely</span> and
+		<<legsruined true>>
+	<</if>>
+	propelling you forward with a jolt of speed.
+	<<if _continueStrippingFeet>><<pain 8>><<gpain>><</if>>
+	<<set _strippedAmount++>>
+	<<set _continueStrippingFeet to true>>
+<</if>>
+<<if _continueStrippingFeet>>
+	<br><br>
+<</if>>
+
+<<if $worn.hands.name isnot "naked" or $worn.handheld.name isnot "naked">>
+	<<if $worn.handheld.name isnot "naked">>
+		You reflexively <span class="red">throw your $worn.handheld.name aside</span>, helplessly grasping 
+		<<handheldruined true>>
+	<<else>>
+		You helplessly grasp
+	<</if>>
+	at thin air in a desperate attempt to find anything to grab onto.
+	<<if $worn.hands.name isnot "naked">>
+		<<if $worn.hands.cursed is 1>>
+			Your fingers wrap around something, but you quickly realise it's not fixed to anything. You accidentally drag a bunch of loose boxes down with you, a ?gwylanItem falling out of one of them and hitting you in the shoulder.
+		<<else>>
+			Your hands find a hanging rope, only to find it's been covered in something sticky. You can only watch as your $worn.hands.name <span class="red">are left behind</span>, the rope snapping around to whip you on the <<bottomsimple>>.
+			<<handsruined true>>
+		<</if>>
+		<<pain 2>><<stress 6>><<gpain>><<gstress>>
+	<</if>>
+	<br><br>
+<</if>>
 <<outfitChecks>>
 
 <<if $gwylanSeen.includes("steal_first") and _fullyNaked and !$gwylan.timer.wrap or _startedNaked>>
@@ -507,7 +629,7 @@ You stumble.
 		<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
 		<<if !$gwylanSeen.includes("steal_first")>>
 			<<set $gwylanSeen.pushUnique("steal_first")>>
-			Gwylan claps as you <<if _strippedAmount gte 3>>finally <</if>>end up right in front of <<him>> at the counter, <<if _fullyNaked>>now stark-naked<<else>>sore and humiliated<</if>>.
+			Gwylan claps as you <<if _strippedAmount gte 4>>finally <</if>>end up right in front of <<him>> at the counter, <<if _fullyNaked>>now stark-naked<<else>>sore and humiliated<</if>>.
 			"What a dance! I've never seen someone lose a fight with a building so gracefully." <<He>> gives you a sweet smile, which slowly turns into a serious glare. <<He>> points behind you, at the entrance. There's a ladder at the door. You must have walked right under it.
 			<br><br>
 
@@ -3635,7 +3757,7 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 
 	<<nightmareCheck "Forest Shop Dog Bed Sleep">>
 	<<generateSleepLinks "Forest Shop Dog Bed Sleep">>
-	<<if !$bedGuest is "Gwylan">>
+	<<if $bedGuest isnot "Gwylan">>
 		<<link [[Climb out|Forest Shop Entrance]]>><<endevent>><</link>>
 	<</if>>
 <</if>>
@@ -3659,7 +3781,7 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 	<<hypnosisText "The word 'walk' fills you with vigor and excitement.">> You stand and stretch, and your head ends up finding Gwylan's hand again. <<tiredness -2>><<ltiredness>>
 	<br><br>
 
-	<<link [[Walk with Gwylan to the cafe|Gwylan Walk Cafe Solo]]>><</link>>
+	<<link [[Walk with Gwylan to the cafe (0:15)|Gwylan Walk Cafe Solo]]>><<pass 15>><</link>>
 	<br>
 <<elseif _gwylanWake>>
 	<<set $bedGuest to "Gwylan">><<set $gwylanbed to true>>
