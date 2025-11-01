@@ -474,6 +474,7 @@ const statChange = (() => {
 
 		if (
 			V.earSlime.defyCooldown &&
+			!V.hypnosis_traits.silence &&
 			(V.worn.genitals.name === "chastity parasite" || V.parasite.penis.name === "parasite" || V.parasite.clit.name === "parasite")
 		) {
 			result += 25;
