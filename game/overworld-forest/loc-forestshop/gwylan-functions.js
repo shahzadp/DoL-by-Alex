@@ -601,7 +601,7 @@ function gwylanRequestIngredients() {
 	if (V.gwylan.requestCount >= 3) complexity += 1;
 	if (V.gwylan.requestCount >= 8) complexity += 1;
 	if (V.gwylan.requestCount >= 15) complexity += 1;
-	V.gwylan.request.timer = new DateTime(Time.date).addDays(Math.ceil(complexity / 2)).timeStamp;
+	V.gwylan.request.timer = new DateTime(Time.date).addDays(complexity).timeStamp;
 	V.gwylan.request.details.difficulty = complexity;
 	const ingredientCount = Math.ceil(1 + complexity / 2);
 	const ingredientAmount = seedrng.randomInt(complexity, complexity + 3);
@@ -702,7 +702,7 @@ function gwylanRequestSample(override) {
 	};
 
 	// request difficulty
-	let complexity = seedrng.randomInt(2, 5);
+	let complexity = seedrng.randomInt(1, 3);
 	if (V.gwylan.requestCount >= 3) complexity += 1;
 	if (V.gwylan.requestCount >= 8) complexity += 1;
 	if (V.gwylan.requestCount >= 15) complexity += 1;
@@ -717,7 +717,8 @@ function gwylanRequestSample(override) {
 		const availableSpecies = [["human", 2]];
 		if (V.settings.bestialityEnabled && complexity > 3) {
 			availableSpecies.push(["wolf", 2], ["fox", 2], ["cat", 1], ["lizard", 1], ["dog", 1]);
-			if (complexity > 4) availableSpecies.push(["boar", 1], ["dolphin", 1]);
+			if (complexity > 4) availableSpecies.push(["dolphin", 1]);
+			if (complexity > 5) availableSpecies.push(["boar", 1]);
 			if (complexity > 6) availableSpecies.push(["bear", 1]);
 		}
 		if (V.settings.plantsEnabled && complexity > 6) availableSpecies.push(["plant", 3]);
@@ -729,7 +730,7 @@ function gwylanRequestSample(override) {
 			} else if (["plant"].includes(chance[0] && V.settings.tentaclesEnabled)) {
 				// heavy repetition bias. if chosen first, very likely to be single group
 				chance[1] += V.gwylan.request.items.find(item => item.name === chance[0])?.need * 60 || 0;
-			} else if (["bear"].includes(chance[0])) {
+			} else if (["bear", "boar"].includes(chance[0])) {
 				// bias against repetition
 				chance[1] -= V.gwylan.request.items.find(item => item.name === chance[0])?.need || 0;
 			}

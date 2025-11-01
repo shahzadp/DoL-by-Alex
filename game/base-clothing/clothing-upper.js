@@ -5308,7 +5308,7 @@ function initUpper() {
 			state_top_base: "chest",
 			plural: 0,
 			colour: 0,
-			colour_options: ["white", "hospital pink", "light blue", "light green", "custom"],
+			colour_options: ["white", "hospital pink", "light blue", "light green", "black", "custom"],
 			colour_sidebar: 1,
 			colour_combat: "pink",
 			exposed: 0,
