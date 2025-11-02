@@ -1270,7 +1270,7 @@
 		<<if $shopHunt.player.hide is 4>>
 			<<if _loc.special.includes("hat")>>
 				<<set $_areBy to "hide beside">>
-			<<elseif Object.values(shopHuntMannequinLocs("ambush")).includes(_locRaw)>>
+			<<elseif shopHuntMannequinLocs("ambush").includes(_locRaw)>>
 				<<set $_specialEvent to "mannequinAmbush">>
 			<<else>>
 				<<set $_areBy to "hide inside">>
@@ -1293,8 +1293,9 @@
 	<<elseif _act is "search">>
 		<<switch _locRaw>>
 			<<case "rottingCloset" "antiqueWardrobe">>
-				<<if Object.values(shopHuntMannequinLocs("ambush")).includes(_locRaw)>>
+				<<if shopHuntMannequinLocs("ambush").includes(_locRaw)>>
 					<<set $_specialEvent to "mannequinAmbush">>
+					<<set $_manId to $shopHunt.actors.find(x => x.state === "ambush" && doArraysMatch(x.position, $shopHunt.player.position)).id>>
 				<<else>>
 					<<set $_areBy to "search inside">>
 				<</if>>
@@ -1677,9 +1678,7 @@
 	<<elseif $_specialEvent>>
 		<<switch $_specialEvent>>
 			<<case "mannequinAmbush">>
-				<<set $_manId to shopHuntMannequinLocs("ambush").filter(x => doArraysMatch(x.position, shopHuntCoords(_locRaw)))[0].id>>
 				You open the doors to the <<shopHuntLocName _locRaw>>, planning to <<= _act is "hideInside" ? "hide" : _act>> inside. <span class="red"><<shopHuntActorName $_manId "cap">> is waiting inside.</span> It leaps out and accosts you!
-				<br><br>
 				<<shopHuntActorSetState $_manId "hold">>
 		<</switch>>
 	<<else>>
@@ -3279,7 +3278,27 @@
 									<<shopHuntActorName $_edenTargetHit.id "cap">> leaps in front of you, <span class="red">shielding you from the bullet</span>.
 									<br>
 								<</if>>
-								<<if $_playerSeesTarget>>
+								<<if $_edenTargetHit.state is "hold">>
+									<<if $_edenTargetHit.name is "giant fox plushie">>
+										<span class="red">A spray of cotton flies from <<shopHuntActorName $_edenTargetHit.id>>, its grip faltering.</span>
+										<<if $_edenTargetHit.health lte 0>>
+											<span class="red">It sags and goes limp on the floor.</span>
+										<</if>>
+										<<trauma 50>><<gggtrauma>>
+									<<elseif $_edenTargetHit.name is "masked mannequin">>
+										<<if $_edenTargetHit.health lte 0>>
+											<span class="red"><<shopHuntActorName $_edenTargetHit.id "cap">> lets go of you, and falls to its hands and knees in a disturbingly human way. Links of chain fall from its tunic.</span> <<trauma 24>><<ggtrauma>>
+										<<else>>
+											<<shopHuntActorName $_edenTargetHit.id "cap">> recoils, <span class="pink">briefly falling to one knee before standing back up and grabbing hold of you once more.</span>
+										<</if>>
+									<<else>>
+										<<if $_edenTargetHit.health lte 0>>
+											<span class="red"><<shopHuntActorName $_edenTargetHit.id "cap">> is blown to the ground in front of you and starts writhing, as if in pain. After an agonising moment of struggle, it becomes lifeless.</span> <<trauma 24>><<ggtrauma>>
+										<<else>>
+											<<shopHuntActorName $_edenTargetHit.id "cap">> recoils, <span class="pink">briefly falling to one knee before standing back up and grabbing hold of you once more.</span>
+										<</if>>
+									<</if>>
+								<<elseif $_playerSeesTarget>>
 									<<if $_edenTargetHit.name is "giant fox plushie">>
 										<span class="red">A spray of cotton flies from <<shopHuntActorName $_edenTargetHit.id>>.</span>
 										<<if $_edenTargetHit.health lte 0>>

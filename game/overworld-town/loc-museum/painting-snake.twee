@@ -43,13 +43,22 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 }>>
 
 <<set $hcEndings ||= []>>
-<<if localStorage.getItem("hopelessCycle") is null or $hcEndings.length gte localStorage.getItem("hopelessCycle").split(",").length>>
-	<<run localStorage.setItem("hopelessCycle", $hcEndings.filter(x => x isnot "S"))>>
+<<set _list1 to $hcEndings.sort()>>
+<<if localStorage.getItem("hopelessCycle") is null>>
+	<<run localStorage.setItem("hopelessCycle", $hcEndings)>>
 <</if>>
-<<if $museumAntiques.paintings.paintingsnake is "talk" and localStorage.getItem("hopelessCycle").length gte 1
-	or $museumAntiques.paintings.paintingsnake is "museum" and localStorage.getItem("hopelessCycle").split(",").length gt $hcEndings.length + 1>>
-	<<set $hcEndings to $hcEndings.concatUnique(localStorage.getItem("hopelessCycle").split(","))>>
-	<<run localStorage.setItem("hopelessCycle", $hcEndings.filter(x => x isnot "S"))>>
+<<set _list2 to localStorage.getItem("hopelessCycle").split(",").sort()>>
+<<set _memory to []>><<set _achieved to []>>
+<<if !_list1.isEqual(_list2)>>
+	<<for _i range ["F","E","D","C","B","A"]>>
+		<<if !_list1.includes(_i) and _list2.includes(_i)>>
+			<<set _memory.push(_i)>>
+			<<set $hcEndings.pushUnique(_i)>>
+		<</if>>
+	<</for>>
+	<<run localStorage.setItem("hopelessCycle", localStorage.getItem("hopelessCycle").split(",").concatUnique($hcEndings))>>
+<</if>>
+<<if _memory.length gte 1>>
 	Looking at the painting, <span class="lblue">a foreign memory strikes you</span>.
 	<<if $museumAntiques.paintings.paintingsnake is "talk">>
 		"I think I know this one," you say. "This is <span class="gold">'Hopeless Cycle'</span>, right? The story of the witch and the gaolor."
@@ -72,14 +81,21 @@ You bring the snake-woman painting, frame and all, to Winter. <<He>> nearly drop
 
 	<<hopelessCycleEndings>>
 	You finish.
-	<<if $hcEndings.includesAll("F","E","D","C","B","A") and !$hcEndings.includes("S")>>
+	<<if $hcEndings.includesAll("F","E","D","C","B","A")>>
 		Winter looks impressed. "That's quite a few of them. There's only one commonly-accepted ending left, in fact.
 		<<if $museumAntiques.paintings.paintingsnake is "talk">>
 			It involves a few supernatural elements I would've excluded as to not dilute the story, but it's clear you're ready for them.
 		<<else>>
 			It involves a few supernatural elements I've previously excluded as to not dilute the story, but it's clear you're ready for them.
 		<</if>>
-		It involves cross-referencing some other legends. Do you know that one?" You don't remember.
+		It involves cross-referencing some other legends. Do you know that one?"
+		<<if _list2.includes("S")>>
+			<br><br>
+
+			You open your mouth to answer, but pause. You had been so sure that you did, but now that you're searching for the memory, it seems to evade you. Winter notices your confusion. "Some stories simply insist on being told, as I understand it. If you can't remember... well, it's a good thing I'm here, isn't it?"
+		<<else>>
+			You don't think you do.
+		<</if>>
 		<br><br>
 
 		<<He>> walks off for a moment, returning with a chair and inviting you to sit. The painting hangs on the wall next to you, the figure's weeping gaze bearing down.
@@ -6073,7 +6089,7 @@ Her soft snoring lulls you into a blissful trance.
 <</if>>
 <br><br>
 <<set $hcEndings.pushUnique(_endingSeen)>>
-<<run localStorage.setItem("hopelessCycle", $hcEndings.concatUnique(localStorage.getItem("hopelessCycle").split(",")).filter(x => x isnot "S"))>>
+<<run localStorage.setItem("hopelessCycle", localStorage.getItem("hopelessCycle").split(",").concatUnique($hcEndings))>>
 <<hopelessCycleEndings>>
 <<if _endingSeen is "S">>
 	<<specialClothesUnlock "set" "chain_tunic">>
