@@ -133,10 +133,10 @@ window.shopHuntFind = shopHuntFind;
  * @param {?string} state Optional argument to only count mannequins matching this state
  */
 function shopHuntMannequinLocs(state = false) {
-	const manLocs = {};
+	const manLocs = [];
 	const mannequins = V.shopHunt.actors.filter(x => x.type === "mannequin" && ((!state && !!x.state) || x.state === state));
 	for (let i = 0; i < mannequins.length; i++) {
-		manLocs[i] = shopHuntLoc(mannequins.filter(x => x.mannequinId === i)[0].position);
+		manLocs[i] = shopHuntLoc(mannequins[i].position);
 	}
 	return manLocs;
 }
