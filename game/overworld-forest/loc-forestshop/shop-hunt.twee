@@ -98,7 +98,6 @@
 			actorsArchive: identical to actors, but instead of tracking all active actors, it tracks all defeated actors. Once an actor's health property reaches zero, they're removed from the main actors array and put here
 			context: the specific scene this hunt is following
 			turns: how long the hunt has lasted. One passage means one turn. Actors take actions every turn, unless the player is fighting, in which case they only act every three turns
-			end: how the encounter ended
 			lightTarget/ambushTarget/searchTarget: The target for certain specific actions
 
 		$shopLocs: an array of all locations in the shop. Only stores names, used as a base for other variables
@@ -189,8 +188,7 @@
 		actors: [],
 		actorsArchive: [],
 		context: _args[0],
-		turns: 0,
-		end: ""
+		turns: 0
 	}>>
 
 	<<switch _args[0]>>
@@ -545,11 +543,11 @@
 <</widget>>
 
 <<widget "shopHuntEnd">>
-	/* Update to use argument instead of $shopHunt.end? */
-	<<if $shopHunt.actors.filter(x => x.type is "eden" and x.role is "enemy").length gte 1>>
-		<<if $shopHunt.end is "victory">>
+	<<set $_end to _args[0]>>
+	<<if $shopHunt.actors.filter(x => x.type is "eden" and x.role is "enemy").length gte 1 and ["rescue","kidnap"].includes($shopHunt.context)>>
+		<<if ["gwylanRescue","gwylanKidnap"].includes($_end)>>
 			<<gwylanRescueStats true "EdenShop">>
-		<<elseif $shopHunt.end is "defeat">>
+		<<elseif $_end is "edenKidnap">>
 			<<gwylanRescueStats false "EdenShop">>
 		<</if>>
 	<</if>>
@@ -1405,14 +1403,15 @@
 								/* Todo: Gwylan hunt, defeating Gwylan in 'game' version */
 							<<else>>
 								<<shopHuntPronoun "He">> cries out in pain, falling to the floor. The shop itself trembles.
-								<<set $phase to "defeatGwylan">><<set $shopHunt.end to "victory">>
+								<<set $phase to "defeatGwylan">>
+								<<set $_end to $shopHunt.context is "rescue" ? "edenKidnap" : "escape">>
 								<<include "Forest Shop Hunt Escape Eden">>
-								<<shopHuntEnd>>
+								<<shopHuntEnd $_end>>
 								<<exitAll>>
 							<</if>>
 						<<case "eden">>
 							<<shopHuntPronoun "He">> swears, staggering back, before stumbling to the floor. <<shopHuntPronoun "He">> lets out a low groan, <span class="green">exhausted</span>.
-							<<set $phase to "defeatEden">><<set $shopHunt.end to "victory">>
+							<<set $phase to "defeatEden">>
 							<<include "Forest Shop Hunt Eden Torment">>
 							<<exitAll>>
 						<<case "mannequin">>
@@ -1556,14 +1555,15 @@
 							/* Todo: Gwylan hunt, defeating Gwylan in 'game' version */
 						<<else>>
 							<<shopHuntPronoun "He">> cries out in pain, falling to the floor. The shop itself trembles.
-							<<set $phase to "defeatGwylan">><<set $shopHunt.end to "victory">>
+							<<set $phase to "defeatGwylan">>
+							<<set $_end to $shopHunt.context is "rescue" ? "edenKidnap" : "escape">>
 							<<include "Forest Shop Hunt Escape Eden">>
-							<<shopHuntEnd>>
+							<<shopHuntEnd $_end>>
 							<<exitAll>>
 						<</if>>
 					<<case "eden">>
 						<<shopHuntPronoun "He">> doesn't try to, though. <<shopHuntPronoun "He">> lets out a low groan, <span class="green">exhausted</span>.
-						<<set $phase to "defeatEden">><<set $shopHunt.end to "victory">>
+						<<set $phase to "defeatEden">>
 						<<include "Forest Shop Hunt Eden Torment">>
 						<<exitAll>>
 					<<case "mannequin">>
@@ -1638,13 +1638,13 @@
 				You offer <<shopHuntActorName $_target>> the key to the <<shopHuntDoor>>.
 				<<if $_actorDrag.type is "eden">>
 					<<shopHuntPronoun "He">> takes it and turns it in the lock. After a few seconds of stubborn twisting, <span class="green">the door swings open</span>.
-					<<set $phase to "key">><<set $shopHunt.end to $shopHunt.context is "kidnap" ? "victory" : "defeat">>
+					<<set $phase to "key">>
+					<<set $_end to "escape">>
 					<<include "Forest Shop Hunt Escape Eden">>
-					<<shopHuntEnd>>
+					<<shopHuntEnd $_end>>
 					<<exitAll>>
 				<<else>>
 					/* default case, should be unreachable */
-					<<set $shopHunt.end to "victory">>
 					<<include "Forest Shop Hunt Escape Alone">>
 					<<shopHuntEnd>>
 					<<exitAll>>
@@ -1652,11 +1652,9 @@
 			<<else>>
 				You put the key in the <<shopHuntDoor>>. <span class="green">The door swings open.</span>
 				<<if $shopHunt.context is "garden">>
-					<<set $shopHunt.end to "victory">>
 					<<include "Forest Shop Caught">>
 					<<shopHuntEnd>>
 				<<else>>
-					<<set $shopHunt.end to "victory">>
 					<<include "Forest Shop Hunt Escape Alone">>
 					<<shopHuntEnd>>
 					<<exitAll>>
@@ -1832,7 +1830,7 @@
 				<<switch $shopHunt.player.hide>>
 					<<case 4>>
 						<<if _loc.special.includes("hat")>>
-							You bend forward a bit, keeping your body behind the hat stand. <span class="green">Your $worn.hat.name draws all the attention.</span>
+							You bend forward a bit, keeping your body behind the hat stand. <span class="green">Your $worn.head.name draws all the attention.</span>
 						<<else>>
 							<span class="green">The <<shopHuntLocName _locRaw "simple">> doors conceal you from sight entirely.</span>
 						<</if>>
@@ -1905,6 +1903,10 @@
 			<<set $_color to "wraith">>
 		<<case "elkspawn">>
 			<<set $_color to "tentacle">>
+		<<case "mannequin">>
+			<<if $shopHunt.actors[_args[0]].name is "giant fox plushie" and $shopHunt.actors[_args[0]].role isnot "enemy">>
+				<<set $_color to "orange">>
+			<</if>>
 	<</switch>>
 
 	<<exit `${$_the}<span class="${$_color}">${_text_output}</span>`>>
@@ -2587,7 +2589,7 @@
 	<<if $shopHunt.player.state isnot "fight" or $shopHunt.turns % 3 is 0>>
 		<!-- Movement -->
 		<<for $_i to 0; $_i lt $shopHunt.actors.length; $_i++>>
-			<<if !!$shopHunt.actors[$_i].state and !$shopHunt.actors[$_i].stun.move and !$shopHunt.actors[$_i].stun.all and !($shopHunt.actors[$_i].role is "enemy" and shopHuntContains(_locRaw).includes($_i) and $shopHunt.actors[$_i].state isnot "drag" and !$shopHunt.player.hide)>>
+			<<if !!$shopHunt.actors[$_i].state and !$shopHunt.actors[$_i].stun.move and !$shopHunt.actors[$_i].stun.all and !($shopHunt.actors[$_i].role is "enemy" and shopHuntContains(_locRaw).includes($_i) and $shopHunt.actors[$_i].state isnot "drag" and !$shopHunt.player.hide) and $shopHunt.actors[$_i].target isnot "reload">>
 				<<switch $shopHunt.actors[$_i].state>>
 					<<case "roam" "search" "check" "rush" "statue" "alert">>
 						<<if $shopHunt.actors[$_i].movement.length is 0>>
@@ -2634,7 +2636,7 @@
 							<<set $shopHunt.actors[$_i].position to applyArrays($shopHunt.actors[$_i].position, $shopHunt.actors[$_i].movement[0])>>
 							<<run $shopHunt.actors[$_i].movement.deleteAt(0)>>
 							<<set _actorMoved[$_i] to $shopHunt.actors[$_i].position>>
-						<<elseif $shopHunt.actors[$_i].target>>
+						<<elseif $shopHunt.actors[$_i].target and $shopHunt.actors[$_i].target isnot shopHuntFind($_i)>>
 							<<set $_destination to $shopHunt.actors[$_i].target>>
 							<<set $shopHunt.actors[$_i].target to false>>
 							<<if $gridConsoleEnable>>
@@ -3141,7 +3143,6 @@
 			<br><br>
 			<<set $shopHunt.illusion++>>
 			<<if $_eden.health lte 0 or $shopHunt.illusion gte 5>>
-				<<set $shopHunt.end to $shopHunt.context is "rescue" ? "victory" : "defeat">>
 				<<set $phase to "outlastEden">>
 				<<include "Forest Shop Hunt Eden Torment">>
 				<<exitAll>>
@@ -3293,7 +3294,7 @@
 										<</if>>
 									<<else>>
 										<<if $_edenTargetHit.health lte 0>>
-											<span class="red"><<shopHuntActorName $_edenTargetHit.id "cap">> is blown to the ground in front of you and starts writhing, as if in pain. After an agonising moment of struggle, it becomes lifeless.</span> <<trauma 24>><<ggtrauma>>
+											<span class="red"><<shopHuntActorName $_edenTargetHit.id "cap">> is blown to the ground in front of you. It reaches towards you, one wooden hand tapping your leg desperately, before falling lifeless.</span> <<trauma 24>><<ggtrauma>>
 										<<else>>
 											<<shopHuntActorName $_edenTargetHit.id "cap">> recoils, <span class="pink">briefly falling to one knee before standing back up and grabbing hold of you once more.</span>
 										<</if>>
@@ -3632,9 +3633,10 @@
 				<<if _actorDrag.points is 3>>
 					<<shopHuntMess "door" 15>>
 					<span @class="shopHuntActorColor(_actorDrag.id)">The door breaks open.</span> The shop groans as if in terrible pain.
-					<<set $phase to "door">><<set $shopHunt.end to $shopHunt.context is "kidnap" ? "victory" : "defeat">>
+					<<set $phase to "door">>
+					<<set $_end to $shopHunt.context is "rescue" ? "edenKidnap" : "escape">>
 					<<include "Forest Shop Hunt Escape Eden">>
-					<<shopHuntEnd>>
+					<<shopHuntEnd $_end>>
 					<<exitAll>>
 				<<else>>
 					<<if _actorDrag.points is 2>>
@@ -3644,7 +3646,7 @@
 					<<else>>
 						<span class="gold">You're at the <<shopHuntDoor>>.</span> <<shopHuntActorName _actorDrag.id "cap">> tries the handle. It's locked. <<shopHuntPronoun "He">> starts kicking the door, gritting <<shopHuntPronoun "his">> teeth. "Let us out!"
 					<</if>>
-					<<set _actorDrag.points++>><<shopHuntDecoy>>
+					<<set $shopHunt.actors.find(x => x.state is "drag").points++>><<shopHuntDecoy>>
 					<br><br>
 				<</if>>
 			<</if>>
@@ -3691,11 +3693,11 @@
 <br>
 <<link [[Hide and seek game|Forest Shop Hunt Intro]]>><<npc Gwylan>><<person1>><<set $phase to "game">><</link>><<note "Only partially supported" "orange">>
 <br>
-<<link [[Rescue from Eden|Forest Shop Hunt Intro]]>><<npc Gwylan>><<npc Eden -1>><<person1>><<set $phase to "rescue">><</link>><<note "Complete!" "green">>
+<<link [[Rescue from Eden|Forest Shop Hunt Intro]]>><<set $phase to "rescue">><</link>><<note "Complete!" "green">>
 <br>
-<<link [[Rescue from Gwylan|Forest Shop Hunt Intro]]>><<npc Gwylan>><<npc Eden -1>><<person1>><<set $phase to "kidnap">><<set $phase2 to "ally">><</link>><<note "Theoretically complete" "lblue">>
+<<link [[Rescue from Gwylan|Forest Shop Hunt Intro]]>><<set $phase to "kidnap">><<set $phase2 to "ally">><</link>><<note "Theoretically complete" "lblue">>
 <br>
-<<link [[Escape from both|Forest Shop Hunt Intro]]>><<npc Gwylan>><<npc Eden -1>><<person1>><<set $phase to "kidnap">><<set $phase2 to "enemy">><</link>><<note "Complete!" "green">>
+<<link [[Escape from both|Forest Shop Hunt Intro]]>><<set $phase to "kidnap">><<set $phase2 to "enemy">><</link>><<note "Complete!" "green">>
 <br>
 <<link [[Wraith|Forest Shop Hunt Intro]]>><<npc Gwylan>><<person1>><<set $phase to "wraith">><</link>><<note "Only partially supported" "orange">>
 <br>
@@ -3745,6 +3747,7 @@
 		Gwylan laughs louder.
 		<<stress 6>><<gstress>>
 	<<case "rescue">>
+		<<npc Gwylan>><<npc Eden -1>><<person1>>
 		<<shopHuntCreateActor "Gwylan" "ally">>
 		<<shopHuntCreateActor "Eden" "enemy" "door">>
 		The interior seems darker than usual, the shelves looming over you.
@@ -3753,11 +3756,12 @@
 		Gwylan locks the door. A moment later, the door pounds. Eden's voice comes through the door. "Open up, <<witch>>! Give <<phim>> back!"
 		<br><br>
 
-		Gwylan looks at the door, narrowing <<person1>><<his>> eyes in thought. "Find somewhere to hide. I have an idea."
+		Gwylan looks at the door, narrowing <<his>> eyes in thought. "Find somewhere to hide. I have an idea."
 		<br><br>
 
 		You hurry deeper into the shop. You hear the front door swing open once you're inside.
 	<<case "kidnap">>
+		<<npc Gwylan>><<npc Eden -1>><<person1>>
 		<<shopHuntCreateActor "Gwylan">>
 		<<shopHuntCreateActor "Eden" $phase2 "door">>
 		<<set $shopHunt.commands.pushUnique("voice")>>
@@ -4060,16 +4064,14 @@ Below <<him>>, a mannequin lays with a bullet lodged in its torso.
 <br><br>
 
 <<if $shopHunt.context is "rescue">>
-	<<set $shopHunt.end to "victory">>
 	<span class="green"><<He>> flees the shop.</span> <<npcincr Eden dom -20>><<llldom "Eden">>
 	<br><br>
 
 	Gwylan shuffles out from behind a shelf. <<person2>><<He>> smiles sadly. "I'm sorry you had to see that. One day, perhaps <<person1>><<he>> will understand. It's a path only <<he>> can walk."
 	<br><br>
 
-	<<He>> pets your head. "The shop knows much. Remembers much. Just look at how much it remembers about you." <<He>> gestures around to the clothes all around the shop. "It remembers triumphs and troubles in equal part, and Eden has much of both."
+	<<person2>><<He>> pets your head. "The shop knows much. Remembers much. Just look at how much it remembers about you." <<He>> gestures around to the clothes all around the shop. "It remembers triumphs and troubles in equal part, and Eden has much of both."
 <<else>>
-	<<set $shopHunt.end to "red">>
 	<span class="red"><<He>> flees the shop.</span> <<npcincr Eden dom -20>><<llldom "Eden">>
 	<br><br>
 
@@ -4091,7 +4093,7 @@ Below <<him>>, a mannequin lays with a bullet lodged in its torso.
 <</if>>
 <br><br>
 
-<<shopHuntEnd>>
+<<shopHuntEnd `$shopHunt.context is "rescue" ? "gwylanRescue" : "gwylanKidnap"`>>
 <<earnFeat "Foxbane">>
 
 <<link [[Next|Forest Shop Entrance]]>><<endevent>><</link>>
