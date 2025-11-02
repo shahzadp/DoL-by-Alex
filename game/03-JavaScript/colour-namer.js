@@ -72,7 +72,7 @@ window.getCustomClothesColourCanvasFilter = function (hue, saturation, brightnes
 		// Slider brightness is 0..4, we consider 0..1 for colour spec
 		// and everything above as extra brightness adjustment
 		// In new renderer it's a shift, not multiplier, so we scale it from x1..x4 to +0..+0.21
-		filterBrightness += (brightness - 1) * 0.07;
+		filterBrightness += (brightness - 1) * 0.07 - (1 - saturation) * 0.21;
 	}
 	return Renderer.mergeLayerData(
 		{
