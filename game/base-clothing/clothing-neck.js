@@ -208,7 +208,7 @@ function initNeck() {
 			fabric_strength: 20,
 			reveal: 1,
 			word: "n",
-			plural: 1,
+			plural: 0,
 			colour: 0,
 			colour_options: [],
 			colour_combat: "black",
