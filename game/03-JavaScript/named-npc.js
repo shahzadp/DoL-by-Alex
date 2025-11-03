@@ -286,8 +286,10 @@ function gwylanStatusCheck() {
 		/* Gwylan allows themselves to become comfortable with the player again after 'breakup' */
 		gwylanStatus.push("lust");
 		if (V.gwylanSeen.includes("partners") && C.npc.Gwylan.dom >= 100 && C.npc.Gwylan.lust >= 40 && C.npc.Gwylan.dom + C.npc.Gwylan.lust >= 160)
-			/* In heat/rut */
-			gwylanStatus.push("heat");
+			if (!V.weekly.gwylanNoHeat) {
+				/* In heat/rut */
+				gwylanStatus.push("heat");
+			}
 		if (
 			T.gwylanLovePercent >= 90 &&
 			C.npc.Gwylan.dom >= 140 &&
