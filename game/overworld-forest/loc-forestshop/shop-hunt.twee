@@ -2287,6 +2287,10 @@
 <</widget>>
 
 <<widget "shopHuntEffects">>
+	<<if !["garden","game","rescue","kidnap","wraith","elkspawn"].includes($shopHunt.context)>>
+		<<shopHuntEmergencyExit>>
+		<<exitAll>>
+	<</if>>
 	<<run statusCheck("Gwylan")>>
 	<<set _locRaw to shopHuntFind("player")>>
 	<<set _loc to clone($shopHunt.locations[_locRaw])>>
@@ -2364,6 +2368,21 @@
 	<</if>>
 
 	<<pain -2>>
+<</widget>>
+
+<<widget "shopHuntEmergencyExit">>
+	<span class="red bold">WARNING! I apologise, but this encounter is bugged and unplayable.</span>
+	Please take the emergency exit link to safely return to the forest. Your save file will be unaffected, but this encounter will immediately end without consequence.
+	<br>
+	<<if ["0.5.6.6"].includes($saveVersion)>>
+		<span class="green">This bug has already been reported and fixed in the latest version,</span> so you don't need to worry about reporting this.
+	<<else>>
+		Please export your save file and report this as a bug to the developers. Encounter context: $shopHunt.context
+	<</if>>
+	<br><br>
+
+	<<link [[Emergency exit|Forest]]>><<set $forest to 0>><<set $eventskip to 1>><<endcombat>><<shopHuntEnd>><</link>>
+	<br><br><br><br>
 <</widget>>
 
 <<widget "shopHuntAction">>
