@@ -5400,9 +5400,9 @@ Perhaps you haven't been entirely cast out.
 <</widget>>
 <<widget "gwylanRitualChecks">>
 	<<if $sexRitual.sealed>>
-		<<trauma 2>>
+		<<trauma 4>>
 	<<else>>
-		<<trauma 1>>
+		<<trauma 2>>
 	<</if>>
 	<<set $sexRitual.timerToforceEnd-->>
 	<<if $settings.playerPregnancyHumanEnabled and _gwylanStatus.includes("wantsPregnancy")>>
@@ -5420,6 +5420,11 @@ Perhaps you haven't been entirely cast out.
 		<<set $_checkbr to true>>
 	<</if>>
 	<<set _willpowerDiffMin to 600 + _willMod>><<set _willpowerDiffMax to 800 + _willMod>>
+	<<if $gwylanSeen.includes("partners") and !$sexRitual.forced>>
+		<<set _willpowerDiffMinTop to 600>><<set _willpowerDiffMaxTop to 800>>
+	<<else>>
+		<<set _willpowerDiffMinTop to 600 + _willMod>><<set _willpowerDiffMaxTop to 800 + _willMod>>
+	<</if>>
 
 	<<if _gwylanStatus.includesAny("aroused", "lust") and $sexRitual.hypnosis isnot "Gwylan">>
 		<<set _physiqueDiffMin -= 1000>>
@@ -6654,9 +6659,9 @@ Perhaps you haven't been entirely cast out.
 		<</if>>
 		<<if !$sexRitual.topAttempt or $sexRitual.hypnosis is "Gwylan" and !$sexRitual.onTop>>
 			<<if ["playerMissionaryVaginal", "playerDoggyVaginal", "playerDoggyAnal", "gwylanRidingVaginal", "gwylanRidingAnal", "gwylanRidingThighs", "gwylanRidingTrib", "service"].includes($sexRitual.position)>>
-				<<link [[Try to get on top|Gwylan Ritual Sex Top Attempt]]>><<def 1>><<set $sexRitual.action to "topAttempt">><<set $sexRitual.topAttempt to true>><</link>><<physiquedifficulty _physiqueDiffMin _physiqueDiffMax>><<willpowerdifficulty _willpowerDiffMin _willpowerDiffMax>>
+				<<link [[Try to get on top|Gwylan Ritual Sex Top Attempt]]>><<def 1>><<set $sexRitual.action to "topAttempt">><<set $sexRitual.topAttempt to true>><</link>><<physiquedifficulty _physiqueDiffMin _physiqueDiffMax>><<willpowerdifficulty _willpowerDiffMinTop _willpowerDiffMaxTop>>
 			<<else>>
-				<<link [[Pin Gwylan down|Gwylan Ritual Sex Top Attempt]]>><<def 1>><<set $sexRitual.action to "topAttempt">><<set $sexRitual.topAttempt to true>><</link>><<physiquedifficulty _physiqueDiffMin _physiqueDiffMax>><<willpowerdifficulty _willpowerDiffMin _willpowerDiffMax>>
+				<<link [[Pin Gwylan down|Gwylan Ritual Sex Top Attempt]]>><<def 1>><<set $sexRitual.action to "topAttempt">><<set $sexRitual.topAttempt to true>><</link>><<physiquedifficulty _physiqueDiffMin _physiqueDiffMax>><<willpowerdifficulty _willpowerDiffMinTop _willpowerDiffMaxTop>>
 			<</if>>
 			<br>
 		<</if>>
@@ -7699,8 +7704,10 @@ Perhaps you haven't been entirely cast out.
 				<span class="red">You feel your foreskin separate from your glans,</span> <<virginitylosttext "Gwylan">>
 				<<sex 100 "genitals">><<takeVirginity "Gwylan" "penile">>
 			<</if>>
-			<<raped>><<penisraped>>
-			<<takeTempleVirginity "Gwylan" "penile">>
+			<<if $_gwylanPart isnot "mouth" or $virginitytest is 1>>
+				<<raped>><<penisraped>>
+				<<takeTempleVirginity "Gwylan" "penile">>
+			<</if>>
 		<<elseif $_playerPart is "anus">>
 			<<analstat>><<set $anustarget to 0>><<sex 30 "anus">>
 			<<set $anususe to "penis">>
