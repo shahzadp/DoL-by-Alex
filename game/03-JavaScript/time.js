@@ -1508,18 +1508,18 @@ function dailyNPCEffects() {
 				}
 			}
 		}
-		if (V.gwylan.timer.wrap && Time.date.dayDifference(V.gwylan.timer.wrap) <= 0) delete V.gwylan.timer.wrap;
-		if (V.gwylan.timer.randomOrgasm && Time.date.dayDifference(V.gwylan.timer.randomOrgasm) <= 0) delete V.gwylan.timer.randomOrgasm;
+		if (V.gwylan.timer.wrap && Time.date.dayDifference(new DateTime(V.gwylan.timer.wrap)) <= 0) delete V.gwylan.timer.wrap;
+		if (V.gwylan.timer.randomOrgasm && Time.date.dayDifference(new DateTime(V.gwylan.timer.randomOrgasm)) <= 0) delete V.gwylan.timer.randomOrgasm;
 		if (V.gwylan.timer.bloodVisit && Time.date.dayDifference(new DateTime(V.gwylan.timer.bloodVisit)) <= 0) delete V.gwylan.timer.bloodVisit;
 		if (V.gwylan.timer.bloodKnock && Time.date.dayDifference(new DateTime(V.gwylan.timer.bloodKnock)) <= 0) delete V.gwylan.timer.bloodKnock;
-		if (V.gwylan.timer.nobody && Time.date.dayDifference(V.gwylan.timer.nobody) <= 0) delete V.gwylan.timer.nobody;
+		if (V.gwylan.timer.nobody && Time.date.dayDifference(new DateTime(V.gwylan.timer.nobody)) <= 0) delete V.gwylan.timer.nobody;
 		if (C.npc.Gwylan.state === "scorned" && V.gwylan.timer.scorned && V.gwylan.request.event !== "yearning") {
 			if (Time.date.dayDifference(new DateTime(V.gwylan.timer.scorned)) <= 0) {
 				V.yearningLetter = 1;
 				delete V.gwylan.timer.scorned;
 			}
 		}
-		if (V.gwylan.timer.petBed && Time.date.dayDifference(V.gwylan.timer.petBed) <= 0) delete V.gwylan.timer.petBed;
+		if (V.gwylan.timer.petBed && Time.date.dayDifference(new DateTime(V.gwylan.timer.petBed)) <= 0) delete V.gwylan.timer.petBed;
 	}
 
 	wikifier("relationshipclamp");

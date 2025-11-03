@@ -724,7 +724,7 @@ function gwylanRequestSample(override) {
 		if (V.settings.plantsEnabled && complexity > 6) availableSpecies.push(["plant", 3]);
 
 		availableSpecies.forEach(chance => {
-			if (["human", "wolf", "fox", "cat", "lizard", "dog"].includes(chance[0])) {
+			if (["human", "wolf", "fox", "cat", "dog"].includes(chance[0])) {
 				// bias towards repetition, but less as complexity increases
 				chance[1] += V.gwylan.request.items.find(item => item.name === chance[0])?.need * (20 - complexity) || 0;
 			} else if (["plant"].includes(chance[0] && V.settings.tentaclesEnabled)) {
