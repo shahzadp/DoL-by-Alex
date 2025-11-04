@@ -237,8 +237,12 @@
 		<<bodywriting_npc_kylar _args[0] _args[1]>>
 	<<elseif $npc[$npcrow.indexOf(_n)] is "Sydney">>
 		<<bodywriting_npc_sydney _args[0] _args[1]>>
-	<<elseif $NPCList[_n].type is "plant" or $role is "islander" or $npc[$npcrow.indexOf(_n)] is "Gwylan">>
+	<<elseif $npc[$npcrow.indexOf(_n)] is "Gwylan">>
+		<<bodywriting_npc_gwylan _args[0] _args[1]>>
+	<<elseif $NPCList[_n].type is "plant">>
 		<<bodywriting_npc_picture _args[0] _args[1]>>
+	<<elseif $role is "islander">>
+		<<bodywriting_npc_shape _args[0] _args[1]>>
 	<<elseif $rng gte 51>>
 		<<bodywriting_npc_special _args[0] _args[1]>>
 	<<else>>
@@ -366,6 +370,38 @@
 	<<bodywriting_finalisation _args[0]>>
 <</widget>>
 
+<<widget "bodywriting_npc_gwylan">>
+	<<run statusCheck("Gwylan")>>
+	<<rng 5>>
+	<<switch $rng>>
+		<<case 1>>
+			<<bodywriting_npc_shape _args[0] _args[1]>>
+		<<case 2>>
+			<<if $gwylanSeen?.includes("romance")>>
+				<<add_bodywriting _args[0] heart _args[1]>>
+			<<else>>
+				<<bodywriting_npc_shape _args[0] _args[1]>>
+			<</if>>
+		<<case 3>>
+			<<add_bodywriting _args[0] paw_print _args[1]>>
+		<<case 4>>
+			<<add_bodywriting _args[0] flower _args[1]>>
+		<<case 5>>
+			<<if _gwylanStatus?.includes("dom")>>
+				<<add_bodywriting _args[0] pet _args[1]>>
+			<<else>>
+				<<bodywriting_npc_shape _args[0] _args[1]>>
+			<</if>>
+		<<case 6>>
+			<<if $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
+				<<add_bodywriting _args[0] witchs_familiar _args[1]>>
+			<<else>>
+				<<bodywriting_npc_shape _args[0] _args[1]>>
+			<</if>>
+	<</switch>>
+	<<bodywriting_finalisation _args[0]>>
+<</widget>>
+
 <<widget "bodywriting_npc_picture">>
 	<<if $NPCList[0].type is "plant">>
 		<<rng 7>>
@@ -395,6 +431,20 @@
 		<<add_bodywriting _args[0] cattle_brand _args[1]>>
 	<</switch>>
 	<<bodywriting_finalisation _args[0]>>
+<</widget>>
+
+<<widget "bodywriting_npc_shape">>
+	<<rng 4>>
+	<<switch $rng>>
+		<<case 1>>
+			<<add_bodywriting _bodypart square _args[1]>>
+		<<case 2>>
+			<<add_bodywriting _bodypart triangle _args[1]>>
+		<<case 3>>
+			<<add_bodywriting _bodypart circle _args[1]>>
+		<<case 4>>
+			<<add_bodywriting _bodypart triquetra _args[1]>>
+	<</switch>>
 <</widget>>
 
 <<widget "bodywriting_normal_select">>
