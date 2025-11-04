@@ -210,7 +210,7 @@ function effectsMakeup() {
 
 	if (V.makeupWashed) {
 		delete V.makeupWashed;
-		span(`Your makeup is washed away${V.beauty >= (V.beautymax / 7) * 4 ? " revealing your natural beauty" : ""}.`, "teal");
+		span(`Your makeup is washed away${V.beauty >= (V.beautymax / 7) * 4 ? ", revealing your natural beauty" : ""}.`, "teal");
 		fragment.append(document.createElement("br"));
 	}
 
