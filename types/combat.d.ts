@@ -170,7 +170,7 @@ declare global {
 		| "finished";
 
 	// There is a lot more, look at tentacle-action.twee
-	export type HeadTarget = 0 | "leftarm" | "rightarm" | "feet" | "leftnipplesuck" | "rightnipplesuck" | "leftnipple" | "rightnipple" | "finished";
+	export type HeadTarget = 0 | "leftarm" | "rightarm" | "feet" | "leftnipplesuck" | "rightnipplesuck" | "leftnipple" | "rightnipple" | "penisrub" | "finished";
 
 	export interface CombatRendererOverrides {
 		legBackPosition?: LegPositions;

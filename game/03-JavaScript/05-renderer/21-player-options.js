@@ -1077,10 +1077,11 @@ class PlayerCombatMapper {
 	}
 
 	/**
+	 * @param {CombatPlayerOptions} options
 	 * @param {...Object<string, string>} parts
 	 * @returns {string?}
 	 */
-	static getTentacleHeadPosition(...parts) {
+	static getTentacleHeadPosition(options, ...parts) {
 		const count = V.tentacles.max;
 		// const count = V.tentacles.active;
 		for (let i = 0; i < count; i++) {
@@ -1093,6 +1094,11 @@ class PlayerCombatMapper {
 
 			if (tentacle.tentaclehealth <= 0 && tentacle.head === "finished") {
 				continue;
+			}
+
+			// Check for penis exposed.
+			if (tentacle.head === "penisrub" && !this.isPenisExposed(options)) {
+				return null;
 			}
 
 			const part = parts.find(part => tentacle.head in part);
@@ -1140,7 +1146,7 @@ class PlayerCombatMapper {
 		 * @returns {Tentacle}
 		 */
 		function getState(parts) {
-			const state = PlayerCombatMapper.getTentacleHeadPosition(parts || {});
+			const state = PlayerCombatMapper.getTentacleHeadPosition(options, parts || {});
 			return {
 				state,
 				show: state != null,
@@ -1153,7 +1159,7 @@ class PlayerCombatMapper {
 		 * @returns {ArmTentacle}
 		 */
 		function getArmState(target, parts) {
-			const state = PlayerCombatMapper.getTentacleHeadPosition(parts);
+			const state = PlayerCombatMapper.getTentacleHeadPosition(options, parts);
 			const tentacle = PlayerCombatMapper.getTentacleByShaft(target);
 			const isBound = tentacle != null && V[target] === "grappled";
 			return {
@@ -1185,14 +1191,14 @@ class PlayerCombatMapper {
 			tentacles.mouth = getState({ mouthentrance: "oral-entrance", mouthimminent: "oral-imminent", mouth: "oral", mouthdeep: "oral" });
 		}
 		tentacles.breasts = getState();
-		// Tentacle code requires that I check the states.
+
 		if (V.penisstate !== 0 || V.penisuse !== 0) {
 			tentacles.penis = getState({
 				penisentrance: "penis-entrance-0",
 				penisimminent: "penis-imminent",
 				penis: "penis",
 				penisdeep: "penis",
-				penisrub: "penis",
+				penisrub: "penis-entrance-0",
 			});
 		}
 		if (V.vaginastate !== 0 || V.vaginause !== 0) {
