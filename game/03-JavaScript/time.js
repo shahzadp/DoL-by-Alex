@@ -911,9 +911,6 @@ function dayPassed() {
 	}
 	if (V.bird.clean >= 1) V.bird.clean = Math.clamp(V.bird.clean - (10 - V.bird.upgrades.shelter), 0, 100);
 
-	/* Set flag to determine Kylar's position at lunch */
-	V.daily.kylar.libraryStalk = rollKylarLibraryStalkFlag();
-
 	if (V.whitney_roof) {
 		delete V.whitney_roof;
 	}
@@ -928,6 +925,10 @@ function dayPassed() {
 	// Activate the robin pillory
 	if (V.robinPillory && V.robinPillory.danger !== undefined && (V.robindebtevent <= 1 || !V.baileySold)) V.robinPillory.active = true;
 
+	// Save today's HC ending in local storage
+	if (V.daily.winterStoryTime && V.hcEndings)
+		localStorage.setItem("hopelessCycle", localStorage.getItem("hopelessCycle").split(",").concatUnique(V.hcEndings));
+
 	// Reset the daily stats
 	if (V.stall_stats) {
 		Object.values(V.stall_stats).forEach(produce => {
@@ -937,6 +938,9 @@ function dayPassed() {
 	}
 
 	V.daily.clearProperties();
+
+	/* Set flag to determine Kylar's position at lunch */
+	V.daily.kylar.libraryStalk = rollKylarLibraryStalkFlag();
 
 	if (random(1, 8) === 1) V.daily.robin.orphanageKitchen = true;
 
