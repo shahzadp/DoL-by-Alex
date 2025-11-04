@@ -551,7 +551,12 @@ const combatMainPc = {
 				return options.animKey;
 			},
 			filters: ["tentacles"],
-			z: CombatRenderer.indices.frontArm + 5,
+			zfn(options) {
+				if (options.tentacles.frontArm.isBound) {
+					return CombatRenderer.indices.frontArm + 20;
+				}
+				return CombatRenderer.indices.frontArm + 5;
+			},
 		},
 		tentacleBackLeg: {
 			srcfn(options) {
