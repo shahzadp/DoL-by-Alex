@@ -133,6 +133,7 @@ declare global {
 			| "mouthimminent"
 			| "mouth"
 			| "othermouth"
+			| "otheranus"
 			| "feet"
 			| "footjob"
 			| "leftarm"

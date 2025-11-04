@@ -479,6 +479,8 @@ class CombatSystem {
 					position: "feet",
 					state: "rubbing",
 				};
+			case "otheranus":
+				return {};
 			case "clothed": // Huh? Asking Puri - For when you need to undress NPCs before using the part.
 				return {};
 			case "leftarm":
