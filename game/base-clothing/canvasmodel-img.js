@@ -443,7 +443,7 @@ DefineMacro("modelprepare-player-body", function () {
 			// Force default horns if the PC has unsupported horn styles (e.g. Classic)
 			T.modeloptions.demon_horns_type = "default";
 		}
-		T.modeloptions.cow_horns_type = "default-demon";
+		T.modeloptions.cow_horns_type = T.modeloptions.demon_horns_type === "succubus" ? "succubus-demon" : "default-demon";
 	}
 	// Demon-cow tail
 	if (isPartEnabled(T.modeloptions.cow_tail_type) && isPartEnabled(T.modeloptions.demon_tail_type) && isChimeraEnabled("demoncow", "tail")) {

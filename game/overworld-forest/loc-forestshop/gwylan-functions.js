@@ -45,7 +45,7 @@ function gwylanRequest(override = null) {
 	// One-time event modifiers and custom modifiers for base events
 	if (!V.gwylanSeen.includes("request_gas_mask") && V.gwylanTalked?.length >= 5) allPossibleRequests.push(["clothingGasMask", 3]);
 	if (!V.gwylanSeen.includes("request_gold_accessories") && V.adultshopunlocked && C.npc.Gwylan.love >= 30) allPossibleRequests.push(["clothingGold", 3]);
-	if (window.npcIsPregnant("Gwylan") && V.farm?.woodland >= 2) allPossibleRequests.push(["plums", 3]);
+	if (window.npcIsPregnant("Gwylan") && V.farm?.woodland >= 2) allPossibleRequests.push(["plums", 5]);
 
 	// Unlockable events
 	if (V.$gwylanSeen?.includes("ritual_beast") >= 5 && (!V.gwylan.timer.sample || Time.date.dayDifference(new DateTime(V.gwylan.timer.sample) < 7)))
@@ -258,6 +258,7 @@ function gwylanRequestClothes(override) {
 	const requireIntegrity = complexity >= seedrng.randomInt(5, 7);
 	const requirePattern = complexity >= seedrng.randomInt(1, 5);
 	const allowReplacements = complexity <= seedrng.randomInt(3, 4);
+	const ignoreNeck = V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1;
 
 	function grcCreate(clothingName, clothingSlot) {
 		const baseItem = {
@@ -398,12 +399,6 @@ function gwylanRequestClothes(override) {
 		grcCreate("gold chain", "neck");
 		V.gwylan.request.details.outfit = false;
 		V.gwylan.request.details.shops = ["clothing", "adult"];
-		return V.gwylan.request;
-	}
-	if (override === "currentBelt") {
-		grcCreate(V.worn.genitals.name, "genitals");
-		V.gwylan.request.details.outfit = false;
-		V.gwylan.request.details.shops = [];
 		return V.gwylan.request;
 	}
 
@@ -564,7 +559,7 @@ function gwylanRequestClothes(override) {
 		case "bunny ears":
 			grcCreate("bunny leotard", "under_upper");
 			grcCreate("bunny ears", "head");
-			if (extraItems) grcCreate("bunny collar", "neck");
+			if (extraItems && !ignoreNeck) grcCreate("bunny collar", "neck");
 			V.gwylan.request.details.outfit = true;
 			V.gwylan.request.special = "bunny";
 			// bnuuy
@@ -575,7 +570,7 @@ function gwylanRequestClothes(override) {
 			grcCreate("catgirl bra", "under_upper");
 			grcCreate("catgirl panties", "under_lower");
 			grcCreate("kitty ears", "head");
-			if (extraItems) grcCreate("cat bell collar", "neck");
+			if (extraItems && !ignoreNeck) grcCreate("cat bell collar", "neck");
 			V.gwylan.request.details.outfit = true;
 			V.gwylan.request.special = "kitty";
 			// ctuuy
@@ -730,7 +725,7 @@ function gwylanRequestSample(override) {
 			} else if (["plant"].includes(chance[0] && V.settings.tentaclesEnabled)) {
 				// heavy repetition bias. if chosen first, very likely to be single group
 				chance[1] += V.gwylan.request.items.find(item => item.name === chance[0])?.need * 60 || 0;
-			} else if (["bear", "boar"].includes(chance[0])) {
+			} else if (["bear", "boar", "lizard"].includes(chance[0])) {
 				// bias against repetition
 				chance[1] -= V.gwylan.request.items.find(item => item.name === chance[0])?.need || 0;
 			}
@@ -808,6 +803,8 @@ window.collectSample = collectSample;
 
 function gwylanRequestClothingSlotCheck(slot) {
 	if (!V.gwylan?.request.event || !slot) return false;
+
+	if (slot === "neck" && V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1) return true;
 
 	return V.gwylan.request.items.some(
 		thing =>
