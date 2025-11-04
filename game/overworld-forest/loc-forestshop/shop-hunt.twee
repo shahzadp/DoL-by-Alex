@@ -2888,6 +2888,7 @@
 
 	<!-- Actors tripping out of sight of the player -->
 	<<set $_tripPrinted to 0>>
+	<<set $_mannequinsTripped to { north: 0, south: 0, east: 0, west: 0, northeast: 0, northwest: 0, southeast: 0, southwest: 0 }>>
 	<<for $_i to 0; $_i lt Object.keys(_actorMoved).length; $_i++>>
 		<<set $_actor to Number(Object.keys(_actorMoved)[$_i])>>
 		<<set $_tripLoc to shopHuntLoc(Object.values(_actorMoved)[$_i])>>
@@ -2907,7 +2908,7 @@
 						<<if $shopHunt.actors[$_actor].name is "giant fox plushie">>
 							<<set $_silentTrip to true>>
 						<<else>>
-							You hear the faint sound of wood falling over from the $_direction. You think <span @class="$_color">one of the mannequins tripped</span>.
+							<<set $_mannequinsTripped[$_direction]++>>
 						<</if>>
 					<<case "elkspawn">>
 						<<shopHuntDamageActor $_actor 1 true>>
@@ -2926,19 +2927,23 @@
 						<<if $shopHunt.actors[$_actor].name is "giant fox plushie">>
 							<<set $_silentTrip to true>>
 						<<else>>
-							You hear the faint sound of wood falling over from the $_direction. You think <span @class="$_color">one of the mannequins tripped</span>.
+							<<set $_mannequinsTripped[$_direction]++>>
 						<</if>>
 					<<case "elkspawn">>
 						<<shopHuntDamageActor $_actor 1 true>>
 						/* Todo: Gwylan hunt elkspawn, how would it react here? I have it set that it takes damage from tripping because it's more cumbersome than the other actors */
 				<</switch>>
 			<</if>>
-			<<if $_silentTrip>>
-				<<set $_silentTrip to false>>
-				<<set $_tripPrinted-->>
-			<</if>>
 		<</if>>
 	<</for>>
+	<<if Object.values($_mannequinsTripped).reduce((a, b) => a + b) gte 1>>
+		<<set $_mannequinDirections to Object.keys($_mannequinsTripped).filter(x => $_mannequinsTripped[x] gte 1)>>
+		You hear the faint <<pluralise `Object.values($_mannequinsTripped).reduce((a, b) => a + b)` "sound">> of wood falling over from the <<formatList $_mannequinDirections>>. You think <span @class="$_color"><<number `Object.values($_mannequinsTripped).reduce((a, b) => a + b)`>> of the mannequins tripped</span>.
+	<</if>>
+	<<if $_silentTrip>>
+		<<set $_silentTrip to false>>
+		<<set $_tripPrinted-->>
+	<</if>>
 	<<if $_tripPrinted>>
 		<br><br>
 	<</if>>
@@ -3903,6 +3908,7 @@
 	Eden sees you and marches up to you, grabbing your arm. <<person2>><<He>> looks down to Gwylan with disgust, and drags you to the entrance.
 	<br><br>
 
+	<<person1>>
 	<<if $shopHunt.context is "kidnap">>
 		<<if $gwylanSeen.includes("romance")>>
 			"<<pcPetname "Gwylan" "simple">>." Gwylan, says softly. You look back. Black tears trail down <<his>> face. "You promised."
@@ -3917,6 +3923,7 @@
 	Light banishes the gloom around you. You and Eden both cover your eyes. <<person2>><<He>> doesn't slow down, though. <<He>> drags you from the shop.
 	<br><br>
 
+	<<person1>>
 	You hear a rattle from the doorframe, like strained breathing. Gwylan emerges from the darkness, frantically inspecting the remains of the door. <<He>> rubs the frame as if <<he>> were conforting a hurt child. <<person2>><<He>> turns and glares at Eden.
 	<<if $shopHunt.context is "kidnap" and $gwylanSeen.includes("romance")>>
 		"You wish to take and destroy all I hold dear," <<he>> says in an eerily calm tone. "Soon, I'll have nothing to lose. You must know how that feels, Eden."
