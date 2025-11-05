@@ -5,7 +5,7 @@ function masturbationActions() {
 	const fragment = document.createDocumentFragment();
 
 	const playerToys = listUniqueCarriedSextoys().filter(
-		toy => (V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump")
+		toy => (V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump", "vibrator")
 	);
 
 	const selectedToy = location => {
@@ -141,7 +141,9 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 	const toyDropDown = limit => {
 		const toys = listUniqueCarriedSextoys().filter(toy => {
 			if (limit === "breastpump") return toy.type.includes("breastpump");
-			return (V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump");
+			return (
+				(V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump", "vibrator")
+			);
 		});
 		let count = 0;
 
@@ -646,6 +648,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 					}
 				}
 				switch (selectedToy(arm).name) {
+					case "wand vibe":
 					case "bullet vibe":
 						if (V.player.penisExist && V.penisuse === 0 && !playerChastity("penis")) {
 							result.options.push({

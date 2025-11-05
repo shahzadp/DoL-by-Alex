@@ -78,6 +78,13 @@
 			<<if _cursedPrevent is true>>
 				<<continue>>
 			<</if>>
+			/* Strip strap-on */
+			<<if $worn[_slot].type.includes("strap-on")>>
+				<<set _strap to $player.inventory.sextoys[$worn[_slot].name].find(toy => toy.worn)>>
+				<<set _strap.worn to false>>
+				You remove your <<= $worn[_slot].name>>.
+				<<set $worn[_slot] to clone(setup.clothes[_slot][0])>>
+			<</if>>
 			/*Strips equip and puts it in the wardrobe*/
 			<<if _wearId is "strip" and $worn[_slot].name isnot "naked">>
 				You remove the <<print $worn[_slot].name>>.
@@ -1530,6 +1537,9 @@
 	<<set $_equip to []>>
 	<<set _equipped to []>>
 	<<for $_slot, $_value range $randomEquipConfigure>>
+		<<if $worn[$_slot].type.includes("strap-on")>>
+			<<continue>>
+		<</if>>
 		<<if $_value>>
 			<<generalUndress $wardrobe_location $_slot>>
 			<<run $_equip.push($_slot)>>
