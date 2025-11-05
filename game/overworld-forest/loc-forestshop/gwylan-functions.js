@@ -875,7 +875,7 @@ function gwylanCanRescueFromWraith() {
 			C.npc.Gwylan.init === 1 &&
 			C.npc.Gwylan.state === "active" &&
 			V.gwylanSeen?.includes("ritual_sex") &&
-			V.wraith?.seen >= 3 &&
+			V.wraith?.seen >= 1 &&
 			V.wraith?.possessCount >= 1
 		);
 	}

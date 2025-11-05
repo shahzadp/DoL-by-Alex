@@ -1660,6 +1660,8 @@ function isPossibleLoveInterest(name) {
 			return V.farm_stage >= 7 && V.alex_countdown === undefined;
 		case "Gwylan":
 			return V.gwylanSeen?.includes("partners") || V.gwylanSeen?.includes("romance");
+		default:
+			return false;
 	}
 }
 window.isPossibleLoveInterest = isPossibleLoveInterest;
