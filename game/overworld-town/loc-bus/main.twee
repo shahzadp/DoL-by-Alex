@@ -91,9 +91,11 @@ You climb aboard the bus. Tickets cost £1.
 <<if $stress gte $stressmax>>
 	<<passoutbus>>
 <<elseif $tiredness gte (C.tiredness.max / 5) * 4 and $stress gte (($stressmax / 5) * 4) and !isPregnancyEnding()>>
-	After a while, you find yourself struggling to keep your eyes open. Your exhausted and tense body slowly relaxes, and your head slumps as you fall into a restless doze.
+	After a while, you find yourself struggling to keep your eyes open. Your exhausted and tense body slowly relaxes, and your head slumps as you begin to fall into a restless doze.
 	<br><br>
 	<<link [[Sleep|Passout bus]]>><<tiredness -20>><<set $phase to 1>><</link>><<ltiredness>>
+	<br>
+	<<link [[Try to stay awake|Passout bus]]>><<set $phase2 to 1>><</link>><<willpowerdifficulty 1 $willpowermax>>
 	<br>
 <<elseif playerBellyVisible() and $rng gte 76 and getPregnancyObject().awareOf>>
 	/* event is only possible if the player knows they are pregnant, and their belly is visible */
@@ -936,24 +938,40 @@ The bus slows to round a corner. You take the opportunity to slip out unnoticed.
 <<effects>>
 <<He>> recoils in pain. <<if $phase is 1>>The bus soon reaches the next stop.<<else>>You arrive at your destination not long after.<</if>> <<tearful>> you seize the opportunity and dart out the vehicle.
 <br><br>
-<<clotheson>>
-<<endcombat>>
 <<set $stress -= 1000>><<set $eventskip to 1>>
+<<clotheson>>
 <<if $phase is 1>>
 	<<unset $phase>><<destinationbusrandom>>
 <<else>>
 	<<destination>>
 <</if>>
+<<endcombat>>
 
 :: Passout bus
-
+<<if $phase2 is 1>>
+	You do your best to stay awake, 
+	<<if $willpowerSuccess>>
+		<span class="green">and you manage.</span>
+		<br><br>
+		Soon the bus arrives at your destination.
+		<br><br>
+		<<destination>>
+		<<endevent>>
+		<<exit>>
+	<<else>>
+		<span class="red">but you can't keep your eyes open and you doze off.</span><<ltiredness>>
+		<br><br>
+		<<set $phase to 1>>
+		<<tiredness -10>>
+	<</if>>
+<</if>>
 <<if $phase is 1>>
 	The bus rumbles to a sudden halt. And you wake with a start.
 <<else>>
 	You've pushed yourself too much.
+	<<passout>>
 <</if>>
 <br><br>
-<<passout>>
 
 <<if dangerEvent()>>
 	<<switch random(1, 2)>>
@@ -968,7 +986,7 @@ The bus slows to round a corner. You take the opportunity to slip out unnoticed.
 	<<ambulance>>
 <</if>>
 
-<<pass 1 hour>>
+<<pass random(20,60)>>
 <<trauma 6>><<if $phase is 1>><<set $stress -= 1000>><<else>><<set $stress -= 2000>><</if>>
 
 :: Bus Pregnancy Wait
