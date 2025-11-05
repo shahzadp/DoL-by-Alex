@@ -1557,7 +1557,7 @@ You feel a warmth start to spread through your whole body, starting in your core
 	<br><br>
 <</if>>
 <<if $sexRitual.canPenetrate>>
-	<<if _gwylanStatus.includes("heat") and !($sexRitual.virginity.length and $sexRitual.virginityCanTake)>>
+	<<if _gwylanStatus.includes("heat") and !($sexRitual.virginity.length and $sexRitual.virginityCanTake) and $angel lt 6>>
 		<<His>> hands grip you tightly, and you feel <<his>> hot breath on your skin. "I would normally leave the choice to you. Forgive me.
 		<<if $player.penisExist>>
 			<span class="pink">I need to feel you inside of me.</span>"
@@ -1755,7 +1755,7 @@ You feel a warmth start to spread through your whole body, starting in your core
 		<<default>>"No penetration, please," you barely manage to say.
 	<</switch>>
 	<<if $sexRitual.bondage>>
-		There's a moment's pause. "Ah," Gwylan says suddenly. "Yes, of course. Apologies, I forgot you couldn't see me nod." He chuckles softly.
+		There's a moment's pause. "Ah," Gwylan says suddenly. "Yes, of course. Apologies, I forgot you couldn't see me nod." <<He>> chuckles softly.
 	<<else>>
 		<<He>> nods.
 	<</if>>
@@ -3159,12 +3159,13 @@ You let out another moan, the sensation amplified by whatever <<he>> had you dri
 <<effects>><<run statusCheck("Gwylan")>><<set _tf to checkTFparts()>>
 <<gwylanRitualEffects>>
 <<canvas-model-temporary-effect "petals">>
+<<set _gwylanOrgasmLimit to _gwylanStatus.includes("heat") ? 8 : 6>>
 /* End conditions */
 <<if $orgasmcount gte 24 or $sexRitual.playerOrgasmsFailed gte 3 or $sexRitual.timerToforceEnd lte 0>>
 	<<set $sexRitual.end to "spent">>
 <<elseif $sexRitual.playerOrgasms gte $sexRitual.orgasmTarget>>
 	<<set $sexRitual.end to "normal">>
-<<elseif $sexRitual.gwylanOrgasms gte 6 and !$sexRitual.tentacleEvent>>
+<<elseif $sexRitual.gwylanOrgasms gte _gwylanOrgasmLimit and !$sexRitual.tentacleEvent>>
 	<<set $sexRitual.end to "Gwylan">>
 <</if>>
 
@@ -7654,6 +7655,8 @@ Perhaps you haven't been entirely cast out.
 <<widget "gwylanRitualPenetrate">>
 	<<set $_gwylanPart to _args[0]>>
 	<<set $_playerPart to _args[1]>>
+	<<set _consensualOverride to true>>
+	<<set _npcConsensualOverride to true>>
 	<<if _args[0] is "withdraw">>
 		<<if $player.penisExist>>
 			<<set $penisstate to 0>><<set $penisuse to 0>><<set $penistarget to 0>>

@@ -5,7 +5,7 @@
 		<<run ["vaginal", "penile", "anal", "oral", "handholding", "kiss"].forEach(type => {
 			if ($player.virginity[type] is true) {
 				T[type + "VirginityColour"] = "gold";
-			} else if (setup.loveInterestNpc.includes($player.virginity[type])) {
+			} else if (isPossibleLoveInterest($player.virginity[type])) {
 				T[type + "VirginityColour"] = "lewd";
 				if ($player.virginityDetails and $player.virginityDetails?.[type]?.consensual is false) T[type + "VirginityColour"] = "red";
 			} else if ($player.virginityDetails and $player.virginityDetails?.[type]?.consensual isnot undefined) {
@@ -1720,14 +1720,22 @@
 			<<case "Forest Shop Caught Distract">>
 				<<set $_special to "Helped Gwylan get out of a mouthful">>
 			<<default>>
-				<<if _args[0].npcPenisSize gte 5>>
+				<<if _args[0].passage.includes("Gwylan Ritual Sex")>>
+					<<if ["vaginal", "penile"].includes(_args[3]) and $gwylanSeen?.includes("fallen_angel")>>
+						<<set $_special to "Fell to a witch to cleanse the forest">>
+					<<elseif _args[3] is "kiss">>
+						<<set $_special to "Broke Gwylan's first rule in the heat of passion">>
+					<<else>>
+						<<set $_special to "Given away willingly to cleanse the forest">>
+					<</if>>
+				<<elseif _args[0].npcPenisSize gte 5>>
 					<<set $_special to `${_args[3] is "vaginal" ? "Broken" : "Taken"} in the most brutal of ways`>>
 				<<elseif _args[0].npcPenisSize2 isnot undefined>>
 					<<set $_special to "Two for the price of one">>
 				<</if>>
 		<</switch>>
 		<<if $_special>><<set $_text_output += `<div class="lewd">Special: ${$_special}</div>`>><</if>>
-		<<if setup.loveInterestNpc.includes(_args[1]) and $_linkColour isnot "red">>
+		<<if isPossibleLoveInterest(_args[1]) and $_linkColour isnot "red">>
 			<<set $_linkColour to "lewd">>
 		<</if>>
 	<</if>>
