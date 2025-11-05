@@ -13,7 +13,7 @@ function masturbationSlimeControl() {
 	const fragment = document.createDocumentFragment();
 	const genitalsExposed = V.worn.over_lower.vagina_exposed >= 1 && V.worn.lower.vagina_exposed >= 1 && V.worn.under_lower.vagina_exposed >= 1;
 	const playerToys = listUniqueCarriedSextoys().filter(
-		toy => (V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump")
+		toy => (V.player.penisExist && !playerChastity("penis") && toy.type.includesAny("stroker")) || toy.type.includesAny("dildo", "breastpump", "vibrator")
 	);
 	const toysId = clone(Array.from(Array(playerToys.length).keys()).filter(i => !playerToys[i].type.includes("stroker")));
 
@@ -281,7 +281,10 @@ function masturbationSlimeControl() {
 								!(V.canSelfSuckPenis && V.penisuse === 0)
 							) {
 								V[armAction] = "mdildomouthentrance";
-							} else if (!["mvaginaentrancedildo", "manusentrancedildo"].includes(V.leftaction) && currentToy.name === "bullet vibe") {
+							} else if (
+								!["mvaginaentrancedildo", "manusentrancedildo"].includes(V.leftaction) &&
+								["bullet vibe", "wand vibe"].includes(currentToy.name)
+							) {
 								actions.push("mchestvibrate");
 								if (V.player.penisExist && V.penisuse === 0 && !playerChastity("penis")) actions.push("mpenisvibrate");
 								if (!V.player.penisExist && !playerChastity("vagina")) {

@@ -35,7 +35,7 @@ function sexToysInventoryInit() {
 				});
 				ownedWrapper.appendChild(ownedDiv);
 
-				cellDiv.append(ownedWrapper, window.sexShopIcon(setupItem, item.colour ? `clothes-${item.colour}` : ""));
+				cellDiv.append(ownedWrapper, window.sexShopIcon(setupItem, setupItem.colour ? `clothes-${item.colour}` : ""));
 				mainGrid.appendChild(cellDiv);
 			});
 		});

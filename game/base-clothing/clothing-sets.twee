@@ -285,6 +285,41 @@
 				})>>
 			<</if>>
 
+			/* Strip worn strap-on */
+			<<if $worn[$_slot].type.includes("strap-on")>>
+				<<set _strap to $player.inventory.sextoys[$worn[$_slot].name].find(toy => toy.worn)>>
+				<<set _strap.worn to false>>
+				<<set $worn[$_slot] to clone(setup.clothes[$_slot][0])>>
+			<</if>>
+
+			/* Equip saved outfit's strap-on */
+			<<if $_slot is "under_lower" and $_incomingItemName.includes("strap-on")>>
+				<<set _toy to $player.inventory.sextoys[$_incomingItemName]>>
+				<<set _toySetup to setup.sextoys.find(t => t.name === $_incomingItemName)>>
+				<<if !_toy or _toy?.length is 0>>
+					<<set _notEquipped[$_slot] to {"name": $_incomingItemName, "reason": "strapon"}>>
+				<<elseif _toySetup>>
+					<<set _index to _toySetup.clothes_index>>
+					<<if $outfit[$wear_outfit].colors>>
+						<<set _strap to _toy.find(toy => toy.colour === $outfit[$wear_outfit].colors.under_lower[0])>>
+						<<if _strap>>
+							<<set $worn[$_slot] to clone(setup.clothes[$_slot][_index])>>
+							<<set $worn[$_slot].colour to $outfit[$wear_outfit].colors.under_lower[0]>>
+							<<set _strap.worn to true>>
+						<<else>>
+							<<set _notEquipped[$_slot] to {"name": $_incomingItemName, "reason": "strapon"}>>
+						<</if>>
+					<<else>>
+						<<set $worn[$_slot] to clone(setup.clothes[$_slot][_index])>>
+						<<set $worn[$_slot].colour to _toy[0].colour>>
+						<<set _toy[0].worn to true>>
+					<</if>>
+				<<else>>
+					<<exit '<span class="red">ERROR: Equipped $_incomingItemName does not exist. Please report.</span>'>>
+				<</if>>
+				<<continue>>
+			<</if>>
+
 			<<set $_storeLocation to ($storeLocation ? $storeLocation : $wardrobe_location)>>
 
 			<<if _preventItemEquip is true>>
@@ -772,6 +807,19 @@
 							}
 						}
 						_resultStrings.notFoundPiece.names.push(notEquippedItem.name);
+						break;
+					case "strapon":
+						if (V.worn[slot].name === notEquippedItem.name) break;
+						if (_resultStrings.strapon === undefined) {
+							_resultStrings.strapon = {
+								"start": "You were unable to find a matching ",
+								"joiner": "or",
+								"end": " in your sex toy inventory.",
+								"names": [],
+								"color": "lewd"
+							}
+						}
+						_resultStrings.strapon.names.push(notEquippedItem.name);
 						break;
 				}
 			})>>
