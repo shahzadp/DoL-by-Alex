@@ -103,7 +103,7 @@
 			Gwylan's eyes have closed. <span class="blue">You try getting <<his>> attention, but <<he>> won't respond.</span>
 			<br><br>
 
-			<<if $location is "cafe" and !between(V.chef_state, 7, 8)>>
+			<<if $location is "cafe" and !(between($chef_state, 7, 8) and $chef_rework lte 30)>>
 				<<getouticon>><<link [[Say goodbye and go back inside (0:01)|Gwylan Talk Struggles Intro]]>><<pass 1>><</link>>
 			<<elseif $location is "cafe">>
 				<<getouticon>><<link [[Say goodbye (0:01)|Gwylan Talk Struggles Intro]]>><<pass 1>><</link>>
@@ -130,7 +130,7 @@
 	<</if>>
 
 	/* Leaving the cafe for elsewhere */
-	<<if $location is "cafe" and !between(V.chef_state, 7, 8) and $gwylan.robin gte 10 and $daily.robin_in_cafe and getRobinLocation() isnot "cafe" and false>> /* WARNING! Re-enable later for Gwybin cafe */
+	<<if $location is "cafe" and !(between($chef_state, 7, 8) and $chef_rework lte 30) and $gwylan.robin gte 10 and $daily.robin_in_cafe and getRobinLocation() isnot "cafe" and false>> /* WARNING! Re-enable later for Gwybin cafe */
 		Gwylan stands up with <<his>> plate. <<He>> empties the crumbs into the air, just as a flock of seagulls pass by. They don't let a single crumb land on the beach.
 		<br><br>
 
@@ -163,7 +163,7 @@
 		<<exit>>
 	<</if>>
 	<<if $location is "cafe" and !["cafe", "cliff", "walking_to_cafe"].includes(_gwylanLocation)>>
-		<<if !between(V.chef_state, 7, 8)>>
+		<<if !(between($chef_state, 7, 8) and $chef_rework lte 30)>>
 			Gwylan stands up with <<his>> plate. <<He>> empties the crumbs into the air, just as a flock of seagulls pass by. They don't let a single crumb land on the beach.
 			<br><br>
 		<</if>>
@@ -636,9 +636,9 @@
 
 <<widget "gwylanOptionsCafe">>
 	<<set $_schoolWalkAvailable to ($gwylanSeen.includes("cafe_walk") or ($gwylan.sea + ($gwylanTalked.count("fox_mask") * 20) + ($gwylanTalked.count("dark_pendant") * 20) gte 40)) or ($gwylan.robin gte 10 and $daily.robin_in_cafe and false)>> /* WARNING! Re-enable later for Gwybin cafe */
-	<<if $_schoolWalkAvailable and Time.schoolDay and ((Time.hour is 7 and Time.minute gte 50) or (Time.hour is 8 and Time.minute lte 40)) and !$daily.gwylan_skip_school>>
-		<<set _passTime to "<<passTimeUntil 8 50>><<set $daily.gwylan.cafeSkip to true>>">><<set _passTimeDisplay to "0:" + ("0" + ((50 - Time.minute + 60) % 60)).slice(-2)>>
-	<<elseif $_schoolWalkAvailable and Time.schoolDay and Time.hour is 8 and Time.minute gt 40 and !$daily.gwylan_skip_school>>
+	<<if $_schoolWalkAvailable and Time.schoolDay and ((Time.hour is 7 and Time.minute gte 45) or (Time.hour is 8 and Time.minute lte 35)) and !$daily.gwylan_skip_school>>
+		<<set _passTime to "<<passTimeUntil 8 45>><<set $daily.gwylan.cafeSkip to true>>">><<set _passTimeDisplay to "0:" + ("0" + ((45 - Time.minute + 60) % 60)).slice(-2)>>
+	<<elseif $_schoolWalkAvailable and Time.schoolDay and Time.hour is 8 and Time.minute gt 35 and !$daily.gwylan_skip_school>>
 		<<set _passTime to "<<pass 10>><<set $daily.gwylan.cafeSkip to true>>">><<set _passTimeDisplay to "0:10">>
 	<<elseif Time.hour lte 7 or (Time.hour is 8 and Time.minute lt 10)>>
 		<<set _passTime to "<<pass 1 hour>>">><<set _passTimeDisplay to "1:00">>
@@ -651,7 +651,7 @@
 	<</if>>
 	<<beachicon>><<link [[Watch the sea with <<him>> (_passTimeDisplay)|Gwylan Ocean Breeze Watch]]>>_passTime<<stress -6>><<trauma -3>><<willpower 1>><</link>><<lstress>><<ltrauma>><<gwillpower>>
 	<br>
-	<<if $location is "cafe" and !between(V.chef_state, 7, 8) and $daily.cafeEaten isnot 1>>
+	<<if $location is "cafe" and !(between($chef_state, 7, 8) and $chef_rework lte 30) and $daily.cafeEaten isnot 1>>
 		<<if $money gte 200>>
 			<<foodicon "coffee">><<link [[Buy coffee (_passTimeDisplay £2)|Gwylan Ocean Breeze Watch]]>>
 				<<set $phase to "coffee">><<set $phase2 to 1>><<set $daily.cafeEaten to 1>><<money -200 "cafe">>
@@ -779,7 +779,7 @@
 			<br>
 		<</if>>
 	<</if>>
-	<<if !between($chef_state, 7, 8) and $cafe_study and ($studyBooks.rented isnot "none" or $studyBooks.stolen isnot "none") and Time.schoolDay>>
+	<<if !(between($chef_state, 7, 8) and $chef_rework lte 30) and $cafe_study and ($studyBooks.rented isnot "none" or $studyBooks.stolen isnot "none") and Time.schoolDay>>
 		<br>
 		<<switch $studyBooks.rented>>
 			<<case "science">><<scienceicon>><<link [[Study science (_passTimeDisplay)|Gwylan Ocean Breeze Watch]]>><<set $phase to "science">><<set $phase2 to 2>><<scienceskill>><<willpower 1>>_passTime<</link>><<gscience>><<gwillpower>><br>
@@ -802,7 +802,7 @@
 	<<if $gwylan.request.event is "meetAtShop" and $location is "forest_shop" and gwylanCanForceRitual("beast") and !_ritualFailSafe and !$daily.gwylan.preventProgress>>
 		<<getouticon>><<link [[Back to the shop|Gwylan Forest Journey Cancel]]>><</link>><<if $daily.gwylan.eventCancelled>><<gwylanWillpowerDifficulty>><</if>>
 		/* ToDo: Gwylan - forcing player into ritual if it's been too long */
-	<<elseif $location is "cafe" and !between($chef_state, 7, 8)>>
+	<<elseif $location is "cafe" and !(between($chef_state, 7, 8) and $chef_rework lte 30)>>
 		<<if $_schoolWalkAvailable and Time.schoolDay and !$daily.gwylan_skip_school>>
 			<<if $daily.robin_in_cafe>>
 				<<schoolicon "building">><<link [[Walk to school early (0:10)|Gwylan Walk School Robin]]>><<pass 10>><<set $daily.gwylan.cafeSkip to true>><<unset $cafe_study>><<storeon "cafe_balcony">><</link>>

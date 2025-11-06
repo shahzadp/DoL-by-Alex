@@ -27,27 +27,28 @@ You have <span class="gold">$mathsinfo</span> <<pluralise $mathsinfo "insight">>
 <</if>>
 <br>
 <<set _chair to Furniture.get('chair')>>
-<<icon "projectMaths.png">><<link [[Work on solution (2:00)|Maths Project Work]]>><<if $location is "home" and _chair.type.includes("comfy")>><<set $mathschance += 5>><<else>><<set $mathschance += 1>><</if>><<mathsskill 2>><<pass 120>><<stress 12>><</link>><<gstress>><<gmaths>>
+<<icon "projectMaths.png">><<link [[Work on solution (2:00)|Maths Project Work]]>><<if ($location is "home" and _chair.type.includes("comfy")) or $location is "avery_mansion">><<set $mathschance += 5>><<else>><<set $mathschance += 1>><</if>><<mathsskill 2>><<pass 120>><<stress 12>><</link>><<gstress>><<gmaths>>
 <br>
 <<if $mathsstim gte 1 and playerIsPregnant() and playerAwareTheyArePregnant()>>
 	<span class="blue">You can't bring yourself to take stimulants while you know you're with child.</span>
 	<br>
 <<elseif $mathsstim gte 1>>
-	<<pillicon "stimulant">><<link [[Use stimulant (2:00)|Maths Project Stim]]>><<if $location is "home" and _chair.type.includes("comfy")>><<set $mathschance += 20>><<else>><<set $mathschance += 16>><</if>><<set $mathsstim -= 1>><<set $mathsstimused += 1>><<mathsskill 40>><<pass 120>><</link>><<gggmaths>>
+	<<pillicon "stimulant">><<link [[Use stimulant (2:00)|Maths Project Stim]]>><<if ($location is "home" and _chair.type.includes("comfy")) or $location is "avery_mansion">><<set $mathschance += 20>><<else>><<set $mathschance += 16>><</if>><<set $mathsstim -= 1>><<set $mathsstimused += 1>><<mathsskill 40>><<pass 120>><</link>><<gggmaths>>
 	<br>
 <</if>>
 <<if $mathsinfo gte 1>>
-	<<investigateicon>><<link [[Use a mathematical insight (2:00)|Maths Project Work]]>><<set $mathsinfo -= 1>><<if $location is "home" and _chair.type.includes("comfy")>><<set $mathschance += 12>><<else>><<set $mathschance += 8>><</if>><<mathsskill 40>><<pass 120>><</link>><<ggmaths>>
+	<<investigateicon>><<link [[Use a mathematical insight (2:00)|Maths Project Work]]>><<set $mathsinfo -= 1>><<if ($location is "home" and _chair.type.includes("comfy")) or $location is "avery_mansion">><<set $mathschance += 12>><<else>><<set $mathschance += 8>><</if>><<mathsskill 40>><<pass 120>><</link>><<ggmaths>>
 	<br>
 <</if>>
 <br>
 <<if $location is "home">>
 	<<getouticon>><<link [[Stop|Bedroom]]>><</link>>
-	<br>
+<<elseif $location is "avery_mansion">>
+	<<getouticon>><<link [[Stop|Mansion Study]]>><</link>>
 <<else>>
 	<<getouticon>><<link [[Stop|School Library]]>><</link>>
-	<br>
 <</if>>
+<br>
 
 :: Maths Project Work
 <<wearProp "pencil">>
@@ -56,6 +57,8 @@ You sit down and get to work.
 <<set _chair to Furniture.get('chair')>>
 <<if $location is "home" and _chair.type.includes("comfy")>>
 	Your <span class="green">comfortable</span> chair makes it easier to concentrate on the project.
+<<elseif $location is "avery_mansion">>
+	The chair is quite <span class="green">comfortable</span>, making it easier to concentrate on the project.
 <<else>>
 	Your <span class="red">uncomfortable</span> chair makes it hard to concentrate, but you muddle through.
 <</if>>
@@ -99,6 +102,41 @@ You sit down and get to work.
 		The orphanage is dead silent as you work.
 	<<else>>
 		You watch the clock as you work, continuing through midnight and into the next day.
+	<</if>>
+<<elseif $location is "avery_mansion">>
+	<<avery_mansion>>
+	<<if $avery_mansion.schedule is "away">>
+		The mansion is nearly silent with Avery gone, save for the ticking of a clock.
+	<<elseif $avery_mansion.schedule is "study" and $avery_mansion.study_unlocked>>
+		<<if C.npc.Avery.rage gte 60>>
+			Avery wanders around the room, checking out the shelves.
+		<<else>>
+			Avery sits at <<nnpc_his "Avery">> desk, reading a book.
+		<</if>>
+	<<elseif $avery_mansion.schedule is "party_prepare">>
+		You hear lots of movement back and forth on the floor below. Checking the time, you realise the party is starting soon.
+	<<elseif $avery_mansion.schedule is "party">>
+		You hear the sound of people below. There's laughter and the clinking of glasses.
+	<<elseif $avery_mansion.schedule is "garden">>
+		You briefly catch a glimpse of Avery in the garden, though you can't see exactly what <<nnpc_hes "Avery">> doing.
+	<<elseif Time.hour lte 2>>
+		You watch the clock as you work, continuing through midnight and into the next day.
+	<<elseif $avery_mansion.schedule is "sleep">>
+		The mansion is nearly silent as you work, save for the ticking of a clock.
+	<<elseif Time.hour lte 5>>
+		As you work, the sky slowly brightens and the sun rises above the horizon.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		You hear some footsteps pass by the door, which soon fade. Avery must be heading down for breakfast.
+	<<elseif Time.hour is 7 and $avery_mansion.schedule is "work">>
+		You hear the faint sound of a car as Avery leaves for work. You're left alone to your task.
+	<<elseif $avery_mansion.schedule is "work">>
+		The day passes by as you work.
+	<<elseif $avery_mansion.schedule is "return">>
+		You hear the distant sound of a car driving up the boulevard.
+	<<elseif $avery_mansion.schedule is "dinner">>
+		You hear the faint sound of a car as Avery returns from work. <span class="blue"><<nnpc_Hes "Avery">> likely expecting dinner soon.</span>
+	<<else>>
+		The day passes by as you work.
 	<</if>>
 <<else>>
 	<<if Time.schoolDay>>
@@ -149,7 +187,19 @@ You sit down and get to work.
 <</if>>
 <br><br>
 <<if $mathsproject is "ongoing">>
-	<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+	<<if $location is "avery_mansion">>
+		<<avery_mansion>>
+		<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work">>
+			<<set $_avery_present to true>>
+		<</if>>
+		<<if ($avery_mansion.schedule is "study" and !$avery_mansion.study_unlocked) or ($avery_mansion.study_unlocked is 1 and Time.hour is 23 and $_avery_present) or ["return", "party", "party_prepare", "date"].includes($avery_mansion.schedule)>>
+			<<link [[Next|Mansion Study]]>><<handheldon>><</link>>
+		<<else>>
+			<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+		<</if>>
+	<<else>>
+		<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+	<</if>>
 	<br>
 <<else>>
 	You glance at the time. You suddenly realise that <span class="red">the maths competition has already ended.</span>
@@ -159,6 +209,8 @@ You sit down and get to work.
 
 	<<if $location is "home">>
 		<<link [[Next|Bedroom]]>><<handheldon>><</link>>
+	<<elseif $location is "avery_mansion">>
+		<<link [[Next|Mansion Study]]>><<handheldon>><</link>>
 	<<else>>
 		<<link [[Next|School Library]]>><<handheldon>><</link>>
 	<</if>>
@@ -172,6 +224,8 @@ You take the stimulant, sit down, and get to work.
 <<set _chair to Furniture.get('chair')>>
 <<if $location is "home" and _chair.type.includes("comfy")>>
 	Between the drugs and your <span class="green">comfortable</span> chair, it's easier than ever to concentrate on the project.
+<<elseif $location is "avery_mansion">>
+	Between the drugs and the <span class="green">comfortable</span> chair, it's easier than ever to concentrate on the project.
 <<else>>
 	Your focus is heightened, but the minor aches and pains from your <span class="red">uncomfortable</span> chair makes the stimulant marginally less effective.
 <</if>>
@@ -213,6 +267,41 @@ You take the stimulant, sit down, and get to work.
 		You're so focused on your work that the sun catches you by surprise when it dips below the horizon.
 	<<else>>
 		The orphanage is silent at this hour. You focus on your work.
+	<</if>>
+<<elseif $location is "avery_mansion">>
+	<<avery_mansion>>
+	<<if $avery_mansion.schedule is "away">>
+		The mansion is nearly silent with Avery gone, save for the ticking of a clock.
+	<<elseif $avery_mansion.schedule is "study" and $avery_mansion.study_unlocked>>
+		<<if C.npc.Avery.rage gte 60>>
+			Avery wanders around the room, but it doesn't break your concentration.
+		<<else>>
+			Avery sits at <<nnpc_his "Avery">> desk, but doesn't distract you.
+		<</if>>
+	<<elseif $avery_mansion.schedule is "party_prepare">>
+		You hear lots of movement back and forth on the floor below. Checking the time, you realise the party is starting soon.
+	<<elseif $avery_mansion.schedule is "party">>
+		You hear the sound of people below, but you manage to work through the noise.
+	<<elseif $avery_mansion.schedule is "garden">>
+		You briefly catch a glimpse of Avery in the garden, but your mind snaps back to the task at hand.
+	<<elseif Time.hour lte 2>>
+		Time speeds by, and you're late to notice that midnight has passed and the next day has begun.
+	<<elseif $avery_mansion.schedule is "sleep">>
+		The mansion is nearly silent as you work, save for the ticking of a clock.
+	<<elseif Time.hour lte 5>>
+		You're so focused on your work that the sun catches you by surprise when it rises above the horizon.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		Some footsteps outside the study briefly break your attention, but they soon fade.
+	<<elseif Time.hour is 7 and $avery_mansion.schedule is "work">>
+		You hear the faint sound of a car as Avery leaves for work. You're left alone to your task.
+	<<elseif $avery_mansion.schedule is "work">>
+		The day flies by as you work.
+	<<elseif $avery_mansion.schedule is "return">>
+		You hear the distant sound of a car driving up the boulevard.
+	<<elseif $avery_mansion.schedule is "dinner">>
+		You hear the faint sound of a car as Avery returns from work. <span class="blue"><<nnpc_Hes "Avery">> likely expecting dinner soon.</span>
+	<<else>>
+		The day flies by as you work.
 	<</if>>
 <<else>>
 	<<if Time.schoolDay>>
@@ -263,31 +352,44 @@ You take the stimulant, sit down, and get to work.
 <</if>>
 <br><br>
 <<if $mathsstimused is 2 or $mathsstimused gte 4 and $rng gte 76>>
-	You sit back and admire your work. You feel a strange heat just beneath your skin. It grows and spreads through your body, concentrated on your loins. Lewd fantasies force themselves into your mind. Within moments, your cheeks are flushed and you find yourself squirming with desire. That dose must have been contaminated by a concentrated aphrodisiac.
+	You sit back and admire your work. You feel a <span @class="basicJitterCss()">strange heat</span> just beneath your skin. It grows and spreads through your body, concentrated on your loins. Lewd fantasies force themselves into your mind. Within moments, your cheeks are flushed and you find yourself squirming with desire. That dose must have been contaminated by a concentrated aphrodisiac.
 	<<gggarousal>><<arousal 10000>><<drugs 500>>
 	<br><br>
 	Your hands wander between your legs in an instinctive attempt to satisfy your burning desire. But the stimulation from touching yourself is too strong to bear. The pleasure shoots through you, painfully intense. Your hands recoil, and your whole body convulses as your vision whites out. The aftershocks leave you trembling. There's no way you'll be able to use your hands to comfort yourself.
 	<br><br>
-	You consider leaving your room for some fresh air. But your mind is so overwhelmed by desire. You can only imagine what will happen when someone finds you in your defenceless state. And the alternative, staying here and trying to endure the arousal until it fades, feels like it might be even worse.
+	You consider leaving <<if $location is "home">>your<<else>>the<</if>> room for some fresh air. But your mind is so overwhelmed by desire. You can only imagine what will happen when someone finds you in your defenceless state. And the alternative, staying here and trying to endure the arousal until it fades, feels like it might be even worse.
 	<br><br>
 	<<if $location is "home">>
 		<<link [[Endure (4:00)|Maths Project Endure Home]]>><<handheldon>><<pass 240>><<stress 24>><</link>><<ggstress>>
 		<br>
 		<<link [[Go outside|Maths Project Outside Home]]>><<handheldon>><</link>>
 		<br>
+	<<elseif $location is "avery_mansion">>
+		<<avery_mansion>>
+		<<if $avery_mansion.schedule is "return">>
+			<<link [[Endure (4:00)|Mansion Study]]>><<handheldon>><<stress -1>><</link>><<ggstress>>
+			<br>
+			<<link [[Go outside|Mansion Study]]>><<handheldon>><<stress -1>><</link>>
+			<br>
+		<<else>>
+			<<link [[Endure (4:00)|Maths Project Endure Mansion]]>><<handheldon>><<pass 240>><<stress 24>><</link>><<ggstress>>
+			<br>
+			<<link [[Go outside|Maths Project Outside Mansion]]>><<handheldon>><</link>>
+			<br>
+		<</if>>
 	<<else>>
-		<<link [[Endure (4:00)|Maths Project Endure Library]]>><<handheldon>><<pass 240>><<stress 24>><</link>>
+		<<link [[Endure (4:00)|Maths Project Endure Library]]>><<handheldon>><<pass 240>><<stress 24>><</link>><<ggstress>>
 		<br>
 		<<link [[Go outside|Maths Project Outside Library]]>><<handheldon>><</link>>
 		<br>
 	<</if>>
 <<elseif $mathsstimused is 3 or $mathsstimused gte 4 and $rng gte 51>>
-	You sit back and admire your work, but something is wrong. The objects in <<if $location is "home">>your room<<else>>the library<</if>> begin to shift and warp, becoming covered in strange patterns. You lose your sense of balance and find yourself wobbling. You almost fall over. That dose must have been contaminated with a concentrated hallucinogen. The knowledge does nothing to make the experience less real.
+	You sit back and admire your work, but something is wrong. The objects in <<if $location is "home">>your room<<elseif $location is "avery_mansion">>the study<<else>>the library<</if>> begin to shift and warp, becoming covered in strange patterns. You lose your sense of balance and find yourself wobbling. You almost fall over. That dose must have been contaminated with a <span @class="basicDrunkCss()">concentrated hallucinogen</span>. The knowledge does nothing to make the experience less real.
 	<<hallucinogen 500>>
 	<br><br>
 	<<if $location is "home">>You try to lie down, but before you can make it to your bed<<else>>You decide to go for a walk to clear your head, but the moment you rise from your chair,<</if>> your surroundings become twisted and unfamiliar. Dark, threatening shapes shift around you as you stumble forward in search of something familiar to cling to. Grotesque creatures with giant eyes and countless thrashing tongues watch you from afar, gibbering in guttural sounds that echo across the landscape. The floor begins to liquefy, and you struggle to move through it as you sink to your ankles, then your knees, then your waist. Finally, it gives way all at once and you find yourself falling, tumbling end-over-end through a black void.
 	<br><br>
-	<<if $location is "home">>
+	<<if $location is "home" or $location is "avery_mansion">>
 		<<set $bus to "residential">>
 	<<else>>
 		<<set $bus to "industrial">>
@@ -297,7 +399,7 @@ You take the stimulant, sit down, and get to work.
 <<elseif $mathsstimrobin isnot 1 and Time.schoolDay and Time.dayState isnot "night" and $robinmissing is 0 and C.npc.Robin.init is 1 and $location is "home">>
 	<<set $mathsstimrobin to 1>>
 	<<npc Robin>><<person1>>
-	You sit back and admire your work. You feel a strange heat just beneath your skin. Your vision blurs, and everything fades to black.
+	You sit back and admire your work. You feel a <span @class="basicJitterCss()">strange</span> heat just beneath your skin. Your vision blurs, and everything fades to black.
 	<<ggarousal>><<arousal 1800>><<drugs 120>><<hallucinogen 120>>
 	<br><br>
 	You awaken to someone shaking your arm. You're still in your room, lying on your bed. Robin sits beside you, frowning.
@@ -305,7 +407,7 @@ You take the stimulant, sit down, and get to work.
 	"You were lying on the floor outside," <<he>> says. <<He>> sounds concerned. "Are you okay?"
 	<br><br>
 	<<if $robinromance is 1>>
-		That strange heat hasn't left your body. Robin is so close.
+		That <span @class="basicJitterCss()">strange heat</span> hasn't left your body. Robin is so close.
 		<br><br>
 		<<link [[Pull Robin on top of you|Maths Project Robin Sex]]>><<handheldon>><<set $sexstart to 1>><</link>><<promiscuous1>>
 		<br>
@@ -313,11 +415,23 @@ You take the stimulant, sit down, and get to work.
 	<<link [[Say you're fine|Maths Project Robin]]>><<handheldon>><</link>>
 	<br>
 <<else>>
-	You sit back and admire your work. You feel a strange heat just beneath your skin.
+	You sit back and admire your work. You feel a <span @class="basicJitterCss()">strange heat</span> just beneath your skin.
 	<<ggarousal>><<arousal 1800>><<drugs 120>><<hallucinogen 120>>
 	<br><br>
 	<<if $mathsproject is "ongoing">>
-		<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+		<<if $location is "avery_mansion">>
+			<<avery_mansion>>
+			<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work">>
+				<<set $_avery_present to true>>
+			<</if>>
+			<<if ($avery_mansion.schedule is "study" and !$avery_mansion.study_unlocked) or ($avery_mansion.study_unlocked is 1 and Time.hour is 23 and $_avery_present) or ["return", "party", "party_prepare", "date"].includes($avery_mansion.schedule)>>
+				<<link [[Next|Mansion Study]]>><<handheldon>><</link>>
+			<<else>>
+				<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+			<</if>>
+		<<else>>
+			<<link [[Next|Maths Project]]>><<handheldon>><</link>>
+		<</if>>
 		<br>
 	<<else>>
 		You glance at the time. You suddenly realise that <span class="red">the maths competition has already ended.</span>
@@ -327,6 +441,8 @@ You take the stimulant, sit down, and get to work.
 
 		<<if $location is "home">>
 			<<link [[Next|Bedroom]]>><<handheldon>><</link>>
+		<<elseif $location is "avery_mansion">>
+			<<link [[Next|Mansion Study]]>><<handheldon>><</link>>
 		<<else>>
 			<<link [[Next|School Library]]>><<handheldon>><</link>>
 		<</if>>
@@ -391,7 +507,7 @@ You tell Robin you're fine, and thank <<him>> for bringing you to your bed. <<He
 
 :: Maths Project Void
 
-<<effects>>
+<<effects>><<set $outside to 1>><<set $location to "alley">>
 <<generate1>><<person1>>
 The fall abruptly ends as you land against a cold brick wall. You recognise the sky and the surrounding buildings, though they still don't seem quite right. You've somehow ended up outside<<if $exposed gte 1>> - and without getting dressed first!<<else>>.<</if>>
 <br><br>
@@ -464,6 +580,23 @@ Your muscles ache from the tension by the time the aches fade. You realise that 
 <<link [[Next|Bedroom]]>><</link>>
 <br>
 
+:: Maths Project Endure Mansion
+<<effects>>
+
+<<if $phase is 1>>
+	You lean up against a wall
+<<else>>
+	You lean back in your chair
+<</if>>
+and hope you can endure the experience. Doing anything productive right now is out of the question. It's a struggle to even think straight, but you do your best to distract yourself by counting things. It's going well until you glance at the clock and realise only a couple of minutes have passed.
+<br><br>
+
+By the time the drug's effects begin to fade your muscles ache from the tension. You realise that your teeth have been clenched too. You're still aroused and frustrated. At least you can think straight again.
+<br><br>
+
+<<link [[Next|Mansion Study]]>><</link>>
+<br>
+
 :: Maths Project Endure Library
 <<effects>>
 
@@ -477,8 +610,7 @@ By the time the drug's effects begin to fade your muscles ache from the tension.
 <br>
 
 :: Maths Project Outside Home
-
-<<effects>><<set $bus to "residential">>
+<<effects>><<set $outside to 1>><<set $location to "alley">><<set $bus to "residential">>
 <<generate1>><<person1>>
 You stumble outside, leaning against a wall for support. <<if $exposed gte 1>>The air is cold against your skin. You were in such a hurry that you didn't even get dressed, but you're past the point of caring. If it means that someone notices you sooner, all the better.<<else>>The stimulation of your clothes brushing against your <<genitals_are 1>> almost too much to bear, forcing you to stop every few steps as you convulse with pleasure.<</if>> At first, no one else notices, until a <<person>> walking on the same side of the street spots you and casts a leer up and down your body. You try to speak to <<him>>.
 <br><br>
@@ -493,25 +625,35 @@ You stumble outside, leaning against a wall for support. <<if $exposed gte 1>>Th
 <<link [[Next|Maths Project Outside Rape]]>><<set $molestationstart to 1>><</link>>
 <br>
 
-:: Maths Project Outside Library
+:: Maths Project Outside Mansion
+<<effects>><<set $outside to 1>><<set $location to "alley">><<set $bus to "residential">>
+<<generate1>><<person1>>
+You stumble outside, through the front gates, and down the boulevard. <<if $exposed gte 1>>The air is cold against your skin. You were in such a hurry that you didn't even get dressed, but you're past the point of caring. If it means that someone notices you sooner, all the better.<<else>>The stimulation of your clothes brushing against your <<genitals_are 1>> almost too much to bear, forcing you to stop every few steps as you convulse with pleasure.<</if>> At first, no one else notices, until a <<person>> walking on the same side of the street spots you and casts a leer up and down your body. You try to speak to <<him>>.
+<br><br>
+"P-please..."
+<br><br>
+<<He>> doesn't wait for clarification. After glancing around to make sure no one is watching, <<he>> grabs your arm and pulls you down an alleyway. Your reflexive scream of protest comes out as a lewd moan.
+<br><br>
+<<His>> hand explores between your legs, and the pleasure overwhelms you once more. But this time the spasms don't stop the stimulation. You can only thrash helplessly as <<his>> fingers continue their work.
+<br><br>
+"You're a naughty one, aren't you?" <<he>> says. "Don't worry. I know just what you need."
+<br><br>
+<<link [[Next|Maths Project Outside Rape]]>><<set $molestationstart to 1>><</link>>
+<br>
 
-<<effects>><<set $bus to "industrial">>
+:: Maths Project Outside Library
+<<effects>><<set $outside to 1>><<set $location to "alley">><<set $bus to "industrial">>
 <<generate1>><<person1>>
 You stumble from the library, through the corridors, and outside. <<if Time.schoolDay and Time.hour gte 8 and Time.hour lte 17>>You leave through the front gate, leaning against a wall for support. <<else>>You haul yourself over the fence, then lean against the wall for support.<</if>> <<if $exposed gte 1>>The air is cold against your skin. Your <<lewdness>> is exposed, but you're past the point of caring. If it means that someone notices you sooner, all the better.<<else>>The stimulation of your clothes brushing against your <<genitals_are 1>> almost too much to bear, forcing you to stop every few steps as you convulse with pleasure.<</if>> At first, no one else notices, until a <<person>> walking on the same side of the street spots you and casts a leer up and down your body. You try to speak to <<him>>.
 <br><br>
-
 "P-please..."
 <br><br>
-
 <<He>> doesn't wait for clarification. After glancing around to make sure no one is watching, <<he>> grabs you and pulls you down an alleyway. Your reflexive scream of protest comes out as a lewd moan.
 <br><br>
-
 <<His>> hand explores between your legs, and the pleasure overwhelms you once more. But this time the spasms don't stop the stimulation. You can only thrash helplessly as <<his>> fingers continue their work.
 <br><br>
-
 "You're a naughty one, aren't you?" <<he>> says. "Don't worry. I know just what you need."
 <br><br>
-
 <<link [[Next|Maths Project Outside Rape]]>><<set $molestationstart to 1>><</link>>
 <br>
 

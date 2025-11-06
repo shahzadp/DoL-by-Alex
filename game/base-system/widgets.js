@@ -713,7 +713,7 @@ DefineMacro("exposure", exposure);
  * @returns {true | false} / If player's current state is inappropriate
  */
 function inappropriatePlayerState(check = ["all"]) {
-	if (["all", "clothes"].includes(check)) {
+	if (["all", "clothes"].includesAny(check)) {
 		if (V.exposed > 0 || V.exposedRaw > 0) return true;
 		if (!V.worn.lower.type.includes("covered")) {
 			if (["slut shirt", "prison shirt", "prison jumpsuit", "unbound straightjacket"].includes(V.worn.upper.name)) {
@@ -757,7 +757,7 @@ function inappropriatePlayerState(check = ["all"]) {
 		}
 		if (V.worn.face.type.includes("gag")) return true;
 	}
-	if (["all", "bodywriting"].includes(check)) {
+	if (["all", "bodywriting"].includesAny(check)) {
 		// May not catch every single instance of inappropriate writing, but it should catch most
 		T.lewd_bodywriting_visible = false;
 		bodywritingExposureCheck(true);
@@ -777,10 +777,10 @@ function inappropriatePlayerState(check = ["all"]) {
 		});
 		return T.lewd_bodywriting_visible;
 	}
-	if (["all", "fluids"].includes(check)) {
+	if (["all", "fluids"].includesAny(check)) {
 		if (V.liquidcount >= 1) return true;
 	}
-	if (["all", "drugs"].includes(check)) {
+	if (["all", "drugs"].includesAny(check)) {
 		if (V.drunk >= 240 || V.drugged >= 200) return true;
 	}
 	return false;
