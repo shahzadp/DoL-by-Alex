@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.6.7",
+	version: "0.5.6.8",
 	versionName: `"Love Bites" edition`,
 	sneaky: false,
 	socialMediaEnabled: true,
