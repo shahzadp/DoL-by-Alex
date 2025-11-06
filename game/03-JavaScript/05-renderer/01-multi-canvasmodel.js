@@ -229,3 +229,11 @@ Macro.add("refresh-multi-canvas", {
 		model.refresh();
 	},
 });
+
+Macro.add("clear-multi-canvas", {
+	handler() {
+		const key = this.args[0];
+		MultiCanvasModel.ensureStorage();
+		delete T.multiCombatModels[key];
+	},
+});
