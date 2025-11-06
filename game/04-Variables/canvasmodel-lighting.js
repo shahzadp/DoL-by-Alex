@@ -1,3 +1,8 @@
+const LightingCategory = {
+	sidebar: 0,
+	combat: 1,
+};
+
 Renderer.CanvasModels.lighting = {
 	name: "lighting",
 	width: 256,
@@ -9,28 +14,34 @@ Renderer.CanvasModels.lighting = {
 	},
 	defaultOptions() {
 		return {
+			category: LightingCategory.sidebar,
 			lights: {
 				yOffset: 59,
 				xOffset: -7,
+				enabled: V.options.characterLightEnabled,
 				spotlight: {
 					maxAlpha: 0.6,
 					radiusX: 50,
 					radiusY: 15,
+					intensity: V.options.lightSpotlight,
 				},
 				glow: {
 					maxAlpha: 0.6,
 					radiusX: 55,
 					radiusY: 100,
 					yOffset: -82,
+					intensity: V.options.lightGlow,
 				},
 				gradient: {
 					enabled: true,
 					height: 200,
 					maxAlpha: 0.6,
+					intensity: V.options.lightGradient,
 				},
 				flat: {
 					enabled: true,
 					maxAlpha: 0.6,
+					intensity: V.options.lightFlat,
 				},
 				colors: {
 					default: "#ffffff",
@@ -40,7 +51,25 @@ Renderer.CanvasModels.lighting = {
 			},
 		};
 	},
-	preprocess(options) {},
+	preprocess(options) {
+		if (options.category === LightingCategory.sidebar) {
+			options.lights.enabled = V.options.characterLightEnabled;
+			options.lights.spotlight.intensity = V.options.lightSpotlight;
+			options.lights.glow.intensity = V.options.lightGlow;
+			options.lights.gradient.intensity = V.options.lightGradient;
+			options.lights.flat.intensity = V.options.lightFlat;
+			return;
+		}
+
+		options.lights.enabled = V.options.combatLightEnabled;
+		options.lights.yOffset = V.options.combatLightOffsetY;
+		options.lights.spotlight.radiusX = V.options.combatLightSpotlightX;
+		options.lights.spotlight.radiusY = V.options.combatLightSpotlightY;
+		options.lights.spotlight.intensity = V.options.combatLightSpotlight;
+		options.lights.glow.intensity = V.options.combatLightGlow;
+		options.lights.gradient.intensity = V.options.combatLightGradient;
+		options.lights.flat.intensity = V.options.combatLightFlat;
+	},
 	layers: {
 		spotlight: {
 			srcfn(options) {
@@ -59,7 +88,7 @@ Renderer.CanvasModels.lighting = {
 					options.lights.spotlight.radiusX,
 					options.lights.spotlight.radiusY,
 					options.lights.spotlight.maxAlpha,
-					V.options.lightSpotlight
+					options.lights.spotlight.intensity
 				);
 
 				return spotlightCanvas.element;
@@ -69,7 +98,7 @@ Renderer.CanvasModels.lighting = {
 			},
 			blendMode: "screen",
 			showfn(options) {
-				return V.options.characterLightEnabled;
+				return options.lights.enabled;
 			},
 			z: ZIndices.spotlight,
 		},
@@ -90,7 +119,7 @@ Renderer.CanvasModels.lighting = {
 					options.lights.glow.radiusX,
 					options.lights.glow.radiusY,
 					options.lights.glow.maxAlpha,
-					V.options.lightGlow
+					options.lights.glow.intensity
 				);
 
 				return glowCanvas.element;
@@ -99,8 +128,8 @@ Renderer.CanvasModels.lighting = {
 				return lightBlendColor(options);
 			},
 			blendMode: "screen",
-			showfn() {
-				return V.options.characterLightEnabled;
+			showfn(options) {
+				return options.lights.enabled;
 			},
 			z: ZIndices.glowlight,
 		},
@@ -110,7 +139,12 @@ Renderer.CanvasModels.lighting = {
 				const linearGradientCanvas = new BaseCanvas(Renderer.CanvasModels.main.width, Renderer.CanvasModels.main.height, 1);
 
 				// Draw linear gradient
-				drawLinearGradient(linearGradientCanvas.ctx, options.lights.gradient.maxAlpha, V.options.lightGradient, options.lights.gradient.height);
+				drawLinearGradient(
+					linearGradientCanvas.ctx,
+					options.lights.gradient.maxAlpha,
+					options.lights.gradient.intensity,
+					options.lights.gradient.height
+				);
 
 				return linearGradientCanvas.element;
 			},
@@ -119,7 +153,7 @@ Renderer.CanvasModels.lighting = {
 			},
 			blendMode: "screen",
 			showfn(options) {
-				return V.options.characterLightEnabled && options.lights.gradient.enabled;
+				return options.lights.enabled && options.lights.gradient.enabled;
 			},
 			z: ZIndices.gradientlight,
 		},
@@ -131,7 +165,7 @@ Renderer.CanvasModels.lighting = {
 				const flatColor = "#ffffff";
 
 				// Draw flat color overlay
-				drawColorOverlay(flatColorCanvas.ctx, flatColor, options.lights.flat.maxAlpha, V.options.lightFlat);
+				drawColorOverlay(flatColorCanvas.ctx, flatColor, options.lights.flat.maxAlpha, options.lights.flat.intensity);
 
 				return flatColorCanvas.element;
 			},
@@ -140,7 +174,7 @@ Renderer.CanvasModels.lighting = {
 			},
 			blendMode: "screen",
 			showfn(options) {
-				return V.options.characterLightEnabled && options.lights.flat.enabled;
+				return options.lights.enabled && options.lights.flat.enabled;
 			},
 			z: ZIndices.flatlight,
 		},
@@ -197,3 +231,9 @@ function lightBlendColor(options) {
 	const factor = Math.abs((V.angel / 6 - V.demon / 6) * V.options.lightTFColor);
 	return ColourUtils.interpolateColor("#ffffff", baseColor, factor);
 }
+
+Macro.add("configureCombatLighting", {
+	handler() {
+		T.modeloptions.category = LightingCategory.combat;
+	},
+});

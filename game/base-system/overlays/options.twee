@@ -533,12 +533,6 @@ IMPORTANT:
 					</label>
 				</div>
 				<div class="settingsToggleItem">
-					<label data-target="images" data-disabledif="V.options.images===0||V.options.combatImages===0">
-						Combat Light<br>
-						<<numberslider "$options.lightCombat" $options.lightCombat 0 1 0.05>>
-					</label>
-				</div>
-				<div class="settingsToggleItem">
 					<label>
 						Colour Component<br>
 						<<numberslider "$options.lightTFColor" $options.lightTFColor 0 1 0.05>>
@@ -549,6 +543,69 @@ IMPORTANT:
 			<div style="margin-left: 10px" onchange="new Wikifier(null, '<<updatesidebarimg>>')">
 				<label data-target="options.images" data-disabledif="V.options.images===0">
 					<<checkbox "$options.characterLightEnabled" false true autocheck>> Enable character lighting
+				</label>
+			</div>
+		</div>
+		<hr>
+		<div>
+			<div class="settingsGrid" data-target='["images", "combatImages", "combatLightEnabled"]' data-disabledif="V.options.images===0||!V.options.combatImages||V.options.characterLightEnabled===false" oninput='Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting"));Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting-demo"));'>
+				<div class="settingsHeader options">Combat Lighting</div>
+				<div class="settingsToggleItemWide d-flex justify-content-center lighting-demo-container">
+					<<setupCombatLightingDemo>>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Y Offset<br>
+						<<numberslider "$options.combatLightOffsetY" $options.combatLightOffsetY 0 128 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight intensity<br>
+						<<numberslider "$options.combatLightSpotlight" $options.combatLightSpotlight 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight width<br>
+						<<numberslider "$options.combatLightSpotlightX" $options.combatLightSpotlightX 0 128 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Spotlight height<br>
+						<<numberslider "$options.combatLightSpotlightY" $options.combatLightSpotlightY 0 48 1>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Gradient<br>
+						<<numberslider "$options.combatLightGradient" $options.combatLightGradient 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Glow<br>
+						<<numberslider "$options.combatLightGlow" $options.combatLightGlow 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Flat<br>
+						<<numberslider "$options.combatLightFlat" $options.combatLightFlat 0 1 0.05>>
+					</label>
+				</div>
+				<div class="settingsToggleItem">
+					<label>
+						Colour Component<br>
+						<<numberslider "$options.combatLightTFColor" $options.combatLightTFColor 0 1 0.05>>
+						<span class="description">Requires Angel/Demon transformation</span>
+					</label>
+				</div>
+			</div>
+			<div style="margin-left: 10px" onchange="new Wikifier(null, '<<updateCombatLightingDemo .lighting-demo-container>>')">
+				<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
+					<<checkbox "$options.combatLightEnabled" false true autocheck>> Enable combat lighting
 				</label>
 			</div>
 		</div>
@@ -572,6 +629,25 @@ IMPORTANT:
 			<br><br>
 		</div>
 	</div>
+<</widget>>
+
+<<widget "setupCombatLightingDemo">>
+	<<run Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting-demo"))>>
+	<<selectmodel "lighting" "combat-lighting-demo">>
+	<<configureCombatLighting>>
+	<<if $passage isnot "Start">>
+		<<rendermodel "lighting position-absolute z-hidden">>
+		<<selectmodel "combatMainPc" "combatMainDemo">>
+		<<rendermodel "combatMainPc">>
+	<<else>>
+		<<rendermodel "lighting z-hidden">>
+	<</if>>
+<</widget>>
+
+<<widget "updateCombatLightingDemo">>
+	<<if elementExists(_args[0])>>
+		<<replace _args[0]>><<setupCombatLightingDemo>><</replace>>
+	<</if>>
 <</widget>>
 
 <<widget "optionsadvanced">>
@@ -610,18 +686,18 @@ IMPORTANT:
 	<div class="settingsGrid">
 		<div class="settingsHeader options">Game Zoom</div>
 		<div class="settingsToggleItemWide">
-				<span class="gold">Zoom Size:</span>
-				<span class="tooltip-anchor linkBlue" tooltip-width="460" tooltip="Will allow you to adjust the size of game elements and text.<br><br><span class='red'>
-							Please be careful with this setting! Only save if you are happy with the changes made, as reloading the game will reset it to the last value used in that save.
-							Depending on the device and browser, the setting may break entirely and may cause unexpected effects.
-						</span>">(?)</span>
-				<br>
-				<span class="description red">Not supported in all browsers</span>
-				<br>
-				<<numberslider "$options.zoom" $options.zoom 50 200 1>>
-				<br><br>
-				<input type="button" value="Set" onclick='zoom()'/>
-				<input type="button" value="Reset" onclick='zoom(100)'/>
+			<span class="gold">Zoom Size:</span>
+			<span class="tooltip-anchor linkBlue" tooltip-width="460" tooltip="Will allow you to adjust the size of game elements and text.<br><br><span class='red'>
+						Please be careful with this setting! Only save if you are happy with the changes made, as reloading the game will reset it to the last value used in that save.
+						Depending on the device and browser, the setting may break entirely and may cause unexpected effects.
+					</span>">(?)</span>
+			<br>
+			<span class="description red">Not supported in all browsers</span>
+			<br>
+			<<numberslider "$options.zoom" $options.zoom 50 200 1>>
+			<br><br>
+			<input type="button" value="Set" onclick='zoom()'/>
+			<input type="button" value="Reset" onclick='zoom(100)'/>
 		</div>
 	</div>
 <</widget>>

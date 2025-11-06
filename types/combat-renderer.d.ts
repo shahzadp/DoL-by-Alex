@@ -187,9 +187,10 @@ declare global {
 		layers: {
 			[x: string]: CanvasModelLayers<T>;
 		};
-		generatedOptions(): string[];
-		defaultOptions(): T;
-		preprocess(options: T): void;
+		generatedOptions?(): string[];
+		defaultOptions?(): T;
+		preprocess?(options: T): void;
+		postprocess?(options: T): void;
 	}
 
 	interface CanvasModel<T extends Options> {

@@ -53,7 +53,8 @@ declare global {
 		| "hawk"
 		| "harpy"
 		| "cow"
-		| "spider";
+		| "spider"
+		| "snake";
 
 	export type PlantTypes = "plant";
 

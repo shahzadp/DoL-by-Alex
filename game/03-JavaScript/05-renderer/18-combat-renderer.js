@@ -1,5 +1,5 @@
 // @ts-check
-/* globals FilterMap, CompositeLayerSpec, Condom, CondomOptions, Partial, ClothedSlots, ClothingState, PositionStates, TransformationKeys, TransformationParts, Transformations, CombatClothingTypes, CombatPlayerOptions, CharacterTypes, SexToySlots */
+/* globals FilterMap, CompositeLayerSpec, Condom, CondomOptions CombatPositions, Partial, ClothedSlots, ClothingState, PositionStates, TransformationKeys, TransformationParts, Transformations, CombatClothingTypes, CombatPlayerOptions, CharacterTypes, SexToySlots */
 
 /**
  * @typedef CombatZIndices
@@ -309,8 +309,6 @@ class CombatRenderer {
 				Errors.report("Position was set to stalk, and the combat renderer doesn't support it yet.");
 				return "missionary";
 			default:
-				/* fights start in position 0 */
-				console.error("Position not set to any valid values", V.position);
 				return "missionary";
 		}
 	}
@@ -766,20 +764,17 @@ class CombatRenderer {
 	}
 
 	static getFringeType() {
-		if (V.fringetype === "wide flaps") {
-			return "wide-flaps";
-		}
-		if (V.fringetype === "hime") {
-			return "hime";
-		}
-		if (V.fringetype === "curtain") {
-			return "curtain";
-		}
-		if (V.fringetype === "mohawk") {
-			return "mohawk";
-		}
-		if (V.fringetype === "buzzcut") {
-			return "buzzcut";
+		switch (V.fringetype) {
+			case "wide flaps":
+				return "wide-flaps";
+			case "hime":
+				return "hime";
+			case "curtain":
+				return "curtain";
+			case "mohawk":
+				return "mohawk";
+			case "buzzcut":
+				return "buzzcut";
 		}
 		if (V.hairtype === "layered bob") {
 			return "layered-bob";
