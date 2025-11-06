@@ -930,10 +930,18 @@ You swim lengths up and down the pool, giving your muscles a workout. <<physique
 	<<npc "Avery">><<person1>>
 	You hear the mansion door open. Avery strides out, wearing nothing except a pair of goggles. <<He>> lowers them over <<his>> eyes, then dives in.
 	<br><br>
-	<<link [[Swim (0:30)|Mansion Pool Swim Avery]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<<if $tiredness gte 1700>>
+		<span class="blue">You're too exhausted to keep swimming.</span>
+	<<else>>
+		<<link [[Swim (0:30)|Mansion Pool Swim Avery]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<</if>>
 	<br>
 <<else>>
-	<<link [[Swim (0:30)|Mansion Pool Swim]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<<if $tiredness gte 1700>>
+		<span class="blue">You're too exhausted to keep swimming.</span>
+	<<else>>
+		<<link [[Swim (0:30)|Mansion Pool Swim]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<</if>>
 	<br>
 <</if>>
 <<link [[Climb out (0:01)|Mansion Pool Climb]]>><<pass 1>><</link>>
@@ -951,10 +959,18 @@ Avery does likewise, more interested in meeting some personal target than in you
 	Without warning, Avery hauls <<himself>> onto the pools edge, and walks away to dry <<himself>>.
 	<<endevent>>
 	<br><br>
-	<<link [[Swim (0:30)|Mansion Pool Swim]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<<if $tiredness gte 1700>>
+		<span class="blue">You're too exhausted to keep swimming.</span>
+	<<else>>
+		<<link [[Swim (0:30)|Mansion Pool Swim]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<</if>>
 	<br>
 <<else>>
-	<<link [[Swim (0:30)|Mansion Pool Swim Avery]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<<if $tiredness gte 1700>>
+		<span class="blue">You're too exhausted to keep swimming.</span>
+	<<else>>
+		<<link [[Swim (0:30)|Mansion Pool Swim Avery]]>><<pass 30>><<tiredness 6>><</link>><<gtiredness>><<gswimming>>
+	<</if>>
 	<br>
 <</if>>
 <<link [[Climb out (0:01)|Mansion Pool Climb]]>><<pass 1>><</link>>
@@ -1274,6 +1290,64 @@ Avery leads you upstairs, to the bedroom. <<He>> shoves you onto the bed while l
 	<br>
 <</if>>
 
+:: Mansion Return Stim Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if _combatend>>
+	<span id="next"><<link [[Next|Mansion Return Stim Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Mansion Return Stim Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Mansion Return Stim Sex Finish
+<<set $outside to 0>><<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	You hold <<him>> tightly as you come down from your stimulant-induced passion. Avery pants, sweat forming on <<his>> brow. "You-" <<He>> exhales. "You were like an animal just now," <<he>> says. <<His>> expression tells you <<he>> didn't mind, though. <<npcincr Avery rage -2>><<larage>>
+	<br><br>
+	<<He>> stands back up<<if C.npc.Avery.rage lte 60>>, offering you a hand<</if>>. <<tearful>> you climb to your feet, now able to think straight again.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Mansion Study]]>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	You shove Avery to the side and stand back up. <<He>> holds <<his>> head in pain and glares at you. "I indulge you, and this is the fucking thanks I get?" <<He>> pushes <<himself>> up and stomps out of the room, swearing to <<himself>> about never doing this again. <<npcincr Avery rage 4>><<ggarage>>
+	<br><br>
+	<<tearful>> you realise your loins are still burning with heat. You consider what to do.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Endure (4:00)|Maths Project Endure Mansion]]>><<set $phase to 1>><<pass 240>><<stress 24>><</link>><<ggstress>>
+	<br>
+	<<link [[Go outside|Maths Project Outside Mansion]]>><</link>>
+	<br>
+<<else>>
+	"What? But you..." Avery frowns. "Whatever, go deal with it yourself then." <<He>> straightens <<his>> clothes and walks away.
+	<br><br>
+	<<tearful>> you realise your loins are still burning with heat. You consider what to do.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Endure (4:00)|Maths Project Endure Mansion]]>><<set $phase to 1>><<pass 240>><<stress 24>><</link>><<ggstress>>
+	<br>
+	<<link [[Go outside|Maths Project Outside Mansion]]>><</link>>
+	<br>
+<</if>>
+
 :: Mansion Landry Interrupt
 <<effects>>
 
@@ -1379,9 +1453,18 @@ A <<personsimple>>'s voice makes you jump. You look towards the direction it cam
 
 :: Mansion Brown Fox Interrupt 2
 <<effects>>
+<<silently>><<overworld_nickname "cap">><<set _oNickname to _text_output>><<underworld_nickname "cap">><<set _uNickname to _text_output>><</silently>>
 <<if $phase is 1>>
 	"<span class="green">I'm the brown fox.</span> Because I jump over the lazy hounds. I already know you, though.
-	<span class="teal"><<overworld_nickname "cap">></span> to the layperson, or <span class="pink"><<underworld_nickname "cap">></span> to those underneath. It's hard not to know about someone so interesting."
+	<<if (_oNickname is "Some orphan boy" or _oNickname is "Some orphan girl") and _uNickname is "Meat">>
+		However I will say it wasn't easy with how well you cover your tracks. I suppose we're very alike in that sense."
+	<<elseif (_oNickname is "Some orphan boy" or _oNickname is "Some orphan girl")>>
+		Completely invisible to the layperson, yet a reputation as <span class="pink"><<underworld_nickname "cap">></span> to those underneath. I'm curious what you did to get that kind of attention."
+	<<elseif _uNickname is "Meat">>
+		<span class="teal"><<overworld_nickname "cap">></span> to the layperson, and yet a suspiciously spotless reputation to those underneath. I can't imagine what skeletons you've got in your closet."
+	<<else>>
+		<span class="teal"><<overworld_nickname "cap">></span> to the layperson, or <span class="pink"><<underworld_nickname "cap">></span> to those underneath. It's hard not to know about someone so interesting."
+	<</if>>
 	<<He>> clicks <<his>> tongue. "Look at you, making me answer questions for free."
 <<elseif $phase is 2>>
 	<<His>> head tilts to the side. "Avery's heart is rotten to the core, but no one deserves to die in a cage. <<nnpc_He "Avery">> means to build one for <<nnpc_himself "Avery">>, and call it paradise."

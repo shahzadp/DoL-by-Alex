@@ -6589,10 +6589,11 @@
 		<<run ["compoundalarm", "compoundbluff", "compoundcard", "compoundcentre", "compoundsmoke", "compoundpipes", "compoundbeg", "compoundflirt", "compoundhonest", "compoundlie", "compoundmock", "compoundWraith", "wraithCompoundSeen", "compound_breakout"].forEach(v => delete V[v]);>>
 	<</if>>
 
+	<!-- 0.5.6.1 Tracking TF history -->
 	<<if !$transformationHistory>>
 		<<set $transformationHistory to []>>
 		<<if $angel gte 6>><<set $transformationHistory.pushUnique("angel")>><</if>>
-		<<if $fallenangel gte 6>><<set $transformationHistory.pushUnique("fallenangel")>><</if>>
+		<<if $fallenangel gte 2>><<set $transformationHistory.pushUnique("fallenangel")>><</if>>
 		<<if $demon gte 6>><<set $transformationHistory.pushUnique("demon")>><</if>>
 		<<if $wolfgirl gte 6>><<set $transformationHistory.pushUnique("wolfgirl")>><</if>>
 		<<if $cat gte 6>><<set $transformationHistory.pushUnique("cat")>><</if>>
@@ -6604,6 +6605,14 @@
 	<!-- 0.5.6.5: Hopeless Cycle persistent memory -->
 	<<if $hcEndings and localStorage.getItem("hopelessCycle") is null>>
 		<<run localStorage.setItem("hopelessCycle", $hcEndings)>>
+	<</if>>
+
+	<!-- 0.5.6.8: Fix bad end typos -->
+	<<if !$objectVersion.badEnd or $objectVersion.badEnd lt 1>>
+		<<set $objectVersion.badEnd to 1>>
+		<<for _i to 0; _i lt $badEndStats.length; _i++>>
+			<<set $badEndStats[_i].reasonEnd to $badEndStats[_i].reasonEnd.replace("Escapted", "Escaped")>>
+		<</for>>
 	<</if>>
 
 	<<set $options.combatLightEnabled ??= true>>

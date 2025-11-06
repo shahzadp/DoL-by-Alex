@@ -388,7 +388,7 @@ function gwylanSchedule() {
 		!V.daily.gwylan.cafeSkip &&
 		((Time.hour === 7 && (Time.minute >= 20 || V.daily.gwylan.cafe)) || Time.hour === 8 || (Time.hour === 9 && Time.minute <= 20))
 	) {
-		if (between(V.chef_state, 7, 8)) {
+		if (between(V.chef_state, 7, 8) && V.chef_rework <= 30) {
 			return "cliff";
 		} else {
 			return "cafe";

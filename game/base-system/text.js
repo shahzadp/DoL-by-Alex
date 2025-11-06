@@ -218,6 +218,43 @@ statDisplay.create("ggglove", (npc, simple) => {
 	return statDisplay.statChange(selectedNPC && !simple && (npc || V.npc.length >= 2) ? `${selectedNPC}'s ${loveAlias}` : loveAlias, 3, "green");
 });
 
+statDisplay.create("lperlove", (npc, simple) => {
+	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, -1, "red");
+});
+statDisplay.create("llperlove", (npc, simple) => {
+	const selectedNPC = npc || V.NPCList[V.index].per;
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, -2, "red");
+});
+statDisplay.create("lllperlove", (npc, simple) => {
+	const selectedNPC = npc || V.NPCList[V.index].per;
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, -3, "red");
+});
+statDisplay.create("gperlove", (npc, simple) => {
+	const selectedNPC = npc || V.NPCList[V.index].per;
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 1, "green");
+});
+statDisplay.create("ggperlove", (npc, simple) => {
+	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 2, "green");
+});
+statDisplay.create("gggperlove", (npc, simple) => {
+	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
+	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
+	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 3, "green");
+});
+
 statDisplay.create("llust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -1, "teal"));
 statDisplay.create("lllust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -2, "teal"));
 statDisplay.create("llllust", npc => statDisplay.statChange(npc ? `${npc}'s Lust` : "Lust", -3, "teal"));

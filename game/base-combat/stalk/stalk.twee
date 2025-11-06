@@ -1430,9 +1430,32 @@
 		<br><br>
 		<div class="div_stalk">
 			/* Tiles */
-			<<for _i to 0; _i lt 8; _i++>>
-				<img @class="'stalk_' + _i" src="img/misc/stalk/base.png">
-			<</for>>
+			<<switch $location>>
+				<<case "park" "forest" "lake" "farm" "meadow" "moor" "bog">>
+					<<for _i to 0; _i lt 8; _i++>>
+						<<if $outside is 1>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_grass.png">
+						<<else>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_floor.png">
+						<</if>>
+					<</for>>
+				<<case "beach" "island" "prison">>
+					<<for _i to 0; _i lt 8; _i++>>
+						<<if $outside is 1>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_sand.png">
+						<<else>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_floor.png">
+						<</if>>
+					<</for>>
+				<<default>>
+					<<for _i to 0; _i lt 8; _i++>>
+						<<if $outside is 1>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_street.png">
+						<<else>>
+							<img @class="'stalk_' + _i" src="img/misc/stalk/base_floor.png">
+						<</if>>
+					<</for>>
+			<</switch>>
 			/* NPC */
 			<<if $NPCList[0].fullDescription is "Ivory Wraith" and $stalk_assess>>
 				<<set $_stalker to "_wraith">>
@@ -1452,7 +1475,7 @@
 			<<if _clothesJustStolen>>
 				<<set $_pcAction to "_theft">>
 			<<elseif $feetuse is "run">>
-				<<if $exposed gte 1>>
+				<<if ($exposed is 1 and $uncomfortable.underwear) or ($exposed gte 2 and $uncomfortable.nude)>>
 					<<set $_pcAction to "_run_exposed">>
 				<<else>>
 					<<set $_pcAction to "_run">>
