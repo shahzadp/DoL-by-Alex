@@ -1977,16 +1977,17 @@ You slap the grin off the <<person2>><<persons>> face, and shove by. "I'm tellin
 
 :: Hallways Pick Locker Attempt
 <<effects>>
-<<set _unlockChance to random($lock, 500)>>
-<<if currentSkillValue('skulduggery') gte _unlockChance>>
+<<if $skulduggerysuccess>>
 	You successfully pick the lock <<if !$worn.under_lower.type.includes("naked") or !$worn.lower.type.includes("naked")>>and fix your clothing<</if>>.
 	<<stress -5>><<lstress>>
 	<br><br>
+	<<skulduggeryuse $skulduggerydifficulty "locks" 5>>
 	<<lockereventnext>>
 	<br>
 <<else>>
 	You nervously try to open the locker but it remains closed tight.<<stress 2>><<gstress>>
 	<br><br>
+	<<set $lockattempt++>>
 	<<set $lock to $lock + 50>>
 	<<lockereventpassages>>
 <</if>>
@@ -2233,23 +2234,35 @@ The <<person1>><<person>> looks at you with concern, <<his>> anger begins to tur
 :: Hallways Locker Victim
 <<effects>>
 <<if $phase is 0>> /* Help */
-	<<generateyv1>><<person1>>
-	It takes you some time to pick the lock, but you eventually manage.
-	<br><br>
+	You step towards the locker and start inspecting the lock. 
+	<<if $skulduggerysuccess>>
+		<<generateyv1>><<person1>>
+		After a bit of probing, it proves to be no match for you and <span class="green">the lock clicks open.</span>
+		<br><br>
 
-	<<skulduggeryuse 100 "locks" 5>>
+		<<skulduggeryuse 100 "locks" 5>>
 
-	When the door finally opens, a grateful <<person>> emerges. "Thank you so much.
-	<<print either(
-		"It was so dark in there!",
-		"It was so cramped in there!",
-		"I'm bursting for a wee!",
-		"That was kind of scary!",
-		"Bullies are the worst.")>>"
-	The <<person>> gives you a broad smile and dashes away. <<lstress>><<stress -2>>
-	<br><br>
-	<<link [[Next|Hallways]]>><<famegood 3>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
+		When the door finally opens, a grateful <<person>> emerges. "Thank you so much.
+		<<print either(
+			"It was so dark in there!",
+			"It was so cramped in there!",
+			"I'm bursting for a wee!",
+			"That was kind of scary!",
+			"Bullies are the worst.")>>"
+		The <<person>> gives you a broad smile and dashes away. <<lstress>><<stress -2>>
+		<br><br>
+		<<link [[Next|Hallways]]>><<famegood 3>><<endevent>><<set $eventskip to 1>><</link>>
+		<br>
+	<<else>>
+		<<pass 8>>
+		After several minutes of fiddling with the it to no avail, you decide to give up. <span class="red">You cannot unlock it.</span>
+		<br><br>
+		<<skulduggeryuse 100 "locks" 5>>
+
+		<<link [[Find a teacher to help them (0:03)|Hallways Locker Victim]]>><<pass 3>><<set $phase to 1>><</link>>
+		<br>
+		<<link [[Ignore them|Hallways Locker Victim]]>><<set $phase to 3>><</link>>
+	<</if>>
 <<elseif $phase is 1>> /* Teacher */
 	You go to the staff room and get the attention of a teacher.
 	<<if $delinquency gte 400>>
