@@ -2721,7 +2721,8 @@ Renderer.CanvasModels.main = {
 		}),
 		"lower_fitted_left": genlayer_clothing_fitted_left_acc("lower", {
 			zfn(options) {
-				return options.zupper;
+				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_left_move_src;
@@ -2732,7 +2733,8 @@ Renderer.CanvasModels.main = {
 		}),
 		"lower_fitted_right": genlayer_clothing_fitted_right_acc("lower", {
 			zfn(options) {
-				return options.zupper;
+				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_right_move_src;
@@ -2743,7 +2745,8 @@ Renderer.CanvasModels.main = {
 		}),
 		"lower_fitted_acc_left": genlayer_clothing_fitted_left("lower", {
 			zfn(options) {
-				return options.zupper;
+				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_left_move_src;
@@ -2754,7 +2757,8 @@ Renderer.CanvasModels.main = {
 		}),
 		"lower_fitted_acc_right": genlayer_clothing_fitted_right("lower", {
 			zfn(options) {
-				return options.zupper;
+				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_right_move_src;

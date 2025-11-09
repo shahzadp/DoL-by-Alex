@@ -1,3 +1,5 @@
+/* global isPossibleLoveInterest */
+
 /* Read this if you plan on modifying setup.sextoys
  * wearable should be set to 1 if item can be worn. Otherwise, set it to 1 (You can't wear a dildo, but you can wear a strapon.)
  * category is used to know which item cannot be worn together. If two items have same category, wearing one will unwear the other.
@@ -744,11 +746,15 @@ function determineRecipient(index) {
 	// Add 15$ for gifting paperwrap
 	if (V.money < item.cost + 15 * 100) return "";
 
-	for (const li of ["Alex", "Eden", "Kylar", "Robin", "Sydney", "Gwylan"]) {
-		if (isLoveInterest(li)) {
+	for (const li of ["Alex", "Eden", "Kylar", "Robin", "Sydney"]) {
+		if (isPossibleLoveInterest(li)) {
 			optionBuilder += `<option value="${li}">${li}</option>`;
 		}
 	}
+	if (V.gwylanSeen?.includes("yearning")) {
+		optionBuilder += `<option value="${"Gwylan"}">${"Gwylan"}</option>`;
+	}
+
 	// if no possible recipient, return.
 	if (optionBuilder === "") return "";
 	const builder = `<br id="giftBr"><a id="ssmGiftButton" onclick="window.sexShopOnGiftClick(${item.index})" class="ssm_gift_button">
