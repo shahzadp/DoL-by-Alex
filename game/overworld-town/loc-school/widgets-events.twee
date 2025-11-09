@@ -1017,7 +1017,8 @@
 				You think you'd be able to pick the lock, <span class="blue">if your arms weren't bound.</span>
 				<br>
 			<<else>>
-				<<link [[Pick the lock and help them out (0:10)|Hallways Locker Victim]]>><<pass 10>><<set $phase to 0>><</link>>
+				<<set $skulduggerydifficulty to 100>>
+				<<link [[Attempt to pick the lock and help them out (0:02)|Hallways Locker Victim]]>><<pass 2>><<set $phase to 0>><<skulduggerycheck "silent">><</link>><<skulduggerydifficulty>>
 			<</if>>
 			<br>
 			<<link [[Find a teacher to help them (0:03)|Hallways Locker Victim]]>><<pass 3>><<set $phase to 1>><</link>>
@@ -1131,13 +1132,19 @@
 	"Oops," <<he>> says, a sly grin on <<his>> face. <<He>> walks off as you try to open the door. <span class="purple">It's locked.</span>
 	<br><br>
 	<<set $lock to 100>>
+	<<set $lockattempt to 0>>
 	<<lockereventpassages>>
 <</widget>>
 
 <<widget "lockereventpassages">>
 	<<if currentSkillValue('skulduggery') gte $lock>>
-		<<link [[Try to pick the lock (0:05)|Hallways Pick Locker Attempt]]>><<pass 5>><<stress 5>><</link>><<gstress>>
+		<<set $skulduggerydifficulty to random($lock, 500)>>
+		<<link [[Try to pick the lock (0:02)|Hallways Pick Locker Attempt]]>><<pass 2>><<skulduggerycheck "silent">><<stress 5>><</link>><<skulduggerydifficulty>><<gstress>>
 		<br>
+	<<elseif $lockattempt gt 0 and currentSkillValue('skulduggery') lt $lock>>
+		<span class="red">Try as you might, this lock is beyond your ability to pick.</span>
+		<br><br>
+		<<skulduggeryuse $skulduggerydifficulty "locks" 5>>
 	<<else>>
 		<span class="red">The lock looks beyond your ability to pick.</span><<skulduggeryrequired>>
 		<br><br>
