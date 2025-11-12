@@ -4825,6 +4825,7 @@ function initUpper() {
 			variable: "waitress",
 			combat: {
 				reference: "tshirt",
+				hasBreastsAcc: false,
 			},
 			integrity: 100,
 			integrity_max: 100,
