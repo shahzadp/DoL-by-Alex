@@ -468,6 +468,7 @@ function gwylanRequestClothes(override) {
 			break;
 		case "waitress uniform":
 			grcCreate("waitress uniform", "upper");
+			V.gwylan.request.details.outfit = true;
 			V.gwylan.request.special = "waitress";
 			break;
 		case "nurse dress":
@@ -500,6 +501,7 @@ function gwylanRequestClothes(override) {
 		case "gothic crown":
 			grcCreate("gothic gown", "upper");
 			if (extraItems) grcCreate("gothic crown", "head");
+			V.gwylan.request.details.outfit = true;
 			V.gwylan.request.special = "gothic";
 			break;
 		case "karate jacket":
@@ -810,6 +812,7 @@ function gwylanRequestClothingSlotCheck(slot) {
 		thing =>
 			thing.category === "clothing" &&
 			V.worn[slot].name === thing.name &&
+			(thing.slot !== "upper" || (V.worn[slot].one_piece === 1 && gwylanRequestClothingSlotCheck("lower")) || V.worn[slot].one_piece === 0) &&
 			(thing.colour_requirement === "any" || V.worn[slot].colour === thing.colour_requirement) &&
 			(thing.acc_colour_requirement === "any" || V.worn[slot].accessory_colour === thing.acc_colour_requirement) &&
 			(thing.pattern_requirement === "any" || V.worn[slot].pattern === thing.pattern_requirement) &&
