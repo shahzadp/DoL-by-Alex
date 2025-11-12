@@ -396,7 +396,7 @@ const Furniture = (() => {
 			cost: 790,
 			description: "A banner with a tentacle.",
 			handheld: "catalogue",
-			iconFile: "bannerLewd",
+			iconFile: "bannerlewd",
 		});
 		mapper.set("bannerfestive", {
 			name: "festive banner",

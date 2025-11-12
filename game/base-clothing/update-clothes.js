@@ -477,6 +477,7 @@ function updateClothesItem(slot, item, debug) {
 		case "zipped leather crop top":
 		case "zipped leather top":
 			item.type.pushUnique("waterproof");
+			break;
 	}
 
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
