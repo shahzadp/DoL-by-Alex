@@ -3642,21 +3642,22 @@
 		<<if $mouthaction is "apologise">>
 			<<personselect $mouthtarget>>
 			<<set $mouthaction to 0>><<set _sound to 1>>
+			<<set _unforgiver to $NPCList.find(npc => npc.traits.includes("unforgiving"))>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "apologise">>
 			<<elseif $enemytype is "beast">>
 				You tell <<him>> you're sorry for being bad.
 				<<set $mouthactiondefault to "plead">>
-				<<if $NPCList[$mouthtarget].traits.includes("unforgiving")>>
+				<<if $NPCList[$mouthtarget] is _unforgiver>>
 					<<bHe>> ignores you.
 					<<set $apologised to 1>><<set $speechapologiseunforgiving to 1>>
 					<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -2, $enemyangermax / 2)>>
-				<<elseif !!$NPCList.find(key => key.traits.includes("unforgiving"))>>
+				<<elseif !!_unforgiver>>
 					<<bHe>> looks towards
-					<<= /^[A-Z]/.test($NPCList.find(key => key.traits.includes("unforgiving")).fullDescription) ? "" : "the ">>
-					<<= $NPCList.find(key => key.traits.includes("unforgiving")).fullDescription>>,
-					<<if $NPCList.find(key => key.traits.includes("unforgiving")).monster is 0>>
-						who <<beast_growls_text $NPCList.find(key => key.traits.includes("unforgiving")).type>> dismissively.
+					<<= /^[A-Z]/.test(_unforgiver.fullDescription) ? "" : "the ">>
+					<<= _unforgiver.fullDescription>>,
+					<<if _unforgiver.monster is 0>>
+						who <<beast_growls_text _unforgiver.type>> dismissively.
 					<<else>>
 						who simply scoffs.
 					<</if>>
@@ -3699,16 +3700,16 @@
 				<<else>>
 					You tell <<him>> you're sorry for being bad.
 					<<set $mouthactiondefault to "plead">>
-					<<if $NPCList[$mouthtarget].traits.includes("unforgiving")>>
+					<<if $NPCList[$mouthtarget] is _unforgiver>>
 						<span class="red"><<He>> scoffs.</span>
 						<<set $apologised to 1>><<set $speechapologiseunforgiving to 1>>
 						<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -2, $enemyangermax / 2)>>
-					<<elseif !!$NPCList.find(key => key.traits.includes("unforgiving"))>>
+					<<elseif !!_unforgiver>>
 						<<He>> looks over at
-						<<= /^[A-Z]/.test($NPCList.find(key => key.traits.includes("unforgiving")).fullDescription) ? "" : "the ">>
-						<<= $NPCList.find(key => key.traits.includes("unforgiving")).fullDescription>>,
-						<<if $NPCList.find(key => key.traits.includes("unforgiving")).monster is 0>>
-							who <<beast_growls_text $NPCList.find(key => key.traits.includes("unforgiving")).type>> dismissively.
+						<<= /^[A-Z]/.test(_unforgiver.fullDescription) ? "" : "the ">>
+						<<= _unforgiver.fullDescription>>,
+						<<if _unforgiver.monster is 0>>
+							who <<beast_growls_text _unforgiver.type>> dismissively.
 						<<else>>
 							who simply scoffs and says "Don't listen to <<phim>>."
 						<</if>>

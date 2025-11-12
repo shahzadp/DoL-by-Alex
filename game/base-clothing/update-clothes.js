@@ -231,6 +231,12 @@ const remapColours = {
 	"light-pink": "light pink",
 	"blue-steel": "blue steel",
 };
+// .variable must be the same across all outfit pieces, correct wrongly assigned props here
+const remapVariables = {
+	"vintageskirt": "vintageskirtsuit",
+	"vintagepants": "vintagepantsuit",
+	"chain tunic skirt": "chain tunic",
+}
 
 /**
  * Updates a single clothes object
@@ -242,6 +248,7 @@ const remapColours = {
 function updateClothesItem(slot, item, debug) {
 	if (!item) return; // might be old save that didn't have a new slot
 	if (item.temp) return; // temp items are not meant to be proper clothes
+	if (Object.keys(remapVariables).includes(item.variable)) item.variable = remapVariables[item.variable];
 	const itemOld = clone(item);
 	// transfer new properties from itemRef to the item
 	const itemRef = setup.clothes[slot][clothesIndex(slot, item)];
@@ -711,5 +718,16 @@ function wardrobesUpdate() {
 	if (!V.wardrobes.prison.locationRequirement?.length) {
 		V.wardrobes.prison.locationRequirement = ["prison"];
 	}
+
+	if (!V.wardrobes.avery_mansion) {
+		V.wardrobes.avery_mansion = clone(defWardrobe);
+		V.wardrobes.avery_mansion.name = "Mansion Wardrobe";
+		V.wardrobes.avery_mansion.transfer = true;
+		V.wardrobes.avery_mansion.isolated = true;
+		V.wardrobes.avery_mansion.shopSend = true;
+		V.wardrobes.avery_mansion.space = 80;
+		V.wardrobes.avery_mansion.locationRequirement.push("avery_mansion");
+	}
+	if (V.avery_mansion) V.wardrobes.avery_mansion.unlocked = true;
 }
 DefineMacro("wardrobesUpdate", wardrobesUpdate);
