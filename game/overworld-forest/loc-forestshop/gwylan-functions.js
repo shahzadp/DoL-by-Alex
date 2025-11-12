@@ -472,9 +472,9 @@ function gwylanRequestClothes(override) {
 			V.gwylan.request.special = "waitress";
 			break;
 		case "nurse dress":
-		case "pink nurse hat":
+		case "nurse hat":
 			grcCreate("nurse dress", "upper");
-			grcCreate("pink nurse hat", "head");
+			grcCreate("nurse hat", "head");
 			if (extraItems) grcCreate("nurse socks", "legs");
 			V.gwylan.request.details.outfit = true;
 			V.gwylan.request.special = "nurse";

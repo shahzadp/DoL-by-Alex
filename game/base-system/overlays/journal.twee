@@ -134,7 +134,7 @@
 				<</if>>
 			<</if>>
 
-			<<if $averydate is 1 and Time.hour lte 21 and $averydatedone isnot 1>>
+			<<if $avery_mansion?.schedule isnot "away" and $averydate is 1 and Time.hour lte 21 and $averydatedone isnot 1>>
 				<li>You have a date scheduled with Avery <span class="pink"><<this_saturday>></span>. <<nnpc_He "Avery">>'ll wait for you <<= $avery_mansion ? "in the garage" : "on Domus Street">> between <span class="gold"><<ampm 20 00>></span> and <span class="gold"><<ampm 21 00>></span>.</li>
 			<</if>>
 
@@ -837,33 +837,80 @@
 			<<elseif $avery_mansion.fake_stones is 2>>
 				<li><<icon "avery_vault.png">> Leave the fake wishing stones in Avery's vault.</li>
 			<</if>>*/
-			<<if $avery_mansion.jobs.includes("maid")>>
-				<li><<iconUi "clothes/traits/maid.png">>Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the maid trait.</li>
-			<<elseif $avery_mansion.jobs.includes("formal")>>
-				<li><<iconUi "clothes/traits/formal.png">>Avery wants you to greet <<nnpc_him Avery>> after work wearing an outfit with the formal trait.</li>
-			<</if>>
-			<<if $avery_mansion.jobs.includes("hairlength")>>
-				<li><<icon "scissors.png">> Avery wants you to keep your hair no longer than the top of your chest.</li>
-			<</if>>
-			<<if $avery_mansion.jobs.includes("hairstyle")>>
-				<li><<icon "comb.png">> Avery wants you to keep your hair in the neat style.</li>
-			<</if>>
-			<<if $avery_mansion.jobs.includes("knees")>>
-				<li><<socialiseicon>> Avery wants you to kneel before <<nnpc_him Avery>> after work.</li>
-			<<elseif $avery_mansion.jobs.includes("bow")>>
-				<li><<socialiseicon>> Avery wants you to <<= $player.gender_appearance is "f" ? "curtsy" : "bow">> to <<nnpc_him Avery>> after work.</li>
-			<</if>>
-			<<if $avery_mansion.jobs.includes("lounge") or
-			$avery_mansion.jobs.includes("dining") or
-			$avery_mansion.jobs.includes("bedroom") or
-			$avery_mansion.jobs.includes("pool") or
-			$avery_mansion.jobs.includes("garden") or
-			$avery_mansion.jobs.includes("display") or
-			$avery_mansion.jobs.includes("kitchen") or
-			$avery_mansion.jobs.includes("bathroom")>>
-				<li><<icon "clothes/feather_duster.png">>
-					<<set $_averyCleanColor to ["","purple","pink","red"][Math.clamp(Math.floor(($avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed) / 3),0,3)]>>
-					<span @class="$_averyCleanColor">Avery wants you to keep <<nnpc_his Avery>> mansion clean.</span>
+			<<if $avery_mansion.jobs.length>>
+				<li>
+					<<icon "avery_garage.png">> Additionally, Avery expects to see proper presentation from you when <<nnpc_he "Avery">> returns from work.
+					<<if $avery_mansion.jobs.includes("maid")>>
+						<br>
+						<<if $worn.upper.type.includes("maid") and $worn.lower.type.includes("maid") and $worn.head.type.includes("maid")>>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<iconUi "clothes/traits/maid.png">>Greeting <<nnpc_him Avery>> wearing an outfit with the maid trait.
+					<<elseif $avery_mansion.jobs.includes("formal")>>
+						<br>
+						<<if $worn.upper.type.includes("formal") and $worn.lower.type.includes("formal")>>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<iconUi "clothes/traits/formal.png">>Greeting <<nnpc_him Avery>> wearing an outfit with the formal trait.
+					<</if>>
+					<<if $avery_mansion.jobs.includes("knees")>>
+						<br>
+						<<if $avery_mansion.kneel isnot "refuse">>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<sneakicon>>Greeting <<nnpc_him Avery>> by kneeling before <<nnpc_him Avery>>.
+					<<elseif $avery_mansion.jobs.includes("bow")>>
+						<br>
+						<<if $avery_mansion.bow>>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<sneakicon>>Greeting <<nnpc_him Avery>> by <<= $player.gender_appearance is "f" ? "curtsying" : "bowing">> to <<nnpc_him Avery>>.
+					<</if>>
+					<<if $avery_mansion.jobs.includes("meek")>>
+						<br>
+						<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<socialiseicon>>Greeting <<nnpc_him Avery>> with a meek demeanour.
+					<</if>>
+					<<if $avery_mansion.jobs.includes("hairlength")>>
+						<br>
+						<<if $hairlength lt 400>>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<icon "scissors.png">>Keeping your hair no longer than the top of your chest.
+					<</if>>
+					<<if $avery_mansion.jobs.includes("hairstyle")>>
+						<br>
+						<<if $hairtype is "neat">>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<icon "comb.png">>Keeping your hair in the 'neat' style.
+					<</if>>
+					<<if ["lounge", "dining", "bedroom", "pool", "garden", "display", "kitchen", "bathroom"].includesAny($avery_mansion.jobs)>>
+						<br>
+						<<set $_averyCleanColor to ["","purple","pink","red"][Math.clamp(Math.floor(($avery_mansion.rage.assess - $avery_mansion.rage.dinner_missed) / 3),0,3)]>>
+						<<if $_averyCleanColor is "">>
+							<span class='fa-icon fa-selected'></span>
+						<<else>>
+							<span class='fa-icon fa-unselected'></span>
+						<</if>>
+						<<icon "clothes/feather_duster.png">><span @class="$_averyCleanColor">Keeping <<nnpc_his Avery>> mansion clean.</span>
+					<</if>>
 				</li>
 			<</if>>
 			<<if $avery_tower>>

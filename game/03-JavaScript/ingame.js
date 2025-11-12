@@ -388,6 +388,9 @@ function loveInterestFunction() {
 	jQuery(document).on("change", "#listbox-loveinterestsecondary", function (e) {
 		Wikifier.wikifyEval("<<replace #loveInterest>><<loveInterest>><</replace>>");
 	});
+	jQuery(document).on("change", "#listbox-loveinteresttertiary", function (e) {
+		Wikifier.wikifyEval("<<replace #loveInterest>><<loveInterest>><</replace>>");
+	});
 }
 DefineMacro("loveInterestFunction", loveInterestFunction);
 
