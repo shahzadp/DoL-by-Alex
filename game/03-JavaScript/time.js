@@ -502,6 +502,7 @@ function weekPassed() {
 	if (V.robinpaid !== 1 && V.robindebt >= V.robindebtlimit && V.robindebtevent <= 0) {
 		wikifier("robinPunishment", "docks");
 		V.robineventnote = 1;
+		V.robindebt = 0;
 	}
 	V.robinmoney += (V.robin.stayup >= 1 ? 250 : 300) + V.robin.moneyModifier;
 	if (V.robinmoney > 4000) V.robinmoney = 4000;

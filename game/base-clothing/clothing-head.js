@@ -1572,8 +1572,8 @@ function initHead() {
 		{
 			index: 43,
 			slot: "head",
-			name: "pink nurse hat",
-			name_cap: "Pink nurse hat",
+			name: "nurse hat",
+			name_cap: "Nurse hat",
 			variable: "pinknurse",
 			combat: {
 				mainColour: "#ff5c61",
