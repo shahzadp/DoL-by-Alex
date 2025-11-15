@@ -8583,6 +8583,7 @@ function initUpper() {
 			outfitPrimary: { lower: "bedsheet skirt" },
 			notuck: 0,
 			pregType: 0,
+			back_img: 1,
 		},
 		{
 			index: 158,
