@@ -1007,3 +1007,9 @@ function getAllPills() {
 	for (const item of Object.keys(V.sexStats.pills.pills)) V.sexStats.pills.pills[item].owned = 14;
 }
 window.getAllPills = getAllPills;
+
+function hasPillsTaken(type) {
+	if (!setup.pills.find(pill => pill.name === type)) return Errors.report("Couldn't find pills", type);
+	return V.sexStats.pills.pills?.[type]?.doseTaken || 0;
+}
+window.hasPillsTaken = hasPillsTaken;
