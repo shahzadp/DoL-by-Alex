@@ -18,6 +18,7 @@ The school lockers are notoriously easy to break into, though thankfully, you've
 	<<lockerclothes>>
 	<<lockerclothes2>>
 	/*kind of a hacky solution to allow players to swap out their current handheld item for the stored handheld item instead of sending it back to the wardrobe but hey, it's effective and doesn't fuck w how the other storage locations work.*/
+	<<lockerclothesautooption>>
 <</if>>
 
 <<if !["early", "late", "earlynoschool", "latenoschool", "daynoschool"].includes($schoolstate)>>
@@ -328,7 +329,7 @@ You find a small pin in the locker, and use the tip to poke a tiny hole in the c
 				<br><br>
 				<<if $worn.handheld.name is "naked">>
 					<<lockericon>>
-					<<link [[`Take out your ${_clothes[0].name}`|$passage]]>><<set $eventskip to 1>><<storeload "lockers">><</link>>
+					<<link [[`Take out your ${_clothes[0].name}`|$passage]]>><<set $lockerSwapLock to true>><<set $eventskip to 1>><<storeload "lockers">><</link>>
 				<<else>>
 					<<lockericon>>
 					<<link [[`Swap out your ${$worn.handheld.name}`|$passage]]>><<set $eventskip to 1>><<handheldundress "lockers2">><<storeload "lockers">><</link>>
@@ -354,12 +355,124 @@ You find a small pin in the locker, and use the tip to poke a tiny hole in the c
 				<br><br>
 				<<if $worn.handheld.name is "naked">>
 					<<lockericon>>
-					<<link [[`Take out your ${_clothes[0].name}`|$passage]]>><<set $eventskip to 1>><<storeload "lockers2">><</link>>
+					<<link [[`Take out your ${_clothes[0].name}`|$passage]]>><<set $lockerSwapLock to true>><<set $eventskip to 1>><<storeload "lockers2">><</link>>
 				<<else>>
 					<<lockericon>>
 					<<link [[`Swap out your ${$worn.handheld.name}`|$passage]]>><<set $eventskip to 1>><<handheldundress "lockers">><<storeload "lockers2">><</link>>
 				<</if>>
 				<br>
+			<</if>>
+		<</if>>
+		<<unset $wearoutfittext>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautooption">>
+	<<lockericon>>
+	<<if $autoLockerEnabled>>
+		<<link [[Stop automatically storing your handheld item|$passage]]>><<set $eventskip to 1>><<set $autoLockerEnabled to false>><<set $lockerSwapLock to false>><</link>>
+	<<else>>
+		<<link [[Automatically store your handheld item|$passage]]>><<set $eventskip to 1>><<set $autoLockerEnabled to true>><<set $lockerSwapLock to true>><</link>>
+	<</if>>
+	/* The lockerSwapLock variable prevents swapping the player's handheld item multiple times during the schoolday */
+	/* The variable is unset when going to one of the exits (currently front/back courtyards and bathroom) */
+	<br>
+<</widget>>
+
+<<widget "lockerclothesautoequiprun">>
+	<<if $autoLockerEnabled>>
+		<<lockerclothesautoequip>>
+		<<lockerclothesautoequip2>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautoequip">>
+	<<if !$possessed>>
+		<<wardrobeSelection true>>
+		<<set _store_location to "lockers">>
+		<<storeon _store_location "check">>
+		<<if _store_check is 1>>
+			<<set _clothes to clothingInStorage(_store_location)>>
+			<<if _clothes.length gt 0>>
+				<<if $worn.handheld.name is "naked">>
+					You take your _clothes[0].name out of your locker before entering class.<<storeload "lockers">>
+					<br><br>
+				<<elseif $lockerSwapLock is false>>
+					You swap out your $worn.handheld.name with your _clothes[0].name before entering class.<<handheldundress "lockers2">><<storeload "lockers">>
+					<br><br>
+				<</if>>
+				<<set $lockerSwapLock to true>>
+			<</if>>
+		<</if>>
+		<<unset $wearoutfittext>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautoequip2">>
+	<<if !$possessed>>
+		<<wardrobeSelection true>>
+		<<set _store_location to "lockers2">>
+		<<storeon _store_location "check">>
+		<<if _store_check is 1>>
+			<<set _clothes to clothingInStorage(_store_location)>>
+			<<if _clothes.length gt 0>>
+				<<if $worn.handheld.name is "naked">>
+					You take your _clothes[0].name out of your locker before entering class.<<storeload "lockers2">>
+					<br><br>
+				<<elseif $lockerSwapLock is false>>
+					You swap out your $worn.handheld.name with your _clothes[0].name before entering class.<<handheldundress "lockers">><<storeload "lockers2">>
+					<br><br>
+				<</if>>
+				<<set $lockerSwapLock to true>>
+			<</if>>
+		<</if>>
+		<<unset $wearoutfittext>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautostorerun">>
+	<<if $autoLockerEnabled and $lockerSwapLock and $worn.handheld.name isnot "naked">>
+		<<lockerclothesautostore>>
+		<<lockerclothesautostore2>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautostore">>
+	<<if !$possessed>>
+		<<wardrobeSelection true>>
+		<<set _store_location to "lockers">>
+		<<storeon _store_location "check">>
+		<<set _clothes to clothingInStorage(_store_location)>>
+		<<if _clothes.length gt 0>>
+			You swap out your $worn.handheld.name with your _clothes[0].name before leaving the main halls.<<set $lockerSwapLock to false>><<handheldundress "lockers2">><<storeload "lockers">>
+			<br><br>
+		<<else>>
+			<<storeon "lockers2" "check">>
+			<<if _store_check isnot 1>>
+				You store your $worn.handheld.name in your locker before leaving the main halls.<<set $lockerSwapLock to false>><<handheldundress "lockers">>
+				<br><br>
+			<</if>>
+		<</if>>
+		<<unset $wearoutfittext>>
+	<</if>>
+<</widget>>
+
+<<widget "lockerclothesautostore2">>
+	<<if !$possessed>>
+		<<wardrobeSelection true>>
+		<<set _store_location to "lockers2">>
+		<<storeon _store_location "check">>
+		<<set _clothes to clothingInStorage(_store_location)>>
+		<<if $lockerSwapLock>>
+			<<if _clothes.length gt 0>>
+				You swap out your $worn.handheld.name with your _clothes[0].name before leaving the main halls.<<set $lockerSwapLock to false>><<handheldundress "lockers">><<storeload "lockers2">>
+				<br><br>
+			<<else>>
+				<<storeon "lockers" "check">>
+				<<if _store_check isnot 1>>
+					You store your $worn.handheld.name in your locker before leaving the main halls.<<set $lockerSwapLock to false>><<handheldundress "lockers">>
+					<br><br>
+				<</if>>
 			<</if>>
 		<</if>>
 		<<unset $wearoutfittext>>
