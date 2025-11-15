@@ -678,7 +678,7 @@ function exposure() {
 	if (
 		["over_upper", "upper"].every(slot => itemExposure(slot) >= 1) &&
 		(!V.worn.lower.type.includes("covered") || itemExposure("lower") >= 2) &&
-		(!V.worn.under_upper.type.includes("covered") || itemExposure("lower") >= 1)
+		(!V.worn.under_upper.type.includes("covered") || itemExposure("under_upper") >= 1)
 	) {
 		// the answer is yes
 		// Only non-male appearing PCs should be exposed from underwear/breasts
