@@ -631,7 +631,7 @@ function initUnderUpper() {
 			warmth: 1,
 			cost: 500,
 			description: "No-nonsense.",
-			shop: ["clothing", "school"],
+			shop: ["clothing", "school", "adult"],
 			accessory: 0,
 			accessory_colour: 0,
 			accessory_colour_options: [],
