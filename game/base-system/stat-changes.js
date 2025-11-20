@@ -947,7 +947,9 @@ const statChange = (() => {
 		}
 		if (type === "penileskill" && !(V.player.penisExist || playerHasStrapon())) return;
 		amount = Number(amount);
+		console.log(amount);
 		if (amount) {
+			console.log("!!!");
 			V[type] = Math.clamp(V[type] + amount, 0, V[type + "max"] || 1000);
 		}
 	}
