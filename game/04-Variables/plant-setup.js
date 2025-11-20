@@ -2091,7 +2091,7 @@ function initPlants() {
 		full_english_breakfast: {
 			index: 113,
 			name: "full_english_breakfast",
-			recipe_name: "a full English breakfast",
+			recipe_name: "Full English breakfast",
 			singular: "full English breakfast",
 			plural: "full English breakfasts",
 			plant_cost: 900,
@@ -2293,7 +2293,7 @@ function initPlants() {
 		roast_dinner: {
 			index: 124,
 			name: "roast_dinner",
-			recipe_name: "a roast dinner",
+			recipe_name: "roast dinner",
 			singular: "serving of roast dinner",
 			plural: "servings of roast dinner",
 			plant_cost: 2400,

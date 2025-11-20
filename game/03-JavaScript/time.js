@@ -1552,6 +1552,7 @@ function dailyPlayerEffects() {
 	V.hairlength += 3;
 	V.fringelength += 3;
 	calchairlengthstage();
+	console.log("???");
 	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 100);
 	lustfulUpdate();
 
