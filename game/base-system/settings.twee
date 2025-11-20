@@ -2488,7 +2488,7 @@
 		</div>
 		<hr>
 		<<if _npcId is undefined>>
-			<<set _npcId to 0>>
+			<<set _npcId to 25>> /* Should be set to the index of the NPC that is at the top of the list when sorted alphabetically by name */
 
 			<<set _breastDescription to ["Flat","Small","Pert","Modest","Full","Large"]>>
 			<<set _breastDescriptionNPC to ["nipple","small breast","pert breast","modest breast","full breast","large breast"]>>
@@ -2505,9 +2505,13 @@
 
 		<<if _npcList is undefined>>
 			<<set _npcList to {}>>
-			<<for $_i to 0; $_i lt $NPCNameList.length; $_i++>>
-				<<set _npcList[clone($NPCNameList[$_i])] to clone($_i)>>
+			<<set _sortedNPCList to clone($NPCNameList)>>
+			<<run _sortedNPCList.sort()>>
+
+			<<for $_i to 0; $_i lt _sortedNPCList.length; $_i++>>
+				<<set _npcList[_sortedNPCList[$_i]] to clone($NPCNameList.indexOf(_sortedNPCList[$_i]))>>
 			<</for>>
+		
 			<<if $passage is "Start" or !$wraithIntro>>
 				<<run delete _npcList["Ivory Wraith"]>>
 			<</if>>
