@@ -359,14 +359,14 @@ function playerEndWaterProgress() {
 		pregnancy.waterBreakingTimer--;
 		if (pregnancy.waterBreakingTimer <= 0) {
 			pregnancy.waterBreaking = true;
-			// To prevent new events from occuring, allowing players to more easily go to the hospital or similar locations
+			// To prevent new events from occurring, allowing players to more easily go to the hospital or similar locations
 			V.eventskip = 1;
 			return true;
 		}
 		return false;
 	} else if (!isNaN(pregnancy.waterBreakingTimer) && !pregnancy.waterBreaking && pregnancy.waterBreakingTimer <= 0) {
 		pregnancy.waterBreaking = true;
-		// To prevent new events from occuring, allowing players to more easily go to the hospital or similar locations
+		// To prevent new events from occurring, allowing players to more easily go to the hospital or similar locations
 		V.eventskip = 1;
 		return true;
 	}
