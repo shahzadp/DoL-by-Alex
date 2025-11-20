@@ -124,7 +124,7 @@ Add a TODO comment explaining that this will be fixed someday
 
 ##### Global variables
 
-ESLint may report a issue like `'myVariable' is not defined`. It means ESLint cannot figure out where the variable is defined. If you really meant to make variable global add the new variable to `.eslintrc.cjs` `globals` section inside corresponding group:
+ESLint may report an issue like `'myVariable' is not defined`. It means ESLint cannot figure out where the variable is defined. If you really meant to make variable global add the new variable to `.eslintrc.cjs` `globals` section inside corresponding group:
 
 ```json
 myVariable: "readonly"
