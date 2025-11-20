@@ -2840,6 +2840,9 @@ Renderer.CanvasModels.main = {
 		"lower_back": genlayer_clothing_back_img('lower', {
 			z: ZIndices.back_lower
 		}),
+		"lower_back_acc": genlayer_clothing_back_img_acc('lower', {
+			z: ZIndices.back_lower
+		}),
 		/***
 		 *     ██████  ██    ██ ███████ ██████  ██       ██████  ██     ██ ███████ ██████
 		 *    ██    ██ ██    ██ ██      ██   ██ ██      ██    ██ ██     ██ ██      ██   ██
@@ -4672,10 +4675,11 @@ function genlayer_clothing_back_img_acc(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !options.worn[slot].setup.altdisabled.includes("back");
 
-			const suffix = isAltPosition ? 'back_alt' : 'back';
+			const prefix = isAltPosition ? 'back_alt' : 'back';
+			const suffix = options.worn[slot].setup.back_integrity_img ? `_${options.worn[slot].integrity}` : '';
 			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "_" + options.worn[slot].pattern?.replace(/ /g,"_") : '';
 
-			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${suffix}${pattern}_acc.png`;
+			const path = `img/clothes/${slot}/${options.worn[slot].setup.variable}/${prefix}${suffix}${pattern}_acc.png`;
 			return gray_suffix(path, options.filters[this.filtersfn(options)[0]]);
 		},
 	}, overrideOptions));
