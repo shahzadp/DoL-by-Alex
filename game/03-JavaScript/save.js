@@ -1187,7 +1187,7 @@ function settingsObjects(type) {
 					humanPregnancyMonths: { min: 1, max: 9, decimals: 0, displayName: "Human pregnancy length:" },
 					hypnosisEnabled: { bool: true, displayName: "Hypnosis:" },
 					npcVirginChanceAdult: { min: 0, max: 100, decimals: 0, displayName: "Likelihood of adults being virgins:", randomize: "encounter" },
-					npcVirginChanceStudent: { min: 0, max: 100, decimals: 0, displayName: "Likelihood of students being virgins:", randomize: "encounter" },
+					npcVirginChanceStudent: { min: 0, max: 100, decimals: 0, displayName: "Likelihood of young adults being virgins:", randomize: "encounter" },
 					darkSkinChance: { min: 0, max: 100, decimals: 0, displayName: "Likelihood that NPCs have dark skin:", randomize: "encounter" },
 					lurkersEnabled: { bool: true, displayName: "Lurkers:" },
 					fertilityCycleEnabled: { bool: true, displayName: "Menstrual cycle:" },
