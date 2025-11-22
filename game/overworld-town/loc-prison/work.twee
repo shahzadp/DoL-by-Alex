@@ -339,7 +339,11 @@ You chat with the other inmates. <<generate_relaxed_guard 0>><<generate2>><<pers
 	<<case 9>>
 		"Best to keep your head down," a <<person>> says. "Though drawing attention would help you change opinions more easily."
 	<<default>>
-
+		<<if random(0,100) is 1>>
+			The <<person>> stares through the screen, <span class="red">right into you.</span><<trauma 10>><<gtrauma>>
+		<<else>>
+			A <<person>> stares at the sky, silent.
+		<</if>>
 <</switch>>
 <<endevent>>
 <br><br>
@@ -350,10 +354,15 @@ You chat with the other inmates. <<generate_relaxed_guard 0>><<generate2>><<pers
 		<br><br>
 		<<link [[Endure|Prison Laundry Work Endure]]>><<trauma 6>><<stress 6>><<arousal 600 "bottom">><</link>><<gtrauma>><<gstress>><<garousal>>
 		<br>
-		<<link [[Shove|Prison Laundry Work Shove]]>><<prison_inmates 1>><<prison_guards -1>><</link>><<gsuspicion>><<grespect>>
-		<br>
-		<<link [[Squeeze back|Prison Laundry Work Squeeze]]>><<prison_inmates 1>><<prison_attention 1>><</link>><<promiscuous1>><<gattention prison>><<grespect>>
-		<br>
+		<<if pcAreArmsBound("both")>>
+			<span class="blue">You can't do anything with your arms bound.</span>
+			<br>
+		<<else>>
+			<<link [[Shove|Prison Laundry Work Shove]]>><<prison_inmates 1>><<prison_guards -1>><</link>><<gsuspicion>><<grespect>>
+			<br>
+			<<link [[Squeeze back|Prison Laundry Work Squeeze]]>><<prison_inmates 1>><<prison_attention 1>><</link>><<promiscuous1>><<gattention prison>><<grespect>>
+			<br>
+		<</if>>
 	<<case 2>>
 		They enjoy your jokes.<<grespect>><<prison_inmates 1>>
 		<br><br>
@@ -967,10 +976,14 @@ You're sorting through the last of the paper, when you find another interesting 
 
 :: Prison Medical Work Hard
 <<effects>>
-
-<<generate_methodical_guard 0>><<person1>>You help <<methodical_guard 0>> move patients, take vitals, and apply bandages. <<He>> only speaks when necessary, and gives little heed to the patients' comfort.
+<<generate_methodical_guard 0>><<person1>>
+<<if pcAreArmsBound("both")>>
+	You help <<methodical_guard 0>> as much as you can with your arms bound.
+<<else>>
+	You help <<methodical_guard 0>> move patients, take vitals, and apply bandages.
+<</if>>
+<<He>> only speaks when necessary, and gives little heed to the patients' comfort.
 <br><br>
-
 <<rng 6>>
 <<switch $rng>>
 <<case 1>>
@@ -979,24 +992,32 @@ You're sorting through the last of the paper, when you find another interesting 
 	<br><br>
 	The patient, a <<person>>, tugs your <<if $exposed gte 2>>arm<<else>>sleeve<</if>>. "Hurts it does. Could you slip me something extra? <<person1>><<He>> won't notice."
 	<br><br>
-
-	<<set $skulduggerydifficulty to 300>>
-	<<link [[Slip something extra|Prison Medical Work Slip]]>><<handheldon>><</link>><<skulduggerydifficulty>>
-	<br>
-	<<set $skulduggerydifficulty to 700>>
-	<<link [[Slip something extra, and something for yourself|Prison Medical Work Extra]]>><<handheldon>><</link>><<skulduggerydifficulty>>
-	<br>
+	<<if !pcAreArmsBound("both")>>
+		<<set $skulduggerydifficulty to 300>>
+		<<link [[Slip something extra|Prison Medical Work Slip]]>><<handheldon>><</link>><<skulduggerydifficulty>>
+		<br>
+		<<set $skulduggerydifficulty to 700>>
+		<<link [[Slip something extra, and something for yourself|Prison Medical Work Extra]]>><<handheldon>><</link>><<skulduggerydifficulty>>
+		<br>
+	<<else>>
+		<span class="blue">There's little you can do with your arms bound.</span>
+		<br>
+	<</if>>
 	<<link [[Refuse|Prison Medical Work Slip Refuse]]>><<handheldon>><</link>>
 	<br>
 <<case 2>>
-	<<if currentSkillValue('tending') gte random(1, 1000)>>
-		"Apply the ointment to the rash. You already have? Then help me with- Oh. That's done as well." <span class="green"><<methodical_guard 0 cap>> is impressed by your ability.</span><<gperlove "methodical_guard">><<lsuspicion>><<prison_rep methodical 1>><<prison_guards 1>>
+	<<if pcAreArmsBound("both")>>
+		"Apply the ointment—oh." <<methodical_guard 0 cap>> notices your bound arms, <span class="red">and frowns. "Forget I said anything."</span><<prison_rep methodical -1>><<lperlove "methodical_guard">><<prison_guards -1>><<gsuspicion>>
 		<br><br>
 	<<else>>
-		"Apply the ointment to the rash. No, on the leg. The other leg. No, <span class="red">not <i>there.</i></span>" <<methodical_guard 0 cap>> is unimpressed with your assistance.
-		<br><br>
+		<<if currentSkillValue('tending') gte random(1, 1000)>>
+			"Apply the ointment to the rash. You already have? Then help me with—Oh. That's done as well." <span class="green"><<methodical_guard 0 cap>> is impressed by your ability.</span><<gperlove "methodical_guard">><<lsuspicion>><<prison_rep methodical 1>><<prison_guards 1>>
+			<br><br>
+		<<else>>
+			"Apply the ointment to the rash. No, on the leg. The other leg. No, <span class="red">not <i>there.</i></span>" <<methodical_guard 0 cap>> is unimpressed with your assistance.
+			<br><br>
+		<</if>>
 	<</if>>
-
 	<<prison_medical_options>>
 <<case 3>>
 	<<generate2>><<person2>>
@@ -1286,28 +1307,43 @@ You administer a single tooth as instructed. The <<person2>><<person>> sighs, bu
 <<switch $rng>>
 	<<case 1>>
 		<<beastNEWinit 5 "hawk">>
-		You carry a basket of fish with both hands. The <<beastsplural>> watch you, like statues, until the basket touches the floor. You turn and run as the creatures descend in a feeding frenzy.<<gstress>><<prison_birds 1>><<prison_birds_text>>
+		<<if pcAreArmsBound("both")>>
+			You carefully nudge a basket of fish with your feet. <span class="red">You almost trip. The <<beastsplural>> close in immediately.</span><<stress 12>>
+		<<else>>
+			You carry a basket of fish with both hands. The <<beastsplural>> watch you, like statues, until the basket touches the floor.<<stress 6>>
+		<</if>>
+		You turn and run as the creatures descend in a feeding frenzy.<<gstress>><<prison_birds 1>><<prison_birds_text>>
 		<br><br>
-
 		<<prison_spire_options>>
 		<<wearProp "basket of fish">>
 	<<case 2>>
 		<<beastNEWinit 5 "hawk">><<person1>>
 		Small gems litter the ground around the beacon. Shark's teeth. You are expected to collect them.
 		<br><br>
-		<<set $skulduggerydifficulty to 800>>
-		<<link [[Be sneaky|Prison Spire Work Hard Sneak]]>><</link>><<skulduggerydifficulty>>
-		<br>
-		<<link [[Be quick|Prison Spire Work Hard Quick]]>><</link>><<athleticsdifficulty 800>>
-		<br>
+		<<if pcAreArmsBound("both")>>
+			<span class="blue">There's little you can do with your arms bound.</span>
+			<br>
+			<<link [[Give up|Prison Spire Work Give Up]]>><<prison_guards -3>><<set $phase to "gems">><</link>><<ggsuspicion>>
+			<br>
+		<<else>>
+			<<set $skulduggerydifficulty to 800>>
+			<<link [[Be sneaky|Prison Spire Work Hard Sneak]]>><</link>><<skulduggerydifficulty>>
+			<br>
+			<<link [[Be quick|Prison Spire Work Hard Quick]]>><</link>><<athleticsdifficulty 800>>
+			<br>
+		<</if>>
 	<<case 3>>
 		<<generate_anxious_guard 0>><<person1>>
 		<<set $hawk_loot to either("cigar", "beer bottle", "knife", "mobile phone", "packet of sweets")>>
 		"Contraband," <<anxious_guard 0>> says, pointing at a <<endevent>><<beastNEWinit 1 "hawk">><<person1>><<beasttype>> sat alone near the tower's edge. <<bHes>> holding a $hawk_loot in <<bhis>> <<if $monster is 1>>hand<<else>>beak<</if>>.
 		<br><br>
 
-		<<link [[Next|Prison Spire Work Get]]>><</link>>
+		<<link [[Get it|Prison Spire Work Get]]>><</link>>
 		<br>
+		<<if $prison.anxious gte 70>>
+			<<link [[Refuse|Prison Spire Work Get Refuse]]>><</link>>
+			<br>
+		<</if>>
 	<<case 4>>
 		<<beastNEWinit 2 "hawk">><<person1>>
 		The <<beastsplural>> journey between the tower and ocean, searching for pieces of driftwood and bringing them to the top of the beacon. This wood is sometimes discarded at once, thrown to splinter against the platform floor.
@@ -1320,13 +1356,17 @@ You administer a single tooth as instructed. The <<person2>><<person>> sighs, bu
 		"Not much need doing right now," <<anxious_guard 0>> says. "Just help me keep an eye out."
 		<br><br>
 
-		<<socialiseicon>><<link [[Chat|Prison Spire Work Chat 2]]>><<prison_rep anxious 1>><</link>><<gperlove "anxious_guard">>
+		<<if !$worn.face.type.includes("gag")>>
+			<<socialiseicon>><<link [[Chat|Prison Spire Work Chat 2]]>><<prison_rep anxious 1>><</link>><<gperlove "anxious_guard">>
+		<<else>>
+			<span class="blue">You can't speak to the guard with this gag in the way.</span>
+		<</if>>
 		<br>
 		<<investigateicon>><<link [[Search for teeth|Prison Spire Work Search]]>><</link>><<difficulty 70>>
 		<br>
 		<<daydreamicon>><<link [[Daydream|Prison Spire Work Daydream]]>><<stress -6>><</link>><<lstress>>
 		<br>
-		<<if $harpy gte 6>>
+		<<if $harpy gte 6 and !$worn.face.type.includes("gag")>>
 			<<birdicon "sing">><<link [[Sing|Prison Spire Work Sing]]>><<transform bird 1>><<prison_rep anxious 1>><<prison_birds 1>><</link>><<prison_birds_text>><<if $prisonSingIntro>><<gperlove "anxious guard">><</if>><<harpy>>
 			<br>
 		<</if>>
@@ -1359,7 +1399,11 @@ You administer a single tooth as instructed. The <<person2>><<person>> sighs, bu
 	<</if>>
 	<br><br>
 
-	<<link [[Soothe|Prison Spire Work Soothe]]>><</link>><<tendingdifficulty 1 1000>>
+	<<if $worn.face.type.includes("gag")>>
+		<span class="blue">There's little you can do with this gag in the way.</span>
+	<<else>>
+		<<link [[Soothe|Prison Spire Work Soothe]]>><</link>><<tendingdifficulty 1 1000>>
+	<</if>>
 	<br>
 	<<link [[Give up|Prison Spire Work Give Up]]>><<prison_birds 1>><<prison_guards -1>><</link>><<gsuspicion>><<prison_birds_text>>
 	<br>
@@ -1507,12 +1551,18 @@ You reach for the $hawk_loot.
 
 :: Prison Spire Work Give Up
 <<effects>>
-
-<<endevent>>
-<<generate_anxious_guard 0>><<person1>>
-<<anxious_guard 0 cap>> looks frustrated. "Well," <<he>> says. "I'm not going near it. Maybe we can snatch it when it naps." <<He>> doesn't sound keen.
-<br><br>
-<<unset $hawk_loot>>
+<<if $phase is "gems">>
+	<<endevent>>
+	<<generate_anxious_guard 0>><<person1>>
+	<<anxious_guard 0 cap>> looks frustrated. "Well," <<he>> says."Dunno why I even need you up here."<<stress 3>><<gstress>>
+	<br><br>
+<<else>>
+	<<endevent>>
+	<<generate_anxious_guard 0>><<person1>>
+	<<anxious_guard 0 cap>> looks frustrated. "Well," <<he>> says."I'm not going near it. Maybe we can snatch it when it naps." <<He>> doesn't sound keen.
+	<br><br>
+	<<unset $hawk_loot>>
+<</if>>
 <<prison_spire_options>>
 
 :: Prison Spire Work Get Refuse
@@ -1526,7 +1576,8 @@ You reach for the $hawk_loot.
 	<<gagged_speech "I'm sorry,">> you say. <<gagged_speech "But no.">>
 <</if>>
 <br><br>
-
+<<endevent>>
+<<generate_anxious_guard 0>><<person1>>
 <<anxious_guard 0 cap>> takes a deep breath, and leaves the cabin.
 <br><br>
 
@@ -1791,15 +1842,15 @@ You sit and watch the <<beastsplural>>, and let your mind wander.
 <<clearsinglenpc 0>><<beastNEWinit 5 "hawk">><<person2>>
 You approach the tower's edge. The <<beastsplural>> glance at you.
 <br><br>
-
+You sing.
 <<if $prison.birds gte 30>>
-	You sing. All of the watchers sing along to your symphony. The waves carry your glamorous song to the mainland. You hope someone can hear it. <<trauma -3>><<ltrauma>>
+	<span class="green">All of the watchers sing along to your symphony</span>. The waves carry your glamorous song to the mainland. You hope someone can hear it. <<trauma -3>><<ltrauma>>
 <<elseif $prison.birds gte 20>>
-	You sing. Most of the watchers join in. Many across the island immerse themselves in your combined verse. <<stress -3>><<lstress>>
+	<span class="teal">Most of the watchers join in</span>. Many across the island immerse themselves in your combined verse. <<stress -3>><<lstress>>
 <<elseif $prison.birds gte 10>>
-	You sing. Some of the watchers pick up your song. They are the melodies to your longing rhythm. <<stress -3>><<lstress>>
+	<span class="blue">Some of the watchers pick up your song</span>. They are the melodies to your longing rhythm. <<stress -3>><<lstress>>
 <<else>>
-	You sing. Your sole, dulcet voice sears through the ocean. The watchers keep a wary eye on you, but they seem fond of your soothing tune.
+	Your sole, dulcet voice sears through the ocean. The watchers keep a wary eye on you, but they seem fond of your soothing tune.
 <</if>>
 <br><br>
 
