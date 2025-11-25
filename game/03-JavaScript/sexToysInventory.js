@@ -308,7 +308,7 @@ function updateNumberInString(element, indexMin, category) {
 	if (index < indexMin || index <= 0) return;
 
 	element.id = element.id.replace(/\d+/, index - 1);
-	if (element.getAttribute("onclick")) element.setAttribute("onclick", `window.sexToysInventoryOnItemClick(${index - 1},\`${category}\`)`);
+	if (element.onclick) element.onclick = () => window.sexToysInventoryOnItemClick(index - 1, category);
 }
 
 function checkSextoysGift(npcName) {
