@@ -10,7 +10,7 @@
 	/* FROSTBITE */
 	<<if _passout is "cold">>
 		<<set Weather.bodyTemperature to Weather.tempSettings.minTemperature + 1.5>>
-		<<if !["beach", "estate", "forest", "lake", "moor", "park", "sea", "tower"].includes($location)>>
+		<<if !["beach", "estate", "forest", "lake", "moor", "park", "sea", "tower", "wolf_cave"].includes($location)>>
 			You pass out from the cold.
 			<br><br>
 		<</if>>
@@ -112,6 +112,13 @@
 
 				<<addinlineevent "rescue" 1>>
 					<<link [[Everything fades to black...|Passout Hypothermia Rescue]]>><</link>>
+				<</addinlineevent>>
+			<<case "wolf_cave">>
+				You try your best to stay warm, but the cold is too much. The ground rushes up to meet you as your consciousness slips away.
+				<br><br>
+				
+				<<addinlineevent "rescue" 1>>
+					<<link [[Everything fades to black...|Passout Wolf Cave Hypothermia]]>><</link>>
 				<</addinlineevent>>
 			<<case "cabin">>
 				<<addinlineevent "Eden" 2>>
@@ -251,7 +258,7 @@
 	/* HEATSTROKE */
 	<<elseif _passout is "heat">>
 		<<set Weather.bodyTemperature to Weather.tempSettings.maxTemperature - 1>>
-		<<if !["beach", "estate", "forest", "lake", "moor", "sea"].includes($location)>>
+		<<if !["beach", "estate", "forest", "lake", "moor", "sea", "wolf_cave"].includes($location)>>
 			You pass out from the heat.
 			<br><br>
 		<</if>>
@@ -386,6 +393,13 @@
 
 				<<addinlineevent "rescue" 1>>
 					<<link [[Everything fades to black...|Passout Heatstroke Rescue]]>><</link>>
+				<</addinlineevent>>
+			<<case "wolf_cave">>
+				Sweat pours down your forehead. It stings your eyes, but you're too fatigued to wipe it away. The heat is too much. You stagger to a patch of shade near the cave and collapse in a heap.
+				<br><br>
+				
+				<<addinlineevent "rescue" 1>>
+					<<link [[Everything fades to black...|Passout Wolf Cave Heatstroke]]>><</link>>
 				<</addinlineevent>>
 			<<case "lake">>
 				Waves of heat engulf you. Your head spins and your vision blurs.
@@ -3874,3 +3888,38 @@ You tell the <<person>> you're finished, and <<he>> follows you back to the room
 
 <<link [[Next|Danube Street]]>><<clearNPC passout_danube_master>><<endevent>><<set $eventskip to 1>><</link>>
 <br>
+
+:: Passout Wolf Cave Hypothermia
+<<effects>>
+<<beastNEWinit 1 wolf>>
+
+You wake up inside the cave with two <<beasttypes>> huddled close to you. One of them perks up when <<bhe>> notices you're awake.
+<br><br>
+
+<<if $monster is 1>>
+	"<<pPackbrother>> awake! Feel well?" <<bHe>> nuzzles you as the sensation returns to your stiff fingers. They seem to have dragged you to the back of the cave and watched over you. "Cold out. Careful." You reassure them that you're okay, patting them on their heads.
+<<else>>
+	<<bHe>> nuzzles you as you feel your senses come back to your fingers. They seem to have dragged you to the back of the cave and watched over you. You pat the <<beasttypes>> on their heads and thank them.
+<</if>>
+They stay close to you, keeping you warm.
+<br><br>
+
+<<link [[Next|Wolf Cave]]>><<endevent>><<set $eventskip to 1>><</link>>
+
+:: Passout Wolf Cave Heatstroke
+<<effects>>
+<<beastNEWinit 1 wolf>>
+
+<<clothesstrip>>
+You wake up inside the cave<<if Object.keys(V.carried).filter(s => V.carried[s].name !== "naked").length gte 1>><<clothesruined>> with your clothes tossed to the side. They're torn to shreds<</if>>. A <<beasttype>> perks up when <<bhe>> notices you're awake.
+<br><br>
+
+<<if $monster is 1>>
+	"<<pPackbrother>> awake! Feel well?" <<bHe>> touches your forehead with <<bhis>> hand, checking your temperature. <<bHe>> must have watched over you while you were unconscious. "Hot out. Careful." You reassure <<bhim>> that you're okay, patting <<bhim>> on the head.
+<<else>>
+	<<bHe>> bounds toward you, then licks your face all over. You laugh, and <<bhe>> backs off of you. <<bHis>> tongue lolls out of <<bhis>> mouth happily as <<bhe>> looks at you. <<bHe>> must have watched over you while you were unconscious. You pat the <<beasttype>> on <<bhis>> head and thank <<bhim>>.
+<</if>>
+<<bHe>> leaves the cave, allowing you to rest.
+<br><br>
+
+<<link [[Next|Wolf Cave]]>><<endevent>><<set $eventskip to 1>><</link>>
