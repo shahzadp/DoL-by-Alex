@@ -2514,10 +2514,10 @@ function masturbationEffectsArms(
 			if (doubleAction) V[otherArm + "arm"] = "manusentrance";
 			altText.fingers = handsOn === 2 ? "fingers" : "finger";
 			if (genitalsExposed()) {
-				sWikifier(`<span class="blue">You reach down to your exposed <<bottom>> and gently press a ${altText.fingers} against your anus.</span>`);
+				sWikifier(`<span class="blue">You reach down to your exposed <<bottom>> and gently press your ${altText.fingers} against your anus.</span>`);
 			} else {
 				sWikifier(
-					`<span class="blue">You reach down to your <<bottom>> and gently press a ${altText.fingers} against your anus through your <<exposedlower>>.</span>`
+					`<span class="blue">You reach down to your <<bottom>> and gently press your ${altText.fingers} against your anus through your <<exposedlower>>.</span>`
 				);
 			}
 			break;
