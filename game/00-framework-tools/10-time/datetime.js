@@ -254,7 +254,7 @@ class DateTime {
 		if (!months) return this;
 		const addedMonths = this.month + months;
 		const newYear = this.year + Math.floor((addedMonths - 1) / 12);
-		const newMonth = ((addedMonths - 1) % 12) + 1;
+		const newMonth = addedMonths <= 0 ? (addedMonths + 12) : ((addedMonths - 1) % 12) + 1;
 		const newDay = Math.min(this.day, DateTime.getDaysOfMonthFromYear(newYear)[newMonth - 1]);
 
 		this.toTimestamp(newYear, newMonth, newDay, this.hour, this.minute, this.second);

@@ -24,10 +24,10 @@
 	<<socialiseicon "cinema">><<link [[Cinema (£15 2:00)|Robin Walk Cinema]]>><<if Time.hour lt 12 and (Time.schoolDay or Time.isWeekEnd())>><<pass 15>><</if>><</link>>
 	<br>
 <</if>>
-/*<<if C.npc.Robin.love gte 40 and $money gte 2000 and !$daily.robin.amusements>>
-	<<starfishicon>><<link [[Amusements (£20 2:00)|Robin Amusements]]>><<pass 15>><</link>>
+<<if C.npc.Robin.love gte 40 and $money gte 2100 and !$daily.robin.amusements>>
+	<<starfishicon>><<link [[Amusements (£21 1:15)|Robin Amusements]]>><<pass 15>><</link>>
 	<br>
-<</if>>*/
+<</if>>
 <<if $halloween_robin is 1 and $halloween_robin_costume is "ghost" and !(Time.monthDay is 31 and Time.hour gte 16)>>
 	<!-- SANITY: Intentional mismatch between stated time and actual time. Extra time is passed later on in the event -->
 	<<if !$robin_forest_visited>>
@@ -2110,30 +2110,130 @@ You hesitate, unsure how to explain. Robin waits for an answer. When it becomes 
 <<else>>
 	<<set $outside to 0>><<set $location to "town">><<effects>>
 	<<set $daily.robin.cinema to 1>>
+	<<robin_amusements_init>>
 	Robin clasps <<his>> hands together. "That would be wonderful," <<he>> says. "I can't wait to see the prizes."
 	<br><br>
 
 	<<if $robinromance is 1>>
 		You walk hand in hand to Starfish Street, and hear the dinging of the machines before you arrive, even over the sound of the waves.
-		<br><br>
 	<<else>>
 		You walk together to Starfish Street, and hear the dinging of the machines before you arrive, even over the sound of the waves.
-		<br><br>
 	<</if>>
-
-	
-	Robin rushes from one game to another. You follow along, joining <<him>> in one game, then another. <<He>> turns to you once the initial excitement has died down. "What game do you want to play?"
+	There's a range of games. Some reward money for winning, others tickets that can be traded in for sweets and knick-knacks.
 	<br><br>
-	
 
-	<<link [[Claw machine|Robin Amusements Claw]]>><<money -2000 "robin">><<pass 30>><</link>>
-	<br>
-	<<link [[Coin pusher|Robin Amusements Coin]]>><<money -2000 "robin">><<pass 30>><</link>>
-	<br>
-	<<link [[Shooting Gallery|Robin Amusements Gallery]]>><<money -2000 "robin">><<pass 30>><</link>>
-	<br>
+	Robin rushes ahead of you, spins in the middle of the room, then comes to a stop facing you. "What game do you want to play?"
+	<br><br>	
+	
+	<<robin_amusements_list>>
+	<<link [[Let Robin decide|Robin Amusements Robin]]>><<set $robin_amusements.choice to $robin_amusements.games.pluck()>><</link>>
 <</if>>
 
+:: Robin Amusements Main
+<<effects>>
+
+<<if $robin_amusements.games.length gte 4>>
+	"What do you want to play next?" Robin asks.
+	<br><br>
+	<<robin_amusements_list>>
+	<<link [[Let Robin decide|Robin Amusements Robin]]>><<set $robin_amusements.choice to $robin_amusements.games.pluck()>><</link>>
+	<br>
+<<else>>
+	Robin looks at the window, at the clocktower on the promenade.
+	<br><br>
+	"We should head back to the orphanage soon," <<he>> says. "People will wonder where I am." <<His>> eyes light up.
+	 "Let's check the prizes first."
+	<br><br>
+	<<He>> rushes to the display, and eyes up the toys and sweets available.
+	<br><br>
+	<i>Giant lollipop: 150 tickets.</i>
+	<br>
+	<i>Bubble blower: 100 tickets.</i>
+	<br>
+	<i>Small bag of sweets: 50 tickets.</i>
+	<br>
+	You have <span class="gold"><<print $robin_amusements.tickets>></span> tickets.
+	<br><br>
+	<<if $robin_amusements.tickets lt 50>>
+		Unfortunately, you don't have enough tickets for anything.
+		<br><br>
+		You leave the amusements, stepping into the wind.
+		<<robin_amusements_end_links>>
+	<<else>>
+		<<if $robin_amusements.tickets gte 300>>
+			<<link [[A giant lollipop for both of you (300 tickets)|Robin Amusements Lollipop 2]]>><<npcincr Robin love 3>><<trauma -6>><<control 6>><</link>><<gglove>><<gcontrol>><<ltrauma>>
+			<br>
+		<</if>>
+		<<if $robin_amusements.tickets gte 150>>
+			<<link [[A giant lollipop to share (150 tickets)|Robin Amusements Lollipop]]>><<npcincr Robin love 3>><<trauma -6>><</link>><<gglove>><<ltrauma>>
+			<br>
+		<</if>>
+		<<if $robin_amusements.tickets gte 200>>
+			<<link [[A bubble blower each (200 tickets)|Robin Amusements Bubble 2]]>><<npcincr Robin love 3>><</link>><<gglove>>
+			<br>
+		<</if>>
+		<<if $robin_amusements.tickets gte 100>>
+			<<link [[A bubble blower to share (100 tickets)|Robin Amusements Bubble]]>><<npcincr Robin love 1>><<stress -6>><</link>><<glove>><<lstress>>
+			<br>
+		<</if>>
+		<<if $robin_amusements.tickets gte 100>>
+			<<link [[A small bag of sweets each (100 tickets)|Robin Amusements Sweets 2]]>><<npcincr Robin love 1>><<stress -6>><</link>><<glove>><<lstress>>
+			<br>
+		<</if>>
+		<<if $robin_amusements.tickets gte 50>>
+			<<link [[A small bag of sweets to share (50 tickets)|Robin Amusements Sweets]]>><<npcincr Robin love 1>><</link>><<glove>>
+			<br>
+		<</if>>
+	<</if>>
+<</if>>
+
+
+
+:: Robin Amusements Robin
+<<effects>>
+
+Robin walks a loop around the amusements, examining each in turn, before settling on
+
+<<if $robin_amusements.choice is "claw">>
+	the claw machine.
+	<br><br>
+
+	<<link [[Next|Robin Amusements Claw]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<elseif $robin_amusements.choice is "coin">>
+	the coin pusher.
+	<br><br>
+	<<link [[Next|Robin Amusements Coin]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<elseif $robin_amusements.choice is "shooting">>
+	the shooting gallery.
+	<br><br>
+	<<link [[Next|Robin Amusements Shooting]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<elseif $robin_amusements.choice is "ring">>
+	the ring toss.
+	<br><br>
+	<<link [[Next|Robin Amusements Ring]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<elseif $robin_amusements.choice is "slot">>
+	the slot machines.
+	<br><br>
+	<<link [[Next|Robin Amusements Slot]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<elseif $robin_amusements.choice is "dance">>
+	the dance platform.
+	<br><br>
+	<<link [[Next|Robin Amusements Dance]]>><<money -700 "robin">><<pass 15>><</link>>
+	<br>
+<<else>>
+	an unexpected result. This shouldn't happen! If you're not using cheats, please inform Vrelnir.
+	<br><br>
+	You return to the orphanage with Robin.
+	<br><br>
+	<<link [[Next|Robin Options]]>><<robin_amusements_end>><</link>>
+	<br>
+<</if>>
+<br><br>
 
 :: Robin Amusements Claw
 <<effects>>
@@ -2146,17 +2246,17 @@ You push a coin into one of the machines, and Robin does likewise beside you. Yo
 Robin runs out of coins, and leans against the glass, defeated. You push in your last. This time, the claw has some strength to it. Robin steps back when the claw lifts the toy an inch, as if afraid he'll ruin it if too close.
 <br><br>
 Robin's gaze remains fixed on the toy as it rises to the top of the machine, carries it across the ceiling,
-<<if random(1, 10) gte 10>>
-	<span class="green">and drops it in the chute.</span>
+<<if random(1, 10) is 10>>
+	<span class="green">and drops it in the chute.</span><<trauma -6>><<ltrauma>>
 	<br><br>
-	<<link [[Next|Robin Amusements Claw Win]]>><<trauma -6>><</link>><<ltrauma>>
+	<<link [[Next|Robin Amusements Claw Win]]>><</link>>
 	<br>
 <<else>>
 	<span class="red">but drops it inches from the chute.</span>
 	<br><br>
 	<<link [[Accept it with grace|Robin Amusements Claw Lose Accept]]>><</link>>
 	<br>
-	<<link [[Apologise to Robin|Robinm Amusements Claw Lose Apology]]>><</link>>
+	<<link [[Apologise to Robin|Robin Amusements Claw Lose Apologise]]>><</link>>
 	<br>
 	<<link [[Hit the machine|Robin Amusements Claw Lose Hit]]>><</link>>
 	<br>
@@ -2172,11 +2272,9 @@ Robin jumps with joy, then catches <<himself>>, as if embarrassed. "You did it,"
 The toy rolls to a stop by your knee.
 <br><br>
 
-<<link [[Keep it|Robin Amusements Claw Keep]]>><</link>>
-<br>
 <<link [[Give it to Robin|Robin Amusements Claw Robin]]>><<npcincr Robin love 1>><</link>><<glove>>
 <br>
-<<link [[Suggest giving it to an orphan|Robin Amusements Claw Orphan]]>><<npcincr Robin love 1>><</link>><<glove>>
+<<link [[Suggest giving it to an orphan|Robin Amusements Claw Orphan]]>><<set $robin_amusements.toy to true>><<npcincr Robin love 1>><</link>><<glove>>
 <br>
 
 :: Robin Amusements Claw Keep
@@ -2191,10 +2289,10 @@ The toy rolls to a stop by your knee.
 <</if>>
 <br><br>
 
-Robin nods. "It will look nice in your room," <<he>> says.
+obin nods. "It will look nice in your room," <<he>> says.
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><</link>>
+<<link [[Next|Robin Amusements Main]]>><</link>>
 <br>
 
 
@@ -2202,7 +2300,7 @@ Robin nods. "It will look nice in your room," <<he>> says.
 <<effects>>
 
 <<if $speech_attitude is "meek">>
-	"You inspired me," you say, holding out the toy. "I'd like you to have it."
+	"You inspired me," you say, holding out  toy. "I'd like you to have it."
 <<elseif $speech_attitude is "bratty">>
 	"I'm pretty great," you say, then hold out the toy. "I'd like you to have it.
 <<else>>
@@ -2217,7 +2315,7 @@ Robin nods. "It will look nice in your room," <<he>> says.
 <</if>>
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><<pass 60>><</link>>
+<<link [[Next|Robin Amusements Main]]>><<pass 60>><</link>>
 <br>
 
 
@@ -2236,7 +2334,7 @@ Robin nods. "It will look nice in your room," <<he>> says.
 Robin clasps <<his>> hands together. "That's a wonderful idea! I'll pass it along later."
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><<pass 60>><</link>>
+<<link [[Next|Robin Amusements Main]]>><<pass 60>><</link>>
 <br>
 
 :: Robin Amusements Claw Lose Accept
@@ -2253,7 +2351,7 @@ Robin clasps <<his>> hands together. "That's a wonderful idea! I'll pass it alon
 Robin smiles and nods.
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><<pass 60>><</link>>
+<<link [[Next|Robin Amusements Main]]>><<pass 60>><</link>>
 <br>
 
 :: Robin Amusements Claw Lose Apologise
@@ -2275,7 +2373,7 @@ Robin puts a reassuring hand on your back. "It's okay! I didn't succeed either. 
 <</if>>
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><<pass 60>><</link>>
+<<link [[Next|Robin Amusements Main]]>><<pass 60>><</link>>
 <br>
 
 :: Robin Amusements Claw Lose Hit
@@ -2303,7 +2401,7 @@ Robin puts a reassuring hand on your back. "It's okay! I didn't succeed either. 
 <</if>>
 <br><br>
 
-<<link [[Next|Robin Amusements Cream]]>><</link>>
+<<link [[Next|Robin Amusements Main]]>><</link>>
 <br>
 
 :: Robin Amusements Coin
@@ -2312,11 +2410,11 @@ Robin puts a reassuring hand on your back. "It's okay! I didn't succeed either. 
 You approach the coin pushers with Robin. "This one looks ready to fall," <<he>> says, gesturing at one, and taking the machine beside it.
 <br><br>
 
-The coins indeed look ready to fall, but no matter how many additional coins you add, you're never able to get more than a few to fall at once. Robin's luck is no better. <<He>> occasionally dips to check on <<his>> winnings, but <<his>> funds grow ever smaller.
+The coins indeed look ready to fall, but no matter how many additional coins you add, you're never able to get more than a few to fall at once. Robin's luck is no better. <<He>> occasionally dips to check <<his>> winnings, but <<his>> funds grow ever smaller.
 <br><br>
 
 <<if $robinromance>>
-	You crouch to check on your winnings, and find considerably more than you were expecting. Almost enough to replace your losses.
+	You crouch to check on yourself, and find more than you were expecting. Almost enough to replace your losses.
 	<br><br>
 
 	<<link [[Accept it|Robin Amusements Coin Accept]]>><</link>>
@@ -2324,10 +2422,15 @@ The coins indeed look ready to fall, but no matter how many additional coins you
 	<<link [[Accuse Robin of giving you his coins|Robin Amusements Coin Accuse]]>><</link>>
 	<br>
 <<else>>
-	You crouch to check on your winnings. You've recouped maybe half your losses. Robin doesn't seem to have faired any better.
+	You crouch to check on yourself, and find that you've recouped less than half of your losses. Robin hasn't faired much better.
 	<br><br>
+	The rest of the your coins soon disappear, along with your further meagre winnings. Robin stands back, looking satisfied despite the result.
+	<br><br>
+	"That was fun," <<He>> says. "It's a shame we didn't win more, but we've prepared them for the next person."
+	<br><br>
+	
 
-	<<link [[Next|Robin Amusements Cream]]>><</link>>
+	<<link [[Next|Robin Amusements Main]]>><</link>>
 	<br>
 <</if>>
 
@@ -2335,40 +2438,564 @@ The coins indeed look ready to fall, but no matter how many additional coins you
 :: Robin Amusements Coin Accept
 <<effects>>
 
-<<if $speech_attitude is "bratty">>
-	
-<<elseif $speech_attitude is "meek">>
-
-<<else>>
-
-<</if>>
+The rest of the your coins soon disappear, along with your further meagre winnings. Robin stands back, looking satisfied despite the result.
+<br><br>
+"That was fun," <<He>> says. "It's a shame we didn't win more, but we've prepared them for the next person."
 <br><br>
 
-
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
 
 :: Robin Amusements Coin Accuse
 <<effects>>
 
+<<if $speech_attitude is "bratty">>
+	"I appreciate the gesture," you say. "But I don't need your charity."
+	<br><br>
+	"Sorry," Robin replies. "I thought I was sneaky enough."
+	<br><br>
+<<elseif $speech_attitude is "meek">>
+	"Thank you for giving me your coins," you say. "But you shouldn't have."
+	<br><br>
+	"You caught me," Robin says with a smile. "I thought you woulnd't notice."
+<<else>>
+	"You added your coins to my pile," you say.
+	<br><br>
+	"Sorry," Robin says with a smile. "I thought I'd get away with it."
+<</if>>
+<br><br>
+
+<<He>> insists you use <<his>> coins, though it doesn't amount to much. They soon disappear, along with your meagure winnings.
+<br><br>
+
+"That was fun," <<He>> says. "It's a shame we didn't win more, but we've prepared it for the next person."
+<br><br>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
 
 
 
-:: Robin Amusements Gallery
+:: Robin Amusements Shooting
 <<effects>>
+
+You approach the shooting gallery. Robin takes one of the guns, eager, and pushes a coin into the machine. You're able to raise your own gun just in time.
+<br><br>
 
 <<if $stat_shoot gte 1000>>
+	A series of electronic targets spring to life. You take each down almost as soon as they appear, and it's soon clear that Robin isn't quick enough to keep up with you. You're too experienced with the real thing.
+	<br><br>
 
+	When it's over, a long ream of tickets trails across the floor. "You're so good at this," Robin says. "Sorry I didn't help much." <span class="teal">You win many prize tickets.</span>
+	<br><br>
+	<<set $robin_amusements.tickets += 100>>
 <<else>>
+	A series of electronic targets spring to life. Together, you and Robin take down each target in turn, though they come thick and fast, and you notice you're missing hits.
+	<br><br>
 
+	The game ends, and a ream of tickets emerges from the machine. "That was fun," Robin says. <span class="blue">You win some prize tickets.</span>
+	<br><br>
+	<<set $robin_amusements.tickets += 50>>
 <</if>>
 
-:: Robin Amusements Cream
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+:: Robin Amusements Ring
 <<effects>>
 
-<<if Weather.precipitation is "rain">>
-	
-<<elseif Weather.isFreezing>>
-	
+Robin pushes a coin into the ring toss machine, and a number of rings roll to <<his>> knee. The lights change, an array of thick wooden pins emerge from the depths, music blares, Robin concentrates. <<He>> tosses the first ring.
+<br><br>
+
+<<if currentSkillValue("handskill") gte 600>>
+	You do likewise. Each of your rings lands atop the the far pin, giving you the highest score, until it's full. You're forced to make easier shots. Robin has more mixed results. The pins on his side each have one or too rings at their base.
+	<br><br>
+
+	<<link [[Try to fill Robin's high score pins|Robin Amusements Ring Try]]>><<npcincr Robin love 1>><</link>><<glove>>
+	<br>
+	<<link [[Focus on your own|Robin Amusements Ring Focus]]>><</link>><<ghandskill>>
+	<br>
 <<else>>
+	You do likewise. Maybe half your shots miss their mark, the other land on different pins. Robin doesn't far any better, but <<he>> seems to be enjoying <<himself>>
+	<br><br>
+
+	The music reaches a crescendo, and the pins retract, leaving the rings to slide down into the machine. Robin looks up at the score, and a modest line of tickets emerges by your knees. <span class="blue">You win some prize tickets.</span>
+	<br><br>
+	<<set $robin_amusements.tickets += 50>>
 	
+	<<link [[Next|Robin Amusements Main]]>><</link>>
+	<br>
 <</if>>
 
+:: Robin Amusements Ring Try
+<<effects>> 
+
+You throw your rings at the top pin on Robin's side of the machine. It's a bit more awkward, but you manage to fill the pin right as the music reaches a crescendo.
+<br><br>
+
+The pins retract, leaving the rings to slide down into the machine. Robin looks up at the score, and a considerable line of tickets emerges by your knees. <span class="green">You win a lot of prize tickets.</span>
+<br><br>
+<<set $robin_amusements.tickets += 150>>
+
+Robin applauds. "I usually do best at ring toss," Robin says. "When I come with my friends. But you're so much better than anyone."
+<br><br>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+
+:: Robin Amusements Ring Focus
+<<effects>>
+
+You focus on filling the rings on your side, landing each one. The music reaches a crescendo, and the pins retract, leaving the rings to slide into the machine.
+<br><br>
+
+Robin looks up at the score, and a long line of tickets emerges by your knees. <span class="teal">You win many prize tickets.</span>
+<br><br>
+<<set $robin_amusements.tickets += 100>>
+
+Robin looks at the tickets with awe. "You're so good! I'll have to pay more attention to how you throw."
+<br<br>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+:: Robin Amusements Slot
+<<effects>>
+
+You approach the slot machines with Robin. <<He>> chooses one with an ocean aesthetic. 
+<<robin_amusements_slots_pull>>
+A <<robin_amusements_slots_stop>>, <<robin_amusements_slots_stop>>, and <<robin_amusements_slots_stop>> sit in the three slots. 
+<<robin_amusements_slots_pull>>
+You stand next to <<him>>, at a similar machine, except with a <<robin_amusements_slots_stop>>, <<robin_amusements_slots_stop>>, and <<robin_amusements_slots_stop>> displayed.
+<br><br>
+
+You push in a coin, and press the button. Robin does likewise. The slots roll.
+<<robin_amusements_slots_pull>>
+They come to a stop on a <<robin_amusements_slots_stop>>, <<robin_amusements_slots_stop>>, and <<robin_amusements_slots_stop>>. Not a win.
+<br><br>
+
+<<if random(1, 100) is 100>>
+	You and Robin both get some minor wins, but not enough to recoup all your loses. Your last coin falls into the machine, to no avail.
+	<br><br>
+	Robin pushes in <<his>> last coin. The slots spin. Starfish. Starfish. Starfish.
+	<br><br>
+	<span class="gold">A stream of coins falls from the machine,</span> drawing attention from all over the amusements. Robin stands immobile, shocked and bewildered. The excitement comes all at once. <<He>> jumps and claps.
+	<br><br>
+	"I won," <<he>> says. "I really won. There's so much." A smiling member of staff hands <<him>> a plastic bag. Robin crouches, and scoops in the coins.
+	<br><br>
+	"The machine says there's <span class="gold">£200</span> here." <<He>> says. "It's heavy."<<gdom>><<npcincr Robin dom 1>>
+	<br><br>
+	<<set $robin_amusements.slot_win to 1>>
+	<<link [[Next|Robin Amusements Main]]>><</link>>
+	<br>
+<<else>>
+	<<if random(1, 100) is 100>>
+		You have poor luck, not even getting enough minor wins to recoup your losses. You push in your last coin. Starfish. Starfish. Starfish.
+		<br><br>
+		<span class="gold">A stream of coins falls from the machine,</span> drawing attention from all over the amusements. Robin claps <<his>> hands together in joy. "That's so much," <<he>> says. "I'll get you a bag."
+		<br><br>
+		You count your winnings. You make <<moneyGain 200 false false>>.<<llstress>><<stress -12>>
+		<br><br>
+		<<link [[Next|Robin Amusements Main]]>><</link>>
+		<br>
+	<<else>>
+		You and Robin both get some minor wins, but not enough to recoup all your loses. Your last coin falls into the machine, to no avail.
+		<br><br>
+
+		"That was fun," Robin says, cheerful.
+		<br><br>
+
+		<<link [[Next|Robin Amusements Main]]>><</link>>
+		<br>
+	<</if>>
+<</if>>
+
+:: Robin Amusements Dance
+<<effects>>
+
+You approach the dance machine with Robin. There are two platforms beside one another, and the screens are linked. Robin pushes in a coin, and you do likewise.
+<br><br>
+
+Music begins, and the figures on the screen tap their feet. Arrows scroll down the screen. You ready yourself.
+<br><br>
+<<if currentSkillValue('danceskill') gte 600>>
+	The steps are easy, at first. You and Robin clear two whole songs without trouble. The third quickens the pace, and complexity. You're able to keep up just fine, but Robin struggles. Together you succeed, but the fourth song is harder still.
+	<br><br>
+	You hear Robin pant beside you. You know <<hes>> determined not to let you down. <<He>> tries until <<his>> legs give way. <<He>> grasps your arm as <<he>> falls, and together you tumble to the ground.
+	<br><br>
+
+	<<He>> lands on top. "I'm sorry," <<he>> says as a game over screen appears on the machine above. "I thought I was doing well."
+	<br><br>
+
+	<<link [[Reassure Robin|Robin Amusements Dance Reassure]]>><<npcincr Robin love 1>><</link>><<glove>>
+	<br>
+	<<link [[Just stand|Robin Amusements Dance Stand]]>><</link>>
+	<br>
+	
+	<<if $wolfgirl gte 6>>
+		<<link [[Lick Robin's face|Robin Amusements Dance Lick]]>><<npcincr Robin lust 1>><</link>><<wolfgirl>><<glust>>
+		<br>
+	<</if>>
+	<<if $robinromance is 1>>
+		<<link [[Kiss|Robin Amusements Dance Kiss]]>><<npcincr Robin love 1>><<npcincr Robin lust 1>><</link>><<kissvirginitywarning>><<glust>><<glove>>
+	<</if>>
+<<else>>
+	The steps are easy, at first. You and Robin clear two whole songs, but the third quickens the pace, and complexity. You try to keep up, but the order seems designed to catch you out. The song ends, and a game over screen appears.
+	<br><br>
+
+	"We did okay," Robin says, smiling and flushed with exertion. A length of tickets emerges from the machine.
+	<br><br>
+
+	<span class="blue">You win some prize tickets.</span>
+	<br><br>
+	<<set $robin_amusements.tickets += 50>>
+	<<link [[Next|Robin Amusements Main]]>><</link>>
+	<br>
+<</if>>
+
+:: Robin Amusements Dance Reassure
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"You did very well," you say. "There's nothing to apologise for."
+<<elseif $speech_attitude is "bratty">>
+	"Don't worry," you say. "Not everyone can be as skilled as me."
+<<else>>
+	"It's okay," you say. "We'll do better next time."
+<</if>>
+<br><br>
+
+"You're a very good dancer," <<he>> says, climbing to <<his>> feet. "I hope I can learn to be as good as you someday."
+<br><br>
+
+A ream of tickets emerge from the machine. <span class="teal">You win many prize tickets.</span>
+<br><br>
+
+<<set $robin_amusements.tickets += 100>>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+:: Robin Amusements Dance Stand
+<<effects>>
+
+You rise to your feet. Robin rolls to get out of your way, then does likewise.
+<br><br>
+
+A ream of tickets emerge from the machine. <span class="teal">You win many prize tickets.</span>
+<br><br>
+
+<<set $robin_amusements.tickets += 100>>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+:: Robin Amusements Dance Lick
+<<effects>>
+
+You assault Robin's face with a barrage of licks. <<He>> starts giggling. "Why are you doing that?" <<he>> asks. "You're not a dog." <<He>>'s still laughing after rising to <<his>> feet.
+<br><br>
+
+A ream of tickets emerge from the machine. <span class="teal">You win many prize tickets.</span>
+<br><br>
+
+<<set $robin_amusements.tickets += 100>>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+:: Robin Amusements Dance Kiss
+<<effects>>
+
+You lean forwards, and plant a kiss on Robin's lips. You both close your eyes for a moment. <<His>> face is as warm as it looks.
+<<takeKissVirginity "Robin" "romantic">>
+<br><br>
+
+"Oi," says a voice. "You two lovebirds go find a nest somewhere. This is a decent establishment."
+<br><br>
+
+"Sorry," Robin says. <<He>> pulls away, and you both rise to your feet asa ream of tickets emerges from the machine. <span class="teal">You win many prize tickets.</span>
+<br><br>
+
+<<set $robin_amusements.tickets += 100>>
+
+<<link [[Next|Robin Amusements Main]]>><</link>>
+<br>
+
+
+:: Robin Amusements Lollipop 2
+<<effects>>
+
+You trade 300 tickets for two giant lollipops. Robin keeps laughing at their size as you walk along the promenade. "I wonder who had the idea to make them so large," <<he>> says. "I'm not going to be able to finish it soon, and it'll be hard to hide from Bailey." <<He>> doesn't sound frightened.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Lollipop
+<<effects>>
+
+You trade 150 tickets for a giant lollipop. Robin laughs at its size as you walk down the promenade. "Should we stick to a side each?" <<he>> asks when <<he>> can manage to. "We're not going to be able to finish it, and it'll be hard to hide from Bailey." <<He>> doesn't sound frightened.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Bubble 2
+<<effects>>
+
+You trade 200 tickets for a bubble blower each, and walk onto the promenade. Robin stands at the edge, and blows bubbles out over the sea. You stand beside <<him>>, and do likewise. The sea answers with a playful spray. Robin laughs, and blows all the harder.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Bubble
+<<effects>>
+
+You trade 100 tickets for a bubble blower, and walk onto the promenade. Robin is careful to make sure you get plenty of time with it, despite being eager to have a go <<himself>>. <<He>> blows bubbles out over the sea, and the sea answers with a playful spray. Robin laughs, and blows all the harder.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Sweets 2
+<<effects>>
+
+You trade 100 tickets for two small bags of sweets. There's a variety inside. Boiled sweets, sherbert, milk chocolate. You walk along the promenade beside Robin, chatting and eating the sweets. You make it most of the way along before running out.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Sweets
+<<effects>>
+
+You trade 50 tickets for a small bag of sweets. There's a variety inside. Boiled sweets, sherbert, milk chocolate. Robin waits for you to have one before having one <<himself>>. You finish the bag before you make it far down the promenade.
+<br><br>
+
+<<robin_amusements_end_links>>
+
+:: Robin Amusements Cafe
+<<effects>>
+
+<<generate2>>
+Robin takes you to a fancy cafe near an old pier. The other patrons look like tourists. You and Robin sit at a small table, by the window. You look at the menu. It's very expensive.
+<br><br>
+
+
+A
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+arrives to take your order.
+<br><br>
+
+"I'll have a deluxe sandwich please," Robin says. "With cheddar, and a cup of tea."
+<br><br>
+The
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+looks at you.
+<br><br>
+
+<<link [[Deluxe sandwich (Expensive)|Robin Amusements Cafe Sandwich]]>><<trauma -6>><<stress -6>><</link>><<ltrauma>><<lstress>>
+<br>
+<<link [[Scones (Not so expensive)|Robin Amusements Cafe Scones]]>><<set $robinmoney += 20>><<trauma -6>><<stress -6>><</link>><<ltrauma>><<lstress>>
+<br>
+<<link [[Salad (Relatively cheap)|Robin Amusements Cafe Salad]]>><<set $robinmoney += 40>><<trauma -6>><<stress -6>><</link>><<ltrauma>><<lstress>>
+<br>
+
+:: Robin Amusements Cafe Sandwich
+<<effects>>
+
+The
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+arrives with two sandwiches, both served with chips. "It looks so nice," Robin says, admiring the meal in front of <<him>>. "Almost too good to eat."
+<br><br>
+
+<<He>> does it eat, though, sparing not a crumb. It's a nice sandwich, fat with lettuce, tomato, and battered cod.
+<br><br>
+
+Robin places <<his>> cutlery on the plate when finished.
+<br><br>
+
+<<link [[Remain silent|Robin Amusements Cafe End]]>><</link>>
+<br>
+<<link [[Thank Robin for the meal|Robin Amusements Cafe Meal]]>><<npcincr Robin love 1>><</link>><<glove>>
+<br>
+<<if $robinromance is 1>>
+	<<link [[Thank Robin for the date|Robin Amusements Cafe Date]]>><<npcincr Robin love 1>><<npcincr Robin dom 1>><</link>><<glove>><<gdom>>
+	<br>
+<</if>>
+
+:: Robin Amusements Cafe Scones
+<<effects>>
+
+The
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+arrives with a sandwich for Robin, and a plate of scones for you. It arrives with a jug of cream, and a pot of jam, for you to apply at your leisure. The scones themselves are sweet, buttery, and spotted with fruit.
+<br><br>
+
+Robin seems to enjoy his sandwich, as well as the accompanying chips. <<He>> places <<his>> cutlery on the plate when finished.
+<br><br>
+
+<<link [[Remain silent|Robin Amusements Cafe End]]>><</link>>
+<br>
+<<link [[Thank Robin for the meal|Robin Amusements Cafe Meal]]>><<npcincr Robin love 1>><</link>><<glove>>
+<br>
+<<if $robinromance is 1>>
+	<<link [[Thank Robin for the date|Robin Amusements Cafe Date]]>><<npcincr Robin love 1>><<npcincr Robin dom 1>><</link>><<glove>><<gdom>>
+	<br>
+<</if>>
+
+:: Robin Amusements Cafe Salad
+<<effects>>
+
+The
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+arrives with a sandwich for Robin, and a salad for you. It comes with a garlic and cheese garnish.
+<br><br>
+
+Robin seeems to enjoy <<his>> sandwich, as well as the accompanying chips. Robin places <<his>> cutlery on the plate when finished.
+<br><br>
+
+<<link [[Remain silent|Robin Amusements Cafe End]]>><</link>>
+<br>
+<<link [[Thank Robin for the meal|Robin Amusements Cafe Meal]]>><<npcincr Robin love 1>><</link>><<glove>>
+<br>
+<<if $robinromance is 1>>
+	<<link [[Thank Robin for the date|Robin Amusements Cafe Date]]>><<npcincr Robin love 1>><<npcincr Robin dom 1>><</link>><<glove>><<gdom>>
+	<br>
+<</if>>
+
+
+
+:: Robin Amusements Cafe Meal
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Thank you for such a lovely meal," you say.
+<<elseif $speech_attitude is "bratty">>
+	"Thanks for paying," you say.
+<<else>>
+	"Thank you for the meal," you say.
+<</if>>
+<br><br>
+
+Robin smiles, and dabs <<his>> mouth with a napkin. "You're welcome!" <<he>> says. "I wanted to share my good luck."
+<br><br>
+
+
+<<link [[Next|Robin Amusements Cafe End]]>><</link>>
+<br>
+
+
+:: Robin Amusements Cafe Date
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Thank you for taking me on a date," you say, looking aside.
+	<br><br>
+	Robin looks aside as well, a blush spreading on <<his>> face. "I just meant to share my good luck," <<he>> says. "But it is like a date."
+	<br><br>
+<<elseif $speech_attitude is "bratty">>
+	"Thanks for taking me on a date," you say.
+	<br><br>
+	Robin looks aside, a blush spreading on <<his>> face. "I just meant to share my good luck," <<he>> says. "But it is like a date."
+	<br><br>
+<<else>>
+	"Thank you for inviting me on a date," you say.
+	<br><br>
+	Robin looks aside, a blush spreading on <<his>> face. "I just meant to share my good luck," <<he>> says. "But it is like a date."
+	<br><br>
+<</if>>
+
+<<if C.npc.Robin.dom gte 50>>
+	Robin smiles and meets your gaze. <<He>> reaches across the table, and rests a gentle hand on yours.
+<<else>>
+	Robin smiles, and tries to meet your gaze, but can't manage it.
+<</if>>
+<br><br>
+
+<<link [[Next|Robin Amusements Cafe End]]>><</link>>
+<br>
+
+:: Robin Amusements Cafe End
+<<effects>>
+
+Robin tips out <<his>> winnings to pay for the meal. The one pound coins clatter onto the table, drawing some attention from the other patrons. The
+<<if $NPCList[1].gender is "m">>
+	waiter
+<<else>>
+	waitress
+<</if>>
+flashes a knowing smile.
+<br><br>
+
+<<if $robinromance is 1>>
+	Bill paid, you return to the orphanage with Robin, hand in hand.
+<<else>>
+	Bill paid, you return to the orphanage with Robin.
+<</if>>
+<<if $robin_amusements.toy>>
+	You make a detour to deliver the toy you won from the claw machine to the orphans. Robin seems as happy as they.<<ghope>><<hope 1>>
+	<br><br>
+<</if>>
+You find Robin's room as you left it.
+<br><br>
+
+<<link [[Next|Robin Options]]>><<pass 15>><<robin_amusements_end>><</link>>
+<br>
+
+
+:: Robin Amusements Cafe Refuse
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I think it will be safer to save it for a rainy day," you say.
+<<elseif $speech_attitude is "bratty">>
+	"You don't have money to waste on me," you say.
+<<else>>
+	"You should keep it for a rainy day," you say.
+<</if>>
+<br><br>
+
+Robin opens <<his>> mouth, then closes it and nods. "You're right. Let's get back to the orphanage."
+<br><br>
+
+<<if $robin_amusements.toy>>
+	<<if $robinromance is 1>>
+		You return to the orphanage with Robin, hand in hand.
+	<<else>>
+		You return to the orphanage with robin.
+	<</if>>
+	You deliver the toy you won in the claw machine to the orphans. Robin seems as happy as they.<<ghope>><<hope 1>>
+	<br><br>
+	<<His>> room is as you left it.
+	<br><br>
+<<else>>
+	<<if $robinromance is 1>>
+		You return to the orphanage with Robin, hand in hand. <<His>> room is as you left it.
+	<<else>>
+		You return to the orphanage with robin. <<His>> room is as you left it.
+	<</if>>
+<</if>>
+<br><br>
+
+<<link [[Next|Robin Options]]>><<pass 15>><<robin_amusements_end>><</link>>
+<br>
