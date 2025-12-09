@@ -378,13 +378,11 @@ const Time = (() => {
 		},
 		get dayState() {
 			const hour = currentDate.hour;
-			if (hour < 6 || hour >= 21) {
-				return "night";
-			}
-			if (hour >= 18) {
-				return "dusk";
-			}
-			return hour >= 9 ? "day" : "dawn";
+			if (hour < 6) return "night";
+			if (hour < 9) return "dawn";
+			if (hour < 18) return "day";
+			if (hour < 21) return "dusk";
+			return "night";
 		},
 		get nextSchoolTermStartDate() {
 			return getNextSchoolTermStartDate(currentDate);
