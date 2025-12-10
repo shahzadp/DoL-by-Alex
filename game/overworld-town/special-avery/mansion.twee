@@ -997,34 +997,168 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 <<effects>><<avery_mansion>>
 <<npc "Avery">><<person1>>
 
-<<if $avery_mansion.schedule is "drink">>
-	Avery watches you over the rim of <<his>> glass.
-<<elseif $avery_mansion.schedule is "pool">>
-	Avery acknowledges you with a glance, then keeps swimming.
-<<elseif $avery_mansion.schedule is "garden">>
-	Avery focuses on trimming the bush in front of <<him>>.
-<<elseif $avery_mansion.schedule is "lounge">>
-	Avery reclines on the sofa, <<his>> arms outstretched.
-<<elseif $avery_mansion.schedule is "study">>
-	Avery thumbs through the pages of the book in front of <<him>>.
-<<elseif $avery_mansion.schedule is "bath">>
-	Avery reclines in the bath, and regards you.
+
+<<if $daily.avery.talk.ignore or $daily.avery.talk.limit>> /* Avery's ignoring the PC */
+	Avery
+	<<if $avery_mansion.schedule is "sleep">>
+		is completely hidden by <<his>> blanket.
+	<<elseif $avery_mansion.schedule is "bath">>
+	keeps <<his>> eyes shut, ignoring you.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+	keeps <<his>> attention on <<his>> breakfast, ignoring you.
+	<<elseif $avery_mansion.schedule is "study">>
+	keeps <<his>> eyes on <<his>> book, ignoring you.
+	<<elseif $avery_mansion.schedule is "pool">>
+	continues <<= $averyPool.coffee ? `scrolling through <<his>> phone` : $averyPool.sunbath ? `sunbathing` : `swimming laps`>>.
+	<<elseif $avery_mansion.schedule is "garden">>
+	keeps <<his>> attention on <<his>> pruning, ignoring you.
+	<<elseif $avery_mansion.schedule is "lounge">>
+		ignores you for the television.
+	<<elseif $avery_mansion.schedule is "drink">>
+		takes a deep swig of <<his>> drink, ignoring you.
+	<<else>>
+		ignores you.
+	<</if>>
+	<br><br>
+
+	You shouldn't bother Avery anymore for today.
+
+	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+<<elseif !$daily.avery.talk.limit and [PC has hit the daily talk limit]>>
+	<<set $daily.avery.talk.limit to true>>
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 80>>
+		<<if $avery_mansion.schedule is "pool" and $averyPool.swim>>
+			When you try to get Avery's attention, <<he>> ignores you entirely, focusing only on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation. You shouldn't bother Avery anymore for today.
+
+			<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+		<<else>>
+			When you open your mouth to talk, Avery snarls and grabs you by the throat, cutting off anything you might have said. <<His>> nails dig harshly into your skin. <<pain 1>><<gpain>>
+
+			"I've had enough of your incessant chattering," <<he>> says, voice dangerously low. "You're going to leave me alone, or you're going to regret it. Understand?" <<He>> squeezes down. "Nod if you understand."
+
+			<<link [[Nod|Mansion Talk Limit]]>><<set $phase to 1>><<sub 1>><<npcincr Avery dom 1>><</link>><<gdom>>
+			<<link [[Refuse|Mansion Talk Limit]]>><<set $phase to 2>><<def 1>><<npcincr Avery dom -1>><<npcincr Avery rage 1>><</link>><<ldom>><<garage>>
+		<</if>>
+	<<else>>
+		Avery
+		<<if $avery_mansion.schedule is "bath">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				glares at you with a scowl. "It is <<[time]>> in the morning—don't you have better things to do than waste my fucking time?" <<He>> makes a dismissive gesture. "Leave me be."
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				shoots you an irritated look. "It is <<[time]>> in the morning—don't you have better things to do than talk my bloody ear off?" <<He>> makes a dismissive gesture. "Leave me be."
+			<<else>>
+				sighs curtly. "It is <<[time]>> in the morning—don't you have better things to do <<= $averyragerevealed is 1 ? `than natter on like this` : `with your time`>>?" <<He>> raises an eyebrow.
+			<</if>>
+		<<elseif $avery_mansion.schedule is "breakfast">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				glares at you with a scowl.
+
+				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do than waste my fucking time?" <<He>> makes a dismissive gesture. "Leave me be."
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				shoots you an irritated look.
+
+				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do than talk my bloody ear off?" <<He>> makes a dismissive gesture. "Leave me be."
+			<<else>>
+				sighs curtly. 
+
+				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do <<= $averyragerevealed is 1 ? `than natter on like this` : `with your time`>>?" <<He>> raises an eyebrow.
+			<</if>>
+		<<elseif $avery_mansion.schedule is "study" or $avery_mansion.schedule is "lounge" or $avery_mansion.schedule is "drink">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				glares at you with a scowl. 
+
+				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture and
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				shoots you an irritated look. 
+
+				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture and
+			<<else>>
+				frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
+
+				"That's enough," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> then 
+			<</if>>
+			returns 
+			<<if $avery_mansion.schedule is "study">>
+				<<his>> attention to <<his>> book.
+			<<elseif $avery_mansion.schedule is "lounge">>
+				<<his>> attention to the <<= C.npc.Avery.rage gte 20 ? `news` : `football game`>>.
+			<<else>>
+				<<= C.npc.Avery.rage gte 20 ? `to <<his>> drinking` : `<<his>> attention to <<his>> paintings`>>.
+			<</if>>
+		<<elseif $avery_mansion.schedule is "pool">>
+			<<if $averyPool.swim>>
+				When you try to get Avery's attention, <<he>> ignores you entirely, focusing only on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation.
+			<<else>>
+				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+					glares at you with a scowl. 
+
+					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
+				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+					shoots you an irritated look. 
+
+					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
+				<<else>>
+					frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
+
+					"That's enough," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> 
+				<</if>>
+			then <<= $averyPool.sunbath ? `slides <<his>> sunglasses back into place` : `returns <<his>> attention to <<his>> phone`>>.
+			<</if>>
+		<<elseif $avery_mansion.schedule is "garden">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				glares at you with a scowl.
+
+				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as you should know<</if>>, and I won't have you distracting me by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				shoots you an irritated look.
+
+				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as you should know<</if>>, and I won't have you distracting me with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
+			<<else>>
+				frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
+
+				"I'm a bit busy at the moment, <<pcpetname "Avery">>," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as I'm sure you know<</if>>, so I can't spend any more time on <<= $averyragerevealed is 1 ? `listening to you natter on` : `chatting`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> 
+			<</if>>
+		then goes back to <<his>> pruning.
+		<</if>>
+	<br><br>
+
+	You shouldn't bother Avery anymore for today.
+
+	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+	<</if>>
+
 <<else>>
-	Avery acknowledges your presence with a glance.
-<</if>>
-<br><br>
 
-<<if !$avery_mansion.study_unlocked>>
-	<<socialiseicon "ask">><<link [[Ask to enter the study|Mansion Talk Study]]>><</link>>
-	<br>
-<</if>>
-<<if $avery_mansion.assault_pair is 1>>
-	<<ind>><<link [[Consider telling Avery you were assaulted in a spare room|Mansion Talk Assault]]>><<stress 6>><</link>><<gstress>>
-	<br>
-<</if>>
+	<<if $avery_mansion.schedule is "drink">>
+		Avery watches you over the rim of <<his>> glass.
+	<<elseif $avery_mansion.schedule is "pool">>
+		Avery acknowledges you with a glance, then keeps swimming.
+	<<elseif $avery_mansion.schedule is "garden">>
+		Avery focuses on trimming the bush in front of <<him>>.
+	<<elseif $avery_mansion.schedule is "lounge">>
+		Avery reclines on the sofa, <<his>> arms outstretched.
+	<<elseif $avery_mansion.schedule is "study">>
+		Avery thumbs through the pages of the book in front of <<him>>.
+	<<elseif $avery_mansion.schedule is "bath">>
+		Avery reclines in the bath, and regards you.
+	<<else>>
+		Avery acknowledges your presence with a glance.
+	<</if>>
+	<br><br>
 
-<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
-<br>
+	<<if !$avery_mansion.study_unlocked>>
+		<<socialiseicon "ask">><<link [[Ask to enter the study|Mansion Talk Study]]>><</link>>
+		<br>
+	<</if>>
+	<<if $avery_mansion.assault_pair is 1>>
+		<<ind>><<link [[Consider telling Avery you were assaulted in a spare room|Mansion Talk Assault]]>><<stress 6>><</link>><<gstress>>
+		<br>
+	<</if>>
+
+	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+	<br>
+
+<</if>>
 
 
 :: Mansion Talk Assault
