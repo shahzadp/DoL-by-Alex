@@ -1,8 +1,8 @@
 const Utils = (() => {
 	function getStack() {
 		let output = `:: ${V.passage}`;
-		if (DOL.Stack.length >= 1) {
-			output += ` [${DOL.Stack.join(", ")}]`;
+		if (ExecutionContext.instance.callStack.length >= 1) {
+			output += ` [${ExecutionContext.instance.callStack.join(", ")}]`;
 		}
 		return output;
 	}

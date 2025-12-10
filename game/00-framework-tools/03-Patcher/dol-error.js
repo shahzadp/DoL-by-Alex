@@ -4,7 +4,7 @@ function getDebuggingInfo() {
 	if (V == null) return "SugarCube variables could not be loaded.";
 	const response = {
 		passage: V.passage,
-		stack: [...DOL.Stack],
+		stack: [...ExecutionContext.instance.callStack],
 		phase: V.phase,
 		rng: V.rng,
 		danger: V.danger,
