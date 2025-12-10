@@ -19,11 +19,6 @@ window.DOL = {
 	 * See {@link ./02-version/.init.js} for more.
 	 */
 	Versions: {},
-	/**
-	 * General purpose call stack containing the widget names as they are called.
-	 */
-	Stack: [],
-
 	// The following are patches to make javascript execution more consistent (see comment below).
 	State,
 	setup,
