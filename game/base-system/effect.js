@@ -273,7 +273,7 @@ function effects() {
 		element("span", `The school plays are being held on Cliff Street tonight from ${ampm(17, 0)} until ${ampm(21, 0)}.`, "gold");
 	}
 
-	if (V.studyBooks.rented !== "none" && V.book_rent_timer === 0 && !V.studyBookDueWarning && Time.schoolTerm) {
+	if (V.studyBooks?.rented !== "none" && V.book_rent_timer === 0 && !V.studyBookDueWarning && Time.schoolTerm) {
 		V.studyBookDueWarning = 1;
 		element("span", `You have a library book due today.`, "gold");
 	}
