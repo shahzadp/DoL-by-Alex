@@ -131,6 +131,6 @@ Macro.add("runeventpool", {
 		// E.G: ['eventAmbient', >>'autumn_anystreet_2'<<, 'generate1']
 		ExecutionContext.instance.callStack.push(new StackMacroMeta(pick.name));
 		jQuery(this.output).wiki(pick.content);
-		ExecutionContext.instance.callStack.Stack.pop();
+		ExecutionContext.instance.callStack.pop();
 	},
 });
