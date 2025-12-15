@@ -3006,8 +3006,7 @@ Renderer.CanvasModels.main = {
 					return options.worn.under_upper.setup.pregType === "split"
 						&& options.shirt_mask_clip_src;
 
-				return options.worn.under_upper.setup.formfitting
-					&& options.under_upper_fitted_clip_src;
+				return options.upperMask;
 			}
 		}),
 		"under_upper_fitted_left": genlayer_clothing_fitted_left("under_upper", {
@@ -3026,7 +3025,22 @@ Renderer.CanvasModels.main = {
 				return options.body_type === "soft" ? -2 : 2;
 			},
 		}),
-		"under_upper_belly_2": genlayer_clothing_belly_2("under_upper", {
+		"under_upper_fitted_left_acc": genlayer_clothing_fitted_left_acc("under_upper", {
+			masksrcfn(options) {
+				return options.under_upper_fitted_left_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? 2 : -2;
+			},
+		}),
+		"under_upper_fitted_right_acc": genlayer_clothing_fitted_right_acc("under_upper", {
+			masksrcfn(options) {
+				return options.under_upper_fitted_right_move_src;
+			},
+			dxfn(options) {
+				return options.body_type === "soft" ? -2 : 2;
+			},
+		}),		"under_upper_belly_2": genlayer_clothing_belly_2("under_upper", {
 			masksrcfn(options) {
 				return options.belly_mask_src;
 			},
@@ -3052,7 +3066,15 @@ Renderer.CanvasModels.main = {
 			},
 		}),
 		"under_upper_breasts": genlayer_clothing_breasts("under_upper"),
-		"under_upper_acc": genlayer_clothing_accessory('under_upper'),
+		"under_upper_acc": genlayer_clothing_accessory('under_upper', {
+			masksrcfn(options) {
+				if (options.belly >= 19 && options.worn.upper.setup.pregType == "split")
+					return options.worn.under_upper.setup.pregType === "split"
+						&& options.shirt_mask_clip_src;
+
+				return options.upperMask;
+			}
+		}),
 		"under_upper_breasts_acc": genlayer_clothing_breasts_acc('under_upper'),
 		"under_upper_breasts_detail": genlayer_clothing_breasts_detail("under_upper"),
 		"under_upper_back": genlayer_clothing_back_img('under_upper'),
