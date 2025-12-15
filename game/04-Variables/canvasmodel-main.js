@@ -3040,7 +3040,8 @@ Renderer.CanvasModels.main = {
 			dxfn(options) {
 				return options.body_type === "soft" ? -2 : 2;
 			},
-		}),		"under_upper_belly_2": genlayer_clothing_belly_2("under_upper", {
+		}),
+		"under_upper_belly_2": genlayer_clothing_belly_2("under_upper", {
 			masksrcfn(options) {
 				return options.belly_mask_src;
 			},
