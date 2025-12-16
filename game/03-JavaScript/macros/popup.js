@@ -50,6 +50,16 @@ Macro.add("dialog", {
 			$("#ui-dialog").addClass("closeBlocked");
 		}
 
+		document.addEventListener(
+			"keyup",
+			ev => {
+				if (ev.code === "Escape" && Dialog.isOpen()) {
+					ev.preventDefault();
+					ev.stopImmediatePropagation();
+				}
+			},
+			true
+		);
 		Dialog.open();
 	},
 });
