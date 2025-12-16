@@ -457,7 +457,7 @@ class XrayCombatMapper {
 		penetrator.penetratedType =
 			V.enemytype === "machine"
 				? "machine"
-				: V.penisstate !== 0 && ["tentacle", "tentacledeep"].includes(V.penisstate)
+				: V.penisstate !== 0 && (["tentacle", "tentacledeep"].includes(V.penisstate) || V.penistarget === "tentacles")
 				? "tentacle"
 				: V.NPCList[V.penistarget].type;
 

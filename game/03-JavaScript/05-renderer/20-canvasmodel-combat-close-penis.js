@@ -123,7 +123,7 @@ const combatClosePenis = {
 				return (
 					!!options.showPenis &&
 					!!V.player.ballsExist &&
-					V.player.gender === "m" &&
+					V.player.sex === "m" &&
 					(V.parasite.clit.name === "parasite" || V.parasite.penis.name === "parasite") &&
 					["mixed", "impregnation"].includes(V.earSlime.focus)
 				);
