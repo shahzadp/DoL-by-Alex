@@ -823,8 +823,8 @@
 	<<schoolskillgeneral "science" _args[0] _args[1]>>
 <</widget>>
 
-<<widget "mathsskill">>/*Faster to account for fewer lessons.*/
-	<<schoolskillgeneral "maths" `_args[0] * 1.2` _args[1]>>
+<<widget "mathsskill">>/* Faster in school to account for fewer lessons */
+	<<schoolskillgeneral "maths" `_args[0] * (V.location === "school" ? 1.2 : 1)` _args[1]>>
 <</widget>>
 
 <<widget "englishskill">>
@@ -841,7 +841,7 @@
 			<<case "science">>
 				<<scienceskill 6 "no_star">>
 			<<case "maths">>
-				<<schoolskillgeneral "maths" 6 "no_star">>
+				<<mathsskill 6 "no_star">>
 			<<case "English">>
 				<<englishskill 6 "no_star">>
 			<<case "history">>
@@ -852,7 +852,7 @@
 			<<case "science">>
 				<<scienceskill 6 "no_star">>
 			<<case "maths">>
-				<<schoolskillgeneral "maths" 6 "no_star">>
+				<<mathsskill 6 "no_star">>
 			<<case "English">>
 				<<englishskill 6 "no_star">>
 			<<case "history">>
@@ -865,12 +865,12 @@
 <<widget "schoolskill">>
 	<<if _args[0]>>
 		<<historyskill _args[0]>>
-		<<schoolskillgeneral "maths" _args[0]>>
+		<<mathsskill _args[0]>>
 		<<scienceskill _args[0]>>
 		<<englishskill _args[0]>>
 	<<else>>
 		<<historyskill>>
-		<<schoolskillgeneral "maths">>
+		<<mathsskill>>
 		<<scienceskill>>
 		<<englishskill>>
 	<</if>>
@@ -1609,10 +1609,10 @@
 					<<set _statColor to "greenbar">>
 				<</if>>
 				<div @class="_statColor" @style="'width:' + _percent + '%'"></div>
-				<<if statChange.minPain()>>
-					<<if _minPercent>>
-						<div @class="_statColor + ' meterMin'" @style="'width:' + _minPercent + '%'"></div>
-					<</if>>
+				<<if $pain gt 100>>
+					<div @class="$willpowerpain === 0 ? 'dangerbar' : 'redbar'" @style="'width:' + ($pain - 100) + '%'"></div>
+				<<elseif _minPercent>>
+					<div @class="_statColor + ' meterMin'" @style="'width:' + _minPercent + '%'"></div>
 				<</if>>
 			</div>
 		</div>
@@ -4760,49 +4760,33 @@
 <</widget>>
 
 <<widget "schoolrep">>
-	<<if _args[0] and _args[1] and (!$worn.face.type.includes("mask") or _args[1] lt 0)>>
-		<<if $schoolrep[_args[0]] lt 5 or _args[1] lt 0>>
-			<<if _args[0] is "crossdress" and ($daily.school.crossdress is undefined or _args[1] lt 0)>>
-				<<set $daily.school.crossdress to 1>>
-				<<set $schoolrep[_args[0]] += _args[1]>>
-				<<if $schoolrep.crossdress gte 5>>
-					<<set $genderknown.pushUnique("Kylar")>>
-					<<set $genderknown.pushUnique("Whitney")>>
-					<<set $genderknown.pushUnique("Sydney")>>
-					<<set $genderknown.pushUnique("Sirris")>>
-					<<set $genderknown.pushUnique("River")>>
-					<<set $genderknown.pushUnique("Doren")>>
-					<<set $genderknown.pushUnique("Winter")>>
-					<<set $genderknown.pushUnique("Mason")>>
-					<<set $genderknown.pushUnique("Leighton")>>
-					<<set $school_crossdress_message to 5>>
-				<<elseif $schoolrep.crossdress gte 1 and _args[1] gte 1>>
-					<<set $school_crossdress_message to $schoolrep.crossdress>>
-				<</if>>
-				<<set $schoolrep.crossdress to Math.clamp($schoolrep.crossdress, 0, 5)>>
-				<<if _args[1] gt 0>><<set $weekly.crossdressingFameReduction to true>><</if>>
-				<<set $schoolrep.herm to 0>> /* Reset for females that lose a "penis" */
-			<<elseif _args[0] is "herm" and ($daily.school.herm is undefined or _args[1] lt 0)>>
-				<<set $daily.school.herm to 1>>
-				<<set $schoolrep[_args[0]] += _args[1]>>
-				<<if $schoolrep.herm gte 5>>
-					<<set $genderknown.pushUnique("Kylar")>>
-					<<set $genderknown.pushUnique("Whitney")>>
-					<<set $genderknown.pushUnique("Sydney")>>
-					<<set $genderknown.pushUnique("Sirris")>>
-					<<set $genderknown.pushUnique("River")>>
-					<<set $genderknown.pushUnique("Doren")>>
-					<<set $genderknown.pushUnique("Winter")>>
-					<<set $genderknown.pushUnique("Mason")>>
-					<<set $genderknown.pushUnique("Leighton")>>
-					<<set $school_herm_message to 5>>
-				<<elseif $schoolrep.herm gte 1 and _args[1] gte 1>>
-					<<set $school_herm_message to $schoolrep.herm>>
-				<</if>>
-				<<set $schoolrep.herm to Math.clamp($schoolrep.herm, 0, 5)>>
-				<<set $schoolrep.crossdress to 0>> /* Reset for females that gain a "penis" */
-			<</if>>
+	<<set $_rep to _args[0]>>
+	<<set $_val to _args[1]>>
+	<<if !["crossdress", "herm"].includes($_rep) or isNaN($_val)>>
+		<<run Errors.report("schoolrep called with bad parameters", _args)>>
+	<<elseif ["crossdress", "herm"].some(rep => $schoolrep[rep] gte 5)>>
+		<!-- too famous, now engage in glorious nothing -->
+		<!-- TODO: what happens when pc sex-swaps/grows slime parts/magic? -->
+	<<elseif $_val lt 0 and !$daily.crossdressingFameReduction>>
+		<<set $schoolrep[$_rep] to Math.max(0, $schoolrep[$_rep] + $_val)>>
+	<<elseif $_val gt 0 and !$daily.school[$_rep] and !$worn.face.type.includes("mask")>>
+		<!-- can only get rep once a day, and can't reduce it later that day -->
+		<<set $daily.school[$_rep] to 1>>
+		<<set $daily.crossdressingFameReduction to true>>
+
+		<!-- cap max rep at 5 -->
+		<<set $schoolrep[$_rep] to Math.min($schoolrep[$_rep] + $_val, 5)>>
+
+		<!-- for herm pcs, some students can still assume you're crossdressing if they don't know any better. ensure they know better -->
+		<<set $schoolrep.crossdressing to Math.min(5 - $schoolrep.herm, $schoolrep.crossdressing)>>
+
+		<<if $schoolrep[$_rep] is 5>>
+			<!-- now all of china knows you're $_rep -->
+			<<run ["Kylar", "Whitney", "Sydney", "Sirris", "River", "Doren", "Winter", "Mason", "Leighton"].forEach(n => $genderknown.pushUnique(n))>>
 		<</if>>
+
+		<!-- finally, send the message. expands to $school_crossdress_message or $school_herm_message -->
+		<<set V["school_" + $_rep + "_message"] to $schoolrep[$_rep]>>
 	<</if>>
 <</widget>>
 
@@ -4820,7 +4804,7 @@
 			<<schoolrep herm 1>>
 		<<elseif isCrossdressing()>>
 			<<schoolrep crossdress 1>>
-		<<elseif $player.sex is $player.gender_appearance and $schoolrep.crossdress gt 0 and !$daily.crossdressingFameReduction and !$weekly.crossdressingFameReduction and random(0,100) gte 100 - ($schoolrep.crossdress * 3)>>
+		<<elseif $player.sex is $player.gender_appearance and $schoolrep.crossdress gt 0 and !$daily.crossdressingFameReduction and random(0,100) lt $schoolrep.crossdress * 3>>
 			<<schoolrep crossdress -1>>
 			<<set $daily.crossdressingFameReduction to true>>
 		<</if>>

@@ -1705,38 +1705,57 @@ window.checkTFparts = checkTFparts;
 	Might be good to convert the whole TF mechanic, including `transformationStateUpdate` to something like below at some point.
 	Part of the transformationParts is unused right now, but its to account for this potential.
 */
-function validateTransformations() {
-	if (V.cat >= 1 || V.wolfgirl >= 1 || V.cow >= 1 || V.harpy >= 1) {
-		V.physicalTransform = 1;
-	} else {
-		V.physicalTransform = 0;
-	}
-	if (V.demon >= 1 || V.angel >= 1 || V.fallenangel >= 2) {
-		V.specialTransform = 1;
-	} else {
-		V.specialTransform = 0;
-	}
-
-	const transformationParts = [
+function setupTransformations() {
+	setup.transformations = [
 		{
-			nameOveride: "wolf",
-			level: "wolfgirl",
-			build: "wolfbuild",
-			type: "physicalTransform",
+			/*
+			name: tf name, used in V.transformationParts[name], <<tficon name>>, <<transform name>>, etc.
+			level: transformation level getter,
+			build: transformation points counter getter,
+			type: "physicalTransform" or "specialTransform",
+			parts: conditions for unlocking tf parts,
+			traits: same but for traits
+			*/
+			name: "wolf",
+			get level() {
+				return V.wolfgirl;
+			},
+			get build() {
+				return V.wolfbuild;
+			},
+			type: "beast",
 			parts: [
 				{ name: "ears", tfRequired: 4 },
-				{ name: "pubes", tfRequired: 4, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
-				{ name: "pits", tfRequired: 4, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
+				{
+					name: "pubes",
+					tfRequired: 4,
+					get default() {
+						return V.settings.pubicHairEnabled === true ? "default" : "hidden";
+					},
+				},
+				{
+					name: "pits",
+					tfRequired: 4,
+					get default() {
+						return V.settings.pubicHairEnabled === true ? "default" : "hidden";
+					},
+				},
 				{ name: "cheeks", tfRequired: 5, default: "feral" },
 				{ name: "tail", tfRequired: 6 },
 			],
 			traits: [{ name: "fangs", tfRequired: 2 }],
 		},
 		{
-			level: "cat",
-			build: "catbuild",
+			name: "cat",
+			get level() {
+				return V.cat;
+			},
+			get build() {
+				return V.catbuild;
+			},
 			type: "physicalTransform",
 			parts: [
+				{ name: "ears", tfRequired: 4 },
 				{ name: "ears", tfRequired: 4 },
 				{ name: "tail", tfRequired: 6 },
 				{ name: "heterochromia", tfRequired: 7 },
@@ -1747,8 +1766,13 @@ function validateTransformations() {
 			],
 		},
 		{
-			level: "cow",
-			build: "cowbuild",
+			name: "cow",
+			get level() {
+				return V.cow;
+			},
+			get build() {
+				return V.cowbuild;
+			},
 			type: "physicalTransform",
 			parts: [
 				{ name: "horns", tfRequired: 2 },
@@ -1758,9 +1782,13 @@ function validateTransformations() {
 			traits: [],
 		},
 		{
-			nameOveride: "bird",
-			level: "harpy",
-			build: "birdbuild",
+			name: "bird",
+			get level() {
+				return V.harpy;
+			},
+			get build() {
+				return V.birdbuild;
+			},
 			type: "physicalTransform",
 			parts: [
 				{ name: "eyes", tfRequired: 2 },
@@ -1768,7 +1796,13 @@ function validateTransformations() {
 				{ name: "tail", tfRequired: 4 },
 				{ name: "plumage", tfRequired: 4 },
 				{ name: "wings", tfRequired: 6 },
-				{ name: "pubes", tfRequired: 6, default: V.settings.pubicHairEnabled === true ? "default" : "hidden" },
+				{
+					name: "pubes",
+					tfRequired: 6,
+					get default() {
+						return V.settings.pubicHairEnabled === true ? "default" : "hidden";
+					},
+				},
 			],
 			traits: [
 				{ name: "sharpEyes", tfRequired: 2 },
@@ -1776,8 +1810,13 @@ function validateTransformations() {
 			],
 		},
 		{
-			level: "fox",
-			build: "foxbuild",
+			name: "fox",
+			get level() {
+				return V.fox;
+			},
+			get build() {
+				return V.foxbuild;
+			},
 			type: "physicalTransform",
 			parts: [
 				{ name: "ears", tfRequired: 4 },
@@ -1792,8 +1831,13 @@ function validateTransformations() {
 			],
 		},
 		{
-			level: "angel",
-			build: "angelbuild",
+			name: "angel",
+			get level() {
+				return V.angel;
+			},
+			get build() {
+				return V.angelbuild;
+			},
 			type: "specialTransform",
 			parts: [
 				{ name: "halo", tfRequired: 4 },
@@ -1802,8 +1846,13 @@ function validateTransformations() {
 			traits: [],
 		},
 		{
-			level: "fallen",
-			build: "fallenbuild",
+			name: "fallenangel",
+			get level() {
+				return V.fallenangel;
+			},
+			get build() {
+				return V.fallenbuild;
+			},
 			type: "specialTransform",
 			parts: [
 				{ name: "halo", tfRequired: 2 },
@@ -1812,8 +1861,13 @@ function validateTransformations() {
 			traits: [],
 		},
 		{
-			level: "demon",
-			build: "demonbuild",
+			name: "demon",
+			get level() {
+				return V.demon;
+			},
+			get build() {
+				return V.demonbuild;
+			},
 			type: "specialTransform",
 			parts: [
 				{ name: "horns", tfRequired: 2 },
@@ -1823,22 +1877,36 @@ function validateTransformations() {
 			traits: [],
 		},
 	];
+}
+DefineMacro("setupTransformations", setupTransformations);
+
+function validateTransformations() {
+	const physTFs = setup.transformations.filter(tf => tf.type === "physicalTransform" && tf.level >= 1);
+	if (physTFs.length >= 2)
+		Errors.report(
+			"Too many physical transformations!",
+			physTFs.map(tf => tf.name)
+		);
+	if (V.physicalTransform === 1 && physTFs.length === 0) Errors.report("Couldn't find active physical transformation, modded save?");
+	V.physicalTransform = Math.max(physTFs.length, 1);
+
+	const specTFs = setup.transformations.filter(tf => tf.type === "specialTransform" && tf.level >= (tf.name === "fallenangel" ? 2 : 1));
+	V.specialTransform = Math.max(specTFs.length, 1);
+
 	const confirmedTraits = [];
-	transformationParts.forEach(tf => {
-		const tdLevel = V[tf.level];
-		const name = tf.nameOveride || tf.level;
+	setup.transformations.forEach(tf => {
 		tf.parts.forEach(part => {
-			if (tdLevel >= part.tfRequired && V.transformationParts[name][part.name] === "disabled") {
-				V.transformationParts[name][part.name] = part.default || "default";
-			} else if (tdLevel < part.tfRequired && V.transformationParts[name][part.name] !== "disabled") {
-				V.transformationParts[name][part.name] = "disabled";
+			if (tf.level >= part.tfRequired && V.transformationParts[tf.name][part.name] === "disabled") {
+				V.transformationParts[tf.name][part.name] = part.default || "default";
+			} else if (tf.level < part.tfRequired && V.transformationParts[tf.name][part.name] !== "disabled") {
+				V.transformationParts[tf.name][part.name] = "disabled";
 			}
 		});
 		tf.traits.forEach(trait => {
-			if (tdLevel >= trait.tfRequired) confirmedTraits.pushUnique(trait.name);
-			if (tdLevel >= trait.tfRequired && V.transformationParts.traits[trait.name] === "disabled") {
+			if (tf.level >= trait.tfRequired) confirmedTraits.pushUnique(trait.name);
+			if (tf.level >= trait.tfRequired && V.transformationParts.traits[trait.name] === "disabled") {
 				V.transformationParts.traits[trait.name] = trait.default || "default";
-			} else if (tdLevel < trait.tfRequired && V.transformationParts.traits[trait.name] !== "disabled" && !confirmedTraits.includes(trait.name)) {
+			} else if (tf.level < trait.tfRequired && V.transformationParts.traits[trait.name] !== "disabled" && !confirmedTraits.includes(trait.name)) {
 				V.transformationParts.traits[trait.name] = "disabled";
 			}
 		});

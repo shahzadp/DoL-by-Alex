@@ -153,19 +153,16 @@
 	<</if>>
 
 	<<if !$simpleMirror>>
-		<<if $specialTransform is 1 or $physicalTransform is 1>>
+		/* only display the tf menu if there's actually some options that can be changed */
+		<<set $_tfs to setup.transformations.filter(tf => tf.parts?.some(part => tf.level >= part.tfRequired))>>
+		<<if $_tfs.length >= 1>>
 			__Transformation__
 			<br>
-			<<if $demon gte 6>><<tficon "demon">>
-			<<elseif $wolfgirl gte 6>><<tficon "wolf">>
-			<<elseif $angel gte 6>><<tficon "angel">>
-			<<elseif $fallenangel gte 2>><<tficon "fallenangel">>
-			<<elseif $cat gte 6>><<tficon "cat">>
-			<<elseif $cow gte 6>><<tficon "cow">>
-			<<elseif $harpy gte 6>><<tficon "bird">>
-			<<elseif $fox gte 6>><<tficon "fox">>
-			<<else>><<tficon "angel">>
-			<</if>>
+			/* show the icon of the highest leveled transform with parts unlocked */
+			/* assumes maximum of 2 simultaneous transformations */
+			<<set $_icon to ($_tfs[1]?.level gt $_tfs[0].level) ? $_tfs[1].name : $_tfs[0].name>>
+			<<if !$_icon>><<set $_icon to "angel">><</if>>
+			<<tficon $_icon>>
 			<<link "Examine your inner self">><<set $mirrorMenu to "transformation">><<replace #mirror>><<mirrorDisplay>><</replace>><<numberify "#passages > .passage">><</link>>
 		<<else>>
 			Obtain otherworldly powers to examine further.
