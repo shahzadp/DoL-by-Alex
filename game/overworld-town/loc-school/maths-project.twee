@@ -1713,6 +1713,9 @@ You stand beside the projector and look at the audience. There are a mixture of 
 <<else>>
 
 <</if>>
+<<if $avery_mansion.attend.maths>>
+	You spot Avery amongst the crowd<<if $mathsprojectwhitney is 1>> as well<</if>>. <<= $averyragerevealed gte 1 and C.npc.Avery.rage gte 40 ? `<<nnpc_His "Avery">> expression is difficult to make out from this distance` : `<<nnpc_He "Avery">> smiles at you`>>.
+<</if>>
 <br><br>
 
 <<endevent>>
@@ -2089,10 +2092,27 @@ Leighton, River and the two guests confer on stage for a moment.
 	<</if>>
 
 	<<set $mathsproject to "won">><<set $mathsprojectwon to 1>><<earnFeat "Maths Competition Winner">>
-	<<mathsprojectfinish>>
-
-	<<link [[Next|Cliff Street]]>><<unset $mathsexposed>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
+	
+	<<if $avery_mansion.attend.maths>>
+		<<set $averySeen.pushUnique("maths_success")>>
+		<<endevent>><<npc Avery 1>><<person1>>
+		As you make your way through the crowd, <span class="blue">you catch sight of Avery.</span> <span class="green"><<Hes>> smiling</span> as <<he>> approaches you. <<npcincr Avery rage -3>><<larage>>
+		<br><br>
+		"You did well today," <<he>> says.
+		<<if $mathsexposed is "safe">>
+			"And with your dignity intact, at that." Despite <<his>> words, <<he>> almost looks disappointed.
+		<</if>>
+		Then <<he>> offers <<his>> arm. "Now, shall we go?"
+		<br><br>
+		<<link [[Go with Avery|Maths Competition Avery]]>><<set $phase to 1>><</link>><<glove>><<larage>>
+		<br>
+		<<link [[Turn down the offer|Maths Competition Avery]]>><<set $phase to 2>><</link>><<llove>><<garage>>
+		<br>
+	<<else>>
+		<<mathsprojectfinish>>
+		<<link [[Next|Cliff Street]]>><<unset $mathsexposed>><<endevent>><<set $eventskip to 1>><</link>>
+		<br>
+	<</if>>
 <<else>>
 	<<generate2>>
 	<span class="red"><<He>> announces that a <<person2>><<person>> is the winner.</span> <<He>> rushes up to accept <<his>> trophy.
@@ -2110,9 +2130,50 @@ Leighton, River and the two guests confer on stage for a moment.
 		<br><br>
 	<</if>>
 
+	<<if $avery_mansion.attend.maths>>
+		<<set $averySeen.pushUnique("maths_fail")>>
+		You make your way through the crowd. You don't see Avery anywhere. <span class="red"><<nnpc_He "Avery">> must have left early.</span><<stress 6>><<gstress>>
+		<br><br>
+	<</if>>
+
+
 	<<set $mathsproject to "done">>
 	<<mathsprojectfinish>>
 
 	<<link [[Next|Cliff Street]]>><<unset $mathsexposed>><<endevent>><<set $eventskip to 1>><</link>>
 	<br>
+<</if>>
+
+
+:: Maths Competition Avery
+<<effects>>
+
+<<mathsprojectfinish>>
+<<unset $mathsexposed>>
+
+<<if $phase is 1>>
+	You take Avery's arm and leave the town hall. Every now and then during the drive, Avery looks at you, paying particular attention to your bottom half, before returning <<his>> attention to the road with a smile. <<npcincr Avery love 1>><<npcincr Avery rage -1>><<glove>><<larage>>
+	<br><br>
+	<<endevent>><<npc Avery>><<person1>>
+	<<if Time.weekDay is 7 and $averydate is 1 and Time.hour is 20 and $averydatedone isnot 1>>
+		<<if $worn.upper.type.includes("formal") and $worn.lower.type.includes("formal")>>
+			Since you're already dressed for your date, <<he>> forgoes stopping at the mansion. 
+			<br><br>
+			<<avery_date_options>>
+		<<else>>
+			Soon, you arrive at the mansion. <<He>> opens your door for you, and says, "Go get changed into something <span class="gold">formal</span>. Then we can go <<= [dinner date] ? `to dinner` : [party date] ? `to our party` : [hotel date] ? `to the hotel` : `to Bailey's`>>."
+			<br><br>
+			<<link [[Next|Mansion Garage]]>><<endevent>><</link>>
+		<</if>>
+	<<else>>
+		Soon, you arrive at the mansion. <<He>> opens your door for you, and both of you head inside.
+		<br><br>
+		<<link [[Next|Mansion Garage]]>><<endevent>><</link>>
+	<</if>>
+<<else>>
+	Avery frowns, and drops <<his>> arm with a <<= C.npc.Avery.rage gte 60 ? `scoff` : C.npc.Avery.rage gte 20 ? `curt sigh` : `sigh`>>. "Very well. I'll see you <<= Time.weekDay is 7 and $averydate is 1 and $averydatedone isnot 1 ? `later tonight` : `another time`>>, then.<<if Time.weekDay is 7 and $averydate is 1 and Time.hour is 20 and $averydatedone isnot 1>> I'll be waiting in the garage. Don't keep me waiting too long.<</if>>" <<npcincr Avery love -1>><<npcincr Avery rage 1>><<llove>><<garage>>
+	<br><br>
+	With that, <<he>> leaves.
+	<br><br>
+	<<link [[Next|Cliff Street]]>><<endevent>><</link>>
 <</if>>

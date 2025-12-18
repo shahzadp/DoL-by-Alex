@@ -104,7 +104,7 @@
 
 <<widget "avery_mansion_init">>
 <<set $avery_mansion to {}>>
-<<set $avery_mansion.version to 2>>
+<<set $avery_mansion.version to 3>>
 
 <<set $avery_mansion.pool to 0>>
 <<set $avery_mansion.kitchen to 0>>
@@ -160,6 +160,23 @@
 
 <<set $daily.avery.housekeeping_events to {}>>
 
+<<set $avery_mansion.attend to {}>>
+
+
+<<set $daily.avery.talk to {}>>
+<<set $daily.avery.talk.ignore to false>>
+<<set $daily.avery.talk.limit to false>>
+<<set $daily.avery.talk.flirt to false>>
+<<set $daily.avery.talk.seduce to false>>
+<<set $daily.avery.talk.count to 0>>
+<<set $daily.avery.talk.annoyed to 0>>
+<<set $daily.avery.talk.chat to 0>>
+
+<<set $daily.avery.ask to {}>>
+<<set $daily.avery.ask.science to false>>
+<<set $daily.avery.ask.maths to false>>
+<<set $daily.avery.ask.play to false>>
+
 <<set $avery_tower to {}>>
 <<set $avery_tower.progress to 0>>
 <<set $avery_tower.effects to []>>
@@ -171,6 +188,14 @@
 <<avery_mansion_start_clothes>>
 <<set $wardrobes.avery_mansion.unlocked to true>>
 
+<</widget>>
+
+<<widget "avery_daily_talk">>
+<<if $daily.avery.talk.count is undefined>>
+	<<set $daily.avery.talk.count to 0>>
+	<<set $daily.avery.talk.annoyed to 0>>
+	<<set $daily.avery.talk.chat to 0>>
+<</if>>
 <</widget>>
 
 <<widget "avery_antiques_init">>
@@ -243,6 +268,7 @@
 <</widget>>
 
 <<widget "avery_mansion">>
+
 <<if $avery_mansion.party_state is "started">>
 	<<run throw new Error("avery_mansion_party_end was run when current guest was already marked as 'done'! Please report this error.")>>
 <</if>>
@@ -400,6 +426,17 @@
 <<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "date" and $avery_mansion.schedules isnot "sleep" and $avery_mansion.schedule isnot "work">>
 	<<set _avery_available to true>>
 <</if>>
+<<if $avery_mansion.schedule is "pool">>
+	<<if !Weather.isOvercast>>
+		<<set $avery_pool to "sunbathe">>
+	<<elseif Weather.precipitation isnot "none">>
+		<<set $avery_pool to "coffee">>
+	<<else>>
+		<<set $avery_pool to "swim">>
+	<</if>>
+<<else>>
+	<<set $avery_pool to "none">>
+<</if>>
 <</widget>>
 
 <<widget "avery_mansion_away">>
@@ -448,6 +485,33 @@
 <</if>>
 <</widget>>
 
+<<widget "avery_current_room_dirty_check">>
+	<<if $avery_mansion.jobs.includes("pool") and $avery_mansion.pool gte 1 and $bus is "avery_pool">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("kitchen") and $avery_mansion.kitchen gte 1 and $bus is "avery_kitchen">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("lounge") and $avery_mansion.lounge gte 1 and $bus is "avery_lounge">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("display") and $avery_mansion.pool gte 1 and $bus is "avery_display">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("bedroom") and $avery_mansion.pool gte 1 and $bus is "avery_bedroom">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("bathroom") and $avery_mansion.pool gte 1 and $bus is "avery_bathroom">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("dining") and $avery_mansion.pool gte 1 and $bus is "avery_dining">>
+		<<set _dirty_room to true>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("garden") and $avery_mansion.pool gte 1 and $bus is "avery_garden">>
+		<<set _dirty_room to true>>
+	<</if>>
+<</widget>>
+
 <<widget "avery_housework_check">>
 	<<if !$avery_mansion.jobs.includes("pool")>>
 		<<set $avery_mansion.pool to 0>>
@@ -481,6 +545,10 @@
 		<<set _avery_housework_bedroom to true>>
 		<<set _avery_housework_count += $avery_mansion.bedroom>>
 	<</if>>
+<</widget>>
+
+<<widget "avery_mansion_housework_total">>
+<<set _avery_mansion_housework_total to 0 + $avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden>>
 <</widget>>
 
 <<widget "avery_mansion_description">>
@@ -1688,6 +1756,7 @@
 	<<set $avery_mansion.chase to {}>>
 	<<set $avery_mansion.chase.victory to 0>>
 	<<set $avery_mansion.chase.health to 3>>
+	<<set $averySeen.pushUnique("chase")>>
 	<<switch $bus>>
 		<<case "avery_lounge">>
 			<<set $avery_mansion.chase.bus to "hallway_1_e">>
@@ -2980,9 +3049,9 @@
 			You hear another car door open, and close, in the garage. You investigate, and find Avery sat behind the wheel of <<his>> sports car. One arm is encased in a white cast, held aloft by a sling around <<his>> neck. The other clutches a bottle of cheap bourbon. <<He>> takes a swig.
 			<br><br>
 
-			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><</link>>
+			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><</link>>
 			<br>
-			<<link [[Just Watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<pass 10>><</link>>
+			<<link [[Just Watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><<pass 10>><</link>>
 			<br>
 		<<elseif _avery_interrupt is "party_missed">>
 			<<set $avery_mansion.rage.work to false>>
@@ -4168,4 +4237,87 @@
 		<<avery_mansion_tower_negative_effects $avery_mansion.party_missed_guest>><<ggarage>><<lllove>><<npcincr Avery love -3>><<npcincr Avery rage 3>>
 		<br><br>
 	<</if>>
+<</widget>>
+
+<<widget "avery_mansion_skyscraper_calc">>
+	<<set _tower_progress to 0>>
+	<<if $avery_tower.effects.includes("temple")>>
+		<<set _tower_progress -= 4>>
+	<</if>>
+	<<if $avery_tower.effects.includes("theft")>>
+		<<set _tower_progress -= 4>>
+	<</if>>
+	<<if $avery_tower.effects.includes("mayor")>>
+		<<set _tower_progress += 4>>
+	<</if>>
+	<<if $avery_tower.effects.includes("Remy")>>
+		<<set _tower_progress += 4>>
+	<</if>>
+	<<if $avery_tower.effects.includes("Harper")>>
+		<<set _tower_progress += 4>>
+	<</if>>
+<</widget>>
+
+<<widget "avery_mansion_skyscraper_week_estimate">>
+<<avery_mansion_skyscraper_calc>>
+
+<<set _weeks_remaining to Math.round((100 - $avery_tower.progress) / _tower_progress)>>
+
+<<if _weeks_remaining lte 0>>
+	It's just about finished.
+<<elseif _weeks_remaining is 1>>
+	At this rate, it will be done in about a week.
+<<elseif _weeks_remaining is 2>>
+	At this rate, it will be done in about two weeks.
+<<elseif _weeks_remaining is 3>>
+	At this rate, it will be done in about three weeks.
+<<elseif _weeks_remaining is 4>>
+	At this rate, it will be done in about four weeks.
+<<elseif _weeks_remaining is 5>>
+	At this rate, it will be done in about five weeks.
+<<elseif _weeks_remaining is 6>>
+	At this rate, it will be done in about six weeks.
+<<elseif _weeks_remaining is 7>>
+	At this rate, it will be done in about seven weeks.
+<<elseif _weeks_remaining is 8>>
+	At this rate, it will be done in about eight weeks.
+<<elseif _weeks_remaining is 9>>
+	At this rate, it will be done in about nine weeks.
+<<elseif _weeks_remaining is 10>>
+	At this rate, it will be done in about ten weeks.
+<<elseif _weeks_remaining is 11>>
+	At this rate, it will be done in about eleven weeks.
+<<elseif _weeks_remaining is 12>>
+	At this rate, it will be done in about twelve weeks.
+<<elseif _weeks_remaining is 13>>
+	At this rate, it will be done in about thirteen weeks.
+<<elseif _weeks_remaining is 14>>
+	At this rate, it will be done in about fourteen weeks.
+<<elseif _weeks_remaining is 15>>
+	At this rate, it will be done in about fifteen weeks.
+<<elseif _weeks_remaining is 16>>
+	At this rate, it will be done in about sixteen weeks.
+<<elseif _weeks_remaining is 17>>
+	At this rate, it will be done in about seventeen weeks.
+<<elseif _weeks_remaining is 18>>
+	At this rate, it will be done in about eighteen weeks.
+<<elseif _weeks_remaining is 19>>
+	At this rate, it will be done in about nineteen weeks.
+<<elseif _weeks_remaining is 20>>
+	At this rate, it will be done in about twenty weeks.
+<<elseif _weeks_remaining is 21>>
+	At this rate, it will be done in about twenty-one weeks.
+<<elseif _weeks_remaining is 22>>
+	At this rate, it will be done in about twenty-two weeks.
+<<elseif _weeks_remaining is 23>>
+	At this rate, it will be done in about twenty-three weeks.
+<<elseif _weeks_remaining is 24>>
+	At this rate, it will be done in about twenty-four weeks.
+<<else>>
+	<<if $avery_tower.progress gte 76>>
+		Progress has stalled. For now.
+	<<else>>
+		There's still a long way to go.
+	<</if>>
+<</if>>
 <</widget>>

@@ -994,10 +994,11 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 
 
 :: Mansion Talk
-<<effects>><<avery_mansion>>
+<<effects>><<avery_mansion>><<avery_daily_talk>>
 <<npc "Avery">><<person1>>
 
-
+<<set $daily.avery.talk.count += 1>>
+<<unset $avery_ask>>
 <<if $daily.avery.talk.ignore or $daily.avery.talk.limit>> /* Avery's ignoring the PC */
 	Avery
 	<<if $avery_mansion.schedule is "sleep">>
@@ -1009,7 +1010,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	<<elseif $avery_mansion.schedule is "study">>
 	keeps <<his>> eyes on <<his>> book, ignoring you.
 	<<elseif $avery_mansion.schedule is "pool">>
-	continues <<= $averyPool.coffee ? `scrolling through <<his>> phone` : $averyPool.sunbath ? `sunbathing` : `swimming laps`>>.
+	continues <<= $avery_pool is "coffee" ? `scrolling through <<his>> phone` : $avery_pool is "sunbathe" ? `sunbathing` : `swimming laps`>>.
 	<<elseif $avery_mansion.schedule is "garden">>
 	keeps <<his>> attention on <<his>> pruning, ignoring you.
 	<<elseif $avery_mansion.schedule is "lounge">>
@@ -1022,20 +1023,21 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	<br><br>
 
 	You shouldn't bother Avery anymore for today.
+	<br><br>
 
 	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
-<<elseif !$daily.avery.talk.limit and [PC has hit the daily talk limit]>>
+<<elseif !$daily.avery.talk.limit and $daily.avery.talk.count gte 4>>
 	<<set $daily.avery.talk.limit to true>>
 	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 80>>
-		<<if $avery_mansion.schedule is "pool" and $averyPool.swim>>
-			When you try to get Avery's attention, <<he>> ignores you entirely, focusing only on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation. You shouldn't bother Avery anymore for today.
-
+		<<if $avery_mansion.schedule is "pool" and $avery_pool is "swim">>
+			You try to get Avery's attention, but <<he>> ignores you, focusing on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation. You shouldn't bother Avery any more today.
+			<br><br>
 			<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
 		<<else>>
-			When you open your mouth to talk, Avery snarls and grabs you by the throat, cutting off anything you might have said. <<His>> nails dig harshly into your skin. <<pain 1>><<gpain>>
-
-			"I've had enough of your incessant chattering," <<he>> says, voice dangerously low. "You're going to leave me alone, or you're going to regret it. Understand?" <<He>> squeezes down. "Nod if you understand."
-
+			You open your mouth to talk, but Avery snarls and grabs your throat, cutting off anything you might have said. <<His>> nails dig into your skin. <<pain 1>><<gpain>>
+			<br><br>
+			"I've had enough of your incessant chattering," <<he>> says, voice dangerously low. "You're going to leave me alone, or you'll regret it. Understand?" <<He>> squeezes. "Nod if you understand."
+			<br><br>
 			<<link [[Nod|Mansion Talk Limit]]>><<set $phase to 1>><<sub 1>><<npcincr Avery dom 1>><</link>><<gdom>>
 			<<link [[Refuse|Mansion Talk Limit]]>><<set $phase to 2>><<def 1>><<npcincr Avery dom -1>><<npcincr Avery rage 1>><</link>><<ldom>><<garage>>
 		<</if>>
@@ -1043,39 +1045,39 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 		Avery
 		<<if $avery_mansion.schedule is "bath">>
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-				glares at you with a scowl. "It is <<[time]>> in the morning—don't you have better things to do than waste my fucking time?" <<He>> makes a dismissive gesture. "Leave me be."
+				glares and scowls. "It is <<ampm_text>>. Don't you have better things to do than waste my fucking time?" <<He>> makes a dismissive gesture. "Leave me be."
 			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
-				shoots you an irritated look. "It is <<[time]>> in the morning—don't you have better things to do than talk my bloody ear off?" <<He>> makes a dismissive gesture. "Leave me be."
+				shoots you an irritated look. "It is <<ampm_text>>. Don't you have better things to do than talk my bloody ear off?" <<He>> makes a dismissive gesture. "Leave me be."
 			<<else>>
-				sighs curtly. "It is <<[time]>> in the morning—don't you have better things to do <<= $averyragerevealed is 1 ? `than natter on like this` : `with your time`>>?" <<He>> raises an eyebrow.
+				sighs. "It is <<ampm_text>> Don't you have better things to do <<= $averyragerevealed is 1 ? `than natter on like this` : `with your time`>>?" <<He>> raises an eyebrow.
 			<</if>>
 		<<elseif $avery_mansion.schedule is "breakfast">>
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
 				glares at you with a scowl.
-
+				
 				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do than waste my fucking time?" <<He>> makes a dismissive gesture. "Leave me be."
 			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
 				shoots you an irritated look.
-
+				
 				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do than talk my bloody ear off?" <<He>> makes a dismissive gesture. "Leave me be."
 			<<else>>
-				sighs curtly. 
-
+				sighs. 
+				
 				"It's not even seven in the morning yet," <<he>> says after checking <<his>> watch. "Don't you have better things to do <<= $averyragerevealed is 1 ? `than natter on like this` : `with your time`>>?" <<He>> raises an eyebrow.
 			<</if>>
 		<<elseif $avery_mansion.schedule is "study" or $avery_mansion.schedule is "lounge" or $avery_mansion.schedule is "drink">>
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-				glares at you with a scowl. 
+				glares and scowls. 
 
-				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture and
+				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture and
 			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
-				shoots you an irritated look. 
+				shoots you an irritated look.
 
-				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture and
+				"Enough of this," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture and
 			<<else>>
-				frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
+				frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach.
 
-				"That's enough," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> then 
+				"That's enough," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do, anyway." <<He>> then 
 			<</if>>
 			returns 
 			<<if $avery_mansion.schedule is "study">>
@@ -1086,52 +1088,106 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 				<<= C.npc.Avery.rage gte 20 ? `to <<his>> drinking` : `<<his>> attention to <<his>> paintings`>>.
 			<</if>>
 		<<elseif $avery_mansion.schedule is "pool">>
-			<<if $averyPool.swim>>
-				When you try to get Avery's attention, <<he>> ignores you entirely, focusing only on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation.
+			<<if $avery_pool is "swim">>
+				You try to get Avery's attention, but <<he>> ignores you, and on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation.
 			<<else>>
 				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-					glares at you with a scowl. 
+					glares and scowls. 
 
-					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
+					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing, and I won't have you wasting it by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
 				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
 					shoots you an irritated look. 
 
-					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
+					"Enough of this," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing, and I won't have you wasting it with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
 				<<else>>
 					frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
 
-					"That's enough," <<he>> says before you can say anything. "I'm trying to spend what little free time I have to relax. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> 
+					"That's enough," <<he>> says before you can say anything. "I'm trying to spend my precious free time relaxing. I'm not interested in spending all of it <<= $averyragerevealed is 1 ? `listening to you natter on` : `just talking`>>. And I'm sure you have more important things to do, anyway." <<He>> 
 				<</if>>
-			then <<= $averyPool.sunbath ? `slides <<his>> sunglasses back into place` : `returns <<his>> attention to <<his>> phone`>>.
+			then <<= $avery_pool is "sunbathe" ? `slides <<his>> sunglasses back into place` : `returns <<his>> attention to <<his>> phone`>>.
 			<</if>>
 		<<elseif $avery_mansion.schedule is "garden">>
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-				glares at you with a scowl.
+				glares and scowl.
 
-				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as you should know<</if>>, and I won't have you distracting me by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
+				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if $avery_mansion.jobs.includes("garden")>>, as you should know<</if>>, and I won't have you distracting me by talking my bloody ear off. Leave me be." <<He>> makes a dismissive gesture,
 			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
 				shoots you an irritated look.
 
-				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as you should know<</if>>, and I won't have you distracting me with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
+				"Enough of this," <<he>> says before you can say anything. "Tending my garden takes focus<<if $avery_mansion.jobs.includes("garden")>>, as you should know<</if>>, and I won't have you distracting me with your inane chatter. Leave me be." <<He>> makes a dismissive gesture,
 			<<else>>
 				frowns <<= $averyragerevealed is 1 ? `at you, brows furrowing,` : `a little`>> as you approach. 
 
-				"I'm a bit busy at the moment, <<pcpetname "Avery">>," <<he>> says before you can say anything. "Tending my garden takes focus<<if [PC has to tend the garden]>>, as I'm sure you know<</if>>, so I can't spend any more time on <<= $averyragerevealed is 1 ? `listening to you natter on` : `chatting`>>. And I'm sure you have more important things to do with your time, anyway." <<He>> 
+				"I'm a bit busy at the moment, <<pcpetname "Avery">>," <<he>> says before you can say anything. "Tending my garden takes focus<<if $avery_mansion.jobs.includes("garden")>>, as I'm sure you know<</if>>, so I can't spend any more time on <<= $averyragerevealed is 1 ? `listening to you natter on` : `chatting`>>. And I'm sure you have more important things to do, anyway." <<He>> 
 			<</if>>
 		then goes back to <<his>> pruning.
 		<</if>>
-	<br><br>
+		<br><br>
 
-	You shouldn't bother Avery anymore for today.
-
-	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+		You shouldn't bother Avery anymore for today.
+		<br><br>
+		<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
 	<</if>>
+
+<<elseif $daily.avery.talk.count gte 3>>
+	<<set $daily.avery.talk.ignore to true>>
+	<<if $avery_mansion.schedule is "sleep">>
+		Avery glares at you. "Leave me the fuck alone," <<he>> <<= either(`growls` , `hisses`)>>. "I'm trying to sleep."
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+		Avery glares at you. "Leave me the fuck alone," <<he>> <<= either(`growls` , `hisses`)>>. "You might have nothing to do, but time is money, and I'm trying to <<= $avery_mansion.schedule is "dinner" ? `eat` : $avery_mansion.schedule is "bath" ? `bathe` : $avery_mansion.schedule is "pool" ? `exercise` : `unwind`>> in peace."
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+		Avery's brows furrow, and <<his>> lip curls. "I'm not here to entertain your pestering, <<girl>>. Find something else to amuse yourself with." 
+	<<else>>
+		Avery's brows twitch inward. "I'm sorry if you're bored, <<pcpetname "Avery">>. But I'd rather you find something other than this little game to amuse yourself with." 
+	<</if>>
+	<<npcincr Avery rage 1>><<garage>>
+	<br><br>
+	<<He>>
+	<<if $avery_mansion.schedule is "bath">>
+		looks away, ignoring you.
+	<<elseif $avery_mansion.schedule is "sleep">>
+		rolls over and covers <<his>> head with <<his>> blanket.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		looks away, taking a bite of <<his>> breakfast and ignoring you.
+	<<elseif $avery_mansion.schedule is "study">>
+		looks down at <<his>> book, ignoring you.
+	<<elseif $avery_mansion.schedule is "pool">>
+		goes back to <<= $avery_pool is "coffee" ? `scrolling through <<his>> phone` : $avery_pool ? `sunbathe` : `swimming laps`>>
+	<<elseif $avery_mansion.schedule is "garden">>
+		looks back to the bush <<he>> was trimming, ignoring you.
+	<<elseif $avery_mansion.schedule is "lounge">>
+		looks away, ignoring you. You leave <<him>> be.
+	<<elseif $avery_mansion.schedule is "drink">>
+		takes a deep swig of <<his>> drink, looking away and ignoring you.
+	<<else>>
+		looks away, ignoring you.
+	<</if>>
+	<br><br>
+	<<getouticon>><<link [[Leave|Mansion Talk Leave]]>><</link>>
+
+<<elseif $avery_mansion.schedule is "sleep">>
+	<<set $daily.avery.talk.annoyed += 1>>
+	Avery appears to be asleep.
+	<br><br>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Avery?" you whisper, barely audible.
+	<<elseif $speech_attitude is "bratty">>
+		"Hey, Avery," you say, at normal volume.
+	<<else>>
+		"Hey, Avery?" you whisper.
+	<</if>>
+	<br><br>
+	<<He>> opens <<his>> eyes and glares at you. "Leave me<<if $averyragerevealed gte 1>> the fuck<</if>> alone," <<he>> <<= either(`growls` , `hisses`)>>. "I'm trying to sleep." With that, <<he>> rolls over<<if $daily.avery.talk.annoyed gte 1>> again<</if>> and buries <<his>> face into <<his>> pillow. <<npcincr Avery rage 1>><<garage>>
+	<br><br>
+	You shouldn't bother Avery while <<hes>> sleeping.
+	<br><br>
+	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
 
 <<else>>
 
 	<<if $avery_mansion.schedule is "drink">>
 		Avery watches you over the rim of <<his>> glass.
-	<<elseif $avery_mansion.schedule is "pool">>
+	<<elseif $avery_mansion.schedule is "pool" and $avery_pool is "swim">>
 		Avery acknowledges you with a glance, then keeps swimming.
 	<<elseif $avery_mansion.schedule is "garden">>
 		Avery focuses on trimming the bush in front of <<him>>.
@@ -1145,20 +1201,1701 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 		Avery acknowledges your presence with a glance.
 	<</if>>
 	<br><br>
-
+	/* Always here */
+	<<socialiseicon>><<link [[Chat (0:15)|Mansion Talk Chat]]>><<set $daily.avery.talk.chat += 1>><</link>>
+	<br>
+	/*
+	<<if isLoveInterest("Avery") and !$daily.avery.talk.flirt and $avery_pool isnot "swim">>
+		<<brothelicon>><<link [[Flirt (0:15)|Mansion Talk Flirt]]>><<set $daily.avery.talk.chat += 1>><<set $daily.avery.talk.flirt to true>><</link>><<promiscuous1>>
+		<br>
+	<</if>>
+	<<if !$daily.avery.seduce>>
+		<<ind>><<link [[Seduce|Mansion Talk Seduce]]>><<set $daily.avery.talk.seduce to true>><</link>><<promiscuous2>>
+		<br>
+	<</if>>
+	 */
 	<<if !$avery_mansion.study_unlocked>>
-		<<socialiseicon "ask">><<link [[Ask to enter the study|Mansion Talk Study]]>><</link>>
+		<<socialiseicon>><<link [[Ask to enter the study|Mansion Talk Study]]>><</link>>
 		<br>
 	<</if>>
 	<<if $avery_mansion.assault_pair is 1>>
 		<<ind>><<link [[Consider telling Avery you were assaulted in a spare room|Mansion Talk Assault]]>><<stress 6>><</link>><<gstress>>
 		<br>
 	<</if>>
+	<br><br>
 
-	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
+	/* Questions */
+	<<if $scienceproject is "ongoing" and ($sciencephalluschance gte 1 or $sciencelichenchance gte 1 or $scienceshroomchance gte 1) and !$avery_mansion.attend.science>>
+		<<scienceicon>><<link [[Invite <<him>> to the science fair|Mansion Talk Ask]]>><<set $avery_ask to "science">><</link>>
+		<br>
+	<</if>>
+	<<if $mathsproject is "ongoing" and $mathschance gte 1 and !$avery_mansion.attend.maths>>
+		<<mathicon>><<link [[Invite <<him>> to the maths competition|Mansion Talk Ask]]>><<set $avery_ask to "maths">><</link>>
+		<br>
+	<</if>>
+	/* 
+	<<if $englishPlay is "ongoing" and $englishPlayReadiness gte 1 and !$avery_mansion.attend.english_play>>
+		<<englishicon>><<link [[Invite <<him>> to come watch your school play|Mansion Talk Ask]]>><<set $avery_ask to "english_play">><</link>>
+		<br>
+	<</if>>
+	*/
+	<<if $avery_mansion_rent_confront is 1>>
+		<<ind>><<link [[Ask Avery why <<he>> stopped paying Bailey|Mansion Talk Ask]]>><<set $avery_mansion_rent_confront to 2>><<set $avery_ask to "bailey">><</link>>
+		<br>
+	<</if>>
+	<<if $avery_fate is "saved" and ($avery_mansion.injury_stage is "fresh") or ($avery_mansion.injury_timer lte 30 and $avery_mansion.injury_stage is "sling") or ($avery_mansion.injury_timer lte 15 and $avery_mansion.injury_stage is "cast") or ($avery_mansion.injury_timer lte 0 and $avery_mansion.injury_stage is "healing")>>
+		<<ind>><<link [[Ask Avery how <<his>> arm is doing|Mansion Talk Ask]]>><<set $avery_ask to "injury">><</link>>
+		<br>
+	<</if>>
+	<br>
+	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><<set $daily.avery.talk.annoyed += 1>><</link>>
 	<br>
 
 <</if>>
+
+
+:: Mansion Talk Ask 
+<<effects>>
+
+
+<<if $avery_ask is "science">>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"I just," you say, straightening your back. "I was wondering if you would like to come see my project at the science fair?
+		<<if $averySeen.includes("meetPark")>> The one that you helped me with?<</if>> I-if you have the time, that is," you add. "It'll be at the town hall."
+	<<elseif $speech_attitude is "bratty">>
+		"I've got a science fair project I'm going to be showing at the town hall. <<if $averySeen.includes("meetPark")>>Remember that lichen on that statue in the park? That one. <</if>>Just letting you know in case you want to come see it," you say with a shrug.
+	<<else>>
+		"<<if $averySeen.includes("meetPark")>>Remember that lichen I was trying to get in the park? Well, <</if>>I've been working on a science project for the fair at the town hall coming up, and I was wondering if you'd like to come see the results," you say with a smile.<<if $averySeen.includes("meetPark")>> "Since you helped me with it."<</if>>
+	<</if>>
+<<elseif $avery_ask is "maths">>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Well, um,"  you say, straightening your back. "I was wondering if you would like to come see me at the upcoming maths competition? I-if you have the time, that is," you add. "It'll be at the town hall."
+	<<elseif $speech_attitude is "bratty">>
+		"There's a maths competition I might be trying at soon. It'll be over in the town hall. Just letting you know in case you want to come see me there," you say with a shrug.
+	<<else>>
+		"There's a maths competition happening at the town hall soon. I thought I might participate in it. If I do, would you like to come watch?" you say with a smile.
+	<</if>>
+<<elseif $avery_ask is "english_play">>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Actually," you say, straightening your back. "I was wondering if you would like to come see my performance at the upcoming school play? I-if you have time, that is," you add. "It'll be at the town hall."
+	<<elseif $speech_attitude is "bratty">>
+		"I've got this play I signed up for that'll be showing at the town hall soon. Just letting you know in case you want to come watch my brilliant performance," you say with a smirk.
+	<<else>>
+		"I signed up for a school play that will be showing at town hall coming up. I was wondering if you'd like to come see my performance," you say with a smile.
+	<</if>>
+<</if>>
+<br><br>
+Avery
+<<if $avery_ask is "science" or $avery_ask is "maths" or $avery_ask is "english_play">>
+	<<if C.npc.Avery.rage gte 60>>
+		<<if $averyragerevealed is 1>>
+			looks irritated at your request. "<span class="red">I don't have time to waste</span> on something as frivolous as that." <<He>> scoffs.
+		<<else>>
+			raises an eyebrow. "I'm afraid that <span class="red">I don't have time to spare</span> on something like that, <<pcpetname "Avery">>." <<He>> sighs. 
+		<</if>>
+		"And for the record, I don't know why you're bothering with it either, considering you don't even seem to have the time to
+		<<avery_mansion_housework_total>>
+		<<if $avery_mansion.rage.assess gte 9>>
+			do anything I've asked of you,"
+			<br><br>
+		<<elseif _avery_mansion_housework_total gte 6>>
+			clean the house,"
+			<br><br>
+		<<elseif $avery_mansion.rage.dinner_missed gte 1>>
+			<<if $averyragerevealed is 1>>do something as simple as make dinner,"
+			<<else>> /* General */
+				spend on <i>me</i>,"
+			<</if>>
+			<<he>> <<= $averyragerevealed is 1 ? `mutters darkly` : `says coolly`>>.
+			<br><br>
+		<<else>>
+			spend on <i>me</i>," <<he>> <<= $averyragerevealed is 1 ? `mutters darkly` : `says coolly`>>.
+		<</if>>
+		<br><br>
+	<<elseif C.npc.Avery.love lt 50>>
+		raises an eyebrow. "I'm afraid <span class="red">I can't make time</span> for something like that," <<he>> says.
+		<<if $averyragerevealed is 1>>
+			"I'm far too busy, as you should know." <<He>> returns <<his>> attention to what <<he>> was doing. "But good luck, <<pcpetname "Avery">>.<<if C.npc.Avery.rage gte 40>> You're going to need it.<</if>>"
+		<<else>>
+			"I've been quite busy, with work and everything else." <<He>> returns <<his>> attention to what <<he>> was doing. "But good luck, <<pcpetname "Avery">>."
+		<</if>>
+		<br><br>
+	<<else>>
+		hums. "A <<= $avery_ask is "science" ? `science fair` : $avery_ask is "maths" ? `maths competition` : `play`>>, is it?" <<He>>
+		<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+			stares at you with a scrutinising look for a long few moments. Then <<he>> smiles. "<span class="green">Why not?</span> I expect to be impressed, don't let me down <<pcpetname "Avery">>.
+		<<else>>
+			smiles. "<span class="green">I don't see why not.</span> I look forward to being impressed, <<pcpetname "Avery">>. 
+		<</if>>
+		Now, the town hall, you said?"
+		<br><br>
+		You tell <<him>> the details, such as the date and 
+		<<if $avery_ask is "science">>
+			<<set $avery_mansion.attend.science to true>>
+			what your project entails. You go over the details of your
+			<<if $scienceshroomchance>>
+				mushroom project.
+			<<elseif $sciencephalluschance>>
+				phallus project.
+				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 20>> 
+					<<He>> gives you a stern look. "You ought to work on a different project. You wouldn't want to give anyone the wrong idea, would you?"
+				<<elseif C.npc.Avery.dom gte 40>>
+					<<He>> raises an eyebrow. "You should work on a different project. After all, <<= $NPCList[0].penis isnot "none" ? `mine ought to be the only one you're 'studying,'" <<he>> says with a perverse smile.` : `you wouldn't want to give anyone the wrong idea, would you?"`>>
+				<<else>>
+					<<He>> gives you a hard to read look. "I do hope you haven't selected that project for," <<he>> pauses. "recreational purposes."
+				<</if>>
+			<<else>>
+				lichen project<<if $averySeen.includes("meetPark") and $sciencelichenpark gte 1>>, and what you learned about the lichen <<he>> helped you with<</if>>.
+			<</if>>
+			<br><br>
+		<<elseif $avery_ask is "maths">>
+			<<set $avery_mansion.attend.maths to true>>
+			the complex maths problem that you're being asked to solve. You
+			<<if $mathschance gte 50>>
+				attempt to explain what you can about your solution.
+			<<else>>
+				do your best to explain what you can about your <<= $mathschance lte 10 ? `theories, though you haven't really gotten started yet` : `solution`>>.
+			<</if>>
+			Though Avery makes acknowledging sounds and nods at all the right times, you suspect 
+			<<if $mathschance gte 75>>
+				some of it flies completely over <<his>> head.
+			<<elseif $mathschance gte 50>>
+				that <<he>> would be unable to help you even if you asked.
+			<<else>>
+				<<he>> finds it as perplexing as you do.
+			<</if>>
+			<br><br>
+		<<else>>
+			<<set $avery_mansion.attend.english_play to true>>
+			what role you'll be playing in the play. <<He>>
+			<<if $englishPlayRoles.Player is "Cass">>
+				comments that your chosen role suits you, and that <<he>> looks forward to seeing you on stage.
+			<<elseif $englishPlayRoles.Player is "Taylor">>
+				says that Cass would have been a more fitting role for you, but that <<he>> looks forward to seeing you on stage.
+			<<else>>
+				seems to be caught off guard by your chosen role. <<He>> <<= $averyragerevealed gte 1 ? `muses that it's quite bold of you to choose such a role, and that you should have chosen Cass instead` : `tells you <<hes>> curious to see how you pull it off, though Cass would have been a more suitable role for you`>> .
+			<</if>>
+			<br><br>
+		<</if>>
+	<</if>>
+
+<<elseif $avery_ask is "bailey">>
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Um," you say, staring at the <<= $outside is 1 ? `ground` : `floor`>>. "Bailey told me that you've stopped p-paying <<nnpc_him "Bailey">>?" You can't bring yourself to ask why.
+	<<elseif $speech_attitude is "bratty">>
+		"Hey, why'd you stop paying Bailey?" you demand. "<<nnpc_He "Bailey">> started asking me for money again."
+	<<else>>
+		"I heard from Bailey that you stopped paying <<nnpc_him "Bailey">>," you say, trying not to sound accusatory. "Did I do something wrong?"
+	<</if>>
+	<br><br>
+	Avery frowns and
+	<<if $averySeen.includes("chase")>>
+		narrows <<his>> eyes at you.
+	<<elseif $averyragerevealed is 1>>
+		raises an eyebrow at you.
+	<<else>> /* Rage concealed */
+		sighs.
+	<</if>>
+	"<<= either(`You want to know why`,`Do you really have to ask`)>>? Well,
+	<<if $avery_mansion.rage.assess gte 9>> /* Avery's demands */ 
+		I don't know if you've forgotten, or if it was on purpose<<if $averyragerevealed gte 1 and C.npc.Avery.rage gte 60>> just to spite me<</if>>, but <span class="pink">I do expect you to do as I request of you</span>."
+	<<else>> /* PC is missing for more than one day */ 
+		I <span class="pink">hadn't seen you in days</span>. What else did you expect?"
+	<</if>>
+	<br><br>
+	<<He>> <<= $avery_mansion.injury_stage is "sling" or $avery_pool is "swim" ? `huffs` : `crosses <<his>> arms`>>. "I don't ask for much of you. But if you can't keep track of your responsibilities here, then I presume you are prioritising your responsibilities elsewhere. In which case, I'm sure that you can pay Bailey yourself."
+	<br><br>
+	Without a second look, Avery returns to what <<he>> was doing.
+	<br><br>
+<<elseif $avery_ask is "injury">>
+	<<if $avery_mansion.injury_stage isnot "healing">> /* Avery is still in a cast */
+
+		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+			"I just wanted to know how your arm is doing. Is there anything I can do to help?" you ask.
+		<<elseif $speech_attitude is "bratty">>
+			"How's the arm?" you ask. "Need help with anything?"
+		<<else>>
+			"How is your arm doing?" you ask, peering at it. "If you need help with anything, let me know."
+		<</if>>
+		<br><br>
+		<<if $avery_mansion.injury_stage is "fresh">> /* Cast in a sling */
+			<<set $avery_mansion.injury_stage to "fresh_done">>
+			Avery <<= $averyragerevealed is 1 ? `scoffs` : `sighs`>>. "I appreciate the offer, <<pcpetname "Avery">>, but rest assured I can take care of myself.
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				" Then <<his>> lip curls. "If you want to help, however, you could do so by doing as you're told. Then I'd have one less thing to trouble myself over."
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				" Then <<he>> grimaces. "Taking care of <<= $avery_mansion.jobs.includes("lounge") ? `the cooking and cleaning` : `dinner`>> is enough. Though, if you want to help, then I'd appreciate more <<= $avery_mansion.rage.dinner_missed gte 1 ? `consistency with my meals` : `obedience from you`>>."
+			<<else>>
+				Taking care of <<= $avery_mansion.jobs.includes("lounge") ? `the cooking and cleaning` : `dinner`>> is enough."
+			<</if>>
+			<br><br>
+		<<elseif $avery_mansion.injury_stage is "sling">> /* Only wearing cast */
+			<<set $avery_mansion.injury_stage to "sling_done">>
+			Avery shakes <<his>> head. "Now that I don't have to wear the sling anymore, things are easier. Though," <<He>> <<= $averyragerevealed gte 1 ? `glares` : `frowns`>> at <<his>> cast. "This<<if $averyragerevealed gte 1>> bloody<</if>> thing is still a nuisance."
+
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				Then <<he>> glowers at you. "Now that I think about it, if you wanted to help me, <<pcpetname "Avery">>, just do as you're told. Then I'd have one less thing to trouble myself with."
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				Then <<he>> looks back at you. "As long as you take care of <<= $avery_mansion.jobs.includes("lounge") ? `the cooking and cleaning` : `dinner`>>, that's enough. Though if you want to help, I'd appreciate more <<= $avery_mansion.rage.dinner_missed gte 1 ? `consistency with my meals` : `obedience from you`>>."
+			<<else>>
+				"Taking care of <<= $avery_mansion.jobs.includes("lounge") ? `the cooking and cleaning` : `dinner`>> is enough, <<pcpetname "Avery">>," <<he>> says, giving you a tired smile.
+			<</if>>
+			<br><br>
+		<<else>> /* Only two weeks of recovery left */
+			<<set $avery_mansion.injury_stage to "cast_done">>
+			Avery shakes <<his>> head. "I've gotten quite used to wearing a cast," <<he>> smiles. "Though it's not long until I'll be having it off. <<= $avery_mansion.injury_timer>> days from now. It can't come soon enough."
+			<br><br>
+			<span class="gold"><i>Once Avery's cast is removed, <<he>> will regain use of both hands in encounters.</i></span>
+			<br><br>
+		<</if>>
+
+	<<else>> /* Avery has fully recovered */
+		<<set $avery_mansion.injury_stage to "healed">>
+		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+			"How is your arm doing, Avery?" you ask. "Now that it's out of the cast, I mean." You give <<him>> a small smile. "Better, I hope?"
+		<<elseif $speech_attitude is "bratty">>
+			"So, you're finally free from your cast," you say, pointing at <<his>> right arm. "How's it feel?"
+		<<else>>
+			"Your arm looks better," you say. "How are you feeling now that you don't have to wear the cast anymore?"
+		<</if>>
+		<br><br>
+		Avery smiles,
+		<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 80>>
+			a dangerous tilt to it. "It feels better. Much better," <<he>> says, flexing the fingers of <<his>> right hand. "Broken bones heal stronger," <<he>> murmurs, almost to <<himself>>. Then <<he>> reaches over to pinch your cheek with <<his>> now freed hand. It hurts a little, and <<he>> smirks when you flinch. <<pain 1><<gpain>>
+
+		<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 40>>
+			looking pleased. "I do feel much better," <<he>> says, flexing the fingers of <<his>> right hand. "It really was quite frustrating, having to wear that horrid thing. But it's in the past now." <<He>> reaches over to pinch your cheek with <<his>> now freed hand. "How sweet of you to ask, <<pcpetname "Avery">>."
+
+		<<else>>
+			looking pleased. "I do feel much better," <<he>> says. <<He>> flexes the fingers of <<his>> right hand. "It was quite the trial, and yet I've overcome it, and stronger than ever." <<He>> <<laughs>> quietly, and reaches over to stroke your cheek with <<his>> now freed hand. "Thank you for asking, <<pcpetname "Avery">>."
+		<</if>>
+		<br><br>
+	<</if>>
+<</if>>
+
+<<endevent>>
+<<avery_mansion_end_links>>
+
+
+:: Mansion Talk Chat
+<<effects>>
+
+<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+	"I just wanted to talk a little," you say. "If that's okay."
+<<elseif $speech_attitude is "bratty">>
+	"Just wanted to chat," you say.
+<<else>>
+	"I just wanted to chat for a bit," you say. "If you have the time."
+<</if>>
+<br><br>
+<<if C.npc.Avery.rage gte 80 or C.npc.Avery.rage gte 20 and $avery_mansion.rage.assess gte 1>>
+	<<avery_current_room_dirty_check>>
+	Avery <<= $averyragerevealed gte 1 ? `sneers` : `frowns`>> at you. "I'm sure you have better things to be doing, <<pcpetname "Avery">>," <<he>> says, <<if _dirty_room>>pointedly.<</if>>
+
+	<<He>>
+	<<if $avery_mansion.schedule is "bath">>
+		looks away, ignoring you.
+	<<elseif $avery_mansion.schedule is "sleep">>
+		rolls over and covers <<his>> head with <<his>> blanket.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		looks away, taking a bite of <<his>> breakfast and ignoring you.
+	<<elseif $avery_mansion.schedule is "study">>
+		looks down at <<his>> book, ignoring you.
+	<<elseif $avery_mansion.schedule is "pool">>
+		goes back to <<= $avery_pool is "coffee" ? `scrolling through <<his>> phone` : $avery_pool is "sunbathe" ? `sunbathe` : `swim`>>.
+	<<elseif $avery_mansion.schedule is "garden">>
+		looks back to the bush <<he>> was trimming, ignoring you.
+	<<elseif $avery_mansion.schedule is "lounge">>
+		looks away, ignoring you. You leave <<him>> be.
+	<<elseif $avery_mansion.schedule is "drink">>
+		takes a deep swig of <<his>> drink, looking away and ignoring you.
+	<<else>>
+		looks away, ignoring you.
+	<</if>>
+	<br><br>
+	<<endevent>>
+	<<avery_mansion_end_links>>
+<<else>>
+	Avery glances at <<his>> watch.
+	<<if Time.hour is 23 and Time.minute gte 45>>
+		"Afraid not. I'm going to bed soon." <<He>> looks back at you. "Another time, perhaps."
+		<br><br>
+		<<endevent>>
+		<<avery_mansion_end_links>>
+	<<else>>
+		<<He>> hums, and looks back at you. "Very well.<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>> So long as you don't waste my time.<</if>>"
+		<br><br>
+		<<link [[Next|Mansion Talk Chat 2]]>><<pass 15>><</link>>
+	<</if>>
+<</if>>
+
+:: Mansion Talk Chat 2
+<<effects>>
+
+<<set _chat to {}>>
+
+You sit beside Avery, and the two of you chat a while. 
+<<if $avery_mansion.schedule is "drink">>
+	<<He>> always seems to have a drink in <<his>> hand.
+<<elseif $avery_mansion.schedule is "pool">>
+	<<if $avery_pool is "coffee">>
+		<<His>> phone is set aside for now, and <<he>> sips at <<his>> coffee.
+	<<elseif $avery_pool is "sunbathe">>
+		<<He>> doesn't shift positions much.
+	<<else>>
+		<<He>> climbs up to sit beside you on the lip of the pool, legs dangling in the water as you talk.
+	<</if>>
+<<elseif $avery_mansion.schedule is "garden">>
+	<<He>> takes a break from <<his>> gardening, and sits on a nearby bench with you as you talk.
+<<elseif $avery_mansion.schedule is "lounge">>
+	<<He>> hasn't turned the television off, but it's been muted.
+<<elseif $avery_mansion.schedule is "study">>
+	<<He>> doesn't set aside <<his>> book, but <<he>> shuts it with finger marking <<his>> place.
+<<elseif $avery_mansion.schedule is "bath">>
+	<<His>> eyes close, but <<he>> stays engaged in the conversation.
+<<elseif $avery_mansion.schedule is "breakfast">>
+	<<He>> doesn't stop eating <<his>> breakfast, but never speaks when <<his>> mouth is full.
+<</if>>
+<br><br>
+
+<<set _chat.topic to random(1,7)>>
+
+<<if _chat.topic is 1>> /* Avery's skyscraper */
+	<<if $avery_fate is "ascended" or $avery_fate is "saved">>
+		<<if $avery_fate is "ascended">>
+			<<He>> seems pleased with <<himself>> today. More than once as you talk, <<he>> <<= either(
+			`humbly brags about treating a host of influential individuals from outside of town`,
+			`boasts about being invited to twice the amount of parties than <<he>> used to be`,
+			`"complains" about how difficult it is to manage all the responsibilities that come with such high levels of prestige`
+			)>>, wearing a <<= either(`self-satisfied`,`smug`,`haughty`)>> smile the entire time.
+		<<else>>
+			<<He>> seems distracted today. More than once as you talk, you notice <<him>> <<= $outside is 1 ? `glance over in the direction of Elk Street` : $avery_mansion.schedule is "drink" ? `draining <<his>> drinks faster than usual` : `staring into the distance`>> with a <<= either(`frustrated`,`tired`,`difficult to read`)>> expression.
+		<</if>>
+		<br><br>
+	<<elseif $avery_tower.progress gte 25 and $avery_tower.stage is 1>>
+		You ask about the person you met underneath the foundation of Avery's skyscraper.
+		<br><br>
+		"Ah, don't worry, <<pcpetname "Avery">>," <<he>> says, giving you an indulgent smile. "You have nothing to fear. We increased security around the construction site, so nothing like that will happen again."
+		<br><br>
+		It's not what you were asking about, but you don't push the subject.
+		<br><br>
+	<<elseif $avery_tower.progress gte 60 and $avery_tower.stage is 2 and $averySeen.includes("whitney_crash")>>
+		You ask if Avery ever got <<his>> car fixed. A dark look comes over <<his>> face at the question.
+		<br><br>
+		"I did," <<he>> answers. <<= $averyragerevealed is 1 ? `"Despite that brat's` : `<<He>> smooths <<his>> expression over. "Despite that <<nnpc_gendery "Whitney">>'s`>> best efforts, it managed to survive the accident." <<He>> talks about <<his>> car like it's a living being.
+		<br><br>
+	<<else>>
+		<<= either(`You ask how Avery's skyscraper is shaping up.`,`Avery's skyscraper comes up during the course of the conversation.`)>>
+	
+		<<He>>
+		<<if $avery_tower.stage is 2>>
+			grins. "It's all complete. I believe they're working on finishing touches. Landscaping and the like, but it's just about ready for its grand opening at the end of the month." <<He>> puts <<his>> hand on your shoulder. "I can't wait to show it to you," <<he>> murmurs. <<His>> gaze on you is more intent than usual.
+			<br><br>
+		<<else>> /* In progress */
+			<<if $avery_tower.progress gte 80>>
+				seems pleased with the skyscraper's current progress. <<avery_mansion_skyscraper_week_estimate>> <<if C.npc.Avery.rage lt 60>> <<He>> praises your skill as a fellow <<= $player.gender_appearance is "m" ? `host` : `hostess`>>.<</if>> <<npcincr Avery rage -1>><<larage>>
+				<br><br>
+			<<elseif $avery_tower.progress gte 60>>
+				seems content with the skyscraper's current progress. <<avery_mansion_skyscraper_week_estimate>> <<if C.npc.Avery.rage lt 40>> <<He>> praises your skill as a fellow <<= $player.gender_appearance is "m" ? `host` : `hostess`>>.<</if>>
+				<br><br>
+			<<elseif $avery_tower.progress gte 40>>
+				seems impatient with the skyscraper's current progress. The construction is proceeding steadily, but it could be going much faster.<<if C.npc.Avery.rage gte 80>> <<He>> informs you <<he>> expects more from you going forward.<</if>>
+				<br><br>
+			<<elseif $avery_tower.progress gte 20>>
+				seems <<= $averyragerevealed is 1 ? `irritated` : `disgruntled`>> by the skyscraper's current progress.<<if C.npc.Avery.rage gte 60>> <<He>> informs you <<he>> expects better from you going forward.<</if>>
+				<br><br>
+			<<else>>
+				seems <<= $averyragerevealed is 1 ? `furious` : `irritated`>> by the skyscraper's current progress.<<if C.npc.Avery.rage gte 40>> <<He>> informs you <<he>> expects better from you going forward.<</if>> <<npcincr Avery rage 1>><<garage>>
+				<br><br>
+			<</if>>
+		<</if>>
+	<</if>>
+
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<elseif _chat.topic is 2>> /* PC's possible occupations (including temple) */
+	<<set _avery_rng to random(1, 5)>>
+	<<if _avery_rng is 1 and $chef_state gte 3>> /* Cafe */
+		<<if $chef_state gte 9>>
+			<<rng 1 3>>
+			<<if $rng is 1 and $chef_speech isnot "truth" and !$avery_ocean_breeze_comment>>
+				<<set $avery_ocean_breeze_comment to 1>>
+				The day of the Ocean Breeze Cafe's reopening comes up. "Was that the first time you've ever been asked to give a speech before?" Avery asks. <<He>> goes on to give you advice about public speaking.
+				<<if $englishtrait gte 3>>
+					It's nothing you didn't know already, but you let <<him>> go on.
+				<<else>>
+					<span class="green">It's helpful advice</span>—<<he>> knows what <<hes>> about. <<englishskill>><<genglish>>
+				<</if>>
+				<br><br>
+			<<elseif $rng is 2 and !$avery_ocean_breeze_comment and $chef_avery>>
+				<<set $avery_ocean_breeze_comment to 1>>
+				The day of the Ocean Breeze Cafe's reopening comes up. "Was that the first time you've ever walked down a red carpet?" Avery asks. "It's exciting, isn't it? What a shame your old caretaker had to go and ruin the mood." <<= $averyragerevealed is 1? `<<He>> scoffs` : `<<His>> smile twitches`>> at the memory. "I might have stayed longer, but I only had so much time to spare."
+				<br><br>
+			<<else>>
+				"I've seen you on advertisements for the Ocean Breeze Cafe," <<he>> says. "You look <<cute>> all dressed up. You're a <<= $photo and $photo.audienceSize gte 2 ? `professional` : `natural`>> in front of a camera, aren't you?" <<He>> smiles at you. "Have you considered making a career of it?"
+				<br><br>
+			<</if>>
+		<<else>>
+			"I've heard good things about the deluxe cream buns at the Ocean Breeze Cafe," <<he>> says when the topic of cuisine comes up. "'World-class,' they say. I have to admit, with a reputation like that, I'm a little curious to try them myself at some point."
+			<br><br>
+		<</if>>
+
+	<<elseif _avery_rng is 2 and ($temple_rank is "prospective" or $temple_rank is "initiate" or $temple_rank is "monk" or $temple_rank is "priest")>> /* Temple */
+		<<if $temple_rank is "prospective" and !$averySeen.includes("temple_told")>>
+			<<set $averySeen.pushUnique("temple_prospective")>>
+			You tell Avery that you've been invited to join the temple as an initiate.<<if C.npc.Sydney.init is 1>> You mention that a fellow student that has joined as well.<</if>>
+			<br><br>
+			Avery
+			<<if $averyragerevealed gte 1 and C.npc.Avery.rage gte 20>>
+				rolls <<his>> eyes. "Working with the temple? You?" <<He>> huffs a laugh. "You hate spending time around here that badly?<<if !$avery_fate and $avery_party.jordan_init>> I suppose you would be united in defying me.<</if>>"
+				<br><br>
+			<<else>>
+				frowns. "I don't know about that, <<pcpetname "Avery">>. It's quite a demanding position, isn't it? And so much work for no pay." <<He>> shakes <<his>> head.
+				<br><br>
+			<</if>>
+
+			<<He>> pauses for a moment, then gives you a sly smile. "You know," <<he>> drawls, "on second thought, why don't you give it a try?
+			<<if $averyragerevealed gte 1 and C.npc.Avery.rage gte 60>>
+				Perhaps you'd learn a little discipline."
+			<<elseif $averyragerevealed gte 1 and C.npc.Avery.rage gte 20>>
+				You might learn a thing or two about behaving yourself."
+			<<else>>
+				Who knows? You might learn something interesting there."
+			<</if>>
+			<br><br>
+		<<elseif $temple_rank is "initiate" or $temple_rank is "monk" or $temple_rank is "priest">>
+			<<if !$averySeen.includes("temple_initiate")>>
+				<<set $averySeen.pushUnique("temple_initiate")>>
+				The temple comes up during your conversation, and 
+				<<if $averySeen.includes("temple_prospective")>>
+					Avery asks if you decided to join the temple's ranks after all, <<= $averyragerevealed gte 1 ? `an impish` : `a`>> smile on <<his>> lips. You tell <<him>> you did, and that smile widens a little. "Very good," <<he>> says. "It's
+				<<else>>
+					you mention that you're a <<temple_title>>. At first, <<he>> appears displeased by the news, but after a few moments of thought, <<he>> dons an impish smile. "Well, I suppose it is 
+				<</if>> 
+				important to have extracurriculars at your age."
+				<br><br>
+				<<He>> then reminds you that you still have your <<= $averyragerevealed is 1 ? `responsibilities here in the mansion` : `other responsibilities`>> to take care of.
+				<br><br>
+			<<elseif $player.virginity.temple is "Avery">>
+				You confess that you haven't yet told the temple of your broken vow. Avery seems far less concerned about it than you.<<if $averyragerevealed gte 1>> <<He>> appears to be more entertained than anything.<</if>>
+				<br><br>
+				"Couldn't you keep it a secret?" <<he>> suggests. You tell <<him>> about the chastity exam, and <<he>> <<= $averyragerevealed gte 1 ? `<<laughs>>` : `gives a wry smile`>>. "Being a <<temple_title>> sounds quite complicated. My poor<<if C.npc.Avery.love gte 30>> little<</if>> doll."
+				<br><br>
+			<<elseif !$averyfate and $averySeen.includes("temple_initiative")>>
+				<<rng 1 3>>
+				You talk to Avery about working as a <<temple_title>>.
+
+				<<if $rng is 1 and !$avery_fate and $avery_party.jordan_init and $avery_tower.effects.includes("temple")>>
+					<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+						<<His>> lips twist with distaste. "Could you tell the rest of your ilk to back off from my skyscraper?
+						<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+							<<He>> raises an eyebrow. "I suppose you couldn't just tell Jordan and the rest of your <i><<nnpc_his "Jordan">></i>> ilk to leave my skyscraper be? 
+						<<else>>
+							<<His>> smile becomes strained. "Speaking of the temple, do you think you might tell Jordan and <<nnpc_his "Jordan">> followers to leave my skyscraper be?
+						<</if>>
+						It would save us all some hassle."
+						<br><br>
+
+					<<elseif $rng is 2 and ($player.virginity.vaginal is true or $player.virginity.penile is true) and $player.virginity.temple is true and !$averySeen.includes("player_virgin")>>
+						<<set $averySeen.pushUnique("player_virgin")>>
+						<<if $worn.genitals.type.includes("chastity")>>
+							Avery <<= $averyragerevealed is 1 ? `rolls <<his>> eyes` : `sighs`>>. "That must be why you wear that chastity belt." <<He>> puts a hand on the small of your back. "I still think it's overcaution on your part."
+						<<else>>
+							Avery raises an eyebrow. "A <<temple_title>>, hm?" At first, <<he>> 
+							<<if $averyragerevealed gte 1>>
+								seems uninterested, but then something seems to occur to <<him>>. "I presume you've taken the vow of chastity, too, then?" <<He>> hums, and a smirk comes to <<his>> lips.
+							<<else>>
+								hums. "You have to take a vow of chastity to join the temple's ranks, don't you?"
+							<</if>> <<npcincr Avery lust 1>><<glust>>
+							<br><br>
+							For the rest of the conversation, you notice Avery giving you heated and lingering looks every now and then.
+						<</if>>
+						<br><br>
+					<</if>>
+				<<else>>
+					"A <<temple_title>>." Avery 
+					<<if $averyragerevealed is 1>>
+						raises an eyebrow. "To think someone <<= C.npc.Avery.rage gte 40 ? `so bratty` : `like you`>>
+					<<else>>
+						hums. "To think someone like you 
+					<</if>>
+					is a member of the temple." <<He>> <<= C.npc.Avery.rage gte 20 ? `smirks` : `smiles`>>. "I wonder <<= C.npc.Avery.rage gte 20 ? `if you're as much of a handful for them as you are for me` : `what they think of us`>>?" <<he>> muses.
+					<br><br>
+				<</if>>
+			<</if>>
+
+		<<else>>
+			The temple comes up during your conversation, and you chat about which of its teachings both of you follow. Avery tells you that <<he>> follows 
+			<<if $averyragerevealed is 1>>
+				them in public, but not in private. "I'm far too busy to waste
+			<<else>>
+				the basic teachings as <<he>> must, but <<hes>> not very pious. "I'm a bit too busy to be spending so much of
+			<</if>>
+			my time on such things," <<he>> says.
+			<br><br>
+		<</if>>
+
+	<<elseif _avery_rng is 3>> /* Spa */
+		<<He>> mentions wanting to visit the spa again soon. 
+		<<if $averySeen.includes("spa")>>
+			<<if $averySpaBanWeeks gte 1>>
+				<<He>> gives you a <<= C.npc.Avery.rage gte 60 ? `dark` : C.npc.Avery.rage gte 20 ? `stern` : `sour`>> look. "If we meet there again, I hope you'll be more agreeable, <<pcpetname "Avery">>."
+			<<else>>
+				"It was nice seeing you there last time, <<pcpetname "Avery">>," <<he>> says. "Hopefully next time will be even better."<<if C.npc.Avery.love gte 80>> <<He>> winks.<</if>>
+			<</if>>
+			<br><br>
+		<<elseif $spa_job gte 1 and !$averySeen.includes("spa")>>
+			When you remark that it's odd you haven't seen Avery there, <<he>> says, "I only go on Sundays, when I can make the time. It's the only day I can make the time for it—before our dinner parties, of course."
+			<br><br>
+		<<else>> /* Player hook for the spa */
+			"It is a nice place," <<he>> says. "Not far." <<He>> peers at you, and adds, "You might
+			<<if $beauty gte ($beautymax / 7) * 6>>
+				try your hand at working there, <<pcpetname "Avery">>. You've got the face<<if $speech_attitude is "meek" or $speech_attitude_avery>> and demeanour<</if>> for it."
+			<<elseif currentSkillValue("handskill") gte 400>>
+				try your hand at working there, <<pcpetname "Avery">>. You're quite skilled with your hands, after all."
+			<<else>>
+				visit yourself sometime. You could use it," <<he>> adds with a <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 20 ? `snort` : `smile`>>.
+			<</if>>
+			<br><br>
+		<</if>>
+
+	<<elseif _avery_rng is 4>> /* Office */
+		<<if $officejobintro gte 1 and !$averySeen.includes("personalAssistant")>>
+			"I’ve been looking for a skilled personal assistant
+			<<if $averySeen.includes("office")>>
+				, and <<office_manager>> told me you’d be a good fit," <<he>> says. "I hope you're giving the offer the consideration that it's due?" 
+			<<else>>
+				," <<he>> says, giving you a pointed look. "I'll have to ask <<office_manager>> if there are any skilled temps that could be trusted with the job."
+			<</if>>
+			<br><br>
+			<<He>> smoothly transitions to another topic before you can say anything on the matter.
+			<br><br>
+		<<elseif $officejobintro gte 1>> /* Random variations */
+			<<rng 1 4>>
+			<<if $rng is 1 and $averySeen.includes("personalAssistant")>> /* Already personal assistant */
+				<<He>> asks you if you <<= either(
+				`remember which account <<he>> was working on the last time you worked for <<him>>. You respond to the best of your ability`,
+				`plan on working for <<him>> <<if Time.hour lte 8 and Time.weekDay isnot 7>>today<<elseif Time.weekDay isnot 6>>on Sunday<<else>>tomorrow.<</if>>. You tell <<him>> you will if you can`,
+				`were interested in the restaurant <<he>> had you get lunch from. <<He>> mentions possibly taking you there in the future for dinner`
+				)>>.
+				<br><br>
+			<<elseif $rng is 2 and $daily.officeManagerMasturbate>>
+				You tell Avery you saw <<office_manager>> masturbating in <<npc_his "office_manager">> office today. <<He>>
+				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+					glowers at that.
+					<br><br>
+					"Did you?" <<He>> narrows <<his>> eyes. "That had better be the start and end of it."
+					<br><br>
+				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+					frowns.
+					<br><br>
+					"Interesting," <<he>> mutters. "I hope you then left and gave the <<nnpc_gender "office_manager">> <<nnpc_his "office_manager">> privacy?"
+					<br><br>
+				<<else>>
+					frowns.
+					<br><br>
+					"Did you now?" <<He>> hums. "Well, thank you for telling me, <<pcpetname "Avery">>. Good <<girl>>." <<He>> pats you on the head.<<if $averyragerevealed is 1>> You notice a strange sort of glint in <<his>> eyes.<</if>>
+					<br><br>
+				<</if>>
+
+			<<elseif $rng is 3 and $officejobintro gte 1>>
+				<<He>> 
+				<<if $averyragerevealed gte 1>>
+					complains about the temp office's manager, and how <<nnpc_he "office_manager">> spends too much of the HR department's time on reporting the poor conduct of office employees. "Time is money, as they say," <<he>> finishes, "and if a temp can't do their job right, then they'll get what <<= C.npc.Avery.rage gte 20 ? `they deserve` : `they've earned`>>."
+					<br><br>
+				<<else>>
+					talks about the temp office's manager, and how <<nnpc_he "office_manager">> spends quite a lot of the HR department's time on reporting the poor conduct of office employees. "I understand <<nnpc_his "office_manager">> concern," <<he>> finishes, "but HR only has so much time in the day, and time is money, as they say. They have few enough resources as it is."
+					<br><br>
+				<</if>>
+
+			<<else>>
+				When you mention the office, Avery begins <<= either(`complaining`,`boasting`)>> about the recent shifts in the company's market profile.
+				<br><br>
+				<<if $mathstrait gte 3>>
+					You <<= either(
+					`nod along, agreeing with <<his>> stance. <<He>> seems pleased by that. <<npcincr Avery rage -1>><<garage>>`,
+					`shake your head, pointing out the opposing pattern in the company's long term trends. <<He>> seems bothered by your correction, but <<he>> also can't argue with your observation. <<npcincr Avery dom -1>><<ldom>><<npcincr Avery rage 1>><<garage>>`)>>
+
+				<<else>>
+					Unable to follow along, you spend most of the conversation thinking about other things until <<hes>> finished talking.
+				<</if>>
+				<br><br>
+			<</if>>
+
+		<<else>> /* Player hook for the office */
+			At one point, <<= $avery_fate is "ascended" ? `Avery's skyscraper on Elk Street` : `the office building on High Street`>> comes up.
+			<br><br>
+			"If you want to earn proper experience in the workforce, you can get a job as a temp there," <<he>> says. "Climb the ladder, and maybe 
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				you can actually be of use to me." <<He>> raises an eyebrow in a challenging manner.
+			<<else>>
+				you'll be able to help me out in a more hands on manner." <<He>> <<laughs>>.
+			<</if>> 
+			<br><br>
+		<</if>>
+	<<else>> /* No fame */
+		<<if $beauty gte ($beautymax * 0.8)>>
+			"Have you ever considered becoming a model?" <<he>> asks at one point. <<He>> reaches over and <<= C.npc.Avery.rage gte 40 ? `pinches` : `caresses`>> your cheek. "It just feels a shame to keep all your beauty to myself," <<he>> says with a laugh.
+			<br><br>
+		<<else>>
+			You both talk about the weather. It's a long conversation, and Avery somehow keeps it interesting.
+			<br><br>
+		<</if>>
+	<</if>>
+
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<elseif _chat.topic is 3>> /* Fame/reputation */
+	<<set _chat.fame to random(1,4)>>
+
+	<<if _chat.fame is 4 and (($scienceproject is "won" and !$science_avery_comment) or ($mathsproject is "won" and !$maths_avery_comment) or ($englishPlay is "done" and !$english_avery_comment))>>
+		"I heard that you
+		<<if $scienceproject is "won" and !$science_avery_comment>>
+			<<set $science_avery_comment to 1>>
+			did well with your science fair project
+		<<elseif $mathsproject is "won" and !$maths_avery_comment>>
+			<<set $maths_avery_comment to 1>>
+			did well with your maths competition
+		<<elseif $englishPlay is "done" and !$english_avery_comment>>
+			<<set $english_avery_comment to 1>>
+			performed well in your school play
+		<</if>>
+		, <<pcpetname "Avery">>," <<he>> says with a <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 60 ? `smirk. "Better than I expected from you, at least."` : `smile. "Just as I expected."`>><<if C.npc.Avery.love gte 60>> <<He>> reaches over and pats you on the head.<</if>> <<stress -6>><<llstress>><<npcincr Avery rage -3>><<larage>>
+		<br><br>
+	<<else>> /* General fame */
+		<<if _chat.fame is 3 and ($fame.model gte 400 or $fame.business gte 400 or $fame.social gte 400 or $fame.good gte 400)>> /* Positive fame */
+			<<He>> smiles at you, and tells you about something <<he>> heard from <<= either(`one of <<his>> colleagues`,`an associate`,`an acquaintance`)>> concerning
+			<<if $fame.model gte 400>>
+				your <span class="green">budding modeling career</span>.
+			<<elseif $fame.business gte 400>>
+				your <span class="green">business reputation</span>.
+			<<elseif $fame.social gte 400>>
+				the <span class="green">waves you're making in high society</span>.
+			<<else>> 
+				<span class="green">tales of your kind-heartedness</span>.
+			<</if>>
+			<br><br>
+			"It's nice to learn that my <<if C.npc.Avery.love gte 30>>little <</if>><<= $player.gender_appearance is "m" ? `prince` : `princess`>> is so well-regarded." <<He>> reaches up to stroke your cheek.<<if $averyragerevealed is 1>> "Keep it up."<</if>> <<stress -3>><<lstress>>
+			<br><br>
+		<<elseif _chat.fame lte 2 and ($fame.sex gte 400 or $fame.pregnancy gte 400 or $fame.prostitution gte 400 or $fame.rape gte 400 or $fame.bestiality gte 400 or $fame.exhibitionism gte 400 or (crimeSumCurrent() gte 2000 and $averyCrimeTracker gte 2000) or $fame.scrap gte 400)>> /* Negative/combat fame */
+			<<He>> <<= $averyragerevealed is 1 ? `scowls` : `frowns`>> at you, and tells you about something <<he>> heard from <<= either(`one of <<his>> colleagues`,`an associate`,`an acquaintance`)>> concerning
+			<<if $fame.sex gte 400 or $fame.pregnancy gte 400>>
+				rumours of a <<girl>> willing to spread <<pher>> legs for anyone. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<<elseif $fame.prostitution gte 400>>
+				rumours of a <<girl>> who would do just about anything for money. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<<elseif $fame.rape gte 400>>
+				the rise of sexual assault in town, and how one <<girl>> in particular is considered an easy target. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<<elseif $fame.bestiality gte 400>>
+				rumours of a <<girl>> willing to bend over for any animal in town. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<<elseif $fame.exhibitionism gte 400>>
+				rumours of a <<girl>> willing to bare it all for anyone in town. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<<elseif crimeSumCurrent() gte 2000 and $averyCrimeTracker gte 2000>>
+				the rise of crime in town, with many of those crimes tied to one suspect—<span class="red">one that could very well be you</span>.
+				<br><br>
+			<<else>> /* Combat */
+				the rise of physical assault in town, and how one <<girl>> in particular is prone to violence. <span class="red">Seems you were referred to by name.</span>
+				<br><br>
+			<</if>> <<stress 3>><<gstress>>
+			<<if crimeSumCurrent() gte 2000 and $averyCrimeTracker gte 2000>>
+				"Those crimes were yours, weren't they?" <<he>> asks, though it seems to be a rhetorical question. "I told you to fix your act up, <<girl>>. I can't be seen with a<<if $averyragerevealed gte 1>> fucking<</if>> criminal.<<if $averyragerevealed gte 1>> If you can't keep your hands to yourself, then at least try to avoid being caught.<</if>>" <<npcincr Avery rage 1>><<garage>>
+				<br><br>
+			<<elseif $fame.scrap gte 400>>
+				"That was you, wasn't it?" <<he>> asks, though it seems to be a rhetorical question. "Fix your act up, <<girl>>. I can't be seen with a<<if $averyragerevealed gte 1>> fucking<</if>> delinquent." <<npcincr Avery rage 1>><<garage>>
+				<br><br>
+			<<else>>
+				"You need to fix your behaviour, <<girl>>. I can't be seen with a known <<= $fame.prostitution gte 400 or $fame.rape gte 400 ? `whore` : $fame.bestiality gte 400 ? `deviant` : `slut`>>." <<npcincr Avery rage 1>><<garage>>
+				<br><br>
+			<</if>>
+
+		<<else>> /* No fame */
+			<<if $beauty gte ($beautymax * 0.8)>>
+				"Have you ever considered becoming a model?" <<he>> asks at one point. <<He>> reaches over and <<= C.npc.Avery.rage gte 40 ? `pinches` : `caresses`>> your cheek. "It just feels a shame to keep all your beauty to myself," <<he>> says with a laugh.
+				<br><br>
+			<<else>>
+				You both talk about the weather. It's a long conversation, but Avery somehow keeps it interesting.
+				<br><br>
+			<</if>>
+		<</if>>
+	<</if>>
+
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<elseif _chat.topic is 4>> /* Passive aggressive mansion-related comments */
+	<<set _chat to {}>>
+	<<set _chat.rage to []>>
+	<<if $avery_mansion.jobs.includes("hairstyle") and $hairtype isnot "neat" or $avery_mansion.jobs.includes("hairlength") and $hairlength gte 400>>
+		<<set _chat.rage.pushUnique("hair")>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("maid") and !$worn.upper.type.includes("maid") and !$worn.lower.type.includes("maid") and !$worn.head.type.includes("maid")>>
+		<<set _chat.rage.pushUnique("clothes")>>
+	<</if>>
+	<<if $avery_mansion.jobs.includes("formal") and !$worn.upper.type.includes("formal") and !$worn.lower.type.includes("formal")>>
+		<<set _chat.rage.pushUnique("clothes")>>
+	<</if>>
+	<<if !$avery_mansion.bow and $avery_mansion.jobs.includes("bow") or $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("knees")>>
+		<<set _chat.rage.pushUnique("bow")>>
+	<</if>>
+	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("knees")>>
+		<<set _chat.rage.pushUnique("knees")>>
+	<</if>>
+	<<if $avery_mansion.days_absent gte 2>>
+		<<set _chat.rage.pushUnique("absent")>>
+	<</if>>
+	<<if $avery_mansion.rage.dinner_wrong gte 1>>
+		<<set _chat.rage.pushUnique("dinner_wrong")>>
+	<</if>>
+	<<if $avery_mansion.rage.dinner_missed gte 1>>
+		<<set _chat.rage.pushUnique("dinner_missed")>>
+	<</if>>
+	<<set _chat.rage_select to _chat.rage.random()>>
+	
+	The topic drifts towards <<= $avery_mansion.jobs.includes("bedroom") ? `your responsibilities in the mansion, and Avery` : `Avery's expectations of you, and <<he>>`>>
+	<<if $averyragerevealed gte 1 or $averySeen.includes("chase") or $avery_mansion.rage.assess gte 7>>
+		<span class="pink">narrows <<his>> eyes at you</span>.
+	<<elseif $avery_mansion.rage.assess gte 1>>
+		<span class="purple">frowns</span>.
+	<<else>> /* Avery isn't upset about anything */
+		<span class="green">smiles</span>.
+	<</if>>
+	<<avery_housework_check>>
+	<<avery_current_room_dirty_check>>
+	<<if $avery_mansion.rage.assess gte 1>>
+		<<if _chat.rage_select is "hair">> /* Hair */ 
+			"Your hair." <<He>> raises a hand to curl a lock of it around <<his>> finger, tugging on it. "I seem to recall saying something about keeping it <<= $avery_mansion.jobs.includes("hairlength") and $hairlength gte 400 ? `neater than this when I get home—and shorter, too` : $hairtype isnot "neat" ? `neater than this when I get home` : `shorter than this`>>. Perhaps you simply didn't hear me?" <<He>> chuckles.<<if $averyragerevealed is 1 or $averySeen.includes("chase")>> It sounds more like a warning than a joke.<</if>>
+			<br><br>
+		<<elseif _chat.rage_select is "clothes">> /* Maid/formal clothing wrong */
+			<<He>> looks you up and down, and says, "I know it might be something of a hassle for you to change just to greet me." <<He>> puts <<his>> hand on your thigh. "But you can indulge me at least in this, can't you?"<<if $averyragerevealed is 1 or $averySeen.includes("chase")>> It almost sounds like a threat.<</if>>
+			<br><br>
+		<<elseif _chat.rage_select is ("bow") or _chat.rage_select is "knees">> /* No bowing/kneeling */
+			"I must say," <<he>> <<= $averyragerevealed is 1 ? `leers` : `smiles`>> as <<he>> looks you up and down. "You looked so cute when you <<= _chat.rage_select is "knees" ? `knelt` : `<<= $player.gender_appearance is "m" ? `bowed` : `curtsied`>>`>> for me, <<pcpetname "Avery">>. I look forward to seeing it again," <<he>> says<<if $averyragerevealed is 1 or $averySeen.includes("chase")>> pointedly<</if>>, putting a hand on your thigh.
+			<br><br>
+		<<elseif _chat.rage_select is "absent">> /* PC is missing for more than one day */ 
+			"It feels like I haven't seen you around the past few days. Or is that just me?" <<He>> smiles again, though it doesn't reach <<his>> eyes. "It would be nice to have you around more often."<<if $averyragerevealed is 1 or $averySeen.includes("chase")>> It almost sounds like a threat.<</if>>
+			<br><br>
+		<<elseif _chat.rage_select is "dinner_wrong" or _chat.rage_select is "dinner_missed">> /* Dinner */ 
+			"You know, I was a little disappointed the other day when you <<= _chat.rage_select is "dinner_wrong" ? `prepared a different dish than the one I'd expected` : `weren't here for dinner`>>." <<He>> looks away, scanning the <<= $outside is 1 ? `grounds` : `room`>> as if bored. "I wouldn't have thought it so difficult to be present for a single meal." <<he>> muses<<if $averyragerevealed is 1 or $averySeen.includes("chase")>>, though the words sound more like a threat than anything else<</if>>.
+			<br><br>
+		<<elseif _chat.rage_select is _avery_housework_count gte 1>> /* Dirty house */
+			"I suppose you haven't gotten around to cleaning yet today?" <<he>> asks<<if _dirty_room>> as <<he>> looks around at the <<= $bus is "avery_garden" ? `unkempt greenery` : $bus is "avery_pool" ? `filthy pool` : `mess`>><</if>>.
+			<br><br>
+		<<else>> /* Party missed, and it's the only thing Avery's upset about */
+			<<He>> doesn't speak <<his>> mind, but you wonder if it might have to do with the party you missed.
+			<br><br>
+		<</if>>
+
+	<<else>> /* PC is performing well */
+		<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+			"Despite what a brat you can be, I suppose I can't complain about how dutiful you are," <<he>> says.<<if $avery_mansion.jobs.includes("bedroom")>> "And more competent than some of the help I've hired in my time." <<He>> gives a derisive snort.<</if>>
+			<br><br>
+		<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+			"It is nice having you around, <<pcpetname "Avery">>." <<He>> puts a hand on your thigh. "Despite your attitude, you can at least keep up with your responsibilities.<<if $avery_mansion.jobs.includes("bedroom")>> And with more competence than some of the help I've hired in my time.<</if>>" <<He>> <<laughs>>.
+			<br><br>
+		<<else>>
+			"It is a pleasure having you around, <<pcpetname "Avery">>." <<He>> puts a hand on your thigh. "You're such a sweet little thing. <<if ($averyragerevealed gte 1 or C.npc.Avery.dom gte 80) and $avery_mansion.jobs.includes("bedroom")>> And more competent than some of the help I've hired in my time.<</if>>" <<He>> <<laughs>> under <<his>> breath.
+			<br><br>
+		<</if>>
+	<</if>>
+
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<elseif _chat.topic is 5>> /* Lewd */
+	<<set _chat.lewd to random(1,4)>>
+	<<if _chat.lewd is 1 and $bus isnot "avery_bathroom">> /* Groping */
+		<<set $avery_talk_grope to 1>>
+		At one point during your conversation, <<he>> reaches over to
+		<<rng 1 2>>
+		<<if $rng is 1 and $player.breastsize gte 3>> /* Chest */
+			wrap an arm around your waist. You think that's where it'll stay, but <<he>> has more shameless intentions. <<He>> slides <<his>> hand up and starts groping one of your <<breasts>>, then your <<nipple>>. Despite the assault on your breast, <<he>> keeps the conversation going, <<his>> eyes locked on your face as a lecherous smile spreads over <<his>> lips. <<arousal 600 "breasts">><<garousal>><<set _breast_grope to true>>
+			<<if $arousal gte $arousalmax>>
+				<br><br>
+				<<orgasm>>
+
+				Avery looks surprised, but no less smug, and <<laughs>> to <<himself>> as <<he>> pulls <<his>> hand away. <<npcincr Avery lust 3>><<glust>>
+				<br><br>
+			<<else>>
+				<<npcincr Avery lust 1>><<glust>>
+				<br><br>
+			<</if>>
+
+		<<else>> /* Genitals */
+			rest a hand on your thigh. You think that's where it'll stay, but <<he>> has more shameless intentions. <<He>> slides <<his>> hand over and starts groping your <<groin>>. Despite the assault on your <<privates>>, <<he>> keeps the conversation going, <<his>> eyes locked on your face as a lecherous smile spreads over <<his>> lips. <<arousal 600 "genitals">><<garousal>>
+			<<if $arousal gte $arousalmax>>
+				<<orgasm>>
+				<br><br>
+				Avery looks smug, and <<laughs>> to <<himself>> as <<he>> pulls <<his>> hand away.<<if $worn.lower.name is "naked" or ($worn.lower.skirt_down is 1 and $worn.under_lower.name is "naked")>> <<Hes>> still eyeing you as <<he>> wipes <<his>> hand clean with a handkerchief.<</if>> <<npcincr Avery lust 3>><<glust>>
+				<br><br>
+			<<else>>
+				<<npcincr Avery lust 1>><<glust>>
+				<br><br>
+			<</if>>
+		<</if>>
+
+		<<if C.npc.Avery.lust gte 60>>
+			Then, all of a sudden, <<he>> shifts closer to you. <<His>> arm comes around your waist<<if _breast_grope is true>> again<</if>>, and <<he>> pulls you against <<him>> as <<he>> leans in for a kiss.
+			<br><br>
+			<<link [[Give in|Mansion Talk Chat Lewd]]>><</link>><<promiscuous1>><<kissvirginitywarning>>
+			<br>
+			<<link [[Refuse|Mansion Talk Chat End]]>><<set $avery_chat_end to "annoyed">><<set $phase to 1>><<npcincr Avery rage 1>><</link>><<garage>>
+			<br><br>
+		<<else>>
+			<<endevent>>
+			<<avery_mansion_end_links>>
+		<</if>>
+
+	<<elseif _chat.lewd is 2 and $bus isnot "bathroom">> /* Sitting in lap */
+		As you talk, Avery pats <<his>> lap, encouraging you to take a seat on it.
+		<br><br>
+		<<if C.npc.Avery.lust gte 60>>
+			You can tell by the way <<his>> eyes darken and <<his>> lips curl into a smug smile that <<he>> has lewd intentions.
+			<br><br>
+			<<link [[Straddle <<his>> lap|Mansion Talk Chat Lewd]]>><</link>><<promiscuous2>>
+			<br>
+			<<if C.npc.Avery.rage gte 20>>
+				<<link [[Decline|Mansion Talk Chat End]]>><<set $avery_chat_end to "annoyed">><<set $phase to 2>><</link>>
+				<br>
+			<<else>>
+				<<link [[Decline|Mansion Talk Chat End]]>><<set $avery_chat_end to "calm">><<set $phase to 2>><</link>>
+				<br>
+			<</if>>
+
+		<<else>>
+			<<link [[Sit on <<his>> lap|Mansion Talk Chat Lewd]]>><<set $phase to 1>><<npcincr Avery dom 1>><</link>><<gdom>><<promiscuous1>>
+			<br>
+			<<link [[Decline|Mansion Talk Chat End]]>><<set $avery_chat_end to "calm">><<set $phase to 2>><</link>>
+			<br>
+		<</if>>
+
+	<<elseif _chat.lewd is 3 and $avery_mansion.jobs.includes("dungeon")>> /* Comments about the dungeon */
+		<<if $masochism gte 1>>
+			"Do you like my dungeon, <<pcpetname "Avery">>?" <<he>> asks with a <<= C.npc.Avery.rage gte 20 ? `knowing smirk` : `slow smile`>>.
+			<<if $averySeen.includes("whip_orgasm")>>
+				"I seem to recall you enjoying being whipped especially." You shiver at the memory.
+			<<else>>
+				"I've noticed that you seem to enjoy the pain."
+			<</if>> <<arousal 50>><<garousal>>26
+			<br>
+		<<else>>
+			"How do you feel about my dungeon, 
+			<<if $submissive gte 1500 or C.npc.Avery.dom gte 40>>
+				my<<if C.npc.Avery.love gte 30>> little<</if>> pet? You're so sweet when you submit to me."
+			<<elseif $submissive lte 500>>
+				<<pcpetname "Avery">>? I know it's against your nature to submit. But."
+			<<else>>
+				<<pcpetname "Avery">>?"
+			<</if>>
+			<<He>> puts a hand on your thigh, and purrs, "I do look forward to taking you down there again soon." <<He>> squeezes down
+			<<if $avery_comment_dungeon is 1>>
+				<<unset $avery_comment_dungeon>>
+				tight, it almost feels punitive. "I just hope you do as you're told next time," <<he>> adds with a twitch in <<his>> smile. <<trauma 3>><<gtrauma>>
+			<<else>>
+				once before pulling <<his>> hand away from you with a satisfied smile.
+			<</if>>
+			<br><br>
+		<</if>>
+			
+		<<endevent>>
+		<<avery_mansion_end_links>>
+
+	<<else>> /* Leering and commenting on PC's looks */
+		<<rng 1 3>>
+		As you talk, you notice Avery
+		<<if $rng is 1 and $player.breastsize gte 2>>
+			leering at your <<chest>><<= $worn.upper.type.includes("naked") and $worn.under_upper.type.includes("naked") ? `, exposed as they are. <<embarrassment>>` : ` through your <<top>>.`>>
+		<<elseif $rng is 2 and $player.bottomsize gte 2>>
+			leering at your <<bottomsimple>><<= $worn.lower.type.includes("naked") and $worn.under_lower.type.includes("naked") ? `, exposed as it is. <<embarrassment>>` : ` through your <<bottoms>>.`>>
+		<<else>>
+			looking you up and down. <<His>> leering makes you very aware of <<= $exposed gte 2 ? `your nudity. <<embarrassment>>` : `yourself.`>>
+		<</if>><<arousal 50>><<garousal>>
+		<br><br>
+		"Ah, forgive me. You look very <<cute>> today, <<pcpetname "Avery">>," Avery says with a perverse grin. <<He>> puts <<his>> hand on the small of your back. "I can't help but stare."
+		<br><br>
+		<<endevent>>
+		<<avery_mansion_end_links>>
+	<</if>>
+
+<<elseif _chat.topic is 6 and $worn.neck.name is "love locket">> /* Love locket */
+	During a lull in the conversation, Avery's eyes land on your love locket. 
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+		<<He>> stares at it askance. "A locket? How unexpectedly sentimental of you."
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+		"A locket, hm?" <<He>> raises an eyebrow. "How charming."
+	<<else>>
+		"Is that a love locket?" <<he>> asks. "It looks cute on you."
+	<</if>>
+	<br><br>
+	<<link [[Thank <<him>>|Mansion Talk Chat Locket]]>><<set $phase to 1>><</link>>
+	<br>
+	
+	<<if !$carried.neck.photo>>
+		<<link [[Show <<him>> your love locket|Mansion Talk Chat Locket]]>><<set $phase to 3>><</link>>
+		<br>
+	<<else>>
+		<<link [[Show <<him>> your love locket|Mansion Talk Chat Locket]]>><<set $phase to 2>><</link>>
+		<br>
+	<</if>>
+	<<link [[Change the subject|Mansion Talk Chat Locket]]>><<set $phase to 4>><</link>>
+	<br>
+
+<<else>> /* Misc */
+	<<set _chat.misc to random(1,5)>>
+	<<if _chat.misc is 1>> /* Grades */
+		Avery brings up your school grades.
+		<<if ($mathstrait + $sciencetrait + $englishtrait + $historytrait) gte 12>>
+			You tell <<him>> how well you're doing. <<He>> seems pleased<<if C.npc.Avery.love gte 50>>, and pats you on the head<</if>>. <<stress -6>><<lstress>>
+			<br><br>
+		<<elseif ($mathstrait + $sciencetrait + $englishtrait + $historytrait) lte 5>>
+			Aware of how poorly you're doing, you change the subject. <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 60 ? `Though <<he>> looks irritated at being ignored, <<he>>` : $averyragerevealed is 1 ? `<<He>> seems displeased by your obvious diversion, but` : `Likely picking up on the implication, <<he>>`>> doesn't push the subject. <<stress 6>><<gstress>>
+			<br><br>
+		<<else>>
+			You tell <<him>> you're doing all right. <<He>> <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 40 `mutters about how you could be doing better, but` : $averyragerevealed is 1 ? `just seems glad you're not failing, and` : `hums noncommittally, and`>> moves on.
+			<br><br>
+		<</if>>
+	<<elseif _chat.misc is 2>> /* PC's clothes */
+		<<rng 1 2>>
+		<<if $rng is 1 and ($avery_mansion.jobs.includes("maid") or $avery_mansion.jobs.includes("formal"))>>
+			<<if $avery_mansion.jobs.includes("maid")>>
+				<<if ($worn.upper.type.includes("maid") and $worn.upper.femininity gte 1) or ($worn.lower.type.includes("maid") and $worn.lower.femininity gte 1) or ($worn.head.type.includes("maid") and $worn.head.femininity gte 1)>>
+					<<He>> nods at your maid dress. "Now, that's what I like to see when I get home." <<He>> puts a hand on your thigh. "I know you aren't actually my maid, but you do look cute <<= $player.gender_appearance is "m" ? `in a dress, my boy`,`dressed as one`>>," <<he>> adds with a smile,
+				<<elseif $worn.upper.type.includes("maid") or $worn.lower.type.includes("maid") or $worn.head.type.includes("maid")>>
+					<<He>> nods at your revealing clothing. "Now, that's what I like to see when I get home." <<He>> puts a hand on your thigh. "I must say you look quite alluring dressed like this," <<he>> purrs,
+				<<else>>
+					<<He>> eyes you up and down. <<He>> <<= $averyragerevealed is 1 ? `raises one brow` : `cocks <<his>> head`>> and says, "I look forward to seeing you in maid's attire next time I come home." It's a pointed statement. "I know you aren't actually my maid, but you would look cute <<= $player.gender_appearance is "m" ? `in a dress, my boy`,`dressed as one`>>," <<he>> adds with a smile,
+				<</if>> leaning closer.
+				<br><br>
+			<<else>> /* Formal */
+				<<if $worn.upper.type.includes("formal") or $worn.lower.type.includes("formal")>>
+					<<He>> nods at your 
+					<<if $worn.upper.type.includes("formal")>>
+						<<print $worn.upper.name>>
+					<<else>>
+						<<print $worn.lower.name>>
+					<</if>>
+					. "It's that style that I like seeing you in. You do look <<cute>> in it,
+				<<else>>
+					<<He>> eyes you up and down. <<He>> <<= $averyragerevealed is 1 ? `raises one brow` : `cocks <<his>> head`>> and says, "I look forward to seeing you in formalwear more often." It's a pointed statement. "You look <<cute>> all dressed up for me, 
+				<</if>>
+				you know," <<he>> adds with a smile, putting a hand on your thigh.
+			<</if>>
+			<br><br>
+		<<else>>
+			<<if $worn.upper.type.includes("formal") or $worn.lower.type.includes("formal")>>
+				<<He>> smiles and nods at your 
+				<<if $worn.upper.type.includes("formal")>>
+					<<print $worn.upper.name>>
+				<<else>>
+					<<print $worn.lower.name>>
+				<</if>>
+				. "I do like seeing you in formalwear. It makes you look expensive," <<he>> adds, giving you a wink.
+				<br><br>
+			<<elseif $worn.upper.type.includes("maid") or $worn.lower.type.includes("maid") or $worn.head.type.includes("maid")>>
+				<<He>> smiles and raises an eyebrow at your maid dress. "You know, I do like the look of you in that," <<he>> says. "You aren't actually <<if $avery_mansion.jobs.includes("lounge") ? `my` : `a`>> maid, but you do look cute <<= $player.gender_appearance is "m" ? `in a dress, my boy`,`dressed as one`>>."<</if>> <<He>> winks at you.
+				<br><br>
+			<<elseif $worn.upper.reveal gte 700 or $worn.lower.reveal gte 700>>
+				<<He>> smiles and looks you up and down, lingering on your 
+				<<if $worn.upper.reveal gte 700>>
+					<<print $worn.upper.name>>
+				<<else>>
+					<<print $worn.lower.name>>
+				<</if>>
+				"Are you trying to entice me, <<pcpetname "Avery">>? If so, " <<he>> leans in to whisper in your ear. "It's working." <<npcincr Avery lust 1>><<glust>>
+				<br><br>
+			<<elseif $exposed gte 2>>
+				<<He>> smiles and looks you up and down, lingering on your bare <<chestsimple>> and exposed <<genitals>>. "Are you trying to tempt me, <<pcpetname "Avery">>? If so," <<He>> leans in to whisper in your ear. "It's working." <<npcincr Avery lust 2>><<glust>>
+				<br><br>
+			<<else>>
+				<<He>> looks you up and down, and says, "You look <<cute>> today, <<pcpetname "Avery">>." <<He>> smiles and puts a hand on the small of your back.
+				<br><br>
+			<</if>>
+		<</if>>
+
+	<<elseif _chat.misc is 3>> /* The room you're in */
+		<<if $avery_mansion.schedule is "drink">>
+			<<He>> tells you about <<his>> collection of expensive liquors. It sounds like something <<he>> boasts about a lot.<<if $avery_fate is "saved">> You notice <<he>> doesn't mention the bottle of cheap bourbon you'd seen <<him>> drinking from when <<he>> came back from the hospital.<</if>>
+			<br><br>
+			<<if $avery_mansion.jobs.includes("lounge") and $avery_mansion.lounge gte 1>>
+				At the end of the conversation, <<he>> points out that the lounge needs tidying.
+			<</if>>
+			<br><br>
+		<<elseif $avery_mansion.schedule is "pool">>
+			<<if $avery_pool is "coffee">>
+				<<He>> tells you from where <<his>> coffee was sourced, the subtle notes in its flavour, and how well regarded the beans themselves are amongst <<his>> set. 
+				<br><br>
+				The world of coffee is more complicated than you thought.
+				<br><br>
+			<<else>>
+				<<He>> tells you about <<his>> exercise regimen, including swimming. "It's important to exercise to maintain one's figure." <<He>> looks you up and down, then smiles and places a hand on your thigh. "Though you look <<cute>> no matter what, <<pcpetname "Avery">><<if $averyragerevealed is 1>>, it's important that you don't get too complacent<</if>>."
+				<br><br>
+			<</if>>
+
+			<<if $avery_mansion.job.includes("pool") and $avery_mansion.pool gte 1>>
+				At the end of the conversation, <<he>> points out that the pool needs cleaning.
+				<br><br>
+			<</if>>
+
+		<<elseif $avery_mansion.schedule is "garden">>
+			<<rng 1 2>>
+			After a while, <<he>> gets back to pruning <<his>> garden while you watch <<him>> work.
+			<<if $rng is 1 and !$averySeen.includes("flower")>>
+				The subject of flowers comes up. "I prefer white roses myself," <<he>> says as <<he>> examines the bush in front of <<him>>.
+				<<if C.npc.Avery.love gte 60 and C.npc.Avery.rage lt 20 and !$averySeen.includes("flower")>>
+					<<set $averySeen.pushUnique("flower")>>
+					"And what about you, <<pcpetname "Avery">>?" You tell <<him>> your favourite flower, and <<he>> hums in acknowledgement. "I see. I'll keep that in mind."
+				<</if>>
+				<br><br>
+			<<else>>
+				You note that <<he>> is very meticulous in <<his>> work.
+				<br><br>
+				<<if currentSkillValue('tending') lt 600>>
+					<span class="gold">You learn a thing or two about tending gardens.</span> <<gtending>><<tending 6>>
+				<</if>>
+				<br><br>
+			<</if>>
+
+			<<if $avery_mansion.jobs.includes("garden") and $avery_mansion.garden gte 1>>
+				At the end of the conversation, <<he>> points out that the garden needs weeding.
+				<br><br>
+			<</if>>
+
+		<<elseif $avery_mansion.schedule is "lounge">>
+			<<if C.npc.Avery.rage lt 20>> /* Watching football */
+				<<rng 1 2>>
+				After a while, <<his>> attention returns to the football game.
+				<<if $rng is 1>>
+					<<He>> seems to be enjoying it, up until the team <<he>> was rooting for misses the winning goal. 
+					<br><br>
+					<<He>> goes on a rant about what the player in question ought to have done different. It's all that <<he>> talks about for the rest of the conversation.
+					<br><br>
+				<<else>>
+					<<He>> explains the game to you as it progresses. <<= $athletics gte 600 ? `You already understand the rules of the sport, but you let <<him>> go on.` : `You struggle to follow along.`>>
+					<br><br>
+				<</if>>
+
+			<<else>> /* Watching the news */
+				<<He>> keeps an eye on the screen as you talk. 
+
+				An advertisement for a new model of sports car starts playing. <<He>> <<= either(`is immediately captivated` : `nitpicks at the features it boasts`)>>. When the advertisement is over, <<he>> starts talking about cars in general, then about <<his>> own cars. It's all that <<he>> talks about for the rest of the conversation. 
+			<</if>>
+			<<tiredness 1>><<gtiredness>>
+			<br><br>
+			<<if $avery_mansion.jobs.includes("lounge") and $avery_mansion.lounge gte 1>>
+				At the end of the conversation, <<he>> points out that the lounge needs tidying.
+				<br><br>
+			<</if>>
+
+		<<elseif $avery_mansion.schedule is "study">>
+			<<if $englishtrait gte random(1, 4)>>
+				You recognise the book <<hes>> reading. It's <<= either(`a nonfiction`,`a fantasy`,`an erotic`)>> novel. <<= either(`You haven't`,`You've`)>> read it before, and ask for <<his>> thoughts on it.
+			<<else>>
+				You don't recognise the book <<he>> reading. You ask <<him>> about it.
+			<</if>>	
+			Avery seems pleased to be asked for <<his>> opinion. <<= either(
+			`"This is one of my favourite books," <<he>> says. "I read it until it got worn out. This is my second copy."`,
+			`"It's a new book from my favourite author," <<he>> says. "I've heard good reviews about it, so I'm trying it out. I'm enjoying it so far."`,
+			`"It's something a colleague recommended to me. It's<<if $averyragerevealed is 1>> awful, honestly," <<he>> says. "But I promised that I'd give it a read."<<else>> ine," <<he>> says, with a somewhat strained smile.<</if>>`,
+			`"It's something a colleague recommended to me. It's an entertaining read so far," <<he>> says.`
+			)>>
+			<br><br>
+		<<elseif $avery_mansion.schedule is "bath">>
+			<<He>> <<= either(`has you rub <<his>> shoulders`,`has you wash <<his>> back`,`talks in depth about <<his>> beauty regimen`)>> as <<he>> bathes.
+			<<if $avery_mansion.jobs.includes("bathroom") and $avery_mansion.bathroom gte 1>>
+				At the end of the conversation, <<he>> points out that the bathroom needs cleaning.
+			<</if>>
+			<br><br>
+		<<elseif $avery_mansion.schedule is "breakfast">>
+			<<if C.npc.Avery.dom gte 40 and $housekeeping gte 700>>
+				<<He>> glances at you, then back to <<his>> meal. "If only I had the time for you to make breakfast<<if $averyragerevealed gte 1>> for me<</if>>, too," <<he>> says. "I'm sure it would be delicious."
+			<<else>>
+				<<He>> sighs. "I wish I had the time for a more fulfilling breakfast in the morning," <<he>> says. "Unfortunately, I'm far too busy."
+			<</if>>
+			<br><br>
+			<<if $avery_mansion.jobs.includes("dining") and $avery_mansion.dining gte 1>>
+				At the end of the conversation, <<he>> points out that the dining room needs cleaning.
+			<</if>>
+			<br><br>
+		<</if>>
+	<<elseif _chat.misc is 4>>
+		"I am quite fond of cats," <<he>> says at one point. "There's something about them that speaks to me."
+		<br><br>
+		You ask why <<he>> doesn't have a cat <<himself>>. 
+		<<if $wolfgirl gte 2 or $cat gte 2>>
+			<<He>> stares at you for a moment before <<he>> smiles. Reaching over to you, <<he>> <<= C.npc.Avery.rage gte 40 ? `pulls on one of your pointed ears, then scratches behind it` : `scratches behind your pointed ears`>>. You can't help but purr. <<arousal 50>><<garousal>>
+			<br><br>
+			"Why should I? It seems I have <<= $cat gte 2 ? `one` : `a puppy`>> already," <<he>> teases.
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				"Speaking of which, be careful not to get fur all over the place." <<He>> pulls <<his>> hand away, shaking it to get a few strands of fur off.<<if $avery_mansion.jobs.includes("mansion")>> "You don't want to make more of a mess for you to clean, do you?"<</if>>
+			<</if>>
+			<br><br>
+		<<else>>
+			"I don't have time for pets. And they're so messy," <<he>> explains with a huff.
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 20 and ($wolfgirl gte 2 or $cat gte 2 or $cow gte 2 or $harpy gte 6)>>
+				"Speaking of which, be careful not to get <<= if $harpy gte 2 ? `feathers` : `fur`>> all over the place." <<He>> reaches over and plucks <<= if $harpy gte 2 ? `a loose feather` : `a few strands of fur`>> off your shoulder.<<if $avery_mansion.jobs.includes("lounge")>> "You don't want to make more of a mess for you to clean, do you?"<</if>>
+			<<elseif $avery_mansion.jobs.includes("lounge")>>
+				"You wouldn't want more of a mess to clean, do you?"
+			<</if>>
+			<br><br>
+		<</if>>
+
+	<<else>> /* Weather */
+		<<rng 1 2>>
+		<<if $rng is 1 and Time.season is "winter">>
+			"I do enjoy winter," <<he>> says, looking <<= $outside is 1 ? `up at the sky` : `out the window`>>
+			<<if !Weather.precipitation is "none">>
+				with a smile. "And it's a perfect day out today, don't you think? It's not often you have a sunny day around this time of year."
+			<<else>>
+				with a content smile. "Nothing as energising as a cold winter's day, don't you think?"
+			<</if>>
+			<br><br>
+		<<elseif $avery_fate and Weather.bloodMoon>>
+			Avery seems distracted tonight. More than once as you talk, you notice <<him>> <<= [outside] ? `glance up` : `staring out the window`>> at the blood moon with
+			<<if $avery_fate is "ascended">>
+				a <<= either(`solemn`,`contemplative`,`difficult to read`)>> 
+			<<else>>
+				<<= either(`an uneasy`,`an exhausted`,`a difficult to read`)>>
+			<</if>>
+			expression.
+			<br><br>
+		<<elseif !Weather.isOvercast and Time.dayState is "day">>
+			<<if $avery_mansion.schedule is "pool">>
+				"Perfect weather for a 
+				<<if $avery_pool is "coffee">>
+					swim, don't you think?"
+					<<if $avery_mansion.injury_stage is "cast">>
+						<<He>> then <<= $averyragerevealed is 1 ? `glowers` : `frowns`>> at <<his>> cast, and sighs. "If only I could take advantage," <<he>> mutters.
+					<</if>>
+				<<elseif $avery_pool is "sunbathe">>
+					sunbath," <<he>> says, stretching with a contented sigh.
+				<<else>>
+					swim, don't you think?" <<he>> says, swishing <<his>> legs in the water.<<if C.npc.Avery.love gte 50>> "You should join me sometime."<</if>>
+				<</if>>
+				<br><br>
+			<<else>>
+				"It’s a nice day out today," <<he>> says. "Wouldn't you agree, <<= C.npc.Avery.love gte 60 ? `my little sunshine` : C.npc.Avery.love gte 30 ? `sunshine` : `<<pcpetname "Avery">>`>>?"
+				<br><br>
+			<</if>>
+
+		<<elseif Weather.isOvercast>>
+			<<if $outside is 1 and Weather.precipitation isnot "none">>
+				<<if $worn.handheld.includes("rainproof")>>
+					You're lucky you have your <<print $worn.handheld.name>>. You hold it over yourself and Avery, keeping you both safe from the rain.
+				<<elseif $avery_pool is "coffee">>
+					The table you sit at has an umbrella attachment, so both of you are safe from the rain.
+				<<elseif $bus is "avery_garden">>
+					Both of you ignore the falling rain. The branches of a nearby tree keep you somewhat dry.
+				<<else>> /* Pool */
+					Both of you ignore the rain that falls. Every now and then, one of you is startled by a rain drop landing too close to an eye.
+				<</if>>
+				<br><br>
+			<<elseif $outside is 0 and Weather.precipitation isnot "none">>
+				<<if $avery_mansion.schedule is "study">> /* Aesthetic™ */
+					As you talk, Avery puts on a vinyl of <<= either(`jazz`,`classical music`)>>. The music, the muffled sounds of rain outside, and the closed in atmosphere of the study is relaxing. <<stress -6>><<lstress>><<trauma -3>><<ltrauma>>
+				<<else>>
+					"Raining, hm?" Avery frowns. "<<= Time.weekDay isnot 7 and Time.hour lte 6 ? `I should bring an umbrella with me to work.` : `At least we're inside.`>>"
+				<</if>>
+				<br><br>
+			<<else>>
+				"Cloudy out today, isn't it?" Avery frowns. "I wonder if it's going to rain. <<= Time.weekDay isnot 7 and Time.hour lte 6 ? `Perhaps I should bring an umbrella with me to work, just in case.` : `If it does, at least we're inside.`>>"
+				<br><br>
+			<</if>>
+
+		<<else>>
+			You talk about the weather. Despite the length of the conversation, neither of you say much at all.
+			<br><br>
+		<</if>>
+	<</if>>
+
+	<<endevent>>
+	<<avery_mansion_end_links>>
+<</if>>
+
+
+:: Mansion Talk Chat Locket
+<<effects>>
+
+<<if $phase is 2>> /* Show */
+	You show Avery what's inside your love locket. Inside is a picture of <<= $carried.neck.photo is "Avery" ? `<<him>>` : `<<print $carried.neck.photo>>`>>.
+	<br><br>
+	<<if $carried.neck.photo is "Avery">>
+		<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+			<<He>> raises an eyebrow at it and hums. "You'll forgive my surprise. Given how rebellious you can be, I was beginning to wonder." Then <<he>> <<laughs>>. "But I suppose it's only to be expected."
+		<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+			"My, my." <<He>> smirks. "How flattering, <<pcpetname "Avery">>." <<He>> seems satisfied.
+		<<else>>
+			<<He>> lets out a small laugh. "Why, how <<= either(`sweet`,`lovely`,`charming`)>>, <<pcpetname "Avery">>." <<He>> puts a hand on the small of your back.<<if $averyragerevealed is 1>> <<He>> seems satisfied.<</if>>
+		<</if>><<npcincr Avery rage -1>><<npcincr Avery love 1>><<larage>><<glove>>
+		<br><br>
+		<<endevent>>
+		<<avery_mansion_end_links>>
+
+	<<else>>
+		Upon seeing it, <<he>>
+		<<if $carried.neck.photo is "Robin">>
+			<<if $robinaverybeat is 1>>
+				glowers. "Ah. That brat. You remember what <<nnpc_he "Robin">> did to me, don't you? Why are you keeping a photo of <<nnpc_him "Robin">> on you?" <<npcincr Avery rage 3>><<ggarage>>
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				scowls. "I told you not to associate with <<nnpc_his "Robin">> sort, didn't I?" <<npcincr Avery rage 1>><<garage>>
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "Ah. That <<nnpc_gendery "Robin">>. You know, one might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a love locket, rather than a schoolmate," <<he>> says with a too careful nonchalance. <<npcincr Avery rage 1>><<garage>>
+			<<else>>
+				raises an eyebrow. "Ah. Isn't this your friend? The one you walk to school with from time to time?"<<if $averyragerevealed is 1>> <<He>> frowns.<</if>> <<npcincr Avery rage 1>><<garage>>
+			<</if>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Whitney">>
+			<<if $averySeen.includes("whitney_crash")>>
+				glowers. "The <<nnpc_gendery "Whitney">> that stole my car? You remember what <<nnpc_he "Whitney">> did to it, don't you? Why are you keeping a photo of <<nnpc_him "Whitney">> on you?" <<npcincr Avery rage 5>><<ggarage>>
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 60>> 
+				scowls. "What is the meaning of this, <<girl>>?" <<npcincr Avery rage 1>><<garage>>
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than a schoolmate," <<he>> says with a too careful nonchalance. <<npcincr Avery rage 1>><<garage>>
+			<<else>>
+				raises an eyebrow. "Ah. And who is this, exactly? <<nnpc_He "Whitney">> seems," <<he>> says, then pauses. <<if $averyragerevealed is 1>> <<His>> lip curls.<</if>> It appears <<hes>> unable to think of anything polite to say. <<npcincr Avery rage 1>><<garage>>
+			<</if>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Sydney">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				scowls. "What is the meaning of this, <<girl>>?"
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than a schoolmate." <<he>> says with a too careful nonchalance.
+			<<else>>
+				raises an eyebrow. "Ah. And who is this, exactly?
+				<<if $averySeen.includes("temple_prospective")>>
+					Someone from the temple?"
+				<<else>>
+					One of your schoolmates?"
+				<</if>>
+			<</if>> <<npcincr Avery rage 1>><<garage>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Kylar">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				scowls. "What is the meaning of this, <<girl>>?"
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than a schoolmate," <<he>> says with a too careful nonchalance.
+			<<else>>
+				raises an eyebrow. "Ah. And who is this, exactly? One of your schoolmates? They look strange." <<if $averyragerevealed is 1>> <<His>> lip curls.<</if>> It appears <<hes>> unable to think of anything polite to say. 
+			<</if>> <<npcincr Avery rage 1>><<garage>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Alex">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>> 
+				scowls. "What is the meaning of this, <<girl>>?"
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than some farmer," <<he>> says with a too careful nonchalance.
+			<<else>>
+				raises an eyebrow. "Ah. And who is this, exactly? A farmer?"<<if $averyragerevealed is 1>> <<His>> lip curls with distaste.<</if>>
+			<</if>> <<npcincr Avery rage 1>><<garage>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Eden">>
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>> 
+				scowls. "What is the meaning of this, <<girl>>?"
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than some strange <<nnpc_gender "Eden">>," <<he>> says with a too careful nonchalance.
+			<<else>>
+				raises an eyebrow. "Ah. And who is this, exactly? I don't recall ever seeing this individual before." <<He>> pauses. <<if $averyragerevealed is 1>> <<His>> lip curls.<</if>> It appears <<hes>> unable to think of anything polite to say.
+			<</if>> <<npcincr Avery rage 1>><<garage>>
+			<br><br>
+		<<elseif $carried.neck.photo is "Gwylan">>
+			<<if $gwylan?.timer?.nobody gte Time.date.timeStamp>>
+				Or so you thought, but instead, it's just a photo of <span class="pink">nobody</span>.
+				<br><br>
+				Avery
+				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+					frowns. "An interesting choice to wear a love locket with no one inside it."
+				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+					raises an eyebrow. "Do you wear it just for the sake of wearing it?" <<He>> hums. "I suppose it does suit you."
+				<<else>>
+					hums. "Empty, I see. It's still a lovely accessory, in any case."
+				<</if>>
+				<<He>> then changes the subject to complain about work.
+				<br><br>
+			<<else>>
+				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>> 
+					scowls. "What is the meaning of this, <<girl>>?"
+				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+					frowns. "One might think you would keep a picture of your <<nnpc_girlfriend "Avery">> in a locket, rather than some strange <<nnpc_gendery "Gwylan">>," <<he>> says with a too careful nonchalance.
+				<<else>>
+					raises an eyebrow. "Ah. And who is this, exactly? I don't recall ever seeing this individual before. <<nnpc_He "Gwylan">> seems odd."<<if $averyragerevealed is 1>> <<His>> lip curls.<</if>> It appears <<hes>> unable to think of anything polite to say.
+				<</if>> <<npcincr Avery rage 1>><<garage>>
+			<</if>>
+			<br><br>
+		<<else>> /* Black Wolf, Great Hawk */
+			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+				frowns.
+			<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+				raises an eyebrow.
+			<<else>>
+				gives a polite smile. 
+			<</if>>
+			<br><br>
+			"You must love 
+			<<if $carried.neck.photo is "Black Wolf">>
+				<<= either(`wolves`,`animals`)>>
+			<<else>> /* Great Hawk */
+				<<= either(`hawks`,`birds`,`animals`)>>
+			<</if>>."
+
+			Seeming baffled by your decision to keep such a photo in a love locket, Avery changes the subject rather than ruminating on it further.
+			<br><br>
+		<</if>>
+
+		<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60 or ($carried.neck.photo is "Robin" and $robinaverybeat is 1) or ($carried.neck.photo is "Whitney" and $averySeen.includes("whitney_crash"))>>
+			<<link [[Next|Mansion Talk Chat End]]>><<set $avery_chat_end to "angry">><</link>>
+
+		<<elseif $carried.neck.photo is "Great Hawk" or $carried.neck.photo is "Black Wolf" or ($carried.neck.photo is "Gwylan" and $gwylan?.timer?.nobody gte Time.date.timeStamp)>>
+			<<endevent>>
+			<<avery_mansion_end_links>>
+
+		<<else>>
+			<<He>> looks back at you. "It's sweet how much you cherish your <i>friend</i>," <<he>> says. "But I
+			<<if $averyragerevealed is 1>>
+				would be careful what you keep around your neck like that. What if someone other than me saw it and misunderstood, hm?" <<His>> smile, such as it is, twitches at the idea. "So either remove the picture, or get rid of the thing altogether."
+
+				<<He>> changes the subject after that, though you notice <<him>> shooting irritated looks at your locket every now and then. <<stress 3>><<gstress>>
+			<<else>>
+				can't help but notice you haven't favoured me with the same treatment, despite all I do for you."
+
+				<<He>> changes the subject after that, though you notice <<him>> shooting intent looks at your locket every now and then.
+			<</if>>
+			<br><br>
+			<<endevent>>
+			<<avery_mansion_end_links>>
+		<</if>>
+	<</if>>
+
+<<elseif $phase is 1>>
+	"You're welcome." Avery soon changes the subject, and complains about work.
+	<br><br>
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<elseif $phase is 3>> /* Show and it's empty */
+	You show Avery what's inside your love locket, though it's empty. You explain that you just wear it as an accessory.
+	<br><br>
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+		<<He>> frowns. "I see." <<He>> then changes the subject to complain about work.
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+		<<He>> raises an eyebrow. "I see. I suppose it does suit you."
+	<<else>>
+		<<He>> nods. "I see. It's lovely, still."
+	<</if>>
+	<br><br>
+	<<endevent>>
+	<<avery_mansion_end_links>>
+
+<<else>>
+	You change the subject away from your locket. If Avery notices, <<he>> doesn't comment.
+	<br><br>
+	<<endevent>>
+	<<avery_mansion_end_links>>
+<</if>>
+
+:: Mansion Talk Chat Lewd
+<<effects>>
+
+<<if $avery_talk_grope is 1>> /* Groping */
+	When you return Avery's kiss, you feel <<him>> hum with satisfaction against your lips. <<= $outside is 1 ? `Without a care for <<his>> neighbors, <<he>>` : `<<He>>`>> begins <<= $exposed gte 2 ? `running <<his>> <<if $avery_mansion.injury_stage is "cast">>hand<<else>>hands<</if>> over your body` : `pulling at your clothes`>>.
+	<<unset $avery_talk_grope>>
+	<<promiscuity1>>
+	<<link [[Next|Mansion Talk Sex]]>><<set $sexstart to 1>><</link>>
+	<br>
+<<else>> /* Sitting on lap */
+	You climb into Avery's lap, straddling it as you wrap your arms around Avery's neck. <<He>> seems quite pleased, 
+	<<if $avery_mansion.injury_stage is "sling">>
+		and <<his>> good hand moves to rest on your thigh. It
+	<<else>>
+		wrapping <<his>> own arm around your waist. <<His>> other hand rests on your thigh,
+	<</if>>
+	then travels up to start massaging your <<privates>>. <<arousal 600 "genitals">><<garousal>>
+	<<promiscuity1>>
+	After keeping up the pretense of conversation for a few minutes, Avery suddenly pushes you down onto your back. <<= $outside is 1 ? `Without a care for <<his>> neighbours, <<he>>` : `<<He>>`>> begins <<= $exposed gte 2 ? `running <<his>> <<if $avery_mansion.injury_stage is "cast">>hand<<else>>hands<</if>> over your body` : `pulling at your clothes`>>.
+	<br><br>
+	<<link [[Next|Mansion Talk Sex]]>><<set $sexstart to 1>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Talk Sex
+
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemytrust += 100>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0)>>
+	<span id="next"><<link [[Next|Mansion Talk Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Mansion Talk Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+
+:: Mansion Talk Sex Finish
+<<pass 10>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+
+	Avery
+	<<if $avery_mansion.schedule is "drink" or $avery_mansion.schedule is "lounge">>
+		pushes <<himself>> up to sit on the sofa. <<He>> <<laughs>> with quiet satisfaction as <<he>> straightens <<his>> clothes and fixes <<his>> hair.
+
+	<<elseif $avery_mansion.schedule is "pool">>
+		<<if $avery_pool is "coffee">>
+			slumps back into <<his>> seat, letting out a satisfied sigh. <<= $avery_mansion.injury_stage is "cast" ? `After` : `As`>> <<he>> fixes <<his>> hair, <<he>> takes a sip of <<his>> coffee.
+		<<elseif $avery_pool is "sunbathe">>
+			stretches on the pool lounger with a satisfied sigh. <<He>> looks disheveled, but doesn't appear to care.
+		<<else>>
+			holds you for a few moments longer before parting. <<He>> <<= Weather.temperature lte 5 ? `shivers a little when the cold sweeps in, but <<he>> appears no less satisfied` : `has a satisfied air to <<him>>`>>.
+		<</if>>
+		<br><br>
+	<<elseif $avery_mansion.schedule is "garden">>
+		pulls away from you to straighten out <<his>> clothes and fix <<his>> hair. <<He>> <<= Weather.temperature lte 5 ? `shivers a little when the cold sweeps in, but <<he>> appears no less satisfied` : `has a satisfied air to <<him>>`>>.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "study">>
+		slumps against the back of <<his>> chair. <<He>> <<laughs>> with quiet satisfaction as <<he>> straightens <<his>> clothes and fixes <<his>> hair.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "bath">>
+		<<laughs>> with quiet satisfaction as <<he>> returns to <<his>> bath.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		pushes <<himself>> up to <<his>> feet, then slumps in <<his>> chair. <<He>> <<laughs>> with quiet satisfaction as <<he>> straightens <<his>> clothes and fixes <<his>> hair.
+		<br><br>
+	<</if>> "That was <<= either(`a nice little treat`,`an enjoyable distraction`)>>," <<he>> says. "We'll have to do this again soon." <<npcincr Avery rage -1>><<larage>><<npcincr Avery lust -20>><<llust>>
+	<br><br>
+	<<if C.npc.Avery.love gte 60 and ($arousal gte ($arousalmax / 4) * 3)>>
+		Before you can move yourself, <<he>> puts a hand on your hip. "Hold on one moment," <<he>> says. "Let me take care of you, <<pcpetname "Avery">>."
+		<br><br>
+		<<He>> slides <<his>> hand between your thighs, and <<= $player.penisExist ? `wraps <<his>> fingers around your <<penis>>` : `rubs <<his>> fingers along your <<pussy>>, rolling <<his>> thumb over your <<clit>>`>>. As <<he>> does so, <<he>>
+		<<if C.npc.Avery.rage gte 60>>
+			nips and bites
+		<<elseif C.npc.Avery.rage gte 20>>
+			kisses and bites
+		<<else>>
+			kisses and nips 
+		<</if>> 
+		at your neck. It doesn't take long to push you over the edge. <<if C.npc.Avery.rage gte 60>><<pain 1>><<gpain>><</if>><<set $arousal to $arousalmax>><<ggarousal>>
+		<br><br>
+		<<orgasm>>
+
+		Avery's eyes are locked on to you as you shake and shudder with your orgasm. There's a smugness to <<his>> smile now. "Good <<girl>>," <<he>> says once you've recovered.<<if isLoveInterest("Avery")>> You feel warm with the praise. <<stress -3>><<lstress>><</if>>
+		<<outfitChecks>>
+		<<tearful>> you pull away from Avery. <<He>> lets you go this time, and watches as you push yourself up to your feet<<if !_fullyNaked>> and fix your clothes<</if>>.
+		<br><br>
+	<<else>>
+		<<outfitChecks>>
+		<<tearful>> you push yourself up to your feet<<if !_fullyNaked>>, and fix your clothes<</if>>. <<He>> watches you as you do so, a <<= C.npc.Avery.rage gte 60 ? `smirk` : `smile`>> on <<his>> face.
+		<br><br>
+	<</if>>
+
+<<elseif $enemyhealth lte 0>>	
+	<<if $avery_mansion.schedule is "drink" or $avery_mansion.schedule is "lounge">>
+		You kick Avery firmly in the stomach, catching <<him>> off guard. <<He>> tumbles over the opposite arm of the sofa with a yelp, and you hear <<him>> crash to the ground with a cry of pain.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "pool">>
+		<<if $avery_pool is "coffee">>
+			Avery recoils from you, and though <<he>> tries to grab the table for support, <<his>> fingers slip, and <<he>> ends up falling to the ground with a cry of pain.
+		<<elseif $avery_pool is "sunbathe">>
+			Avery recoils from you with a pained but furious noise, the pool lounger rocking dangerously beneath the two of you.
+		<<else>>
+			You shove Avery back, and <<he>> falls back into the pool.
+		<</if>>
+		<br><br>
+	<<elseif $avery_mansion.schedule is "garden">>
+		When you kick Avery away from you, <<he>> tumbles into one of <<his>> bushes with a cry of pain.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "study">>
+		Avery recoils from you with a pained groan, nearly slamming <<his>> head into one of the wings of <<his>> armchair.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "bath">>
+		Avery stumbles away from you, tripping back into the bathtub. A cascade of water splashes over the side of it, muffling <<his>> cry of pain.
+		<br><br>
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		Though Avery attempts to grab <<his>> chair for support when you kick <<him>> away from you, it only goes crashing to the ground with <<him>>, and <<he>> lets out a pained but furious noise.
+		<br><br>
+	<</if>>
+	<<outfitChecks>>
+	You take the opportunity to <<if !_fullyNaked>> grab your clothes and <</if>>run before <<he>> can recover. <<npcincr Avery dom -1>><<ldom>><<npcincr Avery rage 1>><<garage>>
+	<br><br>
+<<elseif $finish is 1>> /* Asked Avery to stop */
+	Avery
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+		scoffs, and shoves you away from <<him>>. You barely catch yourself from falling onto the <<= $outside is 1 ? `ground` : `floor`>>.
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+		rolls <<his>> eyes, and pushes you away.
+	<<else>>
+		sighs, and pulls away from you.
+	<</if>><<npcincr Avery lust 5>><<glust>>
+	<br><br>
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
+		"If you didn't want this, then why the hell did you agree in the first place?" <<he>> demands through gritted teeth. "Waste of my bloody time."
+	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
+		"If you didn't want this, then why did you agree in the first place?" <<he>> asks. "I'd appreciate it if you didn't waste my time in the future."
+	<<else>>
+		"If you didn't want this, then why did you agree in the first place?" <<he>> asks. "I'd appreciate it if you didn't waste <<= $averyragerevealed is 1 ? `my` : `both our`>> time in the future."
+	<</if>>
+	<br><br>
+	<<if $avery_mansion.schedule is "drink">>
+		<<He>> goes back to <<his>> drink after that.
+	<<elseif $avery_mansion.schedule is "pool">>
+		<<if $avery_pool is "coffee">>
+			<<He>> goes back to scrolling through <<his>> phone.
+		<<elseif $avery_pool is "sunbathe">>
+			<<He>> goes back to <<his>> sunbathing.
+		<<else>>
+			<<He>> goes back to <<his>> swimming<<if C.npc.Avery.rage gte 60>>, diving back into the pool with enough force that some water splashes you<</if>>.
+		<</if>>
+	<<elseif $avery_mansion.schedule is "lounge">>
+		<<He>> goes back to watching the <<= C.npc.Avery.rage gte 20 ? `news` : `football game`>>.
+	<<elseif $avery_mansion.schedule is "garden">>
+		<<He>> goes back to pruning <<his>> garden.
+	<<elseif $avery_mansion.schedule is "study">>
+		<<He>> goes back to <<his>> reading.
+	<<elseif $avery_mansion.schedule is "bath">>
+		<<He>> goes back to <<his>> bath.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		<<He>> goes back to eating <<his>> breakfast.
+	<</if>>
+	<br><br>
+	<<He>> seems <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 40 ? `angry` : `irritated`>>. You should leave <<him>> be.
+	<br><br>
+	<<outfitChecks>>
+	<<tearful>> you <<if !_fullyNaked>>fix your clothes and <</if>>withdraw.
+
+<<else>> 
+	Avery shoves you
+	<<if $avery_mansion.schedule is "drink" or $avery_mansion.schedule is "lounge">>
+		off the sofa.
+	<<elseif $avery_mansion.schedule is "pool">>
+		to the ground.
+	<<elseif $avery_mansion.schedule is "garden">>
+		off the bench.
+	<<else>>
+		to the floor.
+	<</if>>
+	<br><br>
+	Too hurt to resist, you can only whimper as another wave of pain courses through you from the fall.
+	<br><br>
+	"You brought this on yourself," <<he>> says
+	<<if C.npc.Avery.rage gte 60>>
+		through gritted teeth. "Now get out of here."
+	<<elseif C.npc.Avery.rage gte 20>>
+		coolly. "Don't say yes in the first place if you don't plan on following through on it. Now leave."
+	<<else>>
+		with affected nonchalance. "Why say yes in the first place if you weren't going to follow through with it?" <<He>> huffs.
+	<</if>><<npcincr Avery rage 1>><<garage>>
+	<br><br>
+	<<tearful>> you struggle to your feet. You feel Avery's eyes on you as you leave <<him>>.
+	<br><br>
+<</if>>
+
+
+<<endcombat>>
+<<avery_mansion_end_links>>
+
+:: Mansion Talk Chat End
+
+<<if $avery_chat_end is "calm">>
+	<<pass 15>>
+	<<if $phase is 1>>
+		You climb into Avery's lap, sitting with one arm around Avery's neck. <<He>> seems quite pleased, wrapping <<his>> own arm around your waist.<<if !$avery_mansion.injury_stage is "sling">> <<His>> other hand rests on your thigh, and stays there.<</if>> As you talk, <<he>> gives it a squeeze now and then in accordance to <<his>> mood. <<gdom>>
+		<br><br>
+		When the conversation comes to a natural end, Avery lets you off <<his>> lap
+	<<else>>
+		You don't sit in Avery's lap. <<He>> looks somewhat disappointed, but <<he>> doesn't pursue the matter.
+		<br><br>
+		When the conversation comes to a natural end, Avery lets you go 
+	<</if>>
+	with a parting nod. As you step away, <<he>>
+	<<if $avery_mansion.schedule is "drink">>
+		pours <<himself>> another drink.
+	<<elseif $avery_mansion.schedule is "pool">>
+		<<if $avery_pool is "coffee">>
+			goes back to scrolling through <<his>> phone.
+		<<elseif $avery_pool is "sunbathe">>
+			slides <<his>> sunglasses back in place, and returns to <<his>> sunbathing.
+		<<else>>
+			goes back to swimming.
+		<</if>>
+	<<elseif $avery_mansion.schedule is "lounge">>
+		goes back to watching the <<= C.npc.Avery.rage gte 20 ? `news` : `football game`>>.
+	<<elseif $avery_mansion.schedule is "garden">>
+		focuses once more on pruning <<his>> garden.
+	<<elseif $avery_mansion.schedule is "study">>
+		goes back to <<his>> reading
+	<<elseif $avery_mansion.schedule is "bath">>
+		relaxes back into <<his>> bath.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		focuses on <<his>> breakfast once more.
+	<</if>>
+	<br><br>
+<<elseif $avery_chat_end is "annoyed">>
+	<<pass 15>>
+	<<if $phase is 1>> /* Refuse to have sex */
+		You pull away from Avery, who gives you a <<= $averyragerevealed gte 1 and C.npc.Avery.rage gte 60 ? `dark` : $averyragerevealed gte 1 ? `irritated` : `disappointed`>> look. <<He>> doesn't pursue the matter, however. <<garage>>
+	<<else>>
+		You don't sit in Avery's lap. <<He>> shoots you <<= C.npc.Avery.rage gte 20 ? `an irritated` : `a disappointed`>> look, but doesn't pursue the matter.
+	<</if>>
+	<br><br>
+	When the conversation comes to a natural end, Avery lets you go with a <<= $averyragerevealed is 1 ? `huff` : `curt sigh`>>. As you step away, <<he>>
+	<<if $avery_mansion.schedule is "drink">>
+		pours <<himself>> another drink.
+	<<elseif $avery_mansion.schedule is "pool">>
+		<<if $avery_pool is "coffee">>
+			goes back to scrolling through <<his>> phone.
+		<<elseif $avery_pool is "sunbathe">>
+			slides <<his>> sunglasses back in place, and returns to <<his>> sunbathing.
+		<<else>>
+			goes back to swimming<<if C.npc.Avery.rage gte 60>>, diving back into the pool with enough force that some water splashes you<</if>>.
+		<</if>>
+	<<elseif $avery_mansion.schedule is "lounge">>
+		goes back to watching the <<= C.npc.Avery.rage gte 20 ? `news` : `football game`>>.
+	<<elseif $avery_mansion.schedule is "garden">>
+		focuses once more on pruning <<his>> garden.
+	<<elseif $avery_mansion.schedule is "study">>
+		goes back to <<his>> reading.
+	<<elseif $avery_mansion.schedule is "bath">>
+		relaxes back into <<his>> bath.
+	<<elseif $avery_mansion.schedule is "breakfast">>
+		focuses on <<his>> breakfast once more.
+	<</if>>
+	<br><br>
+<<else>>
+	<<pass 10>>
+	Glaring, Avery rips the love locket off your neck, then
+	<<if $avery_mansion.schedule is "study" or $avery_mansion.schedule is "bath">>
+		shoves it into your hands. "Get rid of it," <<he>> demands, gesturing at a rubbish bin.
+	<<elseif $avery_mansion.schedule is "pool">>
+		throws it into the pool. "Get rid of it," <<he>> demands.
+
+		Before you can go to retrieve it, <<he>> shoves you into the pool, and goes back to what <<he>> was doing.
+	<<elseif $avery_mansion.schedule is "garden">>
+		throws it across the garden. "Get rid of it," <<he>> demands.
+
+		Before you can go to retrieve it, <<he>> shoves you off the bench, and stands to return to <<his>> pruning. You land roughly on the gravelled path. <<pain 3>><<gpain>>
+	<<else>>
+		shoves it into your hands. "Get rid of it," <<he>> demands.
+	<</if>>
+	<br><br>
+	Luckily, <<he>> loses interest in you after that, so <<he>> doesn't notice that you don't actually throw the locket away. You make sure you're out of eyeshot before putting it back around your neck.
+	<br><br>
+<</if>>
+<<unset $avery_chat_end>>
+<<endevent>>
+<<avery_mansion_end_links>>
 
 
 :: Mansion Talk Assault
@@ -1469,7 +3206,7 @@ Avery leads you upstairs, to the bedroom. <<He>> shoves you onto the bed while l
 	<<link [[Go outside|Maths Project Outside Mansion]]>><</link>>
 	<br>
 <<else>>
-	"What? But you..." Avery frowns. "Whatever, go deal with it yourself then." <<He>> straightens <<his>> clothes and walks away.
+	"What?" Avery frowns. "Whatever, go deal with it yourself then." <<He>> straightens <<his>> clothes and walks away.
 	<br><br>
 	<<tearful>> you realise your loins are still burning with heat. You consider what to do.
 	<br><br>
@@ -2155,7 +3892,7 @@ You approach Avery's flaming mansion. Two fire engines are parked outside. The f
 On the other side of the gate, staring up at the mansion in awe, is Robin.
 <br><br>
 
-<<He>> tears <<his>> gaze away as you approach, and smiles at you. "I didn't expect it to be so..." <<He>> pauses. "Big." <<He>> reaches into <<his>> bag, produces a folder, and pushes it through the bars.
+<<He>> tears <<his>> gaze away as you approach, and smiles at you. "I didn't expect it to be so," <<He>> pauses. "Big." <<He>> reaches into <<his>> bag, produces a folder, and pushes it through the bars.
 <br><br>
 
 "Just a small gift from everyone," Robin says as you open it. It's full of letters, some long, some short, all thanking you, and wishing you the best. Some are illustrated with drawings of various complexity. There are many, some are even from ex-residents, much older than you.<<gstress>><<stress 6>><<ltrauma>><<trauma 6>>
@@ -2614,7 +4351,7 @@ You sneak up towards Avery's study. <<say_brown_fox "cap">> whispers to you. "It
 	"I'm sorry, but a cage remains a cage, no matter how gilded. The bird always yearns for freedom."
 <<elseif $phase is 3>>
 	<<if $speech_attitude is "meek">>
-		"This is awful," you say. "I... hate it here."
+		"This is awful," you say. "I hate it here."
 	<<elseif $speech_attitude is "bratty">>
 		"This place is a living hell. I want out."
 	<<else>>

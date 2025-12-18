@@ -8,12 +8,12 @@ Config.history.maxStates = 5;
 /* sneaky will enable the Sneaky notice banner on the opening screen and save display */
 /* versionName will be displayed in the top right of the screen, leave as "" to not display anything */
 const StartConfig = {
-	debug: true,
+	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.6.10",
+	version: "0.5.7.0",
 	versionName: `"Love Bites" edition`,
-	sneaky: false,
+	sneaky: true,
 	socialMediaEnabled: true,
 	sourceLinkEnabled: false,
 };
