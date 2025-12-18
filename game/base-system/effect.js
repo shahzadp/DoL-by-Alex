@@ -408,7 +408,7 @@ function effects() {
 					if (V.gwylan.request.missed) {
 						sWikifier(`<<hypnosisText "You still haven't completed Gwylan's request.">> `);
 					} else {
-						sWikifier(`<<hypnosisText "You didnt't complete Gwylan's request yesterday.">> `);
+						sWikifier(`<<hypnosisText "You didn't complete Gwylan's request yesterday.">> `);
 					}
 					break;
 				case "meetAtShop":
