@@ -1394,7 +1394,7 @@ function initUnderUpper() {
 			fabric_strength: 20,
 			reveal: 200,
 			bustresize: 0,
-			word: "a",
+			word: "an",
 			one_piece: 0,
 			strap: 0,
 			open: 0,
