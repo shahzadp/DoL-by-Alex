@@ -1895,11 +1895,12 @@ function validateTransformations() {
 
 	const confirmedTraits = [];
 	setup.transformations.forEach(tf => {
+		const tfname = tf.name === "fallenangel" ? "fallenAngel" : tf.name;
 		tf.parts.forEach(part => {
-			if (tf.level >= part.tfRequired && V.transformationParts[tf.name][part.name] === "disabled") {
-				V.transformationParts[tf.name][part.name] = part.default || "default";
-			} else if (tf.level < part.tfRequired && V.transformationParts[tf.name][part.name] !== "disabled") {
-				V.transformationParts[tf.name][part.name] = "disabled";
+			if (tf.level >= part.tfRequired && V.transformationParts[tfname][part.name] === "disabled") {
+				V.transformationParts[tfname][part.name] = part.default || "default";
+			} else if (tf.level < part.tfRequired && V.transformationParts[tfname][part.name] !== "disabled") {
+				V.transformationParts[tfname][part.name] = "disabled";
 			}
 		});
 		tf.traits.forEach(trait => {
