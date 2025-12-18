@@ -621,47 +621,31 @@
 				<<gameMode>>
 			</div>
 
+			<div class="settingsToggleItem">
+				<<set _foundPregnancy to !!Object.values($NPCName).find(npc => npc.pregnancy && npc.pregnancy.enabled && npc.pregnancy.type && !setup.pregnancy.canBePregnant.includes(npc.fullDescription))>>
+				<label>
+					<span class="gold">Pregnancy Mode:</span>
+					<br>
+					<<if $passage is "Start">>
+						<label><<radiobutton "_pregnancytype" "realistic" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "realistic" ? "checked": "")`>> <mouse class="tooltip green">Realistic<span>Pregnancy will not happen immediately, and you won't know right away when it happens. You may need to use a pregnancy test, and the father may not be known to you initially. Cum on the outside of your vagina may get you pregnant as well, unless washed off within the next several hours.</span></mouse></label> |
+						<label><<radiobutton "_pregnancytype" "fetish" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "fetish" ? "checked": "")`>> <mouse class="tooltip pink">Fetishised<span>Pregnancy may happen as soon as semen gets inside you. You will know as soon as it happens, and will immediately know the father.</span></mouse></label> |
+						<label><<radiobutton "_pregnancytype" "silly" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "silly" ? "checked": "")`>> <mouse class="tooltip gold">Silly<span>Pregnancy may happen as soon as you hold hands or kiss, especially with those you love. <i class="red none">There may be story content related issues with this mode. Some feats will be disabled with this mode.</i></span></mouse></label> |
+						<label><<radiobutton "_pregnancytype" "disabled" autocheck>> <mouse class="tooltip red">Disabled<span>Pregnancy will be disabled.<<if $passage isnot "Start">>Will not prevent existing pregnancies or prevent the player from interacting with their children.<</if>></span></mouse></label>
+					<<else>>
+						<<pregnancyType>>
+					<</if>>
+				</label>
+				<br>
+				<label>
+					<<fertilityCycles>>
+				</label>
+				<br>
+				<label data-disabledif="T.foundPregnancy&&V.settings.incompletePregnancyEnabled===true">
+					<<incompletePregnancy>>
+				</label>
+			</div>
+
 			<<if _selectedStart isnot "custom">>
-				<<if $passage is "Start">>
-					<div class="settingsToggleItem">
-						<span class="gold">Fetish Settings:</span>
-						<br>
-						<<if _kinkPreset is undefined>><<set _kinkPreset to "kinkDefault">><</if>>
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Reasonably Debauched<span>Default settings. All kinks are enabled, except for watersports.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkDefault" autocheck>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Vanilla<span>All beast-related toggles are disabled, as well as plant people, tentacles, slimes, lactation, facesitting, double penetration, and hypnosis.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkVanilla" autocheck>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">No Beasts<span>All beast-related settings are disabled, including bestiality, swarms, vore, parasites, spiders, slugs, wasps, lurkers, bees, and horses.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkNoBeasts" autocheck>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Anything Goes<span>All kinks are enabled, including watersports.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkEverything" autocheck>></label>
-					</div>
-				<</if>>
-
-				<div class="settingsToggleItem">
-					<<set _foundPregnancy to !!Object.values($NPCName).find(npc => npc.pregnancy && npc.pregnancy.enabled && npc.pregnancy.type && !setup.pregnancy.canBePregnant.includes(npc.fullDescription))>>
-					<label>
-						<span class="gold">Pregnancy Mode:</span>
-						<br>
-						<<if $passage is "Start">>
-							<label><<radiobutton "_pregnancytype" "realistic" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "realistic" ? "checked": "")`>> <mouse class="tooltip green">Realistic<span>Pregnancy will not happen immediately, and you won't know right away when it happens. You may need to use a pregnancy test, and the father may not be known to you initially. Cum on the outside of your vagina may get you pregnant as well, unless washed off within the next several hours.</span></mouse></label> |
-							<label><<radiobutton "_pregnancytype" "fetish" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "fetish" ? "checked": "")`>> <mouse class="tooltip pink">Fetishised<span>Pregnancy may happen as soon as semen gets inside you. You will know as soon as it happens, and will immediately know the father.</span></mouse></label> |
-							<label><<radiobutton "_pregnancytype" "silly" `_pregnancytype ? "autocheck" : ($settings.pregnancyType is "silly" ? "checked": "")`>> <mouse class="tooltip gold">Silly<span>Pregnancy may happen as soon as you hold hands or kiss, especially with those you love. <i class="red none">There may be story content related issues with this mode. Some feats will be disabled with this mode.</i></span></mouse></label> |
-							<label><<radiobutton "_pregnancytype" "disabled" autocheck>> <mouse class="tooltip red">Disabled<span>Pregnancy will be disabled.<<if $passage isnot "Start">>Will not prevent existing pregnancies or prevent the player from interacting with their children.<</if>></span></mouse></label>
-						<<else>>
-							<<pregnancyType>>
-						<</if>>
-					</label>
-					<br>
-					<label>
-						<<fertilityCycles>>
-					</label>
-					<br>
-					<label data-disabledif="T.foundPregnancy&&V.settings.incompletePregnancyEnabled===true">
-						<<incompletePregnancy>>
-					</label>
-				</div>
-
 				<div class="settingsToggleItem">
 					<<if $passage is "Start">>
 						<span class="gold">Generic NPC Genders:</span>
@@ -716,6 +700,15 @@
 					<<else>>
 						<<npcAttractionSettings>>
 					<</if>>
+				</div>
+
+				<div class="settingsToggleItem">
+					<span class="gold">Named NPC Genders:</span>
+					<br>
+					<<if _namedNpcPreset is undefined>><<set _namedNpcPreset to "namedNpcDefaultGender">><</if>>
+					<label>All Male <<radiobutton "_namedNpcPreset" "namedNpcAllMaleGender" autocheck>></label> |
+					<label><<print $passage is "Start" ? "Random Genders" : "Current Genders">> <<radiobutton "_namedNpcPreset" "namedNpcDefaultGender" autocheck>></label> |
+					<label>All Female <<radiobutton "_namedNpcPreset" "namedNpcAllFemaleGender" autocheck>></label>
 				</div>
 
 				<div class="settingsToggleItem">
@@ -777,15 +770,6 @@
 				</div>
 
 				<div class="settingsToggleItem">
-					<span class="gold">Named NPC Genders:</span>
-					<br>
-					<<if _namedNpcPreset is undefined>><<set _namedNpcPreset to "namedNpcDefaultGender">><</if>>
-					<label>All Male <<radiobutton "_namedNpcPreset" "namedNpcAllMaleGender" autocheck>></label> |
-					<label><<print $passage is "Start" ? "Random Genders" : "Current Genders">> <<radiobutton "_namedNpcPreset" "namedNpcDefaultGender" autocheck>></label> |
-					<label>All Female <<radiobutton "_namedNpcPreset" "namedNpcAllFemaleGender" autocheck>></label>
-				</div>
-
-				<div class="settingsToggleItem">
 					<<if $passage is "Start">>
 						<<if _monstersPreset is undefined>><<set _monstersPreset to "monstersDefault">><</if>>
 						<span class="gold">Replace Beasts with Monster People:</span>
@@ -797,11 +781,24 @@
 						<<monsterSettings>>
 					<</if>>
 				</div>
-			<</if>>
-			<<if $passage is "Start">>
-				<div class="settingsToggleItem">
-					<i><<= _selectedStart is "custom" ? "To change" : "For more control over">> fetish and gameplay settings, visit the <span class="teal"><<= _selectedStart is "default" ? "Custom Start" : "Game Settings">></span> tab.</i>
-				</div>
+				<<if $passage is "Start">>
+					<div class="settingsToggleItem">
+						<span class="gold">Fetish Settings:</span>
+						<br>
+						<<if _kinkPreset is undefined>><<set _kinkPreset to "kinkDefault">><</if>>
+						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Vanilla<span>All beast-related toggles are disabled, as well as plant people, tentacles, slimes, lactation, facesitting, double penetration, and hypnosis.</span></mouse>
+						<<radiobutton "_kinkPreset" "kinkVanilla" autocheck>></label> |
+						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Reasonably Debauched<span>Default settings. All kinks are enabled, except for watersports.</span></mouse>
+						<<radiobutton "_kinkPreset" "kinkDefault" autocheck>></label> |
+						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">No Beasts<span>All beast-related settings are disabled, including bestiality, swarms, vore, parasites, spiders, slugs, wasps, lurkers, bees, and horses.</span></mouse>
+						<<radiobutton "_kinkPreset" "kinkNoBeasts" autocheck>></label> |
+						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Anything Goes<span>All kinks are enabled, including watersports.</span></mouse>
+						<<radiobutton "_kinkPreset" "kinkEverything" autocheck>></label>
+					</div>
+					<div class="settingsToggleItem">
+						<i><<= _selectedStart is "custom" ? "To change" : "For more control over">> fetish and gameplay settings, visit the <span class="teal"><<= _selectedStart is "default" ? "Custom Start" : "Game Settings">></span> tab. Gameplay settings can still be changed after you start the game.</i>
+					</div>
+				<</if>>
 			<</if>>
 		</div>
 	</div>
