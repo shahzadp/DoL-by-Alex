@@ -2930,7 +2930,7 @@ function initHead() {
 			description: "Enchanting.",
 			shop: ["forest"],
 			shopGroup: "witch",
-			accessory: 1,
+			accessory: 0,
 			accessory_colour: 0,
 			accessory_colour_options: [],
 			accessory_colour_sidebar: 0,

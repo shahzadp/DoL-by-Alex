@@ -233,10 +233,10 @@ const remapColours = {
 };
 // .variable must be the same across all outfit pieces, correct wrongly assigned props here
 const remapVariables = {
-	"vintageskirt": "vintageskirtsuit",
-	"vintagepants": "vintagepantsuit",
+	vintageskirt: "vintageskirtsuit",
+	vintagepants: "vintagepantsuit",
 	"chain tunic skirt": "chain tunic",
-}
+};
 
 /**
  * Updates a single clothes object
@@ -485,6 +485,8 @@ function updateClothesItem(slot, item, debug) {
 		case "zipped leather top":
 			item.type.pushUnique("waterproof");
 			break;
+		case "starry witch hat":
+			item.accessory = 0;
 	}
 
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
