@@ -10340,6 +10340,8 @@ function initUpper() {
 			variable: "chef",
 			combat: {
 				reference: "tshirt",
+				hasBreastsAcc: false,
+				hasSleevesAcc: false,
 			},
 			integrity: 200,
 			integrity_max: 200,

@@ -335,6 +335,9 @@ function initHead() {
 			name: "chef hat",
 			name_cap: "Chef hat",
 			variable: "chef",
+			combat: {
+				accessory: false,
+			},
 			state: 0,
 			state_base: 0,
 			integrity: 200,
