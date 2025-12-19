@@ -246,12 +246,17 @@
 <</widget>>
 
 <<widget "wearoutfit">>
+	/* Strip worn strap-on before equipping outfit */
+	<<if $wear_outfit isnot "none" and $worn.under_lower.type.includes("strap-on")>>
+		<<set _strap to $player.inventory.sextoys[$worn.under_lower.name].find(toy => toy.worn)>>
+		<<set _strap.worn to false>>
+		<<set $worn.under_lower to clone(setup.clothes.under_lower[0])>>
+	<</if>>
 	<<set _selectedWardrobe to selectWardrobe()>>
 	<<updateWornClothingLocation $wardrobe_location>>
 	<<deleteoutfit>>
 	<<overwriteoutfit>>
 	<<set $delete_outfit to "none">>
-
 	<<if $wear_outfit is "clotheson">>
 		<<storeon $storeLocation>>
 	<<elseif $wear_outfit isnot "none">>
@@ -285,29 +290,23 @@
 				})>>
 			<</if>>
 
-			/* Strip worn strap-on */
-			<<if $worn[$_slot].type.includes("strap-on")>>
-				<<set _strap to $player.inventory.sextoys[$worn[$_slot].name].find(toy => toy.worn)>>
-				<<set _strap.worn to false>>
-				<<set $worn[$_slot] to clone(setup.clothes[$_slot][0])>>
-			<</if>>
-
-			/* Equip saved outfit's strap-on */
-			<<if $_slot is "under_lower" and $_incomingItemName.includes("strap-on")>>
-				<<set _toy to $player.inventory.sextoys[$_incomingItemName]>>
-				<<set _toySetup to setup.sextoys.find(t => t.name === $_incomingItemName)>>
+			/* Equip saved outfit's strap-on. If saved outfit doesn't have a strap-on or any underwear, and player was wearing a strap, re-equip it */
+			<<if $_slot is "under_lower" and ($_incomingItemName.includes("strap-on") or ($_incomingItemName is "naked" and _strap))>>
+				<<set _equippedStrap to $_incomingItemName is "naked" ? _strap.name : $_incomingItemName>>
+				<<set _toy to $player.inventory.sextoys[_equippedStrap]>>
+				<<set _toySetup to setup.sextoys.find(t => t.name === _equippedStrap)>>
 				<<if !_toy or _toy?.length is 0>>
-					<<set _notEquipped[$_slot] to {"name": $_incomingItemName, "reason": "strapon"}>>
+					<<set _notEquipped[$_slot] to {"name": _equippedStrap, "reason": "strapon"}>>
 				<<elseif _toySetup>>
 					<<set _index to _toySetup.clothes_index>>
-					<<if $outfit[$wear_outfit].colors>>
-						<<set _strap to _toy.find(toy => toy.colour === $outfit[$wear_outfit].colors.under_lower[0])>>
+					<<if $outfit[$wear_outfit].colors and $_incomingItemName isnot "naked">>
+						<<set _strap to _strap or _toy.find(toy => toy.colour === $outfit[$wear_outfit].colors.under_lower[0])>>
 						<<if _strap>>
 							<<set $worn[$_slot] to clone(setup.clothes[$_slot][_index])>>
 							<<set $worn[$_slot].colour to $outfit[$wear_outfit].colors.under_lower[0]>>
 							<<set _strap.worn to true>>
 						<<else>>
-							<<set _notEquipped[$_slot] to {"name": $_incomingItemName, "reason": "strapon"}>>
+							<<set _notEquipped[$_slot] to {"name": _equippedStrap, "reason": "strapon"}>>
 						<</if>>
 					<<else>>
 						<<set $worn[$_slot] to clone(setup.clothes[$_slot][_index])>>
@@ -315,7 +314,7 @@
 						<<set _toy[0].worn to true>>
 					<</if>>
 				<<else>>
-					<<exit '<span class="red">ERROR: Equipped $_incomingItemName does not exist. Please report.</span>'>>
+					<<exit '<span class="red">ERROR: Equipped _equippedStrap does not exist. Please report.</span>'>>
 				<</if>>
 				<<continue>>
 			<</if>>
