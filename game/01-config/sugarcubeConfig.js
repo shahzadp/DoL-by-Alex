@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.7.1",
+	version: "0.5.7.2",
 	versionName: `"SNEAKY (Still figuring out the name -Vrel)" edition`,
 	sneaky: true,
 	socialMediaEnabled: true,
