@@ -854,7 +854,6 @@ Renderer.CanvasModels.main = {
 		} else if (soft) {
 			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
 			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name) && !options.belly_mask_clip_src;
-			options.shirt_mask_clip_src = "img/clothes/masks/soft_clip.png";
 			["upper", "under_upper"].forEach(slot => {
 				options[`${slot}_fitted_right_move_src`] = "img/clothes/masks/soft_right_move.png";
 				options[`${slot}_fitted_left_move_src`]  = "img/clothes/masks/soft_left_move.png";
@@ -4229,7 +4228,7 @@ function genlayer_clothing_fitted_left(slot, overrideOptions) {
 			const checks = options.show_clothes
 				&& options.worn[slot].index > 0
 				&& options.worn[slot].setup.mainImage !== 0
-				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || (options.body_type === "soft" && (V.bellyTucked || V.worn[slot].setup.one_piece)))
+				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || (options.body_type === "soft" && ((V.bellyTucked && ["under_lower", "lower"].includes(slot)) || V.worn[slot].setup.one_piece)))
 				&& !between(options.belly, 8, 24);
 			return checks;
 		},
@@ -4242,7 +4241,7 @@ function genlayer_clothing_fitted_right(slot, overrideOptions) {
 			const checks = options.show_clothes
 				&& options.worn[slot].index > 0
 				&& options.worn[slot].setup.mainImage !== 0
-				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || (options.body_type === "soft" && (V.bellyTucked || V.worn[slot].setup.one_piece)))
+				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || (options.body_type === "soft" && ((V.bellyTucked && ["under_lower", "lower"].includes(slot)) || V.worn[slot].setup.one_piece)))
 				&& !between(options.belly, 8, 24);
 			return checks;
 		},
