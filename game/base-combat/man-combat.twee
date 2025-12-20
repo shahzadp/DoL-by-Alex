@@ -1136,12 +1136,12 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 	<<set $_clothing to $worn[$_slot]>>
 	<<set $_hand to _args[1]>>
 
-	<<set $_origin to $_clothing.state>>
+	<<set _origin to $_clothing.state>>
 
 
 	<<combat-pull-clothing-state $_slot "down" $_hand>>
 
-	<<switch $_origin>>
+	<<switch _origin>>
 		<<case "chest">>
 			<<He>> pulls your $_clothing.name down with <<his>> $_hand hand,
 			<<if !_toplessExposed>>
@@ -1260,7 +1260,26 @@ Hands are 'inverted': NPC holds PC's left hand with their right one, and vice ve
 		<<if $_clothing.state_top>>
 			<!-- upper clothing has a .state_top variable, and lower doesn't. -->
 			<<set _origin to $_clothing.state_top>>
-			<<set _dest to setup.clothingStateNextDown[$_clothing.state_top]>>
+			<<set _dest to setup.clothingStateNextDown[_origin]>>
+
+			<!-- pulling down open tops is only intended to free the tits, do not attempt to remove your bras by pulling them all the way down through the legs, baka! -->
+			<<set $_min_dest to setup.clothingStateNextDown["chest"]>>
+			<<set $_min_idx to setup.clothingStateIndex[$_min_dest]>>
+
+			<<if setup.clothingStateIndex[_dest] lt $_min_idx>>
+				<!-- this shouldn't happen, reset everything and quit -->
+				<<set $_clothing.state_top to $_min_dest>>
+				<<set $_clothing.state to $_min_dest>>
+				<<set _origin to "none">>
+				<<set $noupper to 1>>
+				<<combat-reset-hand $_hand>>
+				<<exit>>
+			<<elseif setup.clothingStateIndex[_dest] is $_min_idx>>
+				<!-- take npc hands off before continuing -->
+				<<set $noupper to 1>>
+				<<combat-reset-hand $_hand>>
+			<</if>>
+
 			<<set $_clothing.state_top to _dest>>
 
 			<<if setup.clothingStateIndex[$_clothing.state_top] lt setup.clothingStateIndex[$_clothing.state]>>
