@@ -48,7 +48,7 @@ function gwylanRequest(override = null) {
 	if (window.npcIsPregnant("Gwylan") && V.farm?.woodland >= 2) allPossibleRequests.push(["plums", 5]);
 
 	// Unlockable events
-	if (V.$gwylanSeen?.includes("ritual_beast") >= 5 && (!V.gwylan.timer.sample || Time.date.dayDifference(new DateTime(V.gwylan.timer.sample) < 7)))
+	if (V.gwylanSeen?.includes("ritual_beast") && (!V.gwylan.timer.sample || Time.date.dayDifference(new DateTime(V.gwylan.timer.sample)) < 7))
 		allPossibleRequests.push(["sample", 1]); // Lewd fluid sample
 	/* ToDo: Gwylan - Asking for a sample of the player's fluids
 	if (V.gwylanSeen.includes("cafe_chef_truth") && (!V.gwylan.timer.samplePlayer || V.gwylan.timer.samplePlayer < Time.date.timeStamp))
