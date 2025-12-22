@@ -724,7 +724,7 @@ function gwylanRequestSample(override) {
 			if (["human", "wolf", "fox", "cat", "dog"].includes(chance[0])) {
 				// bias towards repetition, but less as complexity increases
 				chance[1] += V.gwylan.request.items.find(item => item.name === chance[0])?.need * (20 - complexity) || 0;
-			} else if (["plant"].includes(chance[0] && V.settings.tentaclesEnabled)) {
+			} else if (["plant"].includes(chance[0]) && V.settings.tentaclesEnabled) {
 				// heavy repetition bias. if chosen first, very likely to be single group
 				chance[1] += V.gwylan.request.items.find(item => item.name === chance[0])?.need * 60 || 0;
 			} else if (["bear", "boar", "lizard"].includes(chance[0])) {
