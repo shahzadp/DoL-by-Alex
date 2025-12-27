@@ -1333,19 +1333,26 @@ function dailyNPCEffects() {
 				V.avery_mansion.rage.assess--;
 			}
 
+			// Avery injury healing progress. Stops at 0. "<stage>_done" and "healed" are set after talking to Avery to prevent asking again
 			if (V.avery_mansion.injury_timer !== undefined) {
-				V.avery_mansion.injury_timer--;
-				if (V.avery_mansion.injury_timer <= 30 && V.avery_mansion.injury_stage == "fresh_done") {
-					V.avery_mansion.injury_stage = "sling";
-				} else if (V.avery_mansion.injury_timer <= 15 && V.avery_mansion.injury_stage == "sling_done") {
-					V.avery_mansion.injury_stage = "cast";
-				} else if (V.avery_mansion.injury_stage == "cast_done") {
+				if (V.avery_mansion.injury_timer >= 1) {
+					V.avery_mansion.injury_timer--;
+				}
+				if (V.avery_mansion.injury_timer <= 0 && !["healing", "healed"].includes(V.avery_mansion.injury_stage)) {
 					V.avery_mansion.injury_stage = "healing";
+				} else if (V.avery_mansion.injury_timer <= 15 && !["cast", "cast_done"].includes(V.avery_mansion.injury_stage)) {
+					V.avery_mansion.injury_stage = "cast";
+				} else if (V.avery_mansion.injury_timer <= 30 && !["sling", "sling_done"].includes(V.avery_mansion.injury_stage)) {
+					V.avery_mansion.injury_stage = "sling";
+				} else if (!["fresh", "fresh_done"].includes(V.avery_mansion.injury_stage)) {
+					V.avery_mansion.injury_stage = "fresh";
 				}
 			}
+
 			if (V.avery_mansion.rage.timer >= 1) {
 				V.avery_mansion.rage.timer--;
 			}
+
 			if (V.avery_mansion.jobs.includes("pool") && V.avery_mansion.pool < 4) {
 				V.avery_mansion.pool++;
 			}
