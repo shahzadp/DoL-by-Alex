@@ -12,7 +12,7 @@
  *      time: The time the NPC was generated.
  *              EG: 805     13:48 / 1:48pm
  *      area: Where it was generated.
- *              EG: ['::Alleyways', 'eventsstreet', 'eventday', 'street8']
+ *              EG: ['::Alleyways', 'eventsstreet', 'eventday', 'streetFollowDogAlley']
  *                      Passage        Widget 1      Widget 2    Widget 3
  *  }
  */
