@@ -413,10 +413,12 @@ function getOutfitPair() {
 			check.wornHalf = garmentLayers[i];
 			check.brokenHalf = brokenHalf;
 			check.colour = V.worn[garmentLayers[i]].colour;
+			check.colourCustom = V.worn[garmentLayers[i]].colourCustom;
 			check.colour_sidebar = V.worn[garmentLayers[i]].colour_sidebar;
 			check.colour_combat = V.worn[garmentLayers[i]].colour_combat;
 			check.accessory = V.worn[garmentLayers[i]].accessory;
 			check.accessory_colour = V.worn[garmentLayers[i]].accessory_colour;
+			check.accessory_colourCustom = V.worn[garmentLayers[i]].accessory_colourCustom;
 			check.pattern = V.worn[garmentLayers[i]].pattern;
 			check.pattern_colour = V.worn[garmentLayers[i]].pattern_colour;
 			check.location = V.worn[garmentLayers[i]].location;
@@ -446,6 +448,12 @@ function makeMissingOutfit(brokenOutfit) {
 	// Resets the one_piece value and set values
 	V.worn[brokenOutfit.wornHalf].one_piece = 1;
 	V.worn[brokenOutfit.wornHalf].set = brokenOutfit.set;
+
+	// Remove inherited accessory_colour
+	if (V.worn[brokenOutfit.wornHalf].outfitSecondary && !V.worn[brokenOutfit.wornHalf].accessory_colour_sidebar) {
+		V.worn[brokenOutfit.wornHalf].accessory_colour = 0;
+		delete V.worn[brokenOutfit.wornHalf].accessory_colourCustom;
+	}
 
 	// Checks for any item worn in that place then puts it in the wardrobe
 	if (V.worn[brokenHalf].name !== "naked") {

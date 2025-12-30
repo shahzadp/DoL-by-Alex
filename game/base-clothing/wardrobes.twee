@@ -216,8 +216,15 @@
 			<br>
 		<<elseif $wardrobeOption is "separateOutfits" and Object.values(_outfitPieceIds).length gt 0>>
 			<<for $_outfitSlot, $_outfitId range _outfitPieceIds>>
-				<<set _selectedWardrobe[$_outfitSlot][$_outfitId].outfitSecondary[1] to "split">>
-				<<set _selectedWardrobe[$_outfitSlot][$_outfitId].one_piece to "split">>
+				<<set $_secondaryItem to _selectedWardrobe[$_outfitSlot][$_outfitId]>>
+				<<set $_secondaryItem.outfitSecondary[1] to "split">>
+				<<set $_secondaryItem.one_piece to "split">>
+				<<if _item.accessory_colour and !$_secondaryItem.accessory_colour>>
+					<<set $_secondaryItem.accessory_colour to _item.accessory_colour>>
+					<<if _item.accessory_colourCustom>>
+						<<set $_secondaryItem.accessory_colourCustom to _item.accessory_colourCustom>>
+					<</if>>
+				<</if>>
 				<<set _item.outfitPrimary[$_outfitSlot] to "split">>
 			<</for>>
 			<<set _item.one_piece to "split">>
@@ -1501,7 +1508,10 @@
 			<<run Object.entries(_itemStats).forEach(([key, itemStatValue]) => {
 				if (!itemStatValue) return;
 				switch (key) {
-					case "index": case "colour": case "accessory_colour": case "pattern":
+					case "accessory_colour": case "accessory_colourCustom":
+						if (!T.latestWardrobeAddition.accessory_colour_sidebar && T.itemStats.one_piece != "split") return;
+						break;
+					case "index": case "colour": case "pattern":
 						return;
 						break;
 					case "altposition": case "altsleeve":
@@ -1523,7 +1533,7 @@
 						if (!T.latestWardrobeAddition[key]) return;
 						if (itemStatValue === "down") {
 							delete T.latestWardrobeAddition.outfitPrimary.head;
-							/* TODO: when over_head slot is added: delete T.latestWardrobeAddition.outfitPrimary.over_head; */
+							delete T.latestWardrobeAddition.outfitPrimary.over_head;
 						}
 						break;
 				}
@@ -2069,7 +2079,14 @@ It will cost you
 						.filter(([, item]) => T.upperOutfit.variable === item.variable)
 						/* Colours and pattern must match */
 						.filter(([, item]) =>
-							T.itemStatsIdentifierKeys.every((key) => T.currentClothing[key] === item[key])
+							T.itemStatsIdentifierKeys.every((key) => {
+								/* Some outfit secondaries (hanfu, overalls) do not store accessory_colour */
+								if ((!T.currentClothing.accessory_colour_sidebar || !item.accessory_colour_sidebar)
+									&& key.includes("accessory_colour")) {
+									return true;
+								}
+								return T.currentClothing[key] === item[key];
+							})
 						)
 						/* Edge case for damaged hood paired with an upper w/ hoodposition === "down" */
 						.filter(([, item]) => {
