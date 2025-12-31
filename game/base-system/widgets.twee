@@ -69,6 +69,7 @@
 
 <<widget "underwater">>
 	<<water>><<set $underwater to 1>><<set $underwatercheck to 1>><<unset $oxygenRecovery>>
+	<<waterbr 1>>
 	<<if $combat isnot 1>>
 		<<if $oxygen lt 0 and $nooxygen is 1>>
 			<<set $stress += 1000>>
@@ -2619,6 +2620,18 @@
 	<</if>>
 <</widget>>
 
+<<widget "waterbr">> /* Prints the specified number of linebreaks after "waterwash" prints text */
+	<<if _waterWashText>>
+		<<if _args[0] is 2>>
+			<br><br>
+		<<elseif _args[0] is 1>>
+			<br>
+		<<else>>
+			<span class="red">ERROR: No valid argument for "waterbr" (must be 1 or 2).</span>
+		<</if>>
+	<</if>>
+<</widget>>
+
 <<widget "waterwash">>
 	<<if $combat isnot 1>>
 		<<for _bodypart range setup.bodyliquid.bodyparts>>
@@ -2630,27 +2643,33 @@
 		<<washRecordedSperm "anus" "pc">>
 	<</if>>
 
+	<<if $waterwash is 0>> /* Return early if no lewd fluids */
+		<<set _waterWashText to false>> /* Temp variable to track if text is printed, checked in "waterbr" widget */
+		<<exit>>
+	<</if>>
+
 	<<if _waterDoesNotAttractAttention>>
 		<<if $waterwash gte 10>>
-			<span class="lewd">Copious amounts of lewd fluid washes into the water.</span><br>
+			<span class="lewd">Copious amounts of lewd fluid washes into the water.</span>
 		<<elseif $waterwash gte 5>>
-			<span class="lewd">Lots of lewd fluid washes into the water.</span><br>
+			<span class="lewd">Lots of lewd fluid washes into the water.</span>
 		<<elseif $waterwash gte 2>>
-			<span class="lewd">Lewd fluid washes into the water.</span><br>
-		<<elseif $waterwash is 1>>
-			<span class="lewd">Some lewd fluid washes into the water.</span><br>
+			<span class="lewd">Lewd fluid washes into the water.</span>
+		<<else>>
+			<span class="lewd">Some lewd fluid washes into the water.</span>
 		<</if>>
 	<<else>>
 		<<if $waterwash gte 10>>
-			<span class="lewd">Copious amounts of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+			<span class="lewd">Copious amounts of lewd fluid washes into the water. You hope it doesn't attract attention.</span>
 		<<elseif $waterwash gte 5>>
-			<span class="lewd">Lots of lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+			<span class="lewd">Lots of lewd fluid washes into the water. You hope it doesn't attract attention.</span>
 		<<elseif $waterwash gte 2>>
-			<span class="lewd">Lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
-		<<elseif $waterwash is 1>>
-			<span class="lewd">Some lewd fluid washes into the water. You hope it doesn't attract attention.</span><br>
+			<span class="lewd">Lewd fluid washes into the water. You hope it doesn't attract attention.</span>
+		<<else>>
+			<span class="lewd">Some lewd fluid washes into the water. You hope it doesn't attract attention.</span>
 		<</if>>
 	<</if>>
+	<<set _waterWashText to true>>
 	<<set $waterwash to 0>>
 
 	<<washmakeup>>
