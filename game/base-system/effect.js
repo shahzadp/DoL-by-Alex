@@ -169,7 +169,7 @@ function effectsWater(waterType = "liquid") {
 			}
 			sWikifier("<<covered>>");
 			br();
-			br();
+			if (V.makeupWashed) br();
 		} else if (wetIntro >= 1) {
 			if (V.exhibitionism >= 35) {
 				span(
@@ -185,7 +185,7 @@ function effectsWater(waterType = "liquid") {
 				);
 			}
 			br();
-			br();
+			if (V.makeupWashed) br();
 		}
 	}
 	return fragment;
