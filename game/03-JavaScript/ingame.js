@@ -3022,3 +3022,15 @@ function hasSharpSenses(sense = "any") {
 	return false;
 }
 window.hasSharpSenses = hasSharpSenses;
+
+function displayDefiantOption(amount) {
+	if (isNaN(amount)) paramError("displayDefiantOption", "amount", amount, "Expected a number.");
+	amount = Number(amount);
+	if (amount) {
+		if (V.submissive <= amount || V.wolfgirl >= 6) {
+			return true;
+		}
+		return false;
+	}
+}
+window.displayDefiantOption = displayDefiantOption;
