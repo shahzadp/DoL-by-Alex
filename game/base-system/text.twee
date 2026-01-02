@@ -1590,27 +1590,47 @@
 <</widget>>
 
 <<widget "male">><<silently>>
-	<<set _text_output to ($pronoun is "m" ? "male" : "female")>>
+	<<if $pronoun is "m">>
+		<<set _text_output to "male">>
+	<<elseif $pronoun is "f">>
+		<<set _text_output to "female">>
+	<<elseif $pronoun>>
+		<<set _text_output to "androgynous">>
+	<<else>>
+		<<set _text_output to `<span class="red">[ERROR: undefined pronoun in "male"]</span>`>>
+	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "personsimple">><<silently>>
-	<<set _text_output to (!$NPCList[$index].type or $NPCList[$index].type is "human" or _args[0] is "normal" ? "" : $NPCList[$index].type)>>
-	<<if $role and $role isnot "normal" and _args[0] isnot "normal">>
-		<<set _text_output += $role>>
-	<<elseif $npcadult is 1>>
-		<<set _text_output += ($pronoun is "m" ? "man" : "woman")>>
+	<<if $NPCList[$index].type and $NPCList[$index].type isnot "human" and _args[0] isnot "normal">>
+		<<set _text_output to $NPCList[$index].type>>
 	<<else>>
-		<<set _text_output += ($pronoun is "m" ? "boy" : "girl")>>
+		<<set _text_output to "">>
+	<</if>>
+	<<if $role and $role isnot "normal">>
+		<<set _text_output += $role>>
+	<<elseif $pronoun is "m">>
+		<<set _text_output += ($npcadult is 1 ? "man" : "boy")>>
+	<<elseif $pronoun is "f">>
+		<<set _text_output += ($npcadult is 1 ? "woman" : "girl")>>
+	<<elseif $pronoun>>
+		<<set _text_output += "person">>
+	<<else>>
+		<<set _text_output += `<span class="red">[ERROR: undefined pronoun in "personsimple"]</span>`>>
 	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "personname">><<silently>>
-	<<set _text_output to $NPCList[$index].name>>
+	<<if $NPCList[$index].name>>
+		<<set _text_output to $NPCList[$index].name>>
+	<<else>>
+		<<set _text_output to `<span class="red">[ERROR: undefined name in "personname"]</span>`>>
+	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "person">><<silently>>
 	<<set _text_output to $description + " ">>
-	<<if ($NPCList[$index].type and $NPCList[$index].type isnot "human") and _args[0] isnot "normal">>
+	<<if $NPCList[$index].type and $NPCList[$index].type isnot "human" and _args[0] isnot "normal">>
 		<<set _text_output += $NPCList[$index].type>>
 	<</if>>
 	<<if $npc_named is 1>>
@@ -1621,6 +1641,10 @@
 		<<set _text_output += ($npcadult is 1 ? "man" : "boy")>>
 	<<elseif $pronoun is "f">>
 		<<set _text_output += ($npcadult is 1 ? "woman" : "girl")>>
+	<<elseif $pronoun>>
+		<<set _text_output += "person">>
+	<<else>>
+		<<set _text_output += `<span class="red">[ERROR: undefined pronoun in "person"]</span>`>>
 	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
@@ -1644,15 +1668,16 @@
 		<<set _text_output to "the " + $description + " " + $role>>
 	<<elseif $npcadult is 1>>
 		<<if $pronoun is "m">>
-			<<set _text_output to "the " + $description+" man">>
+			<<set _text_output to "the " + $description + " man">>
 		<<elseif $pronoun is "f">>
-			<<set _text_output to "the " + $description+" woman">>
+			<<set _text_output to "the " + $description + " woman">>
 		<<else>>
 			<<set _text_output to "the " + $description>>
 		<</if>>
 	<<else>>
 		<<set _text_output to "the " + $NPCList[$index].fullDescription>>
-<</if>><</silently>><<print _text_output>><</widget>>
+	<</if>>
+<</silently>><<print _text_output>><</widget>>
 
 <<widget "combatpersons">><<silently>>
 	<<combatperson>>
