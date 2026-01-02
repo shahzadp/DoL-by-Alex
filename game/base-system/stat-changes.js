@@ -258,6 +258,27 @@ const statChange = (() => {
 	}
 	DefineMacro("stress", stress);
 
+	/*
+		When the player has the full wolf transformation, choosing Defiant dialogue options
+		in lists of links lowers stress, but submissive characters are traumatized and
+		lose control for acting unlike themselves. This function is inserted inside links,
+		takes a target value (usually 500 or 850), and makes extra stat adjustments if too submissive.
+	*/
+	function wolfDefiant(amount) {
+		if (isNaN(amount)) paramError("wolfDefiant", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		if (amount) {
+			if (V.wolfgirl >= 6) {
+				stress(-6);
+				if (V.submissive > amount) {
+					trauma(30);
+					control(-10);
+				}
+			}
+		}
+	}
+	DefineMacro("wolfDefiant", wolfDefiant);
+
 	function sensitivity(amount, key) {
 		if (isNaN(amount)) paramError("sensitivity", "amount", amount, "Expected a number.");
 		amount = Number(amount);
