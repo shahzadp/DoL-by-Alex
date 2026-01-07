@@ -622,7 +622,7 @@ function gwylanRequestIngredients() {
 	const isSeasonEnding = [2, 5, 8, 11].includes(Time.month) && Time.monthDay > Time.lastDayOfMonth - 22;
 	const nextSeason = Time.month > 11 || Time.month < 3 ? "spring" : Time.month > 8 ? "winter" : Time.month > 5 ? "autumn" : "summer";
 
-	const blockedTypes = ["food", "vegetable", "meat", "fish"]; // enable fish once we have a fishing system. Yes, I am serious.
+	const blockedTypes = ["food", "vegetable", "meat", "seafood"]; // enable seafood once we have a fishing system. Yes, I am serious.
 	const blockedItems = ["pink_rose", "oyster_pearl", "orange"]; // oyster pearl could be a required ingredient for something powerful later?
 	const blockedSources = ["human"];
 	const seedOnly = ["carnation", "daisy", "lotus", "plumeria", "poppy", "strange_flower", "white_rose"]; // items that can only be asked for if the player has their seeds due to remote location or no wild harvest
