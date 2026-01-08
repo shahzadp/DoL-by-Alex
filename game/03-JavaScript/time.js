@@ -865,6 +865,7 @@ function dayPassed() {
 	dailyMasochismSadismEffects();
 	dailySchoolEffects();
 	dailyFarmEvents();
+	dailyDockEffects();
 	dailyLiquidEffects();
 	dailyTransformationEffects();
 	dailyNPCEffects();
@@ -2151,6 +2152,12 @@ function dailyFarmEvents() {
 	delete V.alex_breakfast;
 	delete V.alex_tea;
 	delete V.alex_to_bed;
+}
+
+function dailyDockEffects() {
+	if (typeof V.docks.pub.cooldown !== "undefined" && V.docks.pub.cooldown >= 1) {
+		V.docks.pub.cooldown--;
+	}
 }
 
 function passWater(passMinutes) {

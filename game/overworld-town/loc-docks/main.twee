@@ -1,7 +1,8 @@
 :: Docks
 
-<<set $outside to 1>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 1>><<set $location to "docks">><<effects>>
 <<skul_dock_init>>
+
 You are on the docks.
 <<if Time.dayState is "dawn">>
 	They're already busy with activity as vehicles arrive to transfer cargo and shipments.
@@ -12,15 +13,13 @@ You are on the docks.
 <<elseif Time.dayState is "dusk">>
 	The last ships are leaving, while others remain moored for the night.
 <</if>>
-<br>
+<br><br>
 
-<<if $dockwork gte 1 and Time.schoolDay and $idDocksReveal isnot 2 and Time.hour is 7>>
-	<br>
-
+<<if ($docks.askedForWork or $docks.hired) and Time.schoolDay and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID isnot "shown">>
 	You approach the other workers, but a manager stops you. "Sorry, no can do, <<girl>>. You know the rules: no students on weekdays."
 
 	<<if $id is 1>>
-		<<set $idDocksReveal to 1>>
+		<<set $docks.fakeID to "idea">>
 		<br>
 		<span class="blue">Maybe they'd let you work on school days if you showed them the ID you purchased from Briar?</span>
 		<br>
@@ -29,10 +28,9 @@ You are on the docks.
 
 <<if $arousal gte $arousalmax>>
 	<<orgasmLocation "docks">>
-	<br>
+	<br><br>
 <</if>>
-<br>
-<<if $dockwork is 2 and Time.hour is 7 and Time.schoolDay and !($idDocksReveal gte 1)>>
+<<if $docks.hired and Time.schoolDay and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID is "not considered">>
 	Dockers arrive for work. They won't let you join them on a school day.
 	<br><br>
 <</if>>
@@ -40,22 +38,36 @@ You are on the docks.
 	<<investigateicon>><<link [[Look for Robin (0:20)|Docks_Robin]]>><<pass 20>><</link>>
 	<br>
 <</if>>
-<<if $dockwork is 1 and Time.dayState isnot "night" and $exposed lte 0>>
-	<<docksicon>><<link [[Take job (0:30)|Docks Take Job]]>><<pass 30>><<set $dockwork to 2>><</link>>
+<<if $docks.askedForWork and !$docks.hired and Time.dayState isnot "night" and $exposed lte 0>>
+	<<docksicon>><<link [[Take job (0:30)|Docks Take Job]]>><<pass 30>><<set $docks.hired to true>><</link>>
 	<br>
-<<elseif $dockwork is 2 and Time.hour is 7 and $exposed lte 0 and (!Time.schoolDay or $idDocksReveal is 2)>>
+<<elseif $docks.hired and Time.hour gte 6 and Time.hour lte 8 and !$daily.docksLeftEarly and $exposed lte 0 and (!Time.schoolDay or $docks.fakeID is "shown")>>
 	<<if pcAreArmsBound("both")>>
 		<span class="red">Both of your arms are bound</span>, so you are unable to work as a docker.
 	<<else>>
-		<<docksicon>><<link [[Work as a docker (12:00)|Docks Start]]>><</link>><<gtiredness>>
+		<<if Time.minute is 0>>
+			<<set _time_to_display to (16 - Time.hour) + ":00">>
+		<<elseif Time.minute >= 51>>
+			<<set _time_to_display to (15 - Time.hour) + ":0" + (60 - Time.minute)>>
+		<<else>>
+			<<set _time_to_display to (15 - Time.hour) + ":" + (60 - Time.minute)>>
+		<</if>>
+
+		<<if Time.hour is 6>>
+			<<link [["Work as a docker (" + _time_to_display + ")"|Docks Start Early]]>><<set $phase to 0>><</link>> /* started early, phase used in Docks Start */
+		<<else>>
+			<<link [["Work as a docker (" + _time_to_display + ")"|Docks Start]]>><<set $phase to 1>><</link>> /* started exactly on time or late, phase used in Docks Start */
+		<</if>>
 	<</if>>
 	<br>
-<<elseif $dockwork is undefined and Time.dayState isnot "night" and $exposed lte 0>>
-	<<socialiseicon "ask">><<link [[Ask for work (0:05)|Docks Ask]]>><<pass 5>><<set $dockwork to 1>><</link>>
+<<elseif !$docks.askedForWork and !$docks.hired and Time.dayState isnot "night" and $exposed lte 0>>
+	<<socialiseicon "ask">><<link [[Ask for work (0:05)|Docks Ask]]>><<pass 5>><<set $docks.askedForWork to true>><</link>>
 	<br>
 <</if>>
-<<if $exposed lte 0 and Time.dayState isnot "night" and $dockstatus gte 80 and $dockwage lt 2000>>
-	<<socialiseicon "ask">><<link [[Ask for raise (0:05)|Docks Raise]]>><<pass 5>><<set $dockwage += 100>><<dockstatus -20>><</link>><<llcool>>
+<<if $exposed lte 0 and Time.dayState isnot "night" and $docks.status gte 80 and $docks.wage lt 2500>>
+	/* <<dockstatus>> multiplies inputs by 2 and clamps, so asking for a raise is -40 status */
+	/* At the earliest fame to ask for a raise, this sets you to 40, and at the highest, 60 */
+	<<socialiseicon "ask">><<link [[Ask for raise (0:05)|Docks Raise]]>><<pass 5>><<set $docks.wage += 100>><<dockstatus -20>><</link>><<lllcool>>
 	<br>
 <</if>>
 <<if Time.dayState is "night">>
@@ -67,8 +79,9 @@ You are on the docks.
 	<<dressasyouwereicon>><<link [[Get dressed|Docks]]>><<storeon "docks">><</link>>
 	<br>
 <</if>>
-<<if $id is 1 and $dockwork gte 1 and Time.hour is 7 and $idDocksReveal is 1>>
+<<if $id is 1 and ($docks.askedForWork or $docks.hired) and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID is "idea">>
 	<<ind>><<link [[Use fake ID (0:02)|Docks Fake ID]]>><</link>>
+	<br>
 <</if>>
 
 <br>
@@ -76,28 +89,26 @@ You are on the docks.
 <br>
 
 <<if $debug is 1>>
-	<<link [[(debug) Max dock status|Docks]]>><<set $dockstatus to 100>><</link>>
+	<<link [[(debug) Max dock status|Docks]]>><<set $docks.status to 100>><</link>>
 	<br>
-	<<link [[(debug) Min dock status|Docks]]>><<set $dockstatus to 0>><</link>>
+	<<link [[(debug) Min dock status|Docks]]>><<set $docks.status to 0>><</link>>
 	<br>
 <</if>>
 
-
 :: Docks Raise
-
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 0>><<effects>>
 <<generate1>><<person1>>
 
-You ask a manager for a raise. "Well..." <<He>> adjusts <<his>> glasses and taps something into <<his>> computer. "You have been pulling your weight around here. Fine. You're on <span class="gold">£<<print (($dockwage * 12) / 100)>></span> a shift now."
+You ask a manager for a raise. "Well..." <<He>> adjusts <<his>> glasses and taps something into <<his>> computer. "You have been pulling your weight around here. Fine. You're on <span class="gold">£<<print (($docks.wage * 8) / 100)>></span> a shift now, plus <span class="gold">£<<print (($docks.wage / 100) * 1.5)>></span> for every hour of overtime."
 <<trauma -18>><<stress -18>><<lltrauma>><<llstress>>
 <br><br>
 
-<<if $dockwage gte 2000>>
+<<if $docks.wage gte 2500>>
 	"That's more than any other worker," <<he>> adds.
 	<br><br>
 <</if>>
 
-The other dockers overheard, and grumble as you leave. They're just jealous.
+The other dockers overheard and grumble as you leave. They're just jealous.
 <br><br>
 
 <<endevent>>
@@ -106,8 +117,8 @@ The other dockers overheard, and grumble as you leave. They're just jealous.
 <br>
 
 :: Docks Ask
+<<set $outside to 0>><<effects>>
 
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
 You approach a <<generate1>><<person1>><<person>> standing on a raised platform. <<He>> jots something on <<his>> clipboard while observing the workers.
 <br><br>
 
@@ -130,47 +141,56 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 <br>
 
 :: Docks Ask 2
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
-
-"We're looking for more hands," the <<person>> says. "So many ships come and go nowadays. You'll want details." <<He>> sits back behind <<his>> desk. "<<printmoney 1000>> an hour is the starting wage. Perform well and you might get a raise. Work begins at <span class="gold"><<ampm 7 00>></span>."
+"We're looking for more hands," the <<person>> says. "So many ships come and go nowadays. You'll want details." <<He>> sits back behind <<his>> desk.
 <br><br>
 
-"Oh, and don't be late," <<he>> adds. "We can't just have workers show up throughout the day. Security reasons. You need to be here between seven and eight or we can't sign you in. No work for you on school days either, or I'll get in trouble. Work day is twelve hours, and you need to stay the whole shift if you want to get paid."
+"<<printmoney 1500>> an hour is the starting wage. Perform well and you might get a raise. The docks open at <span class="gold"><<ampm 6 00>></span>, and work starts at <span class="gold"><<ampm 7 00>></span>. You'll be working a full eight-hour shift until <span class="gold"><<ampm 16 00>></span>."
+<br><br>
+
+<span class="teal">"You need to stay the whole shift if you want to get paid."</span>
+<br><br>
+
+"If you think you can handle it, we need some extra help until <span class="gold"><<ampm 19 00>></span>. It's overtime, so we'll pay 50% extra an hour, <span class="gold"><<printmoney 2250>></span>, and you can leave at any time."
+<br><br>
+
+"Oh, and don't be late," <<he>> adds. "We can't just have workers show up throughout the day. Security reasons. No work for you on school days, either, or I'll get in trouble."
 <br><br>
 
 <<if $id is 1>>
-	<<set $idDocksReveal to 2>>
+	<<set $docks.fakeID to "shown">>
 	You show <<him>> the fake ID you purchased from Briar. "I'm not a student<<if $speech_attitude is "meek">>..<</if>>."
 	<br><br>
 
-	<<He>> glances at it, then hands it back. "Can't be too careful. Everything else still applies, then, except for the 'no working on school days' part."
+	<<He>> glances at it, then hands it back. "Can't be too careful. Everything else still applies, except for the 'no working on school days' part."
 	<br><br>
-
 <</if>>
 
+<<link [[Next|Docks Ask 3]]>><</link>>
+<br>
+
+:: Docks Ask 3
 <<He>> runs <<his>> eyes up and down your body.
 
 <<if currentSkillValue('physique') gte 15000>>
-	"You're a strapping <<lass>>, aren't you. It's a physical job, but you won't have any problems."
+	"You're a strapping <<lass>>, aren't you? It's a physical job, but you won't have any problems."
 <<elseif currentSkillValue('physique') gte 10000>>
 	"You look good and fit. It's a physical job, but you should be fine."
 <<elseif currentSkillValue('physique') gte 5000>>
-	"This is a physically demanding job. You look like you can handle yourself, but go careful."
+	"This is a physically demanding job. You look like you can handle yourself, but be careful."
 <<else>>
 	<<He>> sighs. "This is a physically demanding job, and, well." <<He>> pauses. "You're not the strongest <<girl>> I've seen, let me put it that way. I won't stop you, but you might be in for a rough time."
 <</if>>
 <br><br>
+
 "I think that's everything. I can give you a rundown of the more technical aspects, the rest you can learn on the job. So, interested?"
 <br><br>
 
-<<link [[Yes (0:30)|Docks Take Job]]>><<pass 30>><<set $dockwork to 2>><<endevent>><</link>>
+<<link [[Yes (0:30)|Docks Take Job]]>><<pass 30>><<set $docks.hired to true>><<endevent>><</link>>
 <br>
 <<link [[No|Docks Refuse Job]]>><</link>>
 <br>
 
 :: Docks Refuse Job
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
-
 "That's a shame," the <<person>> sighs. "Come back if you change your mind."
 <br><br>
 
@@ -179,72 +199,653 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 <br>
 
 :: Docks Take Job
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
-<<set $dockwage to 1000>><<set $dockstatus to 10>>
-"Remember," the manager says. "Work starts at <span class="gold"><<ampm 7 00>></span><<if $idDocksReveal isnot 2>>, and you can't work on school days<</if>>. Welcome to the team."
+<<effects>>
+
+"Remember," the manager says. "You need to show up by <span class="gold"><<ampm 7 00>></span><<if $docks.fakeID isnot "shown">>, and you can't work on school days<</if>>. Security can let you in before <<ampm 9 00>>, but don't make a habit of it. Work ends at <span class="gold"><<ampm 16 00>></span>. Welcome to the team."
 <br><br>
 
 <<link [[Next|Docks]]>><</link>>
 <br>
 
-:: Docks Start
+:: Docks Start Early
+<<effects>>
 
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
-You pass security and report to a manager for work. <<dockstatustext>>
-<br><br>
-<<if hasSexStat("exhibitionism", 5)>>
-	<<link [[Strip and work (1:00)|Docks Work]]>><<undressclothes "docks">><<set $phase to 2>><<dockstatus 1>><</link>><<if $daily.dockExhibitionism isnot 1>><<exhibitionist5>><</if>><<gcool>>
-	<br>
+<<if Time.minute lt 55>>
+	You pass security and wait for work to begin. Dockers talk amongst themselves while passing the time.
+	<br><br>
+
+	<<if !$docks.firstDay>>
+		<<dockoverhear>>
+	<</if>>
+<<else>>
+	You pass security and join the other dockers. You barely have time to get settled before your shift begins.
+	<br><br>
 <</if>>
+
+<<set _time_to_pass to (60 - Time.minute)>>
+<<if _time_to_pass is 60>>
+	<<set _time_to_display to "1:00">>
+<<elseif _time_to_pass lt 10>>
+	<<set _time_to_display to "0:0" + _time_to_pass>>
+<<else>>
+	<<set _time_to_display to "0:" + _time_to_pass>>
+<</if>>
+
+<<link [["Next (" + _time_to_display + ")"|Docks Start]]>><<pass _time_to_pass>><</link>>
+
+:: Docks Start
+<<effects>>
+
+<<set $docks.dailyHours.shift.total to 0>><<set $docks.dailyHours.shift.workedHard to 0>><<set $docks.dailyHours.shift.slacked to 0>><<set $docks.dailyHours.shift.unpaid to 0>>
+<<set $docks.dailyHours.overtime.total to 0>><<set $docks.dailyHours.overtime.workedHard to 0>><<set $docks.dailyHours.overtime.slacked to 0>><<set $docks.dailyHours.overtime.unpaid to 0>>
+
+<<if $docks.firstDay>> /* this is set to false later in this passage */
+	You <<if $phase is 1>>pass security and <</if>>report to a manager for work.
+	<br><br>
+	"First day on the job?" the <<generate1>><<person1>><<person>> asks. You nod. <<He>> writes something on a clipboard.
+	<<if Time.hour is 7 and Time.minute is 0>>
+		"And on time at <span class="gold"><<ampm 7 00>></span> sharp. Good. Let's keep it that way."
+	<<elseif Time.hour is 7 and Time.minute lt 15>>
+		"A little late, but not too bad. Try to be here by <span class="gold"><<ampm 7 00>></span> in the future."
+	<<else>>
+		"You're late. That's alright, you're fresh from orientation. Try to be here by <span class="gold"><<ampm 7 00>></span> in the future. You won't be paid for any hours you miss."
+	<</if>>
+<<elseif Time.hour is 7>>
+	<<if $phase is 0>> /* arrived early, set in docks passage */
+		You report to a manager for work.
+	<<elseif Time.minute is 0>>
+		You pass security and report to a manager for work.
+	<<elseif Time.minute lt 3>>
+		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> doesn't seem to care that you're a couple minutes late.
+	<<elseif Time.minute lt 15>>
+		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> pointedly reminds you to show up on time.<<stress 6>><<gstress>>
+	<<else>>
+		Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> scolds you for showing up late.<<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<</if>>
+<<elseif Time.hour is 8>>
+	Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> scolds you in front of the other dockers for showing up over an hour late.<<stress 6>><<trauma 6>><<dockstatus -1>><<gstress>><<gtrauma>><<lcool>>
+<<else>>
+	You shouldn't see this passage! Report this to Vrelnir.
+<</if>>
+<br><br>
+
+<<endevent>>
+
+/* Set the type of workday. First day is always normal */
+<<if $docks.firstDay>>
+	<<set $docks.dayType to "normal">>
+	<<set $docks.firstDay to false>> /* end of first day differences, set early to avoid more complex checks based on leave times */
+<<else>>
+	<<if $christmas is 1>>
+		<<if Time.monthDay is 25>>
+			<span class="green">It's Christmas day.</span> A manager thanks the few dockers who are present and says that they will receive overtime rates all day and a <span class="gold">£100</span> bonus at the end of their shift.
+		<<else>>
+			<span class="lblue">It's the week before Christmas.</span> A manager states that all employees who work this week will receive a <span class="gold">£25</span> bonus at the end of the day.
+		<</if>>
+		<br><br>
+	<</if>>
+	<<if $rng gte 86>> /* 15% chance */
+		<span class="red">The docks are busy today.</span> Work will be tiring. A manager announces that the overtime rate is raised from 150% to 200% for the day.
+		<<set $docks.dayType to "busy">>
+	<<elseif $rng gte 71>> /* 15% chance */
+		<span class="blue">Few ships are coming in today.</span> Work will be easy, but there won't be enough work to stay overtime.
+		<<set $docks.dayType to "slow">>
+	<<elseif $rng lte Math.round($world_corruption_soft/5)>> /* 0-20% chance based on soft world corruption */
+		<span class="lewd">Strange shipments are coming in today.</span> The crew that normally handles them asked for help with the overflow. A manager announces that the overtime rate is raised from 150% to 200% for the day.
+		<<set $docks.dayType to "lewd">>
+	<<else>> /* remaining chance, 50-70% */
+		The usual number of ships are coming through the docks today.
+		<<set $docks.dayType to "normal">>
+	<</if>>
+	<br><br>
+<</if>>
+
 <<dockoptions>>
 
+/* The following passages are a workaround to allow widgets to be called from links */
+:: Docks Leave
+<<effects>>
+<<dockleave>>
+
+:: Docks Options
+<<effects>>
+<<dockoptions>>
+
+:: Docks Lunch
+<<effects>>
+<<docklunchoptions>>
+
+/* In the Docks Work passage, $phase determines action: 0 is working, 1 is slacking  */
 :: Docks Work
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 1>><<effects>>
 
 <<if $arousal gte $arousalmax>>
 	<<orgasmLocation "docks">>
 <</if>>
-<<if $phase is 0>>
 
-	You work hard. It's tiring.
-	<<physique 6>>
-	<br><br>
+<<if $phase is 0>>
+	You work hard. It's
+	<<if $docks.dayType is "busy">>
+		exhausting.
+		<<physique 9>>
+	<<elseif $docks.dayType is "slow">>
+		a slow day, leaving plenty of time to take breaks when you're not needed.
+		<<physique 3>>
+	<<elseif $docks.dayType is "lewd">>
+		tiring, and you feel strangely heated.
+		<<physique 6>>
+	<<else>>
+		tiring.
+		<<physique 6>>
+	<</if>>
 
 	<<if $upperwetstage gte 3 or $lowerwetstage gte 3>>
+		<br><br>
 		You feel the other dockers ogling your body through your wet clothing.
 		<<gstress>><<garousal>><<stress 6>><<arousal 600>>
-		<br><br>
 	<</if>>
 <<elseif $phase is 1>>
-	You do as little work as you can get away with. Your colleagues grumble about you.
-	<br><br>
+	<<if $docks.dayType is "lewd">>
+		You try to avoid handling the unusual cargo.
+	<<else>>
+		You do as little work as you can get away with.
+	<</if>>
+	<<set _daily_slacked to ($docks.dailyHours.shift.slacked + $docks.dailyHours.overtime.slacked)>>
+	<<if $docks.dayType is "slow">>
+		Your colleagues <span class="teal">don't mind you slacking today.</span>
+	<<else>>
+		<<if $docks.status gte 80>>
+			<<if _daily_slacked is 1>>
+				Your colleagues <span class="green">don't mind.</span>
+			<<elseif _daily_slacked is 2>>
+				Your colleagues <span class="lblue">cover for you.</span>
+			<<elseif _daily_slacked is 3>>
+				Your colleagues <span class="blue">let it slide.</span>
+			<<elseif _daily_slacked is 4>>
+				Your colleagues <span class="purple">are getting impatient.</span>
+			<<elseif $docks.dayType is "busy">>
+				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
+			<<else>>
+				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
+			<</if>>
+		<<elseif $docks.status gte 60>>
+			<<if _daily_slacked is 1>>
+				Your colleagues <span class="lblue">cover for you.</span>
+			<<elseif _daily_slacked is 2>>
+				Your colleagues <span class="blue">let it slide.</span>
+			<<elseif _daily_slacked is 3>>
+				Your colleagues <span class="purple">are getting impatient.</span>
+			<<elseif $docks.dayType is "busy">>
+				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
+			<<else>>
+				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
+			<</if>>
+		<<elseif $docks.status gte 40>>
+			<<if _daily_slacked is 1>>
+				Your colleagues <span class="blue">let it slide.</span>
+			<<elseif _daily_slacked is 2>>
+				Your colleagues <span class="purple">are getting impatient.</span>
+			<<elseif $docks.dayType is "busy">>
+				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
+			<<else>>
+				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
+			<</if>>
+		<<elseif $docks.status gte 20>>
+			<<if _daily_slacked is 1>>
+				Your colleagues <span class="purple">are getting impatient.</span>
+			<<elseif $docks.dayType is "busy">>
+				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
+			<<else>>
+				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $docks.suspicion gte 4>>
+		<br><br>
+		A supervisor follows you and <<if $docks.status gte 20>>says<<else>>sneers<</if>>,
+		<<if $rng gte 81>>
+			"Stop slacking, <<girl>>. No work, no pay<<if $docks.dayType is "busy">>, and there's no shortage of work for you today<<elseif $docks.dayType is "slow">>, even on slow days<</if>>."
+		<<elseif $rng gte 61>>
+			"We don't pay you to sit idle<<if $docks.dayType is "busy">>, especially not on days like these<</if>>. Get back to work."
+		<<elseif $rng gte 41>>
+			"You think you're special? No pay for slackers.<<if $docks.dayType is "busy">> We need all hands on-board today.<</if>>"
+		<<elseif $rng gte 21>>
+			"Back in my day, we fired slackers. Now we just don't pay them."
+		<<else>>
+			"A little birdie told me you've not been pulling your weight around here. We only pay for hours worked."
+		<</if>>
+		<<stress 6>><<gstress>>
+		<<if Time.hour gte 17>>
+			<<set $docks.dailyHours.overtime.unpaid += 1>>
+		<<else>>
+			<<set $docks.dailyHours.shift.unpaid += 1>>
+		<</if>>
+	<</if>>
 
 	<<if $upperwetstage gte 3 or $lowerwetstage gte 3>>
+		<br><br>
 		You feel the other dockers ogling your body through your wet clothing.
 		<<gstress>><<garousal>><<stress 6>><<arousal 600>>
-		<br><br>
 	<</if>>
 <<elseif $phase is 2>>
 	You strip naked behind some cargo containers. <<flaunting>> you take a deep breath and step out onto the dock.
-	<<if $daily.dockExhibitionism isnot 1>>
-		<<set $daily.dockExhibitionism to 1>>
-		<<exhibitionism5>>
-	<<else>>
-		<br><br>
-	<</if>>
+	<<set $daily.docksExhibitionism to true>>
+	<<exhibitionism5>>
 
 	<<covered>> Few notice at first, until someone whistles at you and attracts attention. More and more dockers stop what they're doing to cheer and whistle at you. Each new onlooker renews your thrill.
 	<br><br>
 
 	A supervisor tells everyone to get back to work. They do so, though reluctant to take their eyes off you. <<generate1>><<person1>>The supervisor doesn't tell you to get dressed. The longing look <<he>> gives your body suggests why.<<endevent>>
-	<br><br>
 <</if>>
-<<pass 60>>
+<br><br>
+
+/* Suspicion level based on slacking */
+/* Set after the supervisor display so that the red text warning the dockoptions widget appears first */
+/* Bounds are 0 to 4. Pay is withheld at 4 suspicion when slacking again. Working or stripping and working reduces it */
+<<if ($phase is 0 or $phase is 2) and $docks.suspicion gte 1>>
+	<<set $docks.suspicion -= 1>>
+<<elseif $phase is 1 and $docks.suspicion lte 3>>
+	<<set $docks.suspicion += 1>>
+<</if>>
+
 <<dockwork>>
 
-:: Docks Rape Capsize
+:: Docks Lunch Socialize
+<<effects>>
 
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+You sit down with the other workers and talk over lunch.
+
+<<if $docks.status gte 100>>
+	You quickly become the center of attention. A <<generate1>><<person1>><<person>> offers a toast to you and thanks you for all the help you've been<<if $dockwage lt 2500>>, while a <<generate2>><<person2>><<person>> jokes that you should ask for a raise already<</if>>.<<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<endevent>>
+<<elseif $docks.status gte 80>>
+	They enjoy your company and listen when you talk. A <<generate1>><<person1>><<person>> offers to share <<his>> food with you.<<stress -6>><<trauma -3>><<dockstatus 1>><<lstress>><<ltrauma>><<gcool>><<endevent>>
+<<elseif $docks.status gte 60>>
+	They enjoy your company and listen when you talk.<<stress -6>><<dockstatus 1>><<lstress>><<gcool>>
+<<elseif $docks.status gte 40>>
+	Some workers eye you with suspicion. Others make smalltalk with you. You don't feel like they trust you yet.<<dockstatus 1>><<gcool>>
+<<elseif $docks.status gte 20>>
+	You do your best to ingratiate yourself with the other workers. Many of them give you suspicious looks or ignore you, but you think you're gaining their trust.<<dockstatus 1>><<gcool>>
+<<else>>
+	<<if $rng gte 51>>
+		<<generate1>><<person1>>
+
+		You have trouble finding dockers willing to talk to you. Most of them ignore you or move away when you approach. Eventually, you manage to strike up a conversation with
+		<<rng>>
+		<<if $rng gte 76>>
+			<<if Time.isWeekEnd()>>
+				another student working weekends
+			<<else>>
+				a delinquent who is skipping school
+			<</if>>
+		<<elseif $rng gte 51>>
+			a drunk <<personsimple>>
+		<<else>>
+			a <<person>> who is sitting alone
+		<</if>>
+		and build a rapport with <<him>>.<<dockstatus 1>><<gcool>>
+		<<endevent>>
+	<<else>>
+		The workers move away when you try to talk with them. Some of them spread rumors about you. Others joke about tossing you into the ocean.<<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<</if>>
+<</if>>
+<br><br>
+
+<<docklunchprompt>>
+
+:: Docks Lunch Flirt
+<<effects>>
+
+<<generate1>><<person1>>
+
+You <<print either("approach", "get comfortable next to", "sidle up to", "sit down next to")>> a <<person>> and flirt with <<him>>.
+<<promiscuity1>>
+
+<<if $docks.status gte 40 and random(1, 3) is 1>>
+	<<if $rng gte $world_corruption_soft>>
+		<<He>> <<print either("shakes <<his>> head", "gives you a wistful smile", "sighs")>>.
+		<<rng>>
+		<<if $rng gte 81>>
+			"<<print either("Sorry, but I'm faithfully married. You could try the pub? Me and mine found love over a couple of pints.", "I'm married, but I'm sure you'll find someone who can please you.")>>"
+		<<elseif $rng gte 61>>
+			"I swore an oath to the temple that I intend to keep."
+		<<elseif $rng gte 41>>
+			"I don't swing that way."
+		<<elseif $rng gte 21>>
+			"I don't do one-night stands. If you're looking for a hookup, try the pub."
+		<<else>>
+			"You're cute, but I'm hungry and just want to eat."
+		<</if>>
+		<br><br>
+
+		<<link [[Next|Docks Lunch]]>><<endevent>><</link>>
+	<<else>>
+		<<He>> <<print either("eyes you for a long moment", "fidgets in <<his>> seat", "tries to hide <<his>> growing arousal")>>.
+		<<rng>>
+		<<if $rng gte 81>>
+			"<<print either("I'm faithfully married, but...", "Tempting, but I don't know if my spouse would forgive me.")>>"<<set $docks.flirtTarget to 3>>
+		<<elseif $rng gte 61>>
+			"Maybe the temple wouldn't know...?"<<set $docks.flirtTarget to 4>>
+		<<elseif $rng gte 41>>
+			"I don't normally go for <<girl>>s."<<set $docks.flirtTarget to 5>>
+		<<elseif $rng gte 21>>
+			"I don't normally go for one-night stands."<<set $docks.flirtTarget to 6>>
+		<<else>>
+			"I'm still eating."<<set $docks.flirtTarget to 7>>
+		<</if>>
+		It's not clear if <<hes>> serious yet, but you didn't hear a no.
+		<br><br>
+
+		<<docklunchseduce>>
+	<</if>>
+<<elseif $docks.status gte 60 and random(1, 2) is 1>>
+	<<He>> <<print either("tells you you're cute and likes seeing you around", "smiles and playfully flirts back", "fidgets in <<his>> seat and starts breathing more quickly")>>.<<set $docks.flirtTarget to 1>>
+	<br><br>
+
+	<<docklunchseduce>>
+<<elseif $docks.status gte 40>>
+	<<He>> <<print either("says that <<he>> appreciates the company", "looks you over with a slight smile", "seems receptive to your advances")>>, but it's hard to get a read on <<him>>.<<set $docks.flirtTarget to 2>>
+	<br><br>
+
+	<<docklunchseduce>>
+<<elseif $docks.status gte 20>>
+	<<He>> <<print either("glances at you, but shakes <<his>> head.", "opens <<his>> mouth as if to respond, but decides against it.", "doesn't even look up from <<his>> meal.", "regards you with a level stare. \"Make yourself useful around here first.\"")>>
+	<br><br>
+
+	<<link [[Next|Docks Lunch]]>><<endevent>><</link>>
+<<else>>
+	"<<print either("Fuck off,", "Go away,", "Buzz off,", "Don't bother me,", "Can't you see that I'm busy?")>>" <<he>> says. "<<print either("You're not worth my time.", "I'm trying to enjoy my lunch.", "Go be a whore somewhere else.", "If you want a sucker, try the pub.", "If I wanted a whore, I'd go to the brothel.", "I'm starving and just want to eat.", "Try making yourself useful around here before slutting it up.")>>"<<stress 6>><<gstress>>
+	<br><br>
+
+	<<link [[Next|Docks Lunch]]>><<endevent>><</link>>
+<</if>>
+<br><br>
+
+:: Docks Lunch Seduce
+<<effects>>
+
+You lean over and whisper something into the <<persons>> ear.
+<<promiscuity2>>
+
+<<if $docks.flirtTarget is 1>> /* Easyish target, requires 60+ status */
+	<<set $seductiondifficulty to 4000>>
+<<elseif $docks.flirtTarget is 2>> /* Medium targets, requires 40-59 status */
+	<<set $seductiondifficulty to 5000>>
+<<else>> /* Various difficulty targets, requires 40+ status */
+	<<set $seductiondifficulty to 6000>>
+<</if>>
+
+<<if $docks.dayType is "lewd">> /* Significantly reduce seduction difficulty due to dockers being aroused */
+	<<set $seductiondifficulty -= 2000>>
+<</if>>
+
+<<seductioncheck>>
+<<seductionskilluptext>>
+<<seductionskilluse>>
+
+<<if $seductionrating gte $seductionrequired>>
+	<<if $docks.flirtTarget is 1 or $docks.flirtTarget is 2>>
+		The <<person>> <<print either("breathes faster", "shivers with anticipation", "squirms in <<his>> seat")>> and <<print either("checks the time, looks around to see if anyone's watching")>>. "<<if Time.minute gte 50>><<print either("Alright, but let's make this quick", "We better be quick. Work starts soon")>><<else>><<print either("Let's get out of here", "We can slip away for a while")>><</if>>. I know just the spot."
+		<br><br>
+		You're led to a more secluded area of the docks, away from view of the others. The <<personsimple>> embraces you.
+	<<else>>
+		<<if $docks.flirtTarget is 3>> /* married */
+			"Yeah. You're right. It's just been us, right? Our little secret." <<His>> breath grows faster as he looks you up and down. "I know a spot we can go. Nice and secluded, where nobody else can see. Follow me."
+			<br><br>
+			You follow the <<person>> toward a secluded area of the docks, away from view. There is a wild look in <<his>> eyes. "Don't tell anyone, you understand?" he warns. "This is between you and me. No one else. Loose lips sink ships." Not giving you a chance to respond, <<he>> embraces you.
+		<<elseif $docks.flirtTarget is 4>> /* temple oath */
+			"I—" <<He>> looks down in shame. "I'm not strong enough. I need to purge these urges, and I need someone to help me. Someone like you." <<He>> smiles weakly. "Come. I know just the place."
+			<br><br>
+			You follow <<him>> toward a secluded area of the docks, away from view. "I need this," <<he>> says. "I need you. Purge me." There is one last moment of fleeting hesitation before <<he>> presses in close to embrace you.
+		<<elseif $docks.flirtTarget is 5>> /* different orientation */
+			"I understand. There are so many holes in the world, why not try them all?" <<He>> gives you an odd look. "Let's get going before anyone finds out, okay?"
+			<br><br>
+			The <<person>> leads you to a secluded area of the docks, then turns to face you. "This is my first time with a <<girl>>. I— I don't know why, but it's exciting. Come here and show me what you can do." <<He>> embraces you.
+		<<elseif $docks.flirtTarget is 6>> /* no hookups */
+			"Well, I— I suppose it couldn't hurt?" <<he>> says. "You have such a... way with words." <<He>> swallows. "I know a spot. Follow me, and stay close. You don't want to get caught by yourself out here."
+			<br><br>
+			The <<person>> leads you to a secluded area of the docks. "This isn't my first time, not by a long shot. I hoped this part of my life was over, but you're just so..." <<his>> voice trails off. <<He>> stares at you for a moment, then embraces you.
+		<<else>> /* just hungry */
+			"Maybe you can help satify a different kind of hunger, eh?" The <<person>> looks you over. "Alright, slut. Follow me. I can show you a good time."
+			<br><br>
+			You're led to a secluded area of the docks, out of view of the others. The <<personsimple>> embraces you.
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Docks Lunch Sex]]>><<set $sexstart to 1>><</link>>
+<<else>>
+	<<if $docks.flirtTarget is 1>>
+		The <<person>> <<print either("hesitates", "looks conflicted", "looks unsure")>>.
+		<<rng>>
+		<<if $rng gte 76>>
+			"Where would we even sneak off to? The docks are crowded, and we can't just leave. They wouldn't let us back in." <<He>> gives you a sympathetic smile. "Maybe we'll see each other at the pub later?"
+		<<elseif $rng gte 51>>
+			"You're cute, but I'm worried that a supervisor might catch wind of this. Wouldn't want to get in trouble, now would we?" <<He>> gives you a pat on the back.
+		<<elseif $rng gte 26>>
+			"You're good company, but I don't want to risk my job over this. Don't take it personally, you're sweet and all, just not worth the risk."
+		<<else>>
+			"I mean, I like you, but I don't <i>know</i> know you, you know? I'm looking for something more serious."
+		<</if>>
+	<<elseif $docks.flirtTarget is 2>>
+		The <<person>> <<print either("hesitates", "looks conflicted", "looks unsure")>>.
+		<<if $rng gte 76>>
+			"I don't know about this. This feels like a bad idea. I don't want to get in trouble with the boss."
+		<<elseif $rng gte 51>>
+			"We really shouldn't be fooling around on the job."
+		<<elseif $rng gte 26>>
+			"I'm not interested."
+		<<else>>
+			"Sorry, I don't want to want to have sex with you. It's not personal."
+		<</if>>
+	<<else>>
+		The <<person>> <<print either("jerks away", "pulls back", "recoils")>> from you, as if woken from a <<print either("dream", "fugue")>>.
+		<<if $docks.flirtTarget is 3>> /* married */
+			"N— no, I can't do this. This is wrong. What am I doing?" <<He>> looks uneasy as <<he>> walks away.
+		<<elseif $docks.flirtTarget is 4>> /* temple oath */
+			"I— I can't break my vow. The temple would know. I—" <<His>> breath catches in his throat. "I have to go!" <<He>> gets up and hurries away.
+		<<elseif $docks.flirtTarget is 5>> /* different orientation */
+			"I'm sorry, but this feels... wrong, somehow. Like there's something wrong with me." <<He>> looks uneasy. "Sorry, but I need to go."
+		<<elseif $docks.flirtTarget is 6>> /* no hookups */
+			"I— I'm not interested. I'm looking for something more steady. There's just these... holes in my thoughts lately. Lapses of judgment. I don't mean to offend." <<He>> gives you an apologetic look before turning away.
+		<<else>> /* just hungry */
+			"Hmm. Nope. Still hungry. Sorry, but maybe after I've had my lunch."
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Docks Lunch]]>><<endevent>><</link>>
+<</if>>
+
+:: Docks Lunch Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<if $docks.flirtTarget is 1>>
+		<<set $enemytrust += 100>>
+	<<elseif $docks.flirtTarget isnot 3>>
+		<<set $enemytrust += 50>>
+	<</if>>
+<<elseif $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Docks Lunch Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Docks Lunch Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Docks Lunch Sex Finish
+<<effects>>
+
+<<if $enemyhealth lte 0>>
+	<<tearful>> you shove the <<person>> away from you.
+	<<if $docks.flirtTarget is 3>>
+		"Keep your mouth shut about this!" <<he>> yells after you, though <<he>> doesn't pursue.
+	<<elseif $docks.flirtTarget is 4>>
+		"Don't tell the temple!" <<he>> yells after you, though <<he>> doesn't pursue.
+	<<else>>
+		<<He>> doesn't pursue. You're sure the others will hear about this.<<dockstatus -1>><<lcool>>
+	<</if>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+
+	<<if $docks.flirtTarget is 3>>
+		The <<person>> groans as <<he>> collects <<himself>>. "I needed that," <<he>> says. "Just don't go telling anyone, you got it? Now let's go, they'll be suspicious if we aren't back soon."
+	<<elseif $docks.flirtTarget is 4>>
+		"Purged," <<he>> breathes out, shivering. "Thank you. Thank you, thank you, thank you, thank you." You give the <<person>> a moment to collect <<himself>>. "Jordan will be angry.
+		<<if $rng gte 51>>
+			So be it. I accept my punishment." <<He>> looks resolved, but you see a hint of fear in <<his>> eyes.
+		<<else>>
+			Maybe I should stay away from the temple for a while. They'll forget, right?" <<He>> looks worried.
+		<</if>>
+	<<elseif $docks.flirtTarget is 5>>
+		"I can't believe it was this good," the <<person>> says. <<Hes>> still panting. "I hope I wasn't too rough or anything. Let's do this again sometime."
+	<<elseif $docks.flirtTarget is 6>>
+		The <<person>> looks spent. <<Hes>> still breathing heavily as <<he>> gets up and puts <<his>> clothes back on. "Thanks for that. Maybe this'll be my last fling, for real this time." <<He>> smiles at you. "Or maybe we can meet up again. I'd be open to it."
+	<<elseif $docks.flirtTarget is 7>>
+		"Oh, that hit the spot," <<he>> says. "Don't suppose you're up for seconds? Dessert, maybe?" <<He>> gives you a hungry look.
+	<<else>>
+		<<rng>>
+		<<if $rng gte 76>>
+			The <<person>> <<print either("squeezes your ass", "squeezes your hips", "strokes your face", "strokes your thighs")>>. "You're a <<print either("nice", "good", "great")>> <<print either("fuck", "lay")>>," <<he>> says. "<<if Time.minute gte 50>>Let's going before we're late.<<if $docks.status gte 80>> I'm sure everyone misses you.<</if>><<else>>I need to get going. See you again soon?<</if>>"
+		<<elseif $rng gte 51>>
+			The <<person>> moans softly and smiles at you. "That was <<print either("amazing", "incredible", "wonderful")>>! You're so <<print either("adorable", "cute")>>. Let's do this again sometime."
+		<<elseif $rng gte 26>>
+			The <<person>> stumbles back to <<his>> feet to put <<his>> clothes back on. "That was fun, but let's get going. <<if Time.minute gte 50>>I don't want to be late<<elseif Time.minute gte 30>>There's still some free time before we have to go back to work<<else>>I still haven't finished my lunch<</if>>."
+		<<else>>
+			With a wistful sigh, the <<person>> gets up and starts dressing <<himself>> again. "I hope to do this again soon. You were <<print either("great", "wonderful")>>."
+		<</if>>
+	<</if>>
+<<else>>
+	"Did I do something wrong? Are you alright?" <<he>> asks. The <<person>> looks you up and down, worried, then shakes <<his>> head. "Let's get going. We don't want to be late.<<if $docks.flirtTarget is 3>> And not a word about this to anyone, got it?<<elseif $docks.flirtTarget is 4>> Oh, and please don't tell the temple, okay?<</if>>"
+<</if>>
+<br><br>
+
+<<clotheson>>
+<<endcombat>>
+
+<<tearful>> you return to the main area of the docks.
+<<if ($docks.flirtTarget is 1 or $docks.flirtTarget is 2 or $docks.flirtTarget is 7) and random(1, 3) is 1>>
+	The <<person>> immediately tells <<his>> friends about you. You see them give you lustful glances.<<famesex 2>><<stress 6>><<dockstatus 1>><<gstress>><<gcool>>
+<</if>>
+<br><br>
+
+<<link [[Next|Docks Lunch]]>><</link>>
+
+:: Docks Lunch Sleep
+<<effects>>
+
+You search for a quiet spot to lie down and take a nap. It's not very
+<<if Time.hour gte 12>> /* Will only be true if sleeping bleeds into the next hour */
+	comfortable.
+	<<if $docks.status gte 40>>
+		After a while, you're awoken by a worker gently shaking your shoulder to inform you that lunch is over.<<tiredness -6>><<ltiredness>>
+	<<else>>
+		You almost oversleep, but you're awoken by a supervisor warning you to get back to work.<<stress 6>><<tiredness -6>><<gstress>><<ltiredness>>
+	<</if>>
+<<else>>
+	comfortable, but you feel a little more rested by the time you wake up again.<<tiredness -6>><<ltiredness>>
+<</if>>
+<br><br>
+
+<<docklunchprompt>>
+
+:: Docks Lunch Stroll
+<<effects>>
+
+You take a stroll near the ocean.
+<<if Weather.precipitation is "snow">>
+	Snow blankets the area.
+<<elseif Weather.precipitation is "rain">>
+	Rain patters across the ground.
+<</if>>
+<<outfitChecks>>
+<<if Weather.temperature lte -15>>
+	The extreme cold is carried on an ocean breeze and
+	<<if _fullyNaked>>
+		batters your bare <<chest>> and <<genitals>>.<<pain 12>><<stress 12>><<ggpain>><<ggstress>>
+	<<elseif _bottomless>>
+		sends painful chills through your exposed <<genitals>>.<<pain 6>><<stress 12>><<gpain>><<ggstress>>
+	<<elseif _topless>>
+		whips painfully against your exposed <<chest>>.<<pain 6>><<stress 12>><<gpain>><<ggstress>>
+	<<else>>
+		gets under your clothes. You shiver.<<stress 6>><<gstress>>
+	<</if>>
+<<elseif Weather.temperature lte 0>>
+	It's freezing out.
+	<<if _fullynaked>>
+		The cold feels biting against your bare <<chest>> and <<genitals>>.<<pain 6>><<stress 6>><<gpain>><<gstress>>
+	<<elseif _bottomless>>
+		The cold feels almost painful against your exposed <<genitals>>.<<stress 6>><<gstress>>
+	<<elseif _topless>>
+		You cross your arms in an effort to keep your bare <<chest>> warm.<<stress 6>><<gstress>>
+	<<else>>
+		You try to stay warm.
+	<</if>>
+<<elseif Weather.temperature lte 15>>
+	<<if Weather.precipitation is "rain">>
+		<<set _rain_or_air to "rain">>
+	<<else>>
+		<<set _rain_or_air to "air">>
+	<</if>>
+	<<if _fullyNaked>>
+		The cool _rain_or_air feels arousing against your <<chest>> and <<genitals>>.<<stress -6>><<arousal 600>><<lstress>><<garousal>>
+	<<elseif _bottomless>>
+		The cool _rain_or_air feels oddly pleasant against your <<genitals>>.<<stress -6>><<arousal 300>><<lstress>><<garousal>>
+	<<elseif _topless>>
+		The cool _rain_or_air feels oddly pleasant against your <<chest>>.<<stress -6>><<arousal 300>><<lstress>><<garousal>>
+	<<else>>
+		The cool _rain_or_air is refreshing.<<stress -6>><<lstress>>
+	<</if>>
+<<elseif Weather.temperature lte 25>>
+	The temperature is perfect for a walk. It's relaxing, and your mind has time to wander.<<stress -6>><<lstress>>
+<<elseif Weather.temperature lte 30>>
+	It's quite warm out, but not overwhelming. Your mind has time to wander.<<stress -6>><<lstress>>
+<<else>>
+	It's extremely hot out. The heat wears down on you.<<stress 6>><<gstress>>
+<</if>>
+<br><br>
+<<if (Weather.precipitation is "none") and (Weather.temperature gte 1) and (Weather.temperature lte 30) and (($docks.status gte 60 and random(1, 3) is 1) or ($docks.status gte 80 and random(1, 2) is 1))>>
+	A <<generate1>><<person1>><<person>> joins you on your walk.
+	<<if $rng gte 91>>
+		<<He>> talks about <<his>> experiences working at the docks, including some of the seedier details when you're out of earshot of the others. You learn more than you wanted to.<<dockstatus 1>><<awareness 1>><<stress 6>><<trauma 6>><<gcool>><<gawareness>><<gstress>><<gtrauma>>
+	<<elseif $rng gte 76>>
+		<<He>> seems grateful for the company and tells you about some of the local history of the docks.<<dockstatus 1>><<gcool>><<ghistory>><<historyskill>>
+	<<else>>
+		<<He>> seems grateful for the company, sharing details about <<his>> life and making smalltalk with you.<<dockstatus 1>><<gcool>>
+	<</if>>
+	<br><br>
+
+	<<endevent>>
+<</if>>
+<<if Time.hour gte 12>>
+	<<if $docks.status gte 40>>
+		A colleague informs you that work is starting up again shortly.
+	<<else>>
+		Your walk is interrupted by a supervisor calling out for everyone to get back to work.<<stress 6>><<gstress>>
+	<</if>>
+	<br><br>
+<</if>>
+<<docklunchprompt>>
+
+:: Docks Rape Capsize
+<<effects>>
 
 The <<person1>><<person>> gets closer. You press one leg into the side of the boat, making the vessel rock. They stumble forwards. "Don't you da—" <<he>> manages before you give the boat another shove, this time turning it over and sending all three of you overboard.
 <br><br>
@@ -290,8 +891,8 @@ You swim back to shore. "<<pShe>> capsized it on purpose!" the <<person>> says t
 <</if>>
 
 :: Docks Rape Finish
-
 <<effects>>
+
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
 
@@ -330,17 +931,17 @@ You swim back to shore. "<<pShe>> capsized it on purpose!" the <<person>> says t
 <</if>>
 
 :: Docks Binding
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<unbind>>
-You turn your back to the <<person>>. <<He>> fiddles with the knots, and sets you free. "There you go <<lass>>. Be more careful in the future."
+You turn your back to the <<person>>. <<He>> fiddles with the knots and sets you free. "There you go, <<lass>>. Be more careful in the future."
 <br><br>
 
 <<endevent>>
 <<dockoptions>>
 
 :: Docks Binding Refuse
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<He>> shrugs. "Suit yourself."
 <br><br>
@@ -349,7 +950,7 @@ You turn your back to the <<person>>. <<He>> fiddles with the knots, and sets yo
 <<dockoptions>>
 
 :: Docks Tourist Return
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 1>><<effects>>
 
 <<generate2>><<person2>>You return to the dock. Your manager greets you. "Don't worry," <<he>> sighs. "Those types never listen to us."
 <br><br>
@@ -357,7 +958,7 @@ You turn your back to the <<person>>. <<He>> fiddles with the knots, and sets yo
 <<dockoptions>>
 
 :: Docks Tourist Seduce
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 0>><<effects>>
 
 <<set $seductiondifficulty to 6000>>
 <<seductioncheck>>
@@ -417,7 +1018,7 @@ The surrounding passengers socialise, unaware of what you're up to beneath the t
 <</if>>
 
 :: Docks Tourist Sex Finish
-<<set $outside to 0>><<effects>>
+<<set $outside to 1>><<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
@@ -463,7 +1064,7 @@ The surrounding passengers socialise, unaware of what you're up to beneath the t
 <<dockoptions>>
 
 :: Docks Tourist Intimidate
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 "Attention everybody," you shout. The passengers fall silent. "This ship is on a collision course with another. You need to steer away from the docks. Or prepare to swim ashore." You turn and walk away. The crowd erupts into anxious babbling the moment you disappear from view. You descend to your ship and steer away.
 <br><br>
@@ -477,7 +1078,7 @@ You arrive back at the docks. A manager greets you. <<generate2>><<person2>>"You
 <<dockoptions>>
 
 :: Docks Examine
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>>
 	You compare the numbers,
@@ -559,7 +1160,7 @@ You keep an eye out for anything valuable. There's a lot, but you need something
 
 
 :: Docks Compound
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 0>><<effects>>
 
 <<skul_dock_init>>
 
@@ -591,7 +1192,7 @@ It's the last crate they load into the cargo container. The <<person1>><<person>
 <<dockoptions>>
 
 :: Docks Compound Ignore
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 You ignore the strange vehicle and continue working.
 <br><br>
@@ -599,7 +1200,7 @@ You ignore the strange vehicle and continue working.
 <<dockoptions>>
 
 :: Docks History
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>>
 	You look more closely,
@@ -628,7 +1229,7 @@ You ignore the strange vehicle and continue working.
 <<dockoptions>>
 
 :: Docks Angry
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $speech_attitude is "meek">>
 	"I'm just trying to work," you say. "Please let me."
@@ -645,7 +1246,7 @@ You ignore the strange vehicle and continue working.
 <<dockoptions>>
 
 :: Docks Walk
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 You walk away from the crowd. You try to ignore the jeers.
 <br><br>
@@ -653,7 +1254,7 @@ You walk away from the crowd. You try to ignore the jeers.
 <<dockoptions>>
 
 :: Docks Steal
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 It's a watch. It should be worth something. You mark it down as missing.
 <br><br>
@@ -661,7 +1262,7 @@ It's a watch. It should be worth something. You mark it down as missing.
 <<dockoptions>>
 
 :: Docks Don't Steal
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 You mark down that a package is damaged, and continue working.
 <br><br>
@@ -670,7 +1271,7 @@ You mark down that a package is damaged, and continue working.
 <br>
 
 :: Docks Slave Ignore
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $lock lt 400>>
 	There's nothing you can do. You move on to the next container.
@@ -685,7 +1286,7 @@ The <<person>> seems relieved.
 <<dockoptions>>
 
 :: Docks Slave Open
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 0>><<effects>>
 
 You successfully pick the lock and open the container. The <<person>> glances around. "I didn't see anything," <<he>> says. "I need this job." <<He>> walks away.
 <br><br>
@@ -702,7 +1303,7 @@ You successfully pick the lock and open the container. The <<person>> glances ar
 <br>
 
 :: Docks Slave Help
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 1>><<effects>>
 
 You rush from the container, and find the <<person1>><<person>> who saw you open it.
 <br><br>
@@ -726,7 +1327,7 @@ You return to the container, and find the <<person1>><<person>> lying where you 
 <br>
 
 :: Docks Slave Untie
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<set $outside to 0>><<effects>>
 
 You untie the bindings and remove the gag.
 
@@ -751,7 +1352,7 @@ You untie the bindings and remove the gag.
 <br>
 
 :: Docks Slave Cafe
-<<set $outside to 0>><<set $location to "cafe">><<dockeffects>><<effects>>
+<<set $outside to 0>><<set $location to "cafe">><<effects>>
 
 You take <<him>> to a nearby cafe and sit at a table away from the window. <<His>> eyes light up when <<he>> sees the menu. <<He>> points at the picture of a burger, so you order one for <<him>> and one for yourself. <<He>> devours <<his>> meal, pausing only to drink the accompanying pop.
 <br><br>
@@ -769,7 +1370,7 @@ You leave the cafe together. <<He>> looks much happier.
 <br>
 
 :: Docks Slave Station
-<<set $outside to 0>><<set $location to "town">><<dockeffects>><<effects>><<wearProp "ticket">>
+<<set $outside to 0>><<set $location to "town">><<effects>><<wearProp "ticket">>
 
 You take the <<person>> to the train station on Harvest Street. <<He>> walks close, and keeps bumping into you. The station itself is busy. There's a map of the country on the wall, detailing the train network.
 <br><br>
@@ -782,30 +1383,29 @@ You buy a ticket and walk onto the platform as the train arrives.
 The <<person>> seems anxious.
 <br><br>
 
-
 <<if $money gte 10000>>
 	<<link [[Give nothing|Docks Slave Station 2]]>><<famegood 5>><<set $phase to 0>><</link>>
 	<br>
-	<<link [[Give £100|Docks Slave Station 2]]>><<set $dockslavemoney to 100>><<money -10000 "gift">><<famegood 10>><<set $phase to 1>><</link>>
+	<<link [[Give £100|Docks Slave Station 2]]>><<set $docks.slave.money to 100>><<money -10000 "gift">><<famegood 10>><<set $phase to 1>><</link>>
 	<br>
 <<else>>
 	<<link [[Wave goodbye|Docks Slave Station 2]]>><<famegood 5>><<set $phase to 0>><</link>>
 	<br>
 <</if>>
 <<if $money gte 30000>>
-	<<link [[Give £300|Docks Slave Station 2]]>><<set $dockslavemoney to 300>><<money -30000 "gift">><<famegood 30>><<set $phase to 2>><</link>>
+	<<link [[Give £300|Docks Slave Station 2]]>><<set $docks.slave.money to 300>><<money -30000 "gift">><<famegood 30>><<set $phase to 2>><</link>>
 	<br>
 <</if>>
 <<if $money gte 100000>>
-	<<link [[Give £1000|Docks Slave Station 2]]>><<set $dockslavemoney to 1000>><<money -100000 "gift">><<famegood 50>><<set $phase to 3>><</link>>
+	<<link [[Give £1000|Docks Slave Station 2]]>><<set $docks.slave.money to 1000>><<money -100000 "gift">><<famegood 50>><<set $phase to 3>><</link>>
 	<br>
 <</if>>
 
 :: Docks Slave Station 2
-<<set $outside to 0>><<set $location to "town">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase gte 1>>
-	You hand the <<person>> the ticket and £<<print $dockslavemoney>>.
+	You hand the <<person>> the ticket and £<<print $docks.slave.money>>.
 <<else>>
 	You hand the <<person>> the ticket.
 <</if>>
@@ -818,7 +1418,7 @@ The <<person>> seems anxious.
 	"This train will take you home," you say.
 <</if>>
 
-<<He>> seems reluctant to leave you, but <<he>> understands and walks alone toward the waiting train. Before reaching it however, <<he>> turns and runs back. <<He>> almost knocks you over with a hug.
+<<He>> seems reluctant to leave you, but <<he>> understands and walks alone toward the waiting train. Before reaching it, however, <<he>> turns and runs back. <<He>> almost knocks you over with a hug.
 <br><br>
 
 <<He>> waves from the window as the train departs.
@@ -828,7 +1428,7 @@ The <<person>> seems anxious.
 <br>
 
 :: Passout Docks
-<<set $outside to 0>><<set $location to "town">><<dockeffects>><<effects>>
+<<set $outside to 0>><<set $location to "town">><<effects>>
 
 <<upperruined>><<lowerruined>><<underruined>><<handheldruined>>
 <<set $leftarm to "bound">><<set $rightarm to "bound">><<handheldruined>>
@@ -852,7 +1452,7 @@ The <<person>> stands and takes <<his>> position in front of the board as the <<
 <br>
 
 :: Passout Docks 2
-<<set $outside to 0>><<set $location to "docks">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>>
 	<<if $speech_attitude is "meek">>
@@ -921,6 +1521,7 @@ The pair cheer their colleague on.
 
 :: Passout Docks Rape Finish
 <<effects>>
+
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
 
@@ -951,9 +1552,10 @@ The pair cheer their colleague on.
 <<set $stress -= 2000>>
 
 :: Docks Pub Crawl
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>><<silently>><<handheldon>><</silently>>
-<<set $dockpubcount += 1>>
-<<if Time.hour gte 3 and Time.hour lte 18>>
+<<set $outside to 0>><<set $location to "pub">><<effects>><<silently>><<handheldon>><</silently>>
+
+<<set $docks.pub.count += 1>>
+<<if Time.hour gte 3 and Time.hour lte 16>>
 
 	Your colleagues pat your back, congratulating your endurance. They separate and stagger home.
 	<<gcool>><<dockstatus 5>>
@@ -1013,7 +1615,7 @@ The pair cheer their colleague on.
 
 
 	<<if dangerEvent()>>
-		You overhear one of the other dockers talking about you. <<generate1>><<person1>>"You sure the <<girl>> can handle it," <<he>> says. "The drinking, I mean. I don't want to get in trouble with <<pher>> parents or nothing."
+		You overhear one of the other dockers talking about you. <<generate1>><<person1>>"You sure the <<girl>> can handle it?" <<he>> says. "The drinking, I mean. I don't want to get in trouble with <<pher>> parents or nothing."
 		<br><br>
 
 		<<foodicon "beer">><<link [[Challenge to drinking contest|Docks Pub Crawl Contest]]>><<dockstatus 1>><<set $phase to 0>><</link>><<gcool>>
@@ -1072,7 +1674,7 @@ The pair cheer their colleague on.
 <</if>>
 
 :: Docks Pub Crawl Eyeing Encourage
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $speech_attitude is "meek">>
 	"You should talk to <<him>>," you say. "Just be yourself."
@@ -1101,7 +1703,7 @@ You finish your drink and leave with your colleagues.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Eyeing Ignore
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You decide to keep to yourself. You finish your drink and leave with your colleagues.
 <br><br>
@@ -1109,7 +1711,7 @@ You decide to keep to yourself. You finish your drink and leave with your collea
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Flirt
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You flirt back, revelling in the attention. You manage to convince someone to pay for drinks for you and your colleagues.
 <<dockstatus 1>><<gcool>>
@@ -1122,7 +1724,7 @@ You and the dockers finish your drinks and leave together.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Tease
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You hike your skirt up, giving them a tantalising glimpse of your upper thighs just short of your <<undies>>. One of your colleagues, a <<generate1>><<person1>><<person>>, spoils the fun and pulls your $worn.lower.name over your thighs proper. "Sorry," <<he>> says. "But you're working them up a bit too well. I don't want to lose teeth protecting you."
 
@@ -1134,7 +1736,7 @@ You and the dockers finish your drinks and leave together.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Flirt Ignore
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You ignore the flirters, finish your drink and leave with your colleagues.
 <br><br>
@@ -1142,7 +1744,7 @@ You ignore the flirters, finish your drink and leave with your colleagues.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Contest
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>><<set $phase += 1>>
 	<<if $speech_attitude is "meek">>
@@ -1165,7 +1767,7 @@ You ignore the flirters, finish your drink and leave with your colleagues.
 	<<generate3>><<person3>>The bartender arrives with two glasses. "Scotch," <<he>> says. "Let's start you off easy."
 	<br><br>
 
-	<<if $dockpubcount gte 4>>
+	<<if $docks.pub.count gte 4>>
 		<<person1>>"I don't think this'll take long," the <<person>> says. "We've had more than a few already."
 		<br><br>
 	<</if>>
@@ -1257,7 +1859,7 @@ You ignore the flirters, finish your drink and leave with your colleagues.
 <</if>>
 
 :: Docks Pub Crawl Contest Stop
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>><<silently>><<handheldon>><</silently>>
+<<effects>><<silently>><<handheldon>><</silently>>
 
 <<if $phase is 4>>
 	You shake your head and push the glass away from you. All eyes turn to the <<person>>, who lifts <<his>> and smells it. <<He>> places it back on the table. "I prom—" <<He>> hiccups. "I promised myself. Never again." It's a draw. The dockers are disappointed.
@@ -1275,7 +1877,7 @@ Your colleagues finish their drinks and you leave the pub together.
 
 
 :: Docks Pub Crawl Silent
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You don't interject.
 <br><br>
@@ -1311,7 +1913,7 @@ You finish drinking and leave the pub with your colleagues.
 <</if>>
 
 :: Docks Pub Crawl Sex Finish
-<<set $outside to 0>><<effects>>
+<<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
@@ -1334,7 +1936,7 @@ You finish drinking and leave the pub with your colleagues.
 
 
 :: Docks Pub Crawl Sex Refuse
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> whispers. "Now how abouts you come with me, and I won't need to hurt you."
 <<gtrauma>><<gstress>><<trauma 1>><<stress 1>>
@@ -1347,7 +1949,7 @@ The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> wh
 	"Unprovoked!" the <<person>> says as <<he>> nurses <<his>> scalp.
 	<br><br>
 
-	The pub owner rushes over. <<generate2>><<person2>> "Last thing I need is a brawl," <<he>> says. "You dockers always bring trouble. Get out."
+	The pub owner rushes over. <<generate2>><<person2>>"Last thing I need is a brawl," <<he>> says. "You dockers always bring trouble. Get out."
 	<br><br>
 
 	"That was self-defence," you argue, but <<he>> won't hear it. Your colleagues down the last of their drink and together you leave the pub. They don't seem to mind.
@@ -1359,7 +1961,7 @@ The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> wh
 	"Unprovoked!" the <<person>> says as <<he>> nurses <<his>> scalp.
 	<br><br>
 
-	The pub owner rushes over. <<generate2>><<person2>> "Last thing I need is a brawl," <<he>> says. "You dockers always bring trouble. Get out."
+	The pub owner rushes over. <<generate2>><<person2>>"Last thing I need is a brawl," <<he>> says. "You dockers always bring trouble. Get out."
 	<br><br>
 
 	Your colleagues argue that it was justified, but <<he>> won't hear it. They down the last of their drink and together you leave the pub.
@@ -1369,7 +1971,7 @@ The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> wh
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Body
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<set $seductiondifficulty to 4000>>
 <<seductioncheck>>
@@ -1395,8 +1997,8 @@ The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> wh
 
 	The pub owner steps up to a microphone in the corner of the room, preparing to read the first question.
 	<br><br>
-	<<set $dockquiz to "body">>
-	<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $dockquizhome to 0>><<set $dockquizaway to 0>><</link>>
+	<<set $docks.pub.quiz.bet to "body">>
+	<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $docks.pub.quiz.home to 0>><<set $docks.pub.quiz.away to 0>><</link>>
 	<br>
 
 <<else>>
@@ -1414,19 +2016,19 @@ The <<person>> grasps your neck and leans in. "I tried asking nicely," <<he>> wh
 <</if>>
 
 :: Docks Pub Crawl Bet
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You put £60 on the table. Your colleagues follow suit, though some with a grumble. "Thanks for your contribution," the <<person>> says. "That's our night paid for."
 <br><br>
 
 The pub owner steps up to a microphone in the corner of the room, preparing to read the first question.
 <br><br>
-<<set $dockquiz to "money">>
-<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $dockquizhome to 0>><<set $dockquizaway to 0>><</link>>
+<<set $docks.pub.quiz.bet to "money">>
+<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $docks.pub.quiz.home to 0>><<set $docks.pub.quiz.away to 0>><</link>>
 <br>
 
 :: Docks Pub Crawl Quiz Refuse
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>>
 
@@ -1435,8 +2037,8 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 
 	The pub owner steps up to a microphone in the corner of the room, preparing to read the first question.
 	<br><br>
-	<<set $dockquiz to "none">>
-	<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $dockquizhome to 0>><<set $dockquizaway to 0>><</link>>
+	<<set $docks.pub.quiz.bet to "nothing">>
+	<<link [[Next|Docks Pub Crawl Quiz]]>><<set $phase to 0>><<set $docks.pub.quiz.home to 0>><<set $docks.pub.quiz.away to 0>><</link>>
 	<br>
 
 <<else>>
@@ -1452,7 +2054,7 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 <</if>>
 
 :: Docks Pub Crawl Quiz
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase is 0>><<set $phase += 1>>
 	The first category <<dockpubquiz>>
@@ -1466,12 +2068,12 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 	The fifth category <<dockpubquiz>>
 <<else>>
 
-	<<if $dockquizhome gt $dockquizaway>>
+	<<if $docks.pub.quiz.home gt $docks.pub.quiz.away>>
 
 		"And the winners are," the owner announces. "The dockers!" You cheer and drum the table with your colleagues, until the owner convinces you to settle down.
 		<br><br>
 		<<earnFeat "Pub Crawl Victors">>
-		<<if $dockquiz is "money">>
+		<<if $docks.pub.quiz.bet is "money">>
 			The sailors aren't impressed. "Rigged," the <<person>> says, but they hand over the cash. You've gained <<moneyGainDisplay 60>>.
 			<<money 6000>>
 			<br><br>
@@ -1481,7 +2083,7 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 			<br><br>
 
 			<<dockpuboptions>>
-		<<elseif $dockquiz is "body">>
+		<<elseif $docks.pub.quiz.bet is "body">>
 			The sailors aren't impressed. "Rigged," the <<person>> says, but they hand over the cash.
 			<br><br>
 
@@ -1502,17 +2104,17 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 
 		<</if>>
 
-	<<elseif $dockquizhome is $dockquizaway>>
+	<<elseif $docks.pub.quiz.home is $docks.pub.quiz.away>>
 		"And the winners are," the owner announces. "No one! It's a draw." The dockers and sailors seem equally upset.
 		<br><br>
 		You and your colleagues leave soon after.
-		<<if $dockquiz is "money">><<money 6000>><</if>>
+		<<if $docks.pub.quiz.bet is "money">><<money 6000>><</if>>
 		<br><br>
 		<<dockpuboptions>>
 	<<else>>
 		"And the winners are," the owner announces. "The sailors!" They cheer and laugh until the owner convinces them to settle down.
 		<br><br>
-		<<if $dockquiz is "money">>
+		<<if $docks.pub.quiz.bet is "money">>
 			They take their money. "Sorry guys," the <<person>> says. "Shoulda known better than to challenge us."
 			<<lcool>><<dockstatus -1>>
 			<br><br>
@@ -1520,7 +2122,7 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 			<<lstress>><<stress -6>>
 			<br><br>
 			<<dockpuboptions>>
-		<<elseif $dockquiz is "body">>
+		<<elseif $docks.pub.quiz.bet is "body">>
 			The <<person>> looks at you and makes a come-hither motion. <<His>> fellow sailors stare at you with ravenous eyes. "Time to pay up," <<he>> says. "Get that bum over here."
 			<br><br>
 			<<link [[Walk over|Docks Pub Crawl Gangbang]]>><<set $sexstart to 1>><</link>>
@@ -1539,10 +2141,13 @@ The pub owner steps up to a microphone in the corner of the room, preparing to r
 			<<dockpuboptions>>
 		<</if>>
 	<</if>>
+	<<unset $docks.quiz.bet>>
+	<<unset $docks.quiz.home>>
+	<<unset $docks.quiz.away>>
 <</if>>
 
 :: Docks Pub Crawl Gangbang Refuse
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $speech_attitude is "meek">>
 	"S-sorry," you say. "But I don't want to."
@@ -1562,7 +2167,7 @@ You leave the pub with your colleagues.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Fight
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $speech_attitude is "meek">>
 	"S-sorry," you say. "But I don't want to."
@@ -1582,7 +2187,7 @@ You leave the pub with your colleagues.
 <br>
 
 :: Docks Pub Crawl Join
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>><<wearProp "alcohol" 0 "shot">>
+<<effects>><<wearProp "alcohol" 0 "shot">>
 
 You pick up a bystander's drink and drench the <<persons>> hair. <<He>> sneers and lunges, clutching your throat and dragging you to the ground. One swift kick to the <<if $NPCList[0].penis isnot "none">>cock<<else>>pussy<</if>> and <<he>> releases you, and clutches <<his>> groin in agony.
 <br><br>
@@ -1596,7 +2201,7 @@ The owner glares at you as you leave with your laughing colleagues.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Calm
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if currentSkillValue('physique') gte 12000>>
 	You stand in the middle of one of the fights and manage to hold a sailor and docker away from each other. A couple of the more level heads on both sides watch you and, inspired by your act, intervene themselves. They manage to calm things enough that security can form a line between the dockers and sailors.
@@ -1642,7 +2247,7 @@ You leave with your laughing colleagues.
 
 :: Docks Pub Crawl Gangbang Finish
 
-<<set $outside to 0>><<effects>>
+<<effects>>
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<fameprostitution 30>>
 	Applause fills the pub. The sailors clink and swig their free drinks. "This is the life," the <<person>> sighs.
@@ -1676,8 +2281,7 @@ You leave with your laughing colleagues.
 <</if>>
 
 :: Docks Pub Crawl Take
-
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 Your colleagues reach for the money, but you snatch it away from them. You remind them whose butt was on the line. They grumble, but agree. You've gained <<moneyGain 360>>.
 <br><br>
@@ -1689,7 +2293,7 @@ You and your colleagues enjoy your free drinks and leave in an elevated mood.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Share
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 You let your colleagues have their share. You've gained <<moneyGain 60>>.
 <br><br>
@@ -1701,11 +2305,11 @@ You and your colleagues enjoy your free drinks and leave in an elevated mood.
 <<dockpuboptions>>
 
 :: Docks Pub Crawl Science
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase2 is 0>>
 	<<if random(1, 2) is 2>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You let your colleagues answer the questions. They write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1721,7 +2325,7 @@ You and your colleagues enjoy your free drinks and leave in an elevated mood.
 <<elseif $phase2 is 1>>
 	<<wearProp "pencil">>
 	<<if currentSkillValue('science') gte random(1, 1000)>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You write down the answers, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1744,7 +2348,7 @@ You and your colleagues enjoy your free drinks and leave in an elevated mood.
 
 The owner reads the sailor's answers.
 <<if random(1, 2) is 2>>
-	<<set $dockquizaway += 1>>
+	<<set $docks.pub.quiz.away += 1>>
 	"That's a point to the sailors." A cheer erupts from their table.
 <<else>>
 	"Sorry guys. No points."
@@ -1758,11 +2362,11 @@ The owner reads the sailor's answers.
 <br>
 
 :: Docks Pub Crawl Maths
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase2 is 0>>
 	<<if random(1, 2) is 2>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You let your colleagues answer the questions. They write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1778,7 +2382,7 @@ The owner reads the sailor's answers.
 	<</if>>
 <<elseif $phase2 is 1>>
 	<<if currentSkillValue('maths') gte random(1, 1000)>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You write down the answers, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1800,7 +2404,7 @@ The owner reads the sailor's answers.
 <br><br>
 
 The owner reads the sailor's answers.
-<<if random(1, 2) is 2>><<set $dockquizaway += 1>>
+<<if random(1, 2) is 2>><<set $docks.pub.quiz.away += 1>>
 	"That's a point to the sailors." A cheer erupts from their table.
 <<else>>
 	"Sorry guys. No points." They groan.
@@ -1811,11 +2415,11 @@ The owner reads the sailor's answers.
 <br>
 
 :: Docks Pub Crawl English
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase2 is 0>>
 	<<if random(1, 2) is 2>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You let your colleagues answer the questions. They write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1830,7 +2434,7 @@ The owner reads the sailor's answers.
 	<</if>>
 <<elseif $phase2 is 1>>
 	<<if $englishSuccess>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You write down the answers, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1853,7 +2457,7 @@ The owner reads the sailor's answers.
 
 The owner reads the sailor's answers.
 <<if random(1, 2) is 2>>
-	<<set $dockquizaway += 1>>
+	<<set $docks.pub.quiz.away += 1>>
 	"That's a point to the sailors." A cheer erupts from their table.
 <<else>>
 	"Sorry guys. No points." They groan.
@@ -1864,11 +2468,11 @@ The owner reads the sailor's answers.
 <br>
 
 :: Docks Pub Crawl History
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase2 is 0>>
 	<<if random(1, 2) is 2>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You let your colleagues answer the questions. They write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1883,7 +2487,7 @@ The owner reads the sailor's answers.
 	<</if>>
 <<elseif $phase2 is 1>>
 	<<if currentSkillValue('history') gte random(1, 1000)>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You write down the answers, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1905,7 +2509,7 @@ The owner reads the sailor's answers.
 <br><br>
 
 The owner reads the sailor's answers.
-<<if random(1, 2) is 2>><<set $dockquizaway += 1>>
+<<if random(1, 2) is 2>><<set $docks.pub.quiz.away += 1>>
 	"That's a point to the sailors." A cheer erupts from their table.
 <<else>>
 	"Sorry guys. No points." They groan.
@@ -1916,11 +2520,11 @@ The owner reads the sailor's answers.
 <br>
 
 :: Docks Pub Crawl Love
-<<set $outside to 0>><<set $location to "pub">><<dockeffects>><<effects>>
+<<effects>>
 
 <<if $phase2 is 0>>
 	<<if random(1, 2) is 2>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You let your colleagues answer the questions. They argue a bit, but write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1931,12 +2535,12 @@ The owner reads the sailor's answers.
 		You let your colleagues answer the questions. They write them down, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
 
-		The owner reads your paper. "The dockers score zero." You grumble with your colleagues. The sailors laugh. <<if $dockquiz is "body">>"Guess it's up to us to teach you the ropes," the <<person>> teases.<<else>>"Don't worry," the <<person>> teases. "We didn't expect better."<</if>>
+		The owner reads your paper. "The dockers score zero." You grumble with your colleagues. The sailors laugh. <<if $docks.pub.quiz.bet is "body">>"Guess it's up to us to teach you the ropes," the <<person>> teases.<<else>>"Don't worry," the <<person>> teases. "We didn't expect better."<</if>>
 	<</if>>
 <<elseif $phase2 is 1>>
 	<<wearProp "pencil">>
 	<<if $promiscuity gte random(1, 100)>>
-		<<set $dockquizhome += 1>>
+		<<set $docks.pub.quiz.home += 1>>
 
 		You write down the answers, fold the paper and hand it to the pub owner. The sailors do likewise.
 		<br><br>
@@ -1947,7 +2551,7 @@ The owner reads the sailor's answers.
 		<<if $promiscuity lte 30>>You're not confident, but you write down the answers, fold the paper and hand it to the pub owner.<<else>>You write down the answers, fold the paper and hand it to the pub owner.<</if>> The sailors do likewise.
 		<br><br>
 
-		The owner reads your paper. "The dockers score zero." You grumble with your colleagues. The sailors laugh. <<if $dockquiz is "body">>"Guess it's up to us to teach you the ropes," the <<person>> teases.<<else>>"Don't worry," the <<person>> teases. "We didn't expect better."<</if>>
+		The owner reads your paper. "The dockers score zero." You grumble with your colleagues. The sailors laugh. <<if $docks.pub.quiz.bet is "body">>"Guess it's up to us to teach you the ropes," the <<person>> teases.<<else>>"Don't worry," the <<person>> teases. "We didn't expect better."<</if>>
 	<</if>>
 <<else>>
 	You convince your colleagues that you know your stuff, and write down nonsense answers. You fold the paper and hand it to the pub owner.
@@ -1958,7 +2562,7 @@ The owner reads the sailor's answers.
 <br><br>
 
 The owner reads the sailor's answers.
-<<if random(1, 2) is 2>><<set $dockquizaway += 1>>
+<<if random(1, 2) is 2>><<set $docks.pub.quiz.away += 1>>
 	"That's a point to the sailors." A cheer erupts from their table. "You learn a thing or two sailing between ports," the <<person>> says.
 <<else>>
 	"Sorry guys. No points." They boo. "You lot don't know nothing," the <<person>> says.
@@ -1969,7 +2573,8 @@ The owner reads the sailor's answers.
 <br>
 
 :: Docks Fake ID
-<<effects>><<generate1>><<person1>>
+<<effects>>
+<<generate1>><<person1>>
 
 You flag down a manager.
 <br><br>
@@ -1989,4 +2594,4 @@ The two of you hear a loud bang from across the docks. "Woah, careful over there
 <<He>> doesn't look back, apparently done with you.
 <br><br>
 
-<<link [[Next|Docks]]>><<endevent>><<pass 2>><<set $idDocksReveal to 2>><</link>>
+<<link [[Next|Docks]]>><<endevent>><<pass 2>><<set $docks.fakeID to "shown">><</link>>

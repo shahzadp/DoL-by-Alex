@@ -6690,4 +6690,69 @@
 	<<if $passage isnot "Gwylan Ritual Bait Sex Plant" and $genitalReactionDisable>>
 		<<unset $genitalReactionDisable>>
 	<</if>>
+
+	<!-- 0.5.8.0 -->
+
+	/* docks variable cleanup */
+	<<if !$docks>>
+		<<set $docks to {
+			askedForWork: $dockwork ? true : false,
+			hired: $dockwork and $dockwork is 2 ? true : false,
+			wage: $dockwage ? ($dockwage + 500) : 1500,
+			status: $dockstatus || 30,
+			firstDay: $timeStats.docks and $timeStats.docks.total ? false : true,
+			dayType: "normal",
+			suspicion: 0,
+			fakeID: $idDocksReveal and $idDocksReveal is 2 ? "shown" : $idDocksReveal ? "idea" : "not considered",
+			dailyHours: {
+				shift: {
+					total: 0,
+					workedHard: 0,
+					slacked: 0,
+					unpaid: 0,
+				},
+				overtime: {
+					total: 0,
+					workedHard: 0,
+					slacked: 0,
+					unpaid: 0,
+				}
+			},
+			slave: {
+				seen: $dockslave ? true : false,
+				money: $dockslavemoney || 0,
+			},
+			pub: {
+				count: $dockpubcount || 0,
+				cooldown: 0,
+			}
+		}>>
+
+		<<if $dockquiz>>
+			<<if $dockquiz is "none">>
+				<<set $docks.pub.quiz.bet to "nothing">>
+			<<else>>
+				<<set $docks.pub.quiz.bet to $dockquiz>>
+			<</if>>
+		<</if>>
+		<<if $dockquizhome>>
+			<<set $docks.pub.quiz.home to $dockquizhome>>
+		<</if>>
+		<<if $dockquizaway>>
+			<<set $docks.pub.quiz.away to $dockquizaway>>
+		<</if>>
+
+		/* Increase docks status to new baseline for players who started docks content, but didn't progress in it */
+		<<if $docks.wage is 1500 and $docks.status lt 30>>
+			<<set $docks.status to 30>>
+		<</if>>
+
+		<<run ["dockwork", "dockwage", "dockstatus", "idDocksReveal", "dockslave", "dockslavemoney", "dockpubcount", "dockquiz", "dockquizhome", "dockquizaway"].forEach(v => delete V[v]);>>
+
+		<<if $daily>>
+			<<set $daily.docksLeftEarly to false>>
+			<<set $daily.docksExhibitionism to $daily.dockExhibitionism ? true : false>>
+		<</if>>
+
+	<</if>>
 <</widget>>
