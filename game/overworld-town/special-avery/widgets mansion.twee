@@ -71,10 +71,13 @@
 	<</if>>
 	<<set _avery_mansion_chase_test to false>>
 	<<if $avery_mansion.chase and _avery_mansion_chase_test>>
+		Avery chase game state: <<print $avery_mansion.chase.state>><br>
 		Avery chase victory: <<print $avery_mansion.chase.victory>><br>
 		Avery chase health: <<print $avery_mansion.chase.health>><br>
 		Avery chase bus: <<print $avery_mansion.chase.bus>><br>
+		Avery chase bus_prev: <<print $avery_mansion.chase.bus_prev>><br>
 		Avery chase avery_bus: <<print $avery_mansion.chase.avery_bus>><br>
+		Avery chase avery_bus_prev: <<print $avery_mansion.chase.avery_bus_prev>><br>
 		Avery chase sound: <<print $avery_mansion.chase.sound>><br>
 		Avery chase player_sound: <<print $avery_mansion.chase.player_sound>><br>
 		Avery chase key: <<print $avery_mansion.chase.key>><br>
@@ -1802,6 +1805,7 @@
 	<<set $avery_mansion.chase.gear to []>>
 	<<set $avery_mansion.chase.trap to []>>
 	<<set $avery_mansion.chase.trap_done to []>>
+	<<set $avery_mansion.chase.state to "tutorial">>
 	<<rng 5>>
 	<<switch $rng>>
 		<<case 1>>
@@ -1974,7 +1978,6 @@
 <<set $avery_mansion.chase.bus_prev to $avery_mansion.chase.bus>>
 <<set $avery_mansion.chase.sound to "none">>
 <<if $avery_mansion.chase.trap.includes($avery_mansion.chase.avery_bus)>>
-	<<set $avery_mansion.chase.trap.delete($avery_mansion.chase.avery_bus)>>
 	<<set $avery_mansion.chase.sound to $avery_mansion.chase.avery_bus>>
 <</if>>
 <<if $avery_mansion.chase.sound is "garage" or $avery_mansion.chase.sound is "pool" or $avery_mansion.chase.sound is "hallway_2">>
@@ -1985,7 +1988,7 @@
 	$avery_mansion.chase.avery_bus is "study" or
 	$avery_mansion.chase.avery_bus is "hallway_2_w" or
 	$avery_mansion.chase.avery_bus is "hallway_2_e" or
-	$avery_mansion.chase.avery_bus is "hallway_2" or
+	$avery_mansion.chase.avery_bus is "hallway_1" or
 	$avery_mansion.chase.avery_bus is "hallway_3">>
 		<<set $avery_mansion.chase.avery_bus to "hallway_2">>
 	<<else>>
@@ -2232,11 +2235,9 @@
 	<<elseif _args[0] is "pool" and $avery_mansion.chase.trap.includes("pool")>>
 		Avery cries out. It's soon followed by a loud splash. <<He>> slipped on your oil, and fell into the pool.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
 		<<set $avery_mansion.chase.trap.delete("pool")>>
-	<<elseif _args[0] is "hallway_2">>
-		<<if $avery_mansion.chase.trap.includes("hallway_2")>>
-			Avery shouts in surprise. It's followed by a succession of thuds as <<he>> tumbles down the main stair. Your marbles did the trick.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
-			<<set $avery_mansion.chase.trap.delete("hallway_2")>>
-		<</if>>
+	<<elseif _args[0] is "hallway_2" and $avery_mansion.chase.trap.includes("hallway_2")>>
+		Avery shouts in surprise. It's followed by a succession of thuds as <<he>> tumbles down the main stair. Your marbles did the trick.<<gfrustration>><<set $avery_mansion.chase.health -= 1>>
+		<<set $avery_mansion.chase.trap.delete("hallway_2")>>
 	<<elseif _args[0] is "main_stair">>
 		You hear the main staircase creak under Avery's feet.
 	<<elseif _args[0] is "study_stair">>
@@ -2358,6 +2359,7 @@
 <</widget>>
 
 <<widget "avery_mansion_chase_run">> /* Moves PC to adjacent room */
+	<<set delete $avery_mansion.chase.avery_bus_prev>><<set delete $avery_mansion.chase.bus_prev>>
 	<<switch $avery_mansion.chase.bus>>
 		<<case "lounge">>
 			<<icon "avery_hallway.png">><<link [[Next|Mansion Chase Hallway 1 W]]>><</link>>
@@ -2418,12 +2420,41 @@
 	<</switch>>
 <</widget>>
 
-<<widget "avery_mansion_chase_tips">>
-	<i>Avery will hunt you through the mansion. <<He>> will move to an adjacent room each time you take an action.
-	<br>
-	You'll hear <<him>> if <<hes>> in an adjacent room, but <<he>>'ll also hear you! Hiding will probably save you, but better not to risk it in the first place.
-	<br>
-	Don't let <<him>> catch you. Find a way to escape, or a way to turn things in your favour.</i>
+<<widget "avery_mansion_chase_state">>
+	<<if $avery_mansion.chase.state is "tutorial">>
+		<br><br>
+		<i>Avery will hunt you through the mansion. <<He>> will move to an adjacent room each time you take an action.
+		<br>
+		You'll hear <<him>> if <<hes>> in an adjacent room, but <<he>>'ll also hear you! Hiding will probably save you, but better not to risk it in the first place.
+		<br>
+		Don't let <<him>> catch you. Find a way to escape, or a way to turn things in your favour.</i>
+		<br><br>
+	<</if>>
+
+	<<set $_caught to $avery_mansion.chase.avery_bus is $avery_mansion.chase.bus>>
+	<<set $_collided to $avery_mansion.chase.avery_bus is $avery_mansion.chase.bus_prev and $avery_mansion.chase.avery_bus_prev is $avery_mansion.chase.bus>>
+	
+	<<if $avery_mansion.chase.health lte 0>>
+		<<set $avery_mansion.chase.state to "victory">>
+	<<elseif $_caught or $_collided>>
+		<<if $_collided>>
+			<span class="red">You stumble into Avery. Before you can react, <<he>> shoves you to the <<= $outside ? `ground` : `floor`>>. You are backed into a <<= $outside ? `wall` : `corner`>> as <<he>> descends on you.</span><<stress 8>><<pain 10>><<gstress>><<ggpain>>
+			<<set $avery_mansion.chase.avery_bus to $avery_mansion.chase.bus>>
+		<<else>>
+			<span class="red">Avery bursts through the door, and fixes you with <<his>> glare.</span>
+			<<He>> rolls up <<his>> sleeves as <<he>> approaches.
+		<</if>>
+		<br><br>
+
+		<<if $avery_mansion.chase.trap.includes($avery_mansion.chase.bus)>>
+			<<set $avery_mansion.chase.state to "trap">>
+			<<set $avery_mansion.chase.trap.delete($avery_mansion.chase.bus)>>
+		<<else>>
+			<<set $avery_mansion.chase.state to "caught">>
+		<</if>>
+	<<else>>
+		<<set $avery_mansion.chase.state to "chase">>
+	<</if>>
 <</widget>>
 
 <<widget "avery_mansion_chase_caught">>
