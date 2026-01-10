@@ -153,9 +153,8 @@ function DefineMacroS(macroName, macroFunction, tags, skipArgs, maintainContext)
 
 function pluralise(count, singular, plural) {
 	count = Wikifier.getValue(count);
-	if (plural === undefined) {
-		plural = singular + "s";
-	}
+	plural ??= singular + "s";
+
 	return count === 1 ? singular : plural;
 }
 window.pluralise = pluralise;

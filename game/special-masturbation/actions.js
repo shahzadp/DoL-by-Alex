@@ -352,7 +352,7 @@ function masturbationActionsHands(arm, { playerToys, selectedToy, toyDisplay, ge
 			result.options.push(stop("mvaginastop"));
 			break;
 		case "mvagina":
-			result.text = `You have <<number $fingersInVagina>> ${V.fingersInVagina === 1 ? "finger" : "fingers"} in your <<pussy>>.${
+			result.text = `You have <<number $fingersInVagina>> <<pluralise $fingersInVagina "finger">> in your <<pussy>>.${
 				V.fingersInVagina === V.vaginaFingerLimit ? " You cannot fit any more." : ""
 			}`;
 			if (V.fingersInVagina < V.vaginaFingerLimit - 1 && V.fingersInVagina < 4 && currentSkillValue("vaginalskill") >= 300) {

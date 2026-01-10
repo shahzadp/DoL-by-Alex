@@ -1958,7 +1958,7 @@ async function featsMergePre() {
 		} else if ((T.saveDataImportCount >= 10 && Browser.isMobile.any()) || T.saveDataImportCount >= 25) {
 			$("#featsBeginText").html(`${T.saveDataImportCount} saves detected, this might take some time on a slower device.`);
 		} else {
-			$("#featsBeginText").html(`Only ${T.saveDataImportCount} saves detected, this shouldn't take too long.`);
+			$("#featsBeginText").html(`Only ${T.saveDataImportCount} ${pluralise(T.saveDataImportCount, "save")} detected, this shouldn't take too long.`);
 		}
 		$("#featsBeginLoadingText").addClass("hidden");
 		$("#featsBeginButton").removeClass("hidden");
