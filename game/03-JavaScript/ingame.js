@@ -2331,8 +2331,8 @@ function dailyConvert() {
 		if (V.sewersfeeding === 1) V.daily.morgan.feeding = 1;
 		if (V.sewersDaily) V.sewersDaily.forEach(n => (V.daily.morgan[n] = 1));
 		/* `$compoundstate != undefined` is no longer used as an indicator of the access to compound,
-		as it migrated to $daily.compoundState. $compound.card === 2 is used for that instead. */
-		if (V.compoundstate !== undefined) V.compoundcard = 2;
+		as it migrated to $daily.compoundState. $compound.discovered is used for that instead. */
+		if (V.compoundstate !== undefined) V.compound.discovered = true;
 		V.daily.pharm.impatient = V.left_before_nurse_returned;
 
 		/* unset old vars */

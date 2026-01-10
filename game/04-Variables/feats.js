@@ -2368,7 +2368,7 @@ function earnHourlyFeats() {
 	if (V.feats.allSaves.points >= Math.floor(currentMax * 0.95)) earnFeat("My Timeless Collection of Feats");
 
 	// Bugged in saves that used the "Show them the stolen card" link in many older versions
-	if (V.compound.card === 2) earnFeat("Illicit Science");
+	if (V.compound.discovered) earnFeat("Illicit Science");
 
 	return fragment;
 }

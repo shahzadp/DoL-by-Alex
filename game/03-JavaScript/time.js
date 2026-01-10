@@ -1463,7 +1463,7 @@ function dailyNPCEffects() {
 			}
 		}
 		V.wraith.days++;
-		if (V.wraith.days >= 31 && V.wraithIntro && !V.wraithCompoundCooldown && !V.wraithCompoundEvent && V.compound.card === 2) {
+		if (V.wraith.days >= 31 && V.wraithIntro && !V.wraithCompoundCooldown && !V.wraithCompoundEvent && V.compound.discovered) {
 			if (!V.wraithCompoundChance) {
 				V.wraithCompoundChance = 0;
 				if (V.wraith.offspring === "sold") V.wraithCompoundChance += 10;
