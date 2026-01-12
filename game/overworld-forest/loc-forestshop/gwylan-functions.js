@@ -754,6 +754,7 @@ function canCollectSamples() {
 	// Check broadly if sample collection is possible
 	if (!V.gwylan?.request?.event) return false;
 	if (!V.gwylan.request.items?.some(item => item.category === "sample")) return false;
+	if (V.statFreeze) return false;
 	if (pcAreArmsBound("both")) {
 		return "bound";
 	}
