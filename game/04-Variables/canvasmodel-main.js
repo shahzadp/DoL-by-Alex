@@ -715,7 +715,13 @@ Renderer.CanvasModels.main = {
 			if (ears) options.hideHeadAcc = true;
 		}
 		if (options.worn.neck.setup.name === "familiar collar") {
-			if (!V.worn.neck.type.includes("leash") && !T.magicLeash) options.hideLeash = true;
+			if (T.magicLeash) {
+				// For debug purposes to determine leash escapes
+				V.magicLeashPassage = V.passage;
+				V.magicLeashPassagePrev = V.passagePrev;
+			} else if (!V.worn.neck.type.includes("leash")) {
+				options.hideLeash = true;
+			}
 		}
 
 		// Generate mask images
