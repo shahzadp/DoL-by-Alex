@@ -152,10 +152,39 @@ function DefineMacroS(macroName, macroFunction, tags, skipArgs, maintainContext)
  */
 
 function pluralise(count, singular, plural) {
+	const irregulars = Object.freeze({
+		child: "children",
+		baby: "babies",
+		person: "people",
+		man: "men",
+		woman: "women",
+		penis: "penises",
+		foot: "feet",
+		leaf: "leaves",
+		watch: "watches",
+		this: "these",
+		that: "those",
+		is: "are",
+		it: "them",
+	});
+	
 	count = Wikifier.getValue(count);
-	plural ??= singular + "s";
+	if (!Number.isFinite(count)) throw new TypeError(`Pluralise: invalid value for 'count': ${count}`);
+	
+	if (count === 1) return singular;
 
-	return count === 1 ? singular : plural;
+	if (plural == null) {
+		const key = singular.toLowerCase();
+		const irregularForm = Object.hasOwn(irregulars, key) ? irregulars[key] : undefined;
+
+		plural = irregularForm ?? singular + "s";
+
+		if (singular[0] === singular[0].toUpperCase()) {
+			plural = plural.toUpperFirst();
+		}
+	}
+
+	return plural;
 }
 window.pluralise = pluralise;
 DefineMacroS("pluralise", pluralise);
