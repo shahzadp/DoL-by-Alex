@@ -418,39 +418,23 @@ Weather.Temperature = (() => {
 				inside(value, tooltip) {
 					T.temperatureOverride = {
 						inside: (T.temperatureOverride?.inside ?? Weather.insideTemperature) + value,
-						insideTooltip: tooltip ? `<span class="orange">${tooltip}</span>` : "",
+						insideTooltip: tooltip ? `<span class="${value < 0 ? "teal" : "orange"}">${tooltip}</span>` : "",
 					};
 				},
-				outside(value, tooltip) {
+				outside(value, tooltip, modifyWeather = false) {
 					T.temperatureOverride = {
-						outside: (T.temperatureOverride?.outside ?? Weather.temperature) + value,
-						outsideTooltip: tooltip ? `<span class="orange">${tooltip}</span>` : "",
+						outsideTooltip: tooltip ? `<span class="${value < 0 ? "teal" : "orange"}">${tooltip}</span>` : "",
 					};
+					if (modifyWeather) {
+						T.temperatureOverride.outside = (T.temperatureOverride?.outside ?? Weather.temperature) + value;
+					} else {
+						T.temperatureOverride.outsideApparent = Weather.temperature + value;
+					}
 				},
 				water(value, tooltip) {
 					T.temperatureOverride = {
 						water: (T.temperatureOverride?.water ?? Weather.waterTemperature) + value,
-						waterTooltip: tooltip ? `<span class="orange">${tooltip}</span>` : "",
-					};
-				},
-			},
-			decrease: {
-				inside(value, tooltip) {
-					T.temperatureOverride = {
-						inside: (T.temperatureOverride?.inside ?? Weather.insideTemperature) - value,
-						insideTooltip: tooltip ? `<span class="teal">${tooltip}</span>` : "",
-					};
-				},
-				outside(value, tooltip) {
-					T.temperatureOverride = {
-						outside: (T.temperatureOverride?.outside ?? Weather.temperature) - value,
-						outsideTooltip: tooltip ? `<span class="teal">${tooltip}</span>` : "",
-					};
-				},
-				water(value, tooltip) {
-					T.temperatureOverride = {
-						water: (T.temperatureOverride?.water ?? Weather.waterTemperature) - value,
-						waterTooltip: tooltip ? `<span class="teal">${tooltip}</span>` : "",
+						waterTooltip: tooltip ? `<span class="${value < 0 ? "teal" : "orange"}">${tooltip}</span>` : "",
 					};
 				},
 			},
@@ -459,6 +443,12 @@ Weather.Temperature = (() => {
 			},
 			set outside(value) {
 				T.temperatureOverride = { outside: value };
+			},
+			get outsideApparent() {
+				return T.temperatureOverride?.outsideApparent;
+			},
+			set outsideApparent(value) {
+				T.temperatureOverride = { outsideApparent: value };
 			},
 			get inside() {
 				return T.temperatureOverride?.inside;
