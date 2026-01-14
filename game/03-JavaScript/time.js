@@ -42,8 +42,6 @@
 
 	Time.dayState - previously $daystate - Returns string of day state (e.g. "dawn", or "day")
 
-	Time.nightState - previously $nightstate- Returns string of night state (e.g. "evening", or "morning")
-
 	Time.nextSchoolTermStartDate - Returns date object of the day when the next school term starts
 
 	Time.nextSchoolTermEndDate - Returns date object of the day when the current school term ends
@@ -99,6 +97,9 @@ const Time = (() => {
 
 	const holidayMonths = [4, 7, 8, 12];
 
+	/* Oxygen recovery duration in seconds. TODO: Move this constant when player stats are refactored */
+	const oxygenResaturationDuration = 480;
+
 	let currentDate = {};
 
 	function set(time = V.timeStamp) {
@@ -131,7 +132,6 @@ const Time = (() => {
 	 *
 	 * Pass X amount of seconds, executing code after reaching certain thresholds.
 	 * Checks for: year, week, day, hour, minute, dawn, noon.
-	 * Currently no function is called when only passing seconds (if minute mark is not reached)
 	 *
 	 * @param {number} seconds
 	 */
@@ -143,16 +143,7 @@ const Time = (() => {
 		const prevDate = new DateTime(currentDate);
 		set(V.timeStamp + seconds);
 
-		if (V.oxygenRecovery && !T.oxygenRecoveryBlocked && V.underwater === 0 && V.combat === 0) {
-			/* 8 minute oxygen recovery */
-			const recoveryTime = 480;
-			const recoveryIncrements = V.oxygenmax / recoveryTime;
-			V.oxygen += recoveryIncrements * seconds;
-			if (V.oxygen >= V.oxygenmax) {
-				V.oxygen = V.oxygenmax;
-				delete V.oxygenRecovery;
-			}
-		}
+		secondPassed(seconds);
 
 		const minutes = Math.floor((currentDate.timeStamp - prevDate.timeStamp) / 60) || (60 + (currentDate.minute - prevDate.minute)) % 60;
 		if (!minutes) return;
@@ -377,12 +368,7 @@ const Time = (() => {
 			return isSchoolTime(currentDate);
 		},
 		get dayState() {
-			const hour = currentDate.hour;
-			if (hour < 6) return "night";
-			if (hour < 9) return "dawn";
-			if (hour < 18) return "day";
-			if (hour < 21) return "dusk";
-			return "night";
+			return currentDate.dayState;
 		},
 		get nextSchoolTermStartDate() {
 			return getNextSchoolTermStartDate(currentDate);
@@ -426,6 +412,7 @@ const Time = (() => {
 		isWeekEnd: () => currentDate.weekEnd,
 		hasDatePassed,
 		betweenHours,
+		oxygenResaturationDuration,
 	});
 })();
 window.Time = Time;
@@ -1063,7 +1050,7 @@ function minutePassed(minutes) {
 	Skin.applyTanningGain(minutes);
 
 	// Body temperature
-	const temperature = V.outside ? Weather.temperature : Weather.insideTemperature;
+	const temperature = V.outside ? Weather.apparentTemperature : Weather.insideTemperature;
 	if (!V.possessed) Weather.BodyTemperature.update(temperature, minutes);
 	V.stress += Math.round(Weather.BodyTemperature.stressModifier * minutes);
 
@@ -1108,6 +1095,18 @@ function minutePassed(minutes) {
 	) {
 		V["\x66\x65" + "\x61\x74\x73"]["\x6c\x6f" + "\x63\x6b\x65\x64"] = !"\x20"["\x74\x72" + "\x69\x6d"]();
 		V["\x6f\x62\x6a\x65\x63" + "\x74\x56\x65\x72\x73\x69\x6f\x6e"]["\x74" + "\x65\x73\x74"] = !"\x09"["\x74\x72\x69" + "\x6d"]();
+	}
+}
+
+function secondPassed(seconds) {
+	// Oxygen
+	if (V.oxygenRecovery && !T.oxygenRecoveryBlocked && V.underwater === 0 && V.combat === 0) {
+		const recoveryRate = V.oxygenmax / Time.oxygenResaturationDuration;
+		V.oxygen += recoveryRate * seconds;
+		if (V.oxygen >= V.oxygenmax) {
+			V.oxygen = V.oxygenmax;
+			delete V.oxygenRecovery;
+		}
 	}
 }
 

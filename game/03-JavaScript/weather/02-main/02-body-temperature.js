@@ -101,7 +101,7 @@ Weather.BodyTemperature = (() => {
 	}
 
 	function getRestingPoint(iterations = 6, warmth = undefined, bodyTemperature, outside) {
-		let ambientTemperature = outside || V.outside ? Weather.temperature : Weather.insideTemperature;
+		let ambientTemperature = outside || V.outside ? Weather.apparentTemperature : Weather.insideTemperature;
 
 		if (T.inWater) {
 			ambientTemperature = Weather.waterTemperature;

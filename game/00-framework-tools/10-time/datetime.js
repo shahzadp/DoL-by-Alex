@@ -177,13 +177,7 @@ class DateTime {
 	 * @returns {number} The number of days between the two objects
 	 */
 	dayDifference(otherDateTime) {
-		const startOfDay = this.timeStamp - this.hour * TimeConstants.secondsPerHour - this.minute * TimeConstants.secondsPerMinute - this.second;
-		const startOfOtherDay =
-			otherDateTime.timeStamp -
-			otherDateTime.hour * TimeConstants.secondsPerHour -
-			otherDateTime.minute * TimeConstants.secondsPerMinute -
-			otherDateTime.second;
-		return (startOfOtherDay - startOfDay) / TimeConstants.secondsPerDay;
+		return (otherDateTime.midnight.timeStamp - this.midnight.timeStamp) / TimeConstants.secondsPerDay;
 	}
 
 	/**
@@ -348,6 +342,35 @@ class DateTime {
 		}
 
 		return this.timeStamp >= startDate.timeStamp && this.timeStamp <= endDate.timeStamp;
+	}
+
+	/**
+	 * Returns midnight, or the start of the current day.
+	 * 
+	 * @returns {DateTime} The new DateTime of the current day set at 00:00:00
+	 */
+	get midnight() {
+		const midnight = new DateTime(this);
+		// Avoids running toTimestamp()
+		midnight.timeStamp -= this.hour * TimeConstants.secondsPerHour + this.minute * TimeConstants.secondsPerMinute + this.second;
+		midnight.hour = 0;
+		midnight.minute = 0;
+		midnight.second = 0;
+		return midnight;
+	}
+
+	/**
+	 * Returns the simplified phase of the day of the current object's date
+	 *
+	 * @returns {string} The day state (e.g. "dawn", or "night")
+	 */
+	get dayState() {
+		const hour = this.hour;
+		if (hour < 6) return "night";
+		if (hour < 9) return "dawn";
+		if (hour < 18) return "day";
+		if (hour < 21) return "dusk";
+		return "night";
 	}
 
 	/**
