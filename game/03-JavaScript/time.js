@@ -558,6 +558,9 @@ function weekPassed() {
 
 	statChange.worldCorruption("soft", V.world_corruption_hard);
 
+	V.stray_happiness -= Math.floor(V.world_corruption_soft / 10);
+	V.stray_happiness = Math.clamp(V.stray_happiness, 0, 100);
+
 	V.weekly.clearProperties();
 }
 
@@ -711,7 +714,6 @@ function dayPassed() {
 	}
 	if (V.pound) {
 		V.pound.compete = 0;
-		wikifier("stray_happiness", -1);
 		V.pound.tasks = [];
 	}
 
