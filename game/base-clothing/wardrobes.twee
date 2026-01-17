@@ -219,12 +219,9 @@
 				<<set $_secondaryItem to _selectedWardrobe[$_outfitSlot][$_outfitId]>>
 				<<set $_secondaryItem.outfitSecondary[1] to "split">>
 				<<set $_secondaryItem.one_piece to "split">>
-				<<if _item.accessory_colour and !$_secondaryItem.accessory_colour>>
-					<<set $_secondaryItem.accessory_colour to _item.accessory_colour>>
-					<<if _item.accessory_colourCustom>>
-						<<set $_secondaryItem.accessory_colourCustom to _item.accessory_colourCustom>>
-					<</if>>
-				<</if>>
+
+				/* Inherit primary's accessory_colour/pattern for repairs (i.e. overall buttons or hanfu sash) */
+				<<inheritOutfitAttributes $_secondaryItem _item>>
 				<<set _item.outfitPrimary[$_outfitSlot] to "split">>
 			<</for>>
 			<<set _item.one_piece to "split">>
@@ -2027,22 +2024,32 @@ It will cost you
 <<set _equip to setup.clothingLayer.all>>
 <<set _value to 0>>
 
-/* item stat keys to find matching clothing */
+/* item stat keys to find matching outfit clothing */
 <<set _itemStatsIdentifierKeys to [
 	"colour",
 	"colourCustom",
 	"accessory_colour",
 	"accessory_colourCustom",
 	"one_piece",
-	"pattern"
+	"pattern",
 ]>>
+
+/* some item stat keys are optional */
+<<set _itemStatsConditionalKeys to {
+	get accessory_colour() { return ((item) => !T.currentClothing.accessory_colour_sidebar || !item.accessory_colour_sidebar); },
+	get accessory_colourCustom() { return this.accessory_colour; },
+	get pattern() { return ((item) => !T.currentClothing.pattern_options?.length || !item.pattern_options?.length); },
+}>>
+
 /* Add a new key whenever the clothing object is updated */
-<<set _itemStatsConditionalKeys to [
+<<set _itemStatsKeys to [
 	...T.itemStatsIdentifierKeys,
 	"hoodposition",
 	"altposition",
-	"altsleeve"
+	"altsleeve",
+	"inherited_attributes",
 ]>>
+
 <<for _eIndex to 0; _eIndex lt _equip.length; _eIndex++>>
 	<<set _toDelete to []>>
 	<<for _iIndex to 0; _iIndex lt $wardrobe[_equip[_eIndex]].length; _iIndex++>>
@@ -2070,7 +2077,7 @@ It will cost you
 			<<set _itemDeleteSlots to new Set([_upperOutfit.slot, ...Object.keys(_upperOutfit.outfitPrimary)])>>
 			<<set _itemDeleteSlots.delete(_ignoreSlot)>>
 
-			/* Searches wardrobe to mark one outfit piece each for deletion before duplicating */
+			/* Searches wardrobe to mark matching outfit pieces for deletion before duplicating */
 			<<set _itemDeleteCandidates to Object.fromEntries(Object.entries($wardrobe)
 				.filter(([slot, items]) => T.itemDeleteSlots.has(slot))
 				.map(([slot, items]) => {
@@ -2081,8 +2088,7 @@ It will cost you
 						.filter(([, item]) =>
 							T.itemStatsIdentifierKeys.every((key) => {
 								/* Some outfit secondaries (hanfu, overalls) do not store accessory_colour */
-								if ((!T.currentClothing.accessory_colour_sidebar || !item.accessory_colour_sidebar)
-									&& key.includes("accessory_colour")) {
+								if (T.itemStatsConditionalKeys[key] && T.itemStatsConditionalKeys[key](item)) {
 									return true;
 								}
 								return T.currentClothing[key] === item[key];
@@ -2154,11 +2160,11 @@ It will cost you
 			index: _currentClothing.index
 		}>>
 		/* Conditionally stores values in _itemStats if they are not 0 or undefined */
-		<<run _itemStatsConditionalKeys.forEach((key) => {
+		<<run _itemStatsKeys.forEach((key) => {
 			if (!T.currentClothing[key]) return;
 			switch (key) {
-				case "one_piece":
-					if (T.currentClothing[key] != "split") return;
+				case "one_piece": case "inherited_attributes":
+					if (T.currentClothing.one_piece != "split") return;
 					break;
 				case "altposition": case "altsleeve":
 					if (T.currentClothing[key] === "none") return;
@@ -2172,6 +2178,10 @@ It will cost you
 
 		<<set _isBroken to (_currentClothing.one_piece === "broken")>>
 		<<if _currentClothing.outfitSecondary and _isBroken>>
+			/* Copy over lost primary attributes that outfit secondary inherited */
+			<<if _currentClothing.inherited_attributes>>
+				<<run Object.entries(T.currentClothing.inherited_attributes).forEach(([key, value]) => T.itemStats[key] = value)>>
+			<</if>>
 			/* If a secondary part of an outfit is broken adds the primary part so the complete outfit will be repaired */
 			<<set _upperSlot to _currentClothing.outfitSecondary[0]>>
 			<<set _upperIndex to clothesIndex(_upperSlot, _currentClothing)>>
