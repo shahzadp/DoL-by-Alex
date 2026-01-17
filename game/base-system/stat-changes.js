@@ -17,21 +17,21 @@ const statChange = (() => {
 	}
 
 	function trauma(amount) {
-		if (isNaN(amount)) paramError("trauma", "amount", amount, "Expected a number.");
+		if (isNaN(amount)) return paramError("trauma", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
+			let traumaMod = 1;
 			if (amount >= 0) {
-				let traumaMod = 1;
-
 				if (V.rapetrait) traumaMod *= 0.7;
 				if (V.bestialitytrait >= 1 && V.enemytype === "beast") traumaMod *= 0.7;
 				if (V.tentacletrait >= 1 && V.enemytype === "tentacles") traumaMod *= 0.7;
-
-				// eslint-disable-next-line prettier/prettier
-				V.trauma += Math.trunc(((amount * 3) - ((amount * 1.5) * (V.control / V.controlmax))) * traumaMod)
+				// increase trauma by 3x amount at 0 control, 1.5x at full, then go trait reductions
+				V.trauma += Math.trunc(amount * (3 - 1.5 * (V.control / V.controlmax)) * traumaMod);
 			} else {
-				// eslint-disable-next-line prettier/prettier
-				V.trauma += Math.trunc((amount * 3) + ((amount * 1.5) * (V.control / V.controlmax)));
+				// good doctors know how to help you
+				if (["asylum", "hospital"].includes(V.location)) traumamod *= 2;
+				// decrease trauma by 1.5x amount with no control, 3x with full control
+				V.trauma += Math.trunc(amount * (1.5 + 1.5 * (V.control / V.controlmax)) * traumaMod);
 			}
 		}
 
@@ -137,17 +137,20 @@ const statChange = (() => {
 	function control(amount, combat) {
 		if (isNaN(amount)) paramError("control", "amount", amount, "Expected a number.");
 		if (V.gamemode === "soft") {
+			// everything is a consensual consensual roleplay
 			V.control = V.controlmax;
 			V.controlled = 1;
 			return;
 		}
 		amount = Number(amount);
-		if (amount) {
-			V.control += amount * 10;
-			if (combat && V.control >= V.controlstart) V.control = V.controlstart;
-			else if (V.controlstart < V.control) V.controlstart = Math.min(V.control, V.controlmax);
-			V.controlled = V.control >= (V.controlmax / 5) * 2 ? 1 : 0;
-		}
+
+		// halve control gains outside of combat
+		if (amount > 0 && !combat) amount /= 2;
+		V.control += amount * 10;
+		// if you're looking here to fix a bug where an action that should increase control in combat actually lowers it instead - check State.history/State.expired for the combat start passage and look for a missing <<controlloss>> that failed to set $controlstart to the right value
+		if (combat && V.control >= V.controlstart) V.control = V.controlstart;
+		else if (!combat) V.controlstart = Math.min(V.control, V.controlmax);
+		V.controlled = V.control > V.controlmax / 2 ? 1 : 0;
 		V.control = Math.clamp(V.control, 0, V.controlmax);
 	}
 	DefineMacro("control", amount => control(amount));

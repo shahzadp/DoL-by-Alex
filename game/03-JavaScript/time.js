@@ -1078,7 +1078,7 @@ function minutePassed(minutes) {
 	if (V.drugged > 0) statChange.drugs(-minutes);
 	// prevent fatigue from being an issue when passing days (actually 20+ hours) at a time
 	if (minutes < 1200) statChange.tiredness(minutes / 15);
-	statChange.pain(minutes, -1);
+	statChange.pain(minutes, -0.5);
 
 	// Arousal
 	const arousalMultiplier = V.backgroundTraits.includes("lustful") ? 0.2 * (12 - Math.floor(V.purity / 80)) + 1 + (V.purity <= 50 ? 1 : 0) : -10;
@@ -1562,8 +1562,7 @@ function dailyPlayerEffects() {
 	V.hairlength += 3;
 	V.fringelength += 3;
 	calchairlengthstage();
-	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 100);
-	V.beauty = Math.clamp(V.beauty, 0, V.beautymax);
+	statChange.skill("beauty", 70 - (V.trauma / V.traumamax) * 100);
 	lustfulUpdate();
 
 	if (V.orgasmstat >= 1000 && V.orgasmtrait === 0) {
