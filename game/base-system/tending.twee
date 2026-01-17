@@ -98,6 +98,12 @@
 	Tilling time is reduced by tending skill.
 	<br><br>
 
+	<<if _location is "garden" and C.npc.Robin.autoWater and C.npc.Robin.trauma < 50 and ["orphanage", "garden", "bath"].includes(getRobinLocation()) and Time.hour is 16 and between(Time.minute, 30, 59) and orphanagePlotsPlanted() and !orphanagePlotsWatered() and Weather.precipitation !== "rain" and (Weather.precipitation !== "snow" or V.alex_greenhouse >= 3)>>
+		<span class="green">Robin is busy watering the garden for you.</span>
+		<br>
+		<<exit>>
+	<</if>>
+
 	<<set $_i to 0>>
 
 	<<for _plantbed range $_plotsHere>>
@@ -399,8 +405,35 @@
 		<br>
 	<</if>>
 	<<if Weather.precipitation is "rain">>
-		<span class="green">The rain soaks the ground.</span>
+		<<if $location is "home" and $alex_greenhouse gte 3>>
+			<span class="green">A rainwater harvester soaks the ground inside the greenhouse.</span>
+		<<else>>
+			<span class="green">The rain soaks the ground.</span>
+		<</if>>
 		<br>
+	<<elseif $location is "home" and C.npc.Robin.autoWater and orphanagePlotsPlanted() and Time.hour gte 17 and ["orphanage", "garden", "bath", "sleep"].includes(getRobinLocation())>>
+		<<if C.npc.Robin.trauma gte 50 and !orphanagePlotsWatered()>>
+			<span class="red">Robin is too traumatized to water the garden for you.</span>
+			<<set C.npc.Robin.autoWater to false>>
+			<br>
+		<<elseif Weather.precipitation is "snow">>
+			<<if $alex_greenhouse gte 3 and $daily.robin.watered>>
+				<<if $daily.robin.watered is "together">>
+					<span class="green">You watered the garden with Robin.</span>
+				<<else>>
+					<span class="green">Robin watered the garden for you.</span>
+				<</if>>
+			<<elseif !orphanagePlotsWatered()>>
+				<span class="blue">Robin won't water the garden while it's snowing.</span>
+			<</if>>
+			<br>
+		<<elseif $daily.robin.watered is "together">>
+			<span class="green">You watered the garden with Robin.</span>
+			<br>
+		<<elseif $daily.robin.watered is "alone">>
+			<span class="green">Robin watered the garden for you.</span>
+			<br>
+		<</if>>
 	<</if>>
 	<<run unsetTendingVars()>>
 <</widget>>
