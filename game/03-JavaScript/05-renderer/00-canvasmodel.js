@@ -241,7 +241,7 @@ class CanvasModel {
 			this.preprocess(options);
 		} catch (e) {
 			console.error(e);
-			throw new Error("Error in model preprocessing: " + e.stack);
+			throw new Error("Error in model preprocessing: " + e.stack.slice(0, e.stack.indexOf(Browser.isGecko ? "@" : "(eval")));
 		}
 		for (const layer of this.layerList) {
 			// Reset some options

@@ -3681,11 +3681,16 @@
 			<<elseif $enemytype is "beast">>
 				You tell <<him>> you're sorry for being bad.
 				<<set $mouthactiondefault to "plead">>
-				<<if $NPCList[$mouthtarget] is _unforgiver>>
+				<<if $NPCList[$mouthtarget] is _unforgiver and $apologised is 0>>
+					<!-- apology to an unforgiving character, instead add 25 anger at no english, remove maximum of 50 at excellent english -->
 					<<bHe>> ignores you.
 					<<set $apologised to 1>><<set $speechapologiseunforgiving to 1>>
-					<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -2, $enemyangermax / 2)>>
-				<<elseif !!_unforgiver>>
+					<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -4, $enemyangermax / 2)>>
+				<<elseif $NPCList[$mouthtarget] is _unforgiver>>
+					<!-- repeated apology, now it's just more anger -->
+					<span class = red><<bHe>> only looks more annoyed.</span>
+					<<set $enemyanger += Math.clamp(100 - $englishtrait * 20, 0, $enemyangermax / 2)>>
+				<<elseif !!_unforgiver and $apologised is 0>>
 					<<bHe>> looks towards
 					<<= /^[A-Z]/.test(_unforgiver.fullDescription) ? "" : "the ">>
 					<<= _unforgiver.fullDescription>>,
@@ -3735,9 +3740,13 @@
 					<<set $mouthactiondefault to "plead">>
 					<<if $NPCList[$mouthtarget] is _unforgiver>>
 						<span class="red"><<He>> scoffs.</span>
-						<<set $apologised to 1>><<set $speechapologiseunforgiving to 1>>
-						<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -2, $enemyangermax / 2)>>
-					<<elseif !!_unforgiver>>
+						<<if $apologised is 0>>
+							<<set $enemyanger += Math.clamp(25 - $englishtrait * 20, $enemyangermax / -4, $enemyangermax / 2)>>
+							<<set $apologised to 1>><<set $speechapologiseunforgiving to 1>>
+						<<else>>
+							<<set $enemyanger += Math.clamp(100 - $englishtrait * 20, 0, $enemyangermax / 2)>>
+						<</if>>
+					<<elseif !!_unforgiver and $apologised is 0>>
 						<<He>> looks over at
 						<<= /^[A-Z]/.test(_unforgiver.fullDescription) ? "" : "the ">>
 						<<= _unforgiver.fullDescription>>,

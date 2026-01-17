@@ -352,7 +352,7 @@ Current usage is in the following function and required to be modified to add ne
 -   `DefineMacro("namedNpcPregnancy", namedNpcPregnancy);` - to specifically get a named npc pregnant. Will need to be updated when a new species is added.
 -   `DefineMacro("impregnateParasite", impregnateParasite);` - to impregnate the player with a parasite pregnancy.
 -   Within `<<widget "orgasm">>` - Runs specific code to get random npc's pregnant. Will need to be updated when a new species is added.
--   Within `<<widget "setupFeats">>` - Used to run `<<earnFeat "Diversity of Life">>`.
+-   Within `function earnHourlyFeats` - Used to run `earnFeat("Diversity of Life")`.
 
 ## pregnancy.js Usage
 

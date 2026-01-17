@@ -580,6 +580,7 @@ function wardrobesUpdate() {
 				NOTE: "DO NOT USE THIS OBJECT TO STORE CLOTHES",
 				unlocked: true,
 				shopSend: true,
+				transfer: true,
 				name: "Orphanage",
 			},
 			changingRoom: clone(defWardrobe),
@@ -598,7 +599,12 @@ function wardrobesUpdate() {
 		V.wardrobes.changingRoom.unlocked = true;
 		/* eden's */
 		V.wardrobes.edensCabin.name = "Eden's Cabin";
+		V.wardrobes.edensCabin.isolated = true;
 		V.wardrobes.edensCabin.space = 10;
+		// allow sending clothes to the cabin when pc can leave for a day
+		V.wardrobes.edensCabin.shopSend = V.edenfreedom >= 1;
+		// allow transferring clothes from the cabin when pc can leave for a week
+		V.wardrobes.edensCabin.transfer = V.edenfreedom >= 2;
 		if (V.syndromeeden) V.wardrobes.edensCabin.unlocked = true;
 		/* asylum */
 		V.wardrobes.asylum.locationRequirement.push("asylum");
@@ -732,6 +738,12 @@ function wardrobesUpdate() {
 		V.wardrobes.avery_mansion.locationRequirement.push("avery_mansion");
 	}
 	if (V.avery_mansion) V.wardrobes.avery_mansion.unlocked = true;
-	V.wardrobes.alexFarm.isolated = true;
+	if (V.objectVersion.wardrobes < 16) {
+		V.wardrobes.alexFarm.isolated = true;
+		V.wardrobes.edensCabin.isolated = true;
+		V.wardrobes.edensCabin.shopSend = V.edenfreedom >= 1;
+		V.wardrobes.edensCabin.transfer = V.edenfreedom >= 2;
+		V.wardrobes.wardrobe.transfer = true;
+	}
 }
 DefineMacro("wardrobesUpdate", wardrobesUpdate);

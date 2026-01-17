@@ -100,7 +100,7 @@ function incSavesCount(storyVars = V, type, date) {
 
 function onSave(save, details) {
 	// * update feats * //
-	Wikifier.wikifyEval("<<updateFeats>>");
+	updateFeats();
 
 	// Save the recently loaded version
 	save.state.loadedVersion = StartConfig.version;
@@ -153,8 +153,6 @@ importStyles("style.css")
 	});
 
 console.log("Game Version:", StartConfig.version);
-
-l10nStrings.errorTitle = StartConfig.version + " Error";
 
 // delete parser that adds unneeded line breaks -ng
 Wikifier.Parser.delete("lineBreak");
