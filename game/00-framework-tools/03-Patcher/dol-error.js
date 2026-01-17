@@ -73,7 +73,10 @@ function getDebuggingInfo() {
 }
 
 throwError = function (place, message, source, isExportable = true, isLogged = true) {
-	if (typeof message === "string") message = message.replace(/Export$/, "");
+	// add game version and active passage info at the start of the error box
+	const header = `${StartConfig.version} ${L10n.get("errorTitle")} (:: ${passage()}): `;
+	// nested reports are implemented with military-grade stupidity, but informative enough for the screenshots
+	if (typeof message === "string") message = message.replace(/Export(\)+?)?$/, "$1").replaceAll("Export;", ";").replaceAll(header, "");
 
 	const $wrapper = jQuery(document.createElement("div"));
 	const $toggle = jQuery(document.createElement("button"));
@@ -81,7 +84,7 @@ throwError = function (place, message, source, isExportable = true, isLogged = t
 	const $title = jQuery(document.createElement("span"));
 	const $code = jQuery(document.createElement("code"));
 	const $exportBtn = jQuery(document.createElement("button"));
-	const mesg = `${L10n.get("errorTitle")}: ${message || "unknown error"}`;
+	const mesg = header + (message || "unknown error");
 
 	$toggle
 		.addClass("error-toggle")
