@@ -476,8 +476,14 @@ function weekPassed() {
 		V.history_exam = Math.clamp(V.history_exam - 7, -107, 200);
 		wikifier("exam_difficulty");
 	}
-	if (V.robinpaid === 1) V.robinPayout = 0;
-	else {
+	if (V.robinpaid === 1) {
+		V.robinPayout = 0;
+		if (V.robinWeeksSinceProtector) {
+			V.robinWeeksSinceProtector++;
+		} else {
+			V.robinWeeksSinceProtector = 1;
+		}
+	} else {
 		V.robinmoney -= 400;
 		if (V.robinmoney <= 0 && V.robindebt >= 0) {
 			V.robinmoney = 0;
@@ -1027,6 +1033,17 @@ function hourPassed(hours) {
 		wikifier("clearNPC", "pubfame_receptionist");
 		V.pubfame.hospital = {};
 		if (V.per_npc.pubfame_nurse) wikifier("clearNPC", "pubfame_nurse");
+	}
+
+	// Robin autowatering
+	// Include "bath" as a location since bathing is from 17:00-17:29
+	if (Time.hour === 17 && C.npc.Robin.autoWater && C.npc.Robin.trauma < 50 && ["orphanage", "garden", "bath"].includes(getRobinLocation()) && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && orphanagePlotsPlanted() && !orphanagePlotsWatered()) {
+		Object.entries(V.plots).forEach(([location, plots]) => {
+			if (location === "garden") {
+				plots.forEach(plot => (plot.water = 1));
+			}
+		});
+		V.daily.robin.watered = "alone";
 	}
 }
 

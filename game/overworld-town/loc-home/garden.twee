@@ -136,6 +136,34 @@ You are in the garden behind the orphanage.
 		<<link [[Pounce on Robin|Robin Bird Visit]]>><<set $phase to 3>><</link>><<cat>>
 		<br>
 	<</if>>
+<<elseif C.npc.Robin.wateringIntro isnot 1 and $robinpaid gte 1 and Weather.precipitation isnot "rain" and (Weather.precipitation isnot "snow" or $alex_greenhouse gte 3) and getRobinLocation() is "orphanage" and C.npc.Robin.trauma lt 20 and orphanagePlotsPlanted() and !orphanagePlotsWatered() and $robinWeeksSinceProtector gte 2 and ($baileypaychain gte 1 or $baileydefeatedchain gte 1)>>
+	<<npc Robin>><<person1>>
+	<<set C.npc.Robin.wateringIntro to 1>>
+	You see someone watering the plants in <<= $alex_greenhouse gte 3 ? "the greenhouse" : "your garden">>. <span class="gold">It's Robin.</span>
+	<br><br>
+
+	<<for _plot range $plots["garden"]>>
+		<<set _plot.water to 1>>
+	<</for>>
+
+	"Oh, <<if Time.hour lte 11>>good morning<<else>>hello<</if>>!" <<he>> says. "I saw that your plot was dry." <<He>> gestures at the plants. "Now that you're paying Bailey for us, I figured that helping you with the garden is the least I could do."
+	<br><br>
+
+	Robin looks
+	<<if C.npc.Robin.dom gte 80>>
+		pleased with <<himself>>. "I just finished. How did I do?"
+	<<elseif C.npc.Robin.dom gte 20>>
+		at you for approval. "I know, I should have asked first. I wanted to make it a surprise, though."
+	<<else>>
+		sheepish. "I'm sorry, I should have asked first. I hope that's okay with you."
+	<</if>>
+	<br><br>
+
+	<<link [[Thank Robin|Robin Watering Thank]]>><<npcincr Robin love 1>><<npcincr Robin dom 1>><</link>><<glove "Robin">><<gdom "Robin">>
+	<br>
+	<<link [[Tell Robin that you can water your own plants|Robin Watering Berate]]>><<npcincr Robin dom -1>><<control 10>><</link>><<ldom "Robin">><<gcontrol>>
+	<br>
+
 <<elseif !$weekly.gardenVoyeur and Time.dayState is "night" and $rng gte 81>>
 
 	<<set $weekly.gardenVoyeur to true>>
@@ -424,7 +452,58 @@ You decide not to investigate the source of the noise; you have your own things 
 <</if>>
 
 <<set _robin to statusCheck("Robin")>>
-<<if $phase is 1>>
+<<if _robin_location is "garden" and _robin.trauma lt 50 and $daily.robin.tending isnot 1>>
+	<<set $daily.robin.tending to 1>><<set $phase to 2>>
+
+	<<set _time_to_pass to 60 - Time.minute>>
+	<<if _time_to_pass gte 10>>
+		<<set _time_to_display to "0:" + _time_to_pass>>
+	<<else>>
+		<<set _time_to_display to "0:0" + _time_to_pass>>
+	<</if>>
+
+	<<npc Robin>><<person1>>
+	Robin is watering your garden. <<He>> spots you and
+	<<if _robin.trauma gte 40>>
+		gives a weak smile. <<His>> eyes are red.
+		<br><br>
+
+		"Hey," <<he>> says.
+		<<if _time_to_pass lt 5>>
+			"I was just finishing up."
+		<<elseif Time.minute lt 25>>
+			"Can I help you with something?"
+		<<else>>
+			"I was just getting started."
+		<</if>>
+		<br><br>
+
+		<<link [[Hug (0:05)|Garden Robin Hug]]>><<pass 5>><<npcincr Robin love 1>><<npcincr Robin trauma -1>><<trauma -6>><</link>><<ltrauma>><<glove>><<lrtrauma>>
+		<br>
+		<<link [["Help Robin water (" + _time_to_display + ")"|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass _time_to_pass>><</link>><<ltrauma>><<lstress>><<glove>>
+		<br>
+		<<link [[Say you're just passing through|Garden Robin Finished]]>><</link>>
+		<br>
+	<<else>>
+		waves.
+		<br><br>
+
+		"Hey!" <<he>> says. "It's good to see you." <<He>> gestures at the soil with the watering can.
+		<<if _time_to_pass lt 5>>
+			"I was just finishing up."
+		<<elseif _time_to_pass lt 25>>
+			"Can I help you with something?"
+		<<else>>
+			"I was just getting started."
+		<</if>>
+		<br><br>
+
+		<<link [["Help Robin water (" + _time_to_display + ")"|Garden Robin Help]]>><<npcincr Robin love 1>><<trauma -6>><<stress -6>><<pass _time_to_pass>><</link>><<ltrauma>><<lstress>><<glove>>
+		<br>
+		<<link [[Say you're just passing through|Garden Robin Finished]]>><</link>>
+		<br>
+	<</if>>
+<<elseif $phase is 1>>
 	<<set $phase to 0>>
 	/* TODO: eventpool */
 	<<if $rng gte 61 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
@@ -443,8 +522,8 @@ You decide not to investigate the source of the noise; you have your own things 
 		<<link [[Next|Garden Flowers]]>><</link>>
 		<br>
 	<</if>>
-<<elseif $phase2 is "watered" and $rng lte (C.npc.Robin.love - 50) and _robin_location is "orphanage" and _robin.trauma lt 80 and $daily.robin.tending isnot 1>>
-	<<set $daily.robin.tending to 1>><<set $phase2 to 0>>
+<<elseif $phase2 is "watered" and $rng lte (C.npc.Robin.love - 50) and _robin_location is "orphanage" and _robin.trauma lt 80 and Weather.precipitation isnot "rain" and (Weather.precipitation isnot "snow" or $alex_greenhouse gte 3) and $daily.robin.tending isnot 1>>
+	<<set $daily.robin.tending to 1>><<set $phase to 1>><<set $phase2 to 0>>
 	<<npc Robin>><<person1>>
 	<<if _robin.trauma gte 40>>
 		You hear a gentle patter of footsteps disturbing the grass. It's Robin.
@@ -809,11 +888,17 @@ You squeeze <<his>> hips between your thighs for a moment and lean closer. "You'
 <<effects>>
 <<set _robin to statusCheck("Robin")>><<wearProp "watering can">>
 
-<<for _plot range $plots["garden"]>>
-	<<set _plot.water to 1>>
-<</for>>
+<<if $phase is 1>>
+	<<for _plot range $plots["garden"]>>
+		<<set _plot.water to 1>>
+	<</for>>
+	You hand Robin your watering can, and <<he>> gets to work while you find another.
+<<else>>
+	<<set $daily.robin.watered to "together">>
+	You grab a spare watering can and get to work helping Robin.
+<</if>>
 
-You hand Robin your watering can, and <<he>> gets to work while you find another. Together, you water the flowers around the garden.
+Together, you water the flowers around the garden.
 <<if _robin.trauma gte 40>>
 	Robin is quiet, but <<he>> seems happier as <<he>> works.
 <<else>>
@@ -856,7 +941,12 @@ Job well done, Robin sits on the grass and watches the flowers sway in the breez
 	<br><br>
 <</if>>
 
-A few minutes pass, until an argument breaks out inside the orphanage. Robin looks over. "I should investigate," <<he>> says, rising to <<his>> feet. "Thanks for letting me help."
+A few minutes pass, until an argument breaks out inside the orphanage. Robin looks over. "I should investigate," <<he>> says, rising to <<his>> feet.
+<<if $phase is 1>>
+	"Thanks for letting me help."
+<<else>>
+	"Thanks for helping me."
+<</if>>
 <br><br>
 
 <<link [[Next|Garden Flowers]]>><<endevent>><</link>>
@@ -888,7 +978,7 @@ You sit on the grass beside Robin and rummage among the wild flowers for suitabl
 	<br><br>
 <</if>>
 
-Soon, you both have flower crowns ready. <<if currentSkillValue('tending') lt 200>>Yours looks rougher than Robin's, but <<he>> doesn't seem to mind.<</if>> <<He>> reaches atop your head and places the crown <<he>> made upon it. You place yours atop <<his>> head in turn.
+Soon, you both have flower crowns ready. <<if currentSkillValue('tending') lt 200>>Yours looks rougher than Robin's, but <<he>> doesn't seem to mind. <</if>><<He>> reaches atop your head and places the crown <<he>> made upon it. You place yours atop <<his>> head in turn.
 <br><br>
 
 <<headwear 14>>
@@ -900,7 +990,12 @@ Soon, you both have flower crowns ready. <<if currentSkillValue('tending') lt 20
 	<br><br>
 <</if>>
 
-You hear shouting within the orphanage. "Those two are at it again," Robin says, rising to <<his>> feet. "I need to investigate. Thanks for letting me help."
+You hear shouting within the orphanage. "Those two are at it again," Robin says, rising to <<his>> feet. "I need to investigate.
+<<if $phase is 1>>
+	Thanks for letting me help."
+<<else>>
+	Thanks for helping me."
+<</if>>
 <br><br>
 
 <<specialClothesUnlock "item" "flower crown">>
@@ -914,7 +1009,12 @@ You hear shouting within the orphanage. "Those two are at it again," Robin says,
 You wrap your arms around Robin. <<He>> rests <<his>> head on your shoulder and sobs.
 <br><br>
 
-"I'm okay," <<he>> says after a few minutes, wiping <<his>> eyes. "Thank you. I'll be inside."
+"I'm okay," <<he>> says after a few minutes, wiping <<his>> eyes. "Thank you. I'll
+<<if $phase is 1>>
+	be inside."
+<<else>>
+	finish up here."
+<</if>>
 <br><br>
 
 <<link [[Next|Garden Flowers]]>><<endevent>><</link>>
@@ -923,20 +1023,45 @@ You wrap your arms around Robin. <<He>> rests <<his>> head on your shoulder and 
 :: Garden Robin Finished
 <<effects>>
 
-<<if $speech_attitude is "meek">>
-	"Thank you for offering," you say. "But I've just finished."
-<<elseif $speech_attitude is "bratty">>
-	"You're a tad too late," you say. "Just finished."
+<<if $phase is 1>>
+	<<if $speech_attitude is "meek">>
+		"Thank you for offering," you say. "But I've just finished."
+	<<elseif $speech_attitude is "bratty">>
+		"You're a tad too late," you say. "Just finished."
+	<<else>>
+		"Thank you for offering," you say. "But I've just finished."
+	<</if>>
+	<br><br>
+
+	<<if C.npc.Robin.trauma gte 40>>
+		Robin nods and walks back towards the orphanage.
+	<<else>>
+		Robin nods. "Okay. I'll be inside if you need me."
+	<</if>>
+	<br><br>
 <<else>>
-	"Thank you for offering," you say. "But I've just finished."
+	<<if $speech_attitude is "meek">>
+		"I was just passing through," you say. "I really appreciate your help, though."
+	<<elseif $speech_attitude is "bratty">>
+		"Just passing through," you say.
+	<<else>>
+		"I was just passing through," you say. "Thank you for the help."
+	<</if>>
+	<br><br>
+
+	<<if C.npc.Robin.trauma gte 40>>
+		Robin nods and resumes watering the garden.
+	<<else>>
+		Robin nods. "I'll be done in a bit.
+		<<if C.npc.Robin.dom gte 80>>
+			We should do something together later."
+		<<else>>
+			Maybe we can do something together later?"
+		<</if>>
+		<<He>> looks hopeful<<if C.npc.Robin.trauma gte 20>>, but <<his>> smile doesn't reach his eyes<</if>>.
+	<</if>>
+	<br><br>
 <</if>>
-<br><br>
-<<if C.npc.Robin.trauma gte 40>>
-	Robin nods and walks back towards the orphanage.
-<<else>>
-	Robin nods. "Okay. I'll be inside if you need me."
-<</if>>
-<br><br>
 
 <<link [[Next|Garden Flowers]]>><<endevent>><</link>>
 <br>

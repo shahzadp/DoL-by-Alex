@@ -606,7 +606,17 @@ function getRobinLocation() {
 		// T.robin_location = "cafe";
 	} else if (Time.schoolDay && between(Time.hour, 8, 15)) {
 		T.robin_location = "school";
-	} else if (Time.hour === 16 && between(Time.minute, 31, 59)) {
+	// Start bathing time half an hour later if Robin has been asked to water the player's garden
+	// Robin will only water if crops are planted, will not water in the rain at all, and will not water during snow before the greenhouse is built
+	} else if (C.npc.Robin.autoWater && C.npc.Robin.trauma < 50 && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && ((Time.hour === 16 && between(Time.minute, 30, 59)) || (Time.hour === 17 && between(Time.minute, 0, 29))) && orphanagePlotsPlanted()) {
+		if (Time.hour === 16 && between(Time.minute, 30, 59) && !orphanagePlotsWatered()) {
+			T.robin_location = "garden";
+		} else if (!V.daily.robin.bath) {
+			T.robin_location = "bath";
+		} else {
+			T.robin_location = "orphanage";
+		}
+	} else if (Time.hour === 16 && between(Time.minute, 30, 59)) {
 		if (!V.daily.robin.bath) {
 			T.robin_location = "bath";
 		} else {
@@ -2642,10 +2652,35 @@ $(document).on(":onWeatherChange", () => {
 	V.daily.plotsRain = true;
 	Object.entries(V.plots).forEach(([location, plots]) => {
 		// Don't water greenhouse plants from rain - disabled for now
+		// Alternate text about a rainwater harvester was added, so this may not be needed
 		// if (location === "garden" && V.alex_greenhouse === 3) return;
 		plots.forEach(plot => (plot.water = 1));
 	});
 });
+
+// Returns true if one or more orphanage plots have been planted
+// Used to determine whether Robin should automatically water them
+function orphanagePlotsPlanted() {
+	for (let i = 0; i < V.plots.garden.length; i++) {
+		if (V.plots.garden[i].stage >= 1) {
+			return true;
+		}
+	}
+	return false;
+}
+window.orphanagePlotsPlanted = orphanagePlotsPlanted
+
+// Returns true if all orphanage plots have been watered
+// Used to determine whether Robin sshould automatically water them
+function orphanagePlotsWatered() {
+	for (let i = 0; i < V.plots.garden.length; i++) {
+		if (V.plots.garden[i].water === 0) {
+			return false;
+		}
+	}
+	return true;
+}
+window.orphanagePlotsWatered = orphanagePlotsWatered
 
 // Temporary until a rework
 // Apparently the sugarcube <<script>> parser don't parse the following correctly - so made it a function instead
