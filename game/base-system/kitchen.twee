@@ -220,7 +220,12 @@
 							<<set _futureTime to _futureTime.addHours(_hours)>>
 							<<set _futureTime to _futureTime.addMinutes(_minutes)>>
 
-							<<if !_hourRestriction or _futureTime.hour lt _hourRestriction or _futureTime.minute lte 15>>
+							/* Prevent using limited provided ingredients */
+							<<if $bus is "loft_kitchen" and $_setupItem.ingredients.filter(x => $loftIngredients[x] and $loftIngredients[x] lt 3).length gte 1>>
+								<<set _limitedIngredientRestriction to true>>
+							<</if>>
+
+							<<if (!_hourRestriction or _futureTime.hour lt _hourRestriction or _futureTime.minute lte 15) and !_limitedIngredientRestriction>>
 								| <<link [["3" + _timeString|$passage]]>><<make_recipe $lastRecipeViewed 3>><</link>>
 							<</if>>
 						<</if>>
@@ -325,6 +330,8 @@
 		<<if !_ingredientsSupplied?.includes($_ingredient) or !_ingredientsSupplied?.includes(ingredientUsed($_ingredient, _args[0]))>>
 			<<set $_ingredient to ingredientUsed($_ingredient, _args[0])>>
 			<<tending_give $_ingredient `-$_amount`>>
+		<<elseif $bus is "loft_kitchen" and Object.keys($loftIngredients).includes($_ingredient)>>
+			<<set $loftIngredients[$_ingredient] -= $_amount>>
 		<</if>>
 	<</for>>
 	<<wearProp setup.plants[_args[0]].handheld>>
@@ -332,6 +339,7 @@
 	<<if $bus is "avery_kitchen" and $avery_mansion.jobs.includes("kitchen") and $_amount gte random(1,3)>>
 		<<set $avery_mansion.kitchen_made += $_amount>>
 	<</if>>
+	<<set $recipeMade to _args[0]>>
 <</widget>>
 
 <<widget "knownFoodRecipes">>
@@ -761,5 +769,12 @@ Should probably be removed once said feature has been implemented
 	<<if !$housekeepingTips.includes("alternativeLewd") and $plants.bottle_of_breast_milk.amount + $plants.bottle_of_semen gte 1>>
 		<<set $housekeepingTips.pushUnique("alternativeLewd")>>
 		You doubt you could get away with it in more controlled kitchens, but this kitchen seems quite free. If you're running short on milk or cream, <span class="gold">you may be able substitute with lewder ingredients</span>.
+	<</if>>
+<</widget>>
+
+<<widget "kitchenExit">>
+	<<unset $recipeMade>>
+	<<if $location isnot "avery_mansion">>
+		<<handheldon>>
 	<</if>>
 <</widget>>
