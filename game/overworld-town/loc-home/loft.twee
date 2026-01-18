@@ -49,10 +49,28 @@ You are in the kitchen in the orphanage loft, hidden away from Bailey.
 
 <<robinorphanagekitchen>>
 
-You can cook whatever you like here, but you'll need to supply your own ingredients.
-<br><br>
+<<if Object.keys($loftIngredients).length gte 1>>
+	<<for _i range Object.keys($loftIngredients)>>
+		<<if $loftIngredients[_i] lte 0>>
+			<<if $recipeMade and setup.plants[$recipeMade].ingredients.includes(_i)>>
+				<span class="red">You used the last of the <<print setup.plants[_i].plural>>.</span>
+				<br>
+			<</if>>
+			<<run delete $loftIngredients[_i]>>
+		<<else>>
+			<span class="green">Some <<print setup.plants[_i].plural>> were delivered here recently.</span> There should be enough for <span class="gold"><<number $loftIngredients[_i]>> <<pluralise $loftIngredients[_i] "meal">></span>.
+			<br>
+		<</if>>
+	<</for>>
+	<br>
+	<<ingredientsSupplied `Object.keys($loftIngredients)`>>
+<<else>>
+	You can cook whatever you like here, but you'll need to supply your own ingredients.
+	<br><br>
+<</if>>
+
 <<allowLewdIngredients>>
 <<kitchenDisplay>>
 
-<<getouticon>><<link [[Leave|Orphanage Loft]]>><<handheldon>><</link>>
+<<getouticon>><<link [[Leave|Orphanage Loft]]>><<kitchenExit>><</link>>
 <br>

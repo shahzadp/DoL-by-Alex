@@ -1161,6 +1161,13 @@ function noonCheck() {
 		}
 		V.avery_mansion.sleep_interrupt = 0;
 	}
+
+	if (V.loftIngredients && Object.keys(V.loftIngredients).length >= 1) {
+		Object.keys(V.loftIngredients).forEach(x => {
+			V.loftIngredients[x]--;
+			if (V.loftIngredients[x] <= 0) delete V.loftIngredients[x];
+		});
+	}
 }
 
 function dawnCheck() {
