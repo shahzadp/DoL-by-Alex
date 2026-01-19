@@ -1771,9 +1771,9 @@ You sit beside Avery, and the two of you chat a while.
 
 	<<elseif _avery_rng is 4>> /* Office */
 		<<if $officejobintro gte 1 and !$averySeen.includes("officeAssistant")>>
-			"I’ve been looking for a skilled personal assistant
+			"I've been looking for a skilled personal assistant
 			<<if $averySeen.includes("office")>>
-				, and <<office_manager>> told me you’d be a good fit," <<he>> says. "I hope you're giving the offer the consideration that it's due?"
+				, and <<office_manager>> told me you'd be a good fit," <<he>> says. "I hope you're giving the offer the consideration that it's due?"
 			<<else>>
 				," <<he>> says, giving you a pointed look. "I'll have to ask <<office_manager>> if there are any skilled temps that could be trusted with the job."
 			<</if>>
@@ -2019,7 +2019,6 @@ You sit beside Avery, and the two of you chat a while.
 <<elseif _chat.topic is 5>> /* Lewd */
 	<<set _chat.lewd to random(1,4)>>
 	<<if _chat.lewd is 1 and $bus isnot "avery_bathroom">> /* Groping */
-		<<set $avery_talk_grope to 1>>
 		At one point during your conversation, <<he>> reaches over to
 		<<rng 1 2>>
 		<<if $rng is 1 and $player.breastsize gte 3>> /* Chest */
@@ -2051,7 +2050,7 @@ You sit beside Avery, and the two of you chat a while.
 		<<if C.npc.Avery.lust gte 60>>
 			Then, all of a sudden, <<he>> shifts closer to you. <<His>> arm comes around your waist<<if _breast_grope is true>> again<</if>>, and <<he>> pulls you against <<him>> as <<he>> leans in for a kiss.
 			<br><br>
-			<<link [[Give in|Mansion Talk Chat Lewd]]>><</link>><<promiscuous1>><<kissvirginitywarning>>
+			<<link [[Give in|Mansion Talk Chat Lewd]]>><<set $avery_talk_grope to 1>><</link>><<promiscuous1>><<kissvirginitywarning>> /* The grope value is set here to avoid being teleported into a kiss when going to Mansion Talk Chat Lewd from non-kiss scenes */
 			<br>
 			<<link [[Refuse|Mansion Talk Chat End]]>><<set $avery_chat_end to "annoyed">><<set $phase to 1>><<npcincr Avery rage 1>><</link>><<garage>>
 			<br><br>
@@ -2210,7 +2209,7 @@ You sit beside Avery, and the two of you chat a while.
 				"I do like seeing you in formalwear. It makes you look expensive," <<he>> adds, giving you a wink.
 				<br><br>
 			<<elseif $worn.upper.type.includes("maid") or $worn.lower.type.includes("maid") or $worn.head.type.includes("maid")>>
-				<<He>> smiles and raises an eyebrow at your maid dress. "You know, I do like the look of you in that," <<he>> says. "You aren't actually <<if $avery_mansion.jobs.includes("lounge") ? `my` : `a`>> maid, but you do look cute <<= $player.gender_appearance is "m" ? `in a dress, my boy`:`dressed as one`>>."<</if>> <<He>> winks at you.
+				<<He>> smiles and raises an eyebrow at your maid dress. "You know, I do like the look of you in that," <<he>> says. "You aren't actually <<= $avery_mansion.jobs.includes("lounge") ? `my` : `a`>> maid, but you do look cute <<= $player.gender_appearance is "m" ? `in a dress, my boy` : `dressed as one`>>." <<He>> winks at you.
 				<br><br>
 			<<elseif _fullyNaked>>
 				<<He>> smiles and looks you up and down, lingering on your bare <<chestsimple>> and exposed <<genitals>>. "Are you trying to tempt me, <<pcpetname "Avery">>? If so," <<He>> leans in to whisper in your ear. "It's working." <<npcincr Avery lust 2>><<glust>>
@@ -2391,13 +2390,13 @@ You sit beside Avery, and the two of you chat a while.
 				<</if>>
 				<br><br>
 			<<else>>
-				"It’s a nice day out today," <<he>> says. "Wouldn't you agree, <<= C.npc.Avery.love gte 60 ? `my little sunshine` : C.npc.Avery.love gte 30 ? `sunshine` : `<<pcpetname "Avery">>`>>?"
+				"It's a nice day out today," <<he>> says. "Wouldn't you agree, <<= C.npc.Avery.love gte 60 ? `my little sunshine` : C.npc.Avery.love gte 30 ? `sunshine` : `<<pcpetname "Avery">>`>>?"
 				<br><br>
 			<</if>>
 
 		<<elseif Weather.isOvercast>>
 			<<if $outside is 1 and Weather.precipitation isnot "none">>
-				<<if $worn.handheld.includes("rainproof")>>
+				<<if $worn.handheld.type.includes("rainproof")>>
 					You're lucky you have your <<print $worn.handheld.name>>. You hold it over yourself and Avery, keeping you both safe from the rain.
 				<<elseif $avery_pool is "coffee">>
 					The table you sit at has an umbrella attachment, so both of you are safe from the rain.
@@ -2415,7 +2414,14 @@ You sit beside Avery, and the two of you chat a while.
 				<</if>>
 				<br><br>
 			<<else>>
-				"Cloudy out today, isn't it?" Avery frowns. "I wonder if it's going to rain. <<= Time.weekDay isnot 7 and Time.hour lte 6 ? `Perhaps I should bring an umbrella with me to work, just in case.` : `If it does, at least we're inside.`>>"
+				"Cloudy out today, isn't it?" Avery frowns.
+				<<if Time.weekDay isnot 7 and Time.hour lte 6>>
+					"I wonder if it's going to rain. Perhaps I should bring an umbrella with me to work, just in case."
+				<<elseif $outside is 0>>
+					"I wonder if it's going to rain. If it does, at least we're inside."
+				<<else>>
+					"I wonder if it's going to rain."
+				<</if>>
 				<br><br>
 			<</if>>
 
