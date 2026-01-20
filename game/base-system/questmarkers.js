@@ -1,21 +1,21 @@
 const events = [
 	{
-		// event name for debugging
+		// event name for debugging and logging failures
 		name: "school day",
 		// conditions for the reminder to show up
-		// must be specific enough to no longer trigger once the event is actually attended
+		// must be specific enough to no longer trigger once the event is actually attended. mandatory.
 		condition() {
 			return Time.schoolDay && Object.keys(V.daily.school.attended).length < 5;
 		},
 		// arriving at any time during this hour brings no penalties to the event
 		starthour: 8,
-		// arriving at any time after this hour will no longer trigger the event
+		// the last hour during which the event can still be attended. puts event in top priority tier during that hour. shows a failure message after that hour if condition() is still true.
 		endhour: 14,
-		// bigger number = higher chance of it being pulled
+		// bigger number === higher chance of it being pulled. default is 1.
 		priority: 5, // prioritize avoiding truancy
 		// text shown in twine markup while event is scheduled
 		text: "<<schoolday>>",
-		// text shown if conditions are still met, but it's past the time to attend
+		// text shown if condition() is still met, but it's past the time to attend
 		failuretext:
 			"You have missed <<print Object.keys(V.daily.school.attended).length === 4 ? 'a lesson' : `<<number 5 - Object.keys(V.daily.school.attended).length>>` + ' lessons'>> today.",
 	},
@@ -216,8 +216,8 @@ Macro.add("questmarker", {
 		qualifiedEvents.forEach(ev => {
 			if (!ev.failuretext || Time.hour <= (ev.endhour || 24)) return;
 			const failvar = ev.name + "fail";
-			if (V.hourly[failvar]) return;
-			V.hourly[failvar] = 1;
+			if (V.daily[failvar]) return;
+			V.daily[failvar] = 1;
 			const div = document.createElement("div");
 			div.classList.add("purple");
 			div.append(Wikifier.wikifyEval(ev.failuretext));
