@@ -17,7 +17,7 @@ const events = [
 		text: "<<schoolday>>",
 		// text shown if conditions are still met, but it's past the time to attend
 		failuretext:
-			"You have missed <<print Object.keys(V.daily.school.attended).length === 4 ? 'a lesson' : 5 - Object.keys(V.daily.school.attended).length + ' lessons'>> today...",
+			"You have missed <<print Object.keys(V.daily.school.attended).length === 4 ? 'a lesson' : `<<number 5 - Object.keys(V.daily.school.attended).length>>` + ' lessons'>> today.",
 	},
 	{
 		// example of a lazy event that will still work
@@ -34,7 +34,7 @@ const events = [
 			// other school-related events have higher priority anyway
 			return true;
 		},
-		text: "There is no school today.",
+		text: "There's no school tomorrow.",
 		priority: 0,
 	},
 	{
@@ -46,7 +46,7 @@ const events = [
 		endhour: 20,
 		priority: 4,
 		text: "You have a date with Avery <<print $avery_mansion ? 'in the garage': 'on Domus Street'>> <<if Time.hour is 20>><span class='gold'>right now!</span><<else>>at <<ampm 20 00>>.<</if>>",
-		failuretext: "You have missed your date with Avery. <<nnpc_He 'Avery'>> will not be happy...",
+		failuretext: "You didn't show up for your date with Avery.",
 	},
 	{
 		name: "community service",
@@ -57,7 +57,7 @@ const events = [
 		endhour: 20,
 		priority: 1,
 		text: "The police station on Barb Street expects you for community service.",
-		failuretext: "You didn't attend your community service today...",
+		failuretext: "You didn't attend your community service today.",
 	},
 	{
 		name: "harper appointment",
@@ -68,7 +68,7 @@ const events = [
 		endhour: 24,
 		priority: 1,
 		text: "You <<print $harper_appointments.enabled ? 'have an' : 'may get an'>> appointment with Doctor Harper at hospital on Nightingale Street.",
-		failuretext: "You have missed <<print $harper_appointments.enabled ? 'an' : 'a chance to get an'>> appointment with Doctor Harper...",
+		failuretext: "You have missed <<print $harper_appointments.enabled ? 'an' : 'a chance to get an'>> appointment with Doctor Harper.",
 	},
 	{
 		name: "brothel show",
@@ -79,7 +79,7 @@ const events = [
 		endhour: 24,
 		priority: 1,
 		text: "You're expected to perform a <<print $brothelshowdata.type>> show at the brothel.",
-		failuretext: "You skipped the brothel show today...",
+		failuretext: "You missed the brothel show today.",
 	},
 	{
 		name: "escort job",
@@ -97,7 +97,7 @@ const events = [
 		},
 		priority: 6,
 		text: "You have an escort job at <<ampm `new DateTime(V.brothel_escortjob.date).hour`>>.",
-		failuretext: "You didn't attend your escort job...",
+		failuretext: "You missed your escort job.",
 	},
 	{
 		name: "wren heist",
@@ -143,8 +143,8 @@ const events = [
 		starthour: 16,
 		endhour: 19,
 		priority: 6,
-		text: "Adult shop on Elk Street undergoes renovations between <<ampm 16>> and <<ampm 20>> today.",
-		failuretext: "You didn't help <<if C.npc.Sydney.init>>Sydney<</if>> at the adult shop today...",
+		text: "Adult shop on Elk Street is undergoing renovations after <<ampm 16>> today.",
+		failuretext: "You didn't help <<if C.npc.Sydney.init>>Sydney<</if>> at the adult shop today.",
 	},
 	{
 		name: "science fair",
@@ -154,8 +154,16 @@ const events = [
 		starthour: 9,
 		endhour: 18,
 		priority: 5,
-		text: "The science fair is being held today on Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
-		failuretext: "The science fair has ended. You didn't attend...",
+		text: "The science fair is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
+		failuretext: "The science fair has ended. You didn't attend.",
+	},
+	{
+		name: "science fair tomorrow",
+		condition() {
+			return V.scienceprojectdays === 1;
+		},
+		priority: 2,
+		text: "The science fair is being held at Cliff Street tomorrow",
 	},
 	{
 		name: "maths competition",
@@ -165,8 +173,16 @@ const events = [
 		starthour: 9,
 		endhour: 18,
 		priority: 5,
-		text: "The maths competition is being held today on Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
-		failuretext: "The maths competition has ended. You didn't attend...",
+		text: "The maths competition is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
+		failuretext: "The maths competition has ended. You didn't attend.",
+	},
+	{
+		name: "maths competition tomorrow",
+		condition() {
+			return V.mathsprojectdays === 1;
+		},
+		priority: 2,
+		text: "The maths competition is being held at Cliff Street tomorrow",
 	},
 	{
 		name: "english play",
@@ -176,8 +192,16 @@ const events = [
 		starthour: 17,
 		endhour: 20,
 		priority: 5,
-		text: "The school plays are being held today on Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>",
-		failuretext: "The last of school plays is finished by now. You didn't attend...",
+		text: "The school plays are being held today at Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>",
+		failuretext: "The last of the school plays is finished by now. You didn't attend.",
+	},
+	{
+		name: "english play tomorrow",
+		condition() {
+			return V.englishPlayDays === 1;
+		},
+		priority: 2,
+		text: "The school plays are being held at Cliff Street tomorrow",
 	},
 ];
 setup.events = events;
