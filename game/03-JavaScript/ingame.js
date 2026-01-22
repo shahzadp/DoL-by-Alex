@@ -608,7 +608,7 @@ function getRobinLocation() {
 		T.robin_location = "school";
 	// Start bathing time half an hour later if Robin has been asked to water the player's garden
 	// Robin will only water if crops are planted, will not water in the rain at all, and will not water during snow before the greenhouse is built
-	} else if (C.npc.Robin.autoWater && C.npc.Robin.trauma < 50 && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && ((Time.hour === 16 && between(Time.minute, 30, 59)) || (Time.hour === 17 && between(Time.minute, 0, 29))) && orphanagePlotsPlanted()) {
+	} else if (V.robin.autoWater && C.npc.Robin.trauma < 50 && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && ((Time.hour === 16 && between(Time.minute, 30, 59)) || (Time.hour === 17 && between(Time.minute, 0, 29))) && orphanagePlotsPlanted()) {
 		if (Time.hour === 16 && between(Time.minute, 30, 59) && !orphanagePlotsWatered()) {
 			T.robin_location = "garden";
 		} else if (!V.daily.robin.bath) {
