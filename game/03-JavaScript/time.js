@@ -478,10 +478,10 @@ function weekPassed() {
 	}
 	if (V.robinpaid === 1) {
 		V.robinPayout = 0;
-		if (V.robinWeeksSinceProtector) {
-			V.robinWeeksSinceProtector++;
+		if (V.robin.weeksSinceProtector) {
+			V.robin.weeksSinceProtector++;
 		} else {
-			V.robinWeeksSinceProtector = 1;
+			V.robin.weeksSinceProtector = 1;
 		}
 	} else {
 		V.robinmoney -= 400;
@@ -1037,7 +1037,7 @@ function hourPassed(hours) {
 
 	// Robin autowatering
 	// Include "bath" as a location since bathing is from 17:00-17:29
-	if (Time.hour === 17 && C.npc.Robin.autoWater && C.npc.Robin.trauma < 50 && ["orphanage", "garden", "bath"].includes(getRobinLocation()) && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && orphanagePlotsPlanted() && !orphanagePlotsWatered()) {
+	if (Time.hour === 17 && V.robin.autoWater && C.npc.Robin.trauma < 50 && ["orphanage", "garden", "bath"].includes(getRobinLocation()) && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && orphanagePlotsPlanted() && !orphanagePlotsWatered()) {
 		Object.entries(V.plots).forEach(([location, plots]) => {
 			if (location === "garden") {
 				plots.forEach(plot => (plot.water = 1));

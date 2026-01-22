@@ -553,20 +553,19 @@
 	<</if>>
 	<<set _willpower to currentSkillValue('willpower')>>
 	<<if !$settings.blindStatsEnabled>>
+		<<set _difficulty to Math.round(Math.clamp(_willpower - _willpowerdifficultymin, 0, _willpowerdifficultymax) / (_willpowerdifficultymax - _willpowerdifficultymin) * 100)>>
+		<<if _difficulty gt 100>>
+			<<set _difficulty to 100>>
+		<</if>>
 		<<if _args[2] is undefined>>
 			<<if $settings.skillCheckStyle is "skillname">>
 				| <span class="orange">Willpower</span>
 			<<else>>
 				| <span class="orange">Willpower</span>:
-				<<set _difficulty to Math.round(Math.clamp(_willpower - _willpowerdifficultymin, 0, _willpowerdifficultymax) / (_willpowerdifficultymax - _willpowerdifficultymin) * 100)>>
-				<<if _difficulty gt 100>>
-					<<set _difficulty to 100>>
-				<</if>>
 				<<skillDifficultyText _difficulty>>
 			<</if>>
-		<<elseif _args[2] is "combat">>
-			<<if $settings.skillCheckStyle is "skillname">>
-			<<elseif _difficulty gte 100>>
+		<<elseif _args[2] is "combat" and $settings.skillCheckStyle isnot "skillname">>
+			<<if _difficulty gte 100>>
 				<span class="green">(Very Easy)</span>
 			<<elseif _difficulty gte 80>>
 				<span class="teal">(Easy)</span>
