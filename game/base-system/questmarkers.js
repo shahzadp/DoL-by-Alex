@@ -64,10 +64,8 @@ const events = [
 		condition() {
 			return (V.harper_appointments.enabled || V.schoolPsych === 1) && Time.weekDay === 6 && V.daily.harperVisit !== 1;
 		},
-		starthour: 0,
-		endhour: 24,
-		priority: 1,
-		text: "You <<print $harper_appointments.enabled ? 'have an' : 'may get an'>> appointment with Doctor Harper at hospital on Nightingale Street.",
+		priority: 2,
+		text: "You <<print $harper_appointments.enabled ? 'have an' : 'may get an'>> appointment with Doctor Harper at the hospital today.",
 		failuretext: "You have missed <<print $harper_appointments.enabled ? 'an' : 'a chance to get an'>> appointment with Doctor Harper.",
 	},
 	{
@@ -75,11 +73,8 @@ const events = [
 		condition() {
 			return V.brothelshowdata.type !== "none" && V.brothelshowdata.intro && Time.weekDay === 6;
 		},
-		starthour: 0,
-		endhour: 24,
-		priority: 1,
-		text: "You're expected to perform a <<print $brothelshowdata.type>> show at the brothel.",
-		failuretext: "You missed the brothel show today.",
+		priority: 3,
+		text: "You're expected to perform a <<print $brothelshowdata.type>> show at the brothel today.",
 	},
 	{
 		name: "escort job",
@@ -229,10 +224,10 @@ Macro.add("questmarker", {
 		// find the most important notification
 		// first go events about to expire
 		importants = qualifiedEvents.filter(ev => ev.endhour === Time.hour);
-		// second go events underway
-		if (!importants.length) importants = qualifiedEvents.filter(ev => between(Time.hour, ev.starthour || 0, ev.endhour || 24));
-		// third go upcoming events
-		if (!importants.length) importants = qualifiedEvents.filter(ev => Time.hour < ev.starthour);
+		// second go events underway (unless they are all-day events that don't have starthour)
+		if (!importants.length) importants = qualifiedEvents.filter(ev => between(Time.hour, ev.starthour, ev.endhour == null ? 24 : ev.endhour));
+		// third go upcoming and all day events
+		if (!importants.length) importants = qualifiedEvents.filter(ev => Time.hour <= (ev.endhour == null ? 24 : ev.endhour));
 		if (!importants.length) return;
 		// find the highest priority of available events
 		let topprio = 0;
@@ -249,7 +244,7 @@ Macro.add("questmarker", {
 		br();
 
 		/* alternatively, here goes the code to display all active events at once rather than the top one. can end up cluttering the sidebar.
-		couner = 0;
+		let counter = 0;
 		qualifiedEvents.forEach(ev => {
 			const div = document.createElement("div");
 			if (Time.hour <= (ev.endhour || 24)) {
