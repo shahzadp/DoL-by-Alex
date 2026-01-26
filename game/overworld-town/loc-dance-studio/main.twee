@@ -35,7 +35,7 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 		<br><br>
 	<</if>>
 	<<if $openinghours is 1 and $exposed lt 1>>
-		<<if $dance_job_intro>>
+		<<if $danceStudio.jobOffered>>
 			<<if $weekly.danceJob is "done">>
 				<span class="blue">Charlie will have another job for you next week.</span>
 				<br>
@@ -46,11 +46,11 @@ You are in the dance studio. Here you can pay for lessons to improve your dancin
 		<</if>>
 		<<if $exposed lt 1>>
 			<<if $money gte 1200>>
-				<<if $danceskill gte 800 and $dance_job_intro is undefined and $dancestudiointro gte 1>>
+				<<if $danceskill gte 800 and $danceStudio.intro and !$danceStudio.jobOffered>>
 					<<dancestudioicon>><<link [[Take a dance lesson (£12 1:00)|Dancing Lesson Job Intro]]>><</link>><<gtiredness>><<note "+ + Dancing Skill" "green">>
 					<br>
 				<<else>>
-					<<dancestudioicon>><<link [[Take a dance lesson (£12 1:00)|Dancing Lesson]]>><<set $phase to 0>><<money -1200 "danceStudioLessons">><<set $dancestage to 0>><</link>><<gtiredness>><<note "+ + Dancing Skill" "green">>
+					<<dancestudioicon>><<link [[Take a dance lesson (£12 1:00)|Dancing Lesson]]>><<set $phase to 0>><<money -1200 "danceStudioLessons">><<set $danceStudio.stage to 0>><</link>><<gtiredness>><<note "+ + Dancing Skill" "green">>
 					<br>
 				<</if>>
 			<<else>>
@@ -161,17 +161,17 @@ The dance studio is closed. <<openinghours>>
 	<<He>> shifts uncomfortably on the spot, as if suddenly self-conscious. <<He>> looks annoyed, "Would you like to take your place over here? My name's Charlie." <<He>> turns back to the rest of the class as you head over. The lesson soon commences.
 <</if>>
 <br><br>
-<<link [[Next|$danceStudioIntroExit]]>><<unset $danceStudioIntroExit>><<endevent>><</link>>
+<<link [[Next|$danceStudio.introExit]]>><<unset $danceStudio.introExit>><<endevent>><</link>>
 <br>
 
 :: Dancing Lesson
 
-<<if $dancestudiointro is 1 and $phase is 0>><<pass 20>><</if>>
+<<if $danceStudio.intro and $phase is 0>><<pass 20>><</if>>
 <<set $outside to 0>><<set $location to "dance_studio">><<effects>>
 
-<<if $dancestudiointro isnot 1>>
+<<if !$danceStudio.intro>>
 	<<danceStudioIntro "Dancing Lesson">>
-<<elseif $dancestage gte 2>>
+<<elseif $danceStudio.stage gte 2>>
 	<<tiredness 4>><<danceskill 14>><<danceskilluse>><<wearandtear "dance">><<physique 2>>
 	The rest of the lesson passes uneventfully.
 	<br><br>
@@ -194,9 +194,9 @@ The dance studio is closed. <<openinghours>>
 			<br><br>
 		<</if>>
 	<</if>>
-	<<tiredness 4>><<set $dancestage += 1>><<danceskill 14>><<danceskilluse>><<wearandtear "dance">><<physique 2>><<npc Charlie>><<person1>>
+	<<tiredness 4>><<set $danceStudio.stage += 1>><<danceskill 14>><<danceskilluse>><<wearandtear "dance">><<physique 2>><<npc Charlie>><<person1>>
 	<<if $rng lte 20>>
-		<<set $dancelesson to "barre">>
+		<<set $danceStudio.lesson to "barre">>
 		You stretch and work your muscles using a barre.
 		<<if currentSkillValue('danceskill') lte 200>>
 			It's hard work to stay balanced. You can see in the mirror that you look a bit silly, especially compared to the more experienced students.
@@ -207,7 +207,7 @@ The dance studio is closed. <<openinghours>>
 		<</if>>
 		<br><br>
 	<<elseif $rng lte 40>>
-		<<set $dancelesson to "duo">><<generate2>><<person2>>
+		<<set $danceStudio.lesson to "duo">><<generate2>><<person2>>
 		You partner up with a <<person>>.
 		<<if currentSkillValue('danceskill') lte 200>>
 			<<He>> has more experience than you, so you let <<him>> take the lead.
@@ -218,7 +218,7 @@ The dance studio is closed. <<openinghours>>
 		<</if>>
 		<br><br>
 	<<elseif $rng lte 60>>
-		<<set $dancelesson to "airbarre">>
+		<<set $danceStudio.lesson to "airbarre">>
 		You stretch and work your muscles using an air barre.
 		<<if currentSkillValue('danceskill') lte 200>>
 			More experienced students use it to develop strength and poise. You just have fun swinging around.
@@ -240,8 +240,8 @@ The dance studio is closed. <<openinghours>>
 				<br><br>
 			<</if>>
 		<</if>>
-	<<elseif $rng lte 80>>
-		<<set $dancelesson to "instructor">>
+	<<elseif $rng lte 80 and !$daily.danceStudioHandVirginPrompt>>
+		<<set $danceStudio.lesson to "instructor">>
 		Charlie gives you some personal attention.
 		<<if currentSkillValue('danceskill') lte 200>>
 			<<He>> helps you with the basics.
@@ -252,7 +252,7 @@ The dance studio is closed. <<openinghours>>
 		<</if>>
 		<br><br>
 	<<elseif $rng lte 100>>
-		<<set $dancelesson to "noinstructor">>
+		<<set $danceStudio.lesson to "noinstructor">>
 		Charlie demonstrates some moves in front of the class, who do their best to emulate <<him>>.
 		<br><br>
 	<</if>>
@@ -266,11 +266,11 @@ The dance studio is closed. <<openinghours>>
 
 :: Widgets Events Dance [widget]
 <<widget "eventsdance">>
-	<<if $dancelesson is "barre">>
+	<<if $danceStudio.lesson is "barre">>
 		<<endevent>>Charlie announces that <<nnpc_he "Charlie">> needs to clear some room and asks you and a <<generate1>><<person1>><<person>> to put away the portable barre. You manage to carry it out of the studio and into a room filled with other equipment. As you put it down however, you hear the door shut behind you. <span class="red">You turn to find the <<person>> advancing on you, lust in <<his>> eyes.</span>
 		<br><br>
 		<<link [[Next|Dance Studio Molestation]]>><<set $molestationstart to 1>><</link>>
-	<<elseif $dancelesson is "duo">>
+	<<elseif $danceStudio.lesson is "duo">>
 		You don't think <<he>> has to keep <<his>> hand that close to your butt. Or pull your body that close against <<his>> for that matter. <span class="blue">You can feel <<his>> hardened <<if $NPCList[1].penis is "clothed">>penis<<else>>nipples<</if>> pressing against you.</span>
 		<br><br>
 		<<link [[Endure|Dance Studio Duo]]>><<set $phase to 0>><</link>><<garousal>>
@@ -281,7 +281,7 @@ The dance studio is closed. <<openinghours>>
 			<<link [[Reciprocate|Dance Studio Duo]]>><<set $phase to 2>><</link>><<promiscuous2>>
 			<br>
 		<</if>>
-	<<elseif $dancelesson is "airbarre">>
+	<<elseif $danceStudio.lesson is "airbarre">>
 		The barre gives way slightly, enough to disrupt your delicate balance. Instinct causes you to twist in an attempt to save yourself from falling. You succeed, but the barre becomes wrapped around your waist.
 		<br><br>
 		<<if $worn.lower.type.includes("naked")>>
@@ -315,24 +315,33 @@ The dance studio is closed. <<openinghours>>
 		<</if>>
 		<br><br>
 		<<link [[Next|Dancing Lesson]]>><<endevent>><</link>>
-	<<elseif $dancelesson is "instructor">>
-		<<He>> presses <<his>> body against your back and holds your hands in <<his>> own so that <<he>> can more directly demonstrate to you. <<takeHandholdingVirginity "Charlie" null null true>>Despite <<him>> making no overtly sexual moves, you can't help but feel a little turned on with <<his>> toned body so intimately close to yours.
-		<<garousal>><<arousal 300>>
-		<br><br>
-		<<link [[Meek compliment|Dance Studio Instructor]]>><</link>>
-		<br>
-		<<link [[Confident brag|Dance Studio Instructor]]>><<set $phase to 1>><</link>>
-		<br>
-		<<if hasSexStat("promiscuity", 2)>>
-			<<link [[Flirt|Dance Studio Instructor]]>><<set $phase to 2>><</link>><<promiscuous2>>
+	<<elseif $danceStudio.lesson is "instructor">>
+		<<if $player.virginity.handholding is true>>
+			<<set $daily.danceStudioHandVirginPrompt to true>>
+			<<He>> presses <<his>> body against your back and moves <<his>> hands to yours, about to hold them.
+			<br><br>
+			<<link [[Allow|Dance Studio Instructor]]>><<set $phase to 3>><</link>><<handholdingvirginitywarning>>
 			<br>
+			<<link [[Pull away|Dance Studio Instructor]]>><<set $phase to 4>><</link>>
+		<<else>>
+			<<He>> presses <<his>> body against your back and holds your hands in <<his>> own so that <<he>> can more directly demonstrate to you. Despite <<him>> making no overtly sexual moves, you can't help but feel a little turned on with <<his>> toned body so intimately close to yours.
+			<<garousal>><<arousal 300>>
+			<br><br>
+			<<link [[Meek compliment|Dance Studio Instructor]]>><<set $phase to 0>><</link>>
+			<br>
+			<<link [[Confident brag|Dance Studio Instructor]]>><<set $phase to 1>><</link>>
+			<br>
+			<<if hasSexStat("promiscuity", 2)>>
+				<<link [[Flirt|Dance Studio Instructor]]>><<set $phase to 2>><</link>><<promiscuous2>>
+				<br>
+			<</if>>
 		<</if>>
-	<<else>>
+	<<else>> /* noinstructor */
 		The receptionist peeks her head through the door and looks at Charlie, who seems to understand her meaning. "I need to take five," <<he>> announces. "Keep practising, I won't be long."
 		<br><br>
 		<<endevent>>
-		<<if $dancestudioanger gte 10>>
-			<<set $dancestudioanger -= 10>>
+		<<if $danceStudio.anger gte 10>>
+			<<set $danceStudio.anger -= 10>>
 			<<generate1>><<generate2>><<generate3>><<generate4>><<generate5>><<generate6>><<person1>>The sound of the door shutting is more ominous than usual. You soon realise why, the rest of the room is all but silent. Everyone else is looking at you. A <<person>> speaks. <span class="red">"We've had enough of your shit. Time for a real lesson."</span> They rush toward you.
 			<br><br>
 			<<link [[Next|Dance Studio Strip]]>><<set $molestationstart to 1>><<set $timer to 10>><</link>>
@@ -340,7 +349,7 @@ The dance studio is closed. <<openinghours>>
 		<<else>>
 			How do you want to conduct yourself while Charlie is away?
 			<br><br>
-			<<link [[Focus on practising|Dancing Lesson No Instructor]]>><</link>>
+			<<link [[Focus on practising|Dancing Lesson No Instructor]]>><<set $phase to 0>><</link>>
 			<br>
 			<<link [[Help other students|Dancing Lesson No Instructor]]>><<set $phase to 1>><</link>>
 			<br>
@@ -430,7 +439,7 @@ Charlie immediately recognises that something is wrong. <<He>> pulls you aside a
 	<br><br>
 <<elseif $phase is 1>>
 	You push <<him>> away from you, causing <<him>> to trip over <<his>> feet and falls loudly to the floor. Cursing, <<he>> stands up as Charlie announces that it's time to change partners. The <<person2>><<person>> gives you one last angry look before being matched up with an elderly <<personsimple>>; <span class="pink">the entire class seems irritated with your behaviour.</span>
-	<<set $dancestudioanger += 1>>
+	<<set $danceStudio.anger += 1>>
 	<br><br>
 <<elseif $phase is 2>>
 	<<promiscuity2>>Not wanting to be outdone, you return <<his>> fondling with your own. Hiding the lewd touching under the veneer of dance practice, you grope each other right in the middle of the room, the rest of the class ignorant of the lechery occurring right in front of them. By the time Charlie calls for a stop, both you and the <<person>> are breathing far more heavily than anyone else.
@@ -443,20 +452,36 @@ Charlie immediately recognises that something is wrong. <<He>> pulls you aside a
 <<if $phase is 0>>
 	You turn your head to look at <<him>>. "I hope to be as good as you someday." You avert your eyes meekly when <<he>> tries to meet your gaze.
 	<br>
-	<<He>> squeezes your hands slightly, "You will be, and sooner than you think." You swear <<he>> gives you more attention than the other students for the rest of the lesson.
-	<<npcincr Charlie love 2>><<glove "Charlie">> <<danceskilluse>>
+	<<He>> squeezes your hands slightly. "You will be, and sooner than you think." You swear <<he>> gives you more attention than the other students for the rest of the lesson.
+	<<npcincr Charlie love 2>><<glove "Charlie">>
+	<<danceskilluse>>
 	<br><br>
-	<span class="pink">The other students notice too, many give you jealous looks.</span>
-	<<set $dancestudioanger += 1>>
+	<span class="pink">The other students notice, too. Many give you jealous looks.</span>
+	<<set $danceStudio.anger += 1>>
 <<elseif $phase is 1>>
 	"You'd better watch out," you announce, "I'll be bettering you soon!"
 	<br>
-	<<He>> laughs, "I hope so, means I've done my job right. Now, shut your yap a moment and watch closely..."
+	<<He>> laughs. "I hope so, means I've done my job right. Now, shut your yap a moment and watch closely..."
 <<elseif $phase is 2>>
 	You rub your butt against <<his>> crotch. "You're so fit and well formed, I don't know how you do it."
 	<br>
-	<<He>> moves <<his>> pelvis away from you, blood rushing to <<his>> face. "Y-yes. I mean, no, I mean... you're doing okay, I need to go check on someone else." <<He>> avoids looking in your direction for the rest of the lesson.<<npcincr Charlie love -2>><<llove "Charlie">>
+	<<He>> moves <<his>> pelvis away from you, blood rushing to <<his>> face. "Y-yes. I mean, no, I mean... you're doing okay, I need to go check on someone else." <<He>> avoids looking in your direction for the rest of the lesson.
+	<<npcincr Charlie love -2>><<llove "Charlie">>
 	<<promiscuity2>>
+<<elseif $phase is 3>>
+	You feel <<his>> hands slide up and against your own, palm to palm. The brush of <<his>> fingertips across your skin sends a shiver down your back. <<He>> gently locks his fingers between yours, then squeezes.
+	<<takeHandholdingVirginity "Charlie" "consensual" null true>>
+	You look back at Charlie, and <<he>> smiles. "Now, pay close attention..."
+	<<npcincr Charlie love 2>><<glove "Charlie">>
+	<br><br>
+<<elseif $phase is 4>>
+	You pull away before Charlie can hold your hands.
+	<<if $danceStudio.handVirginProtected>>
+		"I forgot you were shy about that," <<he>> says. <<He>> looks embarassed. "That's alright. We can continue working on your form without contact. Now, where were we..."
+	<<else>>
+		"What's wrong?" <<he>> asks. "Are you afraid of being touched? Holding your partner is an important part of dancing." <<He>> gives you a sympathetic look. "I understand if you have your boundaries. Let's keep working on your form, but with less contact this time. Now, where were we..."
+	<</if>>
+	<<set $danceStudio.handVirginProtected to true>>
 <</if>>
 <br><br>
 <<link [[Next|Dancing Lesson]]>><<endevent>><</link>>
@@ -495,12 +520,12 @@ Charlie immediately recognises that something is wrong. <<He>> pulls you aside a
 	<<endevent>>
 	<<npc Charlie>><<person1>>
 	A <<generate2>><<person2>><<person>> near you loses <<his>> balance and would have fallen to the floor had you not intervened. You spend some time teaching <<him>> how to remain composed. You don't learn much yourself, but <<he>> is clearly grateful, <span class="green">and the class seems pleased with your generosity.</span> Charlie soon returns.
-	<<set $dancestudioanger -= 1>>
+	<<set $danceStudio.anger -= 1>>
 <<elseif $phase is 2>>
 	<<endevent>>
 	<<npc Charlie>><<person1>>
 	You flaunt your skill in front of the other students. It feels good to act superior, <span class="pink">but the looks you receive suggest that the other students dislike being shown up like this.</span> Charlie soon returns.
-	<<stress -12>><<set $dancestudioanger += 1>>
+	<<stress -12>><<set $danceStudio.anger += 1>>
 <</if>>
 <br><br>
 <<link [[Next|Dancing Lesson]]>><<endevent>><</link>>
@@ -648,8 +673,8 @@ You enter the changing room, and think about how you would like to dress for the
 
 :: Yoga Classes Enter
 <<effects>>
-<<set $dancestage to 0>>
-<<if $dancestudiointro isnot 1>>
+<<set $danceStudio.stage to 0>>
+<<if !$danceStudio.intro>>
 	<<danceStudioIntro "Yoga Classes Start 2">>
 <<elseif $worn.under_upper.type.includes("dance")>>
 	In your yoga clothes, you enter the classroom. Several mats are scattered on the floor, many of them already taken by the other students. No one pays attention to you, and you choose a mat closer to the back of the class to sit down.
@@ -672,9 +697,9 @@ You enter the changing room, and think about how you would like to dress for the
 <<if Array.isArray(_pregnancyDailyEvent)>>
 	<<set _pregnancyDailyEvent to _pregnancyDailyEvent[random(0, _pregnancyDailyEvent.length - 1)]>>
 <</if>>
-<<tiredness 4>><<set $dancestage += 1>><<stress -6>><<wearandtear "dance">><<physique 2>><<pass 20>>
+<<tiredness 4>><<set $danceStudio.stage += 1>><<stress -6>><<wearandtear "dance">><<physique 2>><<pass 20>>
 <<if !$daily.yogaWillpower>><<set $daily.yogaWillpower to 1>><<willpower 4>><</if>>
-<<if ["tired"].includes(_event) and $dancestage gte 3>>
+<<if ["tired"].includes(_event) and $danceStudio.stage gte 3>>
 	At the end of the lesson, Charlie tells everyone to recline on their backs. You lie down as instructed, and <<nnpc_he "Charlie">> leads you in guided meditation. "Close your eyes," <<nnpc_he "Charlie">> says, <<nnpc_his "Charlie">> voice barely audible over the soothing music playing in the background. "Allow your body to become soft and heavy. Sink into the floor, and relax..." Whatever else Charlie has to say is lost to you, as you drift off to sleep.
 	<br><br>
 	A gentle hand on your shoulder nudges you back into the realm of consciousness. You groggily look around the room to see students chattering amongst themselves as they roll up their yoga mats and leave the studio.
@@ -683,7 +708,7 @@ You enter the changing room, and think about how you would like to dress for the
 	<<ltiredness>><<glove>><<tiredness -12>><<npcincr Charlie love 1>>
 	<br><br>
 	<<link [[Next|Dance Studio Changing Room]]>><<money -2200 "danceStudioLessons">><<if $exposed gte 2>><<clotheson>><</if>><<endevent>><</link>>
-<<elseif $dancestage gte 3>>
+<<elseif $danceStudio.stage gte 3>>
 	The rest of the lesson passes uneventfully.
 	<br><br>
 	<<link [[Next|Dance Studio Changing Room]]>><<money -2200 "danceStudioLessons">><<if $exposed gte 2>><<clotheson>><</if>><<endevent>><</link>>
@@ -849,7 +874,7 @@ The receptionist looks you up and down. "We offer high heel classes every Tuesda
 :: Heel Lesson
 <<set $outside to 0>><<set $location to "dance_studio">><<effects>>
 
-<<if $dancestudiointro isnot 1>>
+<<if !$danceStudio.intro>>
 	<<danceStudioIntro "Heel Lesson">>
 <<else>>
 	<<if $arousal gte $arousalmax>>
