@@ -29,7 +29,7 @@ const statChange = (() => {
 				V.trauma += Math.trunc(amount * (3 - 1.5 * (V.control / V.controlmax)) * traumaMod);
 			} else {
 				// good doctors know how to help you
-				if (["asylum", "hospital"].includes(V.location)) traumamod *= 2;
+				if (["asylum", "hospital"].includes(V.location)) traumaMod *= 2;
 				// decrease trauma by 1.5x amount with no control, 3x with full control
 				V.trauma += Math.trunc(amount * (1.5 + 1.5 * (V.control / V.controlmax)) * traumaMod);
 			}

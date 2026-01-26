@@ -219,7 +219,7 @@ function genderappearancecheck() {
 	if (T.under_lower_protected && V.settings.nudeGenderPerception > 0) {
 		addfemininityfromfactor(T.bulge_size * -60, "Bulge visible through underwear", "noow");
 	} else if ((T.over_lower_protected || T.lower_protected) && V.settings.nudeGenderPerception > 0) {
-		addfemininityfromfactor(Math.clamp((T.bulge_size - 6) * -60, 0, Infinity), "Bulge visible through clothing", "noow");
+		addfemininityfromfactor(-Math.clamp((T.bulge_size - 6) * 60, 0, Infinity), "Bulge visible through clothing", "noow");
 	} else if (V.worn.genitals.exposed && V.settings.nudeGenderPerception === 1) {
 		if (V.player.penisExist) {
 			addfemininityfromfactor((V.player.penissize + 2.5) * -150, "Penis exposed", "noow");
