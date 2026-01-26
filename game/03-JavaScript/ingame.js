@@ -1733,7 +1733,7 @@ function setupTransformations() {
 			get build() {
 				return V.wolfbuild;
 			},
-			type: "beast",
+			type: "physicalTransform",
 			parts: [
 				{ name: "ears", tfRequired: 4 },
 				{
@@ -2661,9 +2661,11 @@ $(document).on(":onWeatherChange", () => {
 // Returns true if one or more orphanage plots have been planted
 // Used to determine whether Robin should automatically water them
 function orphanagePlotsPlanted() {
-	for (let i = 0; i < V.plots.garden.length; i++) {
-		if (V.plots.garden[i].stage >= 1) {
-			return true;
+	if (V.plots?.garden) {
+		for (let i = 0; i < V.plots.garden.length; i++) {
+			if (V.plots.garden[i].stage >= 1) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -2673,12 +2675,15 @@ window.orphanagePlotsPlanted = orphanagePlotsPlanted
 // Returns true if all orphanage plots have been watered
 // Used to determine whether Robin sshould automatically water them
 function orphanagePlotsWatered() {
-	for (let i = 0; i < V.plots.garden.length; i++) {
-		if (V.plots.garden[i].water === 0) {
-			return false;
+	if (V.plots?.garden) {
+		for (let i = 0; i < V.plots.garden.length; i++) {
+			if (V.plots.garden[i].water === 0) {
+				return false;
+			}
 		}
+		return true;
 	}
-	return true;
+	return false;
 }
 window.orphanagePlotsWatered = orphanagePlotsWatered
 

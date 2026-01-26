@@ -300,7 +300,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 		case "vagina":
 			if (V.masturbationAudience >= 4) {
 				resultArray.push(
-					`"Look how wet she is."`,
+					`"Look how wet <<pshe>> is."`,
 					`"Did you want an audience that badly?"`,
 					`"<<pHer>> clit is so hard."`,
 					`"Yeah <<girl>>, show everyone how you play with your pussy."`

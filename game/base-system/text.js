@@ -219,7 +219,7 @@ statDisplay.create("ggglove", (npc, simple) => {
 });
 
 statDisplay.create("lperlove", (npc, simple) => {
-	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const selectedNPC = npc || V.NPCList[V.index].per;
 	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
 	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
 	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, -1, "red");
@@ -243,13 +243,13 @@ statDisplay.create("gperlove", (npc, simple) => {
 	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 1, "green");
 });
 statDisplay.create("ggperlove", (npc, simple) => {
-	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const selectedNPC = npc || V.NPCList[V.index].per;
 	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
 	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
 	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 2, "green");
 });
 statDisplay.create("gggperlove", (npc, simple) => {
-	const selectedNPC = npc || V.per_npc[V.NPCList[V.index].per];
+	const selectedNPC = npc || V.NPCList[V.index].per;
 	const loveAlias = `${(selectedNPC && setup.loveAlias[selectedNPC]()) || "Love"}`;
 	const NPCName = `${(selectedNPC && setup.perName[selectedNPC]()) || ""}`;
 	return statDisplay.statChange(selectedNPC && !simple && (npc || V.enemyno >= 2) ? `${NPCName}'s ${loveAlias}` : loveAlias, 3, "green");

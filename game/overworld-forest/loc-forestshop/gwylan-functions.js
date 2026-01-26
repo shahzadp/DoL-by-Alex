@@ -777,6 +777,13 @@ function canCollectSampleSingle(species, modifier = null) {
 	if (species === "harpy") speciesCorrected = "hawk";
 	if (species === "human" && V.npc.includes("Ivory Wraith")) return false; // no bustin
 
+	if (!speciesCorrected) {
+		Errors.report(`[canCollectSampleSingle]: speciesCorrected is undefined! Defaulting to human.`, {
+			Stacktrace: Utils.GetStack(),
+			speciesCorrected,
+		});
+		speciesCorrected = "human";
+	}
 	const hasNeededSample = V.gwylan.request.items?.some(item => item.category === "sample" && speciesCorrected.includes(item.name));
 
 	return hasNeededSample;
