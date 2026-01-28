@@ -167,10 +167,10 @@ function pluralise(count, singular, plural) {
 		is: "are",
 		it: "them",
 	});
-	
+
 	count = Wikifier.getValue(count);
 	if (!Number.isFinite(count)) throw new TypeError(`Pluralise: invalid value for 'count': ${count}`);
-	
+
 	if (count === 1) return singular;
 
 	if (plural == null) {

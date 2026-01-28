@@ -10,7 +10,7 @@ function onDeviceReady() {
 	// record the last time when back button was pressed
 	window.lastBackEvent = 0;
 	// save back button from instant seppuku and give it purpose
-    document.addEventListener("backbutton", (ev) => {
+	document.addEventListener("backbutton", (ev) => {
 		ev.preventDefault();
 		// back button can now close opened dialog menus
 		if (SugarCube.Dialog.isOpen()) SugarCube.Dialog.close();
