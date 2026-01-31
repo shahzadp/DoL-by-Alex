@@ -545,6 +545,14 @@ function weekPassed() {
 			V.avery_tower.progress += 4;
 		}
 		V.avery_tower.progress = Math.clamp(V.avery_tower.progress, 0, 100);
+
+		// Avery forgiving one missed meal per perfect week
+		if (V.avery_mansion.rage.dinner_missed) {
+			if (V.avery_mansion.rage.dinner_missed_lastWeek && V.avery_mansion.rage.dinner_missed_lastWeek === V.avery_mansion.rage.dinner_missed) {
+				V.avery_mansion.rage.dinner_missed--;
+			}
+			V.avery_mansion.rage.dinner_missed_lastWeek = V.avery_mansion.rage.dinner_missed;
+		}
 	}
 
 	supermarketWeekly();
