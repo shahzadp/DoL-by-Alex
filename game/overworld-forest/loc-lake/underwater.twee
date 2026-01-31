@@ -194,8 +194,9 @@ You swim up to the surface, <span class="red">but you can't find the hole in the
 :: Lake Ruin
 
 <<set $outside to 0>><<set $location to "lake_ruin">><<set $bus to "lake_ruin">><<underwater>><<effects>><<lakeeffects>>
+<<set $lakeRuin ||= {}>>
 You are in the submerged ruin beneath the lake. Glowing purple lichen covers ancient walls.
-<<if $wraithPrison or $sciencelichenlake is 1 or $scienceproject is "won" or $scienceproject is "done">>
+<<if $lakeRuin.rune>>
 	A strange rune glimmers on a flat section of the wall.
 <</if>>
 <br><br>
@@ -215,13 +216,13 @@ You are in the submerged ruin beneath the lake. Glowing purple lichen covers anc
 	<<swimicon "up">><<link [[Swim towards the surface|Lake Underwater]]>><<wateraction>><</link>><<loxygen>>
 	<br><br>
 	<<if $sciencelichenknown is 1 and $sciencelichenlake isnot 1 and $scienceproject is "ongoing">>
-		<<scienceicon "purple lichen">><<link [[Retrieve lichen for your science project|Lake Lichen]]>><<set $sciencelichenlake to 1>><<wateraction>><</link>><<loxygen>>
+		<<scienceicon "purple lichen">><<link [[Retrieve lichen for your science project|Lake Lichen]]>><<set $sciencelichenlake to 1>><<set $lakeRuin.rune to true>><<wateraction>><</link>><<loxygen>>
 		<br>
 	<</if>>
 	<<if $nextPassageCheck is "Lake Ruin Prison Intro">>
 		<<investigateicon>><span class="nextLink"><<link [[Inspect the rune|Lake Ruin Prison Intro]]>><<wateraction>><</link>><<loxygen>></span>
 		<br>
-	<<elseif $wraithPrison or $sciencelichenlake is 1 or $scienceproject is "won" or $scienceproject is "done">>
+	<<elseif $lakeRuin.rune>>
 		<<investigateicon>><<link [[Inspect the rune|Lake Ruin Symbol]]>><<wateraction>><</link>><<loxygen>>
 		<br>
 	<</if>>
@@ -269,7 +270,7 @@ You are deep in the submerged ruin beneath the lake. Pots of different sizes fil
 :: Lake Ruin Door
 
 <<set $outside to 0>><<set $location to "lake_ruin">><<underwater>><<effects>><<lakeeffects>>
-<<set $lakeruinkey to 2>><<wearProp "key" "bronze">>
+<<set $lakeRuin.key to 2>><<wearProp "key" "bronze">>
 You hear the ancient mechanism creak and the door groans open. Beyond is a plinth, stood alone in a rubble-strewn room.
 <<if $museumAntiques.antiques.antiqueivorynecklace isnot "notFound">>
 	You look around the barren room. You don't see anything besides the plinth.
@@ -634,17 +635,36 @@ Once through, the tentacles give up the pursuit.
 		<br><br>
 		<<plinthroom>>
 	<</addinlineevent>>
-	<<if $settings.swarmsEnabled>>
-		<<addinlineevent "swarm" 3>>
-			You reach inside one of the pots. Swarms of small fish surge out, surrounding you.
-			<br><br>
+	<<addinlineevent "swarm" 3>>
+		You reach inside one of the pots. Swarms of small fish surge out, surrounding you.
+		<br><br>
+		<<if $settings.swarmsEnabled>>
 			<<link [[Next|Lake Swarm]]>><<set $molestationstart to 1>><</link>>
+		<<else>>
+			<<outfitChecks>>
+			<<if !_fullyNaked>>
+				<<if _outfit and (_top === _bottom)>>
+					<<set _bottom to $worn[Object.keys(_top.outfitPrimary).filter((key)=>key.includes("lower"))?.[0]]>>
+				<</if>>
+				<<if _bottom>><<set _bottom.integrity -= 10>><</if>>
+				<<if _top>><<set _top.integrity -= 10>><</if>>
+				<<integritycheck>><<exposure>>
+				<br>
+			<</if>>
+			You manage to swim away from the swarms of fish who stay near their pots<<if !_fullyNaked>>, but your clothing is left worse for wear<</if>>.
+			<<trauma 12>><<stress 24>><<gtrauma>><<ggstress>>
+			<br><br>
+			<<lakeicon "pots">><<link [[Search pots|Lake Pots]]>><<handheldon>><<wateraction>><</link>><<loxygen>>
 			<br>
-		<</addinlineevent>>
-	<</if>>
-	<<addinlineevent "dust" `27 + (!$settings.swarmsEnabled ? 3 : 0)`>>
+			<<swimicon "up">><<link [[Swim towards exit|Lake Ruin]]>><<wateraction>><<handheldon>><</link>><<loxygen>>
+			<br><br>
+			<<plinthroom>>
+		<</if>>
+		<br>
+	<</addinlineevent>>
+	<<addinlineevent "dust" 27>>
 		You reach inside one of the pots. There's purple dust at the bottom. Your probing disturbs it, and it swirls around your arm. You feel heated.
-		<<gstress>><<stress `!$settings.swarmsEnabled and random(30) gte 27 ? 6 : 3`>><<garousal>><<arousal 600>>
+		<<gstress>><<stress 3>><<garousal>><<arousal 600>>
 		<br><br>
 		<<if $arousal gte $arousalmax>>
 			<<orgasmLocation "underwater">>
@@ -662,11 +682,11 @@ Once through, the tentacles give up the pursuit.
 			<<plinthroom>>
 		<</if>>
 	<</addinlineevent>>
-	<<if $lakeruinkey is undefined>>
+	<<if !$lakeRuin.key>>
 		<<addinlineevent "bronze key" 10>>
 			<<wearProp "key" "bronze">>
 			You reach inside one of the pots. You find a decaying bronze key.
-			<<set $lakeruinkey to 1>>
+			<<set $lakeRuin.key to 1>>
 			<br><br>
 			<<lakeicon "pots">><<link [[Search pots|Lake Pots]]>><<handheldon>><<wateraction>><</link>><<loxygen>>
 			<br>
@@ -758,7 +778,8 @@ Once through, the tentacles give up the pursuit.
 	<<lakeicon "pots">><<link [[Search pots|Lake Pots]]>><<wateraction>><</link>><<loxygen>>
 	<br>
 	<<swimicon "up">><<link [[Swim towards exit|Lake Ruin]]>><<wateraction>><</link>><<loxygen>>
-	<br>
+	<br><br>
+	<<plinthroom>>
 <</if>>
 
 :: Lake Ruin Box
@@ -768,25 +789,35 @@ Once through, the tentacles give up the pursuit.
 <<skulduggerycheck>>
 <<skulduggeryuse>>
 <<if $skulduggerysuccess is 1>>
-	<<if $rng gte 96>>
-		<<if random(1,100) gte 81>>
-			<<wearProp "chastity">>
-			You find a gold chastity belt.
-			<<set $antiquemoney += 2000>><<museumAntiqueStatus "antiquegoldchastitybelt" "found">>
-			<<set _goldchastity to true>>
-			<br><br>
-		<<else>>
-			<<wearProp "gold necklace">>
-			You find a gold necklace.
-			<<set $antiquemoney += 500>><<museumAntiqueStatus "antiquegoldnecklace" "found">>
-			<br><br>
-		<</if>>
-	<<else>>
+	<<set _boxEventWeights to {
+		silverRing: 190,
+		goldNecklace: 8,
+		goldChastity: 2
+	}>>
+	<<set $lakeRuin.goldChastityAttempts ||= 0>>
+	<<set _boxEventMulti to 1 - ($lakeRuin.goldChastityAttempts / (_boxEventWeights.silverRing + _boxEventWeights.goldNecklace))>>
+	<<cleareventpool>>
+	<<addinlineevent "silver ring" `_boxEventWeights.silverRing * _boxEventMulti`>>
 		<<wearProp "silver ring">>
 		You find a silver ring.
 		<<set $antiquemoney += 30>><<museumAntiqueStatus "antiquesilverring" "found">>
-		<br><br>
-	<</if>>
+		<<set $lakeRuin.goldChastityAttempts += 1>>
+	<</addinlineevent>>
+	<<addinlineevent "gold necklace" `_boxEventWeights.goldNecklace * _boxEventMulti`>>
+		<<wearProp "gold necklace">>
+		You find a <span class="gold">gold necklace</span>.
+		<<set $antiquemoney += 500>><<museumAntiqueStatus "antiquegoldnecklace" "found">>
+		<<set $lakeRuin.goldChastityAttempts += 1>>
+	<</addinlineevent>>
+	<<addinlineevent "gold chastity belt" _boxEventWeights.goldChastity>>
+		<<wearProp "chastity">>
+		You find a <span class="gold">gold chastity belt</span>.
+		<<set $antiquemoney += 2000>><<museumAntiqueStatus "antiquegoldchastitybelt" "found">>
+		<<set $lakeRuin.goldChastityAttempts = 0>>
+		<<set _goldchastity to true>>
+	<</addinlineevent>>
+	<<runeventpool>>
+	<br><br>
 	<<if $historytrait gte 4>>
 		You take the empty box too. It belongs in a museum.
 		<<set $antiquemoney += 20>><<museumAntiqueStatus "antiquebox" "found">>
@@ -808,7 +839,6 @@ Once through, the tentacles give up the pursuit.
 		<<set $gold_chastity_held to true>>
 	<</if>>
 	<<wateraction>><</link>><<loxygen>>
-	<br>
 <<else>>
 	<<wearProp "ivory box">>
 	You fail to pick the lock.
@@ -822,8 +852,9 @@ Once through, the tentacles give up the pursuit.
 	<<lakeicon "pots">><<handheldon>><<link [[Search pots|Lake Pots]]>><<wateraction>><</link>><<loxygen>>
 	<br>
 	<<swimicon "up">><<link [[Swim towards exit|Lake Ruin]]>><<handheldon>><<wateraction>><</link>><<loxygen>>
-	<br>
 <</if>>
+<br><br>
+<<plinthroom>>
 
 :: Lake Gold Chastity Belt
 
@@ -842,7 +873,8 @@ You feel an urge to try it on. You wrap it around your waist. As it clicks shut 
 <<lakeicon "pots">><<link [[Search pots|Lake Pots]]>><<handheldon>><<wateraction>><<clotheson>><</link>><<loxygen>>
 <br>
 <<swimicon "up">><<link [[Swim towards exit|Lake Ruin]]>><<handheldon>><<wateraction>><<clotheson>><</link>><<loxygen>>
-<br>
+<br><br>
+<<plinthroom>>
 
 :: Lake Lichen
 
