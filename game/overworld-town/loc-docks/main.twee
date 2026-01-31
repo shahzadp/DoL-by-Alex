@@ -259,11 +259,13 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> doesn't seem to care that you're a couple minutes late.
 	<<elseif Time.minute lt 15>>
 		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> pointedly reminds you to show up on time.<<stress 6>><<gstress>>
-	<<else>>
+	<<elseif Time.minute lt 30>>
 		Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> scolds you for showing up late.<<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<<else>>
+		Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> harshly scolds you for showing up <<if Time.minute gt 30>>over <</if>>half an hour late.<<stress 12>><<trauma 6>><<ggstress>><<gtrauma>>
 	<</if>>
 <<elseif Time.hour is 8>>
-	Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> scolds you in front of the other dockers for showing up over an hour late.<<stress 6>><<trauma 6>><<dockstatus -1>><<gstress>><<gtrauma>><<lcool>>
+	Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> harshly scolds you in front of the other dockers for showing up <<if Time.minute gt 0>>over <</if>>an hour late.<<stress 12>><<trauma 6>><<dockstatus -1>><<ggstress>><<gtrauma>><<lcool>>
 <<else>>
 	You shouldn't see this passage! Report this to Vrelnir.
 <</if>>
@@ -290,7 +292,7 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 	<<elseif $rng gte 71>> /* 15% chance */
 		<span class="blue">Few ships are coming in today.</span> Work will be easy, but there won't be enough work to stay overtime.
 		<<set $docks.dayType to "slow">>
-	<<elseif $rng lte Math.round($world_corruption_soft/5)>> /* 0-20% chance based on soft world corruption */
+	<<elseif $rng lte Math.floor($world_corruption_soft/5)>> /* 0-20% chance based on soft world corruption */
 		<span class="lewd">Strange shipments are coming in today.</span> The crew that normally handles them asked for help with the overflow. A manager announces that the overtime rate is raised from 150% to 200% for the day.
 		<<set $docks.dayType to "lewd">>
 	<<else>> /* remaining chance, 50-70% */
@@ -394,6 +396,12 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 			<<if _daily_slacked is 1>>
 				Your colleagues <span class="purple">are getting impatient.</span>
 			<<elseif $docks.dayType is "busy">>
+				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
+			<<else>>
+				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
+			<</if>>
+		<<else>>
+			<<if $docks.dayType is "busy">>
 				Your colleagues <span class="red">are angry that you're not helping on a busy day.</span><<dockstatus -2>><<llcool>>
 			<<else>>
 				Your colleagues <span class="red">grumble about you.</span><<dockstatus -1>><<lcool>>
