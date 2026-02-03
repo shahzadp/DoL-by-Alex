@@ -20,6 +20,8 @@ const StartConfig = {
 window.StartConfig = StartConfig;
 
 State.prng.init();
+// disable widget performance logs for the release
+Perflog.enabled = false;
 
 window.versionUpdateCheck = true;
 window.onLoadUpdateCheck = false;
