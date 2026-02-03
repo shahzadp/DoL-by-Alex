@@ -3510,7 +3510,7 @@
 	/* Code that should not be moved into a check like above */
 	<<set $runWardrobeSanityChecker to true>>
 
-	<<if $objectVersion.updateClothes lt 74 or $objectVersion.updateClothes is undefined>>
+	<<if $objectVersion.updateClothes lt 75 or $objectVersion.updateClothes is undefined>>
 		<<updateClothes>>
 		<<if $objectVersion.updateClothes lt 38>>
 			<!-- V0.4.0.7 return items stuck in $store without proper .location -->
@@ -3530,8 +3530,13 @@
 			<<run fixIntegrityUpdater()>>
 		<</if>>
 		<!-- reset propEquipped -->
-		<<if $objectVersion.updateClothes lt 62>>
-			<<if $propEquipped is 1 and $worn.handheld.type !== "prop" and $worn.handheld.variable !== "featherduster">><<set $propEquipped to 0>><</if>>
+		<<if $objectVersion.updateClothes lt 75>>
+			<<if $propEquipped is 1 and $worn.handheld.type.includes("prop")>>
+				<<generalRuined "handheld" true "worn">>
+
+				<<wearProp $worn.handheld.name>>
+			<</if>>
+			<<run delete $propEquipped>>
 		<</if>>
 
 		<!-- 0.5.6.9 Rename Nurse Hat -->
@@ -3547,7 +3552,7 @@
 
 		<!-- do NOT forget to bump this version in variables-start.twee, too -->
 
-		<<set $objectVersion.updateClothes to 74>>
+		<<set $objectVersion.updateClothes to 75>>
 	<</if>>
 
 	<<if !$specialClothesEffects?.pimp>>
@@ -5300,13 +5305,6 @@
 		<<run delete $_indexTmp>>
 		<<run delete $_isOverwritingNPC>>
 	<</if>>
-	/* Kill the leather leggings with fire */
-	/* Commenting out again due to continued issues
-	<<if !$objectVersion.itemFix lt 1 or $objectVersion.itemFix is undefined>>
-		<<if $worn.under_lower.name isnot "naked" and $worn.legs.name is "leather leggings">><<generalUndress "wardrobe" "under_lower">><</if>>
-		<<run convertLegstoUnder()>>
-		<<set $objectVersion.itemFix to 1>>
-	<</if>>*/
 	<<if $sydney_spear_talk is 1>>
 		<<set $sydneySeen.pushUnique("spearMission")>>
 		<<unset $sydney_spear_talk>>

@@ -288,6 +288,7 @@ function updateClothesItem(slot, item, debug) {
 		}
 		item[key] = clone(itemRef[key]);
 	}
+	item.index = itemRef.index;
 	item.colour = remapColours[item.colour] || item.colour;
 	item.accessory_colour = remapColours[item.accessory_colour] || item.accessory_colour;
 	item.pattern = remapColours[item.pattern] || item.pattern;
@@ -464,6 +465,12 @@ function updateClothesItem(slot, item, debug) {
 		case "leather miniskirt":
 			item.one_piece = 0;
 			item.type.pushUnique("waterproof");
+			break;
+		case "school skirt":
+			if (item.variable === "schoolskirt2") {
+				item.name = "simple school skirt";
+				item.name_cap = "Simple school skirt";
+			}
 			break;
 		case "catsuit":
 		case "catsuit bottoms":

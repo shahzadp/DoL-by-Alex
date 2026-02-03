@@ -23,8 +23,8 @@ declare global {
 		name: string;
 		plural: string;
 		singular?: string; // *
-		handheld: string;
-		handheld_gift?: string; // *
+		/* true if separate image is used when gifting food (e.g. pizza-gift.png vs pizza.png since you are presumably not gifting an entire large pizza for your LI to immediately consume) */
+		handheld_gift?: boolean;
 		recipe_name?: string; // *
 		seed_name?: string; // *
 		plant_cost: number;

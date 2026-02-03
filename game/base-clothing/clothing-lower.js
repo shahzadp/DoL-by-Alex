@@ -6335,8 +6335,8 @@ function initLower() {
 		{
 			index: 116,
 			slot: "lower",
-			name: "school skirt",
-			name_cap: "School skirt",
+			name: "simple school skirt",
+			name_cap: "Simple school skirt",
 			variable: "schoolskirt2",
 			combat: {
 				reference: "sundress",
@@ -10569,7 +10569,7 @@ function initLower() {
 				"teal",
 				"white",
 				"yellow",
-				"custom"
+				"custom",
 			],
 			accessory_colour_sidebar: "secondary",
 			accessory_integrity_img: 1,
@@ -10581,7 +10581,6 @@ function initLower() {
 			iconFile: "ruffled_long_dress.png",
 			accIcon: "ruffled_long_dress_acc.png",
 		},
-
 	];
 
 	setup.moddedClothes.lower.forEach((x, i) => (x.index = setup.clothes.lower.length + i));

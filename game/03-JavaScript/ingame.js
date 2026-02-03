@@ -1,4 +1,4 @@
-/* global ClothesItem, ClothedSlots */
+/* global ClothesItem, ClothedSlots, paramError */
 
 function mapMove(moveTo) {
 	const currentPassage = V.passage;
@@ -606,9 +606,16 @@ function getRobinLocation() {
 		// T.robin_location = "cafe";
 	} else if (Time.schoolDay && between(Time.hour, 8, 15)) {
 		T.robin_location = "school";
-	// Start bathing time half an hour later if Robin has been asked to water the player's garden
-	// Robin will only water if crops are planted, will not water in the rain at all, and will not water during snow before the greenhouse is built
-	} else if (V.robin.autoWater && C.npc.Robin.trauma < 50 && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && ((Time.hour === 16 && between(Time.minute, 30, 59)) || (Time.hour === 17 && between(Time.minute, 0, 29))) && orphanagePlotsPlanted()) {
+		// Start bathing time half an hour later if Robin has been asked to water the player's garden
+		// Robin will only water if crops are planted, will not water in the rain at all, and will not water during snow before the greenhouse is built
+	} else if (
+		V.robin.autoWater &&
+		C.npc.Robin.trauma < 50 &&
+		Weather.precipitation !== "rain" &&
+		(Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) &&
+		((Time.hour === 16 && between(Time.minute, 30, 59)) || (Time.hour === 17 && between(Time.minute, 0, 29))) &&
+		orphanagePlotsPlanted()
+	) {
 		if (Time.hour === 16 && between(Time.minute, 30, 59) && !orphanagePlotsWatered()) {
 			T.robin_location = "garden";
 		} else if (!V.daily.robin.bath) {
@@ -2670,7 +2677,7 @@ function orphanagePlotsPlanted() {
 	}
 	return false;
 }
-window.orphanagePlotsPlanted = orphanagePlotsPlanted
+window.orphanagePlotsPlanted = orphanagePlotsPlanted;
 
 // Returns true if all orphanage plots have been watered
 // Used to determine whether Robin sshould automatically water them
@@ -2685,7 +2692,7 @@ function orphanagePlotsWatered() {
 	}
 	return false;
 }
-window.orphanagePlotsWatered = orphanagePlotsWatered
+window.orphanagePlotsWatered = orphanagePlotsWatered;
 
 // Temporary until a rework
 // Apparently the sugarcube <<script>> parser don't parse the following correctly - so made it a function instead

@@ -1853,7 +1853,7 @@ You rifle through the wood and detritus, searching for anything that could help 
 <</if>>
 <br><br>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>><</link>>
 <br>
 
 :: Bird Tower Base Descend
@@ -2057,7 +2057,7 @@ You have <span class="gold"><<number $bird.materials.fabric>></span><<birdicon "
 
 :: Bird Tower Rope Clothes
 <<effects>>
-<<set $fabricColour to $fabricColour is 0 ? "white" : $fabricColour>>
+<<set $fabricColour to [0, "custom"].includes($fabricColour) ? "white" : $fabricColour>>
 <<wearProp "rag" $fabricColour>>
 
 You tear off your clothing, giving yourself more raw material to work with.
@@ -2067,7 +2067,7 @@ You tear off your clothing, giving yourself more raw material to work with.
 <<covered>>
 <br><br>
 
-<<link [[Next|Bird Tower Look]]>><<run delete $fabricColour>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Look]]>><<run delete $fabricColour>><</link>>
 <br>
 
 
@@ -2096,12 +2096,12 @@ You tear and tie together fabric and other materials, adding to your rope.
 <</if>>
 <br><br>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>><</link>>
 <br>
 
 
 :: Bird Tower Rope Escape
-<<effects>><<wearProp "rope climb" 0 "fabric">>
+<<effects>><<wearProp "fabric rope climb">>
 
 You tie one end of your rope around a chunk of upward-pointing stone, and throw the other off the edge. It almost reaches the bottom. It's enough.
 <br><br>
@@ -2526,7 +2526,7 @@ You lift the necklace.
 <<setTowerTemp>><<effects>>
 
 <<if $phase is "wallet">>
-	<<wearProp "wallet" 0 "empty">>
+	<<wearProp "wallet empty">>
 	You turn the wallet upside down.
 <<elseif $phase is "purse">>
 	<<wearProp "stolen purse">>
@@ -2536,16 +2536,16 @@ You lift the necklace.
 <</if>>
 
 <<if $rng gte 81>>
-	<<wearProp "cash" 0 "four">>
+	<<wearProp "cash four">>
 	<<moneyGain 200 true false>> in cash falls out.
 <<elseif $rng gte 61>>
 	<<wearProp "keycard" "silver">>
 	A credit card falls out. It might be worth something to a fence.<<set $blackmoney += 120>>
 <<elseif $rng gte 41>>
-	<<wearProp "cash" 0 "three">>
+	<<wearProp "cash three">>
 	<<moneyGain 80 true false>> in cash falls out.
 <<elseif $rng gte 21>>
-	<<wearProp "cash" 0 "two">>
+	<<wearProp "cash two">>
 	<<moneyGain 40 true false>> in cash falls out.
 <<else>>
 	It's empty.
@@ -2635,20 +2635,20 @@ You lift the necklace.
 		You bite into the crisp apple. It's juicy.
 		<<hunger -100>>
 	<<case "carrot">>
-		<<wearProp "carrot">>
+		<<wearProp "wild carrot">>
 		<<canvas-model-override "mouth" "chew">>
 		You bite into the crisp carrot. It's crunchy.
 		<<hunger -100>>
 	<<case "beans">>
-		<<wearProp "food tin" 0 "beans">>
+		<<wearProp "bean tin">>
 		You bash the tin against the wall, and pry it the rest of the way using a spike of ruined masonry. The beans would be nicer warm, but they fill you all the same.
 		<<hunger -400>>
 	<<case "tuna">>
-		<<wearProp "food tin" 0 "tuna">>
+		<<wearProp "tuna tin">>
 		You bash the tin against the wall, and pry it the rest of the way using a spike of ruined masonry. The tuna is tasty, if salty.
 		<<hunger -200>>
 	<<default>>
-		<<wearProp "food tin" 0 "custard">>
+		<<wearProp "custard tin">>
 		You bash the tin against the wall, and pry it the rest of the way using a spike of ruined masonry. Cold custard on its own isn't the best treat, but you enjoy the sweetness.
 		<<hunger -400>>
 <</switch>>
@@ -3356,7 +3356,7 @@ You slowly run your hands down the <<beasttypes>> feathers, towards <<bhis>> <<n
 :: Bird Tower Mirror
 <<setTowerTemp>><<effects>>
 
-<<birdicon "tower">><<link [[Step away|Bird Tower]]>><<handheldon>><<unset $mirrorMenu>><<unset $bodywritingSet>><<postMirror>><</link>>
+<<birdicon "tower">><<link [[Step away|Bird Tower]]>><<unset $mirrorMenu>><<unset $bodywritingSet>><<postMirror>><</link>>
 <br>
 
 <<mirror>>
@@ -3505,7 +3505,7 @@ You bring your hands lower and start combing through <<bhis>> wings with your fi
 			<<case 1>>One of <<bhis>> feathers comes loose. <span class="teal">You take it.</span>
 			<<case 2>>A couple of <<bhis>> feathers come loose. <span class="teal">You take them.</span>
 		<</switch>>
-		<<wearProp "feather" "original">>
+		<<wearProp "hawk feather">>
 		<<set $bird.materials.feathers += _featherNum>>
 	<</if>>
 <<else>>
@@ -3524,9 +3524,9 @@ After a while, <<bhe>> turns to you.
 <</if>>
 <br><br>
 
-<<link [[Allow|Bird Tower Bathe Preen Allow]]>><<handheldon>><<stress -3>><<npcincr "Great Hawk" dom 1>><</link>><<lstress>><<gdom>>
+<<link [[Allow|Bird Tower Bathe Preen Allow]]>><<stress -3>><<npcincr "Great Hawk" dom 1>><</link>><<lstress>><<gdom>>
 <br>
-<<link [[Push away|Bird Tower Bathe Preen Deny]]>><<handheldon>><</link>>
+<<link [[Push away|Bird Tower Bathe Preen Deny]]>><</link>>
 <br>
 
 :: Bird Tower Bathe Preen Allow
@@ -3593,7 +3593,7 @@ or ($demon gte 6 and $transformationParts.demon.wings isnot "hidden")>>
 				<<case 1>>One of your loose feathers has fallen out. <span class="teal">You take it.</span>
 				<<case 2>>A couple of your loose feathers have fallen out. <span class="teal">You take them.</span>
 			<</switch>>
-			<<wearProp "feather" "grey">>
+			<<wearProp "pc feather" "hair">>
 			<<set $bird.materials.feathers += _featherNum>>
 		<</if>>
 	<</if>>
@@ -3676,7 +3676,7 @@ The <<beasttype>> shakes <<bhis>> feathers, and lets you stroke <<bhis>> wings.
 			<<case 1>>One of <<bhis>> feathers comes loose. <span class="teal">You take it.</span>
 			<<case 2>>A couple of <<bhis>> feathers come loose. <span class="teal">You take them.</span>
 		<</switch>>
-		<<wearProp "feather" "original">>
+		<<wearProp "hawk feather">>
 		<<set $bird.materials.feathers += _featherNum>>
 	<</if>>
 <<else>>
@@ -3689,7 +3689,7 @@ The <<beasttype>> shakes <<bhis>> feathers, and lets you stroke <<bhis>> wings.
 				<<case 1>>One of <<bhis>> feathers comes loose. <span class="teal">You take it.</span>
 				<<case 2>>A couple of <<bhis>> feathers come loose. <span class="teal">You take them.</span>
 			<</switch>>
-			<<wearProp "feather" "original">>
+			<<wearProp "hawk feather">>
 			<<set $bird.materials.feathers += _featherNum>>
 		<</if>>
 	<<else>>
@@ -3831,7 +3831,7 @@ You bring your attentive touch down towards <<bhis>> groin.
 		<<case 2>>A couple of your loose feathers have fallen out. <span class="teal">You take them.</span>
 	<</switch>>
 	<<set $bird.materials.feathers += _selfFeatherNum>>
-	<<wearProp "feather" "grey">>
+	<<wearProp "pc feather" "hair">>
 <<else>>
 	You preen your wings. There's no more loose feathers to remove for now, but it makes you feel better regardless.
 <</if>>
@@ -4802,7 +4802,6 @@ You wonder if anything you just experienced was real for a moment. The vertigo a
 <<else>>
 	"I brought you a gift," you say. "I hope you like it."
 <</if>>
-<<wearProp "lurker">>
 You take your netted lurker and give it to your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>>. <<npcincr "Great Hawk" love 1>><<glove>>
 <br><br>
 <<if $monster is 1>>
@@ -4823,11 +4822,11 @@ You take your netted lurker and give it to your <<if $monster is 1>><<nnpc_wife 
 <<feedLurker>>
 <<link [[Accept <<bhis>> offer (0:15)|Bird Tower Give Captured Lurker Accept]]>><<transform bird 1>><<npcincr "Great Hawk" love 1>><<npcincr "Great Hawk" dom 1>><<stress -16>><</link>><<llstress>><<glove>><<gdom>>
 <br>
-<<link [[Decline|Bird Tower Give Captured Lurker Refuse]]>><<handheldon>><<npcincr "Great Hawk" dom -1>><</link>><<ldom>>
+<<link [[Decline|Bird Tower Give Captured Lurker Refuse]]>><<npcincr "Great Hawk" dom -1>><</link>><<ldom>>
 <br>
 
 :: Bird Tower Give Captured Lurker Accept
-<<canvas-model-override "mouth" "chew">>
+<<wearProp "lurker">><<canvas-model-override "mouth" "chew">>
 <<if $speech_attitude is "meek">>
 	"Thank you," you say.
 <<elseif $speech_attitude is "bratty">>
@@ -5202,7 +5201,7 @@ You use some fabric to bind some large leaves together, and secure them to the r
 <<set $birdShelterTimer to 900>>
 <br><br>
 
-<<link [[Next|Bird Tower Build]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Build]]>><</link>>
 <br>
 
 :: Bird Tower Build Shelter 2
@@ -5214,7 +5213,7 @@ Having tools makes it simple, and with some wood for proper weight distribution,
 <<unset $birdShelterRepair>>
 <br><br>
 
-<<link [[Next|Bird Tower Build]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Build]]>><</link>>
 <br>
 
 :: Bird Tower Build Shelter 3
@@ -5228,7 +5227,7 @@ You cut a hole in it and bind some leather and fabric around it on the other sid
 You re-secure it to the roof, satisfied with your ingenuity. <<trauma -6>><<ltrauma>>
 <br><br>
 
-<<link [[Next|Bird Tower Build]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Build]]>><</link>>
 <br>
 
 :: Bird Tower Build Nest 1
@@ -5237,7 +5236,7 @@ You re-secure it to the roof, satisfied with your ingenuity. <<trauma -6>><<ltra
 You lay down some fabric and leaves in your part of the nest. It will prevent any uncomfortable poking, at least.
 <br><br>
 
-<<link [[Next|Bird Tower Build]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Build]]>><</link>>
 <br>
 
 :: Bird Tower Build Nest 2
@@ -5320,9 +5319,9 @@ While <<bhe>> finishes meticulously placing each stick and log, you begin to sew
 You fill the nest with leaves, and throw two sewn sheets of fabric over the top. They're large enough to hang over the edges. Finally, you throw in your makeshift pillows. All that's left is to test it out.
 <br><br>
 
-<<link [[Climb in|Bird Tower Build Nest 4]]>><<handheldon>><<set $phase to 1>><</link>>
+<<link [[Climb in|Bird Tower Build Nest 4]]>><<set $phase to 1>><</link>>
 <br>
-<<link [[Jump in|Bird Tower Build Nest 4]]>><<handheldon>><<set $phase to 2>><</link>>
+<<link [[Jump in|Bird Tower Build Nest 4]]>><<set $phase to 2>><</link>>
 <br>
 
 :: Bird Tower Build Nest 4
@@ -5422,7 +5421,7 @@ This is as big as you can safely make the fire. It should burn for quite some ti
 
 <<run upgradeBirdFirepit()>>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>><</link>>
 <br>
 
 :: Bird Tower Firepit
@@ -5629,7 +5628,7 @@ Expanding on the drying rack is simple, especially with the right tools. You use
 
 <<set $bird.firepit.maxItems to $bird.upgrades.rack * 2>>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>>><</link>>
 <br>
 
 :: Bird Tower Build Rack 3
@@ -5649,7 +5648,7 @@ You wipe your forehead and admire your handiwork. You should be able to dry out 
 
 <<set $bird.firepit.maxItems to $bird.upgrades.rack * 2>>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>><</link>>
 <br>
 
 :: Bird Tower Build Decor 1
@@ -5726,7 +5725,7 @@ You take a hefty piece of firewood and bind lurkers all around it. You sharpen s
 The walls of your tower tell the stories of countless hunts, and tease more to come. Your spouse looks around, seemingly stunned at all you've accomplished. <<stress -24>><<trauma -6>><<lllstress>><<ltrauma>>
 <br><br>
 
-<<link [[Next|Bird Tower Build Decor Ponder]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower Build Decor Ponder]]>><</link>>
 <br>
 
 :: Bird Tower Build Decor Ponder
@@ -5798,7 +5797,7 @@ You move your mirror right next to it.
 <</if>>
 <br><br>
 
-<<link [[Next|Bird Tower]]>><<handheldon>><</link>>
+<<link [[Next|Bird Tower]]>><</link>>
 <br>
 
 :: Bird Tower Build Snare 1
@@ -5819,7 +5818,7 @@ You look around for a good spot, and see a bit of displaced grass. Something tra
 <br>
 
 :: Bird Tower Build Duster
-<<setTowerTemp>><<effects>><<wearProp "featherduster">>
+<<setTowerTemp>><<effects>><<wearProp "feather duster">>
 You break a stick in half and hollow out the tip, before placing some feathers inside and tying them in place with a piece of fabric.
 <br><br>
 
@@ -5845,12 +5844,12 @@ Whose feathers will you use?
 :: Bird Tower Build Clip 2
 <<setTowerTemp>><<effects>>
 <<if $phase is 0>>
-	<<wearProp "feather" "grey">>
+	<<wearProp "pc feather" "hair">>
 	You use your own feathers.
 	<<hairToFeatherColour>>
 	<<generalWear "head" 31 _colourConverted>>
 <<else>>
-	<<wearProp "feather" "original">>
+	<<wearProp "hawk feather">>
 	You use the Great Hawk's feathers.
 	<<generalWear "head" 31 "tan">>
 <</if>>
@@ -5865,12 +5864,11 @@ Whose feathers will you use?
 <<set _cleanIncrease to 0>>
 <<if $syndromebird is 1>>
 	<<if $worn.handheld.name is "feather duster">>
-		<<set $propEquipped to 0>>
 		<<set _cleanIncrease += 2>>
 		You use your feather duster to clean up the tower. The place looks much better by the time you're done. <<trauma -1>><<ltrauma>>
 	<<elseif $bird.duster is true or ($bird.upgrades.wardrobe is 1 and getOwnedClothingCount(12, "handheld") gte 1)>>
 		<<set _cleanIncrease += 2>>
-		<<wearProp "featherduster">>
+		<<wearProp "feather duster">>
 		You grab your feather duster
 		<<if $bird.upgrades.wardrobe is 1 and getOwnedClothingCount(12, "handheld") gte 1>>
 			from the wardrobe
@@ -5941,10 +5939,10 @@ Whose feathers will you use?
 	You take a step back and admire how much cleaner the tower is. As you do, a glint catches your eye near the far corner.
 	<br><br>
 
-	<<link [[Investigate (0:10)|Bird Tower Telescope Get]]>><<if $propEquipped is 1>><<if $carried.handheld.name isnot "naked">><<handheldon>><<else>><<handheldruined true>><</if>><<set $propEquipped to 0>><</if>><<bird_pass 10>><</link>>
+	<<link [[Investigate (0:10)|Bird Tower Telescope Get]]>><<bird_pass 10>><</link>>
 	<br>
 <</if>>
-<<link [[`${$bird.upgrades.telescope is 0 and $bird.clean gte 75 ? "Ignore" : "Next"}`|Bird Tower]]>><<if $propEquipped is 1>><<if $carried.handheld.name isnot "naked">><<handheldon>><<else>><<handheldruined true>><</if>><<set $propEquipped to 0>><</if>><<endevent>><</link>>
+<<link [[`${$bird.upgrades.telescope is 0 and $bird.clean gte 75 ? "Ignore" : "Next"}`|Bird Tower]]>><<endevent>><</link>>
 <br>
 
 :: Bird Tower Telescope Get
@@ -7330,13 +7328,13 @@ You look up to the sky.
 <br>
 
 :: Bird Tower Eggs Take
-<<setTowerTemp>><<effects>><<wearProp "egg" 0 "hawk">>
+<<setTowerTemp>><<effects>><<wearProp "hawk egg">>
 
 You take the unfertilised <<pluralise $eggLayNumber "egg">> from the nest. <<your_bird_text "cap">> doesn't seem to mind. <<tending_pick bird_egg $eggLayNumber $eggLayNumber>>
 <br><br>
 
 <<if $birdEggContext is "huntReturn">>
-	<<link [[Next|Bird Tower Great Hawk Egg Laying Hunt Finish]]>><<endBirdEggLaying>><<handheldon>><</link>>
+	<<link [[Next|Bird Tower Great Hawk Egg Laying Hunt Finish]]>><<endBirdEggLaying>><</link>>
 <<else>>
 	<<link [[Next|Bird Tower]]>><<endevent>><<endBirdEggLaying>><</link>>
 <</if>>
@@ -7452,7 +7450,7 @@ You're filled with a sense of maternal bliss.
 		You're flooded with emotion. <<trauma -12>><<lltrauma>>
 	<</if>>
 	<br><br>
-
+	<<wearProp "hawk egg">>
 	<<if $syndromebird isnot 1 and $bird.syndrome gte 15>>
 		Your eyes wander down to the <<pluralise $eggLayNumber "egg">>. Your <<pluralise $eggLayNumber "child">>. Your mind fills with instinctual purpose. You rest your head on <<bhis>> shoulder. <<bHis>> plumage is so soft. Staying here with <<bhim>> doesn't seem so bad anymore.
 		<span class="red">It's not <<bhis>> fault. <<bHe>> only wants a mate.
@@ -7493,14 +7491,14 @@ You're filled with a sense of maternal bliss.
 			<<bHe>> prods at <<pluralise $eggLayNumber "it">>, before looking to you. They're unfertilised, of course.
 		<</if>>
 	<</if>>
-	<<wearProp "egg" 0 "bird">>
+	<<wearProp "bird egg">>
 	<<tending_pick bird_egg $eggLayNumber $eggLayNumber>>
 	<<unset $harpyEggs>>
 	<<set $harpyEggsPrevent to 14>>
 	<br><br>
 
 	<<if _optionReassure>>
-		<<link [[Reassure|Bird Tower Player Eggs Reassure]]>><<handheldon>><<npcincr "Great Hawk" love 1>><<bird_stockholm 3>><</link>><<glove>><<ggbirdstockholm>>
+		<<link [[Reassure|Bird Tower Player Eggs Reassure]]>><<npcincr "Great Hawk" love 1>><<bird_stockholm 3>><</link>><<glove>><<ggbirdstockholm>>
 		<br>
 	<</if>>
 <</if>>

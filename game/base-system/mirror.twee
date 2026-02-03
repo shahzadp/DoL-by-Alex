@@ -607,7 +607,7 @@
 <</widget>>
 
 <<widget "mirrorSkin">>
-	<<mirroricon>><<link "Back">><<handheldon>><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<<mirroricon>><<link "Back">><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
 	<br><br>
 
 	<div class="settingsGrid">
@@ -757,7 +757,7 @@
 	<<if Skin.Sunscreen.isApplied()>>
 		<br>
 		<<cosmeticsicon "sunscreen">><<link "Remove sunscreen">>
-			<<handheldon>>
+
 			<<set Skin.Sunscreen.autoApply to false>>
 			<<replace #sunscreenDescription>><<sunscreenApply "remove">><</replace>>
 			<<replace #sunscreenLinks>><<sunscreenLinks>><</replace>>
@@ -766,7 +766,7 @@
 		<<if Skin.Sunscreen.usesLeft gt 0>>
 			<br>
 			<<cosmeticsicon "sunscreen">><<link "Apply sunscreen">>
-				<<handheldon>>
+
 				<<replace #sunscreenDescription>><<sunscreenApply>><</replace>>
 				<<replace #sunscreenLinks>><<sunscreenLinks>><</replace>>
 			<</link>> <<note `Skin.Sunscreen.usesLeft + ' use'+(Skin.Sunscreen.usesLeft > 1 ? 's' : '') + ' left'`>>
@@ -1370,7 +1370,7 @@
 <</widget>>
 
 <<widget "mirrorHair">>
-	<<mirroricon>><<link "Back">><<handheldon>><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
+	<<mirroricon>><<link "Back">><<updatesidebarimg>><<replace #mirror>><<mirrorMenu>><</replace>><<numberify "#passages > .passage">><<unset $mirrorMenu>><</link>>
 	<<shopClothingFilterSettingsDefault>> /* Due to reusing the traits filtering */
 	<br><br>
 	<div id="hairDescription">
@@ -1860,21 +1860,24 @@
 						`_item.colour <span @class="_itemType+'-'+_item.colour.replace(/ /g, '-')"><span class="colour-sample"></span></span>
 						× _item.count`>>
 						<<button _name>>
-							<<handheldon>>
-							<<if _itemType is "lipstick">>
-								<<set _colour to _item.colour is "dark red" ? "jewel red" : _item.colour is "orange" ? "tangerine" : _item.colour>>
-								<<wearProp _itemType _colour>>
-							<<else>>
-								<<wearProp _itemType>>
-							<</if>>
 							<<if $makeup[_itemType] !== _item.colour>>
 								<<set $makeup[_itemType] = _item.colour>>
 								<<set _item.count -= 1>>
 								<<if _itemType == 'mascara'>>
 									<<set $makeup.mascara_running = 0>>
 								<</if>>
-								<<run Engine.show()>>
 							<</if>>
+							<<set $mirrorMenu to "makeup">>
+							<<replace #mirror>>
+								<<if _itemType is "lipstick">>
+									<<set _colour to _item.colour is "dark red" ? "jewel red" : _item.colour is "orange" ? "tangerine" : _item.colour>>
+									<<wearProp _itemType _colour>>
+								<<else>>
+									<<wearProp _itemType>>
+								<</if>>
+								<<updatesidebarimg>>
+								<<mirrorDisplay>>
+							<</replace>>
 						<</button>>
 					<</capture>>
 				</span>
@@ -2076,7 +2079,6 @@
 									`_colour <span @class="'eye-'+_colour.replace(/ /g, '-')"><span class="colour-sample bgcolour-eyes left-"></span></span>`>>
 
 									<<button _contactName>>
-										<<handheldon 1>>
 										<<if _contact_eye_selected == "Both">>
 											<<set $makeup.eyelenses = { left: _colour, right: _colour }>>
 										<<elseif _contact_eye_selected == "Left eye">>
@@ -2130,7 +2132,6 @@
 					<span class="gold bold">Eyebrow Colour:</span>
 					<br>
 					<<if $mirror_eyebrow_dye is true>>
-						<<handheldon 1>>
 						<<wearProp "hairdye">>
 						<<unset $mirror_eyebrow_dye>>
 						You open up the box with <<= setup.colours.hair_map[$browsDyeOption].name>> dye and prepare the mixture. Using a small brush, you carefully apply the dye to your eyebrows. You wait several minutes for the dye to set and hope you didn't mess up anything.

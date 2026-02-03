@@ -139,14 +139,14 @@ function sexToysInventoryOnCarryClick(index, category) {
 	const setupToy = setup.sextoys[toy.index];
 	const setupCategory = setupToy.category;
 	const colour = toy.colour === "lime-green" ? "lime" : toy.colour || "";
-	const handheld = setup.clothes.handheld.find(item => item.variable === toy.name);
+	const handheld = setup.props.find(item => item === toy.name);
 
 	if (handheld) Wikifier.wikifyEval(`<<wearProp '${toy.name}' '${colour.replace("-", " ")}'>><<updatesidebarimg>>`);
 
 	// if player has reached maximum item carried, stop the function
 	if (!toy.carried && countCarriedSextoys() >= maxCarried) return;
 	toy.carried = !toy.carried;
-	if (!toy.carried) Wikifier.wikifyEval("<<handheldon>><<updatesidebarimg>>");
+	if (!toy.carried) Wikifier.wikifyEval("<<updatesidebarimg>>");
 
 	// if player chose "Put back in the cupboard", also unwear the item
 	if (!toy.carried && toy.worn) {

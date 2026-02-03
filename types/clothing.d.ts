@@ -71,6 +71,13 @@ declare module "twine-sugarcube" {
 			[x: string]: SpecialClothesSetsSetup;
 		};
 		sextoys: SexToy[];
+		propDefaults: PropSetup;
+		props: {
+			[x: string]: PropSetup;
+		};
+		moddedProps: {
+			[x: string]: PropSetup;
+		};
 	}
 }
 
@@ -319,9 +326,10 @@ declare global {
 		hoodposition?: "down" | "up";
 		altDamage?: "metal" | "plastic" | "parasite";
 		penisSize?: boolean;
+		zIndex?: string;
 		hood?: 0 | 1;
 		// Handheld item held over head, or alternate limb position used
-		holdPosition?: "right_cover" | "left_cover" | "cover_both" | "idle" | "clutch" | "over_head" | "hold";
+		holdPosition?: ArmPosition;
 		coverBackImage?: 0 | 1;
 		coverImage?: 0 | 1;
 		leftImage?: 0 | 1;
@@ -365,7 +373,20 @@ declare global {
 		requirements?(): boolean;
 		hint?: string;
 	}
-
+	export interface PropSetup {
+		folder?: string;
+		armPosition?: ArmPosition;
+		zIndex?: string;
+		hasAccessory?: boolean;
+		hasBackAcc?: boolean;
+		hasCoverImg?: boolean;
+		hasLevels?: boolean;
+		overUnderSplit?: boolean;
+		overUnderAccSplit?: boolean;
+		colour?: string[];
+		accColour?: string[];
+		animation?: string;
+	}
 	export interface SpecialClothesSetsSetup {
 		text: string;
 		requirements?(): boolean;
@@ -380,6 +401,7 @@ declare global {
 		iconColor?: string;
 		iconAccColor?: string;
 	}
+	export type ArmPosition = "right_cover" | "right_idle" | "right_hold" | "left_cover" | "left_idle" | "cover_both" | "idle_both" | "clutch" | "handsfree";
 
 	function getCustomClothesColourCanvasFilter(hue: number, saturation: number, brightness: number, contrast: number, sepia = 0): CompositeLayerSpec;
 
