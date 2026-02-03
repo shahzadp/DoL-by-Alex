@@ -564,12 +564,12 @@
 	<<set _warmClothes to []>>
 
 	<<if _fullyNaked>>
-		<<set _warmClothes to "clothes">>
+		<<set _warmClothes to "some clothes">>
 	<<elseif _wet>>
 		<<dry_full>><<upperstrip>><<lowerstrip>>
 		<<set _warmClothes to "dry clothes">>
 	<<elseif !_bottom>>
-		<<set _warmClothes to "bottoms">>
+		<<set _warmClothes to "some trousers">>
 	<<elseif $debug is 1 and $worn.over_upper.name is "naked" and $rng gte 46>>
 		<<set _warmClothes to "a jacket">>
 	<<elseif $worn.upper.warmth lt 6>>
@@ -582,49 +582,46 @@
 
 	<<if $debug is 1 and $worn.over_upper.name is "naked" and $rng gt 100>>
 		/* outerwearToDo: Give players a jacket that's suitably warm. Not the froggy coat. Rng to allow for the possibility that they'll get another article of clothing instead -- rng should normally be gte 45, I just wanted to make this impossible to get. */
-		<<set _slot to "over_upper">>
-		<<set _index to 1>>
-		<<overupperwear _index>>
+		<<set $_slot to "over_upper">>
+		<<set $_jacket to ["froggy coat"]>>
+		<<overupperwear $_jacket.random()>>
 	<<elseif $worn.upper.warmth lt 6>>
-		/* neutral: puffer jacket, winter jacket, turtleneck jumper, cable-knit turtleneck, ghost jumper */
-		<<set _slot to "upper">>
-		<<set _upper to [71, 103, 45, 43, 133]>>
+		<<set $_slot to "upper">>
+		<<set $_upper to ["puffer jacket", "turtleneck jumper", "cable knit turtleneck", "ghost jumper"]>>
 		<<if $player.gender_appearance is "m" or $settings.forcedCrossdressingEnabled>>
-			/* masc: punk leather, leather, letterman jackets, skull jumper */
-			<<set _upper.push(40, 41, 62, 135)>>
+			<<set $_upper.push("punk leather jacket", "leather jacket", "letterman jacket")>>
 		<</if>>
 		<<if $player.gender_appearance is "f" or $settings.forcedCrossdressingEnabled>>
-			/* femme: heart jumper, girl's sweater */
-			<<set _upper.push(134, 28)>>
+			<<set $_upper.push("heart jumper", "girl's sweater")>>
 		<</if>>
-		<<set _index to _upper.random()>>
+		<<set $_item to $_upper.random()>>
 		<<upperstrip>>
-		<<switch _index>>
-			<<case 133>><<upperwear _index "white" "neon blue">>
-			<<case 134>><<upperwear _index "lilac" "pink">>
-			<<case 135>><<upperwear _index "black" "red">>
-			<<default>><<upperwear _index>>
+		<<switch $_item>>
+			<<case "ghost jumper">><<upperwear $_item "white" "neon blue">>
+			<<case "heart jumper">><<upperwear $_item "lilac" "pink">>
+			<<case "skull jumper">><<upperwear $_item "black" "red">>
+			<<default>><<upperwear $_item>>
 		<</switch>>
 		<<set _crossdress to ($worn.upper.gender is "f" and $player.gender_appearance is "m") or ($worn.upper.gender is "m" and $player.gender_appearance is "f")>>
 	<<elseif !$worn.neck.cursed>>
-		<<set _slot to "neck">>
-		<<set _index to 16>>
-		<<neckwear _index>>
+		<<set $_slot to "neck">>
+		<<set $_item to "scarf">>
+		<<neckwear $_item>>
 	<<elseif $worn.head.warmth lt 3>>
 		<<set _costume to $christmas is 1 or $halloween is 1>>
-		<<set _slot to "head">>
-		<<set _index to $christmas is 1 ? 8 : $halloween is 1 ? 53 : 2>>
-		<<headwear _index>>
+		<<set $_slot to "head">>
+		<<set $_item to $christmas is 1 ? "christmas hat" : $halloween is 1 ? "bat beanie" : "beanie">>
+		<<headwear $_item>>
 	<</if>>
-	<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+	<<set _text_output to setup.clothes[$_slot][clothesIndex($_slot, $worn[$_slot])].word is "n" ? `a pair of ${$worn[$_slot].name}` : setup.clothes[$_slot][clothesIndex($_slot, $worn[$_slot])].word + " " + $worn[$_slot].name >>
 	<<set _clothes.push(_text_output)>>
 
 	<<outfitChecks>>
 	<<if _bottomExposed>>
-		<<set _slot to "lower">>
-		<<set _index to either(22, 23, 39, 67)>>
-		<<lowerwear _index>>
-		<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+		<<set $_slot to "lower">>
+		<<set $_item to either("khakis", "trousers", "jeans", "sweatpants")>>
+		<<lowerwear $_item>>
+		<<set _text_output to setup.clothes[$_slot][clothesIndex($_slot, $worn.lower)].word is "n" ? `a pair of ${$worn[$_slot].name}` : setup.clothes[$_slot][clothesIndex($_slot, $worn.lower)].word + " " + $worn[$_slot].name >>
 		<<set _clothes.push(_text_output)>>
 	<</if>>
 <</widget>>
@@ -798,7 +795,7 @@ The <<person>> smiles at you. "It's the least I can do. You go careful now, love
 <<set _exposed to $exposed gte 2>>
 <<returnCarried>>
 <<strip>>
-<<upperwear 157 "white">>
+<<upperwear "bedsheet" "white">>
 You wake up, feeling a little better than you remember. A thin sheet covers your body, keeping you modest but cool. You <<if $player.perceived_breastsize gte 2 or $player.gender_appearance is "f">>hold it to your chest as you <</if>>sit up and get a look at your surroundings. It looks like you're in
 <<switch $bus>>
 	<<case "domus" "danube" "barb" "residential" "wolf">>a living room.
@@ -965,7 +962,7 @@ It occurs to you that it might be best to put on fewer clothes for right now. An
 
 <<getDressedList>>
 
-<<link [[Just wear the bedsheet|Passout Heatstroke Rescue End]]>><<strip>><<returnCarried>><<if $worn.upper.name isnot "bedsheet">><<upperwear 157 "white">><</if>><</link>>
+<<link [[Just wear the bedsheet|Passout Heatstroke Rescue End]]>><<strip>><<returnCarried>><<if $worn.upper.name isnot "bedsheet">><<upperwear "bedsheet" "white">><</if>><</link>>
 <br>
 <<link [[Finish dressing|Passout Heatstroke Rescue End]]>><</link>>
 
@@ -1053,7 +1050,7 @@ You awaken in a dingy windowless room, the stone walls lit only by a flaming tor
 		You wake up naked and bound, wind whipping at you and sea mist spraying you. You've cooled down a lot, but that doesn't protect you much from the realisation that you're suspended off the ground! <<gstress>><<stress 6>>
 		<<set Weather.bodyTemperature-->>
 	<<else>>
-		<<upperwear 157>>
+		<<upperwear "bedsheet">>
 		You wake up bound, bare of anything but what feels like a cocoon of sheets. The wind <<if ["rain", "snow"].includes(Weather.precipitation)>>and <<= Weather.precipitation>> whip<<else>>whips<</if>> at your face, and the sea mist sprays you. You feel a lot warmer, but that doesn't provide much relief from the realisation that you're suspended off the ground! <<gstress>><<stress 6>>
 		<<set Weather.bodyTemperature++>>
 	<</if>>
@@ -1099,7 +1096,7 @@ You give <<him>> a smile and manage to mumble a thank you. <<He>> sighs, shaking
 <<link [[Ask for help|Passout Beach Heatstroke Lemonade Help]]>><</link>>
 
 :: Passout Beach Heatstroke Lemonade Take
-<<effects>><<wearProp "lemonade" 0 "default">>
+<<effects>><<wearProp "lemonade">>
 You grab the lemonade from Robin's hands and bring it to your lips. It tastes slightly salty, and your nose wrinkles at the unfamiliar taste.
 <br><br>
 "Sorry, I know it tastes kinda gross. But you need electrolytes," <<he>> says, sitting next to you. You down the lemonade as quickly as you can. "The ice, too," Robin adds.
@@ -1124,7 +1121,7 @@ You take a few small cubes into your mouth and let them sit on your tongue. It f
 <br><br>
 <<He>> takes the cup from your hands and smiles at you, but <<he>> still looks concerned.
 <br><br>
-<<link [[Next|Passout Beach Heatstroke Lemonade End]]>><<handheldon>><</link>>
+<<link [[Next|Passout Beach Heatstroke Lemonade End]]>><</link>>
 
 :: Passout Beach Heatstroke Lemonade Help
 <<effects>>
@@ -1793,7 +1790,7 @@ You wake up to cold water drenching your face. Whitney stands above you, holding
 	<<if C.npc.Whitney.dom gte 15>>
 		<<person1>><<He>> tips the bottle against your lips, forcing you to down the whole thing in several desperate gulps.
 	<<else>>
-		<<wearProp "water bottle" 0 "open">>
+		<<wearProp "water bottle open">>
 		"Here," <<person1>><<he>> says, thrusting it into your hands. "Drink it. All of it." You down it all in several desperate gulps.
 	<</if>>
 	Some of it dribbles down your neck and chest. It's ice cold.
@@ -2041,12 +2038,12 @@ after all." <<He>> almost sounds like <<hes>> trying to scold you.
 <<elseif _shirtless or _bottomExposed>>
 	<<He>> suddenly seems to realise the implications of your state of dress. "Oh, clothes! You need clothes." <<He>> quickly rummages through an antique wardrobe nearby and hands you
 	<<if $player.gender_appearance is "f">>
-		a sundress. <<upperwear 5 "white">>
+		a sundress. <<upperwear "school shirt" "white">>
 	<<elseif _shirtless>>
-		<<upperwear 4 "tangerine">>
-		an orange shirt<<if _bottomExposed>> and blue shorts<<lowerwear 5 "blue">><</if>>.
+		<<upperwear "t-shirt" "tangerine">>
+		an orange shirt<<if _bottomExposed>> and blue shorts<<lowerwear "shorts" "blue">><</if>>.
 	<<else>>
-		a pair of blue shorts.<<lowerwear 5 "blue">>
+		a pair of blue shorts.<<lowerwear "shorts" "blue">>
 	<</if>>
 	It feels strangely nostalgic. You change into the provided clothes.
 	<<if $passoutReason is "hypothermia">>
@@ -2449,13 +2446,13 @@ Soaked in sweat and still somewhat weak, you climb to your feet. Maybe you shoul
 <<link [[Next|$safePassage]]>><<endevent>><<set $eventskip to 1>><</link>>
 
 :: Passout Robin Hypothermia Park
-<<effects>><<npc Robin>><<person1>><<wearProp "thermos" 0 "hot">>
+<<effects>><<npc Robin>><<person1>><<wearProp "thermos hot">>
 
 You wake up to the smell of hot chocolate. Robin kneels next to you, looking worried. "Are you okay?" <<He>> takes a look at what you're wearing<<if $exposed gte 1>>, or rather what you're not wearing<</if>>.
 <br><br>
 <<if C.npc.Robin.dom gte 50>>
 	<<upperundress "Robin_upper">>
-	<<upperwear 71>>
+	<<upperwear "puffer jacket">>
 	"What in the world are you wearing? In this weather?" <<he>> tuts. <<He>> drapes <<his>> puffer jacket over your shoulders and then places a warm thermos in your hands. "Here, drink this. It'll help you warm up."
 	<<set Weather.Temperature.override.increase.outside(-5, "Robin's puffer jacket making you warm.")>>
 <<else>>
@@ -2473,9 +2470,9 @@ The hot chocolate is warm and sweet as it goes down, and the radiant heat of the
 	"H-hey, erm... M-maybe you should go home and change. I can come with you?"
 <</if>>
 <br><br>
-<<link [[Accept|Passout Robin Hypothermia Park 2]]>><<handheldon>><<set $phase to 0>><</link>>
+<<link [[Accept|Passout Robin Hypothermia Park 2]]>><<set $phase to 0>><</link>>
 <br>
-<<link [[Decline|Passout Robin Hypothermia Park 2]]>><<handheldon>><<set $phase to 1>><</link>>
+<<link [[Decline|Passout Robin Hypothermia Park 2]]>><<set $phase to 1>><</link>>
 
 :: Passout Robin Hypothermia Park 2
 <<effects>>
@@ -2515,7 +2512,7 @@ The hot chocolate is warm and sweet as it goes down, and the radiant heat of the
 		<<storeon "Robin_upper">>
 		<<if $worn.hands.name is "naked">>
 			<<He>> removes <<his>> fingerless gloves and gives them to you. "I don't need them back, just... be safe, you know?"
-			<<handswear 1 "purple">>
+			<<handswear "fingerless gloves" "purple">>
 		<</if>>
 	<<else>>
 		"I... O-okay, if you know what you're doing..." <<He>> looks to <<his>> feet. "Just... promise me you'll be careful."
@@ -2613,7 +2610,7 @@ You wake up to the sound of pen scribbling on paper. You look around and see gre
 		<</if>>
 		<br><br>
 
-		<<He>> fetches a jacket from the back of the tent. "Here, take this," <<he>> says, wrapping it around your shoulders. "I have a few spares." <<upperwear 49 "grey" "blue steel">>
+		<<He>> fetches a jacket from the back of the tent. "Here, take this," <<he>> says, wrapping it around your shoulders. "I have a few spares." <<upperwear "peacoat" "grey" "blue steel">>
 		<br><br>
 
 		<<He>> stays by your side and spends a few minutes lecturing you.
@@ -2782,12 +2779,12 @@ The paramedics insist on wheeling you onboard in a gurney, despite being alert a
 		<<set $clothingselector to $player.gender_appearance>>
 	<</if>>
 	<<if $clothingselector is "m">>
-		<<underlowerwear 4>>
-		<<upperwear 4>>
-		<<lowerwear 5>>
+		<<underlowerwear "briefs">>
+		<<upperwear "t-shirt">>
+		<<lowerwear "shorts">>
 	<<else>>
-		<<upperwear 1>>
-		<<underlowerwear 1>>
+		<<upperwear "sundress">>
+		<<underlowerwear "plain panties">>
 	<</if>>
 <</if>>
 
@@ -2908,7 +2905,7 @@ You wake up in an unfamiliar room.
 	<br><br>
 
 	"This cold weather's dangerous, you know," a voice says. "You're lucky that we had some clothes lying around, but we are going to need them back."
-	<<upperwear 41 "tan">><<lowerwear 22 "denim">>
+	<<upperwear "leather jacket" "tan">><<lowerwear "jeans" "denim">>
 <<else>>
 	<<set Weather.Temperature.override.increase.outside(-5, "The fan cools you.")>>
 	A standing fan is blowing on your face. There's a glass of water next to you. You take it and drink the entire glass in one breath.
@@ -3065,7 +3062,7 @@ You get up and flee into the woods, hoping to get out of sight of your peers and
 <<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
 
 :: Passout Heatstroke Ice Cube
-<<effects>><<upperstrip>><<lowerstrip>><<facestrip>><<bindtemp>><<facewear 4>>
+<<effects>><<upperstrip>><<lowerstrip>><<facestrip>><<bindtemp>><<facewear "gag">>
 <<generatey1>><<generatey2>>
 
 As you come to, you realise that you have been stripped down to your <<undies>>, gagged, and tied to a chair in the alley. Before you can get your bearings, you hear the voice of one of your classmates, a <<person1>><<person>>. "Shush! <<pShes>> waking up. Start recording."
@@ -3092,7 +3089,7 @@ As you come to, you realise that you have been stripped down to your <<undies>>,
 
 :: Passout Beach Heatstroke Wet Shirt
 <<effects>><<set $location to "beach">><<set $outside to 1>>
-<<upperstrip>><<lowerstrip>><<underupperstrip>><<underlowerstrip>><<upperwear 148 "white">>
+<<upperstrip>><<lowerstrip>><<underupperstrip>><<underlowerstrip>><<upperwear "oversized button-down" "white">>
 <<generate1>><<person1>>
 
 You wake up under a small awning on the beach. Sitting up on the beach towel, you realise your clothing is gone. You're wearing nothing but a white oversized button-down shirt. Before you can speak, a <<person>> explains, "Hey, glad to see you're awake. I saw you passed out and decided to keep an eye on you while you recovered."
@@ -3115,7 +3112,7 @@ When you ask where your clothes are, <<he>> responds, "Well... I'm not entirely 
 <<if $phase is 2>>
 	You refuse to go along with the request, and the <<person>> shrugs. "Suit yourself," <<he>> says, walking away. You look around for your clothes but turn up empty-handed. The button-down will have to do.
 	<br><br>
-	<<link [[Next|Beach]]>><<upperruined>><<lowerruined>><<underupperruined>><<underlowerruined>><<upperwear 148 "white">><</link>>
+	<<link [[Next|Beach]]>><<upperruined>><<lowerruined>><<underupperruined>><<underlowerruined>><<upperwear "oversized button-down" "white">><</link>>
 <<else>>
 	<<generate2>><<generate3>><<fameexhibitionism 5>><<set $upperwetstage to 2>><<set $lowerwetstage to 2>>
 
@@ -3468,7 +3465,7 @@ You wake up in a well-appointed sitting room feeling much
 	<<set _clothes to []>>
 
 	<<if $worn.upper.warmth gt 3>>
-		<<set _slot to "upper">>
+		<<set $_slot to "upper">>
 		<<set _upper to []>>
 		<<if _gender is "m" or $settings.forcedCrossdressingEnabled>>
 			/* masc: short sailor shirt */
@@ -3478,24 +3475,24 @@ You wake up in a well-appointed sitting room feeling much
 			/* femme: babydoll */
 			<<set _upper.push(17)>>
 		<</if>>
-		<<set _index to _upper.random()>>
+		<<set $_item to _upper.random()>>
 		<<upperstrip>><<upperruined>>
-		<<upperwear _index>>
-		<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+		<<upperwear $_item>>
+		<<set _text_output to setup.clothes[$_slot][clothesIndex($_slot, $_item)].word is "n" ? `a pair of ${$worn[$_slot].name}` : setup.clothes[$_slot][clothesIndex($_slot, $_item)].word + " " + $worn[$_slot].name >>
 		<<set _clothes.push(_text_output)>>
 	<</if>>
 
 	<<outfitChecks>>
 	<<if _bottomExposed>>
-		<<set _slot to "lower">>
-		<<switch _index>>
-			<<case 57>><<set _index to 52>> /* short sailor shirt match sailor shorts*/
-			<<case 17>><<set _index to 76>> /* babydoll match booty jorts*/
-			<<default>><<set _index to 21>> /* neutral: cycle shorts */
+		<<set $_slot to "lower">>
+		<<switch $_item>>
+			<<case 57>><<set $_item to 52>> /* short sailor shirt match sailor shorts*/
+			<<case 17>><<set $_item to 76>> /* babydoll match booty jorts*/
+			<<default>><<set $_item to 21>> /* neutral: cycle shorts */
 		<</switch>>
 		<<lowerruined>>
-		<<lowerwear _index>>
-		<<set _text_output to setup.clothes[_slot][_index].word is "n" ? `a pair of ${$worn[_slot].name}` : setup.clothes[_slot][_index].word + " " + $worn[_slot].name >>
+		<<lowerwear $_item>>
+		<<set _text_output to setup.clothes[$_slot][clothesIndex($_slot, $_item)].word is "n" ? `a pair of ${$worn[$_slot].name}` : setup.clothes[$_slot][clothesIndex($_slot, $_item)].word + " " + $worn[$_slot].name >>
 		<<set _clothes.push(_text_output)>>
 	<</if>>
 	cooler than before. You see an open window nearby, letting in a refreshing breeze. <<if _clothes.length gte 1>>You look down to find that you're dressed in <<= _clothes.join(" and ")>>.<</if>>

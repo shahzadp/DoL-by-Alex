@@ -1,3 +1,4 @@
+/* globals orphanagePlotsPlanted orphanagePlotsWatered */
 /* Time namespace
 	Use Time prefix when accessing any getters or functions (e.g. Time.second, Time.schoolDay, or Time.getLastDayOfMonth(), etc.)
 	Getters: (Most of these are being used in one way or another)
@@ -1045,7 +1046,16 @@ function hourPassed(hours) {
 
 	// Robin autowatering
 	// Include "bath" as a location since bathing is from 17:00-17:29
-	if (Time.hour === 17 && V.robin.autoWater && C.npc.Robin.trauma < 50 && ["orphanage", "garden", "bath"].includes(getRobinLocation()) && Weather.precipitation !== "rain" && (Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) && orphanagePlotsPlanted() && !orphanagePlotsWatered()) {
+	if (
+		Time.hour === 17 &&
+		V.robin.autoWater &&
+		C.npc.Robin.trauma < 50 &&
+		["orphanage", "garden", "bath"].includes(getRobinLocation()) &&
+		Weather.precipitation !== "rain" &&
+		(Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) &&
+		orphanagePlotsPlanted() &&
+		!orphanagePlotsWatered()
+	) {
 		Object.entries(V.plots).forEach(([location, plots]) => {
 			if (location === "garden") {
 				plots.forEach(plot => (plot.water = 1));
@@ -1376,7 +1386,10 @@ function dailyNPCEffects() {
 					V.avery_mansion.injury_stage = "healing";
 				} else if (V.avery_mansion.injury_timer <= 15 && !["cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)) {
 					V.avery_mansion.injury_stage = "cast";
-				} else if (V.avery_mansion.injury_timer <= 30 && !["sling", "sling_done", "cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)) {
+				} else if (
+					V.avery_mansion.injury_timer <= 30 &&
+					!["sling", "sling_done", "cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)
+				) {
 					V.avery_mansion.injury_stage = "sling";
 				}
 			}
@@ -2341,7 +2354,7 @@ function earSlimeDaily(passageEffects = false) {
 		V.earSlime.eventTimer = Math.clamp(V.earSlime.eventTimer, V.earSlime.corruption / -5 - 5, 10);
 
 		// Daily Growth
-		if (V.earSlime.corruption >= 60 && V.earSlime.corruption > (V.earSlime.growth / 2)) {
+		if (V.earSlime.corruption >= 60 && V.earSlime.corruption > V.earSlime.growth / 2) {
 			if (numberOfEarSlime() > 1) V.earSlime.growth += 2;
 			else if (V.earSlime.growth < 50) V.earSlime.growth++;
 		} else if (V.earSlime.corruption < 30 && V.earSlime.growth <= 50) {

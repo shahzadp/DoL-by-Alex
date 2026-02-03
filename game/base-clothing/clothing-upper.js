@@ -8039,8 +8039,8 @@ function initUpper() {
 			exposed_base: 0,
 			type: ["formal"],
 			set: "upper",
-			gender: "m",
-			femininity: -100,
+			gender: "n",
+			femininity: 0,
 			warmth: 8,
 			cost: 16000,
 			description: "Smart and sophisticated.",
@@ -8539,7 +8539,7 @@ function initUpper() {
 			name: "bedsheet",
 			name_cap: "Bedsheet",
 			variable: "bedsheet",
-			holdPosition: "hold",
+			holdPosition: "right_hold",
 			combat: {
 				reference: "sundress",
 				mainColour: "#ffffff",
@@ -10663,6 +10663,7 @@ function initUpper() {
 			variable: "butterflydress",
 			combat: {
 				reference: "sundress",
+				hasBreastsAcc: false,
 			},
 			integrity: 150,
 			integrity_max: 150,

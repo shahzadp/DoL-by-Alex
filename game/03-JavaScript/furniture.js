@@ -62,7 +62,6 @@ const Furniture = (() => {
 			description: "An old, hand-me-down chair. Wobbly and uncomfortable.",
 			iconFile: "basicChair",
 			iconFile2: "basicChairDesk",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("stool", {
@@ -76,7 +75,6 @@ const Furniture = (() => {
 			description: "A set of stools. Uncomfortable, but better than nothing.",
 			iconFile: "stool",
 			iconFile2: "stoolDesk",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("woodenchair", {
@@ -90,7 +88,6 @@ const Furniture = (() => {
 			description: "A set of regular wooden chairs. Not the most comfortable.",
 			iconFile: "chair",
 			iconFile2: "chairDesk",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("swivelchair", {
@@ -104,7 +101,6 @@ const Furniture = (() => {
 			description: "A pair of swivel chairs. Comfortable and ergonomic.",
 			iconFile: "swivelChair",
 			iconFile2: "swivelChairDesk",
-			handheld: "catalogue",
 			tier: 1,
 		});
 		mapper.set("shellchair", {
@@ -118,7 +114,6 @@ const Furniture = (() => {
 			description: "A set of wheeled chairs with a shell-shaped back. Luxurious.",
 			iconFile: "shellChair",
 			iconFile2: "shellChairDesk",
-			handheld: "catalogue",
 			tier: 1,
 		});
 		mapper.set("armchair", {
@@ -132,7 +127,6 @@ const Furniture = (() => {
 			description: "A set of armchairs. Soft, relaxing, and expensive.",
 			iconFile: "armchair",
 			iconFile2: "armchairDesk",
-			handheld: "catalogue",
 			tier: 1,
 		});
 		mapper.set("egg", {
@@ -146,7 +140,6 @@ const Furniture = (() => {
 			description: "A set of armchairs with a rounded back, in exotic colours. A chore to set up.",
 			iconFile: "armchairegg",
 			iconFile2: "armchaireggDesk",
-			handheld: "catalogue",
 			tier: 1,
 		});
 
@@ -159,7 +152,6 @@ const Furniture = (() => {
 			cost: 1100,
 			description: "Can be used as a working or gathering spot. Just add chairs.",
 			iconFile: "table",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("marbletable", {
@@ -170,7 +162,6 @@ const Furniture = (() => {
 			cost: 1430,
 			description: "A regular wooden table with a twist.",
 			iconFile: "marbletable",
-			handheld: "catalogue",
 			tier: 1,
 		});
 
@@ -221,7 +212,6 @@ const Furniture = (() => {
 			cost: 0,
 			description: "An old, poor bed. Uncomfortable.",
 			iconFile: "bed",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("singlebed", {
@@ -232,7 +222,6 @@ const Furniture = (() => {
 			cost: 1680,
 			description: "A bed for one.",
 			iconFile: "singlebed",
-			handheld: "catalogue",
 			tier: 0,
 		});
 		mapper.set("singlebeddeluxe", {
@@ -243,7 +232,6 @@ const Furniture = (() => {
 			cost: 2400,
 			description: "An ergonomically designed bed. Very comfortable.",
 			iconFile: "singlebeddeluxe",
-			handheld: "catalogue",
 			tier: 1,
 		});
 		mapper.set("doublebed", {
@@ -254,7 +242,6 @@ const Furniture = (() => {
 			cost: 3400,
 			description: "A simple bed. Fits two.",
 			iconFile: "doublebed",
-			handheld: "catalogue",
 			tier: 1,
 			showCheck: "notBedroom",
 		});
@@ -266,7 +253,6 @@ const Furniture = (() => {
 			cost: 2840,
 			description: "A beautiful bed with a soft mattress. Very comfortable, fits two.",
 			iconFile: "doublebeddeluxe",
-			handheld: "catalogue",
 			tier: 2,
 			showCheck: "notBedroom",
 		});
@@ -278,7 +264,6 @@ const Furniture = (() => {
 			cost: 4884,
 			description: "A bed made in a contemporary, minimalist style. Very comfortable, fits two.",
 			iconFile: "doublebedexotic",
-			handheld: "catalogue",
 			tier: 2,
 			showCheck: "notBedroom",
 		});
@@ -290,7 +275,6 @@ const Furniture = (() => {
 			cost: 4860,
 			description: "An authentic bed on a rattan frame. Very comfortable, fits two.",
 			iconFile: "doublebedwicker",
-			handheld: "catalogue",
 			tier: 2,
 			showCheck: "notBedroom",
 		});
@@ -313,7 +297,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 840,
 			description: "A cement planter for small succulents. Pre-planted with 'Monilaria obconica', also known as a bunny succulent.",
-			handheld: "catalogue",
 			iconFile: "bunnySucculent",
 		});
 		mapper.set("jar", {
@@ -323,7 +306,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 1380,
 			description: "A cylindrical jar. Can be put on your windowsill.",
-			handheld: "catalogue",
 			iconFile: "jar",
 		});
 		mapper.set("penguinplushie", {
@@ -333,7 +315,7 @@ const Furniture = (() => {
 			type: [],
 			cost: 1030,
 			description: "Soft and cuddly. Can be put on your windowsill.",
-			handheld: "plushie|0|penguin",
+			handheld: "penguin plushie",
 			iconFile: "penguinPlushie",
 		});
 		mapper.set("yespillow", {
@@ -343,7 +325,7 @@ const Furniture = (() => {
 			type: [],
 			cost: 725,
 			description: "Enthusiastically consensual. Can be put on your windowsill.",
-			handheld: "pillow|0|yes",
+			handheld: "yes pillow",
 			iconFile: "yesPillow",
 		});
 		mapper.set("nopillow", {
@@ -353,7 +335,7 @@ const Furniture = (() => {
 			type: [],
 			cost: 725,
 			description: "For when no means no. Can be put on your windowsill.",
-			handheld: "pillow|0|no",
+			handheld: "no pillow",
 			iconFile: "noPillow",
 		});
 
@@ -365,7 +347,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 360,
 			description: "The days of this calendar are numbered.",
-			handheld: "catalogue",
 			iconFile: "calendar",
 		});
 		mapper.set("painting", {
@@ -375,7 +356,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 680,
 			description: "It's not actually a painting. It's an illustration. ",
-			handheld: "catalogue",
 			iconFile: "painting",
 		});
 		mapper.set("banner", {
@@ -385,7 +365,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 620,
 			description: "A figure from an old movie is poised in the centre.",
-			handheld: "catalogue",
 			iconFile: "banner",
 		});
 		mapper.set("bannerlewd", {
@@ -395,7 +374,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 790,
 			description: "A banner with a tentacle.",
-			handheld: "catalogue",
 			iconFile: "bannerlewd",
 		});
 		mapper.set("bannerfestive", {
@@ -405,7 +383,6 @@ const Furniture = (() => {
 			type: [],
 			cost: 670,
 			description: "It may or may not be in season, but it still looks cool.",
-			handheld: "catalogue",
 			iconFile: "bannerfestive",
 		});
 		mapper.set("bearplushie", {
@@ -425,7 +402,7 @@ const Furniture = (() => {
 			type: [],
 			cost: 1380,
 			description: "Soft and sweet.",
-			handheld: "pillow|0|candy",
+			handheld: "candy pillow",
 			iconFile: "candyPillow",
 		});
 		mapper.set("owlplushie", {
@@ -451,7 +428,6 @@ const Furniture = (() => {
 			cost: 0,
 			description: "An old, creaky wardrobe. Doesn't hold much.",
 			iconFile: "wardrobe",
-			handheld: "catalogue",
 			tier: 0,
 			showCheck: "disabled",
 		});
@@ -463,7 +439,6 @@ const Furniture = (() => {
 			cost: 3160,
 			description: "A basic wardrobe cabinet.",
 			iconFile: "wardrobebasic",
-			handheld: "catalogue",
 			tier: 1,
 			showCheck: "isWardrobeHigherTier",
 		});
@@ -475,7 +450,6 @@ const Furniture = (() => {
 			cost: 3258,
 			description: "A spacious wooden armoire.",
 			iconFile: "armoire",
-			handheld: "catalogue",
 			tier: 1,
 			showCheck: "isWardrobeHigherTier",
 		});
@@ -487,7 +461,6 @@ const Furniture = (() => {
 			cost: 4296,
 			description: "A wardrobe with a lot of space.",
 			iconFile: "wardrobeorganiser",
-			handheld: "catalogue",
 			tier: 2,
 			showCheck: "isWardrobeHigherTier",
 		});
@@ -499,7 +472,6 @@ const Furniture = (() => {
 			cost: 4620,
 			description: "Carved by hand, it holds several drawers and garment rods.",
 			iconFile: "armoirecarved",
-			handheld: "catalogue",
 			tier: 2,
 			showCheck: "isWardrobeHigherTier",
 		});
@@ -522,7 +494,6 @@ const Furniture = (() => {
 			type: ["wallpaper", "starter"],
 			cost: 135,
 			description: "The wallpaper is currently empty.",
-			handheld: "catalogue",
 			iconFile: "wallpaper",
 		});
 	}
