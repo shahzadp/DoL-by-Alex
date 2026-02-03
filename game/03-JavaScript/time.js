@@ -531,20 +531,21 @@ function weekPassed() {
 
 	if (V.avery_mansion) {
 		V.avery_mansion.date_seen = false;
+		V.avery_tower.progress += 5;
 		if (V.avery_tower.effects.includes("theft")) {
-			V.avery_tower.progress -= 4;
+			V.avery_tower.progress -= 5;
 		}
 		if (V.avery_tower.effects.includes("temple")) {
-			V.avery_tower.progress -= 4;
+			V.avery_tower.progress -= 5;
 		}
 		if (V.avery_tower.effects.includes("mayor")) {
-			V.avery_tower.progress += 4;
+			V.avery_tower.progress += 5;
 		}
 		if (V.avery_tower.effects.includes("Remy")) {
-			V.avery_tower.progress += 4;
+			V.avery_tower.progress += 5;
 		}
 		if (V.avery_tower.effects.includes("Harper")) {
-			V.avery_tower.progress += 4;
+			V.avery_tower.progress += 5;
 		}
 		V.avery_tower.progress = Math.clamp(V.avery_tower.progress, 0, 100);
 

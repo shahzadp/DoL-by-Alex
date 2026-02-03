@@ -2198,16 +2198,19 @@ You disembark. Curiously, the boat starts floating in the return direction as so
 <<else>>
 	/*
 	Set up broad categories of events.
-	These allow understanding the odds of each category per location, then perform additional relative weight adjustments within each event pool.
+	These allow understanding the odds of each category per location, then performing weight adjustments within each event pool.
 	*/
 	<<cleareventpool>>
-	<<switch $island.home>> /* Weight doesn't add up neatly to 100 outside of rocky_hillock, but this ensures the lost weight is distributed evenly among other event categories */
+	<<switch $island.home>> /* Weight adds up to 100. Food and antique pools shift weight for risk-reward */
 		<<case "rocky_hillock">>
-			<<set _weightWalnuts to $island.explore is "shore" ? 40 : 15>>
+			<<set _weightWalnuts to $island.explore is "shore" ? 35 : 15>>
+			<<set _weightAntiques to $island.explore is "plain" ? 30 : 10>>
 		<<case "waterfall">>
 			<<set _weightWalnuts to $island.explore is "shore" ? 30 : 10>>
+			<<set _weightAntiques to $island.explore is "plain" ? 35 : 15>>
 		<<case "gulch">>
-			<<set _weightWalnuts to $island.explore is "shore" ? 20 : 5>>
+			<<set _weightWalnuts to $island.explore is "shore" ? 25 : 5>>
+			<<set _weightAntiques to $island.explore is "plain" ? 40 : 20>>
 		<<default>>
 			<<error {
 				message	: `No island home was set when checked in ${$passage}. Please report this to Vrelnir.`,
@@ -2215,10 +2218,9 @@ You disembark. Curiously, the boat starts floating in the return direction as so
 			}>>
 			<br><br>
 	<</switch>>
-	<<set _weightMiscellaneous to $island.explore is "none" ? 35 : 10>>
+	<<set _weightMiscellaneous to $island.explore is "none" ? 35 : 15>>
 	<<set _weightWood to $island.explore is "wood" ? 40 : 20>>
 	<<set _weightIslanders to $island.explore is "battleground" ? 40 : 20>>
-	<<set _weightAntiques to $island.explore is "plain" ? 35 : 10>>
 
 	<<addevent "island_events_category_miscellaneous" _weightMiscellaneous>>
 	<<addevent "island_events_category_walnuts" _weightWalnuts>>
