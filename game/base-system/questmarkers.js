@@ -233,7 +233,7 @@ Macro.add("questmarker", {
 		let topprio = 0;
 		importants.forEach(ev => {
 			// make sure priority exists for filtering later
-			ev.priority ||= 1;
+			if (ev.priority == null) ev.priority = 1;
 			if (ev.priority > topprio) topprio = ev.priority;
 		});
 		// pick a random event from highest priority ones

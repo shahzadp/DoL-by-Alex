@@ -162,6 +162,7 @@
 <</widget>>
 
 <<widget "listdancingclothes">>
+	/* todo: convert to using $wardrobes */
 	<<set _store_location to _args[0]>>
 	<<set _slot to "under_upper">>
 	<<for _index, _outfit range $wardrobe[_slot].sort((a, b) => (a.name > b.name) ? 1 : -1)>>
@@ -178,6 +179,10 @@
 					<span class="grey"><<print _outfit.name>> (Equipped)</span>
 				<<else>>
 					<<link [["Wear "+_outfit.name|$passage]]>>
+						/* todo: grey out the option if rent is due and make use of wardrobes in other safehouses when available */
+						/* for now, assume we're in the city and the closest wardrobe is the orphanage and it's always available */
+						<<set _wardrobe_location to $wardrobe_location>>
+						<<set $wardrobe_location to "wardrobe">>
 						<<if clothingInStorage(_store_location).length is 0>>
 							<<storesave _store_location>>
 							<<set $wearoutfittext to _outfit.name>>
@@ -185,6 +190,7 @@
 						<<set $eventskip to 1>>
 						<<set _item_index to $wardrobe[_slot].indexOf(_outfit)>>
 						<<generalWearFromWardrobe _slot _item_index>>
+						<<set $wardrobe_location to _wardrobe_location>>
 					<</link>>
 				<</if>>
 				<br>
