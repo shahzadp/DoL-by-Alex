@@ -1898,10 +1898,10 @@ function validateTransformations() {
 			physTFs.map(tf => tf.name)
 		);
 	if (V.physicalTransform === 1 && physTFs.length === 0) Errors.report("Couldn't find active physical transformation, modded save?");
-	V.physicalTransform = Math.max(physTFs.length, 1);
+	V.physicalTransform = Math.min(physTFs.length, 1);
 
 	const specTFs = setup.transformations.filter(tf => tf.type === "specialTransform" && tf.level >= (tf.name === "fallenangel" ? 2 : 1));
-	V.specialTransform = Math.max(specTFs.length, 1);
+	V.specialTransform = Math.min(specTFs.length, 1);
 
 	const confirmedTraits = [];
 	setup.transformations.forEach(tf => {
