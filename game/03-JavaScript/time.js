@@ -412,6 +412,7 @@ const Time = (() => {
 		isWeekEnd: () => currentDate.weekEnd,
 		hasDatePassed,
 		betweenHours,
+		openingHours: minutes => betweenHours(7, 20, minutes),
 		oxygenResaturationDuration,
 	});
 })();
@@ -1018,7 +1019,6 @@ function hourPassed(hours) {
 		V.pregnancyDailyEvent = true;
 	}
 
-	V.openinghours = Time.hour >= 7 && Time.hour < 21 ? 1 : 0;
 	V.timeMessages.pushUnique("feats");
 
 	if (!V.wolfevent) V.wolfevent = 1;
