@@ -970,6 +970,14 @@ function settingsObjects(type) {
 					textMap: { 1: "Normal", 2: "Sensitive", 3: "Very Sensitive" },
 					randomize: "characterTrait",
 				},
+				alcoholMod: {
+					min: 0.5,
+					max: 1.5,
+					decimals: 1,
+					displayName: "Alcohol tolerance:",
+					textMap: { 0.5: "Heavyweight", 1: "Normal", 1.5: "Lightweight" },
+					randomize: "characterTrait",
+				},
 				eyeselect: {
 					strings: ["purple", "dark blue", "light blue", "amber", "hazel", "green", "lime green", "red", "pink", "grey", "light grey", "random"],
 					randomize: "characterAppearance",
