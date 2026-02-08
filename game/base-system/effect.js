@@ -1120,6 +1120,37 @@ function effects() {
 			delete V.pregnancyDailyEvent;
 		}
 
+		// Check if any parasites are present before running events. If not, clear events.
+		// TODO: Clear event messages in the case of "staggered" births where some parasites remain in that category. Otherwise, all events will continue to play until the daily reset, even if some parasites have already been birthed.
+		if (V.daily.parasiteEvent) {
+			if (V.sexStats.vagina.pregnancy.type === "parasite") {
+				for (let i = 0; i < maxParasites("vagina"); i++) {
+					if (V.sexStats.vagina.pregnancy.fetus[i] != undefined) {
+						T.hasVaginaParasiteForEvent = true;
+						break;
+					}
+				}
+			}
+			if (V.sexStats.anus.pregnancy.type === "parasite") {
+				for (let i = 0; i < maxParasites("anus"); i++) {
+					if (V.sexStats.anus.pregnancy.fetus[i] != undefined) {
+						T.hasAnusParasiteForEvent = true;
+						break;
+					}
+				}
+			}
+			if (!T.hasVaginaParasiteForEvent) {
+				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function(event) {
+					return !event.includes("vagina");
+				});
+			}
+			if (!T.hasAnusParasiteForEvent) {
+				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function(event) {
+					return !event.includes("anus");
+				});
+			}
+		}
+
 		if (V.daily.parasiteEvent) {
 			let minDaysLeft;
 			if (V.sexStats.vagina.pregnancy.type === "parasite") {

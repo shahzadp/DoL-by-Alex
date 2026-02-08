@@ -937,7 +937,7 @@ window.gwylanHypnoMax = gwylanHypnoMax;
 
 function gwylanForestRescueRange() {
 	if (!V.gwylanSeen?.includes("ritual_sex")) return 25;
-	if (V.worn.neck.name === "familiar collar") return 100;
+	if (V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1) return 100;
 	if (V.fox >= 6) return 50;
 	return 25;
 }
