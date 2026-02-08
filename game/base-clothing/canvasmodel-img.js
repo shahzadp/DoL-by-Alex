@@ -225,7 +225,7 @@ DefineMacro("modelprepare-player-body", function () {
 	function useHold(arm) {
 		const rightHoldClothes =
 			setup.clothes_all_slots.some(slot => ["right_hold", "clutch"].includes(V.worn[slot]?.holdPosition)) ||
-			(V.worn.handheld.name !== "naked" && !["left_cover", "left_idle"].includes(V.worn.handheld?.holdPosition));
+			(V.worn.handheld.name !== "naked" && !["left_cover", "left_idle", "idle_both"].includes(V.worn.handheld?.holdPosition));
 		const leftHoldClothes = setup.clothes_all_slots.some(slot => V.worn[slot]?.holdPosition === "left_hold");
 
 		if ((arm === "right" && rightHoldClothes) || (arm === "left" && leftHoldClothes)) return true;
