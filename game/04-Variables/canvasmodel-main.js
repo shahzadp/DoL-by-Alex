@@ -1165,7 +1165,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			zfn(options) {
-				return (options.arm_left === "cover") ? ZIndices.arms_cover_left - 1.5 : options.zarms;
+				return (options.arm_left === "cover") ? ZIndices.left_cover_arm : options.zarms;
 			},
 			showfn(options) {
 				return options.arm_left !== "none";
@@ -1181,7 +1181,8 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			zfn(options) {
-				return (options.arm_right === "cover" || options.arm_right === "hold") ? ZIndices.arms_cover_right - 1.25 : options.zarms;
+				if (["cover", "hold"].includes(options.arm_right)) return ZIndices.right_cover_arm;
+				return options.zarms;
 			},
 			showfn(options) {
 				return options.arm_right !== "none";
@@ -2021,7 +2022,6 @@ Renderer.CanvasModels.main = {
 			},
 		},
 		"writing_left_shoulder": {
-			z: ZIndices.skin,
 			animation: "idle",
 
 			srcfn(options) {
@@ -2029,6 +2029,10 @@ Renderer.CanvasModels.main = {
 			},
 			showfn(options) {
 				return options.show_writings && !!options.writing_left_shoulder;
+			},
+			zfn(options) {
+				if (["cover", "hold"].includes(options.arm_left)) return ZIndices.left_cover_arm + 0.5;
+				return ZIndices.breasts + 0.5;
 			},
 		},
 		"writing_right_shoulder": {
@@ -2045,7 +2049,8 @@ Renderer.CanvasModels.main = {
 				return 0;
 			},
 			zfn(options) {
-				return ["cover", "hold"].includes(options.arm_right) ? ZIndices.arms_cover + 0.1 : ZIndices.armsidle + 0.1;
+				if (["cover", "hold"].includes(options.arm_right)) return ZIndices.right_cover_arm + 0.5;
+				return ZIndices.armsidle + 0.5;
 			},
 		},
 		"writing_pubic": {
@@ -3282,8 +3287,7 @@ Renderer.CanvasModels.main = {
 					&& options.arm_right !== "none";
 			},
 			zfn(options) {
-				return (options.arm_right === "cover" || options.arm_right === "hold") ?
-					ZIndices.hands : options.zarms + 0.2;
+				return ["cover", "hold"].includes(options.arm_right) ? ZIndices.arms_cover_right - 0.5 : options.zarms + 0.2;
 			},
 		},
 		"hands_right_detail": {
@@ -3399,7 +3403,9 @@ Renderer.CanvasModels.main = {
 				return options.worn.handheld.setup.leftImage === 1;
 			},
 			zfn(options) {
-				return options.arm_left === "cover" ? ZIndices.hands : (options.zarms + 0.2);
+				if (options.arm_left === "cover") return ZIndices.old_over_upper;
+				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
+				return ZIndices[options.worn.handheld.setup.zIndex];
 			},
 			filtersfn() {
 				return ["worn_handheld"];
@@ -3420,7 +3426,9 @@ Renderer.CanvasModels.main = {
 				return hasLeftAcc;
 			},
 			zfn(options) {
-				return options.arm_left === "cover" ? ZIndices.hands : (options.zarms + 0.2);
+				if (options.arm_left === "cover") return ZIndices.old_over_upper;
+				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
+				return ZIndices[options.worn.handheld.setup.zIndex];
 			},
 			filtersfn() {
 				return ["worn_handheld_acc"];
@@ -3441,7 +3449,9 @@ Renderer.CanvasModels.main = {
 				return hasLeftDetail;
 			},
 			zfn(options) {
-				return options.handheld_overhead ? ZIndices.old_over_upper : ZIndices.handheld;
+				if (options.arm_left === "cover") return ZIndices.old_over_upper;
+				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
+				return ZIndices[options.worn.handheld.setup.zIndex];
 			},
 		}),
 		"handheld_back": genlayer_clothing_back_img('handheld', {
