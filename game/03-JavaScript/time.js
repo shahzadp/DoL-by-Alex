@@ -721,6 +721,9 @@ function dayPassed() {
 		V.pound.tasks = [];
 	}
 
+	if (V.valentines && Time.monthDay === 13) V.timeMessages.pushUnique("valentinesTomorrow");
+	if (V.valentines && Time.monthDay === 14) V.timeMessages.pushUnique("valentinesToday");
+
 	if (V.avery_mansion && V.avery_fate !== "fallen" && V.avery_fate !== "kicked") {
 		// Avery takes on the PC's debt, but stops if unsatisfied
 		if (Time.weekDay !== 1) {
