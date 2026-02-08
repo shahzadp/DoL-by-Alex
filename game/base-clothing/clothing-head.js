@@ -1249,6 +1249,7 @@ function initHead() {
 			location: 0,
 			iconFile: "tam_o_shanter.png",
 			accIcon: "tam_o_shanter_acc.png",
+			detailIcon: "tam_o_shanter_pompom.png",
 		},
 		{
 			index: 34,

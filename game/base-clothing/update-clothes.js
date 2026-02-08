@@ -88,6 +88,7 @@ function updateClothingColours(item, itemRef) {
 		case "school swim shorts":
 		case "futuristic bodysuit":
 		case "argyle sweater vest":
+		case "diving suit":
 			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
 			if (item.colourCustom) item.accessory_colourCustom = item.colourCustom;
 			break;
@@ -175,6 +176,27 @@ function updateClothingColours(item, itemRef) {
 		case "classic gothic gown":
 		case "classic gothic skirt":
 			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = item.colour;
+			break;
+		case "shadbelly coat":
+			if (!item.colour || item.colour === 0) item.colour = "black";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "yellow";
+			if (!item.pattern || item.pattern === 0) item.pattern = "shirt";
+			break;
+		case "cheerleading top":
+		case "cheerleading skirt":
+		case "gym bloomers":
+		case "cheerleader gloves":
+		case "pom poms":
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "white";
+			break;
+		case "tam o' shanter":
+			if (!item.colour || item.colour === 0) item.colour = "green";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "red";
+			if (!item.pattern || item.pattern === 0) item.pattern = "pompom";
+			break;
+		case "cowboy chaps":
+		case "cowboy print chaps":
+			if (!item.colour || item.colour === 0) item.colour = "denim";
 			break;
 		default:
 			if ((item.colour === 0 || !item.colour) && itemRef.colour_options?.length) item.colour = itemRef.colour_options[0];
@@ -494,6 +516,9 @@ function updateClothesItem(slot, item, debug) {
 			break;
 		case "starry witch hat":
 			item.accessory = 0;
+			break;
+		case "slacks":
+			item.type = ["formal", "school"];
 	}
 
 	if (debug) console.log("updateClothesItem:", slot, itemOld, clone(item));
