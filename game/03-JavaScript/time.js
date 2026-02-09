@@ -138,49 +138,45 @@ const Time = (() => {
 	 */
 	function pass(seconds) {
 		if (seconds < 0) return;
+		if (seconds > 60 * 60 * 24) return Errors.report("Time.pass attempted to pass more than one day at a time");
 
 		V.timeMessages ||= [];
 
 		const prevDate = new DateTime(currentDate);
-		set(V.timeStamp + seconds);
+		const minutes = Math.floor((prevDate.second + seconds) / 60);
+		const hours = Math.floor((prevDate.minute + minutes) / 60);
 
+		// it is safe to let secondPassed handle all seconds at once
 		secondPassed(seconds);
 
-		const minutes = Math.floor((currentDate.timeStamp - prevDate.timeStamp) / 60) || (60 + (currentDate.minute - prevDate.minute)) % 60;
-		if (!minutes) return;
-
-		minutePassed(minutes);
-
-		const hours = Math.floor(minutes / 60) || (24 + (currentDate.hour - prevDate.hour)) % 24;
-		if (!hours) return;
-
-		hourPassed(hours);
-		if (
-			!V.daily.dawnCheck &&
-			((prevDate.hour < 6 && (currentDate.hour >= 6 || currentDate.day !== prevDate.day)) || (currentDate.day !== prevDate.day && currentDate.hour >= 6))
-		) {
-			V.daily.dawnCheck = true;
-			dawnCheck();
+		// the pyramid. pass minutes until next hour, then next hour might affect some stats affecting things in minutePassed, so pass hours until next day, then pass the day, then pass the rest of the hours, then minutes
+		const minsToNextHour = 60 - prevDate.minute;
+		if (minutes < minsToNextHour) {
+			minutePassed(minutes);
+		} else {
+			minutePassed(minsToNextHour);
+			// temporarily update Time with just enough accuracy to be useful in hourPassed
+			set(V.timeStamp + minsToNextHour * 60);
+			const hoursToNextDay = 24 - prevDate.hour;
+			if (hours < hoursToNextDay) {
+				hourPassed(hours);
+			} else {
+				hourPassed(hoursToNextDay);
+				// todo: maybe do it in a better order than week -> day -> year
+				if (prevDate.weekDay === 7 && currentDate.weekDay === 1) {
+					weekPassed();
+				}
+				dayPassed();
+				if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) {
+					yearPassed();
+				}
+				hourPassed(hours - hoursToNextDay);
+			}
+			// pass the remaining minutes
+			minutePassed(minutes - minsToNextHour);
 		}
-		if (
-			!V.daily.noonCheck &&
-			((prevDate.hour < 12 && (currentDate.hour >= 12 || currentDate.day !== prevDate.day)) ||
-				(currentDate.day !== prevDate.day && currentDate.hour >= 12))
-		) {
-			V.daily.noonCheck = true;
-			noonCheck();
-		}
-
-		const days = Math.floor(hours / 24) || (prevDate.lastDayOfMonth + currentDate.day - prevDate.day) % prevDate.lastDayOfMonth;
-		if (!days) return;
-
-		if (prevDate.weekDay === 7 && currentDate.weekDay === 1) {
-			weekPassed();
-		}
-		dayPassed();
-		if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) {
-			yearPassed();
-		}
+		// finally, set the time where it should be
+		setDate(new DateTime(prevDate.timeStamp + seconds));
 	}
 
 	function getNextSchoolTermStartDate(date) {
@@ -965,10 +961,12 @@ function dayPassed() {
 
 function hourPassed(hours) {
 	if (V.statFreeze) return;
+	if (!hours) return;
 
 	// reset hourly vars
 	V.hourly = {};
 
+	/* changes that need to be applied every hour */
 	for (let i = 0; i < hours; i++) {
 		if (V.innocencestate === 1 && V.control <= 0) statChange.awareness(1);
 		statChange.control(1);
@@ -1020,7 +1018,35 @@ function hourPassed(hours) {
 		if (!V.avery_mansion || ["fallen", "kicked"].includes(V.avery_fate)) {
 			V.home_gone++;
 		}
+
+		// Robin autowatering
+		// Include "bath" as a location since bathing is from 17:00-17:29
+		if (
+			Time.hour === 17 &&
+			V.robin.autoWater &&
+			C.npc.Robin.trauma < 50 &&
+			["orphanage", "garden", "bath"].includes(getRobinLocation()) &&
+			Weather.precipitation !== "rain" &&
+			(Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) &&
+			orphanagePlotsPlanted() &&
+			!orphanagePlotsWatered()
+		) {
+			V.plots.garden?.forEach(plot => (plot.water = 1));
+			V.daily.robin.watered = "alone";
+		}
+		// robin pillory
+		if (V.robinPillory && V.robinPillory.danger !== undefined && V.robinPillory.active) wikifier("robinPilloryHour");
+
+		// time checks
+		if (Time.hour === 6) dawnCheck();
+		if (Time.hour === 12) noonCheck();
+		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
+		if (i !== 0) {
+			minutePassed(60);
+			Time.set(V.timeStamp + 360);
+		}
 	}
+	/* changes that can be applied just once. consider if using V.hourly would make better sense before putting things here */
 	calchairlengthstage();
 
 	if (
@@ -1037,39 +1063,20 @@ function hourPassed(hours) {
 	if (!V.wolfevent) V.wolfevent = 1;
 	if (V.wolfpatrolsent >= 24) delete V.wolfpatrolsent;
 
-	if (V.robinPillory && V.robinPillory.danger !== undefined && V.robinPillory.active) wikifier("robinPilloryHour");
 	if (V.pillory.tenant.exists && V.pillory.tenant.endTime < V.timeStamp) wikifier("clear_pillory");
 
 	if (V.robinbed === "yours" && !["sleep", "orphanage"].includes(getRobinLocation())) delete V.robinbed;
 
+	// todo: why is it here? look for a better way to handle it
 	if (V.per_npc.pubfame_receptionist) {
 		wikifier("clearNPC", "pubfame_receptionist");
 		V.pubfame.hospital = {};
 		if (V.per_npc.pubfame_nurse) wikifier("clearNPC", "pubfame_nurse");
 	}
-
-	// Robin autowatering
-	// Include "bath" as a location since bathing is from 17:00-17:29
-	if (
-		Time.hour === 17 &&
-		V.robin.autoWater &&
-		C.npc.Robin.trauma < 50 &&
-		["orphanage", "garden", "bath"].includes(getRobinLocation()) &&
-		Weather.precipitation !== "rain" &&
-		(Weather.precipitation !== "snow" || V.alex_greenhouse >= 3) &&
-		orphanagePlotsPlanted() &&
-		!orphanagePlotsWatered()
-	) {
-		Object.entries(V.plots).forEach(([location, plots]) => {
-			if (location === "garden") {
-				plots.forEach(plot => (plot.water = 1));
-			}
-		});
-		V.daily.robin.watered = "alone";
-	}
 }
 
 function minutePassed(minutes) {
+	if (!minutes) return;
 	// Stress
 	// decay/rise and crossdresser trait
 	const isCrossdresser = V.backgroundTraits.includes("crossdresser");
@@ -1885,12 +1892,11 @@ function yearlyEventChecks() {
 		V.avery_valentines.sex = "none";
 		V.avery_valentines.end = "none";
 		V.avery_valentines.end_talk = false;
-
-	} else if (V.avery_valentines && Time.monthName == "February" && Time.monthDay > 14) {
+	} else if (V.avery_valentines && Time.monthName === "February" && Time.monthDay > 14) {
 		if (V.avery_valentines.invite === true) {
 			V.avery_valentines_missed = true;
 		}
-	} else if (V.avery_valentines && Time.monthName == "January") {
+	} else if (V.avery_valentines && Time.monthName === "January") {
 		delete V.avery_valentines;
 	}
 
