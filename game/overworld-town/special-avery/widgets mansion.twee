@@ -3094,6 +3094,29 @@
 			<br>
 			<<link [[Just watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><<pass 10>><</link>>
 			<br>
+		<<elseif _avery_interrupt is "valentines_missed">>
+			<<npc "Avery">><<person1>>
+			Avery fixes you with a glare.
+			<br><br>
+
+			<<link [[Next|Avery Valentines Missed Intro]]>><<unset $avery_valentines_missed>><</link>>
+			<br>
+		<<elseif _avery_interrupt is "valentines_ready">>
+			<<set $avery_valentines.ready to true>>
+			<<npc "Avery">><<person1>>
+
+			Avery smiles at you, wearing <<his>> best. "I'm ready when you are," <<he>> says. "For the <span class="gold">Valentine's</span> date. I'll be waiting in the garage."
+			<br><br>
+
+			<<link [[Next|$passage]]>><<endevent>><</link>>
+		<<elseif _avery_interrupt is "valentines_approach">>
+			<<npc "Avery">><<person1>>
+			Avery smiles, <<his>> eyes locked on yours.
+			<br><br>
+
+			<<link [[Next|Avery Valentines Invite Mansion]]>><</link>>
+			<br>
+
 		<<elseif _avery_interrupt is "party_missed">>
 			<<set $avery_mansion.rage.work to false>>
 			<<npc "Avery">><<person1>>
@@ -3521,6 +3544,10 @@
 			<</if>>
 
 			<<if $bus is "avery_garage">>
+				<<if $avery_valentines.ready and !$avery_valentines.done and Time.monthDay is 14>>
+					<<icon "averys_car.png">><<link [[Valentine's Date|Avery Valentines]]>><<endevent>><</link>>
+					<br><br>
+				<</if>>
 				<<if $avery_mansion.date_ready is true and Time.hour lte 21 and $averydatedone isnot 1>>
 					<<icon "averys_car.png">><<link [[Date (1:20)|Avery Date]]>><<endevent>><</link>>
 					<br><br>
@@ -3599,10 +3626,10 @@
 							<br>
 						<</for>>
 					<</if>>
-					/* Re-enable later for Avery studying
+					
 					<<projectoptions>>
 					<<homeStudyOptions>>
-					*/
+					
 					<<if $avery_mansion.schedule isnot "study" or $avery_mansion.schedule is "away">>
 						<<if $avery_mansion.study_secret is 1>>
 							<<set _extralinebreak to true>>
@@ -3685,18 +3712,25 @@
 	<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_mansion.schedule isnot "sleep">>
 		<<set $_avery_present to true>>
 	<</if>>
+
 	<<if $possessed>>
 		<<set _avery_interrupt to false>>
 	<<elseif $_avery_present is true and $avery_injury>>
 		<<set _avery_interrupt to "injury">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "return">>
 		<<set _avery_interrupt to "work">>
+	<<elseif $_avery_present is true and $avery_valentines_missed>>
+		<<set _avery_interrupt to "valentines_missed">>
 	<<elseif $_avery_present is true and $avery_mansion.party_state is "missed">>
 		<<set _avery_interrupt to "party_missed">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "party_prepare" and !$avery_mansion.outfit_warning>>
 		<<set _avery_interrupt to "party_prepare">>
 	<<elseif $_avery_present is true and $avery_mansion.schedule is "party">>
 		<<set _avery_interrupt to "party">>
+	<<elseif $_avery_present is true and $avery_valentines and !$avery_valentines.init>>
+		<<set _avery_interrupt to "valentines_approach">>
+	<<elseif $_avery_present is true and $avery_valentines.invite and !$avery_valentines.ready and Time.monthName is "February" and Time.monthDay is 14>>
+		<<set _avery_interrupt to "valentines_ready">>
 	<<elseif $_avery_present is true and $avery_mansion.date_seen is false and (Time.weekDay isnot 7 or Time.weekDay is 7 and Time.hour lte 19)>>
 		<<set _avery_interrupt to "date_approach">>
 	<<elseif $_avery_present is true and $averydate is 1 and Time.hour is 20 and $averydatedone isnot 1 and $avery_mansion.date_ready isnot true and Time.weekDay is 7>>
@@ -3714,7 +3748,7 @@
 			<<set _avery_interrupt to "fox">>
 		<</if>>
 	<</if>>
-	<<if _args[0] and ["injury","work","party_missed","party_prepare","party","date_approach","date_ready","work","skyscraper_approach","skyscraper_ready"].includes(_avery_interrupt)>>
+	<<if _args[0] and ["injury","work","party_missed","party_prepare","party","date_approach","date_ready","work","skyscraper_approach","skyscraper_ready","valentines_approach"].includes(_avery_interrupt)>>
 		<<avery_mansion_seen>>
 	<</if>>
 
@@ -4360,4 +4394,30 @@
 		There's still a long way to go.
 	<</if>>
 <</if>>
+<</widget>>
+
+<<widget "avery_injury_check">>
+	<<if $avery_mansion.injury_stage is "sling" or $avery_mansion.injury_stage is "sling_done" or $avery_mansion.injury_stage is "cast" or $avery_mansion.injury_stage is "cast_done">>
+		<<set _avery_injured to true>>
+	<</if>>
+<</widget>>
+
+<<widget "avery_valentines_init">>
+	<<set $avery_valentines to {}>>
+
+	<<set $avery_valentines.intro to false>>
+	<<set $avery_valentines.invite to false>>
+	<<set $avery_valentines.ready to false>>
+	<<set $avery_valentines.done to false>>
+	<<set $avery_valentines.reservation to false>>
+	<<set $avery_valentines.chocolate to false>>
+	<<set $avery_valentines.opinion to "none">>
+	<<set $avery_valentines.confess to false>>
+	<<set $avery_valentines.food to "none">>
+	<<set $avery_valentines.soften to false>>
+	<<set $avery_valentines.talk to false>>
+	<<set $avery_valentines.talk_count to 0>>
+	<<set $avery_valentines.sex to "none">>
+	<<set $avery_valentines.end to "none">>
+	<<set $avery_valentines.end_talk to false>>
 <</widget>>

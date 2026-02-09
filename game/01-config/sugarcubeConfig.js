@@ -11,9 +11,9 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.7.9",
-	versionName: `"Lockers and Lockets" edition`,
-	sneaky: false,
+	version: "0.5.8.0",
+	versionName: `"Assorted Chocolates" edition`,
+	sneaky: true,
 	socialMediaEnabled: true,
 	sourceLinkEnabled: false,
 };

@@ -1867,6 +1867,33 @@ function yearlyEventChecks() {
 		delete V.valentines_eden_breakfast;
 	}
 
+	if (Time.monthName === "February" && Time.monthDay <= 14 && !V.avery_valentines) {
+		V.avery_valentines = {};
+
+		V.avery_valentines.intro = false;
+		V.avery_valentines.invite = false;
+		V.avery_valentines.ready = false;
+		V.avery_valentines.done = false;
+		V.avery_valentines.reservation = false;
+		V.avery_valentines.chocolate = false;
+		V.avery_valentines.opinion = "none";
+		V.avery_valentines.confess = false;
+		V.avery_valentines.food = "none";
+		V.avery_valentines.soften = false;
+		V.avery_valentines.talk = false;
+		V.avery_valentines.talk_count = 0;
+		V.avery_valentines.sex = "none";
+		V.avery_valentines.end = "none";
+		V.avery_valentines.end_talk = false;
+
+	} else if (V.avery_valentines && Time.monthName == "February" && Time.monthDay > 14) {
+		if (V.avery_valentines.invite === true) {
+			V.avery_valentines_missed = true;
+		}
+	} else if (V.avery_valentines && Time.monthName == "January") {
+		delete V.avery_valentines;
+	}
+
 	// Halloween
 	if (Time.monthName === "October" && Time.monthDay >= 21) {
 		V.halloween = 1;
