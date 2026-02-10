@@ -138,45 +138,56 @@ const Time = (() => {
 	 */
 	function pass(seconds) {
 		if (seconds < 0) return;
-		if (seconds > 60 * 60 * 24) return Errors.report("Time.pass attempted to pass more than one day at a time");
 
 		V.timeMessages ||= [];
 
 		const prevDate = new DateTime(currentDate);
 		const minutes = Math.floor((prevDate.second + seconds) / 60);
 		const hours = Math.floor((prevDate.minute + minutes) / 60);
+		const days = Math.floor((prevDate.hour + hours) / 24);
 
-		// it is safe to let secondPassed handle all seconds at once
-		secondPassed(seconds);
+		try {
+			// it is safe to let secondPassed handle all seconds at once
+			secondPassed(seconds);
 
-		// the pyramid. pass minutes until next hour, then next hour might affect some stats affecting things in minutePassed, so pass hours until next day, then pass the day, then pass the rest of the hours, then minutes
-		const minsToNextHour = 60 - prevDate.minute;
-		if (minutes < minsToNextHour) {
-			minutePassed(minutes);
-		} else {
-			minutePassed(minsToNextHour);
-			// temporarily update Time with just enough accuracy to be useful in hourPassed
-			set(V.timeStamp + minsToNextHour * 60);
-			const hoursToNextDay = 24 - prevDate.hour;
-			if (hours < hoursToNextDay) {
-				hourPassed(hours);
+			// the pyramid. pass minutes until next hour, then next hour might affect some stats affecting things in minutePassed, so pass hours until next day, then pass the day, then pass the rest of the hours, then minutes
+			const minsToNextHour = 60 - prevDate.minute;
+			if (minutes < minsToNextHour) {
+				minutePassed(minutes);
 			} else {
-				hourPassed(hoursToNextDay);
-				// todo: maybe do it in a better order than week -> day -> year
-				if (prevDate.weekDay === 7 && currentDate.weekDay === 1) {
-					weekPassed();
+				minutePassed(minsToNextHour);
+				// temporarily update Time with just enough accuracy to be useful in hourPassed
+				set(V.timeStamp + minsToNextHour * 60);
+				const hoursToNextDay = 24 - prevDate.hour;
+				if (hours < hoursToNextDay) {
+					hourPassed(hours);
+				} else {
+					hourPassed(hoursToNextDay);
+					// todo: maybe do it in a better order than week -> day -> year
+					for (let day = 0; day < days; ++day) {
+						if (day !== 0) {
+							// we're here for a long haul, give pc some rest
+							statChange.tiredness(-120);
+							hourPassed(24);
+							statChange.tiredness(-120);
+						}
+						if (prevDate.weekDay === 7 && currentDate.weekDay === 1) weekPassed();
+						dayPassed(days);
+						if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) yearPassed();
+					}
+					// pass the remaining hours
+					hourPassed(hours - hoursToNextDay);
 				}
-				dayPassed();
-				if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) {
-					yearPassed();
-				}
-				hourPassed(hours - hoursToNextDay);
+				// pass the remaining minutes
+				minutePassed(minutes - minsToNextHour);
 			}
-			// pass the remaining minutes
-			minutePassed(minutes - minsToNextHour);
+		} catch (ex) {
+			// we only need to catch it so "finally" can run, so, right back at you
+			throw new Error(ex);
+		} finally {
+			// finally, set the time where it should be
+			setDate(new DateTime(prevDate.timeStamp + seconds));
 		}
-		// finally, set the time where it should be
-		setDate(new DateTime(prevDate.timeStamp + seconds));
 	}
 
 	function getNextSchoolTermStartDate(date) {
@@ -552,7 +563,6 @@ function weekPassed() {
 			}
 			V.avery_mansion.rage.dinner_missed_lastWeek = V.avery_mansion.rage.dinner_missed;
 		}
-
 	}
 
 	supermarketWeekly();
@@ -961,13 +971,17 @@ function dayPassed() {
 }
 
 function hourPassed(hours) {
-	if (V.statFreeze) return;
+	if (V.statFreeze) {
+		// minutes still need to pass
+		minutePassed(hours * 60);
+		return;
+	}
 	if (!hours) return;
 
 	// reset hourly vars
 	V.hourly = {};
 
-	/* changes that need to be applied every hour */
+	/* code that needs to run every hour */
 	for (let i = 0; i < hours; i++) {
 		if (V.innocencestate === 1 && V.control <= 0) statChange.awareness(1);
 		statChange.control(1);
@@ -1044,7 +1058,7 @@ function hourPassed(hours) {
 		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
 		if (i !== 0) {
 			minutePassed(60);
-			Time.set(V.timeStamp + 360);
+			Time.set(V.timeStamp + 3600);
 		}
 	}
 	/* changes that can be applied just once. consider if using V.hourly would make better sense before putting things here */
@@ -1077,7 +1091,6 @@ function hourPassed(hours) {
 }
 
 function minutePassed(minutes) {
-	if (!minutes) return;
 	// Stress
 	// decay/rise and crossdresser trait
 	const isCrossdresser = V.backgroundTraits.includes("crossdresser");
@@ -1366,8 +1379,8 @@ function dailyNPCEffects() {
 			}
 
 			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury) {
-				if (V.avery_valentines?.done && Time.monthDay == 15 && Time.monthName == "February") {
-					
+				if (V.avery_valentines?.done && Time.monthDay === 15 && Time.monthName === "February") {
+					// do not spoil the valentines
 				} else {
 					V.avery_mansion.rage.dinner_missed++;
 				}
@@ -1899,8 +1912,7 @@ function yearlyEventChecks() {
 		V.avery_valentines.end = "none";
 		V.avery_valentines.end_talk = false;
 		V.avery_valentines.missed_approach = false;
-
-	} else if (V.avery_valentines && Time.monthName === "February" && Time.monthDay > 14) {
+	} else if (V.avery_valentines && Time.monthName === "February" && Time.monthDay === 15) {
 		if (V.avery_valentines.invite === true && !V.avery_valentines.done && !V.avery_valentines.missed_approach) {
 			V.avery_valentines_missed = true;
 		}
