@@ -3336,6 +3336,7 @@ Renderer.CanvasModels.main = {
 				return true;
 			},
 			zfn(options) {
+				if (options.arm_right === "cover") return ZIndices.arms_cover;
 				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
 				return ZIndices[options.worn.handheld.setup.zIndex];
 			},
@@ -3365,6 +3366,7 @@ Renderer.CanvasModels.main = {
 				return options.worn.handheld.setup.accessory === 1;
 			},
 			zfn(options) {
+				if (options.arm_right === "cover") return ZIndices.arms_cover;
 				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
 				return ZIndices[options.worn.handheld.setup.zIndex];
 			},
@@ -3386,6 +3388,7 @@ Renderer.CanvasModels.main = {
 				return hasRightDetail;
 			},
 			zfn(options) {
+				if (options.arm_right === "cover") return ZIndices.arms_cover;
 				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
 				return ZIndices[options.worn.handheld.setup.zIndex];
 			},

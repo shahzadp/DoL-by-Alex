@@ -168,7 +168,7 @@ DefineMacro("modelprepare-player-body", function () {
 	if (coverCrotch && wings) {
 		if (!T.disabled.includes(V.transformationParts.demon.tail)) {
 			T.modeloptions.demon_tail_state = V.transformationParts.traits.flaunting === "default" ? "flaunt" : "cover";
-			T.modeloptions.cat_tail_state = "cover";
+			if (!T.disabled.includes(V.transformationParts.cat.tail)) T.modeloptions.cat_tail_state = "cover";
 		} else if (!T.disabled.includes(V.transformationParts.angel.wings)) {
 			T.modeloptions.angel_wing_left = "cover";
 			T.modeloptions.bird_wing_left = "cover";

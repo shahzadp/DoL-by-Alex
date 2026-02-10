@@ -265,6 +265,9 @@ function initProps() {
 		mug: {
 			folder: "drink",
 		},
+		purple_haze: {
+			folder: "drink",
+		},
 		shandy: {
 			folder: "drink",
 		},
@@ -280,6 +283,9 @@ function initProps() {
 			folder: "drink",
 		},
 		strawberry_lemonade: {
+			folder: "drink",
+		},
+		strawberry_cocktail: {
 			folder: "drink",
 		},
 		tea: {
