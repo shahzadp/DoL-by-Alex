@@ -552,6 +552,7 @@ function weekPassed() {
 			}
 			V.avery_mansion.rage.dinner_missed_lastWeek = V.avery_mansion.rage.dinner_missed;
 		}
+
 	}
 
 	supermarketWeekly();
@@ -1365,7 +1366,11 @@ function dailyNPCEffects() {
 			}
 
 			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury) {
-				V.avery_mansion.rage.dinner_missed++;
+				if (V.avery_valentines?.done && Time.monthDay == 15 && Time.monthName == "February") {
+					
+				} else {
+					V.avery_mansion.rage.dinner_missed++;
+				}
 			}
 
 			V.avery_mansion.outfit_warning = false;
@@ -1883,6 +1888,7 @@ function yearlyEventChecks() {
 		V.avery_valentines.done = false;
 		V.avery_valentines.reservation = false;
 		V.avery_valentines.chocolate = false;
+		V.avery_valentines.chocolate_asked = false;
 		V.avery_valentines.opinion = "none";
 		V.avery_valentines.confess = false;
 		V.avery_valentines.food = "none";
@@ -1892,8 +1898,10 @@ function yearlyEventChecks() {
 		V.avery_valentines.sex = "none";
 		V.avery_valentines.end = "none";
 		V.avery_valentines.end_talk = false;
+		V.avery_valentines.missed_approach = false;
+
 	} else if (V.avery_valentines && Time.monthName === "February" && Time.monthDay > 14) {
-		if (V.avery_valentines.invite === true) {
+		if (V.avery_valentines.invite === true && !V.avery_valentines.done && !V.avery_valentines.missed_approach) {
 			V.avery_valentines_missed = true;
 		}
 	} else if (V.avery_valentines && Time.monthName === "January") {

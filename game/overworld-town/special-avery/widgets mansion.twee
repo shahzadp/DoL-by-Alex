@@ -3015,7 +3015,7 @@
 
 	<<if $bus is "avery_bedroom">>
 		You are in Avery's bedroom.
-
+		
 		<<if $avery_mansion.schedule is "sleep">>
 			<<nnpc_He "Avery">> snores beneath the covers.
 		<</if>>
@@ -3099,7 +3099,7 @@
 			Avery fixes you with a glare.
 			<br><br>
 
-			<<link [[Next|Avery Valentines Missed Intro]]>><<unset $avery_valentines_missed>><</link>>
+			<<link [[Next|Avery Valentines Missed Intro]]>><<unset $avery_valentines_missed>><<set $avery_valentines.missed_approach to true>><</link>>
 			<br>
 		<<elseif _avery_interrupt is "valentines_ready">>
 			<<set $avery_valentines.ready to true>>
@@ -3153,11 +3153,12 @@
 			<<else>>
 				<<avery_date_approach "mansion">>
 			<</if>>
-
-			<<link [[Yes|Mansion Date Yes]]>><<npcincr Avery love 1>><</link>><<glove>>
-			<br>
-			<<link [[No|Mansion Date No]]>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<llove>><<garage>>
-			<br>
+			<<if !_valentines_ask>>
+				<<link [[Yes|Mansion Date Yes]]>><<npcincr Avery love 1>><</link>><<glove>>
+				<br>
+				<<link [[No|Mansion Date No]]>><<npcincr Avery love -1>><<npcincr Avery rage 1>><</link>><<llove>><<garage>>
+				<br>
+			<</if>>
 		<<elseif _avery_interrupt is "date_ready">>
 			<<set $avery_mansion.date_ready to true>>
 			<<npc "Avery">><<person1>>
@@ -3522,22 +3523,26 @@
 				<<elseif $avery_mansion.schedule is "dinner">>
 					<<npc "Avery">><<person1>>
 					<<if canGiftFood("Avery") and Time.weekDay isnot 1>>
-						<<if C.npc.Avery.rage gte 80>>
-							Avery sits at the table, watching you.
-						<<elseif C.npc.Avery.rage gte 60>>
-							Avery sits at the table, drumming it with <<his>> fingers, awaiting dinner.
-						<<elseif C.npc.Avery.rage gte 40>>
-							Avery sits at the table, thumbing through <<his>> phone, awaiting dinner.
-						<<elseif C.npc.Avery.rage gte 20>>
-							Avery sits at the table, reading <<his>> phone, awaiting dinner.
+						<<if $avery_valentines?.ready and Time.monthDay is 14 and Time.monthName is "February">>
+
 						<<else>>
-							Avery sits at the table, awaiting dinner.
-						<</if>>
-						<<endevent>>
-						<br><br>
-						<<if canGiftFood("Avery")>>
-							<<skinicon "waiter">><<link [[Serve Avery Dinner|Avery Gifts Dinner List]]>><</link>>
+							<<if C.npc.Avery.rage gte 80>>
+								Avery sits at the table, watching you.
+							<<elseif C.npc.Avery.rage gte 60>>
+								Avery sits at the table, drumming it with <<his>> fingers, awaiting dinner.
+							<<elseif C.npc.Avery.rage gte 40>>
+								Avery sits at the table, thumbing through <<his>> phone, awaiting dinner.
+							<<elseif C.npc.Avery.rage gte 20>>
+								Avery sits at the table, reading <<his>> phone, awaiting dinner.
+							<<else>>
+								Avery sits at the table, awaiting dinner.
+							<</if>>
+							<<endevent>>
 							<br><br>
+							<<if canGiftFood("Avery")>>
+								<<skinicon "waiter">><<link [[Serve Avery Dinner|Avery Gifts Dinner List]]>><</link>>
+								<br><br>
+							<</if>>
 						<</if>>
 					<</if>>
 				<</if>>
@@ -4397,7 +4402,7 @@
 <</widget>>
 
 <<widget "avery_injury_check">>
-	<<if $avery_mansion.injury_stage is "sling" or $avery_mansion.injury_stage is "sling_done" or $avery_mansion.injury_stage is "cast" or $avery_mansion.injury_stage is "cast_done">>
+	<<if $avery_mansion and ($avery_mansion.injury_stage is "sling" or $avery_mansion.injury_stage is "sling_done" or $avery_mansion.injury_stage is "cast" or $avery_mansion.injury_stage is "cast_done")>>
 		<<set _avery_injured to true>>
 	<</if>>
 <</widget>>
@@ -4411,6 +4416,7 @@
 	<<set $avery_valentines.done to false>>
 	<<set $avery_valentines.reservation to false>>
 	<<set $avery_valentines.chocolate to false>>
+	<<set $avery_valentines.chocolate_asked to false>>
 	<<set $avery_valentines.opinion to "none">>
 	<<set $avery_valentines.confess to false>>
 	<<set $avery_valentines.food to "none">>
@@ -4420,4 +4426,5 @@
 	<<set $avery_valentines.sex to "none">>
 	<<set $avery_valentines.end to "none">>
 	<<set $avery_valentines.end_talk to false>>
+	<<set $avery_valentines.missed_approach to false>>
 <</widget>>
