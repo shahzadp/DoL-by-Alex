@@ -45,8 +45,21 @@ const events = [
 		starthour: 20,
 		endhour: 20,
 		priority: 4,
-		text: "You have a date with Avery <<print $avery_mansion ? 'in the garage': 'on Domus Street'>> <<if Time.hour is 20>><span class='gold'>right now!</span><<else>>at <<ampm 20 00>>.<</if>>",
+		text: "You have a date with Avery <<print $avery_mansion ? 'in the mansion garage': 'on Domus Street'>> <<if Time.hour is 20>><span class='gold'>right now!</span><<else>>at <<ampm 20 00>>.<</if>>",
 		failuretext: "You didn't show up for your date with Avery.",
+	},
+	{
+		name: "avery valentines date",
+		condition() {
+			return V.avery_valentines?.invite && !V.avery_valentines.done && Time.month === 2 && Time.monthDay === 14;
+		},
+		get starthour() {
+			return V.avery_mansion ? 21 : 20;
+		},
+		endhour: 24,
+		priority: 4,
+		text: "You have a <span class='pink'>Valentine's date</span> with Avery <<if $avery_mansion>>in the mansion garage from <<ampm 21 00>><<elseif Time.hour lt 20>>on Domus Street from <<ampm 20 00>><</if>>.",
+		failuretext: "You have missed your Valentine's date with Avery.",
 	},
 	{
 		name: "community service",
