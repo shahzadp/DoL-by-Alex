@@ -1,5 +1,5 @@
 class DateTime {
-	constructor(year = 2020, month = 1, day = 1, hour = 0, minute = 0, second = 1) {
+	constructor(year = 2020, month = 1, day = 1, hour = 0, minute = 0, second = 0) {
 		if (arguments.length === 1) {
 			// If the argument is a DateTime object, copy its properties
 			if (year instanceof DateTime) {
