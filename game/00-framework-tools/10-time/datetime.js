@@ -98,9 +98,9 @@ class DateTime {
 		// Initialize the year to 1
 		let year = 1;
 		let month = 0;
-		let day = (timestamp / TimeConstants.secondsPerDay) | 0;
-		const hour = (timestamp / TimeConstants.secondsPerHour) | 0;
-		const minute = (timestamp / TimeConstants.secondsPerMinute) | 0;
+		let day = Math.trunc(timestamp / TimeConstants.secondsPerDay);
+		const hour = Math.trunc(timestamp / TimeConstants.secondsPerHour);
+		const minute = Math.trunc(timestamp / TimeConstants.secondsPerMinute);
 		const second = timestamp;
 
 		// Maps the total number of days to the corresponding year and day.
@@ -346,7 +346,7 @@ class DateTime {
 
 	/**
 	 * Returns midnight, or the start of the current day.
-	 * 
+	 *
 	 * @returns {DateTime} The new DateTime of the current day set at 00:00:00
 	 */
 	get midnight() {

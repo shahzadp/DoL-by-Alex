@@ -257,6 +257,7 @@ const statChange = (() => {
 				}
 				V.stress += amount * stressMod;
 			}
+			V.stress = Math.clamp(V.stress, 0, V.stressmax);
 		}
 	}
 	DefineMacro("stress", stress);
@@ -429,6 +430,13 @@ const statChange = (() => {
 		if (amount) {
 			V.tiredness += Math.round(amount * Weather.BodyTemperature.fatigueModifier * (amount > 0 ? 15 : 20));
 		}
+		const overflow = V.tiredness - C.tiredness.max;
+		if (overflow > 0) {
+			// channel excessive fatigue into stress and trauma
+			stress(overflow / 3);
+			trauma(overflow / 6);
+		}
+		V.tiredness = Math.clamp(V.tiredness, 0, C.tiredness.max);
 	}
 	DefineMacro("tiredness", tiredness);
 
