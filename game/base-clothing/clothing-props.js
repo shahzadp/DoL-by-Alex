@@ -259,6 +259,15 @@ function initProps() {
 		red_wine: {
 			folder: "drink",
 		},
+		absinthe: {
+			folder: "drink",
+		},
+		cider: {
+			folder: "drink",
+		},
+		scotch: {
+			folder: "drink",
+		},
 		white_wine: {
 			folder: "drink",
 		},
@@ -325,6 +334,9 @@ function initProps() {
 			folder: "drink",
 		},
 		bean_tin: {
+			folder: "food",
+		},
+		apple_slice: {
 			folder: "food",
 		},
 		choco_donut: {
@@ -426,6 +438,9 @@ function initProps() {
 			armPosition: "clutch",
 		},
 		sugar: {
+			armPosition: "clutch",
+		},
+		fertiliser: {
 			armPosition: "clutch",
 		},
 		berry_basket: {
@@ -574,6 +589,9 @@ function initProps() {
 		antique_silver_dagger: {
 			zIndex: "handheld_over_sleeve",
 		},
+		badminton_racquet: {
+			armPosition: "right_cover",
+		},
 		bucket: {
 			armPosition: "right_cover",
 		},
@@ -693,6 +711,10 @@ function initProps() {
 		},
 		rubber: {
 			colour: ["light pink"],
+		},
+		bouquet: {
+			colour: ["light pink", "red", "pink", "white"],
+			hasAccessory: true,
 		},
 		hammer: {
 			zIndex: "handheld_over_sleeve",
