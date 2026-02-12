@@ -1023,13 +1023,13 @@ There's a half-filled tip jar on the table next to <<him>>.
 	<<birdicon "sing">><<link [[Sing along|Pub Music Sing]]>><</link>><<harpy>><br>
 <</if>>
 <<if $money gte 100>>
-	<<highicon>><<link [[Give a small tip (£1)|Pub Music Tip]]>><<set $phase to 6>><<money -100 "pub">><</link>><br>
+	<<highicon>><<link [[Give a small tip (£1)|Pub Music Tip]]>><<set $phase to 1>><<money -100 "pub">><</link>><br>
 <</if>>
 <<if $money gte 500>>
-	<<highicon>><<link [[Give a reasonable tip (£5)|Pub Music Tip]]>><<set $phase to 12>><<money -500 "pub">><</link>><br>
+	<<highicon>><<link [[Give a reasonable tip (£5)|Pub Music Tip]]>><<set $phase to 2>><<money -500 "pub">><</link>><br>
 <</if>>
 <<if $money gte 3000>>
-	<<highicon>><<link [[Give a generous tip (£30)|Pub Music Tip]]>><<set $phase to 24>><<money -3000 "pub">><</link>><br>
+	<<highicon>><<link [[Give a generous tip (£30)|Pub Music Tip]]>><<set $phase to 3>><<money -3000 "pub">><</link>><br>
 <</if>>
 <<crimeicon "mark">><<link [[Steal when <<hes>> not looking|Pub Music Steal]]>><</link>><<skulduggerydifficulty>><br>
 <<getouticon>><<link [[Leave|Pub]]>><<endevent>><</link>>
@@ -1067,12 +1067,20 @@ Behind you, the <<person>> is showered with tips. <<His>> grateful gaze follows 
 <<set $outside to 0>><<set $location to "pub">><<effects>>
 <<set $weekly.pubMusic to true>>
 
-<<set _money to $phase is 6 ? "some change" : $phase is 12 ? "a few bills" : "a wad of cash">>
-<<set _reacts to $phase is 6 ? "gives you a curt nod" : $phase is 12 ? "gives you a slight smile" : "looks shocked and thanks you profusely. A warm glow of pride fills you">>
-
-You pull out _money and put it into the jar. The <<person>> _reacts. <<= $phase is 24 ? "<<lllstress>><<llltrauma>>" : $phase is 12? "<<llstress>><<lltrauma>>" : "<<lstress>><<ltrauma>>">><<trauma `-$phase`>><<stress `-$phase`>><<famegood $phase/3>>
+<<switch $phase>>
+	<<case 1>>
+		You pull out some change and put it into the jar. The <<person>> gives you a curt nod.
+		<<stress -6>><<lstress>><<famegood 2>>
+	<<case 2>>
+		You pull out a few bills and put it into the jar. The <<person>> gives you a slight smile.
+		<<stress -6>><<trauma -6>><<lstress>><<ltrauma>><<famegood 4>>
+	<<default>>
+		You pull out a wad of cash and put it into the jar. The <<person>> looks shocked and thanks you profusely. A warm glow of pride fills you.
+		<<stress -12>><<trauma -12>><<llstress>><<lltrauma>><<famegood 8>>
+<</switch>>
 <<clearNPC pubMusic>>
 <br><br>
+
 <<link [[Leave|Pub]]>><<endevent>><</link>>
 
 :: Pub Music Steal
