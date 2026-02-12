@@ -62,8 +62,8 @@ function gwylanRequest(override = null) {
 	) {
 		if (V.harpy >= 6 && V.birdFly >= 1) {
 			allPossibleRequests.push(["preen", 2]); // Preen player's wings
-		} else {
-			allPossibleRequests.push(["preen", 1]); // Feathers from GH, more rare since it's harder without TF
+		} else if (!V.avery_mansion || V.avery_fate) {
+			allPossibleRequests.push(["preen", 1]); // Feathers from GH, more rare since it's harder without TF. Do not request this if Avery's mansion is unlocked but before the end of the skyscraper questline to avoid missing dinner, dates, or parties
 		}
 	}
 	if (
@@ -152,7 +152,7 @@ function gwylanRequest(override = null) {
 			return V.gwylan.request;
 		case "preen":
 			V.gwylan.request.event = "preen";
-			V.gwylan.request.items = [{ category: "other", name: "feathers", need: seedrng.randomInt(4, 8) }];
+			V.gwylan.request.items = [{ category: "other", name: "feathers", need: seedrng.randomInt(3, 6) }];
 			V.gwylan.request.timer =
 				V.harpy >= 6 && V.birdFly >= 1 ? new DateTime(Time.date).addDays(1).timeStamp : new DateTime(Time.date).addDays(10).timeStamp; // 10 day timer if no bird tf
 			V.gwylan.request.special = V.harpy >= 6 ? "harpy" : "feathers";
