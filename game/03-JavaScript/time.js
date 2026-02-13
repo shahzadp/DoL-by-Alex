@@ -973,7 +973,7 @@ function dayPassed() {
 function hourPassed(hours) {
 	if (V.statFreeze) {
 		// minutes still need to pass
-		minutePassed(hours * 60);
+		if (hours > 1) minutePassed((hours - 1) * 60);
 		return;
 	}
 	if (!hours) return;
