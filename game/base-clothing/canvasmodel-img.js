@@ -310,7 +310,7 @@ DefineMacro("modelprepare-player-body", function () {
 	} else {
 		T.modeloptions.mouth = "smile";
 	}
-	if (T.prop?.folder === "food") {
+	if (T.prop?.folder === "food" && !T.prop.name.includes("gift")) {
 		const foodKey = T.prop.name.replace(/-/g, "_");
 		const recipe = setup.plants[foodKey]?.type === "food" || T.prop.name?.includes("inedible") || false;
 		if (!recipe) T.modeloptions.mouth = "chew";

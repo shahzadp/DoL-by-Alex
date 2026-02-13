@@ -37,7 +37,8 @@ window.propLevels = propLevels;
 /* primary prop colour may be specified in _args[1], secondary in _args[2]. if the item has colour or accColour options provided in setup, but no colour is specified, one will be randomised. otherwise, prop is assumed to be non-recolourable. */
 function wearProp(prop, colour, accColour) {
 	const key = normaliseKey(prop);
-	const tending = setup.plants[key.replace("gift", "")];
+	const tendingItem = key.replace("_gift", "");
+	const tending = setup.plants[tendingItem];
 	const propErties = setup.props[key] ?? {};
 	T.prop = Object.assign({}, setup.propDefaults, propErties, {
 		name: normaliseFileName(key),
