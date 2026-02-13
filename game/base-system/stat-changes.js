@@ -150,7 +150,8 @@ const statChange = (() => {
 		// if you're looking here to fix a bug where an action that should increase control in combat actually lowers it instead - check State.history/State.expired for the combat start passage and look for a missing <<controlloss>> that failed to set $controlstart to the right value
 		if (combat && V.control >= V.controlstart) V.control = V.controlstart;
 		else if (!combat) V.controlstart = Math.min(V.control, V.controlmax);
-		V.controlled = V.control > V.controlmax / 2 ? 1 : 0;
+		const threshold = V.controltrait ? V.controlmax / 3 : V.controlmax / 2;
+		V.controlled = V.control > threshold ? 1 : 0;
 		V.control = Math.clamp(V.control, 0, V.controlmax);
 	}
 	DefineMacro("control", amount => control(amount));
@@ -435,8 +436,8 @@ const statChange = (() => {
 			// channel excessive fatigue into stress and trauma
 			stress(overflow / 3);
 			trauma(overflow / 6);
+			V.tiredness -= overflow;
 		}
-		V.tiredness = Math.clamp(V.tiredness, 0, C.tiredness.max);
 	}
 	DefineMacro("tiredness", tiredness);
 
