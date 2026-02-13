@@ -281,7 +281,8 @@ function masturbationEffects() {
 	if (
 		random(0, 100) >= Math.clamp(135 - V.earSlime.corruption / 2, 80, 98) &&
 		V.earSlime.corruption > currentSkillValue("willpower") / 10 &&
-		V.corruptionMasturbation === undefined
+		V.corruptionMasturbation === undefined &&
+		!V.hypnosis_traits.silence
 	) {
 		V.corruptionMasturbation = true;
 		V.corruptionMasturbationCount = random(1, 4);
@@ -329,7 +330,7 @@ function masturbationEffectsArms(
 	if (V[armAction] === 0) return fragment;
 
 	if (V[armAction] === "mrest") {
-		if (random(0, 100) >= 91 && V.earSlime.corruption > currentSkillValue("willpower") / 10 && V.corruptionMasturbation === undefined) {
+		if (random(0, 100) >= 91 && V.earSlime.corruption > currentSkillValue("willpower") / 10 && V.corruptionMasturbation === undefined && !V.hypnosis_traits.silence) {
 			V.corruptionMasturbation = true;
 			V.corruptionMasturbationCount = random(2, 6);
 			fragment.append(span("The slime in your ear decides that it will continue for you.", "red"));
