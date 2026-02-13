@@ -20,7 +20,7 @@ function skipToOrgasm(modifiers = "") {
 	T.noMasturbationOutput = true;
 	do {
 		count++;
-		if (T.corruptionMasturbation) masturbationSlimeControl();
+		if (T.corruptionMasturbation && !V.hypnosis_traits.silence) masturbationSlimeControl();
 		masturbationEffects();
 		masturbationActions();
 		if (modifiers.includes("timer")) V.timer -= 1;
