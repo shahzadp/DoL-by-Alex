@@ -538,6 +538,10 @@ function initProps() {
 		crop: {
 			folder: "sex toy",
 		},
+		wooden_paddle: {
+			folder: "sex toy",
+			armPosition: "right_cover",
+		},
 		whip: {
 			folder: "sex toy",
 			colour: ["brown", "black", "khaki", "sand"],
