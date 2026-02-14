@@ -228,6 +228,8 @@ function givestartclothing() {
 		V.worn.under_lower.colour = "pale white";
 		V.worn.legs = clone(setup.clothes.legs[3]);
 		V.worn.head = clone(setup.clothes.head[1]);
+		V.worn.head.colour = "white";
+		V.worn.head.accessory_colour = "white";
 		V.worn.feet = clone(setup.clothes.feet[1]);
 
 		if (V.player.breastsize <= 3) {

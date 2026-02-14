@@ -670,7 +670,6 @@ function initFeet() {
 			variable: "combat",
 			combat: {
 				reference: "bootheels",
-				mainColour: "#333333",
 			},
 			state: 0,
 			state_base: 0,
@@ -681,8 +680,8 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [],
-			colour_combat: "black",
+			colour_options: ["black", "soft brown", "light brown", "khaki", "sand", "tan", "white", "custom"],
+			colour_sidebar: 1,
 			type: ["normal", "rugged"],
 			gender: "m",
 			femininity: -100,
