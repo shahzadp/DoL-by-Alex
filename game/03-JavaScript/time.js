@@ -1892,6 +1892,7 @@ function yearlyEventChecks() {
 		delete V.valentines_eden_bought;
 		delete V.valentines_eden_bath;
 		delete V.valentines_eden_breakfast;
+		delete V.valentines_supermarket;
 	}
 
 	if (Time.monthName === "February" && Time.monthDay <= 14 && !V.avery_valentines && V.avery_mansion) {
