@@ -522,6 +522,14 @@ setup.feats = {
 		filter: ["All", "Social"],
 		hint: "Hint: Turn the tables on a wealthy patron.",
 	},
+	"Most Exclusive": {
+		title: "Most Exclusive",
+		desc: "Ate at a restaurant with a year-long waiting list.",
+		difficulty: 2,
+		series: "",
+		filter: ["All", "Social"],
+		hint: "Hint: Go on a Valentine's date with a wealthy patron.",
+	},
 	"Pride Cometh": {
 		title: "Pride Cometh",
 		desc: "Finished Avery's tower.",
@@ -657,6 +665,12 @@ setup.feats = {
 		desc: "Three wasn't enough for you.",
 		difficulty: 3,
 		series: "love triangles",
+		filter: ["All", "Social"],
+	},
+	"Be My Valentine": {
+		title: "Be My Valentine",
+		desc: "Gifted valentines chocolate at the right time.",
+		difficulty: 1,
 		filter: ["All", "Social"],
 	},
 	"Ballroom Show-off": {

@@ -304,7 +304,7 @@
 				<<set $avery_mansion.schedule to "work">>
 			<<elseif Time.hour lte 17 and $avery_mansion.rage.work is true>>
 				<<set $avery_mansion.schedule to "return">>
-			<<elseif Time.hour lte 17 and $avery_mansion.party_state is "waiting">>
+			<<elseif Time.hour lte 17 and $avery_mansion.party_state is "waiting" and !$avery_valentines?.invite>>
 				<<set $avery_mansion.schedule to "party_prepare">>
 			<<elseif $avery_mansion.party_state is "waiting">>
 				<<set $avery_mansion.schedule to "party">>
@@ -3714,7 +3714,21 @@
 	<</if>>
 <</widget>>
 
+<<widget "avery_valentines_date_check">>
+	<<if Time.monthName is "February" and
+	(Time.monthDay is 7 and Time.weekDay is 7) or
+	(Time.monthDay is 8 and Time.weekDay is 1) or
+	(Time.monthDay is 9 and Time.weekDay is 2) or
+	(Time.monthDay is 10 and Time.weekDay is 3) or
+	(Time.monthDay is 11 and Time.weekDay is 4) or
+	(Time.monthDay is 12 and Time.weekDay is 5) or
+	(Time.monthDay is 13 and Time.weekDay is 6)>>
+		<<set _date_block to true>>
+	<</if>>
+<</widget>>
+
 <<widget "avery_mansion_interrupt">>
+	<<avery_valentines_date_check>>
 	<<if $avery_mansion.schedule isnot "away" and $avery_mansion.schedule isnot "work" and $avery_mansion.schedule isnot "sleep">>
 		<<set $_avery_present to true>>
 	<</if>>
@@ -3737,7 +3751,7 @@
 		<<set _avery_interrupt to "party">>
 	<<elseif $_avery_present is true and $avery_valentines and !$avery_valentines.init>>
 		<<set _avery_interrupt to "valentines_approach">>
-	<<elseif $_avery_present is true and $avery_mansion.date_seen is false and (Time.weekDay isnot 7 or Time.weekDay is 7 and Time.hour lte 19)>>
+	<<elseif $_avery_present is true and $avery_mansion.date_seen is false and (Time.weekDay isnot 7 or Time.weekDay is 7 and Time.hour lte 19) and !_date_block>>
 		<<set _avery_interrupt to "date_approach">>
 	<<elseif $_avery_present is true and $averydate is 1 and Time.hour is 20 and $averydatedone isnot 1 and $avery_mansion.date_ready isnot true and Time.weekDay is 7>>
 		<<set _avery_interrupt to "date_ready">>

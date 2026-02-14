@@ -2596,6 +2596,23 @@ function initPlants() {
 			ingredients: [],
 			icon: "pink_rose.png",
 		},
+
+		valentines_chocolate: {
+			index: 148,
+			name: "valentines_chocolate",
+			singular: "slab of valentines chocolate",
+			plural: "slabs of valentines chocolate",
+			plant_cost: 900,
+			difficulty: 1,
+			bed: "kitchen",
+			type: "food",
+			days: 15,
+			multiplier: 1,
+			special: ["vegetarian", "sweet"],
+			season: [],
+			ingredients: ["butter", "bottle_of_milk", "cocoa_powder", "pear"],
+			icon: "valentines_chocolate.png",
+		},
 	};
 
 	/*

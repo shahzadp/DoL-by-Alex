@@ -134,8 +134,10 @@ that must have cost <<him>> a small fortune<<if _avery_injured>>, though the cas
 	<br><br>
 	<<icon "averys_car.png">><<link [[Go on Valentine's date|Avery Valentines 2]]>><<set $avery_valentines.done to true>><<endevent>><</link>>
 	<br>
-	<<if $plants.chocolate.amount gte 1 and !$avery_valentines.chocolate>>/*Replace with special chocolate when possible */
-		<<icon "chocolates.png">><<link [[Offer Avery Valentine's Day chocolate first|Avery Valentines Chocolate]]>><<set $avery_valentines.chocolate to true>><</link>><<glove>>
+	<<if $plants.valentines_chocolate.amount gte 1 and !$avery_valentines.chocolate>>/*Replace with special chocolate when possible */
+		If you want to give Avery special valentine's chocolate, now's the time.
+		<br><br>
+		<<icon "valentines_chocolate.png">><<link [[Offer Avery Valentine's Day chocolate|Avery Valentines Chocolate]]>><<set $avery_valentines.chocolate to true>><</link>><<glove>>
 		<br>
 	<</if>>
 	<<if $bus is "domus">>
@@ -158,8 +160,8 @@ that must have cost <<him>> a small fortune<<if _avery_injured>>, though the cas
 <</if>>
 
 :: Avery Valentines Chocolate
-<<effects>><<wearProp "valentines chocolates">>
-
+<<effects>><<wearProp "valentines chocolate">>
+<<earnFeat "Be My Valentine">>
 You take out the box of Valentine's Day chocolate you made, and hold it out to Avery.
 <br><br>
 Avery raises an eyebrow. "What's this?" <<he>> asks as <<he>> takes it, lifting the lid.
@@ -1200,7 +1202,7 @@ When your dishes arrive, the two of you tuck in. It's just as good as the entré
 <<effects>>
 
 <<pass 5>><<famesocial 50>>
-
+<<earnFeat "Most Exclusive">>
 Dinner<<if $phase is 0>> and dessert<</if>> consumed, Avery flags down a server and pays the bill. You get a slight peek at the receipt and see
 <<if $money gte 5000000>>
 	an amount that used to be expensive, but is now trivial to you.
@@ -1359,8 +1361,8 @@ You follow Avery's example and undress. <<He>> watches you while you do. There's
 <br><br>
 When you're finished, you move to join Avery on the bed. <<He>> pushes you down onto the mattress, positioning you so your head is on the pillows, and moves
 <<if $NPCList[0].penis isnot "none">> /* Avery has a penis */
-	<<if $player.penisExist and $settings.analEnabled>> /* PC has a penis */
-		<<if $rng gte 51 or _steal_virginity or _break_vow>>
+	<<if $player.penisExist and $settings.analEnabled and !playerChastity("penis") and !playerChastity("anus")>> /* PC has a penis */
+		<<if ($rng gte 51 or _steal_virginity or _break_vow)>>
 			to straddle you. <<He>> reaches into the drawer of <<his>> bedside table and pulls out a bottle of lubricant. <<He>> pops the cap open and brings it behind <<himself>>.
 			<br><br>
 			"I think I'll ride you tonight, <<pcpetname "Avery">>," <<he>> announces.
@@ -1369,7 +1371,7 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<<link [[Go along with it|Avery Valentines Sex Penis]]>><<set $avery_valentines.sex to "penis">><</link>><<penilevirginitywarning>><<if $NPCList[0].penis isnot "none" and $NPCList[0].virginity.anal is true>><<NPCvirginitywarning "Avery" "anal">><</if>><<promiscuous4>>
 				<br>
 			<</if>>
-			<<if $player.vaginaExist>>
+			<<if $player.vaginaExist and !playerChastity("vagina")>>
 				<<if hasSexStat("promiscuity", 4)>>
 					<<link [[Offer your vagina instead|Avery Valentines Sex Vagina]]>><<set $avery_valentines.sex to "vagina">><<set $phase to 1>><</link>><<vaginalvirginitywarning>><<promiscuous4>>
 					<br>
@@ -1384,7 +1386,7 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<span class="blue">You're not promiscuous enough for such behaviour!</span>
 				<br>
 			<</if>>
-		<<else>>
+		<<elseif !playerChastity("anus")>>
 			between your legs. <<He>> reaches into the drawer of <<his>> bedside table and pulls out a bottle of lubricant. <<He>> pops the cap open and brings it to your <<bottom>>.
 			<br><br>
 			"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
@@ -1393,13 +1395,13 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<<link [[Go along with it|Avery Valentines Sex Ass]]>><<if $player.virginity.anal is true>><<set $avery_valentines_anal_virginity to true>><</if>><<set $avery_valentines.sex to "ass">><</link>><<analvirginitywarning>><<promiscuous4>>
 				<br>
 			<</if>>
-			<<if $player.vaginaExist>>
+			<<if $player.vaginaExist and !playerChastity("vagina")>>
 				<<if hasSexStat("promiscuity", 4)>>
 					<<link [[Offer your vagina instead|Avery Valentines Sex Vagina]]>><<set $avery_valentines.sex to "vagina">><<set $phase to 1>><</link>><<vaginalvirginitywarning>><<promiscuous4>>
 					<br>
 				<</if>>
 			<</if>>
-			<<if hasSexStat("promiscuity", 4)>>
+			<<if hasSexStat("promiscuity", 4) !playerChastity("penis")>>
 				<<link [[Offer to be on top instead|Avery Valentines Sex Penis]]>><<set $avery_valentines.sex to "penis">><<set $phase to 1>><</link>><<penilevirginitywarning>><<if $NPCList[0].penis isnot "none" and $NPCList[0].virginity.anal is true>><<NPCvirginitywarning "anal">><</if>><<promiscuous4>>
 				<br>
 			<</if>>
@@ -1407,15 +1409,41 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<span class="blue">You're not promiscuous enough for such behaviour!</span>
 				<br>
 			<</if>>
+		<<else>>
+			to push <<his>> <<print $NPCList[0].penisdesc>> against your face.
+			<br><br>
+			"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
+			<br><br>
+			<<if hasSexStat("promiscuity", 4)>>
+				<<link [[Go along with it|Avery Valentines Sex Mouth]]>><<set $avery_valentines.sex to "mouth">><</link>><<oralvirginitywarning>><<promiscuous4>>
+				<br>
+			<<else>>
+				<span class="blue">You're not promiscuous enough for such behaviour!</span>
+				<br>
+			<</if>>
 		<</if>>
-	<<elseif $player.penisExist and !$player.vaginaExist>> /* PC only has a penis + anal is disabled */
-		to straddle you. You shiver when <<he>> grinds down and rubs your penises together. <<arousal 500 "genitals">><<garousal>>
-		<br><br>
-		"I think I'll ride you tonight, <<pcpetname "Avery">>," <<he>> announces.
-		<br><br>
-		<<link [[Go along with it|Avery Valentines Sex Frot]]>><<set $avery_valentines.sex to "frot">><</link>>
-		<br>
-	<<else>> /* PC has a vagina */
+	<<elseif $player.penisExist and !$player.vaginaExist and !playerChastity("penis")>> /* PC only has a penis + anal is disabled */
+		<<if !playerChastity("penis")>>
+			to straddle you. You shiver when <<he>> grinds down and rubs your penises together. <<arousal 500 "genitals">><<garousal>>
+			<br><br>
+			"I think I'll ride you tonight, <<pcpetname "Avery">>," <<he>> announces.
+			<br><br>
+			<<link [[Go along with it|Avery Valentines Sex Frot]]>><<set $avery_valentines.sex to "frot">><</link>>
+			<br>
+		<<else>>
+			to push <<his>> <<print $NPCList[0].penisdesc>> against your face.
+			<br><br>
+			"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
+			<br><br>
+			<<if hasSexStat("promiscuity", 4)>>
+				<<link [[Go along with it|Avery Valentines Sex Mouth]]>><<set $avery_valentines.sex to "mouth">><</link>><<oralvirginitywarning>><<promiscuous4>>
+				<br>
+			<<else>>
+				<span class="blue">You're not promiscuous enough for such behaviour!</span>
+				<br>
+			<</if>>
+		<</if>>
+	<<elseif $player.vaginaExist and !playerChastity("vagina")>> /* PC has a vagina */
 		<<if $rng gte 51 or _steal_virginity or _break_vow>>
 			between your legs. <<He>> reaches into the drawer of <<his>> bedside table and pulls out a bottle of lubricant. <<He>> pops the cap open and brings it to your <<pussy>>.
 			<br><br>
@@ -1426,7 +1454,7 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<br>
 			<</if>>
 
-			<<if hasSexStat("promiscuity", 4)>>
+			<<if hasSexStat("promiscuity", 4) and !playerChastity("anus")>>
 				<<link [[Offer your ass instead|Avery Valentines Sex Ass]]>><<if $player.virginity.anal is true>><<set $avery_valentines_anal_virginity to true>><</if>><<set $avery_valentines.sex to "ass">><<set $phase to 1>><</link>><<analvirginitywarning>><<promiscuous4>>
 				<br>
 			<</if>>
@@ -1439,7 +1467,7 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 			<br><br>
 			"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
 			<br><br>
-			<<if hasSexStat("promiscuity", 4)>>
+			<<if hasSexStat("promiscuity", 4) and !playerChastity("anus")>>
 				<<link [[Go along with it|Avery Valentines Sex Ass]]>><<if $player.virginity.anal is true>><<set $avery_valentines_anal_virginity to true>><</if>><<set $avery_valentines.sex to "ass">><</link>><<analvirginitywarning>><<promiscuous4>>
 				<br>
 			<</if>>
@@ -1452,9 +1480,21 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<br>
 			<</if>>
 		<</if>>
+	<<else>>
+		to push <<his>> <<print $NPCList[0].penisdesc>> against your face.
+		<br><br>
+		"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
+		<br><br>
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Go along with it|Avery Valentines Sex Mouth]]>><<set $avery_valentines.sex to "mouth">><</link>><<oralvirginitywarning>><<promiscuous4>>
+			<br>
+		<<else>>
+			<span class="blue">You're not promiscuous enough for such behaviour!</span>
+			<br>
+		<</if>>
 	<</if>>
 <<else>> /* Avery has a vagina */
-	<<if $player.penisExist and ($rng gte 51 or _steal_virginity or _break_vow)>> /* PC has a penis */
+	<<if $player.penisExist and ($rng gte 51 or _steal_virginity or _break_vow) and !playerChastity("penis")>> /* PC has a penis */
 		to straddle you. <<He>> reaches into the drawer of <<his>> bedside table and pulls out a bottle of lubricant. <<He>> pops the cap open and brings it to your <<penis>>.
 		<br><br>
 		"I think I'll ride you tonight, <<pcpetname "Avery">>," <<he>> announces.
@@ -1481,13 +1521,25 @@ When you're finished, you move to join Avery on the bed. <<He>> pushes you down 
 				<br>
 			<</if>>
 		<</if>>
-	<<else>> /* PC has a vagina */
+	<<elseif !playerChasity("vagina")>> /* PC has a vagina */
 		between your thighs. <<He>> lifts one of your legs up, and straddles the other. You shiver when <<he>> scoots forward and presses your pussies together. <<arousal 500 "genitals">><<garousal>>
 		<br><br>
 		"I think I'll ride you tonight, <<pcpetname "Avery">>," <<he>> announces.
 		<br><br>
 		<<link [[Go along with it|Avery Valentines Sex Frot]]>><<set $avery_valentines.sex to "frot">><</link>>
 		<br>
+	<<else>>
+		to push <<his>> <<print $NPCList[0].penisdesc>> against your face.
+		<br><br>
+		"I think I'll fuck you tonight, <<pcpetname "Avery">>," <<he>> announces.
+		<br><br>
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Go along with it|Avery Valentines Sex Mouth]]>><<set $avery_valentines.sex to "mouth">><</link>><<oralvirginitywarning>><<promiscuous4>>
+			<br>
+		<<else>>
+			<span class="blue">You're not promiscuous enough for such behaviour!</span>
+			<br>
+		<</if>>
 	<</if>>
 <</if>>
 <<link [[Back out|Avery Valentines End]]>><<set $phase to 1>><</link>>
@@ -1718,8 +1770,8 @@ your lips. A smug smile appears on Avery's face. <<His>> hands tighten on your h
 <</if>>
 
 <<if $arousal gte $arousalmax>>
-	Your arousal mounts, and your orgasm strikes you hard and fast. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
-
+	Your arousal mounts, and your orgasm strikes you hard and fast. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>><<if $player.penisExist>> Your abdomen is soon covered in semen.<br><br><</if>>
+	
 	Avery watches you shuddering and jerking, and <<laughs>> deep in <<his>> throat. "Finished already?" <<he>> asks, voice rough with exertion and pleasure both. "<<= $avery_valentines.soften or C.npc.Avery.love gte 60 ? "How adorable" : "So sensitive">>." <<He>> leans down to murmur in your ear, "But I'm not finished with you just yet."
 	<br><br>
 	With that, <<he>> pushes <<himself>> back up, and shifts <<his>> grip on you.
@@ -1843,8 +1895,8 @@ your lips. It appears to satisfy Avery to hear it, as a smug smile appears on <<
 <</if>>
 
 <<if $arousal gte $arousalmax>>
-	Your arousal mounts, and your orgasm strikes you hard. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
-
+	Your arousal mounts, and your orgasm strikes you hard. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>><<if $player.penisExist>> Your abdomen is soon covered in semen.<br><br><</if>>
+	
 	Avery watches you shuddering and jerking, and <<laughs>> deep in <<his>> throat. "Finished already?" <<he>> asks, voice rough with exertion and pleasure both. "<<= $avery_valentines.soften or C.npc.Avery.love gte 60 ? "How adorable" : "So sensitive">>." <<He>> leans down to murmur in your ear, "But I'm not finished with you just yet."
 	<br><br>
 	With that, <<he>> pushes <<himself>> back up, and shifts <<his>> grip on you.
@@ -1873,6 +1925,135 @@ your lips. It appears to satisfy Avery to hear it, as a smug smile appears on <<
 <</if>>
 
 <<link [[Next|Avery Valentines Sex 4]]>><</link>>
+
+
+:: Avery Valentines Sex Mouth
+<<effects>>
+<<avery_injury_check>>
+
+<<if $NPCList[0].penis isnot "none">>
+	<<if $player.virginity.oral is true>>
+		<<set _virginity_oral to true>>
+	<</if>>
+	Avery holds your chin, and pushes a thumb into your mouth. <<He>> plays with your tongue for a few moments, then pushes <<his>> <<if $NPCList[0].gender is "f">>lingerie<<else>>underwear<</if>> down enough to reveal <<his>> <<npcPenis>>, already stirred to life. <<He>> shifts closer, and presses <<his>> tip against your lips, then begins to slide in. <<if $player.virginity.oral is true>><span class="red">It tastes strange.</span><</if>>
+	<<takeNPCVirginity "Avery" "penile">>
+	<<takeVirginity "Avery" "oral">>
+	<br><br>
+	
+	<<if $NPCList[0].penissize gte 4>>
+		It's hard to breathe around <<his>> large cock, but you manage it. You can feel your spittle running down your chin.<<arousal 300>><<garousal>>
+	<<elseif $NPCList[0].penissize is 1>>
+		Your mouth is able to accomodate it with ease.<<arousal 200>><<garousal>>
+	<<else>>
+		You're able to accomodate <<his>> girth without feeling too uncomfortable. <<arousal 300>><<garousal>>
+	<</if>>
+	<br><br>
+	Once settled, Avery
+	<<if _virginity_oral>>
+		murmurs, "You're new to this, aren't you?" <<He>> grasps the back of your head, pushes <<himself>> further into you. "Don't worry, I won't give you more than you can handle."
+	<<else>>
+		grasps the back of your head, and pushes <<himself>> further into you.
+	<</if>>
+<<else>>
+	Avery holds your chin, and pushes a thumb into your mouth. <<He>> plasy with your tongue for a few moments, then pushes <<his>> <<if $NPCList[0].gender is "f">>lingerie<<else>>underwear<</if>> down enough to reveal <<his>> pussy. <<He>> shifts closer, and presses <<himself>> against your lips.
+	<br><br>
+	Once settled, Avery murmurs, "That's it. Use your tongue." <<He>> grasps the back of your head, and gently thrusts against you.
+<</if>>
+<<promiscuity4>>
+<<link [[Next|Avery Valentines Sex Mouth 2]]>><</link>>
+<br>
+
+:: Avery Valentines Sex Mouth 2
+<<effects>>
+<<avery_injury_check>>
+
+Avery is gentle, waiting for you to do most of the work. <<He>> rests one hand on the back of your head, the other on the wall in front of <<him>>, looking down at you all the while.
+<br><br>
+
+"You're making me feel so good," <<he>> says, voice husky. "Look at me, <<pcpetname "Avery">>. I want to watch you fall apart."
+<br><br>
+
+<<if $submissive gte 1500>>
+	<<His>> words, combined with the feel of <<him>> in your mouth, send waves of arousal through your body. <<= $speech_attitude is "meek" ? "A lewd mewl escapes" : $speech_attitude is "bratty" ? "An aborted grunt replaces a moan that threatened to slip past" : "A moan slips past">>
+<<else>>
+	The feel of <<him>> moving in your mouth sends waves of arousal through your body. <<= $speech_attitude is "meek" ? "A lewd mewl escapes" : $speech_attitude is "bratty" ? "An aborted grunt replaces a moan that threatened to slip past" : "A moan slips past">>
+<</if>>
+your lips. It appears to satisfy Avery to hear it, as a smug smile appears on <<his>> face. <<His>> hand tightens on your head, and <<he>> starts to thrust against you with more force. <<arousal 1800 "mouth">><<ggarousal>>
+<br><br>
+<<link [[Do as you're told|Avery Valentines Sex Mouth 3]]>><<set $phase to 1>><</link>>
+<br>
+<<link [[Beg for more|Avery Valentines Sex Mouth 3]]>><<sub 1>><<set $phase to 2>><</link>>
+<br>
+<<link [[Look away|Avery Valentines Sex Mouth 3]]>><<def 1>><<set $phase to 3>><</link>>
+<br>
+
+:: Avery Valentines Sex Mouth 3
+<<effects>>
+<<avery_injury_check>>
+<<if $phase is 3>>
+	You squeeze your eyes shut, defiant. You hear a quiet click of a tongue, then Avery presses <<his>> thighs against you. <<He>> makes good use of the leverage, using it to fuck you all the harder, breaking down your composure. <<arousal 2000 "mouth">><<ggarousal>>
+	<br><br>
+<<else>>
+	You do your best to keep your eyes open and on Avery. The pleasure makes this difficult.<<arousal 2000 "mouth">><<ggarousal>>
+	<br><br>
+	<<if $phase is 2>>
+		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+			"Avery," you moan. "Please!"
+		<<elseif $speech_attitude is "bratty">>
+			"Fuck," you breathe. "Avery, please."
+		<<else>>
+			"Avery, please, more," you beg.
+		<</if>>
+		<br><br>
+		<<He>> chuckles above you. "Good <<girl>>," <<he>> coos. "You asked so nicely." As a reward, <<he>> starts fucking you a little harder, pushing you to the limit. <<arousal 1000 "mouth">>
+		<br><br>
+	<</if>>
+<</if>>
+
+<<if $arousal gte $arousalmax>>
+	Your arousal mounts, and your orgasm strikes you hard. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out
+	<<if $NPCList[0].penis isnot "none">>
+		around Avery's <<print $NPCList[0].penisdesc>>
+	<<else>>
+		against Avery's pussy
+	<</if>>
+	as your back arches, much to <<his>> satisfaction.<</if>><<if $player.penisExist>> You feel warm semen coat your abdomen.
+	<br><br><</if>>
+	Avery watches you shuddering and jerking, and <<laughs>> deep in <<his>> throat. "Finished already?" <<he>> asks, voice rough with exertion and pleasure both. "<<= $avery_valentines.soften or C.npc.Avery.love gte 60 ? "How adorable" : "So sensitive">>." <<He>> leans closer, and murmurs. "But I'm not finished with you just yet."
+	<br><br>
+	With that, <<he>> grasps your hair, and tilts you to face <<him>>.
+	<<if $avery_valentines.soften or C.npc.Avery.love gte 60>>
+		With a devious glint in <<his>> eyes, <<he>> starts fucking you fast and dirty.
+	<<else>>
+		No longer concerned for your comfort, <<he>> starts fucking you with abandon, focused on <<his>> own pleasure.
+	<</if>>
+	<br><br>
+	The sound of your own gurgling fills the room, along with Avery's moans and grunts of effort. It's all almost unbearable with your sensitivity, and you can't help but <<= $genitalsensitivity gte 2 ? "writhe" : "squirm">> beneath <<him>> just to withstand the intense overstimulation. <<arousal 1000 "mouth">><<garousal>>
+	<br><br>
+<<else>>
+	<<set _no_orgasm to true>>
+	As Avery drives
+	<<if $NPCList[0].penis isnot "none">>
+		into your mouth,
+	<<else>>
+		against your mouth,
+	<</if>>
+	<<he>> <<= $phase is 3 ? "begins" : "continues">> to fondle your
+	<<if $player.penisExist>>
+		leaking erection. <<He>> strokes you
+	<<else>>
+		clit. <<He>> rubs it
+	<</if>>
+	in time with <<his>> thrusts, sending dual sensations through you whenever <<he>> pounds your face.<<arousal 2000 "mouth">><<ggarousal>>
+	<br><br>
+	"That's it," Avery says when you start to <<= $mouthsensitivity gte 2 ? "writhe" : "squirm">> and arch your back beneath <<him>>. <<His>> voice is rough with exertion and pleasure both. "It feels good, doesn't it?" <<He>> gives you a hard thrust that makes you moan.
+	<br><br>
+	You're close, and Avery seems to be as well.
+	<br><br>
+<</if>>
+
+<<link [[Next|Avery Valentines Sex 4]]>><</link>>
+
 
 :: Avery Valentines Sex Frot
 <<effects>>
@@ -1938,8 +2119,8 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 <</if>>
 
 <<if $arousal gte $arousalmax>>
-	Your arousal mounts, and your orgasm strikes you hard and fast. <<orgasm>><<if $player.penisExist>> Your abdomen is soon covered in semen.<</if>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
-
+	Your arousal mounts, and your orgasm strikes you hard and fast. <<orgasm>><<if $player.penisExist>> Your abdomen is soon covered in semen.<br><br><</if>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
+	
 	Avery watches you shuddering and jerking, and <<laughs>> deep in <<his>> throat. "Finished already?" <<he>> asks, voice rough with exertion and pleasure both. "<<= $avery_valentines.soften or C.npc.Avery.love gte 60 ? "How adorable" : "So sensitive">>." <<He>> leans down to murmur in your ear, "But I'm not finished with you just yet."
 	<br><br>
 	With that, <<he>> pushes <<himself>> back up, and shifts <<his>> grip on you.
@@ -1975,9 +2156,8 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 	Avery's rhythm turns uneven as <<he>> approaches the edge.
 	<<if $phase is "no orgasm">>
 		<<set _hole to C.npc.Avery.penis isnot "none" ? "anus" : "vagina">>
-		You're faring no better, and the arousal builds up in you until you can take it no longer. <<orgasm>><<penileejacstat>><<creampie "npc" _hole>>
-		<<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<</if>> <<He>> seems unbothered by your finishing inside. If anything <<he>> seem content to continue fucking your <<penis>>, even though it's beginning to soften.
-		<br><br>
+		You're faring no better, and the arousal builds up in you until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<</if>> <<He>> seems unbothered by your finishing inside. If anything <<he>> seem content to continue fucking your <<penis>>, even though it's beginning to soften.
+		
 		<<He>> doesn't last much longer than you.
 	<</if>>
 	<<He>> jerks up and down one more time, then again, until an orgasm hits <<him>> with a loud moan.
@@ -1999,8 +2179,10 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 <<elseif $avery_valentines.sex is "ass">>
 	Avery's rhythm turns uneven as <<he>> approaches the edge.
 	<<if $phase is "no orgasm">>
-		You're faring no better, the arousing building until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction. <br><br><</if>>
+		You're faring no better, the arousing building until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
+
 		<<He>> doesn't last much longer than you.
+		
 	<</if>>
 	<<He>> jerks in and out of you once, then twice, until an orgasm hits <<him>> with a loud moan.
 	<<analejacstat>>
@@ -2018,7 +2200,8 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 <<elseif $avery_valentines.sex is "vagina">>
 	Avery's rhythm turns uneven as <<he>> approaches the edge.
 	<<if $phase is "no orgasm">>
-		You're faring no better, the arousal building until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction. <br><br><</if>>
+		You're faring no better, the arousal building until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
+		
 		<<He>> doesn't last much longer than you.
 	<</if>>
 	<<He>> jerks in and out of you once, then twice, until an orgasm hits <<him>> with a loud moan.
@@ -2033,10 +2216,30 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 		<<bodyliquid "vagina" "semen" 2>>
 		You feel <<his>> ejaculate filling your womb in waves, and <<he>> thrusts in and out of you as <<he>> wrings out all the pleasure <<he>> can. You feel some of <<his>> ejaculate gush out of your <<pussy>>.<<if $ejactrait>> It sends a lewd thrill through you.<</if>>
 	<</if>>
+<<elseif $avery_valentines.sex is "mouth">>
+	Avery's rhythm turns uneven as <<he>> approaches the edge.
+	<<if $phase is "no orgasm">>
+		You're faring no better, the arousal building until you can take it no longer. <<orgasm>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
+		
+		<<He>> doesn't last much longer than you.
+	<</if>>
+	<<He>> jerks in and out of you once, then twice, until an orgasm hits <<him>> with a loud moan.
+	<<vaginalejacstat>>
+	<<if $NPCList[0].penissize gte 4>>
+		<<bodyliquid "vagina" "semen" 3>>
+		Cum floods your throat, gushing out with each of Avery's weakening thrusts into you. <<His>> <<npcPenis>> and semen fill you to the brim.<<if $ejactrait>> It all sends a lewd thrill through you.<</if>>
+	<<elseif $NPCList[0].penissize is 1>>
+		<<bodyliquid "vagina" "semen" 1>>
+		You taste <<his>> cum pulsing into your mouth as <<he>> thrusts in and out of you, but there's not much of it to be had.<<if $ejactrait>> You can't help but feel a little disappointed.<</if>>
+	<<else>>
+		<<bodyliquid "vagina" "semen" 2>>
+		You taste <<his>> ejaculate filling your mouth in waves, and <<he>> thrusts in and out of you as <<he>> wrings out all the pleasure <<he>> can. You feel some of <<his>> ejaculate run down your throat.<<if $ejactrait>> It sends a lewd thrill through you.<</if>>
+	<</if>>
 <<else>> /* Frot */
 	Avery's rhythm turns uneven as <<he>> approaches the edge.
 	<<if $phase is "no orgasm">>
-		You're faring no better, the arousal building until you can take it no longer. <<orgasm>><<if $player.penisExist and !$femaleclimax and !_deniedOrgasm>> Your semen splatters onto your abdomen.<<bodyliquid "tummy" "semen" 1>><</if>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction. <br><br><</if>>
+		You're faring no better, the arousal building until you can take it no longer. <<orgasm>><<if $player.penisExist and !$femaleclimax and !_deniedOrgasm>> Your semen splatters onto your abdomen.<<bodyliquid "tummy" "semen" 1>><br><br><</if>><<if $phase is 2 or $averyromance>> You cry out Avery's name as your back arches, much to <<his>> satisfaction.<br><br><</if>>
+		
 		<<He>> doesn't last much longer than you.
 	<</if>>
 	<<He>> jerks against you one more time, then again, until an orgasm hits <<him>> with a loud moan.
@@ -2055,6 +2258,7 @@ for leverage, and starts to ride you with a bit more force. <<arousal 1800 "geni
 		You feel <<his>> <<semen>> mix with yours as <<he>> grinds against you. It makes you shudder<<if $ejactrait>>, and sends a lewd thrill through you<</if>>.
 	<</if>>
 <</if>>
+<br><br>
 Once <<his>> orgasm comes to an end, <<he>> curses under <<his>> breath and <<he>> collapses on top of you, using one forearm to keep <<his>> full weight off of you. The two of you pant for breath in the afterglow, <<his>> forehead against your collarbone, the combined heat of your bodies making you sweat all the more.
 <<if $assertiveaction is "trauma" or $assertiveaction is "submissive">>
 	<<trauma -6>><<ltrauma>>
