@@ -176,10 +176,10 @@ const Time = (() => {
 						if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) yearPassed();
 					}
 					// pass the remaining hours
-					hourPassed(24 - hoursToNextDay);
+					hourPassed((hours - hoursToNextDay) % 24);
 				}
 				// pass the remaining minutes
-				minutePassed(60 - minsToNextHour);
+				minutePassed((minutes - minsToNextHour) % 60);
 			}
 		} catch (ex) {
 			// we only need to catch it so "finally" can run, so, right back at you
