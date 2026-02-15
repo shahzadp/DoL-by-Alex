@@ -678,7 +678,7 @@ function initHandheld() {
 			name_cap: "Forearm crutch",
 			variable: "crutch",
 			holdPosition: "right_cover",
-			zIndex: "handheld_over_sleeve",
+			zIndex: "ears",
 			state: 0,
 			state_base: 0,
 			warmth: 0,
