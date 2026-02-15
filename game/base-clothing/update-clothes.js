@@ -26,6 +26,7 @@ function updateClothingColours(item, itemRef) {
 		case "mesh shirt":
 		case "fishnet stockings":
 		case "fishnet tights":
+		case "combat boots":
 			if (!item.colour || item.colour === 0) item.colour = "black";
 			break;
 		case "square shades":
@@ -197,6 +198,10 @@ function updateClothingColours(item, itemRef) {
 		case "cowboy chaps":
 		case "cowboy print chaps":
 			if (!item.colour || item.colour === 0) item.colour = "denim";
+			break;
+		case "hairpin":
+			if (!item.colour || item.colour === 0) item.colour = "white";
+			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "white";
 			break;
 		default:
 			if ((item.colour === 0 || !item.colour) && itemRef.colour_options?.length) item.colour = itemRef.colour_options[0];
