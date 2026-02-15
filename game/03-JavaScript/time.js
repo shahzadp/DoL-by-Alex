@@ -777,8 +777,10 @@ function dayPassed() {
 		delete V.smuggler_known;
 	}
 
-	if (V.tailorMonthlyService > 0) V.tailorMonthlyService--;
-	else if (V.tailorMonthlyService === 0) delete V.tailorMonthlyService;
+	if (V.tailorMonthlyService > 0) {
+		V.tailorMonthlyService--;
+		if (V.tailorMonthlyService === 0) delete V.tailorMonthlyService;
+	}
 
 	if (V.wardrobeRepair && V.wardrobeRepair.timeLeft === 1) V.wardrobeRepair.timeLeft = 0;
 	if (V.clothingShop.ban > 0) V.clothingShop.ban--;
