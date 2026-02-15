@@ -361,8 +361,8 @@ class XrayCombatMapper {
 			case "beargirl":
 			case "bearboy":
 			case "creature":
-			case "horned girl":
-			case "horned boy":
+			case "horned woman":
+			case "horned man":
 				penetrator.penetratorSprite = "tentacle";
 				penetrator.size = 3;
 				options.filters[slot + "Penetrator"] = {

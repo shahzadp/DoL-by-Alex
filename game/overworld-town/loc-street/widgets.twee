@@ -951,7 +951,7 @@
 <<widget "streetNightDogAttack">>
 
 	<<beastNEWinit 3 dog>>
-	<<if $stray_happiness lt random(1, 100) and ($monster is 1 or $settings.bestialityEnabled)>>
+	<<if $monster is 1 or $settings.bestialityEnabled>>
 		Your journey is interrupted by a savage growl emerging from the darkness. You turn to avoid it, only to face a pair of glowing eyes. You're surrounded.
 		<br><br>
 		<<link [[Next|Street Dogs]]>><<set $molestationstart to 1>><</link>>
@@ -975,8 +975,8 @@
 		<<set _tower_creature to true>>
 		<<beastNEWinit 1 creature>>
 		<<if $NPCList[0].monster is "monster">>
-			<<set $NPCList[0].fullDescription to "horned " + ($NPCList[0].gender is "m" ? "boy" : "girl")>>
-			<<set $NPCList[0].type to "horned " + ($NPCList[0].gender is "m" ? "boy" : "girl")>>
+			<<set $NPCList[0].fullDescription to "horned " + ($NPCList[0].gender is "m" ? "man" : "woman")>>
+			<<set $NPCList[0].type to "horned " + ($NPCList[0].gender is "m" ? "man" : "woman")>>
 		<</if>>
 		<<saveNPC 0 tower_creature>>
 	<</if>>
@@ -3337,7 +3337,6 @@
 			<<addevent "streetMoneyProposition" 1>>
 			<<addevent "streetClothingTorn" 0.5>>
 			<<addevent "streetFlirt" 1>>
-			<<addevent "streetFollowDogAlley" 1>>
 			<<addevent "streetBreastGlance" 1>>
 			<<addevent "streetWaterBalloon" 0.5>>
 
@@ -3359,10 +3358,16 @@
 				<<addevent "streetGroupStalk" 1>> /* Group stalking encounter, much more likely at night */
 				<<addevent "streetProstitutionProposition" 0.5>>
 				<<addevent "streetbox" 1>>
-				<<addevent "streetNightDogAttack" 0.2>>
-				<<addevent "streetNightTowerCreature" 0.2>>
 				<<addevent "streetlurker" 0.2>>
 				<<addevent "streetkidnap" 0.5>>
+				<<if $stray_happiness gte random(1, 100)>>
+					<<addevent "streetFollowDogAlley" 1>>
+				<<else>>
+					<<addevent "streetNightDogAttack" 0.5>>
+				<</if>>
+				<<if Time.days gte 8>>
+					<<addevent "streetNightTowerCreature" 0.2>>
+				<</if>>
 			<<else>>
 				/* Events previously in eventsstreetday */
 				<<addevent "streetGroupStalk" 0.1>>
@@ -3370,6 +3375,7 @@
 				<<addevent "streetbox" 0.5>>
 				<<addevent "streetbullies" 1>>
 				<<addevent "streetdog" 1>>
+				<<addevent "streetFollowDogAlley" 1>>
 				<<addevent "streetfriendly1" 1>>
 				<<addevent "streetstray" 1>>
 				<<addevent "shadyFan" 0.6>>
@@ -3538,15 +3544,15 @@
 		<<He>> reaches towards the <<= _skirtExposed ? "hem" : "waistband">> of your <<bottoms>>.
 		<br><br>
 	<</if>>
-<<link [[Remain still|High Public Pants Down Still]]>><<trauma 6>><<stress 6>><<sub 1>><<npcincr Whitney dom 1>><</link>><<gstress>><<gtrauma>><<gdom>>
-<br>
-<<if pcAreArmsBound("both")>>
-	<span class="blue">With your arms bound, you can't do anything to stop <<him>>!</span>
+	<<link [[Remain still|High Public Pants Down Still]]>><<trauma 6>><<stress 6>><<sub 1>><<npcincr Whitney dom 1>><</link>><<gstress>><<gtrauma>><<gdom>>
 	<br>
-<<else>>
-	<<link [[Push Whitney's hands away|High Public Pants Down Push]]>><<set $fightstart to 1>><<def 1>><<npcincr Whitney dom -1>><</link>><<ldom>>
-	<br>
-<</if>>
+	<<if pcAreArmsBound("both")>>
+		<span class="blue">With your arms bound, you can't do anything to stop <<him>>!</span>
+		<br>
+	<<else>>
+		<<link [[Push Whitney's hands away|High Public Pants Down Push]]>><<set $fightstart to 1>><<def 1>><<npcincr Whitney dom -1>><</link>><<ldom>>
+		<br>
+	<</if>>
 <</widget>>
 
 <<widget "whitneyShoppingCentre">>
