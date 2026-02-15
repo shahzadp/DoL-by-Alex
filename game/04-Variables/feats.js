@@ -2757,7 +2757,7 @@ function applyFeatBoosts() {
 					);
 				} else {
 					colors.delete("custom");
-					item.colour = colors.random();
+					item.accessory_colour = colors.random();
 				}
 			}
 			// pick the pattern
