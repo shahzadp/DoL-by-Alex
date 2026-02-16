@@ -145,7 +145,7 @@ const statChange = (() => {
 		amount = Number(amount);
 
 		// halve control gains outside of combat
-		if (amount > 0 && !combat) amount /= 2;
+		if (amount > 0 && !V.combat) amount /= 2;
 		V.control += amount * 10;
 		// if you're looking here to fix a bug where an action that should increase control in combat actually lowers it instead - check State.history/State.expired for the combat start passage and look for a missing <<controlloss>> that failed to set $controlstart to the right value
 		if (combat && V.control >= V.controlstart) V.control = V.controlstart;
