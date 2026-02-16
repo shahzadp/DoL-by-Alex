@@ -1752,6 +1752,9 @@ function dailyPlayerEffects() {
 				(key === "devotion" && !(V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1))
 			) {
 				V.hypnosisTimers[key].time--;
+				if (key === "devotion" && V.gwylan?.timer?.lastSeen && Math.abs(Time.date.dayDifference(new DateTime(V.gwylan.timer.lastSeen))) >= 7) {
+					V.hypnosisTimers[key].time -= 2;
+				}
 			}
 			if (key !== "devotion" && V.hypnosisTimers[key].time <= 0) {
 				V.hypnosis_timer_messages ||= [];
