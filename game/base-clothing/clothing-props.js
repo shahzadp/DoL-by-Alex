@@ -37,7 +37,7 @@ window.propLevels = propLevels;
 /* primary prop colour may be specified in _args[1], secondary in _args[2]. if the item has colour or accColour options provided in setup, but no colour is specified, one will be randomised. otherwise, prop is assumed to be non-recolourable. */
 function wearProp(prop, colour, accColour) {
 	const key = normaliseKey(prop);
-	const tendingItem = key.replace("_gift", "");
+	const tendingItem = key.replace("_gift", "").replace("_basket", "");
 	const tending = setup.plants[tendingItem];
 	const propErties = setup.props[key] ?? {};
 	T.prop = Object.assign({}, setup.propDefaults, propErties, {
@@ -46,7 +46,6 @@ function wearProp(prop, colour, accColour) {
 		accColour: accColour ?? (propErties.accColour?.length ? propErties.accColour.random() : false),
 	});
 
-	if (tending?.type === "food" && T.prop.name.includes("gift")) T.prop.folder = "food";
 	if (T.prop.hasLevels) T.prop.name += propLevels(key);
 
 	if (key.startsWith("antique")) {
@@ -445,6 +444,12 @@ function initProps() {
 			armPosition: "clutch",
 		},
 		berry_basket: {
+			folder: "tending",
+		},
+		pinkshroom: {
+			folder: "tending",
+		},
+		hawk_egg: {
 			folder: "tending",
 		},
 		plant_pot: {

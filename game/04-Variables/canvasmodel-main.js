@@ -1472,7 +1472,7 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.toast,
 
 			srcfn() {
-				return `img/clothes/props/food/toast/toast-${V.trauma > 4000 ? "raw" : "buttered"}.png`;
+				return `img/clothes/props/food/toast-${V.trauma > 4000 ? "raw" : "buttered"}.png`;
 			},
 			showfn(options) {
 				return options.show_face && !!options.toast;
