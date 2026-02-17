@@ -420,13 +420,13 @@ function initProps() {
 		mints: {
 			folder: "food",
 		},
-		burnt: {
+		inedible_burnt: {
 			folder: "food",
 		},
-		slop: {
+		inedible_slop: {
 			folder: "food",
 		},
-		tentaslop: {
+		inedible_tentaslop: {
 			folder: "food",
 		},
 		rice: {
@@ -444,6 +444,9 @@ function initProps() {
 			armPosition: "clutch",
 		},
 		berry_basket: {
+			folder: "tending",
+		},
+		farm_basket: {
 			folder: "tending",
 		},
 		pinkshroom: {
@@ -616,7 +619,7 @@ function initProps() {
 		},
 		piano: {
 			armPosition: "right_cover",
-			zIndex: "handheld_over_sleeve",
+			zIndex: "tailPenisCoverOverlay",
 		},
 		box: {
 			armPosition: "clutch",
