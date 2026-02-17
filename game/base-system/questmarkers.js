@@ -40,12 +40,12 @@ const events = [
 	{
 		name: "avery date",
 		condition() {
-			return V.avery_mansion?.schedule !== "away" && V.averydate === 1 && V.averydatedone !== 1 && Time.weekDay === 7;
+			return V.avery_mansion?.schedule !== "away" && V.averydate === 1 && V.averydatedone !== 1 && V.averydateattended !== 1 && Time.weekDay === 7;
 		},
 		starthour: 20,
 		endhour: 20,
 		priority: 4,
-		text: "You have a date with Avery <<print $avery_mansion ? 'in the mansion garage': 'on Domus Street'>> <<if Time.hour is 20>><span class='gold'>right now!</span><<else>>at <<ampm 20 00>>.<</if>>",
+		text: "You have a date with Avery <<print $avery_mansion ? 'in the mansion garage': 'on Domus Street'>> <<if Time.hour is 20>><span class='gold'>right now</span>.<<else>>at <<ampm 20 00>>.<</if>>",
 		failuretext: "You didn't show up for your date with Avery.",
 	},
 	{
