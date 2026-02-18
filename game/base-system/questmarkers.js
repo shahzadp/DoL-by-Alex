@@ -144,6 +144,7 @@ const events = [
 				V.adultshopprogress < 22 &&
 				V.adultshopintro === 1 &&
 				V.adultshopunlocked === undefined &&
+				!V.daily.dilapidatedShopHelp &&
 				Time.weekDay === 6 &&
 				(Time.hour <= 15 || V.adultshopstate === "sydney")
 			);
@@ -151,7 +152,7 @@ const events = [
 		starthour: 16,
 		endhour: 19,
 		priority: 6,
-		text: "Adult shop on Elk Street is undergoing renovations after <<ampm 16>> today.",
+		text: "The adult shop on Elk Street is undergoing renovations after <<ampm 16>> today.",
 		failuretext: "You didn't help <<if C.npc.Sydney.init>>Sydney<</if>> at the adult shop today.",
 	},
 	{
@@ -201,7 +202,7 @@ const events = [
 		endhour: 20,
 		priority: 5,
 		text: "The school plays are being held today at Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>",
-		failuretext: "The last of the school plays is finished by now. You didn't attend.",
+		failuretext: "The last of the school plays has finished by now. You didn't attend.",
 	},
 	{
 		name: "english play tomorrow",
