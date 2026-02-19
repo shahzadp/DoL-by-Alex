@@ -2840,10 +2840,10 @@ function applyFeatBoosts() {
 		for (let i = 0; i < totalToys; ++i) {
 			// index
 			let index = boostObj[i].index;
-			if (!index || index === -1) index = toyIndexes.pluck();
+			if (index == null || index === -1) index = toyIndexes.pluck();
 			// color
 			let color = boostObj[i].colour;
-			if (!color || color === -1) color = setup.sextoys[index].colour_options.random();
+			if (color == null || color === -1) color = setup.sextoys[index].colour_options.random();
 
 			sexShopOnBuyClick(index, false, color, false);
 		}
