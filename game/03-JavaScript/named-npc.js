@@ -190,6 +190,19 @@ function averySchedule() {
 	/* ToDo: Divorce schedule from V.avery_mansion entirely */
 	if (C.npc.Avery.init !== 1 || C.npc.Avery.status === "dismissed") return;
 
+	/* PC is not allowed to work with Avery if they're injured. Avery works Sunday from 7am-4pm and Monday-Friday 7am-8pm */
+	const workHours = Time.weekDay !== 7 && Time.hour > 6 && Time.hour <= (Time.weekDay === 1 ? 16 : 20);
+	const workAvailable = V.averySeen?.includes("office") && !V.avery_injury;
+	if (workHours && workAvailable) T.avery_available = "office";
+
+	/* Office job can only be unlocked if Avery's not injured. If PC's never been on a date with Avery, they'll receive a note from the office manager at high enough love. If they have been on dates with Avery, Avery has the artefact, and their rage is low enough, they will be railroaded into unlocking the job when they enter the office at high enough office manager love. The times differ for each approach. We may want to revisit this when we do a full standardisation of NPC schedules. */
+	const jobUnlock1 = V.dateCount.Avery === 0 && Time.hour >= 8 && Time.hour < 10;
+	const jobUnlock2 = V.auriga_artefact && C.npc.Avery.rage <= 40 && Time.hour >= 8 && Time.hour < 15;
+	if (!V.averySeen?.includes("office") && Time.weekDay !== 7 && !V.avery_injury) {
+		if (jobUnlock1) T.avery_available = "office invite";
+		if (jobUnlock2) T.avery_available = "office unlock";
+	}
+
 	/* Avery ignores regular schedule to pick up PC */
 	const love = random(20, 100);
 	const rng = random(1, 100);
@@ -198,20 +211,7 @@ function averySchedule() {
 	const schoolPickupChance = (C.npc.Avery.love >= love && (rng >= 51 || Weather.precipitation !== "none")) || (C.npc.Avery.love >= 20 && Time.weekDay === 2);
 	if (schoolPickupChecks && schoolPickupChance) T.avery_available = "pickup";
 
-	/* PC is not allowed to work with Avery if they're injured. Avery works Sunday from 7am-4pm and Monday-Friday 7am-8pm */
-	const workHours = Time.weekDay !== 7 && Time.hour > 6 && Time.hour <= (Time.weekDay === 1 ? 16 : 20);
-	const workAvailable = V.averySeen?.includes("office") && !V.avery_injury;
-	if (workHours && workAvailable) T.avery_available = "office";
-
-	/* Office job can only be unlocked if Avery's not injured. If PC's never been on a date with Avery, they'll receive a note from the office manager at high enough love. If they have been on dates with Avery, Avery has the artefact, and their rage is low enough, they will be railroaded into unlocking the job when they enter the office at high enough office manager love. The times differ for each approach. We may want to revisit this when we do a full standardisation of NPC schedules. */
-	const jobUnlock1 = V.dateCount.Avery === 0 && Time.hour >= 8 && Time.hour < 10;
-	const jobUnlock2 = V.$auriga_artefact && C.npc.Avery.rage <= 40 && Time.hour > 8 && Time.hour < 15;
-	if (!V.averySeen?.includes("office") && Time.weekDay !== 7 && !V.avery_injury) {
-		if (jobUnlock1) T.avery_available = "office invite";
-		if (jobUnlock2) T.avery_available = "office unlock";
-	}
-
-	if (!V.avery_mansion) {
+	if (!V.avery_mansion || T.avery_available === "pickup") {
 		/* Prior to unlocking mansion, Avery can only be found for school pickup, dates, or office job */
 		if (V.averydate === 1 && Time.weekDay === 7 && Time.hour === 20) T.avery_available = "date";
 

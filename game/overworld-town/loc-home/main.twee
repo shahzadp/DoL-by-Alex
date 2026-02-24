@@ -822,7 +822,7 @@ You are in the bathroom.
 <br><br>
 <<if $stress gte $stressmax>>
 	<<passouthome>>
-	<<exit>>
+	<<exitAll>>
 <</if>>
 
 <<if pcAreArmsBound("both")>>
@@ -830,15 +830,9 @@ You are in the bathroom.
 	<<bathroomicon "bath">><<link [["Have a bath " + (_clothed ? " in clothes " : "") + "(0:30)"->Bath]]>><<water>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>
 <<else>>
 	<<bathroomicon "bath">><<link [[Have a bath (0:30)|Bath]]>><<strip>><<pass 30>><<stress -6>><<set $hygiene to 0>><</link>><<lstress>>
-	<br>
-	<<bathroomicon "toothbrush">><<link [[Brush teeth (0:05)|Bathroom Brush]]>><<pass 5>><<set $bathroomExit to "Bathroom">><</link>>
 <</if>>
 <br>
-<!-- Check if there's any hair-->
-<<if $settings.pubicHairEnabled and ($pblevel gte 2 or $pbstrip gte 1 or $pblevelballs gte 2)>>
-	<<bathroomicon "shave">><<link [[Groom pubic hair->Shave]]>><</link>>
-	<br>
-<</if>>
+<<personalUpkeep>>
 <<pregnancyTest "Bedroom">>
 <br>
 
@@ -853,6 +847,14 @@ You are in the bathroom.
 :: Bathroom Brush
 <<effects>>
 <<set _exit to $bathroomExit or "Bathroom">>
+
+<<if $leftarm is "bound" and $rightarm is "bound">>
+	<span class="red">Both of your arms are bound</span>, and you're unable to hold a toothbrush.
+	<br><br>
+
+	<<link [[Next|_exit]]>><<endevent>><<canvas-model-override "clear">><<run delete $bathroomExit>><</link>>
+	<<exitAll>>
+<</if>>
 <<switch $player.gender>>
 	<<case "m">><<wearProp "toothbrush" "blue">>
 	<<case "f">><<wearProp "toothbrush" "pink">>
@@ -3608,151 +3610,83 @@ You grab your clothes and dress with haste.
 :: Shave
 <<effects>>
 <<dontHideForNow>>
-<<if pcAreArmsBound("both")>>
-	<span class="red">Both of your arms are bound</span>, and you find it difficult to do anything about your pubes this way.
-	<br>
-	<<link [[Back->Bathroom]]>><<dontHideRevert>><</link>>
-	<<exit>>
-<</if>>
 
-<<shavestrip>>
-<<wearProp "razor">>
-You take off your clothes and look at your <<genitals>>.
-<br><br>
-<<if playerChastity("hidden")>>
-	The belt fits snug against your body, and it seems that reaching pubes with a razor is almost impossible.
+<<if $phase2 is "pubes">>
+	<<if $phase is "trim">>
+		<<wearProp "scissors">>
+		You pick up a comb and a pair of scissors
+	<<else>>
+		<<wearProp "razor">>
+		You pick up some shaving cream and a razor.
+	<</if>>
 	<br><br>
-	<<link [[Dress up->Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-	<<exit>>
-<</if>>
 
-<<if playerChastity("cage")>>
-	Your penis is <<if $worn.genitals.name is "chastity parasite">>sealed inside the parasite<<else>>locked inside the cage<</if>>. Shaving around it will be a bit more tricky, but that's not a big deal.
-	<br><br>
-<</if>>
-<<if $pblevel gte 2 or $pbstrip gte 1 or $pblevelballs gte 2>>
-	<<shavestyleicon 'clean'>><<link [[Shave clean (0:15)|Shave clean]]>><<pass 15>><<arousal 100>><<set $pblevel to 0>><<set $pbgrowth to 0>><<set $pblevelballs to 0>><<set $pbgrowthballs to 0>><<set $pbstrip to 0>><<set $makeup.pbcolour to 0>><</link>>
-	<br>
-<</if>>
-<<if $pblevel gte 5 or $pbstrip gte 2 or ($pbstrip is 1 and $pblevel gte 2)>>
-	<<shavestyleicon 'strip'>><<link [[Form a landing strip (0:15)|Shave strip]]>><<pass 15>><<arousal 100>><<set $pbstripName to "neat landing strip">><<set $pblevel to 0>><<set $pbgrowth to 0>><<set $pbstrip to 1>><</link>>
-	<br>
-<</if>>
-<<if $pblevel gte 5 or $pbstrip gte 3 or ($pbstrip gte 2 and $pblevel gte 2)>>
-	<<shavestyleicon 'heart'>><<link [[Form a heart (0:15)|Shave strip]]>><<pass 15>><<arousal 100>><<set $pbstripName to "cute heart shape">><<set $pblevel to 0>><<set $pbgrowth to 0>><<set $pbstrip to 2>><</link>>
-	<br>
-<</if>>
-<<if $pblevel gte 5 or $pbstrip gte 4 or ($pbstrip gte 3 and $pblevel gte 2)>>
-	<<shavestyleicon 'triangle'>><<link [[Form a triangle (0:15)|Shave strip]]>><<pass 15>><<arousal 100>><<set $pbstripName to "neat triangle">><<set $pblevel to 0>><<set $pbgrowth to 0>><<set $pbstrip to 3>><</link>>
-	<br>
-<</if>>
-<<if $player.ballsExist is true>>
-	<<if $pblevel gte 2 or $pbstrip gte 1>>
-		<<shavestyleicon 'clean'>><<link [[Shave only pubis (0:10)|Shave pubis]]>><<pass 10>><<arousal 50>><<set $pblevel to 0>><<set $pbgrowth to 0>><<set $pbstrip to 0>><<if $pblevelballs is 0>><<set $makeup.pbcolour to 0>><</if>><</link>>
-		<br>
+	You spread your legs and start carefully <<= $phase is "trim" ? "trimming" : "shaving">> your pubes. After a few minutes,
+	<<switch $phase>>
+		<<case "trim">>
+			the hair around your <<genitals 2>> is neatly trimmed.
+		<<case "balls">>
+			your balls are now smooth and clean.
+		<<case "pubis">>
+			your pubis is now smooth and clean.
+		<<case "strip">>
+			your <<genitals_are 2>> now smooth and clean, except for a <<print $pbstripName>> on your pubis.
+		<<default>>
+			your <<genitals_are 2>> now smooth and clean.
+	<</switch>>
+<<else>>
+	<<if pcAreArmsBound("both")>>
+		<span class="red">Both of your arms are bound</span>, and you're unable to hold a razor.
+		<br><br>
+		<<link [[Back|$bathroomExit]]>><<endevent>><<run delete $bathroomExit>><<dontHideRevert>><</link>>
+		<<exitAll>>
+	<<else>>
+		<<outfitChecks>>
+		You <<if !_fullyNaked>>take off your clothes and <</if>>look at your <<genitals 1>>.
+		<<shavestrip>>
+		<<if playerChastity("hidden")>>
+			The belt fits snug against your body. It doesn't look like you can reach your pubes with a razor.
+			<br><br>
+			<<getouticon>><<link [[Back|$bathroomExit]]>><<endevent>><<run delete $bathroomExit>><<clotheson>><<dontHideRevert>><</link>>
+			<<exitAll>>
+		<</if>>
+		<<if playerChastity("cage")>>
+			Your penis is <<if $worn.genitals.name is "chastity parasite">>sealed inside the parasite<<else>>locked inside the cage<</if>>. Shaving around it will be a bit more tricky, but that's not a big deal.
+		<</if>>
 	<</if>>
-	<<if $pblevelballs gte 3>>
-		<<shavestyleicon 'balls'>><<link [[Shave only balls (0:05)|Shave balls]]>><<pass 5>><<arousal 50>><<set $pblevelballs to 0>><<set $pbgrowthballs to 0>><<if $pblevel is 0 and $pbstrip is 0>><<set $makeup.pbcolour to 0>><</if>><</link>>
-		<br>
-	<</if>>
 <</if>>
-<<if $pblevel gt 5 or $pblevelballs gt 5>>
-	<<shavestyleicon 'trim'>><<link [[Trim short (0:10)|Shave trim]]>><<pass 10>><<arousal 100>>
-	<<if $pblevel gte 5>>
-		<<set $pblevel to 5>><<set $pbgrowth to 7>><<set $pbstrip to 0>>
+<br>
+<<shaveOptions>>
+
+<<getouticon>><<link [[Back|$bathroomExit]]>><<endevent>><<run delete $bathroomExit>><<clotheson>><<dontHideRevert>><</link>>
+
+
+:: Dye Hair
+<<effects>>
+<<set _dyes = $makeup.owned.hairdye.filter(x => x.count > 0)>>
+
+<<if $phase2 is "apply">>
+	<<wearProp "hairdye">>
+	You treat the area with petroleum jelly, then prepare the <<hairmapcolourtext $makeup[$phase]>> hair dye.
+	<<if $phase is "browscolour">>
+		Using a small brush, you carefully apply the colour to your brows. You wait several minutes for the chemicals to set in, then wipe off the excess dye.
+	<<else>>
+		<<dontHideForNow>><<shavestrip>>
+		Using a small brush, you carefully apply the chemicals to your pubes and wait for them to soak in. After several minutes, you rinse your private area. The process is oddly arousing. <<arousal 100>><<garousal>>
 	<</if>>
-	<<if $pblevelballs gte 5>>
-		<<set $pblevelballs to 5>><<set $pbgrowthballs to 10>>
-	<</if>>
-	<</link>>
-	<br>
+	<hr>
 <</if>>
-<<if !playerChastity("hidden")>>
-	<<cosmeticsicon "dyes">><<link [[Dye pubic hair->Dye pubic hair]]>><</link>>
-	<br>
-<</if>>
-<<refuseicon>><<link [[Don't shave anything->Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
 
-:: Shave clean
-<<effects>>
-
-You pick up some shaving cream and a razor.
-<br>
-You sit down, spread your legs, and start carefully shaving your pubes. After a few minutes, you are done and your <<genitals_are 2>> now smooth and clean.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-
-:: Shave pubis
-<<effects>>
-
-You pick up some shaving cream and a razor.
-<br>
-You start carefully shaving hair. After a few minutes, you are done and your pubis is now smooth and clean.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-
-:: Shave balls
-<<effects>>
-
-You pick up some shaving cream and a razor.
-<br>
-You prop one leg on a bathtub and start carefully shaving your balls. After a few minutes, you are done and your testicles are now smooth and clean.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-
-:: Shave strip
-<<effects>>
-
-You pick up some shaving cream and a razor.
-<br>
-You sit down, spread your legs, and start carefully shaving your pubes. After a few minutes, you are done and your <<genitals_are 2>> now smooth and clean with a <<print $pbstripName>> adorning your pubis.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-
-:: Shave trim
-<<effects>><<wearProp "scissors">>
-
-You pick up a comb and a pair of scissors.
-<br>
-You sit down, spread your legs, and start carefully trimming your pubes. After a few minutes you are done and hair around your <<genitals 2>> is now neatly trimmed.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
-
-:: Dye pubic hair
-<<effects>>
-
-<<set _ownedColours = $makeup.owned.hairdye.filter(x => x.count > 0)>>
-<<if _ownedColours.length == 0>>
-	You don't own any hair dyes. Maybe you should visit a cosmetics shop to buy some.
+<<if _dyes.length == 0>>
+	You have no remaining hair dye. You can buy more at the cosmetics shop.
 	<br>
 <<else>>
-	<<wearProp "hairdye">>
-	What colour will it be?
-	<br>
-	<<set _choice = _ownedColours[0].colour>>
-	<<for _i, _item range _ownedColours>>
-		<label><span class="grey-shadow"><span @class="'hair-' + _item.colour.replace(/ /g, '-')"><span class="colour-hair"><span style="color:#FD6064;"><<hairmapcolourtext _item.colour>></span></span></span></span>&nbsp;<<print '<<radiobutton "_choice" "'+_item.colour+'" ' + (_choice is _item.colour ? "checked" : "") + '>>'>></label>
-		&nbsp;x&nbsp;_item.count |
-	<</for>>
-
-	<br><br>
-	<<link [[Dye pubic hair using selected colour (0:30)|Dye pubic hair Finish]]>><<pass 30>><<set $makeup.owned.hairdye.find(x => x.colour == _choice).count -= 1>><<set $makeup.pbcolour = _choice>><</link>>
+	<div id="dyeOptions">
+		<<dyeOptions>>
+	</div>
 <</if>>
 <br>
-<<link [[Back|Shave]]>><</link>>
-
-:: Dye pubic hair Finish
-<<effects>>
-
-You treat your most sensitive parts with petroleum jelly and then prepare the hair dye.
-<br>
-Using a small brush, you carefully apply chemicals to your pubes and wait for them to soak in.
-<br>
-<<arousal 100>>
-<br>
-After several minutes, you rinse your private area with water and behold your <<genitals 2>> with <<hairmapcolourtext $makeup.pbcolour>> pubic hair.
-<br><br>
-<<link [[Next|Bathroom]]>><<clotheson>><<dontHideRevert>><</link>>
+<<getouticon>><<link [[Back|$bathroomExit]]>><<endevent>><<run delete $bathroomExit>><<clotheson>><<dontHideRevert>><</link>>
 
 :: Mirror Bodywriting
 <<effects>><<wearProp "pen">>

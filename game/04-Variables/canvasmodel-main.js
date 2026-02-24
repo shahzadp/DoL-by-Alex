@@ -1795,8 +1795,19 @@ Renderer.CanvasModels.main = {
 				return options.cow_horns_layer === "front" ? ZIndices.over_head + 1 : ZIndices.horns + 1;
 			},
 		}),
-		"cow_ears": genlayer_ears("cow", false, {
+		"cow_ear_left": genlayer_ears("cow", false, {
 			z: ZIndices.horns,
+			masksrcfn() {
+				return "img/face/masks/left.png"
+			}
+		}),
+		"cow_ear_right": genlayer_ears("cow", false, {
+			zfn() {
+				return ZIndices.ears + 0.5;
+			},
+			masksrcfn() {
+				return "img/face/masks/right.png"
+			}
 		}),
 		"cow_tag": genlayer_ears("cow", false, {
 			z: ZIndices.facewear,
@@ -2045,7 +2056,7 @@ Renderer.CanvasModels.main = {
 				return options.show_writings && !!options.writing_right_shoulder;
 			},
 			dxfn(options) {
-				if (options.arm_right === "cover" || options.handheld_position === "right_cover") return 4;
+				if (["none", "cover"].includes(options.arm_right) || options.handheld_position === "right_cover") return 4;
 				return 0;
 			},
 			zfn(options) {

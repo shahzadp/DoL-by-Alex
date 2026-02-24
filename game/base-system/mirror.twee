@@ -1825,15 +1825,16 @@
 	<<set _itemType = _args[0]>>
 
 	<<set _items = $makeup.owned[_itemType].filter(x => x.count > 0)>>
+	<<cosmeticsicon _itemType>>	<span class="gold bold"><<= _itemType.toUpperFirst()>>:</span>
 	<<if $makeup.owned[_itemType].length == 0>>
-		<<cosmeticsicon _itemType>> You don't own any _itemType.
+		<br>
+		You don't own any _itemType.
 	<<elseif _items.length == 0>>
+		<br>
 		You ran out of _itemType.
 		<br>
 	<</if>>
 	<<if _items.length != 0 or $makeup[_itemType] != 0>>
-		<<cosmeticsicon _itemType>>
-		<span class="gold bold"><<= _itemType.toUpperFirst()>>:</span>
 		<<if $makeup[_itemType] != 0>>
 			<<capture _itemType>>
 			<span class="no-numberify">
@@ -2043,8 +2044,11 @@
 						<span class="no-numberify">
 							<<link "Remove">>
 								<<set $makeup.eyelenses = { left: 0, right: 0 }>>
-								<<run Engine.show()>>
-							<</link>>
+									<<replace #mirror>>
+										<<updatesidebarimg>>
+										<<mirrorDisplay>>
+									<</replace>>
+								<</link>>
 						</span>
 						<br>
 						You are wearing
@@ -2073,6 +2077,7 @@
 							<<switch _contact_eye_selected>>
 								<<default>><<set _eye to "left">>
 							<</switch>>
+							<span @class="$makeup.eyelenses.left == _colour || $makeup.eyelenses.right == _colour ? 'makeupWorn' : 'makeupItem'">
 							<span class="makeupItem">
 								<<capture _colour>>
 									<<set _contactName to
@@ -2086,7 +2091,10 @@
 										<<elseif _contact_eye_selected == "Right eye">>
 											<<set $makeup.eyelenses.right = _colour>>
 										<</if>>
-										<<run Engine.show()>>
+										<<replace #mirror>>
+											<<updatesidebarimg>>
+											<<mirrorDisplay>>
+										<</replace>>
 									<</button>>
 								<</capture>>
 							</span>
@@ -2113,58 +2121,18 @@
 										<<elseif _contact_eye_selected == "Right eye">>
 											<<set $makeup.eyelenses.right = _colour>>
 										<</if>>
-										<<run Engine.show()>>
+										<<replace #mirror>>
+											<<updatesidebarimg>>
+											<<mirrorDisplay>>
+										<</replace>>
 									<</button>>
 								<</capture>>
 							</span>
 						<</for>>
-
 					</div>
 				<</if>>
 			</div>
-			/* WHY IS THIS IN THE BEDROOM AND NOT THE BATHROOM WITH THE PUBIC HAIR DYE? WHY IS IT SAVED WITH MAKEUP PRESETS? */
-			<div class="settingsToggleItemWide">
-				<<cosmeticsicon "dyes">>
-				<<set _dyes = $makeup.owned.hairdye.filter(x => x.count > 0)>>
-				<<if _dyes.length == 0>>
-					You have no hair dye to dye your eyebrows with.
-				<<else>>
-					<span class="gold bold">Eyebrow Colour:</span>
-					<br>
-					<<if $mirror_eyebrow_dye is true>>
-						<<wearProp "hairdye">>
-						<<unset $mirror_eyebrow_dye>>
-						You open up the box with <<= setup.colours.hair_map[$browsDyeOption].name>> dye and prepare the mixture. Using a small brush, you carefully apply the dye to your eyebrows. You wait several minutes for the dye to set and hope you didn't mess up anything.
-						<<set $makeup.owned.hairdye.find(x => x.colour == $browsDyeOption).count -= 1>><<set $makeup.browscolour = $browsDyeOption>><<unset $browsDyeOption>>
-						<hr>
-					<</if>>
 
-					<<if $makeup.browscolour != 0>>
-						Your brows are coloured with <<hairmapcolourtext $makeup.browscolour>> hair dye. Visit a hairdresser to restore them to their natural <<hairmapcolourtext $naturalhaircolour>> colour.
-					<<else>>
-						Your brows are their natural <<hairmapcolourtext $naturalhaircolour>> colour.
-					<</if>>
-					<br><br>
-					Dying your eyebrows will take <span class="gold">0:15</span> minutes.
-					<br>
-					<div class="makeupList no-numberify capitalize">
-						<<for _i to 0; _i lt _dyes.length; _i++>>
-							<<if $makeup.browscolour is _dyes[_i].colour or $naturalhaircolour is _dyes[_i].colour>>
-								<<continue>>
-							<</if>>
-							<<set _displayName = (_dyes[_i].colour in setup.colours.hair_map ? setup.colours.hair_map[_dyes[_i].colour].name : _dyes[_i].colour.charAt(0).toUpperCase() + _dyes[_i].colour.slice(1)) + " ×" + _dyes[_i].count + " ">>
-							<<set _dyeName to _displayName + `<span @class="'hair-' + _dyes[_i].colour.replace(/ /g, '-')"><span class="colour-sample bgcolour-hair colour-hair"></span></span>`>>
-							<<capture _dyes, _i>>
-								<<button _dyeName>>
-									<<set $mirror_eyebrow_dye to true>><<pass 15>>
-									<<set $browsDyeOption to _dyes[_i].colour>>
-									<<run Engine.show()>>
-								<</button>>
-							<</capture>>
-						<</for>>
-					</div>
-				<</if>>
-			</div>
 		<</if>>
 	</div>
 <</widget>>
