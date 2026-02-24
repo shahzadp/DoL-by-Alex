@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.8.9",
+	version: "0.5.8.10",
 	versionName: `"Assorted Chocolates" edition`,
 	sneaky: false,
 	socialMediaEnabled: true,
