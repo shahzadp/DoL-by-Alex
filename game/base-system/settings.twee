@@ -2371,6 +2371,37 @@
 				<</link>>
 			<</if>>
 		</div>
+		<div class="settingsToggleIndent">
+			<<foldout false "_gender">>
+				<span class="gold">Assign to all Named NPCs:</span>
+				Gender:
+				<<link "Male">><<assignAllNPCs "pronoun" "m">><</link>> | <<link "Female">><<assignAllNPCs "pronoun" "f">><</link>>
+				<br>
+				Genitals:
+				<<link "Penis">><<assignAllNPCs "gender" "m">><</link>> | <<link "Vagina">><<assignAllNPCs "gender" "f">><</link>>
+				<br>
+				Penis size:
+				<<set _penisNames to ["", "Tiny", "Average", "Thick", "Huge"]>> /* the empty first element is necessary because _j starts at 1 */
+				<<for _j to 1; _j lt _penisNames.length; _j++>>
+					<<capture _j>>
+						<<link _penisNames[_j]>><<assignAllNPCs "penissize" _j>><</link>>
+						<<if _j isnot _penisNames.length -1>>|<</if>>
+					<</capture>>
+				<</for>>
+				<br>
+				Breast size:
+				<<set _breastNames to ["Flat", "Budding", "Tiny", "Small", "Pert", "Modest", "Full", "Large", "Ample", "Massive", "Huge", "Gigantic", "Enormous"]>>
+				<<for _k to 0; _k lt _breastNames.length; _k++>>
+					<<capture _k>>
+						<<link _breastNames[_k]>><<assignAllNPCs "breastsize" _k>><</link>>
+						<<if _k isnot _breastNames.length -1>>|<</if>>
+					<</capture>>
+				<</for>>
+				<br>
+				Skin colour:
+				<<link "Pale">><<assignAllNPCs "skincolour" "white">><</link>> | <<link "Dark">><<assignAllNPCs "skincolour" "black">><</link>>
+			<</foldout>>
+		</div>
 		<hr>
 		<<if _npcId is undefined>>
 			<<set _npcId to 25>> /* Should be set to the index of the NPC that is at the top of the list when sorted alphabetically by name */
@@ -2443,6 +2474,28 @@
 			<<set _listActive to true>>
 		<</if>>
 	</div>
+<</widget>>
+
+<<widget "assignAllNPCs">>
+	<<set $_characteristic to _args[0]>>
+	<<set $_value to _args[1]>>
+	<<for $_i to 0; $_i lt $NPCName.length; $_i++>>
+		<<set $NPCName[$_i][$_characteristic] to $_value>>
+		<<if $_characteristic is "breastsize">>
+			<<set $NPCName[$_i].breastdesc to $_i > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
+			<<set $NPCName[$_i].breastsdesc to $_i > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
+		<</if>>
+	<</for>>
+	<<if $passage isnot "start" and $per_npc and Object.keys($per_npc).length gt 0>>
+		<<for $_i, $_value range $per_npc>>
+			<<set $per_npc[$_i][$_characteristic] to $_value>>
+			<<if $_characteristic is "breastsize">>
+				<<set $per_npc[$_i].breastdesc to $_i > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
+				<<set $per_npc[$_i].breastsdesc to $_i > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
+			<</if>>
+		<</for>>
+	<</if>>
+	<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
 <</widget>>
 
 <<widget "exportsettings">>
@@ -2519,7 +2572,7 @@
 				<<link "Previous">>
 					<<set _sortedId to _sortedNPCList.indexOf($NPCNameList[_npcId])>>
 					<<if _sortedId is 0>>
-						<<set _sortedId to $NPCNameList.length - 1>>
+						<<set _sortedId to $NPCNameList.length - 2>>
 					<<else>>
 						<<set _sortedId-->>
 					<</if>>
@@ -2566,10 +2619,7 @@
 				<span class="gold">Penis Size:</span>
 				<br>
 				<<for _j to 1; _j lt _penisNames.length; _j++>>
-					<label>
-						<<radiobutton "$NPCName[_npcId].penissize" _j autocheck>>
-						<<print _penisNames[_j]>>
-					</label>
+					<label>	<<radiobutton "$NPCName[_npcId].penissize" _j autocheck>><<= _penisNames[_j]>></label>
 					<<if _j isnot _penisNames.length -1>>|<</if>>
 				<</for>>
 			</span>

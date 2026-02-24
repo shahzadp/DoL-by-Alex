@@ -701,6 +701,25 @@ Config.navigation.override = function (dest) {
 			case "Street Eden Rage":
 				return "Eden Caged Caught";
 
+			case "Farm Shave":
+			case "Farm shave clean":
+			case "Shave clean":
+			case "Farm shave pubis":
+			case "Shave pubis":
+			case "Farm shave balls":
+			case "Shave balls":
+			case "Farm shave strip":
+			case "Shave strip":
+			case "Farm shave trim":
+			case "Shave trim":
+				return "Shave";
+
+			case "Dye pubic hair":
+			case "Farm Dye":
+			case "Dye pubic hair Finish":
+			case "Farm dye pubic hair Finish":
+				return "Dye Hair";
+
 			default:
 				return false;
 		}
