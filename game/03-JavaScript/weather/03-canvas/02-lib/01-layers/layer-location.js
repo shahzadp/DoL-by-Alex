@@ -99,6 +99,28 @@ Weather.Renderer.Layers.add({
 });
 
 Weather.Renderer.Layers.add({
+	name: "locationSmoke",
+	zIndex: 10,
+	animation: { updateRate: 50 },
+	effects: [
+		{
+			effect: "multiSmoke",
+			drawCondition() {
+				if (!Array.isArray(this.particles)) return false;
+				return this.particles.some(obj => typeof obj.type === "string" && obj.type.includes("smoke"));
+			},
+			params: {},
+			bindings: {
+				particles() {
+					const loc = setup.Locations.get();
+					return setup.LocationImages[loc]?.particles || [];
+				},
+			},
+		},
+	],
+});
+
+Weather.Renderer.Layers.add({
 	name: "horizonGlow",
 	zIndex: 8,
 	effects: [

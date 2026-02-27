@@ -4,6 +4,8 @@ interface ImageLocation {
 	emissive?: EmissiveSetting | { [key: string]: EmissiveSetting };
 	reflective?: ReflectiveSetting;
 	layerTop?: ImageSetting | { [key: string]: ImageSetting };
+	weather?: WeatherLocationSettings;
+	particles?: {};
 }
 
 interface AnimationSetting {
@@ -64,7 +66,67 @@ interface ReflectiveProperty {
 	alwaysDisplay?: boolean | (() => boolean);
 	compositeOperation?: string | (() => string);
 	animation?: string | AnimationSetting;
+	verticalFactor?: number | (() => number);
+	amplitude?: number | (() => number);
+	verticalSpeed?: number | (() => number);
 }
+
+interface BoundsBand {
+	top?: number | (() => number);
+	bottom?: number | (() => number);
+}
+
+interface GroundBounds {
+	splashes: BoundsBand;
+	fog: BoundsBand;
+}
+
+interface WeatherLocationSettings {
+	fogDistributionCurve?: number | (() => number);
+	rainSplashEnabled?: boolean;
+	fogEnabled?: boolean;
+	groundBounds?: GroundBounds;
+}
+
+interface WeatherType {
+	name: string;
+	iconType: string | (() => string);
+	value: number;
+	probability: {
+		summer: number;
+		winter: number;
+		spring: number;
+		autumn: number;
+	};
+	cloudCount: {
+		small: () => number;
+		medium: () => number;
+		large: () => number;
+	};
+	tanningModifier: number | (() => number);
+	overcast: number | (() => number);
+	precipitationIntensity: number | (() => number);
+	rain?: {
+		dropLength: number;
+		dropSpeed: number;
+		dropWidth: number;
+	};
+	cloudAlpha: number;
+	darkenFactor: {
+		sky: number;
+		sun: number;
+		moon: number;
+		clouds: number;
+		cirrusClouds: number;
+		overcastClouds: number;
+		precipitation: number;
+		fog: number;
+		location: number;
+	};
+	fogChangeRate: number;
+	lightningFrequency?: number | (() => number);
+}
+
 declare global {
 	export interface LocationImages {
 		[locationKey: string]: ImageLocation;

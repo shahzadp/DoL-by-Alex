@@ -3,16 +3,6 @@ setup.SkySettings = {
 		on: 19,
 		off: 7,
 	},
-	fade: {
-		overcast: {
-			timeToFade: 60,
-			bloodMoonMaxValue: 0.85,
-		},
-	},
-	blur: {
-		minFactorToBlur: 0.4,
-		fogMaxBlurValue: 1,
-	},
 	canvas: {
 		sidebar: {
 			size: [64, 192],
@@ -74,10 +64,6 @@ setup.SkySettings = {
 						horizon: 80,
 					},
 				},
-			},
-			blur: {
-				minFactorToBlur: 0.4,
-				fogMaxBlurValue: 1,
 			},
 		},
 		banner: {

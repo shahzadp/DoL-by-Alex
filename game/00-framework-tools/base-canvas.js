@@ -1,5 +1,5 @@
 class BaseCanvas {
-	constructor(width, height, scale = 1) {
+	constructor(width = 300, height = 150, scale = 1) {
 		this.canvas = $("<canvas/>");
 		this.element = this.canvas[0];
 		this.scale = scale;

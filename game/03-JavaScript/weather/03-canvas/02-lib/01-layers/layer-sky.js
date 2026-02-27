@@ -90,5 +90,35 @@ Weather.Renderer.Layers.add({
 				},
 			},
 		},
+		{
+			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.sky > 0;
+			},
+			compositeOperation: "source-atop",
+			params: {
+				darkenTarget: "#343434",
+			},
+			bindings: {
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.sky);
+				},
+			},
+		},
+		{
+			effect: "desaturate",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled;
+			},
+			compositeOperation: "copy",
+			params: {
+				maxDesaturate: 0.6,
+			},
+			bindings: {
+				factor() {
+					return Time.dayState === "day" || Time.dayState === "dawn" ? Weather.fog : 0;
+				},
+			},
+		},
 	],
 });

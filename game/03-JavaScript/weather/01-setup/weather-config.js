@@ -17,8 +17,8 @@ setup.WeatherGeneration = {
 			/* Will generate random number of key points between the min and max value */
 			daysToGenerate: 20, // How many days of forecast to generate ahead of the current day. Do not set too low or it will generate new key points too often.
 			minTimeApartKeyPoints: 140, // Minimum time between each keypoint, in minutes
-			minKeyPointsPerDay: 1, // Mininum number of key points per day. Must be at least 1
-			maxKeyPointsPerDay: 4, // Maximum number of key points per day.
+			minKeyPointsPerDay: 1, // Minimum number of key points per day. Must be at least 1
+			maxKeyPointsPerDay: 3, // Maximum number of key points per day.
 		},
 		temperature: {
 			// Generates at least 1 month ahead, dynamically
@@ -37,6 +37,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.3,
 			sunIntensity: 0.1, // Modifies tanning changes from sun exposure
+			fogIncreaseAllowed: 0.7, // Daily chance that the fog is allowed to increase on that day
+			allDayFog: 0.09, // Daily chance that the fogGoal is maxed all day
 		},
 		{
 			// Feb
@@ -46,6 +48,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.25,
 			sunIntensity: 0.2,
+			fogIncreaseAllowed: 0.65,
+			allDayFog: 0.08,
 		},
 		{
 			// Mar
@@ -55,6 +59,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.2,
 			sunIntensity: 0.3,
+			fogIncreaseAllowed: 0.55,
+			allDayFog: 0.04,
 		},
 		{
 			// Apr
@@ -64,6 +70,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.25,
 			sunIntensity: 0.5,
+			fogIncreaseAllowed: 0.48,
+			allDayFog: 0.02,
 		},
 		{
 			// May
@@ -73,6 +81,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.3,
 			sunIntensity: 0.7,
+			fogIncreaseAllowed: 0.42,
+			allDayFog: 0.015,
 		},
 		{
 			// Jun
@@ -82,6 +92,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.35,
 			sunIntensity: 1,
+			fogIncreaseAllowed: 0.38,
+			allDayFog: 0.015,
 		},
 		{
 			// Jul
@@ -91,6 +103,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.4,
 			sunIntensity: 1,
+			fogIncreaseAllowed: 0.37,
+			allDayFog: 0.01,
 		},
 		{
 			// Aug
@@ -100,6 +114,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.35,
 			sunIntensity: 0.8,
+			fogIncreaseAllowed: 0.4,
+			allDayFog: 0.01,
 		},
 		{
 			// Sep
@@ -109,6 +125,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.3,
 			sunIntensity: 0.7,
+			fogIncreaseAllowed: 0.6,
+			allDayFog: 0.015,
 		},
 		{
 			// Oct
@@ -118,6 +136,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.25,
 			sunIntensity: 0.5,
+			fogIncreaseAllowed: 0.62,
+			allDayFog: 0.04,
 		},
 		{
 			// Nov
@@ -127,6 +147,8 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.2,
 			sunIntensity: 0.3,
+			fogIncreaseAllowed: 0.72,
+			allDayFog: 0.06,
 		},
 		{
 			// Dec
@@ -136,8 +158,11 @@ setup.WeatherGeneration = {
 			},
 			extremeChance: 0.25,
 			sunIntensity: 0.1,
+			fogIncreaseAllowed: 0.75,
+			allDayFog: 0.08,
 		},
 	],
+
 	weatherTypes: [
 		{
 			name: "clear",
@@ -152,17 +177,32 @@ setup.WeatherGeneration = {
 			},
 			cloudCount: {
 				// Visual only - determines how many clouds spawn at once in the sidebar of each type
-				small: () => random(0, 2, true),
+				small: () => random(0, 1, true),
+				medium: () => 0,
 				large: () => 0,
 			},
 			// Modifies the tanning factor, based on cloud coverage. A modifier of 1 has no penalties.
 			tanningModifier: 1,
-			// Determines how overcast the sky should be. (Between 0 and 1)
-			overcast: () => 0,
+			// Determines how much opacity the overcast sprite should have. This layer is also darkened by the darkenFactor.
+			overcast: 0,
 			// Determines the intensity of the precipitation. A bigger value accumulates snow faster during winter.
 			precipitationIntensity: 0,
-			// Determines how dark the clouds should be when it's overcast
-			visibility: 1,
+			// Controls cloud layer alpha multipliers for the primary cloud effect.
+			cloudAlpha: 1,
+			// Factor of how much darkening is applied to each layer when this weather is active
+			darkenFactor: {
+				sky: 0,
+				sun: 0,
+				moon: 0,
+				clouds: 0,
+				cirrusClouds: 0,
+				overcastClouds: 0,
+				precipitation: 0,
+				fog: 0,
+				location: 0,
+			},
+			// Effect that this weather has on the amount of fog
+			fogChangeRate: -0.03,
 		},
 		{
 			name: "lightClouds",
@@ -175,13 +215,26 @@ setup.WeatherGeneration = {
 				autumn: 0.4,
 			},
 			cloudCount: {
-				small: () => random(1, 4, true),
-				large: () => random(1, 1, true),
+				small: () => random(1, 3, true),
+				medium: () => random(1, 1, true),
+				large: () => 0,
 			},
 			tanningModifier: 0.5,
-			overcast: () => randomFloat(0, 0.3, true),
+			overcast: 0.15,
 			precipitationIntensity: 0,
-			visibility: 1,
+			cloudAlpha: 1,
+			darkenFactor: {
+				sky: 0,
+				sun: 0,
+				moon: 0,
+				clouds: 0,
+				cirrusClouds: 0,
+				overcastClouds: 0,
+				precipitation: 0,
+				fog: 0,
+				location: 0,
+			},
+			fogChangeRate: -0.02,
 		},
 		{
 			name: "heavyClouds",
@@ -194,13 +247,26 @@ setup.WeatherGeneration = {
 				autumn: 0.3,
 			},
 			cloudCount: {
-				small: () => 0,
-				large: () => random(0, 4, true),
+				small: () => random(1, 2, true),
+				medium: () => random(1, 4, true),
+				large: () => random(1, 2, true),
 			},
 			tanningModifier: 0.2,
-			overcast: () => randomFloat(0.5, 0.8, true),
+			overcast: 0.6,
 			precipitationIntensity: 0,
-			visibility: 0.8,
+			cloudAlpha: 1,
+			darkenFactor: {
+				sky: 0.1,
+				sun: 0.1,
+				moon: 0.1,
+				clouds: 0.1,
+				cirrusClouds: 0.1,
+				overcastClouds: 0.1,
+				precipitation: 0.1,
+				fog: 0.1,
+				location: 0.1,
+			},
+			fogChangeRate: -0.01,
 		},
 		{
 			name: "lightPrecipitation",
@@ -213,13 +279,32 @@ setup.WeatherGeneration = {
 				autumn: 0.15,
 			},
 			cloudCount: {
-				small: () => 0,
-				large: () => random(1, 5, true),
+				small: () => random(1, 2, true),
+				medium: () => random(2, 4, true),
+				large: () => random(1, 2, true),
 			},
 			tanningModifier: 0.2,
-			overcast: () => randomFloat(0.8, 1, true),
-			precipitationIntensity: 1,
-			visibility: 0.7,
+			overcast: 0.75,
+			precipitationIntensity: 1.3,
+			windAngle: 0.1,
+			rain: {
+				dropLength: 3.5,
+				dropSpeed: 75,
+				dropWidth: 0.4,
+			},
+			cloudAlpha: 1,
+			darkenFactor: {
+				sky: 0.4,
+				sun: 0.3,
+				moon: 0.3,
+				clouds: 0.2,
+				cirrusClouds: 0.2,
+				overcastClouds: 0.3,
+				precipitation: 0.2,
+				fog: 0.2,
+				location: 0.1,
+			},
+			fogChangeRate: -0.01,
 		},
 		{
 			name: "heavyPrecipitation",
@@ -232,32 +317,110 @@ setup.WeatherGeneration = {
 				autumn: 0.1,
 			},
 			cloudCount: {
-				small: () => 0,
-				large: () => random(2, 5, true),
+				small: () => random(1, 2, true),
+				medium: () => random(2, 5, true),
+				large: () => random(1, 3, true),
 			},
 			tanningModifier: 0.1,
-			overcast: () => 1,
-			precipitationIntensity: 1.5,
-			visibility: 0.4,
+			overcast: 0.8,
+			precipitationIntensity: 1.6,
+			windAngle: 0.2,
+			rain: {
+				dropLength: 5.5,
+				dropSpeed: 90,
+				dropWidth: 0.3,
+			},
+			cloudAlpha: 0.9,
+			darkenFactor: {
+				sky: 0.4,
+				sun: 0.4,
+				moon: 0.4,
+				clouds: 0.4,
+				cirrusClouds: 0.4,
+				overcastClouds: 0.4,
+				precipitation: 0.1,
+				fog: 0.3,
+				location: 0.2,
+			},
+			fogChangeRate: -0.01,
 		},
 		{
-			name: "thunderStorm",
-			value: 4,
+			name: "storm",
+			iconType: () => "storm_" + Weather.precipitation,
+			value: 5,
 			probability: {
-				// Disabled for now since it's not implemented yet
-				summer: 0, // 0.02,
-				winter: 0, // 0.005,
-				spring: 0, // 0.015,
-				autumn: 0, // 0.01,
+				summer: 0.07,
+				winter: 0.03,
+				spring: 0.05,
+				autumn: 0.04,
 			},
 			cloudCount: {
 				small: () => 0,
-				large: () => random(3, 5, true),
+				medium: () => random(2, 4, true),
+				large: () => random(1, 2, true),
 			},
 			tanningModifier: 0,
-			overcast: () => 1,
+			overcast: 1,
 			precipitationIntensity: 2,
-			visibility: 0.3,
+			windAngle: 0.3,
+			rain: {
+				dropLength: 9.5,
+				dropSpeed: 120,
+				dropWidth: 0.3,
+			},
+			cloudAlpha: 0.9,
+			darkenFactor: {
+				sky: 0.6,
+				sun: 0.6,
+				moon: 0.6,
+				clouds: 0.5,
+				cirrusClouds: 0.5,
+				overcastClouds: 0.5,
+				precipitation: 0.2,
+				fog: 0.5,
+				location: 0.3,
+			},
+			lightningFrequency: 2,
+			fogChangeRate: -0.04,
+		},
+		{
+			name: "thunderstorm",
+			iconType: () => "thunderstorm_" + Weather.precipitation,
+			value: 6,
+			probability: {
+				summer: 0.06,
+				winter: 0.04,
+				spring: 0.04,
+				autumn: 0.03,
+			},
+			cloudCount: {
+				small: () => 0,
+				medium: () => random(2, 4, true),
+				large: () => random(2, 3, true),
+			},
+			tanningModifier: 0,
+			overcast: 1,
+			precipitationIntensity: 3.5,
+			windAngle: 0.35,
+			rain: {
+				dropLength: 9.5,
+				dropSpeed: 120,
+				dropWidth: 0.3,
+			},
+			cloudAlpha: 0.8,
+			darkenFactor: {
+				sky: 0.8,
+				sun: 0.5,
+				moon: 0.8,
+				clouds: 0.6,
+				cirrusClouds: 0.6,
+				overcastClouds: 0.6,
+				precipitation: 0.4,
+				fog: 0.5,
+				location: 0.4,
+			},
+			lightningFrequency: 10,
+			fogChangeRate: -0.04,
 		},
 	],
 };

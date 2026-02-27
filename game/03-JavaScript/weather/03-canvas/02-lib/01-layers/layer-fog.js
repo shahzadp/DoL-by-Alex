@@ -1,42 +1,53 @@
 Weather.Renderer.Layers.add({
 	name: "fog",
-	zIndex: 13,
-	blur: false,
+	animation: { updateRate: 50 },
+	zIndex: 15,
+	compositeOperation: "source-over",
 	effects: [
 		{
-			effect: "fog",
+			effect: "particleFog",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.skyDisabled && setup.LocationImages[setup.Locations.get()].weather.fogEnabled;
 			},
 			params: {
+				scale: 30,
+				scaleVariance: 10,
+				minVel: 0.6, // px/sec
+				maxVel: 1.2,
 				images: {
-					fog: "img/misc/sky/clouds/fog/0.png",
+					fog: "img/misc/sky/clouds/fog/fog0.png",
 				},
-				movement: {
-					speed: 0.4,
-				},
-				baseAlpha: 0.9,
 			},
 			bindings: {
-				fogFactor() {
-					return Weather.fog;
+				maxParticleCount() {
+					return Weather.fog * Constants.weather.fogParticles.globalLocationCapMax;
 				},
-				weather() {
-					return Weather.current;
+				fogDistributionCurve() {
+					return setup.LocationImages[setup.Locations.get()].weather.fogDistributionCurve;
+				},
+				top() {
+					return setup.LocationImages[setup.Locations.get()].weather.groundBounds.fog.top;
+				},
+				bottom() {
+					return setup.LocationImages[setup.Locations.get()].weather.groundBounds.fog.bottom - 1;
 				},
 			},
 		},
 		{
 			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled;
+			},
 			compositeOperation: "source-atop",
 			params: {
-				color: {
-					nightDark: "#000412ee",
-					nightBright: "#000412dd",
-					day: "#97a9e8e5",
-					dawnDusk: "#7a511895",
-					bloodMoon: "#4a0505ee",
+				dayStateColors: {
+					nightDark: "#595971",
+					nightBright: "#8d8da5",
+					day: "#fffffc",
+					dawnDusk: "#bb9776",
+					bloodMoon: "#380101",
 				},
+				darkenTarget: "#000000",
 			},
 			bindings: {
 				sunFactor() {
@@ -47,6 +58,9 @@ Weather.Renderer.Layers.add({
 				},
 				bloodMoon() {
 					return Weather.bloodMoon;
+				},
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.fog);
 				},
 			},
 		},

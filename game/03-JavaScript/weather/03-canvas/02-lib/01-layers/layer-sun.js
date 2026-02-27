@@ -21,6 +21,21 @@ Weather.Renderer.Layers.add({
 			},
 		},
 		{
+			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.sun > 0;
+			},
+			compositeOperation: "source-atop",
+			params: {
+				darkenTarget: "#000000",
+			},
+			bindings: {
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.sun);
+				},
+			},
+		},
+		{
 			effect: "outerRadialGlow",
 			drawCondition() {
 				return this.renderInstance.orbitals.sun.factor > -0.5 && !this.renderInstance.skyDisabled;
@@ -38,8 +53,24 @@ Weather.Renderer.Layers.add({
 					return this.renderInstance.orbitals.sun.factor;
 				},
 				diameter() {
-					// Reference this layer and above effect image
-					return this.renderInstance.layers.get("sun").effects[0].images.orbital.width;
+					const sunLayer = this.renderInstance.layers.get("sun");
+					const orbitalEffect = sunLayer.effects.find(effect => effect.effect === "skyOrbital");
+					return orbitalEffect?.images?.orbital?.width ?? 0;
+				},
+			},
+		},
+		{
+			effect: "desaturate",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled;
+			},
+			compositeOperation: "copy",
+			params: {
+				maxDesaturate: 0.4,
+			},
+			bindings: {
+				factor() {
+					return Time.dayState === "day" || Time.dayState === "dawn" ? Weather.fog : 0;
 				},
 			},
 		},

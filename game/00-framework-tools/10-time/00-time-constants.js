@@ -11,6 +11,7 @@ const TimeConstants = (() => {
 	const secondsPerDay = 86400;
 	const secondsPerHour = 3600;
 	const secondsPerMinute = 60;
+	const minutesPerHour = 60;
 	const standardYearMonths = Object.freeze([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
 	const leapYearMonths = Object.freeze([31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
 	const synodicMonth = 29.53058867;
@@ -19,6 +20,7 @@ const TimeConstants = (() => {
 		secondsPerDay,
 		secondsPerHour,
 		secondsPerMinute,
+		minutesPerHour,
 		standardYearMonths,
 		leapYearMonths,
 		synodicMonth,

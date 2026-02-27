@@ -1,41 +1,109 @@
 /*
-	Simple data packer to compress all weather variables into a single integer
+	Packs a weather snapshot for the Start page by saving only the next two keypoints for weather, fog, 
+	and overcast. On the start page, unpack restores those keypoints and stores them back in the weatherObj, 
+	allowing us to treat start page weather in the same way as we treat weather throughout the rest of the game.
 */
 const Packer = (() => {
-	// Helper function to pad numbers with leading zeros
-	function pad(number, width) {
-		const numberStr = number.toString();
-		return numberStr.length >= width ? numberStr : new Array(width - numberStr.length + 1).join("0") + numberStr;
-	}
-
 	function packWeatherData() {
-		const overcast = pad(Math.round(Weather.overcast * 100), 3);
-		const fog = pad(Math.round(Weather.fog * 100), 3);
-		const snow = pad(V.weatherObj.snow, 3);
-		const weatherIndex = pad(
-			setup.WeatherGeneration.weatherTypes.findIndex(weatherType => weatherType.name === V.weatherObj.name),
-			2
-		);
+		const nowTimestamp = Time.date?.timeStamp ?? 0;
+		const payload = {
+			snow: V.weatherObj.snow,
+			previousWeatherIndex: V.weatherObj.previousWeatherIndex,
+			weatherKeypoints: packKeypointsPair(V.weatherObj.keypointsArr, nowTimestamp, "value"),
+			fogKeypoints: packKeypointsPair(V.weatherObj.fogKeypoints, nowTimestamp, "fogGoal"),
+		};
 
-		const packedData = weatherIndex + fog + snow + overcast;
-
-		return parseInt(packedData, 10).toString(36); // Base 36
+		return btoa(JSON.stringify(payload));
 	}
 
 	function unpackWeatherData(packedData) {
-		packedData = parseInt(packedData, 36).toString(10).padStart(11, '0'); // Ensure the string is zero-padded to 11 digits
+		const payload = tryDecodeJsonPayload(packedData);
+		if (payload) {
+			applyWeatherPayload(payload);
+			return;
+		}
 
-		const overcast = parseInt(packedData.slice(-3), 10) / 100;
+		applyLegacyWeatherPayload(packedData);
+	}
+
+	function tryDecodeJsonPayload(packedData) {
+		try {
+			const decoded = atob(packedData);
+			const s = decoded.trim();
+			if (!(s.startsWith("{") || s.startsWith("["))) {
+				return null;
+			} else {
+				return JSON.parse(s);
+			}
+		} catch (e) {
+			return null;
+		}
+	}
+
+	function applyWeatherPayload(payload) {
+		V.weatherObj.snow = payload.snow ?? 0;
+
+		T.baseTemperature = V.weatherObj.snow > 15 ? -20 : 20;
+
+		V.weatherObj.previousWeatherIndex = payload.previousWeatherIndex ?? payload.weatherIndex ?? 0;
+
+		if (payload.weatherKeypoints?.length) {
+			V.weatherObj.keypointsArr = payload.weatherKeypoints.map(keyPoint => ({
+				timestamp: keyPoint.timestamp,
+				value: keyPoint.value ?? 0,
+			}));
+		} else {
+			V.weatherObj.keypointsArr = [];
+		}
+
+		if (payload.fogKeypoints?.length) {
+			V.weatherObj.fogKeypoints = payload.fogKeypoints.map(keyPoint => ({
+				timestamp: keyPoint.timestamp,
+				fogGoal: keyPoint.fogGoal ?? 0,
+			}));
+		} else {
+			V.weatherObj.fogKeypoints = [];
+		}
+	}
+
+	function applyLegacyWeatherPayload(packedData) {
+		packedData = parseInt(packedData, 36).toString(10).padStart(11, "0"); // Ensure the string is zero-padded to 11 digits
+
 		const snow = parseInt(packedData.slice(-6, -3), 10);
-		const fog = parseInt(packedData.slice(-9, -6), 10) / 100;
-		const weatherIndex = parseInt(packedData.slice(0, 2), 10);
 
-		V.weatherObj.overcast = overcast;
 		V.weatherObj.snow = snow;
-		V.weatherObj.fog = fog;
 		T.baseTemperature = snow > 15 ? -20 : 20;
-		const weatherName = setup.WeatherGeneration.weatherTypes[weatherIndex].name;
-		Weather.set(weatherName);
+
+		V.weatherObj.keypointsArr = [];
+		V.weatherObj.fogKeypoints = [];
+	}
+
+	function packKeypointsPair(keypoints, nowTimestamp, valueKey) {
+		if (!keypoints?.length) return [];
+
+		let current;
+		let next;
+
+		for (const keyPoint of keypoints) {
+			if (keyPoint.timestamp <= nowTimestamp) {
+				current = keyPoint;
+			}
+
+			if (keyPoint.timestamp > nowTimestamp && !next) {
+				next = keyPoint;
+			}
+		}
+
+		// Fallback if something happens and the earliest keypoint is after the current time. I've found that this can happen at the very start of the game.
+		if (!current || !next) return [];
+
+		const currentValue = current?.[valueKey];
+		const nextValue = next?.[valueKey] ?? currentValue;
+
+		return [
+			{ timestamp: current.timestamp, [valueKey]: currentValue },
+			{ timestamp: next.timestamp, [valueKey]: nextValue },
+		];
 	}
 
 	return {

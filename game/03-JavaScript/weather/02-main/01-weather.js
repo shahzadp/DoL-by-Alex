@@ -1,23 +1,5 @@
 const Weather = (() => {
 	/* Helper functions */
-
-	function generateKeyPoints({ date, minKeys, maxKeys, timeApart, rangeValue, totalSteps }) {
-		const numberOfKeyPoints = Weather.activeRenderer.rng.randomInt(minKeys - 1, maxKeys - 1);
-		const keyPoints = new Map();
-
-		while (keyPoints.size < numberOfKeyPoints) {
-			const randomUnit = Weather.activeRenderer.rng.randomInt(timeApart + 1, totalSteps - timeApart);
-
-			const isFarEnough = Array.from(keyPoints.keys()).every(kp => Math.abs(kp - randomUnit) >= timeApart);
-			if (isFarEnough) {
-				keyPoints.set(randomUnit, rangeValue(date));
-			}
-		}
-		// Add the last key point
-		keyPoints.set(totalSteps + 1, rangeValue(date));
-		return new Map([...keyPoints.entries()].sort((a, b) => a[0] - b[0]));
-	}
-
 	function getSunIntensity(time) {
 		time ??= Time.date;
 		const sunIntensity = Weather.genSettings.months[time.month - 1].sunIntensity * Weather.activeRenderer?.orbitals.sun.getFactor(time);
@@ -27,7 +9,7 @@ const Weather = (() => {
 	}
 
 	function setAccumulatedSnow(minutes) {
-		const precipitationIntensity = Weather.type.precipitationIntensity;
+		const precipitationIntensity = resolveValue(Weather.current.precipitationIntensity);
 		const temperature = Weather.temperature;
 		const snowfallRate = Weather.tempSettings.snow.snowfallRate;
 		const meltingRate = Weather.tempSettings.snow.meltingRate;
@@ -73,8 +55,21 @@ const Weather = (() => {
 		return (date.day === date.lastDayOfMonth && date.hour >= sunRise) || (date.day === 1 && date.hour < sunSet);
 	}
 
+	function getWeatherDarkenFactor(baseDarken) {
+		const sunFactor = Weather.activeRenderer?.orbitals?.sun?.factor ?? 0;
+		const moonBrightness = Weather.activeRenderer?.moonBrightnessFactor ?? 0;
+
+		const dayness = Math.clamp((sunFactor + 1) / 2, 0, 1);
+		const nightness = 1 - dayness;
+
+		const dayDarkenReductionMax = 0.3;
+		const moonNightReductionMax = 0.2;
+
+		const timeFactor = Math.clamp(1 - dayness * dayDarkenReductionMax - moonBrightness * nightness * moonNightReductionMax, 0, 1);
+		return baseDarken * timeFactor;
+	}
+
 	return {
-		generateKeyPoints,
 		setAccumulatedSnow,
 		setIceThickness,
 		getSunIntensity,
@@ -94,6 +89,12 @@ const Weather = (() => {
 			return V.weatherObj.ice[key] > Weather.tempSettings.ice.minThickness[key];
 		},
 		getBloodMoon,
+		getWeatherDarkenFactor,
+		index: date => {
+			const w = Weather.WeatherGeneration.getWeather(date);
+			if (w === null) return null;
+			return setup.WeatherGeneration.weatherTypes.findIndex(type => type.name === w.name);
+		},
 		get genSettings() {
 			return setup.WeatherGeneration;
 		},
@@ -113,17 +114,14 @@ const Weather = (() => {
 		get name() {
 			return Weather.WeatherGeneration.getWeather().name;
 		},
-		get type() {
-			return Weather.WeatherGeneration.getWeather().defines;
-		},
 		get value() {
-			return Weather.WeatherGeneration.getWeather().defines.value;
+			return Weather.WeatherGeneration.getWeather().value;
 		},
 		get isOvercast() {
-			return V.weatherObj.overcast > 0.5;
+			return Weather.overcast > 0.5;
 		},
 		get overcast() {
-			return V.weatherObj.overcast;
+			return Weather.Overcast.getOvercast();
 		},
 		get sunIntensity() {
 			return getSunIntensity();
@@ -133,7 +131,13 @@ const Weather = (() => {
 			return Weather.isFreezing ? "snow" : "rain";
 		},
 		get precipitationIntensity() {
-			return Weather.WeatherGeneration.getWeather().precipitationIntensity;
+			return resolveValue(Weather.WeatherGeneration.getWeather().precipitationIntensity);
+		},
+		get enableLightning() {
+			return resolveValue(Weather.WeatherGeneration.getWeather().lightningFrequency) > 0 && Weather.precipitation !== "snow";
+		},
+		get lightningFrequency() {
+			return resolveValue(Weather.WeatherGeneration.getWeather().lightningFrequency);
 		},
 		get temperature() {
 			return Weather.Temperature.getCelsius();
@@ -176,11 +180,13 @@ const Weather = (() => {
 			return this.dayState;
 		},
 		get fog() {
-			return V.weatherObj.fog;
+			return Weather.FogGeneration.getFog();
 		},
-		set fog(value) {
-			V.weatherObj.fog = value;
-			Weather.activeRenderer.drawLayers();
+		get previousWeatherIndex() {
+			return V.weatherObj.previousWeatherIndex;
+		},
+		set previousWeatherIndex(value) {
+			V.weatherObj.previousWeatherIndex = value;
 		},
 		get lightsOn() {
 			return !Weather.bloodMoon && (Time.hour >= setup.SkySettings.lightsTime.on || Time.hour < setup.SkySettings.lightsTime.off);

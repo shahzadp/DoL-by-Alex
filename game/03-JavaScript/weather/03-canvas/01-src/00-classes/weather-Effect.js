@@ -63,15 +63,17 @@ Weather.Renderer.Effect = class Effect {
 
 		if (this.imagePaths && Object.keys(this.imagePaths).length > 0) {
 			imageLoadPromises = Object.keys(this.imagePaths).map(name => {
-				return new Promise((resolve, reject) => {
-					const img = new Image();
-					img.onload = () => {
+				const src = this.imagePaths[name];
+				return window.ImageCache
+					.getOrCreate(src)
+					.then(img => {
 						this.images[name] = img;
-						resolve(img);
-					};
-					img.onerror = () => reject(new Error(`Could not load image ${name} at path ${this.imagePaths[name]}`));
-					img.src = this.imagePaths[name];
-				});
+						return img;
+					})
+					.catch(() => {
+						Errors.report(`Warning: Missing effect image: Could not load image ${name} at path ${src}`);
+						return null;
+					});
 			});
 		}
 

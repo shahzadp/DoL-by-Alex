@@ -12,7 +12,7 @@ setup.WeatherDescriptions = {
 		lightClouds: {
 			dawn: "The sun's orange glow peeks through the clouds.",
 			day: "The sun shines brightly through the clouds.",
-			dusk: "Streaks of orange light covers the sky.",
+			dusk: "Streaks of orange light cover the sky.",
 			night: "The stars can be seen between the clouds.",
 			bloodMoon: "Clouds drift across the eerie red glow of the moon.",
 			transition: () => Weather.isOvercast ? "The overcast is dispersing, making way for clearer skies." : null,
@@ -41,11 +41,17 @@ setup.WeatherDescriptions = {
 			bloodMoon: () => Weather.precipitation === "rain" ? "The downpour reflects the red sky." : "Snow reflects the moon's eerie red, blanketing the world in surreal silence.",
 			transition: () => !Weather.isOvercast && !Weather.isFreezing ? "Dark clouds begin to gather. It's going to rain soon." : !Weather.isOvercast ? "Clouds are gathering above. It's going to snow soon." : null,
 		},
-		thunderStorm: {
-			dawn: "A thunderstorm rages at dawn.",
-			day: "Loud thunder and bright lightning strike.",
-			dusk: "Orange skies and thunderstorms merge.",
-			night: "Flashes of lightning illuminate the night.",
+		storm: {
+			dawn: () => Weather.precipitation === "rain" ? "A storm rages at dawn." : "A storm rages at dawn, driving thick snow.",
+			day: () => Weather.precipitation === "rain" ? "An occasional bolt of lightning brightens the clouds." : "A storm churns through the day.",
+			dusk: () => Weather.precipitation === "rain" ? "Orange skies and storms churn." : "Orange skies dim behind the storm.",
+			night: () => Weather.precipitation === "rain" ? "Occasional flashes of lightning illuminate the night." : "The storm presses in through the night.",
+		},
+		thunderstorm: {
+			dawn: () => Weather.precipitation === "rain" ? "A thunderstorm rages at dawn." : "A storm rages at dawn.",
+			day: () => Weather.precipitation === "rain" ? "Lightning brightens the clouds." : "A heavy storm churns through the day.",
+			dusk: () => Weather.precipitation === "rain" ? "Orange skies and thunderstorms churn." : "Orange skies darken behind the storm.",
+			night: () => Weather.precipitation === "rain" ? "Flashes of lightning illuminate the night." : "The storm presses in through the night.",
 		},
 		tentaclePlains: `<span class="purple">The sky glows with a vivid purple hue.</span>`,
 	},

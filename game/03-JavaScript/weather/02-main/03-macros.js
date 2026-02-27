@@ -33,7 +33,7 @@ Macro.add("weatherIcon", {
 		const iconImg = $("<img />");
 
 		const dayState = Weather.bloodMoon ? "blood" : Weather.dayState === "night" ? "night" : "day";
-		const weatherState = resolveValue(Weather.type.iconType, "clear");
+		const weatherState = resolveValue(Weather.current.iconType, "clear");
 		const path = `img/ui/weather/${dayState}_${weatherState}.png`;
 
 		iconImg.attr("src", path);

@@ -5,32 +5,45 @@ Weather.WeatherGeneration = (() => {
 
 	function getWeather(date) {
 		if (date) {
-			// Do not modify weather obj if searching for another date than the current
 			const lastKeyPoint = V.weatherObj.keypointsArr[V.weatherObj.keypointsArr.length - 1];
 			const lastKeyPointTimestamp = lastKeyPoint?.timestamp || 0;
 
-			if (date.timeStamp > lastKeyPointTimestamp) {
-				console.warn(`getWeather: Provided date is after the last key point timestamp. Returning weather type of the last key point.`);
-				return Weather.genSettings.weatherTypes[lastKeyPoint?.value] || "unknown";
+			if (!V.weatherObj.keypointsArr?.length) {
+				return null;
 			}
+
+			if (date.timeStamp > lastKeyPointTimestamp) {
+				console.warn(`getWeather: Provided date is after the last key point timestamp.`);
+				return null;
+			}
+
 			if (date.timeStamp < Time.date.timeStamp) {
 				console.warn(`getWeather: Provided date is before the current timestamp. Returning the current weather type.`);
-				return T.currentWeather || interpolateWeather(new DateTime(Time.date));
+				return interpolateWeather(new DateTime(Time.date));
 			}
 
-			return interpolateWeather(date);
-		}
-		const currentWeather = V.weatherObj.name;
-		if (T.currentWeather === undefined) {
-			date = new DateTime(Time.date);
-			generateWeather(date);
-			T.currentWeather = interpolateWeather(date);
+			return interpolateWeather(new DateTime(date));
 		}
 
-		if (Weather.activeRenderer?.loaded.value && T.currentWeather.name !== currentWeather) {
-			$.event.trigger(":onWeatherChange");
+		return interpolateWeather(new DateTime(Time.date));
+	}
+
+	function updateWeather(date = new DateTime(Time.date)) {
+		generateWeather(date);
+
+		const incomingWeather = interpolateWeather(date);
+		const incomingWeatherIndex = incomingWeather?.value;
+		const previousWeatherIndex = Weather.previousWeatherIndex;
+
+		if (incomingWeatherIndex !== previousWeatherIndex) {
+			Weather.previousWeatherIndex = incomingWeatherIndex;
+			$.event.trigger(":onWeatherChange", {
+				previousWeatherIndex,
+				incomingWeatherIndex,
+			});
 		}
-		return T.currentWeather;
+
+		return incomingWeather;
 	}
 
 	// Sets weather to specified type for at least 1 hour.
@@ -42,14 +55,12 @@ Weather.WeatherGeneration = (() => {
 			console.warn(`Could not set weather. ${weatherType} doesn't exist.`);
 			return;
 		}
-		delete T.currentWeather;
 		delete T.currentTemperature;
 
 		const currentTimeStamp = Time.date.timeStamp;
 		const nextTimeStamp = currentTimeStamp + minutes * TimeConstants.secondsPerMinute;
 		// One hour of leeway, in case the next key point is close after the new one
 		const leeway = TimeConstants.secondsPerHour;
-
 		// Remove key points that are within the new key point timestamps
 		while (V.weatherObj.keypointsArr.length > 0 && V.weatherObj.keypointsArr[0].timestamp <= nextTimeStamp + leeway) {
 			V.weatherObj.keypointsArr.splice(0, 1);
@@ -58,15 +69,17 @@ Weather.WeatherGeneration = (() => {
 		V.weatherObj.keypointsArr.unshift({ timestamp: nextTimeStamp, value: weatherTypeIndex });
 		V.weatherObj.keypointsArr.unshift({ timestamp: currentTimeStamp, value: weatherTypeIndex });
 
-		getWeather();
+		const newWeather = updateWeather();
 
 		if (instant && Weather.sky.loaded.value) {
 			Weather.sky.layers.get("clouds").effects[0].reset();
-			Weather.sky.updateFade(true);
 		}
 
 		Weather.Observables.checkForUpdate();
+
+		return newWeather;
 	}
+	window.setWeather = setWeather;
 
 	function interpolateWeather(date) {
 		const currentTimeStamp = date.timeStamp;
@@ -86,7 +99,14 @@ Weather.WeatherGeneration = (() => {
 
 		// Failsafe if no next key point is found for the day, assume weather stays the same
 		if (!nextKeyPoint && currentKeyPoint) {
-			return currentKeyPoint.value;
+			const current = Weather.genSettings.weatherTypes[currentKeyPoint.value];
+
+			return current;
+		}
+
+		if (!nextKeyPoint && !currentKeyPoint) {
+			currentKeyPoint = { timestamp: currentTimeStamp, value: 0 };
+			nextKeyPoint = { timestamp: currentTimeStamp + TimeConstants.secondsPerDay, value: 0 };
 		}
 
 		currentKeyPoint ??= { timestamp: currentTimeStamp, value: nextKeyPoint.value };
@@ -100,19 +120,8 @@ Weather.WeatherGeneration = (() => {
 		// Interpolate the weather value
 		const interpolatedValue = Math.round(current.value + (next.value - current.value) * fraction);
 
-		if (V.weatherObj?.name !== null) {
-			const currentWeatherType = Weather.genSettings.weatherTypes.find(type => type.name === V.weatherObj.name);
-			if (currentWeatherType.value === interpolatedValue) {
-				return createObjectByType(currentWeatherType);
-			}
-		}
-
 		if (current.value === interpolatedValue) {
-			const newObj = createObjectByType(current);
-			V.weatherObj.name = newObj.name;
-			const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === newObj.name).overcast);
-			V.weatherObj.targetOvercast = targetOvercast * (Weather.bloodMoon ? setup.SkySettings.fade.overcast.bloodMoonMaxValue : 1);
-			return newObj;
+			return current;
 		}
 
 		return findClosestWeatherType(interpolatedValue);
@@ -135,21 +144,7 @@ Weather.WeatherGeneration = (() => {
 
 		// Randomly choose one type if there are multiple options with the same int value
 		const chosenType = closestTypes[Weather.activeRenderer.rng.randomInt(0, closestTypes.length - 1)];
-		const newObj = createObjectByType(chosenType);
-
-		V.weatherObj.name = chosenType.name;
-		const targetOvercast = resolveValue(Weather.genSettings.weatherTypes.find(type => type.name === newObj.name).overcast);
-		V.weatherObj.targetOvercast = targetOvercast * (Weather.bloodMoon ? setup.SkySettings.fade.overcast.bloodMoonMaxValue : 1);
-		return newObj;
-	}
-
-	function createObjectByType(obj) {
-		return {
-			defines: obj,
-			name: obj.name,
-			tanningModifier: obj.tanningModifier,
-			precipitationIntensity: obj.precipitationIntensity,
-		};
+		return chosenType;
 	}
 
 	function generateWeather(currentDate) {
@@ -244,6 +239,8 @@ Weather.WeatherGeneration = (() => {
 			dayKeypoints.sort((a, b) => a.timestamp - b.timestamp);
 			V.weatherObj.keypointsArr.push(...dayKeypoints);
 		}
+
+		// printSeasonalWeatherKeypoints();
 	}
 
 	function getRandomWeatherValue() {
@@ -254,6 +251,46 @@ Weather.WeatherGeneration = (() => {
 		});
 
 		return weightedRandom(...options, Weather.activeRenderer.rng);
+	}
+
+	function printSeasonalWeatherKeypoints(_keypoints = V.weatherObj.keypointsArr) {
+		const weatherTypes = Weather.genSettings.weatherTypes;
+		const seasons = ["winter", "spring", "summer", "autumn"];
+		const seasonMonths = {
+			winter: [12, 1, 2],
+			spring: [3, 4, 5],
+			summer: [6, 7, 8],
+			autumn: [9, 10, 11],
+		};
+		const seasonDays = Object.fromEntries(
+			seasons.map(season => [
+				season,
+				seasonMonths[season].reduce((total, month) => total + new DateTime(Time.date.year, month, 1).lastDayOfMonth, 0),
+			])
+		);
+		const seasonWeights = Object.fromEntries(seasons.map(season => [season, 0]));
+
+		weatherTypes.forEach(weatherType => {
+			seasons.forEach(season => {
+				seasonWeights[season] += weatherType.probability?.[season] ?? 0;
+			});
+		});
+
+		const rows = Object.fromEntries(
+			weatherTypes.map(weatherType => {
+				const row = {};
+				seasons.forEach(season => {
+					const weight = weatherType.probability?.[season] ?? 0;
+					const totalWeight = seasonWeights[season];
+					const estimatedDays = totalWeight > 0 ? round((weight / totalWeight) * seasonDays[season], 1) : 0;
+					row[season] = `${estimatedDays}`;
+				});
+				return [weatherType.name, row];
+			})
+		);
+
+		console.table(rows);
+		console.table({ seasonDays });
 	}
 
 	return Object.create({
@@ -271,7 +308,9 @@ Weather.WeatherGeneration = (() => {
 		},
 		getWeather,
 		setWeather,
+		updateWeather,
 		isWeather,
+		printSeasonalWeatherKeypoints,
 		generate: generateWeather,
 	});
 })();

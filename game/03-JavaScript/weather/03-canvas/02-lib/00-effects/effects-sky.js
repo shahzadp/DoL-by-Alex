@@ -160,3 +160,66 @@ Weather.Renderer.Effects.add({
 		});
 	},
 });
+
+Weather.Renderer.Effects.add({
+	name: "rainbow",
+	defaultParameters: {
+		baseOpacity: 0.6,
+		thickness: 16,
+		innerRadius: 60,
+		blur: 2,
+		colors: ["#8B00FF", "#0000FF", "#00FF00", "#FFFF00", "#FF7F00", "#FF0000"],
+		offsetX: 0,
+		offsetY: 0,
+		arcDegrees: 60,
+		direction: "right",
+		bottomOffset: 0,
+	},
+
+	init() {
+		this.rMid = this.innerRadius + this.thickness / 2;
+		this.spanRad = (this.arcDegrees * Math.PI) / 180;
+		if (this.direction === "right") {
+			this.baseStart = Math.PI;
+			this.endSign = +1;
+			this.anticw = false;
+		} else {
+			this.baseStart = 0;
+			this.endSign = -1;
+			this.anticw = true;
+		}
+	},
+
+	draw() {
+		const ctx = this.canvas.ctx;
+		const width = this.canvas.element.width;
+		const height = this.canvas.element.height;
+
+		const anchorY = height - this.bottomOffset + this.offsetY;
+		const anchorX = width / 2 - (this.direction === "right" ? this.offsetX : -this.offsetX);
+		const centerX = anchorX + (this.direction === "right" ? this.rMid : -this.rMid);
+		const centerY = anchorY;
+
+		const grad = ctx.createRadialGradient(centerX, centerY, this.innerRadius, centerX, centerY, this.innerRadius + this.thickness);
+		const cols = this.colors;
+		const n = cols.length;
+		for (let i = 0; i < n; i++) {
+			grad.addColorStop(i / (n - 1), cols[i] + "80");
+		}
+
+		const startAngle = this.baseStart;
+		const endAngle = this.baseStart + this.endSign * this.spanRad;
+
+		ctx.save();
+		ctx.globalAlpha = this.baseOpacity;
+		ctx.filter = `blur(${this.blur}px)`;
+		ctx.lineWidth = this.thickness;
+		ctx.strokeStyle = grad;
+		ctx.lineCap = "round";
+
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, this.rMid, startAngle, endAngle, this.anticw);
+		ctx.stroke();
+		ctx.restore();
+	},
+});
