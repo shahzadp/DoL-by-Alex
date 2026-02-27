@@ -13,8 +13,13 @@ Weather.sky = new Weather.Renderer.Sky({
 		"horizonGlow",
 		"location",
 		"precipitation",
+		"lightningNear",
+		"lightningMid",
+		"lightningFar",
+		"lightningExtra",
 		"bloodGlow",
 		"sunGlow",
 		"fog",
+		"locationSmoke",
 	],
 });

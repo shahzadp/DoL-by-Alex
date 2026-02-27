@@ -166,8 +166,17 @@ declare module "twine-sugarcube" {
 			progress: number;
 		};
 
+		/**
+		 * WeatherObj is the base source of truth for the weather. Any values related to the weather should
+		 * be derived from the weatherObj, rather than being added to the weatherObj itself.
+		 */
 		weatherObj: {
 			snow: number;
+			ice: Record<string, number>;
+			monthlyTemperatures: number[];
+			keypointsArr: [];
+			previousWeatherIndex: number;
+			fogKeypoints: [];
 		};
 
 		/**

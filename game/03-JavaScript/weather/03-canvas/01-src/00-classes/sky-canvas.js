@@ -35,7 +35,6 @@ Weather.Renderer.Sky = class {
 
 		this.layers = new Map();
 		this.orbitals = {};
-		this.fadables = {};
 
 		this.loaded = new ObservableValue(false);
 
@@ -81,7 +80,6 @@ Weather.Renderer.Sky = class {
 	initialize() {
 		this.initSun();
 		this.initMoon();
-		this.initFadables();
 		this.setupLayers();
 		this.setupCanvas();
 	}
@@ -128,11 +126,6 @@ Weather.Renderer.Sky = class {
 
 		const bloodMoonOrbitSettings = this.settings.orbits.bloodmoon;
 		this.orbitals.bloodMoon = new Orbital(this.settings, bloodMoonOrbitSettings, Time.date);
-	}
-
-	initFadables() {
-		const overcastSettings = setup.SkySettings.fade.overcast;
-		this.fadables.overcast = new Fadable(overcastSettings, Time.date, Weather.overcast);
 	}
 
 	async initEffects() {
@@ -186,11 +179,6 @@ Weather.Renderer.Sky = class {
 		}
 	}
 
-	updateFade(instant = false) {
-		const overcastTarget = V.weatherObj.targetOvercast ?? 0;
-		this.fadables.overcast.setFadeFactor(Time.date, overcastTarget, instant);
-		V.weatherObj.overcast = round(this.fadables.overcast.factor, 2);
-	}
 
 	get dayFactor() {
 		return this.orbitals.sun?.factor ?? 0;
@@ -199,10 +187,6 @@ Weather.Renderer.Sky = class {
 	// Returns 1 when moon is fully lit - and 0 when its fully dark
 	get moonBrightnessFactor() {
 		return 1 - 2 * Math.abs(Time.date.moonPhaseFraction - 0.5);
-	}
-
-	get blur() {
-		return Weather.fog;
 	}
 
 	get skyDisabled() {

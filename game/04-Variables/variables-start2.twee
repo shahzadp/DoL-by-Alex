@@ -125,15 +125,14 @@
 
 	/* Do not use this object directly - use the Weather singleton instead */
 	<<set $weatherObj to {
-		name: "clear",
 		snow: 0,
 		ice: {},
-		fog: 0,
-		overcast: 0,
-		targetOvercast: 0,
 		monthlyTemperatures: [],
-		keypointsArr: []
+		keypointsArr: [],
+		previousWeatherIndex: 0,
+		fogKeypoints: [],
 	}>>
+
 
 	/* Default start date: 6 sept (sunday), 2020, 07:00 */
 	/* Do not change start date during gameplay as time is relative to the start date */
@@ -153,6 +152,9 @@
 	<<unset $startingseason>>
 	<<set $timeStamp to 0>>
 	<<set Time.set()>>
+	<<run Weather.WeatherGeneration.updateWeather()>>
+	<<run Weather.Temperature.updateTemperature()>>
+	<<run Weather.FogGeneration.generateFogKeypoints(V.weatherObj.keypointsArr)>>
 	<<run Weather.activeRenderer = Weather.sky>>
 	<<run Weather.sky.initialize()>>
 	<<set $hourly to {}>>

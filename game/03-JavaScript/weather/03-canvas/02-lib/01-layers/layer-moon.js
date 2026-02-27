@@ -52,6 +52,21 @@ Weather.Renderer.Layers.add({
 			},
 		},
 		{
+			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled && !Weather.bloodMoon && Weather.current.darkenFactor.moon > 0;
+			},
+			compositeOperation: "source-atop",
+			params: {
+				darkenTarget: "#000000",
+			},
+			bindings: {
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.moon);
+				},
+			},
+		},
+		{
 			/* Blood moon */
 			effect: "skyOrbital",
 			drawCondition() {
@@ -63,6 +78,21 @@ Weather.Renderer.Layers.add({
 			bindings: {
 				position() {
 					return this.renderInstance.orbitals.bloodMoon.position;
+				},
+			},
+		},
+		{
+			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled && Weather.bloodMoon && Weather.current.darkenFactor.moon > 0;
+			},
+			compositeOperation: "source-atop",
+			params: {
+				darkenTarget: "#000000",
+			},
+			bindings: {
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.moon);
 				},
 			},
 		},
@@ -82,7 +112,9 @@ Weather.Renderer.Layers.add({
 					return this.renderInstance.orbitals.bloodMoon.position;
 				},
 				diameter() {
-					return this.renderInstance.layers.get("moon").effects[1].images.orbital.width;
+					const moonLayer = this.renderInstance.layers.get("moon");
+					const orbitalEffect = moonLayer.effects.find(effect => effect.effect === "skyOrbital");
+					return orbitalEffect?.images?.orbital?.width;
 				},
 			},
 		},
@@ -104,8 +136,9 @@ Weather.Renderer.Layers.add({
 					return this.renderInstance.orbitals.bloodMoon.factor;
 				},
 				diameter() {
-					// Reference this layer and above effect image
-					return this.renderInstance.layers.get("moon").effects[1].images.orbital.width;
+					const moonLayer = this.renderInstance.layers.get("moon");
+					const orbitalEffect = moonLayer.effects.find(effect => effect.effect === "skyOrbital");
+					return orbitalEffect?.images?.orbital?.width;
 				},
 			},
 		},

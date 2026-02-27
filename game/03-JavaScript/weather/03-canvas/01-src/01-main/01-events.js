@@ -11,19 +11,23 @@ $(document).on(":enginerestart", () => {
 });
 
 /* Initialise banner canvas on passageend in order to load Time and localStorage correctly */
-$(document).on(":passageend", () => {
+$(document).on(":passageend", async () => {
 	if (State.passage === "Start" && !Weather.banner?.loaded.value) {
 		// Load localStorage weather object if it exists - then set the weatherObj
 		// Otherwise set a default time state
-		const weatherData = localStorage.getItem("weather");
+
 		const timeData = localStorage.getItem("time");
-		let startTime = new DateTime(2022, 8, 10, 23, 45);
-		if (weatherData) {
-			Weather.WeatherGeneration.generate(Time.date);
-			Packer.unpackWeatherData(weatherData);
-			startTime = new DateTime(parseInt(timeData, 36));
+		if (timeData) {
+			Time.set(new DateTime(parseInt(timeData, 36)));
+		} else {
+			Time.set(new DateTime(2022, 8, 10, 23, 45));
 		}
-		Time.set(startTime);
+
+		const weatherData = localStorage.getItem("weather");
+		if (weatherData) {
+			Packer.unpackWeatherData(weatherData);
+		}
+
 		Weather.banner.initialize();
 	}
 });
@@ -35,17 +39,14 @@ $(document).on(":passagestart", () => {
 		if (State.passage === "Start") {
 			// Set temporary weatherObj for Start menu
 			V.weatherObj = {
-				name: "lightClouds",
 				snow: 0,
 				ice: {},
-				fog: 0,
-				overcast: 0,
-				targetOvercast: 0,
 				monthlyTemperatures: [],
 				keypointsArr: [],
+				previousWeatherIndex: 0,
+				fogKeypoints: [],
 			};
 			Time.set(0);
-
 			// Setup banner canvas
 			if (!Weather.banner?.loaded.value) {
 				Weather.banner = new Weather.Renderer.Sky({
@@ -63,11 +64,14 @@ $(document).on(":passagestart", () => {
 						"bloodGlow",
 						"bannerPrecipitation",
 						"location",
+						"fogOverlay",
+						"rainbow",
+						"lightning",
+						"lightningPulse",
 					],
 					resizable: true,
 				});
 			}
-
 			Weather.activeRenderer = Weather.banner;
 			return;
 		}
@@ -86,7 +90,6 @@ $(document).on(":passagestart", () => {
 
 	// Return if sidebar has already been initialised
 	if (!V.weatherObj || Weather.sky?.loaded.value) return;
-
 	Weather.activeRenderer = Weather.sky;
 	Weather.sky.initialize();
 });

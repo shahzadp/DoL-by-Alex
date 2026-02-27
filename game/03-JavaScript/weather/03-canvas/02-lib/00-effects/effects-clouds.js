@@ -6,6 +6,7 @@ Weather.Renderer.Effects.add({
 		layerIndex: 0,
 		currentWeather: null,
 		overlapLimit: 0.4,
+		cloudAlpha: 1,
 	},
 	init() {
 		if (!this.weatherType) return;
@@ -97,7 +98,7 @@ Weather.Renderer.Effects.add({
 		};
 
 		updateTargetCount();
-		if (!this.clouds.length || this.elapsedTime() >= 3 * Time.minutesPerHour) {
+		if (!this.clouds.length || this.elapsedTime() >= 3 * TimeConstants.minutesPerHour) {
 			for (let i = 0; i < this.layers.length; i++) {
 				this.clouds[i] = [];
 			}
@@ -138,7 +139,11 @@ Weather.Renderer.Effects.add({
 			cloudCanvas.ctx.fillStyle = layerSettings.color;
 			cloudCanvas.ctx.globalCompositeOperation = "source-atop";
 			cloudCanvas.fillRect();
+
+			const prevAlpha = this.canvas.ctx.globalAlpha;
+			this.canvas.ctx.globalAlpha = this.cloudAlpha;
 			this.canvas.drawImage(cloudCanvas.element);
+			this.canvas.ctx.globalAlpha = prevAlpha;
 		}
 
 		if (cloudGeneration) this.generateClouds();
@@ -200,7 +205,7 @@ Weather.Renderer.Effects.add({
 		};
 
 		updateTargetCount();
-		if (!this.clouds.length || this.elapsedTime() >= 3 * Time.minutesPerHour) {
+		if (!this.clouds.length || this.elapsedTime() >= 3 * TimeConstants.minutesPerHour) {
 			this.currentDate = new DateTime(Time.date);
 			this.generateClouds(false);
 			return;
@@ -257,32 +262,6 @@ Weather.Renderer.Effects.add({
 	init() {
 		if (this.currentWeather === this.weather.name) return;
 		this.currentWeather = this.weather.name;
-		this.effects[0].init();
-	},
-	draw() {
-		this.effects[0].draw();
-		this.canvas.drawImage(this.effects[0].canvas.element);
-	},
-});
-
-Weather.Renderer.Effects.add({
-	name: "fog",
-	effects: [
-		{
-			effect: "imageOverlay",
-			bindings: {
-				images() {
-					return {
-						overlay: this.images.fog,
-					};
-				},
-				factor() {
-					return this.fogFactor;
-				},
-			},
-		},
-	],
-	init() {
 		this.effects[0].init();
 	},
 	draw() {

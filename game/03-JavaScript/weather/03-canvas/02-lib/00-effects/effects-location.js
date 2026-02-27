@@ -24,13 +24,14 @@ Weather.Renderer.Effects.add({
 				return !this.renderInstance.skyDisabled;
 			},
 			params: {
-				color: {
+				dayStateColors: {
 					nightDark: "#00001ceb",
 					nightBright: "#0d0d26bf",
 					day: "#00000000",
 					dawnDusk: "#5e410885",
 					bloodMoon: "#380101bf",
 				},
+				darkenTarget: "#252525",
 			},
 			bindings: {
 				sunFactor() {
@@ -41,6 +42,9 @@ Weather.Renderer.Effects.add({
 				},
 				bloodMoon() {
 					return Weather.bloodMoon;
+				},
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.location);
 				},
 			},
 		},
@@ -158,14 +162,18 @@ Weather.Renderer.Effects.add({
 		},
 		{
 			effect: "colorOverlay",
+			drawCondition() {
+				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.location > 0;
+			},
 			params: {
-				color: {
+				dayStateColors: {
 					nightDark: "#00001ceb",
 					nightBright: "#0d0d26bf",
 					day: "#00000000",
 					dawnDusk: "#4f3605a5",
 					bloodMoon: "#380101bf",
 				},
+				darkenTarget: "#000000",
 			},
 			bindings: {
 				sunFactor() {
@@ -176,6 +184,9 @@ Weather.Renderer.Effects.add({
 				},
 				bloodMoon() {
 					return Weather.bloodMoon;
+				},
+				darkenFactor() {
+					return Weather.getWeatherDarkenFactor(Weather.current.darkenFactor.location);
 				},
 			},
 		},
@@ -354,12 +365,12 @@ Weather.Renderer.Effects.add({
 	async init() {
 		const loadImage = async (key, obj) => {
 			// Make it asyncronous to wait for the image to load before animating without slowing down the main flow
-			return new Promise((resolve, reject) => {
-				let image = new Image();
-				const path = this.fullPath;
+			return new Promise(resolve => {
+				const basePath = this.fullPath;
 				const imagePath = typeof obj === "object" && obj.image ? obj.image : this.obj;
+				const resolvedSrc = basePath + imagePath;
 
-				const handleLoadedImage = () => {
+				const handleLoadedImage = image => {
 					if (typeof obj !== "object") obj = {};
 
 					// If it's an animation, add it to the animation group
@@ -416,28 +427,20 @@ Weather.Renderer.Effects.add({
 					resolve();
 				};
 
-				// Only load image if it isn't loaded already
-				if (imagePath instanceof Image) {
-					image = obj.image;
-					handleLoadedImage();
-				} else {
-					image = new Image();
-					image.src = path + imagePath;
-					image.onload = handleLoadedImage;
-					image.onerror = () => {
-						if (this.fullPath !== path) {
-							image.src = this.fullPath + imagePath;
-							image.onload = handleLoadedImage;
-							image.onerror = () => {
-								console.warn("Could not load image", image.src);
-								resolve();
-							};
-							return;
-						}
-						if (V.debug) Errors.report("Warning: Missing location image: " + image.src);
-						resolve();
-					};
-				}
+				window.ImageCache.getOrCreate(resolvedSrc).then(handleLoadedImage).catch(() => {
+					// Failsafe to prevent location-image animation error when going through history rapidly.
+					if (this.fullPath !== basePath) {
+						const fallbackSrc = this.fullPath + imagePath;
+						window.ImageCache.getOrCreate(fallbackSrc).then(handleLoadedImage).catch(() => {
+							Errors.report("Warning: Missing location image fallback: " + fallbackSrc);
+							resolve();
+						});
+						return;
+					}
+
+					Errors.report("Warning: Missing location image: " + resolvedSrc);
+					resolve();
+				});
 			});
 		};
 

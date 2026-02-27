@@ -43,7 +43,12 @@ Weather.Renderer.AnimationGroup = class AnimationGroup {
 
 	updateAnimations(deltaTime) {
 		deltaTime = Math.min(deltaTime, this.updateRate);
-		if (this.animations.size < 1) return;
+		// If there are no child animations, still trigger the onUpdate callback
+		// so that layers/effects that rely on the animation group's tick still redraw.
+		if (this.animations.size < 1) {
+			this.onUpdate();
+			return;
+		}
 		const updatedEffects = new Set();
 		this.animations.forEach((animation, key) => {
 			if (!animation.parentAnimation) {

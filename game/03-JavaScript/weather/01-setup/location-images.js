@@ -86,6 +86,22 @@ setup.LocationImages = {
 				size: 1,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 7,
+					bottom: 0,
+				},
+				fog: {
+					top: 11,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	alex_cottage: {
 		folder: "alex_cottage",
@@ -102,6 +118,22 @@ setup.LocationImages = {
 		emissive: {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
+		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 6,
+					bottom: 0,
+				},
+				fog: {
+					top: 12,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	alex_farm: {
@@ -121,6 +153,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			color: "#deae66",
 			strength: 2,
+		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 9,
+					bottom: 0,
+				},
+				fog: {
+					top: 16,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	arcade: {
@@ -185,6 +233,22 @@ setup.LocationImages = {
 				alpha: 0.4,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 6,
+					bottom: 0,
+				},
+				fog: {
+					top: 8,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	asylum: {
 		folder: "asylum",
@@ -229,6 +293,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 1000,
 					cycleDelay: () => 0,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 6,
+					bottom: 0,
 				},
 			},
 		},
@@ -298,6 +378,22 @@ setup.LocationImages = {
 				horizon: 30,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 0,
+			rainSplashEnabled: false,
+			fogEnabled: false,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 0,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	avery_skyscraper: {
 		folder: "avery_skyscraper",
@@ -361,6 +457,22 @@ setup.LocationImages = {
 				},
 				color: "#e6502eff",
 				strength: 1,
+			},
+		},
+		weather: {
+			fogDistributionCurve: 5,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 12,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -545,6 +657,22 @@ setup.LocationImages = {
 				image: "snow.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 50,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	beach: {
 		folder: "beach",
@@ -593,6 +721,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 12,
+					bottom: 0,
+				},
+				fog: {
+					top: 14,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	blitz: {
 		folder: "blitz",
@@ -619,6 +763,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 220,
 					cycleDelay: 0,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 19,
+					bottom: 0,
+				},
+				fog: {
+					top: 24,
+					bottom: 0,
 				},
 			},
 		},
@@ -660,6 +820,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 12,
+					bottom: 0,
+				},
+				fog: {
+					top: 16,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	brothel: {
 		folder: "brothel",
@@ -679,6 +855,22 @@ setup.LocationImages = {
 			color: "#deae66",
 			size: 5,
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 2,
+					bottom: 0,
+				},
+				fog: {
+					top: 7,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	cabin: {
 		folder: "cabin",
@@ -697,6 +889,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			color: "#deae66",
 			strength: 2,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 4,
+					bottom: 0,
+				},
+				fog: {
+					top: 13,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	cafe: {
@@ -727,6 +935,22 @@ setup.LocationImages = {
 				image: "water.png",
 				compositeOperation: "overlay",
 				alpha: 0.5,
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 8,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -760,6 +984,22 @@ setup.LocationImages = {
 				alpha: 0.5,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 10,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	cafe_renovated: {
 		folder: "cafe_renovated",
@@ -783,6 +1023,22 @@ setup.LocationImages = {
 				image: "water.png",
 				compositeOperation: "overlay",
 				alpha: 0.5,
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 10,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -823,6 +1079,22 @@ setup.LocationImages = {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
 				alpha: 0.9,
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 25,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -872,6 +1144,22 @@ setup.LocationImages = {
 			color: "#c26802",
 			size: 1,
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 14,
+					bottom: 0,
+				},
+				fog: {
+					top: 16,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	churchyard: {
 		folder: "churchyard",
@@ -889,6 +1177,22 @@ setup.LocationImages = {
 			image: "emissive.png",
 			color: "#a8b5ff",
 			size: 2,
+		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 27,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	coastpath: {
@@ -943,6 +1247,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 13,
+					bottom: 0,
+				},
+				fog: {
+					top: 15,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	com_alley: {
 		folder: "com_alley",
@@ -974,6 +1294,22 @@ setup.LocationImages = {
 			color: "#deae66",
 			strength: 2,
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 22,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	compound: {
 		folder: "compound",
@@ -995,6 +1331,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 4,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 4,
+					bottom: 0,
+				},
+				fog: {
+					top: 13,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	dance_studio: {
 		folder: "dance_studio",
@@ -1008,6 +1360,22 @@ setup.LocationImages = {
 				image: "snow.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 4,
+					bottom: 0,
+				},
+				fog: {
+					top: 10,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	dilapidated_shop: {
 		folder: "dilapidated_shop",
@@ -1019,6 +1387,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 7,
+					bottom: 0,
+				},
+				fog: {
+					top: 14,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -1091,6 +1475,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 3,
+					bottom: 0,
+				},
+				fog: {
+					top: 20,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	drain: {
 		folder: "drain",
@@ -1126,6 +1526,23 @@ setup.LocationImages = {
 		// 		},
 		// 	},
 		// },
+
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 20,
+					bottom: 0,
+				},
+				fog: {
+					top: 26,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	estate: {
 		folder: "estate",
@@ -1142,6 +1559,22 @@ setup.LocationImages = {
 		emissive: {
 			condition: () => Weather.lightsOn,
 			image: "emissive.png",
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 6,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	factory: {
@@ -1223,6 +1656,22 @@ setup.LocationImages = {
 				color: "#e6cc77",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 10,
+					bottom: 0,
+				},
+				fog: {
+					top: 13,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	farm: {
 		folder: "farm",
@@ -1254,6 +1703,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 15,
+					bottom: 0,
+				},
+				fog: {
+					top: 19,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	farm_manors: {
 		folder: "farm_manors",
@@ -1274,6 +1739,22 @@ setup.LocationImages = {
 		emissive: {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 28,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	fields: {
@@ -1318,6 +1799,22 @@ setup.LocationImages = {
 			color: "#deae66",
 			blur: 0,
 			intensity: 0.8,
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 21,
+					bottom: 0,
+				},
+				fog: {
+					top: 23,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	flats: {
@@ -1364,6 +1861,23 @@ setup.LocationImages = {
 		// reflective: {
 		// 	image: "reflective.png",
 		// },
+
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 7,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	forest: {
 		folder: "forest",
@@ -1431,6 +1945,22 @@ setup.LocationImages = {
 				color: "#e63e3e",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 30,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	forest_shop: {
 		folder: "forest_shop",
@@ -1489,6 +2019,22 @@ setup.LocationImages = {
 				condition: () => Weather.lightsOn && !V.gwylan?.timer?.nobody && V.yearningLetter,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 13,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	forest_shop_garden: {
 		folder: "forest_shop_garden",
@@ -1519,6 +2065,22 @@ setup.LocationImages = {
 			intensity: 1.2,
 			size: 2,
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 21,
+					bottom: 0,
+				},
+				fog: {
+					top: 27,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	home: {
 		folder: "home",
@@ -1531,19 +2093,69 @@ setup.LocationImages = {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
 			},
-			smoke: {
-				condition: () => !Weather.bloodMoon,
-				image: "smoke.png",
-				animation: {
-					frameDelay: 200,
-					cycleDelay: () => 3000,
-					startDelay: () => 3000,
-				},
-			},
 		},
 		emissive: {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
+		},
+		particles: [
+			{
+				condition: () => !Weather.bloodMoon,
+				type: "smoke",
+				shape: "image",
+				image: "img/misc/sky/clouds/fog/smoke2.png",
+				origin: [3, 71.5], // Coordinates from the top left
+				rate: 3, // Particles generated per second
+				size: 4, // Size of the particle in px
+				riseSpeed: 0.8,
+				spread: 6,
+				alpha: 1,
+				color: "#4c4c4cff", // Last 2 numbers are the alpha (99 in hex means 60%)
+				windSpeed: 3, // strength of the wind, will push the particles in a direction
+				windDirection: 0, // degrees - A value of 0 is right (east)
+				minFadeDistance: 1, // minimum fade time of the particles (in distance (px))
+				maxFadeDistance: 25, // maximum fade time
+				fadeTime: 1.2, // In seconds
+				driftAmplitude: 0, // curve - mostly useful if we want the smoke to travel straight up (but in a wobbly curve)
+				driftWavelength: 0, // wavelength of the curve
+			},
+			{
+				condition: () => !Weather.bloodMoon,
+				type: "smoke",
+				shape: "image",
+				image: "img/misc/sky/clouds/fog/smoke2.png",
+				origin: [20, 69],
+				rate: 3,
+				size: 4,
+				riseSpeed: 0.8,
+				spread: 8,
+				alpha: 1,
+				color: "#484848ff",
+				windSpeed: 2,
+				windDirection: 0,
+				minFadeDistance: 1,
+				maxFadeDistance: 20,
+				fadeTime: 1.2,
+				driftAmplitude: 0,
+				driftWavelength: 0,
+			},
+		],
+
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 2,
+					bottom: 0,
+				},
+				fog: {
+					top: 7,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	hospital: {
@@ -1561,6 +2173,22 @@ setup.LocationImages = {
 		emissive: {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 13,
+					bottom: 0,
+				},
+				fog: {
+					top: 18,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	ind_alley: {
@@ -1589,6 +2217,22 @@ setup.LocationImages = {
 			color: "#deae66",
 			strength: 2,
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 18,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	island: {
 		folder: "island",
@@ -1606,6 +2250,22 @@ setup.LocationImages = {
 				image: "water.png",
 				animation: {
 					frameDelay: 500,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 16,
+					bottom: 0,
+				},
+				fog: {
+					top: 29,
+					bottom: 0,
 				},
 			},
 		},
@@ -1629,6 +2289,22 @@ setup.LocationImages = {
 			size: 4,
 			intensity: 0.8,
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 4,
+					bottom: 0,
+				},
+				fog: {
+					top: 19,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	kylarmanor_grounds: {
 		folder: "kylarmanor_grounds",
@@ -1648,6 +2324,22 @@ setup.LocationImages = {
 			color: "#9484d1",
 			size: 2,
 			intensity: 0.4,
+		},
+		weather: {
+			fogDistributionCurve: 4,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 18,
+					bottom: 0,
+				},
+				fog: {
+					top: 30,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	lake: {
@@ -1739,6 +2431,22 @@ setup.LocationImages = {
 				image: "ice.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 9,
+					bottom: 0,
+				},
+				fog: {
+					top: 30,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	lake_office: {
 		folder: "lake_office",
@@ -1790,6 +2498,22 @@ setup.LocationImages = {
 				blur: 0.5,
 				verticalDirection: () => (!Weather.isFrozen("lake") ? 1 : 0),
 				alpha: () => (!Weather.isFrozen("lake") ? 0.6 : 0.15),
+			},
+		},
+		weather: {
+			fogDistributionCurve: 5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 14,
+					bottom: 0,
+				},
+				fog: {
+					top: 34,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -1858,6 +2582,23 @@ setup.LocationImages = {
 		// 	},
 		// 	horizon: 112,
 		// },
+
+		weather: {
+			fogDistributionCurve: 0,
+			rainSplashEnabled: false,
+			fogEnabled: false,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 0,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	landfill: {
 		folder: "landfill",
@@ -1871,6 +2612,22 @@ setup.LocationImages = {
 				image: "snow.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 6,
+					bottom: 0,
+				},
+				fog: {
+					top: 16,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	market: {
 		folder: "market",
@@ -1882,6 +2639,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -1909,6 +2682,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			color: "#deae66",
 			strength: 2,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 9,
+					bottom: 0,
+				},
+				fog: {
+					top: 15,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	meadow: {
@@ -1938,6 +2727,22 @@ setup.LocationImages = {
 				size: 4,
 				animation: {
 					frameDelay: 200,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 21,
+					bottom: 0,
+				},
+				fog: {
+					top: 26,
+					bottom: 0,
 				},
 			},
 		},
@@ -1972,6 +2777,23 @@ setup.LocationImages = {
 		// 	image: "reflective.png",
 		// 	horizon: 112,
 		// },
+
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 22,
+					bottom: 0,
+				},
+				fog: {
+					top: 24,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	museum: {
 		folder: "museum",
@@ -1989,6 +2811,22 @@ setup.LocationImages = {
 				image: "grass_autumn.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 10,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	night_monster_lair: {
 		folder: "night_monster_lair",
@@ -2003,7 +2841,7 @@ setup.LocationImages = {
 			},
 			beast: {
 				image: "beast.png",
-				condition: () => Time.dayState === "morning",
+				condition: () => Time.dayState === "dawn",
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => random(1, 5, true) * 1000,
@@ -2018,7 +2856,7 @@ setup.LocationImages = {
 			},
 			flies: {
 				image: "drip.png",
-				condition: () => Time.dayState !== "morning",
+				condition: () => Time.dayState !== "dawn",
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => 0,
@@ -2029,6 +2867,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 200,
 					cycleDelay: () => random(10, 30, true) * 1000,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 2,
+					bottom: 0,
 				},
 			},
 		},
@@ -2043,6 +2897,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 7,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2081,6 +2951,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 8,
+					bottom: 0,
+				},
+				fog: {
+					top: 11,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	old_temple: {
 		folder: "old_temple",
@@ -2099,6 +2985,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			color: "#ff633f",
 			size: 4,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 13,
+					bottom: 0,
+				},
+				fog: {
+					top: 21,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	park: {
@@ -2146,6 +3048,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			color: "#deae66a5",
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 19,
+					bottom: 0,
+				},
+				fog: {
+					top: 23,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	estate_cottage: {
 		folder: "estate_cottage",
@@ -2166,6 +3084,22 @@ setup.LocationImages = {
 		emissive: {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 11,
+					bottom: 0,
+				},
+				fog: {
+					top: 15,
+					bottom: 0,
+				},
+			},
 		},
 	},
 	police_station: {
@@ -2192,6 +3126,22 @@ setup.LocationImages = {
 			image: "emissive.png",
 			condition: () => Weather.lightsOn,
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 11,
+					bottom: 0,
+				},
+				fog: {
+					top: 15,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	pool: {
 		folder: "pool",
@@ -2210,6 +3160,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => 0,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 0,
+			rainSplashEnabled: false,
+			fogEnabled: false,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 0,
+					bottom: 0,
 				},
 			},
 		},
@@ -2234,6 +3200,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 9,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	prison: {
 		folder: "prison",
@@ -2251,6 +3233,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 200,
 					cycleDelay: () => 0,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 4,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 23,
+					bottom: 0,
 				},
 			},
 		},
@@ -2306,6 +3304,22 @@ setup.LocationImages = {
 				condition: () => between(Time.hour, 12, 14) && Time.weekDay === 6,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 11,
+					bottom: 0,
+				},
+				fog: {
+					top: 14,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	promenade: {
 		folder: "promenade",
@@ -2331,6 +3345,22 @@ setup.LocationImages = {
 			condition: () => Weather.lightsOn,
 			image: "emissive.png",
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 18,
+					bottom: 0,
+				},
+				fog: {
+					top: 21,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	pub: {
 		folder: "pub",
@@ -2350,6 +3380,22 @@ setup.LocationImages = {
 			color: "#deae66",
 			strength: 3,
 		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 5,
+					bottom: 0,
+				},
+				fog: {
+					top: 9,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	res_alley: {
 		folder: "res_alley",
@@ -2368,6 +3414,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 1000,
 					cycleDelay: () => random(4, 15, true) * 1000,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 21,
+					bottom: 0,
 				},
 			},
 		},
@@ -2392,6 +3454,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 19,
+					bottom: 0,
+				},
+				fog: {
+					top: 22,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	school: {
 		folder: "school",
@@ -2409,6 +3487,22 @@ setup.LocationImages = {
 				image: "grass_autumn.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 19,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	school_rear_courtyard: {
 		folder: "school_rear_courtyard",
@@ -2424,6 +3518,22 @@ setup.LocationImages = {
 			summer: {
 				image: "summer.png",
 				condition: () => !Weather.isSnow && Time.season === "summer",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 12,
+					bottom: 0,
+				},
+				fog: {
+					top: 22,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2457,12 +3567,44 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 21,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	sewers: {
 		folder: "sewers",
 		base: {
 			default: {
 				image: "base.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 29,
+					bottom: 29,
+				},
+				fog: {
+					top: 29,
+					bottom: 29,
+				},
 			},
 		},
 	},
@@ -2493,6 +3635,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 40,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	sepulchre: {
 		folder: "sepulchre",
@@ -2517,6 +3675,22 @@ setup.LocationImages = {
 				color: "#5b6ee1",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 10,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	shopping_centre: {
 		folder: "shopping_centre",
@@ -2528,6 +3702,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 6,
+					bottom: 0,
+				},
+				fog: {
+					top: 13,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2566,6 +3756,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 2000,
 					cycleDelay: () => 2000,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 12,
+					bottom: 0,
+				},
+				fog: {
+					top: 18,
+					bottom: 0,
 				},
 			},
 		},
@@ -2641,6 +3847,22 @@ setup.LocationImages = {
 				size: 3,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 7,
+					bottom: 0,
+				},
+				fog: {
+					top: 12,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	studio: {
 		folder: "studio",
@@ -2658,6 +3880,22 @@ setup.LocationImages = {
 			default: {
 				image: "emissive.png",
 				condition: () => Weather.lightsOn && between(Time.hour, 18, 23),
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 10,
+					bottom: 0,
+				},
+				fog: {
+					top: 16,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2705,6 +3943,22 @@ setup.LocationImages = {
 				size: 4,
 			},
 		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 7,
+					bottom: 0,
+				},
+				fog: {
+					top: 19,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	tentworld: {
 		folder: "tentworld",
@@ -2721,6 +3975,22 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => random(1, 9, true) * 1000,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: false,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
 				},
 			},
 		},
@@ -2761,6 +4031,22 @@ setup.LocationImages = {
 				image: "emissive_blood.png",
 				color: "#e63e3e66",
 				size: 5,
+			},
+		},
+		weather: {
+			fogDistributionCurve: 3,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 9,
+					bottom: 0,
+				},
+				fog: {
+					top: 20,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2822,6 +4108,22 @@ setup.LocationImages = {
 				},
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 18,
+					bottom: 0,
+				},
+				fog: {
+					top: 23,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	underground: {
 		folder: "underground",
@@ -2833,6 +4135,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 10,
+					bottom: 0,
+				},
+				fog: {
+					top: 18,
+					bottom: 0,
+				},
 			},
 		},
 	},
@@ -2848,6 +4166,22 @@ setup.LocationImages = {
 				image: "snow.png",
 			},
 		},
+		weather: {
+			fogDistributionCurve: 1,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 15,
+					bottom: 0,
+				},
+				fog: {
+					top: 17,
+					bottom: 0,
+				},
+			},
+		},
 	},
 	wolf_cave: {
 		folder: "wolf_cave",
@@ -2859,6 +4193,22 @@ setup.LocationImages = {
 			snow: {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
+			},
+		},
+		weather: {
+			fogDistributionCurve: 2.5,
+			rainSplashEnabled: true,
+			fogEnabled: true,
+
+			groundBounds: {
+				splashes: {
+					top: 16,
+					bottom: 0,
+				},
+				fog: {
+					top: 24,
+					bottom: 0,
+				},
 			},
 		},
 	},

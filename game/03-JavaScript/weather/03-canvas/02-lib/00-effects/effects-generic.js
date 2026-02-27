@@ -22,10 +22,33 @@ Weather.Renderer.Effects.add({
 
 Weather.Renderer.Effects.add({
 	name: "colorOverlay",
+	defaultParameters: {
+		dayStateColors: {
+			nightDark: "#00000000",
+			nightBright: "#00000000",
+			day: "#00000000",
+			dawnDusk: "#00000000",
+			bloodMoon: "#00000000",
+		},
+		darkenFactor: 0,
+		darkenTarget: "#000000",
+		sunFactor: 0,
+		moonFactor: 0,
+		bloodMoon: false,
+	},
 	draw() {
+		const colors = this.dayStateColors ?? this.color;
+		const darkenFactor = this.darkenFactor;
+		const darkenTarget = this.darkenTarget;
+		const nightDark = darkenFactor > 0 ? ColourUtils.interpolateColor(colors.nightDark, darkenTarget, darkenFactor) : colors.nightDark;
+		const nightBright = darkenFactor > 0 ? ColourUtils.interpolateColor(colors.nightBright, darkenTarget, darkenFactor) : colors.nightBright;
+		const dawnDusk = darkenFactor > 0 ? ColourUtils.interpolateColor(colors.dawnDusk, darkenTarget, darkenFactor) : colors.dawnDusk;
+		const day = darkenFactor > 0 ? ColourUtils.interpolateColor(colors.day, darkenTarget, darkenFactor) : colors.day;
+		const bloodMoon = darkenFactor > 0 ? ColourUtils.interpolateColor(colors.bloodMoon, darkenTarget, darkenFactor) : colors.bloodMoon;
+
 		// Color based on the moon state and phase
-		const nightColor = this.bloodMoon ? this.color.bloodMoon : ColourUtils.interpolateColor(this.color.nightDark, this.color.nightBright, this.moonFactor);
-		const color = ColourUtils.interpolateTripleColor(nightColor, this.color.dawnDusk, this.color.day, this.sunFactor);
+		const nightColor = this.bloodMoon ? bloodMoon : ColourUtils.interpolateColor(nightDark, nightBright, this.moonFactor);
+		const color = ColourUtils.interpolateTripleColor(nightColor, dawnDusk, day, this.sunFactor);
 		this.canvas.ctx.fillStyle = color;
 		this.canvas.fillRect();
 	},
@@ -44,7 +67,7 @@ Weather.Renderer.Effects.add({
 			return this.currentDate?.compareWith(Time.date, true) / TimeConstants.secondsPerMinute;
 		};
 
-		if (!this.x || this.elapsedTime() >= 3 * Time.minutesPerHour) {
+		if (!this.x || this.elapsedTime() >= 3 * TimeConstants.minutesPerHour) {
 			this.x = this.renderInstance.rng.randomInt(0, this.images.overlay.width);
 			this.currentDate = new DateTime(Time.date);
 		}
@@ -75,6 +98,21 @@ Weather.Renderer.Effects.add({
 				this.images.overlay.height * this.scaleFactor
 			);
 		}
+	},
+});
+
+Weather.Renderer.Effects.add({
+	name: "desaturate",
+	defaultParameters: {
+		factor: null,
+		maxDesaturate: 1,
+	},
+	draw(_, layerCanvas) {
+		const desaturateFactor = this.factor * this.maxDesaturate;
+
+		this.canvas.ctx.filter = desaturateFactor > 0 ? `grayscale(${desaturateFactor})` : "none";
+		this.canvas.ctx.globalAlpha = 1;
+		this.canvas.ctx.drawImage(layerCanvas.element, 0, 0, this.canvas.element.width, this.canvas.element.height);
 	},
 });
 

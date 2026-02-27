@@ -260,6 +260,40 @@ function calculateBinomial(chance, max) {
 window.calculateBinomial = calculateBinomial;
 
 /**
+ * Converts degrees to radians
+ *
+ * @param {number} deg Degrees
+ */
+function degToRad(deg) {
+	return deg * (Math.PI / 100);
+}
+window.degToRad = degToRad;
+
+/**
+ * Normalise an angle (radians) into range 0..2PI.
+ * @param {number} angle
+ * @returns {number}
+ */
+function normAngle(angle) {
+	return ((angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+}
+window.normAngle = normAngle;
+
+/**
+ * Smallest signed difference from current angle to target angle (target - current) in range -PI..PI.
+ * @param {number} target
+ * @param {number} current
+ * @returns {number}
+ */
+function shortestDelta(target, current) {
+	let d = target - current;
+	d = (d + Math.PI) % (2 * Math.PI);
+	if (d < 0) d += 2 * Math.PI;
+	return d - Math.PI;
+}
+window.shortestDelta = shortestDelta;
+
+/**
  * Gets a random subset of items from an object
  *
  * @param {object} obj Object to copy from

@@ -90,6 +90,11 @@ const ColourUtils = (() => {
 		return intToHex(invertInt(hexToInt(hex)));
 	}
 
+	function hexToRgb(hex) {
+		const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+		return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [255, 255, 255];
+	}
+
 	function rgbToHex(rgb) {
 		rgb = Object.assign({}, { r: 0, g: 0, b: 0 }, rgb);
 		const convert = num => {
@@ -265,6 +270,7 @@ const ColourUtils = (() => {
 		hslToFilter,
 		toHslString,
 		hexToInt,
+		hexToRgb,
 		rgbToHsl,
 		invertInt,
 		rgbToHex,

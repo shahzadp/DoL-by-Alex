@@ -66,7 +66,13 @@ Weather.Renderer.Layers.add({
 				alpha() {
 					const factor = this.renderInstance.orbitals.sun.factor;
 					const nightAlpha = Weather.bloodMoon ? this.opacity.bloodMoon : this.opacity.night;
-					return interpolate(nightAlpha, this.opacity.day, Math.clamp(factor + 0.4, 0, 1));
+					const dayFactor = Math.clamp(factor + 0.4, 0, 1);
+					const baseAlpha = interpolate(nightAlpha, this.opacity.day, dayFactor);
+
+					// Fade out stars as precipitation intensity increases, down to a min of 0.2
+					const precipFactor = inverseLerp(Weather.precipitationIntensity, 1.5, 3.5);
+					const precipFade = Math.clamp(interpolate(1, 0.2, precipFactor), 0.2, 1);
+					return baseAlpha * precipFade;
 				},
 				rotation() {
 					return Time.date.fractionOfDay * 360;

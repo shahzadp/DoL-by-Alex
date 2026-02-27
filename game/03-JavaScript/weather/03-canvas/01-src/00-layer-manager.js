@@ -15,7 +15,6 @@ Weather.Renderer.Layers = (() => {
 			console.error(new Error(`Layer '${params.name} contain no effects.`));
 			return;
 		}
-
 		const layer = new Weather.Renderer.Layer(params.name, params.blur, params.zIndex, params.animation);
 		params.effects.map(p => layer.addEffect(p.effect, p.params, p.bindings, p.drawCondition, p.compositeOperation));
 		layers.set(params.name, layer);
