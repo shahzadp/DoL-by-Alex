@@ -3971,32 +3971,30 @@
 <<widget "enableSchoolRescue">>
 	/* Call with all applicable conditions for a rescue in any order. ex: <<enableSchoolRescue "Whitney" "delinquency">> for scenes where Whitney or low delinquency can save you, or <<enableSchoolRescue "Leighton">> for scenes where just Leighton can save you. */
 	/* Shouldn't be called without any arguments; just use the standard "enable_rescue" widget for those cases. */
-	<<if $drugged lte 0>>
-		<<set $_rescue to []>>
+	<<set $_rescue to []>>
 
-		<<if _args.includes("Whitney") and C.npc.Whitney.dom gte random(10, 25) and C.npc.Whitney.state is "active" and $whitneyromance is 1>>
-			<<set $_rescue.push("Whitney")>>
-		<</if>>
+	<<if _args.includes("Whitney") and C.npc.Whitney.dom gte random(10, 25) and C.npc.Whitney.state is "active" and $whitneyromance is 1>>
+		<<set $_rescue.push("Whitney")>>
+	<</if>>
 
-		/* There are no cases where Leighton being present and low delinquency are separate conditions for rescue, but there are some where both are required. ex: "Maths Note Molestation" */
-		<<if _args.includesAll("delinquency", "Leighton") and $delinquency lt 400 and $pillory.tenant.special.name isnot "Leighton">>
-			<<set $_rescue.push("Leighton")>>
-		<<elseif _args.includes("delinquency") and $delinquency lt 400>>
-			<<set $_rescue.push("delinquency")>>
-		<<elseif _args.includes("Leighton") and $pillory.tenant.special.name isnot "Leighton">>
-			<<set $_rescue.push("Leighton")>>
-		<</if>>
+	/* There are no cases where Leighton being present and low delinquency are separate conditions for rescue, but there are some where both are required. ex: "Maths Note Molestation" */
+	<<if _args.includesAll("delinquency", "Leighton") and $delinquency lt 400 and $pillory.tenant.special.name isnot "Leighton">>
+		<<set $_rescue.push("Leighton")>>
+	<<elseif _args.includes("delinquency") and $delinquency lt 400>>
+		<<set $_rescue.push("delinquency")>>
+	<<elseif _args.includes("Leighton") and $pillory.tenant.special.name isnot "Leighton">>
+		<<set $_rescue.push("Leighton")>>
+	<</if>>
 
-		<<if $_rescue.includes("Whitney") and $_rescue.includes("delinquency", "Leighton")>>
-			/* Safe Whitney rescue */
-			<<set $rescue to 3>>
-		<<elseif $_rescue.includes("Whitney")>>
-			/* Lone Whitney rescue */
-			<<set $rescue to 2>>
-		<<elseif $_rescue.length gt 0 or !_args[0]>>
-			/* Safe rescue */
-			<<set $rescue to 1>>
-		<</if>>
+	<<if $_rescue.includes("Whitney") and $_rescue.includes("delinquency", "Leighton")>>
+		/* Safe Whitney rescue */
+		<<set $rescue to 3>>
+	<<elseif $_rescue.includes("Whitney")>>
+		/* Lone Whitney rescue */
+		<<set $rescue to 2>>
+	<<elseif $_rescue.length gt 0 or !_args[0]>>
+		/* Safe rescue */
+		<<set $rescue to 1>>
 	<</if>>
 <</widget>>
 
