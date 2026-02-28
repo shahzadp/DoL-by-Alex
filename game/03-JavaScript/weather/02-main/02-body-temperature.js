@@ -89,7 +89,6 @@ Weather.BodyTemperature = (() => {
 
 		const scaledMinutes = Math.min(minutes, 60 + Math.sqrt(Math.max(minutes - 60, 0)));
 		this.set(calculateTemperatureChange(Weather.BodyTemperature.get(), temperature, scaledMinutes, getTotalWarmth()));
-		resetActivity();
 
 		if (Weather.BodyTemperature.get() < Weather.tempSettings.minTemperature) {
 			V.passout = "cold";
