@@ -180,6 +180,8 @@ const Time = (() => {
 				}
 				// pass the remaining minutes
 				minutePassed((minutes - minsToNextHour) % 60);
+				// reset BodyTemperature effects
+				delete T.bodyActivity;
 			}
 		} catch (ex) {
 			// we only need to catch it so "finally" can run, so, right back at you
