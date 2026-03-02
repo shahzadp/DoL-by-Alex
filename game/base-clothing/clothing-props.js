@@ -617,6 +617,9 @@ function initProps() {
 		first_aid: {
 			armPosition: "right_cover",
 		},
+        fish_basket: {
+            armPosition: "right_cover",
+        },
 		piano: {
 			armPosition: "right_cover",
 			zIndex: "tailPenisCoverOverlay",
