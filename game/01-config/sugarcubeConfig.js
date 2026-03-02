@@ -719,7 +719,10 @@ Config.navigation.override = function (dest) {
 			case "Dye pubic hair Finish":
 			case "Farm dye pubic hair Finish":
 				return "Dye Hair";
-
+			case "Sewers Rats":
+				return "Sewers Scones Eat";
+			case "Sewers Rats Pretend":
+				return "Sewers Scones Pretend";
 			default:
 				return false;
 		}
