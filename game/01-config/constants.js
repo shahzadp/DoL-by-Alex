@@ -16,6 +16,11 @@ const constants = {
 			globalLocationCapMin: 10,
 		},
 	},
+	badEndTimeRules: {
+		badEndsWithTimeObfuscation: ["Underground Farm", "Wolf Cave", "Underground Dungeon", "Mines"],
+		hoursToLoseMinutes: 2,
+		hoursToLoseTime: 8,
+	},
 };
 
 /* Hoist Constants to the top (For statevars.js) */
