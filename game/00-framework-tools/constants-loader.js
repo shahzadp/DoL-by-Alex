@@ -8,9 +8,13 @@ var ConstantsLoader = (() => {
 	}
 
 	function clone(obj) {
+		if (Array.isArray(obj)) {
+			return Object.freeze(obj.map(value => (value !== null && typeof value === "object" ? clone(value) : value)));
+		}
+
 		const fragment = Object.create({});
 		Object.entries(obj).forEach(([key, value]) => {
-			if (typeof value === "object") {
+			if (value !== null && typeof value === "object") {
 				/* Sub object within object. */
 				Object.defineProperty(fragment, key, {
 					value: clone(value),

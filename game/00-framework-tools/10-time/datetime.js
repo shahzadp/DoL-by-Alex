@@ -374,6 +374,36 @@ class DateTime {
 	}
 
 	/**
+	 * Returns whether or not enough time has passed in the current bad end for minute precision to be lost.
+	 *
+	 * @param {object} badEnd The bad end tracking object, V.badEndStats.last()
+	 * @returns {boolean} True if minutes should be obfuscated
+	 */
+	hasLostTrackOfMinutes(badEnd) {
+		const rules = window.Constants.badEndTimeRules;
+		if (!rules.badEndsWithTimeObfuscation.includes(badEnd?.source)) return false;
+		if (!Number.isFinite(badEnd?.trackedStart) || badEnd?.trackedEnd !== undefined) return false;
+
+		const elapsed = this.timeStamp - badEnd.trackedStart;
+		return elapsed >= rules.hoursToLoseMinutes * TimeConstants.secondsPerHour;
+	}
+
+	/**
+	 * Returns whether or not enough time has passed in the current bad end for time of day to be lost.
+	 *
+	 * @param {object} badEnd The bad end tracking object, V.badEndStats.last()
+	 * @returns {boolean} True if time should be obfuscated
+	 */
+	hasLostTrackOfTime(badEnd) {
+		const rules = window.Constants.badEndTimeRules;
+		if (!rules.badEndsWithTimeObfuscation.includes(badEnd?.source)) return false;
+		if (!Number.isFinite(badEnd?.trackedStart) || badEnd?.trackedEnd !== undefined) return false;
+
+		const elapsed = this.timeStamp - badEnd.trackedStart;
+		return elapsed >= rules.hoursToLoseTime * TimeConstants.secondsPerHour;
+	}
+
+	/**
 	 * Returns the weekday (1-7 for Sun-Sat) of the current object's date
 	 *
 	 * @returns {number} The weekday number of the current date
