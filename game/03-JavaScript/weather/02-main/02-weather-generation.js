@@ -18,7 +18,9 @@ Weather.WeatherGeneration = (() => {
 			}
 
 			if (date.timeStamp < Time.date.timeStamp) {
-				console.warn(`getWeather: Provided date is before the current timestamp. Returning the current weather type.`);
+				console.warn(
+					`getWeather: Provided date is before the current timestamp. Returning the current weather type. You can probably ignore this warning if the game has just started.`
+				);
 				return interpolateWeather(new DateTime(Time.date));
 			}
 
@@ -263,10 +265,7 @@ Weather.WeatherGeneration = (() => {
 			autumn: [9, 10, 11],
 		};
 		const seasonDays = Object.fromEntries(
-			seasons.map(season => [
-				season,
-				seasonMonths[season].reduce((total, month) => total + new DateTime(Time.date.year, month, 1).lastDayOfMonth, 0),
-			])
+			seasons.map(season => [season, seasonMonths[season].reduce((total, month) => total + new DateTime(Time.date.year, month, 1).lastDayOfMonth, 0)])
 		);
 		const seasonWeights = Object.fromEntries(seasons.map(season => [season, 0]));
 
