@@ -6,7 +6,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleRain",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0 && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				sunTint: "#97a9e8aa",
@@ -249,7 +249,7 @@ Weather.Renderer.Layers.add({
 			effect: "imageOverlay",
 			drawCondition() {
 				return (
-					!this.renderInstance.skyDisabled &&
+					!this.renderInstance.sidebarSkyDisabled &&
 					Weather.precipitationIntensity >=
 						resolveValue(setup.WeatherGeneration.weatherTypes.find(w => w.name === "lightPrecipitation").precipitationIntensity)
 				);

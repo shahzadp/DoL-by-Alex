@@ -9,7 +9,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "skyOrbital",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor > -0.5 && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor > -0.5 && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: { orbital: "img/misc/sky/sun.png" },
@@ -23,7 +23,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.sun > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.sun > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -38,7 +38,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "outerRadialGlow",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor > -0.5 && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor > -0.5 && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				outerRadius: 24, // The radius of the outer glow
@@ -62,7 +62,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "desaturate",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "copy",
 			params: {
@@ -84,7 +84,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "outerRadialGlow",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor > -0.7 && !Weather.isOvercast && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor > -0.7 && !Weather.isOvercast && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				outerRadius: 64, // The radius of the outer glow

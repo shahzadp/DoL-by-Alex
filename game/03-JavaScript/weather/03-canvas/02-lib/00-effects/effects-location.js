@@ -21,7 +21,7 @@ Weather.Renderer.Effects.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				dayStateColors: {
@@ -163,7 +163,7 @@ Weather.Renderer.Effects.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.location > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.location > 0;
 			},
 			params: {
 				dayStateColors: {
@@ -427,20 +427,24 @@ Weather.Renderer.Effects.add({
 					resolve();
 				};
 
-				window.ImageCache.getOrCreate(resolvedSrc).then(handleLoadedImage).catch(() => {
-					// Failsafe to prevent location-image animation error when going through history rapidly.
-					if (this.fullPath !== basePath) {
-						const fallbackSrc = this.fullPath + imagePath;
-						window.ImageCache.getOrCreate(fallbackSrc).then(handleLoadedImage).catch(() => {
-							Errors.report("Warning: Missing location image fallback: " + fallbackSrc);
-							resolve();
-						});
-						return;
-					}
+				window.ImageCache.getOrCreate(resolvedSrc)
+					.then(handleLoadedImage)
+					.catch(() => {
+						// Failsafe to prevent location-image animation error when going through history rapidly.
+						if (this.fullPath !== basePath) {
+							const fallbackSrc = this.fullPath + imagePath;
+							window.ImageCache.getOrCreate(fallbackSrc)
+								.then(handleLoadedImage)
+								.catch(() => {
+									Errors.report("Warning: Missing location image fallback: " + fallbackSrc);
+									resolve();
+								});
+							return;
+						}
 
-					Errors.report("Warning: Missing location image: " + resolvedSrc);
-					resolve();
-				});
+						Errors.report("Warning: Missing location image: " + resolvedSrc);
+						resolve();
+					});
 			});
 		};
 

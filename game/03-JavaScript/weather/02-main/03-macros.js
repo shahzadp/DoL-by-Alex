@@ -1,6 +1,6 @@
 Macro.add("skybox", {
 	handler() {
-		Weather.sky.skybox.appendTo(this.output);
+		Weather.sidebar.skybox.appendTo(this.output);
 	},
 });
 

@@ -73,8 +73,8 @@ Weather.WeatherGeneration = (() => {
 
 		const newWeather = updateWeather();
 
-		if (instant && Weather.sky.loaded.value) {
-			Weather.sky.layers.get("clouds").effects[0].reset();
+		if (instant && Weather.sidebar.loaded.value) {
+			Weather.sidebar.layers.get("clouds").effects[0].reset();
 		}
 
 		Weather.Observables.checkForUpdate();

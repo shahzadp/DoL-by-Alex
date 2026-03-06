@@ -6,7 +6,7 @@ Weather.Renderer.Layers.add({
 			/* Night sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return !Weather.bloodMoon && !this.renderInstance.skyDisabled;
+				return !Weather.bloodMoon && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				radius: 256,
@@ -34,7 +34,7 @@ Weather.Renderer.Layers.add({
 			/* Blood sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return Weather.bloodMoon && !this.renderInstance.skyDisabled;
+				return Weather.bloodMoon && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				color: {
@@ -57,7 +57,7 @@ Weather.Renderer.Layers.add({
 			/* Day sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				color: {
@@ -79,7 +79,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.sky > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.sky > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -105,7 +105,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "skyStarField",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor < 0.75 && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor < 0.75 && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				area: 1000,
@@ -191,7 +191,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "outerRadialGlow",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor > -0.7 && !Weather.isOvercast && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor > -0.7 && !Weather.isOvercast && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				outerRadius: 82, // The radius of the outer glow
@@ -221,7 +221,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "clouds",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -296,7 +296,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.clouds > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.clouds > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -335,7 +335,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "overcast",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -358,7 +358,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -412,7 +412,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "cirrus",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -449,7 +449,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.cirrusClouds > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.cirrusClouds > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -737,7 +737,9 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "imageOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.overcast > 0.5 && Weather.precipitationIntensity >= 1 && Weather.precipitation === "snow";
+				return (
+					!this.renderInstance.sidebarSkyDisabled && Weather.overcast > 0.5 && Weather.precipitationIntensity >= 1 && Weather.precipitation === "snow"
+				);
 			},
 			compositeOperation: "destination-out",
 			params: {
@@ -762,7 +764,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleFog",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.fog > 0.2;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.fog > 0.2;
 			},
 			params: {
 				scale: 150,
@@ -784,7 +786,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.fog > 0.2 && Weather.current.darkenFactor.fog > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.fog > 0.2 && Weather.current.darkenFactor.fog > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -823,7 +825,7 @@ Weather.Renderer.Layers.add({
 			effect: "rainbow",
 			drawCondition() {
 				return (
-					!this.renderInstance.skyDisabled &&
+					!this.renderInstance.sidebarSkyDisabled &&
 					!Weather.bloodMoon &&
 					this.renderInstance.orbitals.sun.factor > 0.6 &&
 					this.renderInstance.orbitals.sun.factor < 0.85 &&
@@ -855,7 +857,7 @@ Weather.Renderer.Layers.add({
 			effect: "imageOverlay",
 			drawCondition() {
 				return (
-					!this.renderInstance.skyDisabled &&
+					!this.renderInstance.sidebarSkyDisabled &&
 					!Weather.bloodMoon &&
 					this.renderInstance.orbitals.sun.factor > 0.7 &&
 					this.renderInstance.orbitals.sun.factor < 0.85 &&

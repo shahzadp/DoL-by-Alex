@@ -6,7 +6,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "clouds",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -92,7 +92,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -123,7 +123,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "desaturate",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "copy",
 			params: {
@@ -145,7 +145,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "overcast",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -168,7 +168,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -210,7 +210,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "cirrus",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				images: {
@@ -247,7 +247,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.cirrusClouds > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.cirrusClouds > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -278,7 +278,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "desaturate",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "copy",
 			params: {

@@ -179,7 +179,6 @@ Weather.Renderer.Sky = class {
 		}
 	}
 
-
 	get dayFactor() {
 		return this.orbitals.sun?.factor ?? 0;
 	}
@@ -189,7 +188,7 @@ Weather.Renderer.Sky = class {
 		return 1 - 2 * Math.abs(Time.date.moonPhaseFraction - 0.5);
 	}
 
-	get skyDisabled() {
+	get sidebarSkyDisabled() {
 		return V.location === "tentworld"; // todo move to Weather
 	}
 

@@ -322,7 +322,7 @@ const Skin = (() => {
 
 		if (V.outside) {
 			const month = modifiers.month <= 0.6;
-			const dayState = Weather.sky.dayFactor <= 0.6;
+			const dayState = Weather.sidebar.dayFactor <= 0.6;
 			const output = month ? Time.monthName : dayState ? "Sun is low" : "weather";
 			if (modifiers.sun <= 0.3) reasons.push(`Low sun intensity (${output})`);
 			else if (modifiers.sun <= 0.7) reasons.push(`Reduced sun intensity (${output})`);

@@ -6,7 +6,7 @@ Weather.Renderer.Layers.add({
 			/* Night sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return !Weather.bloodMoon && !this.renderInstance.skyDisabled;
+				return !Weather.bloodMoon && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				radius: 82,
@@ -34,7 +34,7 @@ Weather.Renderer.Layers.add({
 			/* Blood sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return Weather.bloodMoon && !this.renderInstance.skyDisabled;
+				return Weather.bloodMoon && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				color: {
@@ -57,7 +57,7 @@ Weather.Renderer.Layers.add({
 			/* Day sky */
 			effect: "skyGradiant",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				color: {
@@ -93,7 +93,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.sky > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.sky > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -108,7 +108,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "desaturate",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			compositeOperation: "copy",
 			params: {

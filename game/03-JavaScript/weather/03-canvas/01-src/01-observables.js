@@ -45,7 +45,7 @@ Weather.Observables = (() => {
 	Object.keys(setup.WeatherBindings).forEach(key => (observables[key] = new ObservableValue(null)));
 
 	const setBindings = () => {
-		if (Weather.sky?.loaded.value) Weather.Tooltips.skybox();
+		if (Weather.sidebar?.loaded.value) Weather.Tooltips.skybox();
 		Object.entries(setup.WeatherBindings).forEach(([key, config]) => {
 			const value = config.variable();
 			observables[key].value = value;
@@ -60,11 +60,11 @@ Weather.Observables = (() => {
 					scheduler.scheduleUpdate(layer, async draw => {
 						if (layer === "all") {
 							Weather.Tooltips.skybox();
-							Weather.sky.updateOrbits();
-							Weather.sky.drawLayers();
+							Weather.sidebar.updateOrbits();
+							Weather.sidebar.drawLayers();
 						} else {
-							await Weather.sky.layers.get(layer).init();
-							if (!draw) Weather.sky.drawLayers(layer);
+							await Weather.sidebar.layers.get(layer).init();
+							if (!draw) Weather.sidebar.drawLayers(layer);
 						}
 					});
 				});
@@ -79,11 +79,11 @@ Weather.Observables = (() => {
 		});
 	});
 
-	Weather.sky?.loaded.subscribe(() => {
+	Weather.sidebar?.loaded.subscribe(() => {
 		setBindings();
 		subscribeToUpdates();
 
-		// Check if values were changed between page load and Weather.sky finished loading
+		// Check if values were changed between page load and Weather.sidebar finished loading
 		Object.keys(observables).forEach(key => {
 			if (changedKeys.get(key) === observables[key].value) {
 				observables[key]._notifyListeners(observables[key].value, changedKeys.get(key));
