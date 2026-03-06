@@ -268,7 +268,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "debugBounds",
 			drawCondition() {
-				return V.debug;
+				return V.debug && V.debugWeatherBandBounds;
 			},
 			params: {},
 			bindings: {
