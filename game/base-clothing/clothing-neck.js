@@ -152,7 +152,7 @@ function initNeck() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "holy_pendant.png",
+			iconFile: "holy-pendant.png",
 			accIcon: 0,
 		},
 
@@ -224,7 +224,7 @@ function initNeck() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "stone_pendant.png",
+			iconFile: "stone-pendant.png",
 			accIcon: 0,
 		},
 

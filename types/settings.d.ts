@@ -86,6 +86,7 @@ declare global {
 		silhouetteEnabled: boolean;
 		bodywritingImages: boolean;
 		combatAnimations: boolean;
+		topdownBreastjob: boolean;
 		showDebugRenderer: boolean;
 		showCombatTools: boolean;
 		reflections: boolean;

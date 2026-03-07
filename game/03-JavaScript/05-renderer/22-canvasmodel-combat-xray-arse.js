@@ -26,8 +26,8 @@ const combatXrayArse = {
 	layers: {
 		arse: {
 			srcfn(options) {
-				const baseSize = options.anus.size ? "_size" + options.anus.size : "";
-				const baseSizeDP = options.anus.doublePen ? "_dp" + options.anus.size2 : "";
+				const baseSize = options.anus.size ? "-size" + options.anus.size : "";
+				const baseSizeDP = options.anus.doublePen ? "-dp" + options.anus.size2 : "";
 				return `${options.src}anal/${options.anus.base}${baseSize}${baseSizeDP}.png`;
 			},
 			showfn(options) {
@@ -45,8 +45,8 @@ const combatXrayArse = {
 		condom2: xrayArseCondom("npc2"),
 		cum: {
 			srcfn(options) {
-				const baseSize = options.anus.size ? "_size" + options.anus.size : "";
-				const cumAmt = options.anus.penetratorSprite.includes("horse") ? "_cum_horse" : "_cum";
+				const baseSize = options.anus.size ? "-size" + options.anus.size : "";
+				const cumAmt = options.anus.penetratorSprite.includes("horse") ? "-cum-horse" : "-cum";
 				return `${options.src}anal/cum/${options.anus.base}${baseSize}${cumAmt}.png`;
 			},
 			showfn(options) {
@@ -60,7 +60,7 @@ const combatXrayArse = {
 		},
 		ejaculating: {
 			srcfn(options) {
-				const cumSize = options.anus.size ? "_size" + options.anus.size + "_cumming" : "";
+				const cumSize = options.anus.size ? "-size" + options.anus.size + "-cumming" : "";
 				return `${options.src}anal/cum/${options.anus.base}${cumSize}.png`;
 			},
 			showfn(options) {
@@ -86,8 +86,8 @@ function xrayArsePenetrator(npc, overrideOptions = {}) {
 	 */
 	const defaults = {
 		srcfn(options) {
-			const penSize = "_size" + options.anus.size;
-			const dp = options.anus.doublePen && npc === "npc2" ? "_dp" : "";
+			const penSize = "-size" + options.anus.size;
+			const dp = options.anus.doublePen && npc === "npc2" ? "-dp" : "";
 			return `${options.src}anal/${options.anus.penetratorSprite}${penSize}${dp}.png`;
 		},
 		showfn(options) {
@@ -119,8 +119,8 @@ function xrayArseCondom(npc, overrideOptions = {}) {
 	 */
 	const defaults = {
 		srcfn(options) {
-			const conSize = "_size" + options.anus.size;
-			const dp = options.anus.doublePen && npc === "npc2" ? "_dp" : "";
+			const conSize = "-size" + options.anus.size;
+			const dp = options.anus.doublePen && npc === "npc2" ? "-dp" : "";
 			return `${options.src}anal/tentacle${conSize}${dp}.png`;
 		},
 		showfn(options) {

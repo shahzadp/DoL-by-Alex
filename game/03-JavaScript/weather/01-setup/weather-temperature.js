@@ -2,9 +2,9 @@
 setup.WeatherTemperature = {
 	thermometer: {
 		base: "img/ui/weather/thermometer.png",
-		fill: "img/ui/weather/thermo_filled.png",
-		upArrow: "img/ui/weather/arrow_up.png",
-		downArrow: "img/ui/weather/arrow_down.png",
+		fill: "img/ui/weather/thermo-filled.png",
+		upArrow: "img/ui/weather/arrow-up.png",
+		downArrow: "img/ui/weather/arrow-down.png",
 		constant: "img/ui/weather/constant.png",
 	},
 	dayMultiplier: 1.5, // Multiplier on day calculations

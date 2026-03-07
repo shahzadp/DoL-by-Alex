@@ -347,7 +347,7 @@ function initSpecialClothes() {
 			subsetOf: ["bad_end", "transformation"],
 			feat: true,
 			featCost: 15,
-			icon: "tf_cow.png",
+			icon: "tf-cow.png",
 		},
 		loincloth: {
 			text: "loincloth",
@@ -502,7 +502,7 @@ function initSpecialClothes() {
 			subsetOf: ["pendant", "temple"],
 			feat: true,
 			featCost: 15,
-			icon: "clothes/holy_pendant.png",
+			icon: "clothes/holy-pendant.png",
 		},
 		stone_pendant: {
 			text: "stone pendant",
@@ -777,7 +777,7 @@ function initSpecialClothes() {
 			shop: ["forest"],
 			subsetOf: ["fox"],
 			feat: false,
-			icon: "clothes/islander_mask.png"
+			icon: "clothes/islander-mask.png"
 		},
 		fox: {
 			text: "fox-themed items",

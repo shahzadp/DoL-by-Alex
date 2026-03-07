@@ -64,8 +64,7 @@ Weather.Renderer.Effect = class Effect {
 		if (this.imagePaths && Object.keys(this.imagePaths).length > 0) {
 			imageLoadPromises = Object.keys(this.imagePaths).map(name => {
 				const src = this.imagePaths[name];
-				return window.ImageCache
-					.getOrCreate(src)
+				return window.ImageCache.getOrCreate(src)
 					.then(img => {
 						this.images[name] = img;
 						return img;

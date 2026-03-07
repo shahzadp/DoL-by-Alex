@@ -139,7 +139,7 @@ const combatClosePenis = {
 				return `${options.src}penis/${options.position}/${options.chastity}.png`;
 			},
 			showfn(options) {
-				return !!options.showPenis && !!playerChastity();
+				return !!options.showPenis && !!playerChastity() && !playerHasStrapon();
 			},
 			animationfn(options) {
 				return options.animKeyPenis;

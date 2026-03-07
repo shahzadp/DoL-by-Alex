@@ -549,9 +549,22 @@ IMPORTANT:
 		<hr>
 		<div>
 			<div class="settingsGrid" data-target='["images", "combatImages", "combatLightEnabled"]' data-disabledif="V.options.images===0||!V.options.combatImages||V.options.characterLightEnabled===false" oninput='Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting"));Renderer.refresh(Renderer.locateModel("lighting", "combat-lighting-demo"));'>
-				<div class="settingsHeader options">Combat Lighting</div>
-				<div class="settingsToggleItemWide d-flex justify-content-center lighting-demo-container">
-					<<setupCombatLightingDemo>>
+				<div class="settingsHeader options">Combat Visuals</div>
+				<div class="settingsToggleItem d-flex justify-content-center lighting-demo-container">
+					<div id="combatLightingDemo"><<setupCombatLightingDemo>></div>
+					<div id="combatLightingToggle" onchange="new Wikifier(null, '<<updateCombatLightingDemo .lighting-demo-container>>')">
+						<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
+							<<checkbox "$options.combatLightEnabled" false true autocheck>> Enable combat lighting
+						</label>
+					</div>
+				</div>
+				<div class="settingsToggleItem d-flex justify-content-center boob-demo-container">
+					<div id="closeBreastDemo"><<setupBreastjobDemo>></div>
+					<div id="closeBreastToggle" onchange="new Wikifier(null, '<<replace #closeBreastDemo>><<setupBreastjobDemo>><</replace>>')">
+						<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
+							<<checkbox "$options.topdownBreastjob" false true autocheck>> Enable topdown breastjob (large breasts only)
+						</label>
+					</div>
 				</div>
 				<div class="settingsToggleItem">
 					<label>
@@ -603,11 +616,6 @@ IMPORTANT:
 					</label>
 				</div>
 			</div>
-			<div style="margin-left: 10px" onchange="new Wikifier(null, '<<updateCombatLightingDemo .lighting-demo-container>>')">
-				<label data-target='["images", "combatImages"]' data-disabledif="V.options.images===0||!V.options.combatImages">
-					<<checkbox "$options.combatLightEnabled" false true autocheck>> Enable combat lighting
-				</label>
-			</div>
 		</div>
 	<<else>>
 		<br>
@@ -641,6 +649,22 @@ IMPORTANT:
 		<<rendermodel "combatMainPc">>
 	<<else>>
 		<<rendermodel "lighting z-hidden">>
+	<</if>>
+<</widget>>
+
+<<widget "setupBreastjobDemo">>
+	<<run Renderer.refresh(Renderer.locateModel("combatCloseDemo", "combat-boob-demo"))>>
+	<<set T.breastjobDemo to true>>
+	<<selectmodel "combatCloseDemo" "combat-boob-demo">>
+	<<if $passage isnot "Start">>
+		<<selectmodel "combatCloseDemo" "combatCloseDemo">>
+		<<if $options.sidebarAnimations isnot false>>
+			<<animatemodel "combatCloseDemo">>
+		<<else>>
+			<<rendermodel "combatCloseDemo">>
+		<</if>>
+	<<else>>
+		<<rendermodel "combatCloseDemo z-hidden">>
 	<</if>>
 <</widget>>
 

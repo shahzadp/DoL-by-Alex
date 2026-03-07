@@ -263,10 +263,7 @@ Weather.WeatherGeneration = (() => {
 			autumn: [9, 10, 11],
 		};
 		const seasonDays = Object.fromEntries(
-			seasons.map(season => [
-				season,
-				seasonMonths[season].reduce((total, month) => total + new DateTime(Time.date.year, month, 1).lastDayOfMonth, 0),
-			])
+			seasons.map(season => [season, seasonMonths[season].reduce((total, month) => total + new DateTime(Time.date.year, month, 1).lastDayOfMonth, 0)])
 		);
 		const seasonWeights = Object.fromEntries(seasons.map(season => [season, 0]));
 

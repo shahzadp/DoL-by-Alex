@@ -718,8 +718,9 @@ window.nullable = nullable;
 Macro.add("icon", {
 	handler() {
 		if (!V.options.images) return;
+		if (typeof this.args[0] !== "string") return this.error(`bad evaluation: icon type '${this.args[0]}' is not a string`);
 		const basePath = this.name === "iconUi" ? "img/ui/" : "img/misc/icon/";
-		const name = typeof this.args[0] === "string" ? this.args[0] : "error";
+		const name = normaliseFileName(this.args[0]);
 		const iconImg = document.createElement("img");
 		iconImg.className = [
 			"icon",

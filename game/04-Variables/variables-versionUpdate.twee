@@ -605,8 +605,8 @@
 	<</if>>
 
 	<<if $player.penissize is undefined>>
-		<<set $player.penissize to 2>>
-		<<set $penissizemax to 4>>
+		<<set $player.penissize to 4>>
+		<<set $penissizemax to 6>>
 		<<set $penisgrowthtimer to 700>>
 	<</if>>
 
@@ -4578,7 +4578,7 @@
 	<</if>>
 
 	<!-- Fixing broken transformation stuff -->
-	<<if $tfFIX is undefined or $tfFIX lte 7>>
+	<<if $tfFIX is undefined or $tfFIX lte 8>>
 		<<if $tfFIX is undefined>>
 			<!-- V0.4.0.5 repair transformationParts object after damage from mid-prayer room or nightmare saves -->
 			<<if $transformationParts.fox is undefined>>
@@ -4670,7 +4670,14 @@
 			<<if $fox gte 6>><<set $transformationHistory.pushUnique("fox")>><</if>>
 		<</if>>
 
-		<<set $tfFIX to 8>>
+		<!-- 0.6.0.0 TF name updates -->
+		<<if $tfFIX is undefined or $tfFIX lte 8>>
+			<<if $transformationParts.fallenAngel.wings is "classicfallenplus">><<set $transformationParts.fallenAngel.wings to "classic-fallenplus">><</if>>
+			<<if $transformationParts.cow.ears is "spotted black">><<set $transformationParts.cow.ears to "spotted-black">><</if>>
+			<<if $transformationParts.cow.ears is "spotted brown">><<set $transformationParts.cow.ears to "spotted-brown">><</if>>
+		<</if>>
+
+		<<set $tfFIX to 9>>
 	<</if>>
 
 	<!-- V0.4.0.5 Old saves with untyped named NPCs -->
@@ -6824,11 +6831,32 @@
 		<<unset $pillsconsumed>>
 	<</if>>
 
-	<!-- Weather update -->	
+	/* Getting rid of negative penis sizes */
+	<<if !$objectVersion.penisFix>>
+		<<if $player.penisExist>>
+			<<set $player.penissize += 2>>
+			<<if $frozenValues>>
+				<<set $frozenValues.penissize += 2>>
+			<</if>>
+			<<if $sexRitual?.penissize>>
+				<<set $sexRitual.penissize += 2>>
+			<</if>>
+		<</if>>
+		<<if $player.ballsExist>>
+			<<set $ballssize to $player.penissize>>
+			<<set $ballssizemax to $penissizemax>>
+			<<set $ballssizemin to $penissizemin>>
+		<</if>>
+		<<set $penissizemax += 2>>
+		<<set $penissizemin += 2>>
+		<<set $objectVersion.penisFix to 1>>
+	<</if>>
+
+	<!-- Weather update -->
 	<<if $weatherObj.fogKeypoints is undefined>>
 		<<set $weatherObj.fogKeypoints to []>>
 	<</if>>
-	
+
 	<<if $weatherObj.previousWeatherIndex is undefined>>
 		<<set $weatherObj.previousWeatherIndex to 0>>
 	<</if>>

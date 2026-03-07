@@ -2531,7 +2531,7 @@ window.beastMaleChance = beastMaleChance;
 function penisNames(override) {
 	const names = ["penis"];
 
-	if (V.player.penissize < 0 && !override) return names;
+	if (V.player.penissize < 2 && !override) return names;
 
 	if ((V.awareness >= 100 && !override) || override >= 1) names.push("dick");
 	if ((V.awareness >= 200 && V.purity < 900 && !override) || override >= 2) names.push("cock");

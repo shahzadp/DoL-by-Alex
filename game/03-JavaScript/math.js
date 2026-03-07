@@ -271,6 +271,7 @@ window.degToRad = degToRad;
 
 /**
  * Normalise an angle (radians) into range 0..2PI.
+ *
  * @param {number} angle
  * @returns {number}
  */
@@ -281,6 +282,7 @@ window.normAngle = normAngle;
 
 /**
  * Smallest signed difference from current angle to target angle (target - current) in range -PI..PI.
+ *
  * @param {number} target
  * @param {number} current
  * @returns {number}

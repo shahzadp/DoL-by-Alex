@@ -250,7 +250,7 @@ const combatMainPc = {
 		},
 		arm_shackle: {
 			srcfn(options) {
-				if (options.armBackPosition === "bound") return `${options.root}prop/shackles/${options.position}/arms_bound.png`;
+				if (options.armBackPosition === "bound") return `${options.root}prop/shackles/${options.position}/arms-bound.png`;
 				return `${options.root}prop/shackles/${options.position}/arms.png`;
 			},
 			showfn(options) {
@@ -263,7 +263,7 @@ const combatMainPc = {
 		},
 		leg_shackle: {
 			srcfn(options) {
-				return `${options.root}prop/shackles/${options.position}/legs_${options.legFrontPosition}.png`;
+				return `${options.root}prop/shackles/${options.position}/legs-${options.legFrontPosition}.png`;
 			},
 			showfn(options) {
 				return !!options.props.leg_shackle.show || !!options.machines.leg_chains.show;
@@ -797,7 +797,7 @@ const combatMainPc = {
 				const genitals = options.clothes.genitals?.item;
 				if (genitals?.type.includes("chastity")) {
 					if (genitals.name === "chastity parasite") {
-						const size = Math.clamp(V.player.penissize, -1, 2);
+						const size = Math.clamp(V.player.penissize, 0, 3);
 						return `${options.src}body/penetrator/parasite${size}.png`;
 					}
 					if (genitals.type.includes("cage")) {
@@ -1752,7 +1752,7 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.over_lower;
 				if (clothes?.name == null || clothes.positions == null) return "";
-				const path = `${options.src}clothing/over_lower/${clothes.name}/back-${clothes.positions.back}-${clothes.state}.png`;
+				const path = `${options.src}clothing/over-lower/${clothes.name}/back-${clothes.positions.back}-${clothes.state}.png`;
 				return path;
 			},
 			show: false,
@@ -1762,7 +1762,7 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.over_lower;
 				if (clothes?.name == null || clothes.positions == null) return "";
-				const path = `${options.src}clothing/over_lower/${clothes.name}/back-${clothes.positions.back}-${clothes.state}-acc.png`;
+				const path = `${options.src}clothing/over-lower/${clothes.name}/back-${clothes.positions.back}-${clothes.state}-acc.png`;
 				return path;
 			},
 			show: false,
@@ -1772,7 +1772,7 @@ const combatMainPc = {
 			srcfn(options) {
 				const clothes = options.clothes.over_lower;
 				if (clothes?.name == null || clothes.positions == null) return "";
-				const path = `${options.src}clothing/over_lower/${clothes.name}/back-${clothes.positions.back}-${clothes.pattern}.png`;
+				const path = `${options.src}clothing/over-lower/${clothes.name}/back-${clothes.positions.back}-${clothes.pattern}.png`;
 				return path;
 			},
 			show: false,

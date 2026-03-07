@@ -27,6 +27,8 @@
  * @property {string} animKeyPenis
  * @property {string} animKeyArse
  * @property {string} animKeyChest
+ * @property {boolean} breastjobDemo Options -> Performance toggle for changing breastjob sprites to topdown view
+ * @property {boolean} topdownDemo Options -> Performance toggle for changing breastjob sprites to topdown view
  */
 
 class CloseCombatMapper {
@@ -110,13 +112,13 @@ class CloseCombatMapper {
 		const chastityTypes = {
 			"chastity belt": "belt",
 			"gold chastity belt": "belt-gold",
-			"chastity parasite": `parasite-${V.player.penissize + 2}`,
+			"chastity parasite": `parasite-${V.player.penissize}`,
 			"flat chastity cage": "flat",
 			"small chastity cage": "small",
 		};
 		const chastityDevice = playerChastity() ? chastityTypes[V.worn.genitals.name] || "base" : false;
 		options.chastity = `chastity-${chastityDevice}`;
-		if (playerChastity("cage")) {
+		if (playerChastity("cage") && !playerHasStrapon()) {
 			if (V.worn.genitals.name === "chastity parasite") options.penis.concealed = true;
 			else options.chastity = `chastity-cage-${chastityDevice}`;
 			options.penis.size = `chastity-${chastityDevice}`;
@@ -149,7 +151,7 @@ class CloseCombatMapper {
 		}
 
 		// Set animation speed
-		const framesChest = combat.isChestActive("close") ? (V.player.breastsize >= 8 ? 10 : 6) : 1;
+		const framesChest = combat.isChestActive("close") ? (V.player.breastsize >= 8 && V.options.topdownBreastjob ? 10 : 6) : 1;
 		options.animKeyChest = `sex-${framesChest}f-${combat.isChestActive("close") ? CloseCombatMapper.getCloseAnimationSpeed() : "idle"}`;
 
 		options.animKeyVagina = `${combat.isVaginaActive("close") ? CloseCombatMapper.getCloseAnimation() : "sex-1f-idle"}`;
@@ -330,9 +332,9 @@ class CloseCombatMapper {
 	 */
 	static mapCloseChest(options) {
 		const breastsNpc = V.NPCList[V.chesttarget];
-		const topdown = V.player.breastsize >= 8 && ["penis", "tentacle"].includes(V.chestuse.toString());
+		const topdown = V.player.breastsize >= 8 && ["penis", "tentacle"].includes(V.chestuse.toString()) && V.options.topdownBreastjob;
 		options.chest = {
-			base: ["penis", "tentacle"].includes(V.chestuse.toString()) ? (V.player.breastsize >= 8 ? "topdown-job" : "base-job") : V.player.breastsize,
+			base: ["penis", "tentacle"].includes(V.chestuse.toString()) ? (topdown ? "topdown-job" : "base-job") : V.player.breastsize,
 			breasts: V.player.breastsize,
 			npc: topdown ? "penis-topdown" : V.enemytype === "beast" ? "beast" : V.chestuse,
 		};

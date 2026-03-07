@@ -270,7 +270,7 @@ setup.WeatherGeneration = {
 		},
 		{
 			name: "lightPrecipitation",
-			iconType: () => "light_" + Weather.precipitation,
+			iconType: () => "light-" + Weather.precipitation,
 			value: 3,
 			probability: {
 				summer: 0.05,
@@ -308,7 +308,7 @@ setup.WeatherGeneration = {
 		},
 		{
 			name: "heavyPrecipitation",
-			iconType: () => "heavy_" + Weather.precipitation,
+			iconType: () => "heavy-" + Weather.precipitation,
 			value: 4,
 			probability: {
 				summer: 0.05,
@@ -346,7 +346,7 @@ setup.WeatherGeneration = {
 		},
 		{
 			name: "storm",
-			iconType: () => "storm_" + Weather.precipitation,
+			iconType: () => "storm-" + Weather.precipitation,
 			value: 5,
 			probability: {
 				summer: 0.07,
@@ -385,7 +385,7 @@ setup.WeatherGeneration = {
 		},
 		{
 			name: "thunderstorm",
-			iconType: () => "thunderstorm_" + Weather.precipitation,
+			iconType: () => "thunderstorm-" + Weather.precipitation,
 			value: 6,
 			probability: {
 				summer: 0.06,

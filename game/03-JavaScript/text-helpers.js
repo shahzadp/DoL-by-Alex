@@ -1,6 +1,6 @@
 /* returns text without diacritics e.g. "crème brulee" -> "creme brulee" */
 function removeDiacritics(text) {
-	return text.normalize("NFKD").replace(/[^\w\s.-_\\/]/g, "");
+	return text.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
 }
 window.removeDiacritics = removeDiacritics;
 
@@ -13,6 +13,7 @@ window.normaliseKey = normaliseKey;
 /* returns text in lowercase kebab case without diacritics e.g creme-brulee.png */
 function normaliseFileName(text) {
 	return removeDiacritics(text)
+		.replace(/([A-Z])/g, "-$1")
 		.replace(/[\s-_]+/g, "-")
 		.toLowerCase();
 }

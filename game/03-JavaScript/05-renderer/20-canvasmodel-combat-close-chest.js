@@ -48,7 +48,7 @@ const combatCloseChest = {
 				return options.animKeyChest;
 			},
 			filters: ["body"],
-			z: CombatRenderer.indices.closeNpc + 1,
+			z: CombatRenderer.indices.closeNpc + 2,
 		},
 		breasts_back: {
 			srcfn(options) {
@@ -103,3 +103,87 @@ const combatCloseChest = {
 	},
 };
 Renderer.CanvasModels.combatCloseChest = combatCloseChest;
+
+/**
+ * @type {CanvasModelOptions<CloseOptions>}
+ */
+const combatCloseDemo = {
+	name: "combatCloseDemo",
+	width: 64,
+	height: 64,
+	scale: true,
+	frames: 6,
+	generatedOptions() {
+		return [];
+	},
+	defaultOptions() {
+		return { ...CloseCombatMapper.generateOptions(), ...this.metadata };
+	},
+	preprocess(options) {
+		options.breastjobDemo = T.breastjobDemo;
+		options.topdownDemo = T.breastjobDemo && V.options.topdownBreastjob;
+	},
+	layers: {
+		demo: {
+			srcfn(options) {
+				const base = options.topdownDemo ? "topdown" : "base";
+				return `img/sex/close/chest/${base}-job.png`;
+			},
+			showfn(options) {
+				return !!options.breastjobDemo;
+			},
+			animationfn(options) {
+				const framesChest = options.topdownDemo ? 10 : 6;
+				options.animKeyChest = `sex-${framesChest}f-vfast`;
+
+				return options.animKeyChest;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase,
+		},
+		demo_front: {
+			srcfn(options) {
+				return `img/sex/close/chest/12-front-job.png`;
+			},
+			showfn(options) {
+				return !!options.breastjobDemo && !options.topdownDemo;
+			},
+			animationfn() {
+				return `sex-6f-vfast`;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeNpc + 2,
+		},
+		demo_back: {
+			srcfn(options) {
+				return `img/sex/close/chest/12-back-job.png`;
+			},
+			showfn(options) {
+				return !!options.breastjobDemo && !options.topdownDemo;
+			},
+			animationfn() {
+				return `sex-6f-vfast`;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeNpc + 1,
+		},
+		demo_npc: {
+			srcfn(options) {
+				const penis = options.topdownDemo ? "penis-topdown" : "penis";
+				return `img/sex/close/chest/npc/${penis}.png`;
+			},
+			showfn(options) {
+				return !!options.breastjobDemo;
+			},
+			animationfn(options) {
+				const framesChest = options.topdownDemo ? 10 : 6;
+				options.animKeyChest = `sex-${framesChest}f-vfast`;
+
+				return options.animKeyChest;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeNpc + 1,
+		},
+	},
+};
+Renderer.CanvasModels.combatCloseDemo = combatCloseDemo;

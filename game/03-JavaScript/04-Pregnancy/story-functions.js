@@ -520,7 +520,7 @@ function playerHeatMinArousal() {
 window.playerHeatMinArousal = playerHeatMinArousal;
 
 function playerRutMinArousal() {
-	if (!V.player.penisExist || V.player.penissize < -1 || !V.sexStats || !V.sexStats.pills || (V.statFreeze && !V.statFreezeIgnoreRestrictions)) return 0;
+	if (!V.player.penisExist || V.player.penissize < 1 || !V.sexStats || !V.sexStats.pills || (V.statFreeze && !V.statFreezeIgnoreRestrictions)) return 0;
 
 	const pills = V.sexStats.pills.pills;
 	let minArousal = 0;
