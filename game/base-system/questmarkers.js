@@ -17,7 +17,7 @@ const events = [
 		text: "<<schoolday>>",
 		// text shown if condition() is still met, but it's past the time to attend
 		failuretext:
-			"You have missed <<print Object.keys(V.daily.school.attended).length === 4 ? 'a lesson' : `<<number 5 - Object.keys(V.daily.school.attended).length>>` + ' lessons'>> today.",
+			"You have missed <<print Object.keys(V.daily.school.attended).length === 4 ? 'a lesson' : `<<number ${5 - Object.keys(V.daily.school.attended).length}>>` + ' lessons'>> today.",
 	},
 	{
 		// example of a lazy event that will still work
@@ -84,7 +84,7 @@ const events = [
 	{
 		name: "brothel show",
 		condition() {
-			return V.brothelshowdata.type !== "none" && V.brothelshowdata.intro && Time.weekDay === 6;
+			return V.brothelshowdata.type !== "none" && V.brothelshowdata.intro && Time.weekDay === 6 && !V.brothelshowdata.done;
 		},
 		priority: 3,
 		text: "You're expected to perform a <<print $brothelshowdata.type>> show at the brothel today.",

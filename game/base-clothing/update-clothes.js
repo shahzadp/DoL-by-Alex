@@ -685,7 +685,7 @@ function wardrobesUpdate() {
 		V.wardrobes.avery_mansion.shopSend = true;
 		V.wardrobes.avery_mansion.space = 80;
 		if (V.avery_mansion) V.wardrobes.avery_mansion.unlocked = true;
-		V.wardrobes.avery_mansion.locationRequirement.push("avery_mansion");
+		V.wardrobes.avery_mansion.locationRequirement.push("avery_mansion", "alley");
 		/* add .lastTaken prop to everything */
 		if (V.worn !== undefined) Object.keys(V.worn).forEach(s => (V.worn[s].lastTaken = "wardrobe"));
 		if (V.carried !== undefined) Object.keys(V.carried).forEach(s => (V.carried[s].lastTaken = "wardrobe"));
@@ -781,6 +781,11 @@ function wardrobesUpdate() {
 		V.wardrobes.edensCabin.shopSend = V.edenfreedom >= 1;
 		V.wardrobes.edensCabin.transfer = V.edenfreedom >= 2;
 		V.wardrobes.wardrobe.transfer = true;
+	}
+	if (V.objectVersion.wardrobes < 17) {
+		V.wardrobes.avery_mansion.locationRequirement.pushUnique("alley");
+		/* remove broken temporary clothes creeped into main wardrobe */
+		V.wardrobe.lower = V.wardrobe.lower.filter(s => !s.temp);
 	}
 }
 DefineMacro("wardrobesUpdate", wardrobesUpdate);
