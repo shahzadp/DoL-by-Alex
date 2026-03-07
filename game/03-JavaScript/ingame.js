@@ -1773,7 +1773,6 @@ function setupTransformations() {
 			type: "physicalTransform",
 			parts: [
 				{ name: "ears", tfRequired: 4 },
-				{ name: "ears", tfRequired: 4 },
 				{ name: "tail", tfRequired: 6 },
 				{ name: "heterochromia", tfRequired: 7 },
 			],
