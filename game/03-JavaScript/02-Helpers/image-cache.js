@@ -1,4 +1,4 @@
-var ImageCache = (() => {
+const ImageCache = (() => {
 	const cacheEntries = new Map();
 
 	function getOrCreate(src) {

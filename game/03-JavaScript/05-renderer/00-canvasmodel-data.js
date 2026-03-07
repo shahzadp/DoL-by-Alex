@@ -97,7 +97,7 @@ const ZIndices = {
 	facewear: 145,
 	head: 150,
 	over_head: 152,
-	handheld: 152.5,
+	handheld: 131,
 	handheld_over_sleeve: 160,
 
 	old_over_upper: 164,

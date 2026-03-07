@@ -56,8 +56,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbottom.png",
-		frontIcon: "img/misc/icon/smalldownarrow.png",
+		icon: "img/misc/icon/pill-bottom.png",
+		frontIcon: "img/misc/icon/small-down-arrow.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -92,8 +92,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbottom.png",
-		frontIcon: "img/misc/icon/smalluparrow.png",
+		icon: "img/misc/icon/pill-bottom.png",
+		frontIcon: "img/misc/icon/small-up-arrow.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -128,8 +128,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbottom.png",
-		frontIcon: "img/misc/icon/smallcross.png",
+		icon: "img/misc/icon/pill-bottom.png",
+		frontIcon: "img/misc/icon/small-cross.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -164,8 +164,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbreast.png",
-		frontIcon: "img/misc/icon/smalldownarrow.png",
+		icon: "img/misc/icon/pill-breast.png",
+		frontIcon: "img/misc/icon/small-down-arrow.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -200,8 +200,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbreast.png",
-		frontIcon: "img/misc/icon/smalluparrow.png",
+		icon: "img/misc/icon/pill-breast.png",
+		frontIcon: "img/misc/icon/small-up-arrow.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -236,8 +236,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillbreast.png",
-		frontIcon: "img/misc/icon/smallcross.png",
+		icon: "img/misc/icon/pill-breast.png",
+		frontIcon: "img/misc/icon/small-cross.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -272,8 +272,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillpenis.png",
-		frontIcon: "img/misc/icon/smalldownarrow.png",
+		icon: "img/misc/icon/pill-penis.png",
+		frontIcon: "img/misc/icon/small-down-arrow.png",
 		display_condition() {
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
@@ -308,8 +308,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillpenis.png",
-		frontIcon: "img/misc/icon/smalluparrow.png",
+		icon: "img/misc/icon/pill-penis.png",
+		frontIcon: "img/misc/icon/small-up-arrow.png",
 		display_condition() {
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
@@ -344,8 +344,8 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pillpenis.png",
-		frontIcon: "img/misc/icon/smallcross.png",
+		icon: "img/misc/icon/pill-penis.png",
+		frontIcon: "img/misc/icon/small-cross.png",
 		display_condition() {
 			return V.player.penisExist && this.owned() > 0 ? 1 : 0;
 		},
@@ -392,7 +392,7 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/fertility_booster.png",
+		icon: "img/misc/icon/pill-fertility.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -435,7 +435,7 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/contraceptive_pills.png",
+		icon: "img/misc/icon/pill-contraceptive.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -481,7 +481,7 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/antiParasiteCream.png",
+		icon: "img/misc/icon/anti-parasite-cream.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -511,7 +511,7 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/strong pills.png",
+		icon: "img/misc/icon/pill-strong.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},
@@ -541,7 +541,7 @@ setup.pills = [
 		overdose() {
 			return V.sexStats.pills["pills"][this.name].overdose;
 		},
-		icon: "img/misc/icon/pills.png",
+		icon: "img/misc/icon/pill-collection.png",
 		display_condition() {
 			return this.owned() > 0 ? 1 : 0;
 		},

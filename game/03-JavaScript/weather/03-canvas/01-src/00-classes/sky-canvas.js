@@ -179,7 +179,6 @@ Weather.Renderer.Sky = class {
 		}
 	}
 
-
 	get dayFactor() {
 		return this.orbitals.sun?.factor ?? 0;
 	}

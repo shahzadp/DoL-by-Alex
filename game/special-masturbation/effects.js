@@ -330,7 +330,12 @@ function masturbationEffectsArms(
 	if (V[armAction] === 0) return fragment;
 
 	if (V[armAction] === "mrest") {
-		if (random(0, 100) >= 91 && V.earSlime.corruption > currentSkillValue("willpower") / 10 && V.corruptionMasturbation === undefined && !V.hypnosis_traits.silence) {
+		if (
+			random(0, 100) >= 91 &&
+			V.earSlime.corruption > currentSkillValue("willpower") / 10 &&
+			V.corruptionMasturbation === undefined &&
+			!V.hypnosis_traits.silence
+		) {
 			V.corruptionMasturbation = true;
 			V.corruptionMasturbationCount = random(2, 6);
 			fragment.append(span("The slime in your ear decides that it will continue for you.", "red"));
@@ -493,7 +498,7 @@ function masturbationEffectsArms(
 			fragment.append(" ");
 		}
 	}
-	if (V.ballssize <= 0 && ((V[arm + "arm"] === "mballs" && V[otherArm + "arm"] === "mballs") || (doubleAction && V[armAction] === "mballsentrance"))) {
+	if (V.ballssize <= 2 && ((V[arm + "arm"] === "mballs" && V[otherArm + "arm"] === "mballs") || (doubleAction && V[armAction] === "mballsentrance"))) {
 		// Tiny balls are too small for both hands
 		V.rightactiondefault = "mrest";
 		V.rightaction = 0;
@@ -1247,7 +1252,7 @@ function masturbationEffectsArms(
 			if (
 				playerIsPregnant() &&
 				playerPregnancyProgress() >= 0.1 &&
-				V.player.penissize <= -1 &&
+				V.player.penissize <= 1 &&
 				(!V.daily.chastityParasizeSizeReduction || V.daily.chastityParasizeSizeReduction < 150)
 			) {
 				V.penisgrowthtimer += 3;
@@ -1298,7 +1303,7 @@ function masturbationEffectsArms(
 						fragment.append(span(`You roll your ${balls} around in your hands.`));
 					}
 				} else {
-					altText.oneOfYour = V.ballssize <= 0 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
+					altText.oneOfYour = V.ballssize <= 2 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
 					if (V.arousal >= V.arousalmax * (4 / 5)) {
 						sWikifier(
 							`You grope ${altText.oneOfYour} with your ${arm} and enjoy the feeling of tightness as your balls clench up against the base of your <<penis>>.`
@@ -1326,14 +1331,14 @@ function masturbationEffectsArms(
 				altText.gently = V.arousal >= V.arousalmax * (4 / 5) ? "urgently" : V.arousal >= V.arousalmax * (3 / 5) ? "" : "gently";
 				if (handsOn === 2) {
 					switch (V.ballssize) {
-						case 1:
-						case 2:
-							fragment.append(span(`You cup your ${balls} with your hands and ${altText.gently} squeeze them.`));
-							break;
 						case 3:
+						case 4:
 							fragment.append(span(`You cup your ${balls} with your hands and ${altText.gently} squeeze them.`));
 							break;
-						case 4:
+						case 5:
+							fragment.append(span(`You cup your ${balls} with your hands and ${altText.gently} squeeze them.`));
+							break;
+						case 6:
 							fragment.append(span(`You ${altText.gently} squeeze your ${balls} with your hands.`));
 							break;
 						default:
@@ -1341,16 +1346,16 @@ function masturbationEffectsArms(
 							break;
 					}
 				} else {
-					altText.oneOfYour = V.ballssize <= 0 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
+					altText.oneOfYour = V.ballssize <= 2 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
 					switch (V.ballssize) {
-						case 1:
-						case 2:
-							fragment.append(span(`You cup ${altText.oneOfYour} with your ${arm} and ${altText.gently} squeeze it.`));
-							break;
 						case 3:
+						case 4:
 							fragment.append(span(`You cup ${altText.oneOfYour} with your ${arm} and ${altText.gently} squeeze it.`));
 							break;
-						case 4:
+						case 5:
+							fragment.append(span(`You cup ${altText.oneOfYour} with your ${arm} and ${altText.gently} squeeze it.`));
+							break;
+						case 6:
 							fragment.append(span(`You cup ${altText.oneOfYour} with your ${arm} and ${altText.gently} squeeze it.`));
 							break;
 						default:
@@ -1368,14 +1373,14 @@ function masturbationEffectsArms(
 			if (V.earSlime.defyCooldown && V.earSlime.growth >= 100) {
 				if (handsOn === 2) {
 					switch (V.ballssize) {
-						case 1:
-						case 2:
+						case 3:
+						case 4:
 							fragment.append(span(`You take one of your ${balls} in each hand`));
 							break;
-						case 3:
+						case 5:
 							fragment.append(span(`You take one of your ${balls} in each hand. They fill your palms nicely`));
 							break;
-						case 4:
+						case 6:
 							fragment.append(span(`You take one of your ${balls} in each hand. You can barely get your hands around them`));
 							break;
 						default:
@@ -1383,16 +1388,16 @@ function masturbationEffectsArms(
 							break;
 					}
 				} else {
-					altText.oneOfYour = V.ballssize <= 0 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
+					altText.oneOfYour = V.ballssize <= 2 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
 					switch (V.ballssize) {
-						case 1:
-						case 2:
+						case 3:
+						case 4:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand`));
 							break;
-						case 3:
+						case 5:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand. It fills your palm nicely`));
 							break;
-						case 4:
+						case 6:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand. You can barely get your hand around it`));
 							break;
 						default:
@@ -1406,14 +1411,14 @@ function masturbationEffectsArms(
 				wikifier("arousal", 100 * handsOn, "masturbationPenis");
 				if (handsOn === 2) {
 					switch (V.ballssize) {
-						case 1:
-						case 2:
+						case 3:
+						case 4:
 							fragment.append(span(`You take one of your ${balls} in each hand.`, "blue"));
 							break;
-						case 3:
+						case 5:
 							fragment.append(span(`You take one of your ${balls} in each hand. They fill your palms nicely.`, "blue"));
 							break;
-						case 4:
+						case 6:
 							fragment.append(span(`You take one of your ${balls} in each hand. You can barely get your hands around them.`, "blue"));
 							break;
 						default:
@@ -1421,16 +1426,16 @@ function masturbationEffectsArms(
 							break;
 					}
 				} else {
-					altText.oneOfYour = V.ballssize <= 0 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
+					altText.oneOfYour = V.ballssize <= 2 ? `both of your ${balls}` : additionalEffect.hands ? "the other" : `one of your ${balls}`;
 					switch (V.ballssize) {
-						case 1:
-						case 2:
+						case 3:
+						case 4:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand.`, "blue"));
 							break;
-						case 3:
+						case 5:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand. It fills your palm nicely.`, "blue"));
 							break;
-						case 4:
+						case 6:
 							fragment.append(span(`You take ${altText.oneOfYour} in your ${arm} hand. You can barely get your hand around it.`, "blue"));
 							break;
 						default:

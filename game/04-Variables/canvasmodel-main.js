@@ -628,11 +628,8 @@ Renderer.CanvasModels.main = {
 		if (options.breasts_parasite === "parasite") {
 			options.filters.breasts_parasite = lookupColour(options, setup.colours.clothes_map, "red", "breasts_parasite");
 		}
-		if (["parasite", "parasitem"].includes(options.clit_parasite)) {
-			options.filters.clit_parasite = lookupColour(options, setup.colours.clothes_map, "red", "clit_parasite");
-		}
-		if (options.penis_parasite === "parasite") {
-			options.filters.penis_parasite = lookupColour(options, setup.colours.clothes_map, "red", "penis_parasite");
+		if (options.ear_slime_panties) {
+			options.filters.ear_slime = lookupColour(options, setup.colours.clothes_map, "red", "ear_slime");
 		}
 		if (options.prop?.colour && options.prop?.colour !== "hair") {
 			options.filters.prop = lookupColour(options, setup.colours.clothes_map, options.prop.colour, "prop");
@@ -843,8 +840,8 @@ Renderer.CanvasModels.main = {
 		const notMasc = ["curvy", "slender"].includes(options.body_type);
 		const soft = options.body_type === "soft" && !(between(options.belly, 8, 24));
 		if (notMasc && options.breasts === "cleavage") {
-			const suffix = between(options.breast_size, 3, 4) ? "-mid.png" : ".png";
-			options.breasts_mask_src = `img/body/breasts/breasts-${options.body_type}${suffix}`
+			const suffix = between(options.breast_size, 3, 4) ? "-3-4.png" : ".png";
+			options.breasts_mask_src = `img/body/breasts/mask-${options.body_type}${suffix}`
 		} else {
 			options.breasts_mask_src = null;
 		}
@@ -1052,7 +1049,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return options.mannequin ? "img/body/mannequin/basenoarms.png" : `img/body/basenoarms-${options.body_type}.png`;
+				return options.mannequin ? "img/body/mannequin/base-body.png" : `img/body/base-${options.body_type}.png`;
 			},
 		},
 		"basehead": {
@@ -1062,7 +1059,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return options.mannequin ? "img/body/mannequin/basehead.png" : "img/body/basehead.png";
+				return options.mannequin ? "img/body/mannequin/base-head.png" : "img/body/base-head.png";
 			},
 		},
 		"breasts": {
@@ -1077,8 +1074,8 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				const mannequin = (options.mannequin) ? "mannequin/" : "";
 				const prefix = `img/body/${mannequin}`;
-				const suffix = options.breasts === "cleavage" && options.breast_size >= 3 ? "_clothed.png" : ".png";
-				return `${prefix}breasts/breasts${options.breast_size}${suffix}`;
+				const breasts = options.breasts === "cleavage" && options.breast_size >= 3 ? "clothed" : "breasts";
+				return `${prefix}breasts/${breasts}-${options.breast_size}.png`;
 			},
 		},
 		"belly": {
@@ -1090,7 +1087,7 @@ Renderer.CanvasModels.main = {
 				return !!options.belly
 			},
 			srcfn(options) {
-				return between(options.belly, 1, 24) ? `img/body/preggyBelly/pregnancy_belly_${options.belly}.png` : "";
+				return between(options.belly, 1, 24) ? `img/body/pregnant-belly/${options.belly}.png` : "";
 			},
 		},
 		"bellyLeft": {
@@ -1102,7 +1099,7 @@ Renderer.CanvasModels.main = {
 				return !!options.belly
 			},
 			srcfn(options) {
-				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/preggyBelly/pregnancy_belly_${options.belly}.png` : "";
+				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/pregnancy_belly_${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_left_move_src;
@@ -1120,7 +1117,7 @@ Renderer.CanvasModels.main = {
 				return !!options.belly
 			},
 			srcfn(options) {
-				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/preggyBelly/pregnancy_belly_${options.belly}.png` : "";
+				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/pregnancy_belly_${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_right_move_src;
@@ -1139,10 +1136,9 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				switch (options.nipples_parasite) {
 					case "urchin":
-						/* Swap to chestparasitegray for new sprites, make sure to include colour changes to the code */
-						return `img/body/breasts/chestparasite${options.breast_size}.png`;
+						return `img/body/breasts/urchin-${options.breast_size}.png`;
 					case "slime":
-						return `img/body/breasts/chestslime${options.breast_size}.png`;
+						return `img/body/breasts/slime-${options.breast_size}.png`;
 					default:
 						return "";
 				}
@@ -1157,7 +1153,7 @@ Renderer.CanvasModels.main = {
 				return !!options.breasts_parasite;
 			},
 			srcfn(options) {
-				return options.breasts_parasite === 'parasite' ? `img/body/breasts/breastsparasite${options.breast_size}.png` : "";
+				return options.breasts_parasite === 'parasite' ? `img/body/breasts/ear-slime-${options.breast_size}.png` : "";
 			},
 		},
 		"leftarm": {
@@ -1171,9 +1167,9 @@ Renderer.CanvasModels.main = {
 				return options.arm_left !== "none";
 			},
 			srcfn(options) {
-				if (options.mannequin) return "img/body/mannequin/leftarmidle.png";
-				if (options.arm_left === "cover") return "img/body/leftarmcover.png";
-				return `img/body/leftarmidle-${options.body_type}.png`
+				if (options.mannequin) return "img/body/mannequin/left-arm-idle.png";
+				if (options.arm_left === "cover") return "img/body/left-arm-cover.png";
+				return `img/body/left-arm-idle-${options.body_type}.png`
 			},
 		},
 		"rightarm": {
@@ -1188,11 +1184,11 @@ Renderer.CanvasModels.main = {
 				return options.arm_right !== "none";
 			},
 			srcfn(options) {
-				if (options.mannequin && options.handheld_position) return `img/body/mannequin/rightarm${options.handheld_position === "right_cover" ? "cover" : options.handheld_position}.png`;
-				if (options.mannequin) return "img/body/mannequin/rightarmidle.png";
-				if (options.arm_right === "cover" || options.handheld_position === "right_cover") return "img/body/rightarmcover.png";
-				if (options.handheld_position) return `img/body/rightarm${options.handheld_position}.png`;
-				return `img/body/rightarmidle-${options.body_type}.png`
+				if (options.mannequin && options.handheld_position) return `img/body/mannequin/right-arm-${options.handheld_position === "right_cover" ? "cover" : options.handheld_position}.png`;
+				if (options.mannequin) return "img/body/mannequin/right-arm-idle.png";
+				if (options.arm_right === "cover" || options.handheld_position === "right_cover") return "img/body/right-arm-cover.png";
+				if (options.handheld_position) return `img/body/right-arm-${options.handheld_position}.png`;
+				return `img/body/right-arm-idle-${options.body_type}.png`
 			},
 		},
 		"tummy_parasite": {
@@ -1203,9 +1199,9 @@ Renderer.CanvasModels.main = {
 				switch (options.tummy_parasite) {
 					case "urchin":
 						/* Swap to img/body/tummyurchingray for new sprites, make sure to include colour changes to the code */
-						return 'img/body/tummyurchin.png';
+						return 'img/body/urchin-tummy.png';
 					case "slime":
-						return 'img/body/tummyslime.png';
+						return 'img/body/slime-tummy.png';
 					default:
 						return "";
 				}
@@ -1439,7 +1435,7 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.blush,
 
 			srcfn(options) {
-				return `img/face/${options.facestyle}/blush${options.blush}.png`;
+				return `img/face/${options.facestyle}/blush-${options.blush}.png`;
 			},
 			showfn(options) {
 				return options.show_face && options.blush > 0;
@@ -1450,7 +1446,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/face/${options.facestyle}/tear${options.tears}.png`;
+				return `img/face/${options.facestyle}/tears-${options.tears}.png`;
 			},
 			showfn(options) {
 				return options.show_face && options.tears > 0;
@@ -1482,7 +1478,7 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.neck,
 
 			srcfn() {
-				return 'img/body/wraith_scars.png';
+				return 'img/body/scars-wraith.png';
 			},
 			showfn(options) {
 				return options.show_face && options.scars;
@@ -1643,49 +1639,24 @@ Renderer.CanvasModels.main = {
 			},
 			srcfn(options) {
 				if (options.mannequin) return "img/body/mannequin/penis.png";
-				if (options.genitals_chastity) {
-					if (["chastity belt", "flat chastity cage", "chastity parasite"].includes(options.worn.genitals.setup.name)) return;
-					if (options.worn.genitals.setup.name === "small chastity cage") return "img/body/penis/penis_chastitysmall.png";
-					return "img/body/penis/penis_chastity.png";
-				}
-				if (!playerHasStrapon()) {
-					return `img/body/${options.balls ? 'penis' : 'penisnoballs'}/${options.penis === "virgin" ? "penis_virgin" : "penis"}${options.penis_size}.png`;
-				}
-
-				return; //if the player has a strapon, then we want to hide their penis
+				if (options.genitals_chastity) return "img/body/penis/chastity.png";
+				const penis = options.balls ? "penis" : "penis-no-balls";
+				return `img/body/${penis}/${options.penis}.png`;
 			},
 			showfn(options) {
-				return options.crotch_visible && !!options.penis;
+				return options.crotch_visible && !!options.penis && !playerHasStrapon() && !(options.ear_slime_panties && V.arousal <= 6000);
 			},
 		},
 		"penis_parasite": {
-			filters: ["penis_parasite"],
 			animation: "idle",
-
+			filtersfn(options) {
+				if (options.ear_slime_panties) return ["ear_slime"];
+				return [];
+			},
 			srcfn(options) {
-				if (options.genitals_chastity) {
-					if (!options.worn.genitals.setup.name.includes("cage")) return "";
-					switch (options.penis_parasite) {
-						case "urchin":
-							return `img/clothes/genitals/${options.worn.genitals.setup.variable}/urchin.png`;
-						case "slime":
-							return `img/clothes/genitals/${options.worn.genitals.setup.variable}/slime.png`;
-						default:
-							break;
-					}
-				}
-
-				switch (options.penis_parasite) {
-					case "urchin":
-						/* Swap to penisurchingray for new sprites, make sure to include colour changes to the code */
-						return `img/body/penis/penisurchin${options.penis_size}.png`;
-					case "slime":
-						return `img/body/penis/penisslime${options.penis_size}.png`;
-					case "parasite":
-						return `img/body/penis/penisparasite${options.balls ? 'balls' : ''}${options.penis_size}.png`;
-					default:
-						return "";
-				}
+				if (!options.penis_parasite.includes("ear-slime")) return `img/body/parasites/${options.penis_parasite}.png`;
+				const folder = options.balls ? "penis" : "penis-no-balls";
+				return `img/body/${folder}/${options.penis_parasite}.png`;
 			},
 			showfn(options) {
 				return options.crotch_visible && !!options.penis && !!options.penis_parasite && !playerHasStrapon();
@@ -1697,33 +1668,31 @@ Renderer.CanvasModels.main = {
 			},
 		},
 		"clit_parasite": {
-			filters: ["clit_parasite"],
 			animation: "idle",
 
 			srcfn(options) {
-				switch (options.clit_parasite) {
-					case "urchin":
-						/* Swap to cliturchingray for new sprites, make sure to include colour changes to the code */
-						return 'img/body/cliturchin.png';
-					case "slime":
-						return 'img/body/clitslime.png';
-					case "parasite":
-						return 'img/body/parasitepanty.png';
-					case "parasitem":
-						return 'img/body/parasiteshorts.png';
-					default:
-						return "";
-				}
+				return `img/body/${options.clit_parasite}.png`;
 			},
 			showfn(options) {
-				if (options.clit_parasite === "parasite") return !options.belly_hides_under_lower;
 				return options.crotch_visible && !!options.clit_parasite && !options.chastity && !options.belly_hides_under_lower
 			},
 			zfn(options) {
-				if (["parasite", "parasitem"].includes(options.clit_parasite))
-					return options.crotch_exposed ? ZIndices.penis_chastity - 0.1 : ZIndices.penisunderclothes - 0.1;
 				if (options.crotch_exposed) return ZIndices.parasite;
 				return ZIndices.underParasite;
+			},
+		},
+		"ear_slime_panties": {
+			filters: ["ear_slime"],
+			animation: "idle",
+
+			srcfn(options) {
+				return `img/body/${options.ear_slime_panties}.png`;
+			},
+			showfn(options) {
+				return !!options.ear_slime_panties && !options.belly_hides_under_lower;
+			},
+			zfn(options) {
+				return options.crotch_exposed ? ZIndices.penis_chastity - 0.1 : ZIndices.penisunderclothes - 0.1;
 			},
 		},
 		"penis_condom": {
@@ -1732,7 +1701,7 @@ Renderer.CanvasModels.main = {
 			filters: ["condom"],
 
 			srcfn(options) {
-				return options.penis_condom === 'plain' ? `img/body/penis/condom${options.penis_size}.png` : '';
+				return options.penis_condom === 'plain' ? `img/body/penis/condom-${options.penis_size}.png` : '';
 			},
 			showfn(options) {
 				return options.crotch_visible
@@ -1977,18 +1946,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				const area_name = "right_cheek"
-				const writing = setup.bodywriting[options.writing_right_cheek];
-				if (writing.type === "text") {
-					if (writing.sprites && writing.sprites.length > 0 && writing.sprites.includes(area_name)) {
-						return `img/bodywriting/text/${writing.key}/${area_name}.png`;
-					}
-					return `img/bodywriting/text/default/${area_name}.png`;
-				}
-
-				const arrow = writing.arrow ? "_arrow" : "";
-				if (writing.type === "object") return `img/bodywriting/${writing.writing}/${area_name}${arrow}.png`;
-				return '';
+				return getWritingImgPath('right_cheek', setup.bodywriting[options.writing_right_cheek]);
 			},
 			showfn(options) {
 				return options.show_writings && !!options.writing_right_cheek;
@@ -2003,12 +1961,12 @@ Renderer.CanvasModels.main = {
 				const writing = setup.bodywriting[options.writing_breasts];
 				if (writing.type === "text") {
 					if (writing.sprites && writing.sprites.length > 0 && writing.sprites.includes(area_name)) {
-						return `img/bodywriting/text/${writing.key}/${area_name}.png`;
+						return `img/bodywriting/text/${writing.key.replace(/_/g,"-")}/${area_name.replace(/_/g,"-")}.png`;
 					}
-					return `img/bodywriting/text/default/${area_name}1.png`;
+					return `img/bodywriting/text/default/${area_name.replace(/_/g,"-")}-1.png`;
 				}
 				if (writing.type === "object") {
-					return `img/bodywriting/${writing.writing}/${area_name}${options.breast_size}.png`;
+					return `img/bodywriting/${writing.writing}/${area_name.replace(/_/g,"-")}-${options.breast_size}.png`;
 				}
 				return '';
 			},
@@ -2024,7 +1982,7 @@ Renderer.CanvasModels.main = {
 				const writing = setup.bodywriting[options.writing_breasts];
 				if ((!writing.sprites || writing.sprites.length == 0)
 					&& writing.type === "text" && options.breast_size >= 2) {
-					return `img/bodywriting/text/default/breasts${options.breast_size}.png`;
+					return `img/bodywriting/text/default/breasts-${options.breast_size}.png`;
 				}
 				return '';
 			},
@@ -2126,33 +2084,35 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				return `img/body/cum/VaginalCumDrip${options.drip_vaginal}.png`;
+				return `img/body/cum/vaginal-${options.drip_vaginal}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_vaginal;
 			},
 			animationfn(options) {
-				return `VaginalCumDrip${options.drip_vaginal}`;
+				const anim = toTitleCase(options.drip_vaginal).replace(/-/g,"");
+				return `VaginalCumDrip${anim}`;
 			},
 		},
 		"drip_anal": {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				return `img/body/cum/AnalCumDrip${options.drip_anal}.png`;
+				return `img/body/cum/anal-${options.drip_anal}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_anal;
 			},
 			animationfn(options) {
-				return `AnalCumDrip${options.drip_anal}`;
+				const anim = toTitleCase(options.drip_anal).replace(/-/g,"");
+				return `AnalCumDrip${anim}`;
 			},
 		},
 		"drip_mouth": {
 			z: ZIndices.semen_cough,
 
 			srcfn(options) {
-				return `img/body/cum/MouthCumDrip${options.drip_mouth}.png`;
+				return `img/body/cum/mouth-${options.drip_mouth}.png`;
 			},
 			showfn(options) {
 				return options.show_face
@@ -2163,7 +2123,8 @@ Renderer.CanvasModels.main = {
 				return options.facestyle === "small-eyes" ? 2 : 0;
 			},
 			animationfn(options) {
-				return `MouthCumDrip${options.drip_mouth}`;
+				const anim = toTitleCase(options.drip_mouth).replace(/-/g,"");
+				return `MouthCumDrip${anim}`;
 			},
 		},
 		"cum_chest": {
@@ -2171,7 +2132,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Chest ${options.cum_chest}.png`;
+				return `img/body/cum/chest-${options.cum_chest}.png`;
 			},
 			showfn(options) {
 				return !!options.cum_chest;
@@ -2182,7 +2143,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Face ${options.cum_face}.png`;
+				return `img/body/cum/face-${options.cum_face}.png`;
 			},
 			showfn(options) {
 				return options.show_face && !!options.cum_face;
@@ -2193,7 +2154,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Feet ${options.cum_feet}.png`;
+				return `img/body/cum/feet-${options.cum_feet}.png`;
 			},
 			showfn(options) {
 				return !!options.cum_feet;
@@ -2202,7 +2163,7 @@ Renderer.CanvasModels.main = {
 		"cum_leftarm": {
 			animation: "idle",
 			srcfn(options) {
-				return `img/body/cum/Left Arm ${options.cum_leftarm}.png`;
+				return `img/body/cum/left-arm-${options.cum_leftarm}.png`;
 			},
 			showfn(options) {
 				return options.arm_left !== "none" && options.arm_left != "cover" && !!options.cum_leftarm;
@@ -2215,7 +2176,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Right Arm ${options.cum_rightarm}.png`;
+				return `img/body/cum/right-arm-${options.cum_rightarm}.png`;
 			},
 			showfn(options) {
 				return options.arm_right !== "none"
@@ -2232,7 +2193,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Neck ${options.cum_neck}.png`;
+				return `img/body/cum/neck-${options.cum_neck}.png`;
 			},
 			showfn(options) {
 				return !!options.cum_neck;
@@ -2243,7 +2204,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Thighs ${options.cum_thigh}.png`;
+				return `img/body/cum/thighs-${options.cum_thigh}.png`;
 			},
 			showfn(options) {
 				return !!options.cum_thigh;
@@ -2254,7 +2215,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			srcfn(options) {
-				return `img/body/cum/Tummy ${options.cum_tummy}.png`;
+				return `img/body/cum/tummy-${options.cum_tummy}.png`;
 			},
 			showfn(options) {
 				return !!options.cum_tummy;
@@ -2660,27 +2621,13 @@ Renderer.CanvasModels.main = {
 					&& !options.belly_hides_under_lower;
 			},
 			srcfn(options) {
-				let size = "";
-				if (options.worn.genitals.setup.penisSize) {
-					switch (options.penis_size) {
-						case -2: case -1:
-							size = -1;
-							break;
-						case 0:
-							size = 0;
-							break;
-						case 1: case 2:
-							size = 1;
-							break;
-						case 3: case 4:
-							size = 2;
-							break;
-					}
+				if (options.worn.genitals.setup.name === "chastity parasite") {
+					return `img/body/ear-slime-chastity-${options.ear_slime_size}.png`;
 				}
 
 				const setupVar = options.worn.genitals.setup.variable;
 				const integrity = options.worn.genitals.integrity;
-				return `img/clothes/genitals/${setupVar}/${integrity}${size}.png`;
+				return `img/clothes/genitals/${setupVar}/${integrity}.png`;
 			},
 			masksrcfn(options) {
 				return options.body_type === "soft" ? "img/clothes/masks/soft_lower_clip.png" : null;
@@ -3348,7 +3295,7 @@ Renderer.CanvasModels.main = {
 			},
 			zfn(options) {
 				const setup = options.worn.handheld.setup;
-				if (options.arm_right === "cover" && V.worn.handheld.holdPosition === "right_cover" && setup.zIndex) return ZIndices[setup.zIndex];
+				if (setup.zIndex) return ZIndices[setup.zIndex];
 				if (options.arm_right === "cover") return ZIndices.arms_cover;
 				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
 				return ZIndices[options.worn.handheld.setup.zIndex];
@@ -3380,7 +3327,7 @@ Renderer.CanvasModels.main = {
 			},
 			zfn(options) {
 				const setup = options.worn.handheld.setup;
-				if (options.arm_right === "cover" && V.worn.handheld.holdPosition === "right_cover" && setup.zIndex) return ZIndices[setup.zIndex];
+				if (setup.zIndex) return ZIndices[setup.zIndex];
 				if (options.arm_right === "cover") return ZIndices.arms_cover;
 				if (!options.worn.handheld.setup.zIndex) return ZIndices.handheld;
 				return ZIndices[options.worn.handheld.setup.zIndex];
@@ -3952,7 +3899,7 @@ Renderer.CanvasModels.main = {
 			},
 			srcfn() {
 				const intensity = V.farm_assault ? 2 : T.tempEffects?.fire || V.fire;
-				return `img/misc/ambient/fire/back${intensity}.png`
+				return `img/misc/ambient/fire/back-${intensity}.png`
 			},
 		}),
 		"fire_front": genlayer_effect('fire','front', {
@@ -3966,7 +3913,7 @@ Renderer.CanvasModels.main = {
 				return `petals${direction}`;
 			},
 			srcfn(options) {
-				return `img/misc/ambient/petals/back${options.petalColour.toUpperFirst()}.png`
+				return `img/misc/ambient/petals/back-${options.petalColour}.png`
 			},
 		}),
 		"petals_front": genlayer_effect('petals','front', {
@@ -3975,7 +3922,7 @@ Renderer.CanvasModels.main = {
 				return `petals${direction}`;
 			},
 			srcfn(options) {
-				return `img/misc/ambient/petals/front${options.petalColour.toUpperFirst()}.png`
+				return `img/misc/ambient/petals/front-${options.petalColour}.png`
 			},
 		}),
 		"vines": {
@@ -4151,22 +4098,22 @@ function gray_suffix(path, filter) {
 function getWritingImgPath(area_name, writing) {
 	if (writing.type === "text") {
 		if (writing.sprites && writing.sprites.length > 0 && writing.sprites.includes(area_name)) {
-			return `img/bodywriting/text/${writing.key}/${area_name}.png`;
+			return `img/bodywriting/text/${writing.key.replace(/_/g,"-")}/${area_name.replace(/_/g,"-")}.png`;
 		}
-		return `img/bodywriting/text/default/${area_name}.png`;
+		return `img/bodywriting/text/default/${area_name.replace(/_/g,"-")}.png`;
 	}
-	if (writing.type === "object") return `img/bodywriting/${writing.writing}/${area_name}.png`;
+	if (writing.type === "object") return `img/bodywriting/${writing.writing.replace(/_/g,"-")}/${area_name.replace(/_/g,"-")}.png`;
 	return '';
 }
 
 function getWritingImgPathArrow(area_name, writing) {
 	if (writing.type === "text") {
 		if (writing.sprites && writing.sprites.length > 0 && writing.sprites.includes(area_name)) {
-			return `img/bodywriting/text/${writing.key}/${area_name}.png`;
+			return `img/bodywriting/text/${writing.key.replace(/_/g,"-")}/${area_name.replace(/_/g,"-")}.png`;
 		}
-		return `img/bodywriting/text/default/${area_name}${writing.arrow ? "_arrow" : ""}.png`;
+		return `img/bodywriting/text/default/${area_name.replace(/_/g,"-")}${writing.arrow ? "-arrow" : ""}.png`;
 	}
-	if (writing.type === "object") return `img/bodywriting/${writing.writing}/${area_name}.png`;
+	if (writing.type === "object") return `img/bodywriting/${writing.writing.replace(/_/g,"-")}/${area_name.replace(/_/g,"-")}.png`;
 	return '';
 }
 
@@ -5137,13 +5084,13 @@ function genlayer_horns(tf, overrideOptions) {
 function genlayer_effect(effect, layer, overrideOptions) {
 	return Object.assign({
 		animationfn() {
-			if (effect === "precipitation") return Weather.precipitation === "snow" ? `snow${layer.toUpperFirst()}` : "rain";
+			if (effect === "precipitation") return Weather.precipitation === "snow" ? `snow-${layer}` : "rain";
 			return `${effect}${layer.toUpperFirst()}`;
 		},
 		srcfn() {
 			const type = Weather.precipitation;
 			const intensity = Weather.name;
-			if (effect === "precipitation") return `img/misc/ambient/${effect}/${type}/${intensity}${layer.toUpperFirst()}.png`
+			if (effect === "precipitation") return `img/misc/ambient/${effect}/${type}/${intensity}-${layer}.png`
 			return`img/misc/ambient/${effect}/${layer}.png`
 		},
 		showfn(options) {
@@ -5157,15 +5104,15 @@ function genlayer_effect(effect, layer, overrideOptions) {
 }
 
 function genlayer_breath(type, layer, overrideOptions) {
-	const breath = `${type}Breath`;
-	const effect = breath === "playerBreath" ? "temperature" : breath;
+	const anim = `${type}Breath`;
+	const effect = type === "player" ? "temperature" : type;
 	return genlayer_effect(effect, layer, Object.assign({
 		animationfn() {
-			if (V.arousal >= 6000 || V.pain >= 40) return `${breath}Fast`;
-			return breath;
+			if (V.arousal >= 6000 || V.pain >= 40) return `${anim}Fast`;
+			return anim;
 		},
 		srcfn() {
-			return `img/misc/ambient/${breath}.png`
+			return `img/misc/ambient/${type}-breath.png`
 		},
 	}, overrideOptions))
 }

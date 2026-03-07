@@ -17,7 +17,7 @@ setup.WeatherBindings = {
 	time: {
 		variable: () => Time.date.timeStamp,
 		layers: [
-			"all", // TODO: This seems inefficient and defeats the purpose of having all of these different bindings 
+			"all", // TODO: This seems inefficient and defeats the purpose of having all of these different bindings
 		],
 	},
 	weather: {

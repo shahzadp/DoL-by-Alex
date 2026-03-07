@@ -96,7 +96,8 @@ class DateTime {
 	 * @param {number} second
 	 */
 	toTimestamp(year, month, day, hour, minute, second) {
-		if (year < TimeConstants.MIN_DATE.year || year > TimeConstants.MAX_DATE.year) throw new Error(`Invalid year: Year must be between ${TimeConstants.MIN_DATE.timeStamp}-${TimeConstants.MAX_DATE.year}.`);
+		if (year < TimeConstants.MIN_DATE.year || year > TimeConstants.MAX_DATE.year)
+			throw new Error(`Invalid year: Year must be between ${TimeConstants.MIN_DATE.timeStamp}-${TimeConstants.MAX_DATE.year}.`);
 		if (month < 1 || month > 12) throw new Error("Invalid month: Month must be between 1-12.");
 		const daysInMonth = DateTime.getDaysOfMonthFromYear(year);
 		if (day < 1 || day > daysInMonth[month - 1]) throw new Error("Invalid date: Day must be between 1-" + daysInMonth[month - 1] + ".");

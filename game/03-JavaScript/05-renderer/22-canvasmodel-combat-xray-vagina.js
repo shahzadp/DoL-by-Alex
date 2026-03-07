@@ -26,8 +26,8 @@ const combatXrayVagina = {
 	layers: {
 		vagina: {
 			srcfn(options) {
-				const baseSize = options.vagina.size ? "_size" + options.vagina.size : "";
-				const baseSizeDP = options.vagina.doublePen ? "_dp" + options.vagina.size2 : "";
+				const baseSize = options.vagina.size ? "-size" + options.vagina.size : "";
+				const baseSizeDP = options.vagina.doublePen ? "-dp" + options.vagina.size2 : "";
 				return `${options.src}vaginal/${options.vagina.base}${baseSize}${baseSizeDP}.png`;
 			},
 			showfn(options) {
@@ -45,9 +45,9 @@ const combatXrayVagina = {
 		condom2: xrayVaginaCondom("npc2"),
 		cum: {
 			srcfn(options) {
-				const baseSize = options.vagina.size ? "_size" + options.vagina.size : "";
-				const dp = options.vagina.doublePen ? "_dp" : "";
-				const cumAmt = "_cum" + options.vagina.cum;
+				const baseSize = options.vagina.size ? "-size" + options.vagina.size : "";
+				const dp = options.vagina.doublePen ? "-dp" : "";
+				const cumAmt = "-cum" + options.vagina.cum;
 				return `${options.src}vaginal/cum/${options.vagina.base}${baseSize}${dp}${cumAmt}.png`;
 			},
 			showfn(options) {
@@ -61,7 +61,7 @@ const combatXrayVagina = {
 		},
 		ejaculating: {
 			srcfn(options) {
-				const cumSize = options.vagina.size ? "_size" + options.vagina.size + "_cumming" : "";
+				const cumSize = options.vagina.size ? "-size" + options.vagina.size + "-cumming" : "";
 				return `${options.src}vaginal/cum/${options.vagina.base}${cumSize}.png`;
 			},
 			showfn(options) {
@@ -87,8 +87,8 @@ function xrayVaginaPenetrator(npc, overrideOptions = {}) {
 	 */
 	const defaults = {
 		srcfn(options) {
-			const penSize = "_size" + options.vagina.size;
-			const dp = options.vagina.doublePen && npc === "npc2" ? "_dp" : "";
+			const penSize = "-size" + options.vagina.size;
+			const dp = options.vagina.doublePen && npc === "npc2" ? "-dp" : "";
 			return `${options.src}vaginal/${options.vagina.penetratorSprite}${penSize}${dp}.png`;
 		},
 		showfn(options) {
@@ -120,8 +120,8 @@ function xrayVaginaCondom(npc, overrideOptions = {}) {
 	 */
 	const defaults = {
 		srcfn(options) {
-			const conSize = "_size" + options.vagina.size;
-			const dp = options.vagina.doublePen && npc === "npc2" ? "_dp" : "";
+			const conSize = "-size" + options.vagina.size;
+			const dp = options.vagina.doublePen && npc === "npc2" ? "-dp" : "";
 			return `${options.src}vaginal/tentacle${conSize}${dp}.png`;
 		},
 		showfn(options) {

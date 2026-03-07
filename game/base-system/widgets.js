@@ -82,7 +82,7 @@ function calculatePenisBulge() {
 		return Math.clamp(V.player.penissize, 0, Infinity);
 	}
 	// Mentioned in combat about npcs `trying to force an erection`, when below the specific arousal checks
-	if ((V.arousal > 9000 && V.player.penissize === -1) || (V.arousal > 9500 && V.player.penissize === -2)) return 1;
+	if ((V.arousal > 9000 && V.player.penissize === 1) || (V.arousal > 9500 && V.player.penissize === 0)) return 1;
 
 	let erectionState = 1;
 	if (V.arousal >= 8000) {
@@ -90,7 +90,7 @@ function calculatePenisBulge() {
 	} else if (V.arousal >= 6000) {
 		erectionState = 2;
 	}
-	return Math.clamp((V.player.penissize + 1) * erectionState, 0, Infinity);
+	return Math.clamp((V.player.penissize - 1) * erectionState, 0, Infinity);
 }
 window.calculatePenisBulge = calculatePenisBulge;
 
@@ -104,7 +104,7 @@ function nudeGenderAppearance() {
 	if (playerChastity("hidden")) {
 		T.apparent_femininity_nude += setup.clothes.genitals[clothesIndex("genitals", V.worn.genitals)].femininity;
 	} else if (V.settings.nudeGenderPerception === 1) {
-		if (V.player.penisExist) T.apparent_femininity_nude += (-V.player.penissize - 2.5) * 150;
+		if (V.player.penisExist) T.apparent_femininity_nude += (-V.player.penissize - 0.5) * 150;
 		if (V.player.vaginaExist) T.apparent_femininity_nude += 450;
 	}
 	if (!(V.sexStats === undefined || !playerBellyVisible() || V.settings.nudeGenderPerception === 0)) {
@@ -222,7 +222,7 @@ function genderappearancecheck() {
 		addfemininityfromfactor(-Math.clamp((T.bulge_size - 6) * 60, 0, Infinity), "Bulge visible through clothing", "noow");
 	} else if (V.worn.genitals.exposed && V.settings.nudeGenderPerception === 1) {
 		if (V.player.penisExist) {
-			addfemininityfromfactor((V.player.penissize + 2.5) * -150, "Penis exposed", "noow");
+			addfemininityfromfactor((V.player.penissize + 0.5) * -150, "Penis exposed", "noow");
 		}
 		if (V.player.vaginaExist) {
 			addfemininityfromfactor(450, "Vagina exposed", "noow");
@@ -247,7 +247,7 @@ function genderappearancecheck() {
 				/* Bare genitals are visible */
 				if (V.settings.nudeGenderPerception === 1) {
 					if (V.player.penisExist) {
-						addfemininityfromfactor((-V.player.penissize - 2.5) * 150, "Penis visible");
+						addfemininityfromfactor((-V.player.penissize - 0.5) * 150, "Penis visible");
 					}
 					if (V.player.vaginaExist) {
 						addfemininityfromfactor(450, "Vagina visible");

@@ -1302,7 +1302,7 @@ function initFace() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "islander_mask.png",
+			iconFile: "islander-mask.png",
 			accIcon: 0,
 		},
 		{
@@ -1452,7 +1452,7 @@ function initFace() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "foxmask.png",
+			iconFile: "fox-mask.png",
 			accIcon: 0,
 		},
 		{

@@ -146,24 +146,24 @@ function masturbationAudienceLines(npc) {
 		V.masturbationAudienceReactions.push("penisSize");
 		V.audiencearousal += 1;
 		switch (V.player.penissize) {
-			case -2:
+			case 0:
 				wikifier("insecurity", '"penis_small"', 4);
 				break;
-			case -1:
+			case 1:
 				wikifier("insecurity", '"penis_small"', 3);
 				break;
-			case 0:
+			case 2:
 				wikifier("insecurity", '"penis_small"', 2);
 				break;
-			case 1:
+			case 3:
 				wikifier("insecurity", '"penis_small"', 1);
 				break;
-			case 2:
+			case 4:
 				break;
-			case 3:
+			case 5:
 				wikifier("insecurity", '"penis_big"', 1);
 				break;
-			case 4:
+			case 6:
 				wikifier("insecurity", '"penis_big"', 1);
 				break;
 		}
@@ -373,8 +373,8 @@ function masturbationAudienceLineText(npc, lineType = "") {
 				resultArray.push(`"Fuck, I wanna shove my cock between those tits."`);
 			}
 			return resultArray.random();
-		case "penisSize-2": // empty case on purpose
-		case "penisSize-1":
+		case "penisSize0": // empty case on purpose
+		case "penisSize1":
 			return [
 				`"Such a cute clit!"`,
 				`"Bet it's hard to masturbate that thing with more than a finger and a thumb."`,
@@ -382,7 +382,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			]
 				.random()
 				.concat(`<<ginsecurity "penis_small">>`);
-		case "penisSize0":
+		case "penisSize2":
 			return [
 				`"${V.masturbationAudience > 1 ? "<<pShes>>" : "You're"} so tiny!"`,
 				`"I can't believe it's so tiny!"`,
@@ -390,7 +390,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			]
 				.random()
 				.concat(`<<ginsecurity "penis_small">>`);
-		case "penisSize1":
+		case "penisSize3":
 			return [
 				`"${V.masturbationAudience > 1 ? "<<pShes>>" : "You're"} so small!"`,
 				`"Such a small, cute penis."`,
@@ -398,13 +398,13 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			]
 				.random()
 				.concat('<<ginsecurity "penis_small">>');
-		case "penisSize2":
+		case "penisSize4":
 			return [
 				`"I'd love a picture of ${V.masturbationAudience > 1 ? "<<pher>>" : "your"} cute penis."`,
 				`"Don't be shy, everyone should know how beautiful your penis is."`,
 				`"If you don't want your penis photographed, you shouldn't act like a slut."`,
 			].random();
-		case "penisSize3":
+		case "penisSize5":
 			return [
 				`"${V.masturbationAudience > 1 ? "<<pShes>>" : "You're"} bigger than I expected."`,
 				`"Don't be shy, you should be proud of your penis."`,
@@ -412,7 +412,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 			]
 				.random()
 				.concat(V.player.gender !== "m" ? `<<ginsecurity "penis_big">>` : "");
-		case "penisSize4":
+		case "penisSize6":
 			return [
 				`"${V.masturbationAudience > 1 ? "<<pShes>>" : "You're"} huge!"`,
 				`"${V.masturbationAudience > 1 ? "<<pHer>>" : "Your"} penis is freakishly big."`,

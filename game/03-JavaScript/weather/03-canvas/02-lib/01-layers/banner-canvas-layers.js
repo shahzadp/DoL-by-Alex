@@ -151,11 +151,11 @@ Weather.Renderer.Layers.add({
 				},
 				// Chance of these appearing is set in the weights above
 				images: {
-					star0: "img/misc/sky/stars/star_0.png",
-					star1: "img/misc/sky/stars/star_1.png",
-					star2: "img/misc/sky/stars/star_2.png",
-					star3: "img/misc/sky/stars/star_3.png",
-					star4: "img/misc/sky/stars/star_4.png",
+					star0: "img/misc/sky/stars/star-0.png",
+					star1: "img/misc/sky/stars/star-1.png",
+					star2: "img/misc/sky/stars/star-2.png",
+					star3: "img/misc/sky/stars/star-3.png",
+					star4: "img/misc/sky/stars/star-4.png",
 				},
 			},
 			bindings: {
@@ -772,7 +772,7 @@ Weather.Renderer.Layers.add({
 				fogDistributionCurve: 1,
 
 				images: {
-					fog: "img/misc/sky/clouds/fog/bannerFog0.png",
+					fog: "img/misc/locations/banner/fog.png",
 				},
 			},
 			bindings: {

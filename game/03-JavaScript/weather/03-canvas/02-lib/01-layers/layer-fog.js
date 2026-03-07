@@ -15,7 +15,7 @@ Weather.Renderer.Layers.add({
 				minVel: 0.6, // px/sec
 				maxVel: 1.2,
 				images: {
-					fog: "img/misc/sky/clouds/fog/fog0.png",
+					fog: "img/misc/sky/clouds/fog/1.png",
 				},
 			},
 			bindings: {

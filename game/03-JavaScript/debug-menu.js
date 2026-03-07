@@ -1768,7 +1768,7 @@ function addFavouriteIcon(section, index, id) {
 
 		input.type = "image";
 		input.className = "heart";
-		input.src = "img/ui/heart_favourite.svg";
+		input.src = "img/ui/heart-favourite.png";
 		for (let i = 0; i < V.debug_favourite.length; i++) {
 			if (V.debug_favourite[i].link[0] === setup.debugMenu.eventList[section][index].link[0]) input.classList.toggle("liked"); // on load up if already favourite set heart red
 		}

@@ -26,8 +26,8 @@ const combatXrayPenis = {
 	layers: {
 		base: {
 			srcfn(options) {
-				const base = ["machine", "tentacle"].includes(options.penis.penetratedType) ? options.penis.base + "_tentacle" : options.penis.base;
-				const baseSize = options.penis.size ? "_size" + options.penis.size : "";
+				const base = ["machine", "tentacle"].includes(options.penis.penetratedType) ? options.penis.base + "-tentacle" : options.penis.base;
+				const baseSize = options.penis.size ? "-size" + options.penis.size : "";
 				return `${options.src}${options.penis.penetrated}/${base}${baseSize}.png`;
 			},
 			showfn(options) {
@@ -42,7 +42,7 @@ const combatXrayPenis = {
 		playerPenis: {
 			srcfn(options) {
 				const playerPenis = options.penis.playerSprite;
-				const size = options.penis.size ? "_size" + options.penis.size : "";
+				const size = options.penis.size ? "-size" + options.penis.size : "";
 				return `${options.src}${options.penis.penetrated}/${playerPenis}${size}.png`;
 			},
 			showfn(options) {
@@ -64,8 +64,8 @@ const combatXrayPenis = {
 		},
 		playerCum: {
 			srcfn(options) {
-				const size = options.penis.size ? "_size" + options.penis.size : "";
-				const cumAmt = options.penis.penetrated === "vaginal" ? "_cum" + V.otherFilled : "_cum";
+				const size = options.penis.size ? "-size" + options.penis.size : "";
+				const cumAmt = options.penis.penetrated === "vaginal" ? "-cum" + V.otherFilled : "-cum";
 				return `${options.src}${options.penis.penetrated}/cum/${options.penis.base}${size}${cumAmt}.png`;
 			},
 			showfn(options) {
@@ -79,7 +79,7 @@ const combatXrayPenis = {
 		},
 		playerEjac: {
 			srcfn(options) {
-				const cumSize = options.penis.size ? "_size" + options.penis.size + "_cumming" : "";
+				const cumSize = options.penis.size ? "-size" + options.penis.size + "-cumming" : "";
 				return `${options.src}${options.penis.penetrated}/cum/${options.penis.base}${cumSize}.png`;
 			},
 			showfn(options) {
@@ -93,7 +93,7 @@ const combatXrayPenis = {
 		},
 		playerCondom: {
 			srcfn(options) {
-				const conSize = "_size" + options.penis.size;
+				const conSize = "-size" + options.penis.size;
 				return `${options.src}${options.penis.penetrated}/tentacle${conSize}.png`;
 			},
 			showfn(options) {

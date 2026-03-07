@@ -2148,19 +2148,19 @@ function displayFeat(featName) {
 		const coin = $("<img>", { class: "featCoin" });
 		switch (feat.difficulty) {
 			case 1:
-				coin.attr("src", "img/ui/CopperCoin.gif");
+				coin.attr("src", "img/ui/coin-copper.gif");
 				break;
 			case 2:
-				coin.attr("src", "img/ui/SilverCoin.gif");
+				coin.attr("src", "img/ui/coin-silver.gif");
 				break;
 			case 3:
-				coin.attr("src", "img/ui/GoldCoin.gif");
+				coin.attr("src", "img/ui/coin-gold.gif");
 				break;
 			case 4:
-				coin.attr("src", "img/ui/PlatinumCoin.gif");
+				coin.attr("src", "img/ui/coin-platinum.gif");
 				break;
 			case 5:
-				coin.attr("src", "img/ui/JeweledCoin.gif");
+				coin.attr("src", "img/ui/coin-jeweled.gif");
 				break;
 		}
 
