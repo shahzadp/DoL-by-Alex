@@ -611,9 +611,6 @@ function initProps() {
 		toolbox: {
 			armPosition: "right_cover",
 		},
-		shears: {
-			armPosition: "right_cover",
-		},
 		first_aid: {
 			armPosition: "right_cover",
 		},
