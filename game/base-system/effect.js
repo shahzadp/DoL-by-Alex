@@ -1257,6 +1257,27 @@ function effects() {
 		}
 	}
 
+	if (V.cheatClothes) {
+            if (V.worn.upper.name !== "naked") { 
+            V.worn.upper.integrity = V.worn.upper.integrity_max;
+            }
+            if (V.worn.over_upper.name !== "naked") { 
+            V.worn.over_upper.integrity = V.worn.over_upper.integrity_max;
+            }
+            if (V.worn.over_lower.name !== "naked") { 
+            V.worn.over_lower.integrity = V.worn.over_lower.integrity_max;
+            }
+            if (V.worn.lower.name !== "naked") { 
+            V.worn.lower.integrity =  V.worn.lower.integrity_max;
+            }
+            if (V.worn.under_lower.name !== "naked") { 
+            V.worn.under_lower.integrity = V.worn.under_lower.integrity_max;
+            }
+            if (V.worn.under_upper.name !== "naked") { 
+            V.worn.under_upper.integrity = V.worn.under_upper.integrity_max;
+            }
+        }
+
 	if (Array.isArray(V.timeMessages) && V.timeMessages.length) {
 		/*
 			Calls to <<earnFeat "x">> here and within earnHourlyFeats are intended to show feats to the user.
