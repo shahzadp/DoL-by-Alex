@@ -1832,7 +1832,7 @@ setup.LocationImages = {
 				image: "sea.png",
 			},
 			power: {
-				image: "powerlines.png",
+				image: "power-lines.png",
 			},
 		},
 		emissive: {
@@ -3026,7 +3026,7 @@ setup.LocationImages = {
 				condition: () => !Weather.isSnow && Time.dayState !== "night",
 				// Not at same time as flyingbird
 				waitForAnimation: "flying-bird",
-				image: "treebirds.png",
+				image: "tree-birds.png",
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => random(2, 10, true) * 1000,
@@ -3036,7 +3036,7 @@ setup.LocationImages = {
 				condition: () => !Weather.isSnow && (Time.dayState === "dawn" || Time.dayState === "dusk"),
 				// Not at same time as treebirds
 				waitForAnimation: "tree-birds",
-				image: "flyingbird.png",
+				image: "flying-bird.png",
 				animation: {
 					frameDelay: 200,
 					cycleDelay: () => random(10, 30, true) * 1000,

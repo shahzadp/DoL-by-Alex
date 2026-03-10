@@ -1205,7 +1205,7 @@ function initFace() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "doggymuzzle.png",
+			iconFile: "doggy-muzzle.png",
 			accIcon: 0,
 		},
 		{

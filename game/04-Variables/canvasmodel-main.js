@@ -1,3 +1,4 @@
+/* globals normaliseFileName */
 /* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable jsdoc/no-undefined-types */
 /* eslint-disable jsdoc/newline-after-description */
@@ -5089,7 +5090,7 @@ function genlayer_effect(effect, layer, overrideOptions) {
 		},
 		srcfn() {
 			const type = Weather.precipitation;
-			const intensity = Weather.name;
+			const intensity = normaliseFileName(Weather.name);
 			if (effect === "precipitation") return `img/misc/ambient/${effect}/${type}/${intensity}-${layer}.png`
 			return`img/misc/ambient/${effect}/${layer}.png`
 		},
