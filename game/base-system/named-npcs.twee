@@ -616,7 +616,7 @@ Zohar
 			<<case Winter>><<set $NPCName[_i].outfits.pushUnique("teacher")>>
 			<<case Mason>><<set $NPCName[_i].outfits.pushUnique("teacher", "maleSchoolSwim", "neutralSwim", "townTrack")>>
 			<<case Leighton>><<set $NPCName[_i].outfits.pushUnique("teacher", "maleFormal1", "femaleFormal1")>>
-			<<case "Black Wolf" "Great Hawk">><<set $NPCName[_i].outfits to ["naked"]>>
+			<<case "Black Wolf" "Great Hawk" "Night Monster">><<set $NPCName[_i].outfits to ["naked"]>>
 			<<case "Ivory Wraith">><<set $NPCName[_i].outfits to ["naked", "moonRobe"]>>
 			<<default>>
 				<!-- Maybe should be left as a default case for futureproofing?
@@ -718,7 +718,7 @@ Zohar
 				<<npcClothesType $NPCName[_i] "temple">>
 			<<case Mason>>
 				<<npcClothesType $NPCName[_i] "beach">>
-			<<case "Black Wolf" "Great Hawk">>
+			<<case "Black Wolf" "Great Hawk" "Night Monster">>
 				<<npcClothesType $NPCName[_i] "naked">>
 			<<case "Ivory Wraith">>
 				<<npcClothesType $NPCName[_i] "Wraith">>
@@ -979,6 +979,11 @@ Zohar
 		<<if $headblackmailed is 1>>
 			<<set $NPCList[_npcno].traits.push("unforgiving")>>
 		<</if>>
+	<<case "Night Monster">>
+		<<set $NPCList[_npcno].health to 600>>
+		<<set $NPCList[_npcno].healthmax to 600>>
+		<<set $NPCList[_npcno].traits.push("drug resistant")>>
+		<<set _condomIgnore to true>><<set _strapIgnore to true>>
 	<<default>>
 		<<set $NPCList[_npcno].health to 200>>
 		<<set $NPCList[_npcno].healthmax to 200>>
@@ -1145,6 +1150,48 @@ Zohar
 			<<set $NPCList[_npcno].monster to 0>>
 			<<set $NPCList[_npcno].pronoun to "i">>
 			<<set $NPCList[_npcno].claws to "talons">>
+		<</if>>
+	<</if>>
+
+	<!-- Adjust for Night Monster -->
+	<<if $NPCList[_npcno].fullDescription is "Night Monster">>
+		<<set $beastname to "nightmonster">>
+		<<set $NPCList[_npcno].lefthand to "none">>
+		<<set $NPCList[_npcno].righthand to "none">>
+		<<set $NPCList[_npcno].stance to "approach">>
+		<<if $daily.nmMonsterRoll isnot undefined and $nightmonstermonster is 1>>
+			<<if $daily.nmMonsterRoll is true>>
+				<<set $NPCList[_npcno].monster to "monster">>
+				<<set $monster to 1>><<set _monsterOverride to true>>
+				<<set $NPCList[_npcno].type to ($NPCList[_npcno].pronoun is "f" ? "horned woman" : "horned man")>>
+				<<set $NPCList[_npcno].lefthand to 0>>
+				<<set $NPCList[_npcno].righthand to 0>>
+				<<run delete $NPCList[_npcno].claws>>
+			<<else>>
+				<<set $NPCList[_npcno].monster to 0>>
+				<<set $NPCList[_npcno].pronoun to "i">>
+				<<set $NPCList[_npcno].claws to "claws">>
+			<</if>>
+		<<elseif $nightmonstermonster gte 1 or !$settings.bestialityEnabled>>
+			<<if ($settings.monsterChance gte $rng and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or ($nightmonstermonster is 2) or (!$settings.bestialityEnabled)>>
+				<<set $daily.nmMonsterRoll to true>>
+				<<set $NPCList[_npcno].monster to "monster">>
+				<<set $monster to 1>><<set _monsterOverride to true>>
+				<<set $NPCList[_npcno].type to ($NPCList[_npcno].pronoun is "f" ? "horned woman" : "horned man")>>
+				<<set $NPCList[_npcno].lefthand to 0>>
+				<<set $NPCList[_npcno].righthand to 0>>
+				<<run delete $NPCList[_npcno].claws>>
+			<<else>>
+				<<set $daily.nmMonsterRoll to false>>
+				<<set $NPCList[_npcno].monster to 0>>
+				<<set $NPCList[_npcno].pronoun to "i">>
+				<<set $NPCList[_npcno].claws to "claws">>
+			<</if>>
+		<<else>>
+			<<set $daily.nmMonsterRoll to false>>
+			<<set $NPCList[_npcno].monster to 0>>
+			<<set $NPCList[_npcno].pronoun to "i">>
+			<<set $NPCList[_npcno].claws to "claws">>
 		<</if>>
 	<</if>>
 
