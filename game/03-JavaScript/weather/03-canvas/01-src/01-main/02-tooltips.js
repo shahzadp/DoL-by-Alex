@@ -1,5 +1,5 @@
 Weather.Tooltips = (() => {
-	function skybox(element = Weather.sky.skybox) {
+	function skybox(element = Weather.sidebar.skybox) {
 		// Maybe not hardcode this here
 		const key = V.location === "tentworld" ? "tentaclePlains" : Weather.name;
 		const weatherState = Weather.TooltipDescriptions.type[key];

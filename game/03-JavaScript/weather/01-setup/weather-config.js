@@ -342,6 +342,7 @@ setup.WeatherGeneration = {
 				fog: 0.3,
 				location: 0.2,
 			},
+			lightningFrequency: 0.1, // Average number of lightning strikes per minute
 			fogChangeRate: -0.01,
 		},
 		{

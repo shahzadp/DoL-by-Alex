@@ -9,7 +9,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "skyStarField",
 			drawCondition() {
-				return this.renderInstance.orbitals.sun.factor < 0.75 && !this.renderInstance.skyDisabled;
+				return this.renderInstance.orbitals.sun.factor < 0.75 && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				area: 256,

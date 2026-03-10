@@ -9,7 +9,7 @@ Weather.Renderer.Layers.add({
 			drawCondition() {
 				return (
 					true ||
-					(!this.renderInstance.skyDisabled &&
+					(!this.renderInstance.sidebarSkyDisabled &&
 						!Weather.bloodMoon &&
 						this.renderInstance.orbitals.sun.factor > 0.7 &&
 						this.renderInstance.orbitals.sun.factor < 0.85 &&

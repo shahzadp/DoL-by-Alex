@@ -448,6 +448,10 @@ setup.debugMenu.eventList = {
 			widgets: [`<<set $debugLines to false>>`],
 		},
 		{
+			link: [`Toggle Weather Band Bounds`, stayOnPassageFn],
+			widgets: [`<<set $debugWeatherBandBounds to !$debugWeatherBandBounds>>`],
+		},
+		{
 			text_only: `\n`,
 		},
 	],

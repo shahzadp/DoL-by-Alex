@@ -42,6 +42,8 @@ Weather.Renderer.AnimationGroup = class AnimationGroup {
 	}
 
 	updateAnimations(deltaTime) {
+		if (!V.weatherObj) return;
+
 		deltaTime = Math.min(deltaTime, this.updateRate);
 		// If there are no child animations, still trigger the onUpdate callback
 		// so that layers/effects that rely on the animation group's tick still redraw.

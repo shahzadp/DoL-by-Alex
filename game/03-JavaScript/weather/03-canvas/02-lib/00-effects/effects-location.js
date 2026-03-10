@@ -21,7 +21,7 @@ Weather.Renderer.Effects.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				dayStateColors: {
@@ -163,7 +163,7 @@ Weather.Renderer.Effects.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return !this.renderInstance.skyDisabled && Weather.current.darkenFactor.location > 0;
+				return !this.renderInstance.sidebarSkyDisabled && Weather.current.darkenFactor.location > 0;
 			},
 			params: {
 				dayStateColors: {

@@ -578,7 +578,7 @@ function weekPassed() {
 }
 
 function dayPassed() {
-	Weather.sky.initSun();
+	Weather.sidebar.initSun();
 	Weather.WeatherGeneration.updateWeather();
 	Weather.Temperature.updateTemperature();
 	Weather.FogGeneration.generateFogKeypoints(V.weatherObj.keypointsArr);
@@ -1176,8 +1176,8 @@ function secondPassed(seconds) {
 }
 
 function noonCheck() {
-	Weather.sky.initMoon();
-	Weather.sky.setMoonPhase();
+	Weather.sidebar.initMoon();
+	Weather.sidebar.setMoonPhase();
 
 	if (V.statFreeze) return;
 

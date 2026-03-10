@@ -18,7 +18,9 @@ Weather.WeatherGeneration = (() => {
 			}
 
 			if (date.timeStamp < Time.date.timeStamp) {
-				console.warn(`getWeather: Provided date is before the current timestamp. Returning the current weather type.`);
+				console.warn(
+					`getWeather: Provided date is before the current timestamp. Returning the current weather type. You can probably ignore this warning if the game has just started.`
+				);
 				return interpolateWeather(new DateTime(Time.date));
 			}
 
@@ -71,8 +73,8 @@ Weather.WeatherGeneration = (() => {
 
 		const newWeather = updateWeather();
 
-		if (instant && Weather.sky.loaded.value) {
-			Weather.sky.layers.get("clouds").effects[0].reset();
+		if (instant && Weather.sidebar.loaded.value) {
+			Weather.sidebar.layers.get("clouds").effects[0].reset();
 		}
 
 		Weather.Observables.checkForUpdate();
