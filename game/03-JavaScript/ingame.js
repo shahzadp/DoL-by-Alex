@@ -2298,8 +2298,6 @@ function dailyConvert() {
 			wolfCaveDog: V.wolf_cave_dog,
 			jordan_missing: V.jordan_missing,
 			blackWolfMonsterRoll: V.blackWolfMonsterRoll,
-			greatHawkMonsterRoll: V.greatHawkMonsterRoll,
-			nightMonsterMonsterRoll: V.nightMonsterMonsterRoll,
 			templePray: V.temple_pray,
 			lakeMeditate: V.lake_meditate,
 			masonSpoken: V.mason_spoken,
@@ -2307,6 +2305,7 @@ function dailyConvert() {
 			rocksPoolInvite: V.rocks_pool_invite,
 			birdWash: V.bird_wash,
 			birdDailyGreeting: V.birdDailyGreeting,
+			greatHawkMonsterRoll: V.greatHawkMonsterRoll,
 			estateBluffed: V.estate_bluffed,
 			estateChaos: V.estate_chaos,
 			spaEvent: V.spa_event,
@@ -2375,7 +2374,7 @@ function dailyConvert() {
 			// eslint-disable-next-line prettier/prettier
 			/* pharm */ "left_before_nurse_returned", "pharmTriedSeduction", "pharmSexFinished", "pharmClosed", "pharmSeductionFailed", "pharmDaily",
 			// eslint-disable-next-line prettier/prettier
-			/* misc */ "comb", "motherwake", "harpervisit", "policecollarseduceattempt", "tenyclusPlayed", "beachstrip", "compoundstate", "baileyvisit", "lakecouple", "museumgreengemtouch", "fenceclimb", "cafeeaten", "mirrortentacles", "massattended", "dockexhibitionism", "home_event", "leightondanceoffered", "wolf_cave_dog", "jordan_missing", "blackWolfMonsterRoll", "greatHawkMonsterRoll", "nightMonsterMonsterRoll", "temple_pray", "lake_meditate", "mason_spoken", "stall_rented", "rocks_pool_invite", "bird_wash", "birdDailyGreeting", "estate_bluffed", "estate_chaos", "spa_event", "estate_done", "lewd_unlock", "bailey_wake_day", "manor_forage", "manor_garden", "manor_kitchen", "manor_parents", "manor_lab", "promiscuitystress1", "promiscuitystress2", "promiscuitystress3", "promiscuitystress4", "promiscuitystress5", "exhibitionismstress1", "exhibitionismstress2", "exhibitionismstress3", "exhibitionismstress4", "exhibitionismstress5", "deviancystress1", "deviancystress2", "deviancystress3", "deviancystress4", "deviancystress5", "seenPets", "asylumfirsttreatment", "asylumsecondtreatment", "asylumassessment", "asylumexercise", "slimeFarmNaked"
+			/* misc */ "comb", "motherwake", "harpervisit", "policecollarseduceattempt", "tenyclusPlayed", "beachstrip", "compoundstate", "baileyvisit", "lakecouple", "museumgreengemtouch", "fenceclimb", "cafeeaten", "mirrortentacles", "massattended", "dockexhibitionism", "home_event", "leightondanceoffered", "wolf_cave_dog", "jordan_missing", "blackWolfMonsterRoll", "temple_pray", "lake_meditate", "mason_spoken", "stall_rented", "rocks_pool_invite", "bird_wash", "birdDailyGreeting", "greatHawkMonsterRoll", "estate_bluffed", "estate_chaos", "spa_event", "estate_done", "lewd_unlock", "bailey_wake_day", "manor_forage", "manor_garden", "manor_kitchen", "manor_parents", "manor_lab", "promiscuitystress1", "promiscuitystress2", "promiscuitystress3", "promiscuitystress4", "promiscuitystress5", "exhibitionismstress1", "exhibitionismstress2", "exhibitionismstress3", "exhibitionismstress4", "exhibitionismstress5", "deviancystress1", "deviancystress2", "deviancystress3", "deviancystress4", "deviancystress5", "seenPets", "asylumfirsttreatment", "asylumsecondtreatment", "asylumassessment", "asylumexercise", "slimeFarmNaked"
 		].forEach(n => delete V[n]);
 	}
 }

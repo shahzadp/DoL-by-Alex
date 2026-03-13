@@ -390,7 +390,6 @@ function pregnancyNameCorrection(name, caps = false) {
 	switch (name) {
 		case "Black Wolf":
 		case "Great Hawk":
-		case "Night Monster":
 		case "Ivory Wraith":
 		case "cum bucket":
 			name = (caps ? "The " : "the ") + name;

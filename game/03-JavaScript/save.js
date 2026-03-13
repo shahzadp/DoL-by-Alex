@@ -1278,14 +1278,6 @@ function settingsObjects(type) {
 					textMap: { 0: "Always a beast", 1: "Monster girl or boy when requirements met", 2: "Always a monster girl or boy" },
 					randomize: "encounter",
 				},
-				nightmonstermonster: {
-					min: 0,
-					max: 2,
-					decimals: 0,
-					displayName: "Night Monster beast type:",
-					textMap: { 0: "Always a beast", 1: "Monster girl or boy when requirements met", 2: "Always a monster girl or boy" },
-					randomize: "encounter",
-				},
 				breastsizemin: {
 					min: 0,
 					max: 4,
