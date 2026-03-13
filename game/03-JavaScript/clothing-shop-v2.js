@@ -352,7 +352,7 @@ function applyClothingShopFilters(items) {
 		1) currently the outfits store item names, instead of the IDs. The outfits should contain the IDs instead.
 		2) I forgor.
 
-		Just to clarify - this is mainly supposed to make the clothing data more organized, easier to manage and work with, less side-effects and weird lookup/cloning techniques.
+		Just to clarify - this is mainly supposed to make the clothing data more organised, easier to manage and work with, less side-effects and weird lookup/cloning techniques.
 		It will definitely drastically improve speed, but it will probably not have a noticable difference in performance.
 		*/
 

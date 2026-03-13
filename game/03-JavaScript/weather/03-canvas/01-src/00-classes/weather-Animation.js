@@ -25,7 +25,7 @@ Weather.Renderer.Animation = class Animation {
 		this.inCycle = false;
 		this.enabled = false;
 
-		// Initialize the start delay if any
+		// Initialise the start delay if any
 		this.startDelayRemaining = this.startDelay;
 	}
 

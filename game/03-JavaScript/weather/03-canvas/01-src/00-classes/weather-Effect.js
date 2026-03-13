@@ -113,8 +113,8 @@ Weather.Renderer.Effect = class Effect {
 	}
 
 	/**
-	 * Initializes the effect. This method should be called before draw().
-	 * It ensures all sub-effects are initialized and executes the effect's custom init logic
+	 * Initialises the effect. This method should be called before draw().
+	 * It ensures all sub-effects are initialised and executes the effect's custom init logic
 	 *
 	 * @returns {Promise} A promise that resolves when the init is complete
 	 */

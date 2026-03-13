@@ -47,13 +47,13 @@ JSON.stringify = function (o, userReplacer, ...args) {
 							...val,
 						};
 						if (!JSON.debug.stringifyClasses[classPath]) {
-							console.log(`Serializing object with class ${classPath}`);
+							console.log(`Serialising object with class ${classPath}`);
 							JSON.debug.stringifyClasses[classPath] = 0;
 						}
 						JSON.debug.stringifyClasses[classPath]++;
 					} else {
 						if (!JSON.debug.stringifyMissingClasses[classPath]) {
-							console.warn(`Serializing object with class ${classPath} failed. Skipping objects like`, val);
+							console.warn(`Serialising object with class ${classPath} failed. Skipping objects like`, val);
 							JSON.debug.stringifyMissingClasses[classPath] = 0;
 						}
 						JSON.debug.stringifyMissingClasses[classPath]++;

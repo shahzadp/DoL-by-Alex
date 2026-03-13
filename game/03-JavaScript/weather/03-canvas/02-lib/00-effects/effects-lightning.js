@@ -29,7 +29,7 @@ Weather.Renderer.Effects.add({
 		// hold bright on completion
 		flashHoldDuration: 0.1, // sec
 
-		// optional manual endpoint - dont set this here
+		// optional manual endpoint - don't set this here
 		boltTargetX: null,
 		boltTargetY: null,
 		boltStartOffsetX: null,

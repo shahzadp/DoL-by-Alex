@@ -37,7 +37,7 @@ Weather.Renderer.Layer = class Layer {
 		}
 		effectConfig.parentLayer = this;
 
-		// Set index for a consistent order - since it loads asyncronously
+		// Set index for a consistent order - since it loads asynchronously
 		const currentIndex = (this.effectIndex = (this.effectIndex ?? 0) + 1);
 		params.id = [currentIndex];
 		const effect = new Weather.Renderer.Effect(effectConfig, condition, compositeOperation, params);
@@ -63,7 +63,7 @@ Weather.Renderer.Layer = class Layer {
 		this.animationGroup?.stop();
 		this.animationGroup?.reset();
 
-		// Sequentially initialize each effect
+		// Sequentially initialise each effect
 		for (const effect of this.effects) {
 			await effect.init();
 		}

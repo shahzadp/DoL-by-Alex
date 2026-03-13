@@ -122,7 +122,7 @@ class DateTime {
 	 * @param {number} timestamp The timestamp to convert.
 	 */
 	fromTimestamp(timestamp) {
-		// Initialize the year to 1
+		// Initialise the year to 1
 		let year = 1;
 		let month = 0;
 		let day = Math.trunc(timestamp / TimeConstants.secondsPerDay);

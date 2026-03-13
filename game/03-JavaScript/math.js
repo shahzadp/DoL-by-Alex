@@ -119,11 +119,11 @@ window.between = between;
  *
  * An exponent of 1.0 returns 1 every time.
  *
- * Exponents between 1.0 and 2.0 return a curve favoring higher results (closer to 1)
+ * Exponents between 1.0 and 2.0 return a curve favouring higher results (closer to 1)
  *
  * An exponent of 2.0 will return a flat line distribution and is identical to random()
  *
- * Exponents greater than 2.0 return a curve favoring lower results (closer to 0), reaching to 0 at infinity.
+ * Exponents greater than 2.0 return a curve favouring lower results (closer to 0), reaching to 0 at infinity.
  *
  * For example, see:
  * https://www.desmos.com/calculator/87hhrjfixi
@@ -142,11 +142,11 @@ window.expCurve = expCurve;
  *
  * A value of 1.0 returns 1 every time.
  *
- * Values between 1.0 and 2.0 return a curve favoring higher results (closer to 1)
+ * Values between 1.0 and 2.0 return a curve favouring higher results (closer to 1)
  *
  * A value of 2.0 will return a flat line distribution and is identical to random()
  *
- * Values greater than 2.0 return a curve favoring lower results (closer to 0), reaching to 0 at infinity.
+ * Values greater than 2.0 return a curve favouring lower results (closer to 0), reaching to 0 at infinity.
  *
  * For example, see:
  * https://www.desmos.com/calculator/87hhrjfixi
