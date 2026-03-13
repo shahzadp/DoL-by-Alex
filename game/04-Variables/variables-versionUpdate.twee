@@ -3682,8 +3682,6 @@
 						<<npcClothesType $per_npc[$_key] "security">>
 					<<elseif ["scarred_inmate", "tattooed_inmate"].includes($_key)>>
 						<<npcClothesType $per_npc[$_key] "prison">>
-					<<elseif ["tower_creature"].includes($_key)>>
-						<<npcClothesType $per_npc[$_key] "naked">>
 					<<elseif ["farm_tower_guard"].includes($_key)>>
 						<<npcClothesName $per_npc[$_key] "wildsFlannel">>
 					<<elseif ["prison_intro_officer"].includes($_key)>>
@@ -6866,16 +6864,6 @@
 	<<unset $weatherObj.overcast>>
 	<<unset $weatherObj.targetOvercast>>
 
-	/* Fix corrupted x-rays */
-	<<if $per_npc?.tower_creature?.fullDescription>>
-		<<switch $per_npc.tower_creature.fullDescription>>
-			<<case "horned boy">>
-				<<set $per_npc.tower_creature.fullDescription to "horned man">>
-			<<case "horned girl">>
-				<<set $per_npc.tower_creature.fullDescription to "horned woman">>
-		<</switch>>
-	<</if>>
-
 	/* Physique changes */
 	<<if !$physiqueSizeUpdate>>
 		<<set $physiqueSizeUpdate to true>>
@@ -6903,6 +6891,22 @@
 			<<set $harperSeen.pushUnique("hospital")>>
 		<</if>>
 		<<unset $hospitalintro>>
+	<</if>>
+
+	/* Unset Night Monster persistent NPC in favor of Named NPC (NNPC) */
+	<<if !$nightMonsterNNPCUpdate>>
+		<<set $nightMonsterNNPCUpdate to 1>> /* set to 1 here, set to 2 in variablesStart2 or Config.navigation.override */
+		<<clearNPC "tower_creature">>
+		<<run ["tower_creature_intro", "tower_sleep", "tower_sheet", "tower_view"].forEach(v => delete V[v]);>>
+	<</if>>
+
+	<<if $nightmonstermonster is undefined>>
+		<<rng>>
+		<<if $monsterchance gte $rng>>
+			<<set $nightmonstermonster to 1>>
+		<<else>>
+			<<set $nightmonstermonster to 0>>
+		<</if>>
 	<</if>>
 
 <</widget>>
