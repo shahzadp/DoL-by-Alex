@@ -32,8 +32,7 @@ declare global {
 		| "Wren"
 		| "Sydney"
 		| "Ivory Wraith"
-		| "Zephyr"
-		| "Night Monster";
+		| "Zephyr";
 
 	const V: SugarCubeStoryVariables;
 	const T: SugarCubeTemporaryVariables;

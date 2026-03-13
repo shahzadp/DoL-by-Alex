@@ -967,21 +967,32 @@
 	<</if>>
 <</widget>>
 
-<<widget "streetNightMonster">>
-	<<npc "Night Monster">>
+<<widget "streetNightTowerCreature">>
+	<<if $tower_creature_intro gte 1>>
+		<<loadNPC 0 tower_creature>>
+	<<else>>
+		<<set $tower_creature_intro to 1>>
+		<<set _tower_creature to true>>
+		<<beastNEWinit 1 creature>>
+		<<if $NPCList[0].monster is "monster">>
+			<<set $NPCList[0].fullDescription to "horned " + ($NPCList[0].pronoun is "m" ? "man" : "woman")>>
+			<<set $NPCList[0].type to "horned " + ($NPCList[0].pronoun is "m" ? "man" : "woman")>>
+		<</if>>
+		<<saveNPC 0 tower_creature>>
+	<</if>>
 	<<if $NPCList[0].monster is "monster" or $settings.bestialityEnabled>>
-		You hear something land behind you, followed by a low growl. You turn to face a pair of glowing yellow eyes. <<bHe>> steps into the light of a streetlamp, revealing a pair of horns
+		You hear something land behind you, followed by a low growl. You turn, and face a pair of glowing yellow eyes. <<bHe>> steps into the light of a streetlamp, revealing a pair of horns
 
 		<<if $NPCList[0].monster is "monster">>
 			that split <<bhis>> messy hair. <<bHe>> flashes a sharp-toothed, menacing grin before leaping toward you.
 		<<else>>
-			atop a hairless, scaled head. It opens its colossal maw and leaps toward you.
+			atop a hairless, scaled head. It opens its colossal maw, and leaps toward you.
 		<</if>>
 		<br><br>
 
-		<<link [[Stand your ground|Street Monster]]>><<set $phase to 0>><<set $molestationstart to 1>><</link>>
+		<<link [[Stand your ground|Street Monster]]>><<set $molestationstart to 1>><</link>>
 		<br>
-		<<link [[Run|Street Monster Run]]>><<set $phase to 1>><</link>><<athleticsdifficulty 400 1400>>
+		<<link [[Run|Street Monster Run]]>><</link>><<athleticsdifficulty 400 1400>>
 		<br>
 	<<else>>
 		You hear something land behind you, followed by a low growl. You run in a panic, until you trip and fall. Nothing follows.<<beastescape>>
@@ -3354,13 +3365,8 @@
 				<<else>>
 					<<addevent "streetNightDogAttack" 0.5>>
 				<</if>>
-				<<if Time.days gte 0>>
-					<<if $beauty gte ($beautymax / 7) * 4>>
-						<<set $_nightMonsterWeight to 0.5>>
-					<<else>>
-						<<set $_nightMonsterWeight to 0.2>>
-					<</if>>
-					<<addevent "streetNightMonster" $_nightMonsterWeight>>
+				<<if Time.days gte 8>>
+					<<addevent "streetNightTowerCreature" 0.2>>
 				<</if>>
 			<<else>>
 				/* Events previously in eventsstreetday */
