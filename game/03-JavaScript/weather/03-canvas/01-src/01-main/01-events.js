@@ -1,4 +1,4 @@
-/* Initialize sky canvas on loading a save */
+/* Initialise sky canvas on loading a save */
 $(document).on(":onloadsave", () => {
 	if (!Weather.sidebar?.loaded.value) return;
 	Weather.activeRenderer = Weather.sidebar;
@@ -32,7 +32,7 @@ $(document).on(":passageend", async () => {
 	}
 });
 
-/* Initialize sky canvas on page refresh */
+/* Initialise sky canvas on page refresh */
 $(document).on(":passagestart", () => {
 	// Setup banner for start menu
 	if (["Start", "Clothes Testing", "Renderer Test Page", "Tips"].includes(State.passage)) {

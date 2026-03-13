@@ -996,7 +996,7 @@ function hourPassed(hours) {
 		statChange.arousal(0, "time");
 		wikifier("wetnessCalculate");
 		// special clothes effects
-		// currently, only these slots can have lustful traits, consider universalizing
+		// currently, only these slots can have lustful traits, consider universalising
 		["upper", "lower", "feet", "head"].forEach(slot => {
 			["bimbo", "pimp"].forEach(type => {
 				if (V.worn[slot].type.includes(type)) ++V.specialClothesEffects[type].progress;

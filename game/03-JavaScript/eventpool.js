@@ -79,7 +79,7 @@ function rollWeightedRandomFromArray(items) {
 		}
 	}
 	// Should never happen
-	console.warn("Weighted random math went wrong", roll0, sum, items);
+	console.warn("Weighted random maths went wrong", roll0, sum, items);
 	return items[0].item;
 }
 window.rollWeightedRandomFromArray = rollWeightedRandomFromArray;

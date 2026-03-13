@@ -1,6 +1,6 @@
 /*
-	Packs a weather snapshot for the Start page by saving only the next two keypoints for weather, fog, 
-	and overcast. On the start page, unpack restores those keypoints and stores them back in the weatherObj, 
+	Packs a weather snapshot for the Start page by saving only the next two keypoints for weather, fog,
+	and overcast. On the start page, unpack restores those keypoints and stores them back in the weatherObj,
 	allowing us to treat start page weather in the same way as we treat weather throughout the rest of the game.
 */
 const Packer = (() => {
