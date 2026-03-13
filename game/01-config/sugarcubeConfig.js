@@ -173,6 +173,14 @@ Config.navigation.override = function (dest) {
 			return dest.replace("Playground", "Courtyard");
 			/* Try not to include "Playground" in any passage names after this. */
 		}
+		if (V.nightMonsterNNPCUpdate === 1) {
+			/* Teleports the player out after Night Monster NNPC update to avoid error cases, particularly when importing mid-combat */
+			V.nightMonsterNNPCUpdate = 2;
+			if (dest.includes("Street Monster") || dest.includes("Monster Tower")) {
+				Wikifier.wikifyEval("<<endcombat>>");
+				return "Domus Street";
+			}
+		}
 		switch (dest) {
 			case "Downgrade Waiting Room":
 				return V.passage;
