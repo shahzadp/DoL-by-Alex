@@ -1,7 +1,7 @@
 const constants = {
 	penisSize: {
-		max: 5,
-		min: -2,
+		max: 6,
+		min: 0,
 	},
 	tiredness: {
 		max: 2000,
