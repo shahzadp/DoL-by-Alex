@@ -215,7 +215,7 @@ Do not render instance multiple times on same passage.
 
 #### \<\<showlayer LAYERNAME \[...FILTERS]>>
 
-Show layer and optionaly add filters
+Show layer and optionally add filters
 
 #### \<\<hidelayer LAYERNAME>>
 
