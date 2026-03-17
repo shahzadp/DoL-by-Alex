@@ -383,6 +383,9 @@ function initProps() {
 		pasta_fork: {
 			folder: "food",
 		},
+		pasty: {
+			folder: "food",
+		},
 		popcorn: {
 			folder: "food",
 		},
