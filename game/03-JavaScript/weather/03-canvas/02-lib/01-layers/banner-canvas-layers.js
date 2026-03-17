@@ -830,9 +830,10 @@ Weather.Renderer.Layers.add({
 					this.renderInstance.orbitals.sun.factor > 0.6 &&
 					this.renderInstance.orbitals.sun.factor < 0.85 &&
 					Weather.overcast < 1 &&
-					(Weather.precipitationIntensity <=
-						resolveValue(setup.WeatherGeneration.weatherTypes.find(w => w.name === "lightPrecipitation").precipitationIntensity) ||
-						Weather.fog > 0.4)
+					Weather.precipitationIntensity > 0 &&
+					Weather.precipitationIntensity <= 1.3 && // precipitationIntensity for lightPrecipitation
+					Weather.precipitation === "rain" &&
+					Weather.fog > 0.2
 				);
 			},
 			params: {
