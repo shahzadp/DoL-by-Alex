@@ -1277,7 +1277,7 @@ setup.LocationImages = {
 			},
 			blood: {
 				condition: () => Weather.bloodMoon && !Weather.isSnow,
-				image: "bloodmoon.png",
+				image: "blood-moon.png",
 				animation: {
 					frameDelay: 200,
 					cycleDelay: () => random(10, 60, true) * 1000,
@@ -2538,7 +2538,7 @@ setup.LocationImages = {
 			},
 			bloodmoon: {
 				condition: () => Weather.bloodMoon && Weather.isSnow,
-				image: "bloodmoon.png",
+				image: "blood-moon.png",
 				animation: {
 					frameDelay: 300,
 					cycleDelay: () => 0,

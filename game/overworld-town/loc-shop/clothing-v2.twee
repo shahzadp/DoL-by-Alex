@@ -1304,11 +1304,25 @@
 						<<if _pat and _item.pattern_options?.includes(_pat)>>
 							<<set _modeloptions.worn[_slot].pattern to _pat>>
 						<</if>>
+						<<set _position to setup.clothes[_slot][_modeloptions.worn[_slot].index]?.holdPosition>>
+						<<if _position or _slot is "handheld">>
+							<<set _modeloptions.arm_right to "hold">>
+							<<switch _position>>
+								<<case "left_cover">>
+									<<set _modeloptions.arm_left to "cover">>
+									<<set _modeloptions.arm_right to "idle">>
+								<<case "right_cover">>
+									<<set _modeloptions.arm_right to "cover">>
+								<<case "clutch">>
+									<<set _modeloptions.arm_left to "cover">>
+								<<case "cover_both">>
+									<<set _modeloptions.arm_left to "cover">>
+									<<set _modeloptions.arm_right to "cover">>
+								<<case "idle_both">>
+									<<set _modeloptions.arm_right to "idle">>
+							<</switch>>
+						<</if>>
 					<</for>>
-					<<if _slot is "handheld">>
-						<<set _position to setup.clothes.handheld[_modeloptions.worn.handheld.index]?.holdPosition>>
-						<<set _modeloptions.arm_right to _position is "right_cover" ? "cover" : _position is "idle" ? "idle" : "hold">>
-					<</if>>
 
 				<<rendermodel "canvas-mannequin">>
 

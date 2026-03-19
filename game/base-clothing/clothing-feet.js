@@ -1757,7 +1757,7 @@ function initFeet() {
 			accessory_colour: 0,
 			accessory_colour_options: [],
 			cursed: 0,
-			notuck: 1,
+			notuck: 0,
 			location: 0,
 			iconFile: "giftwrap_feet.png",
 		},

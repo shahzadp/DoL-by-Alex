@@ -37,7 +37,7 @@ const combatCloseMouth = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
-		
+
 		tongue: {
 			srcfn(options) {
 				return `${options.src}mouth/${options.mouth.state}-tongue.png`;
@@ -50,7 +50,7 @@ const combatCloseMouth = {
 			},
 			z: CombatRenderer.indices.closeNpc - 2,
 		},
-		
+
 		saliva: {
 			srcfn(options) {
 				return `${options.src}mouth/${options.mouth.state}-saliva.png`;
@@ -101,6 +101,4 @@ function mouthPenetrator(npc, overrideOptions = {}) {
 	return Object.assign(defaults, overrideOptions);
 }
 
-
 Renderer.CanvasModels.combatCloseMouth = combatCloseMouth;
-

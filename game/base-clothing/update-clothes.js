@@ -37,7 +37,7 @@ function updateClothingColours(item, itemRef) {
 			break;
 		case "aviators":
 			if (!item.colour || item.colour === 0) item.colour = "grey";
-			if (!item.accessory_colour || item.accessory_colour === 0) item.accessory_colour = "original";
+			if (!item.accessory_colour || item.accessory_colour === 0 || item.accessory_colour === "original") item.accessory_colour = "black";
 			break;
 		case "glasses":
 			if (!item.colour || item.colour === 0) item.colour = "silver";
