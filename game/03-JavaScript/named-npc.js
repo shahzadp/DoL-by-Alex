@@ -245,7 +245,7 @@ function averySchedule() {
 			/* Sunday */
 			case 1:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 16) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 17 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -258,7 +258,7 @@ function averySchedule() {
 			/* Monday */
 			case 2:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 20) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 23 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -269,7 +269,7 @@ function averySchedule() {
 			/* Tuesday */
 			case 3:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 20) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 23 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -280,7 +280,7 @@ function averySchedule() {
 			/* Wednesday */
 			case 4:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 20) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 23 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -291,7 +291,7 @@ function averySchedule() {
 			/* Thursday */
 			case 5:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 20) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 23 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -302,7 +302,7 @@ function averySchedule() {
 			/* Friday */
 			case 6:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 20) V.avery_mansion.schedule = "work";
 				else if (Time.hour <= 23 && V.avery_mansion.rage.work === true) V.avery_mansion.schedule = "return";
@@ -313,7 +313,7 @@ function averySchedule() {
 			/* Saturday */
 			case 7:
 				if (Time.hour <= 4) V.avery_mansion.schedule = "sleep";
-				else if (Time.hour <= 5) V.avery_mansion.schedule = "bath";
+				else if (Time.hour <= 5 && V.daily.avery.morning_bath != "done") V.avery_mansion.schedule = "bath";
 				else if (Time.hour <= 6) V.avery_mansion.schedule = "breakfast";
 				else if (Time.hour <= 9) V.avery_mansion.schedule = "garden";
 				else if (Time.hour <= 12) V.avery_mansion.schedule = "pool";

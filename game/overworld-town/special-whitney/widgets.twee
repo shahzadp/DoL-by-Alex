@@ -1,6 +1,7 @@
 :: Widgets Whitney [widget]
 <<widget "whitneyoptions">>
 	/*add  to added links, so cigarettes are removed from the scene after the player smokes with Whitney*/
+	
 	<<if $location is "park" and Time.dayState isnot "day">>
 		<br><br>
 		<<if C.npc.Whitney.love gte 15>>
@@ -11,7 +12,7 @@
 		<br><br>
 		<<whitneyexit>>
 	<<else>>
-		<<if $daily.whitney.parkWhore is "run">>
+		<<if $daily.whitney.parkWhore is "run" and $location is "park">>
 			<<set $daily.whitney.parkWhore to true>><<run delete $daily.whitney.textTrigger>>
 			"Nice getaway earlier," <<he>> suddenly says. "What, you thought I'd be mad?
 			<<if $whitneyromance is 1>><<set _noOptions to true>>
@@ -28,7 +29,7 @@
 			<<else>>
 				I got paid. Who cares if they didn't get what they wanted?"
 			<</if>>
-		<<elseif $daily.whitney.parkWhore is "paid" and C.npc.Whitney.love gte 10>>
+		<<elseif $daily.whitney.parkWhore is "paid" and C.npc.Whitney.love gte 10 and $location is "park">>
 			<<set $daily.whitney.parkWhore to true>><<set _noOptions to true>><<run delete $daily.whitney.textTrigger>>
 			<<He>> rummages through <<his>> <<npcClothesText $NPCList[0] "upper">> for a handful of banknotes. <<He>> shoves them in your face without looking.
 			<br><br>
@@ -40,7 +41,7 @@
 			<br>
 			<<link [[Stay silent|Whitney Park Whore Share]]>><<printmoney 5000>><<money 5000 "prostitution">><<set $phase to 0>><</link>>
 			<br>
-		<<elseif $daily.whitney.parkWhore is "runFail" and C.npc.Whitney.love gte 10>>
+		<<elseif $daily.whitney.parkWhore is "runFail" and C.npc.Whitney.love gte 10 and $location is "park">>
 			<<set $daily.whitney.parkWhore to true>><<set _noOptions to true>><<run delete $daily.whitney.textTrigger>>
 			"Dumbass," <<he>> mutters. "You call that a getaway? Try running next time."
 			<br><br>
@@ -76,7 +77,38 @@
 					>>
 				<</if>>
 			<</if>>
-		<<elseif !$worn.handheld.type.includes("prop")>>
+		<<elseif C.npc.Whitney.love gte 18 and $whitney_home_timer gte 21 and !$whitney_home_stage>>
+			<<set $whitney_home_timer to 0>>
+			<<set _noOptions to true>>
+			Whitney stares at you, a strange look in <<his>> eyes. Then <<he>> flicks <<his>> cigarette into the fountain, and grasps your arm.
+			<br><br>
+			"I've something to show you," <<he>> says. "It's only fifteen minutes away."
+			<br><br>
+			<<link [[Go with Whitney (0:30)|Whitney Home Intro 1]]>><<pass 5>><<set $whitney_home_stage to 1>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Refuse|Whitney Home Intro Refuse]]>><<npcincr Whitney love -1>><</link>><<llove>>
+			<br>
+		<<elseif C.npc.Whitney.love gte 18 and $whitney_home_timer gte 21 and $whitney_home_stage is 1>>
+			<<set $whitney_home_timer to 0>>
+			<<set _noOptions to true>>
+			Whitney flicks the cigarette in the fountain as soon as <<he>> sees you, and marches closer, looking determined. "You're coming with me, slut," <<he>> says. "I left something at home, and I'm not leaving you here where any creep can grab you."
+			<br><br>
+			<<link [[Go with Whitney (0:35)|Whitney Home Intro 2]]>><<pass 15>><<set $whitney_home_stage to 2>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Refuse|Whitney Home Intro Refuse]]>><<npcincr Whitney love -1>><</link>><<llove>>
+			<br>
+		<<elseif C.npc.Whitney.love gte 18 and $whitney_home_timer gte 21 and $whitney_home_stage is 2>>
+			<<set $whitney_home_timer to 0>>
+			<<set _noOptions to true>>
+			Whitney notices you approach, and stares at you. Then <<he>> draws <<himself>> up, puts out the cigarette on the back of <<his>> own hand, and steps closer.
+			<br><br>
+			"You're just in time," <<he>> says. "I wanna show you my flat." <<He>> grabs your arm.
+			<br><br>
+			<<link [[Go with Whitney (0:35)|Whitney Home Intro 3]]>><<pass 15>><<set $whitney_home_stage to 3>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Refuse|Whitney Home Intro Refuse]]>><<npcincr Whitney love -1>><</link>><<llove>>
+			<br>
+		<<elseif !$worn.handheld.type.includes("prop") and $location is "park">>
 			<<if _whitney_attention is 1>>
 				<<if C.npc.Whitney.lust gte 50>>
 					<span class="green">Whatever was on <<his>> mind is long gone. <<His>> eyes are glued to you.</span>
@@ -129,6 +161,10 @@
 				<</if>>
 			<</if>>
 			<br>
+			<<if $location is "flats">>
+				<<ind>><<link [[Hang out (0:30)|Whitney Home Hang]]>><<pass 30>><<npcincr Whitney love 1>><<stress -6>><</link>><<glove>><<lstress>>
+				<br>
+			<</if>>
 			<<if $daily.whitney.ask is undefined and $location is "park">>
 				<<socialiseicon "ask">><<link [[Ask if something's wrong|Whitney Ask]]>><<set $daily.whitney.ask to 1>><</link>>
 				<br>
@@ -163,6 +199,13 @@
 				<<skinicon "give">><<link [[Give Whitney food|Whitney Gifts List]]>><<handheldon>><</link>>
 				<br>
 			<</if>>
+			<<if StartConfig.sneaky and $location is "park" and ($whitney_home_stage lt 3 or !$whitney_home_stage)>>
+				<<ind>><<link [[Progress Home events|Whitney Park]]>><<set $whitney_home_timer += 21>><</link>> SNEAKY OPTION
+				<br>
+			<<elseif StartConfig.sneaky and $location is "flats" and $whitney_home_stage is 3>>
+				<<ind>><<link [[Progress Home events|Whitney Home Hang]]>><<set $whitney_home_timer += 21>><</link>> SNEAKY OPTION
+				<br>
+			<</if>>
 			<<whitneyoptionsleave>>
 		<</if>>
 	<</if>>
@@ -172,6 +215,9 @@
 	<<if $bus is "park" or $location is "park">>
 		<<getouticon>><<link [[Leave|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
 		<br>
+	<<elseif $location is "flats">>
+		<<getouticon>><<link [[Leave (0:01)|Whitney Home Leave]]>><<endevent>><<set $eventskip to 1>><</link>>
+		<br>
 	<</if>>
 <</widget>>
 
@@ -179,6 +225,10 @@
 	<<if $bus is "park" or $location is "park">>
 		<<set $daily.whitney.park to 0>><<run delete $daily.whitney.text>><<run delete $daily.whitney.textTrigger>>
 		<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+		<br>
+	<<elseif $location is "flats">>
+		<<run delete $daily.whitney.text>><<run delete $daily.whitney.textTrigger>>
+		<<link [[Next|Barb Street]]>><<endevent>><<set $eventskip to 1>><</link>>
 		<br>
 	<</if>>
 <</widget>>
@@ -401,4 +451,316 @@
 		<<link [[Next|Oxford Street]]>><<endevent>><</link>>
 		<br>
 	<</if>>
+<</widget>>
+
+<<widget "whitney_parent">>
+	<<if $per_npc["whitney_parent_flat"].gender is "f">>
+		<<set _text_output to "mum">>
+	<<else>>
+		<<set _text_output to "dad">>
+	<</if>>
+	<<print _text_output>>
+<</widget>>
+
+
+<<widget "whitney_gang_options">>
+	<<endevent>><<npc Whitney>><<person1>>
+	<<link [[Hang out (0:30)|Whitney Home Hang Gang]]>><<pass 30>><</link>>
+	<br>
+	<<link [[Leave (0:02)|Whitney Home Hang Gang Leave]]>><</link>>
+	<br>
+<</widget>>
+
+<<widget "whitney_home_events">>
+
+	<<endevent>>
+	<<npc Whitney>><<person1>>
+	<<cleareventpool>>
+	<<addinlineevent "whitney_hang_1">>
+		You hang out with Whitney in <<his>> living room. <<He>> flips through the channels, until something catches <<his>> interest.
+		<<if random(1, 3) is 3>>
+			Then <<he>> shifts over, and rests <<his>> head in your lap.
+			<br><br>
+			
+			<<link [[Stroke <<his>> hair|Whitney Home Hang Lap Stroke]]>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Do nothing|Whitney Home Hang Lap Nothing]]>><</link>>
+			<br>
+			<<link [[Tell <<him>> to move|Whitney Home Hang Lap Tell]]>><<npcincr Whitney love -1>>><</link>><<llove>>
+			<br>
+		<<else>>
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_2">>
+		You play a game with Whitney in <<his>> bedroom, lying on your front while Whitney sits beside you.
+
+		<<if random(1, 3) is 3>>
+			Deciding that the bed just isn't comfortable enough, <<he>> sits on on you instead, pushing you into the bed. <<His>> face gives no indication of having done anything unusual.
+			<br><br>
+
+			<<link [[Put up with it|Whitney Home Hang Sit Put]]>><</link>>
+			<br>
+			<<link [[Complain|Whitney Home Hang Sit Complain]]>><</link>>
+			<br>
+			<<link [[Try to throw <<him>> off|Whitney Home Hang Sit Throw]]>><</link>><<physiquedifficulty 1 1000>>
+			<br>
+		<<else>>
+			It's a cooperative game, but that doesn't stop Whitney from sabotaging your efforts, then bragging that <<he>> contributed more when you both lose.
+
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_3">>
+		You play a game with Whitney in <<his>> bedroom, sitting on the floor while <<he>> sits on the bed above you.
+		<<if random(1, 3) is 3>>
+			It's a single player game, and Whitney is content to watch and give pointers. After a few minutes <<he>> starts playing with your hair, running it through <<his>> fingers, as if enjoying the texture.
+			<br><br>
+
+			<<link [[Encourage|Whitney Home Hang Hair Encourage]]>><<npcincr Whitney love 1>><<stress -6>><</link>><<glove>><<lstress>>
+			<br>
+			<<link [[Move away|Whitney Home Hang Hair Move]]>><</link>>
+			<br>
+		<<else>>
+			It's a competitive fighting game, and Whitney is no slouch,
+			<<if $handskill gte random(400, 800)>>
+				<span class="green">but you're able to get the upper hand.</span> Whitney seems impressed.<<glove>><<npcincr Whitney love 1>>
+			<<else>>
+				<span class="red">winning most matches.</span>
+			<</if>>
+
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_4">>
+		You hang out with Whitney, sitting on the sofa while <<he>> scrolls on <<his>> phone, showing you videos <<he>> finds amusing.
+		<<if random(1, 3) is 3>>
+			After a while, <<he>> wraps an arm around your waist and lies down, so you can see the phone together.
+			<br><br>
+			<<link [[Snuggle into <<him>>|Whitney Home Hang Phone Snuggle]]>><<npcincr Whitney lust 1>><<npcincr Whitney love 1>><</link>><<glust>><<glove>>
+			<br>
+			<<link [[Pull away|Whitney Home Hang Phone Pull]]>><</link>>
+			<br>
+			<<link [[Stay still|Whitney Home Hang Phone Still]]>><</link>>
+			<br>
+		<<else>>
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_5">>
+		You hang out with Whitney in <<his>> room. <<He>> fetches <<his>> guitar from the wardrobe, and plays a little. <<He>> holds it like a weapon. It's quite loud.
+		<<if random(1, 3) is 3>>
+			"What do you think?" <<he>> asks, voice barely audible over the sound.
+			<br><br>
+
+			<<link [[Say its very nice|Whitney Home Hang Guitar Say]]>><</link>>
+			<br>
+			<<link [[Give a thumbs up|Whitney Home Hang Guitar Up]]>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Give a thumbs down|Whitney Home Hang Guitar Down]]>><</link>>
+			<br>
+		<<else>>
+			"It's an easy way to get the neighbours to complain," <<he>> says putting it away. "But I'm not in the mood right now."
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_6">>
+		You hang out with Whitney. <<He>> lies on <<his>> bed and talks about <<his>> friends, and some of the trouble they've gotten up to.
+		<br><br>
+
+		<<link [[Say you don't approve|Whitney Home Hang Talk Disapprove]]>><</link>>
+		<br>
+		<<link [[Say <<his>> friends sound like bad influences|Whitney Home Hang Talk Influences]]>><</link>>
+		<br>
+		<<link [[Ask if you can tag along in the future|Whitney Home Hang Talk Tag]]>><</link>>
+		<br>
+		<<link [[Say nothing|Whitney Home Hang Talk Nothing]]>><</link>>
+		<br>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_7">>
+		Whitney asks you to watch while <<he>> tries on clothes in <<his>> room. <<He>> dresses and undressed right in front of you, with no concern.
+		<br><br>
+		<<if random(1, 3) is 3>>
+			"How'd I look?" <<he>> says at one point, wearing a rather skimpy outfit.
+			<br><br>
+
+			<<link [[Say <<he>> looks nice|Whitney Home Hang Talk Nice]]>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Say <<he>> looks like a slut|Whitney Home Hang Talk Slut]]>><<npcincr Whitney love 1>><</link>><<glove>>
+			<br>
+			<<link [[Say <<he>> looks awful|Whitney Home Hang Talk Awful]]>><<npcincr Whitney love -1>><</link>><<llove>>
+			<br>
+		<<else>>
+			<<whitneyoptions>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_8">>
+		Whitney asks for your help cleaning the kitchen. "My <<whitney_parent>> will complain otherwise," <<he>> says, grabbing a dry plate from the rack by the sink and putting in the cupboard.
+		<br><br>
+
+		"That's better." It still looks quite untidy.
+
+		<<whitneyoptions>>
+	<</addinlineevent>>
+
+	<<runeventpool>>
+<</widget>>
+
+
+
+<<widget "whitney_home_events_gang">>
+
+	<<endevent>>
+	<<npc Whitney>><<person1>>
+	<<cleareventpool>>
+	
+	<<addinlineevent "whitney_hang_gang_1">>
+		<<generatey2>>
+		You hang out with Whitney and <<his>> friends. They run a tournament in a fighting game, passing the controllers between them. Whitney makes it into the final round, along with a <<person2>><<person>>.
+		<br><br>
+		"You give me £50 if I win," Whitney says.
+		<br>
+		<<His>> friend nods. "If I win, you have to climb out the window, and bring something back from a neighbour's flat."
+		<br>
+		Whitney laughs. "Alright, but I'll take the slut with me."
+		<br><br>
+
+		They play the final match. Whitney wins a round, followed by <<his>> friend. It's a best of three.
+		<br><br>
+
+		<<link [[Distract Whitney|Whitney Home Gang Window Distract]]>><</link>><<exhibitionist1>>
+		<br>
+		<<link [[Do nothing|Whitney Home Gang Window Nothing]]>><</link>>
+		<br> 
+		<<whitney_gang_options>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_gang_1">>
+		You hang out with Whitney and <<his>> friends while they watch TV in the living room.
+		<<if random(1, 3) is 3>>
+			"Get us some snacks," Whitney says at one point. "There're are crisps above the kettle, and dip in the fridge."
+			<br><br>
+
+			<<link [[Fetch snacks|Whitney Home Gang Snacks Fetch]]>><<npcincr Whitney dom 1>><</link>><<gdom>>
+			<br>
+			<<link [[Refuse|Whitney Home Gang Snack Fetch Refuse]]>><<npcincr Whitney dom -1>><<stress 6>><<trauma 6>><<pain 4>><</link>><<gpain>><<gtrauma>><<gstress>><<ldom>>
+			<br>
+		<<else>>
+			There's some argument about what to put on, but Whitney has the final say.
+			<br><br>
+
+			<<whitney_gang_options>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_gang_2">>
+		You hang out with Whitney and <<his>> friends in the kitchen. They talk about some of their adventures. They sound violent.
+		<br><br>
+
+		Whitney keeps an arm around your waist the whole time.
+		<br><br>
+
+		<<whitney_gang_options>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_gang_3">>
+		You hang out in Whitney's bedroom with <<his>> friends. They play a difficult game, passing the controller between each other.
+		<<if random(1, 3) is 3>>
+			Whitney passes it to you.
+			<br><br>
+
+			<<link [[Do your best|Whitney Home Gang Game Best]]>><</link>><<skill_difficulty `currentSkillValue("handskill")` "Hand Skill" 400 800>>
+			<br>
+			<<link [[Lose on purpose|Whitney Home Gang Game Lose]]>><</link>>
+			<br>
+			<<link [[Refuse to play|Whitney Home Gang Game Refuse]]>><</link>>
+			<br>
+		<<else>>
+			<br><br>
+			"Fuck this," Whitney says after losing one too many times. "What else is there?"
+			<br><br>
+
+			<<whitney_gang_options>>
+		<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "whitney_hang_gang_4">>
+		<<generatey2>><<person2>>
+		You catch one of Whitney's friends, a <<person>>, staring at you a bit too long. Whitney notices too.
+		<<person1>>
+		<<if C.npc.Whitney.dom gte 16 and C.npc.Whitney.lust lt 20>>
+			<<He>> hooks <<his>> around you and smirks at <<his>> friend. "What you looking at," <<he>> says. "<<pShes>> mine. See?"
+			<<if $worn.neck.type.includes("collar")>>
+				<<He>> grabs your collar.
+			<<else>>
+				<<He>> bites your neck.
+			<</if>>
+			<br><br>
+
+			<<His>> other friends laugh, dispelling any tension.
+			<br><br>
+
+			<<whitney_gang_options>>
+		<<elseif C.npc.Whitney.dom gte 5 and C.npc.Whitney.dom lt 16 and C.npc.Whitney.lust lt 20>>
+			<<He>> jerks forward all of a sudden, making <<his>> friend flinch,
+			<<if $worn.neck.type.includes("collar")>>
+				then <<he>> grabs your collar.
+			<<else>>
+				then <<he>> bites your neck.
+			<</if>>
+			"<<pShes>> mine. Fuck off."
+			<br><br>
+			
+			<<His>> friend nods, and looks away as the others tease <<him>>.
+			<br><br>
+
+			<<whitney_gang_options>>
+		<<elseif C.npc.Whitney.dom lt 5 and C.npc.Whitney.lust lt 20>>
+			<<He>> wraps <<his>> arms around your neck from behind, resting <<his>> head
+			<<if $physiquesize gte 12000>>
+				on your shoulder.
+			<<else>>
+				on yours.
+			<</if>>
+			"<<pShes>> mine," <<he>> says, shooting a glare at <<his>> friend.
+			<br><br>
+
+			<<His>> friend nods, and looks away as the others tease <<him>>.
+			<br><br>
+
+			<<whitney_gang_options>>
+		<<elseif C.npc.Whitney.love gte 16 and C.npc.Whitney.lust gte 20>>
+			With a smirk, <<he>> starts kissing your neck, groping underneath your clothes while maintaining eye contact with the <<person2>><<person>>.
+			<br><br>
+			"You want to look?" Whitney says. "Look all you want, but don't touch."<<glust>><<npcincr Whitney lust 1>><<garousal>><<arousal 600>>
+			<br><br>
+
+			Whitney pulls away from you, and grabs your chin. "And what will I do with you? Letting people gawk at you, as if you're public property. I think you need a lesson, don't you?"
+			<br><br>
+
+			<<link [[Nod|Whitney Home Gang Sex]]>><<npcincr Whitney dom 1>><<npcincr Whitney lust 1>><<endevent>><<npc Whitney>><<person1>><<set $sexstart to 1>><</link>><<promiscuous1>><<gdom>><<glust>>
+			<br>
+			<<link [[Disagree|Whitney Home Gang Disagree]]>><</link>>
+			<br>
+		<<else>>
+			<<He>> wraps an arm around your shoulder, and stares at the <<person2>><<person>>, who averts <<his>> eyes.
+			<br><br>
+
+			"What's the matter?" Whitney says. "You were so keen to gawk just now."
+			<br><br>
+
+			"I wasn't," <<his>> friend begins, but changes <<his>> tune. "I'm sorry." <<He>> averts <<his>> gaze as the others tease <<him>>.
+			<br><br>
+
+			<<whitney_gang_options>>
+		<</if>>
+	<</addinlineevent>>
+	<<runeventpool>>
 <</widget>>

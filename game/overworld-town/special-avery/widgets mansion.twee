@@ -3331,6 +3331,20 @@
 			<</if>>
 
 			<<if $bus is "avery_bedroom">>
+				<<if $daily.avery.morning_bath is "dressing">>
+					<<if C.npc.Avery.rage gte 80>>
+						Clothes fly from the wardrobe as Avery dresses within.
+					<<elseif C.npc.Avery.rage gte 60>>
+						Avery stomps around the wardrobe, choosing what to dress.
+					<<elseif C.npc.Avery.rage gte 40>>
+						Avery mutters to <<himself>> in the wardrobe as <<he>> dresses.
+					<<elseif C.npc.Avery.rage gte 20>>
+						You hear Avery dressing in the wardrobe.
+					<<else>>
+						You hear Avery in the wardrobe, humming as <<he>> dresses.
+					<</if>>
+					<br><br>
+				<</if>>
 				<<if $unbind is 1>>
 					<<unset $unbind>>
 					<<if $possessed>>
@@ -3412,29 +3426,57 @@
 				<</if>>
 			<</if>>
 
-			<<if $bus is "avery_bathroom">>
+			<<if $bus is "avery_bathroom" and !$daily.avery.morning_bath>>
 				<<if $avery_mansion.schedule is "bath">>
 					<<npc "Avery">><<person1>>
-					<<if C.npc.Avery.rage gte 80>>
-						Avery lies in the bath, letting the cold tap run.
-					<<elseif C.npc.Avery.rage gte 60>>
-						Avery fiddles with the bath taps, unable to get the temperature right.
-					<<elseif C.npc.Avery.rage gte 40>>
-						Avery dips <<his>> head beneath the surface of the bath.
-					<<elseif C.npc.Avery.rage gte 20>>
-						Avery washes <<himself>> in the bath.
-					<<else>>
-						Avery relaxes in the bath.
+					<<if !$daily.avery.morning_bath>>
+						<<if C.npc.Avery.rage gte 80>>
+							Avery lies in the bath, letting the cold tap run.
+						<<elseif C.npc.Avery.rage gte 60>>
+							Avery fiddles with the bath taps, unable to get the temperature right.
+						<<elseif C.npc.Avery.rage gte 40>>
+							Avery dips <<his>> head beneath the surface of the bath.
+						<<elseif C.npc.Avery.rage gte 20>>
+							Avery washes <<himself>> in the bath.
+						<<else>>
+							Avery relaxes in the bath.
+						<</if>>
+					<<elseif $daily.avery.morning_bath is "drying">>
+						<<if C.npc.Avery.rage gte 80>>
+							Avery dries <<his>> hair, shaking the dryer as if that will make it faster.
+						<<elseif C.npc.Avery.rage gte 60>>
+							Avery dries <<his>> hair, letting it flow as <<he>> stares at the unseen.
+						<<elseif C.npc.Avery.rage gte 40>>
+							Avery dries <<his>> hair, running <<his>> free hand through <<his>> locks. 
+						<<elseif C.npc.Avery.rage gte 20>>
+							Avery dries <<his>> hair.
+						<<else>>
+							Avery dries <<his>> hair with a smile.
+						<</if>>
 					<</if>>
 					<<endevent>>
 					<br><br>
-					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
-					<br>
-					<<bathroomicon "bath">><<link [[Bathe with Avery (0:20)|Mansion Bathe Avery]]>><<pass 20>><</link>>
-					<br>
-					<<personalUpkeep>>
-					<br>
-					<<pregnancyTest "Mansion Bathroom">>
+					<<if !$daily.avery.bathroom_peek and random(1, 4) is 4>>
+						<<set _hide_links to 1>>
+						<<npc Avery>>
+						<<person1>>
+						You approach the bathroom, but hear movement inside, and stop. You see a flash of skin through the door. It's Avery, preparing to get into the bath.
+						<br><br>
+						<<set $skulduggerydifficulty to 400>>
+						<<link [[Peep|Mansion Bathroom Avery Peeping 2]]>><<set $phase to 0>><</link>><<garousal>><<skulduggerydifficulty>>
+						<br>
+						<<link [[Wait until Avery is inside the bath to enter|Mansion Bathroom Avery Peeping End]]>><<set $phase to 1>><</link>>
+						<br>
+					<<else>>
+						<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
+						<br>
+						<<bathroomicon "bath">><<link [[Bathe with Avery (0:20)|Mansion Bathe Avery]]>><<pass 20>><</link>>
+						<br>
+						<<personalUpkeep>>
+						<br>
+						<<pregnancyTest "Mansion Bathroom">>
+					<</if>>
+					<<set $daily.avery.bathroom_peek to true>>
 				<<else>>
 					<<bathroomicon "bath">><<link [[Bathe (0:20)|Mansion Bathe]]>><<pass 20>><</link>>
 					<br>
@@ -3447,22 +3489,39 @@
 
 			<<if $bus is "avery_dining">>
 				<<if $avery_mansion.schedule is "breakfast">>
-					<<npc "Avery">><<person1>>
-					<<if C.npc.Avery.rage gte 80>>
-						Avery fumes at something on <<his>> phone, <<his>> breakfast forgotten.
-					<<elseif C.npc.Avery.rage gte 60>>
-						Avery scrolls through <<his>> phone, stopping now and then to take a bite of <<his>> breakfast.
-					<<elseif C.npc.Avery.rage gte 40>>
-						Avery reads the news on <<his>> phone with one hand while eating breakfast with the other.
-					<<elseif C.npc.Avery.rage gte 20>>
-						Avery eats breakfast, but seems too distracted to enjoy it.
-					<<else>>
-						Avery eats breakfast, savouring each bite.
+					<<if !$daily.avery.breakfast_bite and random(1, 4)>>
+						<<set _hide_links to 1>>
+						You enter the dining room and see Avery eating breakfast. It's a simple parfait with <<= either("fruits","granola","cereal")>>. Though simple, it looks tasty.
+						<br><br>
 					<</if>>
-					<<endevent>>
-					<br><br>
-					<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
-					<br><br>
+					<<set $daily.avery.breakfast_bite to 1>>
+					<<npc "Avery">><<person1>>
+					<<if _hide_links and C.npc.Avery.love gte 60 and C.npc.Avery.rage lt 20>>
+						Avery notices you looking. "Hungry?" <<He>> scoops up a spoonful. "Would you like a bite?"
+						<br><br>
+						<<link [[Yes|Mansion Breakfast Avery Bite]]>><<set $phase to 1>><</link>>
+						<br>
+						<<link [[No|Mansion Breakfast Avery Bite]]>><<set $phase to 2>><</link>>
+						<br>
+					<<else>>
+
+						<<if C.npc.Avery.rage gte 80>>
+							Avery fumes at something on <<his>> phone, <<his>> breakfast forgotten.
+						<<elseif C.npc.Avery.rage gte 60>>
+							Avery scrolls through <<his>> phone, stopping now and then to take a bite of <<his>> breakfast.
+						<<elseif C.npc.Avery.rage gte 40>>
+							Avery reads the news on <<his>> phone with one hand while eating <<his>> breakfast with the other.
+						<<elseif C.npc.Avery.rage gte 20>>
+							Avery eats <<his>> breakfast, but seems too distracted to enjoy it.
+						<<else>>
+							Avery eats <<his>> breakfast, savouring each bite.
+						<</if>>
+						<<endevent>>
+						<br><br>
+						<<socialiseicon>><<link [[Talk to Avery|Mansion Talk]]>><</link>>
+						<br><br>
+					<</if>>
+					
 				<<elseif $avery_mansion.schedule is "party_prepare">>
 					<<npc "Avery">><<person1>>
 					<<if Time.weekDay is 1>>
@@ -3505,6 +3564,7 @@
 						<br><br>
 					<</if>>
 				<</if>>
+
 			<</if>>
 
 			<<if $bus is "avery_garage">>
@@ -3614,7 +3674,9 @@
 				<br>
 			<</if>>
 
-			<<avery_mansion_links>>
+			<<if !_hide_links>>
+				<<avery_mansion_links>>
+			<</if>>
 
 			<<if $bus is "avery_bedroom">>
 				<br><br>
@@ -4593,4 +4655,29 @@
 	<<unset $avery_valentines_virginity>>
 	<<unset $avery_valentines_steal_virginity>>
 	<<unset $avery_valentines_vow>>
+<</widget>>
+
+<<widget "avery_mansion_morning_change">>
+<<set $daily.avery.morning_bath to "dressing">>
+<<set $daily.avery.morning_change to true>>
+<<He>> looks at you,
+<<if $rng gte 76 and C.npc.Avery.dom gte 40>>
+	and asks, "You aren't busy, are you? Come with me." <<He>> nods towards <<his>> wardrobe.
+	<<if $avery_mansion.morning_change_count gte 1>>
+		It appears <<he>> expects you to dress <<him>> for the day again.
+	<<else>>
+		"I want you to help me get dressed."
+	<</if>>
+	<br><br>
+	<<link [[Do as asked (0:15)|Mansion Bedroom Avery Dress]]>><<set $phase to 1>><<npcincr Avery dom 1>><<pass 15>><</link>><<gdom>>
+	<br>
+	<<link [[Refuse|Mansion Bedroom Avery Dress Refuse]]>><<set $phase to 2>><<npcincr Avery dom -1>><</link>><<ldom>>
+	<br>
+<<else>>
+	nods, and heads into <<his>> bedroom. You hear <<his>> wardrobe door swing open.
+	<br><br>
+	
+	<<link [[Next|Mansion Bathroom]]>><<clotheson>><<endevent>><</link>>
+	<br><br>
+<</if>>
 <</widget>>

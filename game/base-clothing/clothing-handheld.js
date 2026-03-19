@@ -232,7 +232,7 @@ function initHandheld() {
 			back_img_acc: 1,
 			back_img_colour: "primary",
 			back_img_acc_colour: "none",
-			mask_img: 1,
+			mask_img: 0,
 			cursed: 0,
 			location: 0,
 			iconFile: "paperparasol.png",

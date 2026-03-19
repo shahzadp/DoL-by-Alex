@@ -1623,7 +1623,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Whitney Romance`, stayOnPassageFn],
-			widgets: [`<<set $whitneyromance to 1>>`],
+			widgets: [`<<set $whitneyromance to 1>>`, `<<set $whitney_home_timer to 0>>`],
 		},
 		{
 			link: [`Pub Whore`, stayOnPassageFn],
