@@ -2289,7 +2289,7 @@ function initLower() {
 			high_img: 0,
 			back_img: 0,
 			cursed: 0,
-			notuck: 1,
+			notuck: 0,
 			location: 0,
 			iconFile: "overalls.png",
 			accIcon: 0,
@@ -5179,6 +5179,7 @@ function initLower() {
 			iconFile: 0,
 			accIcon: 0,
 			outfitSecondary: ["upper", "cocoon"],
+			zIndex: "over_head",
 		},
 
 		{
