@@ -53,6 +53,7 @@ module.exports = {
 		// DoL shortcuts
 		C: "readonly",
 		DeserializeGame: "readonly",
+		F: "readonly", // setup.foodstuff
 		globals: "readonly",
 		T: "readonly",
 		V: "readonly",

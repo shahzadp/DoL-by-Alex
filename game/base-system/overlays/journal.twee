@@ -627,13 +627,13 @@
 						<li><<shopicon "forest">>Gwylan has asked you to wear <<if $gwylan.request.items.length gt 1>>some clothes<<else>>a clothing item<</if>> to the forest shop.</li>
 						<<gwylanJournalItems>>
 					<<case "ingredients">>
-						<li><<tendingicon "basket">>Gwylan has asked you to gather some ingredients.</li>
+						<li><<icon "tending/basket.png">>Gwylan has asked you to gather some ingredients.</li>
 						<<gwylanJournalItems>>
 					<<case "sample">>
 						<li><<iconUi "sym-lust-empty.png">> Gwylan has asked you to gather some samples.</li>
 						<<gwylanJournalItems>>
 					<<case "recipe">>
-						<li><<tendingicon "basket">>Gwylan has asked you to gather some items to make <span class="blue">$gwylan.request.special</span>.</li>
+						<li><<icon "tending/basket.png">>Gwylan has asked you to gather some items to make <span class="blue">$gwylan.request.special</span>.</li>
 						<<gwylanJournalItems>>
 					<<case "samplePlayer">>
 						/* ToDo: Gwylan */
@@ -653,7 +653,7 @@
 							<</if>>
 						<</if>>
 					<<case "cream">>
-						<li><<tendingicon "cream">><span class="lewd">Gwylan has made you a lewd offer involving some cream...</span></li>
+						<li><<foodstufficon "cream">><span class="lewd">Gwylan has made you a lewd offer involving some cream...</span></li>
 					<<case "robin">>
 						/* ToDo: Gwylan */
 					<<case "chastity">>
@@ -780,13 +780,13 @@
 		<h1 class="header gold bold">Avery's Demands</h1>
 		<ul class="journal carry">
 			<li><<foodicon "eat">>Avery wants you to have dinner ready at <span @class="between(Time.weekDay,2,6) ? 'gold' : ''"><<ampm 21 00>> weekdays</span>.</li>
-			<<if $avery_mansion.food.name isnot "none">>
+			<<if $avery_mansion.food isnot "none">>
 				<li>
-					<<tendingicon $avery_mansion.food.icon>>
+					<<foodstufficon $avery_mansion.food>>
 					<<set $_averyMissedColor to ["","purple","pink","red"][Math.clamp($avery_mansion.rage.dinner_missed,0,3)]>>
-					<<set $_averyDishAmount to $plants[$avery_mansion.food.name].amount>>
-					<<set $_averyDishAmountColour to $plants[$avery_mansion.food.name].amount ? "green" : "red">>
-					<span @class="$_averyMissedColor">Avery wants <<recipe_name $avery_mansion.food.name "article">>.</span> You currently have <span @class="$_averyDishAmountColour"><<print $_averyDishAmount>></span>.
+					<<set $_averyDishAmount to $foodstuff[$avery_mansion.food].amount>>
+					<<set $_averyDishAmountColour to $foodstuff[$avery_mansion.food].amount ? "green" : "red">>
+					<span @class="$_averyMissedColor">Avery wants <<recipe_name $avery_mansion.food "article">>.</span> You currently have <span @class="$_averyDishAmountColour"><<print $_averyDishAmount>></span>.
 				</li>
 			<</if>>
 			<<if !["missed", "started"].includes($avery_mansion.party_state)>>
@@ -1146,8 +1146,8 @@
 		<</if>>
 	<</if>>
 
-	<<set _plant_keys to Object.keys($plants)>>
-	<<set _hasProduce to Object.keys($plants).some(key => $plants[key].amount >= 1)>>
+	<<set _foodstuffKeys to Object.keys($foodstuff)>>
+	<<set _hasProduce to Object.keys($foodstuff).some(key => $foodstuff[key].amount >= 1)>>
 	<<set _carrying to [$antiquemoney, $blackmoney, $phials_held, $lurkers_held, $popcorn, $milkshake, $panties_held].some(i => i >= 1)>>
 	<<if _carrying or _hasProduce>>
 		<hr>
@@ -1164,7 +1164,7 @@
 		You are carrying:
 		<ul class="journal carry">
 			<<if ["prison", "prison_beach"].includes($location) and $prison.teeth gte 1>>
-				<li><<tendingicon "sharks-teeth">> <span class="green"><<number $prison.teeth>></span> shark's teeth.
+				<li><<icon "tending/sharks-teeth.png">> <span class="green"><<number $prison.teeth>></span> shark's teeth.
 				<<if $prison_wren_intro isnot 1>>
 					You can find Wren in the yard on Fridays after lunch.
 				<</if>>
@@ -1201,9 +1201,10 @@
 			<details class="journal">
 				<summary class="journal">Products</summary>
 				<<set $_types to []>>
-				<<for _t to 0; _t lt _plant_keys.length; _t++>>
-					<<set _produce to setup.plants[$plants[_plant_keys[_t]].name]>>
-					<<set $_types.pushUnique(_produce.type.toUpperFirst())>>
+				<<for _t to 0; _t lt _foodstuffKeys.length; _t++>>
+					<<set _foodstuff to F[_foodstuffKeys[_t]]>>
+					<<set _foodstuffType to ((_foodstuff?.category) === "dish" ? "food" : _foodstuff?.category)>>
+					<<set $_types.pushUnique(_foodstuffType.toUpperFirst())>>
 				<</for>>
 				<<set $_types.sort()>>
 				<<if $_types.length>>
@@ -1397,16 +1398,16 @@
 		<</if>>
 
 		<<if $plants_known.length gte 0>>
-			<<set _plant_keys to Object.keys(setup.plants)>>
+			<<set _foodstuffKeys to Object.keys(F)>>
 			<<set _collection to 0>>
 			<<for _i to 0; _i lt $plants_known.length; _i++>>
-				<<if Object.keys(setup.plants).includes($plants_known[_i])>>
+				<<if Object.keys(F).includes($plants_known[_i])>>
 					<<set _collection += 1>>
 				<</if>>
 			<</for>>
 			<<set _total to 0>>
-			<<for _i to 0; _i lt _plant_keys.length; _i++>>
-				<<if setup.plants[_plant_keys[_i]].type === "flower" || setup.plants[_plant_keys[_i]].type === "vegetable">>
+			<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
+				<<if F[_foodstuffKeys[_i]]?.tending?.has_seeds>>
 					<<set _total += 1>>
 				<</if>>
 			<</for>>
@@ -1425,11 +1426,14 @@
 			<details class="journal">
 				<summary class="journal">Seeds</summary>
 				<div class="itemCollectible">
-					<<for _i to 0; _i lt _plant_keys.length; _i++>>
-						<<set _tooltip to setup.plants[_plant_keys[_i]].seed_name ? setup.plants[_plant_keys[_i]].seed_name.toUpperFirst() : (setup.plants[_plant_keys[_i]].plural[0].toUpperCase() + setup.plants[_plant_keys[_i]].plural.substring(1))>>
-						<<set _icon to setup.plants[_plant_keys[_i]].icon>>
-						<<if setup.plants[_plant_keys[_i]].type is "flower" or setup.plants[_plant_keys[_i]].type is "vegetable">>
-							<<if $plants_known.includes( setup.plants[_plant_keys[_i]].name)>>
+					<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
+						<<set _seedItem to F[_foodstuffKeys[_i]]>>
+						<<set _seedName to _seedItem?.tending?.seed_name>>
+						<<set _seedPlural to _seedItem?.plural or "">>
+						<<set _tooltip to _seedName ? _seedName.toUpperFirst() : (_seedPlural[0].toUpperCase() + _seedPlural.substring(1))>>
+						<<set _icon to _seedItem?.icon>>
+						<<if _seedItem?.tending?.has_seeds>>
+							<<if $plants_known.includes(_foodstuffKeys[_i])>>
 								<div class="item" @tooltip="_tooltip">
 									<<icon `"tending/" + _icon`>>
 								</div>
@@ -1449,23 +1453,24 @@
 
 <<widget "journalInventory">>
 	<<set $_filter to _args[0] || "all">>
-	<<for _t to 0; _t lt _plant_keys.length; _t++>>
-		<<set _item to $plants[_plant_keys[_t]]>>
-		<<set _produce to setup.plants[_item.name]>>
-		<<if _item.amount gte 1>>
-			<<if $_filter is "all" or _produce.type is $_filter>>
+	<<for _t to 0; _t lt _foodstuffKeys.length; _t++>>
+		<<set _foodstuffKey to _foodstuffKeys[_t]>>
+		<<set _foodstuff to F[_foodstuffKey]>>
+		<<set _item to $foodstuff[_foodstuffKey]>>
+		<<set _foodstuffType to ((_foodstuff?.category) === "dish" ? "food" : _foodstuff?.category)>>
+		<<if _item?.amount gte 1>>
+			<<if $_filter is "all" or _foodstuffType is $_filter>>
 				<<set _formatter = new Intl.NumberFormat('en-gb', { roundingMode: 'trunc', notation: 'compact' })>>
 				<<set _amount = _formatter.format(_item.amount)>>
 				<<if _item.amount === 1>>
-					<<set _itemName to _produce.singular || _produce.name.replace(/_/g, ' ')>>
+					<<set _itemName to _foodstuff.singular>>
 				<<else>>
-					<<set _itemName to _produce.plural>>
+					<<set _itemName to _foodstuff.plural>>
 				<</if>>
 				<<set _tooltip to `<span class="green">${_item.amount}</span> ${_itemName}`>>
 
 				<div class="item" @tooltip="_tooltip">
-					<<set _iconName to _produce.icon.replace(/\.[^/.]+$/, "")>>
-					<<tendingicon _iconName>>
+					<<foodstufficon _foodstuffKey>>
 					<hr>
 					<<= _amount>>
 				</div>

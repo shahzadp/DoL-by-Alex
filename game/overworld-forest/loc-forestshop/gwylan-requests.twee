@@ -68,8 +68,8 @@ You hand Gwylan the wolfshrooms.
 <br><br>
 
 <<set _amountToRemove to 3 - $gwylanTutorialShrooms>>
-<<if $plants.wolfshroom.amount>>
-	<<set $plants.wolfshroom.amount -= _amountToRemove>>
+<<if $foodstuff.wolfshroom.amount>>
+	<<set $foodstuff.wolfshroom.amount -= _amountToRemove>>
 <</if>>
 <<unset $gwylanTutorialShrooms>>
 /* Above is in case the player became proficient enough in tending to pick wolfshrooms without the tutorial exception half way through */
@@ -601,7 +601,7 @@ You hear a zipper unzip, <span class="pink">and your leotard falls right off</sp
 <<effects>><<run statusCheck("Gwylan")>>
 <<set _itemsDelivered to []>>
 <<run $gwylan.request.items.forEach(item => {
-	if (V.plants[item.name]) V.plants[item.name].amount -= item.need;
+	if (V.foodstuff[item.name]) V.foodstuff[item.name].amount -= item.need;
 })>>
 <<run $gwylan.request.items.forEach(item => _itemsDelivered.pushUnique(item.name))>>
 
@@ -2051,7 +2051,7 @@ Gwylan rummages around the shop for a while, looking for something. "I can never
 	<<set _clothesToTake to []>>
 	<<run $gwylan.request.items.forEach(item => {
 		if (item.category === "clothing") T.clothesToTake.pushUnique(item.slot);
-		if (item.category === "tending" && V.plants[item.name]) V.plants[item.name].amount -= item.need;
+		if (item.category === "tending" && V.foodstuff[item.name]) V.foodstuff[item.name].amount -= item.need;
 	})>>
 	<<for _cl to 0; _cl lt _clothesToTake.length; _cl++>>
 		<<set _noRebuy to true>>
@@ -2945,7 +2945,7 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 					<br><br>
 
 					"Wonderful! I'm low on stock, and could use a few.
-				<<elseif $plants.wolfshroom.amount>>
+				<<elseif $foodstuff.wolfshroom.amount>>
 					You nod. "I've picked them before."
 					<br><br>
 
@@ -2983,7 +2983,7 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 						<<default>>
 							"I need a few <<print $_types[0]>>.
 					<</switch>>
-				<<elseif $_request.items.every(item => setup.plants[item.name].shop is "supermarket")>>
+				<<elseif $_request.items.every(item => F[item.name].shop.available_in?.includes("supermarket"))>>
 					"I have a bit of a shopping list here. It's not the most exciting task, but you would be saving me a trip.
 				<<else>>
 					<<set $_typesPlural to []>>
@@ -3001,12 +3001,12 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 				<<set $_names to []>>
 				<<run $_request.items.forEach(item => {
 					if (item.need > 1) {
-						$_names.pushUnique("<<number " + item.need + ">> " + setup.plants[item.name].plural);
+						$_names.pushUnique("<<number " + item.need + ">> " + F[item.name].plural);
 					} else {
 						if (["a","e","i","o","u"].some(letter => item.name.startsWith(letter))) {
-							$_names.pushUnique("an " + setup.plants[item.name].name.replace(/_/g," "));
+							$_names.pushUnique("an " + F[item.name].name.replace(/_/g," "));
 						} else {
-							$_names.pushUnique("a " + setup.plants[item.name].name.replace(/_/g," "));
+							$_names.pushUnique("a " + F[item.name].name.replace(/_/g," "));
 						}
 					}
 				})>>
@@ -3307,7 +3307,7 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 						<</switch>>
 					<</if>>
 				<<case "tending">>
-					<<set $_itemAmount to $plants[$_thisItem.name].amount>>
+					<<set $_itemAmount to $foodstuff[$_thisItem.name].amount>>
 					<<if $gwylan.request.special is "tutorial">>
 						<<set $_itemAmount += $gwylanTutorialShrooms>>
 					<</if>>
@@ -3316,13 +3316,12 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 					<<else>>
 						<span class='fa-icon fa-unselected'></span>
 					<</if>>
-					<<set $_thisItemIcon to setup.plants[$_thisItem.name].icon.replace(/\.[^/.]+$/, "")>>
-					<<tendingicon $_thisItemIcon>>
+					<<foodstufficon $_thisItem.name>>
 					<<number $_thisItem.need>>
 					<<if $_thisItem.need gt 1>>
-						<<print setup.plants[$_thisItem.name].plural>>
+						<<print F[$_thisItem.name].plural>>
 					<<else>>
-						<<print setup.plants[$_thisItem.name].name.replace(/_/g," ")>>
+						<<print F[$_thisItem.name].name.replace(/_/g," ")>>
 					<</if>>
 					<<if $_itemAmount gte $_thisItem.need>>
 						<span class='green'>($_itemAmount / $_thisItem.need)</span>

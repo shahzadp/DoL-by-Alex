@@ -294,14 +294,14 @@
 <<widget "supermarketDisplayItems">>
 	<<set _foodKeys to []>>
 	<<set _foodGroups to []>>
-	<<run Object.keys(setup.plants).forEach(key => {
-		const item = setup.plants[key];
-		if (!item.shop or !item.shop.includes(_selectedShop)) return;
+	<<run Object.keys(F).forEach(key => {
+		const item = F[key];
+		if (!item.shop.available_in?.includes(_selectedShop)) return;
 
 		const filter = _foodSearch ? _foodSearch.toLowerCase().split(/[_ ]/g) : false;
 		if (filter and !filter.find(term =>
 				item.name.includes(term) or
-				item.type.includes(term) or
+				item.category.includes(term) or
 				item.plural?.includes(term) or
 				item.singular?.includes(term)
 			)) {
@@ -309,8 +309,8 @@
 		}
 
 		_foodKeys.pushUnique(key);
-		if (V.plants[key].supermarket gt 0) {
-			_foodGroups.pushUnique(item.type);
+		if (V.foodstuff[key].supermarket gt 0) {
+			_foodGroups.pushUnique(item.category);
 		} else {
 			_foundSoldOut to true;
 		}
@@ -321,8 +321,8 @@
 		<<foldout false _categoryVar>>
 			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
 			<<set _keys to _foodKeys.filter(key =>
-				(_category isnot "Sold out" && setup.plants[key].type is _category && $plants[key].supermarket > 0) ||
-				(_category is "Sold out" && $plants[key].supermarket <= 0)
+				(_category isnot "Sold out" && F[key].category is _category && $foodstuff[key].supermarket > 0) ||
+				(_category is "Sold out" && $foodstuff[key].supermarket <= 0)
 			)>>
 			<<for $_i, $_key range _keys>>
 				<div @id="$_key" class="item"><<supermarketDisplayItem $_key>></div>
@@ -334,23 +334,23 @@
 
 <<widget "supermarketDisplayItem">>
 	<<set _key to _args[0]>>
-	<<set $_setupItem to setup.plants[_key]>>
+	<<set $_setupItem to F[_key]>>
 	<div class="details">
 		<div>
-			<<tendingicon $_setupItem.icon>> |
+			<<foodstufficon _args[0]>> |
 
-			Owned: <span class="gold"><<print $plants[_key].amount>></span> |
+			Owned: <span class="gold"><<print $foodstuff[_key].amount>></span> |
 
 			<<if Time.dayState is "night">>
-				Value: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
+				Value: <span class="gold"> £<<print ($_setupItem.shop.sell_price * ($_setupItem.shop.bought_in_bulk or 1) * 2 / 100).toFixed(2)>></span>
 			<<else>>
-				Price: <span class="gold"> £<<print ($_setupItem.plant_cost * ($_setupItem.boughtInBulk or 1) * 2 / 100).toFixed(2)>></span>
+				Price: <span class="gold"> £<<print ($_setupItem.shop.sell_price * ($_setupItem.shop.bought_in_bulk or 1) * 2 / 100).toFixed(2)>></span>
 			<</if>>
-			<<if $_setupItem.boughtInBulk>>
-				per <<print $_setupItem.boughtInBulk>>
+			<<if $_setupItem.shop.bought_in_bulk>>
+				per <<print $_setupItem.shop.bought_in_bulk>>
 			<</if>>
 		</div>
-		<<if $plants[_key].supermarket gt 0>>
+		<<if $foodstuff[_key].supermarket gt 0>>
 			<<numberStepper "<<recipe_name _key 'cap'>>" $shoppingBasket[_key] {
 				callback: (value, arr) => {
 					V.shoppingBasket[arr[0]] = value;
@@ -359,17 +359,17 @@
 				valueFormat: (value, percentage, values) => {
 					return `${value}/${values[1]}`;
 				},
-				values: [_key, $plants[_key].supermarket],
+				values: [_key, $foodstuff[_key].supermarket],
 				disableMinMax: false,
-				step: 1 * ($_setupItem.boughtInBulk or 1),
-				max: Math.floor($plants[_key].supermarket),
+				step: 1 * ($_setupItem.shop.bought_in_bulk or 1),
+				max: Math.floor($foodstuff[_key].supermarket),
 				colorArr:["--yellow"],
 				percentage: false
 			}>>
 		<<else>>
 			<br>
 			<span class="red">
-				<<switch $plants[_key].name>>
+				<<switch _key>>
 					<<case "prawn" "clam" "date" "lime">><<recipe_name _key 'cap'>>s are
 					<<case "cherry">>Cherries are
 					<<case "oats">>Oats are
@@ -383,7 +383,7 @@
 	<div class="recipe">
 		<<capture _key>>
 			<<if $options.images is 1>>
-				<<set _file to `recipe-${$_setupItem.type}.png`>>
+				<<set _file to $_setupItem.kitchen_item_type_icon>>
 				<<link "<<iconUi _file>>">>
 					<<replace "#altSection">><<supermarketDisplayDetails _key>><</replace>>
 					<<removeclass "#altSection, #mobileCloser" "mobileHidden">>
@@ -419,7 +419,7 @@
 			if (amount > 0) {
 				$_typesInBasket++;
 			};
-			sum += setup.plants[key].plant_cost * amount * 2 or 0;
+			sum += F[key].shop.sell_price * amount * 2 or 0;
 			return sum;
 		}, 0)>>
 
@@ -446,10 +446,10 @@
 			<<link [[Steal|$passage]]>>
 				<<for _itemInCart range Object.keys($shoppingBasket)>>
 					<<for _i to 0; _i lt $shoppingBasket[_itemInCart]; _i++>>
-						<<crimeUp `setup.plants[_itemInCart].plant_cost * 2 / 100` "thievery">>
+						<<crimeUp `F[_itemInCart].shop.sell_price * 2 / 100` "thievery">>
 					<</for>>
-					<<tending_give $plants[_itemInCart].name $shoppingBasket[_itemInCart]>>
-					<<set $plants[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
+					<<tending_give _itemInCart $shoppingBasket[_itemInCart]>>
+					<<set $foodstuff[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
 				<</for>>
 				<<set $shoppingBasket to {}>>
 			<</link>>
@@ -459,9 +459,9 @@
 			<<if $money gte _totalCost>>
 				<<link [["Purchase"|$passage]]>>
 					<<for _itemInCart range Object.keys($shoppingBasket)>>
-						<<tending_give $plants[_itemInCart].name $shoppingBasket[_itemInCart]>>
-						<<money `-(setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
-						<<set $plants[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
+						<<tending_give _itemInCart $shoppingBasket[_itemInCart]>>
+						<<money `-(F[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
+						<<set $foodstuff[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
 					<</for>>
 					<<set $shoppingBasket to {}>>
 				<</link>>
@@ -485,12 +485,12 @@
 		<<if $shoppingBasket[_itemInCart] lte 0>><<continue>><</if>>
 		<div class="basketItem">
 			<div>
-				<<tendingicon setup.plants[_itemInCart].icon>>
+				<<foodstufficon _itemInCart>>
 				<<recipe_name _itemInCart "cap">> |
 				x<<print $shoppingBasket[_itemInCart]>>
 			</div>
 			<div class="price">
-				<span class="gold"> £<<print (setup.plants[_itemInCart].plant_cost * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span>
+				<span class="gold"> £<<print (F[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span>
 				<span>
 					<<capture _itemInCart>>
 						<<link "Remove">>
@@ -506,8 +506,8 @@
 <</widget>>
 
 <<widget "supermarketDisplayFillBasket">>
-	<<if Object.keys(setup.plants).find(key => {
-		if (setup.plants[key]?.shop?.includes(_selectedShop) and $plants[key].supermarket) return key;
+	<<if Object.keys(F).find(key => {
+		if (F[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) return key;
 	})>>
 		Fill
 		<<link "25%">><<supermarketDisplayFillBasketLink 0.25>><</link>> |
@@ -521,9 +521,9 @@
 
 <<widget "supermarketDisplayFillBasketLink">>
 	<<set $shoppingBasket to {}>>
-	<<run Object.keys(setup.plants).forEach(key => {
-		if (setup.plants[key]?.shop?.includes(_selectedShop) and $plants[key].supermarket) {
-			$shoppingBasket[key] to Math.ceil($plants[key].supermarket * _args[0]);
+	<<run Object.keys(F).forEach(key => {
+		if (F[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) {
+			$shoppingBasket[key] to Math.ceil($foodstuff[key].supermarket * _args[0]);
 		}
 	})>>
 	<<replace "#itemList">><<supermarketDisplayItems>><</replace>>
@@ -532,10 +532,10 @@
 <</widget>>
 
 <<widget "supermarketDisplayDetails">>
-	<<set $_setupItem to setup.plants[_args[0]]>>
+	<<set $_setupItem to F[_args[0]]>>
 	<div id="basket">
 		<div>
-		<<tendingicon $_setupItem.icon>>
+		<<foodstufficon _args[0]>>
 			<div class="recipeTitle"><<recipe_name _args[0] "cap">>:</div>
 		</div>
 		<div class="mobileOnly">
@@ -553,8 +553,8 @@
 			<</link>>
 			<hr>
 		</div>
-		<<if $_setupItem.boughtInBulk>>
-			Bought in sets of <<print $_setupItem.boughtInBulk>>.
+		<<if $_setupItem.shop.bought_in_bulk>>
+			Bought in sets of <<print $_setupItem.shop.bought_in_bulk>>.
 		<</if>>
 		<<knownFoodRecipes _args[0]>>
 	</div>

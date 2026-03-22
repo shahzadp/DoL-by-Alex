@@ -72,6 +72,18 @@ setup.debugMenu.eventList = {
 			widgets: [``],
 		},
 		{
+			link: [`Foodstuff Prop Debug`, `Foodstuff Prop Debug`],
+			widgets: [``],
+		},
+		{
+			link: [`Learn all recipes`, stayOnPassageFn],
+			widgets: [`<<learn_recipe_all>>`],
+		},
+		{
+			link: [`Give 20 of each foodstuff`, stayOnPassageFn],
+			widgets: [`<<give_all_foodstuff>>`],
+		},
+		{
 			link: [`Strip`, stayOnPassageFn],
 			widgets: [`<<undressclothes "wardrobe">>`],
 		},

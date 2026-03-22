@@ -39,7 +39,7 @@
 	Avery mansion days: <<print $avery_mansion.days>><br>
 	Avery mansion walk cycle: <<print $avery_mansion.walk_cycle>><br>
 	Avery mansion display antiques: <<print $avery_mansion.display_antiques>><br>
-	Avery mansion food: <<print $avery_mansion.food.name>><br>
+	Avery mansion food: <<print $avery_mansion.food>><br>
 	Avery mansion food last: <<print $avery_mansion.food_last>><br>
 	Avery mansion date ready: <<print $avery_mansion.date_ready>><br>
 
@@ -127,7 +127,7 @@
 	<<set $avery_mansion.days_absent to 0>>
 	<<set $avery_mansion.walk_cycle to 0>>
 	<<set $avery_mansion.display_antiques to 0>>
-	<<set $avery_mansion.food to clone(setup.plants.hamburger)>>
+	<<set $avery_mansion.food to "hamburger">>
 	<<set $avery_mansion.food_last to "none">>
 	<<set $avery_mansion.date_ready to false>>
 
@@ -217,28 +217,28 @@
 
 <<widget "avery_mansion_food_select">>
 	<<avery_food_select>>
-	<<if $avery_mansion.food.name is $avery_mansion.food_last>>
+	<<if $avery_mansion.food is $avery_mansion.food_last>>
 		<<if $avery_mansion.rage.dinner_wrong>>
-			"On second thought, that was delicious," Avery says. <span class="gold">"I'd like <<recipe_name $avery_mansion.food.name "article">> again next time."</span>
+			"On second thought, that was delicious," Avery says. <span class="gold">"I'd like <<recipe_name $avery_mansion.food "article">> again next time."</span>
 		<<else>>
-			"I think I fancy the routine. <span class="gold">I'd like <<recipe_name $avery_mansion.food.name "article">> again.</span>"
+			"I think I fancy the routine. <span class="gold">I'd like <<recipe_name $avery_mansion.food "article">> again.</span>"
 		<</if>>
-	<<elseif setup.plants[$avery_mansion.food.name].special.includes("seafood")>>
-		"I fancy seafood next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food.name "article">> will hit the spot."</span>
-	<<elseif setup.plants[$avery_mansion.food.name].special.includes("sweet")>>
-		"I fancy something sweet next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food.name "article">> will hit the spot."</span>
-	<<elseif setup.plants[$avery_mansion.food.name].special.includes("spicy")>>
-		"I fancy something spicy next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food.name "article">> will hit the spot."</span>
+	<<elseif F[$avery_mansion.food].food.tags.includes("seafood")>>
+		"I fancy seafood next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food "article">> will hit the spot."</span>
+	<<elseif F[$avery_mansion.food].food.tags.includes("sweet")>>
+		"I fancy something sweet next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food "article">> will hit the spot."</span>
+	<<elseif F[$avery_mansion.food].food.tags.includes("spicy")>>
+		"I fancy something spicy next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food "article">> will hit the spot."</span>
 	<<else>>
-		"I fancy something hearty next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food.name "article">> will hit the spot."</span>
+		"I fancy something hearty next time," Avery says. <span class="gold">"I think <<recipe_name $avery_mansion.food "article">> will hit the spot."</span>
 	<</if>>
 	<br><br>
 	<i>Avery will ask for more complex recipes at higher dominance.</i>
 	<br><br>
 
-	<<if $gift.name isnot $avery_requested_food>>
-		<<for _i range setup.plants[$avery_requested_food].ingredients>>
-			<<if $plants[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes($plants[_i].name)>>
+	<<if $gift isnot $avery_requested_food>>
+		<<for _i range F[$avery_requested_food].recipe.ingredients>>
+			<<if $foodstuff[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes(_i)>>
 				<<set _missingIngredients to true>>
 			<</if>>
 		<</for>>
@@ -247,11 +247,11 @@
 		<<link [[Say you couldn't make <<recipe_name $avery_requested_food "article">> because you were missing ingredients|Avery Gifts Ingredients]]>><</link>>
 		<br>
 	<</if>>
-	<<if $plants[$avery_mansion.food.name].recipe isnot true>>
+	<<if $foodstuff[$avery_mansion.food]?.knows_recipe isnot true>>
 		<<link [[Say you don't know the recipe|Avery Gifts Recipe]]>><<unset $avery_requested_food>><</link>>
 		<br>
 	<</if>>
-	<<if $plants[$avery_mansion.food.name].recipe isnot true or _missingIngredients>>
+	<<if $foodstuff[$avery_mansion.food]?.knows_recipe isnot true or _missingIngredients>>
 		<<link [[Say nothing|Mansion Dining]]>><<endevent>><<unset $avery_requested_food>><</link>>
 		<br>
 	<<else>>
@@ -3582,7 +3582,7 @@
 						<<set _extralinebreak to true>>
 						<<for _i range $avery_mansion.recipe>>
 							<<capture _i>>
-								<<tendingicon `setup.plants[_i].icon.replace(/\.[^/.]+$/, "")`>><<link [[Learn recipe for <<recipe_name _i>> (2:00)|Mansion Study Learn]]>><<set $phase to _i>><<pass 120>><</link>>
+								<<foodstufficon _i>><<link [[Learn recipe for <<recipe_name _i>> (2:00)|Mansion Study Learn]]>><<set $phase to _i>><<pass 120>><</link>>
 							<</capture>>
 							<br>
 						<</for>>
