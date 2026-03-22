@@ -4517,7 +4517,7 @@
 	<</if>>
 
 	<!-- V0.4 egg -->
-	<<if $plants.egg>>
+	<<if def $plants and $plants.egg>>
 		<<set $plants.chicken_egg to $plants.egg>>
 		<<run delete $plants.egg>>
 		<<set $plants.chicken_egg.name to "chicken_egg">>
@@ -6021,14 +6021,14 @@
 		<<set $makeup.blusher = 0>>
 	<</if>>
 	<!-- 0.5.3.0 makes sure $plants is defined on all saves and stocks supermarket-->
-	<<if $plants.salt is undefined>>
-		<<set _food_keys to Object.keys(setup.plants)>>
+	<<if def $plants and $plants.salt is undefined>>
+		<<set _food_keys to Object.keys(F)>>
 		<<for _i to 0; _i lt _food_keys.length; _i++>>
 			<<set $_type to _food_keys[_i]>>
 			<<if $plants[$_type] is undefined>>
-				<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
+				<<set $plants[$_type] to {"name": F[$_type].name, "plural": F[$_type].plural, "amount": 0}>>
 			<<elseif $plants[$_type].name is undefined>>
-				<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+				<<set $plants[$_type] to {"name": F[$_type].name, "plural": F[$_type].plural, "amount": $plants[$_type].amount}>>
 			<</if>>
 		<</for>>
 		<<supermarketWeekly>>
@@ -6058,14 +6058,14 @@
 		<<set $daily.giftedFood to {}>>
 	<</if>>
 	<!-- 0.5.3.1 makes sure the related $plants names use _ rather than spaces as they get used as object keys -->
-	<<if $plants.cheese_and_crackers.name is "cheese and crackers">>
+	<<if def $plants and $plants.cheese_and_crackers.name is "cheese and crackers">>
 		<<run ["cheese_and_crackers", "choc_chip_cookie", "spaghetti_bolognese", "porridge"].forEach(key => $plants[key].name to key)>>
 		<<set $plants.porridge.plural to "servings of porridge">>
 		<<set $plants.chips.plural to "packets of chips">>
 		<<set $plants.yorkshire_pudding.plural to "yorkshire puddings">>
 		<<set $plants.choc_chip_cookie.plural to "chocolate chip cookies">>
 	<</if>>
-	<<if $plants.chilli_con_carne.singular is "serving ">>
+	<<if def $plants and $plants.chilli_con_carne.singular is "serving ">>
 		<<set $plants.chilli_con_carne.singular to "serving of chilli con carne">>
 	<</if>>
 
@@ -6073,7 +6073,9 @@
 	<<set $daily.prison ||= {}>>
 
 	<!-- Rice does not have a supermarket quantity -->
-	<<set $plants.rice.supermarket ||= 0>>
+	<<if def $plants>>
+		<<set $plants.rice.supermarket ||= 0>>
+	<</if>>
 
 	<!-- Avery cards sending face items of the wrong colour -->
 	<<if $avery_cards?.face>>
@@ -6305,12 +6307,6 @@
 	<</for>>
 
 	<<unset $topless>>
-
-	<!-- 0.5.5.1, repair Avery recipe request if it pulled a string instead of the setup object -->
-	<<if $avery_mansion?.food and typeof $avery_mansion.food is "string">>
-		<<set $_recipeToFix to $avery_mansion.food>>
-		<<set $avery_mansion.food to Object.entries(clone(setup.plants)).find(([key, item]) => key === $_recipeToFix)[1]>>
-	<</if>>
 
 	<!-- 0.5.5.1, add kitchen stock to Avery's mansion object -->
 	<<if $avery_mansion and !$avery_mansion.kitchen_stock>>
@@ -6553,12 +6549,6 @@
 		<<set $dateCount.Gwylan to 0>>
 		<<set $dateCount.GwylanBeast to 0>>
 		<<set $dateCount.GwylanSex to 0>>
-	<</if>>
-
-	<!-- Increment in variables-start.twee as well whenever new tending objects are added -->
-	<<if !$objectVersion.plants or $objectVersion.plants lt 2>>
-		<<updatePlants>>
-		<<set $objectVersion.plants to 2>>
 	<</if>>
 
 	/* Text animation accessibility options */
@@ -6907,6 +6897,74 @@
 		<<else>>
 			<<set $nightmonstermonster to 0>>
 		<</if>>
+	<</if>>
+
+
+	/* Move legacy stall vars to new names */
+	<<if def $plants_stall>>
+		<<if ndef $foodstuff_stall>>
+			<<set $foodstuff_stall to clone($plants_stall)>>
+		<</if>>
+		<<unset $plants_stall>>
+	<</if>>
+	<<if def $plant_inventory>>
+		<<if ndef $foodstuff_inventory>>
+			<<set $foodstuff_inventory to clone($plant_inventory)>>
+		<</if>>
+		<<unset $plant_inventory>>
+	<</if>>
+	<<if def $stall_plant>>
+		<<if ndef $stall_foodstuff>>
+			<<set $stall_foodstuff to $stall_plant>>
+		<</if>>
+		<<unset $stall_plant>>
+	<</if>>
+
+	/* Move legacy food inventory into $foodstuff, then drop $plants */
+	<<if ndef $foodstuff>>
+		<<set $foodstuff to {}>>
+	<</if>>
+	<<if def $plants>>
+		<<run Object.keys($plants).forEach(key => {
+			if (!F[key]) return;
+			if (!V.foodstuff[key]) {
+				V.foodstuff[key] = clone(V.plants[key]);
+			} else {
+				Object.assign(V.foodstuff[key], clone(V.plants[key]));
+			}
+			delete V.foodstuff[key].name;
+			delete V.foodstuff[key].plural;
+			delete V.foodstuff[key].singular;
+		})>>
+		<<unset $plants>>
+	<</if>>
+
+	<<if def $objectVersion.plants and ndef $objectVersion.foodstuff>>
+		<<set $objectVersion.foodstuff to $objectVersion.plants>>
+	<</if>>
+	<<if def $objectVersion.plants>>
+		<<unset $objectVersion.plants>>
+	<</if>>
+
+	<<if $avery_mansion?.food?.name>>
+		<<set $avery_mansion.food to $avery_mansion.food.name>>
+	<</if>>
+
+	<<if def $foodstuff>>
+		<<run Object.keys($foodstuff).forEach(key => {
+			if (V.foodstuff[key]?.recipe === true && V.foodstuff[key].knows_recipe !== true) {
+				V.foodstuff[key].knows_recipe = true;
+			}
+			if ("recipe" in V.foodstuff[key]) {
+				delete V.foodstuff[key].recipe;
+			}
+		})>>
+	<</if>>
+
+	<!-- Increment in variables-start.twee as well whenever new foodstuff objects are added -->
+	<<if !$objectVersion.foodstuff or $objectVersion.foodstuff lt 3>>
+		<<updatePlants>>
+		<<set $objectVersion.foodstuff to 3>>
 	<</if>>
 
 <</widget>>

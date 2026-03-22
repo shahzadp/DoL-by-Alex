@@ -73,12 +73,12 @@ The <<person>> opens a laptop. "So what do you have for me?"
 <i>You can collect money from sold produce every day at noon. High business fame helps the factory sell produce faster.</i>
 <br><br>
 <<set $farmersProduce.toSell to {}>>
-<<set _plant_keys to Object.keys($plants)>>
-<<set _plantItems to {}>>
-<<if _plant_keys.length gte 1>>
-	<<for _i to 0; _i lt _plant_keys.length; _i++>>
-		<<if ["produce","vegetable","fruit","shroom"].includes(setup.plants[_plant_keys[_i]].type)>>
-			<<set _plantItems[_plant_keys[_i]] to clone($plants[_plant_keys[_i]])>>
+<<set _foodstuffKeys to Object.keys($foodstuff)>>
+<<set _foodstuffItems to {}>>
+<<if _foodstuffKeys.length gte 1>>
+	<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
+		<<if ["produce","vegetable","fruit","mushroom"].includes(F[_foodstuffKeys[_i]].category)>>
+			<<set _foodstuffItems[_foodstuffKeys[_i]] to clone($foodstuff[_foodstuffKeys[_i]])>>
 		<</if>>
 	<</for>>
 	<div id="supermarketDisplay" class="food_ui no-numberify">
@@ -136,19 +136,19 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 
 
 <<widget "produceDisplayItems">>
-	<<set _keys to [...new Set([...Object.keys(_plantItems), ...Object.keys($farmersProduce.toSell)])]
-	.sort((a, b) => (_plantItems[a]?.plural || $farmersProduce.toSell[a]?.plural)
-		.localeCompare(_plantItems[b]?.plural || $farmersProduce.toSell[b]?.plural))>>
+	<<set _keys to [...new Set([...Object.keys(_foodstuffItems), ...Object.keys($farmersProduce.toSell)])]
+	.sort((a, b) => (F[a]?.plural || F[a]?.name || a)
+		.localeCompare(F[b]?.plural || F[b]?.name || b))>>
 
 	<<set _foodKeys to []>>
 	<<set _foodGroups to []>>
 	<<run Object.values(_keys).forEach(key => {
-		const item = setup.plants[key];
+		const item = F[key];
 
 		const filter = _foodSearch ? _foodSearch.toLowerCase().split(/[_ ]/g) : false;
 		if (filter and !filter.find(term =>
 				item.name.includes(term) or
-				item.type.includes(term) or
+				item.category.includes(term) or
 				item.plural?.includes(term) or
 				item.singular?.includes(term)
 			)) {
@@ -156,7 +156,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		}
 
 		_foodKeys.pushUnique(key);
-		if (V.plants[key].amount > 250) {
+		if (V.foodstuff[key].amount > 250) {
 			_foodGroups.pushUnique("Sellable Produce");
 		} else {
 			_foundSoldOut to true;
@@ -168,7 +168,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		<<set _open to _category is "Sellable Produce" ? true : false>>
 		<<foldout _open _categoryVar>>
 			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
-			<<set _keys to _foodKeys.filter(key => (_category isnot "Owned Produce" && $plants[key].amount > 250) ||	(_category is "Owned Produce" && ($plants[key] === undefined || V.plants[key].amount <= 250))
+			<<set _keys to _foodKeys.filter(key => (_category isnot "Owned Produce" && $foodstuff[key].amount > 250) ||	(_category is "Owned Produce" && ($foodstuff[key] === undefined || V.foodstuff[key].amount <= 250))
 			)>>
 			<<for $_i, $_key range _keys>>
 				<div @id="$_key" class="item"><<produceDisplayItem $_key>></div>
@@ -183,7 +183,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		<<set $_total to 0>>
 		<<for _label, _value range $farmersProduce.toSell>>
 			<<if _value gt 0>>
-				<<set $_total += bulkProduceValue(SugarCube.setup.plants[_label],_value)>>
+				<<set $_total += bulkProduceValue(F[_label],_value)>>
 			<</if>>
 		<</for>>
 		Total: <<printmoney $_total>>
@@ -197,7 +197,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 						<<else>>
 							<<set $farmersProduce.selling[_label] += _value>>
 						<</if>>
-						<<set $plants[_label].amount -= _value>>
+						<<set $foodstuff[_label].amount -= _value>>
 					<</if>>
 				<</for>>
 				<<set $farmersProduce.toSell to {}>>
@@ -211,24 +211,23 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 <<widget "produceDisplayItem">>
 	<<if _args[0]>>
 		<<set _item to _args[0]>>
-		<<set _icon to setup.plants[_item].icon>>
-		<<capture _item, _icon>>
+		<<capture _item>>
 			<div>
 				<<if $farmersProduce.toSell[_item] is undefined>>
 					<<set $farmersProduce.toSell[_item] to 0>>
 				<</if>>
-				<<tendingicon _icon>>
-				<<if $plants[_item] is undefined>>
-					You don't have any <<print $plants[_item].plural>> right now.
-				<<elseif $plants[_item].amount lt 250>>
-					<<print $plants[_item].plural.toLocaleUpperFirst()>> | Owned: <span class="gold"><<print $plants[_item].amount>></span>
+				<<foodstufficon _item>>
+				<<if $foodstuff[_item] is undefined>>
+					You don't have any <<print F[_item].plural>> right now.
+				<<elseif $foodstuff[_item].amount lt 250>>
+					<<print F[_item].plural.toLocaleUpperFirst()>> | Owned: <span class="gold"><<print $foodstuff[_item].amount>></span>
 					<br>
 					Not enough to sell.
 					<<if $farmersProduce.selling[_item]>><br><</if>>
 				<<else>>
-					<<set _max to $plants[_item].amount - ($plants[_item].amount % 250)>>
-					<<set _base to bulkProduceValue(setup.plants[_item])>>
-					<<set _title to $plants[_item].plural.toLocaleUpperFirst()>>
+					<<set _max to $foodstuff[_item].amount - ($foodstuff[_item].amount % 250)>>
+					<<set _base to bulkProduceValue(F[_item])>>
+					<<set _title to F[_item].plural.toLocaleUpperFirst()>>
 					| Value per 250: <<printmoney _base>>
 					<<numberStepper "_title" 0 {
 						callback: (value, arr) => {
@@ -241,7 +240,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 						valueFormat: (value, percentage, values) => {
 							return `${value}/${values[1]}`;
 						},
-						values: [_item, $plants[_item].amount],
+						values: [_item, $foodstuff[_item].amount],
 						disableMinMax: false,
 						step: 250,
 						max: _max,
@@ -250,7 +249,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 					}>>
 				<</if>>
 				<<if $farmersProduce.selling[_item]>>
-					<span class="teal">They are still processing <<print $farmersProduce.selling[_item]>> <<print $plants[_item].plural>>.</span>
+					<span class="teal">They are still processing <<print $farmersProduce.selling[_item]>> <<print F[_item].plural>>.</span>
 				<</if>>
 			</div>
 		<</capture>>
@@ -276,7 +275,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		<<if !$farmersProduce.soldData>><<set $farmersProduce.soldData = {}>><</if>>
 		<<for _label, _value range $farmersProduce.selling>>
 			<<set _quantity to clone(_baseSaleQuantity)>>
-			<<if !setup.plants[_label].season.includes(Time.season)>>
+			<<if !F[_label].tending?.seasons?.includes(Time.season)>>
 				<<set _quantity to Math.floor(_quantity * 0.9)>>
 			<</if>>
 			<<set _rng to 800 + Math.floor(currentSkillValue('tending') / 5)>>
@@ -287,17 +286,17 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 			<<set $farmersProduce.sold += _quantity>>
 			<<set $farmersProduce.totalSold += _quantity>>
 
-			<<set $farmersProduce.money += bulkProduceValue(setup.plants[_label],_quantity)>>
+			<<set $farmersProduce.money += bulkProduceValue(F[_label],_quantity)>>
 			<<set $farmersProduce.selling[_label] -= _quantity>>
 
 			<<if !$farmersProduce.soldData[_label]>>
 				<<set $farmersProduce.soldData[_label] to {
 					amount: _quantity,
-					total: bulkProduceValue(setup.plants[_label],_quantity),
+					total: bulkProduceValue(F[_label],_quantity),
 				}>>
 			<<else>>
 				<<set $farmersProduce.soldData[_label].amount += _quantity>>
-				<<set $farmersProduce.soldData[_label].total += bulkProduceValue(setup.plants[_label],_quantity)>>
+				<<set $farmersProduce.soldData[_label].total += bulkProduceValue(F[_label],_quantity)>>
 			<</if>>
 
 			<<if $farmersProduce.selling[_label] lte 0>>

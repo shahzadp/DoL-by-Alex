@@ -263,7 +263,7 @@ function initSpecialClothes() {
 		},
 		pumpkin: {
 			text: "pumpkin costume",
-			requirements: () => Object.values(V.plants).filter(food => food.recipe).length >= 15,
+			requirements: () => Object.values(V.foodstuff).filter(food => food.knows_recipe).length >= 15,
 			hint: "learn 15 recipes",
 			shop: ["forest"],
 			subsetOf: ["halloween"],

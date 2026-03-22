@@ -92,3 +92,20 @@ function initCCrime() {
 	};
 }
 window.initCCrime = initCCrime; // Init function
+
+function initFoodstuffAlias() {
+	window.F ??= {};
+
+	for (const key of Object.keys(setup.foodstuff || {})) {
+		Object.defineProperty(F, key, {
+			get() {
+				return setup.foodstuff[key];
+			},
+			set(val) {
+				setup.foodstuff[key] = val;
+			},
+			enumerable: true,
+		});
+	}
+}
+window.initFoodstuffAlias = initFoodstuffAlias;

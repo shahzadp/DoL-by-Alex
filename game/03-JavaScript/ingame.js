@@ -545,10 +545,10 @@ function updateAskColour() {
 }
 DefineMacroS("updateAskColour", updateAskColour);
 
-function bulkProduceValue(plant, quantity = 250) {
-	if (plant != null) {
-		const baseCost = (plant.plant_cost * quantity) / 2;
-		const seasonBoost = !plant.season.includes(Time.season) ? 1.1 : 1;
+function bulkProduceValue(foodstuff, quantity = 250) {
+	if (foodstuff != null) {
+		const baseCost = (foodstuff.shop.sell_price * quantity) / 2;
+		const seasonBoost = foodstuff.tending?.seasons && !foodstuff.tending.seasons.includes(Time.season) ? 1.1 : 1;
 		return Math.floor(baseCost * seasonBoost);
 	}
 }
@@ -2704,7 +2704,7 @@ function tendingDay() {
 			// Growth check
 			if (plot.stage >= 1 && (plot.water === 1 || plot.bed === "water")) {
 				plot.days += 1;
-				if (plot.days >= setup.plants[plot.plant].days * ((plot.stage + 1) / 5)) {
+				if (plot.days >= (F[plot.plant].tending.growth_days * (plot.stage + 1)) / 5) {
 					plot.stage += 1;
 				}
 			}
@@ -2782,8 +2782,8 @@ window.unableTakeVirginity = unableTakeVirginity;
 function canGiftFood(npc) {
 	let amount = 0;
 
-	Object.values(setup.plants).forEach(plants => {
-		if (plants.type === "food" && V.plants[plants.name] && V.plants[plants.name].amount > 0) {
+	Object.entries(F).forEach(([key, item]) => {
+		if (item.category === "dish" && V.foodstuff[key]?.amount > 0) {
 			amount++;
 		}
 	});
@@ -2798,9 +2798,9 @@ function ingredientIsAllowed(providedKey) {
 	const isAllowed = key => {
 		if (provided.includes(key) || !exceptions || exceptions.includes(key)) return true;
 
-		const setupObject = setup.plants[key];
-		if (Array.isArray(setupObject?.ingredients) && setupObject.ingredients.length) {
-			return setupObject.ingredients.every(ingredient => {
+		const setupObject = F[key];
+		if (setupObject.recipe?.ingredients.length) {
+			return setupObject.recipe.ingredients.every(ingredient => {
 				return isAllowed(ingredient);
 			});
 		}
@@ -2812,28 +2812,37 @@ function ingredientIsAllowed(providedKey) {
 window.ingredientIsAllowed = ingredientIsAllowed;
 
 function ingredientAlternativesSetup(recipe) {
-	const alternatives = {
-		bottle_of_milk: [],
-		cream: [],
-		strange_flower: ["blood_lemon"],
-		chicken_egg: ["bird_egg"],
-		beef: [],
+	const alternatives = {};
+	const addAlternative = (ingredient, alternative) => {
+		if (!alternatives[ingredient]) alternatives[ingredient] = [];
+		alternatives[ingredient].pushUnique(alternative);
 	};
-	if (V.chef_state >= 3 && T.allowLewdIngredients && (!V.options.ingredientsAutoManage || V.options.ingredientsAutoManageLewd)) {
-		alternatives.bottle_of_milk.pushUnique("baby_bottle_of_breast_milk");
-		alternatives.cream.pushUnique("bottle_of_semen");
+	const lewdAllowed = V.chef_state >= 3 && T.allowLewdIngredients && (!V.options.ingredientsAutoManage || V.options.ingredientsAutoManageLewd);
+
+	Object.entries(F).forEach(([key, item]) => {
+		const ingredientAlternatives = item?.ingredient_alternatives;
+		if (!ingredientAlternatives) return;
+		ingredientAlternatives.normal.forEach(alternative => addAlternative(key, alternative));
+		if (lewdAllowed) ingredientAlternatives.lewd.forEach(alternative => addAlternative(key, alternative));
+	});
+
+	const recipeAlternatives = F[recipe]?.recipe?.ingredient_alternatives;
+	if (recipeAlternatives?.normal) {
+		Object.entries(recipeAlternatives.normal).forEach(([ingredient, list]) => {
+			list.forEach(alternative => addAlternative(ingredient, alternative));
+		});
 	}
-	switch (recipe) {
-		case "lasagne":
-			alternatives.beef.pushUnique("chicken");
-			break;
+	if (lewdAllowed && recipeAlternatives?.lewd) {
+		Object.entries(recipeAlternatives.lewd).forEach(([ingredient, list]) => {
+			list.forEach(alternative => addAlternative(ingredient, alternative));
+		});
 	}
 
 	return alternatives;
 }
 
 function ingredientsProvided(mainIngredient, recipe) {
-	if (!setup.plants[mainIngredient] || !setup.plants[recipe]) return false;
+	if (!F[mainIngredient] || !F[recipe]) return false;
 	const alternatives = ingredientAlternativesSetup(recipe);
 	const options = [mainIngredient];
 
@@ -2847,18 +2856,18 @@ function ingredientUsed(mainIngredient, recipe) {
 
 	// When auto management has been disabled
 	if (!V.options.ingredientsAutoManage) {
-		if (Array.isArray(alternatives[mainIngredient]) && alternatives[mainIngredient].includes(V.plants[mainIngredient].alternative)) {
-			return V.plants[mainIngredient].alternative;
+		if (Array.isArray(alternatives[mainIngredient]) && alternatives[mainIngredient].includes(V.foodstuff[mainIngredient].alternative)) {
+			return V.foodstuff[mainIngredient].alternative;
 		}
 		return mainIngredient;
 	}
 
 	// Check for any provided ingredients first
-	if (ingredientsProvided(mainIngredient)) return ingredientsProvided(mainIngredient);
+	if (ingredientsProvided(mainIngredient, recipe)) return ingredientsProvided(mainIngredient, recipe);
 
 	// Check for alternatives if there is none of the normal ingredient
-	if (alternatives[mainIngredient]?.length && V.plants[mainIngredient]?.amount <= 0) {
-		const alternative = alternatives[mainIngredient].find(ingredient => V.plants[ingredient]?.amount > 0);
+	if (alternatives[mainIngredient]?.length && V.foodstuff[mainIngredient]?.amount <= 0) {
+		const alternative = alternatives[mainIngredient].find(ingredient => V.foodstuff[ingredient]?.amount > 0);
 		if (alternative) return alternative;
 	}
 	return mainIngredient;
@@ -2866,12 +2875,12 @@ function ingredientUsed(mainIngredient, recipe) {
 window.ingredientUsed = ingredientUsed;
 
 function ingredientsTotal(mainIngredient, recipe, includeAlternatives) {
-	if (!setup.plants[mainIngredient]) return 0;
+	if (!F[mainIngredient]) return 0;
 	const alternatives = ingredientAlternativesSetup(recipe);
-	let count = V.plants[mainIngredient].amount;
+	let count = V.foodstuff[mainIngredient].amount;
 	if (includeAlternatives && alternatives[mainIngredient] && !T.ingredientsSupplied?.includes(mainIngredient)) {
 		alternatives[mainIngredient].forEach(ingredient => {
-			count += V.plants[ingredient]?.amount || 0;
+			count += V.foodstuff[ingredient]?.amount || 0;
 		});
 	}
 	return count;
@@ -2887,12 +2896,12 @@ function ingredientsOptions(mainIngredient, recipe) {
 window.ingredientsOptions = ingredientsOptions;
 
 function ingredientsNextAlternative(mainIngredient, recipe) {
-	if (!V.plants[mainIngredient]) return;
+	if (!V.foodstuff[mainIngredient]) return;
 	const options = ingredientsOptions(mainIngredient, recipe);
-	const currentAlt = V.plants[mainIngredient].alternative || mainIngredient;
+	const currentAlt = V.foodstuff[mainIngredient].alternative || mainIngredient;
 	const currentIndex = options.indexOf(currentAlt);
 	const nextIndex = currentIndex === -1 || currentIndex + 1 >= options.length ? 0 : currentIndex + 1;
-	V.plants[mainIngredient].alternative = options[nextIndex];
+	V.foodstuff[mainIngredient].alternative = options[nextIndex];
 }
 window.ingredientsNextAlternative = ingredientsNextAlternative;
 
@@ -2905,17 +2914,17 @@ function kitchenFilter() {
 	let providedIngredients = false;
 	let knownRestrictions = false;
 
-	Object.keys(setup.plants).forEach(recipe => {
-		const item = setup.plants[recipe];
+	Object.keys(F).forEach(recipe => {
+		const item = F[recipe];
 
 		if (
 			kitchenFilter &&
 			!kitchenFilter.find(
 				term =>
 					(V.options.ingredientsSearch !== "ingredients" &&
-						(item.name.includes(term) || item.type.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))) ||
+						(item.name.includes(term) || item.category.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))) ||
 					(V.options.ingredientsSearch !== "recipes" &&
-						item.ingredients.find(ingredient => ingredient.includes(term) || ingredientUsed(ingredient)?.includes(term)))
+						item.recipe?.ingredients.find(ingredient => ingredient.includes(term) || ingredientUsed(ingredient)?.includes(term)))
 			)
 		) {
 			return;
@@ -2926,21 +2935,21 @@ function kitchenFilter() {
 			if (!T.recipeKeys.some(recipe => recipe.key === recipe)) T.recipeKeys.push({ key: recipe, group: "Provided Ingredients" });
 			return;
 		}
-		if (!V.plants[recipe].recipe || !item.ingredients) return;
+		if (!V.foodstuff[recipe].knows_recipe || !item.recipe || !item.recipe.ingredients.length) return;
 		let group;
 
-		if (item.special.includes("sweet")) {
+		if (item.food?.tags.includes("sweet")) {
 			group = "sweets";
-		} else if (item.special.includes("drink")) {
+		} else if (item.food?.tags.includes("drink")) {
 			group = "drinks";
-		} else if (item.type.includes("ingredient")) {
+		} else if (item.category === "ingredient") {
 			group = "ingredients";
 		} else {
 			group = "savouries";
 		}
 
 		let missingIngredientsFound = false;
-		item.ingredients.forEach(ingredient => {
+		item.recipe.ingredients.forEach(ingredient => {
 			if (ingredientsTotal(ingredient, recipe, true) <= 0 && !ingredientsProvided(ingredient, recipe)) missingIngredientsFound = true;
 		});
 
@@ -2967,24 +2976,24 @@ function marketFilter() {
 
 	let missingItems = false;
 
-	Object.keys(setup.plants).forEach(product => {
-		const item = setup.plants[product];
+	Object.keys(F).forEach(product => {
+		const item = F[product];
 
-		if (V.plants[product].amount <= 0 && V.plants[product].marketStall === undefined) return;
+		if (V.foodstuff[product].amount <= 0 && V.foodstuff[product].marketStall === undefined) return;
 
-		// Makes sure items always get this set for older saves
-		if (V.plants[product].marketStall === undefined) V.plants[product].marketStall = !setup.plants[product]?.shop?.length;
+		// Defaults items to not be displayed in the market stall
+		if (V.foodstuff[product].marketStall === undefined) V.foodstuff[product].marketStall = false;
 
 		if (
 			marketFilter &&
-			!marketFilter.find(term => item.name.includes(term) || item.type.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))
+			!marketFilter.find(term => item.name.includes(term) || item.category.includes(term) || item.plural?.includes(term) || item.singular?.includes(term))
 		) {
 			return;
 		}
 
-		T.marketGroups.pushUnique(item.type);
-		let group = item.type;
-		if (V.plants[product].amount <= 0) {
+		T.marketGroups.pushUnique(item.category);
+		let group = item.category;
+		if (V.foodstuff[product].amount <= 0) {
 			missingItems = true;
 			group = "No Stock";
 		}

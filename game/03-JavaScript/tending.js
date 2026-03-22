@@ -11,9 +11,9 @@ window.plantSeedsInPlot = function (plot, plantType) {
 };
 
 window.unlockAllSeeds = function () {
-	Object.values(setup.plants).forEach(plant => {
-		if (!V.plants_known.includes(plant.name) && (plant.type === "flower" || plant.type === "vegetable")) {
-			V.plants_known.push(plant.name);
+	Object.entries(F).forEach(([key, plant]) => {
+		if (!V.plants_known.includes(key) && plant.tending?.has_seeds) {
+			V.plants_known.push(key);
 		}
 	});
 };

@@ -1934,7 +1934,7 @@
 <</widget>>
 
 <<widget "produceStats">>
-	<<set $_produceKeys to Object.keys(clone(setup.plants))>>
+	<<set $_produceKeys to Object.keys(clone(F))>>
 	<span @class="_produceStatsCurrent ? '' : 'goldLink'">
 		/* Inverted in how it works */
 		<<link `_produceStatsCurrent ? "Show player stats" : "Hide player stats"`>>
@@ -1982,13 +1982,13 @@
 					if (a.toUpperCase() < b.toUpperCase()) return -1;
 					return 1;
 				case "Value":
-					return (setup.plants[b]?.plant_cost || 0) - (setup.plants[a]?.plant_cost || 0);
+					return F[b].shop.sell_price - F[a].shop.sell_price;
 				case "Amount":
-					return ($plants[b].amount || 0) - ($plants[a].amount || 0);
+					return ($foodstuff[b].amount || 0) - ($foodstuff[a].amount || 0);
 				case "Total":
-					return ((setup.plants[b]?.plant_cost * $plants[b].amount) || 0) - ((setup.plants[a]?.plant_cost * $plants[a].amount) || 0);
+					return (F[b].shop.sell_price * $foodstuff[b].amount || 0) - (F[a].shop.sell_price * $foodstuff[a].amount || 0);
 				case "Market: Allowed to be sold":
-					return $plants[b]?.marketStall ? 1 : -1;
+					return $foodstuff[b]?.marketStall ? 1 : -1;
 				case "Market: Sold Today":
 					return ($stall_stats[b]?.sold.amount || 0) - ($stall_stats[a]?.sold.amount || 0);
 				case "Market: Average Today":
@@ -2040,8 +2040,8 @@
 			</tr>
 		</thead>
 		<<for $_key range $_produceKeys>>
-			<<set $_produce to clone(setup.plants[$_key])>>
-			<<set $_playerProduce to clone($plants[$_key])>>
+			<<set $_produce to clone(F[$_key])>>
+			<<set $_playerProduce to clone($foodstuff[$_key])>>
 			<<if $_playerProduce.amount lte 0 and
 			!$stall_stats?.[$_key]?.sold.amount and !$stall_stats?.[$_key]?.sold.amountHistory and
 			!$farmersProduce?.selling[$_key] and !$farmersProduce?.soldData?.[$_key]>>
@@ -2052,7 +2052,7 @@
 					<<recipe_name $_key>>
 				</td>
 				<td data-label="Value">
-					<<printmoney `$_produce.plant_cost or 0`>>
+					<<printmoney `$_produce?.shop?.cost ?? 0`>>
 				</td>
 				<<if !_produceStatsCurrent>>
 					<td data-label="Amount">
@@ -2064,7 +2064,7 @@
 					</td>
 					<td data-label="Total">
 						<<if $_playerProduce.amount gt 0>>
-							<<printmoney `($_produce.plant_cost or 0) * $_playerProduce.amount`>>
+							<<printmoney `($_produce?.shop?.cost ?? 0) * $_playerProduce.amount`>>
 						<<else>>
 							<span class="dash">-</span>
 						<</if>>
@@ -2072,8 +2072,8 @@
 				<</if>>
 				<<if _produceStatsMarket or _produceStatsMarketOverall>>
 					<td data-label="Market: Allowed to be sold">
-						<<if $plants[$_key]?.marketStall isnot undefined>>
-							<<print $plants[$_key].marketStall>>
+						<<if $foodstuff[$_key]?.marketStall isnot undefined>>
+							<<print $foodstuff[$_key].marketStall>>
 						<<else>>
 							<span class="dash">-</span>
 						<</if>>

@@ -111,7 +111,7 @@
 			<span class="gold"><<wordify_i $_i true>> plot (<<display_quality _plantbed>>):</span>
 
 			<<if _plantbed.stage gte 1>>
-				<<set $_plantedPlant to setup.plants[_plantbed.plant]>>
+				<<set $_plantedPlant to F[_plantbed.plant]>>
 				<<if $_plantedPlant is undefined>>
 					<<error {
 						message	: `Could not access property from modded save. (${_plantbed.plant})`,
@@ -125,7 +125,7 @@
 			<</if>>
 
 			<<if _plantbed.stage gte 5>>
-				<span class="green">The <<print $_plantedPlant.seed_name ? `$_plantedPlant.seed_name is` : `$_plantedPlant.plural are`>> flowering and ready for picking.</span>
+				<span class="green">The <<print $_plantedPlant.tending?.seed_name ? `$_plantedPlant.tending.seed_name is` : `$_plantedPlant.plural are`>> flowering and ready for picking.</span>
 				<br>
 				<<switch _plantbed.size>>
 					<<case "small">> <<set $_timeStr to "0:05">><<set _pass to 5>>
@@ -136,19 +136,19 @@
 				<<if pcAreArmsBound("both")>>
 					<span class="red">Can't pick when your arms are bound.</span>
 				<<else>>
-					<<if $options.images is 1 and $_plantedPlant.icon>>
-						<<tendingicon $_plantedPlant.icon>>
+					<<if $options.images is 1>>
+						<<foodstufficon _plantbed.plant>>
 					<</if>>
 					<<link "Pick ($_timeStr)" $passage>><<pass _pass>><<tending_harvest _plantbed>><<clear_plot _plantbed>><</link>>
 				<</if>>
 				<br>
 
 			<<elseif _plantbed.stage is 4>>
-				<span class="teal">The <<print $_plantedPlant.seed_name ? `$_plantedPlant.seed_name is` : `$_plantedPlant.plural are`>> budding.</span>
+				<span class="teal">The <<print $_plantedPlant.tending?.seed_name ? `$_plantedPlant.tending.seed_name is` : `$_plantedPlant.plural are`>> budding.</span>
 			<<elseif _plantbed.stage is 3>>
-				<span class="lblue">The <<print $_plantedPlant.seed_name ? `$_plantedPlant.seed_name has` : `$_plantedPlant.plural have`>> grown into seedlings.</span>
+				<span class="lblue">The <<print $_plantedPlant.tending?.seed_name ? `$_plantedPlant.tending.seed_name has` : `$_plantedPlant.plural have`>> grown into seedlings.</span>
 			<<elseif _plantbed.stage is 2>>
-				<span class="blue"><<print $_plantedPlant.seed_name ? `${$_plantedPlant.seed_name.toUpperFirst()} sprouts` : `Thin $_plantedPlant.plural sprout`>> from the soil.</span>
+				<span class="blue"><<print $_plantedPlant.tending?.seed_name ? `${$_plantedPlant.tending.seed_name.toUpperFirst()} sprouts` : `Thin $_plantedPlant.plural sprout`>> from the soil.</span>
 			<<elseif _plantbed.stage is 1>>
 				<span class="blue">You planted <<print $_plantedPlant.name.replace(/_/g," ")>> seeds here.</span>
 			<<else>>
@@ -258,15 +258,15 @@
 	<</switch>>
 	<<for _plantType range $plants_known>>
 		<br>
-		<<set $_plant to setup.plants[_plantType]>>
+		<<set $_plant to F[_plantType]>>
 		<<if !$_plant>>
 			<span class="red">Plant type '<<print _plantType>>' not found.</span>
 			<br><br>
 			Please report this.
-		<<elseif $_plant.season.includes(Time.season) or (_location is "garden" and $alex_greenhouse gte 3)>>
-			<<set $_name to $_plant.seed_name ? $_plant.seed_name : $_plant.plural>>
+		<<elseif $_plant.tending?.seasons?.includes(Time.season) or (_location is "garden" and $alex_greenhouse gte 3)>>
+			<<set $_name to $_plant.tending?.seed_name ? $_plant.tending.seed_name : $_plant.plural>>
 			/* comparing soil types; check if target bed is compatible with the seed's soil type */
-			<<if $_plant.bed is _plantbed.bed>>
+			<<if $_plant.tending.planting_bed is _plantbed.bed>>
 				<<switch _plantbed.size>>
 					<<case "small">><<set _passTime to 30>>
 					<<case "medium">><<set _passTime to 90>>
@@ -274,19 +274,19 @@
 				<</switch>>
 				<<set $_timeString to getTimeString(_passTime)>>
 				<<capture _passTime _plantbed _plantType>>
-					<<if $options.images is 1 and $_plant.icon>>
-						<<tendingicon $_plant.icon>>
+					<<if $options.images is 1>>
+						<<foodstufficon _plantType>>
 					<</if>>
 					<<link "Plant $_name ($_timeString)" $passage>><<pass _passTime>><<run plantSeedsInPlot(_plantbed, _plantType)>><</link>>
 				<</capture>>
 				<<if !$settings.blindStatsEnabled>>
-					<span class="orange">(<<print $_plant.days>> days)</span>
+					<span class="orange">(<<print $_plant.tending.growth_days>> days)</span>
 				<</if>>
 			<<else>>
-				<<if $options.images is 1 and $_plant.icon>>
-					<<tendingicon $_plant.icon>>
+				<<if $options.images is 1>>
+					<<foodstufficon $_plant>>
 				<</if>>
-				<span class="blue"><<print $_name.toLocaleUpperFirst()>> only grow in <<print $_plant.bed>>.</span>
+				<span class="blue"><<print $_name.toLocaleUpperFirst()>> only grow in <<print $_plant.tending.planting_bed>>.</span>
 			<</if>>
 		<<else>>
 			<<tending_season_notice $_plant>>
@@ -449,17 +449,15 @@
 	/* Argument is the plot you want to harvest */
 	<<set $_plot to _args[0]>>
 	<<set $_type to $_plot.plant>>
-	<<if $plants[$_type] is undefined>>
-		<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
-	<<elseif $plants[$_type].name is undefined>>
-		<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+	<<if $foodstuff[$_type] is undefined>>
+		<<set $foodstuff[$_type] to {"amount": 0}>>
 	<</if>>
 	<<switch $_plot.size>>
 		<<case "small">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 20) + 10)>>
 		<<case "medium">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 10) + 20)>>
 		<<default>> <<set _tending_amount to random(10, (currentSkillValue('tending') / 2) + 50)>>
 	<</switch>>
-	<<set _tending_amount *= setup.plants[$_type].multiplier>>
+	<<set _tending_amount *= F[$_type].tending.yield_multiplier>>
 	<<switch Math.clamp($_plot.quality, 1, 4)>>
 		<<case 4>> <<set _tending_amount *= 1.6>>
 		<<case 3>> <<set _tending_amount *= 1.4>>
@@ -477,11 +475,11 @@
 	<<set _tending_amount *= $settings.tendingYieldModifier>>
 
 	<<set _tending_amount to Math.trunc(_tending_amount)>>
-	<<set $plants[$_type].amount += _tending_amount>>
+	<<set $foodstuff[$_type].amount += _tending_amount>>
 
 	<<set $tendingvars.harvest to true>>
 	<<set $tendingvars.harvest_amount to _tending_amount>>
-	<<set $tendingvars.harvest_name to (_tending_amount is 1 ? setup.plants[$_type].name.replace(/_/g," ") : setup.plants[$_type].plural)>>
+	<<set $tendingvars.harvest_name to (_tending_amount is 1 ? F[$_type].name.replace(/_/g," ") : F[$_type].plural)>>
 <</widget>>
 
 <<widget "tending_pick">>
@@ -491,10 +489,8 @@
 	* Third argument: maximum number picked.
 	*/
 	<<set $_type to _args[0]>>
-	<<if $plants[$_type] is undefined>>
-		<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
-	<<elseif $plants[$_type].name is undefined>>
-		<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+	<<if $foodstuff[$_type] is undefined>>
+		<<set $foodstuff[$_type] to {"amount": 0}>>
 	<</if>>
 
 	<<if _args[2] gte 1>>
@@ -503,14 +499,14 @@
 		<<set _tending_amount to random(1, 5)>>
 	<</if>>
 
-	<<if !setup.plants[$_type].special.includes("large") and setup.plants[$_type].bed isnot "bird_nest">>
+	<<if F[$_type].tending?.affected_by_tending_skill>>
 		<<set _tending_amount *= (1 + (currentSkillValue('tending') / 1000))>>
 	<</if>>
 	<<if $backgroundTraits.includes("greenthumb")>>
 		<<set _tending_amount *= 1.2>>
 	<</if>>
 	<<set _tending_amount to Math.trunc(_tending_amount)>>
-	<<set $plants[$_type].amount += _tending_amount>>
+	<<set $foodstuff[$_type].amount += _tending_amount>>
 	<<set $wild_plant_stat += _tending_amount>>
 
 	You pick
@@ -523,50 +519,46 @@
 		<<else>>
 			a
 		<</if>>
-		<<if $options.images is 1 and setup.plants[$_type].icon>>
-			<<tendingicon setup.plants[$_type].icon>>
+		<<if $options.images is 1>>
+			<<foodstufficon $_type>>
 		<</if>>
-		<<print setup.plants[$_type].name.replace(/_/g," ")>>.
+		<<print F[$_type].name.replace(/_/g," ")>>.
 	<<else>>
-		<<if $options.images is 1 and setup.plants[$_type].icon>>
-			<<tendingicon setup.plants[$_type].icon>>
+		<<if $options.images is 1>>
+			<<foodstufficon $_type>>
 		<</if>>
-		<<number _tending_amount>> <<print setup.plants[$_type].plural>>.
+		<<number _tending_amount>> <<print F[$_type].plural>>.
 	<</if>>
 <</widget>>
 
 <<widget "tending_give">>
 	<<if _args[0]>>
 		<<set $_type to _args[0]>>
-		<<if $plants[$_type] is undefined>>
-			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
-		<<elseif $plants[$_type].name is undefined>>
-			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+		<<if $foodstuff[$_type] is undefined>>
+			<<set $foodstuff[$_type] to {"amount": 0}>>
 		<</if>>
 
-		<<set $plants[$_type].amount += (_args[1] ? _args[1] : 1)>>
+		<<set $foodstuff[$_type].amount += (_args[1] ? _args[1] : 1)>>
 	<</if>>
 <</widget>>
 
 <<widget "tending_season_notice">>
 	<<set $_plant to _args[0]>>
-	<<if $options.images is 1 and $_plant.icon>>
-		<<tendingicon $_plant.icon>>
+	<<if $options.images is 1>>
+		<<foodstufficon $_plant>>
 	<</if>>
 	<span class="blue">
-		<<set $_seasons to formatList($_plant.season)>>
+	<<set $_seasons to formatList($_plant.tending?.seasons || [])>>
 		<<print $_plant.plural.toLocaleUpperFirst()>> can only be planted in $_seasons.
 	</span>
 <</widget>>
 
 <<widget "updatePlants">>
-	<<set $_food_keys to Object.keys(setup.plants)>>
+	<<set $_food_keys to Object.keys(F)>>
 	<<for _i to 0; _i lt $_food_keys.length; _i++>>
 		<<set $_type to $_food_keys[_i]>>
-		<<if $plants[$_type] is undefined>>
-			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": 0}>>
-		<<elseif $plants[$_type].name is undefined>>
-			<<set $plants[$_type] to {"name": setup.plants[$_type].name, "plural": setup.plants[$_type].plural, "amount": $plants[$_type].amount}>>
+		<<if $foodstuff[$_type] is undefined>>
+			<<set $foodstuff[$_type] to {"amount": 0}>>
 		<</if>>
 	<</for>>
 <</widget>>
