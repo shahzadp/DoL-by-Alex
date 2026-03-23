@@ -586,7 +586,7 @@ function initLegs() {
 			colour_combat: 0,
 			type: ["costume"],
 			gender: "n",
-			femininity: -0,
+			femininity: 0,
 			warmth: 2,
 			cost: 1000,
 			description: "Cute cow print.",

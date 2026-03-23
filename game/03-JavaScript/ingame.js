@@ -1720,7 +1720,7 @@ window.checkTFparts = checkTFparts;
 
 /*
 	Might be good to convert the whole TF mechanic, including `transformationStateUpdate` to something like below at some point.
-	Part of the transformationParts is unused right now, but its to account for this potential.
+	Part of the transformationParts is unused right now, but it's to account for this potential.
 */
 function setupTransformations() {
 	setup.transformations = [

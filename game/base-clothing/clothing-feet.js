@@ -1856,7 +1856,6 @@ function initFeet() {
 			colour_combat: "black",
 			type: ["normal", "rugged"],
 			gender: "n",
-			femininity: 0,
 			warmth: 4,
 			cost: 8000,
 			description: "For slipping down chimneys.",
