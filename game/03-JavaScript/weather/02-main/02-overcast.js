@@ -28,6 +28,8 @@ Weather.Overcast = (() => {
 
 		if (!currentKeyPoint || !nextKeyPoint || nextKeyPoint.timestamp === currentKeyPoint.timestamp) {
 			const weatherNow = Weather.WeatherGeneration.getWeather(date);
+			if (!weatherNow) return 0;
+
 			const overcastNow = weatherNow.overcast;
 			const scaledNow = Time.isBloodMoon(date) ? overcastNow * 0.85 : overcastNow;
 			return round(Math.clamp(scaledNow, 0, 1), 2);

@@ -529,7 +529,8 @@ setup.LocationImages = {
 		emissive: {
 			default: {
 				image: "banner-tentacles-1.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
+				condition: () =>
+					!Weather.bloodMoon && (Weather.banner?.orbitals.sun.factor ?? 1) < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				color: "#ffffff40",
 				size: 0,
 				blur: 0,
@@ -537,7 +538,7 @@ setup.LocationImages = {
 			},
 			bloodmoon: {
 				image: "banner-tentacles-blood-moon-1.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
+				condition: () => Weather.bloodMoon && (Weather.banner?.orbitals.sun.factor ?? 1) < 0 && !(Number(localStorage.getItem("worldCorruption")) > 24),
 				color: "#ffffff40",
 				size: 0,
 				blur: 0,
@@ -547,7 +548,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-2.png",
 				condition: () =>
 					!Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 25 &&
 					Number(localStorage.getItem("worldCorruption")) < 50,
 				color: "#ffffff40",
@@ -559,7 +560,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-blood-moon-2.png",
 				condition: () =>
 					Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 25 &&
 					Number(localStorage.getItem("worldCorruption")) < 50,
 				color: "#ffffff40",
@@ -571,7 +572,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-3.png",
 				condition: () =>
 					!Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 50 &&
 					Number(localStorage.getItem("worldCorruption")) < 75,
 				color: "#ffffff40",
@@ -583,7 +584,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-blood-moon-3.png",
 				condition: () =>
 					Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 50 &&
 					Number(localStorage.getItem("worldCorruption")) < 75,
 				color: "#ffffff40",
@@ -595,7 +596,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-4.png",
 				condition: () =>
 					!Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 75 &&
 					Number(localStorage.getItem("worldCorruption")) < 100,
 				color: "#ffffff40",
@@ -607,7 +608,7 @@ setup.LocationImages = {
 				image: "banner-tentacles-blood-moon-4.png",
 				condition: () =>
 					Weather.bloodMoon &&
-					Weather.banner.orbitals.sun.factor < 0 &&
+					(Weather.banner?.orbitals.sun.factor ?? 1) < 0 &&
 					Number(localStorage.getItem("worldCorruption")) >= 75 &&
 					Number(localStorage.getItem("worldCorruption")) < 100,
 				color: "#ffffff40",
@@ -617,7 +618,7 @@ setup.LocationImages = {
 			},
 			tentacles5: {
 				image: "banner-tentacles-5.png",
-				condition: () => !Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
+				condition: () => !Weather.bloodMoon && (Weather.banner?.orbitals.sun.factor ?? 1) < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
 				color: "#ffffff40",
 				size: 0,
 				blur: 0,
@@ -625,7 +626,7 @@ setup.LocationImages = {
 			},
 			bloodmoonTentacles5: {
 				image: "banner-tentacles-blood-moon-5.png",
-				condition: () => Weather.bloodMoon && Weather.banner.orbitals.sun.factor < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
+				condition: () => Weather.bloodMoon && (Weather.banner?.orbitals.sun.factor ?? 1) < 0 && Number(localStorage.getItem("worldCorruption")) >= 100,
 				color: "#ffffff40",
 				size: 0,
 				blur: 0,
