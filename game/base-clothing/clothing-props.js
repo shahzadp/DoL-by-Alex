@@ -38,7 +38,7 @@ window.propLevels = propLevels;
 function wearProp(prop, colour, accColour) {
 	const key = normaliseKey(prop);
 	const tendingItem = key.replace("_gift", "").replace("_basket", "");
-	const tending = F[tendingItem];
+	const tending = setup.foodstuff[tendingItem];
 	const propErties = setup.props[key] ?? {};
 	T.prop = Object.assign({}, setup.propDefaults, propErties, {
 		name: normaliseFileName(key),

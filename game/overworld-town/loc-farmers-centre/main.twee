@@ -77,7 +77,7 @@ The <<person>> opens a laptop. "So what do you have for me?"
 <<set _foodstuffItems to {}>>
 <<if _foodstuffKeys.length gte 1>>
 	<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
-		<<if ["produce","vegetable","fruit","mushroom"].includes(F[_foodstuffKeys[_i]].category)>>
+		<<if ["produce","vegetable","fruit","mushroom"].includes(setup.foodstuff[_foodstuffKeys[_i]].category)>>
 			<<set _foodstuffItems[_foodstuffKeys[_i]] to clone($foodstuff[_foodstuffKeys[_i]])>>
 		<</if>>
 	<</for>>
@@ -137,13 +137,13 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 
 <<widget "produceDisplayItems">>
 	<<set _keys to [...new Set([...Object.keys(_foodstuffItems), ...Object.keys($farmersProduce.toSell)])]
-	.sort((a, b) => (F[a]?.plural || F[a]?.name || a)
-		.localeCompare(F[b]?.plural || F[b]?.name || b))>>
+	.sort((a, b) => (setup.foodstuff[a]?.plural || setup.foodstuff[a]?.name || a)
+		.localeCompare(setup.foodstuff[b]?.plural || setup.foodstuff[b]?.name || b))>>
 
 	<<set _foodKeys to []>>
 	<<set _foodGroups to []>>
 	<<run Object.values(_keys).forEach(key => {
-		const item = F[key];
+		const item = setup.foodstuff[key];
 
 		const filter = _foodSearch ? _foodSearch.toLowerCase().split(/[_ ]/g) : false;
 		if (filter and !filter.find(term =>
@@ -183,7 +183,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		<<set $_total to 0>>
 		<<for _label, _value range $farmersProduce.toSell>>
 			<<if _value gt 0>>
-				<<set $_total += bulkProduceValue(F[_label],_value)>>
+				<<set $_total += bulkProduceValue(setup.foodstuff[_label],_value)>>
 			<</if>>
 		<</for>>
 		Total: <<printmoney $_total>>
@@ -218,16 +218,16 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 				<</if>>
 				<<foodstufficon _item>>
 				<<if $foodstuff[_item] is undefined>>
-					You don't have any <<print F[_item].plural>> right now.
+					You don't have any <<print setup.foodstuff[_item].plural>> right now.
 				<<elseif $foodstuff[_item].amount lt 250>>
-					<<print F[_item].plural.toLocaleUpperFirst()>> | Owned: <span class="gold"><<print $foodstuff[_item].amount>></span>
+					<<print setup.foodstuff[_item].plural.toLocaleUpperFirst()>> | Owned: <span class="gold"><<print $foodstuff[_item].amount>></span>
 					<br>
 					Not enough to sell.
 					<<if $farmersProduce.selling[_item]>><br><</if>>
 				<<else>>
 					<<set _max to $foodstuff[_item].amount - ($foodstuff[_item].amount % 250)>>
-					<<set _base to bulkProduceValue(F[_item])>>
-					<<set _title to F[_item].plural.toLocaleUpperFirst()>>
+					<<set _base to bulkProduceValue(setup.foodstuff[_item])>>
+					<<set _title to setup.foodstuff[_item].plural.toLocaleUpperFirst()>>
 					| Value per 250: <<printmoney _base>>
 					<<numberStepper "_title" 0 {
 						callback: (value, arr) => {
@@ -249,7 +249,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 					}>>
 				<</if>>
 				<<if $farmersProduce.selling[_item]>>
-					<span class="teal">They are still processing <<print $farmersProduce.selling[_item]>> <<print F[_item].plural>>.</span>
+					<span class="teal">They are still processing <<print $farmersProduce.selling[_item]>> <<print setup.foodstuff[_item].plural>>.</span>
 				<</if>>
 			</div>
 		<</capture>>
@@ -275,7 +275,7 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 		<<if !$farmersProduce.soldData>><<set $farmersProduce.soldData = {}>><</if>>
 		<<for _label, _value range $farmersProduce.selling>>
 			<<set _quantity to clone(_baseSaleQuantity)>>
-			<<if !F[_label].tending?.seasons?.includes(Time.season)>>
+			<<if !setup.foodstuff[_label].tending?.seasons?.includes(Time.season)>>
 				<<set _quantity to Math.floor(_quantity * 0.9)>>
 			<</if>>
 			<<set _rng to 800 + Math.floor(currentSkillValue('tending') / 5)>>
@@ -286,17 +286,17 @@ The gate shudders open, and a lorry rumbles out, on its way to collect your prod
 			<<set $farmersProduce.sold += _quantity>>
 			<<set $farmersProduce.totalSold += _quantity>>
 
-			<<set $farmersProduce.money += bulkProduceValue(F[_label],_quantity)>>
+			<<set $farmersProduce.money += bulkProduceValue(setup.foodstuff[_label],_quantity)>>
 			<<set $farmersProduce.selling[_label] -= _quantity>>
 
 			<<if !$farmersProduce.soldData[_label]>>
 				<<set $farmersProduce.soldData[_label] to {
 					amount: _quantity,
-					total: bulkProduceValue(F[_label],_quantity),
+					total: bulkProduceValue(setup.foodstuff[_label],_quantity),
 				}>>
 			<<else>>
 				<<set $farmersProduce.soldData[_label].amount += _quantity>>
-				<<set $farmersProduce.soldData[_label].total += bulkProduceValue(F[_label],_quantity)>>
+				<<set $farmersProduce.soldData[_label].total += bulkProduceValue(setup.foodstuff[_label],_quantity)>>
 			<</if>>
 
 			<<if $farmersProduce.selling[_label] lte 0>>

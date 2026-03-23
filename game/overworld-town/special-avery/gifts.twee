@@ -82,7 +82,7 @@ Avery takes a seat, and gestures at the table in front of <<him>>.
 
 :: Avery Gifts 3
 <<effects>>
-<<set _gift to F[$gift].name + (F[$gift].food.handheld_gift ? " gift" : "")>>
+<<set _gift to setup.foodstuff[$gift].name + (setup.foodstuff[$gift].food.handheld_gift ? " gift" : "")>>
 <<wearProp _gift>>
 
 You place the <<recipe_name $gift>> in front of Avery.
@@ -157,7 +157,7 @@ You place the <<recipe_name $gift>> in front of Avery.
 	<br>
 	<<link [[Remain silent|Avery Gifts Steak Silent]]>><<npcincr Avery love 1>><</link>><<glove>>
 	<br>
-<<elseif F[$gift].food.tags.includes("spicy")>>
+<<elseif setup.foodstuff[$gift].food.tags.includes("spicy")>>
 	<<if $avery_mansion?.food_last is $gift and $avery_mansion?.food isnot $gift>>
 		Avery stares at the meal. "This again? Come now, you can do better." <<He>> takes a bite of the <<recipe_name $gift>>, and winces as the spices do their work.<<llove>><<npcincr Avery love -1>><<if $avery_mansion>><<set $avery_mansion.rage.dinner_wrong to true>><</if>>
 	<<elseif $avery_mansion?.food is $gift or !$avery_mansion>>
@@ -169,7 +169,7 @@ You place the <<recipe_name $gift>> in front of Avery.
 
 	<<link [[Next|Avery Gifts End]]>><</link>>
 	<br>
-<<elseif F[$gift].food.tags.includes("drink")>>
+<<elseif setup.foodstuff[$gift].food.tags.includes("drink")>>
 	<<if $avery_mansion?.food_last is $gift and $avery_mansion?.food isnot $gift>>
 		Avery holds the drink up to the light, and turns the glass. "This again? Come on, you can do better." <<He>> takes the smallest sip.<<llove>><<npcincr Avery love -1>><<if $avery_mansion>><<set $avery_mansion.rage.dinner_wrong to true>><</if>>
 	<<elseif $avery_mansion?.food is $gift or !$avery_mansion>>
@@ -423,7 +423,7 @@ clicks <<his>> tongue. "An aspiring chef should be able to acquire necessary ing
 	<br><br>
 <</if>>
 
-<<for _i range F[$avery_requested_food].recipe.ingredients>>
+<<for _i range setup.foodstuff[$avery_requested_food].recipe.ingredients>>
 	<<if !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes(_i)>>
 		<<capture _i>>
 			<<foodstufficon _i>><<link [[<<recipe_name _i "cap">>|Avery Gifts Ingredients 2]]>><<set $phase to _i>><</link>>
@@ -458,7 +458,7 @@ clicks <<his>> tongue. "An aspiring chef should be able to acquire necessary ing
 <<elseif $foodstuff[$phase].supermarket isnot undefined>>
 	<<money 5000>>
 	Avery chuckles. "Oh, <<recipe_name $phase>>? That should be within your abilities." <<He>> pulls out <<his>> wallet and tosses <<printmoney 5000>> onto the table. "<span class="gold">The supermarket in the High Street shopping centre stocks that.</span> The next time you need <<recipe_name $phase "plural">>, acquire it there."
-<<elseif F[$phase].recipe?.ingredients.length>>
+<<elseif setup.foodstuff[$phase].recipe?.ingredients.length>>
 	<<if $phase2 gte 1>>
 		Avery seems irritated. "<<recipe_name $phase "cap">> too? Something else you could just cook yourself."
 	<<else>>
@@ -471,14 +471,14 @@ clicks <<his>> tongue. "An aspiring chef should be able to acquire necessary ing
 		Avery produces a key, and hands it to you. "There are recipe books in my study. I'm sure you'll find what you need."
 	<</if>>
 
-	<<for _i range F[$phase].recipe.ingredients>>
+	<<for _i range setup.foodstuff[$phase].recipe.ingredients>>
 		<<if $foodstuff[_i].amount is 0 and !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes(_i)>>
 			<<set _missingIngredients to true>>
 		<</if>>
 	<</for>>
 	<<if _missingIngredients>>
 		<br><br>
-		<<for _i range F[$phase].recipe.ingredients>>
+		<<for _i range setup.foodstuff[$phase].recipe.ingredients>>
 			<<if !$avery_mansion.kitchen_stock.normal.concat($avery_mansion.kitchen_stock.requested).includes(_i)>>
 				<<capture _i>>
 					<<foodstufficon _i>><<link [[Say you can't make <<recipe_name $phase>> either because you're missing <<recipe_name _i>>|Avery Gifts Ingredients 2]]>><<set $phase to _i>><<set $phase2++>><</link>>

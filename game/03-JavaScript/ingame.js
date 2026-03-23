@@ -2704,7 +2704,7 @@ function tendingDay() {
 			// Growth check
 			if (plot.stage >= 1 && (plot.water === 1 || plot.bed === "water")) {
 				plot.days += 1;
-				if (plot.days >= (F[plot.plant].tending.growth_days * (plot.stage + 1)) / 5) {
+				if (plot.days >= (setup.foodstuff[plot.plant].tending.growth_days * (plot.stage + 1)) / 5) {
 					plot.stage += 1;
 				}
 			}
@@ -2782,7 +2782,7 @@ window.unableTakeVirginity = unableTakeVirginity;
 function canGiftFood(npc) {
 	let amount = 0;
 
-	Object.entries(F).forEach(([key, item]) => {
+	Object.entries(setup.foodstuff).forEach(([key, item]) => {
 		if (item.category === "dish" && V.foodstuff[key]?.amount > 0) {
 			amount++;
 		}
@@ -2798,7 +2798,7 @@ function ingredientIsAllowed(providedKey) {
 	const isAllowed = key => {
 		if (provided.includes(key) || !exceptions || exceptions.includes(key)) return true;
 
-		const setupObject = F[key];
+		const setupObject = setup.foodstuff[key];
 		if (setupObject.recipe?.ingredients.length) {
 			return setupObject.recipe.ingredients.every(ingredient => {
 				return isAllowed(ingredient);
@@ -2819,14 +2819,14 @@ function ingredientAlternativesSetup(recipe) {
 	};
 	const lewdAllowed = V.chef_state >= 3 && T.allowLewdIngredients && (!V.options.ingredientsAutoManage || V.options.ingredientsAutoManageLewd);
 
-	Object.entries(F).forEach(([key, item]) => {
+	Object.entries(setup.foodstuff).forEach(([key, item]) => {
 		const ingredientAlternatives = item?.ingredient_alternatives;
 		if (!ingredientAlternatives) return;
 		ingredientAlternatives.normal.forEach(alternative => addAlternative(key, alternative));
 		if (lewdAllowed) ingredientAlternatives.lewd.forEach(alternative => addAlternative(key, alternative));
 	});
 
-	const recipeAlternatives = F[recipe]?.recipe?.ingredient_alternatives;
+	const recipeAlternatives = setup.foodstuff[recipe]?.recipe?.ingredient_alternatives;
 	if (recipeAlternatives?.normal) {
 		Object.entries(recipeAlternatives.normal).forEach(([ingredient, list]) => {
 			list.forEach(alternative => addAlternative(ingredient, alternative));
@@ -2842,7 +2842,7 @@ function ingredientAlternativesSetup(recipe) {
 }
 
 function ingredientsProvided(mainIngredient, recipe) {
-	if (!F[mainIngredient] || !F[recipe]) return false;
+	if (!setup.foodstuff[mainIngredient] || !setup.foodstuff[recipe]) return false;
 	const alternatives = ingredientAlternativesSetup(recipe);
 	const options = [mainIngredient];
 
@@ -2875,7 +2875,7 @@ function ingredientUsed(mainIngredient, recipe) {
 window.ingredientUsed = ingredientUsed;
 
 function ingredientsTotal(mainIngredient, recipe, includeAlternatives) {
-	if (!F[mainIngredient]) return 0;
+	if (!setup.foodstuff[mainIngredient]) return 0;
 	const alternatives = ingredientAlternativesSetup(recipe);
 	let count = V.foodstuff[mainIngredient].amount;
 	if (includeAlternatives && alternatives[mainIngredient] && !T.ingredientsSupplied?.includes(mainIngredient)) {
@@ -2914,8 +2914,8 @@ function kitchenFilter() {
 	let providedIngredients = false;
 	let knownRestrictions = false;
 
-	Object.keys(F).forEach(recipe => {
-		const item = F[recipe];
+	Object.keys(setup.foodstuff).forEach(recipe => {
+		const item = setup.foodstuff[recipe];
 
 		if (
 			kitchenFilter &&
@@ -2976,8 +2976,8 @@ function marketFilter() {
 
 	let missingItems = false;
 
-	Object.keys(F).forEach(product => {
-		const item = F[product];
+	Object.keys(setup.foodstuff).forEach(product => {
+		const item = setup.foodstuff[product];
 
 		if (V.foodstuff[product].amount <= 0 && V.foodstuff[product].marketStall === undefined) return;
 

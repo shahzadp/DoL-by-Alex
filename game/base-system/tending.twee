@@ -111,7 +111,7 @@
 			<span class="gold"><<wordify_i $_i true>> plot (<<display_quality _plantbed>>):</span>
 
 			<<if _plantbed.stage gte 1>>
-				<<set $_plantedPlant to F[_plantbed.plant]>>
+				<<set $_plantedPlant to setup.foodstuff[_plantbed.plant]>>
 				<<if $_plantedPlant is undefined>>
 					<<error {
 						message	: `Could not access property from modded save. (${_plantbed.plant})`,
@@ -258,7 +258,7 @@
 	<</switch>>
 	<<for _plantType range $plants_known>>
 		<br>
-		<<set $_plant to F[_plantType]>>
+		<<set $_plant to setup.foodstuff[_plantType]>>
 		<<if !$_plant>>
 			<span class="red">Plant type '<<print _plantType>>' not found.</span>
 			<br><br>
@@ -284,12 +284,12 @@
 				<</if>>
 			<<else>>
 				<<if $options.images is 1>>
-					<<foodstufficon $_plant>>
+					<<foodstufficon _plantType>>
 				<</if>>
 				<span class="blue"><<print $_name.toLocaleUpperFirst()>> only grow in <<print $_plant.tending.planting_bed>>.</span>
 			<</if>>
 		<<else>>
-			<<tending_season_notice $_plant>>
+			<<tending_season_notice _plantType>>
 		<</if>>
 
 	<</for>>
@@ -457,7 +457,7 @@
 		<<case "medium">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 10) + 20)>>
 		<<default>> <<set _tending_amount to random(10, (currentSkillValue('tending') / 2) + 50)>>
 	<</switch>>
-	<<set _tending_amount *= F[$_type].tending.yield_multiplier>>
+	<<set _tending_amount *= setup.foodstuff[$_type].tending.yield_multiplier>>
 	<<switch Math.clamp($_plot.quality, 1, 4)>>
 		<<case 4>> <<set _tending_amount *= 1.6>>
 		<<case 3>> <<set _tending_amount *= 1.4>>
@@ -479,7 +479,7 @@
 
 	<<set $tendingvars.harvest to true>>
 	<<set $tendingvars.harvest_amount to _tending_amount>>
-	<<set $tendingvars.harvest_name to (_tending_amount is 1 ? F[$_type].name.replace(/_/g," ") : F[$_type].plural)>>
+	<<set $tendingvars.harvest_name to (_tending_amount is 1 ? setup.foodstuff[$_type].name.replace(/_/g," ") : setup.foodstuff[$_type].plural)>>
 <</widget>>
 
 <<widget "tending_pick">>
@@ -499,7 +499,7 @@
 		<<set _tending_amount to random(1, 5)>>
 	<</if>>
 
-	<<if F[$_type].tending?.affected_by_tending_skill>>
+	<<if setup.foodstuff[$_type].tending?.affected_by_tending_skill>>
 		<<set _tending_amount *= (1 + (currentSkillValue('tending') / 1000))>>
 	<</if>>
 	<<if $backgroundTraits.includes("greenthumb")>>
@@ -522,12 +522,12 @@
 		<<if $options.images is 1>>
 			<<foodstufficon $_type>>
 		<</if>>
-		<<print F[$_type].name.replace(/_/g," ")>>.
+		<<print setup.foodstuff[$_type].name.replace(/_/g," ")>>.
 	<<else>>
 		<<if $options.images is 1>>
 			<<foodstufficon $_type>>
 		<</if>>
-		<<number _tending_amount>> <<print F[$_type].plural>>.
+		<<number _tending_amount>> <<print setup.foodstuff[$_type].plural>>.
 	<</if>>
 <</widget>>
 
@@ -543,9 +543,9 @@
 <</widget>>
 
 <<widget "tending_season_notice">>
-	<<set $_plant to _args[0]>>
+	<<set $_plant to setup.foodstuff[_args[0]]>>
 	<<if $options.images is 1>>
-		<<foodstufficon $_plant>>
+		<<foodstufficon _args[0]>>
 	<</if>>
 	<span class="blue">
 	<<set $_seasons to formatList($_plant.tending?.seasons || [])>>
@@ -554,7 +554,7 @@
 <</widget>>
 
 <<widget "updatePlants">>
-	<<set $_food_keys to Object.keys(F)>>
+	<<set $_food_keys to Object.keys(setup.foodstuff)>>
 	<<for _i to 0; _i lt $_food_keys.length; _i++>>
 		<<set $_type to $_food_keys[_i]>>
 		<<if $foodstuff[$_type] is undefined>>

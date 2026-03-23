@@ -608,8 +608,8 @@ function gwylanRequestIngredients() {
 		const plumsNeeded = ingredientBaseAmount * seedrng.randomInt(3, 5);
 		V.gwylan.request.items.push({
 			category: "tending",
-			name: F.plum.name,
-			type: F.plum.category,
+			name: "plum",
+			type: setup.foodstuff.plum.category,
 			need: plumsNeeded,
 			root: true,
 		});
@@ -718,7 +718,11 @@ function gwylanRequestIngredients() {
 		}
 
 		// Seed-only items must be in-season. If there is no season, then that means it can't be grown, but is still able to be found throuougt the world regardless of season.
-		if (requiresSeeds.includes(ingredientKey) && F[ingredientKey].tending?.seasons && !F[ingredientKey].tending.seasons.includes(Time.season)) {
+		if (
+			requiresSeeds.includes(ingredientKey) &&
+			setup.foodstuff[ingredientKey].tending?.seasons &&
+			!setup.foodstuff[ingredientKey].tending.seasons.includes(Time.season)
+		) {
 			removeIngredient(ingredientKey);
 			continue;
 		}
@@ -727,15 +731,15 @@ function gwylanRequestIngredients() {
 		if (
 			requiresSeeds.includes(ingredientKey) &&
 			isSeasonEnding &&
-			F[ingredientKey].tending?.seasons &&
-			!F[ingredientKey].tending.seasons.includes(nextSeason)
+			setup.foodstuff[ingredientKey].tending?.seasons &&
+			!setup.foodstuff[ingredientKey].tending.seasons.includes(nextSeason)
 		) {
 			removeIngredient(ingredientKey);
 			continue;
 		}
 
 		// Supermarket items are only available on lower-complexity requests
-		if (F[ingredientKey].shop?.available_in?.includes("supermarket") && !canRequestSupermarketItems) {
+		if (setup.foodstuff[ingredientKey].shop?.available_in?.includes("supermarket") && !canRequestSupermarketItems) {
 			removeIngredient(ingredientKey);
 			continue;
 		}
@@ -743,7 +747,7 @@ function gwylanRequestIngredients() {
 
 	for (let ingredientIndex = 0; ingredientIndex < ingredientSlotCount; ingredientIndex++) {
 		const ingredientKey = eligibleIngredientKeys.pluck();
-		const setupItem = clone(F[ingredientKey]);
+		const setupItem = clone(setup.foodstuff[ingredientKey]);
 		if (!eligibleIngredientKeys.length) {
 			if (!V.gwylan.request.items.length) {
 				Errors.report(`[gwylanRequestClothes]: No available tending items found for request!! Defaulting to wolfshrooms.`, {
@@ -762,7 +766,7 @@ function gwylanRequestIngredients() {
 			need: 0,
 		};
 		if (setupItem.shop.available_in?.includes("supermarket")) {
-			const supermarketMaxNeed = Math.trunc(3000 / F[ingredientKey].shop.sell_price); // supermarket items are set to this every week, so ensure it can't take more than 1 week to complete request
+			const supermarketMaxNeed = Math.trunc(3000 / setup.foodstuff[ingredientKey].shop.sell_price); // supermarket items are set to this every week, so ensure it can't take more than 1 week to complete request
 			const yieldMultiplier = setupItem.tending?.yield_multiplier ?? 1;
 			requestItem.need = Math.clamp(Math.ceil(ingredientBaseAmount * random(yieldMultiplier, yieldMultiplier + 2)), 1, supermarketMaxNeed);
 		} else if (setupItem.name === "wild_honeycomb") {

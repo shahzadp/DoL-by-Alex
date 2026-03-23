@@ -11,7 +11,7 @@ window.plantSeedsInPlot = function (plot, plantType) {
 };
 
 window.unlockAllSeeds = function () {
-	Object.entries(F).forEach(([key, plant]) => {
+	Object.entries(setup.foodstuff).forEach(([key, plant]) => {
 		if (!V.plants_known.includes(key) && plant.tending?.has_seeds) {
 			V.plants_known.push(key);
 		}
