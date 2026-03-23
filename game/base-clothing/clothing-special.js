@@ -318,9 +318,9 @@ function initSpecialClothes() {
 			iconColor: "pink",
 		},
 
-		// Bad end or stockholm syndrome sets
+		// Bad end or Stockholm syndrome sets
 		bad_end: {
-			text: "collection of clothes from unsavory places",
+			text: "collection of clothes from unsavoury places",
 			shop: ["forest"],
 			feat: false,
 			icon: "cage.png",

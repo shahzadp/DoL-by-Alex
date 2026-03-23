@@ -1,4 +1,4 @@
-/* returns text without diacritics e.g. "crème brulee" -> "creme brulee" */
+/* returns text without diacritics e.g. "crème brûlée" -> "creme brulee" */
 function removeDiacritics(text) {
 	return text.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
 }
