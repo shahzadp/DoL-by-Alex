@@ -75,8 +75,16 @@ $(document).on(":passagestart", () => {
 			Weather.activeRenderer = Weather.banner;
 			return;
 		}
+
+		if (State.passage === "Clothes Testing" && Weather.banner) {
+			Weather.banner.stopAll();
+			return;
+		}
+
 		// Do nothing if still in start menu
 		if (V.location === "banner") return;
+
+		return;
 	}
 
 	// Do nothing if still in start menu
