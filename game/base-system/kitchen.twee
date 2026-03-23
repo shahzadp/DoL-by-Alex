@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div id="altSection" class="mobileHidden">
-				<<if $lastRecipeViewed and F[$lastRecipeViewed] and _recipeKeys.some((x) => x)>>
+				<<if $lastRecipeViewed and setup.foodstuff[$lastRecipeViewed] and _recipeKeys.some((x) => x)>>
 					<<kitchenDisplayRecipeDetail $lastRecipeViewed>>
 				<<else>>
 					<<kitchenDisplayOptions>>
@@ -117,7 +117,7 @@
 <</widget>>
 
 <<widget "kitchenDisplayRecipe">>
-	<<set $_setupItem to F[_args[0]]>>
+	<<set $_setupItem to setup.foodstuff[_args[0]]>>
 	<div class="details">
 		<div>
 			<<foodstufficon _args[0]>> <<recipe_name _args[0] "cap">> |
@@ -144,7 +144,7 @@
 	<div class="recipe">
 		<<capture _args[0]>>
 			<<if $options.images is 1>>
-				<<set _file to F[_args[0]].kitchen_item_type_icon>>
+				<<set _file to setup.foodstuff[_args[0]].kitchen_item_type_icon>>
 				<<link "<<iconUi _file>>">>
 					<<replace "#altSection">><<kitchenDisplayRecipeDetail _args[0]>><</replace>>
 					<<removeclass "#altSection, #mobileCloser" "mobileHidden">>
@@ -161,7 +161,7 @@
 
 <<widget "kitchenDisplayRecipeDetail">>
 	<<set $lastRecipeViewed to _recipeKeys.some((obj) => obj.key is _args[0]) ? _args[0] : _recipeKeys[0].key>>
-	<<set $_setupItem to F[$lastRecipeViewed]>>
+	<<set $_setupItem to setup.foodstuff[$lastRecipeViewed]>>
 	<div id="basket">
 		<div>
 			<<foodstufficon $lastRecipeViewed>>
@@ -196,7 +196,7 @@
 		<<wearProp $phase2>>
 		<<unset $phase2>>
 	<</if>>
-	<<set $_setupItem to F[$lastRecipeViewed]>>
+	<<set $_setupItem to setup.foodstuff[$lastRecipeViewed]>>
 	<<set $_group to _recipeKeys.find((obj) => obj.key is $lastRecipeViewed).group>>
 	<div style="margin-top: 16px">
 		<<if $_setupItem.recipe?.ingredients.length>>
@@ -259,10 +259,10 @@
 <</widget>>
 
 <<widget "requiredForRecipe">>
-	<<if F[_args[0]].recipe?.ingredients.length gt 0>>
+	<<if setup.foodstuff[_args[0]].recipe?.ingredients.length gt 0>>
 		Ingredients:
 		<div class="itemSummary">
-			<<for $_ingredient range clone(F[_args[0]].recipe.ingredients).sort()>>
+			<<for $_ingredient range clone(setup.foodstuff[_args[0]].recipe.ingredients).sort()>>
 				<<set $_usedIngredient to ingredientUsed($_ingredient, _args[0])>>
 				<div class="basketItem">
 					<<foodstufficon $_usedIngredient>>
@@ -298,7 +298,7 @@
 	<<set $foodstuff[_args[0]].knows_recipe to true>>
 
 	<<set _recipes_known to 0>>
-	<<set _food_keys_recipes to Object.keys(F)>>
+	<<set _food_keys_recipes to Object.keys(setup.foodstuff)>>
 	<<for _e to 0; _e lt _food_keys_recipes.length; _e++>>
 		<<set _food_recipes to _food_keys_recipes[_e]>>
 		<<if $foodstuff[_food_recipes].knows_recipe is true>>
@@ -317,17 +317,17 @@
 <</widget>>
 
 <<widget "learn_recipe_all">>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<for $_i to 0; $_i lt _food_keys.length; $_i++>>
 		<<set _food to _food_keys[$_i]>>
-		<<if F[_food].recipe?.ingredients.length gte 1>>
+		<<if setup.foodstuff[_food].recipe?.ingredients.length gte 1>>
 			<<learn_recipe _food>>
 		<</if>>
 	<</for>>
 <</widget>>
 
 <<widget "give_all_foodstuff">>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<for $_i to 0; $_i lt _food_keys.length; $_i++>>
 		<<set _food to _food_keys[$_i]>>
 		<<if !$foodstuff[_food]>>
@@ -339,8 +339,8 @@
 
 <<widget "make_recipe">>
 	<<set $_amount to _args[1] or 1>>
-	<<tending_give _args[0] `F[_args[0]].recipe.servings * $_amount`>>
-	<<for $_ingredient range F[_args[0]].recipe.ingredients>>
+	<<tending_give _args[0] `setup.foodstuff[_args[0]].recipe.servings * $_amount`>>
+	<<for $_ingredient range setup.foodstuff[_args[0]].recipe.ingredients>>
 		<<if !_ingredientsSupplied?.includes($_ingredient) or !_ingredientsSupplied?.includes(ingredientUsed($_ingredient, _args[0]))>>
 			<<set $_ingredient to ingredientUsed($_ingredient, _args[0])>>
 			<<tending_give $_ingredient `-$_amount`>>
@@ -348,8 +348,8 @@
 			<<set $loftIngredients[$_ingredient] -= $_amount>>
 		<</if>>
 	<</for>>
-	<<set $phase2 to F[_args[0]].name>>
-	<<pass `F[_args[0]].recipe.cook_minutes * $_amount`>>
+	<<set $phase2 to setup.foodstuff[_args[0]].name>>
+	<<pass `setup.foodstuff[_args[0]].recipe.cook_minutes * $_amount`>>
 	<<if $bus is "avery_kitchen" and $avery_mansion.jobs.includes("kitchen") and $_amount gte random(1,3)>>
 		<<set $avery_mansion.kitchen_made += $_amount>>
 	<</if>>
@@ -360,8 +360,8 @@
 	<<if _args[0]>>
 		<<set _knownRecipes to []>>
 		<<set _possibleRecipes to 0>>
-		<<run Object.keys(F).forEach(item => {
-			if (F[item].recipe?.ingredients.includes(_args[0])) {
+		<<run Object.keys(setup.foodstuff).forEach(item => {
+			if (setup.foodstuff[item].recipe?.ingredients.includes(_args[0])) {
 				_possibleRecipes++;
 				if ($foodstuff[item].knows_recipe) _knownRecipes.pushUnique(item);
 			}
@@ -380,7 +380,7 @@
 													<span>
 								Ingredients:
 								<ul>
-									<<for $_secondaryIngredients range F[$_recipe].recipe.ingredients>>
+									<<for $_secondaryIngredients range setup.foodstuff[$_recipe].recipe.ingredients>>
 										<li>
 											<<print $_secondaryIngredients.replace(/_/g, " ").toLocaleUpperFirst()>>
 											<<if _ingredientsSupplied?.includes($_secondaryIngredients)>>
@@ -400,7 +400,7 @@
 			<hr>
 			You don't know any recipes that use this item.
 		<</if>>
-		<<if F[_args[0]].category is "dish" and $foodstuff[_args[0]]?.knownFavorite?.length>>
+		<<if setup.foodstuff[_args[0]].category is "dish" and $foodstuff[_args[0]]?.knownFavorite?.length>>
 			<hr>
 			Known Favourite:
 				<<for $_npc range $foodstuff[_args[0]].knownFavorite>>
@@ -432,13 +432,13 @@ Vrel: If I remember right, that's as far as I got with the UI for the PC eating 
 Should probably be removed once said feature has been implemented
 <<widget "food_list">>
 	<summary class="journal"><<print _args[0].toLocaleUpperFirst()>></summary>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<for _i to 0; _i lt _food_keys.length; _i++>>
 		<<set _food to _food_keys[_i]>>
 
-		<<if _args[0] is "sweets" and F[_food].food.tags.includes("sweet") or
-		_args[0] is "drinks" and F[_food].food.tags.includes("drink") or
-		_args[0] is "savouries" and !F[_food].food.tags.includes("sweet") and !F[_food].food.tags.includes("drink") and F[_food].category isnot "ingredient">>
+		<<if _args[0] is "sweets" and setup.foodstuff[_food].food.tags.includes("sweet") or
+		_args[0] is "drinks" and setup.foodstuff[_food].food.tags.includes("drink") or
+		_args[0] is "savouries" and !setup.foodstuff[_food].food.tags.includes("sweet") and !setup.foodstuff[_food].food.tags.includes("drink") and setup.foodstuff[_food].category isnot "ingredient">>
 			<<set _recipe_go to true>>
 		<<else>>
 			<<set _recipe_go to false>>
@@ -478,18 +478,18 @@ Should probably be removed once said feature has been implemented
 
 <<widget "housekeeping_exam_select">>
 	<<unset $chosen_recipe>>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<set _possible_recipes to []>>
-	<<set $_foodOptions to Object.entries(clone(F)).filter(([key, item]) => !$foodstuff[key].knows_recipe and item.recipe?.ingredients.length)>>
+	<<set $_foodOptions to Object.entries(clone(setup.foodstuff)).filter(([key, item]) => !$foodstuff[key].knows_recipe and item.recipe?.ingredients.length)>>
 	<<for $_difficulty to 1; $_difficulty lt 5; $_difficulty++>>
 		<<run $_foodOptions.forEach(([key, item]) => {
-			if (item.recipe.difficulty is $_difficulty and item.recipe.ingredients.every(ingredient => !F[ingredient].recipe?.ingredients.length or $foodstuff[ingredient].knows_recipe)) {
+			if (item.recipe.difficulty is $_difficulty and item.recipe.ingredients.every(ingredient => !setup.foodstuff[ingredient].recipe?.ingredients.length or $foodstuff[ingredient].knows_recipe)) {
 				_possible_recipes.pushUnique(key);
 			}
 		})>>
 		<<if _possible_recipes.length>>
-			<<if Object.keys($foodstuff).filter(key => !$foodstuff[key].knows_recipe and F[key].recipe?.ingredients.length and F[key].recipe.difficulty is $_difficulty).length
-				is Object.keys($foodstuff).filter(key => F[key].recipe?.ingredients.length and F[key].recipe.difficulty is $_difficulty).length>>
+			<<if Object.keys($foodstuff).filter(key => !$foodstuff[key].knows_recipe and setup.foodstuff[key].recipe?.ingredients.length and setup.foodstuff[key].recipe.difficulty is $_difficulty).length
+				is Object.keys($foodstuff).filter(key => setup.foodstuff[key].recipe?.ingredients.length and setup.foodstuff[key].recipe.difficulty is $_difficulty).length>>
 				<<set _difficultyNotice to $_difficulty>>
 			<</if>>
 			<<set $chosen_recipe to _possible_recipes.pluck()>>
@@ -503,9 +503,9 @@ Should probably be removed once said feature has been implemented
 	<<set $avery_mansion.food_last to $gift>>
 	<<set $avery_requested_food to $avery_mansion.food>>
 	<<unset $chosen_recipe>>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<set _possible_recipes to []>>
-	<<set $_foodOptions to Object.entries(clone(F)).filter(([key, item]) => item.recipe?.ingredients.length && item.category !== "ingredient" && !item.food.tags.includes("drink"))>>
+	<<set $_foodOptions to Object.entries(clone(setup.foodstuff)).filter(([key, item]) => item.recipe?.ingredients.length && item.category !== "ingredient" && !item.food.tags.includes("drink"))>>
 
 	<<if C.npc.Avery.dom gte 75>>
 		<<set $_difficulty to 4>>
@@ -533,10 +533,10 @@ Should probably be removed once said feature has been implemented
 <</widget>>
 
 <<widget "food_gift_list">>
-	<<set _food_keys to Object.keys(F)>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<for _i to 0; _i lt _food_keys.length; _i++>>
 		<<set _food to _food_keys[_i]>>
-		<<if F[_food].category is "dish">>
+		<<if setup.foodstuff[_food].category is "dish">>
 			<<if $foodstuff[_food].amount gte 1>>
 				<<set _food_gift_found to true>>
 				<<set _color to $bus is "avery_dining" and _food is $avery_mansion.food ? "gold" : "">>
@@ -556,8 +556,8 @@ Should probably be removed once said feature has been implemented
 <</widget>>
 
 <<widget "recipe_name">><<silently>>
-	<<set $_difficultyColour to _args[1]?.includes("difficulty") ? ["","green","blue","purple","pink","red"][(F[_args[0]]?.recipe.difficulty)] : "white">>
-	<<set $_recipeName to _args[1]?.includes("plural") ? F[_args[0]].plural : F[_args[0]]?.recipe?.recipe_name or F[_args[0]].name.replace(/_/g," ")>>
+	<<set $_difficultyColour to _args[1]?.includes("difficulty") ? ["","green","blue","purple","pink","red"][(setup.foodstuff[_args[0]]?.recipe.difficulty)] : "white">>
+	<<set $_recipeName to _args[1]?.includes("plural") ? setup.foodstuff[_args[0]].plural : setup.foodstuff[_args[0]]?.recipe?.recipe_name or setup.foodstuff[_args[0]].name.replace(/_/g," ")>>
 	<<if _args[1]?.includes("cap")>>
 		<<set $_recipeName to $_recipeName.toUpperFirst()>>
 	<</if>>
@@ -567,14 +567,14 @@ Should probably be removed once said feature has been implemented
 <</silently>><span @class=$_difficultyColour><<print $_recipeName>></span><</widget>>
 
 <<widget "saveFavoriteFood">>
-	<<if C.npc[_args[0]] and F[_args[1]].category is "dish">>
+	<<if C.npc[_args[0]] and setup.foodstuff[_args[1]].category is "dish">>
 		<<if !$foodstuff[_args[1]].knownFavorite>><<set $foodstuff[_args[1]].knownFavorite to []>><</if>>
 		<<run $foodstuff[_args[1]].knownFavorite.pushUnique(_args[0])>>
 	<</if>>
 <</widget>>
 
 <<widget "recipe_exam_description">>
-	<<if !F[_args[0]].recipe?.ingredients.length>>
+	<<if !setup.foodstuff[_args[0]].recipe?.ingredients.length>>
 		<span class="black">Food item "_args[0]" is not a cookable recipe! Please report this!</span>
 	<<else>>
 		<<if _difficultyNotice is 1>>
@@ -766,7 +766,7 @@ Should probably be removed once said feature has been implemented
 					<span class="black">Food item "_args[0]" does not have an exam description!</span>
 				<</if>>
 		<</switch>>
-		<<if F[_args[0]].recipe.ingredients.includes("chicken_egg") and !$housekeepingTips.includes("alternativeEgg")>>
+		<<if setup.foodstuff[_args[0]].recipe.ingredients.includes("chicken_egg") and !$housekeepingTips.includes("alternativeEgg")>>
 			<<set $housekeepingTips.pushUnique("alternativeEgg")>>
 			<br><br>
 			"Most recipes will call for standard eggs, those being chicken eggs," <<he>> adds. "But keep in mind that <span class="gold">any type of egg can be used as a substitute</span> if you don't have chicken eggs."

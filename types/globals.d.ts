@@ -46,7 +46,6 @@ declare global {
 			max: number;
 		};
 	};
-	const F: Dict<FoodstuffItem>;
 	const ExecutionContext: {
 		instance: {
 			callStack: any;

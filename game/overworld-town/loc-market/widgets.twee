@@ -66,7 +66,7 @@
 	Your produce:
 	<<for _t to 0; _t lt _foodstuffKeys.length; _t++>>
 		<<set _foodstuffKey to _foodstuffKeys[_t]>>
-		<<set _foodstuffNameText to F[_foodstuffKey].name.replace(/_/g," ")>>
+		<<set _foodstuffNameText to setup.foodstuff[_foodstuffKey].name.replace(/_/g," ")>>
 
 		<<if $foodstuff[_foodstuffKey].amount and !$foodstuff_stall.includes(_foodstuffKey)>>
 			<<foodstufficon _foodstuffKey>>
@@ -89,7 +89,7 @@
 	On your stall:
 	<<for _t to 0; _t lt _foodstuffKeys.length; _t++>>
 		<<set _foodstuffKey to _foodstuffKeys[_t]>>
-		<<set _foodstuffNameText to F[_foodstuffKey].name.replace(/_/g," ")>>
+		<<set _foodstuffNameText to setup.foodstuff[_foodstuffKey].name.replace(/_/g," ")>>
 		<<if $foodstuff[_foodstuffKey].amount and $foodstuff_stall.includes(_foodstuffKey)>>
 			<<foodstufficon _foodstuffKey>>
 			<<capture _foodstuffKey>>
@@ -135,17 +135,17 @@
 				<<if $foodstuff[_foodstuffKeys[_t]].marketStall is false>>
 					<<continue>>
 				<</if>>
-				<<set _foodstuffValue to Math.round(F[_foodstuffKeys[_t]].shop.sell_price)>>
+				<<set _foodstuffValue to Math.round(setup.foodstuff[_foodstuffKeys[_t]].shop.sell_price)>>
 				<<set _total_worth += $foodstuff[_foodstuffKeys[_t]].amount * _foodstuffValue>>
 				<<set _total_amount += $foodstuff[_foodstuffKeys[_t]].amount>>
 				<<set _inventory_in_stall to 1>>
 				<<run $foodstuff_inventory.push(_foodstuffKeys[_t])>>
-				<<if ($stall_expensive is undefined) or ($foodstuff[$stall_expensive].amount lte 0) or (F[_foodstuffKeys[_t]].shop.sell_price gte F[$stall_expensive].shop.sell_price)>>
+				<<if ($stall_expensive is undefined) or ($foodstuff[$stall_expensive].amount lte 0) or (setup.foodstuff[_foodstuffKeys[_t]].shop.sell_price gte setup.foodstuff[$stall_expensive].shop.sell_price)>>
 					<<set $stall_expensive to clone(_foodstuffKeys[_t])>>
 				<</if>>
 				<<set $stall_stats[_foodstuffKeys[_t]].inventory to {amount:$foodstuff[_foodstuffKeys[_t]].amount, price:_foodstuffValue, total:($foodstuff[_foodstuffKeys[_t]].amount * _foodstuffValue)}>>
 			<<else>>
-				<<set $stall_stats[_foodstuffKeys[_t]].inventory to {amount:0, price:Math.round(F[_foodstuffKeys[_t]].shop.sell_price), total:0}>>
+				<<set $stall_stats[_foodstuffKeys[_t]].inventory to {amount:0, price:Math.round(setup.foodstuff[_foodstuffKeys[_t]].shop.sell_price), total:0}>>
 			<</if>>
 			<<set _total_sold_amount += $stall_stats[_foodstuffKeys[_t]].sold.amount>>
 		<</for>>
@@ -192,9 +192,9 @@
 	<<set $produce_sold += $stall_amount>>
 	You sell
 	<<if $stall_amount gte 2>>
-		$stall_amount <<print F[$stall_foodstuff].plural>>
+		$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>>
 	<<else>>
-		one <<print F[$stall_foodstuff].name.replace(/_/g," ")>>
+		one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>>
 	<</if>>
 	for <<printmoney `$stall_cost * $stall_amount`>>.
 	<<if $stall_cost * $stall_amount / 100 gte 10000>>
@@ -370,7 +370,7 @@
 	<<elseif $rng is 3>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		A <<person>> walks up to your stand. <<He>> lifts a <span class="green"><<print F[$stall_foodstuff].singular>></span>, and sniffs it.
+		A <<person>> walks up to your stand. <<He>> lifts a <span class="green"><<print setup.foodstuff[$stall_foodstuff].singular>></span>, and sniffs it.
 		<br><br>
 		<<if $stall_amount gte 2>>
 			"How much?" <<he>> asks, picking up several more until <<he>> carries <span class="green"><<stall_amount>></span> in <<his>> basket.
@@ -386,7 +386,7 @@
 	<<elseif $rng is 4>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		A <<person>> walks over, holding <<his>> hands behind <<his>> back. "Aha," <<he>> says, spying a <span class="green"><<print F[$stall_foodstuff].singular>></span>. <<He>> leans closer, and starts talking about it. <<He>> seems to know a lot.
+		A <<person>> walks over, holding <<his>> hands behind <<his>> back. "Aha," <<he>> says, spying a <span class="green"><<print setup.foodstuff[$stall_foodstuff].singular>></span>. <<He>> leans closer, and starts talking about it. <<He>> seems to know a lot.
 		<br><br>
 
 		<<link [[Listen politely (0:10)|Stall Listen]]>><<set $enemytrust += 20>><</link>><<gtrust>>
@@ -400,7 +400,7 @@
 		<<stall_init>>
 		You see a <<person>> moving along the stalls. <<He>> stops at each one, no matter what they're selling, and chats with the owner. At last <<he>> arrives at yours.
 		<br><br>
-		"Oho," <<he>> says, lifting a <span class="green"><<print F[$stall_foodstuff].singular>></span>. "These are lovely. Do you produce them yourself?"
+		"Oho," <<he>> says, lifting a <span class="green"><<print setup.foodstuff[$stall_foodstuff].singular>></span>. "These are lovely. Do you produce them yourself?"
 		<br><br>
 		<<link [[Answer honestly|Stall Honest]]>><<set $enemytrust += 20>><</link>><<gtrust>>
 		<br>
@@ -432,7 +432,7 @@
 	<<elseif $rng is 8>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		A <<person1>><<person>> snatches one of your <span class="green"><<print F[$stall_expensive].plural>></span> as <<he>> walks by, and breaks into a run.
+		A <<person1>><<person>> snatches one of your <span class="green"><<print setup.foodstuff[$stall_expensive].plural>></span> as <<he>> walks by, and breaks into a run.
 		<br><br>
 
 		<<if $worn.lower.type.includes("naked")>>
@@ -471,7 +471,7 @@
 	<<else>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		A <<person1>><<person>> is impressed by your <span class="green"><<print F[$stall_foodstuff].plural>></span>. "How much for <span class="green"><<stall_amount>></span>?" <<he>> asks.
+		A <<person1>><<person>> is impressed by your <span class="green"><<print setup.foodstuff[$stall_foodstuff].plural>></span>. "How much for <span class="green"><<stall_amount>></span>?" <<he>> asks.
 		<br><br>
 
 		<<stall_trust>>
@@ -696,9 +696,9 @@
 <</widget>>
 
 <<widget "stall_update">>
-	<<if F[$stall_foodstuff].shop.stall_size is "large">>
+	<<if setup.foodstuff[$stall_foodstuff].shop.stall_size is "large">>
 		<<set $stall_amount to 1>>
-	<<elseif F[$stall_foodstuff].shop.stall_size is "small">>
+	<<elseif setup.foodstuff[$stall_foodstuff].shop.stall_size is "small">>
 		<<set $stall_amount to random(110, 300)>>
 	<<else>>
 		<<set $stall_amount to random(11, 30)>>
@@ -706,7 +706,7 @@
 	<<if $stall_amount gte $foodstuff[$stall_foodstuff].amount>>
 		<<set $stall_amount to clone($foodstuff[$stall_foodstuff].amount)>>
 	<</if>>
-	<<set $stall_cost to Math.round(clone(F[$stall_foodstuff].shop.sell_price))>>
+	<<set $stall_cost to Math.round(clone(setup.foodstuff[$stall_foodstuff].shop.sell_price))>>
 <</widget>>
 
 <<widget "stall_amount">>
@@ -782,7 +782,7 @@
 			<<set $_reacts to "">>
 	<</switch>>
 
-	<<set _text_output to $_examines + " one of the <span class='green'>" + (F[$stall_foodstuff].plural) + "</span>" + $_reacts>>
+	<<set _text_output to $_examines + " one of the <span class='green'>" + (setup.foodstuff[$stall_foodstuff].plural) + "</span>" + $_reacts>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "marketStockDisplay">>
@@ -809,7 +809,7 @@
 				</div>
 			</div>
 			<div id="altSection" class="mobileHidden">
-				<<if $lastRecipeViewed and F[$lastRecipeViewed]>>
+				<<if $lastRecipeViewed and setup.foodstuff[$lastRecipeViewed]>>
 					<<marketStockDisplayItemDetail $lastRecipeViewed>>
 				<</if>>
 			</div>
@@ -861,7 +861,7 @@
 <</widget>>
 
 <<widget "marketStockDisplayItem">>
-	<<set $_setupItem to F[_args[0]]>>
+	<<set $_setupItem to setup.foodstuff[_args[0]]>>
 	<div class="details">
 		<div>
 			<<foodstufficon _args[0]>> <<recipe_name _args[0] "cap">> |
@@ -876,7 +876,7 @@
 	<div class="recipe">
 		<<capture _args[0]>>
 			<<if $options.images is 1>>
-				<<set _file to F[_args[0]].kitchen_item_type_icon>>
+				<<set _file to setup.foodstuff[_args[0]].kitchen_item_type_icon>>
 				<<link "<<iconUi _file>>">>
 					<<replace "#altSection">><<marketStockDisplayItemDetail _args[0]>><</replace>>
 					<<removeclass "#altSection, #mobileCloser" "mobileHidden">>
@@ -893,7 +893,7 @@
 
 <<widget "marketStockDisplayItemDetail">>
 	<<set $lastRecipeViewed to _args[0]>>
-	<<set $_setupItem to F[_args[0]]>>
+	<<set $_setupItem to setup.foodstuff[_args[0]]>>
 	<div id="basket">
 		<div>
 		<<foodstufficon _args[0]>>
@@ -906,7 +906,7 @@
 		</div>
 	</div>
 	<div id="basketItems">
-		<<if F[_args[0]].recipe?.ingredients.length gt 0>>
+		<<if setup.foodstuff[_args[0]].recipe?.ingredients.length gt 0>>
 			<div id="requiredForRecipe">
 				<<requiredForRecipe _args[0]>>
 			</div>

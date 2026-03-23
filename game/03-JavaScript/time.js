@@ -2552,8 +2552,9 @@ window.getShortFormattedDate = function (date) {
 
 /* Determines and replenishes stock at supermarket */
 function supermarketWeekly() {
-	Object.keys(F).forEach(key => {
-		if (F[key].shop.available_in?.includes("supermarket")) V.foodstuff[key].supermarket = Math.trunc(3000 / F[key].shop.sell_price);
+	Object.keys(setup.foodstuff).forEach(key => {
+		if (setup.foodstuff[key].shop.available_in?.includes("supermarket"))
+			V.foodstuff[key].supermarket = Math.trunc(3000 / setup.foodstuff[key].shop.sell_price);
 	});
 }
 DefineMacro("supermarketWeekly", supermarketWeekly);

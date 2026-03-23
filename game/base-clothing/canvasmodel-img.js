@@ -311,8 +311,11 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.mouth = "smile";
 	}
 	if (T.prop?.folder === "food" && !T.prop.name.includes("gift")) {
-		const foodKey = T.prop.name.replace(/-/g, "_").normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
-		const category = F[foodKey]?.category;
+		const foodKey = T.prop.name
+			.replace(/-/g, "_")
+			.normalize("NFKD")
+			.replace(/[\u0300-\u036f]/g, "");
+		const category = setup.foodstuff[foodKey]?.category;
 		const shouldChew = (category ? category !== "dish" : true) && !T.prop.name.includes("inedible");
 		if (shouldChew) T.modeloptions.mouth = "chew";
 	}

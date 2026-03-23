@@ -294,8 +294,8 @@
 <<widget "supermarketDisplayItems">>
 	<<set _foodKeys to []>>
 	<<set _foodGroups to []>>
-	<<run Object.keys(F).forEach(key => {
-		const item = F[key];
+	<<run Object.keys(setup.foodstuff).forEach(key => {
+		const item = setup.foodstuff[key];
 		if (!item.shop.available_in?.includes(_selectedShop)) return;
 
 		const filter = _foodSearch ? _foodSearch.toLowerCase().split(/[_ ]/g) : false;
@@ -321,7 +321,7 @@
 		<<foldout false _categoryVar>>
 			<span class="gold"><<print _category.toLocaleUpperFirst()>></span>
 			<<set _keys to _foodKeys.filter(key =>
-				(_category isnot "Sold out" && F[key].category is _category && $foodstuff[key].supermarket > 0) ||
+				(_category isnot "Sold out" && setup.foodstuff[key].category is _category && $foodstuff[key].supermarket > 0) ||
 				(_category is "Sold out" && $foodstuff[key].supermarket <= 0)
 			)>>
 			<<for $_i, $_key range _keys>>
@@ -334,7 +334,7 @@
 
 <<widget "supermarketDisplayItem">>
 	<<set _key to _args[0]>>
-	<<set $_setupItem to F[_key]>>
+	<<set $_setupItem to setup.foodstuff[_key]>>
 	<div class="details">
 		<div>
 			<<foodstufficon _args[0]>> |
@@ -419,7 +419,7 @@
 			if (amount > 0) {
 				$_typesInBasket++;
 			};
-			sum += F[key].shop.sell_price * amount * 2 or 0;
+			sum += setup.foodstuff[key].shop.sell_price * amount * 2 or 0;
 			return sum;
 		}, 0)>>
 
@@ -446,7 +446,7 @@
 			<<link [[Steal|$passage]]>>
 				<<for _itemInCart range Object.keys($shoppingBasket)>>
 					<<for _i to 0; _i lt $shoppingBasket[_itemInCart]; _i++>>
-						<<crimeUp `F[_itemInCart].shop.sell_price * 2 / 100` "thievery">>
+						<<crimeUp `setup.foodstuff[_itemInCart].shop.sell_price * 2 / 100` "thievery">>
 					<</for>>
 					<<tending_give _itemInCart $shoppingBasket[_itemInCart]>>
 					<<set $foodstuff[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
@@ -460,7 +460,7 @@
 				<<link [["Purchase"|$passage]]>>
 					<<for _itemInCart range Object.keys($shoppingBasket)>>
 						<<tending_give _itemInCart $shoppingBasket[_itemInCart]>>
-						<<money `-(F[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
+						<<money `-(setup.foodstuff[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2)` "supermarket">>
 						<<set $foodstuff[_itemInCart].supermarket -= $shoppingBasket[_itemInCart]>>
 					<</for>>
 					<<set $shoppingBasket to {}>>
@@ -490,7 +490,7 @@
 				x<<print $shoppingBasket[_itemInCart]>>
 			</div>
 			<div class="price">
-				<span class="gold"> £<<print (F[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span>
+				<span class="gold"> £<<print (setup.foodstuff[_itemInCart].shop.sell_price * $shoppingBasket[_itemInCart] * 2 / 100).toFixed(2)>></span>
 				<span>
 					<<capture _itemInCart>>
 						<<link "Remove">>
@@ -506,8 +506,8 @@
 <</widget>>
 
 <<widget "supermarketDisplayFillBasket">>
-	<<if Object.keys(F).find(key => {
-		if (F[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) return key;
+	<<if Object.keys(setup.foodstuff).find(key => {
+		if (setup.foodstuff[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) return key;
 	})>>
 		Fill
 		<<link "25%">><<supermarketDisplayFillBasketLink 0.25>><</link>> |
@@ -521,8 +521,8 @@
 
 <<widget "supermarketDisplayFillBasketLink">>
 	<<set $shoppingBasket to {}>>
-	<<run Object.keys(F).forEach(key => {
-		if (F[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) {
+	<<run Object.keys(setup.foodstuff).forEach(key => {
+		if (setup.foodstuff[key].shop.available_in?.includes(_selectedShop) and $foodstuff[key].supermarket) {
 			$shoppingBasket[key] to Math.ceil($foodstuff[key].supermarket * _args[0]);
 		}
 	})>>
@@ -532,7 +532,7 @@
 <</widget>>
 
 <<widget "supermarketDisplayDetails">>
-	<<set $_setupItem to F[_args[0]]>>
+	<<set $_setupItem to setup.foodstuff[_args[0]]>>
 	<div id="basket">
 		<div>
 		<<foodstufficon _args[0]>>
