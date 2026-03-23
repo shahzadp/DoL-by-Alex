@@ -2168,9 +2168,9 @@ function initFoodstuff() {
 		},
 		crème_brulee: {
 			index: 103,
-			name: "crème brulee",
-			singular: "pot of crème brulee",
-			plural: "pots of crème brulee",
+			name: "crème brûlée",
+			singular: "pot of crème brûlée",
+			plural: "pots of crème brûlée",
 			icon: "creme-brulee.png",
 			category: "dish",
 			kitchen_item_type_icon: "recipe-food.png",
@@ -2179,7 +2179,7 @@ function initFoodstuff() {
 				sell_price: 600,
 			},
 			recipe: {
-				recipe_name: "crème brulee",
+				recipe_name: "crème brûlée",
 				difficulty: 2,
 				cook_minutes: 50,
 				servings: 1,
@@ -2427,9 +2427,9 @@ function initFoodstuff() {
 		},
 		bakewell_tart: {
 			index: 115,
-			name: "bakewell tart",
-			singular: "bakewell tart",
-			plural: "bakewell tarts",
+			name: "Bakewell tart",
+			singular: "Bakewell tart",
+			plural: "Bakewell tarts",
 			icon: "bakewell-tart.png",
 			category: "dish",
 			kitchen_item_type_icon: "recipe-food.png",
@@ -2438,7 +2438,7 @@ function initFoodstuff() {
 				sell_price: 1200,
 			},
 			recipe: {
-				recipe_name: "bakewell tarts",
+				recipe_name: "Bakewell tarts",
 				difficulty: 3,
 				cook_minutes: 35,
 				servings: 1,

@@ -138,7 +138,7 @@ Template.add("gwylanItem", () =>
 		"lava lamp",
 		"flashlight",
 		"cuckoo clock",
-		"Rubix cube",
+		"Rubik's cube",
 		"globe",
 		"water gun",
 		"dictionary",
