@@ -1182,7 +1182,7 @@ function initHandheld() {
 			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			type: ["school", "bookbag"],
-			gender: "f",
+			gender: "n",
 			femininity: 0,
 			warmth: 0,
 			cost: 4000,

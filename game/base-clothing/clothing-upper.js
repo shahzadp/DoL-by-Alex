@@ -4472,6 +4472,7 @@ function initUpper() {
 			type: ["formal"],
 			set: "keyhole",
 			gender: "f",
+			femininity: 200,
 			formfitting: 1,
 			warmth: 3,
 			cost: 12000,
