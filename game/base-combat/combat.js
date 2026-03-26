@@ -49,7 +49,7 @@ function namedNpcComments(npcName) {
 
 	// Named NPCs with registered handlers resolve to their matching speech macro.
 	if (npcName && Macro.has(`speech-${npcName.toLowerCase()}`) && setup.NPCNameList.includes(npcName)) {
-		return `<<speech-${npcName.toLowerCase}>>`;
+		return `<<speech-${npcName.toLowerCase()}>>`;
 	}
 	// Special case for Ivory Wraith, which uses a dedicated speech macro name.
 	else if (npcName === "Ivory Wraith") {

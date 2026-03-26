@@ -54,28 +54,26 @@
 <</widget>>
 
 <<widget "pushClothingCaption">>
-	<<set $_output to " ">>
-	<<set $_wornItem to $worn[_args[0]]>>
+    <<set $_wornItem to $worn[_args[0]]>>
 
-	/* word 1: article, example: "a" or "an" or "a pair of" */
-	<<if def _args[1]>>
-		<<set $_output += _args[1] + " ">>
-	<<else>>
-		<<set $_wornItemWord to setup.clothes[_args[0]][clothesIndex(_args[0],$_wornItem)].word>>
-		<<set $_output += ($_wornItemWord isnot "n" ? $_wornItemWord : "") + " ">>
-	<</if>>
+    <<set $_wornIntegrity to window.integrityWord($_wornItem,_args[0])>>
+    <<set $_wornColour to window.clothesColour($_wornItem)>>
+    <<set $_wornItemWord to setup.clothes[_args[0]][$_wornItem.index].word>>
 
-	/* word 2: damage, example "frayed" */
-	<<run $_output += window.integrityWord($_wornItem,_args[0])>>
-
-	/* word 3: colour, example: "red" */
-	<<run $_output += window.clothesColour($_wornItem) + " ">>
-
-	/* word 4: clothes name, example: "school shirt" */
-	<<set $_output += $_wornItem.name>>
-
-	/* push */
-	<<set _clothingCaptionItems.pushUnique($_output)>>
+    <<if _args[1] is "a pair of">>
+        <<set $_article to "a pair of">>
+    <<elseif $_wornItemWord is "n">>
+        <<set $_article to "">>
+    <<elseif $_wornIntegrity>>
+        <<set $_article to ["a", "e", "i", "o", "u"].includes($_wornIntegrity[0]) ? "an" : "a">>
+    <<elseif $_wornColour>>
+        <<set $_article to ["a", "e", "i", "o", "u"].includes($_wornColour[0]) ? "an" : "a">>
+    <<else>>
+        <<set $_article to $_wornItemWord>>
+    <</if>>
+    
+    <<set $_output to ` ${$_article} ${$_wornIntegrity} ${$_wornColour} ${$_wornItem.name}`>>
+    <<set _clothingCaptionItems.push($_output)>>
 <</widget>>
 
 <<widget "clothingCaptionTextOver">><<silently>>

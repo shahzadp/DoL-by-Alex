@@ -1181,6 +1181,8 @@ function noonCheck() {
 
 	if (V.statFreeze) return;
 
+	V.robinwakeday = 0;
+	delete V.robin_kicked_out;
 	delete V.bartend_info;
 	delete V.bartend_info_other;
 	if (V.per_npc.bartend) wikifier("clearNPC", "bartend");
@@ -1219,7 +1221,6 @@ function noonCheck() {
 function dawnCheck() {
 	if (V.statFreeze) return;
 
-	V.robinwakeday = 0;
 	V.wolfwake = 0;
 	V.edenwake = 0;
 	delete V.skul_dock_init;
@@ -1231,7 +1232,6 @@ function dawnCheck() {
 	delete V.alexSomno;
 	delete V.alexSomnoAngry;
 	delete V.connudatus_stripped;
-	delete V.robin_kicked_out;
 	delete V.gwylanWake;
 	delete V.gwylanCafeWake;
 
