@@ -54,8 +54,8 @@ Weather.Renderer.Layers.add({
 				},
 				diameter() {
 					const sunLayer = this.renderInstance.layers.get("sun");
-					const orbitalEffect = sunLayer.effects.find(effect => effect.effect === "skyOrbital");
-					return orbitalEffect?.images?.orbital?.width ?? 0;
+					const orbitalEffect = sunLayer.effects.find(effect => effect.effectName === "skyOrbital");
+					return orbitalEffect.images.orbital.width;
 				},
 			},
 		},

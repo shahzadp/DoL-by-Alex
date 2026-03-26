@@ -2,6 +2,7 @@ Weather.Renderer.Effect = class Effect {
 	constructor(effect, condition, compositeOperation, params) {
 		this.params = params ?? {};
 		this.id = params.id;
+		this.effectName = effect.name;
 		this.onInit = effect.init;
 		this.onDraw = effect.draw;
 		this.onEnable = effect.onEnable;

@@ -113,7 +113,7 @@ Weather.Renderer.Layers.add({
 				},
 				diameter() {
 					const moonLayer = this.renderInstance.layers.get("moon");
-					const orbitalEffect = moonLayer.effects.find(effect => effect.effect === "skyOrbital");
+					const orbitalEffect = moonLayer.effects.find(effect => effect.effectName === "skyOrbital");
 					return orbitalEffect?.images?.orbital?.width;
 				},
 			},
@@ -137,7 +137,7 @@ Weather.Renderer.Layers.add({
 				},
 				diameter() {
 					const moonLayer = this.renderInstance.layers.get("moon");
-					const orbitalEffect = moonLayer.effects.find(effect => effect.effect === "skyOrbital");
+					const orbitalEffect = moonLayer.effects.find(effect => effect.effectName === "skyOrbital");
 					return orbitalEffect?.images?.orbital?.width;
 				},
 			},
