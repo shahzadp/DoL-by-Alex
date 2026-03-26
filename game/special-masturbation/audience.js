@@ -326,7 +326,7 @@ function masturbationAudienceLineText(npc, lineType = "") {
 				resultArray.push(
 					`"Didn't think ${V.masturbationAudience > 1 ? "<<pshe>>" : "you"}'d be able to fit ${
 						V.masturbationAudience > 1 ? "<<pher>>" : "a"
-					} whole fist in there, but I guess I was wrong. What a size ${V.player.gender_appearance === "f" ? "queen" : "king"}."`
+					} whole fist in there, but I guess I was wrong. What a size <<pking>>."`
 				);
 			}
 			if (V.fingersInVagina >= 1) resultArray.push(`"We can hear all the lewd sounds coming from your pussy, <<girl>>.`);
