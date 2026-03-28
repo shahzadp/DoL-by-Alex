@@ -912,7 +912,8 @@ function gwylanRequestClothingSlotCheck(slot) {
 			thing.category === "clothing" &&
 			V.worn[slot].name === thing.name &&
 			(thing.slot !== "upper" || (V.worn[slot].one_piece === 1 && gwylanRequestClothingSlotCheck("lower")) || V.worn[slot].one_piece === 0) &&
-			(thing.colour_requirement === "any" || V.worn[slot].colour === thing.colour_requirement) &&
+			(thing.colour_requirement === "any" || V.worn[slot].colour === thing.colour_requirement ||
+				window.clothesColour(V.worn[slot]) === thing.colour_requirement) &&
 			(thing.acc_colour_requirement === "any" || V.worn[slot].accessory_colour === thing.acc_colour_requirement) &&
 			(thing.pattern_requirement === "any" || V.worn[slot].pattern === thing.pattern_requirement) &&
 			(thing.integrity_requirement === "any" ||
