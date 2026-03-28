@@ -1427,15 +1427,21 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 		<</if>>
 		<br><br>
 	<</if>>
-	<<if pcAreArmsBound("any") or $feetuse is "bound" or $worn.feet.name is "ankle cuffs">>
-		<<if $possessed>>
-			You stare down at your bindings. You pull, and they fall apart, unable to hold against you.
-			<br><br>
-			<<unbind>>
+	<<if $possessed and (pcAreArmsBound("any") or $feetuse is "bound" or $worn.feet.type.includes("shackle"))>>
+		You stare down at your bindings.
+		<<if breakableSoftBinding()>>
+			You pull, and they fall apart, unable to hold against you.
+			<<if ["ankle cuffs", "ball and chain"].includes($worn.feet.name)>>
+				You then hear a click, and your $worn.feet.name fall to the ground.
+			<</if>>
 		<<else>>
-			<<undobindingsicon>><<link [[Undo your bindings (0:10)|Bird Tower Unbind]]>><<bird_pass 10>><<unbind>><</link>>
-			<br><br>
+			You hear a click, and your $worn.feet.name fall to the ground.
 		<</if>>
+		<br><br>
+		<<unbind>>
+	<<elseif breakableSoftBinding()>>
+		<<undobindingsicon>><<link [[Undo your bindings (0:10)|Bird Tower Unbind]]>><<bird_pass 10>><<unbind>><</link>>
+		<br><br>
 	<</if>>
 
 	<<birdicon "perch">><<link [[Approach the perch|Bird Tower Perch]]>><</link>>
