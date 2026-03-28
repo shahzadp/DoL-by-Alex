@@ -3090,3 +3090,17 @@ function displayDefiantOption(amount) {
 	}
 }
 window.displayDefiantOption = displayDefiantOption;
+
+function breakableSoftBinding() {
+	/* Allow unbinding any arm bindings, but limit unbinding legs to soft materials or bugged bound states with no clothing */
+	if (
+		pcAreArmsBound("any") ||
+		((["ropes", "vines"].includes(V.worn.feet.name) || [V.feetuse, V.leftleg, V.rightleg].includes("bound")) &&
+		!["ankle cuffs", "ball and chain"].includes(V.worn.feet.name))
+	) {
+		return true;
+	}
+	return false;
+}
+
+window.breakableSoftBinding = breakableSoftBinding;
