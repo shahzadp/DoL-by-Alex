@@ -35,37 +35,37 @@ The image will be processed in the following way:
 Explanation of layer processing options:
 
 <dl>
-    <dt>src: string</dt>
-    <dd>Image file path. Required.</dd>
-    <dt>desaturate: boolean</dt>
-    <dd>Convert to grayscale before processing. Optional, default false.</dd>
-    <dt>brightness: number</dt>
-    <dd>Adjust brightness before processing, from -1 (completely black) to +1 (completely white). Optional, default 0</dd>
-    <dt>contrast: number</dt>
-    <dd>Adjust contrast before processing, where 1 (default) is don't change, values in 0..1 reduce contrast (0 makes image gray) and values above 1 raise contrast.</dd>
-    <dt>blend: string</dt>
-    <dd>Blend color, CSS color string or gradient/pattern specification (see section at the bottom of the document). Optional, default none.</dd>
-    <dt>blendMode: string</dt>
-    <dd>Blend mode. Optional, default none. See <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation" target="_blank">globalCompositionOperation docs</a> for list of modes</dd>
-    <dt>masksrc: string</dt>
-    <dd>Mask image file path. Optional. Result alpha = image alpha &times; mask alpha, so image pixels where mask is transparent will be removed. Mask color does not matter.</dd>
+	<dt>src: string</dt>
+	<dd>Image file path. Required.</dd>
+	<dt>desaturate: boolean</dt>
+	<dd>Convert to grayscale before processing. Optional, default false.</dd>
+	<dt>brightness: number</dt>
+	<dd>Adjust brightness before processing, from -1 (completely black) to +1 (completely white). Optional, default 0</dd>
+	<dt>contrast: number</dt>
+	<dd>Adjust contrast before processing, where 1 (default) is don't change, values in 0..1 reduce contrast (0 makes image gray) and values above 1 raise contrast.</dd>
+	<dt>blend: string</dt>
+	<dd>Blend colour, CSS colour string or gradient/pattern specification (see section at the bottom of the document). Optional, default none.</dd>
+	<dt>blendMode: string</dt>
+	<dd>Blend mode. Optional, default none. See <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation" target="_blank">globalCompositionOperation docs</a> for list of modes</dd>
+	<dt>masksrc: string</dt>
+	<dd>Mask image file path. Optional. Result alpha = image alpha &times; mask alpha, so image pixels where mask is transparent will be removed. Mask colour does not matter.</dd>
 </dl>
 
 In addition to processing, layer has composition-related options that govern how multiple layers are composed into single image:
 
 <dl>
-    <dt>z: number</dt>
-    <dd>Display order, layers with higher numbers are rendered above others. Optional, default 0.</dd>
-    <dt>name: string</dt>
-    <dd>Layer name, for debugging. Optional</dd>
-    <dt>show: boolean</dt>
-    <dd>Render the layer. Optional, default true, and only exact "false" value prevents rendering.</dd>
-    <dt>alpha: number</dt>
-    <dd>Opacity from 0 (invisible) to 1 (opaque). Optional, default 1</dd>
-    <dt>dx: number, dy: number</dt>
-    <dd>Offset on the target canvas. Optional, default 0</dd>
-    <dt>width: number, height: number</dt>
-    <dd>Size of a single animation frame of the image. Optional, default auto-generated. Required if animated frame of this image is smaller than animated frame of target canvas.</dd>
+	<dt>z: number</dt>
+	<dd>Display order, layers with higher numbers are rendered above others. Optional, default 0.</dd>
+	<dt>name: string</dt>
+	<dd>Layer name, for debugging. Optional</dd>
+	<dt>show: boolean</dt>
+	<dd>Render the layer. Optional, default true, and only exact "false" value prevents rendering.</dd>
+	<dt>alpha: number</dt>
+	<dd>Opacity from 0 (invisible) to 1 (opaque). Optional, default 1</dd>
+	<dt>dx: number, dy: number</dt>
+	<dd>Offset on the target canvas. Optional, default 0</dd>
+	<dt>width: number, height: number</dt>
+	<dd>Size of a single animation frame of the image. Optional, default auto-generated. Required if animated frame of this image is smaller than animated frame of target canvas.</dd>
 </dl>
 
 and several others covered in [Animations](#Animations) section.
@@ -78,24 +78,24 @@ For example, `hair_sides` layer is defined as:
 
 ```js
 Renderer.CanvasModels["demo_model"] = {
-    ...
-    layers: {
-        "hair_sides": {
-            srcfn(options) {
-                return 'img/hair/sides/' + options.hair_sides_type + '/' + options.hair_sides_length + '.png'
-            },
-            zfn(options) {
-                if (options.hair_sides_position === "front") {
-                    return ZIndices.hairforwards
-                } else {
-                    return ZIndices.backhair
-                }
-            },
-            showfn(options) {
-                return !!options.hair && !!options.hair_sides_type
-            },
-            filters: ["hair"]
-        },
+	...
+	layers: {
+		"hair_sides": {
+			srcfn(options) {
+				return 'img/hair/sides/' + options.hair_sides_type + '/' + options.hair_sides_length + '.png'
+			},
+			zfn(options) {
+				if (options.hair_sides_position === "front") {
+					return ZIndices.hairforwards
+				} else {
+					return ZIndices.backhair
+				}
+			},
+			showfn(options) {
+				return !!options.hair && !!options.hair_sides_type
+			},
+			filters: ["hair"]
+		},
 ```
 
 Here, `filters` property is constant, while `src`, `z`, and `show` are computed from options. _Options_ for this model would be: `hair`, `hair_sides_type`, and `hair_sides_position`.
@@ -140,10 +140,10 @@ Or the model can have hair_colour option and do the lookup itself in its preproc
 
 ```js
 Renderer.CanvasModels["demo_model"] = {
-    ...
-    preprocess(options) {
-        options.filters.hair = setup.colours.hair_map[options.hair_colour].canvasfilter;
-    }
+	...
+	preprocess(options) {
+		options.filters.hair = setup.colours.hair_map[options.hair_colour].canvasfilter;
+	}
 ```
 
 ## Animations
@@ -191,15 +191,15 @@ Example:
 
 ```js
 Renderer.Animations["idle_redblue"] = {
-    keyframes: [{
-        frame: 0,
-        duration: 1000,
-        blend: "#ff0000"
-    }, {
-        frame: 1,
-        duration: 1000,
-        blend: "#0000ff"
-    }
+	keyframes: [{
+		frame: 0,
+		duration: 1000,
+		blend: "#ff0000"
+	}, {
+		frame: 1,
+		duration: 1000,
+		blend: "#0000ff"
+	}
 };
 ```
 
@@ -273,7 +273,7 @@ Render previously prepared images into it.
 
 ## Gradients & Patterns
 
-Instead of fixed color string, layer's `blend` property can define a linear or radial gradient, or a pattern.
+Instead of fixed colour string, layer's `blend` property can define a linear or radial gradient, or a pattern.
 
 ### Gradients
 
@@ -281,7 +281,7 @@ A gradient specification is a JSON object of structure:
 
 -   `gradient: "linear"|"radial"` - type of the gradient.
 -   `values: number[]` - gradient coordinates. For linear gradient: `[x0, y0, x1, y1]`; for radial gradient: `[x0, y0, r0, x1, y1, r1]`. The coordinates are in pixels, relative to canvas top left corner.
--   `colors` - color stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops).
+-   `colors` - colour stops, array of either pairs `[offset:number, color:string]` (where `offset` is position between 0 and 1), or simply `color` strings (in that case, `offset` is generated to create evenly spaced stops).
 
 Example:
 
@@ -299,7 +299,7 @@ T.modeloptions.filters.hair = {
 };
 ```
 
-will apply following gradient coloring to the layer:
+will apply following gradient colouring to the layer:
 ![result](canvasmodel-demo2.png)
 
 See <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createLinearGradient" target="_blank">createLinearGradient</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient" target="_blank">createRadialGradient</a>, and <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient/addColorStop" target="_blank">addColorStop</a> documentation with more details and examples.

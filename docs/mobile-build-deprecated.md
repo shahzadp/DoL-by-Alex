@@ -5,13 +5,13 @@
 Before you start, you'll need...
   - `docker`
 
-    The built docker image will provide all the tools for building the android apk and is required
+	The built docker image will provide all the tools for building the android apk and is required
 
 ### Optional Tools
 
   - android emulator tools (at minimum `adb`)(aka `Android Studio`)
 
-    In order to test the produced apk, it's recommend to install android studio. If you don't want to install the entire IDE, I recommend following the instructions here https://stackoverflow.com/a/61150826. NOTE: at the time of this writing WSL users must install the windows version of android studio in order to actually use the emulator.
+	In order to test the produced apk, it's recommend to install android studio. If you don't want to install the entire IDE, I recommend following the instructions here https://stackoverflow.com/a/61150826. NOTE: at the time of this writing WSL users must install the windows version of android studio in order to actually use the emulator.
 
 
 <br/> <br/>
@@ -26,7 +26,7 @@ Ensure that you've successfully compiled the game and that `Degrees of Lewdity.h
 
 ### Building debug
 
-Run `docker run -v <PROJECT_ROOT>:/src -it cordova-android npm run build-debug` in the project root. This will create an unsigned debug build for testing in the  `dist/` folder. Note, `<PROJECT_ROOT>` must be replaced with the absolute path to the project directory. This can be accomplished via 
+Run `docker run -v <PROJECT_ROOT>:/src -it cordova-android npm run build-debug` in the project root. This will create an unsigned debug build for testing in the  `dist/` folder. Note, `<PROJECT_ROOT>` must be replaced with the absolute path to the project directory. This can be accomplished via
   - `` `pwd`:/src `` (linux bash)
   - `` %cd%:/src `` (windows)
 
@@ -35,7 +35,7 @@ Run `docker run -v <PROJECT_ROOT>:/src -it cordova-android npm run build-debug` 
 The release build process is almost identical to debug: `docker run -v <PROJECT_ROOT>:/src -it cordova-android npm run build-release`.
 
 Note that building the release version requires a key (`/keys/dol.keystore`). Check the discord for details on how to get the official key.
-    
+
 > using an unofficial key will require the previous release to be uninstalled before proceeding: see `Installing` below
 
 <br/> <br/>
