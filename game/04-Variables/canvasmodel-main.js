@@ -1165,7 +1165,7 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				if (options.mannequin) return "img/body/mannequin/left-arm-idle.png";
 				if (options.arm_left === "cover") return "img/body/left-arm-cover.png";
-				return `img/body/left-arm-idle-${options.body_type}.png`
+				return `img/body/left-arm-idle-${options.body_type}.png`;
 			},
 		},
 		"rightarm": {
@@ -1182,7 +1182,7 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				if (options.mannequin) return `img/body/mannequin/right-arm-${options.arm_right}.png`;
 				if (options.arm_right === "idle") return `img/body/right-arm-idle-${options.body_type}.png`;
-				return `img/body/right-arm-${options.arm_right}.png`
+				return `img/body/right-arm-${options.arm_right}.png`;
 			},
 		},
 		"tummy_parasite": {
@@ -2072,13 +2072,20 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				return `img/body/cum/vaginal-${options.drip_vaginal}.png`;
+				if (options.drip_vaginal === "VerySlow") {
+					T.output = "very-slow";
+				} else if (options.drip_vaginal === "VeryFast") {
+					T.output = "very-fast";
+				} else {
+					T.output = options.drip_vaginal.toLowerCase();
+				}
+				return `img/body/cum/vaginal-${T.output}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_vaginal;
 			},
 			animationfn(options) {
-				const anim = toTitleCase(options.drip_vaginal).replace(/-/g,"");
+				const anim = options.drip_vaginal.replace(/-/g,"");
 				return `VaginalCumDrip${anim}`;
 			},
 		},
@@ -2086,13 +2093,20 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				return `img/body/cum/anal-${options.drip_anal}.png`;
+				if (options.drip_anal === "VerySlow") {
+					T.output = "very-slow";
+				} else if (options.drip_anal === "VeryFast") {
+					T.output = "very-fast";
+				} else {
+					T.output = options.drip_anal.toLowerCase();
+				}
+				return `img/body/cum/anal-${T.output}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_anal;
 			},
 			animationfn(options) {
-				const anim = toTitleCase(options.drip_anal).replace(/-/g,"");
+				const anim = options.drip_anal.replace(/-/g,"");
 				return `AnalCumDrip${anim}`;
 			},
 		},
@@ -2100,7 +2114,14 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.semen_cough,
 
 			srcfn(options) {
-				return `img/body/cum/mouth-${options.drip_mouth}.png`;
+				if (options.drip_mouth === "VerySlow") {
+					T.output = "very-slow";
+				} else if (options.drip_mouth === "VeryFast") {
+					T.output = "very-fast";
+				} else {
+					T.output = options.drip_mouth.toLowerCase();
+				}
+				return `img/body/cum/mouth-${T.output}.png`;
 			},
 			showfn(options) {
 				return options.show_face
@@ -2111,7 +2132,7 @@ Renderer.CanvasModels.main = {
 				return options.facestyle === "small-eyes" ? 2 : 0;
 			},
 			animationfn(options) {
-				const anim = toTitleCase(options.drip_mouth).replace(/-/g,"");
+				const anim = options.drip_mouth.replace(/-/g,"");
 				return `MouthCumDrip${anim}`;
 			},
 		},
@@ -4435,7 +4456,7 @@ function genlayer_clothing_breasts(slot, overrideOptions) {
 			const variable = options.worn[slot].setup.variable;
 			const integrity = options.worn[slot].integrity;
 			const folder = normaliseFileName(slot);
-			if (options.worn[slot].setup.mask_img === 1) return `img/clothes/${folder}/${variable}/mask_${integrity}.png`;
+			if (options.worn[slot].setup.mask_img === 1) return `img/clothes/${folder}/${variable}/mask-${integrity}.png`;
 			return null;
 		},
 		showfn(options) {
