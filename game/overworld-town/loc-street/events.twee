@@ -2673,7 +2673,7 @@ Your cries attract the attention of the people passing by the alley's entrance. 
 :: Street Car
 <<outfitChecks>>
 <<effects>>
-<<if $phase is 1 or $phase is 10>>
+<<if $phase is 1 or $phase is 10 or $phase is 9>>
 	You climb into the back of the car, and the <<person>> drives into a secluded alley. <<He>> joins you on the back seat.
 	<<promiscuity2>>
 
@@ -2816,6 +2816,8 @@ Following the slime's command, you climb into the back of the car, and the <<per
 	<span id="next"><<link [[Next|Street Car Sex]]>><</link>></span><<nexttext>>
 <<elseif $phase is 10>>
 	<span id="next"><<link [[Next|Street Car Sex Police]]>><</link>></span><<nexttext>>
+<<elseif $phase is 9>>
+	<span id="next"><<link [[Next|Street Car Sex Ask]]>><</link>></span><<nexttext>>
 <<else>>
 	<span id="next"><<link [[Next|Street Car Sex Finish]]>><</link>></span><<nexttext>>
 <</if>>
@@ -2854,7 +2856,7 @@ Following the slime's command, you climb into the back of the car, and the <<per
 	<<set $npcpronountemp to $pronoun>>
 	<<clotheson>>
 	<<endcombat>>
-	<<link [[Drop me off|Street Car Sex Dropoff]]>><<set $pronoun to $npcpronountemp>> <<unset $npcpronountemp>> <</link>>
+	<<link [[Drop me off|Street Car Sex Dropoff]]>><<set $pronoun to $npcpronountemp>><<unset $npcpronountemp>> <</link>>
 	<br>
 	<<set _leave to $bus.toUpperFirst()>>
 	<<if $bus isnot "park">>
@@ -2921,11 +2923,10 @@ Industrial
 :: Street Car Sex Police
 
 <<set $outside to 0>><<effects>>
-<<unset $street_car_police>>
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>><<set $prostitutionstat += 1>><<fameprostitution 1>>
-	<<if crimeSumCurrent() gte 2000 and $rng % 2>>
-		<<if $enemyanger lte 0 and crimeSumCurrent() lte 4000 and $beauty gte ($beautymax / 7) * 5>>
+	<<if crimeSumCurrent() gte 1000 and $rng % 2>>
+		<<if $enemyanger lte 0 and crimeSumCurrent() lt 5000 and $beauty gte ($beautymax / 7) * 5>>
 			The <<person1>><<person>> looks conflicted. Finally, <<he>> speaks.
 			<br>
 			"Listen," <<he>> says. "I'm with the police. This was a sting operation. Targeting you. We know you've been committing crimes and prostitution is an easy way to get an arrest. So... so this."
@@ -2949,9 +2950,10 @@ Industrial
 			<br>
 			"What do I owe you for such amazing sex? Just name your price."
 			<br><br>
-			<<if currentSkillValue('skulduggery') gte 700>>
+			<<if currentSkillValue('skulduggery') gte 700 and random(1,2) is 1>>
 				<span class="gold">Thanks to your knowledge of trickery and deceit, you smell a rat. The car. The person. Everything feels wrong. This feels like a setup.</span>
 				<br><br>
+				<<set $street_car_police to true>>
 			<</if>>
 			<<link [[Nothing|Street Car Sex Entrap]]>><<set $phase to 0>><</link>>
 			<br>
@@ -2959,34 +2961,51 @@ Industrial
 			<br>
 			<<link [[£100|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
 			<br>
-			<<link [[£150|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
-			<br>
 			<<link [[£200|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
 			<br>
-			<<link [[£500|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
+			<<link [[£400|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
+			<br>
+			<<link [[£1000|Street Car Sex Entrap]]>><<set $phase to 2>><</link>>
 			<br>
 		<</if>>
 	<<else>>
 		"That was great."
 		<br>
-		<<He>> smiles, strokes your cheek and then shows you a police badge.
-		<br>
-		"There's no cost involved, right? That'd be prostitution. A <<girl>> like you isn't a whore? I'd have to take you in for that."
+		<<if random(1,2) is 1>>
+			<<He>> smiles, strokes your cheek and then shows you a police badge.
+			<br>
+			"There's no cost involved, right? That'd be prostitution. A <<girl>> like you isn't a whore? I'd have to take you in for that."
 		<br><br>
+		<<else>>
+			"There's no cost involved, right? That'd be prostitution. A <<girl>> like you isn't a whore? I'd have to take you in for that, I'm a police officer."
+		<br><br>
+		<<if currentSkillValue('skulduggery') gte 700 and random(1,2) is 1>>
+			<span class="gold">Your eyes, used to deception, detect no lie. The car. The person. Everything makes sense. This is a genuine police officer.</span>
+			<br><br>
+			<<set $street_car_police to true>>
+		<</if>>
+		<</if>>
 		<<if $submissive lte 500>>
-			<<link [[Demand payment|Street Car Sex Entrap]]>><<set $phase to 3>><<crimeUp 50 "prostitution">><</link>><<crime "prostitution">>
+			<<link [[Demand payment|Street Car Sex Entrap]]>><<set $phase to 3>><<crimeUp 50 "prostitution">><</link>>
+			<<if !$settings.blindStatsEnabled and $street_car_police is not true>>
+				 | <span class="red">Crime? (Prostitution)</span>
+			<<else>>
+				<<crime "prostitution">>
+			<</if>>
 			<br>
 		<</if>>
-		<<link [[No cost|Street Car Sex Entrap]]>><<set $phase to 0>><</link>>
+		<<link [[No cost|Street Car Sex Entrap]]>><<set $street_car_police to true>><<set $phase to 0>><</link>>
 		<br>
 	<</if>>
 <<elseif $finish is 1>>
+	<<unset $street_car_police>>
 	"Fine. I hope you don't expect anything." <<He>> shoves you out the car and drives away. <<tearful>> you struggle to your feet.
 	<br><br>
 	<<clotheson>>
 	<<endcombat>>
 	<<destinationeventend>>
 <<else>> /*only triggers if event goes nonconsens and fight*/
+	<<unset $street_car_police>>
 	<<if $rng % 2>>
 		You manage to knock the <<person>> backwards, giving you time to escape. <<tearful>> you escape the car and flee down the alley.
 		<br><br>
@@ -3025,7 +3044,7 @@ Industrial
 
 <<set $outside to 0>><<effects>>
 <<if $phase is 0>>
-	"There's no charge, <<if currentSkillValue('skulduggery') gte 700 or $stealtarget isnot "">>officer,<<else>><<maam>>,<</if>>" you smile. "I'm not a prostitute!"
+	"There's no charge, <<if $street_car_police>>officer,<<else>><<maam>>,<</if>>" you smile. "I'm not a prostitute!"
 	<br><br>
 	"Right..." <<he>> says. "Then I guess you better be on your way."
 	<br><br>
@@ -3064,9 +3083,207 @@ Industrial
 	<br><br>
 	"They'll be with you in a couple of hours," the <<person>> tells you as <<he>> leaves. "Have a nice day, citizen."
 	<br><br>
+	<<unset $street_car_police>>
 	<<link [[Wait (2:00)|Police Cell]]>><<pass 2 hour>><<endcombat>><</link>>
 	<br>
 <</if>>
+
+:: Street Car Sex Ask
+
+<<set $outside to 0>><<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>><<set $prostitutionstat += 1>><<fameprostitution 1>>
+	<<if $rng % 2>>
+		The <<person1>><<person>> looks at you lovingly.
+		<br>
+		"What do I owe you for such amazing sex? Just name your price."
+		<br><br>
+		<<if (currentSkillValue('skulduggery') gte 700 and (random(1,2) is 1)) or crimeSumCurrent() lt 1000 or ($enemyanger lte 0 and crimeSumCurrent() lt 5000)>>
+			<span class="gold">Your eyes<<if currentSkillValue('skulduggery') gte 700>>, used to deception,<</if>> detect no lie. <<if crimeSumCurrent() lt 1000>>The police has no reason to target you with a sting operation. <<else>>The person seems completely genuine. Nothing more than a satified customer.<</if>></span>
+			<br><br>
+			<<set $street_car_police to false>>
+		<</if>>
+		<<link [[Nothing|Street Car Sex Pay]]>>
+		<<set $phase to 0>>
+		<</link>>
+		<br>
+		/* $phase is 1 when giving a larger tip than asked, 2 when giving a lower tip, 3 when not giving anything, 4 when they don't have enough money. Otherwise, it stores the amount paid. */
+		<<link [[£50|Street Car Sex Pay]]>>
+		<<if $rng lte 100*$beauty /(($beautymax / 7) * 2) >>
+			<<if random(1,2) is 1 and $tip gte 5000>><<set $phase to 1>><<else>><<set $phase to 50>><</if>>
+		<<elseif random(1,2) is 1 or $tip gte 5000>><<set $phase to 50>>
+		<<else>>
+			<<set $phase to 2>>
+		<</if>>
+		<</link>>
+		<br>
+		<<link [[£100|Street Car Sex Pay]]>>
+		<<if $rng lte 100*$beauty /(($beautymax / 7) * 3)>>
+			<<if random(1,2) is 1 and $tip gte 10000>><<set $phase to 1>><<else>><<set $phase to 100>><</if>>
+		<<elseif $rng lte 100*$beauty /(($beautymax / 7) * 2) or $tip gte 10000>>
+			<<if random(1,2) is 1 or $tip gte 10000>><<set $phase to 100>><<else>><<set $phase to 2>><</if>>
+		<<else>>
+			<<if random(1,2) is 1>><<set $phase to 2>><<else>><<set $phase to 3>><</if>>
+		<</if>>
+		<</link>>
+		<br>
+		<<link [[£200|Street Car Sex Pay]]>>
+		<<if $rng lte 100*$beauty /(($beautymax / 7) * 4)>>
+			<<if random(1,2) is 1 and $tip gte 20000>><<set $phase to 1>><<else>><<set $phase to 200>><</if>>
+		<<elseif $rng lte 100*$beauty /(($beautymax / 7) * 3) or $tip gte 20000>>
+			<<if random(1,2) is 1 or $tip gte 20000>><<set $phase to 200>><<else>><<set $phase to 2>><</if>>
+		<<else>><<set $phase to 3>>
+		<</if>>
+		<</link>>
+		<br>
+		<<link [[£400|Street Car Sex Pay]]>>
+		<<if $rng lte 100*$beauty /(($beautymax / 7) * 5)>>
+			<<if random(1,2) is 1 and $tip gte 40000>><<set $phase to 1>><<elseif $stealtarget is "">><<set $phase to 400>><<else>><<set $phase to 4>><</if>>
+		<<elseif $rng lte 100*$beauty /(($beautymax / 7) * 4) or $tip gte 40000>>
+			<<if (random(1,2) is 1 and $stealtarget is "") or $tip gte 40000>><<set $phase to 400>><<else>><<set $phase to 4>><</if>>
+		<<else>>
+			<<set $phase to 3>>
+		<</if>>
+		<</link>>
+		<br>
+		<<link [[£1000|Street Car Sex Pay]]>>
+		<<if (random(1,2) is 1 and $stealtarget is "")>><<set $phase to 1000>><<else>><<set $phase to 4>><</if>>
+		<</link>>
+		<br>
+	<<else>>
+		"That was great."
+		<br>
+		"There's no cost involved, right? That'd be prostitution. A <<girl>> like you isn't a whore? I'd have to take you in for that, I'm a police officer."
+		<br><br>
+		<<if currentSkillValue('skulduggery') gte 700 and random(1,2) is 1>>
+			<span class="gold">Thanks to your knowledge of trickery and deceit, you smell that something is off. The way they behave, the whole vibe feels wrong. This person is definitely not police.</span>
+			<br><br>
+			<<set $street_car_police to false>>
+		<</if>>
+		<<link [[Demand payment|Street Car Sex Pay]]>><<set $phase to 5>><</link>>
+		<<if !$settings.blindStatsEnabled and $street_car_police is not false>>
+			 | <span class="red">Crime? (Prostitution)</span>
+		 <</if>>
+		<br>
+		<<link [[No cost|Street Car Sex Pay]]>><<set $phase to 6>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	<<if $finish is 1>> /* Asked to stop */
+		"Fine. I hope you don't expect anything." <<He>> shoves you out the car and drives away. <<tearful>> you struggle to your feet.
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+		<<destinationeventend>>
+	<<else>> /* Nonconsent and player won the fight */
+		You manage to knock the <<person>> backwards, giving you time to escape. <<tearful>> you escape the car and flee down the alley.
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+		<<destinationeventend>>
+	<</if>>
+<</if>>
+
+:: Street Car Sex Pay
+
+<<set $outside to 0>><<effects>>
+<<if $phase isnot 0 and $phase isnot 5 and $phase isnot 6>>
+	You tell <<him>> your price. 
+	<<if $speech_attitude is "meek">>
+		"I can feel that you're still quivering," you say "I'm good enough to be worth this price, right?" 
+	<<elseif $speech_attitude is "bratty">>
+		"Don't deny it, that's what my body is worth," you say. 
+	<<else>>
+		"I think I'm worth this much," you say.
+	<</if>>
+	<br><br>
+<</if>>
+<<if $phase is 0>>
+	"There's no charge, <<maam>>," you smile. "<<if $street_car_police is false>>I'm enjoying myself, <</if>>I'm not a prostitute!"
+	<br><br>
+	"Really?" <<he>> says. "I can't believe I appealed to such a <<if $player.gender_posture is "f" or ($player.gender_posture is "n" and $player.gender_appearance is "f")>>pretty<<else>>handsome<</if>> <<girl>><<if $fame.prostitution gte 1000>>, especially given your reputation<</if>>. Need another kind of ride?" <<he>> asks.
+<<elseif $stealtarget isnot "" and random(1,2) is 1>>
+	<<He>> reaches for <<his>> <<wallet>>, freezes, then stares at you. "Did you just steal from me, you little shit?" <<he>> yells. "Consider yourself paid. Now, out!" <<He>> shoves you out the car. <<tearful>> you struggle to your feet and hear <<him>> cursing as <<he>> drives away.<<set $phase to 3>>
+<<elseif $phase is 1>>
+	<<He>> looks at you, dumbfounded. "You're underselling yourself, <<girl>>," <<he>> says. " Be more ambitious!" <<He>> climbs back over to the driver's seat, takes <<his>> wallet and holds out a wad of cash larger than what you asked. "Where would you like to go?" <<he>> says.
+	<br><br>
+	<<tipreceive "prostitution">>
+<<elseif $phase is 2>>
+	<<He>> stays still for a moment before shaking <<his>> head. "No you're not," <<he>> says. "Be careful to not bite off more than you can chew, <<girl>>." <<He>> climbs back over to the driver's seat and throws some cash at you. "You need to be somewhere, sweetheart?" <<he>> asks.
+	<br><br>
+	<<tipreceive "prostitution">>
+<<elseif $phase is 3>>
+	Anger flashes across <<his>> face. "I give you an inch and you ask for a mile, " <<he>> says. "Get out of my car. Now." <<He>> shoves you out the car and drives away. <<tearful>> you struggle to your feet.
+<<elseif $phase is 4>>
+	<<He>> takes a few instants to answer, still enraptured. "Of course, it's the best sex I ever had in my life, " <<he>> says. 
+	<br>
+	<<He>> climbs back over to the driver's seat and rumages through <<his>> <<wallet>> and the glove compartment. <<He>> holds out some cash, less than you asked. "Sorry, it seems I'm almost out of money<<if $stealtarget isnot "">>, <span class="red">I hope no one stole it</span><</if>>, " <<he>> says, "Can I at least drive you somewhere?"
+	<br><br>
+	<<tipreceive "prostitution">>
+<<elseif $phase is 5>>
+	"You knew the deal. You said you'd pay. <<if $street_car_police is false>>You're not even a real police officer<<else>>You can't arrest me for committing a crime you paid me to do!<</if>> Pay up."
+	<br><br>
+	<<He>> holds up <<his>> hands: "Okay. Okay. It was worth a try."
+	<br><br>
+	You shake your head as <<he>> smiles. 
+	"Take what you need from that bag beside you," <<he>> says. "It's all there."
+	<br><br>
+	You turn around, reach for the bag on the passenger seat, and start rummaging through it. Your fingers quickly close around a very thick stack of bills.
+	<br><br>
+	<span class="gold">You make</span> <<printmoney 40000>><<money 40000 "prostitution">>.
+<<elseif $phase is 6>>
+	"There's no charge, <<if $street_car_police isnot false>>officer,<<else>><<maam>>,<</if>>" you smile. "<<if $street_car_police is false>>I'm enjoying myself, <</if>>I'm not a prostitute!"
+	<br><br>
+	"Right..." <<he>> says. "Then I guess you better be on your way."
+<<elseif $phase lt 400>>
+	<<He>> nods with a smile. "Indeed, you're quite good, " <<he>> says. <<He>> climbs back over to the driver's seat, takes a wad of cash from <<his>> wallet, and hands it over. "I can give you a lift if you want. Or you're just out here?" <<he>> asks.
+	<br><br>
+	<span class="gold">You make</span> <<printmoney `100*$phase`>><<money `100*$phase` "prostitution">>.
+<<elseif $phase lte 400>>
+	<<print either("<<He>> lets out a low whistle, clearly impressed.","<<He>> stares at you for a moment, then chuckles.")>>
+	<<print either("\"Damn, <<girl>>, you're expensive, ","\"Fuck, you're not cheap, ")>>
+	<<print either("that's a lot of money, even for me!\"","but alright, you are a hard negotiator!\"")>> 	
+	<br>
+	<<He>> climbs back to the driver's seat and counts out a thick stack of bills before handing it over.
+	<<print either("\"Need a ride somewhere? No need to walk, \"","\"I'm happy to have you if you need to go somewhere, \"")>>
+	<<he>> says.
+	<br><br>
+	<span class="gold">You make</span> <<printmoney `100*$phase`>><<money `100*$phase` "prostitution">>.
+<<else>>
+	<<He>> bursts into hysterical laughter. "Hah! That's a good one," <<he>> says. "And after that, we'll go sightseeing at my skyscraper."
+	<br>
+	<<He>> tosses some cash at you while climbing back over to the driver's seat
+	<br><br>
+	<<tipreceive "prostitution">>
+<</if>>
+<br><br>
+<<unset $street_car_police>>
+<<set $npcpronountemp to $pronoun>>
+<<set _getride to ($phase isnot 3 and $phase isnot 5 and $phase isnot 6 and $phase isnot 1000)>>
+<<set _ring to $phase is 1000>>
+<<clotheson>>
+<<endcombat>>
+<<if _ring and currentSkillValue('skulduggery') gte 700>>
+	<<set $pronoun to $npcpronountemp>>
+	Your eyes catch a glint on the floor. It's a gold ring set with an emerald, that <<he>> must have dropped while laughing. It's probably <span class="gold">worth more than £1000</span>.
+	<<unset $npcpronountemp>>
+	<br><br>
+	<<set _leave to $bus.toUpperFirst()>>
+	<<if $bus isnot "park">>
+		<<set _leave += ($location is "alley" ? " Alleyways" : " Street")>>
+	<</if>>
+	<<link [[Take it and leave the car|_leave]]>><<set $eventskip to 1>><<set $blackmoney += 2000>><<crimeUp 2000 "thievery">><</link>><<crime "thievery">>
+	<br>
+<</if>>
+<<if _getride>>
+	<<link [[Drop me off|Street Car Sex Dropoff]]>><<set $pronoun to $npcpronountemp>><</link>>
+	<br>
+<</if>>
+<<set _leave to $bus.toUpperFirst()>>
+<<if $bus isnot "park">>
+	<<set _leave += ($location is "alley" ? " Alleyways" : " Street")>>
+<</if>>
+<<link [[Leave the car|_leave]]>><<unset $npcpronountemp>><<set $eventskip to 1>><</link>>
 
 :: Street Flirt
 

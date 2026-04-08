@@ -725,6 +725,14 @@
 	<<rng>>
 	<<generate1>><<person1>>A car pulls up alongside you. The driver, a <<person>>, waves a wad of cash at you. "Show me a good time and I'll make it worth your while. Get in."
 	<br><br>
+	/*Special events have up to 20% chance to happen. */
+	<<if $rng lte Math.min(crimeSumCurrent()/200,10) + 10*Number($fame.prostitution gte 400)>>
+		<<set $phase to 10>> /* Police */
+	<<elseif $fame.prostitution gte 400 and $rng gt 100-Math.min(Math.round($fame.prostitution/100),20)>>
+		<<set $phase to 9>> /* Chance to ask for a lot of money. */
+	<<else>>
+		<<set $phase to 1>>
+	<</if>>
 
 	<<if $earSlime.growth gt 50 and ($earSlime.growth gte 80 - ($earSlime.promiscuity * 10))>>
 		<span class="lewd">You feel the slime in your head command you to get in the car and give yourself to <<him>>.</span> It promises rewards if you comply and threatens consequences if you do not.
@@ -743,30 +751,18 @@
 		<<link [[Defy|Street Car Slime Defy]]>><<corruption -1>><<pain 8>><<stress 6>><<trauma 6>><<def 1>><</link>><<lcorruption>><<ggpain>><<ggtrauma>><<ggstress>>
 		<br>
 	<<else>>
-		<<if !hasSexStat("promiscuity", 2)>>
-			<<if $uncomfortable.prostituting>>
-				<<insufficientStat "promiscuity" "to take up such an offer">>
-			<<else>>
-				<<His>> offer repulses you, but you need the money.
-			<</if>>
+		<<if hasSexStat("promiscuity", 2)>>
+			<<link [[Get in|Street Car]]>><</link>><<promiscuous2>>
 			<br>
 		<<else>>
-			<<if $rng lte 15 and (crimeSumCurrent() gte 1000 or $fame.prostitution gte 400)>>
-				<<link [[Get in|Street Car]]>><<set $phase to 10>><</link>><<promiscuous2>>
+			<<if $uncomfortable.prostituting>>
+				<<insufficientStat "promiscuity" "to take up such an offer">>
 				<br>
 			<<else>>
-				<<link [[Get in|Street Car]]>><<set $phase to 1>><</link>><<promiscuous2>>
+				<<His>> offer repulses you, but you need the money.
 				<br>
-			<</if>>
-		<</if>>
-
-		<<if !hasSexStat("promiscuity", 2) and $uncomfortable.prostituting is false>>
-			<<set _desperateaction to 1>>
-			<<if $rng lte 15 and (crimeSumCurrent() gte 1000 or $fame.prostitution gte 400)>>
-				<<link [[Reluctantly get in|Street Car]]>><<set $desperateaction to _desperateaction>><<set $phase to 10>><</link>><<promiscuous2>>
-				<br>
-			<<else>>
-				<<link [[Reluctantly get in|Street Car]]>><<set $desperateaction to _desperateaction>><<set $phase to 1>><</link>><<promiscuous2>>
+				<<set _desperateaction to 1>>
+				<<link [[Reluctantly get in|Street Car]]>><<set $desperateaction to _desperateaction>><</link>><<promiscuous2>>
 				<br>
 			<</if>>
 		<</if>>
