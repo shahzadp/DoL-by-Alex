@@ -185,7 +185,7 @@ function initSpecialClothes() {
 		halloween: {
 			text: "collection of Halloween costumes",
 			requirements: () => Time.hasDatePassed(10, 21),
-			hint: "in stock from the 21st of October",
+			hint: "in stock from <<= getFormattedDate(new DateTime(Time.year, 10, 21))>>",
 			shop: ["forest"],
 			feat: false,
 			icon: "food/halloween.png",
@@ -275,7 +275,7 @@ function initSpecialClothes() {
 		christmas: {
 			text: "Christmas clothes",
 			requirements: () => Time.hasDatePassed(12, 18) || V.specialClothesEvents?.includes("skulduggery_gift"),
-			hint: "in stock from the 18th of December, or leave a generous gift for a family in need",
+			hint: "in stock from <<= getFormattedDate(new DateTime(Time.year, 12, 18))>>, or leave a generous gift for a family in need",
 			shop: ["forest"],
 			feat: true,
 			featCost: 5,
@@ -285,7 +285,7 @@ function initSpecialClothes() {
 		valentines: {
 			text: "collection of Valentine's Day clothes",
 			requirements: () => Time.hasDatePassed(2, 7),
-			hint: "in stock from the 7th of February",
+			hint: "in stock from <<= getFormattedDate(new DateTime(Time.year, 2, 7))>>",
 			shop: ["forest"],
 			feat: false,
 			icon: "gift_vday.png",
