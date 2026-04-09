@@ -921,7 +921,7 @@ const statChange = (() => {
 		if (isNaN(amount)) paramError("livestockObey", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
-			V.livestock_obey = Math.clamp((V.livestock_obey || 0) + amount, 0, 100);
+			V.livestock.obey = Math.clamp((V.livestock.obey || 0) + amount, 0, 100);
 		}
 	}
 	DefineMacro("livestock_obey", livestockObey);

@@ -1,10 +1,10 @@
 :: Livestock Cell
-<<set $outside to 0>><<set $location to "farm">><<effects>>
+<<set $outside to 0>><<set $location to "farm">><<effects>><<set $bus to "livestock">>
 
 You are in your cell in the barn. There's a bucket of what looks like clean water to drink, and a pile of straw to sleep on.
-<<if $farmCellUnlk is false or $farm_key is true and $farmCellUnlk is undefined>>
+<<if $livestock.lock.unlocked is false or $livestock.lock.keys is true and $livestock.lock.unlocked is undefined>>
 	<span class="teal"> You've hidden a ring of keys in the straw.</span>
-<<elseif $farmCellUnlk is true>>
+<<elseif $livestock.lock.unlocked is true>>
 	<span class="teal"> Your cell door is unlocked. You've hidden a ring of keys in the straw.</span>
 <</if>>
 
@@ -32,10 +32,10 @@ You are in your cell in the barn. There's a bucket of what looks like clean wate
 	<<passoutremy>>
 	<<if Time.hour gte 5 and Time.hour lt 18>>
 		<<hunger 1000>>
-		<<set $livestock_noise to false>>
+		<<set $livestock.noise to false>>
 	<</if>>
 <<elseif Time.hour gte 6 and Time.hour lt 18>>
-	<<set $livestock_noise to false>>
+	<<set $livestock.noise to false>>
 	Remy and the farmhands circle the barn, opening cells and releasing their occupants. One of them opens yours.
 	<br><br>
 
@@ -57,10 +57,10 @@ You are in your cell in the barn. There's a bucket of what looks like clean wate
 		<br> -->
 		<!-- <</if>> Added the closing if here due to sugarcube being stupid, is not part of the above commented out code itself. confirmed the commented code is still not running <<set _errorCheck to "failed">>-->
 	<<npc Remy>><<person1>>
-	Remy <<= $livestock_obey lte 30 ? "marches" : "walks">> over, looking you right in the eyes. "<<= $livestock_obey lte 30 ? "You're a problem specimen" : "I'll handle this one myself">>," <<he>> says, entering your cell. "<<if $livestock_obey lte 30>>So I'll handle you myself. <</if>>Come here."
+	Remy <<= $livestock.obey lte 30 ? "marches" : "walks">> over, looking you right in the eyes. "<<= $livestock.obey lte 30 ? "You're a problem specimen" : "I'll handle this one myself">>," <<he>> says, entering your cell. "<<if $livestock.obey lte 30>>So I'll handle you myself. <</if>>Come here."
 	<br><br>
 
-	<<if $livestock_obey gte 80 and C.npc.Remy.love gte 50 and random(1,100) gte 60 and !playerChastity()>>
+	<<if $livestock.obey gte 80 and C.npc.Remy.love gte 50 and random(1,100) gte 60 and !playerChastity()>>
 		<<link [[Obey|Livestock Milking Obey]]>><<npcincr Remy dom 1>><<livestock_obey 5>><<set $phase to 1>><</link>><<ggobey>>
 		<br>
 		<<link [[Refuse|Livestock Milking Refuse]]>><<npcincr Remy dom -1>><<livestock_obey -5>><</link>><<lobey>>
@@ -73,16 +73,16 @@ You are in your cell in the barn. There's a bucket of what looks like clean wate
 	<</if>>
 <<else>>
 
-	<<if $livestock_lock_intro is undefined>>
+	<<if $livestock.lock.intro is undefined>>
 		<<investigateicon>><<link [[Examine your cell|Livestock Lock Examine]]>><</link>>
 
-	<<elseif $farm_key is true and $farmCellUnlk is undefined>>
+	<<elseif $livestock.lock.keys is true and $livestock.lock.unlocked is undefined>>
 		<<investigateicon>><<link [[Try the keys|Livestock Lock Key]]>><<set $phase to 0>><</link>>
 
-	<<elseif $farm_key is true and $farmCellUnlk is false>>
+	<<elseif $livestock.lock.keys is true and $livestock.lock.unlocked is false>>
 		<<lockicon "bronze key">><<link [[Unlock your cell|Livestock Lock Key]]>><<set $phase to 0>><</link>>
 
-	<<elseif $farmCellUnlk is true>>
+	<<elseif $livestock.lock.unlocked is true>>
 		<<getouticon>><<link [[Leave your cell|Livestock Lock Examine]]>><</link>>
 
 	<<else>>
@@ -91,8 +91,8 @@ You are in your cell in the barn. There's a bucket of what looks like clean wate
 	<br>
 	<<exerciseicon>><<link [[Work out (1:00)|Livestock Workout]]>><</link>><<gtiredness>><<lstress>>
 	<br>
-	<<if $livestock_noise is false>>
-		<<ind>><<link [[Make noise (0:10)|Livestock Noise]]>><<pass 10>><<stress -12>><<trauma -6>><<set $livestock_noise to true>><</link>><<llstress>><<ltrauma>><<lobey>>
+	<<if $livestock.noise is false>>
+		<<socialiseicon "angry">><<link [[Make noise (0:10)|Livestock Noise]]>><<pass 10>><<stress -12>><<trauma -6>><<set $livestock.noise to true>><</link>><<llstress>><<ltrauma>><<lobey>>
 		<br>
 	<</if>>
 	<<bedicon "zzz">><<link [[Sleep until dawn|Livestock Sleep]]>><<set $phase to 0>><</link>><<ltiredness>>
@@ -161,7 +161,7 @@ Remy lands in the dirt. Eden helps you find your footing, and together you escap
 
 :: Livestock Workout
 <<effects>>
-<<if $livestock_noise is true>>
+<<if $livestock.noise is true>>
 	<<pass 1>><<tiredness 1>>
 	You try to get up off the floor but collapse into a heap. Your punishment left you unable to move very much. Getting any exercise right now would be impossible.
 	<br><br>
@@ -191,7 +191,7 @@ Soon, the whole barn begins to join in your rebellious antics—some out of anno
 <br><br>
 It isn't long before the door to the barn opens, and the lights flicker on. Remy and two farmhands inspect the bovine, who quickly all return to their 'beds'. The only one left standing in place is you, marking you as responsible.
 <br><br>
-<<if $livestock_obey gte 80>>
+<<if $livestock.obey gte 80>>
 	<<link [[Next|Livestock Noise 2]]>><<set $phase to 1>><</link>>
 	<br>
 <<else>>
@@ -317,7 +317,7 @@ It isn't long before the door to the barn opens, and the lights flicker on. Remy
 		<br><br>
 	<</if>>
 
-	<<He>> reaches for your collar, then pauses. "Maybe I should do this the old-fashioned way. It'll take more time, but more milk from our prized <<pbull>> would be worth it," <<he>> mutters.
+	<<He>> reaches for your collar, then pauses. "Maybe I should do this the old-fashioned way. It'll take more time, but more milk from our prized <<pcow>> would be worth it," <<he>> mutters.
 	<br><br>
 
 	<<link [[Encourage|Livestock Handmilking]]>><</link>>
@@ -595,7 +595,7 @@ You nuzzle up to Remy, and <<he>> smiles. "I think you know I've got a soft spot
 <<He>> pulls up a stool and brings <<his>> hands to your nipple. <<He>> presses your breasts inward, before lightly squeezing.
 
 <<if $milk_amount gte 1 and $lactating gte 1>>
-	<<set $livestock_milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
+	<<set $livestock.milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
 	Milk leaks from your tips, slowly draining into the bucket underneath you. <<garousal>><<arousal 300 "breasts">>
 	<br><br>
 
@@ -603,7 +603,7 @@ You nuzzle up to Remy, and <<he>> smiles. "I think you know I've got a soft spot
 
 	Remy gives a pleased hum and continues <<his>> ministrations, forcing your body toward another <<if _deniedOrgasm>>ruined <</if>>orgasm, then another. <<orgasm>><<orgasm>>
 <<else>>
-	<<set $livestock_milk to 0>>
+	<<set $livestock.milk to 0>>
 	<<He>> plays with your nipples, hoping to coax out milk, but nothing leaks out. <<He>> clicks <<his>> tongue, but continues trying. The pleasure builds as Remy persistently fondles your <<breasts>>, and the warm, tingling sensation of the gel tips you over the edge. You give a low moo as you reach your peak. <<orgasm>><<silently>><<orgasm>><</silently>>
 	<br><br>
 
@@ -611,14 +611,14 @@ You nuzzle up to Remy, and <<he>> smiles. "I think you know I've got a soft spot
 <</if>>
 
 <<if $player.penisExist>>
-	<<set $livestock_semen to $semen_amount>>
-	<<= $lactating is 1 ? ($livestock_milk gt 0 ? "Once <<hes>> coaxed out the last bit of milk, <<he>> moves the bucket over" : "\"That's disappointing,\" <<he>> mutters. \"Let's hope we have better luck here.\" <<He>> moves the bucket over") : "<<He>> adjusts the bucket so it's beneath your groin">>. <<He>> takes you into both hands, <<= $player.penissize lt 3 ? "fondling" : "pumping">> your shaft while massaging the base of your cock. <<orgasm>>
+	<<set $livestock.semen to $semen_amount>>
+	<<= $lactating is 1 ? ($livestock.milk gt 0 ? "Once <<hes>> coaxed out the last bit of milk, <<he>> moves the bucket over" : "\"That's disappointing,\" <<he>> mutters. \"Let's hope we have better luck here.\" <<He>> moves the bucket over") : "<<He>> adjusts the bucket so it's beneath your groin">>. <<He>> takes you into both hands, <<= $player.penissize lt 3 ? "fondling" : "pumping">> your shaft while massaging the base of your cock. <<orgasm>>
 
 	<<His>> firm, steady strokes and the warm, tingling sensation of the gel brings you to climax again, and again. <<orgasm>><<orgasm>>
 
 	<<if $femaleclimax or _deniedOrgasm>>
-		<<unset $livestock_semen>>
-		Despite Remy's best efforts, no semen is collected as you have multiple <<if _deniedOrgasm>>ruined <</if>>orgasms. Remy frowns. <<if $livestock_milk gte 100>>"Well, no matter," <<he>> mutters. "At least we got something."<</if>> <<He>> gives your cock another <<= $player.penissize lt 2 ? "squeeze" : "stroke">> in one last attempt to coax some cum out.
+		<<unset $livestock.semen>>
+		Despite Remy's best efforts, no semen is collected as you have multiple <<if _deniedOrgasm>>ruined <</if>>orgasms. Remy frowns. <<if $livestock.milk gte 100>>"Well, no matter," <<he>> mutters. "At least we got something."<</if>> <<He>> gives your cock another <<= $player.penissize lt 2 ? "squeeze" : "stroke">> in one last attempt to coax some cum out.
 	<<else>>
 		You ejaculate into the bucket with a low moo as the repeated orgasms wrack your body. You catch a glimpse of Remy's face. <<He>> looks pleased with <<his>> handiwork.
 	<</if>>
@@ -634,51 +634,51 @@ You nuzzle up to Remy, and <<he>> smiles. "I think you know I've got a soft spot
 
 :: Livestock Handmilking End
 <<effects>>
-<<if $livestock_milk is undefined>><<set $livestock_milk to 0>><</if>>
-<<if $livestock_semen is undefined>><<set $livestock_semen to 0>><</if>>
-<<set $fluid_forced_stat += ($livestock_milk + $livestock_semen)>>
+<<if $livestock.milk is undefined>><<set $livestock.milk to 0>><</if>>
+<<if $livestock.semen is undefined>><<set $livestock.semen to 0>><</if>>
+<<set $fluid_forced_stat += ($livestock.milk + $livestock.semen)>>
 
 <<pass 180>>
 <<endevent>>
 <<npc Remy>><<person1>>
 You stay on all fours for what feels like forever, until Remy finally stands up. You slump forward, exhausted from holding the same position. Remy picks up the bucket
 
-<<if $livestock_milk + $livestock_semen gte 5000>><<earnFeat "Pride of the Farm">>
+<<if $livestock.milk + $livestock.semen gte 5000>><<earnFeat "Pride of the Farm">>
 	<<npcincr Remy love 3>>
-	and smiles at the <span class="green">vast</span> quantity of white fluid. "You truly are the pride of our farm." <<He>> pets <<= $cow gte 2 and $transformationParts.cow.horns isnot "hidden" ? "the base of your horns" : "your head">> fondly. "There's no other <<pbull>> like you. Good <<girl>>."
+	and smiles at the <span class="green">vast</span> quantity of white fluid. "You truly are the pride of our farm." <<He>> pets <<= $cow gte 2 and $transformationParts.cow.horns isnot "hidden" ? "the base of your horns" : "your head">> fondly. "There's no other <<pcow>> like you. Good <<girl>>."
 	<<gglove>>
 
-<<elseif $livestock_milk + $livestock_semen gte 3000>>
+<<elseif $livestock.milk + $livestock.semen gte 3000>>
 	<<npcincr Remy love 2>>
 	and smiles at the <span class="teal">great</span> quantity of white fluid. "You're a very good <<girl>>," <<he>> says. <<He>> rubs <<= $cow gte 2 and $transformationParts.cow.horns isnot "hidden" ? "the base of your horns" : "your head">>. "We're lucky to have you in our herd."
 	<<glove>>
 
-<<elseif $livestock_milk + $livestock_semen gte 1000>>
+<<elseif $livestock.milk + $livestock.semen gte 1000>>
 	<<npcincr Remy love 1>>
 	and smiles at the <span class="lblue">large</span> quantity of white fluid. "Excellent." <<He>> pats your head. "Our herd wouldn't be the same without you in it."
 	<<glove>>
 
-<<elseif $livestock_milk + $livestock_semen gte 500>>
+<<elseif $livestock.milk + $livestock.semen gte 500>>
 	and nods at the <span class="blue">decent</span> amount of white fluid. "Very good. I suppose that was worth the time spent milking you myself."
 
-<<elseif $livestock_milk + $livestock_semen gte 300>>
+<<elseif $livestock.milk + $livestock.semen gte 300>>
 	and nods at the <span class="purple">small</span> amount of white fluid. "Good, though I know you can do better." <<He>> looks tired from the time spent tending to you. "Otherwise, it's not worth all that time spent taking care of you myself."
 
-<<elseif $livestock_milk + $livestock_semen gte 100>>
+<<elseif $livestock.milk + $livestock.semen gte 100>>
 	and sighs at the <span class="pink">tiny</span> amount of white fluid in front of <<him>>. "I expected better than that, with all that time spent taking care of you myself."
 
-<<elseif $livestock_milk + $livestock_semen gte 1>>
+<<elseif $livestock.milk + $livestock.semen gte 1>>
 	and frowns at the <span class="red">dribble</span> of white fluid in front of <<him>>. "Pitiable. All that time, and barely anything to show for it."
 
 <<else>>
 	and frowns down at it. "All that for nothing." <<He>> gives a weary sigh. "What a waste of time. But don't worry, <<girl>>. <<if $fluid_forced_stat gte 1000>>I'm confident we can get your productivity back up there.<<else>>I'm not sure why you have such a hard time producing milk, but I'm confident we'll get there<</if>>. You'll be a valuable member of our herd, if I have anything to say about it."
 <</if>>
 <br><br>
-<<He>> calls over one of the workers tending to the cattle and hands over the bucket, <<= $livestock_milk + $livestock_semen gte 1000 ? "careful not to slosh any onto the floor" : "giving the farmhand a curt nod">>.
+<<He>> calls over one of the workers tending to the cattle and hands over the bucket, <<= $livestock.milk + $livestock.semen gte 1000 ? "careful not to slosh any onto the floor" : "giving the farmhand a curt nod">>.
 <br><br>
 
-<<if ($livestock_semen + $livestock_milk) lte 300>>
-	Remy rests a hand on your shoulder. You shiver, still aroused from <<his>> rough treatment. "<<= $fluid_forced_stat gte 1000 ? "You used to produce so much. What happened?" : "I would've figured that would work. Still nothing?">>" When you don't respond, <<he>> shakes <<his>> head. "Don't know why I'm asking a <<pbull>>. Maybe you'll be ready to give tomorrow."
+<<if ($livestock.semen + $livestock.milk) lte 300>>
+	Remy rests a hand on your shoulder. You shiver, still aroused from <<his>> rough treatment. "<<= $fluid_forced_stat gte 1000 ? "You used to produce so much. What happened?" : "I would've figured that would work. Still nothing?">>" When you don't respond, <<he>> shakes <<his>> head. "Don't know why I'm asking a <<pcow>>. Maybe you'll be ready to give tomorrow."
 	<br><br>
 
 	<<He>> stands and walks to the gate after scratching you behind the ears. "You're a good <<girl>>. You know that, right?" Despite <<his>> disappointment, <<he>> still gives you a smile as <<he>> shuts the cage. "It's time for bed now."
@@ -692,8 +692,8 @@ Remy joins the farmhands in freeing the other cattle from the machines. They tur
 
 <<endevent>>
 
-<<unset $livestock_semen>>
-<<unset $livestock_milk>>
+<<unset $livestock.semen>>
+<<unset $livestock.milk>>
 <<unset $deniedOrgasm>>
 <<set $milk_amount to 0>>
 <<unbind>>
@@ -1014,9 +1014,9 @@ You slump, panting, to the straw-strewn floor. Next thing you know, Remy stands 
 <br><br>
 <<He>> reaches beneath you, and tugs free the toys strapped to your <<genitals 1>> and <<breasts>>. It's almost enough to send you over the edge.
 <br><br>
-<<if $livestock_obey gte 80>>
+<<if $livestock.obey gte 80>>
 	"You're such a good <<girl>>," <<he>> says, scratching you behind the ear. "Time for bed." <<He>> stands and walks to the gate. <<He>> smiles at you as <<he>> shuts the cage.
-<<elseif $livestock_obey gte 20>>
+<<elseif $livestock.obey gte 20>>
 	<<He>> wraps <<his>> fingers around your collar and pulls you close. "You're going to be a good <<girl>> tonight, okay?" <<he>> whispers. "No keeping the other cattle up." <<He>> releases you, stands, and walks over to the gate. It shuts with a clank.
 <<else>>
 	<<He>> grasps your ear and pulls you close. "It's time for bed. I better not hear you got up to mischief overnight. Understood?" <<He>> releases you, stands, and walks to the gate without waiting for a response.
@@ -1034,10 +1034,10 @@ Remy and the farmhands finish freeing the cattle from the machine. They turn off
 <<effects>>
 Perhaps the farmers will treat you better if you play along. You allow the sucking feeling to work on your <<penis>>, feeling the arousal build until your body can take it no longer.
 <br><br>
-<<set $livestock_semen to $semen_amount>>
+<<set $livestock.semen to $semen_amount>>
 <<orgasm>>
 <<if $femaleclimax or _deniedOrgasm>>
-	<<unset $livestock_semen>>
+	<<unset $livestock.semen>>
 	Despite the aid of the pump on your <<penis>>, no semen is collected as you have multiple <<if _deniedOrgasm>>ruined <</if>>orgasms.
 	<br><br>
 	<<orgasm>>
@@ -1136,12 +1136,12 @@ You try to focus on something, anything other than the sucking on your penis. Yo
 	<br>
 
 <<else>>
-	<<set $livestock_semen to $semen_amount>>
+	<<set $livestock.semen to $semen_amount>>
 	You can't take it. <span class="red">Your body gives in.</span><<gggwillpower>><<willpower 24>>
 	<br><br>
 	<<orgasm>>
 	<<if $femaleclimax or _deniedOrgasm>>
-		<<unset $livestock_semen>>
+		<<unset $livestock.semen>>
 		Despite the aid of the pump on your <<penis>>, no semen is collected as you have multiple <<if _deniedOrgasm>>ruined <</if>>orgasms.
 		<br><br>
 		<<orgasm>>
@@ -1181,7 +1181,7 @@ Perhaps the farmers will treat you better if you play along. You allow the sucki
 <br><br>
 
 <<orgasm>>
-<<if $milk_amount gte 1 and $lactating gte 1>><<set $livestock_milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
+<<if $milk_amount gte 1 and $lactating gte 1>><<set $livestock.milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
 	Your milk is sucked up the tube, reappearing in a glass canister attached to the milking machine outside your cell. You try not to think about how your milk output is visible to anyone who cares to look.
 	<br><br>
 <</if>>
@@ -1248,7 +1248,7 @@ Your body is wracked time and again, until the <<if $deniedOrgasm>>ruined <</if>
 <<effects>>
 
 <<if $milk_amount gte 1 and $lactating gte 1>>
-	<<set $livestock_milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
+	<<set $livestock.milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
 	Your milk is sucked up the tube, reappearing in a glass canister attached to the milking machine outside your cell. You try not to think about how your milk output is visible to anyone who cares to look.
 	<br><br>
 <<else>>
@@ -1288,21 +1288,21 @@ You try to focus on something, anything other than the sucking on your breasts. 
 :: Livestock Both Give
 <<effects>>
 
-<<if $milk_amount gte 1 and $lactating gte 1>><<set $livestock_milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
+<<if $milk_amount gte 1 and $lactating gte 1>><<set $livestock.milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
 	Your milk is sucked up the tube, reappearing in a glass canister attached to the milking machine outside your cell. You try not to think about how your milk output is visible to anyone who cares to look.
 	<br><br>
 <</if>>
 
 Perhaps the farmers will treat you better if you play along. You allow the sucking feeling to work on your <<penis>> and <<breasts>>, feeling the arousal build until your body can take it no longer.
 <br><br>
-<<set $livestock_semen to $semen_amount>>
+<<set $livestock.semen to $semen_amount>>
 <<orgasm>>
 <<if $femaleclimax or _deniedOrgasm>>
-	<<unset $livestock_semen>>
+	<<unset $livestock.semen>>
 	You've barely recovered from the <<if $deniedOrgasm>>ruined <</if>>orgasm when the suction becomes more intense.
 <<else>>
 	<<if $semen_amount gte 1>>
-		<<if $livestock_milk gte 1>>
+		<<if $livestock.milk gte 1>>
 			Your semen is sucked up the tube, joining the milk in the glass canister. You've barely recovered from the orgasm when the suction becomes more intense.
 		<<else>>
 			Your semen is sucked up the tube, and drips into a glass canister attached to the milking machine outside your cell. You try not to think about how your milk output is visible to anyone who cares to look. You've barely recovered from the orgasm when the suction becomes more intense.
@@ -1388,7 +1388,7 @@ The machine continues to suck your <<penis>>, forcing your body toward another <
 <<effects>>
 
 <<if $milk_amount gte 1 and $lactating gte 1>>
-	<<set $livestock_milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
+	<<set $livestock.milk to $milk_amount>><<set $milk_produced_stat += Math.trunc($milk_amount)>>
 	Your milk is sucked up the tube, reappearing in a glass canister attached to the milking machine outside your cell. You try not to think about how your milk output is visible to anyone who cares to look.
 	<br><br>
 <<else>>
@@ -1412,12 +1412,12 @@ You try to focus on something, anything other than the sucking on your penis and
 	<br>
 
 <<else>>
-	<<set $livestock_semen to $semen_amount>>
+	<<set $livestock.semen to $semen_amount>>
 	You can't take it. <span class="red">Your body gives in.</span><<gggwillpower>><<willpower 24>>
 	<br><br>
 	<<orgasm>>
 	<<if $femaleclimax or _deniedOrgasm>>
-		<<unset $livestock_semen>>
+		<<unset $livestock.semen>>
 		Despite the aid of the pump on your <<penis>>, no semen is collected as you have the first <<if _deniedOrgasm>>ruined <</if>>orgasm. Remembering the gel Remy rubbed into you, and how unnatural that warmth felt.
 		<br><br>
 	<<else>>
@@ -1444,28 +1444,28 @@ You try to focus on something, anything other than the sucking on your penis and
 <<npc Remy>><<person1>>
 You're slumped, panting, above the straw-strewn floor. Next thing you know, Remy stands in front of the milking machine. <<He>> examines the glass canister attached to you.
 <br><br>
-<<if $livestock_milk is undefined>><<set $livestock_milk to 0>><</if>>
-<<if $livestock_semen is undefined>><<set $livestock_semen to 0>><</if>>
-<<set $fluid_forced_stat += ($livestock_milk + $livestock_semen)>>
-<<if $livestock_milk + $livestock_semen gte 5000>><<earnFeat "Pride of the Farm">>
-	<<npcincr Remy love 3>>"Phenomenal productivity," <<he>> says, gazing in awe at the <span class="green">vast</span> quantity of white fluid in front of <<him>>. "I know of no other <<pbull>> that could produce so much."
+<<if $livestock.milk is undefined>><<set $livestock.milk to 0>><</if>>
+<<if $livestock.semen is undefined>><<set $livestock.semen to 0>><</if>>
+<<set $fluid_forced_stat += ($livestock.milk + $livestock.semen)>>
+<<if $livestock.milk + $livestock.semen gte 5000>><<earnFeat "Pride of the Farm">>
+	<<npcincr Remy love 3>>"Phenomenal productivity," <<he>> says, gazing in awe at the <span class="green">vast</span> quantity of white fluid in front of <<him>>. "I know of no other <<pcow>> that could produce so much."
 	<<gglove>>
 	<br><br>
-<<elseif $livestock_milk + $livestock_semen gte 3000>>
+<<elseif $livestock.milk + $livestock.semen gte 3000>>
 	<<npcincr Remy love 2>>"You're a very good <<girl>>," <<he>> says, staring at the <span class="teal">great</span> quantity of white fluid in front of <<him>>. "Only trouble is..." <<He>> smiles. "It might be a bit heavy."
 	<<glove>>
 	<br><br>
-<<elseif $livestock_milk + $livestock_semen gte 1000>>
+<<elseif $livestock.milk + $livestock.semen gte 1000>>
 	<<npcincr Remy love 1>>"With produce like this," <<he>> says, looking at the <span class="lblue">large</span> quantity of white fluid in front of <<him>>. "You're one of the most valuable members of our herd."
 	<<glove>>
 	<br><br>
-<<elseif $livestock_milk + $livestock_semen gte 500>>
+<<elseif $livestock.milk + $livestock.semen gte 500>>
 	"Very good," <<he>> says, looking at the <span class="blue">decent</span> amount of white fluid in front of <<him>>. "You're a valuable member of our herd."
-<<elseif $livestock_milk + $livestock_semen gte 300>>
+<<elseif $livestock.milk + $livestock.semen gte 300>>
 	"Good," <<he>> says, looking at the <span class="purple">small</span> amount of white fluid in front of <<him>>. "I bet you can do better, though."
-<<elseif $livestock_milk + $livestock_semen gte 100>>
-	"Not much for a <<pbull>>," <<he>> says, looking at the <span class="pink">tiny</span> amount of white fluid in front of <<him>>. "But better than nothing."
-<<elseif $livestock_milk + $livestock_semen gte 1>>
+<<elseif $livestock.milk + $livestock.semen gte 100>>
+	"Not much for a <<pcow>>," <<he>> says, looking at the <span class="pink">tiny</span> amount of white fluid in front of <<him>>. "But better than nothing."
+<<elseif $livestock.milk + $livestock.semen gte 1>>
 	"A pitiable amount," <<he>> sighs, looking at the <span class="red">dribble</span> of white fluid in front of <<him>>. "But it means there's something to work with, at least."
 <<else>>
 	"Nothing?" <<he>> sighs. "Don't worry. You'll be a productive member of our herd yet."
@@ -1483,9 +1483,9 @@ You're slumped, panting, above the straw-strewn floor. Next thing you know, Remy
 	<<He>> reaches beneath you, and tugs free the pump surrounding your <<penis>>. It's almost enough to send you over the edge.
 <</if>>
 
-<<if $livestock_obey gte 80>>
+<<if $livestock.obey gte 80>>
 	"You're such a good <<girl>>," <<he>> says, scratching you behind the ear. "Time for bed." <<He>> stands and walks to the gate. <<He>> smiles at you as <<he>> shuts the cage.
-<<elseif $livestock_obey gte 20>>
+<<elseif $livestock.obey gte 20>>
 	<<He>> wraps <<his>> fingers around your collar and pulls you close. "You're going to be a good <<girl>> tonight, okay?" <<he>> whispers. "No keeping the other cattle up." <<He>> releases you, stands, and walks over to the gate. It shuts with a clank.
 <<else>>
 	<<He>> grasps your ear and pulls you close. "It's time for bed. I better not hear you got up to mischief overnight. Understood?" <<He>> releases you, stands, and walks to the gate without waiting for a response.
@@ -1497,8 +1497,8 @@ Remy and the farmhands finish freeing the cattle from the machine. They turn off
 
 <<endevent>>
 
-<<unset $livestock_semen>>
-<<unset $livestock_milk>>
+<<unset $livestock.semen>>
+<<unset $livestock.milk>>
 <<unset $deniedOrgasm>>
 <<unbind>>
 
@@ -1632,7 +1632,7 @@ Remy calls for help, and two farmhands rush to <<his>> side. "If you're going to
 <<effects>>
 
 <<livestock_sleep>>
-<<if $farmLockStr lte 0>><<set _lockBroken to true>><</if>> /* Has to be run here before farm_var_set for the Remy wake event */
+<<if $livestock.lock.strength lte 0>><<set _lockBroken to true>><</if>> /* Has to be run here before farm_var_set for the Remy wake event */
 <<farm_var_set>>
 <<if $phase is 0>>
 	<<if $cow gte 6 or $wolfgirl gte 6 or $cat gte 6 or $fox gte 6>>
@@ -1656,7 +1656,7 @@ A weak light pierces the high windows. It's dawn.
 <br><br>
 
 <<if dangerEvent()>>
-	<<if $livestock_obey gte 80 and C.npc.Remy.love gte 80 and random(80, 110) lte C.npc.Remy.love>>
+	<<if $livestock.obey gte 80 and C.npc.Remy.love gte 80 and random(80, 110) lte C.npc.Remy.love>>
 		<<npc "Remy">><<person1>>
 		You stir at the sound of footsteps approaching your cell. The rest of the barn is quiet, save for the occasional snore from one of the other cows. It takes a few moments for your eyes to adjust well enough to see Remy's face outside of your door.
 		<br><br>
@@ -1772,42 +1772,106 @@ A weak light pierces the high windows. It's dawn.
 
 :: Livestock Cell Leave
 <<effects>><<set $outside to 1>>
-<!-- Modified for Monster People -->
-<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
-	You leave your cell, and join the <<livestock_cows>> in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
+You leave your cell, and join the <<livestock_cows>> in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
+<br><br>
+
+<<if $livestock.winter.active and $livestock.winter.trigger gte 5>>
+	<<npc Remy>><<generate2>><<generate3>><<generate4>><<person1>>
+	The door to the barn opens, and one of the farmhands guarding it jerks awake. Remy and three of <<his>> goons walk into the barn. Outside, you can see that <span class="teal">any lingering snow has melted</span>, and <<livestock_horses>> frolic in the field.
 	<br><br>
-<<else>>
-	You leave your cell, and join the cows in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
+	Remy looks around the barn until <<he>> spots you. "There you are, <<girl>>," <<he>> says.
 	<br><br>
-<</if>>
-
-<<if Weather.precipitation is "rain">>
-	You emerge outside, into the rain and mud.
-<<elseif !Weather.isOvercast>>
-	You emerge outside, into sunlight.
-<<elseif Weather.isSnow>>
-	You emerge outside, into the snow.
+	<<if $livestock.obey lte 20>>
+		<<He>> approaches with a grim expression. <span class="red">"I hoped your attitude would improve with a change of scenery,"</span> <<he>> says. "You'll come around, though. I've never met a <<pcow>> I couldn't break."
+		<br><br>
+		<<He>> strokes his whip. The three goons surround you. One of them leers at you.
+		<br><br>
+		"Stay still," the <<person2>><<person>> says. <<He>> holds up a leash. The <<person3>><<person>> and the <<person4>><<person>> reach for you.
+		<br><br>
+		<<link [[Stay still|Livestock Dewintering]]>><<livestock_obey 2>><<set $phase to 0>><</link>><<gobey>>
+		<br>
+		<<link [[Fight|Livestock Dewintering]]>><<livestock_obey -2>><<set $phase to 1>><</link>><<lobey>>
+	<<else>>
+		Remy approaches, a farmhand coming with <<him>>. Two others start to follow, but Remy waves <<his>> hand, and they go back to tending to the other <<livestock_cows>>.
+		<br><br>
+		Remy places a hand under your chin, tilting your head to look at <<him>>. You don't attempt to resist. "Still a good <<girl>>, aren't you? Maybe you'll even be the head of the herd," <<he>> muses. <<He>> drops <<his>> hand and motions for the farmhand to leave.
+		<br><br>
+		A few dogs are released into the barn, and they start pushing cows from behind. One prods your rear, licking your cheek. You <<if $cow gte 6>>moo<<else>>yelp<</if>> in surprise. Remy chuckles, then steers the dog away from you. 
+		<br><br>
+		"Go join your herd," <<he>> commands, patting your shoulder once. 
+		<br><br>
+		You head toward the rest of the <<livestock_cows>>. You feel Remy's stare on you, but when you look back, <<he>> doesn't show any recognisable emotion.
+		<br><br>
+		<<link [[Next|Livestock Dewintering 2]]>><<set $phase to 0>><</link>>
+	<</if>>
 <<else>>
-	You emerge outside.
+	<<if Weather.precipitation is "rain">>
+		You emerge outside, into the rain and mud.
+	<<elseif !Weather.isOvercast>>
+		You emerge outside, into sunlight.
+	<<elseif Weather.isSnow>>
+		You emerge outside, into the snow.
+	<<else>>
+		You emerge outside.
+	<</if>>
+
+	<<npc Remy>><<person1>> Remy walks ahead, where a large <<livestock_horse>> awaits <<him>>. <<He>> climbs atop it, and spurs it behind the cattle. <<He>> unclips <<his>> whip, and a menacing crack hastens the driven cattle.
+	<br><br>
+
+	<<if $livestock.winter.active>>
+		You follow until you're in front of <<if $livestock.seen.includes("winter")>>the winter<<else>>a different<</if>> barn. The entrance is guarded by two farmhands. Remy stops and sits on <<his>> steed, observing the cattle as they file inside. <<His>> eyes linger on you.
+		<br><br>
+
+		<<if $worn.face.type.includes("gag")>>
+			A farmhand gropes at the back of your head. <<He>> unties and <span class="lblue">removes your $worn.face.name</span> before pushing you into the barn. The two farmhands pull the doors shut.
+			<<set $worn.face.type.push("broken")>>
+			<<faceruined>>
+		<<else>>
+			The two farmhands pull the doors shut.
+		<</if>>
+		<br><br>
+
+		<<hunger 1000>><<set $livestock.seen.pushUnique("winter")>>
+		<<link [[Next|Livestock Barn]]>><<endevent>><</link>>
+	<<elseif $livestock.winter.trigger gte 5>>
+		<span class="blue">Remy leads you to a different barn than what you're used to.</span> There are <<livestock_cows>> milling about. Piles of hay surround them. A few space heaters keep the barn warm. There are many places to lie down, <<if $cow gte 6>>and you long to rest<<else>>if you weren't embarrassed by the idea of acting like a <<pcow>><</if>>.
+		<br><br>
+		<<if !$livestock.seen.includes("winter")>>
+			<<He>> sees the confusion on your face. "I told you that I would keep you safe here, <<girl>>," <<he>> says. 
+		<<else>>
+			"It's my job to keep you and the rest of the herd safe," <<he>> says.
+		<</if>>
+		"Part of that job is making sure you're warm enough to produce milk. This will be your home for the winter."
+		<br><br>
+
+		<<He>> leads you to a pile of hay. You wrinkle your nose at the dusty smell. <<if $cow gte 6>>You miss the smell of grass. <</if>><<He>> pets your head.
+		<br><br>
+
+		"If you're a good <<girl>>, then you can have an apple," <<he>> says. As if to prove <<his>> point, <<he>> takes one from <<his>> pocket. Your mouth waters. <<He>> bites into it, <<his>> eyes never leaving your face.
+		<br><br>
+
+		The apple core drops at your feet as <<he>> walks away. You are left in the barn with the rest of <<if $cow gte 6>>your<<else>>the<</if>> herd.
+		<br><br>
+
+		<<hunger 1000>><<set $livestock.winter.active to true>><<set $livestock.seen.pushUnique("winter")>><<set $livestock.dig.fence to 0>>
+		<<link [[Next|Livestock Barn]]>><<endevent>><</link>>
+	<<else>>
+		You follow a windy lane through a small valley, and into a great field. The perimeter is marked by an electric fence. Remy stops by the entrance, sitting on <<his>> steed and observing the cattle as they pass. <<His>> eyes linger on you.
+		<br><br>
+
+		<<if $worn.face.type.includes("gag")>>
+			A farmhand gropes at the back of your head. <<He>> unties and <span class="lblue">removes your $worn.face.name</span> before pushing you into the field. The two farmhands pull the gate shut.
+			<<set $worn.face.type.push("broken")>>
+			<<faceruined>>
+		<<else>>
+			The two farmhands pull the gate shut.
+		<</if>>
+		<br><br>
+
+		<<hunger 1000>>
+		<<link [[Next|Livestock Field]]>><<endevent>><</link>>
+	<</if>>
 <</if>>
-
-<<npc Remy>><<person1>> Remy walks ahead, where a large <<livestock_horse>> awaits <<him>>. <<He>> climbs atop it, and spurs it behind the cattle. <<He>> unclips <<his>> whip, and a menacing crack hastens the driven cattle.
-<br><br>
-
-You follow a windy lane through a small valley, and into a great field. The perimeter is marked by an electric fence. Remy stops by the entrance, sitting on <<his>> steed and observing the cattle as they pass. <<His>> eyes linger on you.
-<br><br>
-
-<<if $worn.face.type.includes("gag")>>
-	A farmhand gropes at the back of your head. <<He>> unties and <span class="lblue">removes your $worn.face.name</span> before pushing you into the field. Two farmhands pull the gate shut.
-	<<set $worn.face.type.push("broken")>>
-	<<faceruined>>
-<<else>>
-	Two farmhands pull the gate shut.
-<</if>>
-<br><br>
-
-<<hunger 1000>>
-<<link [[Next|Livestock Field]]>><<endevent>><</link>>
 <br>
 
 :: Livestock Cell Refuse
@@ -1820,34 +1884,160 @@ You refuse to leave your cell. The farmhand who opened it, a <<person>>, steps i
 "Remy!" <<he>> shouts. "We got a stubborn'un."
 <br><br>
 <<person1>>
-<<if $livestock_obey gte 80>>
-	"What's gotten into you," Remy says, shaking <<his>> head. "I thought you were a good <<girl>>." <<He>> strokes <<his>> whip with <<his>> thumb as two more farmhands enter the cell. Together they have little trouble pulling you out. They push you with the rest of the herd in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
-<<elseif $livestock_obey lte 20>>
+<<if $livestock.obey gte 80>>
+	"What's gotten into you?" Remy says, shaking <<his>> head. "I thought you were a good <<girl>>." <<He>> strokes <<his>> whip with <<his>> thumb as two more farmhands enter the cell. Together they have little trouble pulling you out. They push you with the rest of the herd in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
+<<elseif $livestock.obey lte 20>>
 	"Figures," Remy says. "You can't resist the opportunity to be a nuisance." <<He>> strokes <<his>> whip with <<his>> thumb as two more farmhands enter the cell. Together they have little trouble pulling you out. They push you with the rest of the herd in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
 <<else>>
 	"What's the matter?" Remy asks, shaking <<his>> head. "Or are you just being stubborn for the sake of it?" <<He>> strokes <<his>> whip with <<his>> thumb as two more farmhands enter the cell. Together they have little trouble pulling you out. They push you with the rest of the herd in their march from the barn. Farmhands flank the group, making sure to drive you in the right direction.
 <</if>>
 <br><br>
 
-<<if Weather.precipitation is "rain">>
-	You emerge outside, into the rain and mud.
-<<elseif !Weather.isOvercast>>
-	You emerge outside, into sunlight.
-<<elseif Weather.isSnow>>
-	You emerge outside, into the snow.
+<<if $livestock.winter.active and $livestock.winter.trigger gte 5>>
+	<<generate3>><<generate4>><<person1>>
+	The door to the barn opens, and one of the farmhands guarding it jerks awake. Outside, you can see that <span class="teal"><<if Weather.isSnow>>most of the<<else>>any<</if>> lingering snow has melted</span>, and <<livestock_horses>> frolic in the field.
+	<br><br>
+	Remy approaches with a grim expression. "<<if $livestock.obey lte 20>>I hoped your attitude would improve<<else>>Here I had thought you were going to be happy<</if>> with a change of scenery," <<he>> says. "You'll come around, though. I've never met a <<pcow>> I couldn't break."
+	<br><br>
+	<<He>> strokes his whip. The three goons surround you. One of them leers at you.
+	<br><br>
+	"Stay still," the <<person2>><<person>> says. <<He>> holds up a leash. The <<person3>><<person>> and the <<person4>><<person>> reach for you.
+	<br><br>
+	<<link [[Stay still|Livestock Dewintering]]>><<livestock_obey 2>><<set $phase to 0>><</link>><<gobey>>
+	<br>
+	<<link [[Fight|Livestock Dewintering]]>><<livestock_obey -2>><<set $phase to 1>><</link>><<lobey>>
 <<else>>
-	You emerge outside.
+	<<if Weather.precipitation is "rain">>
+		You emerge outside, into the rain and mud.
+	<<elseif !Weather.isOvercast>>
+		You emerge outside, into sunlight.
+	<<elseif Weather.isSnow>>
+		You emerge outside, into the snow.
+	<<else>>
+		You emerge outside.
+	<</if>>
+
+	Remy walks ahead, where a large <<livestock_horse>> awaits <<him>>. <<He>> climbs atop it, and spurs it behind the cattle as <<he>> unclips <<his>> whip. A menacing crack hastens the driven cattle.
+	<br><br>
+
+	<<if $livestock.winter>>
+		You follow until you're in front of <<if $livestock.seen.includes("winter")>>the winter<<else>>a different<</if>> barn. The entrance is guarded by two farmhands. Remy stops and sits on <<his>> steed, observing the cattle as they file inside. <<His>> eyes linger on you.
+		<br><br>
+		The two farmhands pull the doors shut.
+		<br><br>
+
+		<<hunger 1000>><<set $livestock.seen.pushUnique("winter")>>
+		<<link [[Next|Livestock Barn]]>><<endevent>><</link>>
+	<<elseif $livestock.winter.trigger gte 5>>
+		<span class="blue">Remy leads you to a different barn than what you're used to.</span> There are <<livestock_cows>> milling about. Piles of hay surround them. A few space heaters keep the barn warm. There are many places to lie down, <<if $cow gte 6>>and you long to rest<<else>>if you weren't embarrassed by the idea of acting like a <<pcow>><</if>>.
+		<br><br>
+		<<if !$livestock.seen.includes("winter")>>
+			<<He>> sees the confusion on your face. "I told you that I would keep you safe here, <<girl>>," <<he>> says. 
+		<<else>>
+			"It's my job to keep you and the rest of the herd safe," <<he>> says.
+		<</if>>
+		"Part of that job is making sure you're warm enough to produce milk. This will be your home for the winter."
+		<br><br>
+
+		<<He>> leads you to a pile of hay. You wrinkle your nose at the dusty smell. <<if $cow gte 6>>You miss the smell of grass. <</if>><<He>> pets your head.
+		<br><br>
+
+		"If you're a good <<girl>>, then you can have an apple," <<he>> says. As if to prove <<his>> point, <<he>> takes one from <<his>> pocket. Your mouth waters. <<He>> bites into it, <<his>> eyes never leaving your face.
+		<br><br>
+
+		The apple core drops at your feet as <<he>> walks away. You are left in the barn with the rest of <<if $cow gte 6>>your<<else>>the<</if>> herd.
+		<br><br>
+
+		<<hunger 1000>><<set $livestock.winter.active to true>><<set $livestock.seen.pushUnique("winter")>><<set $livestock.dig.fence to 0>>
+		<<link [[Next|Livestock Barn]]>><<endevent>><</link>>
+	<<else>>
+		You follow a windy lane through a small valley, and into a great field. The perimeter is marked by an electric fence. Remy stops by the entrance, sitting on <<his>> steed and observing the cattle as they pass. <<His>> eyes linger on you.
+		<br><br>
+		Two farmhands pull the gate shut.
+		<br><br>
+
+		<<hunger 1000>>
+		<<link [[Next|Livestock Field]]>><<endevent>><</link>>
+	<</if>>
 <</if>>
+<br>
 
-Remy walks ahead, where a large <<livestock_horse>> awaits <<him>>. <<He>> climbs atop it, and spurs it behind the cattle as <<he>> unclips <<his>> whip. A menacing crack hastens the driven cattle.
+:: Livestock Dewintering
+<<effects>>
+<<if $phase is 0>>
+	You don't resist as the <<person2>><<person>> clips the leash to your collar. Remy nods, a small smile on <<person1>><<his>> face.
+	<br><br>
+	"Good <<girl>>," <<he>> says. "It's not so hard, is it?"
+<<else>>
+	You raise your fists.
+	<<if $speech_attitude is "meek">>
+		"I-I won't be treated this way," you say.
+	<<elseif $speech_attitude is "bratty">>
+		"I won't break, jackass," you say. "You're wasting your time."
+	<<else>>
+		"This is a waste of your time," you say. "I won't be treated like your cattle."
+	<</if>>
+	<br><br>
+	The <<person3>><<person>> and the <<person2>><<person>> lunge for you. You lash out and connect with the <<person2>><<persons>> chin. The <<person3>><<person>> tries to grab your hand, but you kick <<him>> in the shin.
+	<br><br>
+	They circle you. You prepare for more abuse.
+	<br><br>
+	Remy's eyes harden. <<person1>><<He>> cracks his whip in the air, and you flinch at the sound. 
+	<br><br>
+	The farmhands take advantage of your hesitation. The <<person2>><<person>> clips the leash to your collar, while the <<person3>><<person>> and <<person4>><<person>> wrestle you to your knees.
+	<br><br>
+	Remy approaches with a muzzle in <<person1>><<his>> gloved hands. "You're just a filthy animal. You'll learn that sooner or later." <span class="purple"><<He>> fixes the muzzle around your face.</span>
+	<<facewear "bit gag">><<set $livestock.muzzle to true>>
+<</if>>
 <br><br>
+<<link [[Next|Livestock Dewintering 2]]>><</link>>
+<br>
 
-You follow a windy lane through a small valley, and into a great field. The perimeter is marked by an electric fence. Remy stops by the entrance, sitting on <<his>> steed and observing the cattle as they pass. <<His>> eyes linger on you.
+:: Livestock Dewintering 2
+<<effects>>
+<<if $phase is 0>>
+	Remy whistles, and some of the herd moo in response. A <<livestock_horse>> clops up to the open barn doors. Remy boards the <<livestock_horse>> and scans the barn.
+	<br><br>
+	<<if $livestock.obey gte 80>>
+		"Move <<phim>> up front," <<he>> calls. A farmhand nudges you forward through the herd until you stand at the front. You glance at the other <<livestock_cows>>. They almost seem to salivate at the fresh, green grass. <<if $cow gte 6>>The thought of it makes you salivate too<<else>>Your mouth almost dries up at the prospect of eating grass, but it's arguably more appetising than hay<</if>>.
+		<br><br>
+	<<elseif $livestock.obey gte 60>>
+		"<<pShes>> been good. Move <<phim>> up," <<he>> calls. A farmhand nudges you, and you stumble forward, displacing a few other <<livestock_cows>>. They moo in discontent, but they are quickly quieted by the other farmhands. From where you stand, you can see the green grass of the field. No doubt the rest of the herd is excited. <<if $cow gte 6>>It looks lush and delicious<<else>>It isn't appetising, but anything would be better than dry hay<</if>>.
+		<br><br>
+	<<elseif $livestock.obey gte 40>>
+		"Push <<phim>> in a bit," <<he>> calls. A farmhand nudges you inward, and you now are surrounded by other members of the herd. You can't tell what lies ahead, but the fresh air would be nice.
+		<br><br>
+	<</if>>
+	Remy nods, then blows a whistle around <<his>> neck. You don't hear anything, but the dogs begin to bark, and the cows are quick to respond. The ground is wet beneath your feet, and the fields are expansive past the gates. Somehow, it looks bigger than before.
+	<br><br>
+	Remy pauses, riding in front of the herd. Some farmhands follow with baskets of apples, giving one apple to each cow.
+	<br><br>
+	<<if $livestock.obey gte 30>>
+		Remy stops in front of you. <span class="green">"Give <<phim>> one too.<<if C.npc.Remy.love gte 80>> The <<girl>> deserves it for all <<pshe>> makes.<</if>>"</span>
+		<br>
+		Following orders, a farmhand gives you an apple. The juice is sweet, and it leaves you craving more.<<stress -10>><<lstress>>
+		<br><br>
+	<</if>>
+	Remy rides back to the side and dismounts. He slides a key into the lock on the gate, then pushes it open. <<livestock_cows>> moo with delight as they run past you. They almost seem to be frolicking. You hesitate at the gate, letting the rest of the herd go first.
+	<br><br>
+	"Go on, <<girl>>. The grass tastes better than hay," Remy says. When you don't respond, <<he>> slaps your <<bottomsimple>>, and you lurch forward enough for <<him>> to close the gate. With a heavy click, the gates lock you inside.
+<<else>>
+	Remy turns away from you and whistles. <<His>> <<livestock_horse>> approaches as the dogs begin to bark, startling the cattle. Moos fill the barn as they jostle past you. 
+	<br><br>
+	The <<person2>><<person>> and <<person3>><<person>> hold you in place as Remy approaches you. "I have half a mind to keep you in this barn until you behave," <<person1>><<he>> says. "I can't spare the resources, however. So you'll be at the back of the herd instead." <<He>> mounts <<his>> <<livestock_horse>> without another word.
+	<br><br>
+	The <<person4>><<person>> nudges you until you go to the back of the herd. You follow them through the farm, looking around as you do. The farmhands are relaxing with beers and pastries. Some ignore the herd. Others pay a little too much attention.
+	<br><br>
+	Remy dismounts and opens the gate to the field. The herd charges through, mooing with delight. A few even kick their legs as they start searching for the tastiest tufts of grass. <<if $cow gte 6>>After a winter of dry hay, your mouth waters<<else>>You look at them with contempt<</if>>.
+	<br><br>
+	Soon you're the only one still outside the field. Remy's green eyes glimmer as <<person1>><<he>> regards you. "If you were a good <<girl>>, this wouldn't be necessary," <<he>> says. "Best remember your place."
+	<br><br>
+	<<He>> gives you a swift kick in the arse to force you inside. <<He>> closes the gate and locks it. As <<he>> rides away, <<he>> doesn't look back. 
+<</if>>
 <br><br>
-Two farmhands pull the gate shut.
+You look around the field and wonder what to do.
 <br><br>
-
-<<hunger 1000>>
+<<hunger 1000>><<set $livestock.winter.active to false>><<set $livestock.winter.exam to false>>
 <<link [[Next|Livestock Field]]>><<endevent>><</link>>
 <br>
 
@@ -1864,16 +2054,16 @@ You hear the thundering of hooves behind you. You glance over your shoulder, and
 
 <span class="red"><i>No one can outrun a <<livestock_horse>>.</i></span> Not on an open field. Remy passes, then circles around until <<he>> faces you. <<His>> face is stern.
 
-<<if $livestock_obey gte 60>>
+<<if $livestock.obey gte 60>>
 	"I'm so disappointed in you," <<he>> says, unfurling <<his>> whip with a crack. "There's only one thing for it."
-<<elseif $livestock_obey gte 20>>
+<<elseif $livestock.obey gte 20>>
 	"Bad <<girls>> deserve one thing," <<he>> says, unfurling <<his>> whip with a crack. "Maybe you'll think twice in the future."
 <<else>>
 	"I can't say this surprises me," <<he>> says, unfurling <<his>> whip with a crack. "I'll discipline you as many times as it takes."
 <</if>>
 
-<<if $livestock_horse gte 2>>
-	<<unset $livestock_escape>><<livestockescape>>
+<<if $livestock.horse.reputation gte 2>>
+	<<unset $livestock.escape>><<livestockescape>>
 	<!-- Modified for Monster People -->
 	<<if $remyEscapeSteed is "centaur">>
 		<<generate2>>
@@ -2010,7 +2200,7 @@ Remy's eyes scan the herd, until they land on you. <<He>> nods to <<his>> farmha
 <br><br>
 
 "Poor <<girl>>. Did that <<nnpc_gender "Eden">> hurt you?"
-<<if $livestock_obey gte 20>>
+<<if $livestock.obey gte 20>>
 	<<He>> kneels down. Not quite at eye level, but low enough to stroke your chin. "Don't worry. You're safe, now."
 	<br><br>
 
@@ -2213,7 +2403,7 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 <</if>>
 <<person1>>
 
-<<unset $livestock_escape>>
+<<unset $livestock.escape>>
 <!-- Modified for Monster People -->
 <<if _remyPunishBeast is "horse" and ($monster is 1 or $settings.bestialityEnabled)>>
 	"I know what you deserve," <<nnpc_he "Remy">> says, stroking <<nnpc_his "Remy">> <<if $monster is 1>>centaur steed<<else>>horse<</if>> behind the ear. The <<beasttype>> leans into <<bhis>> master's hand. "This <<if $NPCList[0].pronoun is "m">>boy<<else>>girl<</if>> has been good. Your punishment is <<= $NPCList[0].pronouns.his>> reward."
@@ -2271,18 +2461,25 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	Panting, Remy stops. <<nnpc_He "Remy">> clips the whip to <<nnpc_his "Remy">> side. "Return it to the rest of the herd," <<nnpc_he "Remy">> says, climbing back atop <<nnpc_his "Remy">> <<print $remyEscapeSteed>>. "Let's hope it's smart enough to take this lesson to heart."
 	<br><br>
 
-	The farmhands release your shoulders, and pull you up by your collar. They push you along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
+	The farmhands release your shoulders, and pull you up by your collar.
 
 	<<endevent>>
 
-	<<link [[Next|Livestock Field]]>><</link>>
+	<<if $livestock.winter.active>>
+		They push you across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
+	<<else>>
+		They push you along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Field]]>><</link>>
+	<</if>>
 	<br>
 <</if>>
 <<unset $remyEscapeSteed>>
 
 /*	The farmhands form a circle around you. They struggle to hold back the dogs. Remy remains on <<his>> <<livestock_horse>>, looking thoughtful.
-	<<unset $livestock_escape>>
+	<<unset $livestock.escape>>
 	<!-- Modified for Monster People -->
 	<<if ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly) or $settings.bestialityEnabled) and $settings.horsesEnabled>>
 		<<if maleChance() lt random(1, 100)>>
@@ -2464,16 +2661,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good <<if $NPCList[0].pronoun is "m">>boy<<else>>girl<</if>>," Remy says, leaning down and patting <<bhis>> neck. <<nnpc_He "Remy">> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2488,17 +2690,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2543,17 +2749,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Let's hope it's smart enough to understand the lesson," Remy says, watching from the back of <<nnpc_his "Remy">> steed. "I'm the only thing protecting it from the wolves."
-
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2563,16 +2773,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 
 	"Fine," Remy says from atop <<nnpc_his "Remy">> steed. "Just remember, there are actual wolves out there. You won't fare so well against them. I'm the only thing protecting you."
 	<br><br>
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2616,17 +2831,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good girl," Remy says, leaning down and patting her neck. <<He>> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2637,17 +2856,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2694,17 +2917,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good girl," Remy says, leaning down and patting her neck. <<He>> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2715,17 +2942,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2771,17 +3002,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good boy," Remy says, leaning down and patting his neck. <<He>> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2791,17 +3026,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2847,17 +3086,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good boy," Remy says, leaning down and patting his neck. <<He>> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2867,17 +3110,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2923,17 +3170,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good boy," Remy says, leaning down and patting its neck. <<nnpc_He "Remy">> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2942,17 +3193,22 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
 
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -2997,17 +3253,22 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 	"Good girl," Remy says, leaning down and patting its neck. <<nnpc_He "Remy">> looks down at you. "Take it back to the others. Let's hope it's smart enough to understand the lesson."
 	<br><br>
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
 
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -3016,17 +3277,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Fine," Remy says, looking down at you. "Next time you might come off a lot worse. Let's hope you're smart enough to understand the lesson."
-
-	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands release your shoulders and pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -3070,17 +3335,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Let's hope it's smart enough to understand the lesson," Remy says, watching from the back of <<nnpc_his "Remy">> <<livestock_horse>>. "I'm the only thing protecting it from the wolves."
-
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -3091,14 +3360,20 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 
 	"Fine," Remy says from atop <<nnpc_his "Remy">> <<livestock_horse>>. "Just remember, there are actual wolves out there. You won't fare so well against them. I'm the only thing protecting you."
 	<br><br>
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
-	<<link [[Next|Livestock Field]]>><</link>>
-	<br>
+	The farmhands pull you to your feet. <<tearful>> you're pushed
+	<<if $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
+		<br>
+	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Field]]>><</link>>
+		<br>
+	<</if>>
 
 <</if>>
 
@@ -3139,17 +3414,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 	<br><br>
 
 	"Let's hope it's smart enough to understand the lesson," Remy says, watching from the back of <<nnpc_his "Remy">> <<livestock_horse>>. "I'm the only thing protecting it from the wolves."
-
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -3160,16 +3439,21 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 
 	"Fine," Remy says from atop <<nnpc_his "Remy">> steed. "Just remember, there are actual wolves out there. You won't fare so well against them. I'm the only thing protecting you."
 	<br><br>
-	The farmhands pull you to your feet. <<tearful>> you're pushed along the small lane to the field. The gate clanks shut behind you.
-	<br><br>
-
 	<<clotheson>>
 	<<endcombat>>
-
+	The farmhands pull you to your feet. <<tearful>> you're pushed
 	<<if Time.dayState is "night">>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><</link>>
+		across the field to your cell. The gate clanks shut behind you.
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><</link>>
+		<br>
+	<<elseif $livestock.winter.active>>
+		across the field to the barn. The door slams shut behind you.
+		<br><br>
+		<<link [[Next|Livestock Barn]]>><</link>>
 		<br>
 	<<else>>
+		along the small lane to the field. The gate clanks shut behind you.
+		<br><br>
 		<<link [[Next|Livestock Field]]>><</link>>
 		<br>
 	<</if>>
@@ -3180,7 +3464,7 @@ The farmhands form a circle around you. They struggle to hold back the dogs. Rem
 <<set $outside to 0>><<effects>>
 <<npc "Remy">><<person1>>
 <<livestockescape>>
-<<set $livestock_escape to "birth">>
+<<set $livestock.escape to "birth">>
 
 You fade in and out of consciousness. A large blanket has been draped over you. You hear <<if $harper_appointments.hypnosis_intro>>a familiar<<else>>an unfamiliar<</if>> voice.
 <br><br>
@@ -3200,9 +3484,9 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 :: Livestock Lock Examine
 <<effects>>
 
-<<if $livestock_lock_intro is undefined>>
-	<<if $farmLockStr is undefined>>
-		<<set $farmLockStr to 100>>
+<<if $livestock.lock.intro is undefined>>
+	<<if $livestock.lock.strength is undefined>>
+		<<set $livestock.lock.strength to 100>>
 
 		You walk around your cell and look for anything to help you escape. Unfortunately, there is nothing inside besides a bucket and straw.
 		The iron bars of the cage you were put in look solid. There is no way you could bend them.
@@ -3211,25 +3495,25 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 		The only thing that catches your eye is the lock. Like all the other locks on the other cell gates, it looks old and rusty.
 		<span class="red"> Perhaps if you applied enough force, you would be able to break it.</span>
 		<br><br>
-		<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $farmLockStr -= 1>><<set $livestock_lock_intro to 1>><</link>><<ggtiredness>>
+		<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $livestock.lock.strength -= 1>><<set $livestock.lock.intro to 1>><</link>><<ggtiredness>>
 		<br>
-		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 
-	<<elseif $farmLockStr isnot undefined and $livestock_return is true>>
-		<<unset $livestock_return>>
-		<<set $farmLockStr to 100>>
+	<<elseif $livestock.lock.strength isnot undefined and $livestock.return is true>>
+		<<unset $livestock.return>>
+		<<set $livestock.lock.strength to 100>>
 
-		<<if $livestock_escape is "night">>
+		<<if $livestock.escape is "night">>
 
-			<<set $livestock_lock_intro to 1>>
+			<<set $livestock.lock.intro to 1>>
 			<<generate1>><<person1>>
 			<<saveNPC 0 "remy_farmhand_1">>
 			<<npc Remy 2>>
 
 			You check your cell, it's the same as your old one.
 
-			<<if $farmLockQty gte 2>>
-				<<unset $farmLockQty>>
+			<<if $livestock.lock.quality gte 2>>
+				<<unset $livestock.lock.quality>>
 				You sigh with relief, it's an old rusty lock this time.
 			<<else>>
 				It's the same old rusty lock. <span class="red">Should break just like last time.</span>
@@ -3239,18 +3523,18 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 			You grab the bars and rock them back and forth. Not wasting any time, you scream and shout. Provoked, the cattle soon begin to make enough noise to wake the dead.
 			A <<person>> barges into the room, drawing out a tranquilliser gun and proceeds to putting <<livestock_cows>> to sleep.
 			<br><br>
-			<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Break]]>><<set $farmPatrol to 80>><<set $livestockLockSeq to 1>><</link>><<gtiredness>>
+			<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Break]]>><<set $livestock.lock.patrol to 80>><<set $livestock.lock.sequence to 1>><</link>><<gtiredness>>
 			<br>
-			<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+			<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 
 		<<else>>
 
 			You notice the lock on your gate is old and rusty.
 			<span class="red"> Perhaps if you applied enough force, you would be able to break it.</span>
 			<br><br>
-			<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $farmLockStr -= 1>><<set $livestock_lock_intro to 1>><</link>><<ggtiredness>>
+			<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $livestock.lock.strength -= 1>><<set $livestock.lock.intro to 1>><</link>><<ggtiredness>>
 			<br>
-			<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+			<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 		<</if>>
 
 	<<else>>
@@ -3258,21 +3542,21 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 		You approach the gate, there's an old rusty lock.
 		<span class="red"> Perhaps if you applied enough force, you would be able to break it.</span>
 		<br><br>
-		<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $farmLockStr -= 1>><<set $livestock_lock_intro to 1>><</link>><<ggtiredness>>
+		<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Intro]]>><<set $livestock.lock.strength -= 1>><<set $livestock.lock.intro to 1>><</link>><<ggtiredness>>
 		<br>
-		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 
 	<</if>>
 
-<<elseif $farmGateCD is 0>>
+<<elseif $livestock.lock.cooldown is 0>>
 
 	<span class="red"> You hear the farmhand wheezing outside.</span>
 	You should call it a night and try again tomorrow.
 	<br><br>
 	<<getouticon>><<link [[Step back|Livestock Cell]]>><</link>>
 
-<<elseif $farmGateCD is 1>>
-	<<if $farmCellUnlk is false>>
+<<elseif $livestock.lock.cooldown is 1>>
+	<<if $livestock.lock.unlocked is false>>
 		You decide not to try your luck.
 		You should call it a night and try again tomorrow.
 	<<else>>
@@ -3282,12 +3566,12 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	<br><br>
 	<<getouticon>><<link [[Step back|Livestock Cell]]>><</link>>
 
-<<elseif $farmLockStr lte 0>>
-	<<if $livestockLockSeq is 1>>
-		<<if $farmLockQty is undefined>>
-			<<set $farmLockQty to 0>>
+<<elseif $livestock.lock.strength lte 0>>
+	<<if $livestock.lock.sequence is 1>>
+		<<if $livestock.lock.quality is undefined>>
+			<<set $livestock.lock.quality to 0>>
 		<<else>>
-			<<set $farmLockQty += 1>>
+			<<set $livestock.lock.quality += 1>>
 		<</if>>
 		You bide your time until you are certain the <<person>> is asleep.
 		<br><br>
@@ -3302,23 +3586,23 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 		You can leave your cage tonight. The breakage will be noticed in the morning.
 	<</if>>
 	<br><br>
-	<<sneakicon>><<link [[Sneak out|Livestock Lock Break]]>><<set $livestockLockSeq to 3>><<set $phase to 1>><</link>>
+	<<sneakicon>><<link [[Sneak out|Livestock Lock Break]]>><<set $livestock.lock.sequence to 3>><<set $phase to 1>><</link>>
 	<br>
-	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><<set $phase to 1>><</link>>
+	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><<set $phase to 1>><</link>>
 
-<<elseif $farmLockQty lt 2 and $farmGateCD isnot undefined>>
+<<elseif $livestock.lock.quality lt 2 and $livestock.lock.cooldown isnot undefined>>
 	You approach your cell's gate. Like you expected, Remy's henchmen already put a new lock on your cell's gate.
 	It doesn't seem to be much different from the previous one. It is as old and rusty. The lock hanging outside looks <<livestock_lock_desc>>
 	<span class="red"> You still have a chance. </span>
 	<br><br>
 	<<getouticon>><<link [[Step back|Livestock Cell]]>><</link>>
 
-<<elseif $farmLockQty gte 2>>
+<<elseif $livestock.lock.quality gte 2>>
 	You approach your cell's gate. Like you expected, Remy's henchmen already put a new lock on your cell's gate.
 	This one looks quite different. Not only is it made of steel, but it also looks new.
 	You don't think you would be able to break it with your bare hands.<<stress 12>><<ggstress>>
 	<br><br>
-	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 
 
 <<else>>
@@ -3329,27 +3613,27 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	You grab the bars and rock them back and forth. Not wasting any time, you scream and shout. Provoked, the cattle soon begin to make enough noise to wake the dead.
 	A <<person1>><<person>> barges into the room, carrying a tranquilliser gun. <<He>> begins putting the flustered <<livestock_cows>> to sleep.
 	<br><br>
-	<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Break]]>><<set $livestockLockSeq to 1>><<set $farmPatrol to 80>><</link>><<gtiredness>>
+	<<ind>><<link [[Rock the gate (1:00)|Livestock Lock Break]]>><<set $livestock.lock.sequence to 1>><<set $livestock.lock.patrol to 80>><</link>><<gtiredness>>
 	<br>
-	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+	<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 <</if>>
 
 
 :: Livestock Lock Intro
 
-<<if $livestock_lock_intro is 1>>
+<<if $livestock.lock.intro is 1>>
 	You grab the bars and rock them back and forth. You can't tell if it has any effect on the lock.
 	<br><br>
 
-	<<link [[Continue|Livestock Lock Intro]]>><<set $livestock_lock_intro to 2>><</link>>
+	<<link [[Continue|Livestock Lock Intro]]>><<set $livestock.lock.intro to 2>><</link>>
 
-<<elseif $livestock_lock_intro is 2>>
+<<elseif $livestock.lock.intro is 2>>
 	You continue to rock the gate. Each of your thrusts echoes with a loud clang.
 	You notice several <<livestock_cows>> looking at you with perplexed expressions on their faces.
 	<br><br>
-	<<link [[Continue|Livestock Lock Intro]]>><<set $livestock_lock_intro to 3>><</link>>
+	<<link [[Continue|Livestock Lock Intro]]>><<set $livestock.lock.intro to 3>><</link>>
 
-<<elseif $livestock_lock_intro is 3>>
+<<elseif $livestock.lock.intro is 3>>
 	<<generate1>><<person1>>
 	You are adamant to continue your assault on the gate. Most of the <<livestock_cows>> are now mooing in both irritation and confusion.
 	<br><br>
@@ -3360,9 +3644,9 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	After watching <<him>> some more and listening to the ceasing clamour, you realise that <<he>> is using a tranquilliser gun to pacify the overly vigorous cattle.
 	Soon the barn falls silent. "That does it. What got into all of you all of a sudden, saw a rat or something?"
 	<br><br>
-	<<link [[Next|Livestock Lock Intro]]>><<set $livestock_lock_intro to 4>><</link>>
+	<<link [[Next|Livestock Lock Intro]]>><<set $livestock.lock.intro to 4>><</link>>
 
-<<elseif $livestock_lock_intro is 4>>
+<<elseif $livestock.lock.intro is 4>>
 	You patiently wait for the farmhand to leave, but <<he>> never walks back past your cell. Curious, you approach the gate and look outside.
 	You see <<him>> sitting on a stool with <<his>> arms crossed, snoozing. You look at the lock. Maybe you are just seeing things, but the lock looks <<livestock_lock_desc>> Apparently, you can break it.
 	<br><br>
@@ -3370,14 +3654,14 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	Maybe if you prove <span class="red">obedient</span>, they will focus more on other cattle before they turn their attention to you.
 	You see no point in trying to sabotage the lock tonight. You will most likely wake the <<person>> up and get tranquillised if you try to bash the gate.
 	<br><br>
-	<<getouticon>><<link [[Step back|Livestock Cell]]>><<set $livestock_lock_intro to 5>><<set $farmGateCD to 0>><<tiredness 10>><<endevent>><</link>>
+	<<getouticon>><<link [[Step back|Livestock Cell]]>><<set $livestock.lock.intro to 5>><<set $livestock.lock.cooldown to 0>><<tiredness 10>><<endevent>><</link>>
 <</if>>
 
 :: Livestock Lock Break
 <<effects>>
 
-<<if $livestockLockSeq is 1>>
-	<<if $farmLockStr lte 0>>
+<<if $livestock.lock.sequence is 1>>
+	<<if $livestock.lock.strength lte 0>>
 		You push and the gate finally yields. Hopefully, the farmhand didn't hear the sound in the cacophony of mooing voices.
 		You close the gate, take a closer look at the lock and see that the shackle is broken in two.
 		The breakage shouldn't be obvious without a close inspection, but it will get exposed once someone tries to use a key to unlock your cage.
@@ -3389,24 +3673,24 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 		<br>
 		The lock hanging outside looks <<livestock_lock_desc>>
 		<br><br>
-		<<if $farmPatrol lte 20>>
-			<<set $farmGateCD to 0>>
+		<<if $livestock.lock.patrol lte 20>>
+			<<set $livestock.lock.cooldown to 0>>
 			<<ind>><<link [[Continue|Livestock Lock Caught]]>><<pass 30>><<tiredness 5>><</link>>
 		<<else>>
 			<<ind>><<link [[Continue|Livestock Lock Break]]>><<pass 30>><<tiredness 5>><</link>>
 		<</if>>
 		<br>
-		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestockLockSeq to 2>><</link>>
+		<<getouticon>><<link [[Step back|Livestock Lock Break]]>><<set $livestock.lock.sequence to 2>><</link>>
 	<</if>>
 
-<<elseif $livestockLockSeq is 2>>
-	<<if $farmLockStr is 100>>
+<<elseif $livestock.lock.sequence is 2>>
+	<<if $livestock.lock.strength is 100>>
 		You decide to conserve your strength for now and step back.
 		<br><br>
 		<<link [[Next|Livestock Cell]]>><<endevent>><</link>>
 
-	<<elseif $farmLockQty gte 2 and $farm_key isnot true>>
-		Dejected you turn away. <span class="red">Maybe you should try another way</span>
+	<<elseif $livestock.lock.quality gte 2 and $livestock.lock.keys isnot true>>
+		Dejected you turn away. <span class="red">Maybe you should try another way.</span>
 		<br><br>
 		<<link [[Next|Livestock Cell]]>><</link>>
 
@@ -3423,7 +3707,7 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 				<<case 1>>
 				"Stupid cows," <<he>> mumbles. "And now I gotta sit here and make certain none of you fat asses choke on vomit. Great."
 				<<case 2>>
-				"Stupid cows," <<he>> mumbles. "I should've at least brought some coffee. I'd trade my own sister for a wink of sleep."
+				"Stupid cows," <<he>> mumbles. "I should've at least brought some coffee. I'd trade my own <<print either("sister", "brother")>> for a wink of sleep."
 				<<case 3>>
 				"Stupid cows," <<he>> mumbles. "I'm not getting paid enough to babysit these imbeciles."
 				<<case 4>>
@@ -3441,16 +3725,16 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 		It looks like you will need to damage it some more.
 		You should call it a night and try again tomorrow.
 		<br><br>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 0>><<endevent>><</link>>
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 0>><<endevent>><</link>>
 	<</if>>
 
-<<elseif $livestockLockSeq is 3>>
+<<elseif $livestock.lock.sequence is 3>>
 	<<if $phase is 1>>
 		You gently push the gate open and set foot outside. It feels strange to be outside your cage at night, but it is a good feeling.
 		It is almost as if you are free, even though you realise that you are still far away from it.
 		<br><br>
 		You tiptoe your way towards the barn gate as noiselessly as you can. A sudden realisation flashes in your mind and your heart sinks when you remember that the barn also has a lock on it.
-		However, you quickly calm down when you see that the farmhand forgot to pick up <<person1>><<his>> ring of keys.<<set $farm_key to true>>
+		However, you quickly calm down when you see that the farmhand forgot to pick up <<person1>><<his>> ring of keys.<<set $livestock.lock.keys to true>>
 		<br><br>
 		<<link [[Next|Livestock Lock Break]]>><<set $phase += 1>><</link>>
 
@@ -3464,9 +3748,9 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 
 :: Livestock Lock Key
 <<if $phase is 0>>
-	<<if $farmCellUnlk is undefined and $farmLockQty gte 2>>
+	<<if $livestock.lock.unlocked is undefined and $livestock.lock.quality gte 2>>
 		You fetch the key ring from the straw. You go to unlock your sell but a new lock greets you. A shiny silver lock.
-		Panic sets as you try the keys. <span class="red">They don't work.</span><<unset $farm_key>>
+		Panic sets as you try the keys. <span class="red">They don't work.</span><<unset $livestock.lock.keys>>
 		<br>
 		You'll have to grab a new pair.
 		<br><br>
@@ -3474,7 +3758,7 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	<<else>>
 		You fetch the key ring from the straw and try to unlock your cell with each of the keys.
 		It's a slow and methodical process, but finally, one of them fits.
-		You turn the key and hear a clicking sound. <span class="teal">Your cell is no longer locked.</span> <<set $farmCellUnlk to true>>
+		You turn the key and hear a clicking sound. <span class="teal">Your cell is no longer locked.</span> <<set $livestock.lock.unlocked to true>>
 		<br><br>
 		<<sneakicon>><<link [[Sneak out|Livestock Lock Key]]>><<set $phase += 1>><</link>>
 		<br>
@@ -3483,23 +3767,23 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 <<elseif $phase is 1>>
 	You leave your cell and head towards the barn door. Flipping through the key ring, you discover a large key. It fits.
 	<br><br>
-	<<sneakicon>><<link [[Sneak out|Livestock Lock Break]]>><<set $phase += 1>><<set $livestockLockSeq to 3>><</link>>
+	<<sneakicon>><<link [[Sneak out|Livestock Lock Break]]>><<set $phase += 1>><<set $livestock.lock.sequence to 3>><</link>>
 
 <<elseif $phase is 2>>
-	<<if $farm_key is undefined>>
+	<<if $livestock.lock.keys is undefined>>
 		You discard the useless key ring. <<stress 12>><<ggstress>>
 		<<link [[Next|Livestock Cell]]>><<endevent>><</link>>
 	<<else>>
 		You decide to return to your cell.
-		<<if $farmLockStr lte 0 and $farmGateCD is 0>>
+		<<if $livestock.lock.strength lte 0 and $livestock.lock.cooldown is 0>>
 			You stow the ring of keys in the pile of straw.
-			<<set $farmLockQty += 1>>
+			<<set $livestock.lock.quality += 1>>
 		<<else>>
 			You use the keys on your cell and stow them in a pile of straw.
-			<<set $farmCellUnlk to false>>
+			<<set $livestock.lock.unlocked to false>>
 		<</if>>
 		<br><br>
-		<<link [[Next|Livestock Cell]]>><<set $farmGateCD to 1>><<endevent>><</link>>
+		<<link [[Next|Livestock Cell]]>><<set $livestock.lock.cooldown to 1>><<endevent>><</link>>
 	<</if>>
 <</if>>
 
@@ -3533,7 +3817,7 @@ You hear another voice raise in protest. It's Remy. <<He>> gets into an argument
 	It looks like you will need to damage it some more.
 	You should call it a night and try again tomorrow.
 	<br><br>
-	<<link [[Next|Livestock Cell]]>><<endevent>><<set $farmGateCD to 0>><</link>>
+	<<link [[Next|Livestock Cell]]>><<endevent>><<set $livestock.lock.cooldown to 0>><</link>>
 <<else>>
 	The <<person>> looks at you, catching you in the act of shaking your cell's gate with all your might.
 	"Remy won't like to hear this," <<he>> says, pointing <<his>> tranquilliser gun at you. <<livestock_obey -10>><<llobey>>
