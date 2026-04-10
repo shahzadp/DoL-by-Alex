@@ -2072,20 +2072,19 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				if (options.drip_vaginal === "VerySlow") {
-					T.output = "very-slow";
-				} else if (options.drip_vaginal === "VeryFast") {
-					T.output = "very-fast";
-				} else {
-					T.output = options.drip_vaginal.toLowerCase();
-				}
-				return `img/body/cum/vaginal-${T.output}.png`;
+				const output = options.drip_vaginal;
+				return `img/body/cum/vaginal-${output}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_vaginal;
 			},
 			animationfn(options) {
-				const anim = options.drip_vaginal.replace(/-/g,"");
+				let anim = options.drip_vaginal;
+				if (anim.includes("-")) {
+					anim = toTitleCase(anim.split("-")[0]) + toTitleCase(anim.split("-")[1]);
+				} else {
+					anim = toTitleCase(anim);
+				}
 				return `VaginalCumDrip${anim}`;
 			},
 		},
@@ -2093,20 +2092,19 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.tears,
 
 			srcfn(options) {
-				if (options.drip_anal === "VerySlow") {
-					T.output = "very-slow";
-				} else if (options.drip_anal === "VeryFast") {
-					T.output = "very-fast";
-				} else {
-					T.output = options.drip_anal.toLowerCase();
-				}
-				return `img/body/cum/anal-${T.output}.png`;
+				const output = options.drip_anal;
+				return `img/body/cum/anal-${output}.png`;
 			},
 			showfn(options) {
 				return !!options.drip_anal;
 			},
 			animationfn(options) {
-				const anim = options.drip_anal.replace(/-/g,"");
+				let anim = options.drip_anal;
+				if (anim.includes("-")) {
+					anim = toTitleCase(anim.split("-")[0]) + toTitleCase(anim.split("-")[1]);
+				} else {
+					anim = toTitleCase(anim);
+				}
 				return `AnalCumDrip${anim}`;
 			},
 		},
@@ -2114,14 +2112,8 @@ Renderer.CanvasModels.main = {
 			z: ZIndices.semen_cough,
 
 			srcfn(options) {
-				if (options.drip_mouth === "VerySlow") {
-					T.output = "very-slow";
-				} else if (options.drip_mouth === "VeryFast") {
-					T.output = "very-fast";
-				} else {
-					T.output = options.drip_mouth.toLowerCase();
-				}
-				return `img/body/cum/mouth-${T.output}.png`;
+				const output = options.drip_mouth;
+				return `img/body/cum/mouth-${output}.png`;
 			},
 			showfn(options) {
 				return options.show_face
@@ -2132,7 +2124,12 @@ Renderer.CanvasModels.main = {
 				return options.facestyle === "small-eyes" ? 2 : 0;
 			},
 			animationfn(options) {
-				const anim = options.drip_mouth.replace(/-/g,"");
+				let anim = options.drip_mouth;
+				if (anim.includes("-")) {
+					anim = toTitleCase(anim.split("-")[0]) + toTitleCase(anim.split("-")[1]);
+				} else {
+					anim = toTitleCase(anim);
+				}
 				return `MouthCumDrip${anim}`;
 			},
 		},
