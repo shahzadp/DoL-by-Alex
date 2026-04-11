@@ -629,6 +629,107 @@ Renderer.Animations.looseFeathers = {
 		duration: index === 24 ? 1000 : 100,
 	})),
 };
+
+// Both the red eye and blue eye versions use the same animation.
+const wraithFlashGoalAlpha = 0.12;
+const wraithFadeDelay = random(300, 700); // Rerolls only on game reload, not passage change, but that's fine.
+Renderer.Animations.wraithFlash = {
+	keyframes: (() => {
+		const wraithFlashKeyframes = [];
+
+		// Initial delay before fading in
+		wraithFlashKeyframes.push({ frame: 0, alpha: 0, duration: wraithFadeDelay });
+
+		// Fade in
+		for (let i = 0; i < 10; i++) {
+			const fadeInProgress = i / 9;
+			const alpha = wraithFlashGoalAlpha * (1 / 6) * fadeInProgress;
+			wraithFlashKeyframes.push({ frame: 0, alpha, duration: 11 });
+		}
+
+		for (let i = 0; i < 5; i++) {
+			const fadeInProgress = i / 4;
+			const alpha = wraithFlashGoalAlpha * (1 / 6 + (1 / 6) * fadeInProgress);
+			wraithFlashKeyframes.push({ frame: 1, alpha, duration: 11 });
+		}
+
+		for (let i = 0; i < 5; i++) {
+			const fadeInProgress = i / 4;
+			const alpha = wraithFlashGoalAlpha * (1 / 3 + (1 / 6) * fadeInProgress);
+			wraithFlashKeyframes.push({ frame: 2, alpha, duration: 11 });
+		}
+
+		// Fade out
+		for (let i = 0; i < 20; i++) {
+			const fadeInProgress = i / 19;
+			const alpha = wraithFlashGoalAlpha * (1 / 2 + (1 / 2) * (1 - (1 - fadeInProgress) ** 3));
+			wraithFlashKeyframes.push({ frame: 3, alpha, duration: 11 });
+		}
+
+		for (let i = 0; i < 40; i++) {
+			const fadeOutProgress = i / 39;
+			const alpha = wraithFlashGoalAlpha * (1 - fadeOutProgress ** 3);
+			wraithFlashKeyframes.push({ frame: 3, alpha, duration: 11 });
+		}
+
+		wraithFlashKeyframes.push({ frame: 0, alpha: 0, duration: 0 });
+
+		return wraithFlashKeyframes;
+	})(),
+};
+// Red eye wraith has the eyes fade after the body fades away. Blue eye wraith has the necklace fade.
+Renderer.Animations.wraithFlashAccent = {
+	keyframes: (() => {
+		const wraithFlashAccentKeyframes = [];
+
+		// Wait for frame 3 to start in the wraithFlash animation ((10 + 5 + 5) * 11ms + wraithFadeDelay) before fading in the accent.
+		wraithFlashAccentKeyframes.push({ frame: 4, alpha: 0, duration: wraithFadeDelay + 220 });
+
+		// Fade in
+		for (let i = 0; i < 20; i++) {
+			const fadeInProgress = i / 19;
+			const alpha = wraithFlashGoalAlpha * (0.5 + 0.5 * (1 - (1 - fadeInProgress) ** 3));
+			wraithFlashAccentKeyframes.push({ frame: 4, alpha, duration: 11 });
+		}
+
+		// Hold
+		wraithFlashAccentKeyframes.push({ frame: 4, alpha: wraithFlashGoalAlpha, duration: 500 });
+
+		// Fade out
+		for (let i = 0; i < 40; i++) {
+			const fadeOutProgress = i / 39;
+			const alpha = wraithFlashGoalAlpha * (1 - fadeOutProgress ** 3);
+			wraithFlashAccentKeyframes.push({ frame: 4, alpha, duration: 11 });
+		}
+
+		wraithFlashAccentKeyframes.push({ frame: 0, alpha: 0, duration: 0 });
+		return wraithFlashAccentKeyframes;
+	})(),
+};
+// Animation that plays when the "A pale figure stands behind" text appears in the mirror, which animates for 2 seconds.
+Renderer.Animations.wraithMirrorFade = {
+	keyframes: (() => {
+		const keyframes = [];
+
+		// Fade in
+		for (let i = 0; i < 20; i++) {
+			const progress = i / 19;
+			keyframes.push({ frame: 0, alpha: 0.15 * progress, duration: 25 });
+		}
+
+		// Hold
+		keyframes.push({ frame: 0, alpha: 0.15, duration: 200 });
+
+		// Fade out
+		for (let i = 0; i < 52; i++) {
+			const progress = i / 51;
+			keyframes.push({ frame: 0, alpha: 0.15 * (1 - progress), duration: 25 });
+		}
+
+		keyframes.push({ frame: 0, alpha: 0, duration: 0 });
+		return keyframes;
+	})(),
+};
 Renderer.Animations.rain = {
 	keyframes: [
 		{ frame: 0, duration: 100 },
