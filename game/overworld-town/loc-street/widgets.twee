@@ -2985,7 +2985,7 @@
 
 		<<case 7>>
 			<<wearProp "cash">>
-			As you walk around the market, you notice a bank note on the ground. You bend over and pick it up. It's a <<printmoney 500>> bill.<<lstress>><<stress -6>>
+			As you walk around the market, you notice a bank note on the ground. You bend over and pick it up. It's a <<printmoney 500>> bill.<<lstress>><<stress -6>><<money 500>>
 
 		<<case 8>>
 			<<wearProp "cash">>
@@ -3023,10 +3023,8 @@
 
 				<<if $money gte 100000>>
 					<<gardenicon "fertiliser">><<link [[Buy it (£1000)|Connudatus Street]]>><<set $fertiliser.current += 1>><<money -100000>><<pass 15>><<endevent>><</link>>
-
 				<<else>>
-					<<ind>><span class="blue">You can't afford to buy it.</span>
-
+					<span class="blue">You can't afford to buy it.</span>
 				<</if>>
 
 			<<case 2>>
@@ -3036,10 +3034,8 @@
 
 				<<if $money gte 10000>>
 					<<foodstufficon "bottle_of_milk">><<link [[Buy it (£100)|Connudatus Street]]>><<tending_give bottle_of_milk 3>><<money -10000>><<pass 15>><<endevent>><</link>>
-
 				<<else>>
-					<<ind>><span class="blue">You can't afford to buy it.</span>
-
+					<span class="blue">You can't afford to buy it.</span>
 				<</if>>
 
 			<<case 3>>
@@ -3051,7 +3047,7 @@
 				<<crimeicon "mark">><<link [[Steal the change|Connudatus Street]]>><<crimeUp 1 "petty">><<money _change>><<pass 15>><<endevent>><</link>><<crime "petty">>
 
 			<<case 4>>
-				You notice a stall with some eggs on display and a "be back soon" sign on the table. You could probably steal some eggs if you wanted.
+				You notice a stall with some eggs on display and a 'Be back soon' sign on the table. You could probably steal some eggs if you wanted.
 				<br><br>
 
 				<<foodstufficon "chicken_egg">><<link [[Steal the eggs|Connudatus Street]]>><<crimeUp 1 "petty">><<tending_give chicken_egg 3>><<transform fox 1>><<pass 15>><<endevent>><</link>><<crime "petty">>
@@ -3080,7 +3076,10 @@
 					<</if>>
 
 					<<icon "clothes/checkered-shirt.png">>
-					<<if setup.clothes.upper[33].reveal lt earSlimeCorruptionClothes()>>
+					<<if $worn.lower.outfitSecondary and !$worn.lower.outfitSecondary.includes("split") and !$worn.under_lower.type.includes("covered")>>
+						<span class="red">You can't buy the checkered shirt as removing your outfit would leave you exposed.</span>
+						<br>
+					<<elseif setup.clothes.upper[33].reveal lt earSlimeCorruptionClothes()>>
 						<span class="red">The slime in your ear won't allow you to buy the checkered shirt.</span>
 						<br>
 					<<elseif $earSlime.forcedDressing and $earSlime.forcedDressing.days gt 0 and setup.clothes.upper[33].gender isnot $earSlime.forcedDressing.type and setup.clothes.upper[38].gender isnot 'n'>>
@@ -3096,63 +3095,74 @@
 
 				<<else>>
 					<span class="blue">You can't afford to buy any of it.</span>
-
 				<</if>>
 			<<case 6>>
-				You stop by a stall selling seeds. Several varieties catch your eye.
-				<br><br>
+				<<if ["tomato", "cauliflower", "wheat", "chilli_pepper", "pepper", "spinach"].every(plant => $plants_known.includes(plant))>>
+					You stop by a stall selling various gardening equipment. Nothing catches your eyes at first, but you then notice a single bag of fertiliser hidden under some other products. It's priced at <<printmoney 100000>>.
+					<br><br>
 
-				<<if $money gte 2000>>
-					<<if !$plants_known.includes("tomato")>>
-						<<foodstufficon "tomato">><<link [[Buy tomato seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("tomato")>><</link>>
-						<br>
-					<<else>>
-						<span class="blue">You already have tomato seeds.</span>
-						<br>
-					<</if>>
+					<<if $money gte 100000>>
+						<<gardenicon "fertiliser">><<link [[Buy it (£1000)|Connudatus Street]]>><<set $fertiliser.current += 1>><<money -100000>><<pass 15>><<endevent>><</link>>
 
-					<<if !$plants_known.includes("cauliflower")>>
-						<<foodstufficon "cauliflower">><<link [[Buy cauliflower seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("cauliflower")>><</link>>
-						<br>
 					<<else>>
-						<span class="blue">You already have cauliflower seeds.</span>
-						<br>
-					<</if>>
-
-					<<if !$plants_known.includes("wheat")>>
-						<<foodstufficon "wheat">><<link [[Buy wheat seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("wheat")>><</link>>
-						<br>
-					<<else>>
-						<span class="blue">You already have wheat seeds.</span>
-						<br>
-					<</if>>
-
-					<<if !$plants_known.includes("chilli_pepper")>>
-						<<foodstufficon "chilli_pepper">><<link [[Buy chilli pepper seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("chilli_pepper")>><</link>>
-						<br>
-					<<else>>
-						<span class="blue">You already have chilli pepper seeds.</span>
-						<br>
-					<</if>>
-
-					<<if !$plants_known.includes("pepper")>>
-						<<foodstufficon "pepper">><<link [[Buy pepper seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("pepper")>><</link>>
-						<br>
-					<<else>>
-						<span class="blue">You already have pepper seeds.</span>
-						<br>
-					<</if>>
-
-					<<if !$plants_known.includes("spinach")>>
-						<<foodstufficon "spinach">><<link [[Buy spinach seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("spinach")>><</link>>
-						<br>
-					<<else>>
-						<span class="blue">You already have spinach seeds.</span>
-						<br>
+						<span class="blue">You can't afford to buy it.</span>
 					<</if>>
 				<<else>>
-					<<ind>><span class="blue">You can't afford to buy any.</span>
+					You stop by a stall selling seeds at a big discount. People are gathered around it, buying the last remaining packets before they're gone. Several varieties catch your eye, but <span class="blue">there's only enough time to grab one</span>.
 					<br><br>
+
+					<<if $money gte 2000>>
+						<<if !$plants_known.includes("tomato")>>
+							<<foodstufficon "tomato">><<link [[Buy tomato seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("tomato")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have tomato seeds.</span>
+							<br>
+						<</if>>
+
+						<<if !$plants_known.includes("cauliflower")>>
+							<<foodstufficon "cauliflower">><<link [[Buy cauliflower seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("cauliflower")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have cauliflower seeds.</span>
+							<br>
+						<</if>>
+
+						<<if !$plants_known.includes("wheat")>>
+							<<foodstufficon "wheat">><<link [[Buy wheat seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("wheat")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have wheat seeds.</span>
+							<br>
+						<</if>>
+
+						<<if !$plants_known.includes("chilli_pepper")>>
+							<<foodstufficon "chilli_pepper">><<link [[Buy chilli pepper seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("chilli_pepper")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have chilli pepper seeds.</span>
+							<br>
+						<</if>>
+
+						<<if !$plants_known.includes("pepper")>>
+							<<foodstufficon "pepper">><<link [[Buy pepper seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("pepper")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have pepper seeds.</span>
+							<br>
+						<</if>>
+
+						<<if !$plants_known.includes("spinach")>>
+							<<foodstufficon "spinach">><<link [[Buy spinach seeds (£20)|Connudatus Street]]>><<money -2000>><<set $plants_known.push("spinach")>><</link>>
+							<br>
+						<<else>>
+							<span class="blue">You already have spinach seeds.</span>
+							<br>
+						<</if>>
+					<<else>>
+						<span class="blue">You can't afford to buy any.</span>
+						<br>
+					<</if>>
 				<</if>>
 			<<case 7>>
 				You stop by a stall selling bananas. <<printmoney 500>> a bushel.
@@ -3161,8 +3171,8 @@
 					<<link [[Buy 6 bananas (£5)|Connudatus Street]]>><<money -500>><<tending_give banana 6>><</link>>
 					<br>
 				<<else>>
-					You can't afford to buy any.
-					<br><br>
+					<span class="blue">You can't afford to buy any.</span>
+					<br>
 				<</if>>
 				<<if $money gte 1000>>
 					<<link [[Buy 12 bananas (£10)|Connudatus Street]]>><<money -1000>><<tending_give banana 12>><</link>>
@@ -3176,7 +3186,6 @@
 					<<link [[Buy 24 bananas (£20)|Connudatus Street]]>><<money -2000>><<tending_give banana 24>><</link>>
 					<br>
 				<</if>>
-				<br>
 
 		<</switch>>
 

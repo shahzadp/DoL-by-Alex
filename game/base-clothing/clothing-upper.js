@@ -8052,7 +8052,7 @@ function initUpper() {
 			state_base: "waist",
 			state_top: "chest",
 			state_top_base: "chest",
-			plural: 1,
+			plural: 0,
 			colour: 0,
 			colour_options: ["white", "black", "brown", "light pink", "light blue", "russet", "tan", "grey", "olive", "wine", "navy blue", "custom"],
 			colour_sidebar: 1,

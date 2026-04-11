@@ -445,8 +445,16 @@ function initProps() {
 		pinkshroom: {
 			folder: "tending",
 		},
-		hawk_egg: {
+		hawk_egg_1: {
 			folder: "tending",
+		},
+		hawk_egg_2: {
+			folder: "tending",
+			armPosition: "clutch",
+		},
+		hawk_egg_3: {
+			folder: "tending",
+			armPosition: "clutch",
 		},
 		plant_pot: {
 			folder: "furniture",

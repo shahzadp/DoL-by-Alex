@@ -116,10 +116,8 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 <<set $twoToneDyeOption1 to "noChange">>
 <<set $twoToneDyeOption2 to "noChange">>
 <<set $twoToneHairDye to false>>
+<<set $transformationShow to false>>
 <<set $twoToneStyle to $hairColourGradient.style>>
-<div id="currentCost" class="gold">
-	To pay: £0
-</div>
 <div id="hairDressers">
 	<<hairDressersOptions>>
 </div>
@@ -151,11 +149,14 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 	Two-tone hair colouring: £250
 	<br>
 	Eyebrows colouring: £20"
-	<br><br>
+	<br>
 <</widget>>
 
 <<widget "hairDressersOptions">>
 	<<set _currentCost to 0>>
+	<<if not $transformationShow>>
+		<<set $transformationShow to false>>
+	<</if>>
 	<<if not $dyedHairPart>>
 		<<set $dyedHairPart to "hair">>
 	<</if>>
@@ -176,6 +177,8 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 	<div id="hairDresserDiv">
 		<div id="mannequin" @class="'mannequin ' + _hiddenMannequin" style="height:unset">
 			<<mannequinHairdresser>>
+			<label><<checkbox "$transformationShow" false true autocheck>> Show transformations</label>
+			<div id="currentCost" class="gold">To pay: £0</div>
 		</div>
 		<div>
 			<<if ($money gte _currentCost + 3000 or $hairOption isnot $hairlength) and $hairlength gt 100>>
@@ -336,13 +339,18 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 		</div>
 	</div>
 
+	<<set _pass to 0>>
+	<<set _pass += $hairOption isnot $hairlength ? 15 : 0>>
+	<<set _pass += $fringeOption isnot $fringelength ? 15 : 0>>
+	<<set _pass += $browsDyeOption isnot "noChange" ? 10 : 0>>
+	<<set _pass += $dyeOption is "removeDye" ? 15 : $dyeOption isnot "noChange" ? 30 : 0>>
 	<<if _sydneyPresent>>
 		<<if (!_cancel or _currentCost gt 0) and $money gte _currentCost>>
 			<<hairdressericon "chair">><<link [[Continue|Sydney Hairdressers Session]]>>
 				<<money `-_currentCost` "hairdressers">>
 			<</link>>
 		<<elseif $money lt _currentCost>>
-			<span class="red">You don't have enough money to pay the hairdresser.</span>
+			<span class="blue">You don't have enough money to pay the hairdresser.</span>
 			<br><br>
 			<<hairdressericon "chair">><<link [[Continue|Sydney Hairdressers Session]]>><</link>>
 			<br>
@@ -354,15 +362,17 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 	<<else>>
 
 		<<if $money lt _currentCost>>
-			<<hairdressericon "chair">><span class="red">You don't have enough money to pay the hairdresser.</span>
+			<<hairdressericon "chair">><span class="blue">You don't have enough money to pay the hairdresser.</span>
+			<br>
 		<<elseif $twoToneHairDye and ($twoToneDyeOption1 eq $twoToneDyeOption2)>>
-			<<hairdressericon "chair">><span class="red">You need to select two different colours for two-tone hair colouring.</span>
+			<<hairdressericon "chair">><span class="blue">You need to select two different colours for two-tone hair colouring.</span>
+			<br>
 		<<elseif _currentCost gt 0>>
-			<<hairdressericon "chair">><<link [[Pay hairdresser|Hairdressers Session]]>>
+			<<hairdressericon "chair">><<link [[Pay hairdresser (<<printmoney _currentCost>> <<= getTimeString(_pass)>>)|Hairdressers Session]]>>
 				<<money `-_currentCost` "hairdressers">>
 			<</link>>
+			<br>
 		<</if>>
-		<br><br>
 		<<getouticon>><<link [[Leave|Hairdressers]]>><<endevent>><</link>>
 	<</if>>
 <</widget>>
@@ -549,9 +559,13 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 			<<rendermodel "lighting">>
 			<<selectmodel "main" "hairdresser">>
 				<<selectmodel "main">>
+				<<hidelayer "base">>
+				<<set _modeloptions.arm_left to "none">>
+				<<set _modeloptions.arm_right to "none">>
 				<<set _modeloptions.tanningEnabled to false>>
 				<<set _modeloptions.skin_type = Skin.color.natural>>
 				<<set _modeloptions.skin_tone = Skin.color.tan>>
+				<<set _modeloptions.scars to false>>
 				<<set _modeloptions.freckles = $player.freckles == true and $makeup.concealer != 1>>
 				<<set _modeloptions.mouth to 'neutral'>>
 				<<set _modeloptions.facevariant = $facevariant>>
@@ -607,10 +621,58 @@ The hairdresser makes small talk as <<he>> rings up your purchase. "That stuff's
 				<<set _modeloptions.hair_fringe_type to $fringetype>>
 				<<set _modeloptions.hair_sides_type to $hairtype>>
 
-				<<set _modeloptions.worn.upper.index to 14>>
-				<<set _modeloptions.worn.upper.colour to "white">>
-				<<set _modeloptions.worn.lower.index to 15>>
-				<<set _modeloptions.worn.lower.colour to "white">>
+				/* Automate this later so it doesn't need to be manually updated with every new TF part that gets added */
+				<<set _modeloptions.angel_wings_type to
+					!["hidden", "disabled"].includes($transformationParts.bird.wings) and !["hidden", "disabled"].includes($transformationParts.angel.wings) and $chimera.angelharpy.wings is true ? "harpy-default" :
+					$transformationParts.angel.wings>>
+				<<set _modeloptions.bird_malar_type to $transformationParts.bird.malar>>
+				<<set _modeloptions.bird_tail_type to $transformationParts.bird.tail>>
+				<<set _modeloptions.bird_wings_type to
+					!["hidden", "disabled"].includes($transformationParts.angel.wings) and !["hidden", "disabled"].includes($transformationParts.bird.wings) and $chimera.angelharpy.wings is true ? "default-angel" :
+					!["hidden", "disabled"].includes($transformationParts.fallenAngel.wings) and !["hidden", "disabled"].includes($transformationParts.bird.wings) and $chimera.fallenharpy.wings is true ? "default-fallen" :
+					!["hidden", "disabled"].includes($transformationParts.demon.wings) and !["hidden", "disabled"].includes($transformationParts.bird.wings) and $chimera.demonharpy.wings is true ? "default-demon" :
+					$transformationParts.bird.wings>>
+				<<set _modeloptions.cat_ears_type to $transformationParts.cat.ears>>
+				<<set _modeloptions.cat_tail_type to $transformationParts.cat.tail>>
+				<<set _modeloptions.cow_ears_type to $transformationParts.cow.ears>>
+				<<set _modeloptions.cow_horns_type to
+					!["hidden", "disabled"].includes($transformationParts.demon.horns) and !["hidden", "disabled"].includes($transformationParts.cow.horns) and $transformationParts.demon.horns is "succubus" and $chimera.demoncow.horns is true ? "succubus-demon" :
+					!["hidden", "disabled"].includes($transformationParts.demon.horns) and !["hidden", "disabled"].includes($transformationParts.cow.horns) and $chimera.demoncow.horns is true ? "default-demon" :
+					$transformationParts.cow.horns>>
+				<<set _modeloptions.cow_tail_type to
+					!["hidden", "disabled"].includes($transformationParts.demon.tail) and !["hidden", "disabled"].includes($transformationParts.cow.tail) and $transformationParts.cow.tail is "black" and $chimera.demoncow.tail is true ? "black-demon" :
+					!["hidden", "disabled"].includes($transformationParts.demon.tail) and !["hidden", "disabled"].includes($transformationParts.cow.tail) and $chimera.demoncow.tail is true ? "default-demon" :
+					$transformationParts.cow.tail>>
+				<<set _modeloptions.demon_wings_type to $transformationParts.demon.wings>>
+				<<set _modeloptions.demon_tail_type to
+					!["hidden", "disabled"].includes($transformationParts.cat.tail) and !["hidden", "disabled"].includes($transformationParts.demon.tail) and $chimera.demoncat.tail is true ? "default-cat" :
+					!["hidden", "disabled"].includes($transformationParts.cow.tail) and !["hidden", "disabled"].includes($transformationParts.demon.tail) and $chimera.demoncow.tail is true ? "default-cow" :
+					!["hidden", "disabled"].includes($transformationParts.fox.tail) and !["hidden", "disabled"].includes($transformationParts.demon.tail) and $chimera.demonfox.tail is true ? "hidden" :
+					!["hidden", "disabled"].includes($transformationParts.wolf.tail) and !["hidden", "disabled"].includes($transformationParts.demon.tail) and $chimera.demonwolf.tail is true and $transformationParts.wolf.tail is "feral" ? "default-feral" :
+					!["hidden", "disabled"].includes($transformationParts.wolf.tail) and !["hidden", "disabled"].includes($transformationParts.demon.tail) and $chimera.demonwolf.tail is true ? "default-wolf" :
+					$transformationParts.demon.tail>>
+				<<set _modeloptions.demon_horns_type to
+					!["hidden", "disabled"].includes($transformationParts.cow.horns) and !["hidden", "disabled"].includes($transformationParts.demon.horns) and $transformationParts.demon.horns is "succubus" and $chimera.demoncow.horns is true ? "succubus" :
+					!["hidden", "disabled"].includes($transformationParts.cow.horns) and !["hidden", "disabled"].includes($transformationParts.demon.horns) and $chimera.demoncow.horns is true ? "default" :
+					$transformationParts.demon.horns>>
+				<<set _modeloptions.fallen_wings_type to
+					!["hidden", "disabled"].includes($transformationParts.bird.wings) and !["hidden", "disabled"].includes($transformationParts.fallenAngel.wings) and $chimera.fallenharpy.wings is true ? "harpy-default" :
+					$transformationParts.fallenAngel.wings>>
+				<<set _modeloptions.fox_cheeks_type to $transformationParts.fox.cheeks>>
+				<<set _modeloptions.fox_ears_type to
+					$demon gte 6 and $fox gte 6 and $chimera.demonfox.ears is true ? "default-demon" :
+					$transformationParts.fox.ears>>
+				<<set _modeloptions.fox_tail_type to
+					!["hidden", "disabled"].includes($transformationParts.demon.tail) and !["hidden", "disabled"].includes($transformationParts.fox.tail) and $chimera.demonfox.tail is true ? "default-demon" :
+					$transformationParts.fox.tail>>
+				<<set _modeloptions.wolf_ears_type to $transformationParts.wolf.ears>>
+				<<set _modeloptions.wolf_tail_type to
+					!["hidden", "disabled"].includes($transformationParts.demon.tail) and !["hidden", "disabled"].includes($transformationParts.wolf.tail) and $transformationParts.wolf.tail is "feral" and $chimera.demonwolf.tail is true ? "demon-feral" :
+					!["hidden", "disabled"].includes($transformationParts.demon.tail) and !["hidden", "disabled"].includes($transformationParts.wolf.tail) and $chimera.demonwolf.tail is true ? "demon-default" :
+					$transformationParts.wolf.tail>>
+				<<set _modeloptions.show_tf = $transformationShow>>
+
+				<<set _modeloptions.worn.over_upper.index to 3>>
 			<<rendermodel "canvas-mannequin">>
 		</div>
 	<</if>>

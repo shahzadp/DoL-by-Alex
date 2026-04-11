@@ -1999,7 +1999,7 @@ function initHead() {
 			integrity_max: 100,
 			fabric_strength: 5,
 			reveal: 1,
-			word: "n",
+			word: "a",
 			one_piece: 0,
 			plural: 0,
 			hood: 0,
