@@ -3821,6 +3821,21 @@ You enter the wardrobe.
 
 You exit the wardrobe. Avery is standing on the balcony, watching the front gate, and doesn't turn as you approach the mirror.
 <br><br>
+<<if $settings.multipleWardrobes>>
+	<<for _i = 0; _i lt $wardrobes.avery_mansion.upper.length; _i++>>
+		<<if $wardrobes.avery_mansion.upper[_i].type.includes("formal") and ($settings.forcedCrossdressingEnabled or $wardrobes.avery_mansion.upper[_i].gender.includes("n", $player.gender_appearance))>><<set _hasFormalUpper to true>><</if>>
+	<</for>>
+	<<for _i = 0; _i lt $wardrobes.avery_mansion.lower.length; _i++>>
+		<<if $wardrobes.avery_mansion.lower[_i].type.includes("formal") and ($settings.forcedCrossdressingEnabled or $wardrobes.avery_mansion.lower[_i].gender.includes("n", $player.gender_appearance))>><<set _hasFormalLower to true>><</if>>
+	<</for>>
+<<else>>
+	<<for _i = 0; _i lt $wardrobe.upper.length; _i++>>
+		<<if $wardrobe.upper[_i].type.includes("formal") and ($settings.forcedCrossdressingEnabled or $wardrobe.upper[_i].gender.includes("n", $player.gender_appearance))>><<set _hasFormalUpper to true>><</if>>
+	<</for>>
+	<<for _i = 0; _i lt $wardrobe.lower.length; _i++>>
+		<<if $wardrobe.lower[_i].type.includes("formal") and ($settings.forcedCrossdressingEnabled or $wardrobe.lower[_i].gender.includes("n", $player.gender_appearance))>><<set _hasFormalLower to true>><</if>>
+	<</for>>
+<</if>>
 <<unset $avery_mansion_skyscraper_wardrobe>>
 <<if $worn.face.name isnot "naked">>
 	You examine the $worn.face.name. Avery asked you not to wear anything on your face.
@@ -3834,7 +3849,7 @@ You exit the wardrobe. Avery is standing on the balcony, watching the front gate
 		<<if hasSexStat("exhibitionism", 5)>>
 			You examine yourself, and a lewd thrill shivers through you. Would Avery allow you to attend the opening ceremony like this?
 			<br><br>
-			<<link [[Go to Avery|Mansion Skyscraper Naked]]>><</link>><<promiscuous5>>
+			<<link [[Go to Avery|Mansion Skyscraper Naked]]>><</link>><<exhibitionist5>>
 			<br>
 		<<else>>
 			You examine yourself. There's no way you could attend the opening ceremony like this!
@@ -3844,7 +3859,7 @@ You exit the wardrobe. Avery is standing on the balcony, watching the front gate
 		<<if hasSexStat("exhibitionism", 3)>>
 			You examine yourself, and shiver in excitement. Would Avery allow you to attend the opening ceremony like this?
 			<br><br>
-			<<link [[Go to Avery|Mansion Skyscraper Undies]]>><</link>><<promiscuous3>>
+			<<link [[Go to Avery|Mansion Skyscraper Undies]]>><</link>><<exhibitionist3>>
 			<br>
 		<<else>>
 			You examine yourself. There's no way you could attend the opening ceremony like this!
@@ -3856,6 +3871,11 @@ You exit the wardrobe. Avery is standing on the balcony, watching the front gate
 		<<link [[Go to Avery|Mansion Skyscraper Formal]]>><</link>>
 		<br>
 	<</if>>
+<<elseif !_hasFormalUpper or !_hasFormalLower>>
+	You realise that you don't have any formal clothing to pick from<<if ($exposedRaw gte 2 and $exhibitionism lt 75) or ($exposedRaw is 1 and $exhibitionism lt 35)>>, and there's no way you're going naked!<<else>>.<</if>> You may have to ask Avery for some clothes.
+	<br><br>
+	<<link [[Ask Avery for something formal|Mansion Skyscraper No Formal]]>><</link>>
+	<br>
 <<else>>
 	You don't think this is suitable. Avery would want something formal for your top and bottoms, or nothing at all.
 	<br><br>
@@ -3909,6 +3929,72 @@ You hear the gates rattle open. A limousine drives through. "We'll arrive in sty
 <<link [[Next|Skyscraper Party]]>><<pass 5>><</link>>
 <br>
 
+:: Mansion Skyscraper No Formal
+<<effects>>
+
+You approach Avery. <<He>> turns, hearing your footsteps, and regards your outfit.
+<br><br>
+
+"That won't do," <<he>> says, frowning. "I thought I told you to dress appropriately."
+<br><br>
+
+<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+	"Please don't be mad, but I couldn't find anything to wear," you say. "Would you spare me some clothes?"
+<<elseif $speech_attitude is "bratty">>
+	"I would have, if this wardrobe actually had something." you say. "Got anything lying around I could wear?"
+<<else>>
+	"I'm sorry, I looked but couldn't find anything suitable," you say. "Do you have anything I could borrow?"
+<</if>>
+<br><br>
+
+<<if C.npc.Avery.rage gte random(20, 100) or $averyragerevealed gte 1>>
+	<<He>> glares at you. "Nothing to- How can there be nothing for you to wear?" <<he>> shouts, marching up to you. "Do you have no respect for the time and effort I put into planning this ceremony?" <<He>> grabs your arm.<<stress 8>><<gstress>>
+	<br><br>
+	"If you can find nothing to wear, then <<if hasSexStat("exhibitionism", 5)>><span class="lewd">you'll wear nothing</span><<else>><span class="red">you'll wear nothing</span><</if>>," <<he>> sneers, and starts to undress you.
+	<br><br>
+
+	<<if hasSexStat("exhibitionism", 5)>>
+		<<link [[Allow it|Mansion Skyscraper No Formal 2]]>><</link>><<exhibitionist5>>
+		<br>
+	<</if>>
+	<<link [[Resist|Mansion Skyscraper Dress Fight]]>><<set $fightstart to 1>><<set $phase to 1>><</link>>
+	<br>
+<<else>>
+	<<He>> slowly inhales and rubs <<his>> eyes. "This is a very important ceremony. I would expect you to come prepared." <<He>> exhales. "Well, nothing to be done about that now."
+	<br><br>
+	<<He>> makes <<his>> way to <<his>> own wardrobe, rummaging around for a moment before pulling out
+	<<if $player.gender_appearance is "m">>
+		a tuxedo jacket and trousers.
+		<<upperwear 15>>
+		<<lowerwear 16>>
+	<<else>>
+		an evening gown.
+		<<upperwear 7>>
+	<</if>>
+	You quickly put it on, just as you hear the gates rattle open. A limousine drives through. "We'll arrive in style, but first there are people to meet."
+	<br><br>
+	<<link [[Next|Skyscraper Party]]>><<pass 5>><</link>>
+	<br>
+<</if>>
+
+:: Mansion Skyscraper No Formal 2
+<<effects>>
+
+<<upperruined>><<lowerruined>><<underupperruined>><<underlowerruined>>
+You remain obediently still as <<he>> tears your clothes off your body, revealing more and more skin until you're stood bare and exposed to the world.
+<<exhibitionism5>>
+
+<<He>> steps back, and a smirk forms on <<his>> face as <<he>> takes in the sight of you.
+<br><br>
+
+"Imagine showing up to such a function dressed like that," <<he>> says. <<His>> gaze lingers a little longer on your <<lewdness>>. "It's perfect."
+<br><br>
+
+You hear the gates rattle open. A limousine drives through. "We'll arrive in style, but first there are people to meet."
+<br><br>
+
+<<link [[Next|Skyscraper Party]]>><<pass 5>><</link>>
+<br>
 
 :: Mansion Skyscraper Dress Refuse
 <<effects>>
@@ -3928,7 +4014,7 @@ You hear the gates rattle open. A limousine drives through. "We'll arrive in sty
 
 	<<link [[Nod|Mansion Skyscraper Dress]]>><</link>>
 	<br>
-	<<link [[Fight|Mansion Skyscraper Dress Fight]]>><<set $fightstart to 1>><</link>>
+	<<link [[Fight|Mansion Skyscraper Dress Fight]]>><<set $fightstart to 1>><<set $phase to 0>><</link>>
 	<br>
 <<else>>
 	"This is a very important ceremony," <<he>> says, stepping closer. "Your role there will be vital. If you don't dress the part, the ceremony can't go ahead."
@@ -3957,7 +4043,7 @@ You hear the gates rattle open. A limousine drives through. "We'll arrive in sty
 
 <<link [[Nod|Mansion Skyscraper Dress]]>><</link>>
 <br>
-<<link [[Fight|Mansion Skyscraper Dress Fight]]>><<set $fightstart to 1>><</link>>
+<<link [[Fight|Mansion Skyscraper Dress Fight]]>><<set $fightstart to 1>><<set $phase to 0>><</link>>
 <br>
 
 :: Mansion Skyscraper Dress Fight
@@ -4011,10 +4097,22 @@ You hear the gates rattle open. A limousine drives through. "We'll arrive in sty
 		"It pains me to do this," Avery says as <<he>> hauls you to your feet. "But I won't be stopped. Not now."
 	<</if>>
 	<br><br>
-	<<clotheson>>
-	<<endcombat>>
 
-	<<link [[Next|Mansion Skyscraper Dress]]>><<npc Avery>><<person1>><</link>>
+	<<if $phase is 1>>
+		<<outfitChecks>>
+		<<if !_fullyNaked>>
+			<<He>> removes the last of your clothing as you weakly try to fight back.
+		<</if>>
+		<<silently>><<clotheson>><</silently>><<upperruined>><<lowerruined>><<underupperruined>><<underlowerruined>><<embarrassment>>
+		You hear the gates rattle open. A limousine drives through. "We'll arrive in style, but first there are people to meet." <<stress 18>><<trauma 6>><<ggstress>><<gtrauma>>
+		<br><br>
+		<<endcombat>>
+		<<link [[Next|Skyscraper Party]]>><<pass 5>><<npc Avery>><<person1>><</link>>
+	<<else>>
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Next|Mansion Skyscraper Dress]]>><<npc Avery>><<person1>><</link>>
+	<</if>>
 	<br>
 
 <</if>>

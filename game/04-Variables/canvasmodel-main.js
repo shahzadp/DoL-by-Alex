@@ -2606,6 +2606,9 @@ Renderer.CanvasModels.main = {
 					options.zupperleft + 1 : ZIndices.over_upper_arms;
 			},
 		}),
+		"over_upper_back": genlayer_clothing_back_img('over_upper', {
+			z: ZIndices.back_lower - 10
+		}),
 		/***
 		 *     ██████  ███████ ███    ██ ██ ████████  █████  ██      ███████
 		 *    ██       ██      ████   ██ ██    ██    ██   ██ ██      ██
