@@ -808,13 +808,15 @@ function dayPassed() {
 		if (Weather.temperature <= 0 && Time.month.between(9, 10)) V.livestock.winter.trigger++;
 		else if (Time.month >= 11 || Time.month === 1) {
 			if (V.bus === "livestock") V.livestock.winter.trigger = 5;
-			else V.livestock.winter.active = true; V.livestock.winter.exam = false;
+			else V.livestock.winter.active = true;
+			V.livestock.winter.exam = false;
 		} else V.livestock.winter.trigger = 0;
 	} else {
 		if (Weather.temperature > 0 && Time.month === 2) V.livestock.winter.trigger++;
 		else if (Time.month >= 3 && Time.month <= 8) {
 			if (V.bus === "livestock") V.livestock.winter.trigger = 5;
-			else V.livestock.winter.active = false; V.livestock.winter.exam = false;
+			else V.livestock.winter.active = false;
+			V.livestock.winter.exam = false;
 		} else V.livestock.winter.trigger = 0;
 	}
 
@@ -1052,7 +1054,7 @@ function hourPassed(hours) {
 			}
 		}
 		if (!V.avery_mansion || ["fallen", "kicked"].includes(V.avery_fate)) {
-			V.home_gone++;
+			V.hoursGoneFromHome++;
 		}
 
 		// Robin autowatering

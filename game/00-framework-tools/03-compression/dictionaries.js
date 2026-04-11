@@ -818,7 +818,7 @@ const DoLCompressorDictionaries = (() => {
 		"home",
 		"home_event_count",
 		"home_event_timer",
-		"home_gone",
+		"hoursGoneFromHome",
 		"homochance",
 		"hoodDown",
 		"hoodposition",
