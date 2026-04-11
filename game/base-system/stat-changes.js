@@ -1295,7 +1295,8 @@ const statChange = (() => {
 		if (!lastBadEnd || lastBadEnd.source !== source || lastBadEnd.trackedEnd) {
 			badEndTracking(source, {
 				reason: "unknown",
-				notes: `No bad end was considered active in ${V.passage} when badEndTrackingEnd was called. This is ${V.badEndStats.length ? "an error. Please report this to Vrelnir" : "likely due to loading an old save"}.`,
+				notes: `No bad end was considered active in ${V.passage} when badEndTrackingEnd was called. This is
+				 ${V.badEndStats.length ? "an error. Please report this to Vrelnir" : "likely due to loading an old save"}.`,
 			});
 			lastBadEnd = V.badEndStats.last();
 		}
