@@ -3968,6 +3968,60 @@ Renderer.CanvasModels.main = {
 				return ZIndices.handheld;
 			},
 		}),
+		"wraithFlash": {
+			animation: "wraithFlash",
+			showfn(options) {
+				if (!options.wraithFlash || !Time.isBloodMoon() || V.combat) return false;
+				// V.daily.wraithFlash is reused by the accent animation to make sure they always run together.
+				if (V.daily.wraithFlash) return false;
+				if (random(1, 70) === 1) {
+					V.daily.wraithFlash = true;
+					return true;
+				}
+				return false;
+			},
+			srcfn() {
+				const hasBlueEyes = !["haunt", "despair"].includes(V.wraith.state);
+				return hasBlueEyes ? "img/misc/ambient/wraith/wraith-flash-blue.png" : "img/misc/ambient/wraith/wraith-flash-red.png";
+			},
+			scale: false,
+			width: 256,
+			height: 256,
+			dy: 0,
+			z: ZIndices.bg,
+		},
+		"wraithFlashAccent": {
+			animation: "wraithFlashAccent",
+			showfn(options) {
+				if (!options.wraithFlash || !Time.isBloodMoon() || V.combat) return false;
+				const hasBlueEyes = !["haunt", "despair"].includes(V.wraith.state);
+				return !hasBlueEyes && V.daily.wraithFlash;
+			},
+			srcfn() {
+				const hasBlueEyes = !["haunt", "despair"].includes(V.wraith.state);
+				return hasBlueEyes ? "img/misc/ambient/wraith/wraith-flash-blue.png" : "img/misc/ambient/wraith/wraith-flash-red.png";
+			},
+			scale: false,
+			width: 256,
+			height: 256,
+			dy: 0,
+			z: ZIndices.bg,
+		},
+		"wraithMirror": {
+			animation: "wraithMirrorFade",
+			showfn() {
+				return !!T.wraithMirror;
+			},
+			srcfn() {
+				const hasBlueEyes = !["haunt", "despair"].includes(V.wraith?.state);
+				return hasBlueEyes ? "img/misc/ambient/wraith/wraith-flash-blue.png" : "img/misc/ambient/wraith/wraith-flash-red.png";
+			},
+			scale: false,
+			width: 256,
+			height: 256,
+			dy: 0,
+			z: ZIndices.bg,
+		},
 
 		// new layer template
 		/*
@@ -5147,5 +5201,3 @@ function makeupAdjustment(options) {
 	const ratio = options.skin_tone / 100;
 	options.makeup_adjustment = min + (max - min) * ratio;
 }
-
-
