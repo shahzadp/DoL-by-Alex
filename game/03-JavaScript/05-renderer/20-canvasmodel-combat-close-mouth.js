@@ -90,7 +90,7 @@ function mouthPenetrator(npc, overrideOptions = {}) {
 		},
 		filtersfn(options) {
 			const filter = npc === "npc2" ? ["mouthNpc2"] : ["mouthNpc"];
-			return options.mouth[npc] === "tentacle" ? ["vaginaTentacle"] : filter;
+			return options.mouth[npc] === "tentacle" ? ["mouthTentacle"] : filter;
 		},
 		alphafn(options) {
 			const isWraith = options.mouth[npc] === "tentacle" && ["tentacles-wraith", "tentacles-wraith-penetrated"].includes(V.tentacleColour);
