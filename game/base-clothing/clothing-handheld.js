@@ -587,7 +587,7 @@ function initHandheld() {
 			cursed: 0,
 			location: 0,
 			zIndex: "handheld_over_sleeve",
-			iconFile: "handheld_over_sleeve",
+			iconFile: "balloon-heart.png",
 			accIcon: 0,
 		},
 		{

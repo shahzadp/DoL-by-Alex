@@ -93,7 +93,7 @@ class CloseCombatMapper {
 		options.showVagina = V.player.vaginaExist && V.worn.under_lower.vagina_exposed === 1 && V.worn.lower.vagina_exposed === 1;
 		options.showChest = combat.isChestActive() || ((V.worn.under_upper.exposed ?? 0) >= 1 && (V.worn.upper.exposed ?? 0) >= 2);
 		options.showArse = V.worn.under_lower.anus_exposed === 1 && V.worn.lower.anus_exposed === 1;
-		options.showMouth = !V.worn.face.type.includes("gag");
+		options.showMouth = combat.isMouthActive() && !V.worn.face.type.includes("gag");
 
 		// Genitals
 		const penisType = V.player.sex === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
