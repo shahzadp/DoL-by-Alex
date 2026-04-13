@@ -886,7 +886,7 @@ const combatMainPc = {
 		pregnantBellyOverlay: {
 			srcfn(options) {
 				return options.bellyState === "exposed" && options.position === "doggy"
-					? `${options.src}body/pregnantBelly/base/overlay_exposed.png`
+					? `${options.src}body/pregnantBelly/base/overlay-exposed.png`
 					: `${options.src}body/pregnantBelly/${options.pregnantBellyPath}/overlay.png`;
 			},
 			showfn(options) {

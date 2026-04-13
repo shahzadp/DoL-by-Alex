@@ -766,7 +766,7 @@ Renderer.CanvasModels.main = {
 				|| thickTails.includes(options.hair_sides_type)
 				&& furCap.includes(options.worn.head.setup.variable)
 			) {
-				options.headMask.push(`img/clothes/head/${options.worn.head.setup.variable}/mask_ponytail.png`);
+				options.headMask.push(`img/clothes/head/${options.worn.head.setup.variable}/mask-ponytail.png`);
 			} else {
 				options.headMask.push(`img/clothes/head/${options.worn.head.setup.variable}/mask.png`);
 			}
@@ -791,34 +791,34 @@ Renderer.CanvasModels.main = {
 
 		const bellyDir = "img/clothes/belly"
 		if (between(options.belly, 8, 24)) {
-			options.belly_mask_lower_shadow_src = `${bellyDir}/shadow_${options.belly}.png`;
+			options.belly_mask_lower_shadow_src = `${bellyDir}/shadow-${options.belly}.png`;
 			options.lowerShadowMask.push(options.belly_mask_lower_shadow_src);
 			options.underLowerShadowMask.push(options.belly_mask_lower_shadow_src);
-			options.belly_mask_upper_shadow_src = `${bellyDir}/shadow_${options.belly}.png`;
+			options.belly_mask_upper_shadow_src = `${bellyDir}/shadow-${options.belly}.png`;
 		}
 
 		if (between(options.belly, 15, 24)) {
 			options.belly_mask_src = options.worn.upper.setup.pregType == "min" ?
-				`${bellyDir}/mask_min_${options.belly}.png` : `${bellyDir}/mask_${options.belly}.png`;
+				`${bellyDir}/mask-min-${options.belly}.png` : `${bellyDir}/mask-${options.belly}.png`;
 			options.lowerBellyMask.push(options.belly_mask_src);
 
 			if (V.worn.upper.outfitPrimary == undefined && options.worn.lower.setup.pregType !== "cover") {
 				if (options.belly >= 19) {
 					options.belly_hides_lower = true;
-					options.belly_mask_clip_src = `${bellyDir}/mask_clip_${options.belly}.png`;
+					options.belly_mask_clip_src = `${bellyDir}/mask-clip-${options.belly}.png`;
 					options.lowerMask.push(options.belly_mask_clip_src);
 					options.legsMask.push(options.belly_mask_clip_src);
 
 					const check = options.worn.upper.setup.pregType == "split";
 					const suffix = options.belly >= 22 ? "-big.png" : ".png";
-					options.shirt_mask_clip_src = check ? `${bellyDir}/mask_shirt_clip${suffix}` : null;
-					options.shirt_move_left_src = check ? `${bellyDir}/mask_shirt_left${suffix}` : null;
-					options.shirt_move_left2_src = check ? `${bellyDir}/mask_shirt_left2.png` : null;
-					options.shirt_move_right_src = check ? `${bellyDir}/mask_shirt_right.png` : null;
-					options.shirt_move_right2_src = check ? `${bellyDir}/mask_shirt_right2.png` : null;
-					options.shirt_move_right3_src = check ? `${bellyDir}/mask_shirt_right3.png` : null;
+					options.shirt_mask_clip_src = check ? `${bellyDir}/mask-shirt-clip${suffix}` : null;
+					options.shirt_move_left_src = check ? `${bellyDir}/mask-shirt-left${suffix}` : null;
+					options.shirt_move_left2_src = check ? `${bellyDir}/mask-shirt-left2.png` : null;
+					options.shirt_move_right_src = check ? `${bellyDir}/mask-shirt-right.png` : null;
+					options.shirt_move_right2_src = check ? `${bellyDir}/mask-shirt-right2.png` : null;
+					options.shirt_move_right3_src = check ? `${bellyDir}/mask-shirt-right3.png` : null;
 
-					if (check) options.shirt_mask_breasts_src = `${bellyDir}/mask_shirt_breasts.png`;
+					if (check) options.shirt_mask_breasts_src = `${bellyDir}/mask-shirt-breasts.png`;
 				} else {
 					options.belly_mask_clip_src = null;
 				}
@@ -826,8 +826,8 @@ Renderer.CanvasModels.main = {
 
 			if (V.worn.under_upper.outfitPrimary == undefined) {
 				options.belly_hides_under_lower = true;
-				options.underLowerMask.push(`${bellyDir}/mask_clip_${options.belly}.png`);
-				options.underLowerShadowMask.push(`${bellyDir}/mask_clip_${options.belly}.png`);
+				options.underLowerMask.push(`${bellyDir}/mask-clip-${options.belly}.png`);
+				options.underLowerShadowMask.push(`${bellyDir}/mask-clip-${options.belly}.png`);
 			}
 		}
 
@@ -1095,7 +1095,7 @@ Renderer.CanvasModels.main = {
 				return !!options.belly
 			},
 			srcfn(options) {
-				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/pregnancy_belly_${options.belly}.png` : "";
+				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_left_move_src;
@@ -1113,7 +1113,7 @@ Renderer.CanvasModels.main = {
 				return !!options.belly
 			},
 			srcfn(options) {
-				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/pregnancy_belly_${options.belly}.png` : "";
+				return options.body_type === "soft" && between(options.belly, 11, 14) ? `img/body/pregnant-belly/${options.belly}.png` : "";
 			},
 			masksrcfn(options) {
 				return options.upper_fitted_right_move_src;

@@ -299,13 +299,13 @@ class CloseCombatMapper {
 			case "otheranusentrance":
 				/* penis preparing to penetrate npc */
 				options.penis.state = "entrance";
-				options.penis.npc = V.enemytype === "beast" && V.monster !== 1 ? "beast" : "npc";
+				options.penis.npc = V.enemytype === "beast" && (V.monster !== 1 || V.NPCList[V.active_enemy].type === "centaur") ? "beast" : "npc";
 				break;
 			case "penetrated":
 			case "otheranus":
 				/* penis penetrating npc */
 				options.penis.state = "penetrated";
-				options.penis.npc = V.enemytype === "beast" && V.monster !== 1 ? "beast" : "npc";
+				options.penis.npc = V.enemytype === "beast" && (V.monster !== 1 || V.NPCList[V.active_enemy].type === "centaur") ? "beast" : "npc";
 				break;
 			case "othermouth":
 			case "othermouthentrance":
