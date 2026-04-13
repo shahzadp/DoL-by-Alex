@@ -214,7 +214,7 @@ setup.sextoys = [
 		category: "strap-on",
 		type: ["strap-on", "fetish"],
 		icon: "sex-toys/strap-on-knotted-cock.png",
-		iconFront: "sex-toys/strap-on-knotted-cock_front.png",
+		iconFront: "sex-toys/strap-on-knotted-cock-front.png",
 		colour: 1,
 		colour_options: ["black", "blue", "green", "pink", "purple", "red", "white", "yellow", "tan", "brown", "fleshy"],
 		shape: "knotted cock",
