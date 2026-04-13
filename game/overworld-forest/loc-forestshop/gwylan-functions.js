@@ -701,7 +701,8 @@ function gwylanRequestIngredients() {
 		removeIngredient("lotus");
 	}
 
-	if (V.tending < 800) {
+	// Remove honeycomb unless bees are enabled.
+	if (V.tending < 800 && !(V.settings.bestialityEnabled && V.settings.beesEnabled)) {
 		removeIngredient("wild_honeycomb");
 	}
 
@@ -771,6 +772,8 @@ function gwylanRequestIngredients() {
 			requestItem.need = Math.clamp(Math.ceil(ingredientBaseAmount * random(yieldMultiplier, yieldMultiplier + 2)), 1, supermarketMaxNeed);
 		} else if (setupItem.name === "wild_honeycomb") {
 			requestItem.need = Math.ceil(ingredientBaseAmount / 3);
+		} else if (setupItem.name === "blood_lemon") {
+			requestItem.need = Math.min(requestItem.need, 6); // Ensure that it only takes one succesfull pick to complete the blood lemon request. The 6 comes from the min number of blood lemons you can harvest in one succesful attempt.
 		} else {
 			const yieldMultiplier = setupItem.tending?.yield_multiplier ?? 1;
 			requestItem.need = ingredientBaseAmount * random(yieldMultiplier, yieldMultiplier + 2);
@@ -912,7 +915,8 @@ function gwylanRequestClothingSlotCheck(slot) {
 			thing.category === "clothing" &&
 			V.worn[slot].name === thing.name &&
 			(thing.slot !== "upper" || (V.worn[slot].one_piece === 1 && gwylanRequestClothingSlotCheck("lower")) || V.worn[slot].one_piece === 0) &&
-			(thing.colour_requirement === "any" || V.worn[slot].colour === thing.colour_requirement ||
+			(thing.colour_requirement === "any" ||
+				V.worn[slot].colour === thing.colour_requirement ||
 				window.clothesColour(V.worn[slot]) === thing.colour_requirement) &&
 			(thing.acc_colour_requirement === "any" || V.worn[slot].accessory_colour === thing.acc_colour_requirement) &&
 			(thing.pattern_requirement === "any" || V.worn[slot].pattern === thing.pattern_requirement) &&
