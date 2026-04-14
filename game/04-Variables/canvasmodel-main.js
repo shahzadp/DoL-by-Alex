@@ -3488,7 +3488,6 @@ Renderer.CanvasModels.main = {
 			}
 		}),
 		"head_back_acc": genlayer_clothing_back_img_acc('head', {
-			z: ZIndices['back_lower'],
 			masksrcfn(options) {
 				if (options.worn.handheld.setup.mask_img === 1) {
 					return `img/clothes/handheld/${options.worn.handheld.setup.variable}/mask.png`;
@@ -3497,7 +3496,6 @@ Renderer.CanvasModels.main = {
 			}
 		}),
 		"head_back": genlayer_clothing_back_img('head', {
-			z: ZIndices['back_lower'],
 			masksrcfn(options) {
 				if (options.worn.handheld.setup.mask_img === 1) {
 					return `img/clothes/handheld/${options.worn.handheld.setup.variable}/mask.png`;
