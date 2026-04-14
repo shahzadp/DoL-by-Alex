@@ -6,7 +6,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleRain",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0 && !this.renderInstance.sidebarSkyDisabled;
+				return Weather.precipitation === "rain" && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				sunTint: "#97a9e8aa",
@@ -110,7 +110,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0 && Weather.current.darkenFactor.precipitation > 0;
+				return Weather.precipitation === "rain" && Weather.current.darkenFactor.precipitation > 0;
 			},
 			compositeOperation: "source-atop",
 			params: {
@@ -125,7 +125,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "snow";
 			},
 			params: {
 				sunTint: "#ffffff",
@@ -186,7 +186,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "snow";
 			},
 			params: {
 				sunTint: "#ffffff",
@@ -249,9 +249,7 @@ Weather.Renderer.Layers.add({
 			effect: "imageOverlay",
 			drawCondition() {
 				return (
-					!this.renderInstance.sidebarSkyDisabled &&
-					Weather.precipitationIntensity >=
-						resolveValue(setup.WeatherGeneration.weatherTypes.find(w => w.name === "lightPrecipitation").precipitationIntensity)
+					!this.renderInstance.sidebarSkyDisabled && Weather.precipitationIntensity >= 1.3 // precipitationIntensity for lightPrecipitation
 				);
 			},
 			compositeOperation: "destination-out",

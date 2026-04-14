@@ -487,7 +487,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleRain",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "rain";
 			},
 			params: {
 				sunTint: "#97a9e8aa",
@@ -551,7 +551,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleRain",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "rain";
 			},
 			params: {
 				sunTint: "#97a9e8aa",
@@ -614,7 +614,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "colorOverlay",
 			drawCondition() {
-				return Weather.precipitation === "rain" && Weather.precipitationIntensity > 0 && Weather.current.darkenFactor.precipitation > 0;
+				return Weather.precipitation === "rain" && Weather.current.darkenFactor.precipitation > 0;
 			},
 			compositeOperation: "source-atop",
 			bindings: {
@@ -626,7 +626,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "snow";
 			},
 			params: {
 				sunTint: "#ffffff",
@@ -681,7 +681,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow" && Weather.precipitationIntensity > 0;
+				return Weather.precipitation === "snow";
 			},
 			params: {
 				sunTint: "#ffffff",
@@ -830,7 +830,6 @@ Weather.Renderer.Layers.add({
 					this.renderInstance.orbitals.sun.factor > 0.6 &&
 					this.renderInstance.orbitals.sun.factor < 0.85 &&
 					Weather.overcast < 1 &&
-					Weather.precipitationIntensity > 0 &&
 					Weather.precipitationIntensity <= 1.3 && // precipitationIntensity for lightPrecipitation
 					Weather.precipitation === "rain" &&
 					Weather.fog > 0.2
