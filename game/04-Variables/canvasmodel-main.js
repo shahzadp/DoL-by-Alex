@@ -3945,7 +3945,7 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return !!options.vines;
 			},
-			src: `img/clothes/feet/vines/full_body.png`,
+			src: `img/clothes/feet/vines/full-body.png`,
 		},
 		"prop": genlayer_prop(),
 		"prop_acc": genlayer_prop_acc(),
