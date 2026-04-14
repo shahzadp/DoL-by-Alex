@@ -470,7 +470,7 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.pbhair_balls = V.pblevelballs;
 	}
 
-	if (V.player.sex === "m") {
+	if (V.player.sex !== "f") {
 		T.modeloptions.penis_size = Math.clamp(V.player.penissize, 0, 6);
 		T.modeloptions.balls = V.player.ballsExist;
 		T.modeloptions.penis_condom = V.player.condom.type;
