@@ -138,7 +138,7 @@ const Furniture = (() => {
 			type: ["comfy"],
 			cost: 2420,
 			description: "A set of armchairs with a rounded back, in exotic colours. A chore to set up.",
-			iconFile: "armchairegg",
+			iconFile: "armchair-egg",
 			iconFile2: "armchair-egg-desk",
 			tier: 1,
 		});

@@ -414,7 +414,8 @@ const combatMainPc = {
 		},
 		tattooMachine: {
 			srcfn(options) {
-				return `${options.root}machine/tattoo/${options.position}/${options.machines.tattoo.use}.png`;
+				const location = (options.machines.tattoo.use).replace("_", "-");
+				return `${options.root}machine/tattoo/${options.position}/${location}.png`;
 			},
 			showfn(options) {
 				return !!options.machines.tattoo.show;
