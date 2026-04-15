@@ -641,7 +641,7 @@ function initSpecialClothes() {
 			subsetOf: ["mask", "fox"],
 			feat: true,
 			featCost: 5,
-			icon: "clothes/foxmask.png",
+			icon: "clothes/fox_mask.png",
 		},
 		fedora: {
 			text: "fedora",
