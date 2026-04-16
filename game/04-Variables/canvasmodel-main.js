@@ -4762,7 +4762,7 @@ function genlayer_clothing_back_img(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !options.worn[slot].setup.altdisabled.includes("back");
 
-			const prefix = isAltPosition ? 'back_alt' : 'back';
+			const prefix = isAltPosition ? 'back-alt' : 'back';
 			const suffix = options.worn[slot].setup.back_integrity_img ? `-${options.worn[slot].integrity}` : '';
 			const pattern = options.worn[slot].pattern && !["tertiary", "secondary"].includes(options.worn[slot].setup.pattern_layer) ? "-" + options.worn[slot].pattern?.replace(/ /g,"-") : '';
 
@@ -4802,7 +4802,7 @@ function genlayer_clothing_back_img_acc(slot, overrideOptions) {
 				&& options.worn[slot].alt === "alt"
 				&& !options.worn[slot].setup.altdisabled.includes("back");
 
-			const prefix = isAltPosition ? 'back_alt' : 'back';
+			const prefix = isAltPosition ? 'back-alt' : 'back';
 			const suffix = options.worn[slot].setup.back_integrity_img ? `-${options.worn[slot].integrity}` : '';
 			const pattern = options.worn[slot].pattern && options.worn[slot].setup.pattern_layer === "secondary" ? "-" + options.worn[slot].pattern?.replace(/ /g,"-") : '';
 
