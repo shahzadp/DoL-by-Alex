@@ -188,7 +188,7 @@ DefineMacro("sydneySchedule", sydneySchedule);
 
 function averySchedule() {
 	/* ToDo: Divorce schedule from V.avery_mansion entirely */
-	if (C.npc.Avery.init !== 1 || C.npc.Avery.status === "dismissed") return;
+	if (C.npc.Avery.init !== 1 || C.npc.Avery.state === "dismissed") return;
 
 	/* PC is not allowed to work with Avery if they're injured. Avery works Sunday from 7am-4pm and Monday-Friday 7am-8pm */
 	const workHours = Time.weekDay !== 7 && Time.hour > 6 && Time.hour <= (Time.weekDay === 1 ? 16 : 20);
