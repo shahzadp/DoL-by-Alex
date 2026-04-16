@@ -684,7 +684,7 @@ function initSpecialClothes() {
 			shop: ["forest"],
 			feat: true,
 			featCost: 5,
-			icon: "dancestudio.png",
+			icon: "dance-studio.png",
 		},
 		sage_witch_hat: {
 			text: "strange witch hat",
