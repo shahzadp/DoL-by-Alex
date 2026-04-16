@@ -84,7 +84,7 @@ function aStar(start, end, obstacles, grid) {
 				return doArraysMatch(e.state, step.state);
 			});
 
-			// avoid repeated nodes during the calculation of neighbors
+			// avoid repeated nodes during the calculation of neighbours
 			const isFrontier = frontier.find(e => {
 				return doArraysMatch(e.state, step.state);
 			});
