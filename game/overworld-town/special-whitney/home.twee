@@ -4,8 +4,6 @@
 
 <<whitney_home_events>>
 
-
-
 :: Whitney Home Hang Gang
 <<effects>>
 
@@ -184,9 +182,16 @@ You climb down the stairs, and leave the building.
 
 :: Whitney Home Dawn Enter
 <<effects>>
-<<loadNPC 1 "whitney_parent_flat">>
-You enter Whitney's flat. <<His>> <<person2>><<mum>> sits at the table, warming <<his>> hand on a mug of tea and reading a tabloid. <<He>> doesn't look up.
-<br><br>
+
+<<if !$daily.whitney.breakfast_done>>
+	<<loadNPC 1 "whitney_parent_flat">>
+	<<person2>>
+
+	You enter Whitney's flat. <<His>> <<person2>><<mum>> sits at the table, warming <<his>> hand on a mug of tea and reading a tabloid. <<He>> doesn't look up.
+	<br><br>
+<<else>>
+	You enter Whitney's flat.
+<</if>>
 <<endevent>>
 <<npc Whitney>><<person1>>
 <<if Time.hour gte 9>>
@@ -198,14 +203,14 @@ You enter Whitney's flat. <<His>> <<person2>><<mum>> sits at the table, warming 
 <</if>>
 <br><br>
 
-<<if Time.hour is 9>>
-	<<link [[Next|Whitney Home Hang]]>><</link>>
-	<br>
-<<elseif Time.hour is 7 or Time.hour is 8>>
+<<if (Time.hour is 7 or Time.hour is 8) and !$daily.whitney.breakfast_done>>
 	<<link [[Next|Whitney Home Dawn Breakfast]]>><<loadNPC 1 "whitney_parent_flat">><<set $daily.whitney.breakfast_done to true>><</link>>
 	<br>
-<<else>>
+<<elseif !$daily.whitney.shower_done>>
 	<<link [[Next|Whitney Home Dawn Shower]]>><<set $daily.whitney.shower_done to true>><</link>>
+	<br>
+<<else>>
+	<<link [[Next|Whitney Home Hang]]>><</link>>
 	<br>
 <</if>>
 
@@ -3508,3 +3513,4 @@ You leave the flat together. A couple of <<his>> friends are already waiting for
 <br><br>
 
 <<link [[Next|Barb Street]]>><<endevent>><<set $eventskip to 1>><</link>>
+
