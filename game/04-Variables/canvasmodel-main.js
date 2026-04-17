@@ -831,6 +831,9 @@ Renderer.CanvasModels.main = {
 			}
 		}
 
+		/*
+		TODO: Find a better solution for preventing underwear from clipping through pants without under-lower clothes disappearing - Song on behalf of Kirsty
+
 		if (!options.worn.lower.setup.type.includes("naked")) {
 			const isAltPosition = !options.alt_override && setup.altposition !== undefined
 				&& options.worn.lower.alt === "alt"
@@ -840,6 +843,7 @@ Renderer.CanvasModels.main = {
 
 			options.underLowerMask.push(`img/clothes/lower/${options.worn.lower.setup.variable}/${options.worn.lower.integrity}${pattern}${end}.png`);
 		}
+		*/
 
 		const notMasc = ["curvy", "slender"].includes(options.body_type);
 		const soft = options.body_type === "soft" && !(between(options.belly, 8, 24));
@@ -1638,7 +1642,7 @@ Renderer.CanvasModels.main = {
 				return `img/body/${penis}/${options.penis}.png`;
 			},
 			showfn(options) {
-				return options.crotch_visible && !!options.penis && !playerHasStrapon() && !(options.ear_slime_panties && V.arousal <= 6000);
+				return options.crotch_visible && !!options.penis && !playerHasStrapon() && !(options.ear_slime_panties && V.arousal < 6000);
 			},
 		},
 		"penis_parasite": {
