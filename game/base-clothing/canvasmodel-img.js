@@ -470,18 +470,18 @@ DefineMacro("modelprepare-player-body", function () {
 		T.modeloptions.pbhair_balls = V.pblevelballs;
 	}
 
-	if (V.player.sex !== "f") {
+	if (V.player.penisExist) {
 		T.modeloptions.penis_size = Math.clamp(V.player.penissize, 0, 6);
 		T.modeloptions.balls = V.player.ballsExist;
 		T.modeloptions.penis_condom = V.player.condom.type;
 		T.modeloptions.condom_colour = V.player.condom.colour;
-		const flaccid = V.arousal <= 6000 ? "soft" : "hard";
+		const flaccid = V.arousal < 6000 ? "soft" : "hard";
 		const virgin = V.player.virginity.penile === true ? "-virgin-" : "-";
 		T.modeloptions.penis = flaccid + virgin + T.modeloptions.penis_size;
 
-		if (V.parasite.penis.name) {
+		if (V.parasite.penis.name || V.parasite.clit.name === "parasite") {
 			/* ear-slime */
-			if (V.parasite.penis.name === "parasite") {
+			if (V.parasite.penis.name === "parasite" || V.parasite.clit.name === "parasite") {
 				T.modeloptions.ear_slime_size = V.player.penissize;
 				if (V.worn.genitals.name === "chastity parasite") {
 					switch (V.player.penissize) {

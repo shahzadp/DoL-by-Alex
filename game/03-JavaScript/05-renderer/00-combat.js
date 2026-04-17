@@ -79,7 +79,7 @@ class CombatSystem {
 		if (V.orgasmdown > 0) {
 			return true;
 		}
-		return V.enemyarousal > V.enemyarousalmax;
+		return V.enemyarousal >= V.enemyarousalmax;
 	}
 
 	isActive() {
