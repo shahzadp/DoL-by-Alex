@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.9.2",
+	version: "0.5.9.3",
 	versionName: `"Here Comes the Sun" edition`,
 	sneaky: true,
 	socialMediaEnabled: true,
