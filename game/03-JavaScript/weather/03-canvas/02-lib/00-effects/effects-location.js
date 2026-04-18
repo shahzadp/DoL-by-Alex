@@ -436,13 +436,16 @@ Weather.Renderer.Effects.add({
 							window.ImageCache.getOrCreate(fallbackSrc)
 								.then(handleLoadedImage)
 								.catch(() => {
-									Errors.report("Warning: Missing location image fallback: " + fallbackSrc);
+									if (V.options.images) {
+										Errors.report("Warning: Missing location image fallback: " + fallbackSrc);
+									}
 									resolve();
 								});
 							return;
 						}
-
-						Errors.report("Warning: Missing location image: " + resolvedSrc);
+						if (V.options.images) {
+							Errors.report("Warning: Missing location image: " + resolvedSrc);
+						}
 						resolve();
 					});
 			});

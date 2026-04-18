@@ -71,7 +71,9 @@ Weather.Renderer.Effect = class Effect {
 						return img;
 					})
 					.catch(() => {
-						Errors.report(`Warning: Missing effect image: Could not load image ${name} at path ${src}`);
+						if (V.options.images) {
+							Errors.report(`Warning: Missing effect image: Could not load image ${name} at path ${src}`);
+						}
 						return null;
 					});
 			});
@@ -81,7 +83,7 @@ Weather.Renderer.Effect = class Effect {
 		const subEffectsImageLoadPromises = this.effects.map(subEffect => subEffect.loadImages());
 		return Promise.all([...imageLoadPromises, ...subEffectsImageLoadPromises]);
 	}
-
+	
 	/**
 	 * Allows adding of sub-effects recursively
 	 *
