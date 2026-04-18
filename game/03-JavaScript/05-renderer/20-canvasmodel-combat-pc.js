@@ -323,7 +323,8 @@ const combatMainPc = {
 				return `${options.root}prop/pillory/hands.png`;
 			},
 			showfn(options) {
-				return options.props.pillory.show && !!options.showPlayer;
+				const pillory = options.props.pillory;
+				return pillory.show && !!options.showPlayer && !pillory.hasHorse;
 			},
 			animationfn(options) {
 				return options.animKey;

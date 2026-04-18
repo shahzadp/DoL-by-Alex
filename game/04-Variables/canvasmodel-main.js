@@ -5000,7 +5000,8 @@ function genlayer_wings(side, tf, hair, overrideOptions) {
 		filters: hair ? ["hair"] : [],
 		srcfn(options) {
 			const state = `${options[`${tf}_wing_${side}`]}`;
-			return `img/transformations/${tf}/wings-${state}/${options[`${tf}_wings_type`]}.png`;
+			const cover = state === "cover" ? `-${side}` : "";
+			return `img/transformations/${tf}/wings-${state}/${options[`${tf}_wings_type`]}${cover}.png`;
 		},
 		showfn(options) {
 			return options.show_tf
@@ -5008,12 +5009,13 @@ function genlayer_wings(side, tf, hair, overrideOptions) {
 				&& !options.hide_all;
 		},
 		zfn(options) {
-			if (`${options[`${tf}_wing_${side}`]}` === "cover") return ZIndices.tailPenisCover
-			if (`${options[`${tf}_wings_layer`]}` === "back") return ZIndices.over_head_back
+			if (`${options[`${tf}_wing_${side}`]}` === "cover") return ZIndices.tailPenisCover;
+			if (`${options[`${tf}_wings_layer`]}` === "back") return ZIndices.over_head_back;
 			return ZIndices.backhair;
 		},
 		masksrcfn(options) {
-			return `img/face/masks/${side}.png`;
+			const state = `${options[`${tf}_wing_${side}`]}`;
+			if (state !== "cover") return `img/face/masks/${side}.png`;
 		},
 	}, overrideOptions);
 }
