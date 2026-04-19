@@ -3958,8 +3958,8 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				return `img/clothes/props/${options.prop.folder}/${options.prop.name}-underarm.png`
 			},
-			zfn() {
-				return ZIndices.handheld;
+			zfn(options) {
+				return options.zupperright - 1;
 			},
 		}),
 		"prop_underarm_acc": genlayer_prop_acc({
@@ -3969,8 +3969,8 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				return `img/clothes/props/${options.prop.folder}/${options.prop.name}-underarm-acc.png`
 			},
-			zfn() {
-				return ZIndices.handheld;
+			zfn(options) {
+				return options.zupperright - 1;
 			},
 		}),
 		"wraithFlash": {
