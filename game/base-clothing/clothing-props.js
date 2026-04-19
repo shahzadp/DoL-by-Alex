@@ -744,6 +744,12 @@ function initProps() {
 		hedge_shears: {
 			armPosition: "right_cover",
 		},
+		tarnished_spear: {
+			overUnderSplit: true,
+		},
+		restored_spear: {
+			overUnderSplit: true,
+		},
 	};
 
 	/*
