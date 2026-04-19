@@ -1699,7 +1699,7 @@ Renderer.CanvasModels.main = {
 			filters: ["condom"],
 
 			srcfn(options) {
-				return options.penis_condom === 'plain' ? `img/body/penis/condom-${options.penis}.png` : '';
+				return options.penis_condom === 'plain' ? `img/body/penis/condom-${options.penis.replace("-virgin", "")}.png` : '';
 			},
 			showfn(options) {
 				return options.crotch_visible
