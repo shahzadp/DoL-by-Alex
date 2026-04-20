@@ -5129,8 +5129,7 @@ function genlayer_effect(effect, layer, overrideOptions) {
 		srcfn() {
 			const type = Weather.precipitation;
 			const intensity = normaliseFileName(Weather.name);
-			if (effect === "precipitation") return `img/misc/ambient/${effect}/${type}/${intensity}-${layer}.png`
-			return`img/misc/ambient/${effect}/${layer}.png`
+			return `img/misc/ambient/${effect}/${type}/${intensity}-${layer}.png`
 		},
 		showfn(options) {
 			return !T.hideSidebarEffects && !!options[effect];
