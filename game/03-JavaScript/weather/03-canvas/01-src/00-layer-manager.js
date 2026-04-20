@@ -2,6 +2,8 @@ Weather.Renderer.Layers = (() => {
 	const layers = new Map();
 
 	function addLayer(params) {
+		if (!StartConfig.enableImages) return [];
+
 		const optionalParams = {
 			defaultParameters: {},
 		};

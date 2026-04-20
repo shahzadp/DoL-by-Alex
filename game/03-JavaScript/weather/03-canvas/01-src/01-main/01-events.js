@@ -103,5 +103,6 @@ $(document).on(":passagestart", () => {
 });
 
 $(document).one(":passagerender", () => {
+	if (!StartConfig.enableImages) return;
 	Weather.Thermometer.load();
 });
