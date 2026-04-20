@@ -71,9 +71,7 @@ Weather.Renderer.Effect = class Effect {
 						return img;
 					})
 					.catch(() => {
-						if (V.options.images) {
-							Errors.report(`Warning: Missing effect image: Could not load image ${name} at path ${src}`);
-						}
+						Errors.report(`Warning: Missing effect image: Could not load image ${name} at path ${src}`);
 						return null;
 					});
 			});
