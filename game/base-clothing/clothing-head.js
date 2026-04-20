@@ -2699,6 +2699,9 @@ function initHead() {
 			name: "cake hat",
 			name_cap: "Cake hat",
 			variable: "cake",
+			combat: {
+				reference: "naked", /* TODO: create missionary and doggystyle sprites, then remove */
+			},
 			state: 0,
 			state_base: 0,
 			integrity: 200,
