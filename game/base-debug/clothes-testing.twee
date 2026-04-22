@@ -59,6 +59,7 @@
 			fringePosition: "back",
 			breastSize: 0,
 			penisSize: "none",
+			penisArousal: "soft",
 			penisVirgin: "virgin",
 			ballsExist: true,
 			bellySize: 0,
@@ -339,6 +340,7 @@
 		<<set $characterViewer.skinColour.type to "light">>
 		<<set $characterViewer.skinColour.range to 0>>
 		<<set $characterViewer.bodyState.penisSize to "none">>
+		<<set $characterViewer.bodyState.penisArousal to "soft">>
 		<<set $characterViewer.bodyState.penisVirgin to "virgin">>
 		<<set $characterViewer.bodyState.ballsExist to true>>
 		<<set $characterViewer.bodyState.breastSize to 0>>
@@ -363,6 +365,7 @@
 		<<set $characterViewer.skinColour.type to ["light", "medium", "dark", "gyaru", "rlight", "rmedium", "rdark", "rgyaru", "ylight", "ymedium", "ydark", "ygyaru", "glight", "gmedium", "gdark", "ggyaru", "blight", "bmedium", "bdark", "bgyaru"].random()>>
 		<<set $characterViewer.skinColour.range to random(0, 100)>>
 		<<set $characterViewer.bodyState.penisSize to Object.values(_penisSize).random()>>
+		<<set $characterViewer.bodyState.penisArousal to ["soft", "hard"].random()>>
 		<<set $characterViewer.bodyState.penisVirgin to ["virgin", "default"].random()>>
 		<<set $characterViewer.bodyState.ballsExist to !random(1)>>
 		<<set $characterViewer.bodyState.breastSize to random(0, _breastNames.length - 1)>>
@@ -435,8 +438,14 @@
 			<<print '<<radiobutton "$characterViewer.bodyState.penisSize" "'+_penisSize[_keys[_i]]+'" ' + ($characterViewer.bodyState.penisSize is _penisSize[_keys[_i]] ? "checked" : "") + '>>'>>
 		</label> |
 	<</for>>
-
 	<br><br>
+
+	<span class="gold">Penis Arousal</span>
+	<br>
+	<label>Soft <<radiobutton "$characterViewer.bodyState.penisArousal" "soft" autocheck>></label> |
+	<label>Hard <<radiobutton "$characterViewer.bodyState.penisArousal" "hard" autocheck>></label> |
+	<br><br>
+
 	<span class="gold">Penis Virginity</span>
 	<br>
 	<label>Virgin <<radiobutton "$characterViewer.bodyState.penisVirgin" "virgin" autocheck>></label> |
@@ -1336,10 +1345,11 @@
 	<</switch>>
 	<<set _modeloptions.crotch_visible to $characterViewer.bodyState.penisSize !== "none">>
 	<<set _modeloptions.crotch_exposed to $characterViewer.bodyState.penisSize !== "none">>
-	<<set _modeloptions.penis to $characterViewer.bodyState.penisSize !== "none" ? $characterViewer.bodyState.penisVirgin : "">>
-	<<set _modeloptions.penis_size to $characterViewer.bodyState.penisSize !== "none" ? $characterViewer.bodyState.penisSize : "">>
-	<<set _modeloptions.balls to $characterViewer.bodyState.ballsExist>>
-
+	<<if $characterViewer.bodyState.penisSize !== "none">>
+		<<set _modeloptions.penis_size to $characterViewer.bodyState.penisSize>>
+		<<set _modeloptions.balls to $characterViewer.bodyState.ballsExist>>
+		<<set _modeloptions.penis to $characterViewer.bodyState.penisArousal + "-" + ($characterViewer.bodyState.penisVirgin is "virgin" ? "virgin-" : "") + _modeloptions.penis_size>>
+	<</if>>
 	<<set _modeloptions.belly to $characterViewer.bodyState.bellySize>>
 
 	/*Skin & tan*/
