@@ -2828,7 +2828,7 @@ Renderer.CanvasModels.main = {
 
 			//ToDo: add images for lower penis bulges. check against pregnancy belly
 			srcfn(options) {
-				return `img/clothes/lower/${options.worn.lower.setup.variable}/acc_penis.png`
+				return `img/clothes/lower/${options.worn.lower.setup.variable}/acc-penis.png`
 			},
 			showfn(options) {
 				return options.show_clothes
@@ -2973,7 +2973,7 @@ Renderer.CanvasModels.main = {
 
 			//ToDo: expand the existing bulk images by providing a small bulge when `calculatePenisBulge()` is less than 8 (max is 15). check against pregnancy belly
 			srcfn(options) {
-				return `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/acc_penis.png`;
+				return `img/clothes/under-lower/${options.worn.under_lower.setup.variable}/acc-penis.png`;
 			},
 			showfn(options) {
 				return options.show_clothes
