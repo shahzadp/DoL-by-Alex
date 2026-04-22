@@ -3898,49 +3898,118 @@ Renderer.CanvasModels.main = {
 		 *    ███████ ██      ██      ███████  ██████    ██    ███████
 		 */
 
-		"precipitation_back": genlayer_effect('precipitation', 'back'),
-		"precipitation_front": genlayer_effect('precipitation','front'),
-		"cold_breath": genlayer_breath('player','front'),
-		"water_breath": genlayer_breath('water','front', {
-			srcfn() {
-				return `img/misc/ambient/water/breath.png`
+		"precipitation_back": {
+			animationfn() {
+				return Weather.precipitation === "snow" ? "snowBack" : "rain";
 			},
-		}),
-		"water_back": genlayer_effect('water','back'),
-		"water_front": genlayer_effect('water','front'),
-		"fire_back": genlayer_effect('fire','back', {
+			srcfn() {
+				const type = Weather.precipitation;
+				const intensity = normaliseFileName(Weather.name);
+				return `img/misc/ambient/precipitation/${type}/${intensity}-back.png`;
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.precipitation;
+			},
+			z: ZIndices.background,
+		},
+		"precipitation_front": {
+			animationfn() {
+				return Weather.precipitation === "snow" ? "snowFront" : "rain";
+			},
+			srcfn() {
+				const type = Weather.precipitation;
+				const intensity = normaliseFileName(Weather.name);
+				return `img/misc/ambient/precipitation/${type}/${intensity}-front.png`;
+			},
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.precipitation;
+			},
+			z: ZIndices.foreground,
+		},
+		"cold_breath": {
+			animationfn() {
+				return (V.arousal >= 6000 || V.pain >= 40) ? "playerBreathFast" : "playerBreath";
+			},
+			src: `img/misc/ambient/player-breath.png`,
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.temperature;
+			},
+			z: ZIndices.foreground,
+		},
+		"water_breath": {
+			animationfn() {
+				return (V.arousal >= 6000 || V.pain >= 40) ? "waterBreathFast" : "waterBreath";
+			},
+			src: `img/misc/ambient/water/breath.png`,
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.water;
+			},
+			z: ZIndices.foreground,
+		},
+		"water_back": {
+			animation: "waterBack",
+			src: `img/misc/ambient/water/back.png`,
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.water;
+			},
+			z: ZIndices.background,
+		},
+		"water_front": {
+			animation: "waterFront",
+			src: `img/misc/ambient/water/front.png`,
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.water;
+			},
+			z: ZIndices.foreground,
+		},
+		"fire_back": {
 			animationfn() {
 				const intensity = V.farm_assault ? 2 : T.tempEffects?.fire || V.fire;
 				return `fireBack${intensity}`;
 			},
 			srcfn() {
 				const intensity = V.farm_assault ? 2 : T.tempEffects?.fire || V.fire;
-				return `img/misc/ambient/fire/back-${intensity}.png`
+				return `img/misc/ambient/fire/back-${intensity}.png`;
 			},
-		}),
-		"fire_front": genlayer_effect('fire','front', {
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.fire;
+			},
+			z: ZIndices.background,
+		},
+		"fire_front": {
+			animation: "fireFront",
+			src: `img/misc/ambient/fire/front.png`,
 			showfn(options) {
 				return !T.hideSidebarEffects && (!!options.fire || !!options.fireFront);
 			},
-		}),
-		"petals_back": genlayer_effect('petals','back', {
+			z: ZIndices.foreground,
+		},
+		"petals_back": {
 			animationfn() {
 				const direction = T.tempEffects?.petals === "reverse" ? "Floating" : "Falling";
 				return `petals${direction}`;
 			},
 			srcfn(options) {
-				return `img/misc/ambient/petals/back-${options.petalColour}.png`
+				return `img/misc/ambient/petals/back-${options.petalColour}.png`;
 			},
-		}),
-		"petals_front": genlayer_effect('petals','front', {
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.petals;
+			},
+			z: ZIndices.background,
+		},
+		"petals_front": {
 			animationfn() {
 				const direction = T.tempEffects?.petals === "reverse" ? "Floating" : "Falling";
 				return `petals${direction}`;
 			},
 			srcfn(options) {
-				return `img/misc/ambient/petals/front-${options.petalColour}.png`
+				return `img/misc/ambient/petals/front-${options.petalColour}.png`;
 			},
-		}),
+			showfn(options) {
+				return !T.hideSidebarEffects && !!options.petals;
+			},
+			z: ZIndices.foreground,
+		},
 		"vines": {
 			animation: "idle",
 			z: ZIndices.upper,
@@ -3993,7 +4062,7 @@ Renderer.CanvasModels.main = {
 			width: 256,
 			height: 256,
 			dy: 0,
-			z: ZIndices.bg,
+			z: ZIndices.background,
 		},
 		"wraithFlashAccent": {
 			animation: "wraithFlashAccent",
@@ -4010,7 +4079,7 @@ Renderer.CanvasModels.main = {
 			width: 256,
 			height: 256,
 			dy: 0,
-			z: ZIndices.bg,
+			z: ZIndices.background,
 		},
 		"wraithMirror": {
 			animation: "wraithMirrorFade",
@@ -4025,7 +4094,7 @@ Renderer.CanvasModels.main = {
 			width: 256,
 			height: 256,
 			dy: 0,
-			z: ZIndices.bg,
+			z: ZIndices.background,
 		},
 
 		// new layer template
@@ -5126,40 +5195,6 @@ function genlayer_horns(tf, overrideOptions) {
 	}, overrideOptions))
 }
 
-function genlayer_effect(effect, layer, overrideOptions) {
-	return Object.assign({
-		animationfn() {
-			if (effect === "precipitation") return Weather.precipitation === "snow" ? `snow${layer.toUpperFirst()}` : "rain";
-			return `${effect}${layer.toUpperFirst()}`;
-		},
-		srcfn() {
-			const type = Weather.precipitation;
-			const intensity = normaliseFileName(Weather.name);
-			return `img/misc/ambient/${effect}/${type}/${intensity}-${layer}.png`
-		},
-		showfn(options) {
-			return !T.hideSidebarEffects && !!options[effect];
-		},
-		zfn() {
-			if (layer === "back") return ZIndices.bg;
-			return ZIndices.precipitationFront;
-		}
-}, overrideOptions);
-}
-
-function genlayer_breath(type, layer, overrideOptions) {
-	const anim = `${type}Breath`;
-	const effect = type === "player" ? "temperature" : type;
-	return genlayer_effect(effect, layer, Object.assign({
-		animationfn() {
-			if (V.arousal >= 6000 || V.pain >= 40) return `${anim}Fast`;
-			return anim;
-		},
-		srcfn() {
-			return `img/misc/ambient/${type}-breath.png`
-		},
-	}, overrideOptions))
-}
 
 function setClothingFilter(options, slot, clothingObject, setupObj, filterSuffix, colourProp, customProp) {
 	const filterType = `worn_${slot}${filterSuffix}`;
