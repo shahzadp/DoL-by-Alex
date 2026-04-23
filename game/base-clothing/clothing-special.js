@@ -783,7 +783,7 @@ function initSpecialClothes() {
 			text: "fox-themed items",
 			shop: ["forest"],
 			feat: false,
-			icon: "clothes/foxmask.png",
+			icon: "clothes/fox-mask.png",
 		},
 	};
 }
