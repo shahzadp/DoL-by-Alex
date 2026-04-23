@@ -116,6 +116,9 @@ const Time = (() => {
 	}
 	/*
 	 * Changes date without "passing time"
+	 *
+	 * Consider using the timeTravel() function instead if you are making a large (1 month+) change to the date to prevent
+	 * too many weather / fog keypoints from generating due to the large gap in time.
 	 */
 	function setDate(date) {
 		set(date.timeStamp - V.startDate);
@@ -424,7 +427,26 @@ const Time = (() => {
 		betweenHours,
 		openingHours: minutes => betweenHours(7, 20, minutes),
 		oxygenResaturationDuration,
+		timeTravel,
 	});
+
+	/*
+	 * Use this instead of Time.setDate() when jumping to a date far away from the current time. Without it, thousands of weather/fog keypoints
+	 * could be generated to attempt to fill the gap between the time travel date and the current date, which can freeze the browser.
+	 *
+	 * When used as part of a flashback with freezePlayerStats/unfreezePlayerStats, freezePlayerStats must be called before timeTravel() so
+	 * that V.weatherObj and V.timeStamp are captured into V.frozenValues, then unfreezePlayerStats restores them at the end of the event.
+	 *
+	 * This will always randomize the current weather, so if you want to use this to change the time while in a flashback scene, make sure
+	 * to follow it up with calls to Weather.set and Weather.Temperature.set().
+	 */
+	function timeTravel(date) {
+		V.weatherObj.keypointsArr = [];
+		V.weatherObj.fogKeypoints = [];
+		Time.setDate(date);
+		Weather.WeatherGeneration.generate(date);
+		Weather.FogGeneration.generateFogKeypoints(V.weatherObj.keypointsArr);
+	}
 })();
 window.Time = Time;
 

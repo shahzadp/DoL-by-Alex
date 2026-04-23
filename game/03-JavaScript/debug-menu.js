@@ -260,19 +260,19 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Spring`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 3))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 3))>>`],
 		},
 		{
 			link: [`Summer`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 6))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 6))>>`],
 		},
 		{
 			link: [`Autumn`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 9))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 9))>>`],
 		},
 		{
 			link: [`Winter`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 12))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 12))>>`],
 		},
 		{
 			text_only: `\n`,
@@ -477,10 +477,6 @@ setup.debugMenu.eventList = {
 			widgets: [],
 		},
 		{
-			link: [`Imprison Me`, `Underground Intro`],
-			widgets: [`<<generate1>>`, `<<generate2>>`, `<<person1>>`],
-		},
-		{
 			link: [`Imprison Me with Robin`, `Underground Intro`],
 			widgets: [`<<set $phase to 1>>`],
 		},
@@ -633,10 +629,6 @@ setup.debugMenu.eventList = {
 			widgets: [`<<endcombat>>`, `<<set $detention to 55>>`],
 		},
 		{
-			link: [`Enslave Me`, `Underground Intro`],
-			widgets: [`<<endcombat>>`, `<<generate1>>`, `<<generate2>>`, `<<person1>>`],
-		},
-		{
 			link: [`Work as a dancer`, `Brothel Dance`],
 			widgets: [
 				`<<endcombat>>`,
@@ -763,23 +755,23 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Halloween`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 10, 21, 7))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 10, 21, 7))>>`],
 		},
 		{
 			link: [`Full winter`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 12, 1, 7))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 12, 1, 7))>>`],
 		},
 		{
 			link: [`Christmas`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 12, 18, 7))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 12, 18, 7))>>`],
 		},
 		{
 			link: [`Blood moon`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>>`, `<<set $moonstate to "evening">>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>>`, `<<set $moonstate to "evening">>`],
 		},
 		{
 			link: [`Month is October`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.year, 10))>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 10))>>`],
 		},
 		{
 			link: [`Ambulance Rescue Wakeup`, `Ambulance rescue`],
@@ -787,7 +779,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Harper Appointment`, `Hospital Foyer`],
-			widgets: [`<<set Time.setDate(Time.getNextWeekdayDate(6))>>`, `<<set Time.setTime(16)>>`],
+			widgets: [`<<set Time.timeTravel(Time.getNextWeekdayDate(6))>>`, `<<set Time.setTime(16)>>`],
 		},
 		{
 			link: [`Deep forest`, `Forest`],
@@ -913,7 +905,7 @@ setup.debugMenu.eventList = {
 			link: [`Summon the Wraith`, `Wraith Test Start`],
 			widgets: [
 				`<<endcombat>>`,
-				`<<run Time.setDate(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>>`,
+				`<<run Time.timeTravel(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>>`,
 				`<<set $moonstate to "evening">>`,
 			],
 		},
@@ -1040,6 +1032,71 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Time Test`, `TimeTest`],
 			widgets: [`<<set $prevPassage to $passage>>`, `<<set $timeDistortion to 5>>`],
+		},
+		{
+			text_only: `\nFlashbacks / Out of body events`,
+		},
+		{
+			link: [`Schism`, `Schism`],
+			widgets: [
+				`<<set $outside to 0>>`,
+				`<<set $location to 'lake_ruin'>>`,
+				`<<set $wraithPrison to {timer: 0, timePassed: 0, search: 0, state: "present", possession: false, masturbation: false}>>`,
+				`<<set $lakeRuin ??= {}>><<set $lakeRuin.rune to true>>`,
+			],
+		},
+		{
+			link: [`Give Bleeding Ward Painting`, `Museum`],
+			widgets: [`<<updateMuseumAntiques>>`, `<<set $museumAntiques.paintings.paintingward to "museum">>`],
+		},
+		{
+			link: [`Give Hopeless Cycle Painting`, `Museum`],
+			widgets: [`<<updateMuseumAntiques>>`, `<<set $museumAntiques.paintings.paintingsnake to "museum">>`],
+		},
+		{
+			link: [`Raul and Janet Book Event`, `ScarletBook5`],
+			widgets: [],
+		},
+		{
+			link: [`Olive Book Event`, `Olive Book Full`],
+			widgets: [],
+		},
+		{
+			text_only: `\nBad Ends`,
+		},
+		{
+			link: [`Underground Brothel`, `Underground Intro`],
+			widgets: [`<<generate1>>`, `<<generate2>>`, `<<generate3>>`, `<<person1>>`, `<<badEndTracking "Underground Dungeon" { reason: "soldBailey" }>>`],
+		},
+		{
+			link: [`Underground Farm`, `Livestock Intro`],
+			widgets: [`<<endevent>>`, `<<leash 21>>`, `<<badEndTracking "Underground Farm" { reason: "abductedMoor" }>>`],
+		},
+		{
+			link: [`Prison`, `Police Cell`],
+			widgets: [`<<set $stat_police.pillory += 1>>`, `<<crimeUp 7000 "prostitution" "debug">>`],
+		},
+		{
+			link: [`Asylum`, `Asylum Intro`],
+			widgets: [
+				`<<endevent>>`,
+				`<<trauma 5000>>`,
+				`<<controlloss>>`,
+				`<<controlloss>>`,
+				`<<controlloss>>`,
+				`<<controlloss>>`,
+				`<<ginsecurity "penis_small">>`,
+				`<<badEndTracking "Asylum" { reason: "asylumHospital" }>>`,
+				`<<pass 120>>`,
+			],
+		},
+		{
+			link: [`Captured by Eden`, `Forest Hunter Intro`],
+			widgets: [`<<endcombat>>`, `<<set $location to "forest">>`, `<<badEndTracking "Eden" { reason: "edenHuntedSubmitted" }>>`],
+		},
+		{
+			link: [`Captured by The Great Hawk`, `Moor`],
+			widgets: [`<<set $moor to 50>>`, `<<set $eventskip to 1>>`, `<<moor_hunt_start>>`, `<<set $moor_hunt to 10>>`],
 		},
 	],
 	Character: [
@@ -1320,7 +1377,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Month`, stayOnPassageFn],
-			widgets: [`<<run Time.setDate(new DateTime(Time.date).addMonth(1)>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.date).addMonth(1)>>`],
 		},
 		{
 			text_only: "\n\n",
