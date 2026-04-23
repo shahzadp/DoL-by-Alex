@@ -702,7 +702,7 @@ function gwylanRequestIngredients() {
 	}
 
 	// Remove honeycomb unless bees are enabled.
-	if (V.tending < 800 && !(V.settings.bestialityEnabled && V.settings.beesEnabled)) {
+	if (V.tending < 800 || !(V.settings.bestialityEnabled && V.settings.beesEnabled)) {
 		removeIngredient("wild_honeycomb");
 	}
 
