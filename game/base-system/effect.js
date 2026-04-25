@@ -1258,24 +1258,18 @@ function effects() {
 	}
 
 	if (V.cheatClothes) {
-		if (V.worn.upper.name !== "naked") {
-			V.worn.upper.integrity = V.worn.upper.integrity_max;
+		let _cl_slots_cheat = ["upper", "lower", "under_upper", "under_lower", "over_upper", "over_lower", "genitals"];
+		if (V.worn.face.type.includesAny("covered", "gag", "mask")) {
+			_cl_slots_cheat.push("face");
 		}
-		if (V.worn.over_upper.name !== "naked") {
-			V.worn.over_upper.integrity = V.worn.over_upper.integrity_max;
-		}
-		if (V.worn.over_lower.name !== "naked") {
-			V.worn.over_lower.integrity = V.worn.over_lower.integrity_max;
-		}
-		if (V.worn.lower.name !== "naked") {
-			V.worn.lower.integrity = V.worn.lower.integrity_max;
-		}
-		if (V.worn.under_lower.name !== "naked") {
-			V.worn.under_lower.integrity = V.worn.under_lower.integrity_max;
-		}
-		if (V.worn.under_upper.name !== "naked") {
-			V.worn.under_upper.integrity = V.worn.under_upper.integrity_max;
-		}
+		_cl_slots_cheat.forEach((slot) => {
+			if (V.worn[slot].name === "naked") return;
+			V.worn[slot].integrity = clothingData(slot, V.worn[slot], "integrity_max");
+			cheatsUpdateSlider(
+				`#numberslider-input-worn${slot.replace('_', '-')}integrity`,
+				V.worn[slot].integrity
+			);
+		})
 	}
 
 	if (Array.isArray(V.timeMessages) && V.timeMessages.length) {
