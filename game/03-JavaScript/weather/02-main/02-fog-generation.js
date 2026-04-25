@@ -178,6 +178,32 @@ Weather.FogGeneration = (() => {
 			}
 		}
 
+		// If the current fog keypoint is the last fog keypoint for some reason, just return the fogGoal for that keypoint.
+		// If this happens, then something has likely gone wrong. As of writing, the only time this should be able to happen
+		// is for saves made pre-fog update that were made within a flashback event, then loaded after the fog update, after
+		// <<unfreezePlayerStats>> is run.
+		if (currentKeyPoint && !nextKeyPoint) {
+			if (V.debug) {
+				const lastWeatherKeypointTimestamp = V.weatherObj.keypointsArr?.length
+					? V.weatherObj.keypointsArr[V.weatherObj.keypointsArr.length - 1].timestamp
+					: null;
+				const lastFogKeypointTimestamp = V.weatherObj.fogKeypoints?.length
+					? V.weatherObj.fogKeypoints[V.weatherObj.fogKeypoints.length - 1].timestamp
+					: null;
+
+				console.warn(
+					`interpolateFog: currentKeyPoint is the last fog keypoint; returning currentKeyPoint.fogGoal.` +
+						` \ncurrentTimeStamp: ${currentTimeStamp}` +
+						` \ncurrentFogTimestamp: ${currentKeyPoint.timestamp}` +
+						` \nLast Weather Timestamp: ${lastWeatherKeypointTimestamp}` +
+						` \nLast Fog Timestamp: ${lastFogKeypointTimestamp}` +
+						` \nFog Keypoints Length=${V.weatherObj.fogKeypoints?.length ?? 0}` +
+						` \nWeather Keypoints Length=${V.weatherObj.keypointsArr?.length ?? 0}`
+				);
+			}
+			return currentKeyPoint.fogGoal;
+		}
+
 		const currentGoal = currentKeyPoint.fogGoal;
 		const nextGoal = nextKeyPoint.fogGoal;
 

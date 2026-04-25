@@ -7108,9 +7108,28 @@
 
 	/* Fixing weather and fog keypoints for saves in the middle of a flashback event */
 	<<if $frozenValues>>
-		V.weatherObj.keypointsArr = [];
-		V.weatherObj.fogKeypoints = [];
+		<<run V.weatherObj.keypointsArr = [];>>
+		<<run V.weatherObj.fogKeypoints = [];>>
+		<<run V.frozenValues.weatherObj.keypointsArr = [];>>
+		<<run V.frozenValues.weatherObj.fogKeypoints = [];>>
 		<<run Weather.WeatherGeneration.generate(new DateTime(Time.date));>>
+		<<run Weather.FogGeneration.generateFogKeypoints(V.weatherObj.keypointsArr);>>
+
+		<<if $frozenValues.weatherObj.previousWeatherIndex is undefined>>
+			<<set $frozenValues.weatherObj.previousWeatherIndex to 0>>
+		<</if>>
+
+		<<unset $frozenValues.weatherObj.name>>
+		<<unset $frozenValues.weatherObj.fog>>
+		<<unset $frozenValues.weatherObj.overcast>>
+		<<unset $frozenValues.weatherObj.targetOvercast>>
+	<</if>>
+
+	<<if $weatherObj.keypointsArr.length === 0>>
+		<<run Weather.WeatherGeneration.generate(new DateTime(Time.date));>>
+	<</if>>
+
+	<<if $weatherObj.fogKeypoints.length === 0>>
 		<<run Weather.FogGeneration.generateFogKeypoints(V.weatherObj.keypointsArr);>>
 	<</if>>
 
