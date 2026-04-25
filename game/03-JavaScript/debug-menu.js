@@ -1058,7 +1058,7 @@ setup.debugMenu.eventList = {
 			widgets: [],
 		},
 		{
-			link: [`Olive Book Event`, `Olive Book Full`],
+			link: [`Olive Book Event`, `Olive Book 1`],
 			widgets: [],
 		},
 		{
