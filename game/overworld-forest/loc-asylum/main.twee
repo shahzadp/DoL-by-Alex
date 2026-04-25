@@ -401,7 +401,7 @@ You are in the asylum, deep in the forest. The building is over a century old, a
 	Other patients are relaxing in the recreation room or exercising outside. Most keep to themselves.
 	<<if $o_long_and_beautiful gte 1 and $o_long_and_beautiful lte 7 and $rng % 4 == 0>>
 		<<loadNPC 0 "long_haired">>
-		A slim <<personsimple>> with very long, messy hair wanders out of sight <<print either("down a corridor.","into a private room.","into the cells.","in the garden.")>>
+		A slim <<person1>><<personsimple>> with very long, messy hair wanders out of sight <<print either("down a corridor.","into a private room.","into the cells.","in the garden.")>>
 	<</if>>
 	<br><br>
 	<<asylumstats>>
@@ -873,7 +873,7 @@ You try to stand, but you can't move your arms. "We've given you a jacket until 
 
 
 :: Asylum Socialise
-
+<<endevent>>
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 You chat with the other patients.
 <<if $exposed is 2>>
@@ -1171,8 +1171,14 @@ You chat with the other patients.
 	<<if $o_long_and_beautiful gte 1 and $o_long_and_beautiful lte 7>>
 		<<addinlineevent "socialise_long_and_beautiful" 2>>
 			<<set $o_long_and_beautiful += 1>>
-				<<loadNPC 0 "long_haired">>
-				A thin <<person>> with extremely long, messy, tangled hair stands by a window staring at the trees across the garden.
+			<<endevent>>
+				<<if !$per_npc.long_haired>>
+					<<generate1>>
+					<<saveNPC 0 "long_haired">>
+				<<else>>
+					<<loadNPC 0 "long_haired">>
+				<</if>>
+				A thin <<person1>><<person>> with extremely long, messy, tangled hair stands by a window staring at the trees across the garden.
 				<br><br>
 
 				You stand next to <<him>> and try to strike up a conversation, but <<he>> doesn't respond at all. With <<his>> face mostly hidden
@@ -1186,6 +1192,7 @@ You chat with the other patients.
 		<</addinlineevent>>
 	<<elseif $o_long_and_beautiful gte 8 and $o_long_and_beautiful lte 9 and $per_npc.hy_sibling and $per_npc.hy_parent>>
 		<<addinlineevent "socialise_long_and_beautiful_sib" 10>> /* Approximately 1/3 chance of triggering, once conditionals are true */
+			<<endevent>>
 			<<loadNPC 0 "hy_sibling">>
 			<<loadNPC 1 "hy_parent">>
 			<<loadNPC 2 "long_haired">>
@@ -1218,12 +1225,12 @@ You chat with the other patients.
 			<<else>>
 				"I thought I hadn't seen you around lately.
 			<</if>>
-			So have you met my <<person3>><<npc_sister>>? <<He>>'s here. Very slim, long hair. I told you about <<him>>. Attacked at that beach party.
+			So have you met my <<person3>><<sister_npc>>? <<He>>'s here. Very slim, long hair. I told you about <<him>>. Attacked at that beach party.
 			<<He>>'s been here forever now. <<His>> long hair used to be so beautiful but now no one—"
 			<br><br>
 			The voices behind raise sharply. A <<person2>><<person>> is arguing with one of the orderlies.
 			<br><br>
-			"That's <<Mum>>. <<He>>'s telling them to take better care of my <<person3>><<npc_sister>>.
+			"That's <<Mum>>. <<He>>'s telling them to take better care of my <<person3>><<sister_npc>>.
 			<<He>> seems to be getting worse again. <<He>> blames <<himself>> now and thinks <<he>> was 'asking for it'. One of the doctors keeps
 			telling <<him>> that too. Really upsets <<him>>. <<He>> doesn't talk to anyone now. Won't even see us anymore. And <<his>> hair is nasty now.
 			They don't even brush it. I'd do it, but <<he>> won't see me. It's so—"
@@ -1238,7 +1245,7 @@ You chat with the other patients.
 			With a loud buzz, the <<fullGroup>> are let out through a security door.
 			When you look back to the therapy room, the long-haired <<personsimple>> is nowhere to be seen.
 			<br><br>
-			<span class="teal">Is that the <<npc_sister>>?</span><<set $o_long_and_beautiful to 10>>
+			<span class="teal">Is that the <<sister_npc>>?</span><<set $o_long_and_beautiful to 10>>
 		<</addinlineevent>>
 	<</if>>
 
@@ -1785,7 +1792,8 @@ You strip slowly, just fast enough to keep the orderlies at bay. By the time you
 :: Asylum Shower Wash Hair
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 <<pass 25>>
-Completely naked, you sit for a time with the slim, long-haired <<person4>><<personsimple>>. You don't touch <<him>>, you just keep quietly talking to <<him>>.
+<<loadNPC 0 "long_haired">>
+Completely naked, you sit for a time with the slim, long-haired <<person1>><<personsimple>>. You don't touch <<him>>, you just keep quietly talking to <<him>>.
 <<if currentSkillValue('english') gte 500>>
 	After a time, you notice <<him>> looking at you. Your eloquence seems to be getting through.
 	<<if $o_long_and_beautiful lt 9>>
@@ -1805,7 +1813,7 @@ Finally, <<he>> whispers: "Okay." Together you head to the shower and wash. It i
 <</if>>
 You head back to your clothes, dry yourself and get dressed.
 <br><br>
-<<link [[Next|Asylum]]>><<clotheson>><</link>>
+<<link [[Next|Asylum]]>><<clotheson>><<endevent>><</link>>
 <br>
 
 
