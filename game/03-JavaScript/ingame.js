@@ -2505,9 +2505,9 @@ window.npcSemenMod = npcSemenMod;
 
 function maleChance(override) {
 	if (V.settings.maleChanceSplit === false) return V.settings.maleChance;
-	const appearence = override || V.player.gender_appearance;
-	if (appearence === "m") return V.settings.maleChanceMale;
-	if (appearence === "f") return V.settings.maleChanceFemale;
+	const appearance = override || V.player.gender_appearance;
+	if (appearance === "m") return V.settings.maleChanceMale;
+	if (appearance === "f") return V.settings.maleChanceFemale;
 	return 50;
 }
 window.maleChance = maleChance;
@@ -2521,9 +2521,9 @@ window.attractedToBothChance = attractedToBothChance;
 
 function beastMaleChance(override) {
 	if (V.settings.beastMaleChanceSplit === false) return V.settings.beastMaleChance;
-	const appearence = override || V.player.gender_appearance;
-	if (appearence === "m") return V.settings.beastMaleChanceMale;
-	if (appearence === "f") return V.settings.beastMaleChanceFemale;
+	const appearance = override || V.player.gender_appearance;
+	if (appearance === "m") return V.settings.beastMaleChanceMale;
+	if (appearance === "f") return V.settings.beastMaleChanceFemale;
 	return 50;
 }
 window.beastMaleChance = beastMaleChance;
