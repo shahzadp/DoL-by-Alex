@@ -3852,67 +3852,89 @@ What do you want to write or draw on your $mirror_bodypart?
 <<wearProp "love locket" _colour>>
 You open the locket around your neck.
 <br><br>
-<div class="img-txt">
-	<div id="locket">
-		<span>
-			<img class="icon infront" @src="'img/ui/locket-'+$carried.neck.colour.replace(' ', '-')+'.png'">
-			<img class="icon" @src="'img/ui/locket-'+$carried.neck.colour.replace(' ', '-')+'-photo.png'">
-		</span>
-	</div>
-	<div id="locket-txt">
-		<<switch $carried.neck.photo>>
-			<<case "Robin">>
-				<<set _locket_text to "A photo of Robin smiles back.">>
-			<<case "Whitney">>
-				<<set _locket_text to "A photo of Whitney grins back.">>
-			<<case "Kylar">>
-				<<set _locket_text to "A photo of Kylar gazes back.">>
-			<<case "Eden">>
-				<<set _locket_text to "Eden's stern expression greets you.">>
-			<<case "Avery">>
-				<<set _locket_text to "In the photo, Avery looks to the side, head tilted up.">>
-			<<case "Alex">>
-				<<set _locket_text to "A photo of Alex on a steed greets you.">>
-			<<case "Sydney">>
-				<<set _locket_text to "A photo of Sydney deep in prayer greets you.">>
-			<<case "Black Wolf">>
-				<<set _locket_text to "There's a photo inside of the Black Wolf, sleeping peacefully.">>
-			<<case "Great Hawk">>
-				<<set _locket_text to "There's a photo inside of the Great Hawk, looking statuesque.">>
-			<<case "Gwylan">>
-				<<if $gwylan?.timer?.nobody gte Time.date.timeStamp>>
-					<<set _locket_text to "The picture within is distorted and unrecognisable.">>
-				<<elseif $hypnosis_traits.devotion gte 4>>
-					<<set _locket_text to "Gwylan's seductive smile greets you. The picture almost seems to be shining.">>
-				<<else>>
-					<<set _locket_text to "Gwylan's cheery smile greets you, although the rest of <<nnpc_his 'Gwylan'>> face is blurry.">>
-				<</if>>
-			<<default>>
-				<<set _locket_text to "It's empty, but there's space for a single photograph.">>
-		<</switch>>
-		<<if C.npc["Ivory Wraith"].love gte 10 and (["haunt", "despair"].includes($wraith.state) or C.npc["Ivory Wraith"].lust gt 10) and $hallucinations gte 1 and ((random(1, 100) is 1) or ($controlled is 0 and random(1, 100) lte 5))>>
-			<<fadeText "<span class='wraith'>A pale figure's <<wraithEyes>> gaze pierces you.</span>" "<<print _locket_text>>">>
+<<switch $carried.neck.photo>>
+	<<case "Robin">>
+		<<set _locket_text to "A photo of Robin smiles back.">>
+	<<case "Whitney">>
+		<<set _locket_text to "A photo of Whitney grins back.">>
+	<<case "Kylar">>
+		<<set _locket_text to "A photo of Kylar gazes back.">>
+	<<case "Eden">>
+		<<set _locket_text to "Eden's stern expression greets you.">>
+	<<case "Avery">>
+		<<set _locket_text to "In the photo, Avery looks to the side, head tilted up.">>
+	<<case "Alex">>
+		<<set _locket_text to "A photo of Alex on a steed greets you.">>
+	<<case "Sydney">>
+		<<set _locket_text to "A photo of Sydney deep in prayer greets you.">>
+	<<case "Black Wolf">>
+		<<set _locket_text to "There's a photo inside of the Black Wolf, sleeping peacefully.">>
+	<<case "Great Hawk">>
+		<<set _locket_text to "There's a photo inside of the Great Hawk, looking statuesque.">>
+	<<case "Gwylan">>
+		<<if $gwylan?.timer?.nobody gte Time.date.timeStamp>>
+			<<set _locket_text to "The picture within is distorted and unrecognisable.">>
+		<<elseif $hypnosis_traits.devotion gte 4>>
+			<<set _locket_text to "Gwylan's seductive smile greets you. The picture almost seems to be shining.">>
 		<<else>>
-			<<print _locket_text>>
+			<<set _locket_text to "Gwylan's cheery smile greets you, although the rest of <<nnpc_his 'Gwylan'>> face is blurry.">>
 		<</if>>
-		<br><br>
+	<<default>>
+		<<set _locket_text to "It's empty, but there's space for a single photograph.">><<set _noLocketPhoto to true>>
+<</switch>>
+<<set _locket_text += " <mouse class='tooltip linkBlue'>(?)<span>You can insert custom images of each love interest by placing them in the `img/ui/locket` folder!<br><br>Be sure to name the file after the love interest and replace any spaces with dashes.<br>A photo of Robin should be `robin.png` while a photo of the Black Wolf should be `black-wolf.png`.<br>The images should be 64x64 pixels in size.</span></mouse>">>
+<<if $options.images>>
+	<div class="img-txt">
+		<<if $carried.neck.photo>>
+			<div id="locket">
+				<span>
+					<img class="icon infront" @src="'img/ui/locket-'+$carried.neck.colour.replace(' ', '-')+'-photo.png'" style="height:128px; width:128px">
+					<img class="icon" @src="'img/ui/locket/'+$carried.neck.photo?.replace(' ', '-').toLowerCase()+'.png'" onerror="this.onerror=null; this.src='img/ui/locket-empty.png';" style="height:128px; width:128px">
+				</span>
+			</div>
+		<<else>>
+			<div id="locket">
+				<span>
+					<img class="icon" @src="'img/ui/locket-'+$carried.neck.colour.replace(' ', '-')+'.png'" style="height:128px; width:128px">
+				</span>
+			</div>
+		<</if>>
+		<div id="locket-txt">
+			<<if !_noLocketPhoto and C.npc["Ivory Wraith"].love gte 10 and (["haunt", "despair"].includes($wraith.state) or C.npc["Ivory Wraith"].lust gt 10) and $hallucinations gte 1 and ((random(1, 100) is 1) or ($controlled is 0 and random(1, 100) lte 5))>>
+				<<fadeText "<span class='wraith'>A pale figure's <<wraithEyes>> gaze pierces you.</span>" "<<print _locket_text>>">>
+			<<else>>
+				<<print _locket_text>>
+			<</if>>
+			<br><br>
+		</div>
 	</div>
-</div>
+<<else>>
+	<<if !_noLocketPhoto and C.npc["Ivory Wraith"].love gte 10 and (["haunt", "despair"].includes($wraith.state) or C.npc["Ivory Wraith"].lust gt 10) and $hallucinations gte 1 and ((random(1, 100) is 1) or ($controlled is 0 and random(1, 100) lte 5))>>
+		<<fadeText "<span class='wraith'>A pale figure's <<wraithEyes>> gaze pierces you.</span>" "<<print _locket_text>>">>
+	<<else>>
+		<<print _locket_text>>
+	<</if>>
+	<br><br>
+<</if>>
 
 <<for _npc range setup.NPCNameList>>
 	<<capture _npc>>
 		<<if $carried.neck.photo != _npc and (isLoveInterest(_npc))>>
 			<span @class="'clothes-'+$carried.neck.colour.replace(' ', '-')"><<icon "locket.png">></span>
 			<<if $carried.neck.photo>>
-				<<link [[`Replace the picture with a photo of ${_npc}`|Mirror Locket 2]]>><<set $carried.neck.photo to _npc>><</link>>
+				<<link [[`Replace the photo with one of <<if ["Black Wolf", "Great Hawk"].includes(_npc)>>the <</if>>${_npc}`|Mirror Locket 2]]>><<set $carried.neck.photo to _npc>><</link>>
 				<br>
 			<<else>>
-				<<link [[`Add a photo of ${_npc}`|Mirror Locket 2]]>><<set $carried.neck.photo to _npc>><</link>>
+				<<link [[`Add a photo of <<if ["Black Wolf", "Great Hawk"].includes(_npc)>>the <</if>>${_npc}`|Mirror Locket 2]]>><<set $carried.neck.photo to _npc>><</link>>
 				<br>
 			<</if>>
 		<</if>>
 	<</capture>>
 <</for>>
+<<if $carried.neck.photo>>
+	<span @class="'clothes-'+$carried.neck.colour.replace(' ', '-')"><<icon "locket.png">></span><<link [[Remove the photo|Mirror Locket 2]]>><<set $phase to $carried.neck.photo>><<unset $carried.neck.photo>><</link>>
+	<br>
+<</if>>
 <br>
 
 <<getouticon>><<link [[Back|$passage_mirror]]>><<neckon>><</link>>
@@ -3947,10 +3969,12 @@ You open the locket around your neck.
 		<<else>>
 			You insert a small photograph of Gwylan, smiling and waving cheerfully.
 		<</if>>
+	<<default>>
+		You remove the small photograph of <<if ["Black Wolf", "Great Hawk"].includes($phase)>>the <</if>>$phase, leaving the locket empty once more.
 <</switch>>
 <br><br>
 
-<<link [[Next|$passage_mirror]]>><<neckon>><</link>>
+<<link [[Next|Mirror Locket]]>><<endevent>><<neckon>><</link>>
 
 :: Sold
 <<set $location to "town">><<set $outside to 0>><<effects>>
