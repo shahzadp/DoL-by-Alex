@@ -431,7 +431,7 @@ function gwylanRequestClothes(override) {
 			!(C.npc.Gwylan.lust >= 50 && clothes.reveal < 300)
 	);
 	const roll = clone(possibleClothes.pluck());
-	V.gwylan.request.details.shops = roll.shop;
+	V.gwylan.request.details.shops = roll.shop.filter(shops => availableShops.includes(shops));
 
 	switch (roll.name) {
 		// Full sets
