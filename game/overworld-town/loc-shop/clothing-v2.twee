@@ -64,6 +64,9 @@
 	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gt 0) or ($earSlime.forcedDressing and $earSlime.forcedDressing.days) or playerBellySize() gte 12 or $location is "forest_shop">>
 	<<if _unavailableItems>>
 		<label><<checkbox "$shopClothingFilter.availableOnly" false true autocheck>> Hide unavailable items</label>
+		<<if $location is "forest_shop">>
+			<label><<checkbox "$shopClothingFilter.unavailableOnly" false true autocheck>> Hide available items</label>
+		<</if>>
 	<<else>>
 		<<set $shopClothingFilter.available to false>>
 	<</if>>
@@ -75,6 +78,9 @@
 			shopTimer = setTimeout(updateShop, 300);
 		});
 		$('#checkbox-shopclothingfilteravailableonly').on('change', e => {
+			updateShop();
+		});
+		$('#checkbox-shopclothingfilterunavailableonly').on('change', e => {
 			updateShop();
 		});
 		var updateShop = () => {
@@ -97,6 +103,7 @@
 			(playerBellySize() >= 12 and x.type.includes("constricting")) or
 			$specialClothes.find(item => item.name === x.name)?.unlocked is 0
 		))
+		and ($location isnot "forest_shop" or !V.shopClothingFilter.unavailableOnly or $specialClothes.find(item => item.name === x.name)?.unlocked is 0)
 	)>>
 	<<set _items = applyClothingShopFilters(_items)>>
 
