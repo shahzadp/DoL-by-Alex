@@ -125,7 +125,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow";
+				return Weather.precipitation === "snow" && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				sunTint: "#ffffff",
@@ -186,7 +186,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "particleSnow",
 			drawCondition() {
-				return Weather.precipitation === "snow";
+				return Weather.precipitation === "snow" && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				sunTint: "#ffffff",
