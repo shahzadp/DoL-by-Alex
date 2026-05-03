@@ -786,3 +786,23 @@ function inappropriatePlayerState(check = ["all"]) {
 	return false;
 }
 window.inappropriatePlayerState = inappropriatePlayerState;
+
+/**
+ * Fetches some or all of the PC's visible transformation parts into an array, depending on input
+ *
+ * @param {Array <"ears" | "wings" | "tail" | "halo" | "horns" | "plumage" | "malar" | "cheeks" | "eyes" | "heterochromia" | "pubes" | "pits">} parts / Which types to check, defaults to all
+ * @returns {Array | false} / Parts that match the criteria
+ */
+function getTransformParts(parts = []) {
+	let tfs = ["wolf", "cat", "fox", "bird", "cow", "demon", "fallenAngel", "angel"];
+	let tfPartsToCheck = ["ears", "wings", "tail", "halo", "horns", "plumage", "malar", "cheeks", "eyes", "heterochromia", "pubes", "pits"];
+	let tfParts = [];
+	for (let i = 0 ; i < tfs.length ; i++) {
+		for (let i2 = 0 ; i2 < tfPartsToCheck.length ; i2++) {
+			if ((parts.includesAny(tfPartsToCheck[i2]) || !parts[0]) && ![undefined, "hidden", "disabled"].includes(V.transformationParts[tfs[i]][tfPartsToCheck[i2]])) tfParts.pushUnique(tfPartsToCheck[i2]);
+		}
+	}
+	if (tfParts.length) return tfParts;
+	else return false;
+}
+window.getTransformParts = getTransformParts;

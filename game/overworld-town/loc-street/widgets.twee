@@ -3420,8 +3420,7 @@
 					<</addinlineevent>>
 				<</if>>
 
-				<<getTransformParts>>
-				<<if _tfParts.includesAny("wings", "ears", "tail")>>
+				<<if getTransformParts(["ears", "wings", "tail"])>>
 					<<addevent "streettfpicture" 1>>
 				<</if>>
 			<</if>>
@@ -4050,7 +4049,7 @@
 <</widget>>
 
 <<widget "streettfpicture">>
-	<<generate1>><<person1>>
+	<<generate1>><<person1>><<set _tfParts to getTransformParts(["ears", "wings", "tail"])>>
 	A <<person>> approaches you, holding a camera. "Sorry to bother you, but that has to be the best costume I've ever seen. Do you mind if I take a few pictures?"
 	<br><br>
 
@@ -4061,7 +4060,7 @@
 	<<elseif _tfParts.includes("wings") and (random(1, 2) is 1 or _tfParts.filter(part => part !== "wings").length is 0)>>
 		<<set $phase2 to 1>>
 		wings.
-	<<else>>
+	<<elseif _tfParts.includes("ears") or _tfParts.includes("tail")>>
 		<<set $phase2 to 2>>
 		<<set _earsandtail to []>>
 		<<if _tfParts.includes("ears")>>
@@ -4071,6 +4070,8 @@
 			<<run _earsandtail.push("tail")>>
 		<</if>>
 		<<print formatList(_earsandtail)>>.
+	<<else>> /* Fallback, just in case */
+		inhuman features.
 	<</if>>
 	<br><br>
 
