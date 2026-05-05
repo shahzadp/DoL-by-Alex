@@ -1972,7 +1972,7 @@ function initFoodstuff() {
 				tags: ["vegetarian", "sweet"],
 			},
 		},
-		soufflé: {
+		souffle: {
 			index: 95,
 			name: "soufflé",
 			singular: "soufflé",
@@ -2166,7 +2166,7 @@ function initFoodstuff() {
 				tags: ["vegetarian", "sweet"],
 			},
 		},
-		crème_brulee: {
+		creme_brulee: {
 			index: 103,
 			name: "crème brûlée",
 			singular: "pot of crème brûlée",
