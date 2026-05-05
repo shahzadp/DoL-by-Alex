@@ -107,109 +107,130 @@
 		<br><br>
 		<<link [[Next|Wraith Caught]]>><</link>>
 		<br>
-	<<elseif $rng gte 81 and $hallucinations gte 2 and $settings.tentaclesEnabled>>
-		Several tentacles rise from the water, blocking your path and trapping you on the walkway.
-		<br><br>
-		<<if !pcAreArmsBound("both") and $angel gte 4 and $angelBanish gte 1>>
-			<<link [[Banish them|Drain Tentacles Banish]]>><<angelBanishUse>><</link>><<angelBanishNote>>
-			<br>
-			<<link [[Surrender|Drain Tentacles]]>><<set $molestationstart to 1>><</link>>
-			<br>
-		<<else>>
-			<<link [[Next|Drain Tentacles]]>><<set $molestationstart to 1>><</link>>
-			<br>
-		<</if>>
-	<<elseif $rng gte 61 and $hallucinations gte 2 and $settings.slimesEnabled>>
-
-		A torrent of water rushes through a pipe to your right, colliding with you and knocking you to the ground.
-		<br>
-		<<silently>><<water>><</silently>>
-		<br>
-
-		You feel a weight on your groin. The water passes, leaving a living slime sat atop you.
-		<br><br>
-
-		<<link [[Next|Drain Struggle]]>><<set $struggle_start to 1>><</link>>
-		<br>
-	<<elseif $rng gte 41 and $hallucinations gte 2 and $settings.slimesEnabled>>
-		You feel a weight on your shoulder. A slime oozes through a set of bars in the drain wall, and climbs over your shoulders with a life of its own.
-		<br><br>
-
-		<<if pcAreArmsBound("both")>>
-			<span class="blue">With your arms bound, there's nothing you can do to defend yourself.</span>
-			It spreads over your back,
-			<<if $worn.upper.name isnot "naked">>
-				<<if $worn.under_upper.name isnot "naked">>
-					dissolving your <<print $worn.upper.name>> and <<print $worn.under_upper.name>> with a hiss.
-					<<set $worn.upper.integrity -= 1000>>
-					<<set $worn.under_upper.integrity -= 1000>>
-				<<else>>
-					dissolving your <<print $worn.upper.name>> with a hiss.
-					<<set $worn.upper.integrity -= 1000>>
-				<</if>>
-				<<integritycheck>>
-				<<exposure>>
-			<<elseif $worn.under_upper.name isnot "naked">>
-				dissolving your <<print $worn.under_upper.name>> with a hiss.
-				<<set $worn.under_upper.integrity -= 1000>>
-				<<integritycheck>>
-				<<exposure>>
-			<<else>>
-				tickling your skin.<<garousal>><<arousal 600>>
-				<br><br>
-			<</if>>
-			When it reaches your <<bottom>>, it clings to the nearby wall for leverage, and forces you to the ground.
-			<br><br>
-
-			<<link [[Next|Drain Struggle]]>><<set $phase to 1>><<set $struggle_start to 1>><</link>>
-			<br>
-		<<else>>
-			<<link [[Tug it off|Drain Slime Physique]]>><</link>><<physiquedifficulty 1 20000>>
-			<br>
-			<<link [[Watch for an opening|Drain Slime Watch]]>><<arousal 1800>><</link>><<ggarousal>>
-			<br>
-			<<if !$worn.upper.type.includes("naked")>>
-				<<link [[Sacrifice your top|Drain Slime Sacrifice Upper]]>><</link>>
-				<br>
-			<<elseif !$worn.under_upper.type.includes("naked")>>
-				<<link [[Sacrifice your top|Drain Slime Sacrifice Under]]>><</link>>
-				<br>
-			<</if>>
-		<</if>>
-	<<elseif $rng gte 21>>
-
-		A torrent of water rushes through a pipe to your right, colliding with you and knocking you into the canal!
-		<br>
-		<<silently>><<water>><</silently>>
-		<br>
-		<<set $worn.over_upper.integrity -= 10>><<set $worn.over_lower.integrity -= 10>><<set $worn.upper.integrity -= 10>><<set $worn.lower.integrity -= 10>><<set $worn.under_lower.integrity -= 10>><<pain 1>>
-		<<link [[Next|Drain Water]]>><</link>>
 	<<else>>
-
-		A torrent of water rushes through a pipe to your right, colliding with you and knocking you into the canal!
-		<br>
-		<<silently>><<water>><</silently>>
-		<br>
-		<<set $worn.over_upper.integrity -= 10>><<set $worn.over_lower.integrity -= 10>><<set $worn.upper.integrity -= 10>><<set $worn.lower.integrity -= 10>><<set $worn.under_lower.integrity -= 10>><<pain 1>>
-		You are sucked to the drain floor, and through a gap in the concrete. You are pulled deeper through the dark until you emerge in a dim light. The water leaves you sprawled on the stone floor.
-		<br><br>
-		<<sewersstart>>
-		<<if $sewersintro is 1>>
-			<<if $bus is "residentialdrain">>
-				<<laddericon>><<link [[Climb down|Sewers Residential]]>><</link>>
+		<<cleareventpool>>
+		<<if $hallucinations gte 2 and $settings.tentaclesEnabled>>
+			<<addinlineevent "events_drains_tentacles" 1>>
+				Several tentacles rise from the water, blocking your path and trapping you on the walkway.
 				<br><br>
-			<<elseif $bus is "commercialdrain">>
-				<<laddericon>><<link [[Climb down|Sewers Commercial]]>><</link>>
-				<br><br>
-			<<else>>
-				<<laddericon>><<link [[Climb down|Sewers Industrial]]>><</link>>
-				<br><br>
-			<</if>>
-		<<else>>
-			<<link [[Next|Sewers Intro]]>><</link>>
-			<br>
+				<<if !pcAreArmsBound("both") and $angel gte 4 and $angelBanish gte 1>>
+					<<link [[Banish them|Drain Tentacles Banish]]>><<angelBanishUse>><</link>><<angelBanishNote>>
+					<br>
+					<<link [[Surrender|Drain Tentacles]]>><<set $molestationstart to 1>><</link>>
+					<br>
+				<<else>>
+					<<link [[Next|Drain Tentacles]]>><<set $molestationstart to 1>><</link>>
+					<br>
+				<</if>>
+			<</addinlineevent>>
 		<</if>>
+		<<if $hallucinations gte 2 and $settings.slimesEnabled>>
+			<<addinlineevent "events_drains_struggle" 1>>
+				A torrent of water rushes through a pipe to your right, colliding with you and knocking you to the ground.
+				<br>
+				<<silently>><<water>><</silently>>
+				<br>
+
+				You feel a weight on your groin. The water passes, leaving a living slime sat atop you.
+				<br><br>
+
+				<<link [[Next|Drain Struggle]]>><<set $struggle_start to 1>><</link>>
+				<br>
+			<</addinlineevent>>
+		<</if>>
+		<<if $hallucinations gte 2 and $settings.slimesEnabled>>
+			<<addinlineevent "events_drains_slimes" 1>>
+				You feel a weight on your shoulder. A slime oozes through a set of bars in the drain wall, and climbs over your shoulders with a life of its own.
+				<br><br>
+
+				<<if pcAreArmsBound("both")>>
+					<span class="blue">With your arms bound, there's nothing you can do to defend yourself.</span>
+					It spreads over your back,
+					<<if $worn.upper.name isnot "naked">>
+						<<if $worn.under_upper.name isnot "naked">>
+							dissolving your <<print $worn.upper.name>> and <<print $worn.under_upper.name>> with a hiss.
+							<<set $worn.upper.integrity -= 1000>>
+							<<set $worn.under_upper.integrity -= 1000>>
+						<<else>>
+							dissolving your <<print $worn.upper.name>> with a hiss.
+							<<set $worn.upper.integrity -= 1000>>
+						<</if>>
+						<<integritycheck>>
+						<<exposure>>
+					<<elseif $worn.under_upper.name isnot "naked">>
+						dissolving your <<print $worn.under_upper.name>> with a hiss.
+						<<set $worn.under_upper.integrity -= 1000>>
+						<<integritycheck>>
+						<<exposure>>
+					<<else>>
+						tickling your skin.<<garousal>><<arousal 600>>
+						<br><br>
+					<</if>>
+					When it reaches your <<bottom>>, it clings to the nearby wall for leverage, and forces you to the ground.
+					<br><br>
+
+					<<link [[Next|Drain Struggle]]>><<set $phase to 1>><<set $struggle_start to 1>><</link>>
+					<br>
+				<<else>>
+					<<link [[Tug it off|Drain Slime Physique]]>><</link>><<physiquedifficulty 1 20000>>
+					<br>
+					<<link [[Watch for an opening|Drain Slime Watch]]>><<arousal 1800>><</link>><<ggarousal>>
+					<br>
+					<<if !$worn.upper.type.includes("naked")>>
+						<<link [[Sacrifice your top|Drain Slime Sacrifice Upper]]>><</link>>
+						<br>
+					<<elseif !$worn.under_upper.type.includes("naked")>>
+						<<link [[Sacrifice your top|Drain Slime Sacrifice Under]]>><</link>>
+						<br>
+					<</if>>
+				<</if>>
+			<</addinlineevent>>
+		<</if>>
+		
+		<<addinlineevent "events_drain_torrent_water" 1>>
+			A torrent of water rushes through a pipe to your right, colliding with you and knocking you into the canal!
+			<br>
+			<<silently>><<water>><</silently>>
+			<br>
+			<<set $worn.over_upper.integrity -= 10>><<set $worn.over_lower.integrity -= 10>><<set $worn.upper.integrity -= 10>><<set $worn.lower.integrity -= 10>><<set $worn.under_lower.integrity -= 10>><<pain 1>>
+			<<link [[Next|Drain Water]]>><</link>>
+		<</addinlineevent>>
+
+		<<if $sewersintro is 1>>
+			<<addevent "events_drain_torrent_sewer" 1>>
+		<<else>>
+			<<addevent "events_drain_torrent_sewer" 1.5>>
+		<</if>>
+
+		<<if !$drains_rescue_location and $world_corruption_soft gte 50>>
+			<<addinlineevent "events_drain_lights" 0.5>>
+				You see light up ahead, rotating through the colours of the rainbow. There's a gap in the ceiling, and a grating at the top, letting the light through.
+				<br><br>
+				You hear a sharp smack, then a scream, followed by mirthful laughter. It sounds like someone's being tortured.
+				<br><br>
+				There's no way to reach the grating, or pass through it even if you could.
+				<br><br>
+				
+				<<link [[Try to work out where you could be|Drain Lights Work]]>><</link>><<skill_difficulty `currentSkillValue("history")` "History" 400 800>>
+				<br>
+				<<link [[Just continue on|Drain Lights Leave]]>><</link>>
+				<br>
+			<</addinlineevent>>
+		<</if>>
+
+		<<addinlineevent "drain_events_deluge" 1>>
+			The drains feed the central canal with an endless torrent of water. Up ahead, you hear a muffled roar. It could be a large vehicle, a flood of water headed your way, or even just the sea.
+			<br><br>
+			
+			<<link [[Find a high place, and wait it out (0:20)|Drain Deluge Hide]]>><<pass 20>><</link>>
+			<br>
+			<<link [[Chance it|Drain Deluge Chance]]>><</link>><<difficulty 70>>
+			<br>
+		<</addinlineevent>>
+		
+		<<runeventpool>>
 	<</if>>
+
 	<<if $eventforced>>
 		<<unset $eventforced>>
 	<</if>>
@@ -669,6 +690,32 @@
 	<</if>>
 <</widget>>
 
+<<widget "events_drain_torrent_sewer">>
+	A torrent of water rushes through a pipe to your right, colliding with you and knocking you into the canal!
+	<br>
+	<<silently>><<water>><</silently>>
+	<br>
+	<<set $worn.over_upper.integrity -= 10>><<set $worn.over_lower.integrity -= 10>><<set $worn.upper.integrity -= 10>><<set $worn.lower.integrity -= 10>><<set $worn.under_lower.integrity -= 10>><<pain 1>>
+	You are sucked to the drain floor, and through a gap in the concrete. You are pulled deeper through the dark until you emerge in a dim light. The water leaves you sprawled on the stone floor.
+	<br><br>
+	<<sewersstart>>
+	<<if $sewersintro is 1>>
+		<<if $bus is "residentialdrain">>
+			<<laddericon>><<link [[Climb down|Sewers Residential]]>><</link>>
+			<br><br>
+		<<elseif $bus is "commercialdrain">>
+			<<laddericon>><<link [[Climb down|Sewers Commercial]]>><</link>>
+			<br><br>
+		<<else>>
+			<<laddericon>><<link [[Climb down|Sewers Industrial]]>><</link>>
+			<br><br>
+		<</if>>
+	<<else>>
+		<<link [[Next|Sewers Intro]]>><</link>>
+		<br>
+	<</if>>
+<</widget>>
+
 :: Widgets Destination Drain [widget]
 
 <<widget "destinationdrain">>
@@ -696,3 +743,5 @@
 	<</switch>>
 	<br>
 <</widget>>
+
+

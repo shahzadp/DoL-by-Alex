@@ -93,7 +93,7 @@ You are in the kitchen in the orphanage loft, hidden away from Bailey.
 
 :: Orphanage Loft Reading Nook
 <<effects>>
-You stand before the cosy reading nook by the window. The shelves are filled with books, newspapers, and magazines. A book nook is snug in between them. Bookmarks, flash cards, stationery, and craft supplies are stored in the drawers.
+You stand before the cosy reading nook, by a window. The shelves are filled with books, newspapers, and magazines. Bookmarks, flash cards, stationery, and craft supplies are stored in the drawers.
 <br><br>
 <<rng 5>>
 <<switch $rng>>
@@ -105,28 +105,32 @@ You stand before the cosy reading nook by the window. The shelves are filled wit
 <</switch>>
 <<endevent>>
 <br><br>
-<<link [[Read a reference book (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "reference">><<pass 30>><</link>><<gtiredness>>
-<br>
-<<link [[Read a comic book (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "comic">><<pass 20>><</link>><<gtiredness>><<lstress>>
-<br>
-<<link [[Read a novel (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "novel">><<pass 30>><</link>><<gtiredness>><<genglish>>
-<br>
-<<link [[Read a newspaper (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "newspaper">><<pass 20>><</link>><<gtiredness>>
-<br>
-<<link [[Read a magazine (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "magazine">><<pass 20>><</link>><<gtiredness>>
-<br>
-<<link [[Study with the flash cards|Orphanage Loft Reading Nook 2]]>><<set $phase to "flashcards">><<pass 20>><</link>><<gtiredness>>
-<br>
-<<link [[Do arts and crafts|Orphanage Loft Reading Nook 2]]>><<set $phase to "crafts">><<pass 20>><</link>><<lstress>><<ltrauma>><<gtiredness>>
-<br>
-<<if $worn.lower.integrity lt (clothingData('lower',$worn.lower,'integrity_max')/5) or $worn.upper.integrity lt (clothingData('upper',$worn.upper,'integrity_max')/5) or $worn.under_upper.integrity lt (clothingData('under_upper',$worn.under_upper,'integrity_max')/5) or $worn.under_lower.integrity lt (clothingData('under_lower',$worn.under_lower,'integrity_max')/5)>>
-	<<link [[Fix your clothes|Orphanage Loft Reading Nook 2]]>><<set $phase to "sew">><</link>><<ghousekeeping>>
+<<if !$daily.reading_nook>>
+	<<set $daily.reading_nook to 1>>
+	<<link [[Read a reference book (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "reference">><<pass 30>><</link>><<gtiredness>>
+	<br>
+	<<link [[Read a comic book (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "comic">><<pass 20>><</link>><<gtiredness>><<lstress>>
+	<br>
+	<<link [[Read a novel (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "novel">><<pass 30>><</link>><<gtiredness>><<genglish>>
+	<br>
+	<<link [[Read a newspaper (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "newspaper">><<pass 20>><</link>><<gtiredness>>
+	<br>
+	<<link [[Read a magazine (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "magazine">><<pass 20>><</link>><<gtiredness>>
+	<br>
+	<<link [[Study with the flash cards|Orphanage Loft Reading Nook 2]]>><<set $phase to "flashcards">><<pass 20>><</link>><<gtiredness>>
+	<br>
+	<<link [[Do arts and crafts|Orphanage Loft Reading Nook 2]]>><<set $phase to "crafts">><<pass 20>><</link>><<lstress>><<ltrauma>><<gtiredness>>
+	<br>
+	<<if $worn.lower.integrity lt (clothingData('lower',$worn.lower,'integrity_max')/5) or $worn.upper.integrity lt (clothingData('upper',$worn.upper,'integrity_max')/5) or $worn.under_upper.integrity lt (clothingData('under_upper',$worn.under_upper,'integrity_max')/5) or $worn.under_lower.integrity lt (clothingData('under_lower',$worn.under_lower,'integrity_max')/5)>>
+		<<link [[Fix your clothes|Orphanage Loft Reading Nook 2]]>><<set $phase to "sew">><</link>><<ghousekeeping>>
+		<br>
+	<</if>>
+	<<if $tiredness gte 1700>>
+		<<link [[Take a nap (0:15)|Orphanage Loft Reading Nook 2]]>><<set $phase to "nap">><<pass 15>><</link>><<lstress>><<ltiredness>>
+		<br>
+	<</if>>
 	<br>
 <</if>>
-<<if $tiredness gte 1700>>
-	<<link [[Take a nap (0:15)|Orphanage Loft Reading Nook 2]]>><<set $phase to "nap">><<pass 15>><</link>><<lstress>><<ltiredness>>
-<</if>>
-<br><br>
 <<getouticon>><<link [[Leave|Orphanage Loft]]>><<kitchenExit>><</link>>
 
 :: Orphanage Loft Reading Nook 2
@@ -308,9 +312,9 @@ You stand before the cosy reading nook by the window. The shelves are filled wit
 
 				You try to sew your tattered _itemListText.
 				<<if _equip.length is 1>>
-					Unfortunately, your attempt to fix just makes <<it $_slot>> worse. Your _itemListText <<is $_slot>> even more tattered now.
+					Unfortunately, your attempted fix just makes <<it $_slot>> worse. Your _itemListText <<is $_slot>> even more tattered now.
 				<<else>>
-					Unfortunately, your attempt to fix just make them worse. Your _itemListText are even more tattered now.
+					Unfortunately, your attempted fix just make them worse. Your _itemListText are even more tattered now.
 				<</if>>
 			<<default>>
 				<<pass 15>>
@@ -330,7 +334,7 @@ You stand before the cosy reading nook by the window. The shelves are filled wit
 <<effects>>
 <<if $phase is 1>>
 	<<famegood 10>>
-	"Thank you!" They smile and sit down, listening to you read. <<= either("Your delivery keeps them hooked and engaged", "You act out the scenes and put on silly voices, entertaining them greatly")>>. After finishing the book, you quiz them about it, which they enthusiastically participate in. You have a great time.<<lstress>><<stress -5>><<gtiredness>><<tiredness 10>>
+	"Thank you!" They smile and sit down, listening to you read. <<= either("Your delivery keeps them hooked and engaged", "You act out the scenes and put on silly voices, entertaining them greatly")>>. After finishing the book, you quiz them about it, and they're happy to participate. You have a great time.<<lstress>><<stress -5>><<gtiredness>><<tiredness 10>>
 <<else>>
 	You shake your head.
 	<br><br>
@@ -344,7 +348,7 @@ You stand before the cosy reading nook by the window. The shelves are filled wit
 	<br><br>
 	The <<person2>><<person>> reassures you. "It's okay. We understand. Have a nice day!"
 	<br><br>
-	"Goodbye!" the group unanimously says and scurries away, returning your peace back to you.
+	"Goodbye," the group unanimously says. They scurry away.
 <</if>>
 <<endevent>>
 <br><br>

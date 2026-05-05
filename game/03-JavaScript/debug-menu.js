@@ -57,15 +57,15 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Pass 18 hours`, stayOnPassageFn],
-			widgets: [`<<pass 18 hours>>`],
+			widgets: [`<<pass 18 hours>>`, `<<set $tiredness to 0>>`],
 		},
 		{
 			link: [`Pass 23 hours`, stayOnPassageFn],
-			widgets: [`<<pass 23 hours>>`],
+			widgets: [`<<pass 23 hours>>`, `<<set $tiredness to 0>>`],
 		},
 		{
 			link: [`Pass 24 hours`, stayOnPassageFn],
-			widgets: [`<<pass 24 hours>>`],
+			widgets: [`<<pass 24 hours>>`, `<<set $tiredness to 0>>`],
 		},
 		{
 			link: [`Wardrobe`, `Wardrobe`],

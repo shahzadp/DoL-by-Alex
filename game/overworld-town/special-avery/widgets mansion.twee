@@ -3519,19 +3519,54 @@
 
 			<<if $bus is "avery_dining">>
 				<<if $avery_mansion.schedule is "breakfast">>
-					<<if !$daily.avery.breakfast_bite and random(1, 4)>>
-						<<set _hide_links to 1>>
-						You enter the dining room and see Avery eating breakfast. It's a simple parfait with <<= either("fruits","granola","cereal")>>. Though simple, it looks tasty.
-						<br><br>
+					<<if !$daily.avery.breakfast>>
+						<<set $daily.avery.breakfast to 1>>
+						<<cleareventpool>>
+							<<addinlineevent "avery_breakfast_bite" 1>>
+								<<set _hide_links to 1>>
+								<<set _avery_breakfast_event to "bite">>
+								You enter the dining room and see Avery eating breakfast. It's a simple parfait with <<= either("fruits","granola","cereal")>>. Though simple, it looks tasty.
+								<br><br>
+							<</addinlineevent>>
+
+							<<addinlineevent "avery_breafkast_coffee" 1>>
+								<<set _hide_links to 1>>
+								<<set _avery_breakfast_event to "coffee">>
+							<</addinlineevent>>
+						
+							<<addinlineevent "avery_breakfast_table" 1>>
+								<<set _hide_links to 1>>
+								<<set _avery_breakfast_event to "table">>
+							<</addinlineevent>>
+
+							<<addinlineevent "avery_breakfast_no_event_2" 1>>
+
+							<</addinlineevent>>
+						<<runeventpool>>
 					<</if>>
-					<<set $daily.avery.breakfast_bite to 1>>
+					<<endevent>>
 					<<npc "Avery">><<person1>>
-					<<if _hide_links and C.npc.Avery.love gte 60 and C.npc.Avery.rage lt 20>>
+					<<if _avery_breakfast_event is "bite" and C.npc.Avery.love gte 60 and C.npc.Avery.rage lt 20>>
 						Avery notices you looking. "Hungry?" <<He>> scoops up a spoonful. "Would you like a bite?"
 						<br><br>
 						<<link [[Yes|Mansion Breakfast Avery Bite]]>><<set $phase to 1>><</link>>
 						<br>
 						<<link [[No|Mansion Breakfast Avery Bite]]>><<set $phase to 2>><</link>>
+						<br>
+					<<elseif _avery_breakfast_event is "coffee">>
+						<<npc "Avery">><<person1>>
+						"<<= $averyragerevealed and C.npc.Avery.rage gte 20 ? "Make me some coffee, won't you" : "Would you mind making me some coffee">>?<<if $averySeen.includes("lewd_coffee")>> The same way you made it before,<</if>>" Avery ask when you enter the dining room. <<He>> sounds tired.
+						<br><br>
+						<<link [[Make Avery coffee (0:05)|Mansion Breakfast Avery Coffee]]>><</link>>
+						<br>
+						<<link [[Refuse|Mansion Breakfast Avery Coffee Refuse]]>><</link>><<llove>>
+						<br>
+					<<elseif _avery_breakfast_event is "table">>
+						You enter the dining room, and see Avery setting the table for breakfast.
+						<br><br>
+						<<link [[Help <<him>>|Mansion Breakfast Avery Table]]>><<set $phase to 0>><</link>>
+						<br>
+						<<link [[Leave <<him>> to it|Mansion Breakfast Avery Table End]]>><<set $phase to 1>><</link>>
 						<br>
 					<<else>>
 						<<unset _hide_links>>

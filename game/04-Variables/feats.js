@@ -471,6 +471,13 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Social"],
 	},
+	"Whitney's Secret": {
+		title: "Whitney's Secret",
+		desc: "Discover Whitney's collection.",
+		difficulty: 2,
+		series: "",
+		filter: ["All", "Social"],
+	},
 	"Kylar the Obsessed": {
 		title: "Kylar the Obsessed",
 		desc: "You gave your virginity to them.",
