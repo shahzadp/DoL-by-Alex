@@ -561,6 +561,7 @@
             <<set $foodstuff[$_type] to {"amount": 0}>>
         <</if>>
     <</for>>
+
     <<script>>
         const sortedCatalog = {};
         Object.keys(V.foodstuff)
@@ -570,4 +571,34 @@
             });
         V.foodstuff = sortedCatalog;
     <</script>>
+<</widget>>
+
+<<widget "updateFoodstuffKey">>
+	<<set $_oldKey to _args[0]>>
+	<<set $_newKey to _args[1]>>
+
+	<<set $foodstuff[$_newKey] to {}>>
+	<<set $foodstuff[$_newKey].amount to $foodstuff[$_oldKey].amount>>
+	<<if $foodstuff[$_oldKey].knows_recipe>>
+		<<set $foodstuff[$_newKey].knows_recipe to true>>
+	<</if>>
+	<<run delete V.foodstuff[$_oldKey]>>
+
+	<<if $gift is $_oldKey>>
+		<<set $gift to $_newKey>>
+	<</if>>
+	<<if $chosen_recipe is $_oldKey>>
+		<<set $chosen_recipe to $_newKey>>
+	<</if>>
+	<<if $avery_mansion?.food is $_oldKey>>
+		<<set $avery_mansion.food to $_newKey>>
+	<</if>>
+	<<if $avery_mansion?.food_last is $_oldKey>>
+		<<set $avery_mansion.food_last to $_newKey>>
+	<</if>>
+	<<if $avery_requested_food is $_oldKey>>
+		<<set $avery_requested_food to $_newKey>>
+	<</if>>
+
+	<<updatePlants>>
 <</widget>>
