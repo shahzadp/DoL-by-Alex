@@ -125,7 +125,7 @@ function initFoodstuff() {
 			index: 5,
 			name: "lotus",
 			singular: "lotus",
-			plural: "lotus",
+			plural: "lotuses",
 			icon: "lotus.png",
 			category: "flower",
 			kitchen_item_type_icon: "recipe-flower.png",
