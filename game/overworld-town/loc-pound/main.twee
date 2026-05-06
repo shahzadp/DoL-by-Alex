@@ -715,10 +715,16 @@ You keep walking, and try your best to ignore the whimpering.
 :: Pound Work Sweep
 <<effects>>
 <<if $slimePoundTask>>You follow the <<= numberOfEarSlime() gte 2 ? "slimes'" : "slime's">> command to do a specific task.<<unset $slimePoundTask>><</if>>
-You take a broom and sweep fur from the cages. Once in a neat pile, you sweep it into a dustpan.
+
+You take a broom and
+<<switch random(1,2)>>
+	<<case 1>>sweep fur from the cages. Once in a neat pile, you sweep it into a dustpan.
+	<<case 2>>begin to clean the cages. You sweep clumps of fur into neat piles before pushing it into the dustpan.
+<</switch>>
 <br><br>
+
 <<beastNEWinit 1 dog>>
-<<if random(1, 2) is 2>>
+<<if random(1, 3) is 3>>
 	The broom snags as a <<beasttype>> grabs it between <<bhis>> teeth.
 	<br><br>
 
@@ -726,6 +732,15 @@ You take a broom and sweep fur from the cages. Once in a neat pile, you sweep it
 	<br>
 	<<link [[Wrestle|Pound Work Sweep Wrestle]]>><</link>><<physiquedifficulty 1 6000>>
 	<br>
+<<elseif random(1, 2) is 2>>
+	While attending to a corner of a cage, you see a <<beasttype>> walk over to the dustpan. <<bHe>> sniffs it and paws at the handle.
+	<br><br>
+	
+	<<link [[Keep cleaning|Pound Work Sweep Mess]]>><</link>>
+	<br>
+	<<link [[Tell off|Pound Work Sweep Stop]]>><</link>><<tendingdifficulty 1 200>>
+	<br>
+
 <<else>>
 	<<endevent>><<generate1>><<person1>>
 	A <<person>> grasps the handle as you pass by, stopping you. <<He>> moves in, resting a hand on your <<bottom>>.<<gstress>><<stress 6>>
@@ -805,6 +820,58 @@ The <<pound_text>> watch with blank expressions.
 
 <<poundEndEvent>>
 
+:: Pound Work Sweep Mess
+<<effects>>
+
+The <<beasttype>> knocks over the dustpan, spilling the contents back onto the floor. <<bHe>> starts playing with the bits of fur before you can stop <<bhim>>, flinging debris everywhere.<<gstress>><<stress 6>>
+<br><br>
+The <<beasttype>> eventually tires and walks away, leaving behind a huge mess. You try to clean it up the best you can, but it takes some effort to clean a second time.<<tiredness 6>><<gtiredness>>
+<br><br>
+
+<<poundEndEvent>>
+
+:: Pound Work Sweep Stop 
+<<effects>>
+
+<<if $tendingSuccess>>
+	<<if $speech_attitude is "meek">>
+		"Please stop that,"
+	<<elseif $speech_attitude is "bratty">>
+		"Hey, knock it off,"
+	<<else>>
+		"Don't even think about it,"
+	<</if>>
+	 you say, your voice stern and steady. 
+	<br><br>
+
+	<<if $monster is 1>>
+		The <<beasttype>> hangs <<bhis>> head and walks away. "Mean human..." <<bhe>> mutters. "Just playing..."
+	<<else>> 
+		The <<beasttype>> hangs <<bhis>> head and walks away, whining. 
+	<</if>> 
+	<<pound_status 1>><<gpound_status>>
+	<br><br>
+
+	You pick up the dustpan in case another <<beasttype>> comes in. You finish cleaning the cage. 
+	<br><br>
+
+<<else>> 
+	<<if $speech_attitude is "meek">>
+		"P-please stop that,"
+	<<elseif $speech_attitude is "bratty">>
+		"Come on, knock it off,"
+	<<else>>
+		"Don't do it,"
+	<</if>>
+	 you say, but the <<beasttype>> ignores you. <<bHe>> knocks over the dustpan, spilling the contents back onto the floor. <<bHe>> starts playing with the bits of fur before you can stop <<bhim>>, flinging debris everywhere.<<gstress>><<stress 6>>
+	<br><br>
+
+	The <<beasttype>> eventually tires and walks away, leaving behind a huge mess. You try to clean it up the best you can, but it takes some effort to clean a second time.<<tiredness 6>><<gtiredness>><<pound_status -1>><<lpound_status>>
+	<br><br>
+
+<</if>>
+
+<<poundEndEvent>>
 
 :: Pound Work Feed
 <<effects>><<wearProp "dog bowl">>
