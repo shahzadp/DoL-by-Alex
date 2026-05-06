@@ -661,6 +661,13 @@ statDisplay.create("ghousekeeping", amount => statDisplay.statChange("Housekeepi
 statDisplay.create("gghousekeeping", amount => statDisplay.statChange("Housekeeping", 2, "green", () => amount === undefined || V.housekeeping < amount));
 statDisplay.create("ggghousekeeping", amount => statDisplay.statChange("Housekeeping", 3, "green", () => amount === undefined || V.housekeeping < amount));
 
+statDisplay.create("gstray_happiness", () => statDisplay.statChange("Stray contentment", 1, "green"));
+statDisplay.create("ggstray_happiness", () => statDisplay.statChange("Stray contentment", 2, "green"));
+statDisplay.create("gggstray_happiness", () => statDisplay.statChange("Stray contentment", 3, "green"));
+statDisplay.create("lstray_happiness", () => statDisplay.statChange("Stray contentment", -1, "red"));
+statDisplay.create("llstray_happiness", () => statDisplay.statChange("Stray contentment", -2, "red"));
+statDisplay.create("lllstray_happiness", () => statDisplay.statChange("Stray contentment", -3, "red"));
+
 statDisplay.create("ldom", npc => {
 	let targetName = "";
 	if ((V.npc.includes("Robin") && !npc) || npc === "Robin") {
