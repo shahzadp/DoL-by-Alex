@@ -409,7 +409,7 @@ setup.colours.hair = [
 		name: "dark brown",
 		name_cap: "Dark Brown",
 		csstext: "brown",
-		natural: false,
+		natural: true,
 		dye: true,
 		canvasfilter: {
 			blend: "#784a3a",
@@ -1015,6 +1015,16 @@ setup.colours.eyes = [
 			blend: "#917742",
 		},
 	},
+	{variable: "brown",
+		name: "brown",
+		name_cap: "Brown",
+		csstext: "brown",
+		natural: true,
+		lens: true,
+		canvasfilter: {
+			blend: "#704132",
+		},
+	},
 	{
 		variable: "green",
 		name: "green",
@@ -1070,6 +1080,17 @@ setup.colours.eyes = [
 		canvasfilter: {
 			blend: "#F76EF7",
 			brightness: +0.2,
+		},
+	},
+	{
+		variable: "black",
+		name: "black",
+		name_cap: "Black",
+		csstext: "black",
+		natural: true,
+		lens: true,
+		canvasfilter: {
+			blend: "#474340",
 		},
 	},
 	{
