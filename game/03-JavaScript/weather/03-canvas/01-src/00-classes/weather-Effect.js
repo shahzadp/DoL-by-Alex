@@ -81,7 +81,7 @@ Weather.Renderer.Effect = class Effect {
 		const subEffectsImageLoadPromises = this.effects.map(subEffect => subEffect.loadImages());
 		return Promise.all([...imageLoadPromises, ...subEffectsImageLoadPromises]);
 	}
-	
+
 	/**
 	 * Allows adding of sub-effects recursively
 	 *
