@@ -1685,7 +1685,7 @@ function dailyPlayerEffects() {
 	V.hairlength += 3;
 	V.fringelength += 3;
 	calchairlengthstage();
-	statChange.skill("beauty", 70 - (V.trauma / V.traumamax) * 100);
+	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 200);
 	lustfulUpdate();
 
 	if (V.orgasmstat >= 1000 && V.orgasmtrait === 0) {
