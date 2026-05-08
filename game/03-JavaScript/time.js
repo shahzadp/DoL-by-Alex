@@ -1609,7 +1609,7 @@ function dailyNPCEffects() {
 					V.gwylan.request.timer = V.gwylan.request.missed
 						? new DateTime(Time.date).addDays(4).timeStamp
 						: new DateTime(Time.date).addDays(2).timeStamp;
-					const traumaDevotion = 15 * V.hypnosis_traits.devotion;
+					const traumaDevotion = 10 * V.hypnosis_traits.devotion;
 					const hallucinogenDevotion = 40 * V.hypnosis_traits.devotion;
 					statChange.trauma(traumaDevotion);
 					statChange.hallucinogen(hallucinogenDevotion);
@@ -1860,7 +1860,7 @@ function dailyTransformationEffects() {
 	}
 
 	if (V.auriga_scar && V.location !== "asylum") {
-		const scarTrauma = V.auriga_scar * 50;
+		const scarTrauma = V.auriga_scar * 25;
 		const scarAwareness = V.auriga_scar;
 		const scarPurity = V.auriga_scar * -5;
 		if (V.trauma <= (V.traumamax / 5) * 3) statChange.trauma(scarTrauma);
@@ -2071,11 +2071,11 @@ function dailySchoolEffects() {
 			V.englishPlay = "missed";
 		}
 	}
-	if (V.schooltrait >= 4) statChange.trauma(-50);
-	else if (V.schooltrait === 3) statChange.trauma(-40);
-	else if (V.schooltrait === 2) statChange.trauma(-30);
-	else if (V.schooltrait === 1) statChange.trauma(-20);
-	else statChange.trauma(-10);
+	if (V.schooltrait >= 4) statChange.trauma(-25);
+	else if (V.schooltrait === 3) statChange.trauma(-20);
+	else if (V.schooltrait === 2) statChange.trauma(-15);
+	else if (V.schooltrait === 1) statChange.trauma(-10);
+	else statChange.trauma(-5);
 
 	if (Time.isSchoolDay(Time.yesterday) && V.location !== "prison") {
 		const attended = Object.keys(V.daily.school.attended).length;
