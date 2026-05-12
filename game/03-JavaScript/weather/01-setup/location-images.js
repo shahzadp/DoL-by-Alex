@@ -2109,13 +2109,13 @@ setup.LocationImages = {
 				rate: 3, // Particles generated per second
 				size: 4, // Size of the particle in px
 				riseSpeed: 0.8,
-				spread: 6,
+				spread: 5,
 				alpha: 1,
 				color: "#4c4c4cff", // Last 2 numbers are the alpha (99 in hex means 60%)
-				windSpeed: 3, // strength of the wind, will push the particles in a direction
+				windSpeed: 2, // strength of the wind, will push the particles in a direction
 				windDirection: 0, // degrees - A value of 0 is right (east)
 				minFadeDistance: 1, // minimum fade time of the particles (in distance (px))
-				maxFadeDistance: 25, // maximum fade time
+				maxFadeDistance: 35, // maximum fade time
 				fadeTime: 1.2, // In seconds
 				driftAmplitude: 0, // curve - mostly useful if we want the smoke to travel straight up (but in a wobbly curve)
 				driftWavelength: 0, // wavelength of the curve
@@ -2129,13 +2129,13 @@ setup.LocationImages = {
 				rate: 3,
 				size: 4,
 				riseSpeed: 0.8,
-				spread: 8,
+				spread: 7,
 				alpha: 1,
 				color: "#484848ff",
 				windSpeed: 2,
 				windDirection: 0,
 				minFadeDistance: 1,
-				maxFadeDistance: 20,
+				maxFadeDistance: 30,
 				fadeTime: 1.2,
 				driftAmplitude: 0,
 				driftWavelength: 0,
