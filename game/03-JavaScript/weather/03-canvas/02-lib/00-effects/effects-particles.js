@@ -47,8 +47,8 @@ Weather.Renderer.Effects.add({
 			windDirection: this.windDirection, // degrees
 			spread: this.spread, // degrees
 
-			minFade: this.minFadeDistance, // px
-			maxFade: this.maxFadeDistance, // px
+			minFadeDistance: this.minFadeDistance, // px
+			maxFadeDistance: this.maxFadeDistance, // px
 			fadeTime: this.fadeTime, // seconds
 
 			driftAmplitude: this.driftAmplitude, // px
@@ -58,17 +58,16 @@ Weather.Renderer.Effects.add({
 			color: this.color,
 		};
 
-		const smokes = (this.particles || []).filter(cfg => cfg.type === "smoke");
+		const smokes = (this.particles || []).filter(cfg => cfg.type === "smoke" && resolveValue(cfg.condition, true));
 		for (const raw of smokes) {
-			if (raw.type !== "smoke") return;
 			const cfg = { ...defaults, ...raw };
 
 			// total life so pre‑warm works
-			const life = cfg.maxFade / cfg.riseSpeed + cfg.fadeTime;
+			const life = cfg.maxFadeDistance / cfg.riseSpeed + cfg.fadeTime;
 
 			// horizontal direction of the wind vector (only for initial accel sign)
 			const wRad = degToRad(cfg.windDirection);
-			const timeToMax = cfg.maxFade / cfg.riseSpeed;
+			const timeToMax = cfg.maxFadeDistance / cfg.riseSpeed;
 
 			// horizontal accel needed: v = a*t  =>  a = v/t
 			const accelX = (Math.cos(wRad) * cfg.windSpeed) / timeToMax;
@@ -111,7 +110,7 @@ Weather.Renderer.Effects.add({
 					}
 
 					// fade‑start somewhere between min/max
-					const dist = cfg.minFade + Math.random() * (cfg.maxFade - cfg.minFade);
+					const dist = cfg.minFadeDistance + Math.random() * (cfg.maxFadeDistance - cfg.minFadeDistance);
 					const fadeStart = dist / cfg.riseSpeed;
 
 					return {
