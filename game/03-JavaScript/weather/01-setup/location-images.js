@@ -884,6 +884,21 @@ setup.LocationImages = {
 				condition: () => Weather.isSnow,
 				image: "snow.png",
 			},
+			snowroof: {
+				condition: () => Weather.isSnow,
+				image: "snowroof.png",
+				animation: {
+					frameDelay: 250,
+					cycleDelay: () => random(3, 7, true) * 1000,
+				}
+			},
+			chimney: {
+				condition: () => Weather.isSnow || (!Weather.isSnow && Weather.lightsOn),
+				image: "chimney.png",
+				animation: {
+					frameDelay: 300,
+				}
+			},
 		},
 		emissive: {
 			image: "emissive.png",

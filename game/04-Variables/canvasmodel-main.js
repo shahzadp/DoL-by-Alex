@@ -3396,9 +3396,10 @@ Renderer.CanvasModels.main = {
 				return `img/clothes/handheld/${options.worn.handheld.setup.variable}/left-${options.arm_left}${pattern}.png`;
 			},
 			showfn(options) {
-				if (options.worn.handheld.index <= 0 || !options.show_clothes || options.hide_all || options.arm_left === "none" || (options.prop && options.prop.armPosition !== "handsfree")) return false;
+				if (options.worn.handheld.index <= 0 || !options.show_clothes || options.hide_all || options.arm_left === "none" || (options.prop && options.prop.armPosition !== "handsfree"))
+				return false;
 
-				const hasLeftDetail = !!options.worn.handheld.pattern && options.worn.handheld.setup.pattern_layer === "tertiary";
+				const hasLeftDetail = options.worn.handheld.setup.leftImage === 1 && !!options.worn.handheld.pattern && options.worn.handheld.setup.pattern_layer === "tertiary";
 
 				if (options.arm_left === "cover") return hasLeftDetail && options.worn.handheld.setup.coverImage;
 				return hasLeftDetail;
@@ -3597,6 +3598,8 @@ Renderer.CanvasModels.main = {
 				return options.high_waist_suspenders ? "img/clothes/neck/suspenders/mask.png" : null;
 			},
 			zfn(options) {
+				const setup = options.worn.neck.setup;
+				if (setup.zIndex) return ZIndices[setup.zIndex];
 				return options.hood_mask ? ZIndices.collar : ZIndices.neck;
 			},
 		}),
@@ -3620,6 +3623,8 @@ Renderer.CanvasModels.main = {
 					&& !options.hideLeash;
 			},
 			zfn(options) {
+				const setup = options.worn.neck.setup;
+				if (setup.zIndex) return ZIndices[setup.zIndex];
 				const check = options.worn.head.setup.mask_img === 1
 					&& !(options.hood_down
 						&& options.worn.head.setup.hood
