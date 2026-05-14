@@ -288,8 +288,11 @@ const Skin = (() => {
 		const sunscreenModifier = Skin.Sunscreen.isApplied() ? 0 : 1;
 		// Halved gain if gyaru
 		const skinType = ["gyaru", "rgyaru", "ygyaru", "ggyaru", "bgyaru"].includes(Skin.color.natural) ? 0.3 : 1;
+		// Tanning difficulty, from tans easiest to hardest
+		const gainMultipliers = [5.0, 3.0, 1.0, 0.5, 0.1];
+		const difficultyModifier = gainMultipliers[V.settings.tanningDifficulty ?? 2] ?? 1.0;
 
-		const result = round(sunIntensity * clothingModifier * sunscreenModifier * skinType, 2);
+		const result = round(sunIntensity * clothingModifier * sunscreenModifier * skinType * difficultyModifier, 2);
 
 		return {
 			sun: sunIntensity,
