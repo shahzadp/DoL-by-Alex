@@ -31,6 +31,9 @@ Weather.Renderer.Layers.add({
 				bottom() {
 					return setup.LocationImages[setup.Locations.get()].weather.groundBounds.fog.bottom - 1;
 				},
+				opacity() {
+					return setup.LocationImages[setup.Locations.get()].weather.fogOpacity ?? 1;
+				},
 			},
 		},
 		{

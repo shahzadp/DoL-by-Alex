@@ -85,6 +85,7 @@ interface WeatherLocationSettings {
 	fogDistributionCurve?: number | (() => number);
 	rainSplashEnabled?: boolean;
 	fogEnabled?: boolean;
+	fogOpacity?: number | (() => number);
 	groundBounds?: GroundBounds;
 }
 
