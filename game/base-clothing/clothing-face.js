@@ -1543,8 +1543,9 @@ function initFace() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -1579,15 +1580,17 @@ function initFace() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -1598,6 +1601,47 @@ function initFace() {
 			accIcon: "rose-eyepatch-acc.png",
 			altposition: "none",
 			altdisabled: [],
+        },
+        {
+            index: 47,
+            slot: "face",
+            name: "sleeping mask",
+            name_cap: "Sleeping Mask",
+            variable: "sleeping mask",
+            description: "Ensures uninterrupted rest. Anytime, anywhere.",
+            cost: 3500,
+            shop: ["clothing"],
+            type: ["sleep"],
+            state: 0,
+            state_base: 0,
+            integrity: 100,
+            integrity_max: 100,
+            fabric_strength: 25,
+            reveal: 200,
+            word: "a",
+            plural: 0,
+            colour: 0,
+            colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
+			],
+            colour_sidebar: 1,
+            accessory: 0,
+            accessory_colour: 0,
+            accessory_colour_options: [],
+            pattern: 0,
+            pattern_options: ["blank", "aloof", "anime", "cat", "disapproving", "frilled", "quilted", "sleeping"],
+            pattern_layer: "primary",
+            gender: "n",
+            warmth: 1,
+            set: "face",
+            altposition: "none",
+            altdisabled: [],
+            cursed: 0,
+            location: 0,
+            iconFile: "sleeping-mask.png",
+            accIcon: 0,
         },
 	];
 	setup.clothes.face = clothing;

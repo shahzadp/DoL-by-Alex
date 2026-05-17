@@ -2328,15 +2328,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2370,15 +2372,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2412,15 +2416,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -2453,15 +2459,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -2494,15 +2502,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2536,15 +2546,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2578,15 +2590,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -2619,8 +2633,9 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -2657,15 +2672,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2699,15 +2716,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -2737,15 +2756,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
@@ -2781,15 +2802,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
@@ -2825,15 +2848,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -2866,15 +2891,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			gender: "n",
 			warmth: 4,
@@ -2906,15 +2933,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2948,15 +2977,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -2990,15 +3021,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -3032,15 +3065,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3073,15 +3108,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "f",
@@ -3112,15 +3149,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3153,15 +3192,17 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3194,8 +3235,9 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
@@ -3231,8 +3273,9 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3269,8 +3312,9 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3307,8 +3351,9 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
