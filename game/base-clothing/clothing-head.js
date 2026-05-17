@@ -3391,15 +3391,17 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3466,8 +3468,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3570,15 +3573,17 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3608,8 +3613,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
@@ -3710,8 +3716,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3747,15 +3754,17 @@ function initHead() {
             plural: 0,
             colour: 0,
             colour_options: [
-                "black", "blue", "brown", "green", "pink", "purple",
-                "red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
             ],
             colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-				"black", "blue", "brown", "green", "pink", "purple",
-				"red", "tangerine", "teal", "white", "yellow", "custom"
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
             gender: "n",
@@ -3802,7 +3811,7 @@ function initHead() {
 			location: 0,
 			iconFile: "green-apple-hairpin.png",
 			accIcon: 0,
-			shopGroup: "apple-hairpin",
+			shopGroup: "apple hairpin",
         },
         {
         index: 102,
@@ -4370,6 +4379,89 @@ function initHead() {
         iconFile: "silky-hair-bow.png",
         accIcon: 0,
 		back_img: 1,
+        },
+        {
+            index: 117,
+            slot: "head",
+            name: "badge hat",
+            name_cap: "Badge Hat",
+            variable: "badge hat",
+            description: "Personalized with pins.",
+            cost: 3500,
+            shop: ["clothing"],
+            type: ["normal"],
+            state: 0,
+            state_base: 0,
+            integrity: 100,
+            integrity_max: 100,
+            fabric_strength: 25,
+            reveal: 200,
+            word: "a",
+            plural: 0,
+            colour: 0,
+            colour_options: [
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
+            ],
+            colour_sidebar: 1,
+            accessory: 1,
+            accessory_colour: 0,
+            accessory_colour_options: [
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
+            ],
+            accessory_colour_sidebar: 1,
+            gender: "n",
+            warmth: 1,
+            set: "head",
+            cursed: 0,
+            location: 0,
+            iconFile: "badge-hat.png",
+            accIcon: "badge-hat-acc.png",
+        },
+        {
+            index: 118,
+            slot: "head",
+            name: "hatwithpompom",
+            name_cap: "Hatwithpompom",
+            variable: "hatwithpompom",
+            description: "Warm hat for winter.",
+            cost: 4500,
+            shop: ["clothing"],
+            type: ["normal"],
+            state: 0,
+            state_base: 0,
+            integrity: 100,
+            integrity_max: 100,
+            fabric_strength: 25,
+            reveal: 200,
+            word: "a",
+            plural: 0,
+            colour: 0,
+            colour_options: [
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
+            ],
+            colour_sidebar: 1,
+            accessory: 1,
+            accessory_colour: 0,
+            accessory_colour_options: [
+                "black", "navy blue", "wine", "brown", "olive",
+                "pink", "light pink", "purple", "lilac", "red",
+                "tangerine", "teal", "white", "yellow", "custom"
+            ],
+            accessory_colour_sidebar: 1,
+            gender: "n",
+            warmth: 3,
+            mask_img: 1,
+            set: "head",
+            cursed: 0,
+            location: 0,
+            iconFile: "hatwithpompom.png",
+            accIcon: "hatwithpompom-acc.png",
         },
 	];
 	setup.clothes.head = clothing;
