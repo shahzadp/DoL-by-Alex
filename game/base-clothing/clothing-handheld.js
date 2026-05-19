@@ -1310,6 +1310,9 @@ function initHandheld() {
                 "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
+			pattern: 0,
+			pattern_options: ["plain", "bird", "bird angel", "bird demon", "bird fallen", "cat", "cat angel", "cat demon", "cat fallen", "cow", "cow angel", "cow demon", "cow fallen", "fox", "fox angel", "fox demon", "fox fallen", "heart", "heart angel", "heart demon", "heart fallen", "wolf", "wolf angel", "wolf demon", "wolf fallen"],
+			pattern_layer: "tertiary",
             gender: "n",
             warmth: 1,
             set: "handheld",

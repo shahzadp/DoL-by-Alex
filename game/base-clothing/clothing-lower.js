@@ -11826,6 +11826,7 @@ function initLower() {
         	gender: "f",
 			femininity: 200,
             warmth: 1,
+			back_img: 1,
             back_integrity_img: 1,
 			one_piece: 1,
             set: "lower",

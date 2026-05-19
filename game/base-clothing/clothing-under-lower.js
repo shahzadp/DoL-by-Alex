@@ -2553,7 +2553,7 @@ function initUnderLower() {
                 "tangerine", "teal", "white", "yellow", "custom"
             ],
             colour_sidebar: 1,
-            accessory: 0,
+            accessory: 1,
             accessory_colour: 0,
             accessory_colour_options: [],
             gender: "n",
