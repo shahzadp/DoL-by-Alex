@@ -1377,7 +1377,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Month`, stayOnPassageFn],
-			widgets: [`<<run Time.timeTravel(new DateTime(Time.date).addMonth(1)>>`],
+			widgets: [`<<run Time.timeTravel(new DateTime(Time.date).addMonths(1))>>`],
 		},
 		{
 			text_only: "\n\n",
