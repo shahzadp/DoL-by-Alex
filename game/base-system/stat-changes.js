@@ -105,9 +105,9 @@ const statChange = (() => {
 			V.panicattacks = 0;
 		}
 
-		if (V.trauma >= V.traumamax) {
+		if (V.trauma >= (V.traumamax / 10) * 9.5) {
 			V.dissociation = 2;
-		} else if (V.trauma >= (V.traumamax / 10) * 9) {
+		} else if (V.trauma >= (V.traumamax / 10) * 8.5) {
 			V.dissociation = 1;
 		} else {
 			V.dissociation = 0;
