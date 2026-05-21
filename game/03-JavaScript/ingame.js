@@ -706,6 +706,11 @@ function isInPark(name) {
 				&& C.npc.Whitney.init === 1 && Weather.precipitation !== "none"
 				&& Time.dayState === "day" && !Time.schoolTime
 				&& V.daily.whitney.park === undefined && V.pillory.tenant.special.name !== "Whitney";
+		case "doren":
+			// prettier-ignore
+			return C.npc.Doren.init === 1
+				&& Time.hour >= 9 && Time.hour <= 15
+				&& Time.weekDay === 7;
 		default:
 			return false;
 	}
@@ -3096,7 +3101,7 @@ function breakableSoftBinding() {
 	if (
 		pcAreArmsBound("any") ||
 		((["ropes", "vines"].includes(V.worn.feet.name) || [V.feetuse, V.leftleg, V.rightleg].includes("bound")) &&
-		!["ankle cuffs", "ball and chain"].includes(V.worn.feet.name))
+			!["ankle cuffs", "ball and chain"].includes(V.worn.feet.name))
 	) {
 		return true;
 	}

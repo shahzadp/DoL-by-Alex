@@ -11,6 +11,10 @@ You are in the loft above the orphanage. A wide hall runs down the centre. Corri
 	The smell of warm soup and fresh bread wafts from one of the rooms.
 	<br>
 <</if>>
+<<if $loft_doren is 1>>
+	The comforting scent of books comes from the reading nook.
+	<br>
+<</if>>
 <br>
 <<if $loft_spray isnot 1 and $spray lt $spraymax and $loft_kylar>>
 	<<peppersprayicon>><<link [[Refill pepper spray|Orphanage Loft Spray]]>><<spray 1>><<set $loft_spray to 1>><</link>><<gspray>>
@@ -18,6 +22,10 @@ You are in the loft above the orphanage. A wide hall runs down the centre. Corri
 <</if>>
 <<if $loft_river gte 1>>
 	<<kitchenicon "range">><<link [[Secret kitchen|Orphanage Loft Kitchen]]>><</link>>
+	<br>
+<</if>>
+<<if $loft_doren is 1>>
+	<<schoolicon "library">><<link [[Reading nook|Orphanage Loft Reading Nook]]>><</link>>
 	<br>
 <</if>>
 <<main_hall_icon>><<link [[Main hall (0:01)|Orphanage]]>><<pass 1>><</link>>
@@ -74,3 +82,262 @@ You are in the kitchen in the orphanage loft, hidden away from Bailey.
 
 <<getouticon>><<link [[Leave|Orphanage Loft]]>><<kitchenExit>><</link>>
 <br>
+
+:: Orphanage Loft Reading Nook
+<<effects>>
+You stand before the cosy reading nook by the window. The shelves are filled with books, newspapers, and magazines. A book nook is snug in between them. Bookmarks, flash cards, stationery, and craft supplies are stored in the drawers.
+<br><br>
+<<rng 5>>
+<<switch $rng>>
+	<<case 1>>The orphans gather around the reading nook, listening to a <<generatey1>><<person1>><<person>> read.
+	<<case 2>>A <<generatey1>><<person1>><<person>> quizzes a <<generatey2>><<person2>><<person>> with flash cards.
+	<<case 3>>A <<generatey1>><<person1>><<person>> <<= either("quietly","expressively")>> reads in the nook.
+	<<case 4>>A <<generatey1>><<person1>><<person>> falls asleep in the nook.
+	<<default>>A group of orphans are doing arts and crafts.
+<</switch>>
+<<endevent>>
+<br><br>
+<<link [[Read a reference book (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "reference">><<pass 30>><</link>><<gtiredness>>
+<br>
+<<link [[Read a comic book (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "comic">><<pass 20>><</link>><<gtiredness>><<lstress>>
+<br>
+<<link [[Read a novel (0:30)|Orphanage Loft Reading Nook 2]]>><<set $phase to "novel">><<pass 30>><</link>><<gtiredness>><<genglish>>
+<br>
+<<link [[Read a newspaper (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "newspaper">><<pass 20>><</link>><<gtiredness>>
+<br>
+<<link [[Read a magazine (0:20)|Orphanage Loft Reading Nook 2]]>><<set $phase to "magazine">><<pass 20>><</link>><<gtiredness>>
+<br>
+<<link [[Study with the flash cards|Orphanage Loft Reading Nook 2]]>><<set $phase to "flashcards">><<pass 20>><</link>><<gtiredness>>
+<br>
+<<link [[Do arts and crafts|Orphanage Loft Reading Nook 2]]>><<set $phase to "crafts">><<pass 20>><</link>><<lstress>><<ltrauma>><<gtiredness>>
+<br>
+<<if $worn.lower.integrity lt (clothingData('lower',$worn.lower,'integrity_max')/5) or $worn.upper.integrity lt (clothingData('upper',$worn.upper,'integrity_max')/5) or $worn.under_upper.integrity lt (clothingData('under_upper',$worn.under_upper,'integrity_max')/5) or $worn.under_lower.integrity lt (clothingData('under_lower',$worn.under_lower,'integrity_max')/5)>>
+	<<link [[Fix your clothes|Orphanage Loft Reading Nook 2]]>><<set $phase to "sew">><</link>><<ghousekeeping>>
+	<br>
+<</if>>
+<<if $tiredness gte 1700>>
+	<<link [[Take a nap (0:15)|Orphanage Loft Reading Nook 2]]>><<set $phase to "nap">><<pass 15>><</link>><<lstress>><<ltiredness>>
+<</if>>
+<br><br>
+<<getouticon>><<link [[Leave|Orphanage Loft]]>><<kitchenExit>><</link>>
+
+:: Orphanage Loft Reading Nook 2
+<<effects>>
+<<if $phase is "reference">>
+	<<tiredness 10>>
+	<<rng 5>>
+	<<switch $rng>>
+		<<case 1>>
+			It's a cookbook that teaches simple recipes. 
+			<br><br>
+			<<reading_nook_recipe>>
+		<<case 2>>It's an encyclopedia. You learn something new. <<= either(`<<genglish>><<englishskill>>`, `<<ghistory>><<historyskill>>`, `<<gmaths>><<mathsskill>>`, `<<gscience>><<scienceskill>>`)>>
+		<<case 3>>It's an atlas of world history. You learn something new. <<ghistory>><<historyskill>>
+		<<case 4>>It's a dictionary. You learn something new. <<genglish>><<englishskill>>
+		<<default>>It's an illustrated book on <<= either("zoology", "human evolution", "nature", "biodiversity")>>. You learn something new. <<gscience>><<scienceskill>>
+	<</switch>>
+<<elseif ["novel","comic"].includes($phase)>>
+	<<tiredness 10>>
+	<<if $phase is "novel">>
+		<<englishskill>>
+		<<rng 3>>
+		<<switch $rng>>
+			<<case 1>>It's really hard to get through.
+			<<case 2>><<= either("The prose flows so smoothly", "It's such a page-turner")>> that you don't realise an hour has gone by.<<pass 60>>
+			<<case 3>>It's so immersive that you lose track of time.<<pass 60>>
+			<<default>>It's a light read.
+		<</switch>>
+	<<else>>
+		<<stress -5>>
+		<<rng 6>>
+		<<switch $rng>>
+			<<case 1>>It's really hard to get through.
+			<<case 2>>The use of <<= either("colours", "composition")>> is mind-blowing.
+			<<case 3>>The artstyle is <<= either("cute", "unique", "eye-catching", "beautiful", "gorgeous")>>.
+			<<case 4>><<= either("The prose flows so smoothly", "It's such a page-turner")>> that you don't realise an hour has gone by.<<pass 60>>
+			<<case 5>>It's so immersive that you lose track of time.<<pass 60>>
+			<<default>>It's a light read.
+		<</switch>>
+	<</if>>
+	<<rng 10>>
+	<<switch $rng>>
+		<<case 1>>It makes you stop and think for a while.<<pass 40>>
+		<<case 2>>It gives you an existential crisis. <<gstress>><<stress 5>>
+		<<case 3>>It makes you appreciate life more. <<lstress>><<stress -5>>
+		<<case 4>>It bores you,<<= either(" but you keep going", "<<set _read_bored to true>> so you stop reading", " so you skim through it")>>.
+		<<case 5>>It entertains you. You have a great time. <<lstress>><<stress -5>>
+		<<case 6>>It cracks you up. You burst out laughing a few times. <<lstress>><<stress -5>>
+		<<case 7>>You're on the edge of your seat the whole time. The plot twist blows your mind.
+		<<case 8>>It's a comforting read. You smile as you imagine yourself living in the book's universe. <<lstress>><<stress -5>>
+		<<case 9>>It's a tear-jerker. You cry as you put yourself in the character's shoes.
+		<<default>>It's so <<= either("dystopian", "terrifying")>>. You feel <<= either("a sense of dread crawling into your skin", "chills running down your spine")>>.
+	<</switch>>
+	<br><br>
+	<<if _read_bored isnot true>>
+		The ending <<= either("is perfect", "can't be better than this", "is alright", "could be better", "leaves you with more questions than answers", "is half-baked", "is a letdown")>>
+	<<else>>
+		You don't care about the ending.
+	<</if>>
+<<elseif $phase is "newspaper">>
+	<<tiredness 10>>
+	<<rng 4>>
+	<<switch $rng>>
+		<<case 1>>Your reading comprehension strengthens. <<genglish>><<englishskill>>
+		<<case 2>>You feel more informed about the world. <<ghistory>><<historyskill>>
+		<<case 3>>You have a better understanding of social, political, and economic issues. <<gmaths>><<mathsskill>>
+		<<default>>Your scientific literacy improves. <<gscience>><<scienceskill>>
+	<</switch>>
+<<elseif $phase is "magazine">>
+	<<tiredness 10>>
+	<<rng 3>>
+	<<switch $rng>>
+		<<case 1>>There's a cooking recipe being featured on this print. <<reading_nook_recipe>>
+		<<case 2>>You feel more up-to-date with the current <<= either("fashion trends", "popular musicians", "popular artists")>>.
+		<<default>>You read an interview about a <<= either("famous", "popular")>> <<= either("artist", "band", "musician")>>. It's <<= either("entertaining and insightful. <<lstress>><<stress -6>>", "dull and boring.")>>
+	<</switch>>
+<<elseif $phase is "flashcards">>
+	<<tiredness 10>>
+	You study using flash cards. You feel your memorisation is getting better.<<= either(`<<gggenglish>><<englishskill 18>>`, `<<ggghistory>><<historyskill 18>>`, `<<gggmaths>><<mathsskill 18>>`, `<<gggscience>><<scienceskill 18>>`)>>
+<<elseif $phase is "nap">>
+	<<tiredness -12>>
+	You snuggle up and doze off, giving in to the sleepiness weighing on your eyes. You wake up later feeling refreshed and well-rested. <<lstress>><<stress -5>><<ltrauma>><<trauma -5>>
+	<<if $englishtrait gte 3>>
+		<<cleareventpool>>
+		<<addinlineevent "readingorphans" 1>>
+		<<generatey1>><<generatey2>>
+		<br><br>
+		You notice some orphans gather around you. One of them, a <<person1>><<person>> asks, "Good <<= (Time.hour lt 12 and Time.hour gt 5) ? `morning` : (Time.hour lte 17 and Time.hour gt 12) ? `afternoon` : `evening`>>! We were just wondering if you could read us a book?"
+		<br><br>
+		<<link [[Accept (0:20)|Reading Nook Orphans]]>><<pass 20>><<set $phase to 1>><</link>><<ghope>>
+		<br>
+		<<link [[Refuse|Reading Nook Orphans]]>><<set $phase to 2>><</link>>
+		<<set _hide_links to 1>>
+		<</addinlineevent>>
+		<<runeventpool>>
+	<</if>>
+<<elseif $phase is "crafts">>
+	<<tiredness 10>>
+	Using the supplies in the drawers, you
+	<<rng 4>>
+	<<switch $rng>>
+		<<case 1>>
+			make some <<= either ("crochet crafts", "knit crafts", "bead crafts", "clay crafts", "felt crafts", "charms", "accessories", "pipe cleaner crafts", "paper mache crafts")>>.
+		<<case 2>>
+			<<= either(`<<wearProp "paper sheet">>`,`<<wearProp "scissors">>`)>>
+			create some <<= either ("bookmarks", "origami")>>.
+		<<case 3>>
+			<<= either(`<<wearProp "paintbrush">>paint a picture`,`<<wearProp "pencil">>draw a sketch`)>>.
+		<<default>>
+			<<wearProp "rag">>
+			embroider patterns on a piece of fabric.
+	<</switch>>
+		It's therapeutic. <<lstress>><<stress -5>><<ltrauma>><<trauma -5>>
+<<elseif $phase is "sew">>
+	<<housekeeping 5>>
+	<<outfitChecks>>
+
+	<<silently>>
+	<<set _equip to []>>
+	<<for _tatteredOutfit range Object.keys($worn)>>
+		<<if _tatteredOutfit is "genitals">>
+		<<continue>>
+		<</if>>
+
+		<<if $worn[_tatteredOutfit].integrity lt clothingData(_tatteredOutfit,$worn[_tatteredOutfit],'integrity_max')/5>>
+			<<_equip.push(_tatteredOutfit)>>
+		<</if>>
+	<</for>>
+	
+	<<set _items to []>>
+	<<for _i to 0; _i lt _equip.length; _i++>>
+		<<_items.push($worn[_equip[_i]].name)>>
+	<</for>>
+
+	<<set _itemListText to formatList(_items, "and", true)>>
+	<</silently>>
+	
+	<<if $housekeeping gte 800>>
+		<<pass 15>>
+		<<for _i to 0; _i lt _equip.length; _i++>>
+			<<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+			<<set $_slot to _equip[_i]>>
+		<</for>>
+		<<if _equip.length is 1>>
+			You meticulously sew your tattered _itemListText. Now <<itis $_slot>> good as new.
+		<<else>>
+			You meticulously sew your tattered _itemListText. Now they're good as new.
+		<</if>>
+	<<elseif $housekeeping gte 500>>
+		<<pass 30>>
+		<<for _i to 0; _i lt _equip.length; _i++>>
+			<<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+			<<set $_slot to _equip[_i]>>
+		<</for>>
+		<<if _equip.length is 1>>
+			You sew your tattered _itemListText. It takes you some time, but now <<itis $_slot>> good as new.
+		<<else>>
+			You sew your tattered _itemListText. It takes you some time, but now they're good as new.
+		<</if>>
+	<<else>>
+		<<rng 3>>
+		<<switch $rng>>
+			<<case 1>>
+				<<pass 45>>
+				<<for _i to 0; _i lt _equip.length; _i++>>
+					<<set $worn[_equip[_i]].integrity = clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')>>
+				<</for>>
+
+				You try to sew your tattered _itemListText. It takes you a lot longer than you thought.
+			<<case 2>>
+				<<pass 45>>
+				<<for _i to 0; _i lt _equip.length; _i++>>
+					<<set $worn[_equip[_i]].integrity -= $worn[_equip[_i]].integrity/2>>
+					<<if $worn[_equip[_i]].integrity lt 1>>
+						<<generalRuined _equip[_i]>>
+					<</if>>
+					<<set $_slot to _equip[_i]>>
+				<</for>>
+
+				You try to sew your tattered _itemListText.
+				<<if _equip.length is 1>>
+					Unfortunately, your attempt to fix just makes <<it $_slot>> worse. Your _itemListText <<is $_slot>> even more tattered now.
+				<<else>>
+					Unfortunately, your attempt to fix just make them worse. Your _itemListText are even more tattered now.
+				<</if>>
+			<<default>>
+				<<pass 15>>
+				<<for _i to 0; _i lt _equip.length; _i++>>
+					<<set $worn[_equip[_i]].integrity = $worn[_equip[_i]].integrity + clothingData(_equip[_i],$worn[_equip[_i]],'integrity_max')/10>>
+				<</for>>
+				You try to fix your _itemListText meticulously. You get a bit done.
+		<</switch>>
+	<</if>>
+<</if>>
+<br><br>
+<<if !_hide_links>>
+	<<link [[Next|Orphanage Loft Reading Nook]]>><</link>>
+<</if>>
+
+:: Reading Nook Orphans
+<<effects>>
+<<if $phase is 1>>
+	<<famegood 10>>
+	"Thank you!" They smile and sit down, listening to you read. <<= either("Your delivery keeps them hooked and engaged", "You act out the scenes and put on silly voices, entertaining them greatly")>>. After finishing the book, you quiz them about it, which they enthusiastically participate in. You have a great time.<<lstress>><<stress -5>><<gtiredness>><<tiredness 10>>
+<<else>>
+	You shake your head.
+	<br><br>
+	<<if $speech_attitude is "meek">>
+		"Sorry, I'm afraid not."
+	<<elseif $speech_attitude is "bratty">>
+		"No. Sorry not sorry."
+	<<else>>
+		"Sorry, but not today."
+	<</if>>
+	<br><br>
+	The <<person2>><<person>> reassures you. "It's okay. We understand. Have a nice day!"
+	<br><br>
+	"Goodbye!" the group unanimously says and scurries away, returning your peace back to you.
+<</if>>
+<<endevent>>
+<br><br>
+<<link [[Next|Orphanage Loft Reading Nook]]>><</link>>
