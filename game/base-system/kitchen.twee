@@ -506,7 +506,7 @@ Should probably be removed once said feature has been implemented
 	<<set _food_keys to Object.keys(setup.foodstuff)>>
 	<<set _possible_recipes to []>>
 	<<set $_foodOptions to Object.entries(clone(setup.foodstuff)).filter(([key, item]) => item.recipe?.ingredients.length && item.category !== "ingredient" && !item.food.tags.includes("drink"))>>
-
+	
 	<<if C.npc.Avery.dom gte 75>>
 		<<set $_difficulty to 4>>
 	<<elseif C.npc.Avery.dom gte 50>>
@@ -530,6 +530,35 @@ Should probably be removed once said feature has been implemented
 
 	/* once Avery has chosen a new meal, the player loses the chance to learn the recipes they'd asked to learn prior */
 	<<set $avery_mansion.recipe to []>>
+<</widget>>
+
+<<widget "reading_nook_recipe">>
+	<<unset $chosen_recipe>>
+	<<set _food_keys to Object.keys(setup.foodstuff)>>
+	<<set _possible_recipes to []>>
+	<<set $_foodOptions to Object.entries(clone(setup.foodstuff)).filter(([key, item]) => !$foodstuff[key].knows_recipe and item.recipe?.ingredients.length)>>
+	
+	<<if random(0,50) gte 25>>
+		<<set $_difficulty to 2>>
+	<<else>>
+		<<set $_difficulty to 1>>
+	<</if>>
+
+	<<run $_foodOptions.forEach(([key, item]) => {
+		if (item.recipe.difficulty is $_difficulty and item.recipe.ingredients.every(ingredient => !setup.foodstuff[ingredient].recipe?.ingredients.length or $foodstuff[ingredient].knows_recipe)) {
+			_possible_recipes.pushUnique(key);
+			}
+		})>>
+	<<if _possible_recipes.length>>
+		<<set $chosen_recipe to _possible_recipes.pluck()>>
+	<</if>>
+	
+	<<if !$chosen_recipe>><<set $chosen_recipe to "none">><</if>>
+	<<if $chosen_recipe is "none">>
+		You already knew how to make said food.
+	<<else>>
+		<<learn_recipe $chosen_recipe>>
+	<</if>>
 <</widget>>
 
 <<widget "food_gift_list">>
