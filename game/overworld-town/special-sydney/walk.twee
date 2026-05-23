@@ -60,7 +60,11 @@
 			<br>
 		<</if>>
 		<<if $sydneyromance is 1 and $sydneySeen.includes("corruptroom")>>
-			<<ind>><<link [[Temple prayer room|Sydney Walk Prayer Room]]>><</link>>
+			<<templeicon "prayer room">><<link [[Temple prayer room|Sydney Walk Prayer Room]]>><</link>>
+			<br>
+		<</if>>
+		<<if $location is "temple" and !Weather.bloodMoon>>
+			<<templeicon "garden">><<link [[Temple garden (0:15)|Sydney Walk Temple Garden]]>><</link>>
 			<br>
 		<</if>>
 	<</if>>
@@ -2236,3 +2240,231 @@ You chat with <<him>> on the way.
 You reach Elk Street without incident. Sydney waves you goodbye as <<he>> enters Sirris' shop.
 <br><br>
 <<link [[Next|Elk Street]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Sydney Walk Temple Garden
+<<temple_effects>><<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Shall we take a walk in the garden?"
+<<elseif $speech_attitude is "bratty">>
+	Let's take a walk in the garden!"
+<<else>>
+	"Wanna take a walk in the garden with me?"
+<</if>>
+you suggest.
+<br><br>
+<<if Time.weekDay is 1 and Time.hour gte 10 and Time.hour lte 12 and $daily.massAttended isnot 1>>
+	"I'd love to, but can it wait until after mass?"<<set _walk to false>>
+<<elseif ["heavyClouds"].includes(Weather.name)>>
+	"It looks like it's going to rain soon. Maybe some other day." Sydney gives you a reassuring smile.<<set _walk to false>>
+<<elseif ["heavyPrecipitation", "storm", "thunderStorm"].includes(Weather.name)>>
+	"I don't think it's wise to go out in this weather. Maybe some other day." Sydney gives you a reassuring smile.<<set _walk to false>>
+<<elseif $temple_rank is undefined or $temple_rank is "prospective">>
+	Sydney looks excited. "Sure! Just let me inform <<nnpc_brother "Jordan">> Jordan that I'm leaving."
+	<br><br>
+	<<He>> jogs off, and returns a few minutes later. "Ready."<<set _walk to true>><<pass 2>>
+<<elseif $temple_garden gte 50 or $temple_quarters gte 50>>
+	<<He>> seems hesitant. "There's still lots of work to do around here, but... a break shouldn't hurt."<<set _walk to true>>
+<<else>>
+	<<He>> shakes <<his>> head sadly. "There's far too much to do around here, sorry."<<set _walk to false>>
+<</if>>
+<br><br>
+<<if _walk is true>>
+	Sydney stands up. The two of you walk towards the temple garden<<if $sydneyromance is 1>>, hand in hand<</if>>. <<if $sydneyromance is 1>><<takeHandholdingVirginity "Sydney" "romantic">><</if>>
+	<br><br>
+	<<if Weather.precipitation isnot "none">>
+		<<He>> grabs an umbrella on the way out.
+		<br><br>
+	<</if>>
+
+	<<link [[Next|Sydney Temple Garden]]>><<set $daily.sydney.walk to true>><<pass 5>><</link>>
+	<br>
+<<else>>
+	<<sydneyOptions>>
+<</if>>
+
+:: Sydney Temple Garden
+<<set $outside to 1>><<set $location to "temple">><<temple_effects>><<effects>>
+
+<<if $temple_garden gte 10>>
+	The garden is
+	<<if $temple_garden gte 100>>
+		<span class="green">beautiful.</span>
+	<<elseif $temple_garden gte 80>>
+		<span class="teal">neat and tidy.</span>
+	<<elseif $temple_garden gte 60>>
+		<span class="lblue">neat.</span>
+	<<elseif $temple_garden gte 40>>
+		<span class="blue">reasonably neat</span>.
+	<<elseif $temple_garden gte 20>>
+		<span class="purple">messy.</span>
+	<<else>>
+		<span class="pink">an overgrown mess.</span>
+	<</if>>
+<<else>>
+	The garden looks <span class="red">wild.</span>
+<</if>>
+You two take a stroll around the garden. Lush green grass brushes softly beneath your feet;
+<<if Weather.precipitation == "none">>
+	<<if Time.dayState is "night">>
+		twinkling stars dot the night sky
+	<<else>>
+		radiant sunlight shines overhead
+	<</if>>
+<<else>>
+	tiny <<= Weather.precipitation is "rain" ? "raindrops" : "snowflakes">> drift down from the sky
+<</if>>
+and here you are, with Sydney.
+<br><br>
+<<if $rng gte 51>>
+	You sit on the fountain; Sydney joins you.
+<<else>>
+	Sydney sits on the fountain; you join <<him>>.
+<</if>>
+<<= Time.dayState is "night" ? "Fireflies" : "Butterflies">> dance around you and Sydney. The <<= Time.dayState is "night" ? "moonlit" : "sunlit">> garden seems to have been expecting you two.
+<br><br>
+Sydney <<= $sydneyromance is 1 ? "touches your nose with <<his>> and looks into your eyes" : "smiles at you">>.
+<br><br>
+
+<<if $harpy gte 6>>
+	<<link [[Sing|Sydney Temple Garden 2]]>><<set $phase to "sing">><<transform bird 1>><<npcincr Sydney love 1>><</link>><<harpy>><<glove>>
+	<br>
+<</if>>
+<<link [[Chat with Sydney|Sydney Temple Garden 2]]>><<set $phase to "chat">><<npcincr Sydney love 1>><</link>><<glove>>
+<br>
+<<if $sydneyromance is 1 or (C.npc.Sydney.love gte 70 and $sydneyFriendZoned)>>
+	<<if $sydney.heartbroken>>
+		<<link [[Kiss Sydney|Sydney Temple Garden 2]]>><<set $phase to "kiss">><<npcincr Sydney love -5>><<npcincr Sydney lust 1>><</link>><<promiscuous1>><<lllove>><<glust>><<kissvirginitywarning>><<NPCvirginitywarning "Sydney" "kiss">>
+	<<else>>
+		<<link [[Kiss Sydney|Sydney Temple Garden 2]]>><<set $phase to "kiss">><<npcincr Sydney love 1>><<npcincr Sydney lust 1>><</link>><<promiscuous1>><<glove>><<glust>><<kissvirginitywarning>><<NPCvirginitywarning "Sydney" "kiss">>
+	<</if>>
+		<br>
+<</if>>
+<<link [[Hold Sydney's hand|Sydney Temple Garden 2]]>><<set $phase to "handholding">><<npcincr Sydney love 1>>
+<</link>><<glove>><<handholdingvirginitywarning>><<NPCvirginitywarning "Sydney" "handholding">>
+<br>
+
+:: Sydney Temple Garden 2
+<<temple_effects>><<effects>><<pass 5>>
+
+<<if $phase is "sing">>
+	The flock of birds joins in as the melodious tunes escape your lips. In awe, Sydney breaks into a smile before swaying and singing along with you. <<if Time.dayState isnot "night">>A few <<temple_title>>s appear and provide vocal harmony to your song.<</if>><<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+	<br><br>
+<<elseif $phase is "chat">>
+	You chat with Sydney about mundane things.
+	<br><br>
+	<<if !$sydneySeen?.includes("favouriteFlower")>><<set $sydneySeen.pushUnique("favouriteFlower")>>
+		"White roses always have my heart," <<he>> says. "I wonder what flowers do that for yours."
+		<br><br>
+		Half-joking, you point at <<him>>, causing <<his>> cheeks to bloom a soft shade of pink. Then, you tell <<him>> yours. <<He>> nods, lost in thought.
+		<br><br>
+		<<if $sydneyromance is 1>>"Actually, I've changed my mind. <i>You</i> are my favorite flower of all." Cradling your face, <<he>> declares it with a kiss upon your cheek.<</if>>
+	<</if>>
+
+	<<if $sydneyromance is 1>>
+		<br><br>
+		<<if $rng % 3 is 1>>
+			You lay Sydney's head down on your lap as you stroke <<his>> hair as <<he>> rests <<his>> eyes.
+		<<elseif $rng % 3 is 2>>
+			At some point, Sydney rests <<his>> head on your lap. Chuckling, you stroke <<his>> hair as <<he>> rests <<his>> eyes.
+		<<else>>
+			At some point, you rest your head on Sydney's lap—soft and warm—as <<he>> strokes your hair as you rest your eyes.<<tiredness -3>><<ltiredness>>
+		<</if>>
+		<<npcincr Sydney lust 1>><<glust>>
+		<br><br>
+	<</if>>
+	<<if ["day", "dawn"].includes(Time.dayState)>>
+		The sunlight dances on you two as the birds sing their sweet songs.
+	<<else>>
+		The stars seem to shine brighter tonight.
+	<</if>>
+	<<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+	<br><br>
+<<elseif $phase is "kiss">>
+	<<run statusCheck("Sydney")>>
+	You go in for a kiss.
+	<<if $sydney.heartbroken>>
+		<<promiscuity1>>
+
+		"What are you doing?" Sydney <<= either("blocks it with <<his>> palm", "dodges it", "leans back")>>. "Playing with my heart again?"
+		<br><br>
+		"…How could you be so cruel?" <<His>> voice cracks, tears pooling in <<his>> eyes. <<He>> walks back to the temple, leaving you in the garden, alone.
+		<br><br>
+
+		<<set $daily.sydney.punish to 1>>
+
+		<<link [[Next|Temple]]>><<pass 5>><<endevent>><<set $eventskip to 1>><</link>>
+		<<exit>>
+	<<else>>
+		Leaning closer, Sydney
+		<<if _sydneyStatus.includes("corrupt")>>
+			cups your face and kisses you, <<his>> tongue already finds yours before you know it.
+		<<else>>
+			closes <<his>> eyes nervous, hands <<= C.npc.Sydney.virginity.kiss is true ? "gripping on <<his>> robe" : "folded on <<his>> lap">>. Your lips meet in a sweet kiss.
+		<</if>>
+		<<takeKissVirginity "Sydney" `($sydneyromance is 1 ? "romantic" : "consensual")`>>
+		<<promiscuity1>>
+
+		<<if $sydneyFriendZoned>>
+			Happy but hesitant, Sydney asks, "D-Did you mean it when you kissed me?" <<He>> looks hopeful.
+			<br><br>
+
+			<<link [[Say you mean it|Sydney Temple Garden Friendzone]]>><<set $phase to "loveInterest">><<npcincr Sydney love 5>><</link>><<gglove>>
+			<br>
+			<<link [[Say it was a joke|Sydney Temple Garden Friendzone]]>><<set $phase to "joke">><<npcincr Sydney love -20>><</link>><<llllove>>
+			<<exit>>
+		<</if>>
+	<</if>>
+<<else>> /* handholding */
+	<<if $speech_attitude is "meek">>
+		Inch by inch, you scoot your hand closer to Sydney's hand resting on the rim of the fountain
+	<<elseif $speech_attitude is "bratty">>
+		You hold Sydney's hand resting on the fountain seat.
+	<<else>>
+		You reach for Sydney's hand resting on the fountain seat.
+	<</if>>
+	<br><br>
+	<<if $sydneyromance isnot 1>>It catches <<him>> by surprise.<</if>> Smiling, <<he>> intertwines <<his>> fingers with yours<<if $sydneyromance is 1>>, then raises your hand to <<his>> lips and plants a kiss upon it<</if>>. <<takeHandholdingVirginity "Sydney" `($sydneyromance is 1 ? "romantic" : "consensual")`>>
+	<br><br>
+<</if>>
+
+After a while, you two return to the temple. Sydney hugs you. "See you!" <<He>> <<= $sydneyromance is 1 ? "pecks your cheek" : "gives you a wave">> before <<he>> leaves.
+<br><br>
+
+<<link [[Next|Temple]]>><<pass 5>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Sydney Temple Garden Friendzone
+<<temple_effects>><<effects>>
+
+<<if $phase is "loveInterest">>
+	<<unset $sydneyFriendZoned>>
+	<<set $sydneySeen.pushUnique("friendzone")>>
+	<<if $speech_attitude is "meek">>
+		"I mean it, I swe—"
+	<<elseif $speech_attitude is "bratty">>
+		"Of course I mea—"
+	<<else>>
+		"I mean I—"
+	<</if>>
+	<br><br>
+	Sydney interrupts you with a kiss, again and again and again, meeting your lips with <<his>> smiling ones.<<stress -6>><<trauma -6>><<lstress>><<ltrauma>>
+	<br><br>
+	The look of love is in Sydney's eyes as <<he>> says, "I love you."
+	<br><br>
+	You can't help but return it, "I love you, too."
+	<br><br>
+	<<loveInterestAdd "Sydney">>
+	<<set $sydneyromance to 1>>
+<<else>> /* joke */
+	<<set $sydneySeen.pushUnique("kiss joke")>>
+	<<set $sydney.heartbroken to 7>>
+	<<set $daily.sydney.punish to 1>>
+	"Oh..." <<He>> touches <<his>> lips, broken-hearted. "Sorry, I have to go." <<His>> voice cracks. Sydney leaves you in the garden, alone.
+<</if>>
+<br><br>
+
+<<link [[Next|Temple]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+

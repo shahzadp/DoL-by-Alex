@@ -1549,6 +1549,10 @@ function dailyNPCEffects() {
 			C.npc.Sydney.chastity.anus = "";
 			V.sydneyAnalShieldComment = true;
 		}
+		if (V.sydney.heartbroken) V.sydney.heartbroken--;
+		else if (V.sydney.heartbroken === 0) {
+			delete V.sydney.heartbroken;
+		}
 	}
 
 	// Great Hawk
