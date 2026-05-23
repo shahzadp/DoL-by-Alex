@@ -1,5 +1,4 @@
 :: English Event1
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
 
 <<if $phase is 1>>
@@ -16,8 +15,8 @@
 <<endnpc>>
 
 :: English Outbuilding
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 <<if $phase is 0>>
 	You slowly creep up to the outbuilding, and manage to deliver the note and get away without incident. It takes a few minutes however, and when you arrive back at class Doren chides you for lollygagging.
 	<br><br>
@@ -72,8 +71,8 @@
 <</if>>
 
 :: English Outbuilding Molestation Finish
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 <<if $alarm is 1 and $rescue is 1>>
 	<<if $NPCList[0].stance is "top">>
 		<<set $rescued += 1>>
@@ -119,61 +118,156 @@
 	<br>
 <</if>>
 
-:: English Event2
-
+:: English Molest
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
-You shout out to Doren for help, and try to explain that you're being harassed. The <<person>> looks shocked, <<his>> eyes widen and <<his>> lip trembles, as if on the verge of tears. <<endevent>><<npc Doren>><<person1>>Doren puts <<his>> hands on <<his>> hips and gives you a level stare. "You're not gonna fool me that easily, <<lass>>. You should sit over here, away from the innocent."
-<br><br>
-Doren makes you sit alone on the other side of the room. You got away at least.
-<br><br>
-<<link [[Next|English Lesson]]>><<endevent>><</link>>
 
-:: English Event2 Molest
-
-<<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
-<<He>> runs <<his>> hand further up your thigh, with no regard for how you feel about it.
-<<if playerChastity() and $worn.under_lower.type.includes("naked")>>
-	<<if $worn.genitals.name is "chastity parasite">>
-		<<He>> stops when <<he>> feels the flesh of your $worn.genitals.name. "Ew, What's this? It's attached to you." <<He>> smirks. "I'd best be careful, I don't want to catch anything from you." <<He>> doesn't bother you for the rest of the lesson.
+<<if $phase is 0>> /* Call for help */
+	You shout out to Doren for help, and try to explain that you're being harassed. The <<person>> looks shocked, <<his>> eyes widen and <<his>> lip trembles, as if on the verge of tears. 
+	<<npc Doren>><<person1>>
+		<<if !$dorenintro>>
+			Doren puts <<his>> hands on <<his>> hips and gives you a level stare. "You're not gonna fool me that easily, <<lass>>. You should sit over there, away from the innocent."
+			<br><br>
+			Doren makes you sit alone on the other side of the room. You got away at least.
+			<br><br>
+		<<else>>
+			Doren applauds. "Amazing performance, almost fooled me." <<He>> puts <<his>> hands on <<his>> hips and gives the <<person>> a level stare.
+			<<if $delinquency gte 400>>
+				"You should sit over there, away from the innocent <<lass>>."
+				<br><br>
+				With a frown, the <<person>> drops the act and sits alone on the other side of the room.
+			<<else>>
+				"Office, now."
+				<br><br>
+				With a frown, the <<person>> drops the act and heads straight to Leighton's office.
+			<</if>>
+			<<if $cool gte 120>>
+				The classmates sitting near you check on you, making sure you're alright.<<lstress>><<ltrauma>><<stress -1>><<trauma -1>>
+			<<else>>
+				The class continues uneventfully.
+			<</if>>
+		<</if>>
+<<elseif $phase is 1>> /* Endure */
+	<<moleststat>>
+	<<He>> runs <<his>> hand further up your thigh, with no regard for how you feel about it.
+	<<if playerChastity() and $worn.under_lower.type.includes("naked")>>
+		<<if $worn.genitals.name is "chastity parasite">>
+			<<He>> stops when <<he>> feels the flesh of your $worn.genitals.name. "Ew, What's this? It's attached to you." <<He>> smirks. "I'd best be careful, I don't want to catch anything from you." <<He>> doesn't bother you for the rest of the lesson.
+		<<else>>
+			<<He>> stops when <<he>> feels the metal of your $worn.genitals.name. "What's this? I heard slaves are sometimes forced to wear these things, are you someone's property?" <<He>> smirks. "I'd best be careful, I don't want to offend anyone." <<He>> doesn't bother you for the rest of the lesson.
+		<</if>>
+	<<elseif $worn.under_lower.type.includes("naked")>>
+		<<fameexhibitionism 1>>
+		<<He>> suddenly recoils, blushing. "You aren't wearing any underwear?! You really are a pervert." <<He>> doesn't bother you for the rest of the lesson.
 	<<else>>
-		<<He>> stops when <<he>> feels the metal of your $worn.genitals.name. "What's this? I heard slaves are sometimes forced to wear these things, are you someone's property?" <<He>> smirks. "I'd best be careful, I don't want to offend anyone." <<He>> doesn't bother you for the rest of the lesson.
+		<<He>> traces the outline of your $worn.under_lower.name with a finger, from your waist to your groin. <<He>> moves slowly, clearly enjoying the moment. <<He>> takes things no further though, withdrawing <<his>> hand and acting like nothing happened.
 	<</if>>
-<<elseif $worn.under_lower.type.includes("naked")>>
-	<<fameexhibitionism 1>>
-	<<He>> suddenly recoils, blushing. "You aren't wearing any underwear?! You really are a pervert." <<He>> doesn't bother you for the rest of the lesson.
-<<else>>
-	<<He>> traces the outline of your $worn.under_lower.name with a finger, from your waist to your groin. <<He>> moves slowly, clearly enjoying the moment. <<He>> takes things no further though, withdrawing <<his>> hand and acting like nothing happened.
-<</if>>
-<<garousal>><<arousal 200>>
-<<if $worn.genitals.name is "chastity parasite">>
-	<<gstress>><<stress 6>>
+	<<garousal>><<arousal 200>>
+	<<if $worn.genitals.name is "chastity parasite">>
+		<<gstress>><<stress 6>>
+	<</if>>
+<<elseif $phase is 2>> /* Confront */
+	<<switch $speech_attitude>>
+		<<case "meek">>
+			"Please stop harassing me!"
+		<<case "bratty">>
+			"I'll fuck you up, you cunt!"
+		<<default>>
+			"Stop it, you perv!"
+	<</switch>>
+
+	You <<= either ("punch", "slap", "kick")>> <<if $enemyno gte 2>>them<<else>><<him>>>><</if>> right <<= either ("in the face", "where it hurts")>>.
+	<<set $attackstat += 1>>
+	<br><br>
+
+	<<if $cool gte 160>>
+		The whole class erupt.
+		<br>
+		"Woooo!"
+		<br>
+		"Yeah, get <<his>> arse!"
+		<br>
+		"Serves <<him>> right!"
+		<br>
+	<<else>>
+		The whole class gasp.
+		<br>
+		"<<pShe>> just fucking twatted <<if $enemyno gte 2>>them<<else>><<him>>>><</if>>!"
+		<br>
+		"Holy shit!"
+		<br>
+		"What the hell?"
+		<br>
+	<</if>>
+	<<gcool>><<status 3>>
+	<br><br>
+
+	Doren separates you and <<if $enemyno gte 2>>the delinquents<<else>>the <<person>><</if>> and asks for explanations. You both explain your sides, polar opposite of one another.
+	<br><br>
+
+	<<npc Doren>><<person1>>
+	Fortunately, <<he>> believes you and sends <<if $enemyno gte 2>>the delinquents<<else>>the <<person>><</if>> to 
+		<<if $delinquency gte 400>>
+			sit at the other side of the room.
+			<br>
+			"You should sit over there, away from the innocent."
+		<<else>>
+			the head's office.
+			<br>
+			"Tell Leighton we said hi." Doren says as everyone waves <<if $enemyno gte 2>>them<<else>><<him>>>><</if>> goodbye.
+		<</if>>
+	<<detention -2>><<ldelinquency>>
+	<br><br>
+
+	<<He>> turns to you, "I'm glad you stood up for yourself, <<lass>>." <<if $cool gte 160>>Your classmates affirm <<him>>.<</if>>
+	<br><br>
+
+	The class continues uneventfully with the occasional whispering about what just happened. <<if $cool gte 120>>The classmates sitting near you check on you, making sure you're alright.<<lstress>><<ltrauma>><<stress -1>><<trauma -1>><</if>>
+<<elseif $phase is 3>> /* Call for help (delinquents) */
+	You shout out to Doren for help, and try to explain that you're being harassed. The delinquents deny, "<<pShe>>'s lying!"
+	<br><br>
+
+	<<npc Doren>><<person1>>
+	Doren puts <<his>> hands on <<his>> hips and gives them a level stare. "You're not gonna fool me that easily. Office, now."
+	<br><br>
+	With a scoff, the delinquents drop the act and head straight to Leighton's office.
+	<br><br>
+	<<if $cool gte 120>>
+		The classmates sitting near you check on you, making sure you're alright.<<lstress>><<ltrauma>><<stress -1>><<trauma -1>>
+	<<else>>
+		The class continues uneventfully.
+	<</if>>
 <</if>>
 <br><br>
+
 <<link [[Next|English Lesson]]>><<endevent>><</link>>
+<br>
 
 :: English Events Pinch
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 The <<person1>><<person>> yelps in shock. Doren looks up, and looks at <<him>>. The <<person>> is too embarrassed to complain however, instead looking at <<his>> feet and mumbling an apology before sitting back at <<his>> desk.
 <<promiscuity2>>
+<br><br>
 
 <<link [[Next|English Lesson]]>><<endevent>><</link>>
 <br>
 
 :: English Events Own
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
-"What's the matter <<sir>>," you say. "Jealous?" The giggling becomes laughter.
+
+"What's the matter, <<sir>>?" you say. "Jealous?" The giggling becomes laughter.
 <<promiscuity3>>
+<br><br>
+
 "You lot have a strange idea of humour," Doren says, shaking <<his>> head.
 <br><br>
-<<endevent>>
-<<link [[Next|English Lesson]]>><</link>>
+
+<<link [[Next|English Lesson]]>><<endevent>><</link>>
 <br>
 
 :: English Events Stare
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 You stare down at your hands and try to ignore the laughter. Doren looks at the <<person2>><<person>>. "You know I don't like giving detention," <<person1>><<he>> says. "But you're making it hard for me to avoid." <<person2>>The <<person>> looks away, smirking.
 <br><br>
 <<if $dorenhonest isnot 1>>
@@ -192,73 +286,88 @@ You stare down at your hands and try to ignore the laughter. Doren looks at the 
 <</if>>
 
 :: English Events Honest
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 <<set $dorenhonest to 1>>
 You tell Doren that you've been attacked numerous times, and that you don't feel able to cope. Saying it out loud makes you feel dizzy. You don't go into details, but make it clear how trapped you feel.
 <br><br>
-You realise you're sat on the floor, being held up by Doren's arm. You don't remember falling. "It's okay <<lass>>, I've got you." <<He>> pulls a phone out of <<his>> pocket and calls someone. "Hello? Yes. I need someone to cover my class. Yes, it's an emergency. No. Goodbye." <<He>> puts the phone away.
+
+<<if $trauma gte (($traumamax / 5) * 3)>>
+	You didn't realise you fainted until you wake up in Doren's arms. <<Hes>> caught you before you fall.
+<<else>>
+You realise you're sat on the floor, being held up by Doren's arm. You don't remember falling.
+<</if>>
+"It's okay, <<lass>>. I've got you." <<He>> pulls a phone out of <<his>> pocket and calls someone. "Hello? Yes. I need someone to cover my class. Yes, it's an emergency. No. Goodbye." <<He>> puts the phone away.
 <br><br>
+
 <<He>> helps you to your feet. "I want to take you somewhere they can help, okay?" <<He>> takes your hand and together you walk away from class. <<He>> leads you outside to <<his>> parked car. "Climb aboard. It's not a long trip."
 <br><br>
+
 <<link [[Climb aboard (0:05)|English Events Police]]>><<pass 5>><</link>>
 <br>
 
 :: English Events Fine
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 You put on a brave face and tell <<him>> you're fine. "Okay. If you say so," <<he>> says. "Now let's get back to class before they break a window."
 <br><br>
-<<endevent>>
-<<link [[Next|English Lesson]]>><</link>>
+
+<<link [[Next|English Lesson]]>><<endevent>><</link>>
 <br>
 
 :: English Events Police
-
 <<set $outside to 0>><<set $location to "town">><<effects>>
+
 Doren drives to Barb Street and pulls up outside the police station. "I know this is hard for you, but you need to tell them what you told me." You leave the car and enter the station.
 <br><br>
+
 <<generatePolice 3>><<person3>>A <<person>> sits at the desk, wearing an officer's uniform. <<He>> doesn't glance up as you enter. Doren knocks on the surface, hard enough that a pencil rolls onto the floor. <<person1>>"We've got a crime to report," <<he>> says. "Maybe several."
 <br><br>
+
 The officer looks up. "There's a queue," <<person3>><<he>> says.
 <br><br>
+
 Doren looks around the empty room. "Doesn't look like a queue to me."
 <br><br>
+
 "A backlog then," the officer replies. "We can't help you for three years."
 <br><br>
+
 "Three years!?" Doren slams <<person1>><<his>> fist into the desk, knocking over a mug this time. "This <<girl>> was ra..." <<He>> catches <<himself>>. "<<pShe>> was attacked. More than once. You're telling me you can't do anything?"
 <br><br>
+
 "We can. In three years." <<person3>><<He>> types something into <<his>> computer. "We already have you on record. We'll contact you when we're ready to take your report. Have a nice day."
 <br><br>
+
 <<link [[Next|Doren Intro]]>><</link>>
 <br>
 
 :: English Kylar Moved
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 You shake your head. Doren looks at Kylar. "Hey, doodler," <<he>> says. "I need help up front."
 <br><br>
+
 <<endevent>><<npc Kylar>><<person1>>
 Kylar scowls, but doesn't argue. <<He>> gives you a longing look as Doren makes <<him>> move.
 <<set $kylarenglishstate to "watching">>
 <br><br>
-<<endevent>>
-<<link [[Next|English Lesson]]>><</link>>
+
+<<link [[Next|English Lesson]]>><<endevent>><</link>>
 <br>
 
 :: English Kylar Nod
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>>
+
 You nod. "Alright," Doren says. <<He>> doesn't sound convinced.
 <br><br>
-<<endevent>>
-<<link [[Next|English Lesson]]>><</link>>
+
+<<link [[Next|English Lesson]]>><<endevent>><</link>>
 <br>
 
-
 :: English Read Passage
-
 <<set $outside to 0>><<set $location to "school">><<schooleffects>><<effects>><<wearProp "open English">>
+
 <<if $phase is 0>> /* Tell Doren */
 	<<if C.npc.Doren.love gte 10>>
 		Doren shakes <<his>> head, and passes you <<his>> copy of the book.<br>
