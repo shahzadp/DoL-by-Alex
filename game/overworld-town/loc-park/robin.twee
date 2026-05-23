@@ -197,12 +197,29 @@ You take your time with the mug, letting it warm your hands as you sip away at t
 				<<case 5>> A lot of people weren't prepared for the cold.
 			<</switch>>
 			<br><br>
+			<<if isInPark("doren") and !$weekly.dorenchocolatebuy and random(0,50) gte 25>>
+				<<set $weekly.dorenchocolatebuy to true>><<set _dorenjustbought to true>>
+				<<npc "Doren" 3>><<person3>>
+				"Hiya, <<lass>>!" Doren takes a cup, looking at the stand, "Helping Robin out, eh?" 
+				<br><br>
+				<<He>> turns to the group behind <<him>>; you recognise River among them. "Oi, see that chocolate stand over there? My treat!"
+				<br><br>
+				Quickly, they form a line before Robin, buying hot chocolate.
+				<br><br>
+				"See ya, <<lass>>." Doren says before joining them.
+				<br><br>
+				<<set $robinmoney += 30>>
+			<</if>>
 			<<person1>>
 			Robin smiles when you return to <<him>>.
 			<<if _robin.trauma gte 40>>
 				<<He>> hugs you the moment you place the tray down. "Thank you."
 			<<else>>
 				"Business has improved a lot," <<he>> says. "Thank you."
+				<<if _dorenjustbought is true>>
+					<br><br>	
+					<<He>> shows you <<his>> recent profits, "Look! Doren just came by and treated a bunch of people to a cup!"
+				<</if>>
 			<</if>>
 			<br><br>
 			<<robinChocolateOfferHelp>>
@@ -246,6 +263,23 @@ You take your time with the mug, letting it warm your hands as you sip away at t
 			<br><br>
 			<<robinChocolateOfferHelp>>
 		<</if>>
+	<<elseif $rng gte 21 and isInPark("doren") and !$weekly.dorenchocolatebuy>>
+		<<set $dorenhotchocoprice to 40 + Math.floor(Math.random()*31)*2>>
+		<<set $dorenhotchocoamount to $dorenhotchocoprice/2>>
+
+		<<set $weekly.dorenchocolatebuy to true>>
+		<<npc "Doren" 2>><<person2>>
+		Doren stops by the stall. "Good <<= Time.hour lt 12 ? "morning" : "afternoon">>. I know this is a tall order, but could you make me $dorenhotchocoamount cups of hot chocolate? I'm planning to give them out to the homeless." <<he>> hands Robin £$dorenhotchocoprice.
+		<br><br>
+		Robin shakes <<person1>><<his>> head, returning the money to Doren. "If it's for people in need, then I'll give them for free—"
+		<br><br>
+		"No, no, Robin. I'll pay." Doren insists firmly.
+		<br><br>
+		<<print '<<link [[Offer to pay for the hot chocolate (£'+$dorenhotchocoprice+')|Hot Chocolate Doren]]>><<set $phase to 1>><</link>>'>>
+		<br>
+		<<link [[Convince Robin|Hot Chocolate Doren]]>><<set $phase to 2>><<npcincr Doren love 1>><</link>><<glove Doren>> /*Doren's love */
+		<br>
+		<<link [[Support Robin's point|Hot Chocolate Doren]]>><<set $phase to 3>><<npcincr Robin love 1>><</link>><<glove Robin>> /*Robin's love */
 	<<else>>
 		<<if _robin.trauma gte 40>>
 			"I need some more milk. I'm sorry. I know it's heavy, but could you buy some more?" <<He>> shivers even through <<his>> warm attire. "Harvest Street has some." <<He>> hands you £5 and a large bottle. "That should be enough."
@@ -904,4 +938,57 @@ You let Robin stand, surprising the customer with <<his>> sudden appearance. You
 	<<person2>><<He>> would work out what you were up to, and Robin would be terribly embarrassed.
 <</if>>
 <br><br>
+<<robinChocolateOfferHelp>>
+
+:: Hot Chocolate Doren
+<<effects>>
+<<set _robin to statusCheck("Robin")>>
+<<pass 60>><<famegood 1>>
+<<if $phase is 1>> /* offer to pay*/
+	<<if $speech_attitude is "meek">>
+		"Maybe I can pay for them?" 
+	<<elseif $speech_attitude is "bratty">>
+		"Let me pay for them!"
+	<<else>>
+		"I'll pay for them,"
+	<</if>>
+	you suggest.
+	<br><br>
+	"No." Doren and Robin unanimously say.
+	<br><br>
+	However, after much more convincing from Doren, Robin nods,
+<<elseif $phase is 2>> /* convince Robin*/
+	<<if $speech_attitude is "meek">>
+		"It wouldn't be wise to give away for free when you need the money yourself, Robin." 
+	<<elseif $speech_attitude is "bratty">>
+		"Robin. Why would you give away hot chocolate when you yourself also are in need?"
+	<<else>>
+		"<<Hes>> right, Robin. You need the money yourself. That's why you're out here, selling hot chocolate."
+	<</if>>
+	<br><br>
+	After much more convincing from you and Doren, Robin nods, 
+<<else>> /*support Robin's point*/ 
+	<<if $speech_attitude is "meek">>
+		"We can't possibly take money from you for this!" 
+	<<elseif $speech_attitude is "bratty">>
+		"No, we can't take money if you plan to do that!"
+	<<else>>
+		"Robin's right. We can't take money from you!"
+	<</if>>
+	you protest alongside Robin.
+	<br><br>
+	However, after much more convincing from Doren, Robin nods, 
+<</if>>
+<<if _robin.trauma gte 40>>
+	"Okay, if you say so..."
+<<else>>
+	"Alright. Let's do this!"
+<</if>>
+<br><br>
+You and Doren help Robin make the hot chocolate and pour it into $dorenhotchocoamount cups.
+<br><br>
+"Thanks a lot, you two!" Handing Robin £$dorenhotchocoprice, Doren packs them in <<person2>><<his>> bag, then waves goodbye with a smile before walking away.
+<br><br>
+<<set $robinmoney += $dorenhotchocoprice>>
+<<unset $dorenhotchocoprice>><<unset $dorenhotchocoamount>>
 <<robinChocolateOfferHelp>>
