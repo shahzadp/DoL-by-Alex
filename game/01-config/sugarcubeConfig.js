@@ -208,6 +208,10 @@ Config.navigation.override = function (dest) {
 			case "Industrial alleyways":
 				return "Industrial Alleyways";
 
+			case "English Event2":
+			case "English Event2 Molest":
+				return "English Molest";
+
 			case "Cafe Fruit Salad":
 			case "Cafe Autumn Ale":
 			case "Cafe Summer Ale":

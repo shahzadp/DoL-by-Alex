@@ -1667,6 +1667,7 @@ const DoLCompressorDictionaries = (() => {
 		"suffocating",
 		"suggestedRaisingStakes",
 		"sunBlock",
+		"sunflower",
 		"suspicion",
 		"swallowed",
 		"swallowedstat",
