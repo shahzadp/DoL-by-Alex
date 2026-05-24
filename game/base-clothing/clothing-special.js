@@ -43,6 +43,7 @@ function initSpecialClothes() {
 		{ name: "candy cane", 					sets: ["christmas"] },
 
 		{ name: "rose", 						sets: ["valentines", "flowers"], requirements: () => V.gwylanSeen?.includes("rose"), hint: "get kissed by a rose" },
+		{ name: "rose eyepatch", 				sets: ["valentines", "rose_wedding"] },
 		{ name: "rose wedding veil", 			sets: ["valentines", "rose_wedding"] },
 		{ name: "long rose wedding veil", 		sets: ["valentines", "rose_wedding"] },
 		{ name: "rose wedding dress", 			sets: ["valentines", "rose_wedding"] },
@@ -156,6 +157,7 @@ function initSpecialClothes() {
 
 		{ name: "butterfly dress",				sets: ["butterfly"] },
 		{ name: "butterfly bow",				sets: ["butterfly"] },
+		{ name: "butterfly eyepatch",			sets: ["butterfly"] },
 
 		{ name: "succubus top",					sets: ["succubus"] },
 		{ name: "succubus lower back wings",	sets: ["succubus", "transformation"] },
@@ -812,6 +814,8 @@ function specialClothesUpdate() {
 	if (!V.specialClothes.some(item => item.name === "sage witch hat")) V.specialClothes.push({ name: "sage witch hat", unlocked: 0 });
 	if (!V.specialClothes.some(item => item.name === "jasper pendant")) V.specialClothes.push({ name: "jasper pendant", unlocked: 0 });
 	if (!V.specialClothes.some(item => item.name === "familiar collar")) V.specialClothes.push({ name: "familiar collar", unlocked: 0 });
+	if (!V.specialClothes.some(item => item.name === "butterfly eyepatch")) V.specialClothes.push({ name: "butterfly eyepatch", unlocked: 0 });
+	if (!V.specialClothes.some(item => item.name === "rose eyepatch")) V.specialClothes.push({ name: "rose eyepatch", unlocked: 0 });
 
 	// Delete any entries that do not have a matching setup object.
 	V.specialClothes.forEach((clothing, index) => {

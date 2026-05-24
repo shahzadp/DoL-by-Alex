@@ -1161,7 +1161,7 @@ Renderer.CanvasModels.main = {
 			animation: "idle",
 
 			zfn(options) {
-				return (options.arm_left === "cover") ? ZIndices.left_cover_arm : options.zarms;
+				return (options.arm_left === "cover") ? ZIndices.left_cover_arm : ZIndices.armsidle;
 			},
 			showfn(options) {
 				return options.arm_left !== "none";
@@ -1178,7 +1178,7 @@ Renderer.CanvasModels.main = {
 
 			zfn(options) {
 				if (["cover", "hold"].includes(options.arm_right)) return ZIndices.right_cover_arm;
-				return options.zarms;
+				return ZIndices.armsidle;
 			},
 			showfn(options) {
 				return options.arm_right !== "none";
@@ -4303,6 +4303,7 @@ function filterFnArm(state, slot, options) {
 		case "":
 		case "primary":
 			return altFilterSwap ? [`worn_${slot}_acc`] : [`worn_${slot}`];
+		case 1:
 		case "secondary":
 			return altFilterSwap ? [`worn_${slot}`] : [`worn_${slot}_acc`];
 		case "pattern":
