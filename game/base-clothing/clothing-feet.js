@@ -1938,7 +1938,7 @@ function initFeet() {
 			notuck: 1,
 			location: 0,
 			iconFile: "anklestrapsandals.png",
-			accIcon: "anklestrapsandals_acc.png",
+			accIcon: "anklestrapsandals-acc.png",
 		},
 		{
 			index: 52,
@@ -1977,8 +1977,8 @@ function initFeet() {
 			notuck: 0,
 			location: 0,
 			iconFile: "anklestrapsneakers.png",
-			accIcon: "anklestrapsneakers_acc.png",
-			detailIcon: "anklestrapsneakers_detail.png",
+			accIcon: "anklestrapsneakers-acc.png",
+			detailIcon: "anklestrapsneakers-detail.png",
 		},
 		{
 			index: 53,
@@ -2014,7 +2014,7 @@ function initFeet() {
 			notuck: 0,
 			location: 0,
 			iconFile: "ankletrainers.png",
-			accIcon: "ankletrainers_acc.png",
+			accIcon: "ankletrainers-acc.png",
 		},
         {
 			index: 54,
@@ -2050,7 +2050,7 @@ function initFeet() {
 			notuck: 1,
 			location: 0,
 			iconFile: "balletpumps.png",
-			accIcon: "balletpumps_acc.png",
+			accIcon: "balletpumps-acc.png",
         },
         {
 			index: 55,
@@ -2087,7 +2087,7 @@ function initFeet() {
 			notuck: 1,
 			location: 0,
 			iconFile: "butterflyheels.png",
-			accIcon: "butterflyheels_acc.png",
+			accIcon: "butterflyheels-acc.png",
         },
         {
 			index: 56,
@@ -2117,14 +2117,17 @@ function initFeet() {
 			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
-			accessory: 1,
+			accessory: 0,
 			accessory_colour: 0,
 			accessory_colour_options: [],
-			accessory_colour_sidebar: 0,
+			pattern: 0,
+			pattern_options: ["plain", "dot", "strawberries"],
+			pattern_caption: true,
+			pattern_layer: "tertiary",
 			notuck: 1,
 			location: 0,
 			iconFile: "clogs.png",
-			accIcon: "clogs_acc.png",
+			accIcon: "clogs-acc.png",
         },
         {
 			index: 57,
@@ -2161,7 +2164,7 @@ function initFeet() {
 			notuck: 1,
 			location: 0,
 			iconFile: "doublestrapsandals.png",
-			accIcon: "doublestrapsandals_acc.png",
+			accIcon: "doublestrapsandals-acc.png",
         },
         {
 			index: 58,
@@ -2198,7 +2201,7 @@ function initFeet() {
 			notuck: 1,
 			location: 0,
 			iconFile: "flatsandals.png",
-			accIcon: "flatsandals_acc.png",
+			accIcon: "flatsandals-acc.png",
         },
         {
 			index: 59,
@@ -2234,7 +2237,7 @@ function initFeet() {
 			notuck: 0,
 			location: 0,
 			iconFile: "floralrainboots.png",
-			accIcon: "floralrainboots_acc.png",
+			accIcon: "floralrainboots-acc.png",
         },
         {
 			index: 60,
@@ -2276,8 +2279,8 @@ function initFeet() {
 			notuck: 0,
 			location: 0,
 			iconFile: "floralribbontrainers.png",
-			accIcon: "floralribbontrainers_acc.png",
-			detailIcon: "anklestrapsneakers_detail.png",
+			accIcon: "floralribbontrainers-acc.png",
+			detailIcon: "floralribbontrainers-detail.png",
         },
         {
 			index: 61,
@@ -2314,7 +2317,7 @@ function initFeet() {
 			notuck: 0,
 			location: 0,
 			iconFile: "fuzzybowboots.png",
-			accIcon: "fuzzybowboots_acc.png",
+			accIcon: "fuzzybowboots-acc.png",
         },
         {
 			index: 62,
@@ -2791,7 +2794,7 @@ function initFeet() {
 			],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
-			pattern_options: ["pattern"],
+			pattern_options: ["detail"],
 			pattern_layer: "tertiary",
 			gender: "n",
 			warmth: 4,
@@ -2800,6 +2803,7 @@ function initFeet() {
 			location: 0,
 			iconFile: "platformclogswithfur.png",
 			accIcon: "platformclogswithfur-acc.png",
+			detailIcon: "platformclogswithfur-detail.png",
         },
         {
 			index: 73,
@@ -2847,6 +2851,7 @@ function initFeet() {
 			location: 0,
 			iconFile: "platformloafers.png",
 			accIcon: "platformloafers-acc.png",
+			detailIcon: "platformloafers-detail.png",
         },
         {
 			index: 74,
@@ -2927,6 +2932,7 @@ function initFeet() {
                 "pink", "light pink", "purple", "lilac", "red",
                 "tangerine", "teal", "white", "yellow", "custom"
 			],
+			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 4,
 			cursed: 0,
@@ -3100,12 +3106,7 @@ function initFeet() {
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-			],
-			accessory_colour_sidebar: 1,
+			accessory_colour_options: [],
 			gender: "n",
 			warmth: 1,
 			cursed: 0,
@@ -3192,6 +3193,9 @@ function initFeet() {
                 "tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
+			pattern: 0,
+			pattern_options: ["detail"],
+			pattern_layer: "tertiary",
 			gender: "n",
 			warmth: 4,
 			cursed: 0,

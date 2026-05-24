@@ -1876,7 +1876,7 @@ function initNeck() {
             name: "gothic choker",
             name_cap: "Gothic choker",
             variable: "gothic choker",
-            description: "A frilly chocker.",
+            description: "A frilly choker.",
             cost: 4000,
             shop: ["clothing"],
             type: ["normal","formal","costume"],
