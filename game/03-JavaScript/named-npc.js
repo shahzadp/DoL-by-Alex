@@ -211,7 +211,8 @@ function averySchedule() {
 	const schoolPickupChance = (C.npc.Avery.love >= love && (rng >= 51 || Weather.precipitation !== "none")) || (C.npc.Avery.love >= 20 && Time.weekDay === 2);
 	if (schoolPickupChecks && schoolPickupChance) T.avery_available = "pickup";
 
-	if (!V.avery_mansion || T.avery_available === "pickup") {
+	/* NOTE: not sure if replacing || with && breaks anything, leaving this just in case */
+	if (!V.avery_mansion && T.avery_available === "pickup") {
 		/* Prior to unlocking mansion, Avery can only be found for school pickup, dates, or office job */
 		if (V.averydate === 1 && Time.weekDay === 7 && Time.hour === 20) T.avery_available = "date";
 
