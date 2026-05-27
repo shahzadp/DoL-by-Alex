@@ -12213,6 +12213,7 @@ function initUpper() {
             outfitPrimary: { lower: "milkmaid dress" },
             iconFile: "milkmaiddress.png",
             accIcon: "milkmaiddress-acc.png",
+			formfitting: 1,
 		},
         {
             index: 219,
@@ -12638,6 +12639,7 @@ function initUpper() {
             location: 0,
             iconFile: "lolita-dress.png",
             accIcon: "lolita-dress-acc.png",
+			formfitting: 1,
         },
         {
             index: 228,
