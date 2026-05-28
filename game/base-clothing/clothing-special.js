@@ -3,7 +3,7 @@
 
 function initSpecialClothes() {
 	/* name: should ALWAYS match the clothing item's setup "name" property.
-	 * sets: whoch setup sets the clothes are a part of. Sets are defined in the object after this one.
+	 * sets: which setup sets the clothes are a part of. Sets are defined in the object after this one.
 	 * hint, requirements: Should ONLY be used if item is not part of its own set, and we know for sure it never will be, such as with simple items like the daisy and flower crown.
 	 * Otherwise, hint and requirements should be part of the sets setup further down.
 	*/

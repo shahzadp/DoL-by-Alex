@@ -678,7 +678,7 @@ function sexShopOnItemClick(index) {
 		<div id="ssm_desc">
 			<div class="ssm_closeContainer">
 				<div class="ssm_close" id="ssm_close1" title="close"
-				     onclick="window.sexShopOnCloseDesc('ssmDescPillContainer')">x</div>
+					onclick="window.sexShopOnCloseDesc('ssmDescPillContainer')">x</div>
 			</div>
 			<span style="color: #bcbcbc">${item.description}</span>
 			<div id="ssm_desc_action"></div>

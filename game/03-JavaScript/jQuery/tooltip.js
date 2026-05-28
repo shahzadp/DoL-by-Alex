@@ -1,55 +1,55 @@
 /* eslint-disable no-unused-expressions */
 /*
-    The main purpose for this jQuery plugin was to enable tooltips for dynamically created elements, by using jQuery
-    However, I also added a [tooltip] attribute to be used with an html element, which is more flexible than the old tooltip.
+	The main purpose for this jQuery plugin was to enable tooltips for dynamically created elements, by using jQuery
+	However, I also added a [tooltip] attribute to be used with an html element, which is more flexible than the old tooltip.
 
-    Example usage: (jquery)
-    jqueryElement.tooltip({
-        message: "Here is a tooltip",
-        delay: 200,
-        position: "cursor",
-    });
+	Example usage: (jquery)
+	jqueryElement.tooltip({
+		message: "Here is a tooltip",
+		delay: 200,
+		position: "cursor",
+	});
 
-    Enable or disable it:
-    jqueryElement.tooltip("enable");
-    jqueryElement.tooltip("disable");
+	Enable or disable it:
+	jqueryElement.tooltip("enable");
+	jqueryElement.tooltip("disable");
 
-    Change message to an already existing tooltip:
-    jqueryElement.tooltip({ message: "New message" });
-
-
-    Example usage: (html)
-    <div tooltip="Here is a tooltip" id="someid" class="someclass">
-        Content here
-    </div>
-
-    Example usage (with added span for separate styles for the tooltip - and sugarcube variable)
-    <div tooltip="Here is a tooltip:<span class='yellow'>Current pepper sprays: $spray</span>">
-        Pepper sprays
-    </div>
-
-    Example usage (with customised settings):
-    <div tooltip="Tooltip text" tooltip-title="Title" tooltip-position="bottom">
-        Pepper sprays
-    </div>
+	Change message to an already existing tooltip:
+	jqueryElement.tooltip({ message: "New message" });
 
 
-    ---------------------------------------------------
-    Styling: (tooltip.css)
-    .tooltip-popup - The container for the tooltip
-    .tooltip-header - An optional title property
-    .tooltip-body - The tooltip text
-    - Anchor styling can be changed with the property "anchorStyle" (anchor = the object to hover over to display the tooltip)
+	Example usage: (html)
+	<div tooltip="Here is a tooltip" id="someid" class="someclass">
+		Content here
+	</div>
 
-    Settings:
-        title: A bigger title text - default null
-        message: The actual tooltip content
-        anchorStyle: Optional css class for the anchor
-        position: Position of the tooltip. Options: cursor, top, bottom, left, right, bottomRight, bottomLeft, topRight, topLeft
-        cursor: Cursor styling when hovering over the anchor
-        delay: Optional delay - default 150ms)
-        width: Optional width of the tooltip. If set to null, it will resize itself based on the content
-        maxWidth: Optional max width of the tooltip. When it reaches this width, text will wrap to the next row
+	Example usage (with added span for separate styles for the tooltip - and sugarcube variable)
+	<div tooltip="Here is a tooltip:<span class='yellow'>Current pepper sprays: $spray</span>">
+		Pepper sprays
+	</div>
+
+	Example usage (with customised settings):
+	<div tooltip="Tooltip text" tooltip-title="Title" tooltip-position="bottom">
+		Pepper sprays
+	</div>
+
+
+	---------------------------------------------------
+	Styling: (tooltip.css)
+	.tooltip-popup - The container for the tooltip
+	.tooltip-header - An optional title property
+	.tooltip-body - The tooltip text
+	- Anchor styling can be changed with the property "anchorStyle" (anchor = the object to hover over to display the tooltip)
+
+	Settings:
+		title: A bigger title text - default null
+		message: The actual tooltip content
+		anchorStyle: Optional css class for the anchor
+		position: Position of the tooltip. Options: cursor, top, bottom, left, right, bottomRight, bottomLeft, topRight, topLeft
+		cursor: Cursor styling when hovering over the anchor
+		delay: Optional delay - default 150ms)
+		width: Optional width of the tooltip. If set to null, it will resize itself based on the content
+		maxWidth: Optional max width of the tooltip. When it reaches this width, text will wrap to the next row
 */
 
 const defaultTooltipSettings = {
