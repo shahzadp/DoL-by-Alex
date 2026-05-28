@@ -237,10 +237,13 @@ Weather.WeatherGeneration = (() => {
 				}
 			}
 
-			// Sort it in case of keypoints being generated out of order
-			dayKeypoints.sort((a, b) => a.timestamp - b.timestamp);
 			V.weatherObj.keypointsArr.push(...dayKeypoints);
 		}
+
+		// Weather exceptions whose duration crosses midnight push an `end` keypoint into the next day,
+		// which then has its own keypoints appended after — leaving the array globally unsorted.
+		// Downstream consumers assume timestamp order is sorted, so re-sort globally after appending.
+		V.weatherObj.keypointsArr.sort((a, b) => a.timestamp - b.timestamp);
 
 		// printSeasonalWeatherKeypoints();
 	}
