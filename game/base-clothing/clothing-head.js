@@ -3391,17 +3391,17 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3411,8 +3411,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bear-hood.png",
 			accIcon: "bear-hood-acc.png",
-        },
-        {
+		},
+		{
 			index: 91,
 			slot: "head",
 			name: "apple hairpin",
@@ -3447,8 +3447,8 @@ function initHead() {
 			iconFile: "apple-hairpin.png",
 			accIcon: 0,
 			shopGroup: "apple hairpin",
-        },
-        {
+		},
+		{
 			index: 92,
 			slot: "head",
 			name: "bandana hat",
@@ -3468,9 +3468,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3484,8 +3484,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bandana-hat.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 93,
 			slot: "head",
 			name: "doggy sou'wester",
@@ -3518,8 +3518,8 @@ function initHead() {
 			location: 0,
 			iconFile: "doggy-souwester.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 94,
 			slot: "head",
 			name: "bear sou'wester",
@@ -3552,8 +3552,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bear-souwester.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 95,
 			slot: "head",
 			name: "bunny earmuffs",
@@ -3573,17 +3573,17 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
 			gender: "n",
@@ -3592,8 +3592,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bunny-earmuffs.png",
 			accIcon: "bunny-earmuffs-acc.png",
-        },
-        {
+		},
+		{
 			index: 96,
 			slot: "head",
 			name: "bunny hairpin",
@@ -3613,9 +3613,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 1,
@@ -3627,8 +3627,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bunny-hairpin.png",
 			accIcon: "bunny-hairpin-acc.png",
-        },
-        {
+		},
+		{
 			index: 97,
 			slot: "head",
 			name: "bunny sou'wester",
@@ -3661,8 +3661,8 @@ function initHead() {
 			location: 0,
 			iconFile: "bunny-souwester.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 98,
 			slot: "head",
 			name: "froggy sou'wester",
@@ -3695,8 +3695,8 @@ function initHead() {
 			location: 0,
 			iconFile: "froggy-souwester.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 99,
 			slot: "head",
 			name: "fur beret",
@@ -3716,9 +3716,9 @@ function initHead() {
 			plural: 0,
 			colour: 0,
 			colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			colour_sidebar: 1,
 			accessory: 0,
@@ -3733,51 +3733,51 @@ function initHead() {
 			location: 0,
 			iconFile: "fur-beret.png",
 			accIcon: 0,
-        },
-        {
-            index: 100,
-            slot: "head",
-            name: "fur beret with pompom",
-            name_cap: "Fur beret with pompom",
-            variable: "fur beret with pompom",
-            description: "Fluffy with a bounce.",
-            cost: 10000,
-            shop: ["clothing"],
-            type: ["normal","hat"],
-            state: 0,
-            state_base: 0,
-            integrity: 100,
-            integrity_max: 100,
-            fabric_strength: 25,
-            reveal: 200,
-            word: "a",
-            plural: 0,
-            colour: 0,
-            colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-            ],
-            colour_sidebar: 1,
+		},
+		{
+			index: 100,
+			slot: "head",
+			name: "fur beret with pompom",
+			name_cap: "Fur beret with pompom",
+			variable: "fur beret with pompom",
+			description: "Fluffy with a bounce.",
+			cost: 10000,
+			shop: ["clothing"],
+			type: ["normal","hat"],
+			state: 0,
+			state_base: 0,
+			integrity: 100,
+			integrity_max: 100,
+			fabric_strength: 25,
+			reveal: 200,
+			word: "a",
+			plural: 0,
+			colour: 0,
+			colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
+			],
+			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
-            gender: "n",
-            warmth: 4,
-            back_img: 1,
-            mask_img: 1,
-            shopGroup: "fur beret",
-            cursed: 0,
-            location: 0,
-            iconFile: "fur-beret-with-pompom.png",
-            accIcon: 0,
-        },
-        {
+			gender: "n",
+			warmth: 4,
+			back_img: 1,
+			mask_img: 1,
+			shopGroup: "fur beret",
+			cursed: 0,
+			location: 0,
+			iconFile: "fur-beret-with-pompom.png",
+			accIcon: 0,
+		},
+		{
 			index: 101,
 			slot: "head",
 			name: "green apple hairpin",
@@ -3812,8 +3812,8 @@ function initHead() {
 			iconFile: "green-apple-hairpin.png",
 			accIcon: 0,
 			shopGroup: "apple hairpin",
-        },
-        {
+		},
+		{
 			index: 102,
 			slot: "head",
 			name: "heart hairpin",
@@ -3884,8 +3884,8 @@ function initHead() {
 			location: 0,
 			iconFile: "kitty-souwester.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 104,
 			slot: "head",
 			name: "large beret",
@@ -3921,8 +3921,8 @@ function initHead() {
 			location: 0,
 			iconFile: "large-beret.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 105,
 			slot: "head",
 			name: "large bow beret",
@@ -4000,8 +4000,8 @@ function initHead() {
 			location: 0,
 			iconFile: "large lace bow.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 107,
 			slot: "head",
 			name: "wide brim sun hat",
@@ -4041,8 +4041,8 @@ function initHead() {
 			location: 0,
 			iconFile: "wide-brim-sun-hat.png",
 			accIcon: "wide-brim-sun-hat-acc.png",
-        },
-        {
+		},
+		{
 			index: 108,
 			slot: "head",
 			name: "tulip hairpin",
@@ -4116,8 +4116,8 @@ function initHead() {
 			location: 0,
 			iconFile: "small-tulip-hairpin.png",
 			accIcon: "small-tulip-hairpin-acc.png",
-        },
-        {
+		},
+		{
 			index: 110,
 			slot: "head",
 			name: "small heart hairpin",
@@ -4155,8 +4155,8 @@ function initHead() {
 			location: 0,
 			iconFile: "small heart hairpin.png",
 			accIcon: "small heart hairpin-acc.png",
-        },
-        {
+		},
+		{
 			index: 111,
 			slot: "head",
 			name: "small bunny hairpin",
@@ -4190,8 +4190,8 @@ function initHead() {
 			location: 0,
 			iconFile: "small-bunny-hairpin.png",
 			accIcon: "small-bunny-hairpin-acc.png",
-        },
-        {
+		},
+		{
 			index: 112,
 			slot: "head",
 			name: "lolita bonnet",
@@ -4234,8 +4234,8 @@ function initHead() {
 			iconFile: "lolita-bonnet.png",
 			accIcon: "lolita-bonnet-acc.png",
 			detailIcon: "pattern",
-        },
-        {
+		},
+		{
 			index: 113,
 			slot: "head",
 			name: "lolita maid headband",
@@ -4270,8 +4270,8 @@ function initHead() {
 			iconFile: "lolita-maid-headband.png",
 			accIcon: 0,
 			shopGroup: "maidband",
-        },
-        {
+		},
+		{
 			index: 114,
 			slot: "head",
 			name: "lolita night cap",
@@ -4307,8 +4307,8 @@ function initHead() {
 			location: 0,
 			iconFile: "lolita-night-cap.png",
 			accIcon: 0,
-        },
-        {
+		},
+		{
 			index: 115,
 			slot: "head",
 			name: "night cap",
@@ -4345,8 +4345,8 @@ function initHead() {
 			location: 0,
 			iconFile: "night-cap.png",
 			accIcon: "night-cap-acc.png",
-        },
-        {
+		},
+		{
 			index: 116,
 			slot: "head",
 			name: "silky hair bow",
@@ -4380,90 +4380,90 @@ function initHead() {
 			iconFile: "silky-hair-bow.png",
 			accIcon: 0,
 			back_img: 1,
-        },
-        {
-            index: 117,
-            slot: "head",
-            name: "badge hat",
-            name_cap: "Badge hat",
-            variable: "badge hat",
-            description: "Personalized with pins.",
-            cost: 3500,
-            shop: ["clothing"],
-            type: ["normal"],
-            state: 0,
-            state_base: 0,
-            integrity: 100,
-            integrity_max: 100,
-            fabric_strength: 25,
-            reveal: 200,
-            word: "a",
-            plural: 0,
-            colour: 0,
-            colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-            ],
-            colour_sidebar: 1,
-            accessory: 1,
-            accessory_colour: 0,
-            accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-            ],
-            accessory_colour_sidebar: 1,
-            gender: "n",
-            warmth: 1,
-            set: "head",
-            cursed: 0,
-            location: 0,
-            iconFile: "badge-hat.png",
-            accIcon: "badge-hat-acc.png",
-        },
-        {
-            index: 118,
-            slot: "head",
-            name: "hat with pompom",
-            name_cap: "Hat with pompom",
-            variable: "hatwithpompom",
-            description: "Warm hat for winter.",
-            cost: 4500,
-            shop: ["clothing"],
-            type: ["normal"],
-            state: 0,
-            state_base: 0,
-            integrity: 100,
-            integrity_max: 100,
-            fabric_strength: 25,
-            reveal: 200,
-            word: "a",
-            plural: 0,
-            colour: 0,
-            colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-            ],
-            colour_sidebar: 1,
-            accessory: 1,
-            accessory_colour: 0,
-            accessory_colour_options: [
-                "black", "navy blue", "wine", "brown", "olive",
-                "pink", "light pink", "purple", "lilac", "red",
-                "tangerine", "teal", "white", "yellow", "custom"
-            ],
-            accessory_colour_sidebar: 1,
-            gender: "n",
-            warmth: 3,
-            mask_img: 1,
-            set: "head",
-            cursed: 0,
-            location: 0,
-            iconFile: "hatwithpompom.png",
-            accIcon: "hatwithpompom-acc.png",
-        },
+		},
+		{
+			index: 117,
+			slot: "head",
+			name: "badge hat",
+			name_cap: "Badge hat",
+			variable: "badge hat",
+			description: "Personalized with pins.",
+			cost: 3500,
+			shop: ["clothing"],
+			type: ["normal"],
+			state: 0,
+			state_base: 0,
+			integrity: 100,
+			integrity_max: 100,
+			fabric_strength: 25,
+			reveal: 200,
+			word: "a",
+			plural: 0,
+			colour: 0,
+			colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
+			],
+			colour_sidebar: 1,
+			accessory: 1,
+			accessory_colour: 0,
+			accessory_colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
+			],
+			accessory_colour_sidebar: 1,
+			gender: "n",
+			warmth: 1,
+			set: "head",
+			cursed: 0,
+			location: 0,
+			iconFile: "badge-hat.png",
+			accIcon: "badge-hat-acc.png",
+		},
+		{
+			index: 118,
+			slot: "head",
+			name: "hat with pompom",
+			name_cap: "Hat with pompom",
+			variable: "hatwithpompom",
+			description: "Warm hat for winter.",
+			cost: 4500,
+			shop: ["clothing"],
+			type: ["normal"],
+			state: 0,
+			state_base: 0,
+			integrity: 100,
+			integrity_max: 100,
+			fabric_strength: 25,
+			reveal: 200,
+			word: "a",
+			plural: 0,
+			colour: 0,
+			colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
+			],
+			colour_sidebar: 1,
+			accessory: 1,
+			accessory_colour: 0,
+			accessory_colour_options: [
+				"black", "navy blue", "wine", "brown", "olive",
+				"pink", "light pink", "purple", "lilac", "red",
+				"tangerine", "teal", "white", "yellow", "custom"
+			],
+			accessory_colour_sidebar: 1,
+			gender: "n",
+			warmth: 3,
+			mask_img: 1,
+			set: "head",
+			cursed: 0,
+			location: 0,
+			iconFile: "hatwithpompom.png",
+			accIcon: "hatwithpompom-acc.png",
+		},
 	];
 	setup.clothes.head = clothing;
 

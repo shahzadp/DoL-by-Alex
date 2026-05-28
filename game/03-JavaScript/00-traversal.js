@@ -8,7 +8,7 @@
  * @returns {object}
  */
 function traverse(source, key, parents, callback) {
-	// Ensure node is setup correctly for later travesal or configuration
+	// Ensure node is setup correctly for later traversal or configuration
 	const output = {};
 	if (source == null) {
 		return null;
@@ -42,7 +42,7 @@ window.traverse = traverse;
  * @returns {object}
  */
 function traversePair(source, target, key, parents, callback) {
-	// Ensure node is setup correctly for later travesal or configuration
+	// Ensure node is setup correctly for later traversal or configuration
 	const output = {};
 	if (source == null) {
 		return null;
