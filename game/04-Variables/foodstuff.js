@@ -207,7 +207,8 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
 			shop: {
-				sell_price: 45,
+				sell_price: 300,
+				available_in: ["supermarket"],
 			},
 		},
 		banana: {
@@ -220,7 +221,8 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
 			shop: {
-				sell_price: 70,
+				sell_price: 100,
+				available_in: ["supermarket"],
 			},
 		},
 		lemon: {
