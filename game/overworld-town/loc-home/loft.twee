@@ -15,6 +15,10 @@ You are in the loft above the orphanage. A wide hall runs down the centre. Corri
 	The comforting scent of books comes from the reading nook.
 	<br>
 <</if>>
+<<if $loft_gh gte 2>>
+	Light filters through the bay window at the far back.
+	<br>
+<</if>>
 <br>
 <<if $loft_spray isnot 1 and $spray lt $spraymax and $loft_kylar>>
 	<<peppersprayicon>><<link [[Refill pepper spray|Orphanage Loft Spray]]>><<spray 1>><<set $loft_spray to 1>><</link>><<gspray>>
@@ -26,6 +30,10 @@ You are in the loft above the orphanage. A wide hall runs down the centre. Corri
 <</if>>
 <<if $loft_doren is 1>>
 	<<schoolicon "library">><<link [[Reading nook|Orphanage Loft Reading Nook]]>><</link>>
+	<br>
+<</if>>
+<<if $loft_gh gte 2>>
+	<<baywindowicon>><<link [[Bay window|Orphanage Loft Bay Window]]>><</link>>
 	<br>
 <</if>>
 <<main_hall_icon>><<link [[Main hall (0:01)|Orphanage]]>><<pass 1>><</link>>
@@ -341,3 +349,356 @@ You stand before the cosy reading nook by the window. The shelves are filled wit
 <<endevent>>
 <br><br>
 <<link [[Next|Orphanage Loft Reading Nook]]>><</link>>
+
+:: Orphanage Loft Bay Window
+<<effects>>
+
+You stand before the bay window. It rises above you. The latch on the central window holds firm.
+<<if $loft_gh is 3>>
+	The quilts, padded by the duvets beneath, look comfy. Cushions and pillows are scattered across the bay. The wind chime sways gently.
+<</if>>
+<br><br>
+<<if Time.hour lte 22>>
+	<<switch random(1,4)>>
+		<<case 1>>A <<generatey1>><<person1>><<person>> watches over the garden below.
+		<<case 2>>A <<generatey1>><<person1>><<person>> chats with a <<generatey2>><<person2>><<person>> while sitting on the window board<<if $loft_gh is 3>>, hugging a pillow in <<person1>><<his>> chest<</if>>.
+		<<case 3>>A <<generatey1>><<person1>><<person>> basks <<= Time.dayState is "night" ? "beneath the moonlight" : "in the sunlight">>, dozing off.
+		<<default>>Some orphans gather near the windows, peering out and pointing excitedly at something in the forest.
+	<</switch>>
+	<br><br>
+<</if>>
+You open the window and perch on the edge of the sill, dangling your feet in the air.
+<br><br>
+
+<<loft_window_options>>
+
+:: Orphanage Loft Bay Window Preen
+<<effects>>
+
+<<if $plucked>>
+	You try to preen your wings, but Gwylan left nothing loose. You're thoroughly plucked already.
+<<elseif $daily.birdSelfPreen is undefined>>
+	<<set $daily.birdSelfPreen to 1>>
+	You preen your wings. It's harder doing this alone.
+	<<set _selfFeatherNum to random(1,2)>>
+	<<switch _selfFeatherNum>>
+		<<case 1>>One of your loose feathers has fallen out. <span class="teal">You take it.</span>
+		<<case 2>>A couple of your loose feathers have fallen out. <span class="teal">You take them.</span>
+	<</switch>>
+	<<set $bird.materials.feathers += _selfFeatherNum>>
+	<<wearProp "pc feather" "hair">>
+<<else>>
+	You preen your wings. There's no more loose feathers to remove for now, but it makes you feel better regardless.
+<</if>>
+<br><br>
+
+<<loft_window_options>>
+
+:: Orphanage Loft Bay Window Sing
+<<effects>>
+
+<<if $harpy gte 6>>
+	<<transform bird 1>>
+	<<print either(
+		"Your powerful, clear voice pierces the air and subdues every creature it can reach, even the most finicky. The forest yield to you.",
+		"Your deep and gentle voice soothes all the sorrows of the world. The forest seems a little more peaceful.",
+		"Your glorious song beckons to a distant land. The trees rattle and the leaves rustle as if heeding your call.",
+		"You hum in the wind, letting it carry your song across the vast expanse of the sky. The trees make way and blossoms bloom even more beautifully wherever it passes.",
+		"Your ballad graces the very air. Nature holds its breath in reverence for you.",
+		"Your melody rides the air as though the sky welcomes it home.",
+		"Your voice drips like honeyed song through the air. Every note pulls at the heart like a siren's call.",
+		"Each note from your throat feels bright enough to stir the skies. Even the breeze seems to dance to your melody."
+	)>><<trauma -6>><<ltrauma>>
+	<br><br>
+	<<cleareventpool>>
+
+	<<addinlineevent "loft_sing_birds" 1>>
+		Your melodic tune attracts <<= Time.dayState is "night" ? "an owl, and it perches beside you on the sill. Its hoot backs your song" : "a flock of songbirds. They gather around you, adding their chirping as accompaniment">>.
+	<</addinlineevent>>
+
+	<<if $seabird_lullaby gte 2 and !$weekly.seabird_sing>>
+		<<addinlineevent "loft_sing_lullaby" .01>>
+			<<set $weekly.seabird_sing to true>>
+			On a whim, you hum the six familiar notes of the <span class="teal">Seabird's Lullaby</span>. Then, words slip from your lips in the most natural way. Everything is silent, except for your voice. <<if Time.hour gte 23>>It drifts through the air, carrying even the weariest of souls to sleep.<</if>>
+			<br><br>
+			A soft singing echoes from the forest. 
+			<<if $gwylan.hunting gte 2 and $hypnosis_traits.devotion gt 0 and !isGwylanAbsent()>>
+				<<silently>><<gwylanWillpowerDifficulty>><</silently>>
+				It evokes a strange, compelling feeling, and suddenly, you feel an urge to venture deeper into the forest.
+					<<if $willpowerSuccess>>
+						You shake your head and push the thought aside.
+					<<else>>
+						You sink deeper into the trance. <<hypnosisText "Guilt sets in as you recall the duties you've neglected.">><<trauma 6>><<gtrauma>>
+					<</if>>
+			<<elseif isGwylanAbsent() is "nobody">>
+				It sounds like nobody. You shake your head. You hear nothing.
+			<<else>>
+				It sounds like Gwylan. Your voices join and weave into a duet.
+			<</if>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Time.hour gte 21>>
+		<<addinlineevent "loft_sing_orphan_lull" .5>>
+			<<generatey1>><<person1>>
+			Another orphan falls asleep nearby. You lower your voice into a soothing coo.
+			<br><br>
+			You wake <<him>> up after a moment and suggest <<he>> go to bed.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if $dissociation gte 1 and $hallucinations gte 2 and Time.dayState is "night">>
+		<<addinlineevent "loft_sing_trauma" 1>>
+			You pour your sorrow and distress into the cold night. Darkness shrouds your lonely tune, seemingly wanting to swallow you whole.
+			<<if Weather.bloodMoon>>
+				For a moment, the red moon looks just like an eye, boring into you with malicious intent. Something is coming for you. <span class="red">You open your mouth, and find yourself unable to sing.</span><<trauma 10>><<ggtrauma>>
+				<<set $daily.no_sing to true>>
+			<</if>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Weather.bloodMoon and Time.dayState is "night">>
+		<<addinlineevent "loft_sing_blood" .7>>
+			<<set $daily.no_sing to true>>
+			<<set _no_options to true>>
+			The deep red moonlight envelopes you, painting everything in red. Your voice trembles, a feeling of dread filling your chest.
+			<br><br>
+			Something terrible is near.
+			<br><br>
+			It had arrived.
+			<br><br>
+			<span class="red">First, no sound leaves your throat.
+			<br><br>
+			Second, you no longer hear anything at all.
+			<br><br>
+			Third, red swarms your vision, until you can't see anymore. There's so much blood.</span><<trauma 10>><<ggtrauma>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if $world_corruption_soft gte 99 and $hallucinations gte 2 and Time.dayState is "night">>
+		<<addinlineevent "loft_sing_snuffed" 1>>
+			Your surroundings suddenly become darker, tendrils of darkness closing on you.
+			<br><br>
+			You no longer hear your own singing. You scream. That is snuffed too. <span class="red">Your voice is stolen from you.</span><<trauma 20>><<gggtrauma>>
+			<br><br>
+			The night is eerily quiet. There's no sound except for your heavy breathing.
+			<<set $daily.no_sing to true>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if $loft_gh is 3>>
+		<<addinlineevent "loft_sing_chimes" 1>>
+			The wind gently sways the wind chimes, creating tinkling sounds that blend with your voice, forming a harmonious symphony.
+		<</addinlineevent>>
+	<</if>>
+	
+	<<addinlineevent "loft_sing_instrument" .7>>
+		<<generatey1>><<person1>>
+		A <<person>> sits by you, holding
+		<<if random(1,50) is 50>>
+			<<print either("a crwth", "a citole", "a pibgorn", "a cittern", "a concertina", "a bone flute", "a hurdy-gurdy", "an Anglo-Saxon lyre")>> in <<his>> hand.
+			<br><br>
+			You pause your song briefly, and curiously examine <<his>> instrument. It's a rare sight to see one of these.
+		<<else>>
+			<<print either("a harmonica", "a guitar", "a clarinet", "a hand drum", "a violin", "a lyre", "an ukulele", "a kalimba", "a saxophone")>> in <<his>> hand.
+		<</if>>
+		<br><br>
+		<<He>> offers you a smile and wordlessly adds <<his>> music to your singing. <<He>> tries <<his>> best to keep up with you.
+		<br><br>
+		By the end, <<his>> face is flushed with excitement. <<He>> looks at you with admiration, as if you are <<his>> muse.<<stress -6>><<lstress>>
+	<</addinlineevent>>
+
+	<<addinlineevent "loft_sing_wolves" 1>>
+		You can hear howling from afar. <<if $wolfpackleader is 1>> Your legion of wolves sing back to you in their own way.<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "loft_sing_longing" 1>>
+		The sky sends forth a powerful gust of wind, as if to express its longing for you. <<if $transformationParts.bird.wings isnot "hidden">>Your wings flutter, each feather caressed by the breeze.<</if>> You yearn to touch the sky again. <<if $plucked>>But your wings cannot carry you into the sky, at least not yet.<</if>>
+	<</addinlineevent>>
+
+	<<addinlineevent "default" 1>>
+		Your song rides the wind, wandering far beyond the skyline.
+	<</addinlineevent>>
+	<<runeventpool>>
+<<else>>
+	You sing to the forest, and it responds in kind with 
+	<<if Weather.precipitation isnot "none">>
+		<<if Weather.precipitation is "rain">>
+			a passing breeze that carries the earthy smell of damp woods.
+		<<else>>
+			a gust of wind that lands a snowflake on your nose. You sneeze.
+		<</if>>
+	<<elseif Time.season is "autumn">>
+		a soothing breeze that smells like decaying leaves and ripe fruits.
+	<<elseif Time.season is "summer">>
+		a fresh breeze with a hint of spice and sweetness from the tree resin melted by the sun's sheer intensity.
+	<<else>>
+		a gentle zephyr with the scent of crisp pines and blooming flowers.
+	<</if>>
+	<<stress -6>><<lstress>>
+	<br><br>
+	<<cleareventpool>>
+
+	<<if Time.dayState is "night" and !Weather.bloodMoon and !Weather.isOvercast>>
+		<<addinlineevent "loft_sing_moonlight" 1>>
+			The moon rests high in the night sky, gently casting its silver hue upon you.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if $dissociation gte 1>>
+		<<addinlineevent "loft_sing_sorrow" .7>>
+			<<set $daily.no_sing to true>>
+			Your singing stops abruptly. A lump forms in your throat as the weight of everything has happened crashes down onto you. You cover your face.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Weather.bloodMoon and Time.dayState is "night">>
+		<<addinlineevent "loft_sing_dread" 1>>
+			<<set $daily.no_sing to true>>
+			You pause, and look up to the sky. The blood moon bears down on you, filling your vision with red.
+			<br><br>
+			<span class="red">Suddenly, you don't want to sing anymore.</span>
+		<</addinlineevent>>
+	<</if>>
+
+	<<addinlineevent "loft_sing_clap" 1>>
+		<<generatey1>><<person1>>
+		A young orphan joins your side. <<He>> claps to your song in encouragement.
+	<</addinlineevent>>
+
+	<<addinlineevent "loft_sing_wave" 1>>
+		Some orphans see you from the garden and wave at you.
+	<</addinlineevent>>
+
+	<<runeventpool>>
+<</if>>
+
+<br><br>
+<<loft_window_options>>
+:: Orphanage Loft Bay Window Watch
+<<effects>>
+
+You watch the forest.
+<br><br>
+<<if $transformationParts.traits.sharpEyes isnot "disabled">>
+	With your sharp eyesight, you can see
+	<<switch random(1,13)>>
+		<<case 1>>seasonal flowers in full bloom across the outskirts.
+		<<case 2>>ripe fruits hanging from distant trees.
+		<<case 3>>a fox burying a bird egg in the distance.
+		<<case 4>>a lone wolf running deeper into the forest, until it disappears into a cave.
+		<<case 5>>smoke rising from somewhere deep within the forest.
+		<<case 6>>a lone figure disappearing deeper into the forest.
+		<<case 7>>branches swaying despite the still air.
+		<<case 8>>a rabbit darting through the undergrowth.
+		<<case 9>>a narrow trail winding through the forest.
+		<<case 10>>a squirrel leaping between branches.
+		<<case 11>>a deer grazing near the forest edge.
+		<<case 12>>ripples spreading across a hidden pond.
+		<<default>>a flock of birds circling above the trees.
+	<</switch>>
+	<<stress -6>><<lstress>>
+<<else>>
+	Lush greenery stretches as far as the eye can see. You can spot a corner of the forest lake. You feel at ease.<<stress -3>><<lstress>>
+<</if>>
+<br><br>
+
+<<cleareventpool>>
+
+<<if $transformationParts.traits.sharpEyes isnot "disabled">>
+	<<addinlineevent "forest_watch_shop" .01>>
+		You notice a strange, castle-like shop cradled in the treeline.<<if $forest_shop_intro is 1>> It's the forest shop.<</if>>
+		<br><br>
+		From here, you can peer through the top window of the building. <<= isGwylanAbsent() is "nobody" ? "Nobody is there.": "A silhouette paces back and forth. As if sensing your gaze, it pauses abruptly in front of the window, staring back at you.">>
+		<br><br>
+		You look away.
+	<</addinlineevent>>
+<</if>>
+
+<<addinlineevent "forest_watch_gun" .2>>
+	A distant gunshot rings through the forest. Moments later, a flock of startled birds takes flight above the trees.
+<</addinlineevent>>
+
+<<addinlineevent "forest_watch_misc" 10>>
+	<<switch random(1,7)>>
+		<<case 1>>
+			<<if $loft_gh is 3>>
+				<<print either(
+					"The curtains billow softly beside you.",
+					"The quilts sink comfortably beneath your weight.",
+					"The blankets bunch beneath your shifting weight.",
+					"The curtains flutter softly against the wooden frame.",
+					"Loose fabric rustles quietly in the breeze."
+				)>>
+			<<else>>
+				The scent of evergreen lingers in the air.
+			<</if>>
+		<<case 2>>
+			<<if Weather.name is "thunderstorm">>
+				A cold storm blankets the forest in darkness. You sit alone by the open window, feeling stray droplets patter softly against your legs as lightning splits the sky.
+			<<elseif Weather.precipitation isnot "none">>
+				<<= Weather.precipitation is "rain" ? "Raindrops patter gently against your dangling legs." : "Snow gathers along the window sill.">>
+			<<else>>
+				The <<= Time.dayState is "night" ? "moonlight caresses": Time.dayState is "dusk" ? "sunset washes across" : "sun warms">> your skin as you lean against the open frame.
+			<</if>>
+		<<case 3>>
+			<<if $loft_river is 1>>
+				The smell of soup drifting from the kitchen.
+			<<else>>
+				A calm silence settles over the orphanage.
+			<</if>>
+		<<case 4>>
+			<<if Weather.bloodMoon>>
+				The blood moon dyes the trees red. The forest is eerily silent.
+			<<elseif Time.dayState is "night">>
+				<<print either(
+					"The night forest hums with unseen life.",
+					"The moon hangs silently above the forest.",
+					"Moonlight washes the bay window silver."
+				)>>
+			<<else>>
+				Warm light pools across the loft floor.
+			<</if>>
+		<<case 5>>
+			<<if Time.season is "spring">>
+				Spring flowers visible beyond the trees.
+			<<elseif Time.season is "winter">>
+				Snow gathers upon the evergreen boughs.
+			<<elseif Time.season is "summer">>
+				Cicadas humming outside.
+			<<else>>
+				Fallen leaves blowing through the open window.
+			<</if>>
+		<<case 6>>
+			<<if $harpy gte 6 and $transformationParts.bird.wings isnot "hidden">>
+				<<print either(
+					"Your feathers flutter loosely in the breeze.",
+					"A warm breeze slips through your feathers.",
+					"The wind teases through your feathers.",
+					"The open sky stirs a longing within you.",
+					"You stretch your wings."
+				)>>
+			<<else>>
+				Fallen leaves spiral through the forest air.
+			<</if>>
+		<<default>><<print either(
+		"The wind rustles the trees.",
+		"Birds migrating overhead.",
+		"Wolves howling far away.",
+		"The forest canopy sways gently below.",
+		"Birds flit between the tree branches.",
+		"Fallen needles blanket the forest floor beneath the evergreens.",
+		"The orphans chatter quietly around the bay.",
+		"Birdsong echoes from somewhere beyond the trees.",
+		"The forest stretches endlessly beneath the horizon."
+		)>>
+	<</switch>>
+<</addinlineevent>>
+
+<<addinlineevent "forest_watch_idle" 1>>
+	Nothing seems out of the ordinary.
+<</addinlineevent>>
+
+<<runeventpool>>
+<br><br>
+<<loft_window_options>>
