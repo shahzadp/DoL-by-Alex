@@ -1691,6 +1691,17 @@ function isPossibleLoveInterest(name) {
 }
 window.isPossibleLoveInterest = isPossibleLoveInterest;
 
+window.isPossibleLoveInterestVirginity = function(taker) {
+	if (typeof taker !== "string") return false;
+	if (taker.includes(" and ")) {
+		return taker.split(" and ").some(name => 
+			isPossibleLoveInterest(name.trim())
+		);
+	}
+	return isPossibleLoveInterest(taker);
+};
+window.isPossibleLoveInterestVirginity = isPossibleLoveInterestVirginity;
+
 function fameTotal() {
 	let result = 0;
 	for (const key in V.fame) {
