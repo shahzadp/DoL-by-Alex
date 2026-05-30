@@ -527,3 +527,15 @@ function importOutfit() {
 }
 
 window.importOutfit = importOutfit;
+
+function wearingFullOutfitOfType(type) {
+	return (V.worn.upper.type.includes(type) && V.worn.lower.type.includes(type)) || V.worn.lower.type.includesAll(type, "overalls");
+}
+
+window.wearingFullOutfitOfType = wearingFullOutfitOfType;
+
+function wearingSchoolOutfit() {
+	return wearingFullOutfitOfType("school");
+}
+
+window.wearingSchoolOutfit = wearingSchoolOutfit;
