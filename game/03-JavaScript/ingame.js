@@ -1213,6 +1213,11 @@ function clothesIndex(slot, itemToIndex) {
 }
 window.clothesIndex = clothesIndex;
 
+/**
+ * @param {string} skill The name of the requested skill.
+ * @param {number} disableModifiers How much of an effect that modifiers will have on the player's current skill. Higher values means a lower effect. Stops at 2.
+ * @returns Returns the current value of the requested skill, accounting for potential modifiers.
+ */
 function currentSkillValue(skill, disableModifiers = 0) {
 	let result = V[skill];
 	if (!result && result !== 0) {
