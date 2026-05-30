@@ -114,6 +114,7 @@ module.exports = {
 		calculatePenisBulge: "readonly",
 		calchairlengthstage: "readonly",
 		canBeMPregnant: "readonly",
+		cheatsUpdateSlider: "readonly",
 		closeOverlay: "readonly",
 		clothesDataTrimmer: "readonly",
 		clothesIndex: "readonly",

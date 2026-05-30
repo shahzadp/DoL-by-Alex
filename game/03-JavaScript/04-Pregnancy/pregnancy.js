@@ -892,7 +892,7 @@ function recordSperm({
 	if (V.settings.pregnancyType === "silly") {
 		if (!["hand", "kiss"].includes(genital)) return null;
 		if ((target === "pc" || spermOwner === "pc") && genital === "hand" && V.worn.hands.name !== "naked") return null;
-		if ((target === "pc" || spermOwner === "pc") && genital === "kiss" && V.worn.face.type.includes("covered")) return null;
+		if ((target === "pc" || spermOwner === "pc") && genital === "kiss" && V.worn.face.type.includes("face_covering")) return null;
 		if (Object.values(V.loveInterest).find(name => V.NPCNameList.includes(name))) rngModifier = Math.clamp(rngModifier + 100, 0, 200);
 	}
 

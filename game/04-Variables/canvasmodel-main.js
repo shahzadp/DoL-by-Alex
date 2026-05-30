@@ -872,7 +872,7 @@ Renderer.CanvasModels.main = {
 				options[`${slot}_fitted_left_move_src`] = isFormfitting ? "img/clothes/masks/formfitting-left-move.png" : null;
 			});
 		} else if (soft) {
-			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("covered") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
+			const upperCheck = !(options.worn.lower.setup.outfitSecondary && options.worn.lower.setup.outfitSecondary[1] === options.worn.upper.setup.name) && !options.worn.lower.setup.type.includes("overalls") && !options.high_waist_suspenders && !options.belly_mask_clip_src;
 			const underUpperCheck = !(options.worn.under_lower.setup.outfitSecondary && options.worn.under_lower.setup.outfitSecondary[1] === options.worn.under_upper.setup.name) && !options.belly_mask_clip_src;
 			["upper", "under_upper"].forEach(slot => {
 				options[`${slot}_fitted_right_move_src`] = "img/clothes/masks/soft-right-move.png";
@@ -2122,7 +2122,7 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return options.show_face
 					&& !!options.drip_mouth
-					&& !options.worn.face.setup.type.includesAny("mask", "covered");
+					&& !options.worn.face.setup.type.includesAny("mask", "face_covering");
 			},
 			dxfn(options) {
 				return options.facestyle === "small-eyes" ? 2 : 0;
@@ -2669,7 +2669,7 @@ Renderer.CanvasModels.main = {
 			zfn(options) {
 				const setup = options.worn.lower.setup;
 				if (setup.zIndex) return ZIndices[setup.zIndex];
-				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				const secondary = options.worn.lower.setup.type.includes("overalls") ? ZIndices.lower_cover : ZIndices.lower;
 				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
@@ -2722,7 +2722,7 @@ Renderer.CanvasModels.main = {
 			zfn(options) {
 				const setup = options.worn.lower.setup;
 				if (setup.zIndex) return ZIndices[setup.zIndex];
-				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				const secondary = options.worn.lower.setup.type.includes("overalls") ? ZIndices.lower_cover : ZIndices.lower;
 				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
@@ -2736,7 +2736,7 @@ Renderer.CanvasModels.main = {
 			zfn(options) {
 				const setup = options.worn.lower.setup;
 				if (setup.zIndex) return ZIndices[setup.zIndex];
-				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				const secondary = options.worn.lower.setup.type.includes("overalls") ? ZIndices.lower_cover : ZIndices.lower;
 				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
@@ -2750,7 +2750,7 @@ Renderer.CanvasModels.main = {
 			zfn(options) {
 				const setup = options.worn.lower.setup;
 				if (setup.zIndex) return ZIndices[setup.zIndex];
-				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				const secondary = options.worn.lower.setup.type.includes("overalls") ? ZIndices.lower_cover : ZIndices.lower;
 				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
@@ -2764,7 +2764,7 @@ Renderer.CanvasModels.main = {
 			zfn(options) {
 				const setup = options.worn.lower.setup;
 				if (setup.zIndex) return ZIndices[setup.zIndex];
-				const secondary = options.worn.lower.setup.type.includes("covered") ? ZIndices.lower_cover : ZIndices.lower;
+				const secondary = options.worn.lower.setup.type.includes("overalls") ? ZIndices.lower_cover : ZIndices.lower;
 				return options.worn.lower.setup.high_img ? ZIndices.lower_high : secondary;
 			},
 			masksrcfn(options) {
@@ -2786,7 +2786,7 @@ Renderer.CanvasModels.main = {
 				if (setup.zIndex) return ZIndices[setup.zIndex];
 				if (options.worn.lower.setup.name.includes("ballgown") || options.worn.lower.setup.name.includes("pinafore"))
 					return ZIndices.upper_top;
-				if (options.worn.lower.setup.type.includes("covered")) return ZIndices.lower_cover;
+				if (options.worn.lower.setup.type.includes("overalls")) return ZIndices.lower_cover;
 				return ZIndices.lower;
 			},
 			masksrcfn(options) {

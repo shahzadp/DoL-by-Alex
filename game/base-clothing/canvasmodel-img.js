@@ -117,49 +117,28 @@ DefineMacro("modelprepare-player-body", function () {
 			██   ██ ██   ██ ██      ██ ███████
 			*/
 	const wings = ["demon", "angel", "fallenAngel", "bird"].some(tf => !["hidden", "disabled"].includes(V.transformationParts[tf].wings));
-	const malePresentingNipples =
-		(V.player.gender_appearance === "m" && V.player.perceived_breastsize <= 2) ||
-		V.worn.under_upper.type.includes("covered") ||
-		(["beach", "pool", "sea", "lake", "lake_ruin"].includes(V.location) && V.worn.under_upper.exposed < 1 && V.underupperwetstage < 3);
-	const coverBreasts =
-		!malePresentingNipples &&
-		!V.dontHide &&
-		V.libertine !== 2 &&
-		V.worn.over_upper.exposed >= 1 &&
-		(V.worn.upper.exposed >= 1 || V.upperwetstage >= 3) &&
-		!V.worn.lower.type.includes("covered") &&
-		((V.uncomfortable.underwear && !V.worn.under_upper.type.includes("naked")) ||
-			(V.uncomfortable.nude && (V.worn.under_upper.exposed >= 1 || V.underupperwetstage >= 3)));
-
-	const acceptableExposure =
-		(["beach", "pool", "sea", "lake", "lake_ruin"].includes(V.location) && V.worn.under_lower.exposed < 1 && V.underlowerwetstage < 3) ||
-		V.worn.under_lower.type.includes("covered");
-	const coverCrotch =
-		!acceptableExposure &&
-		!V.dontHide &&
-		V.libertine !== 2 &&
-		V.worn.over_lower.exposed >= 1 &&
-		(V.worn.lower.exposed >= 1 || V.lowerwetstage >= 3) &&
-		((V.uncomfortable.underwear && !V.worn.under_lower.type.includes("naked")) ||
-			(V.uncomfortable.nude && (V.worn.under_lower.exposed >= 1 || V.underlowerwetstage >= 3)));
+	const coverBreasts = !V.dontHide && ((V.uncomfortable.nude && T.exposedUpper >= 2) || (V.uncomfortable.underwear && T.exposedUpper >= 1));
+	const coverCrotch = !V.dontHide && ((V.uncomfortable.nude && T.exposedLower >= 2) || (V.uncomfortable.underwear && T.exposedLower >= 1));
 
 	T.modeloptions.arm_left = armPosition("left");
 	T.modeloptions.arm_right = armPosition("right");
 
-	if (coverBreasts && wings) {
-		if (
-			!T.disabled.includes(V.transformationParts.demon.wings) &&
-			!(isChimeraEnabled("demonharpy", "wings") && isPartEnabled(T.modeloptions.bird_wings_type))
-		) {
-			T.modeloptions.demon_wings_state = V.transformationParts.traits.flaunting === "default" ? "flaunt" : "cover";
-		} else if (!T.disabled.includes(V.transformationParts.angel.wings)) {
-			T.modeloptions.angel_wing_right = "cover";
-			T.modeloptions.bird_wing_right = "cover";
-		} else if (!T.disabled.includes(V.transformationParts.fallenAngel.wings)) {
-			T.modeloptions.fallen_wing_right = "cover";
-			T.modeloptions.bird_wing_right = "cover";
-		} else if (!T.disabled.includes(V.transformationParts.bird.wings)) {
-			T.modeloptions.bird_wing_right = "cover";
+	if (coverBreasts) {
+		if (wings) {
+			if (
+				!T.disabled.includes(V.transformationParts.demon.wings) &&
+				!(isChimeraEnabled("demonharpy", "wings") && isPartEnabled(T.modeloptions.bird_wings_type))
+			) {
+				T.modeloptions.demon_wings_state = V.transformationParts.traits.flaunting === "default" ? "flaunt" : "cover";
+			} else if (!T.disabled.includes(V.transformationParts.angel.wings)) {
+				T.modeloptions.angel_wing_right = "cover";
+				T.modeloptions.bird_wing_right = "cover";
+			} else if (!T.disabled.includes(V.transformationParts.fallenAngel.wings)) {
+				T.modeloptions.fallen_wing_right = "cover";
+				T.modeloptions.bird_wing_right = "cover";
+			} else if (!T.disabled.includes(V.transformationParts.bird.wings)) {
+				T.modeloptions.bird_wing_right = "cover";
+			}
 		} else {
 			T.coverBreastsWithArm = true;
 		}
