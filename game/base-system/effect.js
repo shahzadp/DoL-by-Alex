@@ -1258,18 +1258,15 @@ function effects() {
 	}
 
 	if (V.cheatClothes) {
-		let _cl_slots_cheat = ["upper", "lower", "under_upper", "under_lower", "over_upper", "over_lower", "genitals"];
-		if (V.worn.face.type.includesAny("covered", "gag", "mask")) {
-			_cl_slots_cheat.push("face");
+		const slots = ["upper", "lower", "under_upper", "under_lower", "over_upper", "over_lower", "genitals"];
+		if (V.worn.face.type.includesAny("face_covering", "gag", "mask")) {
+			slots.push("face");
 		}
-		_cl_slots_cheat.forEach((slot) => {
+		slots.forEach(slot => {
 			if (V.worn[slot].name === "naked") return;
 			V.worn[slot].integrity = clothingData(slot, V.worn[slot], "integrity_max");
-			cheatsUpdateSlider(
-				`#numberslider-input-worn${slot.replace('_', '-')}integrity`,
-				V.worn[slot].integrity
-			);
-		})
+			cheatsUpdateSlider(`#numberslider-input-worn${slot.replace("_", "-")}integrity`, V.worn[slot].integrity);
+		});
 	}
 
 	if (Array.isArray(V.timeMessages) && V.timeMessages.length) {

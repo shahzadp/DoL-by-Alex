@@ -212,7 +212,7 @@ window.wetnessKeyword = wetnessKeyword;
 
 /**
  * Returns an optional wetness prefix for the article of clothing.
-
+ 
  * @param {string} slot clothing article slot used
  * @returns {string} printable integrity prefix
  */
@@ -444,15 +444,15 @@ function outfitChecks() {
 			setup.clothes.lower[clothesIndex("lower", V.worn.lower)].skirt === 1) ||
 		(setup.clothes.over_lower[clothesIndex("over_lower", V.worn.over_lower)].skirt === 1 && V.worn.lower.type.includes("naked")) ||
 		(V.worn.over_lower.type.includes("naked") && setup.clothes.lower[clothesIndex("lower", V.worn.lower)].skirt === 1);
-	T.bottomExposed = V.worn.over_lower.name === "naked" && V.worn.lower.name === "naked" && !V.worn.under_lower.type.includes("covered");
+	T.bottomExposed = V.worn.over_lower.name === "naked" && V.worn.lower.name === "naked" && !V.worn.under_lower.type.includes("lower_covering");
 	T.shirtless =
 		V.worn.over_upper.name === "naked" &&
 		V.worn.upper.name === "naked" &&
-		!V.worn.lower.type.includes("covered") &&
-		!V.worn.under_upper.type.includes("covered");
+		!V.worn.lower.type.includes("overalls") &&
+		!V.worn.under_upper.type.includes("torso_covering");
 
 	T.topless =
-		V.worn.over_upper.name === "naked" && V.worn.upper.name === "naked" && V.worn.under_upper.name === "naked" && !V.worn.lower.type.includes("covered");
+		V.worn.over_upper.name === "naked" && V.worn.upper.name === "naked" && V.worn.under_upper.name === "naked" && !V.worn.lower.type.includes("overalls");
 	T.bottomless = V.worn.over_lower.name === "naked" && V.worn.lower.name === "naked" && V.worn.under_lower.name === "naked";
 	T.overNaked = V.worn.over_lower.name === "naked" && V.worn.over_upper.name === "naked";
 	T.middleNaked = T.shirtless && T.bottomExposed;
@@ -462,7 +462,10 @@ function outfitChecks() {
 	/* Temporary $worn[slot] variables. Generally called as _bottom.integrity or _top.name */
 	const topLayers = [V.worn.over_upper, V.worn.upper, V.worn.under_upper];
 	const bottomLayers = ["over_lower", "lower", "under_lower"];
-	T.top = topLayers.find(item => item.name !== "naked" && (!V.worn.lower || item !== V.worn.lower || item.type.includes("covered"))) || null;
+	T.top =
+		topLayers.find(
+			item => item.name !== "naked" && (!V.worn.lower || item !== V.worn.lower || item.type.includes("torso_covering") || item.type.includes("overalls"))
+		) || null;
 	T.topUnder = topLayers.slice(topLayers.indexOf(T.top) + 1).find(item => item.name !== "naked") || null;
 	T.bottom =
 		V.worn[
