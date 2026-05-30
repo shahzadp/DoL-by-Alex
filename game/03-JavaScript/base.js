@@ -860,7 +860,6 @@ Macro.add("tml", {
  * The "true" EventType will only use its baseChance value.
  * EventChecks format:
  ** __eventRequests__ _Array\<EventTypes>_ - The event requests to be evaluated.
- ** __includeBurden__ _boolean_ - Whether or not to include the Temple's Burden in the evaluations. Defaults to True.
  * 
  * EventRequest format:
  ** __checkType__ _EventTypes_ - The parameter to be evaluated.
@@ -868,20 +867,18 @@ Macro.add("tml", {
  ** __checkMin__ _number_ - The minimum randomized value that the parameter will need to pass, inclusive. Defaults to 1.
  ** __checkMax__ _number_ - The maximum randomized value that the parameter will need to pass, inclusive. Defaults to the skill or stat's maximum value.
  ** __checkFail__ _boolean_ - Check if the player fails instead of succeeds at the check. Defaults to False.
+ ** __includeBurden__ _boolean_ - Include the Temple Burden's influence in the evaluations. Defaults to True.
+ *** The Temple's Burden negatively influences the following Skill Checks:
+ *** Physique, Willpower, Athletics, Dancing, Housekeeping, Skulduggery, Swimming, Tending, English
  * 
  * @param {list<EventRequest>} eventRequests A list of requests to be checked.
- * @param {boolean} includeBurden Toggle to include the Temple's Burden when doing the calculations. Defaults to False.
- ** The Temple's Burden negatively influences the following Skill Checks:
- ** Physique, Willpower, Athletics, Dancing, Housekeeping, Skulduggery, Swimming, Tending, English
  * @returns {void} Each index in checkResults corresponds to its requested event. How the outcome is interpreted is up to the caller.
  ** 1 means it failed.
  ** 2 means it succeeded.
  ** -1 means the player failed the check, but the Temple's Burden is activated.
  ** -2 means the player succeeded the check, but the Temple's Burden is activated.
- * @example
- * 		[TODO]
  */
-function eventChecks(eventRequests, includeBurden = true) {
+function eventChecks(eventRequests) {
 	V.temple_burden ??= 0;
 	T.checkResults = [];
 
@@ -892,6 +889,7 @@ function eventChecks(eventRequests, includeBurden = true) {
 		let curCheckMin = eventRequests[i].checkMin ?? 1;
 		let curCheckMax = eventRequests[i].checkMax;
 		let curCheckFail = eventRequests[i].checkFail ?? false;
+		let curIncludeBurden = eventRequests[i].includeBurden ?? true;
 
 		let baseOutcome = curBaseChance >= random(1, 100);
 		let finalOutcome = 0;
@@ -901,7 +899,7 @@ function eventChecks(eventRequests, includeBurden = true) {
 		 */
 		if (curCheckType === "physique") {
 			// Need special-cased code for the physique check.
-			let templeActivation = includeBurden && (V.temple_burden >= random(1, 100));
+			let templeActivation = curIncludeBurden && (V.temple_burden >= random(1, 100));
 			let playerOutcome = currentSkillValue(curCheckType) >= random(curCheckMin, curCheckMax ?? V.physiquesize);
 			finalOutcome = ((curCheckFail ? !(baseOutcome && playerOutcome) : (baseOutcome && playerOutcome)) ? 2 : 1) * (templeActivation ? -1 : 1);
 		}
@@ -916,7 +914,7 @@ function eventChecks(eventRequests, includeBurden = true) {
 			 * Then, convert that into 2 (for success) or 1 (for failure).
 			 * Then, make the output negative if the Temple's Burden activated during the skill check.
 			*/
-			let templeActivation = includeBurden && (V.temple_burden >= random(1, 100));
+			let templeActivation = curIncludeBurden && (V.temple_burden >= random(1, 100));
 			let playerOutcome = currentSkillValue(curCheckType) >= random(curCheckMin, curCheckMax ?? 1000);
 			finalOutcome = ((curCheckFail ? !(baseOutcome && playerOutcome) : (baseOutcome && playerOutcome)) ? 2 : 1) * (templeActivation ? -1 : 1);
 		}

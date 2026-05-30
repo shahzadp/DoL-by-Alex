@@ -40,6 +40,7 @@ declare global {
 	 * @param {number} checkMin The minimum randomized value that the parameter will need to pass, inclusive. Clothing checks will use its current integrity. Defaults to 1.
 	 * @param {number} checkMax The maximum randomized value that the parameter will need to pass, inclusive. Clothing checks will use its current integrity. Defaults to the skill's maximum value / clothing maximum integrity
 	 * @param {boolean} checkFail Checks if the player fails instead of succeeds at the check. Defaults to False.
+	 * @param {boolean} includeBurden Include the Temple Burden's influence in the evaluations. Defaults to True.
 	 */
 	export interface EventRequest {
 		checkType: EventTypes;
@@ -47,6 +48,7 @@ declare global {
 		checkMin: number;
 		checkMax: number;
 		checkFail: boolean;
+		includeBurden: boolean;
 	}
 }
 export {};
