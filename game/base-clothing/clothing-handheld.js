@@ -1322,7 +1322,7 @@ function initHandheld() {
 			accIcon: "school-bag-acc.png",
 		},
 		{
-			index: 32,
+			index: 31,
 			slot: "handheld",
 			name: "clear umbrella",
 			name_cap: "Clear umbrella",
