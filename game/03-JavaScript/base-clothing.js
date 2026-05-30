@@ -458,3 +458,72 @@ function getClothingOptions() {
 	return modelOptions;
 }
 window.getClothingOptions = getClothingOptions;
+
+function exportOutfit(outfitIndex) {
+	const outfit = { ...V.outfit[outfitIndex] };
+
+	for (const property in outfit) {
+		if (["index", "location", "hairStyle"].includes(property) || outfit[property] === "naked") {
+			Reflect.deleteProperty(outfit, property);
+		}
+	}
+
+	if (outfit.colors) {
+		for (const property in outfit.colors) {
+			if (outfit.colors[property][0] === 0) {
+				Reflect.deleteProperty(outfit.colors, property);
+			}
+		}
+	}
+
+	navigator.clipboard.writeText(JSON.stringify(outfit));
+
+	document.querySelector("#outfitItemExport-" + outfitIndex + " > a").text = "Copied!";
+	window.setTimeout(() => {
+		const element = document.querySelector("#outfitItemExport-" + outfitIndex + " > a");
+		if (element) element.text = "Export";
+	}, 2000);
+}
+
+window.exportOutfit = exportOutfit;
+
+function importOutfit() {
+	try {
+		const outfitText = document.querySelector("#outfitEditorImportText").value;
+		const outfit = JSON.parse(outfitText);
+		document.querySelector("#outfitEditorImportText").value = "";
+
+		for (const slot of [
+			"over_upper",
+			"over_lower",
+			"upper",
+			"lower",
+			"under_upper",
+			"under_lower",
+			"over_head",
+			"head",
+			"face",
+			"neck",
+			"hands",
+			"handheld",
+			"legs",
+			"feet",
+		]) {
+			if (!(slot in outfit)) {
+				outfit[slot] = "naked";
+			}
+
+			if (outfit.colors && !(slot in outfit.colors)) {
+				outfit.colors[slot] = [0, 0];
+			}
+		}
+
+		outfit.index = V.outfit.length;
+		outfit.location = undefined;
+		V.outfit.push(outfit);
+	} catch (error) {
+		alert(error + "\n\nSubmitted string is likely malformed");
+	}
+}
+
+window.importOutfit = importOutfit;
