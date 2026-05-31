@@ -5832,8 +5832,8 @@ function initUpper() {
 			sleeve_img: 1,
 			sleeve_colour: "secondary",
 			sleeve_acc_img: 1,
-			breast_img: { 0: 0, 1: 0, 2: 0, 3: 3, 4: 4, 5: 5, 6: 6 },
-			breast_acc_img: 1,
+			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 3, 5: 5, 6: 6 },
+			breast_acc_img: { 0: 0, 1: 0, 2: 0, 3: 3, 4: 3, 5: 5, 6: 6 },
 			cursed: 0,
 			location: 0,
 			iconFile: "futuresuit.png",
@@ -11584,7 +11584,7 @@ function initUpper() {
 			reveal: 400,
 			word: "a",
 			plural: 0,
-			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 4, 5: 5, 6: 6 },
+			breast_img: { 0: null, 1: null, 2: null, 3: null, 4: 4, 5: 4, 6: 4 },
 			colour: 0,
 			colour_options: [
 				"black", "navy blue", "wine", "brown", "olive",
@@ -11600,6 +11600,7 @@ function initUpper() {
 				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
+			sleeve_acc_img: 1,
 			gender: "n",
 			warmth: 1,
 			sleeve_img: 1,
@@ -11636,6 +11637,7 @@ function initUpper() {
 			word: "a",
 			plural: 0,
 			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 4, 5: 5, 6: 6 },
+			breast_acc_img: { 0: null, 1: null, 2: null, 3: 3, 4: 4, 5: 5, 6: 6 },
 			colour: 0,
 			colour_options: [
 				"black", "navy blue", "wine", "brown", "olive",
@@ -11651,6 +11653,7 @@ function initUpper() {
 				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: 1,
+			accessory_integrity_img: 1,
 			gender: "f",
 			femininity: 200,
 			warmth: 1,
@@ -11685,7 +11688,7 @@ function initUpper() {
 			reveal: 100,
 			word: "a",
 			plural: 0,
-			breast_img: { 0: null, 1: null, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 },
+			breast_img: { 0: null, 1: null, 2: null, 3: null, 4: 4, 5: 4, 6: 4 },
 			colour: 0,
 			colour_options: [
 				"black", "navy blue", "wine", "brown", "olive",
@@ -12258,6 +12261,7 @@ function initUpper() {
 				"tangerine", "teal", "white", "yellow", "custom"
 			],
 			accessory_colour_sidebar: "secondary",
+			accessory_integrity_img: 1,
 			gender: "n",
 			warmth: 1,
 			sleeve_img: 1,
