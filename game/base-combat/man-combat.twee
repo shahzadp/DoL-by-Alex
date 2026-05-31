@@ -36,65 +36,26 @@
 
 <<widget "combat-spank">>
 	<<bruise bottom>><<hitstat>><<set $speechspank to 1>>
-	<<if $spankobject is "paddle">>
-		<<He>> <<print either("spanks","whacks","slaps","smacks","thwacks")>> your <<bottom>> with the paddle,
-		<<if $worn.lower.anus_exposed is 1 and $worn.over_lower.anus_exposed is 1>>
-			<<if $worn.under_lower.name isnot "naked" and $worn.under_lower.anus_exposed is 0>>
-				through your $worn.under_lower.name,
-			<<else>>
-				reddening your exposed skin and
-			<</if>>
-		<<elseif $worn.over_lower.name isnot "naked" and $worn.over_lower.state is "waist">>
-			through your $worn.over_lower.name,
-		<<elseif $worn.lower.name isnot "naked" and $worn.lower.state is "waist">>
-			through your $worn.lower.name,
-		<<elseif $worn.under_lower.name isnot "naked" and $worn.under_lower.state is "waist">>
-			through your $worn.under_lower.name,
-		<<else>>
-			reddening your exposed skin and
-		<</if>>
-		sending waves of pain through your whole body.
-		<<bodypart_admire_chance random_bottom>>
-		<<violence 10 1 1 1 _n>>
-	<<elseif getSexToysofType("dildos and whips").includes($spankobject)>>
-		<<He>> <<print either("spanks","whacks","slaps","smacks","thwacks")>> your <<bottom>> with the $spankobject,
-		<<if $worn.lower.anus_exposed is 1 and $worn.over_lower.anus_exposed is 1>>
-			<<if $worn.under_lower.name isnot "naked" and $worn.under_lower.anus_exposed is 0>>
-				through your $worn.under_lower.name.
-			<<else>>
-				reddening your exposed skin.
-			<</if>>
-		<<elseif $worn.over_lower.name isnot "naked" and $worn.over_lower.state is "waist">>
-			through your $worn.over_lower.name.
-		<<elseif $worn.lower.name isnot "naked" and $worn.lower.state is "waist">>
-			through your $worn.lower.name.
-		<<elseif $worn.under_lower.name isnot "naked" and $worn.under_lower.state is "waist">>
-			through your $worn.under_lower.name.
-		<<else>>
-			reddening your exposed skin.
-		<</if>>
-		<<bodypart_admire_chance random_bottom>>
-		<<violence 5 1 1 1 _n>>
+
+	<<if $worn.lower.anus_exposed is 1 and $worn.over_lower.anus_exposed is 1 and $worn.under_lower.name isnot "naked" and $worn.under_lower.anus_exposed is 0>>
+		<<set $_through to $worn.under_lower.name>>
 	<<else>>
-		<<He>> <<print either("spanks","whacks","slaps","smacks","thwacks")>> your <<bottom>>
-		<<if $worn.lower.anus_exposed is 1 and $worn.over_lower.anus_exposed is 1>>
-			<<if $worn.under_lower.name isnot "naked" and $worn.under_lower.anus_exposed is 0>>
-				through your $worn.under_lower.name.
-			<<else>>
-				reddening your exposed skin.
+		<<for $_slot range ["over_lower", "lower", "under_lower"]>>
+			<<if $worn[$_slot].name isnot "naked" and $worn[$_slot].state is "waist">>
+				<<set $_through to $worn[$_slot].name>>
+				<<break>>
 			<</if>>
-		<<elseif $worn.over_lower.name isnot "naked" and $worn.over_lower.state is "waist">>
-			through your $worn.over_lower.name.
-		<<elseif $worn.lower.name isnot "naked" and $worn.lower.state is "waist">>
-			through your $worn.lower.name.
-		<<elseif $worn.under_lower.name isnot "naked" and $worn.under_lower.state is "waist">>
-			through your $worn.under_lower.name.
-		<<else>>
-			reddening your exposed skin.
-		<</if>>
-		<<bodypart_admire_chance random_bottom>>
-		<<violence 5 1 1 1 _n>>
+		<</for>>
 	<</if>>
+
+	<<set $_waves to ".">>
+	<<if $spankobject is "paddle">>
+        <<set $_waves to ($_through ? "," : " and") + " sending waves of pain through your whole body.">>
+	<</if>>
+
+	<<He>> <<print either("spanks","whacks","slaps","smacks","thwacks")>> your <<bottom>><<if $spankobject is "paddle" or getSexToysofType("dildos and whips").includes($spankobject)>> with the $spankobject<</if>><<if $_through>> through your $_through<<else>>, reddening your exposed skin<</if>>$_waves
+	<<bodypart_admire_chance random_bottom>>
+	<<violence `($spankobject is "paddle" ? 10 : 5)` 1 1 1 _n>>
 <</widget>>
 
 <<widget "combat-dildospank">>
