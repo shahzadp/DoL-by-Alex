@@ -11775,6 +11775,7 @@ function initLower() {
 				"custom",
 			],
 			accessory_colour_sidebar: 1,
+			accessory_integrity_img: 1,
 			gender: "f",
 			femininity: 200,
 			warmth: 2,
