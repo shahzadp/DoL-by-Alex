@@ -11921,9 +11921,9 @@ function initUpper() {
 		{
 			index: 213,
 			slot: "upper",
-			name: "sheer lace pajama",
-			name_cap: "Sheer lace pajama",
-			variable: "sheer lace pajama",
+			name: "sheer lace pyjama",
+			name_cap: "Sheer lace pyjama",
+			variable: "sheer lace pyjama",
 			description: "Fancy and lacy.",
 			cost: 6000,
 			shop: ["clothing"],
