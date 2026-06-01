@@ -1250,6 +1250,9 @@ Zohar
 		<</if>>
 		<<set $NPCName[_i].love += _val>>
 	<<case dom>>
+		<<if ["Sydney", "Black Wolf", "Ivory Wraith"].includes(_nam)>>
+			<<error { message: "<<npcincr>> attempted to modify dom for " + _nam + ", who has no dom clamp" }>>
+		<</if>>
 		<<if _nam is "Gwylan" and _val gt 0>>
 			<<set $_stage to Math.floor($NPCName[_i].dom / 25)>>
 			<<if $_stage gte 1 and !$gwylanSeen?.includes("yearning") or $_stage gte 3 and !$gwylanSeen?.includes("partners") or $gwylan?.wary gt 1>>
@@ -1261,8 +1264,17 @@ Zohar
 			<<set $NPCName[_i].dom += _val>>
 		<</if>>
 	<<case trust>>
+		<<if _nam isnot "Eden">>
+			<<error { message: "<<npcincr>> attempted to modify trust for someone other than Eden (" + _nam + ")" }>>
+		<</if>>
 		<<set $NPCName[_i].trust += _val>>
 	<<case lust>>
+		<<set _lustwhitelist to ["Robin", "Whitney", "Eden", "Kylar", "Avery", 
+								 "Alex", "Sydney", "Gwylan", "Bailey", 
+								 "Leighton", "Quinn", "Ivory Wraith"]>>
+		<<if !_lustwhitelist.includes(_nam)>>
+			<<error { message: "<<npcincr>> attempted to modify lust for non-whitelisted npc " + _nam + ". Make sure to add a lust clamp in <<relationshipclamp>> before whitelisting!" }>>
+		<</if>>
 		<<if $valentines and Time.monthDay is 14 and setup.loveInterestNpc.includes(_nam)>>
 			<<set _val += _val>>
 		<</if>>
@@ -1273,12 +1285,14 @@ Zohar
 		<</if>>
 		<<set _lustincr to 1>>
 	<<case rage>>
+		<<if !["Avery", "Kylar"].includes(_nam)>>
+			<<error { message: "<<npcincr>> attempted to modify rage for someone other than Avery or Kylar (" + _nam + ")" }>>
+		<</if>>
 		<<set $NPCName[_i].rage += _val>>
-	<<case state>>
-		<<set $NPCName[_i].state to _val>>
-	<<case init>>
-		<<set $NPCName[_i].init to _val>>
 	<<case trauma>>
+		<<if _nam isnot "Robin">>
+			<<error { message: "<<npcincr>> attempted to modify trauma for someone other than Robin (" + _nam + ")" }>>
+		<</if>>
 		<<if _nam is "Robin" and _val lt 0>>
 			<<set $NPCName[_i].trauma += Math.round(_val * ($robinTraumaMultiplier || 1))>>
 			<<if $NPCName[_i].trauma lt 0>>
@@ -1291,6 +1305,9 @@ Zohar
 			<</if>>
 		<</if>>
 	<<case purity>>
+		<<if _nam isnot "Sydney">>
+			<<error { message: "<<npcincr>> attempted to modify purity for someone other than Sydney (" + _nam + ")" }>>
+		<</if>>
 		<<if $NPCName[_i].corruption gt 0>>
 			<<set $NPCName[_i].corruption -= _val>>
 			<<if $NPCName[_i].corruption lte 0>>

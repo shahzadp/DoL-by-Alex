@@ -12,7 +12,7 @@ const events = [
 		// the last hour during which the event can still be attended. puts event in top priority tier during that hour. shows a failure message after that hour if condition() is still true.
 		endhour: 14,
 		// bigger number === higher chance of it being pulled. default is 1.
-		priority: 5, // prioritize avoiding truancy
+		priority: 5, // prioritise avoiding truancy
 		// text shown in twine markup while event is scheduled
 		text: "<<schoolday>>",
 		// text shown if condition() is still met, but it's past the time to attend
