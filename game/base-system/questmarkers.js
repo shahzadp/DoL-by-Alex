@@ -163,7 +163,7 @@ const events = [
 		starthour: 9,
 		endhour: 18,
 		priority: 5,
-		text: "The science fair is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
+		text: "The science fair is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>.",
 		failuretext: "The science fair has ended. You didn't attend.",
 	},
 	{
@@ -172,7 +172,7 @@ const events = [
 			return V.scienceprojectdays === 1;
 		},
 		priority: 2,
-		text: "The science fair is being held at Cliff Street tomorrow",
+		text: "The science fair is being held at Cliff Street tomorrow.",
 	},
 	{
 		name: "maths competition",
@@ -182,7 +182,7 @@ const events = [
 		starthour: 9,
 		endhour: 18,
 		priority: 5,
-		text: "The maths competition is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>",
+		text: "The maths competition is being held at Cliff Street from <<ampm 9 00>> until <<ampm 18 00>>.",
 		failuretext: "The maths competition has ended. You didn't attend.",
 	},
 	{
@@ -191,7 +191,7 @@ const events = [
 			return V.mathsprojectdays === 1;
 		},
 		priority: 2,
-		text: "The maths competition is being held at Cliff Street tomorrow",
+		text: "The maths competition is being held at Cliff Street tomorrow.",
 	},
 	{
 		name: "english play",
@@ -201,7 +201,7 @@ const events = [
 		starthour: 17,
 		endhour: 20,
 		priority: 5,
-		text: "The school plays are being held today at Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>",
+		text: "The school plays are being held today at Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>.",
 		failuretext: "The last of the school plays has finished by now. You didn't attend.",
 	},
 	{
@@ -210,7 +210,7 @@ const events = [
 			return V.englishPlayDays === 1;
 		},
 		priority: 2,
-		text: "The school plays are being held at Cliff Street tomorrow",
+		text: "The school plays are being held at Cliff Street tomorrow.",
 	},
 ];
 setup.events = events;
