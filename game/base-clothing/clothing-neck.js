@@ -1988,7 +1988,7 @@ function initNeck() {
 			name: "gemstone necklace",
 			name_cap: "Gemstone necklace",
 			variable: "gemstone necklace",
-			description: "A delicate piece of jewelry.",
+			description: "A delicate piece of jewellery.",
 			cost: 45000,
 			shop: ["clothing"],
 			type: ["formal"],
