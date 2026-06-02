@@ -3439,8 +3439,12 @@ Renderer.CanvasModels.main = {
 			srcfn(options) {
 				const dmg = options.worn.head.setup.accessory_integrity_img ? options.worn.upper.integrity : options.worn.head.integrity;
 				const pattern = options.worn.head.pattern && !["tertiary", "secondary"].includes(options.worn.head.setup.pattern_layer) ? "-" + options.worn.head.pattern?.replace(/ /g,"-") : '';
+				const isAltPosition = !options.alt_override && options.worn.head.setup.altposition !== undefined
+					&& options.worn.head.alt === "alt"
+					&& !options.worn.head.setup.altdisabled.includes("full");
+				const end = isAltPosition ? '-alt' : '';
 
-				return `img/clothes/head/${options.worn.head.setup.variable}/${dmg}${pattern}.png`;
+				return `img/clothes/head/${options.worn.head.setup.variable}/${dmg}${pattern}${end}.png`;
 			},
 			showfn(options) {
 				return options.show_clothes
