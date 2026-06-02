@@ -467,9 +467,10 @@ You spark up a conversation with <<him>>.
 		<</addinlineevent>>
 	<</if>>
 
-	<<if $gwylan_cafe_intro and !isGwylanAbsent()>>
+	<<if $gwylan_cafe_intro and !isGwylanAbsent() and !$weekly.sam_talk_gwy>>
 		<<addinlineevent "sam_chat_shopkeeper" .7>>
 			<<set _no_options to true>>
+			<<set $weekly.sam_talk_gwy to true>>
 			"So, how exactly do you feel about Gwylan?" Sam asks, leaning in closer to you.
 			<<if $gwylanSeen.includes("partners")>>
 				"I know you two are close. <<nnpc_Hes "Gwylan">> talked about you a bunch y'know? Lemme guess. You two are dating?."
@@ -533,7 +534,7 @@ You spark up a conversation with <<him>>.
 		<</if>>
 	<</addinlineevent>>
 
-	<<addinlineevent "sam_chat_orphan_english" 1>>
+	<<addinlineevent "sam_chat_orphan_english" .7>>
 		You're talking about some of the teachers from school when Sam interrupts you.
 		<br><br>
 
@@ -550,7 +551,7 @@ You spark up a conversation with <<him>>.
 	<</addinlineevent>>
 
 	<<if $soup_kitchen_known is 1 and C.npc.River.love gte 20>>
-		<<addinlineevent "sam_chat_soup_kitchen" 1>>
+		<<addinlineevent "sam_chat_soup_kitchen" .7>>
 			You talk about how you volunteer at the soup kitchen.
 			<br><br>
 
@@ -561,25 +562,29 @@ You spark up a conversation with <<him>>.
 		<</addinlineevent>>
 	<</if>>
 
-	<<addinlineevent "sam_chat_orphan_friend" .5>>
-		<<set _no_options to true>>
-		"Robin, is it?" Sam says suddenly. "I've seen <<nnpc_him "Robin">> a few times at the cafe. What a sweet kid! Are you two close?"
-		<br><br>
+	<<if !$weekly.sam_talk_rob>>
+		<<addinlineevent "sam_chat_orphan_friend" .5>>
+			<<set _no_options to true>>
+			<<set $weekly.sam_talk_rob to true>>
+			"Robin, is it?" Sam says suddenly. "I've seen <<nnpc_him "Robin">> a few times at the cafe. What a sweet kid! Are you two close?"
+			<br><br>
 
-		<<link [[Say Robin's your lover|Sam Park Talk Robin]]>><<set $phase to "lover">><</link>>
-		<br>
-		<<link [[Say Robin's a friend|Sam Park Talk Robin]]>><<set $phase to "friend">><</link>>
-		<br>
-		<<link [[Say Robin is like a sibling to you|Sam Park Talk Robin]]>><<set $phase to "sibling">><</link>>
-		<br>
-		<<link [[Say you don't like Robin|Sam Park Talk Robin]]>><<set $phase to "dislike">><</link>>
-		<br>
-		<<link [[Stay quiet|Sam Park Talk Robin]]>><<set $phase to "quiet">><</link>>
-	<</addinlineevent>>
+			<<link [[Say Robin's your lover|Sam Park Talk Robin]]>><<set $phase to "lover">><</link>>
+			<br>
+			<<link [[Say Robin's a friend|Sam Park Talk Robin]]>><<set $phase to "friend">><</link>>
+			<br>
+			<<link [[Say Robin is like a sibling to you|Sam Park Talk Robin]]>><<set $phase to "sibling">><</link>>
+			<br>
+			<<link [[Say you don't like Robin|Sam Park Talk Robin]]>><<set $phase to "dislike">><</link>>
+			<br>
+			<<link [[Stay quiet|Sam Park Talk Robin]]>><<set $phase to "quiet">><</link>>
+		<</addinlineevent>>
+	<</if>>
 
-	<<if $loveInterest.primary isnot "None">>
+	<<if $loveInterest.primary isnot "None" and !$weekly.sam_talk_love>>
 		<<addinlineevent "sam_chat_love" .5>>
 			<<set _no_options to true>>
+			<<set $weekly.sam_talk_love to true>>
 			"I notice you've been in a daze while at work, and I know exactly what's up! You gotta have a crush on someone," <<he>> says with a grin. "Tell me all about it!"
 			<br><br>
 
@@ -591,7 +596,7 @@ You spark up a conversation with <<him>>.
 	<</if>>
 
 	<<if $swimmingskill gte 400>>
-		<<addinlineevent "sam_chat_swim" 1>>
+		<<addinlineevent "sam_chat_swim" .5>>
 			You mention how you enjoy swimming.
 			<br><br>
 
@@ -663,7 +668,6 @@ You feel as though you've learned a bit more about Sam, something you would have
 <<effects>>
 
 <<if $phase is "love">>
-	<<set $samSeen.pushUnique("love_gwy")>>
 	You tell <<him>> that you, in fact, are in love with Gwylan. 
 	<br><br>
 
@@ -674,11 +678,18 @@ You feel as though you've learned a bit more about Sam, something you would have
 		<br><br>
 
 		<<He>> shakes <<his>> head. "No. Nevermind."
+
+	<<elseif $samSeen?.includes("love_gwy")>>
+		and <<he>> gives you a big smile. "Glad to know your feelings haven't changed."
+		<br><br>
+
+		Sam jokes around with you, <<he>> pokes your side a few times.
 	<<else>>
 		and <<he>> gives you a big smile. "<<= $gwylanSeen.includes("romance") ? "I knew it. I had a feeling there was something going on between you two." : "If you aren't just pulling my leg then... that's adorable!">> <<nnpc_Hes "Gwylan">> really sweet. You make a good couple."
 		<br><br>
 
 		Sam jokes around with you, <<he>> pokes your side a few times.
+		<<set $samSeen.pushUnique("love_gwy")>>
 	<</if>>
 <<elseif $phase is "hate">>
 	You tell <<him>> that you hate Gwylan. 
@@ -724,7 +735,6 @@ You feel as though you've learned a bit more about Sam, something you would have
 <<effects>>
 
 <<if $phase is "lover">>
-	<<set $samSeen.pushUnique("love_rob")>>
 	You tell <<him>> that you and Robin are lovers.
 	<br><br>
 
@@ -733,7 +743,13 @@ You feel as though you've learned a bit more about Sam, something you would have
 		<br><br>
 
 		<<He>> shakes <<his>> head. "No. Nevermind."
+	<<elseif $samSeen?.includes("love_rob")>>
+		<<He>> gives you a big smile. "Glad to know your feelings haven't changed."
+		<br><br>
+
+		Sam jokes around with you, <<he>> pokes your side a few times.
 	<<else>>
+		<<set $samSeen.pushUnique("love_rob")>>
 		"Really?" Sam pats your back. "That's adorable! You're both such sweet kids, you really are meant for each other. I can see the wedding now, be sure to invite me to cater!"
 		<br><br>
 
@@ -796,7 +812,12 @@ You feel as though you've learned a bit more about Sam, something you would have
 	<<elseif $speech_attitude is "bratty">>
 		"Why are you so nosy?" you say. "Well, it's _LI, I've always had that one on my mind..."
 	<<else>>
-		"You're pretty nosy," you laugh, feeling a bit embarrassed. "Well, the one I keep thinking about is _LI... I'm unsure if you know that one."
+		"You're pretty nosy," you laugh, feeling a bit embarrassed. "Well, the one I keep thinking about is _LI,
+		<<if _LI is "Avery" and $chef_state gte 9>>
+			you probably saw <<nnpc_him "Avery">> at the cafe's opening ceremony."
+		<<else>>
+			<<= _LI is "Gwylan" ? "your 'favorite customer'." : _LI is "Robin" ? "you might've met <<nnpc_him Robin>> a few times before." : "you may not know that one.">>"
+		<</if>>
 	<</if>>
 	<br><br>
 
