@@ -11971,9 +11971,9 @@ function initUpper() {
 			cursed: 0,
 			location: 0,
 			one_piece: 1,
-			outfitPrimary: { lower: "sheer lace pajama" },
-			iconFile: "sheer-lace-pajama.png",
-			accIcon: "sheer-lace-pajama-acc.png",
+			outfitPrimary: { lower: "sheer lace pyjama" },
+			iconFile: "sheer-lace-pyjama.png",
+			accIcon: "sheer-lace-pyjama-acc.png",
 			formfitting: 1,
 		},
 		{
