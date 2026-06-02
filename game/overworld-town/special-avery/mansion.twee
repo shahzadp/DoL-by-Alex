@@ -1312,7 +1312,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	<<getouticon>><<link [[Leave Avery be|Mansion Talk Leave]]>><</link>>
 <<elseif !$daily.avery.talk.limit and $daily.avery.talk.count gte 4>>
 	<<set $daily.avery.talk.limit to true>>
-	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 80>>
+	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 80 and $avery_mansion.schedule isnot "party_prepare">>
 		<<if $avery_mansion.schedule is "pool" and $avery_pool is "swim">>
 			You try to get Avery's attention, but <<he>> ignores you, focusing on <<his>> swimming. You get the feeling <<hes>> uninterested in further conversation. You shouldn't bother Avery any more today.
 			<br><br>
@@ -1384,6 +1384,8 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			then goes back to <<his>> pruning.
 		<<elseif $avery_mansion.schedule is "sleep">>
 			glares at you. "Leave me the fuck alone," he growls. "I'm trying to sleep." <<garage>><<npcincr Avery rage 1>>
+		<<else>>
+			<<= C.npc.Avery.rage lte 40 ? "shoots you an irritated look" : "glares at you">>. "Now is not the time," <<he>> says before telling you to prepare for the party yourself. Then <<he>> goes back to <<= C.npc.Avery.rage gte 40 ? `commanding` : `directing`>> the servants.
 		<</if>>
 		<br><br>
 		You shouldn't bother Avery anymore for today.
@@ -1466,7 +1468,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 
 	<<if isLoveInterest("Avery") and !$daily.avery.talk.flirt and $avery_pool isnot "swim">>
 		<br>
-		<<ind>><<link [[Flirt (0:15)|Mansion Talk Flirt]]>><<set $daily.avery.talk.chat += 1>><<set $daily.avery.talk.flirt to true>><</link>><<promiscuous1>>
+		<<brothelicon>><<link [[Flirt (0:15)|Mansion Talk Flirt]]>><<set $daily.avery.talk.chat += 1>><<set $daily.avery.talk.flirt to true>><</link>><<promiscuous1>>
 	<</if>>
 	<<if !$daily.avery.talk.seduce>>
 		<br>
@@ -6541,16 +6543,18 @@ You start helping Avery set the table.
 		<<arousal 100 "oral">><<garousal>>
 	<</if>>
 	<br><br>
-	When the kiss ends, Avery <<laughs>> to <<himself>>
-	<<if $avery_mansion.schedule is "pool" and $avery_pool is "sunbathe">>
-		as <<he>> relaxes back in the pool lounger.
-	<<elseif $avery_mansion.schedule is "lounge">>
-		as <<he>> relaxes back against the sofa.
-	<<elseif $avery_mansion.schedule is "bath">>
-		as <<he>> relaxes back against the edge of the bath.
+	<<if !["lounge","bath"].includes($avery_mansion.schedule) or $avery_pool isnot "sunbathe">>
+		When the kiss ends, Avery <<laughs>> to <<himself>>, eyeing you with interest.
 	<<else>>
-		, eyeing you with interest.
-	<</if>><<glust>>
+		When the kiss ends, Avery <<laughs>> to <<himself>>
+		<<if $avery_mansion.schedule is "pool" and $avery_pool is "sunbathe">>
+			as <<he>> relaxes back in the pool lounger.
+		<<elseif $avery_mansion.schedule is "lounge">>
+			as <<he>> relaxes back against the sofa.
+		<<elseif $avery_mansion.schedule is "bath">>
+			as <<he>> relaxes back against the edge of the bath.
+		<</if>>
+	<</if>><<glust>><<npcincr Avery lust 1>>
 	<br><br>
 	"<<= either(`What a delightful surprise`,`How adorable`)>>, <<pcpetname "Avery">>," he says with a
 	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
