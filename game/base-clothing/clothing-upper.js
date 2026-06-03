@@ -12192,7 +12192,6 @@ function initUpper() {
 			femininity: 200,
 			warmth: 1,
 			accessory_integrity_img: 1,
-			sleeve_img: 1,
 			set: "upper",
 			altposition: "none",
 			altdisabled: [],
