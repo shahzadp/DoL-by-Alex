@@ -1897,6 +1897,8 @@ function initUnderUpper() {
 			integrity_max: 100,
 			fabric_strength: 25,
 			reveal: 900,
+			exposed: 1,
+			exposed_base: 1,
 			word: "a",
 			plural: 0,
 			breast_img: { 0: 0, 1: 0, 2: 0, 3: 3, 4: 4, 5: 5, 6: 6 },
