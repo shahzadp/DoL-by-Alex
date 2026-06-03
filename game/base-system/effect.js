@@ -1732,15 +1732,9 @@ function effects() {
 		V.timeMessages = [];
 	}
 
-	sWikifier("<<integritycheck>><<exposure>>");
+	sWikifier("<<integritycheck>>");
 
 	V.orgasmdown -= 1;
-
-	if (V.exposed >= 1 && V.exposedcheck === 1) {
-		V.exposedcheck = 0;
-		sWikifier("You feel self-conscious about your <<nudity>>.");
-		br();
-	}
 
 	if (V.timer >= 1) V.timer--;
 	// V.turnCount++;
@@ -1752,6 +1746,8 @@ function effects() {
 	if (V.worn.feet.type.includes("heels") && currentSkillValue("feetskill") < V.worn.feet.reveal) {
 		V.tiredness += (V.worn.feet.reveal - currentSkillValue("feetskill")) / 150;
 	}
+
+	sWikifier("<<exposure>>");
 
 	if (V.combat) sWikifier("<<pass 10 seconds>>");
 
