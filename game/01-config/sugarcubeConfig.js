@@ -11,7 +11,7 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.10.4",
+	version: "0.5.10.5",
 	versionName: `"Name pending" edition`,
 	sneaky: true,
 	socialMediaEnabled: true,
