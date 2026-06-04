@@ -675,7 +675,7 @@ window.resolveValue = resolveValue;
 
 /**
  * This macro sets $rng. If the variable $rngOverride is set, $rng will always be set to that.
- * Set $rngOverride in the console for bugtesting purposes. Remember to unset it after testing is finished.
+ * Set $rngOverride in the console for bug testing purposes. Remember to unset it after testing is finished.
  * With two arguments, it sets $rng to a random value between the first arg and the second arg. This can be used to guarantee $rng is set to a specific value.
  * With one argument, it sets $rng to a random value between 1 and the arg.
  * With no arguments, it sets $rng to a random value between 1 and 100.
@@ -716,7 +716,7 @@ window.nullable = nullable;
  * This inputs an icon img tag, using the given filename.
  * Example: <<icon "bed.png">>
  * <<icon "bed.png" "nowhitespace">> does not add a trailing whitespace for formatting.
- * <<icon "bed.png" "infront">> will cause the icon to layer ontop of the next one
+ * <<icon "bed.png" "infront">> will cause the icon to layer on top of the next one
  */
 Macro.add("icon", {
 	handler() {
