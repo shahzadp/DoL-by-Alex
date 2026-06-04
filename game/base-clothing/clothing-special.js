@@ -343,7 +343,7 @@ function initSpecialClothes() {
 		},
 		underground_farm: {
 			text: "cow print set",
-			requirements: () => V.livestock_intro !== undefined,
+			requirements: () => V.livestock.intro !== undefined,
 			hint: "become livestock",
 			shop: ["forest", "adult"],
 			subsetOf: ["bad_end", "transformation"],
