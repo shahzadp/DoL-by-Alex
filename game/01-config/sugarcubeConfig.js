@@ -11,9 +11,9 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.10.5",
-	versionName: `"Name pending" edition`,
-	sneaky: true,
+	version: "0.5.10.6",
+	versionName: `"Lofts of Clothes" edition`,
+	sneaky: false,
 	socialMediaEnabled: true,
 	sourceLinkEnabled: false,
 };
