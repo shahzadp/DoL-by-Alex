@@ -7202,11 +7202,6 @@
 		<<set $avery_valentines.invite to false>>
 	<</if>>
 
-	/* Fixed UB var not being unset after escape */
-	<<if $undergroundbrothel and $undergroundbrothel.escape isnot 0>>
-		<<set $undergroundbrothel to {"escape": $undergroundbrothel.escape}>>
-	<</if>>
-
 	/* setting npcSeen for already initiated NPCs */
 	<<if C.npc.Whitney.init is 1 and !$whitneySeen>>
 		<<set $whitneySeen to []>>
@@ -7227,6 +7222,53 @@
 	/* Fixed Butterfly Eyepatch not being unlocked */
 	<<if $specialClothes[125].unlocked is 3>>
 		<<set $specialClothes[133].unlocked to 3>>
+	<</if>>
+
+	/* Remove Duplicate Sunflower from $plants_known */
+	<<if $plants_known.filter(seed => seed === 'sunflower').length gt 1>>
+		<<set $plants_known.delete("sunflower")>>
+		<<set $plants_known.pushUnique("sunflower")>>
+	<</if>>
+
+	/* Fix for broken clothes */
+	<<if $saveVersions.some(v => ["0.5.10.0","0.5.10.1","0.5.10.2","0.5.10.3","0.5.10.4","0.5.10.5","0.5.10.6"].includes(v))>>
+		<<run ['upper','lower','under_upper','under_lower'].forEach(slot => {
+			if(V.worn[slot].one_piece === undefined && V.worn[slot].name !== "naked"){
+				if (V.worn[slot].set === slot){
+					V.worn[slot].one_piece = 0;
+				} else {
+					V.worn[slot].one_piece = 1;
+				}
+			}
+		})>>
+
+		<<run ['upper','lower','under_upper','under_lower'].forEach(slot => {
+			for(let i = 0; i < V.wardrobe[slot].length; i++){
+				if(V.wardrobe[slot][i].one_piece === undefined){
+					if (V.wardrobe[slot][i].set === slot){
+						V.wardrobe[slot][i].one_piece = 0;
+					} else {
+						V.wardrobe[slot][i].one_piece = 1;
+					}
+				}
+			}	
+		})>>
+
+		<<run Object.keys(V.wardrobes).forEach(wardrobe => {
+			if(wardrobe !== "shopReturn" && wardrobe !== "wardrobe"){
+				['upper','lower','under_upper','under_lower'].forEach(slot => {
+					for (let i = 0; i < V.wardrobes[wardrobe][slot].length; i++) {
+						if(V.wardrobes[wardrobe][slot][i].one_piece === undefined){
+							if (V.wardrobes[wardrobe][slot][i].set === slot){
+								V.wardrobes[wardrobe][slot][i].one_piece = 0;
+							} else {
+								V.wardrobes[wardrobe][slot][i].one_piece = 1;
+							}
+						}
+					}
+				});
+			}
+		})>>
 	<</if>>
 <</widget>>
 

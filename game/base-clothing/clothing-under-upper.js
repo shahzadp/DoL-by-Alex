@@ -1900,6 +1900,7 @@ function initUnderUpper() {
 			exposed: 1,
 			exposed_base: 1,
 			word: "a",
+			one_piece: 0,
 			plural: 0,
 			breast_img: { 0: 0, 1: 0, 2: 0, 3: 3, 4: 4, 5: 5, 6: 6 },
 			breast_acc_img: 1,
