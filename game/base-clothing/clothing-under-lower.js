@@ -2551,6 +2551,7 @@ function initUnderLower() {
 			fabric_strength: 25,
 			reveal: 900,
 			word: "a",
+			one_piece: 0,
 			plural: 0,
 			colour: 0,
 			colour_options: [
@@ -2608,6 +2609,7 @@ function initUnderLower() {
 			fabric_strength: 25,
 			reveal: 400,
 			word: "a",
+			one_piece: 0,
 			plural: 0,
 			colour: 0,
 			colour_options: [
