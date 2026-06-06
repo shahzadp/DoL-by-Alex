@@ -1110,8 +1110,13 @@
 <<widget "farm_relax_chat">>
 	<<switch random(1, 10)>>
 		<<case 1>>
-			<<loadNPC 1 "alexs_parent1">>
-			Alex chats with you, and talks about <<his>> family. "I've twelve siblings," <<he>> says at one point. "<<person2>><<Mum>> doesn't know what to do with us all."<<person1>>
+			<<if !$per_npc.alexs_parent1>>
+				<<generate2>>
+				<<saveNPC 1 "alexs_parent1">>
+			<<else>>
+				<<loadNPC 1 "alexs_parent1">>
+			<</if>>
+			Alex chats with you, and talks about <<his>> family. "I've twelve siblings," <<he>> says at one point. <<person2>>"<<Mum>> doesn't know what to do with us all."<<person1>>
 		<<case 2>>
 			Alex chats with you, and talks about the farm's pigs. "Hauling all their food over is rough," <<he>> says at one point. "The truffles are worth it though."
 		<<case 3>>
@@ -1325,7 +1330,12 @@
 			The <<person2>><<person>> looks at you. "This must be one of your farmhands," <<he>> says.
 			<br>
 			<<person1>>
-			"<<print $farm_stage gte 7 ? "The co-owner, actually," : "That's right,">>" Alex replies. <<He>> looks at you, and gestures at the <<person2>><<person>>. "This is one of our clients. We look after <<his>> steed."
+			"<<print $farm_stage gte 7 ? "The co-owner, actually," : "That's right,">>" Alex replies. 
+			<<if $exposed gte 1>>
+				<<He>> looks at you, then averts <<his>> gaze when <<he>> sees your state of dress. "Th-this is one of our clients," <<he>> gestures at the <<person2>><<person>>, who strokes <<his>> chin while <<his>> eyes run over your body. <<covered>>
+			<<else>>
+				<<He>> looks at you, and gestures at the <<person2>><<person>>. "This is one of our clients. We look after <<his>> steed."
+			<</if>>
 			<br><br>
 
 				<<if $farm_work.horse.monster is true>>
@@ -1361,7 +1371,11 @@
 				<</if>>
 				<br><br>
 
-				Alex shows the client to the edge of the farm.
+				<<if $exposed gte 1>>
+					The client keeps glancing at you as Alex shows <<him>> to the edge of the farm.
+				<<else>>
+					Alex shows the client to the edge of the farm.
+				<</if>>
 				<br><br>
 
 				<<link [[Next|Farm Work]]>><<endevent>><</link>>
