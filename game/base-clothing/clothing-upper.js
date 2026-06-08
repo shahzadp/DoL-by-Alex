@@ -11426,7 +11426,7 @@ function initUpper() {
 			shop: ["clothing", "school"],
 			type: ["school", "normal", "bellyHide"],
 			combat: {
-				reference: "suitjacket",
+				reference: "regularshirt",
 			},
 			state: "waist",
 			state_base: "waist",
@@ -11503,7 +11503,7 @@ function initUpper() {
 			shop: ["clothing", "school"],
 			type: ["school", "normal", "bellyHide"],
 			combat: {
-				reference: "suitjacket",
+				reference: "regularshirt",
 			},
 			state: "waist",
 			state_base: "waist",

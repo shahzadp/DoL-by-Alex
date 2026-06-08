@@ -1461,6 +1461,9 @@ function initFace() {
 			name: "futuristic shades",
 			name_cap: "Futuristic shades",
 			variable: "futureshades",
+			combat: {
+				reference: "coolshades",
+			},
 			state: 0,
 			state_base: 0,
 			integrity: 30,
@@ -1529,6 +1532,9 @@ function initFace() {
 			name: "butterfly eyepatch",
 			name_cap: "Butterfly eyepatch",
 			variable: "butterfly eyepatch",
+			combat: {
+				reference: "eyepatch",
+			},
 			description: "A delicate touch.",
 			cost: 7000,
 			shop: ["forest"],
@@ -1578,6 +1584,9 @@ function initFace() {
 			name: "rose eyepatch",
 			name_cap: "Rose eyepatch",
 			variable: "rose eyepatch",
+			combat: {
+				reference: "eyepatch",
+			},
 			description: "Every rose hides its thorns.",
 			cost: 9500,
 			shop: ["forest"],
@@ -1644,6 +1653,9 @@ function initFace() {
 			name: "sleeping mask",
 			name_cap: "Sleeping mask",
 			variable: "sleeping mask",
+			combat: {
+				reference: "blindfold",
+			},
 			description: "Ensures uninterrupted rest. Anytime, anywhere.",
 			cost: 3500,
 			shop: ["clothing"],

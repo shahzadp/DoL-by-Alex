@@ -3984,7 +3984,7 @@ function initHead() {
 			name_cap: "Large bow beret",
 			variable: "large bow beret",
 			combat: {
-				reference: "bow",
+				reference: "beatnik",
 			},
 			description: "A big beret, with bow.",
 			cost: 7500,

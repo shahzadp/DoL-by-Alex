@@ -11564,7 +11564,7 @@ function initLower() {
 			shop: ["clothing"],
 			type: ["normal"],
 			combat: {
-				reference: "skirt",
+				reference: "longskirt",
 			},
 			state: "waist",
 			state_base: "waist",
