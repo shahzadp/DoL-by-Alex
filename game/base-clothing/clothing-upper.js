@@ -12575,6 +12575,7 @@ function initUpper() {
 			cursed: 0,
 			location: 0,
 			one_piece: 1,
+			formfitting: 1,
 			outfitPrimary: { lower: "milkmaid dress" },
 			iconFile: "milkmaiddress.png",
 			accIcon: "milkmaiddress-acc.png",
