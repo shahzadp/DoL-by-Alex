@@ -631,7 +631,7 @@ function getRobinLocation() {
 		}
 	} else if (V.halloween === 1 && between(Time.hour, 16, 18) && Time.monthDay === 31) {
 		T.robin_location = "halloween";
-	} else if (Time.isWeekEnd() && between(Time.hour, 9, 16) && C.npc.Robin.trauma < 80) {
+	} else if (Time.isWeekEnd() && between(Time.hour, 9, 16) && Weather.precipitation !== "rain" && C.npc.Robin.trauma < 80) {
 		T.robin_location = Time.season === "winter" ? "park" : "beach";
 	} else if (V.englishPlay === "ongoing" && V.englishPlayDays === 0 && Time.hour >= 17 && Time.hour < 21) {
 		T.robin_location = "englishPlay";
