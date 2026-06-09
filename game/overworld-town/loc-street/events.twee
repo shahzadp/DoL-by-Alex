@@ -12381,19 +12381,21 @@ The <<person>> leads you down the street, into a discreet hotel. <<He>> already 
 	<span class="green">You feel a prickle at the top of your spine.</span> The <<person>> is looking everywhere in the room, except one corner. You spot it. <span class="red">A hidden camera.</span><<gstress>><<stress 6>>
 	<br><br>
 	<<if hasSexStat("exhibitionism", 5)>>
-		<<link [[Charge extra for filming|Street Seduction Filming]]>><</link>><<exhibitionist5>>
+		<<link [[Charge <<if $phase isnot 0>>extra <</if>>for filming|Street Seduction Filming]]>><</link>><<exhibitionist5>>
 		<br>
 	<<elseif $uncomfortable.prostituting is false>>
 		<<set _desperateaction to 1>>
-		<<link [[Charge extra for filming|Street Seduction Filming]]>><<set $desperateaction to _desperateaction>><</link>><<exhibitionist5>>
+		<<link [[Charge <<if $phase isnot 0>>extra <</if>>for filming|Street Seduction Filming]]>><<set $desperateaction to _desperateaction>><</link>><<exhibitionist5>>
 		<br>
 	<</if>>
 	<<if $submissive lte 500>>
 		<<link [[Threaten to report <<him>> to the police|Street Seduction Threaten]]>><</link>><<defianttext>>
 		<br>
 	<</if>>
-	<<link [[Just climb on the bed|Street Seduction Bed]]>><</link>>
-	<br>
+	<<if hasSexStat("exhibitionism", 5)>>
+		<<link [[Just climb on the bed|Street Seduction Bed]]>><</link>><<exhibitionist5>>
+		<br>
+	<</if>>
 <<else>>
 	<<link [[Search the room|Street Seduction Search]]>><</link>>
 	<br>
@@ -12430,11 +12432,11 @@ You look at the <<person>>, and only now see that <<he>> avoids looking in the d
 <<if hasSexStat("exhibitionism", 5)>>
 	<<link [[Charge extra for filming|Street Seduction Filming]]>><</link>><<exhibitionist5>>
 	<br>
-	<<link [[Just climb on the bed|Street Seduction Bed]]>><</link>>
+	<<link [[Just climb on the bed|Street Seduction Bed]]>><</link>><<exhibitionist5>>
 	<br>
 <<elseif $uncomfortable.prostituting is false>>
 	<<set _desperateaction to 1>>
-	<<link [[Charge extra for filming|Street Seduction Filming]]>><<set $desperateaction to _desperateaction>><</link>><<exhibitionist5>>
+	<<link [[Charge <<if $phase isnot 0>>extra <</if>>for filming|Street Seduction Filming]]>><<set $desperateaction to _desperateaction>><</link>><<exhibitionist5>>
 	<br>
 <</if>>
 <<if $submissive lte 500>>
@@ -12448,30 +12450,18 @@ You look at the <<person>>, and only now see that <<he>> avoids looking in the d
 :: Street Seduction Filming
 <<effects>>
 
-<<if $phase is 1 or $phase is 2>>
-	<<if $speech_attitude is "meek">>
-		"You seem to have left your camera there," you say. "Switched on, too. I'm afraid that will cost you triple."
-	<<elseif $speech_attitude is "bratty">>
-		"Daring of you to put a camera there," you say. "This will cost you triple. You're lucky I don't charge extra for clumsy deceptions."
-	<<else>>
-		"We can do it with the camera there," you say. "But it'll cost you triple."
-	<</if>>
-	<br><br>
+<<if $speech_attitude is "meek">>
+	"You seem to have left your camera there," you say. "Switched on, too. I'm afraid that will cost you <<if $phase is 0>><<printmoney 15000>><<else>>triple<</if>>."
+<<elseif $speech_attitude is "bratty">>
+	"Daring of you to put a camera there," you say. "This will cost you <<if $phase is 0>><<printmoney 15000>><<else>>triple<</if>>. You're lucky I don't charge extra for clumsy deceptions."
 <<else>>
-	<<if $speech_attitude is "meek">>
-		"You seem to have left your camera there," you say. "Switched on, too. I'm afraid this will cost you £150."
-	<<elseif $speech_attitude is "bratty">>
-		"Daring of you to put a camera there," you say. "This will cost you £150. You're lucky I don't charge extra for clumsy deceptions."
-	<<else>>
-		"We can do it with the camera there," you say. "But it'll cost you £150."
-	<</if>>
-	<br><br>
+	"We can do it with the camera there," you say. "But it'll cost you <<if $phase is 0>><<printmoney 15000>><<else>>triple<</if>>."
 <</if>>
+<br><br>
 
 "Camera? What camera?" <<Hes>> a bad liar, and <<he>> knows it. "Fine. I'll pay extra. Now get on the bed."
 <br><br>
-
-<<link [[Get on the bed|Street Seduction Bed]]>><</link>>
+<<link [[Get on the bed|Street Seduction Bed]]>><<set $phase to ($phase || 1) * 3>><</link>><<exhibitionist5>>
 <br>
 <<if $submissive lte 500>>
 	<<link [[Threaten to report <<him>> to the police|Street Seduction Threaten]]>><</link>><<defianttext>>
@@ -12503,21 +12493,14 @@ You look at the <<person>>, and only now see that <<he>> avoids looking in the d
 
 "You wouldn't dare," the <<person>> says, but there's a quiver in <<his>> voice. "I'll tell them you broke into my room. I'll say you tried to rob me."
 
-<<if $phase is 1 or $phase is 2>>
+<<if $phase isnot 0>>
 	You know what? Here." <<He>> throws the promised cash at you. "Now fuck off."
 	<br><br>
-
-	<<if $phase is 2>>
-		You catch the <<moneyGain 100>>
-	<<elseif $phase is 1>>
-		You catch the <<moneyGain 50>>
-	<</if>>
-	<br><br>
-
+	You catch the <<if $phase is 1>><<moneyGain 50>><<else>><<moneyGain 100>><</if>>
 <<else>>
 	<<He>> doesn't seem to be aware that <<hes>> backing away from you, intimidated.
-	<br><br>
 <</if>>
+<br><br>
 	
 <<link [[Take the camera on the way out|Street Seduction Threaten Take]]>><<crimeUp 30 "thievery">><<set $blackmoney += 50>><</link>><<gcrime "thievery">>
 <br>
@@ -12589,43 +12572,18 @@ You lie down on the bed. The <<person>> is soon on top of you.
 <<set $outside to 0>><<effects>>
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
-	<<if $phase2 is 1>>
-	The <<person>> drops some notes on you, grabs <<his>> coat and the camera, then leaves without another word.
-	<br><br>
-	<<elseif $phase is 1 or $phase is 2>>
-		The <<person>> drops some notes on you, grabs <<his>> coat, fiddles under a painting, then leaves without another word.
-	<<else>>
-		The <<person>> grabs <<his>> coat, then leaves without another word.
-	<</if>>
-	<br>
-	<<if $phase2 is 1>>
-		<<if $phase is 2>>
-			You make <<moneyGain 300>>
-		<<elseif $phase is 1>>
-			You make <<moneyGain 150>>
-		<</if>>
-		<<set $prostitutionstat += 1>><<fameprostitution 1>>
-	<<else>>
-		<<if $phase is 2>>
-			You make <<moneyGain 100>>
-		<<elseif $phase is 1>>
-			You make <<moneyGain 50>>
-		<</if>>
+	The <<person>><<if $phase isnot 0>> drops some notes on you,<</if>> grabs <<his>> coat<<if $phase2 is 1>> and the camera, then<<else>>, fiddles under a painting, and<</if>> leaves without another word.
+	<<if $phase isnot 0>>
+		<<set $_pay to 50 * $phase>>
+		<br><br>You make <<moneyGain $_pay>>
 		<<set $prostitutionstat += 1>><<fameprostitution 1>>
 	<</if>>
-	<br><br>
 <<elseif $enemyhealth lte 0>>
 	You smack the <<person>> away from you, forcing <<him>> off the bed. You turn and escape before <<he>> can retaliate.
-	<br><br>
 <<else>>
-	<<if $phase2 is 1 or $phase is 1 or $phase is 2>>
-		"Fine," the <<person>> says. "But I'm not paying you anything."
-	<<else>>
-		"Fine," the <<person>> says. "Get out before I change my mind."
-	<</if>>
-	<br><br>
+	"Fine," the <<person>> says. "<<if $phase isnot 0>>But I'm not paying you anything<<else>>Get out before I change my mind<</if>>."
 <</if>>
-
+<br><br>
 <<clotheson>>
 <<tearful>> you leave the hotel.
 <br><br>
