@@ -536,7 +536,7 @@ class NpcCombatMapper {
 	 * @returns {Partial<CompositeLayerSpec>}
 	 */
 	static getNpcSkinFilter(npc) {
-		return setup.colours.getSkinFilter(npc.skincolour === "ghost" ? "ghost" : npc.skincolour === "white" ? "light" : "dark", 0);
+		return setup.colours.getSkinFilter(npc?.skincolour === "ghost" ? "ghost" : npc?.skincolour === "white" ? "light" : "dark", 0);
 	}
 
 	/**
@@ -545,7 +545,7 @@ class NpcCombatMapper {
 	 */
 	static getNpcPenetratorFilter(npc) {
 		// Get any special colours, strapon, etc.
-		if (npc.strapon) {
+		if (npc?.strapon) {
 			// Figure out a filter for each strapon colour:
 			switch (npc.strapon.color) {
 				case "fleshy":
