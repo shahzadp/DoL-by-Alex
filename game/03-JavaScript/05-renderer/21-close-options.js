@@ -253,7 +253,7 @@ class CloseCombatMapper {
 				/* filters for npc targeting vagina/anus */
 				if (!["horse", "beast-oral", "machine"].includes(options[slot].npc)) {
 					options.filters[`${slot}Npc`] = NpcCombatMapper.getNpcPenetratorFilter(targetNpc);
-					options.filters[`${slot}Condom`] = CombatRenderer.getCondomOptions(targetNpc.condom).colour;
+					options.filters[`${slot}Condom`] = CombatRenderer.getCondomOptions(targetNpc?.condom).colour;
 				}
 			}
 			if (options[slot].npc2) {
@@ -261,7 +261,7 @@ class CloseCombatMapper {
 
 				/* filters for npc double-penetrating vagina/anus */
 				options.filters[`${slot}Npc2`] = NpcCombatMapper.getNpcPenetratorFilter(targetNpc2);
-				options.filters[`${slot}Condom2`] = CombatRenderer.getCondomOptions(targetNpc2.condom).colour;
+				options.filters[`${slot}Condom2`] = CombatRenderer.getCondomOptions(targetNpc2?.condom).colour;
 			}
 		}
 	}
