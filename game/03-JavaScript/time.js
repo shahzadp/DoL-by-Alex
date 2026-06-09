@@ -176,6 +176,7 @@ const Time = (() => {
 						}
 						if (prevDate.weekDay === 7 && currentDate.weekDay === 1) weekPassed();
 						dayPassed(days);
+						if (prevDate.month === currentDate.month - 1) monthPassed();
 						if (prevDate.yearDay < Time.startDate.yearDay && currentDate.yearDay >= Time.startDate.yearDay) yearPassed();
 					}
 					// pass the remaining hours
@@ -463,6 +464,14 @@ function yearPassed() {
 	V.englishPlay = "none";
 
 	V.yearly.clearProperties();
+}
+
+function monthPassed() {
+	V.volunteer = "none";
+	V.soupKitchen = "none";
+	V.foodDropoff = "none";
+
+	V.monthly.clearProperties();
 }
 
 function weekPassed() {

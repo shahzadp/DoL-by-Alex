@@ -200,6 +200,8 @@ River pierces you with <<his>> blue eyes. "I didn't expect to see you here," <<h
 
 :: Soup Kitchen Work
 <<set $outside to 0>><<set $location to "temple">><<effects>>
+<<set $monthly.soupKitchen to true>>
+
 You help River work the kitchen. You cut vegetables ready for cooking and clean up any spillages made throughout the hall.
 <br><br>
 <<pubfameComplete "river">>
@@ -289,6 +291,68 @@ You help River work the kitchen. You cut vegetables ready for cooking and clean 
 		<<link [[Next|Soup Kitchen]]>><</link>>
 		<br>
 	<</addinlineevent>>
+	<<if $monthly.foodDropoff isnot true and !Time.isWeekEnd()>>
+		<<addinlineevent "kitchen_doren" 100>>
+			<<set $monthly.foodDropoff to true>>
+			<<npc Doren 2>><<person2>>
+			"Hullo, River!" a sing-songy voice says. You turn to see a familiar face smiling at you. It's Doren.
+			<<if !$dorenSeen.includes("soup_kitchen")>>
+				<<set $dorenSeen.pushUnique("soup_kitchen")>>
+			"Oh, heya, <<lass>>! I didn't know you volunteered at the soup kitchen. Great to know someone keeping River company," <<he>> says with a cheeky smile. River ignores <<his>> teasing.
+			<<else>>
+			"Heya, <<lass>>!" <<He>> waves at you.
+			<</if>>
+			<<npcincr Doren love 1>><<glove "Doren">>
+			<br><br>
+
+			"Our food drive was a success!" Doren cheers while stacking boxes of produce. River lends <<him>> a hand.
+			<br><br>
+
+			Next, Doren helps out in the kitchen. While cooking, the two of them
+			<<switch random(1,4)>>
+				<<case 1>>quibble over how to do things.
+					<<set _rng to random(1, 4)>>
+					<br><br>
+					"That's not how you <<if _rng is 1>>chop vegetables<<elseif _rng is 2>>wipe spillages<<elseif _rng is 3>>clean the dishes<<else>>stir a pot<</if>>," River remarks.
+					<br>
+					"Show me how then." Doren dons a cheeky smile, crossing <<his>> arms.
+					<br>
+					They end up in a <<if _rng is 1>>vegetable-chopping<<elseif _rng is 2>>spillage-wiping<<elseif _rng is 3>>dishwashing<<else>>pot-stirring<</if>> competition. <<= ("Doren","River")>> comes out victorious!
+
+				<<case 2>>have a pleasant chat.
+
+				<<case 3>>talk about school-related things.
+					<br><br>
+					<<switch random(1,2)>>
+					<<case 1>>
+						River shoots Doren a puzzled look. "Do students still think you're a werewolf?"
+						<br>
+						"Aye!" Doren nods, laughing.
+					<<case 2>>
+						"How's work?" Doren asks, chuckling at the cliché question.
+						<br>
+						"Could be better."
+					<</switch>>
+
+				<<case 4>>talk about you.
+					<br><br>
+					<<if C.npc.River.love gte 40 and C.npc.Doren.love gte 50 and $monthly.volunteer and $monthly.soupKitchen>>
+						"<<pShe>> has been helpful around here," River says, <<= ("chopping the vegetables","stirring the pot")>>.
+						<br>
+						"<<pShes>> been volunteering with me, too. What a good <<lass>>!" Doren smiles, <<= ("chopping the vegetables","stirring the pot")>>.
+					<<else>>
+						They're pleased that you're helping out in the soup kitchen.
+					<</if>>
+			<</switch>>
+			<br><br>
+
+			An hour passes. Doren says goodbye to everyone before <<he>> leaves.
+			<br><br>
+
+			<<link [[Next|Soup Kitchen]]>><<endevent>><</link>>
+			<br>
+		<</addinlineevent>>
+	<</if>>
 <</if>>
 <<runeventpool>>
 
@@ -534,7 +598,11 @@ The rest of the hour passes without event.
 	You approach the soup kitchen, but the door is locked. <<openinghours 18 21>>
 	<br><br>
 <</if>>
-<<link [[Next|Wolf Street]]>><</link>>
+<<if $debug is 1 and !Time.betweenHours(18, 20, 1)>>
+	<<loitericon>><<link [[Wait for the soup kitchen to open (DEBUG)|Soup Kitchen]]>><<passTimeUntil 18 1>><</link>>
+	<br>
+<</if>>
+<<getouticon>><<link [[Leave|Wolf Street]]>><</link>>
 <br>
 
 
