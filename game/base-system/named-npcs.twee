@@ -1210,12 +1210,24 @@ Zohar
 
 <<widget "npcincr">>
 	<!-- Arguments passed are NNPC name, variable type, and value (+/-)-->
-
 	<<set _nam to _args[0]>>
 	<<set _var to _args[1]>>
 	<<set _val to _args[2]>>
 	<<if _args[3]>>
 		<<set _cheat to _args[3]>>
+	<</if>>
+	
+	<!-- 
+		do NOT change this to reference setup.NPCNameList: this check exists to make sure whenever a new NNPC is added, 
+		calling npcincr with them throws an error until the implemented adds clamps to <<relationshipclamp>> 
+		and adds their name to relevant whitelists (and blacklists, if they don't use love or dom) below. 
+
+		if you're reading this, there's a decent chance that means you! 
+		head over to game/base-system/widgets.twee and give this new NNPC relevant clamps before whitelisting them below.
+	-->
+	<<set _validNNPCNames to ["Avery","Bailey","Briar","Charlie","Darryl","Doren","Eden","Gwylan","Harper","Jordan","Kylar","Landry","Leighton","Mason","Morgan","River","Robin","Sam","Sirris","Whitney","Winter","Black Wolf","Niki","Quinn","Remy","Alex","Great Hawk","Wren","Sydney","Ivory Wraith","Zephyr"]>>
+	<<if !_validNNPCNames.includes(_nam)>>
+		<<error { message: "NNPC '" + _nam + "' is not whitelisted for use with <<npcincr>>"}>>
 	<</if>>
 
 	<<set _i to $NPCNameList.indexOf(_nam)>>
@@ -1227,7 +1239,6 @@ Zohar
 		<</if>>
 		<<set $NPCName[_i].love += _val>>
 	<<case dom>>
-		/* This would be better has a whitelist than a blacklist, in case a new NPC is added to the game */
 		<<if ["Sydney", "Black Wolf", "Ivory Wraith"].includes(_nam)>>
 			<<error { message: "<<npcincr>> attempted to modify dom for " + _nam + ", who has no dom clamp" }>>
 		<</if>>
