@@ -46,7 +46,7 @@ function namedNpcComments(npcName) {
 
 	// Do not return any comment while the current pass is silent.
 	if (T.silent) return "";
-
+	
 	// Named NPCs with registered handlers resolve to their matching speech macro.
 	if (npcName && Macro.has(`speech-${npcName.toLowerCase()}`) && setup.NPCNameList.includes(npcName)) {
 		return `<<speech-${npcName.toLowerCase()}>>`;
