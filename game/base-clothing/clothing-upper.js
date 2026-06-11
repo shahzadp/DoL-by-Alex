@@ -12507,7 +12507,7 @@ function initUpper() {
 			name: "milkmaid dress",
 			name_cap: "Milkmaid dress",
 			variable: "milkmaid dress",
-			description: "To milk, or being milked, that is the question.",
+			description: "To milk, or to be milked, that is the question.",
 			cost: 6500,
 			shop: ["clothing", "adult"],
 			type: ["normal"],
