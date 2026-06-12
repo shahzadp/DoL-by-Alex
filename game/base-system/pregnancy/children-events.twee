@@ -90,7 +90,13 @@
 <<widget "wolfCaveSingles">>
 	<<if _args[0]>>
 		<<childSelect _args[0]>>
-		<<switch random(0,0)>>
+		<<set _c to $children[_args[0]]>>
+		<<set _hurtEligible to ["wolf","wolfboy","wolfgirl"].includes(_c.type) and (_c.mother is "Black Wolf" or _c.father is "Black Wolf")>>
+		<<set _scene to 0>>
+		<<if _hurtEligible>>
+			<<set _scene to random(0,1)>>
+		<</if>>
+		<<switch _scene>>
 			<<case 0>>
 				You spot your <<childtype>> <<childname>> lying on a sleeping <<wolf_cave_singular>>, looking at you with <<childhis>> <<childhands>> stretched towards you.
 				<br><br>
@@ -105,6 +111,10 @@
 				<<link [[Talk (0:15)|childTalk]]>><<pass 15>><</link>>
 				<br>
 				<<link [[Play (0:30)|childPlay]]>><<pass 30>><</link>>
+			<<case 1>>
+				<<childHe>>'s whining beside the Black Wolf, who growls at other wolves.
+				<br><br>
+				<<link [[Investigate (0:10)|Wolf Cave Hurt Pup]]>><<pass 10>><</link>>
 		<</switch>>
 	<</if>>
 	<br>
@@ -155,6 +165,45 @@
 		<</switch>>
 	<</if>>
 <</widget>>
+
+:: Wolf Cave Hurt Pup
+<<set _hurtPupId to $childSelected.childId>>
+<<effects>><<npc "Black Wolf">>
+<<childSelect _hurtPupId>>
+
+You decide to investigate and find your <<childtype>> whimpering beside the Black Wolf, who looks aggressive and growls at any other wolf that tries to approach. <<bHe>> growls at you too, until <<bhe>> realises it's you, and calms slightly.
+<br><br>
+
+<<if $monster is 1>>
+
+	"<<childHe>>'s hurt," <<bHe>> says, gesturing at your <<childtype>>. "Tripped." <<bHe>> insistently points to something on the cave floor. A jagged rock lies not too far away from your <<childtype>>.
+	<br><br>
+
+	You kneel down and examine your <<childtype>>. There's a scrape on one of <<childhis>> paws. It's nothing serious, but painful for a young one. The Black Wolf watches you two intently.
+	<br><br>
+
+	You clean the wound as best you can with what you have available, and your <<childtype>> stops whimpering. <<childHe>> nuzzles against you and licks your hand. <<ltrauma>><<lstress>><<trauma -6>><<stress -6>>
+	<br><br>
+
+	You three spend a bit of time together in silence until the Black Wolf retreats once again to the outside of the cave.
+
+<<else>>
+
+	The Black Wolf's face turns towards something on the cave floor, huffing insistently. <<bHe>> wants you to look. You find a jagged rock not too far away from where your <<childtype>> is.
+	<br><br>
+
+	You kneel down and examine your <<childtype>>. There's a scrape on one of <<childhis>> paws. Nothing serious, but painful for a young one. The Black Wolf circles around you both.
+	<br><br>
+
+	You clean the wound as best you can with what you have available, and your <<childtype>> stops whimpering. <<childHe>> nuzzles against you and licks your hand. <<ltrauma>><<lstress>><<trauma -6>><<stress -6>>
+	<br><br>
+
+	You three spend a bit of time together in silence until the Black Wolf retreats once again to the outside of the cave.
+
+<</if>>
+<br><br>
+
+<<link [[Next|$childPassageExit]]>><<unset $childPassageExit>><<endevent>><</link>>
 
 :: childBreastFeed
 <<set $pregnancyStats.childBreastfedInteractions++>>
@@ -584,36 +633,36 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 				<</for>>
 			</div>
 			<div class="containerFooter">
-					<<if $storedChildrenToys[$location].length gt 0>>
+				<<if $storedChildrenToys[$location].length gt 0>>
+					<div class="tab inventory">
+						<<button "<span class='fa-icon fa-trash'></span> Discard">>
+							<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
+							<<set _selectedLocationToy to 0>>
+							<<childrenToysUIReplace>>
+						<</button>>
+					</div>
+					<<if $player.inventory.childrenToys.length lt 5>>
 						<div class="tab inventory">
-							<<button "<span class='fa-icon fa-trash'></span> Discard">>
+							<<button "<span class='fa-icon fa-export'></span> Carry">>
+								<<run $player.inventory.childrenToys.push($storedChildrenToys[$location][_selectedLocationToy])>>
 								<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
 								<<set _selectedLocationToy to 0>>
 								<<childrenToysUIReplace>>
 							<</button>>
 						</div>
-						<<if $player.inventory.childrenToys.length lt 5>>
-							<div class="tab inventory">
-								<<button "<span class='fa-icon fa-export'></span> Carry">>
-									<<run $player.inventory.childrenToys.push($storedChildrenToys[$location][_selectedLocationToy])>>
-									<<run $storedChildrenToys[$location].deleteAt(_selectedLocationToy)>>
-									<<set _selectedLocationToy to 0>>
-									<<childrenToysUIReplace>>
-								<</button>>
-							</div>
-						<<else>>
-							<div class="tab inventory">
-								<button class="link-internal macro-button no-numberify buttonDisabled" disabled><span class='fa-icon fa-export'></span>Carry</button>
-							</div>
-						<</if>>
 					<<else>>
 						<div class="tab inventory">
-							<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-trash'></span> Discard">></button>
-						</div>
-						<div class="tab inventory">
-							<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-export'></span> Carry">></button>
+							<button class="link-internal macro-button no-numberify buttonDisabled" disabled><span class='fa-icon fa-export'></span>Carry</button>
 						</div>
 					<</if>>
+				<<else>>
+					<div class="tab inventory">
+						<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-trash'></span> Discard">></button>
+					</div>
+					<div class="tab inventory">
+						<button class="link-internal macro-button buttonDisabled" disabled><<="<span class='fa-icon fa-export'></span> Carry">></button>
+					</div>
+				<</if>>
 			</div>
 		</div>
 	</div>
@@ -1318,10 +1367,10 @@ You leave behind $donatedMilk bottles of milk for your children with one of Bail
 
 <<switch random(1,2)>>
 	<<case 1>>
-	"I dunno how such a little thing can drink so much!" <<He>> laughs.
+		"I dunno how such a little thing can drink so much!" <<He>> laughs.
 
 	<<case 2>>
-	"Never thought this would be so tiring," <<he>> sighs.
+		"Never thought this would be so tiring," <<he>> sighs.
 
 <</switch>>
 
