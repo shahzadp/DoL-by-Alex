@@ -764,7 +764,7 @@ function gwylanRequestIngredients() {
 			category: "tending",
 			name: ingredientKey,
 			type: setupItem.category,
-			need: 0,
+			need: 1,
 		};
 		if (setupItem.shop.available_in?.includes("supermarket")) {
 			const supermarketMaxNeed = Math.trunc(3000 / setup.foodstuff[ingredientKey].shop.sell_price); // supermarket items are set to this every week, so ensure it can't take more than 1 week to complete request
