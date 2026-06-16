@@ -16,7 +16,7 @@ Warmth checklist:
 function initFace() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "face",
 			name: "naked",
@@ -46,8 +46,8 @@ function initFace() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "face",
 			name: "glasses",
@@ -80,8 +80,8 @@ function initFace() {
 			location: 0,
 			iconFile: "glasses.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "face",
 			name: "cool shades",
@@ -114,8 +114,8 @@ function initFace() {
 			location: 0,
 			iconFile: "cool_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "face",
 			name: "surgical mask",
@@ -145,8 +145,8 @@ function initFace() {
 			location: 0,
 			iconFile: "surgical_mask.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "face",
 			name: "gag",
@@ -180,8 +180,8 @@ function initFace() {
 			location: 0,
 			iconFile: "",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "face",
 			name: "blindfold",
@@ -211,8 +211,8 @@ function initFace() {
 			location: 0,
 			iconFile: "",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "face",
 			name: "gag and blindfold",
@@ -246,8 +246,8 @@ function initFace() {
 			location: 0,
 			iconFile: "",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "face",
 			name: "skulduggery mask",
@@ -280,8 +280,8 @@ function initFace() {
 			location: 0,
 			iconFile: "skulduggery_mask.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "face",
 			name: "low frame glasses",
@@ -313,8 +313,8 @@ function initFace() {
 			location: 0,
 			iconFile: "low_frame_glasses.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 9,
 			slot: "face",
 			name: "half moon glasses",
@@ -349,8 +349,8 @@ function initFace() {
 			location: 0,
 			iconFile: "half_moon_glasses.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 10,
 			slot: "face",
 			name: "deep frame glasses",
@@ -382,8 +382,8 @@ function initFace() {
 			location: 0,
 			iconFile: "deep_frame_glasses.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 11,
 			slot: "face",
 			name: "square shades",
@@ -417,8 +417,8 @@ function initFace() {
 			location: 0,
 			iconFile: "square_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 12,
 			slot: "face",
 			name: "round shades",
@@ -451,8 +451,8 @@ function initFace() {
 			location: 0,
 			iconFile: "round_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 13,
 			slot: "face",
 			name: "shield shades",
@@ -486,8 +486,8 @@ function initFace() {
 			location: 0,
 			iconFile: "shield_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 14,
 			slot: "face",
 			name: "cat eye shades",
@@ -520,8 +520,8 @@ function initFace() {
 			location: 0,
 			iconFile: "cat_eye_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 15,
 			slot: "face",
 			name: "aviators",
@@ -555,8 +555,8 @@ function initFace() {
 			location: 0,
 			iconFile: "aviators.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 16,
 			slot: "face",
 			name: "punk shades",
@@ -590,8 +590,8 @@ function initFace() {
 			location: 0,
 			iconFile: "punk_shades.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 17,
 			slot: "face",
 			name: "muzzle",
@@ -621,8 +621,8 @@ function initFace() {
 			location: 0,
 			iconFile: "",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 18,
 			slot: "face",
 			name: "mummy facewrap",
@@ -652,8 +652,8 @@ function initFace() {
 			location: 0,
 			iconFile: "mummy_facewrap.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 19,
 			slot: "face",
 			name: "swimming goggles",
@@ -686,8 +686,8 @@ function initFace() {
 			location: 0,
 			iconFile: "swimming_goggles.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 20,
 			slot: "face",
 			name: "belly dancer's veil",
@@ -718,8 +718,8 @@ function initFace() {
 			location: 0,
 			iconFile: "belly_dancers_veil.png",
 			accIcon: "belly_dancers_veil_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 21,
 			slot: "face",
 			name: "muzzle",
@@ -753,8 +753,8 @@ function initFace() {
 			location: 0,
 			iconFile: "muzzle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 22,
 			slot: "face",
 			name: "gag",
@@ -788,8 +788,8 @@ function initFace() {
 			location: 0,
 			iconFile: "gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 23,
 			slot: "face",
 			name: "bit gag",
@@ -819,8 +819,8 @@ function initFace() {
 			location: 0,
 			iconFile: "bit_gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 24,
 			slot: "face",
 			name: "wolf muzzle",
@@ -851,8 +851,8 @@ function initFace() {
 			location: 0,
 			iconFile: "wolf_muzzle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 25,
 			slot: "face",
 			name: "kitty muzzle",
@@ -883,8 +883,8 @@ function initFace() {
 			location: 0,
 			iconFile: "kitty_muzzle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 26,
 			slot: "face",
 			name: "cloth gag",
@@ -915,8 +915,8 @@ function initFace() {
 			location: 0,
 			iconFile: "cloth_gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 27,
 			slot: "face",
 			name: "panty gag",
@@ -947,8 +947,8 @@ function initFace() {
 			location: 0,
 			iconFile: "panty_gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 28,
 			slot: "face",
 			name: "tape gag",
@@ -978,8 +978,8 @@ function initFace() {
 			location: 0,
 			iconFile: "tape_gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 29,
 			slot: "face",
 			name: "penis gag",
@@ -1012,8 +1012,8 @@ function initFace() {
 			location: 0,
 			iconFile: "penis_gag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 30,
 			slot: "face",
 			name: "skeleton mask",
@@ -1043,8 +1043,8 @@ function initFace() {
 			location: 0,
 			iconFile: "skeleton_mask.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 31,
 			slot: "face",
 			name: "esoteric spectacles",
@@ -1074,8 +1074,8 @@ function initFace() {
 			location: 0,
 			iconFile: "esoteric_spectacles.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 32,
 			slot: "face",
 			name: "gas mask",
@@ -1107,8 +1107,8 @@ function initFace() {
 			location: 0,
 			iconFile: "gas_mask.png",
 			accIcon: "gas_mask_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 33,
 			slot: "face",
 			name: "eyepatch",
@@ -1141,8 +1141,8 @@ function initFace() {
 			location: 0,
 			iconFile: "eyepatch.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 34,
 			slot: "face",
 			name: "medical eyepatch",
@@ -1175,8 +1175,8 @@ function initFace() {
 			location: 0,
 			iconFile: "medical_eyepatch.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 35,
 			slot: "face",
 			name: "doggy muzzle",
@@ -1207,8 +1207,8 @@ function initFace() {
 			location: 0,
 			iconFile: "doggy-muzzle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 36,
 			slot: "face",
 			name: "bamboo muzzle",
@@ -1239,8 +1239,8 @@ function initFace() {
 			location: 0,
 			iconFile: "bamboomuzzle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 37,
 			slot: "face",
 			name: "monocle",
@@ -1273,8 +1273,8 @@ function initFace() {
 			location: 0,
 			iconFile: "monocle.png",
 			accIcon: "monocle_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 38,
 			slot: "face",
 			name: "islander mask",
@@ -1304,8 +1304,8 @@ function initFace() {
 			location: 0,
 			iconFile: "islander-mask.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 39,
 			slot: "face",
 			name: "reading glasses",
@@ -1338,8 +1338,8 @@ function initFace() {
 			location: 0,
 			iconFile: "reading_glasses.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 40,
 			slot: "face",
 			name: "bandanna",
@@ -1370,8 +1370,8 @@ function initFace() {
 			location: 0,
 			iconFile: "bandanna.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 41,
 			slot: "face",
 			name: "heart sunglasses",
@@ -1423,8 +1423,8 @@ function initFace() {
 			location: 0,
 			iconFile: "heart_sunglasses.png",
 			accIcon: "heart_sunglasses_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 42,
 			slot: "face",
 			name: "fox mask",
@@ -1454,8 +1454,8 @@ function initFace() {
 			location: 0,
 			iconFile: "fox-mask.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 43,
 			slot: "face",
 			name: "futuristic shades",
@@ -1492,8 +1492,8 @@ function initFace() {
 			location: 0,
 			iconFile: "futureshades.png",
 			accIcon: "futureshades_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 44,
 			slot: "face",
 			name: "plaster",
@@ -1525,8 +1525,8 @@ function initFace() {
 			location: 0,
 			iconFile: "plaster.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 45,
 			slot: "face",
 			name: "butterfly eyepatch",
@@ -1577,8 +1577,8 @@ function initFace() {
 			accIcon: "butterfly-eyepatch-acc.png",
 			altposition: "none",
 			altdisabled: [],
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 46,
 			slot: "face",
 			name: "rose eyepatch",
@@ -1646,8 +1646,8 @@ function initFace() {
 			accIcon: "rose-eyepatch-acc.png",
 			altposition: "none",
 			altdisabled: [],
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 47,
 			slot: "face",
 			name: "sleeping mask",
@@ -1702,7 +1702,7 @@ function initFace() {
 			location: 0,
 			iconFile: "sleeping-mask.png",
 			accIcon: 0,
-		},
+		}),
 	];
 	setup.clothes.face = clothing;
 
