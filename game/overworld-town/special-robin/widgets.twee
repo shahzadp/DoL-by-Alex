@@ -315,7 +315,25 @@
 	<<set _robin to statusCheck("Robin")>>
 	<<storeon "Robin's Room" "check">>
 	<<set _anyItemsInRoom to _store_check is 1 and $store.upper.find(item => item.location is "Robin's Room") and $store.lower.find(item => item.location is "Robin's Room")>>
-	<<if Time.schoolDay and Time.hour gte 8 and Time.hour lte 12>>
+	<<if $worn.neck.name is "love locket" and C.npc.Robin.love gte 10 and $robin.timer.hurt is 0 and $rng gte 91 and !$daily.robin.lovelocket>>
+		<<set $daily.robin.lovelocket to 1>>
+		<<npc Robin>><<person1>>
+		Robin notices your love locket.
+		<br><br>
+		<<if C.npc.Robin.trauma gte 40>>
+			"Is that?" <<he>> asks, looking at it with curiosity.<<if $robinnote is 1 and !$robinromance>> <<He>> seems to have something on <<his>> mind, but hesitates to bring it up.<<elseif _robin.lovestage gte 5>> <<He>> blushes, and turns <<his>> curious eyes on you.<</if>>
+		<<else>>
+			"That's a cute locket!" <<He>> looks at it with great interest.<<if $robinnote is 1 and !$robinromance>> There's something on <<his>> mind.<<elseif _robin.lovestage gte 5>> Something seems to cross <<his>> mind, and <<he>> blushes a little.<</if>>
+		<</if>>
+		<br><br>
+		<<neckstrip>><<set _colour to $carried.neck.colour>>
+		<<wearProp "love locket" _colour>>
+		<<link [[Thank <<him>>|Robin Talk Locket]]>><<set $phase to 1>><</link>>
+		<br>
+		<<link [[Show <<him>> your love locket|Robin Talk Locket]]>><<set $phase to 2>><</link>>
+		<br>
+		<<link [[Change the subject|Robin Talk Locket]]>><<set $phase to 3>><</link>>
+	<<elseif Time.schoolDay and Time.hour gte 8 and Time.hour lte 12>>
 		/* Only checks up to noon because if there's a set of actions that can lead past noon there's something else wrong and it shouldn't be masked by this case */
 		<<if $gwylan?.robin gte 10 and !between($chef_state, 7, 8) and false>> /* WARNING! Re-enable later for Gwybin cafe */
 			<<if _robin.trauma gte 80>>
