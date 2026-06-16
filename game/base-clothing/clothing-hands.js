@@ -16,7 +16,7 @@ Warmth checklist:
 function initHands() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "hands",
 			name: "naked",
@@ -47,9 +47,8 @@ function initHands() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "hands",
 			name: "fingerless gloves",
@@ -83,9 +82,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "hands",
 			name: "mittens",
@@ -119,9 +117,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "hands",
 			name: "arm warmers",
@@ -156,9 +153,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "hands",
 			name: "lace arm warmers",
@@ -196,8 +192,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "hands",
 			name: "long leather gloves",
@@ -249,9 +245,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "hands",
 			name: "cheerleader gloves",
@@ -290,9 +285,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "hands",
 			name: "gold bracelets",
@@ -326,9 +320,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "hands",
 			name: "cow sleeves",
@@ -362,9 +355,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 9,
 			slot: "hands",
 			name: "work gloves",
@@ -402,8 +394,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 10,
 			slot: "hands",
 			name: "sexy nun's gloves",
@@ -442,8 +434,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 11,
 			slot: "hands",
 			name: "wrist cuffs",
@@ -480,8 +472,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 12,
 			slot: "hands",
 			name: "gold shackles",
@@ -518,9 +510,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 13,
 			slot: "hands",
 			name: "belted gloves",
@@ -579,8 +570,8 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 14,
 			slot: "hands",
 			name: "succubus gloves",
@@ -619,7 +610,7 @@ function initHands() {
 			mainImage: 0,
 			leftImage: 1,
 			rightImage: 1,
-		},
+		}),
 	];
 	setup.clothes.hands = clothing;
 

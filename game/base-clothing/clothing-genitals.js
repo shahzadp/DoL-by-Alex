@@ -3,7 +3,7 @@
 function initGenitals() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "genitals",
 			name: "naked",
@@ -41,8 +41,8 @@ function initGenitals() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "genitals",
 			name: "chastity belt",
@@ -86,8 +86,8 @@ function initGenitals() {
 			altDamage: "metal",
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "genitals",
 			name: "chastity cage",
@@ -157,8 +157,8 @@ function initGenitals() {
 			altDamage: "metal",
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "genitals",
 			name: "gold chastity belt",
@@ -202,8 +202,8 @@ function initGenitals() {
 			altDamage: "metal",
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "genitals",
 			name: "fetish chastity belt",
@@ -251,8 +251,8 @@ function initGenitals() {
 			altDamage: "plastic",
 			iconFile: "chastity_belt.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "genitals",
 			name: "fetish chastity cage",
@@ -324,8 +324,8 @@ function initGenitals() {
 			altDamage: "plastic",
 			iconFile: 0,
 			accIcon: "chastity_cage.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "genitals",
 			name: "small chastity cage",
@@ -395,8 +395,8 @@ function initGenitals() {
 			altDamage: "metal",
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "genitals",
 			name: "flat chastity cage",
@@ -466,8 +466,8 @@ function initGenitals() {
 			altDamage: "metal",
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "genitals",
 			name: "chastity parasite",
@@ -537,7 +537,7 @@ function initGenitals() {
 			iconFile: 0,
 			accIcon: 0,
 			penisSize: true,
-		},
+		}),
 	];
 	setup.clothes.genitals = clothing;
 

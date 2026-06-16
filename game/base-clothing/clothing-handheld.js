@@ -3,7 +3,7 @@
 function initHandheld() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "handheld",
 			name: "naked",
@@ -34,8 +34,8 @@ function initHandheld() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "handheld",
 			name: "umbrella",
@@ -87,8 +87,8 @@ function initHandheld() {
 			accIcon: "umbrella_acc.png",
 			zIndex: "over_head",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "handheld",
 			name: "parasol",
@@ -143,8 +143,8 @@ function initHandheld() {
 			accIcon: "parasol_acc.png",
 			zIndex: "over_head",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "handheld",
 			name: "sweet lolita parasol",
@@ -199,8 +199,8 @@ function initHandheld() {
 			accIcon: "sweetparasol_acc.png",
 			zIndex: "over_head",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "handheld",
 			name: "paper parasol",
@@ -240,8 +240,8 @@ function initHandheld() {
 			iconFile: "paper-parasol.png",
 			accIcon: "pattern",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "handheld",
 			name: "purse",
@@ -289,8 +289,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "purse.png",
 			accIcon: "purse_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "handheld",
 			name: "heart purse",
@@ -338,8 +338,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "heart_purse.png",
 			accIcon: "heart_purse_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "handheld",
 			name: "messenger bag",
@@ -371,8 +371,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "messenger_bag.png",
 			accIcon: "messenger_bag_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "handheld",
 			name: "backpack",
@@ -407,8 +407,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "backpack.png",
 			accIcon: "backpack_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 9,
 			slot: "handheld",
 			name: "paper fan",
@@ -446,8 +446,8 @@ function initHandheld() {
 			accIcon: "pattern",
 			zIndex: "head",
 			holdPosition: "right_hold",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 10,
 			slot: "handheld",
 			name: "feather duster",
@@ -480,8 +480,8 @@ function initHandheld() {
 			zIndex: "head",
 			iconFile: "feather_duster.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 11,
 			slot: "handheld",
 			name: "pom poms",
@@ -530,8 +530,8 @@ function initHandheld() {
 			iconFile: "pom_poms.png",
 			accIcon: "pom_poms_acc.png",
 			leftImage: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 12,
 			slot: "handheld",
 			name: "balloon",
@@ -563,8 +563,8 @@ function initHandheld() {
 			zIndex: "handheld_over_sleeve",
 			iconFile: "balloon.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 13,
 			slot: "handheld",
 			name: "heart balloon",
@@ -596,8 +596,8 @@ function initHandheld() {
 			zIndex: "handheld_over_sleeve",
 			iconFile: "balloon-heart.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 14,
 			slot: "handheld",
 			name: "gym bag",
@@ -643,8 +643,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "gym_bag.png",
 			accIcon: "gym_bag_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 15,
 			slot: "handheld",
 			name: "cane",
@@ -677,8 +677,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "cane.png",
 			accIcon: "cane_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 16,
 			slot: "handheld",
 			name: "forearm crutch",
@@ -712,8 +712,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "crutch.png",
 			accIcon: "crutch_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 17,
 			slot: "handheld",
 			name: "broomstick",
@@ -745,8 +745,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "broom.png",
 			accIcon: "broom_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 18,
 			slot: "handheld",
 			name: "glowstick",
@@ -778,8 +778,8 @@ function initHandheld() {
 			zIndex: "head",
 			iconFile: "glowstick.png",
 			accIcon: "glowstick_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 19,
 			slot: "handheld",
 			name: "pinwheel",
@@ -826,8 +826,8 @@ function initHandheld() {
 			zIndex: "head",
 			iconFile: "pinwheel.png",
 			accIcon: "pinwheel_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 20,
 			slot: "handheld",
 			name: "heart hand warmer",
@@ -857,8 +857,8 @@ function initHandheld() {
 			cursed: 0,
 			location: 0,
 			iconFile: "heart_hand_warmer.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 21,
 			slot: "handheld",
 			name: "floral parasol",
@@ -937,8 +937,8 @@ function initHandheld() {
 			accIcon: "pattern",
 			zIndex: "over_head",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 22,
 			slot: "handheld",
 			name: "regal parasol",
@@ -992,8 +992,8 @@ function initHandheld() {
 			accIcon: "regal_parasol_acc.png",
 			zIndex: "over_head",
 			coverBackImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 23,
 			slot: "handheld",
 			name: "clock purse",
@@ -1024,8 +1024,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "clock_purse.png",
 			accIcon: "clock_purse_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 24,
 			slot: "handheld",
 			name: "cloud purse",
@@ -1057,8 +1057,8 @@ function initHandheld() {
 			cursed: 0,
 			location: 0,
 			iconFile: "pattern",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 25,
 			slot: "handheld",
 			name: "teddy backpack",
@@ -1090,8 +1090,8 @@ function initHandheld() {
 			cursed: 0,
 			location: 0,
 			iconFile: "teddy_backpack.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 26,
 			slot: "handheld",
 			name: "star purse",
@@ -1137,8 +1137,8 @@ function initHandheld() {
 			cursed: 0,
 			location: 0,
 			iconFile: "star_purse.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 27,
 			slot: "handheld",
 			name: "candy cane",
@@ -1170,8 +1170,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "candy_cane.png",
 			accIcon: "candy_cane_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 28,
 			slot: "handheld",
 			name: "tote bag",
@@ -1203,8 +1203,8 @@ function initHandheld() {
 			location: 0,
 			iconFile: "tote_bag.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 29,
 			slot: "handheld",
 			name: "luggage",
@@ -1241,8 +1241,8 @@ function initHandheld() {
 			iconFile: "luggage.png",
 			accIcon: "pattern",
 			holdPosition: "right_cover",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 30,
 			slot: "handheld",
 			name: "vintage suitcase",
@@ -1276,8 +1276,8 @@ function initHandheld() {
 			iconFile: "vintage-suitcase.png",
 			accIcon: "vintage-suitcase-acc.png",
 			holdPosition: "right_cover",
-        },
-		{
+        }),
+		new ClothesItem({
 			index: 31,
 			slot: "handheld",
 			name: "clear umbrella",
@@ -1315,7 +1315,7 @@ function initHandheld() {
 			accIcon: "pattern",
 			coverBackImage: 0,
 			zIndex: "over_head",
-		},
+		}),
 	];
 	setup.clothes.handheld = clothing;
 

@@ -3,7 +3,7 @@
 function initOverHead() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "over_head",
 			name: "naked",
@@ -34,9 +34,8 @@ function initOverHead() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "over_head",
 			name: "froggy hood",
@@ -68,7 +67,7 @@ function initOverHead() {
 			cursed: 0,
 			location: 0,
 			outfitSecondary: ["over_upper", "froggy coat"],
-		},
+		}),
 	];
 	setup.clothes.over_head = clothing;
 

@@ -3,7 +3,7 @@
 function initOverLower() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "over_lower",
 			name: "naked",
@@ -44,9 +44,8 @@ function initOverLower() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "over_lower",
 			name: "froggy skirt",
@@ -95,9 +94,8 @@ function initOverLower() {
 			iconFile: 0,
 			accIcon: 0,
 			outfitSecondary: ["over_upper", "froggy coat"],
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "over_lower",
 			name: "cream",
@@ -145,7 +143,7 @@ function initOverLower() {
 			location: 0,
 			iconFile: 0,
 			accIcon: 0,
-		},
+		}),
 	];
 	setup.clothes.over_lower = clothing;
 

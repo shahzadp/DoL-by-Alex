@@ -19,7 +19,7 @@ Warmth checklist:
 function initUpper() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "upper",
 			name: "naked",
@@ -62,8 +62,8 @@ function initUpper() {
 			mainImage: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "upper",
 			name: "sundress",
@@ -112,8 +112,8 @@ function initUpper() {
 			outfitPrimary: { lower: "sundress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "upper",
 			name: "pyjama shirt",
@@ -160,8 +160,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "upper",
 			name: "towel top",
@@ -204,8 +204,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "upper",
 			name: "t-shirt",
@@ -248,8 +248,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "upper",
 			name: "school shirt",
@@ -311,8 +311,8 @@ function initUpper() {
 			accIcon: "school_shirt_acc.png",
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "upper",
 			name: "plant top",
@@ -360,8 +360,8 @@ function initUpper() {
 			mainImage: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "upper",
 			name: "evening gown",
@@ -449,8 +449,8 @@ function initUpper() {
 			outfitPrimary: { lower: "evening gown skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "upper",
 			name: "tank top",
@@ -496,8 +496,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 9,
 			slot: "upper",
 			name: "ballgown",
@@ -581,8 +581,8 @@ function initUpper() {
 			outfitPrimary: { lower: "ballgown skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 10,
 			slot: "upper",
 			name: "kimono",
@@ -634,8 +634,8 @@ function initUpper() {
 			outfitPrimary: { lower: "kimono skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 11,
 			slot: "upper",
 			name: "mini kimono",
@@ -687,8 +687,8 @@ function initUpper() {
 			outfitPrimary: { lower: "mini kimono skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 12,
 			slot: "upper",
 			name: "maid dress",
@@ -739,8 +739,8 @@ function initUpper() {
 			outfitPrimary: { lower: "maid skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 13,
 			slot: "upper",
 			name: "nun's habit",
@@ -790,8 +790,8 @@ function initUpper() {
 			outfitPrimary: { lower: "nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 14,
 			slot: "upper",
 			name: "large towel",
@@ -838,8 +838,8 @@ function initUpper() {
 			outfitPrimary: { lower: "large towel bottom" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 15,
 			slot: "upper",
 			name: "tuxedo jacket",
@@ -887,8 +887,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 16,
 			slot: "upper",
 			name: "blouse",
@@ -936,8 +936,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 17,
 			slot: "upper",
 			name: "babydoll",
@@ -984,8 +984,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 18,
 			slot: "upper",
 			name: "babydoll lingerie",
@@ -1033,8 +1033,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 19,
 			slot: "upper",
 			name: "crop top",
@@ -1082,8 +1082,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 20,
 			slot: "upper",
 			name: "classic serafuku",
@@ -1131,8 +1131,8 @@ function initUpper() {
 			accIcon: "serafuku_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 21,
 			slot: "upper",
 			name: "tube top",
@@ -1181,8 +1181,8 @@ function initUpper() {
 			notuck: 1,
 			pregType: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 22,
 			slot: "upper",
 			name: "turtleneck",
@@ -1225,8 +1225,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 23,
 			slot: "upper",
 			name: "sweater",
@@ -1273,8 +1273,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 24,
 			slot: "upper",
 			name: "oversized sweater",
@@ -1323,8 +1323,8 @@ function initUpper() {
 			outfitPrimary: { lower: "oversized sweater bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 25,
 			slot: "upper",
 			name: "witch dress",
@@ -1374,8 +1374,8 @@ function initUpper() {
 			outfitPrimary: { lower: "witch skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 26,
 			slot: "upper",
 			name: "vampire jacket",
@@ -1422,8 +1422,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 27,
 			slot: "upper",
 			name: "slut shirt",
@@ -1472,8 +1472,8 @@ function initUpper() {
 			accIcon: "slut_shirt_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 28,
 			slot: "upper",
 			name: "girl's sweater",
@@ -1522,8 +1522,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 29,
 			slot: "upper",
 			name: "girl's oversized sweater",
@@ -1573,8 +1573,8 @@ function initUpper() {
 			outfitPrimary: { lower: "girl's oversized sweater bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 30,
 			slot: "upper",
 			name: "christmas shirt",
@@ -1620,8 +1620,8 @@ function initUpper() {
 			iconFile: "christmas_shirt.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 31,
 			slot: "upper",
 			name: "christmas dress",
@@ -1670,8 +1670,8 @@ function initUpper() {
 			outfitPrimary: { lower: "christmas skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 32,
 			slot: "upper",
 			name: "monk's habit",
@@ -1720,8 +1720,8 @@ function initUpper() {
 			outfitPrimary: { lower: "monk's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 33,
 			slot: "upper",
 			name: "checkered shirt",
@@ -1768,8 +1768,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 34,
 			slot: "upper",
 			name: "belly dancer's top",
@@ -1822,8 +1822,8 @@ function initUpper() {
 			notuck: 1,
 			pregType: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 35,
 			slot: "upper",
 			name: "straightjacket",
@@ -1873,8 +1873,8 @@ function initUpper() {
 			outfitPrimary: { lower: "straightjacket bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 36,
 			slot: "upper",
 			name: "argyle sweater vest",
@@ -1921,8 +1921,8 @@ function initUpper() {
 			accIcon: "argyle_sweater_vest_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 37,
 			slot: "upper",
 			name: "dress shirt",
@@ -1993,8 +1993,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 38,
 			slot: "upper",
 			name: "patterned dress",
@@ -2083,8 +2083,8 @@ function initUpper() {
 			outfitPrimary: { lower: "patterned skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 39,
 			slot: "upper",
 			name: "overalls",
@@ -2135,8 +2135,8 @@ function initUpper() {
 			outfitPrimary: { lower: "overall bottoms" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 40,
 			slot: "upper",
 			name: "punk leather jacket",
@@ -2205,8 +2205,8 @@ function initUpper() {
 			accIcon: "punk_leather_jacket_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 41,
 			slot: "upper",
 			name: "leather jacket",
@@ -2274,8 +2274,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 42,
 			slot: "upper",
 			name: "beatnik shirt",
@@ -2322,8 +2322,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 43,
 			slot: "upper",
 			name: "cable knit turtleneck",
@@ -2366,8 +2366,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 44,
 			slot: "upper",
 			name: "v neck",
@@ -2413,8 +2413,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 45,
 			slot: "upper",
 			name: "turtleneck jumper",
@@ -2460,8 +2460,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 46,
 			slot: "upper",
 			name: "cheongsam",
@@ -2511,8 +2511,8 @@ function initUpper() {
 			outfitPrimary: { lower: "cheongsam skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 47,
 			slot: "upper",
 			name: "short cheongsam",
@@ -2563,8 +2563,8 @@ function initUpper() {
 			outfitPrimary: { lower: "short cheongsam skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 48,
 			slot: "upper",
 			name: "tie-front top",
@@ -2610,8 +2610,8 @@ function initUpper() {
 			mainImage: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 49,
 			slot: "upper",
 			name: "peacoat",
@@ -2661,8 +2661,8 @@ function initUpper() {
 			accIcon: "peacoat_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 50,
 			slot: "upper",
 			name: "gothic gown",
@@ -2719,8 +2719,8 @@ function initUpper() {
 			outfitPrimary: { lower: "gothic skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 51,
 			slot: "upper",
 			name: "gothic jacket",
@@ -2768,8 +2768,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 52,
 			slot: "upper",
 			name: "swim shirt",
@@ -2819,8 +2819,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 53,
 			slot: "upper",
 			name: "waiter's shirt",
@@ -2870,8 +2870,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 54,
 			slot: "upper",
 			name: "lederhosen",
@@ -2920,8 +2920,8 @@ function initUpper() {
 			outfitPrimary: { lower: "lederhosen bottoms" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 55,
 			slot: "upper",
 			name: "karate jacket",
@@ -2971,8 +2971,8 @@ function initUpper() {
 			accIcon: "karate_jacket_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 56,
 			slot: "upper",
 			name: "sailor shirt",
@@ -3022,8 +3022,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 57,
 			slot: "upper",
 			name: "short sailor shirt",
@@ -3073,8 +3073,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 58,
 			slot: "upper",
 			name: "foreign football shirt",
@@ -3122,8 +3122,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 59,
 			slot: "upper",
 			name: "gym shirt",
@@ -3172,8 +3172,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 60,
 			slot: "upper",
 			name: "cheerleading top",
@@ -3237,8 +3237,8 @@ function initUpper() {
 			accIcon: "cheerleading_top_acc.png",
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 61,
 			slot: "upper",
 			name: "hunting coat",
@@ -3286,8 +3286,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 62,
 			slot: "upper",
 			name: "letterman jacket",
@@ -3341,8 +3341,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 63,
 			slot: "upper",
 			name: "racing silks",
@@ -3392,8 +3392,8 @@ function initUpper() {
 			accIcon: "racing_silks_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 64,
 			slot: "upper",
 			name: "shadbelly coat",
@@ -3448,8 +3448,8 @@ function initUpper() {
 			detailIcon: "shadbelly_coat_shirt.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 65,
 			slot: "upper",
 			name: "mummy top",
@@ -3497,8 +3497,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 66,
 			slot: "upper",
 			name: "diving suit",
@@ -3552,8 +3552,8 @@ function initUpper() {
 			outfitPrimary: { lower: "diving suit bottom" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 67,
 			slot: "upper",
 			name: "classic sundress",
@@ -3602,8 +3602,8 @@ function initUpper() {
 			outfitPrimary: { lower: "classic sundress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 68,
 			slot: "upper",
 			name: "classic gothic gown",
@@ -3658,8 +3658,8 @@ function initUpper() {
 			outfitPrimary: { lower: "classic gothic skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 69,
 			slot: "upper",
 			name: "scout shirt",
@@ -3707,8 +3707,8 @@ function initUpper() {
 			accIcon: "scout_shirt_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 70,
 			slot: "upper",
 			name: "football shirt",
@@ -3756,8 +3756,8 @@ function initUpper() {
 			accIcon: "soccer_shirt_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 71,
 			slot: "upper",
 			name: "puffer jacket",
@@ -3804,8 +3804,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 72,
 			slot: "upper",
 			name: "camo shirt",
@@ -3852,8 +3852,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 73,
 			slot: "upper",
 			name: "star pyjama shirt",
@@ -3900,8 +3900,8 @@ function initUpper() {
 			accIcon: "star_pyjama_shirt_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 74,
 			slot: "upper",
 			name: "moon pyjama shirt",
@@ -3948,8 +3948,8 @@ function initUpper() {
 			accIcon: "moon_pyjama_shirt_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 75,
 			slot: "upper",
 			name: "catsuit",
@@ -3998,8 +3998,8 @@ function initUpper() {
 			accIcon: 0,
 			outfitPrimary: { lower: "catsuit bottoms" },
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 76,
 			slot: "upper",
 			name: "open shoulders crop top",
@@ -4049,8 +4049,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 77,
 			slot: "upper",
 			name: "hoodie",
@@ -4129,8 +4129,8 @@ function initUpper() {
 			notuck: 1,
 			hoodposition: "up",
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 78,
 			slot: "upper",
 			name: "bathrobe",
@@ -4180,8 +4180,8 @@ function initUpper() {
 			outfitPrimary: { lower: "bathrobe bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 79,
 			slot: "upper",
 			name: "rag top",
@@ -4227,8 +4227,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 80,
 			slot: "upper",
 			name: "retro top",
@@ -4290,8 +4290,8 @@ function initUpper() {
 			accIcon: "retro_top_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 81,
 			slot: "upper",
 			name: "utility vest",
@@ -4337,8 +4337,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 82,
 			slot: "upper",
 			name: "utility vest with shirt",
@@ -4388,8 +4388,8 @@ function initUpper() {
 			accIcon: "utility_shirt_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 83,
 			slot: "upper",
 			name: "monster hoodie",
@@ -4440,8 +4440,8 @@ function initUpper() {
 			notuck: 0,
 			hoodposition: "up",
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 84,
 			slot: "upper",
 			name: "keyhole dress",
@@ -4490,8 +4490,8 @@ function initUpper() {
 			outfitPrimary: { lower: "keyhole skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 85,
 			slot: "upper",
 			name: "prison shirt",
@@ -4537,8 +4537,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 86,
 			slot: "upper",
 			name: "prison jumpsuit",
@@ -4586,8 +4586,8 @@ function initUpper() {
 			outfitPrimary: { lower: "prison jumpsuit trousers" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 87,
 			slot: "upper",
 			name: "patient gown",
@@ -4635,8 +4635,8 @@ function initUpper() {
 			outfitPrimary: { lower: "patient gown skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 88,
 			slot: "upper",
 			name: "cropped hoodie",
@@ -4683,8 +4683,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 89,
 			slot: "upper",
 			name: "cow onesie",
@@ -4739,8 +4739,8 @@ function initUpper() {
 			notuck: 0,
 			hoodposition: "up",
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 90,
 			slot: "upper",
 			name: "baseball shirt",
@@ -4786,8 +4786,8 @@ function initUpper() {
 			iconFile: "baseball_shirt.png",
 			accIcon: "baseball_shirt_acc.png",
 			notuck: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 91,
 			slot: "upper",
 			name: "scarecrow shirt",
@@ -4838,8 +4838,8 @@ function initUpper() {
 			outfitPrimary: { lower: "scarecrow skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 92,
 			slot: "upper",
 			name: "waitress uniform",
@@ -4903,8 +4903,8 @@ function initUpper() {
 			outfitPrimary: { lower: "waitress skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 93,
 			slot: "upper",
 			name: "split dress",
@@ -4967,8 +4967,8 @@ function initUpper() {
 			outfitPrimary: { lower: "split dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 94,
 			slot: "upper",
 			name: "skimpy lolita dress",
@@ -5035,8 +5035,8 @@ function initUpper() {
 			outfitPrimary: { lower: "skimpy lolita skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 95,
 			slot: "upper",
 			name: "short ballgown",
@@ -5119,8 +5119,8 @@ function initUpper() {
 			accIcon: "short_ballgown_acc.png",
 			outfitPrimary: { lower: "short ballgown skirt" },
 			notuck: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 96,
 			slot: "upper",
 			name: "single breasted jacket",
@@ -5181,8 +5181,8 @@ function initUpper() {
 			accIcon: "single_breasted_jacket_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 97,
 			slot: "upper",
 			name: "double breasted jacket",
@@ -5243,8 +5243,8 @@ function initUpper() {
 			accIcon: "double_breasted_jacket_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 98,
 			slot: "upper",
 			name: "nurse dress",
@@ -5304,8 +5304,8 @@ function initUpper() {
 			outfitPrimary: { lower: "nurse skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 99,
 			slot: "upper",
 			name: "plastic nurse dress",
@@ -5365,8 +5365,8 @@ function initUpper() {
 			outfitPrimary: { lower: "plastic nurse skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 100,
 			slot: "upper",
 			name: "transparent nurse dress",
@@ -5418,8 +5418,8 @@ function initUpper() {
 			outfitPrimary: { lower: "transparent nurse skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 101,
 			slot: "upper",
 			name: "hanfu",
@@ -5484,8 +5484,8 @@ function initUpper() {
 			outfitPrimary: { lower: "hanfu skirt" },
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 102,
 			slot: "upper",
 			name: "open shoulder sweater",
@@ -5533,8 +5533,8 @@ function initUpper() {
 			outfitPrimary: { lower: "open shoulder sweater bottom" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 103,
 			slot: "upper",
 			name: "winter jacket",
@@ -5586,8 +5586,8 @@ function initUpper() {
 			accIcon: "winter_jacket_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 104,
 			slot: "upper",
 			name: "cocoon",
@@ -5639,8 +5639,8 @@ function initUpper() {
 			notuck: 0,
 			pregType: "min",
 			zIndex: "old_over_upper",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 105,
 			slot: "upper",
 			name: "skeleton outfit",
@@ -5689,8 +5689,8 @@ function initUpper() {
 			outfitPrimary: { lower: "skeleton bottoms" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 106,
 			slot: "upper",
 			name: "classy vampire jacket",
@@ -5739,8 +5739,8 @@ function initUpper() {
 			accIcon: "classy_vampire_jacket_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 107,
 			slot: "upper",
 			name: "virgin killer",
@@ -5785,8 +5785,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 108,
 			slot: "upper",
 			name: "futuristic bodysuit",
@@ -5841,8 +5841,8 @@ function initUpper() {
 			outfitPrimary: { lower: "futuristic bodysuit pants" },
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 109,
 			slot: "upper",
 			name: "lace nightgown",
@@ -5891,8 +5891,8 @@ function initUpper() {
 			accIcon: 0,
 			outfitPrimary: { lower: "lace nightgown skirt" },
 			notuck: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 110,
 			slot: "upper",
 			name: "cat hoodie",
@@ -5957,9 +5957,8 @@ function initUpper() {
 			hoodposition: "up",
 			pregType: "min",
 			back_img: 1,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 111,
 			slot: "upper",
 			name: "ao dai",
@@ -6009,9 +6008,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 112,
 			slot: "upper",
 			name: "school cardigan",
@@ -6064,9 +6062,8 @@ function initUpper() {
 			accIcon: "cardigan_acc.png",
 			notuck: "tie",
 			pregType: "min",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 113,
 			slot: "upper",
 			name: "school blouse",
@@ -6115,9 +6112,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "split",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 114,
 			slot: "upper",
 			name: "traditional maid dress",
@@ -6167,9 +6163,8 @@ function initUpper() {
 			outfitPrimary: { lower: "traditional maid skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 115,
 			slot: "upper",
 			name: "Victorian maid dress",
@@ -6219,9 +6214,8 @@ function initUpper() {
 			outfitPrimary: { lower: "Victorian maid skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 116,
 			slot: "upper",
 			name: "shrine maiden robes",
@@ -6270,9 +6264,8 @@ function initUpper() {
 			outfitPrimary: { lower: "shrine maiden skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 117,
 			slot: "upper",
 			name: "polo shirt",
@@ -6322,9 +6315,8 @@ function initUpper() {
 			accIcon: "polo_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 118,
 			slot: "upper",
 			name: "colour block crop top",
@@ -6376,9 +6368,8 @@ function initUpper() {
 			accIcon: "col_block_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 119,
 			slot: "upper",
 			name: "band t-shirt",
@@ -6427,9 +6418,8 @@ function initUpper() {
 			accIcon: "band_tee_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 120,
 			slot: "upper",
 			name: "boxy t-shirt",
@@ -6478,9 +6468,8 @@ function initUpper() {
 			accIcon: "boxy_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 121,
 			slot: "upper",
 			name: "virgin killer dress",
@@ -6528,9 +6517,8 @@ function initUpper() {
 			outfitPrimary: { lower: "virgin killer skirt" },
 			notuck: 1,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 122,
 			slot: "upper",
 			name: "gakuran",
@@ -6578,9 +6566,8 @@ function initUpper() {
 			accIcon: "gakuran_acc.png",
 			notuck: 0,
 			pregType: "split",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 123,
 			slot: "upper",
 			name: "halter sundress",
@@ -6646,9 +6633,8 @@ function initUpper() {
 			outfitPrimary: { lower: "halter sundress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 124,
 			slot: "upper",
 			name: "leather dress",
@@ -6715,9 +6701,8 @@ function initUpper() {
 			outfitPrimary: { lower: "leather skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 125,
 			slot: "upper",
 			name: "serafuku",
@@ -6781,9 +6766,8 @@ function initUpper() {
 			accIcon: "serafuku_new_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 126,
 			slot: "upper",
 			name: "cable knit cardigan",
@@ -6829,8 +6813,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 127,
 			slot: "upper",
 			name: "open shoulder lolita dress",
@@ -6884,8 +6868,8 @@ function initUpper() {
 			outfitPrimary: { lower: "lolita skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 128,
 			slot: "upper",
 			name: "school sweater vest",
@@ -6936,9 +6920,8 @@ function initUpper() {
 			accIcon: "school_vest_acc.png",
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 129,
 			slot: "upper",
 			name: "jingle-bell dress",
@@ -6988,8 +6971,8 @@ function initUpper() {
 			outfitPrimary: { lower: "jingle-bell skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 130,
 			slot: "upper",
 			name: "sleeveless jingle-bell dress",
@@ -7038,8 +7021,8 @@ function initUpper() {
 			outfitPrimary: { lower: "sleeveless jingle-bell skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 131,
 			slot: "upper",
 			name: "jumper",
@@ -7121,8 +7104,8 @@ function initUpper() {
 			accIcon: "jumper_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 132,
 			slot: "upper",
 			name: "festive jumper",
@@ -7186,8 +7169,8 @@ function initUpper() {
 			accIcon: "jumper_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 133,
 			slot: "upper",
 			name: "ghost jumper",
@@ -7269,8 +7252,8 @@ function initUpper() {
 			accIcon: "jumper_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 134,
 			slot: "upper",
 			name: "heart jumper",
@@ -7353,8 +7336,8 @@ function initUpper() {
 			accIcon: "jumper_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 135,
 			slot: "upper",
 			name: "skull jumper",
@@ -7437,8 +7420,8 @@ function initUpper() {
 			accIcon: "jumper_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 136,
 			slot: "upper",
 			name: "leather crop top",
@@ -7486,8 +7469,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 137,
 			slot: "upper",
 			name: "zipped leather crop top",
@@ -7536,8 +7519,8 @@ function initUpper() {
 			accIcon: "leather_crop_top_acc.png",
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 138,
 			slot: "upper",
 			name: "leather top",
@@ -7586,8 +7569,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 139,
 			slot: "upper",
 			name: "zipped leather top",
@@ -7638,8 +7621,8 @@ function initUpper() {
 			accIcon: "leather_top_acc.png",
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 140,
 			slot: "upper",
 			name: "cropped leather jacket",
@@ -7708,8 +7691,8 @@ function initUpper() {
 			accIcon: "cropped_leather_jacket_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 141,
 			slot: "upper",
 			name: "sexy nun's habit",
@@ -7760,8 +7743,8 @@ function initUpper() {
 			outfitPrimary: { lower: "sexy nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 142,
 			slot: "upper",
 			name: "sexy priest's vestments",
@@ -7810,8 +7793,8 @@ function initUpper() {
 			outfitPrimary: { lower: "sexy priest's shorts" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 143,
 			slot: "upper",
 			name: "waistcoat",
@@ -7867,8 +7850,8 @@ function initUpper() {
 			accIcon: "waistcoat_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 144,
 			slot: "upper",
 			name: "lapelled waistcoat",
@@ -7924,8 +7907,8 @@ function initUpper() {
 			accIcon: "waistcoat_lapel_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 145,
 			slot: "upper",
 			name: "long waistcoat",
@@ -7978,8 +7961,8 @@ function initUpper() {
 			accIcon: "waistcoat_long_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 146,
 			slot: "upper",
 			name: "long lapelled waistcoat",
@@ -8033,8 +8016,8 @@ function initUpper() {
 			accIcon: "waistcoat_long_lapel_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 147,
 			slot: "upper",
 			name: "shirt and blazer",
@@ -8090,8 +8073,8 @@ function initUpper() {
 			accIcon: "blazer_shirt_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 148,
 			slot: "upper",
 			name: "oversized button-down",
@@ -8143,8 +8126,8 @@ function initUpper() {
 			outfitPrimary: { lower: "oversized button-down bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 149,
 			slot: "upper",
 			name: "button-down",
@@ -8197,8 +8180,8 @@ function initUpper() {
 			iconFile: "button_down.png",
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 150,
 			slot: "upper",
 			name: "life vest",
@@ -8245,9 +8228,8 @@ function initUpper() {
 			accIcon: "life_vest_acc.png",
 			notuck: 1,
 			pregType: "min",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 151,
 			slot: "upper",
 			name: "harem vest",
@@ -8294,8 +8276,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 152,
 			slot: "upper",
 			name: "long-sleeved shirt",
@@ -8340,8 +8322,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 153,
 			slot: "upper",
 			name: "sexy butler top",
@@ -8388,8 +8370,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 154,
 			slot: "upper",
 			name: "classic open shoulder lolita dress",
@@ -8440,8 +8422,8 @@ function initUpper() {
 			outfitPrimary: { lower: "classic lolita skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 155,
 			slot: "upper",
 			name: "jumpsuit",
@@ -8509,8 +8491,8 @@ function initUpper() {
 			outfitPrimary: { lower: "jumpsuit trousers" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 156,
 			slot: "upper",
 			name: "ragged dress",
@@ -8559,8 +8541,8 @@ function initUpper() {
 			outfitPrimary: { lower: "ragged dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 157,
 			slot: "upper",
 			name: "bedsheet",
@@ -8612,8 +8594,8 @@ function initUpper() {
 			notuck: 0,
 			pregType: 0,
 			back_img: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 158,
 			slot: "upper",
 			name: "pimp suit jacket",
@@ -8666,9 +8648,8 @@ function initUpper() {
 			accIcon: "pimp_jacket_acc.png",
 			notuck: 1,
 			pregType: "split",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 159,
 			slot: "upper",
 			name: "graphic tee",
@@ -8792,9 +8773,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 160,
 			slot: "upper",
 			name: "cropped graphic tee",
@@ -8918,9 +8898,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 161,
 			slot: "upper",
 			name: "oversized graphic tee",
@@ -9044,8 +9023,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 162,
 			slot: "upper",
 			name: "short keyhole cheongsam",
@@ -9096,8 +9075,8 @@ function initUpper() {
 			outfitPrimary: { lower: "short keyhole cheongsam skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 163,
 			slot: "upper",
 			name: "seaweed top",
@@ -9145,8 +9124,8 @@ function initUpper() {
 			mainImage: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 164,
 			slot: "upper",
 			name: "tracksuit jacket",
@@ -9214,8 +9193,8 @@ function initUpper() {
 			accIcon: "tracksuit_jacket_acc.png",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 165,
 			slot: "upper",
 			name: "belted vest",
@@ -9283,8 +9262,8 @@ function initUpper() {
 			notuck: 1,
 			pregType: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 166,
 			slot: "upper",
 			name: "layered shirt",
@@ -9354,8 +9333,8 @@ function initUpper() {
 			accIcon: "pattern",
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 167,
 			slot: "upper",
 			name: "drop arm tank top",
@@ -9403,8 +9382,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 168,
 			slot: "upper",
 			name: "vintage skirtsuit",
@@ -9454,9 +9433,8 @@ function initUpper() {
 			outfitPrimary: { lower: "vintage skirt" },
 			notuck: 1,
 			pregType: "split",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 169,
 			slot: "upper",
 			name: "vintage pantsuit",
@@ -9506,8 +9484,8 @@ function initUpper() {
 			outfitPrimary: { lower: "vintage pants" },
 			notuck: 1,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 170,
 			slot: "upper",
 			name: "chain tunic",
@@ -9587,8 +9565,8 @@ function initUpper() {
 			outfitPrimary: { lower: "chain tunic skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 171,
 			slot: "upper",
 			name: "initiate's robe",
@@ -9637,8 +9615,8 @@ function initUpper() {
 			outfitPrimary: { lower: "initiate's robe skirt" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 172,
 			slot: "upper",
 			name: "long nun's habit",
@@ -9688,8 +9666,8 @@ function initUpper() {
 			outfitPrimary: { lower: "long nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 173,
 			slot: "upper",
 			name: "novice nun's habit",
@@ -9739,8 +9717,8 @@ function initUpper() {
 			outfitPrimary: { lower: "novice nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 174,
 			slot: "upper",
 			name: "lolita nun's habit",
@@ -9790,8 +9768,8 @@ function initUpper() {
 			outfitPrimary: { lower: "lolita nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 175,
 			slot: "upper",
 			name: "avowed nun's habit",
@@ -9841,8 +9819,8 @@ function initUpper() {
 			outfitPrimary: { lower: "avowed nun's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 176,
 			slot: "upper",
 			name: "evangelist's uniform",
@@ -9891,8 +9869,8 @@ function initUpper() {
 			outfitPrimary: { lower: "evangelist's bloomers" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 177,
 			slot: "upper",
 			name: "confessor's robe",
@@ -9941,8 +9919,8 @@ function initUpper() {
 			outfitPrimary: { lower: "confessor's robe skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 178,
 			slot: "upper",
 			name: "confessor's habit",
@@ -9991,8 +9969,8 @@ function initUpper() {
 			outfitPrimary: { lower: "confessor's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 179,
 			slot: "upper",
 			name: "exorcist's cassock",
@@ -10042,8 +10020,8 @@ function initUpper() {
 			outfitPrimary: { lower: "exorcist's cassock trousers" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 180,
 			slot: "upper",
 			name: "exorcist's habit",
@@ -10093,8 +10071,8 @@ function initUpper() {
 			outfitPrimary: { lower: "exorcist's habit skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 181,
 			slot: "upper",
 			name: "monk's sparring habit",
@@ -10149,8 +10127,8 @@ function initUpper() {
 			back_img: 1,
 			back_img_colour: "primary",
 			back_integrity_img: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 182,
 			slot: "upper",
 			name: "nun's sparring habit",
@@ -10205,8 +10183,8 @@ function initUpper() {
 			notuck: 0,
 			pregType: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 183,
 			slot: "upper",
 			name: "gothic witch dress",
@@ -10261,8 +10239,8 @@ function initUpper() {
 			outfitPrimary: { lower: "gothic witch skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 184,
 			slot: "upper",
 			name: "pumpkin dress",
@@ -10313,8 +10291,8 @@ function initUpper() {
 			outfitPrimary: { lower: "pumpkin skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 185,
 			slot: "upper",
 			name: "gift wrap top",
@@ -10359,8 +10337,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 186,
 			slot: "upper",
 			name: "chef jacket",
@@ -10413,8 +10391,8 @@ function initUpper() {
 			accIcon: "chef_jacket_acc.png",
 			notuck: 0,
 			pregType: "split",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 187,
 			slot: "upper",
 			name: "unbound straightjacket",
@@ -10464,8 +10442,8 @@ function initUpper() {
 			outfitPrimary: { lower: "unbound straightjacket bottom" },
 			notuck: 0,
 			pregType: "min",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 188,
 			slot: "upper",
 			name: "serafuku dress",
@@ -10531,8 +10509,8 @@ function initUpper() {
 			outfitPrimary: { lower: "serafuku dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 189,
 			slot: "upper",
 			name: "janet dress",
@@ -10582,8 +10560,8 @@ function initUpper() {
 			outfitPrimary: { lower: "janet dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 190,
 			slot: "upper",
 			name: "swan lake dress",
@@ -10631,8 +10609,8 @@ function initUpper() {
 			accIcon: "swan_dress_acc.png",
 			outfitPrimary: { lower: "swan lake skirt" },
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 191,
 			slot: "upper",
 			name: "fancy swan lake dress",
@@ -10681,8 +10659,8 @@ function initUpper() {
 			accIcon: "swan_dress_fancy_acc.png",
 			outfitPrimary: { lower: "fancy swan lake skirt" },
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 192,
 			slot: "upper",
 			name: "butterfly dress",
@@ -10733,8 +10711,8 @@ function initUpper() {
 			accIcon: "butterfly_dress_acc.png",
 			outfitPrimary: { lower: "butterfly dress skirt" },
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 193,
 			slot: "upper",
 			name: "succubus top",
@@ -10783,8 +10761,8 @@ function initUpper() {
 			iconFile: "succubus_top.png",
 			accIcon: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 194,
 			slot: "upper",
 			name: "rose wedding dress",
@@ -10868,8 +10846,8 @@ function initUpper() {
 			outfitPrimary: { lower: "rose wedding dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 195,
 			slot: "upper",
 			name: "mini rose wedding dress",
@@ -10953,8 +10931,8 @@ function initUpper() {
 			outfitPrimary: { lower: "mini rose wedding dress skirt" },
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 196,
 			slot: "upper",
 			name: "rose wedding suit",
@@ -11042,8 +11020,8 @@ function initUpper() {
 			outfitPrimary: { lower: "rose wedding suit trousers" },
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 197,
 			slot: "upper",
 			name: "frilly rose wedding suit",
@@ -11131,8 +11109,8 @@ function initUpper() {
 			outfitPrimary: { lower: "frilly rose wedding suit trousers" },
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 198,
 			slot: "upper",
 			name: "ruffled blouse",
@@ -11218,8 +11196,8 @@ function initUpper() {
 			accIcon: "ruffled_dress_acc.png",
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 199,
 			slot: "upper",
 			name: "ao dai",
@@ -11269,8 +11247,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 1,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 200,
 			slot: "upper",
 			name: "oversized hoodie",
@@ -11320,8 +11298,8 @@ function initUpper() {
 			pregType: "min",
 			mask_img: 1,
 			back_img: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 201,
 			slot: "upper",
 			name: "oversized t-shirt",
@@ -11367,8 +11345,8 @@ function initUpper() {
 			accIcon: 0,
 			notuck: 0,
 			pregType: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 202,
 			slot: "upper",
 			name: "short sleeve button up",
@@ -11416,8 +11394,8 @@ function initUpper() {
 			pregType: 0,
 			altposition: "none",
 			altdisabled: [],
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 203,
 			slot: "upper",
 			name: "preppy skirt uniform",
@@ -11493,8 +11471,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "preppy-skirt-uniform.png",
 			accIcon: "preppy-skirt-uniform-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 204,
 			slot: "upper",
 			name: "preppy shorts uniform",
@@ -11571,8 +11549,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "preppy-shorts-uniform.png",
 			accIcon: "preppy-shorts-uniform-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 205,
 			slot: "upper",
 			name: "lolita maid",
@@ -11616,8 +11594,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "lolita-maid.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 206,
 			slot: "upper",
 			name: "ribbon nightgown",
@@ -11694,8 +11672,8 @@ function initUpper() {
 			shopGroup: "ruffled nightgown",
 			iconFile: "ribbon-nightgown.png",
 			accIcon: "ribbon-nightgown-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 207,
 			slot: "upper",
 			name: "mermaid dress",
@@ -11772,8 +11750,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "mermaid-dress.png",
 			accIcon: "mermaid-dress-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 208,
 			slot: "upper",
 			name: "nightgown",
@@ -11831,8 +11809,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "nightgown.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 209,
 			slot: "upper",
 			name: "princess dress",
@@ -11911,8 +11889,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "princess-dress.png",
 			accIcon: "princess-dress-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 210,
 			slot: "upper",
 			name: "puff sleeve a-line dress",
@@ -11990,8 +11968,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "puff-sleeve-aline-dress.png",
 			accIcon: "puff-sleeve-aline-dress-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 211,
 			slot: "upper",
 			name: "rococo midi dress",
@@ -12068,8 +12046,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "rococo-midi-dress.png",
 			accIcon: "rococo-midi-dress-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 212,
 			slot: "upper",
 			name: "cardigan sailor uniform",
@@ -12146,8 +12124,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "cardigan-sailor-uniform.png",
 			accIcon: "cardigan-sailor-uniform-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 213,
 			slot: "upper",
 			name: "sheer lace pyjama",
@@ -12226,8 +12204,8 @@ function initUpper() {
 			iconFile: "sheer-lace-pyjama.png",
 			accIcon: "sheer-lace-pyjama-acc.png",
 			formfitting: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 214,
 			slot: "upper",
 			name: "tie front dress",
@@ -12285,8 +12263,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "tie-front-dress.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 215,
 			slot: "upper",
 			name: "classic blouse",
@@ -12362,8 +12340,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "classic-blouse.png",
 			accIcon: "classic-blouse-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 216,
 			slot: "upper",
 			name: "cut-out shoulder top",
@@ -12439,8 +12417,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "cutout-shoulder-top.png",
 			accIcon: "cutout-shoulder-top-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 217,
 			slot: "upper",
 			name: "open-shoulders top",
@@ -12500,8 +12478,8 @@ function initUpper() {
 			accIcon: 0,
 			mask_img: 1,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 218,
 			slot: "upper",
 			name: "milkmaid dress",
@@ -12581,8 +12559,8 @@ function initUpper() {
 			outfitPrimary: { lower: "milkmaid dress" },
 			iconFile: "milkmaiddress.png",
 			accIcon: "milkmaiddress-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 219,
 			slot: "upper",
 			name: "dirndl blouse",
@@ -12658,8 +12636,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "dirndl-blouse.png",
 			accIcon: "dirndl-blouse-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 220,
 			slot: "upper",
 			name: "lolita lace nightgown",
@@ -12719,8 +12697,8 @@ function initUpper() {
 			iconFile: "lolita-lace-nightgown.png",
 			accIcon: 0,
 			outfitPrimary: { lower: "lolita lace nightgown" },
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 221,
 			slot: "upper",
 			name: "plunging neckline shirt",
@@ -12777,8 +12755,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "plunging-neckline-shirt.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 222,
 			slot: "upper",
 			name: "off-shoulder lace top",
@@ -12836,8 +12814,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "offshoulder-lace-top.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 223,
 			slot: "upper",
 			name: "one-shoulder top",
@@ -12894,8 +12872,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "oneshoulder-top.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 224,
 			slot: "upper",
 			name: "striped sweater",
@@ -12975,8 +12953,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "striped-sweater.png",
 			accIcon: "striped-sweater-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 225,
 			slot: "upper",
 			name: "flowy sleeve top",
@@ -13036,8 +13014,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "flowy-sleeve-top.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 226,
 			slot: "upper",
 			name: "off-shoulder sweater dress",
@@ -13096,8 +13074,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "offshoulder-sweater-dress.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 227,
 			slot: "upper",
 			name: "lolita dress",
@@ -13176,8 +13154,8 @@ function initUpper() {
 			iconFile: "lolita-dress.png",
 			accIcon: "lolita-dress-acc.png",
 			formfitting: 1,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 228,
 			slot: "upper",
 			name: "ruffled nightgown",
@@ -13237,8 +13215,8 @@ function initUpper() {
 			location: 0,
 			iconFile: "ruffled-nightgown.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 229,
 			slot: "upper",
 			name: "babydoll top",
@@ -13295,7 +13273,7 @@ function initUpper() {
 			location: 0,
 			iconFile: "babydoll-top.png",
 			accIcon: 0,
-		},
+		}),
 	];
 	setup.clothes.upper = clothing;
 

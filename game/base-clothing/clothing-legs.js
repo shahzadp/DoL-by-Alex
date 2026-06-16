@@ -17,7 +17,7 @@ Warmth checklist:
 function initLegs() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "legs",
 			name: "naked",
@@ -47,8 +47,8 @@ function initLegs() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "legs",
 			name: "tights",
@@ -82,8 +82,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "tights.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "legs",
 			name: "boy's gym socks",
@@ -119,8 +119,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "boys_gym_socks.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "legs",
 			name: "girl's gym socks",
@@ -156,8 +156,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "girls_gym_socks.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 4,
 			slot: "legs",
 			name: "stockings",
@@ -191,8 +191,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "stockings.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 5,
 			slot: "legs",
 			name: "fishnet stockings",
@@ -227,8 +227,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "fishnet_stockings.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 6,
 			slot: "legs",
 			name: "fishnet tights",
@@ -263,8 +263,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "fishnet_tights.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 7,
 			slot: "legs",
 			name: "garter stockings",
@@ -318,8 +318,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "garter_stockings.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 8,
 			slot: "legs",
 			name: "legwarmers",
@@ -353,8 +353,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "legwarmers.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 9,
 			slot: "legs",
 			name: "christmas leg warmers",
@@ -387,8 +387,8 @@ function initLegs() {
 			cursed: 0,
 			location: 0,
 			iconFile: "christmas_leg_warmers.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 10,
 			slot: "legs",
 			name: "gold anklets",
@@ -422,8 +422,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "gold_anklets.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 11,
 			/* TODO: Not sure why we have 2 naked? */
 			slot: "legs",
@@ -453,8 +453,8 @@ function initLegs() {
 			location: 0,
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 12,
 			slot: "legs",
 			name: "striped thighhighs",
@@ -491,8 +491,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "striped_thighhighs.png",
 			accIcon: "striped_thighhighs_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 13,
 			slot: "legs",
 			name: "ankle socks",
@@ -528,8 +528,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "ankle_socks.png",
 			accIcon: "ankle_socks_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 14,
 			slot: "legs",
 			name: "plain thighhighs",
@@ -564,8 +564,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "striped_thighhighs.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 15,
 			slot: "legs",
 			name: "cow socks",
@@ -600,8 +600,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "cow_socks.png",
 			accIcon: "cow_socks_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 16,
 			slot: "legs",
 			name: "nurse socks",
@@ -637,8 +637,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "nurse_socks.png",
 			accIcon: "nurse_socks_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 17,
 			slot: "legs",
 			name: "ribbon stockings",
@@ -674,9 +674,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "ribbon_stockings.png",
 			accIcon: "ribbon_stockings_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 18,
 			slot: "legs",
 			name: "patterned dress socks",
@@ -711,9 +710,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "twirly_socks.png",
 			accIcon: "twirly_socks_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 19,
 			slot: "legs",
 			name: "polka dot socks",
@@ -762,9 +760,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "polka_socks.png",
 			accIcon: "polka_socks_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 20,
 			slot: "legs",
 			name: "sports socks",
@@ -799,9 +796,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "short_sport.png",
 			accIcon: "short_sport_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 21,
 			slot: "legs",
 			name: "knee-high sports socks",
@@ -836,9 +832,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "long_sport.png",
 			accIcon: "long_sport_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 22,
 			slot: "legs",
 			name: "rib-knit socks",
@@ -873,9 +868,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "long_stripe.png",
 			accIcon: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 23,
 			slot: "legs",
 			name: "rib-knit ankle socks",
@@ -911,9 +905,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "short_stripe.png",
 			accIcon: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 24,
 			slot: "legs",
 			name: "striped kneehighs",
@@ -949,9 +942,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "striped_kneehighs.png",
 			accIcon: "striped_kneehighs_acc.png",
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 25,
 			slot: "legs",
 			name: "sheer leggings",
@@ -1006,8 +998,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "leggings.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 26,
 			slot: "legs",
 			name: "mismatched socks",
@@ -1043,8 +1035,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "mismatched.png",
 			accIcon: "mismatched_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 27,
 			slot: "legs",
 			name: "loose socks",
@@ -1078,8 +1070,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "loose_socks.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 28,
 			slot: "legs",
 			name: "sexy nun's stockings",
@@ -1114,8 +1106,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "sexy_nuns_stockings.png",
 			accIcon: "sexy_nuns_stockings_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 29,
 			slot: "legs",
 			name: "fishnet garter stockings",
@@ -1151,8 +1143,8 @@ function initLegs() {
 			shopGroup: "harness garter stockings",
 			iconFile: "fishnet-garter-stockings.png",
 			accIcon: "fishnet-garter-stockings-acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 30,
 			slot: "legs",
 			name: "men's garter socks",
@@ -1187,8 +1179,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "mens_garters.png",
 			accIcon: "mens_garters_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 31,
 			slot: "legs",
 			name: "ruffled socks",
@@ -1224,8 +1216,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "ruffled_socks.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 32,
 			slot: "legs",
 			name: "ruffled kneehighs",
@@ -1260,8 +1252,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "ruffled_kneehighs.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 33,
 			slot: "legs",
 			name: "ruffled thighhighs",
@@ -1296,9 +1288,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "ruffled_thighhighs.png",
 			accIcon: 0,
-		},
-
-		{
+		}),
+		new ClothesItem({
 			index: 34,
 			slot: "legs",
 			name: "tabi",
@@ -1333,8 +1324,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "tabi.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 35,
 			slot: "legs",
 			name: "gold shackles",
@@ -1368,8 +1359,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "gold_anklets.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 36,
 			slot: "legs",
 			name: "mismatched thighhighs",
@@ -1406,8 +1397,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "mismatched_thighhighs.png",
 			accIcon: "mismatched_thighhighs_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 37,
 			slot: "legs",
 			name: "sheer stockings",
@@ -1462,8 +1453,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "sheer_thighhighs.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 38,
 			slot: "legs",
 			name: "belted thighhighs",
@@ -1519,8 +1510,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "pattern",
 			accIcon: "belted_thighhighs_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 39,
 			slot: "legs",
 			name: "leather thighhighs",
@@ -1572,8 +1563,8 @@ function initLegs() {
 			cursed: 0,
 			location: 0,
 			iconFile: "belted_thighhighs_long.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 40,
 			slot: "legs",
 			name: "chain leggings",
@@ -1607,8 +1598,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "chainmail_leggings.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 41,
 			slot: "legs",
 			name: "knee plaster",
@@ -1643,8 +1634,8 @@ function initLegs() {
 			altdisabled: [],
 			iconFile: "kneeplaster.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 42,
 			slot: "legs",
 			name: "ripped tights",
@@ -1677,8 +1668,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "rippedtights.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 43,
 			slot: "legs",
 			name: "floral socks",
@@ -1712,8 +1703,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "floralsocks.png",
 			accIcon: "floralsocks_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 44,
 			slot: "legs",
 			name: "lace over-the-knee socks",
@@ -1747,8 +1738,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "laceovertheknee.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 45,
 			slot: "legs",
 			name: "lace socks with ribbons",
@@ -1783,8 +1774,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "lacesockswithribbons.png",
 			accIcon: "lacesockswithribbons_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 46,
 			slot: "legs",
 			name: "lace socks",
@@ -1818,8 +1809,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "lacesocks.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 47,
 			slot: "legs",
 			name: "lace socks with bows",
@@ -1854,8 +1845,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "lacesockswithbows.png",
 			accIcon: "lacesockswithbows_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 48,
 			slot: "legs",
 			name: "elegant knee-high socks",
@@ -1889,8 +1880,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "elegantkneehigh.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 49,
 			slot: "legs",
 			name: "elegant socks",
@@ -1924,8 +1915,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "elegantkneehigh.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 50,
 			slot: "legs",
 			name: "striped leg warmers",
@@ -1959,8 +1950,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "stripedlegwarmers.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 51,
 			slot: "legs",
 			name: "mischievous socks",
@@ -1995,8 +1986,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "mischievous.png",
 			accIcon: "mischievous_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 52,
 			slot: "legs",
 			name: "fishnet ankle socks",
@@ -2030,8 +2021,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "fishnetankle.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 53,
 			slot: "legs",
 			name: "plain over-the-knee socks",
@@ -2065,8 +2056,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "plainovertheknee.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 54,
 			slot: "legs",
 			name: "lace tights",
@@ -2099,8 +2090,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "lacetights.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 55,
 			slot: "legs",
 			name: "asymmetrical garter stockings",
@@ -2135,8 +2126,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "asymmetricalgarter.png",
 			accIcon: "asymmetricalgarter_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 56,
 			slot: "legs",
 			name: "asymmetrical loose socks",
@@ -2171,8 +2162,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "asymmetricalloose.png",
 			accIcon: "asymmetricalloose_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 57,
 			slot: "legs",
 			name: "asymmetrical striped garters",
@@ -2206,8 +2197,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "asymmetricalstriped.png",
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 58,
 			slot: "legs",
 			name: "fuzzy knee socks",
@@ -2242,8 +2233,8 @@ function initLegs() {
 			location: 0,
 			iconFile: "fuzzykneesocks.png",
 			accIcon: "fuzzykneesocks_acc.png",
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 59,
 			slot: "legs",
 			name: "fishnet kneehighs",
@@ -2278,7 +2269,7 @@ function initLegs() {
 			location: 0,
 			iconFile: "fishnet_stockings.png",
 			accIcon: 0,
-		},
+		}),
 	];
 	setup.clothes.legs = clothing;
 

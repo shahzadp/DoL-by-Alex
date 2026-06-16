@@ -5,7 +5,7 @@ plural - widget will output "are" if 1 and "is" if 0. eg - Your hat <<upperplura
 function initOverUpper() {
 	/** @type {ClothesItem[]} */
 	const clothing = [
-		{
+		new ClothesItem({
 			index: 0,
 			slot: "over_upper",
 			name: "naked",
@@ -45,8 +45,8 @@ function initOverUpper() {
 			iconFile: 0,
 			accIcon: 0,
 			mainImage: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 1,
 			slot: "over_upper",
 			name: "froggy coat",
@@ -90,8 +90,8 @@ function initOverUpper() {
 			iconFile: "",
 			accIcon: 0,
 			outfitPrimary: { over_lower: "froggy skirt", over_head: "froggy hood" },
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 2,
 			slot: "over_upper",
 			name: "cream",
@@ -133,8 +133,8 @@ function initOverUpper() {
 			location: 0,
 			iconFile: 0,
 			accIcon: 0,
-		},
-		{
+		}),
+		new ClothesItem({
 			index: 3,
 			slot: "over_upper",
 			name: "barber chair",
@@ -177,7 +177,7 @@ function initOverUpper() {
 			notuck: 1,
 			pregType: 0,
 			back_img: 1,
-		},
+		}),
 	];
 	setup.clothes.over_upper = clothing;
 
