@@ -581,7 +581,7 @@ You're sure it'll be fine. You shut and lock the door.
 	<<if $farm.beasts.pigs lte -5 and $rng gte 51>>
 		<<if $farm_work.pig.monster is true>>
 			You try to shove the <<farm_text pig>> away from you, <span class="red">but <<farm_he pig>> shoves back,
-			and you fall to the ground.</span><<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			and you fall to the ground.</span><<lrespect>><<gtrauma>><<gstress>><<farm_pigs -1>><<trauma 6>><<stress 6>>
 			<br><br>
 		<<else>>
 			You try to shove the pig away from you, <span class="red">but the weight pushes you to the ground.</span>
@@ -614,7 +614,7 @@ You're sure it'll be fine. You shut and lock the door.
 :: Farm Pigs Endure
 <<effects>>
 
-<<if $farm.beasts.pigs lte -5 and $rng gte 51>>
+<<if $farm.beasts.pigs lt -5 and $rng gte 51>>
 
 	<<if $farm_work.pig.monster is true>>
 		You endure as the <<farm_text pig>> humps you. Unsatisfied, <<farm_he pig>> wrestles you to the ground.
@@ -628,7 +628,7 @@ You're sure it'll be fine. You shut and lock the door.
 
 <<else>>
 	<<if $farm_work.pig.monster is true>>
-		You endure as the <<farm_text pig>> humps you. <<farm_He pig>> soon tires, and steps away. You close the pen after <<farm_him pig>>
+		You endure as the <<farm_text pig>> humps you. <<farm_He pig>> soon tires, and steps away. You close the pen after <<farm_him pig>>.
 	<<else>>
 		You endure as the pig humps you. It soon tires, or is otherwise satisfied, and drops to the ground. You close the pen after it.
 	<</if>>
@@ -922,8 +922,9 @@ You're sure it'll be fine. You shut and lock the door.
 	"D-down!" you say, <span class="red">but your voice shakes.</span>
 
 	<<switch _firstSuccess>>
-		<<case 0 /* For when you think you're slick by not wearing clothes for the pigs to grab, but your nakedness
-			makes them too horny */>>
+		<<case 0>>
+			<!-- For when you think you're slick by not wearing clothes for the pigs to grab, but your nakedness makes them
+				too horny. -->
 			You try to pull your <<hairDetails>> out of <<farm_his pig>> <<= $farm_work.pig.monster is true ? "hands" : "mouth">>,
 			but your pleas only make <<farm_him pig>> tug harder.<<gpain>><<violence 1>>
 			<br><br>
@@ -979,11 +980,8 @@ The <<farm_text pig>> releases your <<if _firstSuccess is 0>> <<hairDetails>> <<
 <br>
 
 
-/** Moved the "Farm Pigs Feed Extreme Scold" section above the "Farm Pigs Feed Extreme" because it leads right into
- * it but for some reason was waaaaay at the bottom.
- */
 :: Farm Pigs Feed Extreme Scold
-<<effects>>
+<<effects>><<outfitChecks>>
 
 You open your mouth to scold, but you only manage a yell as you are yanked over the fence. You land in a pile of mud with a squelch.
 <br><br>
@@ -1011,7 +1009,13 @@ You push them away as best you can.<<gstress>><<garousal>><<stress 6>><<arousal 
 	<br>
 <<else>>
 	"A-Away," you say, <span class="red">but your voice trembles and the <<farm_text_many pig>> ignore you.</span>
-	They continue their assault. They grasp and tear, and soon have your <span class="pink">clothes reduced to tatters.</span><<clothesruined>>
+	They continue their assault.
+	<<if _top or _bottom>>
+		They grasp and tear, and soon have your <span class="pink">clothes reduced to tatters.</span><<clothesruined>>
+	<<else>>
+		<!-- Small stress and arousal punishment if the player is already naked. -->
+		You shudder as they <<if $farm_work.pig.monster is true>> grope and <</if>> lick your exposed skin.<<stress 3>><<arousal 300>>
+	<</if>>
 	<br><br>
 
 	<<link [[Next|Farm Pigs Feed Extreme]]>><</link>>
@@ -1021,15 +1025,14 @@ You push them away as best you can.<<gstress>><<garousal>><<stress 6>><<arousal 
 
 :: Farm Pigs Feed Extreme
 <<effects>>
-<!-- Seems strange how the player gains the same stress and arousal, regardless of whether or not they pass
-	the Tending check. Added an additional penalty for failing the check, as well as some flavor text. -->
+<!-- Additional penalty for failing the check. -->
 You try to push them away, but they force you to the ground. Their tongues attack from all angles, licking you all over.<<gstress>><<garousal>><<stress 6>><<arousal 600>>
 <br><br>
 
 At last, they back away. But only so a particularly large <<farm_text pig>> has space to climb on top of you.
 <br><br>
 
-<<link [[Next|Farm Pig Rape]]>><<set $molestationstart to 1>><</link>>
+<<link [[Next|Farm Pigs Rape Extreme]]>><<set $molestationstart to 1>><</link>>
 <br>
 
 
@@ -1058,7 +1061,7 @@ Alex arrives at the edge of the pen, and laughs. <<He>> hauls <<himself>> over w
 <br>
 
 
-:: Farm Pig Rape
+:: Farm Pigs Rape Extreme
 <<if $molestationstart is 1>>
 	<<set $molestationstart to 0>>
 	<<controlloss>>
@@ -1087,12 +1090,13 @@ Alex arrives at the edge of the pen, and laughs. <<He>> hauls <<himself>> over w
 <<actionsman>>
 
 <<if _combatend>>
-	<span id="next"><<link [[Next|Farm Pig Rape Finish]]>><</link>></span><<nexttext>>
+	<span id="next"><<link [[Next|Farm Pigs Rape Extreme Finish]]>><</link>></span><<nexttext>>
 <<else>>
-	<span id="next"><<link [[Next|Farm Pig Rape]]>><</link>></span><<nexttext>>
+	<span id="next"><<link [[Next|Farm Pigs Rape Extreme]]>><</link>></span><<nexttext>>
 <</if>>
 
-:: Farm Pig Rape Finish
+
+:: Farm Pigs Rape Extreme Finish
 <<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
@@ -1105,26 +1109,32 @@ Alex arrives at the edge of the pen, and laughs. <<He>> hauls <<himself>> over w
 		The others cheer.
 		<br>
 		<<if random(1, 2) is 2>>
-			"Not so great now, are you?"
+			"Not so great now."
 		<<else>>
-			"I hope <<pshe>> knows <<pher>> place."
+			"I hope <<pshe>> know place."
+		<</if>>
+
+		<<if random(1, 2) is 2>>
+			"You should been rougher."
+		<<else>>
+			"Can be rougher next time."
 		<</if>>
 		<br>
+		<!-- Imagine if someone adds a soft bad-end to the Woodland specifically because of this off-handed comment,
+			where the player gets kidnapped by the pigs after passing out in there when the Pig's Respect is less than
+			or equal to -20, causing them to spend several days as the pigs' sex toy until the Pig's Respect goes
+			back to +20. What an absolute cook. Unfortunately, this seems very excessive when compared to the other
+			parts of the game that need more development. If some degenerate uses this comment as future inspiration,
+			may the Lord of the Flies grant you their most splendid of blessings upon all that you do. -->
 		<<if random(1, 2) is 2>>
-			"You should've been rougher."
+			"We keep <<phim>> here?"
 		<<else>>
-			"You should be rougher next time."
+			"I bet <<pshe>> like that."
 		<</if>>
-		<br>
-		<<if random(1, 2) is 2>>
-			"We should keep <<phim>> here."
-		<<else>>
-			"My turn next time."
-		<</if>>
-	<</if>><<lrespect>><<farm_pigs -1>>
+	<</if>>
 	<br><br>
 
-	<<tearful>> you stagger from the pen. You close the gate behind you.
+	<<tearful>> you stagger from the pen. You close the gate behind you.<<lrespect>><<farm_pigs -1>>
 	<br><br>
 
 	<<clotheson>>

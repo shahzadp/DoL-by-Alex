@@ -288,6 +288,20 @@ function effects() {
 		element("i", "Your innocence has been replaced by trauma.");
 	}
 
+	// Check if the variables are initialized
+	V.burdenApplied ??= false;
+	V.burdenRng ??= 100;
+	V.burdenThreshold ??= 0;
+	/**
+	 * Check if the player entered a passage that required a skill check which was gimped by the Temple's Burden.
+	 */
+	if (V.burdenApplied === true && V.burdenRng <= V.burdenThreshold) {
+		// Currently doesn't print any newlines.
+		sWikifier(`<<templeLossUpper>>`);
+	}
+	// burdenApplied is ALWAYS reset to False, regardless of whether or not the message is printed.
+	V.burdenApplied = false;
+
 	if (V.eventskipoverrule) V.eventskipoverrule = 0;
 
 	if (V.underwatercheck > 0) {
@@ -1756,6 +1770,9 @@ function effects() {
 	V.menu = 0;
 
 	if (V.combat === 0 && V.ironmanmode === true) IronMan.scheduledSaves();
+
+	// Randomizes burdenRng to a value between 1 and 100, inclusive.
+	V.burdenRng = random(1, 100);
 
 	return fragment;
 }

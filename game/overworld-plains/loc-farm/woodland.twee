@@ -1,9 +1,20 @@
 :: Farm Woodland
 <<set $outside to 1>><<set $location to "alex_farm">><<set $bus to "woodland">><<effects>>
-
 <<farm_work_update>>
 
 You are in the woodland within the farm grounds.
+<<if $farm_work.woodland is 0 >>
+	Heavy branches and thick clumps of leaves litter the trails.
+	<span class="red">You will not be able to forage.</span>
+<<elseif $farm_work.woodland is 1>>
+	Branches and leaves litter the trails.
+	<span class="red">You will not be able to forage.</span>
+<<elseif $farm_work.woodland is 2 and $farm.woodland is 2>>
+	Only a few branches and sparse leaves cover the trails.
+	You will be able to forage, <span class="yellow">although some branches may block your way.</span>
+<<elseif $farm_work.woodland is 3 and $farm.woodland is 3>>
+	You will be able to forage, <span class="green">and the paths through the woodland are clear.</span>
+<</if>>
 
 <<if Time.dayState is "night">>
 	<<if Weather.precipitation is "snow">>
@@ -20,6 +31,45 @@ You are in the woodland within the farm grounds.
 		The trees shield you from the worst of the rain.
 	<<else>>
 		You are surrounded by the chirping of birds.
+	<</if>>
+<</if>>
+<br><br>
+
+<<if $farm_work.pigs_out is 0>>
+	<<if _farm_work_time <= -3>>
+		The <<farm_text_many pig>> are asleep in their sty.
+	<<elseif _farm_work_time <= 0>>
+		The <<farm_text_many pig>> are rubbing each other awake.
+	<<else>>
+		The <<farm_text_many pig>> squeal to be let out.
+	<</if>>
+<<elseif $farm_work.pigs_out is 1>>
+	<<if Time.season is "winter">>
+		<span class="teal">The earth is too cold to find edible fungi.</span>
+	<<elseif Weather.precipitation is "snow">>
+		<span class="teal">The <<farm_text_many pig>> stay away from the ice treeline.</span>
+	<<elseif Weather.precipitation is "rain">>
+		<span class="orange">The
+			<<if $farm_work.pig.monster>> pigpeople forage
+			<<else>> pigs root
+			<</if>>
+			around in the muddy undergrowth.
+		</span>
+	<<else>>
+		<span class="orange">The
+			<<if $farm_work.pig.monster>> pigpeople forage
+			<<else>>pigs root
+			<</if>>
+			around in the damp undergrowth.
+		</span>
+	<</if>>
+<<else>>
+	<<if _farm_work_time < 46>>
+		The <<farm_text_many pig>> shuffle around in their sty.
+		<!-- The pigs whisper to each other about a community of angry birds deep within the woodlands. About how the birds
+			are constructing a giant slingshot to free their brethren. The pigs sound fearful. ++Stress -->
+	<<else>>
+		The <<farm_text_many pig>> are asleep in their sty.
 	<</if>>
 <</if>>
 <<if $farm_work.alex is "woodland">>
@@ -60,11 +110,71 @@ You are in the woodland within the farm grounds.
 		<</if>>
 		<br>
 	<</if>>
-	<<if $farm_work.forage isnot 1 and $farm.woodland gte 2>>
+	<!-- Players with a Level 2 Woodland can forage once per day, and players with a Level 3 Woodland can forage twice per
+		day. To balance this out, the player will only be able to forage after the Woodland is fully tended, and a Level 3
+		Woodland will increase the daily Pig's Respect decay from -0.5 to -1. If the player doesn't want to spend that time
+		tending, they can wait for Alex to finish it for them. However, the "Forage for fungi" activity will only be
+		available while the pigs are out in their pen.
+		
+		It costs £30,000 to reach a Level 2 Woodland, and £80,000 to reach a Level 3 Woodland.
+		
+		Using the current Market Stall rates, Foraging for Fruit with a Level 2 Woodland will give £50 worth of Fruit, while
+		Foraging for Fungi will give £100 worth of Fungi. This amount can be increased with the player's Tending skills.
+		Players at this stage of the game would likely already having Tending S, which would double their average yield to
+		£100 and £200, respectively.
+
+		Foraging is broken up into 3 20-minute events, where a dangerEvent() may trigger each time. Foraging for Fruit will
+		cause the dangerEvent to trigger a generic punishment, while Foraging for Fungi has a chance to trigger a pig-related
+		skill check. Passing this Skill Check will give +1 Pig's Respect. There is also a chance, depending on RNG and the
+		player's state of dress, for the Skill Check to be much harder, with a small chance of failure even with maxed stats.
+
+		Foraging for Fungi will also require the player to reward the pigs when they return to the farm, either with
+		potatoes, carrots, or apples. The required food scales based on the amount of fungi the player gathered during the
+		session, and is doubled if the Pig's Respect is between -20 and -6.
+		
+		The player can also choose the reward the pigs with their body. The amount of pigs they will need to satisfy is:
+			1x Consensual Pig Encounters from 5 to 30 Pig's Respect
+			2x Consensual Pig Encounters from -5 to 4 Pig's Respect
+			3x Consensual Pig Encounters from -20 to -6 Pig's Respect
+
+		Rewarding the pigs in any way will give Pig's Respect, varying based on the reward, while refusing will give -3
+		Pig's Respect.
+		
+		If the player refuses when the Pig's Respect is between -20 and -6, the player will be faced with 3 non-consensual
+		Pig Encounters. Fighting one off will lead to +1 Pig's Respect, but calling for Alex's Help at any point will lead
+		to -3 Pig's Respect.
+		
+		If the Pig's Respect is between -30 and -21, they will first lead the player deep into the woodland so the player
+		can't call Alex for help. The player will be unable to satiate them with regular food, as the pigs demand an
+		immediate reward. The player's only option will be to give them their harvest, to reward them with their body, or
+		to refuse and try to fight them off.
+
+		Offering their harvest is not guaranteed to satisfy the pigs, even at Tending S and with a Green Thumb. However,
+		the first 2 options will cause the following encounters to be consensual. If the player fights off a pig at any
+		point, the following encounters will become non-consensual. -->
+	<<if $farm_work.forage lt ($farm.woodland - 1) and $farm_work.woodland is $farm.woodland>>
 		<<if pcAreArmsBound("both")>>
 			<span class="red">Both of your arms are bound</span>, so you are unable to forage.
 		<<else>>
-			<<foresticon "bush">><<link [[Forage (1:00)|Farm Woodland Forage]]>><<set $farm_work.forage to 1>><<pass 60>><</link>>
+			<<foresticon "bush">><<link [[Forage for fruits (1:00)|Farm Woodland Forage]]>><<set $farm_work.forage += 1>>
+				<<tiredness 2>>
+				<<set $phase to {
+					basket: [0, 0, 0],
+					remainingAttempts: 3,
+					forageType: "fruit",
+					}>>
+			<</link>><<gtiredness>>
+			<<if $farm_work.pigs_out is 1 and Time.season is not "winter">>
+				<br>
+				<<animalicon "pig">><<link [[Forage for fungi (1:00)|Farm Woodland Forage]]>><<set $farm_work.forage += 1>>
+					<<tiredness 2>>
+					<<set $phase to {
+						basket: [0, 0, 0],
+						remainingAttempts: 3,
+						forageType: "fungi",
+						}>>
+				<</link>><<gtiredness>>
+			<</if>>
 		<</if>>
 		<br>
 	<</if>>
@@ -72,49 +182,40 @@ You are in the woodland within the farm grounds.
 <</if>>
 
 :: Farm Woodland Tend
-<<effects>>
+<<effects>><<outfitChecks>>
 
 You remove dead wood, and trim the branches of the wildest trees.
 <br><br>
 
-
 <<if dangerEvent()>>
-	<<if $worn.upper.name isnot "naked" and random(1, 2) is 2>>
-		<<set $worn.upper.integrity -= 10>>
-		<<if $worn.upper.integrity lte 0>>
-			Your $worn.upper.name <<= $worn.upper.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it. <span class="pink">The force tears the fabric from your body, baring your <<undertop>>.</span>
+	<!-- 0 means upper clothing, 1 means lower clothing -->
+	<<set _branchTarget to random(0, 1)>>
+	<<if _top>>
+		<<set _top.integrity -= 10>>
+		<<if _top.integrity lte 0>>
+			Your _top.name <<= $_top.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it.
+			<span class="pink">The force tears the fabric from your body, baring your <<undertop>>.</span>
 		<<else>>
-			Your $worn.upper.name <<= $worn.upper.plural ? "catch" : "catches">> on one such branch, leaving <<upperit>> worse for wear.
+			Your _top.name <<= _top.plural ? "catch" : "catches">> on one such branch, leaving _top.name worse for wear.
 		<</if>>
-	<<elseif $worn.lower.name isnot "naked">>
-		<<set $worn.lower.integrity -= 10>>
-		<<if $worn.lower.integrity lte 0>>
-			Your $worn.lower.name <<= $worn.lower.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it. <span class="pink">The force tears the fabric from your body, baring your <<undies>>.</span>
+	<<elseif _bottom.name isnot "naked">>
+		<<set _bottom.integrity -= 10>>
+		<<if _bottom.integrity lte 0>>
+			Your _bottom.name <<= _bottom.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it.
+			<span class="pink">The force tears the fabric from your body, baring your <<undies>>.</span>
 		<<else>>
-			Your $worn.lower.name <<= $worn.lower.plural ? "catch" : "catches">> on one such branch, leaving <<lowerit>> worse for wear.
-		<</if>>
-	<<elseif $worn.under_upper.name isnot "naked" and random(1, 2) is 2>>
-		<<set $worn.under_upper.integrity -= 10>>
-		<<if $worn.under_upper.integrity lte 0>>
-			Your $worn.under_upper.name <<= $worn.under_upper.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it. <span class="pink">The force tears the fabric from your body, baring your <<breasts>>.</span>
-		<<else>>
-			Your $worn.under_upper.name <<= $worn.under_upper.plural ? "catch" : "catches">> on one such branch, leaving <<underupperit>> worse for wear.
-		<</if>>
-	<<elseif $worn.under_lower.name isnot "naked">>
-		<<set $worn.under_lower.integrity -= 10>>
-		<<if $worn.under_lower.integrity lte 0>>
-			Your $worn.under_lower.name <<= $worn.under_lower.plural ? "catch" : "catches">> on one such branch as a gust of wind disturbs it. <span class="pink">The force tears the fabric from your body, baring your <<genitals>>.</span>
-		<<else>>
-			Your $worn.under_lower.name <<= $worn.under_lower.plural ? "catch" : "catches">> on one such branch, leaving <<underlowerit>> worse for wear.
+			Your _bottom.name <<= _bottom.plural ? "catch" : "catches">> on one such branch, leaving _bottom.name worse for wear.
 		<</if>>
 	<<else>>
-		A gust of wind animates them as you work, scratching your skin.<<gpain>><<pain 4>>
+		A gust of wind animates the branches as you work, scratching your skin.<<gpain>><<pain 4>>
 	<</if>>
+	<<integritycheck no_text>><<exposure>>
 	<br><br>
 	<<link [[Next|Farm Woodland]]>><</link>>
 <<else>>
 	<<link [[Next|Farm Woodland]]>><</link>>
 <</if>>
+
 
 :: Farm Woodland Tend Alex
 <<effects>>
@@ -203,9 +304,9 @@ You help Alex remove dead wood, and trim the branches of the wildest trees.
 	<<link [[Next|Farm Woodland]]>><<endevent>><</link>>
 <</if>>
 
+
 :: Farm Woodland Tend Skirt
 <<effects>>
-
 
 You step around the ladder just as a gust billows Alex's skirt, giving you a clear view of <<his>> red boyshorts.
 <br><br>
@@ -259,6 +360,7 @@ You step around the ladder just as a gust billows Alex's skirt, giving you a cle
 
 <<link [[Next|Farm Woodland]]>><<endevent>><</link>>
 
+
 :: Farm Woodland Tend Tease
 <<effects>>
 
@@ -279,6 +381,7 @@ Alex's blush deepens. <<He>> continues sawing the log, but keeps <<his>> legs ti
 
 <<link [[Next|Farm Woodland]]>><<endevent>><</link>>
 
+
 :: Farm Woodland Tend No Skirt
 <<effects>>
 
@@ -292,70 +395,2663 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 
 :: Farm Woodland Forage
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts - 1>>
+<<set _forageType to $phase.forageType>>
+<<effects>><<outfitChecks>>
+
+<<farm_gen pig>>
+
+<<if _remainingAttempts lt 0>>
+	<!-- Triggers at the end of the foraging session -->
+	<<if _forageType is "fruit" or $farm.beasts.pigs gte -20>>
+		You can see the treeline from here.
+
+		<<set _uniqueItems to 0>>
+		<<for _i = 0; _i lt _basket.length; _i++>>
+			<<if _basket[_i] gt 0>>
+				<<set _uniqueItems += 1>>
+			<</if>>
+		<</for>>
+		<<if _forageType is "fruit">>
+			<<set _basketTypes to ["strawberry", "peach", "plum"]>>
+			You have found
+			<span class="green">
+				<<for _j = 0; _j < 3; _j++>>
+					<<if _uniqueItems is 1>>
+						<<if _basket[_j] gt 0>>
+							<<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>.
+						<</if>>
+					<<elseif _basket[_j] gt 0 and _j + 1 < _uniqueItems>>
+						<<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>,
+					<<else>>
+						and <<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>.
+					<</if>>
+				<</for>>
+			</span>
+			<br><br>
+
+			<<link [[Next|Farm Woodland]]>><</link>>
+			<br>
+		<<elseif _forageType is "fungi">>
+			<<set _basketTypes to ["mushroom", "truffle", ""]>>
+			You have found
+			<span class="green">
+				<<if _uniqueItems is 1>>
+					<<for _j = 0; _j < 2; _j++>>
+						<<if _basket[_j] gt 0>>
+							<<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>.
+						<</if>>
+					<</for>>
+				<<else>>
+					<<foodstuffReport "mushroom" _basket[0] "mushroom">>, and <<foodstuffReport "truffle" _basket[1] "truffle">>.
+				<</if>>
+			</span>
+			<br><br>
+
+			<!-- The base foraging rates will require you to reward £100.00 of fungi with £8.00 of potatoes, £10.00
+				of carrots, or £5.00 of apples. This assumes apples can only be harvested in the Forest. Quantities
+				will need to be changed if apples suddenly become easier to harvest.
+				
+				The requested quantity is increased by 100% if the Pig's Respect is between -20 and -5. -->
+			<<if $farm.beasts.pigs gte -5>>
+				<<set _respectModifier to 1>>
+				The <<farm_text_many pig>> crowd around you.
+				<<if $farm_work.pig.monster>>"Reward?" "Helpful?" "Food?" "Reward?" They ask.
+				<<else>>They bump you with their snouts, asking for a reward.
+				<</if>>
+				While you could also give them nothing, you get the feeling that refusing too often may be a
+				<span class="red">very bad idea.</span>
+			<<else>>
+				<!-- Should be impossible to reach this point with -30 to -21 Pig's Respect, as it would lead the
+					player to a different passage. -->
+				<<set _respectModifier to 2>>
+				The <<farm_text_many pig>> crowd around you. They jostle you around, insisting on a large reward.
+				While you could also give them nothing, you get the feeling that refusing any more
+				<span class="red">will be a very bad idea.</span>
+			<</if>>
+			<br><br>
+
+			<!-- Truffles are significantly more expensive than mushrooms. To prevent truffles from being weighted
+				much more heavily than mushrooms in the request calculations, the Pigs will now adjust their requests
+				according to the QUANTITY of each item that's been collected, scaled by the average value the player
+				expects to make each hour. -->
+			<<set _averageValue to (2 * setup.foodstuff["mushroom"].shop.sell_price
+				+ 1 * setup.foodstuff["truffle"].shop.sell_price) / 3>>
+			<!-- Units are in hundredths of a pound. Quantities are rounded up because pigs are greedy. -->
+			<<set _requestedValue to _basket[0] * _averageValue + _basket[1] * _averageValue>>
+			<!-- Requires 8% of the market value in potatoes. -->
+			<<set _requiredPotatoes to Math.ceil((_requestedValue * 0.08 * _respectModifier)
+				/ setup.foodstuff["potato"].shop.sell_price)>>
+			<!-- Or, 10% of the market value in carrots. -->
+			<<set _requiredCarrots to Math.ceil((_requestedValue * 0.10 * _respectModifier)
+				/ setup.foodstuff["wild_carrot"].shop.sell_price)>>
+			<!-- Or, 5% of the market value in apples. -->
+			<<set _requiredApples to Math.ceil((_requestedValue * 0.05 * _respectModifier)
+				/ setup.foodstuff["apple"].shop.sell_price)>>
+			
+			<!-- Respect gains will be added up at the end, and will not be shown in the links to avoid clutter. -->
+			<<if $farm_work.pigs_fed gte 6>>
+				<<foodstufficon "potato">><span class="blue">The pigs are too full to want more potatoes.</span>
+			<<elseif $foodstuff["potato"].amount gte _requiredPotatoes>>
+				<<foodstufficon "potato">><<link [[Reward them with potatoes (0:20)|Farm Woodland Forage Reward]]>><<set $phase to "potato">>
+					<<set $phase to {
+						type: "potato",
+						quantity: _requiredPotatoes
+					}>>
+					<<set $foodstuff["potato"].amount -= _requiredPotatoes>>
+				<</link>>
+			<<else>>
+				<<insufficientQuantity "potatoes to satisfy them" "blue" "<<foodstufficon 'potato'>>">>
+			<</if>>
+			<br>
+
+			<<if $foodstuff["wild_carrot"].amount gte _requiredCarrots>>
+				<<foodstufficon "wild_carrot">><<link [[Reward them with carrots (0:10)|Farm Woodland Forage Reward]]>>
+					<<set $phase to {
+						type: "carrot",
+						quantity: _requiredCarrots
+					}>>
+					<<set $foodstuff["wild_carrot"].amount -= _requiredCarrots>>
+				<</link>>
+			<<else>>
+				<<insufficientQuantity "carrots to satisfy them" "blue" "<<foodstufficon 'wild_carrot'>>">>
+			<</if>>
+			<br>
+
+			<<if $foodstuff["apple"].amount gte _requiredApples>>
+				<<if currentSkillValue("housekeeping") gte 400 and $mathstrait gte 3>>
+					<<foodstufficon "apple">><<link [[Reward them with apples (0:20)|Farm Woodland Forage Reward]]>>
+						<<set $phase to {
+							type: "apple",
+							quantity: _requiredApples
+						}>>
+						<<set $foodstuff["apple"].amount -= _requiredApples>>
+					<</link>>
+				<<elseif currentSkillValue("housekeeping") gte 400>>
+					<<foodstufficon "apple">><<link [[Reward them with apples (0:15)|Farm Woodland Forage Reward]]>>
+						<<set $phase to {
+							type: "apple",
+							quantity: _requiredApples
+						}>>
+						<<set $foodstuff["apple"].amount -= _requiredApples>>
+					<</link>>
+				<<else>>
+					<<foodstufficon "apple">><<link [[Reward them with apples (0:10)|Farm Woodland Forage Reward]]>>
+						<<set $phase to {
+							type: "apple",
+							quantity: _requiredApples
+						}>>
+						<<set $foodstuff["apple"].amount -= _requiredApples>>
+					<</link>>
+				<</if>>
+			<<else>>
+				<<insufficientQuantity "apples to satisfy them" "blue" "<<foodstufficon 'apple'>>">>
+			<</if>>
+			<br>
+			
+			<<if ($settings.bestialityEnabled or $farm_work.pig.monster) and hasSexStat("deviancy", 5)>>
+				<<animalicon "pig">><<link [[Reward them with your body|Farm Woodland Forage Reward]]>>
+					<<set $phase to {
+						type: "body",
+						quantity: 0
+					}>>
+				<</link>><<deviant5>>
+			<</if>>
+			<br>
+
+			<<getouticon>><<link [[Reward them with nothing|Farm Woodland Forage Reward]]>>
+				<<set $phase to {
+					type: "nothing",
+					quantity: 0
+				}>>
+			<</link>><<llrespect>>
+			<br>
+		<<else>>
+			ERROR (Farm Woodland Forage): forageType is invalid. Please report.
+		<</if>>
+	<<else>>
+		<!-- A player with Tending S, the Green Thumb trait, and a Level 3 Woodland can find an average of:
+			20 * 3 * 2.4 = 144 fungi each time they enter the Woodland.
+
+			Once the Pig's Respect is less than -20, they will take the player deep into the woodland at the end of the
+			foraging session, and demand a reward. The player will have the option to give them their harvest, reward
+			them with their body, or refuse.
+
+			The pigs will initially want to have sex with the player 4 times (pigsLeft will be 4). If the player offers
+			them their harvest, each pigsLeft will try to eat a random(20, 40) amount of fungi from the player's basket,
+			repeating 5 times (150 fungi on average). Each fully satisfied attempt will reduce pigsLeft by 1. If the pigs
+			can eat their fill at least 4 times, they will leave the player alone.
+
+			If the pigs can eat their fill 5 times, they will leave the player with whatever food is left over, then rest
+			and head back to the farm.
+
+			Each fully satisfied pig gives +1 Pig's Respect (+4 max).
+
+			Pigs will eat the truffles first, then the mushrooms.
+
+			If the player refuses, pigsLeft will increase by 1 (Total of 5), and all remaining encounters will become
+			non-consensual. -->
+		You've been here for a while. You decide to count up your harvest, then head back towards the farm.
+
+		<<set _uniqueItems to 0>>
+		<<for _i = 0; _i lt _basket.length; _i++>>
+			<<if _basket[_i] gt 0>>
+				<<set _uniqueItems += 1>>
+			<</if>>
+		<</for>>
+
+		<<set _basketTypes to ["mushroom", "truffle", ""]>>
+		You have found
+		<span class="green">
+			<<if _uniqueItems is 1>>
+				<<for _j = 0; _j < 2; _j++>>
+					<<if _basket[_j] gt 0>>
+						<<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>.
+					<</if>>
+				<</for>>
+			<<else>>
+				<<foodstuffReport "mushroom" _basket[0] "mushroom">>, and <<foodstuffReport "truffle" _basket[1] "truffle">>.
+			<</if>>
+		</span>
+		<br><br>
+
+		You look around. You don't recognize this area of the woods. Something isn't right...
+		<br><br>
+
+		<!-- The farm_gen chain of doom -->
+		A <<farm_text pig>> pokes <<farm_his pig>> head out from behind a tree.
+		<<farm_gen pig>>
+		Another <<farm_text pig>> walks out from a bush.
+		<<farm_gen pig>>
+		Another <<farm_text pig>> appears behind you.
+		<<farm_gen pig>>
+		Another <<farm_text pig>> pushes through a thicket.
+		<<farm_gen pig>>
+		You see another <<farm_text pig>>.
+		And then another. And another. And another. And another. <span class="red">And another. And another.</span>
+		<br><br>
+		
+		The <<farm_text_many pig>> surround you.
+
+		<<farm_gen pig>>
+		<<if $farm_work.pig.monster>>
+			One of the <<farm_text_many pig>> speaks up. "We help you. Many time. You give reward. Now."
+		<<else>>
+			They stare at your basket. You think the implication is clear.
+		<</if>>
+		You could give them your harvest, but money is tight and you were going to sell it on the market.
+		<<if hasSexStat("deviancy", 5)>> You could offer them your body, but how many times will you need to satisfy them?<</if>>
+		You hesitate.
+		<br><br>
+
+		<<foodstufficon "mushroom">><<link [[Offer your harvest (?:??)|Farm Woodland Forage Reward Extreme]]>>
+			<<set $phase to {
+				type: "basket",
+				basket: _basket
+			}>>
+		<</link>>
+		<br>
+		
+		<!-- The "body" and "nothing" rewards are disabled when bestiality is disabled and the pigs aren't monsters. -->
+		<<if $settings.bestialityEnabled or $farm_work.pig.monster>>
+			<<if hasSexStat("deviancy", 5)>>
+				<<animalicon "pig">><<link [[Offer your body (?:??)|Farm Woodland Forage Reward Extreme]]>>
+					<<set $phase to {
+						type: "body",
+						basket: _basket
+					}>>
+				<</link>><<deviant5>>
+			<</if>>
+			<br>
+
+			<<foresticon>><<link [[Refuse (?:??)|Farm Woodland Forage Reward Extreme]]>>
+				<<set $phase to {
+					type: "nothing",
+					basket: _basket
+				}>>
+			<</link>><<dangerousText>>
+			<br>
+		<</if>>
+	<</if>>
+<<else>>
+	<<pass 20>>
+	
+	<<pigsOpinion>>
+
+	<<if _forageType is "fruit">>
+		You take a basket into the woodland, and search the boughs and bushes for fruit.
+	<<elseif _forageType is "fungi">>
+		You take a basket into the woodland, and search the undergrowth for fungi.
+		<<if $farm.beasts.pigs gte -20>>
+			The <<farm_text_many pig>> guide you along.
+		<<else>>
+			<span class="red">The <<farm_text_many pig>> guide you along.</span>
+		<</if>>
+	<<else>>
+		ERROR (Farm Woodland Forage): forageType is invalid. Please report.
+	<</if>>
+	<<physique 1>>
+	<br><br>
+	<!-- The player makes 3 foraging checks, each taking 20 minutes, with a chance of receiving something from a pool of items,
+		depending on the activity.
+		
+		All 3 basket indices are used when foraging for fruit. When foraging for fungi, the last index is not used. -->	
+	<<if _forageType is "fruit">>
+		<!-- Basket holds Strawberries, Peaches, and Plums when foraging for fruit. -->
+		<<set _target to random(0, 2)>>
+		<<switch _target>>
+			<<case 0>>
+				<!-- Strawberries -->
+				<<wearProp "strawberry basket">>
+				<span class="green">You find some ripe <<foodstufficon "strawberry">> strawberries.</span>
+				<<if $farm.woodland gte 3>>
+					<<tending_pick strawberry 20 50>>
+				<<else>>
+					<<tending_pick strawberry 10 25>>
+				<</if>>
+				<<set _basket[0] += _tending_amount>>
+			<<case 1>>
+				<!-- Peaches -->
+				<<wearProp "peach basket">>
+				<span class="green">You find some ripe <<foodstufficon "peach">> peaches.</span>
+				<<if $farm.woodland gte 3>>
+					<<tending_pick peach 10 40>>
+				<<else>>
+					<<tending_pick peach 5 20>>
+				<</if>>
+				<<set _basket[1] += _tending_amount>>
+			<<case 2>>
+				<!-- Plums -->
+				<<wearProp "plum basket">>
+				<span class="green">You find some ripe <<foodstufficon "plum">> plums.</span>
+				<<if $farm.woodland gte 3>>
+					<<tending_pick plum 20 40>>
+				<<else>>
+					<<tending_pick plum 10 20>>
+				<</if>>
+				<<set _basket[2] += _tending_amount>>
+		<</switch>>
+	<<elseif _forageType is "fungi">>
+		<!-- When foraging for fungi, there is a 2/3 chance to find Mushrooms, and a 1/3 chance to find Truffles -->
+		<<set _target to random(1, 3)>>
+		<!-- For calculation purposes, the exact quantities and frequencies that the Mushrooms and Truffles are
+			harvested at should stay equal to each other if they end up being adjusted. Otherwise, the _averageValue
+			variable will need to be recalculated with the new values in mind. -->
+		<<if _target lte 2>>
+			<!-- Mushrooms -->
+			<<wearProp "mushroom basket">>
+			<span class="green">You find some <<foodstufficon "mushroom">> mushrooms.</span>
+			<<if $farm.woodland gte 3>>
+				<<tending_pick mushroom 10 30>>
+			<<else>>
+				<<tending_pick mushroom 5 15>>
+			<</if>>
+			<<set _basket[0] += _tending_amount>>
+		<<else>>
+			<!-- Truffles -->
+			<<wearProp "mushroom basket">>
+			<span class="green">You find some <<foodstufficon "truffle">> truffles.</span>
+			<<if $farm.woodland gte 3>>
+				<<tending_pick truffle 10 30>>
+			<<else>>
+				<<tending_pick truffle 5 15>>
+			<</if>>
+			<<set _basket[1] += _tending_amount>>
+		<</if>>
+	<<else>>
+		ERROR (Farm Woodland Forage): forageType is invalid. Please report.
+	<</if>>
+	<br><br>
+
+	<!-- If the player is foraging for fruit or disabled bestiality, they will get scratched by some branches and
+		nothing else will happen.
+
+		If they are foraging for fungi with a Level 2 Woodland, they will have a 1/2 chance of getting molested by
+		a pig after being scratched by a branch.
+		
+		If they are foraging for fungi with a Level 3 Woodland, they will have a 4/5 chance of getting molested by
+		a pig.
+		
+		If the chosen target on the player's body fails, or if the player gets hit with an unlucky 1/4, they will
+		fall to the ground and the skill checks will be harder. -->
+	<<if (_forageType is "fruit" and dangerEvent()) or
+		(_forageType is "fungi" and ((_checkResults[0] is 2 and _checkResults[1] is 2) or dangerEvent(1.25)))>>
+		<<set _woodlandFungiChecks to [
+			{checkType: "hairlength", checkMin: 300, checkMax: 500},
+			{checkType: "uppernaked", checkFail: true},
+			{checkType: "lowernaked", checkFail: true}
+		]>>
+		<<eventChecks _woodlandFungiChecks false>>
+		<<set _attemptOne to random(0, 2)>>
+
+		<<if _attemptOne is 0 and _checkResults[_attemptOne] is 2>>
+			Your <<hairDetails>> catches on a branch as a gust of wind disturbs it. It's stuck.<<gpain>><<pain 4>>
+		<<elseif _attemptOne is 1 and _checkResults[_attemptOne] is 2>>
+			<<set _top.integrity -= 10>>
+			<<if _top.integrity lte 0>>
+				Your _top.name <<= $_top.plural ? "catch" : "catches">> on a branch as a gust of wind disturbs it.
+				<span class="pink">The force tears the fabric from your body, baring your <<undertop>>.</span>
+			<<else>>
+				Your _top.name <<= _top.plural ? "catch" : "catches">> on a branch, leaving _top.name worse for wear.
+			<</if>>
+		<<elseif _attemptOne is 2 and _checkResults[_attemptOne] is 2>>
+			<<set _bottom.integrity -= 10>>
+			<<if _bottom.integrity lte 0>>
+				Your _bottom.name <<= _bottom.plural ? "catch" : "catches">> on a branch as a gust of wind disturbs it.
+				<span class="pink">The force tears the fabric from your body, baring your <<undies>>.</span>
+			<<else>>
+				Your _bottom.name <<= _bottom.plural ? "catch" : "catches">> on a branch, leaving _bottom.name worse for wear.
+			<</if>>
+		<<else>>
+			A gust of wind animates the nearby branches, scratching your skin.<<gpain>><<pain 4>>
+		<</if>>
+		<<integritycheck no_text>><<exposure>>
+		<br><br>
+		
+		<<if _forageType is "fungi" and (($farm.woodland is 2 and random(1, 2) is 2)
+			or ($farm.woodland is 3 and random(1, 5) is lte 4))
+			and ($settings.bestialityEnabled or $farm_work.pig.monster)>>
+			<!-- The event will be initiated by the player's hair or clothes catching on a branch. Upon triggering this
+				event, a pig will try to molest them.
+				
+				If however the targeted check fails, due to the player's hair being too short, the player's upper or
+				lower clothing slot being naked, or they simply hit the unlucky 1/4, they will first fall the the ground
+				and the skill checks will be harder. -->
+			<<if _checkResults[_attemptOne] is 2 and random(1, 4) is not 4>>
+				<<if _attemptOne is 0>>
+					As you untangle your hair,
+				<<else>>
+					<!-- Player's body is targeted while they're wearing clothes. -->
+					As you untangle yourself,
+				<</if>>
+				
+				<<if $farm_work.pig.monster>>
+					a <<farm_text pig>> grasps your <<hairDetails>> and tries to force you to the ground.
+				<<else>>
+					a pig rears on its hind legs and tries to force you to the ground.
+				<</if>>
+				<br><br>
+
+				<<link [[Scold|Farm Woodland Pigs Scold]]>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType,
+						startPosition: "standing"
+					}>>
+				<</link>><<tendingdifficulty 1 900>>
+				<br>
+				<<link [[Shove <<farm_him pig>> away|Farm Woodland Pigs Shove]]>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType,
+						startPosition: "standing"
+					}>>
+				<</link>><<physiquedifficulty 1 13500>>
+				<br>
+				<<link [[Endure|Farm Woodland Pigs Endure]]>><<trauma 6>><<stress 6>><<farm_pigs -1>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType,
+						startPosition: "standing"
+					}>>
+				<</link>><<gtrauma>><<gstress>><<lrespect>>
+				<br>
+				<<if hasSexStat("deviancy", 3)>>
+					<<link [[Give <<farm_him pig>> a hand|Farm Woodland Pigs Hand]]>><<set $sexstart to 1>>
+						<<set $phase to {
+							basket: _basket,
+							remainingAttempts: _remainingAttempts,
+							forageType: _forageType,
+							startPosition: "standing"
+						}>>
+					<</link>><<deviant3>>
+					<br>
+				<</if>>
+			<<else>>
+				<<if _attemptOne is 0 and _checkResults[_attemptOne] is 2>>
+					<!-- Unlucky 1/4. -->
+					As you untangle your hair,
+				<<elseif (_attemptOne is 1 or _attemptOne is 2) and _checkResults[_attemptOne] is 2>>
+					<!-- Unlucky 1/4. -->
+					As you untangle yourself,
+				<<else>>
+					<!-- Failed the check. -->
+					As you back away from the branches,
+				<</if>>
+				you trip on a root and fall onto your back. Looking up, you see a <<farm_text pig>> standing in
+				front of you. Emboldened by your vulnerability, <<farm_he pig>> tries to mount you.
+				<br><br>
+
+				<!-- Exact position is "missionary". -->
+				<<link [[Scold|Farm Woodland Pigs Scold]]>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType,
+						startPosition: "prone"
+					}>>
+				<</link>><<tendingdifficulty 1 1200>>
+				<br>
+				<<link [[Shove <<farm_him pig>> away|Farm Woodland Pigs Shove]]>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType,
+						startPosition: "prone"
+					}>>
+				<</link>><<physiquedifficulty 1 16000>>
+				<br>
+				<!-- Enduring not possible because the player is already prone. -->
+				<<if hasSexStat("deviancy", 4)>>
+					<<link [[Give <<farm_him pig>> a hand|Farm Woodland Pigs Hand]]>><<set $sexstart to 1>>
+						<<set $phase to {
+							basket: _basket,
+							remainingAttempts: _remainingAttempts,
+							forageType: _forageType,
+							startPosition: "prone"
+						}>>
+					<</link>><<deviant4>>
+					<br>
+				<</if>>
+			<</if>>
+		<<else>>
+			<<link [[Continue|Farm Woodland Forage]]>>
+				<<set $phase to {
+					basket: _basket,
+					remainingAttempts: _remainingAttempts,
+					forageType: _forageType
+				}>>
+			<</link>>
+		<</if>>
+
+	<<else>>
+		<!-- Ok ok. Hear me out. *Dons tinfoil hat* WHAT IF. Huamns are not the only ones who gain benefits from using
+			the Strange Flowers? WHAT IF. Animals who eat them gain a minor boost to their intelligence, and increased
+			lust towards humans? WHAT IF. The pigs on Alex's Farm started eating these after being let into the
+			Woodland, WHICH ENDED UP MAKING THEM SMARTER?!!?? AM I COOKING?!?! DO WE COOK THESE??!!?? -->
+		<<if random(1, 5) is 1>>
+			You smell a mesmerising sweetness. It leads you to a patch of strange purple flowers.
+			<br><br>
+			<<if pcAreArmsBound("both")>>
+				<!-- Shouldn't currently be possible to reach this text, as you can't start foraging if your arms are
+					bound. Maybe there will be an arm binding event in the future? -->
+				<span class="red">Both of your arms are bound</span>, so you are unable to pick the flower.
+				<br>
+			<<else>>
+				<<foodstufficon "strange_flower">><<link [[Pick|Farm Woodland Strange Harvest]]>><<drugs 60>>
+					<<set $phase to {
+						basket: _basket,
+						remainingAttempts: _remainingAttempts,
+						forageType: _forageType
+					}>>
+				<</link>><<garousal>>
+			<</if>>
+			<br>
+			<<getouticon>><<link [[Ignore|Farm Woodland Forage]]>>
+				<<set $phase to {
+					basket: _basket,
+					remainingAttempts: _remainingAttempts,
+					forageType: _forageType
+				}>>
+			<</link>>
+			<br>
+
+		<<else>>
+			<<link [[Continue|Farm Woodland Forage]]>>
+				<<set $phase to {
+					basket: _basket,
+					remainingAttempts: _remainingAttempts,
+					forageType: _forageType
+				}>>
+			<</link>>
+			<br>
+		<</if>>
+	<</if>>
+<</if>>
+
+
+<!-- rewardType can be "basket", "body", or "nothing" -->
+<!-- Reward Tradeoffs:
+	Basket:
+		Pros: Reduces the number of pigs the player needs to have sex with.
+			With enough mushrooms, the sex can be avoided entirely.
+			Each satisfied pig gives +1 Respect.
+		Cons: The pigs demand a LOT of mushrooms.
+			The number of pigs is decreased for each pig that is FULLY satisfied.
+	Body:
+		Pros: Pigs will not steal from your basket while you're having sex.
+			Each satisfied pig gives +1 Respect.
+			You are having sex with pigs.
+		Cons: You are having sex with pigs.
+	Nothing:
+		Pros: Encounters will all be non-consensual. You're such a go go getter lmao
+			Each pig fought off gives +1 Respect.
+			This is technically the option that gives you the maximum amount of Pig's Respect (By fighting off 5 pigs).
+		Cons: Pigs will steal from your basket while you're being raped.
+			1 more pig will try to rape you.
+	--> 
+:: Farm Woodland Forage Reward Extreme
+<<set _rewardType to $phase.type>>
+<<set _basket to $phase.basket>>
+<<effects>><<outfitChecks>>
+
+<<if _rewardType is "basket">>
+	You hold out your basket. The <<farm_text_many pig>> stare at it.
+	<br><br>
+
+	<<farm_gen pig>>
+
+	<<if $speech_attitude is "meek">>
+		"I-I hope this is enough for you." You start handing out your mushrooms. "Eep!" But a <<farm_text pig>> knocks your
+		basket out of your hands.
+		<!-- Lillia transformation when? Plz I need -->
+		<<if _basket[1] gt 0>>They dig through the spilled contents, seeming to like your truffles.
+		<<else>>They dig into the spilled contents, pulling back after grabbing a mouthful of mushroom.
+		<</if>>
+	<<elseif $speech_attitude is "bratty">>
+		You stare back at them. They start back at you. Finally, you sigh. "Ugh. Fine." You dump your basket into the grass.
+		<<if _basket[1] gt 0>>They start picking through your harvest, seeming to like your truffles.
+		<<else>>They start picking out what they like, taking away your mushrooms one by one.
+		<</if>>
+	<<else>>
+		"Is this enough?" you ask them. You pour out your harvest in front of them.
+		<<if _basket[1] gt 0>>They consider it, then start grabbing from the spread. They like your truffles.
+		<<else>>They consider it, then start grabbing from the spread. The largest mushrooms are the first to go.
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<set _pigsUnsatisfied to -1>>
+	<<for _i = 0; _i < 5; _i++>>
+		<<set _amountTaken to random(20, 40)>>
+		<!-- Take from truffles if they exist. -->
+		<<if _basket[1] gt 0 and _basket[1] gte _amountTaken>>
+			<<set _basket[1] -= _amountTaken>>
+			<<set $foodstuff["truffle"].amount -= _amountTaken>>
+			<<set _amountTaken to 0>>
+		<!-- Empty the truffles if there aren't enough. -->
+		<<elseif _basket[1] gt 0 and _basket[1] lt _amountTaken>>
+			<<set _amountTaken to _amountTaken - _basket[1]>>
+			<<set $foodstuff["truffle"].amount -= _basket[1]>>
+			<<set _basket[1] to 0>>
+		<</if>>
+		<!-- Take from mushrooms if they exist. Can use an "if" statement here because the pig will either be fully
+			satisfied by the truffles (0), or the truffles will run out and cause the pig to look for mushrooms
+			instead (> 0). -->
+		<<if _basket[0] gt 0 and _basket[0] gte _amountTaken>>
+			<<set _basket[0] -= _amountTaken>>
+			<<set $foodstuff["mushroom"].amount -= _amountTaken>>
+			<<set _amountTaken to 0>>
+		<<elseif _basket[0] gt 0 and _basket[0] lt _amountTaken>>
+			<<set _amountTaken to _amountTaken - _basket[0]>>
+			<<set $foodstuff["mushroom"].amount -= _basket[0]>>
+			<<set _basket[0] to 0>>
+		<</if>>
+
+		<!-- Check if the pig was fully satisfied. -->
+		<<if _amountTaken gt 0>>
+			<<set _pigsUnsatisfied += 1>>
+		<<else>>
+			<!-- Each serving of fungi takes the pigs ~2 minutes to eat. -->
+			<<pass 2>>
+		<</if>>
+	<</for>>
+
+	<!-- Players who've disabled bestiality can only get a little respect. Failing to satisfy the pigs will instead give them
+		increasing amounts of trauma, stress, and pain.
+
+		The pigs will take 30-40 minutes to return to the farm from where they took the player.
+		When satisfied, they will rest for 10 minutes before leaving. -->
+	<<if _pigsUnsatisfied lte 0 or not ($settings.bestialityEnabled or $farm_work.pig.monster)>>
+		<<set _passTime to random(30, 40)>>
+		<<pass _passTime>>
+
+		<<if _pigsUnsatisfied lte 0>>
+			<<pass 10>>
+			After some time, the <<farm_text_many pig>> laze on the earth, satisfied with the meal.
+			<<if $settings.bestialityEnabled or $farm_work.pig.monster>>
+				<<ggrespect>><<farm_pigs 4>>
+			<<else>>
+				<<grespect>><<farm_pigs 1>>
+			<</if>>
+			<br><br>
+		
+			<<if _basket[0] + _basket[1] gt 0>>
+				You pick up your basket. It seems like they left some food behind. After picking up their leftovers, you're
+				able to find 
+				<span class="green">
+					<<if _uniqueItems is 1>>
+						<<for _j = 0; _j < 2; _j++>>
+							<<if _basket[_j] gt 0>>
+								<<foodstuffReport _basketTypes[_j] _basket[_j] _basketTypes[_j]>>.
+							<</if>>
+						<</for>>
+					<<else>>
+						<<foodstuffReport "mushroom" _basket[0] "mushroom">>, and <<foodstuffReport "truffle" _basket[1] "truffle">>.
+					<</if>>
+				</span>
+			<</if>>
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up. Some <<farm_text_many pig>> approach you during this
+			time, giving you a lick or a nuzzle for the meal.
+			<<if $settings.bestialityEnabled or $farm_work.pig.monster>>
+				A few of them still look at you with lustful eyes, but the others form a ring of sorts that stops them from
+				approaching.
+			<</if>>
+			<br><br>
+
+			<span class="red">It seems like they think you've paid your due.</span><<gstress>><<stress 6>>
+			<br><br>
+
+			<<farm_gen pig>>
+
+			<<if $farm_work.pig.monster>>
+				"Thank meal," a <<farm_text pig>> says. "We go back now." You follow them.
+			<<else>>
+				Eventually, they get up and start trotting somewhere. You follow them.
+			<</if>>
+			<br><br>
+		<<elseif _pigsUnsatisfied is lte 2>>
+			<!-- Should only be possible if bestiality is disabled and the pigs aren't monsters.
+			Text for 1-2 unsatisfied pigs. -->
+			<<pass 4>>
+			Once your basket is empty, some <<farm_text_many pig>> lay on the earth, satisfied with their meal.
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up. A few <<farm_text_many pig>> approach you during this
+			time, giving you a lick or a nuzzle as thanks. However, some of the <<farm_text_many pig>> seem unsatisfied. They
+			push you around, checking if you have any more food hidden away.<<gtrauma>><<gstress>>
+			<!-- This amount includes the "It seems they think you've paid your due" stress, and adds +6 stress for every
+				unsatisfied pig. -->
+			<<trauma 6>>
+			<<if _pigsUnsatisfied is 1>><<stress 12>><<else>><<stress 18>><</if>>
+			<br><br>
+
+			Eventually, they get up and start trotting somewhere. You follow them.
+			<br><br>
+		<<else>>
+			<!-- Should only be possible if bestiality is disabled and the pigs aren't monsters.
+			Text for 3-4 unsatisfied pigs. -->
+			<<pass 2>>
+			Once your basket is empty, a few of the <<farm_text_many pig>> lay down. However, most of them are unsatisfied.
+			<br><br>
+
+			You don't know the way back, and you're worried about disturbing them, so you sit with your back against a tree. The
+			<<farm_text_many pig>> get back up. However, instead of dispersing, they turn to you. They want more food.
+			<br><br>
+
+			<!-- Pigs may tear off player's clothes looking for more food. However, they will not try to molest the player. -->
+			They knock you around, searching for anything you might have hidden away.
+			<<if _top or _bottom>>
+				They grasp and tear, and soon have your <span class="pink">clothes reduced to tatters.</span><<clothesruined>>
+				<<ggtrauma>><<ggstress>><<gpain>><<pain 6>>
+			<<else>>
+				You trip and stumble as you're shoved, scraping your skin against the nearby trees.
+				<<ggtrauma>><<ggstress>><<gpain>><<pain 12>>
+			<</if>>
+			<<trauma 12>>
+			<<if _pigsUnsatisfied is 3>><<stress 24>><<else>><<stress 30>><</if>>
+			<br><br>
+
+			Eventually, they tire of their search and trot away with a huff. You watch their outlines fade between the trees.
+			Hesitantly, you follow them.
+			<br><br>
+		<</if>>
+
+		<<link [[Next|Farm Woodland]]>><</link>>
+		<br>
+	<<else>>
+		<!-- Should only be possible if bestiality is enabled, or the pigs are monsters. -->
+		<<if _pigsUnsatisfied is 1>>
+			<<pass 6>>
+			After emptying your basket, most of the <<farm_text_many pig>> laze on the earth, satisfied with their meal.
+			<<ggrespect>><<farm_pigs 3>>
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up. Some <<farm_text_many pig>> approach you during this
+			time, giving you a lick or a nuzzle as thanks. However, a few of the <<farm_text_many pig>> seem unsatisfied. They
+			walk up to you in a small group, intent on something more. 
+			<br><br>
+
+			<<farm_gen pig>>
+
+			<<if $farm_work.pig.monster>>
+				"Not be rough," one of the <<farm_text_many pig>> says. "You give good food."
+			<<else>>
+				The others glance at them, then go back to lazing around.
+			<</if>>
+			<br><br>
+		<<elseif _pigsUnsatisfied is 2 or _pigsUnsatisfied is 3>>
+			<<pass 4>>
+			Once your basket is empty, some <<farm_text_many pig>> lay on the earth, satisfied with their meal.<<grespect>>
+			<<if _pigsUnsatisfied is 2>><<farm_pigs 2>><<else>><<farm_pigs 1>><</if>>
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up. A few <<farm_text_many pig>> approach you during this
+			time, giving you a lick or a nuzzle as thanks. However, some of the <<farm_text_many pig>> seem unsatisfied. They
+			circle around you, intent on something more. 
+			<br><br>
+
+			<<farm_gen pig>>
+
+			<<if $farm_work.pig.monster>>
+				"Not give enough," a <<farm_text pig>> says. "But okay. We less hungry."
+			<<else>>
+				The others glance at them, watching how you react.
+			<</if>>
+			<br><br>
+		<<else>>
+			<<pass 2>>
+			Once your basket is empty, a few of the <<farm_text_many pig>> lay down. However, most of them are unsatisfied.
+			<br><br>
+
+			You don't know the way back, and you're worried about disturbing them, so you sit with your back against a tree. The
+			<<farm_text_many pig>> get back up. However, instead of dispersing, they turn to you. They want something more. 
+			<br><br>
+
+			<<farm_gen pig>>
+
+			<<if $farm_work.pig.monster>>
+				"Give too little," a <<farm_text_many pig>> says. "Very little. Still hungry. You satisfy."
+			<<else>>
+				You can tell they're still hungry. They look at you with lust.
+			<</if>>
+			<br><br>
+		<</if>>
+
+		<!-- After feeding them, the player will have the option to have consensual or non-consensual sex with the pigs that
+			are unsatisfied. -->
+		<<if hasSexStat("deviancy", 5)>>
+			<<link [[Submit to them|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+				<<set $phase to {
+					basket: _basket,
+					rewardHelpful: false,
+					helpfulPigGender: "m",
+					currentConsensual: true,
+					pigsLeft: _pigsUnsatisfied,
+					demeanor: "submissive",
+					location: "woodland",
+					trueConsensual: false
+				}>>
+			<</link>><<deviant5>>
+			<br>
+		<</if>>
+
+		<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: false,
+				helpfulPigGender: "m",
+				currentConsensual: false,
+				pigsLeft: _pigsUnsatisfied,
+				demeanor: "defiant",
+				location: "woodland",
+				trueConsensual: false
+			}>>
+		<</link>>
+		<br>
+	<</if>>
+
+<<elseif _rewardType is "body">>
+	<!-- Player will satisfy a pig with their body (+1 Pig's Respect). If the player has good Science and Tending,
+		they will recognize and reward a pig that was particularly helpful (+1 Pig's Respect). -->
+	You look among the <<farm_text_many pig>> gathered before you, deciding which one you'll offer your body to.
+	<br><br>
+
+	<!-- Player should have a 50% of passing the Science check with a Science Grade of A. -->
+	<<set _rewardBodyChecks to [
+		{checkType: "science", checkMin: 600, checkMax: 800},
+		{checkType: "tending", checkMin: 600, checkMax: 800, includeBurden: false}
+	]>>
+	<<eventChecks _rewardBodyChecks>>
+	<!-- Going to hell for this lol -->
+	<<if _checkResults[0] is 2 and _checkResults[1] is 2>>
+		<!-- Extra point of Respect if the player passes both checks. Passing this also allows the player to automatically
+		refuse one of the pig's advances and (potentially) gain +1 Pig's Respect. -->
+		
+		<<farm_gen pig>>
+
+		<span class="teal">You recognize a <<farm_text pig>> who was particularly helpful.</span>
+		<br><br>
+		
+		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> reaches your
+		waist, you hold <<farm_him pig>> there with your legs.
+		<<if $farm_work.pig.monster>>"Reward?" <<farm_he pig>> asks.<<else>>It hesitates, unsure of your intentions.<</if>>
+		<<deviancy5>>
+
+		You address the rest of the <<farm_text_many pig>>.
+		<br><br>
+
+		<<if $speech_attitude is "meek">>
+			"H-hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> helped me a lot today,
+			<<else>>
+				"Missus <<farm_text pig>> helped me a lot today,
+			<</if>>
+			so I wanted to give <<farm_him pig>> a reward! Next time, if you help me even more, I-I could do it with you instead."
+			You release <<farm_him pig>>.
+		<<elseif $speech_attitude is "bratty">>
+			"Hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> here was very helpful today, so <<farm_he pig>> gets a big reward. Me! I saw you all
+				eyeing me in the forest, so if you want join in, you'd better ask mister <<farm_text pig>> here for tips."
+				You pull <<farm_him pig>> onto you.
+			<<else>>
+				"Missus <<farm_text pig>> here was very helpful today, so <<farm_he pig>> gets a big reward. Me! I saw you all
+				eyeing me in the forest, so if you want join in, you'd better ask missus <<farm_text pig>> here for tips."
+				You pull <<farm_him pig>> onto you.
+			<</if>>
+		<<else>>
+			"Hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> was very helpful today,
+			<<else>>
+				"Missus <<farm_text pig>> was very helpful today,
+			<</if>>
+			so <<farm_he pig>> gets to have some fun. If you want me too, then I'll need you on your best behavior."
+			You spread your legs.
+		<</if>>
+		<<farm_He pig>> mounts you.
+		<br><br>
+
+		<span class="green">The <<farm_text_many pig>> are impressed by your discernment.</span><<grespect>><<farm_pigs 1>>
+		<br><br>
+		
+		<<link [[Next|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: true,
+				helpfulPigGender: $farm_work.pig.gender,
+				currentConsensual: true,
+				pigsLeft: 4,
+				demeanor: "submissive",
+				location: "woodland",
+				trueConsensual: false
+			}>>
+		<</link>>
+		<br>
+	<<else>>
+		<span class="teal">You have a hard time telling them apart,</span> and end up selecting one who looks vaguely familiar.
+		<br><br>
+
+		<<farm_gen pig>>
+
+		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> crawls up to
+		your waist, you hold <<farm_him pig>> there with your legs.
+		<<if $farm_work.pig.monster>>"For me?" <<farm_he pig>> asks.<<else>>It presses against you, unsure of your intentions.<</if>>
+		<<deviancy5>>
+
+		You address the rest of the <<farm_text_many pig>>.
+		<br><br>
+
+		<<if $speech_attitude is "meek">>
+			"H-hey!" you say. "Thanks a lot for helping me today. I want to show you how much I appreciate it. Next time,
+			if you help me even more, I-I could do it with you instead." You release <<farm_him pig>> from your legs.
+		<<elseif $speech_attitude is "bratty">>
+			"Hey!" you say. "You all were pretty helpful today.
+			<<if $farm_work.pig.gender is "m">>
+				As thanks, I'm letting mister <<farm_text pig>> here show you my thank you gift. I saw you all eyeing me in the
+				forest, so if you want join in, you'd better start helping too!" You pull <<farm_him pig>> onto you.
+			<<else>>
+				As thanks, I'm letting missus <<farm_text pig>> here show you my thank you gift. I saw you all eyeing me in the
+				forest, so if you want join in, you'd better start helping too!" You pull <<farm_him pig>> onto you.
+			<</if>>
+		<<else>>
+			"Hey!" you say. "You all were fairly helpful today, and I know you all want a reward.
+			<<if $farm_work.pig.gender is "m">>
+				As thanks, mister <<farm_text pig>> and I will be putting on a show.
+			<<else>>
+				As thanks, missus <<farm_text pig>> and I will be putting on a show.
+			<</if>>
+			If you want me too, then I'll need you on your best behavior." You spread your legs.
+		<</if>>
+		<<farm_He pig>> mounts you.
+		<br><br>
+
+		The <<farm_text_many pig>> crowd around to watch you.
+		<br><br>
+		
+		<<if $farm.beasts.pigs gte 5>>
+			<<set _pigsLeft to 1>>
+		<<elseif $farm.beasts.pigs gte -5>>
+			<<set _pigsLeft to 2>>
+		<<else>>
+			<<set _pigsLeft to 3>>
+		<</if>>
+		<<link [[Next|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: false,
+				helpfulPigGender: $farm_work.pig.gender,
+				currentConsensual: true,
+				pigsLeft: _pigsLeft,
+				demeanor: "submissive",
+				location: "woodland",
+				trueConsensual: false
+			}>>
+		<</link>>
+	<</if>>
+<<else>>
+	<<if $speech_attitude is "meek">>
+		"But..." You look into your basket. "But these are mine."
+	<<elseif $speech_attitude is "bratty">>
+		"Hmpf. You want these?" You wave around your basket. "Find them yourself."
+	<<else>>
+		 "Sorry, but these are mine." You guard your basket.
+	<</if>>
+	<br><br>
+
+	<<if $farm_work.pig.monster>>
+		Another <<farm_text pig>> responds. "Stupid human. Not ask you, we take. You satisfy."
+	<<else>>
+		Your response only aggravates them. They advance on you, uncaring.
+	<</if>>
+	They block your escape. You're deep in the woodland. There's nowhere to run.
+	<br><br>
+
+	<!-- Good luck. -->
+	<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+		<<set $phase to {
+			basket: _basket,
+			rewardHelpful: false,
+			helpfulPigGender: "m",
+			currentConsensual: false,
+			pigsLeft: 5,
+			demeanor: "defiant",
+			location: "woodland",
+			trueConsensual: false
+		}>>
+	<</link>>
+	<br>
+<</if>>
+
+
+:: Farm Woodland Forage Reward
+<<set _rewardType to $phase.type>>
+<<set _rewardQuantity to $phase.quantity>>
 <<effects>>
 
-You take a basket into the woodland, and search the boughs and floor for ripe edibles.
-<br><br>
+<<farm_gen pig>>
 
-<<if $rng gte 76>>
-	<<wearProp "strawberry basket">>
-	<span class="green">You find some ripe <<foodstufficon "strawberry">> strawberries.</span>
-	<<if $farm.woodland gte 3>>
-		<<tending_pick strawberry 10 50>>
+<!-- rewardType can be "potato", "carrot", "apple", "body", or "nothing" -->
+<!-- Reward Tradeoffs:
+	Potato
+		Pros: Can be grown in bulk and gives bonus Respect (+3).
+		Cons: Requires a LOT of potatoes to satisfy the pigs.
+			Takes a long time (20 min).
+			Counts as a feeding action, and is disabled if the pigs are already fully fed.
+	Carrot
+		Pros: Can be grown in bulk.
+			Needs less food that potatoes.
+			Takes a short time (10 min).
+		Cons: Only gives a small amount (+1) of Respect.
+	Apple
+		Pros: Gives bonus Respect if the player has a good Housekeeping and Maths Skills (1-3 Respect in total).
+			Needs much less food than potatoes.
+		Cons: Must be manually gathered from the Forest.
+			The time taken varies based on the amount of Respect gained (10-20 minutes in total).
+	Body
+		Pros: No food loss.
+			A skill check can be passed to give +1 Respect.
+			The pigs give up to +3 Respect at low Respect.
+		Cons: The pigs only give +1 Respect at high Respect.
+			Refusing or fighting off a pig at any point will make the following encounters non-consensual.
+	Nothing
+		Pros: No food loss. Gives you -3 Pig's Respect.
+		Cons: Nothing. You should keep doing it :)
+	-->
+<!-- The in-game name of "carrot" is "wild_carrot".
+	Quantities for "body" and "nothing" will be 0. -->
+<<if _rewardType is "potato" or _rewardType is "carrot" or _rewardType is "apple">>
+	<<if _rewardType is "carrot">>
+		<<set _rewardIcon to "wild_carrot">>
 	<<else>>
-		<<tending_pick strawberry 5 25>>
+		<<set _rewardIcon to _rewardType>>
 	<</if>>
-<<elseif $rng gte 51>>
-	<<wearProp "peach basket">>
-	<span class="green">You find some ripe <<foodstufficon "peach">> peaches.</span>
-	<<if $farm.woodland gte 3>>
-		<<tending_pick peach 10 50>>
-	<<else>>
-		<<tending_pick peach 5 25>>
-	<</if>>
-<<elseif $rng gte 26>>
-	<<wearProp "plum basket">>
-	<span class="green">You find some ripe <<foodstufficon "plum">> plums.</span>
-	<<if $farm.woodland gte 3>>
-		<<tending_pick plum 10 50>>
-	<<else>>
-		<<tending_pick plum 5 25>>
-	<</if>>
-<<else>>
-	<<wearProp "mushroom basket">>
-	<span class="green">You find some <<foodstufficon "mushroom">> mushrooms.</span>
-	<<if $farm.woodland gte 3>>
-		<<tending_pick mushroom 10 50>>
-	<<else>>
-		<<tending_pick mushroom 5 25>>
-	<</if>>
-<</if>>
-<br><br>
 
-<<if random(1, 5) is 5>>
-	You smell a mesmerising sweetness. It leads you to a strange purple flower.
+	<<if $speech_attitude is "meek">>
+		"W-would you all want some <<pluralise 2 _rewardType>>?" you ask.
+	<<elseif $speech_attitude is "bratty">>
+		You think about what you have stocked. "Want some <<pluralise 2 _rewardType>>?"
+	<<else>>
+		 "How about some <<pluralise 2 _rewardType>>?" you say.
+	<</if>>
+
+	<<if $farm_work.pig.monster>>
+		"Food?" "Reward"? "_rewardType?" "Food?" "<<pShe>> give?" "Reward?"
+	<<else>>
+		They oink to each other.
+	<</if>>
+	<<switch _rewardType>>
+		<<case "potato">>
+			You think they recognized the word "potato." They start shuffling back to the farm.
+		<<case "carrot">>
+			You think they recognized the word "carrot." They start walking back to the farm.
+		<<case "apple">>
+			You think they recognized the word "apple." They start trotting back to the farm.
+	<</switch>>
 	<br><br>
-	<<if pcAreArmsBound("both")>>
-		<span class="red">Both of your arms are bound</span>, so you are unable to pick the flower.
+
+	After leaving the woodland, you head to the storehouse.
+
+	<<switch _rewardType>>
+		<<case "potato">>
+			You fill your basket with potatoes, then pour them into the pen. You have to make several trips, the
+			<<farm_text_many pig>> hungry from all of the exertion. By the end, they rest on their sides.
+			<<set $farm_work.pigs_fed += 1>><<physique 2>>
+			<br><br>
+
+			<span class="green">You think they found it filling.</span><<ggrespect>><<farm_pigs 3>>
+			<<pass 20>>
+		<<case "carrot">>
+			You fill your basket with carrots, then pour them into the pen. You make a few trips, the <<farm_text_many pig>>
+			crunching them for longer than you think is necessary. When they're done, they wander away from the fence.
+			<<physique 1>>
+			<br><br>
+			
+			<span class="green">You think they enjoyed the snack.</span><<grespect>><<farm_pigs 1>>
+			<<pass 10>>
+		<<case "apple">>
+			You fill your basket with apples and head back to the pen, a small crowd having formed by the fence.
+			You're worried they may injure themselves if you just pour them in, so you try to split them
+			evenly.
+			<br><br>
+
+			<!-- The Apple Strudel recipe requires the player to cut apples, and needs Housekeeping Level 2 (aka
+				Housekeeping C) to learn it.
+
+				Accurately cutting the apples so that each pig gets roughly the same amount will require a Maths Skill
+				of A, because the player will need to estimate the fraction of each apple to give to each pig. -->
+			<<if currentSkillValue("housekeeping") gte 400 and $mathstrait gte 3>>
+				You spend some time counting up the <<farm_text_many pig>> because they keep moving around.
+				You then cut the apples so that
+				<span class="teal">each <<farm_text_neutral pig>> gets roughly the same amount.</span>
+				<br><br>
+
+				<span class="green">The <<farm_text_many pig>> are very happy with your efforts.</span><<ggrespect>><<farm_pigs 3>>
+				<!-- Takes extra time to feed them properly. -->
+				<<pass 10>>
+			<<elseif currentSkillValue("housekeeping") gte 400>>
+				You try to count how many <<farm_text_many pig>> there are, <span class="teal">but the math makes you dizzy.</span>
+				You settle for an estimate instead. By the time you're nearly done, you realize your pieces were
+				a little <<if random(1, 2) is 1>> too small. <<else>> too large. <</if>>
+				<br><br>
+
+				<span class="green">The <<farm_text_many pig>> appreciate your efforts.</span><<grespect>><<farm_pigs 2>>
+				<!-- Takes a little extra time to cut the pieces. -->
+				<<pass 5>>
+			<<else>>
+				You're worried about <span class="teal">cutting yourself with a the kitchen knife,</span> so you hand
+				them out individually. Some <<farm_text_many pig>> inevitably get less than others.
+				<br><br>
+
+				<span class="green">The <<farm_text_many pig>> root around for leftovers.</span><<grespect>><<farm_pigs 1>>
+			<</if>>
+			<<pass 10>>
+	<</switch>>
+	<br><br>
+
+	By the end, you feed them a total of
+	<span class="green"><<foodstufficon _rewardIcon>> _rewardQuantity <<pluralise _rewardQuantity _rewardType>>.</span>
+	<br><br>
+
+<<elseif _rewardType is "body">>
+	<!-- Should not be possible to reach this branch without bestiality being enabled or the farm pigs being monsters. -->
+	<!-- Player will satisfy a pig with their body (+1 Pig's Respect). If the player has good Science and Tending,
+		they will recognize and reward a pig that was particularly helpful (+1 Pig's Respect). -->
+	You look among the <<farm_text_many pig>> gathered before you, deciding which one you'll reward.
+	<br><br>
+
+	<!-- Player should have a 50% of passing the Science check with a Science Grade of A. -->
+	<<set _rewardBodyChecks to [
+		{checkType: "science", checkMin: 600, checkMax: 800},
+		{checkType: "tending", checkMin: 600, checkMax: 800, includeBurden: false}
+	]>>
+	<<eventChecks _rewardBodyChecks>>
+	<!-- Going to hell for this lol -->
+	<<if _checkResults[0] is 2 and _checkResults[1] is 2>>
+		<!-- Extra point of Respect if the player passes both checks. Passing this also allows the player to refuse one
+			pig's advances without losing Pig's Respect. -->
+
+		<<farm_gen pig>>
+
+		<span class="teal">You recognize a <<farm_text pig>> who was particularly helpful.</span>
+		<br><br>
+		
+		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> reaches your
+		waist, you hold <<farm_him pig>> there with your legs.
+		<<if $farm_work.pig.monster>>"Reward?" <<farm_he pig>> asks.<<else>>It hesitates, unsure of your intentions.<</if>>
+		<<deviancy5>>
+
+		You address the rest of the <<farm_text_many pig>>.
+		<br><br>
+
+		<<if $speech_attitude is "meek">>
+			"H-hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> helped me a lot today,
+			<<else>>
+				"Missus <<farm_text pig>> helped me a lot today,
+			<</if>>
+			so I wanted to give <<farm_him pig>> a reward! Next time, if you help me even more, I-I could do it with you instead."
+			You release <<farm_him pig>>.
+		<<elseif $speech_attitude is "bratty">>
+			"Hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> here was very helpful today, so <<farm_he pig>> gets a big reward. Me! I saw you all
+				eyeing me in the forest, so if you want join in, you'd better ask mister <<farm_text pig>> here for tips."
+				You pull <<farm_him pig>> onto you.
+			<<else>>
+				"Missus <<farm_text pig>> here was very helpful today, so <<farm_he pig>> gets a big reward. Me! I saw you all
+				eyeing me in the forest, so if you want join in, you'd better ask missus <<farm_text pig>> here for tips."
+				You pull <<farm_him pig>> onto you.
+			<</if>>
+		<<else>>
+			"Hey!" you say.
+			<<if $farm_work.pig.gender is "m">>
+				"Mister <<farm_text pig>> was very helpful today,
+			<<else>>
+				"Missus <<farm_text pig>> was very helpful today,
+			<</if>>
+			so <<farm_he pig>> gets to have some fun. If you want me too, then I'll need you on your best behavior."
+			You spread your legs.
+		<</if>>
+		<<farm_He pig>> mounts you.
+		<br><br>
+
+		<span class="green">The <<farm_text_many pig>> are impressed by your discernment.</span><<grespect>><<farm_pigs 1>>
+		<br><br>
+		
+		<<if $farm.beasts.pigs gte 5>>
+			<<set _pigsLeft to 1>>
+		<<elseif $farm.beasts.pigs gte -5>>
+			<<set _pigsLeft to 2>>
+		<<else>>
+			<<set _pigsLeft to 3>>
+		<</if>>
+
+		<!-- This is the only instance of non-forced consensual sex betwen the player and a pig, where the player
+			actually has the option to ask them to stop. -->
+		<<link [[Next|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: true,
+				helpfulPigGender: $farm_work.pig.gender,
+				currentConsensual: true,
+				pigsLeft: _pigsLeft,
+				demeanor: "submissive",
+				location: "treeline",
+				trueConsensual: true
+			}>>
+		<</link>>
+		<br>
 	<<else>>
-		<<foodstufficon "strange_flower">> <<link [[Pick|Farm Woodland Harvest]]>><<drugs 60>><</link>><<garousal>>
+		<span class="teal">You have a hard time telling them apart,</span> and end up selecting one who looks vaguely familiar.
+		<br><br>
+
+		<<farm_gen pig>>
+
+		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> crawls up to
+		your waist, you hold <<farm_him pig>> there with your legs.
+		<<if $farm_work.pig.monster>>"For me?" <<farm_he pig>> asks.<<else>>It presses against you, unsure of your intentions.<</if>>
+		<<deviancy5>>
+
+		You address the rest of the <<farm_text_many pig>>.
+		<br><br>
+
+		<<if $speech_attitude is "meek">>
+			"H-hey!" you say. "Thanks a lot for helping me today. I want to show you how much I appreciate it. Next time,
+			if you help me even more, I-I could do it with you instead." You release <<farm_him pig>> from your legs.
+		<<elseif $speech_attitude is "bratty">>
+			"Hey!" you say. "You all were pretty helpful today.
+			<<if $farm_work.pig.gender is "m">>
+				As thanks, I'm letting mister <<farm_text pig>> here show you my thank you gift. I saw you all eyeing me in the
+				forest, so if you want join in, you'd better start helping too!" You pull <<farm_him pig>> onto you.
+			<<else>>
+				As thanks, I'm letting missus <<farm_text pig>> here show you my thank you gift. I saw you all eyeing me in the
+				forest, so if you want join in, you'd better start helping too!" You pull <<farm_him pig>> onto you.
+			<</if>>
+		<<else>>
+			"Hey!" you say. "You all were fairly helpful today, and I know you all want a reward.
+			<<if $farm_work.pig.gender is "m">>
+				As thanks, mister <<farm_text pig>> and I will be putting on a show.
+			<<else>>
+				As thanks, missus <<farm_text pig>> and I will be putting on a show.
+			<</if>>
+			If you want me too, then I'll need you on your best behavior." You spread your legs.
+		<</if>>
+		<<farm_He pig>> mounts you.
+		<br><br>
+
+		The <<farm_text_many pig>> crowd around to watch you.
+		<br><br>
+		
+		<<if $farm.beasts.pigs gte 5>>
+			<<set _pigsLeft to 1>>
+		<<elseif $farm.beasts.pigs gte -5>>
+			<<set _pigsLeft to 2>>
+		<<else>>
+			<<set _pigsLeft to 3>>
+		<</if>>
+		<<link [[Next|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: false,
+				helpfulPigGender: $farm_work.pig.gender,
+				currentConsensual: true,
+				pigsLeft: _pigsLeft,
+				demeanor: "submissive",
+				location: "treeline",
+				trueConsensual: false
+			}>>
+		<</link>>
 	<</if>>
-	<br>
-	<<getouticon>><<link [[Ignore|Farm Woodland]]>><</link>>
 <<else>>
-	<<link [[Next|Farm Woodland]]>><</link>>
+	<<if $farm.beasts.pigs gte -5 or not ($settings.bestialityEnabled or $farm_work.pig.monster)>>
+		<<farm_pigs -3>>
+		They consider you, then snort and trot away.
+		<br><br>
+
+		<<link [[Next|Farm Woodland]]>><</link>>
+		<br>
+	<<else>>
+		They consider you, then snort and trot away.
+		<br><br>
+
+		<<farm_gen pig>>
+
+		As they do, a <<farm_text pig>> stays behind.
+		
+		<<if $farm_work.pig.monster>>
+			<<if random(1, 3) is 1>>
+				"Not enough. Not satisfy." <<farm_He pig>> says. "Stupid human need breed."
+			<<elseif random(1, 2) is 1>>
+				"More breed," <<farm_he pig>> says. "Stupid human reward."
+			<<else>>
+				"No reward. Lie," <<farm_he pig>> says. "Stupid human can satisfy."
+			<</if>>
+		<<else>>
+			<<farm_He pig>> growls at you, blocking your path.
+		<</if>>
+
+		The <<farm_text_many pig>> turn around at the sound of <<farm_his pig>> voice. You try to move around <<farm_him pig>>,
+		but <<farm_he pig>> moves between you and the farm. You look around. The other <<farm_text_many pig>> don't try to
+		stop you, but they also don't try to stop the <<farm_text pig>>.
+		<br><br>
+
+		<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: false,
+				helpfulPigGender: "m",
+				currentConsensual: false,
+				pigsLeft: 3,
+				demeanor: "defiant",
+				location: "treeline",
+				trueConsensual: false
+			}>>
+		<</link>>
+		<br>
+	<</if>>
 <</if>>
 
 
-:: Farm Woodland Harvest
+:: Farm Woodland Pigs Reward
+<<set _basket to $phase.basket>>
+<<set _rewardHelpful to $phase.rewardHelpful>>
+<<set _helpfulPigGender to $phase.helpfulPigGender>>
+<<set _currentConsensual to $phase.currentConsensual>>
+<<set _pigsLeft to $phase.pigsLeft>>
+<<set _demeanor to $phase.demeanor>>
+<<set _location to $phase.location>>
+<<set _trueConsensual to $phase.trueConsensual>>
+
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<if _location is "treeline">>
+		<span class="green">You are at the edge of the woodland. Alex might be able to hear you.</span>
+		<br><br>
+	<<elseif _location is "woodland">>
+		<span class="red">You are deep in the woodland. Alex will not be able to hear your cries.</span>
+		<br><br>
+	<<else>>
+		ERROR (Farm Woodland Pigs Reward): Invalid location "_location". Please report.
+	<</if>>
+
+	<<if _currentConsensual>>
+		<<deviancy5>>
+	<</if>>
+
+	<<if _currentConsensual>>
+		<<consensual>>
+		<<set $consensual to 1>>
+		<<neutral 1>>
+		<<set $position to "missionary">>
+	<<else>>
+		<<set $consensual to 0>>
+		<<controlloss>>
+		<<violence 1>>
+		<<neutral 1>>
+		<<molested>>
+	<</if>>
+
+	<<if $farm_work.pig.monster>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals monster>>
+	<<else>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals beast>>
+	<</if>>
+	<<beastCombatInit>>
+	
+	<<if _location is "treeline" and Time.betweenHours(5, 20)>>
+		<<enable_rescue>>
+	<<else>>
+		<<set $rescue to 0>>
+	<</if>>
+
+	<<farm_trust pig>>
+
+	<!-- Submissive start has no change.
+		Defiant starts with increased Anger and decreased Trust.-->
+	<<if _demeanor is "defiant">>
+		<<set $enemyanger += 40>>
+		<<set $enemytrust -= 40>>
+	<</if>>
+
+	<<if _trueConsensual>>
+		<<set $noFinish to 0>>
+	<<else>>
+		<<set $noFinish to 1>>
+	<</if>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<beast $enemyno>>
+<br>
+
+<<if _currentConsensual>>The other <<farm_text_many pig>> crowd around you, eager to see you moan.
+<<else>>The other <<farm_text_many pig>> crowd around you, eager to see you squeal.
+<</if>>
+
+<!-- Fungi stealing checks for if the player non-consensually "rewards" the pigs deep in the woodland. -->
+<<if _location is "woodland" and _currentConsensual is false>>
+<!-- Player effectively loses 0.6 fungi per turn. -->
+	<<for _i = 0; _i < 3; _i++>>
+		<<if (_basket[0] + _basket[1] gt 0) and random(1, 5) is 1>>
+			<<if (_basket[1] is 0) or (_basket[0] gt 0 and _basket[1] gt 0 and random(1, 2) is 1)>>
+				<<set _foodTarget to "mushroom">>
+				<<set _basket[0] -= 1>>
+				<<set $foodstuff["mushroom"].amount -= 1>>
+			<<else>>
+				<<set _foodTarget to "truffle">>
+				<<set _basket[1] -= 1>>
+				<<set $foodstuff["truffle"].amount -= 1>>
+			<</if>>
+
+			<<if $farm_work["pig"].monster>>
+				A <<if random(1, 2) is 1>> pigboy <<else>> piggirl <</if>> munches on a _foodTarget from your basket.
+			<<else>>
+				A pig munches on a _foodTarget from your basket.
+			<</if>>
+			<br><br>
+		<</if>>
+	<</for>>
+<</if>>
+
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Reward Finish]]>>
+		<<set $phase to {
+			basket: _basket,
+			rewardHelpful: _rewardHelpful,
+			helpfulPigGender: _helpfulPigGender,
+			currentConsensual: _currentConsensual,
+			pigsLeft: _pigsLeft - 1,
+			location: _location,
+			trueConsensual: _trueConsensual
+		}>>
+	<</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Reward]]>>
+		<<set $phase to {
+			basket: _basket,
+			rewardHelpful: _rewardHelpful,
+			helpfulPigGender: _helpfulPigGender,
+			currentConsensual: _currentConsensual,
+			pigsLeft: _pigsLeft,
+			demeanor: _demeanor,
+			location: _location,
+			trueConsensual: _trueConsensual
+		}>>
+	<</link>></span><<nexttext>>
+<</if>>
+
+:: Farm Woodland Pigs Reward Finish
+<<set _basket to $phase.basket>>
+<<set _rewardHelpful to $phase.rewardHelpful>>
+<<set _helpfulPigGender to $phase.helpfulPigGender>>
+<<set _currentConsensual to $phase.currentConsensual>>
+<<set _pigsLeft to $phase.pigsLeft>>
+<<set _location to $phase.location>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	The <<farm_text pig>> climbs off you, satisfied.
+
+	<<if $farm_work.pig.monster>>
+		The others cheer.
+		<br>
+		
+		<<if _currentConsensual>>
+			<<if random(1, 2) is 2>>
+				"<<pShe>> so breedable."
+			<<else>>
+				"You see <<phim>> face?"
+			<</if>>
+			<br>
+
+			<<if random(1, 2) is 2>>
+				"You should been rougher."
+			<<else>>
+				"Can be rougher next time."
+			<</if>>
+			<br>
+
+			<<if random(1, 2) is 2>>
+				"Can we keep <<phim>>?"
+			<<else>>
+				"We can breed more if want stay."
+			<</if>>
+		<<else>>
+			<<if random(1, 2) is 2>>
+				"Not so great now."
+			<<else>>
+				"I hope <<pshe>> know place."
+			<</if>>
+			<br>
+
+			<<if random(1, 2) is 2>>
+				"You should been rougher."
+			<<else>>
+				"Can be rougher next time."
+			<</if>>
+			<br>
+
+			<<if random(1, 2) is 2>>
+				"We keep <<phim>> here?"
+			<<else>>
+				"I bet <<pshe>> like that."
+			<</if>>
+		<</if>>
+	<<else>>
+		The others crowd around it. They sniff and lick it, then turn back to you.
+	<</if>>
+	<!-- +Respect if done consensually. -Respect if nonconsensual. -->
+	<<if _currentConsensual>>
+		<<grespect>><<farm_pigs 1>>
+	<<else>>
+		<<lrespect>><<farm_pigs -1>>
+	<</if>>
+	<br><br>
+
+	<<tearful>> you try to push yourself back up.
+
+	<<farm_gen pig>>
+
+	<<if _pigsLeft gte 1>>
+		As you do, another <<farm_text pig>> approaches you.
+
+		<<if $farm_work.pig.monster>>
+			<<if random(1, 3) is 1>>
+				"Not enough. Not satisfy." <<farm_He pig>> says. "Need breed more."
+			<<elseif random(1, 2) is 1>>
+				"More breed," <<farm_he pig>> says. "Reward too little."
+			<<else>>
+				"Reward too few," <<farm_he pig>> says. "We not satisfied."
+			<</if>>
+		<<else>>
+			<<farm_He pig>> paws at the ground. You can tell <<farm_he pig>> also wants to mate.
+		<</if>>
+		<br><br>
+
+		<<if _rewardHelpful>>
+			<<set _rewardHelpful to false>>
+
+			<<if $farm_work.pig.monster and _helpfulPigGender is "m">>
+				The pigboy you had sex with moves to block <<farm_him pig>>. "No. You not helpful. No reward."
+			<<elseif $farm_work.pig.monster and _helpfulPigGender is "f">>
+				The piggirl you had sex with moves to block <<farm_him pig>>. "No. You not helpful. No reward."
+			<<else>>
+				The pig you had sex with moves to block it. Your pig growls.
+			<</if>>
+
+			The <<farm_text_many pig>> stare at each other. They lunge at each other and start wrestling on the
+			ground. The other <<farm_text_many pig>> watch in silence.
+			<br><br>
+
+			<<link [[Next|Farm Woodland Pigs Reward Fight]]>>
+				<<set $phase to {
+					basket: _basket,
+					rewardHelpful: _rewardHelpful,
+					helpfulPigGender: _helpfulPigGender,
+					currentConsensual: _currentConsensual,
+					pigsLeft: _pigsLeft,
+					location: _location,
+					trueConsensual: false
+				}>>
+			<</link>>
+		<<else>>
+			You look around. The other <<farm_text_many pig>> seem just as lustful. How many more will you need to satisfy?
+			<br><br>
+
+			<<if _currentConsensual and hasSexStat("deviancy", 5)>>
+				<<link [[Submit to them|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+					<<set $phase to {
+						basket: _basket,
+						rewardHelpful: _rewardHelpful,
+						helpfulPigGender: _helpfulPigGender,
+						currentConsensual: true,
+						pigsLeft: _pigsLeft,
+						demeanor: "submissive",
+						location: _location,
+						trueConsensual: false
+					}>>
+				<</link>><<deviant5>>
+			<br>
+			<</if>>
+
+			<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+				<<set $phase to {
+					basket: _basket,
+					rewardHelpful: _rewardHelpful,
+					helpfulPigGender: _helpfulPigGender,
+					currentConsensual: false,
+					pigsLeft: _pigsLeft,
+					demeanor: "defiant",
+					location: _location,
+					trueConsensual: false
+				}>>
+			<</link>>
+			<br>
+		<</if>>
+	<<else>>
+		They don't stop you.
+		<<if _location is "treeline" and _currentConsensual>>
+			You grab your basket and start walking back towards the farm.
+		<<elseif _location is "woodland" and _currentConsensual>>
+			<<set _passTime to random(30, 40)>>
+			<<pass _passTime>>
+			<!-- Pigs only rest for 5 minutes if satisfied sexually. -->
+			<<pass 5>>
+			<!-- Grand Pig Conspiracy when? -->
+			Done with fucking you, the <<farm_text_many pig>> laze about on the earth. Looking around, it's clear you only
+			had sex with a small number of those who had gathered here.
+			<br><br>
+
+			<span class="red">You wonder why they seem so organized.</span><<gstress>><<stress 6>>
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up.
+			<<if _basket[0] + _basket[1] is 0>>
+				Some <<farm_text_many pig>> approach you during this time, giving you a lick or a nuzzle for the meal.
+			<</if>>
+			A few of them still look at you with lustful eyes, but the others form a ring of sorts that stops them from
+			approaching.
+			<br><br>
+
+			<span class="red">It seems like they think you've paid your due.</span><<gstress>><<stress 6>>
+			<br><br>
+
+			<<if $farm_work.pig.monster>>			
+				<<if _basket[0] + _basket[1] is 0>>
+					"Body good, thank for meal," a <<farm_text pig>> says. "We go back now." You follow them.
+				<<else>>
+					"Body good," a <<farm_text pig>> says. "We go back now." You follow them.
+				<</if>>
+			<<else>>
+				Eventually, they get up and start trotting somewhere. You follow them.
+			<</if>>
+		<<elseif _location is "treeline">>
+			You grab your basket and stagger back towards the farm.
+		<<else>>
+			<<set _passTime to random(30, 40)>>
+			<<pass _passTime>>
+			<!-- Pigs only rest for 5 minutes if satisfied sexually. -->
+			<<pass 5>>
+			<span class="red">You ache all over.</span><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<br><br>
+			
+			Done with fucking you, the <<farm_text_many pig>> laze about on the earth. Looking around, it's clear you only
+			had sex with a small number of those who had gathered here.
+			<br><br>
+
+			<span class="red">You wonder why they seem so organized.</span><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<br><br>
+
+			You don't know the way back, so you wait for them to get up. A few of them still look at you with lustful eyes,
+			but the others form a ring of sorts that stops them from approaching.
+			<br><br>
+
+			<span class="red">It seems like they think you've paid your due.</span><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<br><br>
+
+			<<if $farm_work.pig.monster>>			
+				<<if _basket[0] + _basket[1] is 0>>
+					"Thank for meal, fucktoy," a <<farm_text pig>> says. "We leave." You follow them.
+				<<else>>
+					"Fucktoy learn good lesson," a <<farm_text pig>> says. "We leave." You follow them.
+				<</if>>
+			<<else>>
+				Eventually, they get up and start trotting somewhere. They leer at you as they go. You follow them.
+			<</if>>
+		<</if>>
+		<br><br>
+
+		<<link [[Next|Farm Woodland]]>><</link>>
+		<br>
+	<</if>>
+
+<!-- Fighting off the pig will remove the option for consensual sex. -->
+<<elseif $enemyhealth lte 0>>
+	The <<farm_text pig>> backs away from you, cowed. The others make room after seeing how you fought.<<grespect>><<farm_pigs 1>>
+	<br><br>
+
+	<<tearful>> you try to push yourself back up.
+
+	<<farm_gen pig>>
+
+	<<if _pigsLeft gte 1>>
+		As you do, another <<farm_text pig>> approaches you.
+
+		<<if $farm_work.pig.monster>>
+			<<if random(1, 3) is 1>>
+				"Not enough. Not satisfy." <<farm_He pig>> says. "Need breed more."
+			<<elseif random(1, 2) is 1>>
+				"More breed," <<farm_he pig>> says. "Too pretty."
+			<<else>>
+				"Too pretty," <<farm_he pig>> says. "We not satisfied."
+			<</if>>
+		<<else>>
+			<<farm_He pig>> paws at the ground. 
+		<</if>>
+		Despite your display, you can tell <<farm_he pig>> thinks you're worth the risk.
+		<br><br>
+
+		You look around. The other <<farm_text_many pig>> seem just as lustful. How many more will you need to fight off?
+		<br><br>
+
+		<<link [[Next|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: _rewardHelpful,
+				helpfulPigGender: _helpfulPigGender,
+				currentConsensual: false,
+				pigsLeft: _pigsLeft,
+				demeanor: "defiant",
+				location: _location,
+				trueConsensual: false
+			}>>
+		<</link>>
+		<br>
+	<<else>>
+		<<if _location is "treeline">>
+			They don't stop you. You grab your basket and start walking back towards the farm.
+			<br><br>
+		<<else>>
+			<<set _passTime to random(30, 40)>>
+			<<pass _passTime>>
+			<!-- Pigs immediately flee to the farm if they are fought off, but since they don't directly guide the
+				player back, the player needs to spend some extra time orienting themselves. -->
+			The <<farm_text_many pig>> have had enough of your violence. One runs away. You clench your fist. Another flees.
+			And then another. Soon, only stragglers remain. Most of the <<farm_text_many pig>> flee in the same direction.
+			You suspect they're running back to the farm. You follow them.
+			<br><br>
+
+			<!-- Tending skill of B. -->
+			You come across many different animal tracks on your way back.
+			<<if $sciencetrait gte 3>>
+				<span class="green">You remember your lessons from science class.</span>
+				You follow the pig prints back to the farm.					
+			<<else>>
+				<<pass 20>>
+				The indents all look the same. You spend some time going in circles, until at last, you see familiar
+				buildings through the treeline.
+			<</if>>
+			<br><br>
+
+			Throughout it all, you find yourself wondering what exactly just happened.
+			<br><br>
+
+			Where did they take you?<<gstress>><<stress 6>>
+			<br><br>
+			<br><br>
+			
+			Why were they so organized?<<gstress>><<stress 6>>
+			<br><br>
+			<br><br>
+			<br><br>
+
+			Does anyone know?<<gstress>><<stress 6>>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+
+			Would anyone believe you?<<gstress>><<stress 6>>
+			<br><br>
+		<</if>>
+
+		<<link [[Next|Farm Woodland]]>><</link>>
+		<br>
+	<</if>>
+<<elseif $alarm is 1 and $rescue gte 1>><<set $rescued += 1>>
+	"I'm coming!" It's Alex. The <<farm_text_many pig>> back away from you at the sound. They start fleeing into the
+	undergrowth.<<llrespect>><<farm_pigs -3>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<npc Alex>><<person1>>
+	Alex arrives at the edge of the woodland, and laughs. <<He>> pushes through the foliage, and helps you to your feet.
+	"Pigs can be like that," <<he>> says. "If all else fails, don't be afraid to lay down the law."
+
+	<<if $exposed gte 1>>
+		<<glust>><<npcincr Alex lust 1>>
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Farm Woodland]]>><</link>>
+	<br>
+<<else>>
+	<!-- Consensual "Ask to stop" edge case. Honestly such an edge case that you could make an argument that there
+		should be a Feat awarded for achieving it. Would be relatively easy to achieve though. Just obscure. -->
+	The <<farm_text pig>> slowly climbs off of you.
+	<<if $farm_work.pig.monster>>
+		<<farm_He pig>> whines. "Why no mate? I good. We good. Help you."
+	<<else>>
+		It whines. It paws at your leg, pleading with its eyes.
+	<</if>>
+	<br><br>
+
+	<<tearful>> you push yourself off the ground.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+	
+	<<if $farm_work.pig.monster>>
+		As you walk away, the other pigpeople jeer at you.
+	<<else>>
+		As you walk away, you hear squeals and oinks behind you.
+	<</if>>
+	It's clear you've agitated them.<<llrespect>><<farm_pigs -3>>
+	<br><br>
+
+	<<link [[Next|Farm Woodland]]>><</link>>
+	<br>
+<</if>>
+
+
+<!-- There is a potential bug where the player rewards the helpful pig in the Woodland, while there is only
+	1 pig left to satisfy. This would cause the helpful pig to save the player, and the text would say the
+	player is able to walk out of the Woodland on their own. This situation is currently impossible because
+	the "Farm Woodland Forage Reward Extreme" event starts at 4 unsatisfied pigs, and the "helpfulPig" event
+	can only triggers one time after the first pig is satisfied. However, if the Woodland events get changed
+	in the future, this edge case may need need to be handled. -->
+:: Farm Woodland Pigs Reward Fight
+<<set _basket to $phase.basket>>
+<<set _rewardHelpful to $phase.rewardHelpful>>
+<<set _helpfulPigGender to $phase.helpfulPigGender>>
+<<set _currentConsensual to $phase.currentConsensual>>
+<<set _pigsLeft to $phase.pigsLeft>>
+<<set _location to $phase.location>>
+
+<!-- Your pig has a 40% chance of winning you the +Respect. Your power of horni fills it with determination! Unfortunately
+	it just had sex with you, and you milked it RATHER good. -->
+<<if random(1, 5) lte 3>>
+	At last, the other <<farm_text pig>> presses your <<farm_text pig _helpfulPigGender>> into the dirt.
+	<<if $farm_work.pig.monster>>
+		Panting, <<farm_he pig _helpfulPigGender>> looks up at the other <<farm_text pig>> and squeezes out four words.
+		"No... helpful. No... reward."
+	<<else>>
+		It looks tired, struggling underneath the other pig, but still find the breath to muster out a whine.
+	<</if>>
+	<br><br>
+	
+	The other <<farm_text_many pig>> look between you and your <<farm_text pig _helpfulPigGender>>.
+	<<farm_His pig _helpfulPigGender>> loss fills you with a dread for what's come.<<gstress>><<stress 6>>
+
+	<!-- While your horni savior may have lost, their valiant struggle gives them a 50% chance of convincing the other pigs
+		to be nicer to you! If you lose the coinflip, #SkillIssue. -->
+	<<if random(1, 2) is 1>>
+		<<set _pigsLeft -= 1>>
+	<</if>>
+<<else>>
+	<<set _pigsLeft -= 1>>
+	At last, your <<farm_text pig _helpfulPigGender>> presses the other <<farm_text pig>> into the dirt.
+	<<if $farm_work.pig.monster>>
+		Panting, <<farm_he pig _helpfulPigGender>> looks at the other <<farm_text_many pig>> and repeats himself.
+		"No helpful. No reward."
+	<<else>>
+		It looks tired, but still manages a growl towards the other pigs.
+	<</if>>
+	<<grespect>><<farm_pigs 1>>
+	<br><br>
+
+	The other <<farm_text_many pig>> look between you and your <<farm_text pig _helpfulPigGender>>.
+	You can tell your <<farm_text pig _helpfulPigGender>> is too tired to fight another <<farm_text_neutral pig>>,
+	if they insist.
+<</if>>
+<br><br>
+
+<<if _pigsLeft is 0>>
+	<<if $farm_work.pig.monster>>
+		They respect <<farm_his pig _helpfulPigGender>> statement.
+	<<else>>
+		They lose interest.
+	<</if>>
+
+	The other <<farm_text_many pig>> start trickling back into the woodland, looking for other things to interest
+	them. Picking up your basket, you find your <<farm_text pig _helpfulPigGender>> standing in front of you.
+
+	<<if $farm_work.pig.monster>>
+		"Good sex," <<farm_he pig _helpfulPigGender>> says. "Wanted to thank."
+	<<else>>
+		It nuzzles and licks your legs.
+	<</if>>
+	<<lstress>><<stress -6>>
+	<br><br>
+
+	You give your <<farm_text pig _helpfulPigGender>> a pat on the head, then start heading back towards the farm.
+	<br><br>
+
+	<<link [[Next|Farm Woodland]]>><</link>>
+	<br>
+<<else>>
+	<!-- BROTHER. MAY I HAVE SOME OATS?!?!?! -->
+	
+	<<farm_gen pig>>
+
+	Another <<farm_text pig>> steps forward.
+	<<if $farm_work.pig.monster>>
+		<<if random(1, 3) is 1>>
+			"Still not enough. Still not satisfy." <<farm_He pig>> says. "Need breed more."
+		<<elseif random(1, 2) is 1>>
+			"Still more breed," <<farm_he pig>> says. "Reward too little."
+		<<else>>
+			"Still reward too few," <<farm_he pig>> says. "We not satisfy."
+		<</if>>
+		The other pigpeople murmur in agreement. Your <<farm_text pig _helpfulPigGender>> looks at you, then moves to
+		the side. "Sorry. Tried. Can't protect," <<farm_he pig _helpfulPigGender>> says. <<farm_He pig _helpfulPigGender>>
+		watches, remorseful, as the <<farm_text pig>> approaches you.
+	<<else>>
+		It oinks at your pig, then growls at you. The other pigs growl as well. Your pig looks at you, whining. The other
+		pigs begin to growl at it. When the other pig steps towards it, it moves to the side. It looks on, remorseful,
+		as the other pig approaches you.
+	<</if>>
+	<br><br>
+
+	<<if _currentConsensual and hasSexStat("deviancy", 5)>>
+		<<link [[Submit to them|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				rewardHelpful: _rewardHelpful,
+				helpfulPigGender: _helpfulPigGender,
+				currentConsensual: true,
+				pigsLeft: _pigsLeft,
+				demeanor: "submissive",
+				location: _location,
+				trueConsensual: false
+			}>>
+		<</link>><<deviant5>>
+		<br>
+	<</if>>
+
+	<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>><<set $sexstart to 1>>
+		<<set $phase to {
+			basket: _basket,
+			rewardHelpful: _rewardHelpful,
+			helpfulPigGender: _helpfulPigGender,
+			currentConsensual: false,
+			pigsLeft: _pigsLeft,
+			demeanor: "defiant",
+			location: _location,
+			trueConsensual: false
+		}>>
+	<</link>>
+	<br>
+<</if>>
+
+:: Farm Woodland Pigs Scold
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<set _startPosition to $phase.startPosition>>
+<<effects>>
+
+<<if $tendingSuccess>>
+	<<if _startPosition is "standing">>
+		<<if $farm_work.pig.monster>>
+			"Away!" you say, <span class="green">your voice firm and sure.</span>
+			The <<farm_text pig>> releases you, and goes back to foraging among the trees.<<grespect>><<farm_pigs 1>>
+		<<else>>
+			"Down!" you say, <span class="green">your voice firm and sure.</span>
+			The pig drops to the ground, and goes back to rooting among the trees.<<grespect>><<farm_pigs 1>>
+		<</if>>
+	<<elseif _startPosition is "prone">>
+		<<if $farm_work.pig.monster>>
+			"Away!" you say, <span class="green">your voice firm and sure.</span>
+			The <<farm_text pig>> backs away from you, and goes back to foraging among the trees.<<grespect>><<farm_pigs 1>>
+		<<else>>
+			"Back!" you say, <span class="green">your voice firm and sure.</span>
+			The pig backs away from you, and goes back to rooting among the trees.<<grespect>><<farm_pigs 1>>
+		<</if>>
+	<<else>>
+		ERROR (Farm Woodland Pigs Scold): Invalid startPosition "_startPosition".
+	<</if>>
+	<br><br>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+<<else>>
+	<<if (_startPosition is "prone") or ($farm.beasts.pigs lt -5 and $rng gte 51)>>
+		<<if _startPosition is "standing">>
+			<<if $farm_work.pig.monster>>
+				"A-away!" you say, but <span class="red">your voice shakes,</span> and the <<farm_text pig>> pays you no heed.
+				<<farm_He pig>> pulls you to the ground.<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<<else>>
+				"D-down!" you say, but <span class="red">your voice shakes,</span> and the pig pays you no heed.
+				It forces you to the ground.<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<</if>>
+			<br><br>
+
+			<<link [[Next|Farm Woodland Pigs Rape]]>><<set $molestationstart to 1>>
+				<<set $phase to {
+					basket: _basket,
+					remainingAttempts: _remainingAttempts,
+					forageType: _forageType,
+					startPosition: _startPosition,
+					pigTracker: []
+				}>>
+			<</link>>
+			<br>
+		<<else>>
+			<<if $farm_work.pig.monster>>
+				"A-away!" you say, but <span class="red">your voice shakes,</span> and the <<farm_text pig>> pays you no heed.
+				<<farm_He pig>> climbs on top of you.
+				<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<<else>>
+				"D-down!" you say, but <span class="red">your voice shakes,</span> and the pig pays you no heed.
+				It climbs on top of you.<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			<</if>>
+			<br><br>
+
+			<<link [[Next|Farm Woodland Pigs Rape]]>><<set $molestationstart to 1>>
+				<<set $phase to {
+					basket: _basket,
+					remainingAttempts: _remainingAttempts,
+					forageType: _forageType,
+					startPosition: _startPosition,
+					pigTracker: []
+				}>>
+			<</link>>
+			<br>
+		<</if>>
+	<<else>>
+		<<if $farm_work.pig.monster>>
+			"A-away!" you say, but <span class="red">your voice shakes,</span> and the <<farm_text pig>> pays you no heed.
+			<<farm_He pig>> humps you for a few moments, before tiring and stepping away. It goes back to foraging among the trees.
+			<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+		<<else>>
+			"D-down!" you say, but <span class="red">your voice shakes,</span> and the pig pays you no heed.
+			It humps you for a few moments, before tiring and dropping to the ground. It goes back to rooting among the trees.
+			<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+		<</if>>
+		<br><br>
+
+		<<link [[Continue|Farm Woodland Forage]]>>
+			<<set $phase to {
+				basket: _basket,
+				remainingAttempts: _remainingAttempts,
+				forageType: _forageType
+			}>>
+		<</link>>
+		<br>
+	<</if>>
+<</if>>
+
+
+:: Farm Woodland Pigs Shove
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<set _startPosition to $phase.startPosition>>
+<<effects>>
+
+<<if $physiqueSuccess>>
+	<<if _startPosition is "standing">>
+		<<if $farm_work.pig.monster>>
+			<span class="green">You shove the <<farm_text pig>> away from you.</span>
+			<<farm_He pig>> steps away and and goes back to foraging among the trees.<<grespect>><<farm_pigs 1>>
+		<<else>>
+			<span class="green">You shove the pig away from you.</span>
+			It drops to the ground and and goes back to rooting among the trees.<<grespect>><<farm_pigs 1>>
+		<</if>>
+		<br><br>
+		<<link [[Continue|Farm Woodland Forage]]>>
+			<<set $phase to {
+				basket: _basket,
+				remainingAttempts: _remainingAttempts,
+				forageType: _forageType
+			}>>
+		<</link>>
+		<br>
+	<<elseif _startPosition is "prone">>
+		<<if $farm_work.pig.monster>>
+			<span class="green">You shove the <<farm_text pig>> off of you.</span>
+			Surprised by your strength, <<farm_he pig>> goes back to foraging among the trees.<<grespect>><<farm_pigs 1>>
+		<<else>>
+			<span class="green">You shove the pig off of you.</span>
+			Surprised by your strength, it goes back to rooting among the trees.<<grespect>><<farm_pigs 1>>
+		<</if>>
+		<br><br>
+
+		<<link [[Continue|Farm Woodland Forage]]>>
+			<<set $phase to {
+				basket: _basket,
+				remainingAttempts: _remainingAttempts,
+				forageType: _forageType
+			}>>
+		<</link>>
+		<br>
+	<<else>>
+		ERROR (Farm Woodland Pigs Shove): Invalid startPosition "_startPosition".
+	<</if>>
+
+<<else>>
+	<<if (_startPosition is "prone") or ($farm.beasts.pigs lt -5 and $rng gte 51)>>
+		<<if $farm_work.pig.monster>>
+			You try to shove the <<farm_text pig>> off of you, <span class="red">but <<farm_he pig>> wrestles back
+			and forces you back to the ground.</span>
+			<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<gpain>><<trauma 6>><<stress 6>><<violence 1>>
+		<<else>>
+			You try to shove the pig off of you, <span class="red">but it's too heavy. It forces you back to the ground.</span>
+			<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+		<</if>>
+		<br><br>
+
+		<<link [[Next|Farm Woodland Pigs Rape]]>><<set $molestationstart to 1>>
+			<<set $phase to {
+				basket: _basket,
+				remainingAttempts: _remainingAttempts,
+				forageType: _forageType,
+				startPosition: _startPosition,
+				pigTracker: []
+			}>>
+		<</link>>
+		<br>
+
+	<<else>>
+		<<if $farm_work.pig.monster>>
+			You try to shove the <<farm_text pig>> away from you, <span class="red">but <<farm_he pig>> wrestles back
+			and holds your arms behind you.</span> <<farm_he pig>> humps you for a few moments, before tiring and stepping away.
+			It goes back to foraging among the trees.<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+		<<else>>
+			You try to shove the pig away from you, <span class="red">but it's too heavy.</span> It humps you for a few moments,
+			before tiring and dropping to the ground. It goes back to rooting among the trees.
+			<<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+		<</if>>
+		<br><br>
+
+		<<link [[Continue|Farm Woodland Forage]]>>
+			<<set $phase to {
+				basket: _basket,
+				remainingAttempts: _remainingAttempts,
+				forageType: _forageType
+			}>>
+		<</link>>
+		<br>
+	<</if>>
+<</if>>
+
+
+<!-- Should not be possible while player is "prone". -->
+:: Farm Woodland Pigs Endure
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<effects>>
+
+<<if $farm.beasts.pigs lt -5 and $rng gte 51>>
+
+	<<if $farm_work.pig.monster>>
+		You endure as the <<farm_text pig>> humps you. Unsatisfied, <<farm_he pig>> wrestles you to the ground.
+	<<else>>
+		You endure as the pig humps you. Its weight forces you to the ground.
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Farm Woodland Pigs Rape]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType,
+			startPosition: "standing",
+			pigTracker: []
+		}>>
+	<<set $molestationstart to 1>><</link>>
+	<br>
+
+<<else>>
+	<<if $farm_work.pig.monster>>
+		You endure as the <<farm_text pig>> humps you. <<farm_He pig>> soon tires, and steps away.
+		<<farm_He pig>> goes back to foraging among the trees.
+	<<else>>
+		You endure as the pig humps you. It soon tires, or is otherwise satisfied, and drops to the ground.
+		It goes back to rooting among the trees.
+	<</if>>
+	<br><br>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+
+<</if>>
+
+:: Farm Woodland Pigs Hand
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<set _startPosition to $phase.startPosition>>
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<span class="red">You are deep in the woodland. Alex will not be able to hear your cries.</span>
+	<br><br>
+
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+
+	<<if $farm_work.pig.monster>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals monster>>
+	<<else>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals beast>>
+	<</if>>
+	<<beastCombatInit>>
+	<<set $rescue to 0>>
+	<<farm_trust pig>>
+
+	<<if _startPosition is "standing">>
+		You reach back and feel beneath the <<farm_text pig>>.
+		<<npchand>><<deviancy3>>
+	<<elseif _startPosition is "prone">>
+		You reach up and feel beneath the <<farm_text pig>>.
+		<<set $position to "missionary">>
+		<<npchand>><<deviancy4>>
+	<<else>>
+		ERROR (Farm Woodland Pigs Hand): Invalid startPosition: "_startPosition"
+	<</if>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<beast $enemyno>>
+<br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Hand Finish]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Hand]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>></span><<nexttext>>
+<</if>>
+
+
+:: Farm Woodland Pigs Hand Finish
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	Satisfied, the <<farm_text pig>> trots away.
+	<br><br>
+
+	<<tearful>> you push yourself off the ground.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+
+<<elseif $enemyhealth lte 0>>
+	Sufficiently cowed, the <<farm_text pig>> drops to the ground and scurries away.<<grespect>><<farm_pigs 1>>
+	<br><br>
+
+	<<tearful>> you push yourself off the ground.
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+<<else>>
+	The <<farm_text pig>> trots away with a huff.<<lrespect>><<farm_pigs -1>>
+	<br><br>
+
+	<<tearful>> you push yourself off the ground.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+
+<</if>>
+
+
+<!-- If the player is getting raped and the encounter is nonconsensual, pigs will have a chance of being attracted
+	to the noise. Each turn, each pig will have a chance of stealing a Mushroom or Truffle from the player's basket.
+	
+	Player gains an average of 10 mushrooms or truffles every 20 minutes, and at the end, may potentially be raped.
+	Math should work out so that the player loses around 1/5 of their basket if they take longer than 10 turns.
+	However, the increasing number of pigs should cause them to lose everything by turn 20.
+
+	Napkin Math:
+		A pig has a 20% chance of appearing each turn.
+		Each pig has a 20% chance of stealing a mushroom each turn.
+	
+	Turn 0: 0 pigs, 0 mushrooms lost
+	Turn 5: 1 pig, 0 mushrooms lost
+	Turn 10: 2 pigs, 1 mushrooms lost
+	Turn 15: 3 pigs, 3 mushrooms lost
+	Turn 20: 4 pigs, 6 mushrooms lost
+	Turn 25: 5 pigs, 10 mushrooms lost
+	etc. -->
+:: Farm Woodland Pigs Rape
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<set _startPosition to $phase.startPosition>>
+<<set _pigTracker to $phase.pigTracker>>
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<span class="red">You are deep in the woodland. Alex will not be able to hear your cries.</span>
+	<br><br>
+
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+
+	<<if $farm_work.pig.monster>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals monster>>
+	<<else>>
+		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals beast>>
+	<</if>>
+	<<beastCombatInit>>
+	<<set $rescue to 0>>
+	<<if _startPosition is "prone">>
+		<<set $position to "missionary">>
+	<</if>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<beast $enemyno>>
+<br>
+<!-- Truffle eaters go here. -->
+<<if _pigTracker.length is 0>>
+	Your basket lays at your side. No other <<farm_text_many pig>> are nearby.
+<<elseif _pigTracker.length is 1>>
+	<<if _basket[0] + _basket[1] gt 0>>
+		A <<farm_text pig>> glances between you and your basket.
+	<<else>>
+		A <<farm_text pig>> watches you, sad that your basket is empty.
+	<</if>>
+<<elseif _pigTracker.length is 2>>
+	<<if _basket[0] + _basket[1] gt 0>>
+		A pair of <<farm_text_many pig>> look between you and your basket.
+	<<else>>
+		A pair of <<farm_text_many pig>> watch you, sad that your basket is empty.
+	<</if>>
+<<else>>
+	<<if _basket[0] + _basket[1] gt 0>>
+		A small group of <<farm_text_many pig>> snack from your basket while they watch.
+	<<else>>
+		A small group of <<farm_text_many pig>> watch you, sad that your basket is empty.
+	<</if>>
+<</if>>
+<br><br>
+
+<!-- Pig stealing checks -->
+<<for _i = 0; _i < _pigTracker.length; _i++>>
+	<!-- Manually coded genders for the pigpeople because I'm not sure if there's a macro to do this automatically.  -->
+	<<if (_basket[0] + _basket[1] gt 0) and random(1, 5) is 1>>
+		<<if (_basket[1] is 0) or (_basket[0] gt 0 and _basket[1] gt 0 and random(1, 2) is 1)>>
+			<<set _foodTarget to "mushroom">>
+			<<set _basket[0] -= 1>>
+			<<set $foodstuff["mushroom"].amount -= 1>>
+		<<else>>
+			<<set _foodTarget to "truffle">>
+			<<set _basket[1] -= 1>>
+			<<set $foodstuff["truffle"].amount -= 1>>
+		<</if>>
+
+		<<if $farm_work["pig"].monster>>
+			A <<if _pigTracker[_i] is "m">> pigboy <<else>> piggirl <</if>> munches on a _foodTarget from your basket.
+		<<else>>
+			A pig munches on a _foodTarget from your basket.
+		<</if>>
+		<br><br>
+	<</if>>
+<</for>>
+
+<!-- Pig generation checks -->
+<<if random(1, 5) is 1>>
+	<<if $farm_work["pig"].monster>>
+		<<if random(1, 2) is 1>>
+			A pigboy pokes his head out of the treeline. He glances between you and your basket.
+			<<set _pigTracker.push("m")>>
+		<<else>>
+			A piggirl pokes her head out of the treeline. She glances between you and your basket.
+			<<set _pigTracker.push("f")>>
+		<</if>>
+	<<else>>
+		A pig pokes its head out of the treeline. It glances between you and your basket.
+		<<if random(1, 2) is 1>>
+			<<set _pigTracker.push("m")>>
+		<<else>>
+			<<set _pigTracker.push("f")>>
+		<</if>>
+	<</if>>
+	<br><br>
+<</if>>
+<br><br><br>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Rape Finish]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType,
+			pigTracker: _pigTracker
+		}>>
+	<</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Rape]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType,
+			pigTracker: _pigTracker
+		}>>
+	<</link>></span><<nexttext>>
+<</if>>
+
+
+:: Farm Woodland Pigs Rape Finish
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
+<<set _pigTracker to $phase.pigTracker>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+
+	The <<farm_text pig>> climbs off you, satisfied.
+
+	<<if _pigTracker.length gt 0 and $farm_work.pig.monster>>
+		<<if _pigTracker.length is 1>>
+			<<if _pigTracker[0] is "m">>
+				The other pigboy cheers.
+			<<else>>
+				The other piggirl cheers.
+			<</if>>
+		<<else>>
+			The others cheer.
+		<</if>>
+		<br>
+
+		<<if random(1, 2) is 2>>
+			"Not so great now."
+		<<elseif _pigTracker.length gt 1>>
+			"I hope <<pshe>> know place."
+		<</if>>
+		<br>
+
+		<<if random(1, 2) is 2>>
+			"You should been rougher."
+		<<elseif _pigTracker.length gt 2>>
+			"Can be rougher next time."
+		<</if>>
+		<br>
+
+		<<if random(1, 2) is 2>>
+			"We keep <<phim>> here?"
+		<<elseif _pigTracker.length gt 3>>
+			"I bet <<pshe>> like that."
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<tearful>> you pick up your basket and stagger away from them.<<lrespect>><<farm_pigs -1>>
+	<br><br>
+
+	You check your basket.
+	<<if _basket[0] + _basket[1] gt 0>>
+		You have
+		<span class="orange">
+			<<foodstuffReport "mushroom" _basket[0] "mushroom">>, and <<foodstuffReport "truffle" _basket[1] "truffle">>.
+		</span>
+	<<else>>
+		<span class="red">Your basket is empty.</span>
+	<</if>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+
+<<elseif $enemyhealth lte 0>>
+	The <<farm_text pig>> backs away from you, cowed.	
+	<<if _pigTracker.length is 1>>
+		<<if _pigTracker[0] is "m">>
+			The other pigboy follows suit.
+		<<else>>
+			The other piggirl follows suit.
+		<</if>>
+	<<else>>
+		The others follow suit.
+	<</if>>
+	<<grespect>><<farm_pigs 1>>
+	<br><br>
+
+	<<tearful>> you pick up your basket and walk away.
+	<br><br>
+
+	You check your basket.
+	<<if _basket[0] + _basket[1] gt 0>>
+		You have
+		<span class="green">
+			<<foodstuffReport "mushroom" _basket[0] "mushroom">>, and <<foodstuffReport "truffle" _basket[1] "truffle">>.
+		</span>
+	<<else>>
+		<span class="red">Your basket is empty.</span>
+	<</if>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Continue|Farm Woodland Forage]]>>
+		<<set $phase to {
+			basket: _basket,
+			remainingAttempts: _remainingAttempts,
+			forageType: _forageType
+		}>>
+	<</link>>
+	<br>
+
+<</if>>
+
+
+:: Farm Woodland Strange Harvest
+<<set _basket to $phase.basket>>
+<<set _remainingAttempts to $phase.remainingAttempts>>
+<<set _forageType to $phase.forageType>>
 <<effects>><<wearProp "strange flower basket">>
 
-<<tending_pick strange_flower 1 1>>
+<!-- This event has a 1/5 chance of occurring and the flowers sell for £10.00 on the market. The player will gain an average
+	of 2.5 flowers per harvest, or 5 with a Tending Skill S. This way, the player gains around £10.00 of Strange Flowers for
+	every 20 minutes they spend in the woodland with a Tending Skill S.-->
+<<tending_pick strange_flower 1 4>>
 
 The warmth spreads from your fingertips. You resist the urge to bury your nose in its silken petals.
 <br><br>
 
-<<link [[Next|Farm Woodland]]>><</link>>
+<<link [[Continue|Farm Woodland Forage]]>>
+	<<set $phase to {
+		basket: _basket,
+		remainingAttempts: _remainingAttempts,
+		forageType: _forageType
+		}>>
+<</link>>
 <br>
 
 

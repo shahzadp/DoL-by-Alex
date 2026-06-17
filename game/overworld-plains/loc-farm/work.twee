@@ -756,9 +756,9 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 				<<bathroomicon "shower">><<link [[Shower shed (0:01)|Farm Shed]]>><<pass 1>><</link>>
 				<br>
 			<</if>>
-			/* Go to farm barn passage if outside of farming hours, go to cattle milking passage otherwise. */
+			<!-- Go to farm barn passage if outside of farming hours, go to cattle milking passage otherwise. -->
 			<<if Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)>>
-				/* Determine whether you can access the barn normally with Alex's consent. */
+				<!-- Determine whether you can access the barn normally with Alex's consent. -->
 				<<if $farm.milking isnot undefined and $farm.milking.dayMilking>>
 					<<farmicon "barn">><<link [[Barn (0:02)|Farm Barn]]>><<pass 2>><</link>>
 				<<else>>
@@ -1021,7 +1021,6 @@ A bundle falls down the stairwell.
 <</if>>
 <br><br>
 
-
 You get dressed in the kitchen. You hear Alex come down the stairs. <<He>> asks if you're decent before entering the kitchen.
 
 <<if C.npc.Alex.dom gte $npcdomhigh and C.npc.Alex.lust gte 10>>
@@ -1069,7 +1068,6 @@ A great hedge shields most of the fields from the forest beyond, though some are
 <br>
 
 
-
 :: Farm Yard
 <<effects>>
 
@@ -1081,7 +1079,6 @@ A great hedge shields most of the fields from the forest beyond, though some are
 	You grab a broom and begin sweeping the yard of fallen leaves. It's hard work, but you manage to gather them into a neat pile before shovelling them into the compost.
 <</if>>
 <br><br>
-
 
 <<if dangerEvent()>>
 	<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
@@ -1112,8 +1109,6 @@ A great hedge shields most of the fields from the forest beyond, though some are
 	<<link [[Next|Farm Work]]>><</link>>
 	<br>
 <</if>>
-
-
 
 
 :: Farm Chickens Out
@@ -1250,13 +1245,20 @@ You herd the chickens into their coop, then perform a head count to make sure yo
 :: Farm Pigs Out
 <<effects>>
 
+<!-- Adding a small blurb based on the player's Allure to emphasize needing to dress provocatively for more chances
+	to raise the Pig's Respect. -->
+<<pigsOpinion>>
+
 You enter the sty, and release the <<farm_text_many pig>>. They walk down the aisle without prompting.
 You open the gate at the far end, letting them into a small pen outside.
 <br><br>
 
-<<if dangerEvent()>>
+
+<!-- The dangerEvent checks for pigs have been modified to have a 100% chance of triggering if the player's top and
+	bottom are naked, or if the player's Allure is at 8,000. -->
+<<if (_checkResults[0] is 2 and _checkResults[1] is 2) or dangerEvent(1.25)>>
 <!-- Modified for monster people -->
-	<<if $settings.bestialityEnabled or $farm_work.pig.monster is true>>
+	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true)>>
 		<<if $farm_work.pig.monster is true>>
 			The last one grasps your <<hairDetails>>, and tries to force you to the ground.
 		<<else>>
@@ -1275,7 +1277,7 @@ You open the gate at the far end, letting them into a small pen outside.
 			<br>
 		<</if>>
 	<<else>>
-		The <<farm_text_many pig>> seem agitated. It's a little scary.<<stress 6>><<gstress>>
+		The <<farm_text_many pig>> seem agitated. It's a little scary.<<gstress>><<stress 6>>
 		<br><br>
 
 		<<link [[Next|Farm Work]]>><</link>>
@@ -1294,6 +1296,8 @@ You open the gate at the far end, letting them into a small pen outside.
 <<alexRemyTattoosCheck "chores">>
 <<wearProp "bucket">>
 
+<<pigsOpinion>>
+
 You find Alex crossing the yard, a heavy bucket in each hand.
 
 <<if $speech_attitude is "meek">>
@@ -1310,7 +1314,6 @@ Alex smiles as you take the bucket. "Thanks. Will be faster with both of us."
 
 You help Alex carry feed across the yard, spilling it over the fence and into the troughs.
 
-
 <<if $farm_work.pigs_fed gte 6>>
 	The <<farm_text_many pig>> eat the feed with gusto, but by the end<span class="green"> lie on their sides, content.</span>
 <<else>>
@@ -1318,10 +1321,11 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 <</if>>
 <br><br>
 
-
-<<if dangerEvent()>>
+<<if (_checkResults[0] is 2 and _checkResults[1] is 2) or dangerEvent(1.25)>>
 	<<if !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(getPregnancyObject().timer, 24, 86)>>
-		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns, and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps, trying to will your stomach to settle.
+		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns,
+		and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps,
+		trying to will your stomach to settle.
 		<br><br>
 
 		<<link [[Next|Farm Pigs Feed Nausea]]>><</link>>
@@ -1336,17 +1340,17 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 		and makes the Tending checks slightly easier. -->>
 	<<elseif random(0, 1) is 0>>
 		<!-- First tending check is for normal Respect. Second tending check is for very low Respect. -->
-		<<set _eventCheckList to [
+		<<set _feedPigsAlexChecks to [
 			{checkType: "hairlength", checkMin: 300, checkMax: 500},
 			{checkType: "uppernaked", checkFail: true},
 			{checkType: "lowernaked", checkFail: true},
-			{checkType: "tending", checkMin: 0, checkMax: 500, includeBurden: true},
-			{checkType: "tending", checkMin: 0, checkMax: 1000, includeBurden: true},
-			{checkType: "skulduggery", checkMin: 100, checkMax: 300}
+			{checkType: "tending", checkMin: 0, checkMax: 500},
+			{checkType: "tending", checkMin: 0, checkMax: 1000},
+			{checkType: "skulduggery", checkMin: 100, checkMax: 300, includeBurden: false}
 		]>>
-		<<eventChecks _eventCheckList>>
+		<<eventChecks _feedPigsAlexChecks>>
 		<<set _attemptOne to random(0, 2)>>
-		<<if _checkResults[_attemptOne] is 2>>
+		<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and _checkResults[_attemptOne] is 2>>
 			Something catches your <<if _attemptOne is 0>> <<hairDetails>> <<elseif _attemptOne is 1>> _top.name <<else>> _bottom.name <</if>> as you turn away from the trough.
 			<<if $farm.beasts.pigs lte -20 and $rng gte 51>>
 				One of the <<farm_text_many pig>> has reached over the fence.
@@ -1356,7 +1360,8 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 				<<if _checkResults[4] is -2>>
 					"Down!" you say. You tug against <<farm_his pig>> <<= $farm_work.pig.monster is true ? "arm," : "snout,">> but <<templeLossLower>>
 					You find yourself frozen as <<farm_he pig>> pulls you over the fence.
-					<<if _attemptOne is 0>> <<gpain>><<violence 1>> <</if>> /* Bonus pain if the player was grabbed by their hair */
+					<!-- Bonus pain if the player was grabbed by their hair. -->
+					<<if _attemptOne is 0>> <<gpain>><<violence 1>> <</if>>
 					<br><br>
 
 					"Down!" You hear a shout, and Alex bonks the <<farm_text pig>> on <<farm_his pig>> head with a rake.
@@ -1364,17 +1369,13 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 					<<glove>><<gdom>><<npcincr Alex love 1>><<npcincr Alex dom 1>>
 					<br><br>
 				<<elseif _checkResults[4] is -1 or _checkResults[4] is 1>>
-					<!-- Personally think the PC should suffer an additional negative penalty whenever they fail a Skill Check and the Temple's Burden
-						activates. If they pass the Skill Check, however, there won't be an extra penalty. -->>
+					<!-- Personally think the PC should suffer an additional negative penalty whenever they fail a Skill Check and
+						the Temple's Burden activates. If they pass the Skill Check, however, there won't be an extra penalty. -->
 					"D-Down!" you say. You tug against <<farm_his pig>> <<= $farm_work.pig.monster is true ? "arm," : "snout,">> but
-					<<if _checkResults[4] is -1>>
-						<<templeLossLower>> You find yourself frozen as <<farm_he pig>> pulls you over the fence.<<gstress>><<stress 6>>
-					<<else>>
-						your voice trembles and the <<farm_text pig>> ignores you. <<farm_He pig>> yanks you over the fence.
-					<</if>>
-					<<if _attemptOne is 0>> /* Bonus pain if the player was grabbed by their hair */
-						<<gpain>><<violence 1>>
-					<</if>>
+					<<if _checkResults[4] is -1>> <<templeLossLower>> You find yourself frozen as <<farm_he pig>> pulls you over the fence.<<gstress>><<stress 6>>
+						<<else>> your voice trembles and the <<farm_text pig>> ignores you. <<farm_He pig>> yanks you over the fence.<</if>>
+					<!-- Bonus pain if the player was grabbed by their hair. -->
+					<<if _attemptOne is 0>> <<gpain>><<violence 1>> <</if>>
 					<br><br>
 
 					"Down!" You hear a shout, and Alex bonks the <<farm_text pig>> on <<farm_his pig>> head with a rake.
@@ -1399,7 +1400,7 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 				<br><br>
 
 				<<if _checkResults[3] is -2>>
-					"Down!" you say, but as you pull against <<farm_him pig>>, <<templeLossLower>> The pig hesitates, emboldened by your weakness.
+					"Down!" you say, but as you pull against <<farm_him pig>>, <<templeLossLower>> The pig pulls harder, emboldened by your weakness.
 					<br><br>
 
 					<<if _attemptOne is 0>>
@@ -1434,7 +1435,7 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 					<br>
 				<<elseif _checkResults[3] is -1 or _checkResults[3] is 1>>
 					"D-down!" you say, <span class="red">but your voice shakes.</span>
-					<<if _checkResults[3] is -1>><<templeLossUpper>> The pig hesitates, emboldened by your weakness.<<gstress>><<stress 6>><</if>>
+					<<if _checkResults[3] is -1>><<templeLossUpper>> The pig pulls harder, emboldened by your weakness.<<gstress>><<stress 6>><</if>>
 					<br><br>
 					<<if _attemptOne is 0>>
 						The <<farm_text pig>> sees Alex approaching you, and tugs on your hair one last time.<<gpain>><<violence 1>>
@@ -1480,8 +1481,14 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 				<</if>>
 			<</if>>
 		<<elseif _checkResults[5] is 2>>
-			As you turn away from the trough, you feel something brush against your <<if _attemptOne is 0>> <<hairDetails>> <<elseif _attemptOne is 1>> chest.<<else>> waist.<</if>>
-			<span class="teal">One of the <<farm_text_many pig>> just tried to grab you.</span> "No! Bad pig!" you say.
+			As you turn away from the trough, you feel something brush against your
+			<<if _attemptOne is 0>> <<hairDetails>>.
+			<<elseif _attemptOne is 1 and _checkResults[1] is 2>> _top.name.
+			<<elseif _attemptOne is 1>> chest.
+			<<elseif _attemptOne is 2 and _checkResults[2] is 2>> _bottom.name.
+			<<else>> waist.
+			<</if>>
+			<span class="teal">One of the <<farm_text_many pig>> just tried to grab you.</span> "No! Bad <<farm_text pig>>!" you say.
 			The <<farm_text pig>> eyes you. Seeing Alex approaching you, <<farm_he pig>> backs away.<<farm_pigs 1>><<grespect>>
 			<br><br>
 
@@ -1491,7 +1498,13 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 			<<link [[Next|Farm Work]]>><<endevent>><</link>>
 			<br>
 		<<else>>
-			As you turn away from the trough, you feel something brush against your <<if _attemptOne is 0>> <<hairDetails>> <<elseif _attemptOne is 1>> chest.<<else>> waist.<</if>>
+			As you turn away from the trough, you feel something brush against your
+			<<if _attemptOne is 0>> <<hairDetails>>.
+			<<elseif _attemptOne is 1 and _checkResults[1] is 2>> _top.name.
+			<<elseif _attemptOne is 1>> chest.
+			<<elseif _attemptOne is 2 and _checkResults[2] is 2>> _bottom.name.
+			<<else>> waist.
+			<</if>>
 			<span class="red">You don't know what it was.</span><<gstress>><<stress 6>>
 			<br><br>
 
@@ -1513,15 +1526,25 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 
 	<<link [[Next|Farm Work]]>><<endevent>><</link>>
 	<br>
-
 <</if>>
 
 
 :: Farm Pigs Feed
 <<effects>><<wearProp "bucket">>
+<<outfitChecks>>
 
-<<if currentSkillValue('physique') gte 15000>>
-	You pour feed into a couple of buckets and traipse across the field. The buckets are heavy, <span class="green">but no trouble for someone of your strength.</span><<set $farm_work.pigs_fed += 1>><<physique 2>>
+<<pigsOpinion>>
+
+<!-- Just realized this code causes players with a Large Body and high Physique to feed the pigs twice as fast. This
+	has the downside of halving the number of interactions that that player can have with them (3 for Large + high
+	Physique, 6 for bodies smaller than Large), making it much harder to raise their Respect.
+	
+	Adding an automatic +Respect for players who pass this check, to compensate for the lost interactions. All body
+	sizes can now theoretically gain +6 Respect each day from feeding the Pigs solo, compared to the the limit of
+	+3 Respect when feeding them with Alex. -->
+<<if currentSkillValue('physique') gte 14000>>
+	You pour feed into a couple of buckets and traipse across the field. The buckets are heavy, <span class="green">but no trouble for someone of your strength.</span>
+	<<set $farm_work.pigs_fed += 1>><<physique 2>><<grespect>><<farm_pigs 1>>
 	<br><br>
 <<else>>
 	You pour feed into a couple of buckets and traipse across the field. Your arms ache by the time you arrive at the sty.<<physique 2>>
@@ -1532,14 +1555,13 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 You empty the buckets in the troughs.
 
 <<if $farm_work.pigs_fed gte 6>>
-	The <<farm_text_many pig>> eat the feed with gusto, but by the end <span class="green">lie on their sides, content.</span>
+	The <<farm_text_many pig>> eat the feed with gusto, but by the end they <span class="green">lie on their sides, content.</span>
 <<else>>
 	<span class="blue">The <<farm_text_many pig>> devour the feed. Seems they're still hungry.</span>
 <</if>>
 <br><br>
-<<outfitChecks>>
 
-<<if dangerEvent() and ($settings.bestialityEnabled or $farm_work.pig.monster is true)>>
+<<if (_checkResults[0] is 2 and _checkResults[1] is 2) or dangerEvent(1.25)>>
 <!-- Modified for Monster People -->
 	<!-- The original code only triggered these events if the player is wearing lower clothing (_bottom).
 	This means a player could feed the pigs while completely naked and never be harassed. Also,	since the
@@ -1550,20 +1572,22 @@ You empty the buckets in the troughs.
 	decent Skulduggery (300), your character will also notice the the pig's first attempt, causing the pig's
 	second attempt to automatically fail and giving you +Pig Respect. There are just way too few ways to
 	consistently raise it later on.	-->
-	<<set _eventCheckList to [
+	<<set _feedPigsSoloChecks to [
 		{checkType: "hairlength", checkMin: 300, checkMax: 500},
 		{checkType: "uppernaked", checkFail: true},
 		{checkType: "lowernaked", checkFail: true},
-		{checkType: "skulduggery", checkMin: 100, checkMax: 300}
+		{checkType: "skulduggery", checkMin: 100, checkMax: 300,  includeBurden: false}
 	]>>
-	<<eventChecks _eventCheckList false>>
+	<<eventChecks _feedPigsSoloChecks false>>
 	<!-- The Skulduggery check does not include the Temple's Burden because it is a passive check on how aware
 	the player's character is of their own surroundings, and no focus is required. -->
 	<<set _attemptOne to random(0, 2)>>
 	<<set _attemptTwo to random(0, 2)>>
+	<!-- A failed first attempt will only be mentioned if the player passed the Skulduggery check. Otherwise, they will
+		fail to notice it and the pig will have a second chance to grab them -->
 	<<set _grabbed to ((_checkResults[_attemptOne] is 2) or (_checkResults[3] is 1 and _checkResults[_attemptTwo] is 2))>>
 
-	<<if !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(getPregnancyObject().timer, 24, 86)>>
+	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(getPregnancyObject().timer, 24, 86)>>
 		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns, and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps, trying to will your stomach to settle.
 		<br><br>
 
@@ -1574,7 +1598,7 @@ You empty the buckets in the troughs.
 
 			<<link [[Next|Farm Dogs Rape]]>><<set $molestationstart to 1>><</link>>
 		<<else>>
-			/* Losing the pregnancy RNG will cause you to automatically fail the pig's Skulduggery check. */
+			<!-- Losing the pregnancy RNG will cause you to automatically fail the pig's Skulduggry check. -->
 			You lean on the fence for support. Closing your eyes to fight down the waves of nausea, you fail to notice the <<farm_text pig>> approaching you. As you open your eyes, it's too late.
 
 			<<if _grabbed>>
@@ -1600,9 +1624,7 @@ You empty the buckets in the troughs.
 				<<stress 6>><<gstress>>
 			<</if>>
 		<</if>>
-	/* A failed first attempt will only be mentioned if the player passed the Skulduggery check, otherwise, they will
-	fail to notice it and the pig will have a second chance to grab them */
-	<<elseif _grabbed>>
+	<<elseif ($settings.bestialityEnabled or $farm_work.pig.monster is true) and _grabbed>>
 		<<if _checkResults[_attemptOne] is 2>>
 			<<set _firstSuccess to _attemptOne>>
 		<<else>>
@@ -1629,21 +1651,39 @@ You empty the buckets in the troughs.
 			<br>
 		<</if>>
 	<<elseif _checkResults[3] is 2>>
-		As you turn away from the trough, you feel something brush against your <<if _attemptOne is 0>> <<hairDetails>>. <<elseif _attemptOne is 1>> chest.<<else>> waist.<</if>>
+		As you turn away from the trough, you feel something brush against your
+		<<if _attemptTwo is 0>> <<hairDetails>>.
+		<<elseif _attemptTwo is 1 and _checkResults[1] is 2>> _top.name.
+		<<elseif _attemptTwo is 1>> chest.
+		<<elseif _attemptTwo is 2 and _checkResults[2] is 2>> _bottom.name.
+		<<else>> waist.
+		<</if>>
 		<span class="teal">One of the <<farm_text_many pig>> just tried to grab you.</span>
 		<<if _attemptOne is _attemptTwo>>
 			Frustrated, <<farm_he pig>> reaches out again,
-		<<elseif _checkResults[_attemptTwo] is 1>>
-			Frustrated, <<farm_he pig>> reaches out towards your <<if _attemptTwo is 0>> <<hairDetails>>, <<elseif _attemptTwo is 1>> chest, <<else>> waist, <</if>>
 		<<else>>
-			Frustrated, <<farm_he pig>> reaches out towards your <<if _attemptTwo is 0>> <<hairDetails>>, <<elseif _attemptTwo is 1>> _top.name, <<else>> _bottom.name, <</if>>
+			Frustrated, <<farm_he pig>> reaches out towards your
+			<<if _attemptTwo is 0>> <<hairDetails>>,
+			<<elseif _attemptTwo is 1 and _checkResults[1] is 2>> _top.name,
+			<<elseif _attemptTwo is 1>> chest,
+			<<elseif _attemptTwo is 2 and _checkResults[2] is 2>> _bottom.name,
+			<<else>> waist,
+			<</if>>
 		<</if>>
-		but you smack away <<farm_his pig>> <<= $farm_work.pig.monster is true ? "arm" : "snout">>. "No! Bad pig!" you say, as the <<farm_text pig>> backs away. <<farm_He pig>> eyes you warily.<<farm_pigs 1>><<grespect>>
+		but you smack away <<farm_his pig>> <<= $farm_work.pig.monster is true ? "arm" : "snout">>. "No! Bad <<farm_text pig>>!" you say,
+		as the <<farm_text pig>> backs away. <<farm_He pig>> eyes you warily.<<farm_pigs 1>><<grespect>>
 		<br><br>
 
 		<<link [[Next|Farm Work]]>><</link>>
 	<<else>>
-		As you turn away from the trough, a <<farm_text pig>> reaches out towards your <<if _attemptTwo is 0>> <<hairDetails>>. <<elseif _attemptTwo is 1>> chest. <<else>> waist. <</if>> You shiver at its expression.<<stress 6>><<gstress>>
+		As you turn away from the trough, a <<farm_text pig>> reaches out towards your
+		<<if _attemptTwo is 0>> <<hairDetails>>.
+		<<elseif _attemptTwo is 1 and _checkResults[1] is 2> _top.name.
+		<<elseif _attemptTwo is 1>> chest.
+		<<elseif _attemptTwo is 2 and _checkResults[2] is 2>> _bottom.name.
+		<<else>> waist.
+		<</if>>
+		You shiver at its expression.<<stress 6>><<gstress>>
 		<br><br>
 
 		<<link [[Next|Farm Work]]>><</link>>
@@ -1708,20 +1748,31 @@ You spend a few minutes resting in the kitchen and drinking your tea. Feeling re
 :: Farm Pigs In
 <<effects>>
 
+<<pigsOpinion>>
+
 You herd the <<farm_text_many pig>> back into the sty. Some of them remain lying down, reluctant to move, and need cajoling.
 
-<<if dangerEvent() and ($settings.bestialityEnabled or $farm_work.pig.monster is true)>>
-	You manage to get the last to stand. You're leading <<farm_him pig>> inside when <<farm_he pig>> <<= $farm_work.pig.monster is true ? "grasps your arms" : "rears on its hind legs">> and tries to force you to the ground.
-	<br><br>
+<<if (_checkResults[0] is 2 and _checkResults[1] is 2) or dangerEvent(1.25)>>
+	<<if $settings.bestialityEnabled or $farm_work.pig.monster is true>>
+		You manage to get the last to stand. You're leading <<farm_him pig>> inside when <<farm_he pig>>
+		<<= $farm_work.pig.monster is true ? "grasps your arms" : "rears on its hind legs">> and tries to force you to the ground.
+		<br><br>
+	
+		<<link [[Scold|Farm Pigs Scold]]>><</link>><<tendingdifficulty 1 600>>
+		<br>
+		<<link [[Shove <<farm_him pig>> away|Farm Pigs Shove]]>><</link>><<physiquedifficulty 1 12000>>
+		<br>
+		<<link [[Endure|Farm Pigs Endure]]>><<trauma 6>><<stress 6>><<farm_pigs -1>><</link>><<gtrauma>><<gstress>><<lrespect>>
+		<br>
+		<<if hasSexStat("deviancy", 3)>>
+			<<link [[Give <<farm_him pig>> a hand|Farm Pigs Hand]]>><<set $sexstart to 1>><</link>><<deviant3>>
+			<br>
+		<</if>>
+	<<else>>
+		The <<farm_text_many pig>> seem agitated. It's a little scary.<<gstress>><<stress 6>>
+		<br><br>
 
-	<<link [[Scold|Farm Pigs Scold]]>><</link>><<tendingdifficulty 1 600>>
-	<br>
-	<<link [[Shove <<farm_him pig>> away|Farm Pigs Shove]]>><</link>><<physiquedifficulty 1 12000>>
-	<br>
-	<<link [[Endure|Farm Pigs Endure]]>><<trauma 6>><<stress 6>><<farm_pigs -1>><</link>><<gtrauma>><<gstress>><<lrespect>>
-	<br>
-	<<if hasSexStat("deviancy", 3)>>
-		<<link [[Give <<farm_him pig>> a hand|Farm Pigs Hand]]>><<set $sexstart to 1>><</link>><<deviant3>>
+		<<link [[Next|Farm Work]]>><</link>>
 		<br>
 	<</if>>
 <<else>>
@@ -2302,21 +2353,21 @@ You <<tendingtext>> squeeze and rub.
 	<<set $farm_work.cattle_text to 0>>
 <</if>>
 <<switch $farm_work.cattle_text>>
-<<case 0>>
-	<<set $farm_work.cattle_text += 1>>
-	The <<beasttype>> trots away.
-<<case 1>>
-	<<set $farm_work.cattle_text += 1>>
-	The <<beasttype>> licks your hand before trotting away.<<lstress>><<stress -1>>
-<<case 2>>
-	<<set $farm_work.cattle_text += 1>>
-	The <<beasttype>> needs cajoling before <<bhe>> will return to the field.
-<<case 3>>
-	<<set $farm_work.cattle_text += 1>>
-	The <<beasttype>> leaves in a hurry, eager to return to the field.
-<<case 4>>
-	<<set $farm_work.cattle_text to 0>>
-	The <<beasttype>> has some trouble finding the exit but soon trots back to the field.
+	<<case 0>>
+		<<set $farm_work.cattle_text += 1>>
+		The <<beasttype>> trots away.
+	<<case 1>>
+		<<set $farm_work.cattle_text += 1>>
+		The <<beasttype>> licks your hand before trotting away.<<lstress>><<stress -1>>
+	<<case 2>>
+		<<set $farm_work.cattle_text += 1>>
+		The <<beasttype>> needs cajoling before <<bhe>> will return to the field.
+	<<case 3>>
+		<<set $farm_work.cattle_text += 1>>
+		The <<beasttype>> leaves in a hurry, eager to return to the field.
+	<<case 4>>
+		<<set $farm_work.cattle_text to 0>>
+		The <<beasttype>> has some trouble finding the exit but soon trots back to the field.
 <</switch>>
 
 <br><br>
@@ -2365,7 +2416,6 @@ You <<tendingtext>> squeeze and rub.
 		<<animalsemenswallowedstat 15>>
 	<<else>>
 		You lead a cow into the barn and kneel beneath it. You lean down and take one of its udders into your mouth. Thick, creamy milk flows into your mouth. You spit most into the bucket, but can't help but swallow some.<<transform cat 1>>
-
 
 	<</if>>
 <</if>>
@@ -2690,7 +2740,8 @@ You sneak up to the shed, and push the door open.
 	Some of the plants are rooted deep, and need to be dug out.
 <</if>>
 
-/* inexplicably, these strings were written assuming working at night. No idea why? Built new ones, but keeping these to reuse if we introduce sneaky night working or somesuch...
+<!-- inexplicably, these strings were written assuming working at night. No idea why? Built new ones,
+	but keeping these to reuse if we introduce sneaky night working or somesuch...
 <<set _rng to random(1, 6)>>
 <<if _rng is 1>>
 	You faintly hear a wet sound coming from the moor, but you can't see much in the darkness. <<gstress>><<stress 3>>
@@ -2699,7 +2750,7 @@ You sneak up to the shed, and push the door open.
 <<elseif _rng gte 3>>
 	You trip over something in the dark. <<pain 5>> <<gpain>>
 <</if>>
-*/
+	-->
 
 <<set _rng to random(1, 6)>>
 <<if _rng is 1>>
@@ -3266,7 +3317,8 @@ The machine continues its devilish work, sucking with more intensity. You feel a
 	Just when you fear you're about to pass out, the machine comes to a halt.
 	<br><br>
 
-	/* Either use the amount of semen produced by those three orgasms, or the original amount calculated for $farm_penis_milk, whichever is larger */
+	<!-- Either use the amount of semen produced by those three orgasms, or the original amount calculated for
+	$farm_penis_milk, whichever is larger -->
 	<<set _orgasm_semen to _original_amount - $semen_amount>>
 	<<if _femaleclimaxAmount>><<set $farm_penis_milk *= (3 - _femaleclimaxAmount) / 3>><</if>>
 	<<if _femaleclimaxAmount gte 3>>
