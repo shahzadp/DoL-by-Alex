@@ -5478,7 +5478,7 @@
 <</widget>>
 
 <<widget "farm_text_many">>
-	<<set $_bgender to $farm_work[_args[0]].gender_plural>>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender_plural>>
 	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
@@ -5532,8 +5532,41 @@
 	<<print _text_output>>
 <</widget>>
 
+<!-- Refers to the farm animals in singular genderless form, accounting for monster transformations. Pigs, dogs, and cattle in
+	their monster state now get called "pigperson", "dogperson", and "cowperson", while horses still use the word "centaur". -->
+<<widget "farm_text_neutral">>
+	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<if _args[0] is "horse">>
+		<<if $_bperson>>
+			<<set _text_output to "centaur">>
+		<<else>>
+			<<set _text_output to "horse">>
+		<</if>>
+	<<elseif _args[0] is "pig">>
+		<<if $_bperson>>
+			<<set _text_output to "pigperson">>
+		<<else>>
+			<<set _text_output to "pig">>
+		<</if>>
+	<<elseif _args[0] is "dog">>
+		<<if $_bperson>>
+			<<set _text_output to "dogperson">>
+		<<else>>
+			<<set _text_output to "dog">>
+		<</if>>
+	<<else>>
+		<!-- English doesn't have a genderless singular form for "cattle". Defaulting to "cow" and "cowperson". -->
+		<<if $_bperson>>
+			<<set _text_output to "cowperson">>
+		<<else>>
+			<<set _text_output to "cow">>
+		<</if>>
+	<</if>>
+	<<print _text_output>>
+<</widget>>
+
 <<widget "farm_text">>
-	<<set $_bgender to $farm_work[_args[0]].gender>>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
@@ -5565,8 +5598,9 @@
 
 
 <<widget "farm_he">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<if $farm_work[_args[0]].monster>>
-		<<if $farm_work[_args[0]].gender is "m">>
+		<<if _bgender is "m">>
 			<<set _text_output to "he">>
 		<<else>>
 			<<set _text_output to "she">>
@@ -5578,8 +5612,9 @@
 <</widget>>
 
 <<widget "farm_He">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<if $farm_work[_args[0]].monster>>
-		<<if $farm_work[_args[0]].gender is "m">>
+		<<if _bgender is "m">>
 			<<set _text_output to "He">>
 		<<else>>
 			<<set _text_output to "She">>
@@ -5591,8 +5626,9 @@
 <</widget>>
 
 <<widget "farm_him">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<if $farm_work[_args[0]].monster>>
-		<<if $farm_work[_args[0]].gender is "m">>
+		<<if _bgender is "m">>
 			<<set _text_output to "him">>
 		<<else>>
 			<<set _text_output to "her">>
@@ -5604,8 +5640,9 @@
 <</widget>>
 
 <<widget "farm_his">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<if $farm_work[_args[0]].monster>>
-		<<if $farm_work[_args[0]].gender is "m">>
+		<<if _bgender is "m">>
 			<<set _text_output to "his">>
 		<<else>>
 			<<set _text_output to "her">>
@@ -5617,8 +5654,9 @@
 <</widget>>
 
 <<widget "farm_His">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
 	<<if $farm_work[_args[0]].monster>>
-		<<if $farm_work[_args[0]].gender is "m">>
+		<<if _bgender is "m">>
 			<<set _text_output to "His">>
 		<<else>>
 			<<set _text_output to "Her">>
@@ -6723,6 +6761,18 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 	<</switch>>
 	<<if _args[2] is "cap">><<capitalise>><</if>>
 <</silently>><<print _text_output>><</widget>>
+
+<<widget "insufficientQuantity">><<silently>>
+	/* Args 0-2 are Statement, Color (optional), Icon (optional) */
+	/* Pass "" into Icon to not print one. */
+	/* Example: <<insufficientQuantity "peaches to accept such an offer">> 											-------------->	would print (in blue): 	'You do not have enough peaches to accept such an offer'*/
+	/* Example: <<insufficientQuantity "buckets of animal fluid to satisfy Gwylan :P" "pink" "<<farmicon 'bucket'>>">> 	---------->	would print (in red): 	'You do not have enough [milk-bucket.png] buckets of animal fluid to satisfy Gwylan' */
+	/* Example: <<insufficientQuantity "beauty, allure, or skill to be noticed" "purple">> 									------>	would print (in purple):'You do not have enough beauty, allure, or skill to be noticed' */
+
+	<<set _color to _args[1] ? _args[1] : "blue">>
+	<<set _icon to _args[2] ? _args[2] : "">>
+
+<</silently>><span @class="_color">You do not have enough <<if _icon is not "">><<print _icon>><</if>> _args[0].</span><</widget>>
 
 <<widget "insufficientStat">><<silently>>
 	/* Args 0-3 are Stat, Task, Color (optional), and Custom Stat (optional, only use when Stat arg is 'custom')*/
