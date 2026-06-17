@@ -2446,8 +2446,8 @@ function calculateSemenReleased() {
 	released += V.semen_volume / 30;
 
 	if (V.femaleclimax === 1) released /= 30;
-	if (V.orgasmtrait >= 1) released *= 2.5;
-	if (V.cow >= 6) released *= 2;
+	if (V.orgasmtrait >= 1) released *= 1.5;
+	if (V.cow >= 6) released *= 1.2;
 
 	/* if the player doesn't have enough semen, set $_semen_released to whatever they have left */
 	if (V.semen_amount < released) released = V.semen_amount;
@@ -3130,3 +3130,32 @@ function breakableSoftBinding() {
 }
 
 window.breakableSoftBinding = breakableSoftBinding;
+
+function averageBunPrice(toSell = T.buns_sold) {
+	/* Calculates the average price of a bun with diminishing returns */
+	let totalRevenue = 0;
+	let remaining = toSell;
+	if (V.daily.buns_sold === undefined) {
+		V.daily.buns_sold = 0;
+	}
+	let harmonics = 1+Math.floor(V.daily.buns_sold/20); // 1st batch: full price (1/1), 2nd: 1/2, etc.
+	let doneToday = V.daily.buns_sold%20;
+	let bunsToSell = 0;
+	let pricePerBun = V.bun_value / harmonics;
+
+	while (remaining > 0) {
+		bunsToSell = Math.min(20-doneToday, remaining);
+		doneToday = 0;
+		
+		totalRevenue += bunsToSell * pricePerBun;
+		remaining -= bunsToSell;
+		harmonics++;
+		pricePerBun = V.bun_value / harmonics;
+	}
+
+	V.daily.buns_sold += T.buns_sold;
+
+	return totalRevenue / toSell;
+}
+
+window.averageBunPrice = averageBunPrice;

@@ -697,14 +697,26 @@ The others jostle closer.
 :: Moor Crack
 <<set $outside to 0>><<effects>>
 
-<<if $settings.voreEnabled and $rng gte 51 and $phase isnot 1>>
-	You cling to the edge, as the earth continues to rumble. You try to find purchase with your feet, but the wall is soft and slippery. Something gropes your <<bottom>>. You glance down, and see a pink, pulsating mass.
-	<br><br>
+/* $phase 
+1: first fall
+2: tried to climb
+3: called for help
+4: vore event  */
+<<if $rng gte 51 and $phase is 1>>
+	<<if $settings.voreEnabled>>
+		<<set $phase to 4>>
+		You cling to the edge, as the earth continues to rumble. You try to find purchase with your feet, but the wall is soft and slippery. Something gropes your <<bottom>>. You glance down, and see a pink, pulsating mass.
+		<br><br>
 
-	<<link [[Next|Moor Vore]]>><<set $molestationstart to 1>><</link>>
-	<br>
-<<else>>
-	You land on soft earth, several metres from the surface. <<if $phase isnot 1>>The earth shudders to a halt. You see a passage through the dark.<</if>>
+		<<link [[Next|Moor Vore]]>><<set $molestationstart to 1>><</link>>
+		<br>
+	<<else>>
+		You cling to the edge, as the earth continues to rumble. You try to find purchase with your feet, but the wall is soft and slippery. Something gropes your <<bottom>> and you lose your footing, barely breaking your fall. <<trauma 12>><<stress 24>><<pain 8>><<gtrauma>><<ggstress>><<ggpain>>
+		<br><br>
+	<</if>>
+<</if>>
+<<if $phase isnot 4>>
+	You <<if $phase is 3>>are<<else>>land<</if>> on soft earth, several metres from the surface. <<if $phase is 1>>The earth shudders to a halt. You see a passage through the dark.<</if>>
 	<br><br>
 	<<endevent>>
 	<<if $pain gte 100>>
@@ -791,10 +803,13 @@ The others jostle closer.
 	<<if $settings.tentaclesEnabled and $hallucinations gte 1 and $enemytype is "tentacles">>
 		Two tendrils grope after you, but you manage to roll to safety.
 	<</if>>
+	You see a passage leading into the earth.
 	<br><br>
 	<<clotheson>>
-	<<endcombat>>
-	<<link [[Next|Moor]]>><<set $eventskip to 1>><</link>>
+	<<endcombat>> 
+	<<link [[Enter (0:20)|Moor Crack Passage]]>><<set $outside to 0>><<pass 20>><</link>>
+	<br>
+	<<link [[Ignore|Moor]]>><<set $eventskip to 1>><</link>>
 	<br>
 <</if>>
 
@@ -813,7 +828,7 @@ You grasp the rough wall, and start to climb. You're halfway up when an outcrop 
 	Your feet scramble for another foothold, but your fingers slip, <span class="red">and you tumble to the bottom.</span><<ggpain>><<gstress>><<pain 8>><<stress 6>>
 	<br><br>
 
-	<<link [[Next|Moor Crack]]>><<set $phase to 1>><</link>>
+	<<link [[Next|Moor Crack]]>><<set $phase to 2>><</link>>
 	<br>
 <</if>>
 
@@ -854,7 +869,7 @@ You grasp the rough wall, and start to climb. You're halfway up when an outcrop 
 	No one responds.<<ggstress>><<stress 6>>
 	<br><br>
 
-	<<link [[Next|Moor Crack]]>><</link>>
+	<<link [[Next|Moor Crack]]>><<set $phase to 3>><</link>>
 	<br>
 <</if>>
 
@@ -1019,7 +1034,7 @@ The water is cold, and deep. You swim away from shore. You can see nothing ahead
 
 	Your hands grasp sand, and you crawl onto a bank. You weren't imagining the glimmer. Your fingers close around cold metal, half-buried. It feels like a ring.
 	<br><br>
-	<<set $antiquemoney += 3000>><<museumAntiqueStatus "antiquegoldring" "found">>
+	<<set $antiquemoney += 1500>><<museumAntiqueStatus "antiquegoldring" "found">>
 	<<wearProp "antique gold ring">>
 	<<link [[Next|Moor Passage Swim 2]]>><</link>>
 	<br>

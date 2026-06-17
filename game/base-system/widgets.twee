@@ -111,8 +111,8 @@
 
 <<widget "oxygenrecovery">>
 	<<if $oxygenRecovery and $oxygen lt $oxygenmax>>
-		/* 8 minutes to recover from 0 oxygen */
-		<<set $_seconds to Math.ceil((1 - $oxygen/$oxygenmax) * Time.oxygenResaturationDuration)>>
+		/* 16 minutes to recover from 0 oxygen and be ready to dive again (this time is roughly equal to the duration of the dive) */
+		<<set $_seconds to Math.ceil((1 - $oxygen/$oxygenmax) * Time.oxygenResaturationDuration * 2)>>
 		<<set $_minutes to Math.ceil($_seconds / TimeConstants.secondsPerMinute)>>
 		<<loitericon>><<capture $_seconds>><<link [[`Catch your breath (${getTimeString($_minutes)})`|$passage]]>>
 			<<if ['string', 'number'].includes(typeof(_args[0]))>>
@@ -2679,9 +2679,9 @@
 	<</if>>
 
 	<<if _args[0] is "serving">>
-		<!-- +20% for every visible clothing item with 'serving' tag -->
+		<!-- +20% for a visible clothing item with 'serving' tag, then diminishing returns -->
 		<<set $_servingClothesCount to getVisibleClothesList().countWith(item => item.type.includes("serving"))>>
-		<<set $tip += $tip * 0.2 * $_servingClothesCount>>
+		<<set $tip *= (1 + (0.75 * (1 - Math.pow(2/3, $_servingClothesCount))))>>
 	<</if>>
 
 	<<set $tip to $tipmod * $tip>>

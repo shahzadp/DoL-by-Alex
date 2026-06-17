@@ -179,7 +179,7 @@ const statChange = (() => {
 		amount = Number(amount);
 		if (V.player.penisExist && amount) {
 			amount *= 3;
-			if (V.cow >= 6) amount *= 2;
+			if (V.cow >= 6) amount *= 1.25;
 
 			/* Prevents those who can only have "female climax" increase their cum volume */
 			if (V.player.penissize > 0 || amount <= 0) V.semen_volume += amount;
@@ -204,7 +204,7 @@ const statChange = (() => {
 		if (amount) {
 			if (amount > 0) lactationPressure(V.cow >= 6 ? 2 : 1);
 			if (V.lactating) {
-				if (V.cow >= 6) amount *= 2;
+				if (V.cow >= 6) amount *= 1.25;
 				V.milk_volume = Math.clamp(V.milk_volume + amount, 24, V.milk_max);
 			}
 		}

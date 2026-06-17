@@ -47,7 +47,7 @@ setup.shopDetails = {
 	serving: {
 		name: "Serving",
 		desc: "Encourages tips when working as a bartender, waiter or waitress if visible.",
-		details: "Increases the amount of money gained from each tip by 20% per item with the trait.",
+		details: "Increases the amount of money gained from tips by 25% when wearing an item with the trait. Each additional item is 33% less effective.",
 	},
 	fetish: {
 		name: "Fetish",

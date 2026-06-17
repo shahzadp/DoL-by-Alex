@@ -2497,7 +2497,7 @@ You present the order slip to the <<person>> behind the counter.
 <<rng>><<generates2>>
 <<set $NPCList[1].virginity to setup.NPCVirginityTypesVirgin>>
 
-<<if fameSum("sex","rape","prostitution") gte 400>>
+<<if fameSum("sex","rape","prostitution") gte 400 and dangerEvent(0.5,6000)>> /*Keeps access to the other scenes*/
 	Just inside the door the <<person1>><<person>> pulls you aside.
 	<br>
 	"Listen," <<he>> says in almost a whisper.
@@ -2507,7 +2507,7 @@ You present the order slip to the <<person>> behind the counter.
 	<<He>> glances nervously at an internal door.
 	<br>
 	"See my <<person2>><<daughter>> is a good-looking <<personsimple>>, and horny as hell, but...
-	<<if $pronoun is $player.gender_appearance>>
+	<<if $pronoun is $player.gender_appearance and (random(1,2) is 1 or ($pronoun is "m" and $rng gt $maleChanceMale) or ($pronoun is "f" and $rng lte $maleChanceFemale))>>
 		<<hes>> gay, I think. And confused? Conflicted? I don't know, but
 	<<else>>
 		<<hes>> painfully shy. If left to <<himself>>,
@@ -2517,7 +2517,7 @@ You present the order slip to the <<person>> behind the counter.
 
 	The <<person1>><<person>> points at a door.
 	<br>
-	"Through there. Seduce <<person2>><<him>>. Help <<him>>. I'll give you <<printmoney 2000>> now and another <<printmoney 10000>> if you show <<him>> a good time. Deal?"
+	"Through there. Seduce <<person2>><<him>>. Help <<him>>. I'll give you <<printmoney 2000>> now and another <<printmoney 8000>> if you show <<him>> a good time. That's a total of <<printmoney 10000>>. Deal?"
 	<br><br>
 
 	<<link [[Agree|Domus Shy Seduce]]>><<money 2000>><</link>>
@@ -2684,30 +2684,42 @@ You enter the room to find a <<person1>><<person>> sat at a large table. <<He>> 
 <br>
 You put a finger to your lips as you approach <<him>> with open lust in your eyes.
 <br><br>
-
-<<set $seductiondifficulty to 4000>>
-<<seductioncheck>>
-<<seductionskilluptext>>
-<<seductionskilluse>>
-
-Using your seductive powers, you stroke <<his>> neck and kiss <<him>>, while rubbing your hand suggestively across your body. Climbing seductively onto the <<print either("table in front of","couch near","chair behind")>> <<him>>, you beckon <<him>> to join you.
-<br><br>
-
-<<if $seductionrating gte $seductionrequired>>
-	You effortlessly seduce the <<person>>. <<He>> eagerly joins you.
-	<br><br>
-	<<link [[Next|Domus Shy Sex]]>><<set $sexstart to 1>><</link>>
-<<else>>
+<<if random(1,3) is 1>>
 	<<generate2>><<set $NPCList[1] to clone($parentNPC)>>
-	"Help!" <<he>> screams. <<person2>><<Mum>>! There's some freak in here climbing on the furniture!"
+	A hand clamps around your neck.
+	<br><br>
+	"Easy now," the <<person2>><<person>> whispers in your ear. "Don't scare <<person1>><<him>> off. <<He>> needs to see how it's done."
 	<br>
-	The <<person>> appears, and leads you out of the house.
+	"Look at <<phim>> getting you all hot and bothered," the <<person2>><<person>> says out loud. "When someone really wants it, my <<person1>><<personsimple>>, the right move is to grab control. Be a bit forceful. Come on now. Let's do this together."
+	<br><br>
+	<<person2>><<He>> pins you down onto the <<print either("table in front of","couch near")>> the <<person1>><<person>> in one rough motion.
+	<br><br>
+	<<link [[Next|Domus Shy Rape]]>><<set $molestationstart to 1>><</link>>
+<<else>>
+	<<set $seductiondifficulty to 4000>>
+	<<seductioncheck>>
+	<<seductionskilluptext>>
+	<<seductionskilluse>>
+
+	Using your seductive powers, you stroke <<his>> neck and kiss <<him>>, while rubbing your hand suggestively across your body. Climbing seductively onto the <<print either("table in front of","couch near","chair behind")>> <<him>>, you beckon <<him>> to join you.
 	<br><br>
 
-	"Thanks for trying," <<he>> sighs through the closing door.
-	<br><br>
+	<<if $seductionrating gte $seductionrequired>>
+		You effortlessly seduce the <<person>>. <<He>> eagerly joins you.
+		<br><br>
+		<<link [[Next|Domus Shy Sex]]>><<set $sexstart to 1>><</link>>
+	<<else>>
+		<<generate2>><<set $NPCList[1] to clone($parentNPC)>>
+		"Help!" <<he>> screams. <<person2>><<Mum>>! There's some freak in here climbing on the furniture!"
+		<br>
+		The <<person>> appears, and leads you out of the house.
+		<br><br>
 
-	<<link [[Next|Domus Street]]>><<unset $parentNPC>><<unset $shyNPC>><<endevent>><</link>>
+		"Thanks for trying," <<he>> sighs through the closing door.
+		<br><br>
+
+		<<link [[Next|Domus Street]]>><<unset $parentNPC>><<unset $shyNPC>><<endevent>><</link>>
+	<</if>>
 <</if>>
 <br>
 
@@ -2718,15 +2730,26 @@ Using your seductive powers, you stroke <<his>> neck and kiss <<him>>, while rub
 <<if $sexstart is 1>>
 	<<set $sexstart to 0>>
 	<<person1>>
+	<<cleareventpool>>
 	<<if $cool gte 160>>
-		"You... you're, like, the coolest <<girl>> in school,"
-	<<elseif $fame.sex gte 400>>
-		"I heard about you. I... I always hoped one day it'd be my turn,"
-	<<elseif $beauty gte ($beautymax / 7) * 4>>
-		"But you're so hot,"
-	<<else>>
-		"You're not just playing around?"
+		<<addinlineevent "cool">>
+			"You... you're, like, the coolest <<girl>> in school,"
+		<</addinlineevent>>
 	<</if>>
+	<<if $fame.sex gte 400>>
+		<<addinlineevent "fame">>
+		"I heard about you. I... I always hoped one day it'd be my turn,"
+		<</addinlineevent>>
+	<</if>>
+	<<if $beauty gte ($beautymax / 7) * 4>>
+		<<addinlineevent "beauty">>
+		"But you're so hot,"
+		<</addinlineevent>>
+	<</if>>
+	<<addinlineevent "default">>
+		"You're not just playing around?"
+	<</addinlineevent>>
+	<<runeventpool>>
 	<<he>> says. "Y... You really want me?"
 	<br>
 	<<consensual>>
@@ -2799,7 +2822,7 @@ Using your seductive powers, you stroke <<his>> neck and kiss <<him>>, while rub
 	With a parting kiss, you leave the <<person>> looking very happy.
 	<br><br>
 
-	In the hallway, you find <<moneyGain 100>> on a table by the door. You take it on your way out.
+	In the hallway, you find <<moneyGain 80>> on a table by the door. You take it on your way out.
 	<br>
 	The parent is nowhere to be seen.
 	<br><br>
@@ -2867,7 +2890,7 @@ Using your seductive powers, you stroke <<his>> neck and kiss <<him>>, while rub
 	<br><br>
 
 	You collect the money on your way out.
-	<<money 10000>>
+	<<money 8000>>
 
 	<<clotheson>>
 	<<endcombat>><<unset $parentNPC>><<unset $shyNPC>>
