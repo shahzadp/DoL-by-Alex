@@ -166,6 +166,41 @@ You are in the garden behind the orphanage.
 	<<link [[Tell Robin that you can water your own plants|Robin Watering Berate]]>><<npcincr Robin dom -1>><<control 10>><</link>><<ldom "Robin">><<gcontrol>>
 	<br>
 
+<<elseif !$weekly.gardenCropTheft and $orphan_hope lte -10 and $plots.garden and $plots.garden.some(p => p.stage >= 5) and $rng gte 81>>
+
+	<<set $weekly.gardenCropTheft to true>>
+	<<set $cropTheft to {}>>
+	<<set $cropTheft.index to $plots.garden.findIndex(p => p.stage >= 5)>>
+	<<set $cropTheft.crop to setup.foodstuff[$plots.garden[$cropTheft.index].plant]>>
+	<<generatey1>><<person1>>
+
+	Stepping into the fenced garden, you look around.
+	<<if Weather.precipitation is "rain">>
+		The rain soaks the ground.
+	<<elseif Weather.precipitation is "snow">>
+		Snow covers the ground.
+	<<else>>
+		The garden is quiet today.
+	<</if>>
+	<br><br>
+
+	You see a <<person1>><<person>> hunched over, digging through one of the garden plots with hurried motions. <span class="pink"><<Hes>> trying to steal the <<print $cropTheft.crop.plural>> you planted!</span>
+	<br><br>
+
+	<<He>> meets your eyes and freezes before standing up quickly, <<his>> knees covered in mud.
+	<br><br>
+
+	<<if $cropTheft.crop.category is "flower">>
+		"I-I know you planted these. Please let me have these <<print $cropTheft.crop.plural>> to sell," the <<person1>><<person>> begs, tearfully. "I-I'm behind on rent."
+	<<else>>
+		"I-I know you planted these. Please let me have these <<print $cropTheft.crop.plural>>," the <<person1>><<person>> begs, tearfully. "I-I'm so hungry."
+	<</if>>
+	<br><br>
+
+	<<link [[Agree|Garden Crop Theft Agree]]>><</link>>
+	<br>
+	<<link [[Refuse|Garden Crop Theft Refuse]]>><</link>>
+
 <<elseif !$weekly.gardenVoyeur and Time.dayState is "night" and $rng gte 81>>
 
 	<<set $weekly.gardenVoyeur to true>>
@@ -1448,3 +1483,134 @@ You climb the ladder, down into the dark. The water grows louder, until your fee
 
 <<link [[Next|Residential Drain]]>><<set $eventskip to 1>><</link>>
 <br>
+
+:: Garden Crop Theft Agree
+<<effects>>
+<<if $speech_attitude is "meek">>
+	"O-okay," you say with a small nod. "You can have them."
+<<elseif $speech_attitude is "bratty">>
+	"Fine," you say, crossing your arms. "Take them."
+<<else>>
+	"Go ahead," you nod. "Take them with you."
+<</if>>
+<br><br>
+
+The <<person1>><<person>>'s lip trembles at your words. <<He>> bends down and gathers an armful of <<print $cropTheft.crop.plural>> in one arm before scurrying up to you and giving you an awkward hug with the other.<<clear_plot garden $cropTheft.index>>
+<br><br>
+
+"Thank you so much," <<he>> says. "I won't forget this."<<hope 1>><<ghope>><<stress -6>><<lstress>>
+<br><br>
+
+<<He>> stops hugging you and scurries into the orphanage.
+<br><br>
+
+<<unset $cropTheft>>
+<<link [[Leave|Orphanage]]>><<endevent>><</link>>
+
+:: Garden Crop Theft Refuse
+<<effects>>
+<<if $speech_attitude is "meek">>
+	"I-I can't just let you steal the <<print $cropTheft.crop.category>>s I grew," you say apologetically. "I need them too."
+<<elseif $speech_attitude is "bratty">>
+	"You're not stealing the <<print $cropTheft.crop.category>>s I grew!" you say, stepping towards the orphan. "I worked hard on those!"
+<<else>>
+	"You can't just steal my <<print $cropTheft.crop.category>>s," you say. "Those belong to me."
+<</if>>
+<br><br>
+
+"P-Please!" The <<person1>><<person>> begs again, clasping <<his>> hands together. "I'll do anything. I-I can make you feel good, if you want."
+<br><br>
+
+<<He>> steps closer to you and reaches forward to run a hand up your arm.
+<br><br>
+
+<<if hasSexStat("promiscuity", 2)>>
+	<<link [[Take <<him>> up on it|Garden Crop Theft Sex]]>><<set $sexstart to 1>><</link>><<promiscuous2>>
+<<else>>
+	<<insufficientStat "promiscuity" "to take <<him>> up on it">>
+<</if>>
+<br>
+<<link [[Relent|Garden Crop Theft Relent]]>><</link>>
+<br>
+<<link [[Reject <<his>> advances|Garden Crop Theft Reject]]>><</link>>
+
+:: Garden Crop Theft Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>><<set $consensual to 1>>
+	<<neutral 1>><<maninit>><<set $enemytrust += 100>>
+	<<He>> gulps visibly before pulling you into an embrace. <<His>> hands are all over you.
+	<<promiscuity2>>
+<</if>>
+<<effects>><<effectsman>><<man>><<stateman>>
+<br><br>
+
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Garden Crop Theft Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Garden Crop Theft Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Garden Crop Theft Sex Finish
+<<effects>>
+<<if $enemyhealth lte 0>>
+	The <<person1>><<person>> jumps back from you, crying. <<He>> runs into the orphanage without looking back.<<hope -1>><<lhope>><<stress 6>><<gstress>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	The <<person1>><<person>> lets out a sigh of relief.
+	<br><br>
+
+	"T-Thank you," the <<person1>><<person>> says to you before <<he>> scoops up a handful of <<print $cropTheft.crop.plural>> and runs into the orphanage.<<clear_plot garden $cropTheft.index>><<hope 1>><<ghope>><<stress -6>><<lstress>>
+	<br><br>
+
+	<<tearful>> you stand in the garden, alone.
+<<else>>
+	The <<person1>><<person>> looks uncertain for a moment. Then, <<he>> quickly scoops up a handful of <<print $cropTheft.crop.plural>> and runs into the orphanage.<<clear_plot garden $cropTheft.index>><<hope 1>><<ghope>><<stress -6>><<lstress>>
+<</if>>
+<<clotheson>>
+<<endcombat>>
+<<unset $cropTheft>>
+<<link [[Leave|Orphanage]]>><</link>>
+
+:: Garden Crop Theft Reject
+<<effects>>
+<<person1>>
+<<if $speech_attitude is "meek">>
+	"I-I'm sorry," you say, stepping back from <<his>> hand. "I can't."
+<<elseif $speech_attitude is "bratty">>
+	"Not a chance," you say, pushing <<his>> hand away. "Get lost."
+<<else>>
+	"No," you say, moving <<his>> hand off your arm. "That's not happening."
+<</if>>
+<br><br>
+
+The <<person1>><<person>>'s face falls. <<He>> wipes <<his>> eyes with the back of a muddy hand, then turns and trudges into the orphanage empty-handed.<<hope -1>><<lhope>><<stress 6>><<gstress>>
+<br><br>
+
+<<unset $cropTheft>>
+<<link [[Leave|Orphanage]]>><<endevent>><</link>>
+
+:: Garden Crop Theft Relent
+<<effects>>
+<<if $speech_attitude is "meek">>
+	"S-Sorry, I didn't know things were that bad," you say. "Take them."
+<<elseif $speech_attitude is "bratty">>
+	"Well, if you're that desperate, I guess you can have them," you say. "This time."
+<<else>>
+	"Fine, you can have them," you say. "You need them more than me."
+<</if>>
+<br><br>
+
+The <<person1>><<person>>'s face lights up, relieved. <<He>> bends down and gathers an armful of <<print $cropTheft.crop.plural>> in one arm before scurrying up to you and giving you an awkward hug with the other.<<clear_plot garden $cropTheft.index>>
+<br><br>
+
+"Thank you for reconsidering," <<he>> says. "It means the world."<<hope 1>><<ghope>><<stress -6>><<lstress>>
+<br><br>
+
+<<He>> stops hugging you and scurries into the orphanage.
+<br><br>
+
+<<unset $cropTheft>>
+<<link [[Leave|Orphanage]]>><<endevent>><</link>>
