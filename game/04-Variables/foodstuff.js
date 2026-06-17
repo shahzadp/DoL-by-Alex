@@ -459,7 +459,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 1000,
+				sell_price: 900,
 			},
 			food: {
 				tags: ["aphrodisiac"],
@@ -3144,7 +3144,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 1200,
+				sell_price: 500,
 			},
 		},
 		valentines_chocolate: {

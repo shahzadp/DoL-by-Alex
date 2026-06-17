@@ -157,10 +157,18 @@
 <</widget>>
 
 <<widget "sellbuns">>
-	<<set _bun_money to (1000 + (($bun_value * $bun_cut) * _buns_sold))>>
+	<<if _buns_sold gt 0>>
+		<<set _bun_effective_value to 100*Math.floor(averageBunPrice(_buns_sold)/100)>>
+	<<else>>
+		<<set _bun_effective_value to $bun_value>>
+	<</if>>
+	<<set _bun_money to (1000 + ((_bun_effective_value * $bun_cut) * _buns_sold))>>
 	Buns sold: _buns_sold
 	<br>
-	Bun Value: £<<print ($bun_value / 100)>>
+	Bun Value: £<<print (_bun_effective_value / 100)>>
+	<<if _bun_effective_value lt $bun_value>> 
+		| <span class="gold">You made so many buns today that Sam had to lower their price to sell them all!</span>
+	<</if>>
 	<br>
 	Your cut: <<print ($bun_cut * 100)>>%
 	<br>
@@ -353,4 +361,16 @@
 
 <<widget "timeTrackingEndCafe">>
 	<<timeTrackingEnd "cafe">><<timeTrackingEnd "cafeWaiter">><<timeTrackingEnd "cafeChef">><<timeTrackingEnd "cafeBuns">>
+<</widget>>
+
+<<widget "waiter_default">>
+	<<if random(1,6) lte (1+($chef_state gte 9)+($chef_state gte 1))>>
+		<<set $tipmod to 0.1>><<tipset "serving">>
+		<<set $tip += 500>>
+		<<set $tip += 100>>
+
+		The rest of the shift passes uneventfully. Someone left you a tip.<<tipreceive "cafeWaiter">>
+	<<else>>
+		The rest of the shift passes uneventfully. You earn <<money 500 "cafeWaiter">><<printmoney 500>>.
+	<</if>>
 <</widget>>
