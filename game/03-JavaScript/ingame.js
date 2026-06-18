@@ -697,7 +697,8 @@ function isInPark(name) {
 			// prettier-ignore
 			return C.npc.Kylar.state === "active"
 				&& Weather.precipitation === "none"
-				&& Time.dayState === "day" && V.kylarwatched !== 1;
+				&& Time.dayState === "day" && !Time.schoolTime
+				&& V.kylarwatched !== 1;
 		case "robin":
 			return getRobinLocation() === "park";
 		case "whitney":
