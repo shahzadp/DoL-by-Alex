@@ -602,6 +602,10 @@ window.pregnancyGenerator = {
 		const motherObject = npcPregObject(mother, true);
 		let fatherObject;
 		if (father) fatherObject = npcPregObject(father);
+		// Temporary fix: the hawk generator uses fatherObject unconditionally below (child id,
+		// gender, the baby's father), so a Great Hawk pregnancy with no father crashed here.
+		// Bail out cleanly instead. Proper fatherless / donor-parent support comes with the rework.
+		if (!fatherObject) return false;
 
 		const [pregnancy, fertility, magicTattoo] = pregPrep({ motherObject, genital, override: "hawk" });
 		if (typeof pregnancy === "string" || pregnancy instanceof String) return pregnancy;
