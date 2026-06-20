@@ -1560,6 +1560,7 @@ const DoLCompressorDictionaries = (() => {
 		"skulduggeryDintro",
 		"skulduggeryday",
 		"skulduggerydifficulty",
+		"skulduggeryroll",
 		"skulduggerysuccess",
 		"sleepHoursTotal",
 		"sleepStat",
