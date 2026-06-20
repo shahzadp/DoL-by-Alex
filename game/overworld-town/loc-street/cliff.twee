@@ -486,16 +486,25 @@ You shudder and pocket the money.
 			<<link [[Spank prisoner (0:05)|Cliff Street Prisoner]]>><<pass 5>><<set $phase to 2>><</link>><<llstress>><<ltrauma>>
 			<br>
 		<</if>>
-		<<if $pillory.tenant.lowerexposed lte 1 or (($pronoun is "m" and $pillory.tenant.upperexposed lte 1) or ($pronoun is "f" and $pillory.tenant.upperexposed lte 2)) and $stress gte 7000 and $trauma gte (($traumamax / 5) * 2)>>
-			<<link [[Expose prisoner (0:02)|Cliff Street Prisoner]]>><<pass 2>><<set $phase to 3>><</link>><<llstress>>
+		<<if ($pillory.tenant.lowerexposed lte 1 or (($pronoun is "m" and $pillory.tenant.upperexposed lte 1) or ($pronoun is "f" and $pillory.tenant.upperexposed lte 2))) and $stress gte 7000 and $trauma gte (($traumamax / 5) * 2)>>
+			<!-- 
+				note: $daily.exposedPillory should NOT preclude this interaction from happening multiple times per day. 
+				it is only used to make sure that the player cannot cover the prisoner after exposing them, 
+				to avoid gaining kindness fame for fixing something they did themselves. 
+
+				if an alternate scene is written in Cliff Street Prisoner Night Help to account for covering a prisoner 
+				after having already exposed them in the same day, this gate can be removed, so long as it doesn't reintroduce
+				the problem of allowing players to grind kindness fame by repeatedly exposing and covering the same person.
+			-->
+			<<link [[Expose prisoner (0:02)|Cliff Street Prisoner]]>><<pass 2>><<set $phase to 3>><<set $daily.exposedPillory to true>><</link>><<llstress>>
 			<br>
 		<</if>>
 		<<if $submissive lte 1000 or $fame.good gte 50 or $stat_police.pillory gte 1 or (($awareness + $purity) gte 1050)>>
-			<<if ($pillory.tenant.lowerexposed + $pillory.tenant.upperexposed) gte 1>>
+			<<if ($pillory.tenant.lowerexposed + $pillory.tenant.upperexposed) gte 1 and !$daily.exposedPillory>>
 				<<link [[Cover prisoner (0:05)|Cliff Street Prisoner Night Help]]>><<pass 5>><<set $phase to 0>><</link>><<gstress>>
 				<br>
 			<</if>>
-			<<if $speech_attitude is "bratty" or $fame.good gte 150 or $stat_police.pillory gte 1 or (($awareness + $purity) gte 1400)>>
+			<<if $submissive lte 850 or $fame.good gte 150 or $stat_police.pillory gte 1 or (($awareness + $purity) gte 1400)>>
 				<<if $pillory.tenant.crowd gte 8>><<set $skulduggerydifficulty to 1350>> /* 50% chance of failure, even at max skulduggery */
 				<<elseif $pillory.tenant.crowd gte 6>><<set $skulduggerydifficulty to 1250>> /* 30% fail at max skul */
 				<<elseif $pillory.tenant.crowd gte 4>><<set $skulduggerydifficulty to 1100>> /* 10% chance of success, even at max skulduggery */
