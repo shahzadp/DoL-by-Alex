@@ -389,6 +389,7 @@ const DoLCompressorDictionaries = (() => {
 		"cheststate",
 		"chesttarget",
 		"chestuse",
+		"childEyeColour",
 		"childPassageExit",
 		"children",
 		"chill",
