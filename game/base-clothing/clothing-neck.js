@@ -1654,7 +1654,7 @@ function initNeck() {
 			index: 43,
 			slot: "neck",
 			name: "fox scarf",
-			name_cap: "fox scarf",
+			name_cap: "Fox scarf",
 			variable: "foxscarf",
 			combat: {
 				reference: "scarf",
