@@ -85,37 +85,29 @@ function restructureEyeColourVariable() {
 			/* object - reassign and fix number if needed */
 			if (typeof lenses.left === "number") lenses.left = 0;
 			if (typeof lenses.right === "number") lenses.right = 0;
-			V.objectVersion.eyeRepair = 4; // (existing) lens fix done; fall through so old saves also run the eye-colour repair in the same load
-		}
-		/* falls through */
-		case 4: {
-			/*
-				SAVE MIGRATION - eyeRepair v5 (added 2026-06-20 by Reiyu)
-				Repairs the old wolf/hawk bug where a child's eyeColour was saved as a parent's
-				NAME ("Black Wolf", "hefty male wolf", "pc"); the generator was fixed in !4578.
-				This bug existed for 3 years, so many save files are impacted.
-			*/
-			const validEyeColours = [ // build the list of eye colours that count as "real"
-				...setup.colours.eyes.map(e => e.variable), // every standard eye colour the game defines (purple, brown, black, ...)
-				...(V.custom_eyecolours ?? []).map(e => e.variable), // plus this save's custom colours, so we never mistake a real custom one for junk
-			]; // anything NOT in this list is treated as the bug's garbage
-			const fixEye = record => { // helper that repairs ONE baby; reused for born kids AND unborn ones below
-				if (!record.features || validEyeColours.includes(record.features.eyeColour)) return; // skip if there are no eyes to fix (parasites have no .features) or the colour is already real
-				const known = [record.mother, record.father] // start from this baby's two parents
-					.map(p => (p === "pc" ? V.eyeselect : C.npc[p] ? C.npc[p].eyeColour : undefined)) // PC -> natural eye colour; named NPC -> stored colour; one-off/missing parent -> nothing
-					.filter(Boolean); // drop any parent we couldn't get a colour from
-				record.features.eyeColour = eyeColourCalc(known.length ? known[random(0, known.length - 1)] : undefined); // inherit a known parent's colour (random pick if we have both); if neither, eyeColourCalc rolls a random valid one
-			}; // end of helper
-			Object.values(V.children).forEach(fixEye); // 1) fix every child already born
-			[V.sexStats?.vagina?.pregnancy, V.sexStats?.anus?.pregnancy].forEach(p => p?.fetus?.forEach(fixEye)); // 2) fix the player's own unborn babies (vaginal or anal pregnancy)
-			(V.NPCName ?? []).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye)); // 3) fix unborn babies inside pregnant named NPCs
-			Object.values(V.storedNPCs ?? {}).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye)); // 4) fix unborn babies inside stored / background NPCs
-			V.objectVersion.eyeRepair = 5; // mark this repair done so it never runs again on this save
-			break; // finished - leave the version switch
+			V.objectVersion.eyeRepair = 4;
+			break;
 		}
 	}
 }
 window.restructureEyeColourVariable = restructureEyeColourVariable;
+
+/* Old saves stored some children's eyeColour as a parent's name instead of a colour, so swap those for a real inherited one. */
+function fixChildEyeColours() {
+	const validEyeColours = [...setup.colours.eyes.map(e => e.variable), ...(V.custom_eyecolours ?? []).map(e => e.variable)];
+	const fixEye = record => {
+		if (!record.features || validEyeColours.includes(record.features.eyeColour)) return;
+		const known = [record.mother, record.father]
+			.map(p => (p === "pc" ? V.eyeselect : C.npc[p] ? C.npc[p].eyeColour : undefined))
+			.filter(Boolean);
+		record.features.eyeColour = eyeColourCalc(known.length ? known[random(0, known.length - 1)] : undefined);
+	};
+	Object.values(V.children).forEach(fixEye);
+	[V.sexStats?.vagina?.pregnancy, V.sexStats?.anus?.pregnancy].forEach(p => p?.fetus?.forEach(fixEye));
+	(V.NPCName ?? []).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye));
+	Object.values(V.storedNPCs ?? {}).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye));
+}
+window.fixChildEyeColours = fixChildEyeColours;
 
 window.patchCorruptLensesColors = function () {
 	if (V.custom_eyecolours != null) {
