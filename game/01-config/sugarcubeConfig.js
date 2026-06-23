@@ -606,6 +606,15 @@ Config.navigation.override = function (dest) {
 			case "Prison Wren Intro Met":
 				return "Prison Wren Intro";
 
+			case "Orphanage Loft Doren":
+				return "Doren Loft 3";
+			case "Orphanage Loft Doren 2":
+				return "Doren Loft 8";
+			case "Orphanage Loft Doren 3":
+				return "Doren Loft 10";
+			case "Orphanage Loft Doren Thank":
+				return "Doren Loft Thank";
+
 			case "Museum Box":
 				return "Museum Waterlogged Ivory Box";
 			case "Museum Silver Ring":
