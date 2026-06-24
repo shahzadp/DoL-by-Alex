@@ -662,7 +662,7 @@ function exposure() {
 		// wardrobes should not be safe locations though, as they must show what clothes are appropriate outside. if you wanna stop pc from covering themselves - use "don't cover yourself" link in the wardrobes instead of altering the libertine score.
 		safeLocations.some(location => V.passage.includes(location)) &&
 		V.NPCList.every(npc => !npc.fullDescription || Object.values(V.loveInterest).includes(npc.fullDescription)) &&
-		V.audiencepresent === 0
+		!V.audiencepresent
 	) {
 		// alone (or with a li) in safe locations - anything goes
 		V.libertine = 2;
