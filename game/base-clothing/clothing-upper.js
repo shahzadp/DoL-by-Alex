@@ -12557,7 +12557,7 @@ function initUpper() {
 			one_piece: 1,
 			formfitting: 1,
 			outfitPrimary: { lower: "milkmaid dress" },
-			iconFile: "milkmaiddress.png",
+			iconFile: "milkmaid-dress.png",
 			accIcon: "milkmaiddress-acc.png",
 		}),
 		new ClothesItem({
