@@ -8,7 +8,7 @@ DefineMacroS("timeAfterXHours", timeAfterXHours);
 function ampm(hour, minute) {
 	let ampm;
 	if (hour !== undefined) {
-		minute = minute !== undefined ? minute : "00";
+		minute ??= "00";
 	} else {
 		hour = Time.hour;
 		minute = Time.minute;
