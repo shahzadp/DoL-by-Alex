@@ -104,13 +104,8 @@
 		<div class="feat">
 			<div class="featImage">
 				<<if _feat.owned gt 0>>
-					<<switch _setup.difficulty>>
-						<<case 1>><img @src="'img/ui/coin-copper'+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 2>><img @src="'img/ui/coin-silver'+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(75%) contrast(85%);':'')">
-						<<case 3>><img @src="'img/ui/coin-gold'+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 4>><img @src="'img/ui/coin-platinum'+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-						<<case 5>><img @src="'img/ui/coin-jeweled'+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
-					<</switch>>
+					<<set _featType to ["copper", "silver", "gold", "platinum", "jeweled"][_setup.difficulty - 1]>>
+					<img @src="'img/ui/coin-'+_featType+(_feat.owned is 1 ? '-dull':'')+'.png'" class="featCoin" @style="(_feat.owned is 1 ? 'filter:brightness(65%) contrast(85%);':'')">
 				<<else>>
 					<img class="dot">
 				<</if>>
@@ -122,7 +117,7 @@
 					<<set _titleColor to "">>
 				<</if>>
 				<<if _feat.owned gt 0 or _setup.hint is undefined>>
-					<span @class="'title' + _titleColor"><<print _setup.title>></span>
+					<span @class="'title' + _titleColor"><<print (Scripting.evalTwineScript(_setup.altCond ?? "false") && _feat.owned is 2) ? _setup.alt : _setup.title>></span>
 					<span class="text"><<print _setup.desc>></span>
 				<<else>>
 					<span @class="'title' + _titleColor">?????</span>
