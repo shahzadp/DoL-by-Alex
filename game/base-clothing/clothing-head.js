@@ -700,7 +700,7 @@ function initHead() {
 			type: ["maid", "costume", "serving"],
 			gender: "f",
 			femininity: 200,
-			warmth: 0,
+			warmth: 1,
 			cost: 1200,
 			description: "For looking cute while cleaning.",
 			shop: ["clothing", "adult"],

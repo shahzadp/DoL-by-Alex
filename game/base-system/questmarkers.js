@@ -199,7 +199,7 @@ const events = [
 			return V.englishPlayDays === 0 && V.englishPlay === "ongoing";
 		},
 		starthour: 17,
-		endhour: 20,
+		endhour: 21,
 		priority: 5,
 		text: "The school plays are being held today at Cliff Street from <<ampm 17 00>> until <<ampm 21 00>>.",
 		failuretext: "The last of the school plays has finished by now. You didn't attend.",
