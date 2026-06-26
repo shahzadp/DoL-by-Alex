@@ -3087,12 +3087,12 @@ function dangerEvent(mod = 1, floor = 9900, allure = V.allure, reroll = false) {
 	 * (mod = 1, floor = 8,000)
 	 * * 8,000 Allure: 100% pass chance
 	 * * 6,000 Allure:  80% pass chance
-	 * *     0 Allure:  20% pass chance
+	 * *	 0 Allure:  20% pass chance
 	 * 
 	 * (mod = 1.25, floor = 9,900)
 	 * * 8,000 Allure: 100% pass chance
 	 * * 6,000 Allure:  76% pass chance
-	 * *     0 Allure:   1% pass chance
+	 * *	 0 Allure:   1% pass chance
 	 */
 	if (!T.danger || reroll) T.danger = random(1, 10000);
 	return T.danger >= floor - allure * mod;
@@ -3157,24 +3157,39 @@ function averageBunPrice(toSell = T.buns_sold) {
 	if (V.daily.buns_sold === undefined) {
 		V.daily.buns_sold = 0;
 	}
-	let harmonics = 1+Math.floor(V.daily.buns_sold/20); // 1st batch: full price (1/1), 2nd: 1/2, etc.
-	let doneToday = V.daily.buns_sold%20;
-	let bunsToSell = 0;
+	let batch = 1;
+	let harmonics = 1;
+
+	/* Calculates the current divisor for buns */
+	for (let sold_today = 0; sold_today < V.daily.buns_sold; sold_today += 20) {
+		if (batch === 1) {
+			harmonics += 0.5;
+		} else {
+			harmonics += 1 / Math.max(batch / 20, 1);
+		}
+		batch++;
+	}
+	let doneToday = V.daily.buns_sold % 20;
 	let pricePerBun = V.bun_value / harmonics;
 
+	/* Sells the new buns */
 	while (remaining > 0) {
-		bunsToSell = Math.min(20-doneToday, remaining);
+		let bunsInBatch = Math.min(20 - doneToday, remaining);
 		doneToday = 0;
-		
-		totalRevenue += bunsToSell * pricePerBun;
-		remaining -= bunsToSell;
-		harmonics++;
+
+		totalRevenue += bunsInBatch * pricePerBun;
+		remaining -= bunsInBatch;
+		if (batch === 1) {
+			harmonics += 0.5;
+		} else {
+			harmonics += 1 / Math.max(batch / 20, 1);
+		}
+		batch++;
 		pricePerBun = V.bun_value / harmonics;
 	}
 
-	V.daily.buns_sold += T.buns_sold;
+	V.daily.buns_sold += toSell;
 
 	return totalRevenue / toSell;
 }
-
 window.averageBunPrice = averageBunPrice;
