@@ -208,8 +208,12 @@
 	<br>
 	<<if Time.minute < 50>>
 		<<bedicon "zzz">><<link [["Sleep (0:" + _time_to_pass + ")"|Docks Lunch Sleep]]>><<pass _time_to_pass>><</link>><<ltiredness>>
+		<br>
+		<<if $docks.fakeID is "shown">>
+			<<walkicon>><<link [[Leave|Docks Lunch Leave]]>><</link>>
+			<br>
+		<</if>>
 	<</if>>
-	<br>
 <</widget>>
 
 
@@ -269,13 +273,15 @@
 			<<set _overtime_multiplier to 1.5>>
 		<</if>>
 		<<set _shift_wage to ($docks.wage * ($docks.dailyHours.shift.total - $docks.dailyHours.shift.unpaid))>>
+		<<if _shift_wage lt 0>><<set _shift_wage to 0>><</if>>
 		<<if Time.month is 12 and Time.monthDay is 25>> /* All day overtime rates on Christmas */
 			<<set _shift_wage to (_shift_wage * _overtime_multiplier)>>
 		<</if>>
 		<<set _overtime_wage to ($docks.wage * ($docks.dailyHours.overtime.total - $docks.dailyHours.overtime.unpaid) * _overtime_multiplier)>>
+		<<if _overtime_wage lt 0>><<set _overtime_wage to 0>><</if>>
 		<<set _bonus to 0>>
 		<<if $christmas is 1>> /* £25 bonus on Christmas week, £100 bonus on Christmas day */
-			<<if $docks.dailyHours.shift.unpaid is $docks.dailyHours.shift.total>>
+			<<if $docks.dailyHours.shift.unpaid gte $docks.dailyHours.shift.total>>
 				<<set _bonus to 0>>
 			<<elseif Time.monthDay is 25>>
 				<<set _bonus to 10000>>
@@ -289,8 +295,8 @@
 		<<set _bonus_display to (_bonus / 100)>>
 		<<set _total_wage_display to (_total_wage / 100)>>
 
-		<<if $docks.dailyHours.shift.unpaid is $docks.dailyHours.shift.total>> /* slacked the entire shift with max suspicion */
-			<<if $docks.dailyHours.overtime.unpaid is $docks.dailyHours.overtime.total>> /* slacked all of overtime with max suspicion */
+		<<if $docks.dailyHours.shift.unpaid gte $docks.dailyHours.shift.total>> /* slacked the entire shift with max suspicion */
+			<<if $docks.dailyHours.overtime.unpaid gte $docks.dailyHours.overtime.total>> /* slacked all of overtime with max suspicion */
 				You are not given an envelope<<if $christmas is 1>>, not even your Christmas bonus<</if>>. <span class="red">"No work, no pay,"</span> <<he>> says. "<<if $christmas is 1>>We're not a charity. You can't just sit on your arse to collect a bonus.<<else>>If you're not working, why are you here?<</if>>" <<He>> eyes you for a moment, but doesn't stop you from leaving.
 			<<else>>
 				You are given a light envelope containing <span class="gold">£<<print _overtime_wage_display>></span> overtime pay<<if $christmas is 1>>, but your Christmas bonus is withheld<</if>>. <span class="purple">"We expect you to work during your shift,"</span> the <<personsimple>> says. "No, only working during overtime doesn't count. You're not going to last here if you stay that course." <<He>> eyes you for a moment, but doesn't stop you from leaving.

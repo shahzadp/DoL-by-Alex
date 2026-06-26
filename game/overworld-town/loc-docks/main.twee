@@ -15,7 +15,7 @@ You are on the docks.
 <</if>>
 <br><br>
 
-<<if ($docks.askedForWork or $docks.hired) and Time.schoolDay and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID isnot "shown">>
+<<if ($docks.askedForWork or $docks.hired) and Time.schoolDay and (Time.hour is 6 or Time.hour is 7) and $docks.fakeID isnot "shown">>
 	You approach the other workers, but a manager stops you. "Sorry, no can do, <<girl>>. You know the rules: no students on weekdays."
 
 	<<if $id is 1>>
@@ -29,7 +29,7 @@ You are on the docks.
 <<if $arousal gte $arousalmax>>
 	<<orgasmLocation "docks">>
 <</if>>
-<<if $docks.hired and Time.schoolDay and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID is "not considered">>
+<<if $docks.hired and Time.schoolDay and (Time.hour is 6 or Time.hour is 7) and $docks.fakeID is "not considered">>
 	Dockers arrive for work. They won't let you join them on a school day.
 	<br><br>
 <</if>>
@@ -40,9 +40,11 @@ You are on the docks.
 <<if $docks.askedForWork and !$docks.hired and Time.dayState isnot "night" and $exposed lte 0>>
 	<<docksicon>><<link [[Take job (0:30)|Docks Take Job]]>><<pass 30>><<set $docks.hired to true>><</link>>
 	<br>
-<<elseif $docks.hired and Time.hour gte 6 and Time.hour lte 8 and !$daily.docksLeftEarly and $exposed lte 0 and (!Time.schoolDay or $docks.fakeID is "shown")>>
+<<elseif $docks.hired and ((Time.hour is 6 or (Time.hour is 7 and (Time.minute lt 15 or $docks.fakeID is "shown"))) or ($daily.docksLunchLeft and (Time.hour is 11 or (Time.hour is 12 and Time.minute lt 3)))) and !$daily.docksLeftEarly and $exposed lte 0 and (!Time.schoolDay or $docks.fakeID is "shown")>>
 	<<if pcAreArmsBound("both")>>
 		<span class="red">Both of your arms are bound</span>, so you are unable to work as a docker.
+	<<elseif $daily.docksLunchLeft and (Time.hour is 11 or (Time.hour is 12 and Time.minute lt 3))>>
+		<<icon "cargo-stack.png">><<link [[Return to work|Docks Lunch Return]]>><</link>>
 	<<else>>
 		<<if Time.minute is 0>>
 			<<set _time_to_display to (16 - Time.hour) + ":00">>
@@ -54,8 +56,10 @@ You are on the docks.
 
 		<<if Time.hour is 6>>
 			<<icon "cargo-stack.png">><<link [["Work as a docker (" + _time_to_display + ")"|Docks Start Early]]>><<set $phase to 0>><</link>> /* started early, phase used in Docks Start */
-		<<else>>
+		<<elseif Time.hour is 7 and (Time.minute lt 15 or $docks.fakeID is "shown")>>
 			<<icon "cargo-stack.png">><<link [["Work as a docker (" + _time_to_display + ")"|Docks Start]]>><<set $phase to 1>><</link>> /* started exactly on time or late, phase used in Docks Start */
+		<<else>>
+			You shouldn't see this passage! Please report this to Vrelnir.
 		<</if>>
 	<</if>>
 	<br>
@@ -78,7 +82,7 @@ You are on the docks.
 	<<dressasyouwereicon>><<link [[Get dressed|Docks]]>><<storeon "docks">><</link>>
 	<br>
 <</if>>
-<<if $id is 1 and ($docks.askedForWork or $docks.hired) and Time.hour gte 6 and Time.hour lte 8 and $docks.fakeID is "idea">>
+<<if $id is 1 and ($docks.askedForWork or $docks.hired) and (Time.hour is 6 or Time.hour is 7) and $docks.fakeID is "idea">>
 	<<icon "access-card.png">><<link [[Use fake ID (0:02)|Docks Fake ID]]>><</link>>
 	<br>
 <</if>>
@@ -200,7 +204,18 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 :: Docks Take Job
 <<effects>>
 
-"Remember," the manager says. "You need to show up by <span class="gold"><<ampm 7 00>></span><<if $docks.fakeID isnot "shown">>, and you can't work on school days<</if>>. Security can let you in late until <<ampm 9 00>>, but don't make a habit of it. Work ends at <span class="gold"><<ampm 16 00>></span>. Welcome to the team."
+"Remember," the manager says.
+<<if $docks.fakeID is "shown">>
+	"You're expected to show up by <span class="gold"><<ampm 7 00>></span>, but security can check your ID to let you in late before <<ampm 8 00>>. Also, you won't be paid for your first hour if you show up halfway through."
+	<br><br>
+
+	"You can also leave for your lunch break. Just don't come back more than two minutes late or security won't let you in again. Yes, that means you won't get paid for the day if you lose track of time. Sorry, it's harsh, but it's company policy."
+	<br><br>
+<<else>>
+	"No work on school days. You're expected to show up by <span class="gold"><<ampm 7 00>></span>, but security can let you in late before <<ampm 7 15>>. Company policy says we need to verify an ID to let you in any later."
+	<br><br>
+<</if>>
+"Work ends at <span class="gold"><<ampm 16 00>></span>. Welcome to the team."
 <br><br>
 
 <<link [[Next|Docks]]>><</link>>
@@ -247,7 +262,7 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 	<<elseif Time.hour is 7 and Time.minute lt 15>>
 		"A little late, but not too bad. Try to be here by <span class="gold"><<ampm 7 00>></span> in the future."
 	<<else>>
-		"You're late. That's alright, you're fresh from orientation. Try to be here by <span class="gold"><<ampm 7 00>></span> in the future. You won't be paid for any hours you miss."
+		"You're late. That's alright, you're fresh from orientation. Try to be here by <span class="gold"><<ampm 7 00>></span> in the future. You won't be paid for your first hour if you show up at <<ampm 7 30>> or later."
 	<</if>>
 <<elseif Time.hour is 7>>
 	<<if $phase is 0>> /* arrived early, set in docks passage */
@@ -258,15 +273,18 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> doesn't seem to care that you're a couple minutes late.
 	<<elseif Time.minute lt 15>>
 		You pass security and report to a manager for work. <<generate1>><<person1>><<He>> pointedly reminds you to show up on time.<<stress 6>><<gstress>>
-	<<elseif Time.minute lt 30>>
-		Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> scolds you for showing up late.<<stress 6>><<trauma 6>><<gstress>><<gtrauma>>
+	<<elseif $docks.fakeID is "shown">>
+		<<if Time.minute lt 30>>
+			Security stops you to check your ID. When you're allowed entry, a <<generate1>><<person1>><<person>> pointedly reminds you to show up on time.<<stress 6>><<gstress>>
+		<<else>>
+			Security stops you to check your ID. When you're allowed entry, a <<generate1>><<person1>><<person>> glares at you. "You're late," <<he>> says. "The first hour is coming out of your pay. Try to show up on time in the future."<<stress 6>><<gstress>>
+			<<set $docks.dailyHours.shift.unpaid to 1>>
+		<</if>>
 	<<else>>
-		Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> harshly scolds you for showing up <<if Time.minute gt 30>>over <</if>>half an hour late.<<stress 12>><<trauma 6>><<ggstress>><<gtrauma>>
+		You shouldn't see this passage! Please report this to Vrelnir.
 	<</if>>
-<<elseif Time.hour is 8>>
-	Security stops you and calls a manager to check if you work here. When you're allowed entry, a <<generate1>><<person1>><<person>> harshly scolds you in front of the other dockers for showing up <<if Time.minute gt 0>>over <</if>>an hour late.<<stress 12>><<trauma 6>><<dockstatus -1>><<ggstress>><<gtrauma>><<lcool>>
 <<else>>
-	You shouldn't see this passage! Report this to Vrelnir.
+	You shouldn't see this passage! Please report this to Vrelnir.
 <</if>>
 <br><br>
 
@@ -328,16 +346,16 @@ The door is open. A <<generate2>><<person2>><<person>> looks up from <<his>> des
 	You work hard. It's
 	<<if $docks.dayType is "busy">>
 		exhausting.
-		<<physique 9>>
+		<<physique 6>>
 	<<elseif $docks.dayType is "slow">>
 		a slow day, leaving plenty of time to take breaks when you're not needed.
-		<<physique 3>>
+		<<physique 2>>
 	<<elseif $docks.dayType is "lewd">>
 		tiring, and you feel strangely heated.
-		<<physique 6>>
+		<<physique 4>>
 	<<else>>
 		tiring.
-		<<physique 6>>
+		<<physique 4>>
 	<</if>>
 
 	<<if $upperwetstage gte 3 or $lowerwetstage gte 3>>
@@ -771,6 +789,30 @@ You search for a quiet spot to lie down and take a nap. It's not very
 <br><br>
 
 <<docklunchprompt>>
+
+:: Docks Lunch Leave
+<<effects>>
+<<set $daily.docksLunchLeft to true>>
+
+You walk to the security checkpoint, where a surly <<generate1>><<person1>><<personsimple>> addresses you.
+<br><br>
+
+"Leaving for break? I'll need to see your ID." You hand <<him>> your fake ID. <<He>> stares at it for a moment, then hands it back to you. "Alright. Be back by <<ampm 12 00>>, give or take two minutes. You won't be paid if you don't show up again."
+<br><br>
+
+<<link [[Next|Docks]]>><<endevent>><</link>>
+<br>
+
+
+:: Docks Lunch Return
+<<effects>>
+
+Security stops you to check for ID. After a moment, you're let back in.<<if Time.hour is 12>> Nobody seems to care that you're a little late.<</if>>
+<br><br>
+
+<<link [[Next|Docks Lunch]]>><</link>>
+<br>
+
 
 :: Docks Lunch Stroll
 <<effects>>
