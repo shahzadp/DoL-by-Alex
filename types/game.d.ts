@@ -150,26 +150,6 @@ declare module "twine-sugarcube" {
 			pickaxe: number;
 		};
 
-		/* Temple Burden Variables */
-
-		/**
-		 * A randomly generated value between 1 and 100 (inclusive). Randomized each time `<<effects>>` is called.
-		 * 
-		 * If the player's burdenThreshold is greater than or equal to burdenRng, they will fail ALL skill checks that
-		 * can be affected by the Temple's Burden for the current passage.
-		 */
-		burdenRng: number;
-		/**
-		 * Set to true by the `<<skillCheck>>` widget if its provided skill is affected by the Temple's Burden.
-		 * False otherwise.
-		 */
-		burdenApplied: boolean;
-		/**
-		 * The amount of Burden that the player has taken on from the Temple. 0 means a 0% flat chance to fail certain
-		 * skill checks, 15 means a 15% flat chance to fail, 50 means a 50% chance, etc.
-		 */
-		burdenThreshold: number;
-
 		world_corruption_hard: number;
 		world_corruption_soft: number;
 		world_corruption_reduced: number;

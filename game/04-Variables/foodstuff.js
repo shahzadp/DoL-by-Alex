@@ -26,7 +26,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 14,
 				yield_multiplier: 1,
@@ -48,7 +47,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 14,
 				yield_multiplier: 1,
@@ -70,7 +68,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 28,
 				yield_multiplier: 1,
@@ -92,7 +89,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 7,
 				yield_multiplier: 1,
@@ -114,7 +110,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 12,
 				yield_multiplier: 1,
@@ -136,7 +131,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "water",
 				growth_days: 5,
 				yield_multiplier: 1,
@@ -158,7 +152,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 10,
 				yield_multiplier: 1,
@@ -180,7 +173,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 8,
 				yield_multiplier: 1,
@@ -201,10 +193,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 50,
 			},
@@ -218,10 +206,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 300,
 				available_in: ["supermarket"],
@@ -236,10 +220,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 100,
 				available_in: ["supermarket"],
@@ -254,10 +234,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 120,
 			},
@@ -271,10 +247,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 400,
 			},
@@ -291,10 +263,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 80,
 			},
@@ -308,10 +276,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 180,
 			},
@@ -325,10 +289,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 65,
 			},
@@ -342,10 +302,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 80,
 			},
@@ -359,10 +315,6 @@ function initFoodstuff() {
 			category: "mushroom",
 			kitchen_item_type_icon: "recipe-shroom.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 100,
 			},
@@ -376,10 +328,6 @@ function initFoodstuff() {
 			category: "mushroom",
 			kitchen_item_type_icon: "recipe-shroom.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 300,
 			},
@@ -396,10 +344,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 12000,
 				stall_size: "large",
@@ -415,7 +359,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 10,
 				yield_multiplier: 3,
@@ -437,7 +380,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 12,
 				yield_multiplier: 3,
@@ -459,7 +401,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 8,
 				yield_multiplier: 3,
@@ -481,7 +422,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 7,
 				yield_multiplier: 4,
@@ -507,7 +447,6 @@ function initFoodstuff() {
 				lewd: [],
 			},
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 28,
 				yield_multiplier: 1,
@@ -531,10 +470,6 @@ function initFoodstuff() {
 			category: "mushroom",
 			kitchen_item_type_icon: "recipe-shroom.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 800,
 			},
@@ -551,10 +486,6 @@ function initFoodstuff() {
 			ingredient_alternatives: {
 				normal: [],
 				lewd: ["baby_bottle_of_breast_milk"],
-			},
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
 			},
 			shop: {
 				sell_price: 100,
@@ -573,10 +504,6 @@ function initFoodstuff() {
 				normal: ["bird_egg"],
 				lewd: [],
 			},
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 40,
 			},
@@ -590,10 +517,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 3000,
 				stall_size: "large",
@@ -608,10 +531,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 3000,
 				stall_size: "large",
@@ -627,7 +546,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 8,
 				yield_multiplier: 3,
@@ -649,7 +567,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 12,
 				yield_multiplier: 2,
@@ -671,7 +588,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 10,
 				yield_multiplier: 3,
@@ -692,10 +608,6 @@ function initFoodstuff() {
 			category: "mushroom",
 			kitchen_item_type_icon: "recipe-shroom.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 200,
 			},
@@ -709,10 +621,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: [],
-			},
 			shop: {
 				sell_price: 7,
 				stall_size: "small",
@@ -728,7 +636,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 3,
 				yield_multiplier: 1,
@@ -749,10 +656,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 200,
 			},
@@ -766,10 +669,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 200,
 			},
@@ -784,7 +683,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 12,
 				yield_multiplier: 1,
@@ -805,10 +703,6 @@ function initFoodstuff() {
 			category: "produce",
 			kitchen_item_type_icon: "recipe-produce.png",
 			prop_folder: "tending",
-			tending: {
-				affected_by_tending_skill: false,
-				tags: [],
-			},
 			shop: {
 				sell_price: 50000,
 				stall_size: "large",
@@ -924,7 +818,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 10,
 				yield_multiplier: 4,
@@ -1043,7 +936,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 9,
 				yield_multiplier: 5,
@@ -1464,7 +1356,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 15,
 				yield_multiplier: 4,
@@ -1510,7 +1401,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "water",
 				growth_days: 26,
 				yield_multiplier: 20,
@@ -1714,10 +1604,6 @@ function initFoodstuff() {
 			category: "seafood",
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 600,
 				available_in: ["supermarket"],
@@ -1732,10 +1618,6 @@ function initFoodstuff() {
 			category: "seafood",
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 800,
 				available_in: ["supermarket"],
@@ -2257,10 +2139,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 50,
 				available_in: ["supermarket"],
@@ -2348,10 +2226,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 20,
 				available_in: ["supermarket"],
@@ -2390,10 +2264,6 @@ function initFoodstuff() {
 			category: "fruit",
 			kitchen_item_type_icon: "recipe-fruit.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 250,
 				available_in: ["supermarket"],
@@ -2529,10 +2399,6 @@ function initFoodstuff() {
 			category: "seafood",
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 600,
 				available_in: ["supermarket"],
@@ -2571,10 +2437,6 @@ function initFoodstuff() {
 			category: "seafood",
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 400,
 				available_in: ["supermarket"],
@@ -2944,7 +2806,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 10,
 				yield_multiplier: 10,
@@ -3062,10 +2923,6 @@ function initFoodstuff() {
 			category: "meat",
 			kitchen_item_type_icon: "recipe-meat.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 1000,
 				available_in: ["supermarket"],
@@ -3080,10 +2937,6 @@ function initFoodstuff() {
 			category: "meat",
 			kitchen_item_type_icon: "recipe-meat.png",
 			prop_folder: "ingredient",
-			tending: {
-				affected_by_tending_skill: true,
-				tags: []
-			},
 			shop: {
 				sell_price: 700,
 				available_in: ["supermarket"],
@@ -3099,7 +2952,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-vegetable.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 30,
 				yield_multiplier: 1,
@@ -3121,7 +2973,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-ingredient.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				tags: []
 			},
 			shop: {
@@ -3140,7 +2991,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
 			tending: {
-				affected_by_tending_skill: true,
 				tags: []
 			},
 			shop: {
@@ -3230,7 +3080,6 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-flower.png",
 			prop_folder: "tending",
 			tending: {
-				affected_by_tending_skill: true,
 				planting_bed: "earth",
 				growth_days: 14,
 				yield_multiplier: 1,
@@ -3288,7 +3137,7 @@ function initFoodstuff() {
 			},
 		},
 		jammie_dodger: {
-			index: 150,
+			index: 94,
 			name: "jammie dodger",
 			singular: "jammie dodger",
 			plural: "jammie dodgers",
@@ -3313,7 +3162,7 @@ function initFoodstuff() {
 			},
 		},
 		jam: {
-			index: 151,
+			index: 95,
 			name: "jam",
 			singular: "cup of jam",
 			plural: "cups of jam",

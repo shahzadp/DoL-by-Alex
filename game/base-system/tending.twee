@@ -17,8 +17,7 @@
 <</widget>>
 
 <<widget "add_plot">>
-	<!-- Adds a plot to an existing location. Arguments are as in the plots_init widget, but the second argument
-	and beyond are shifted down one. -->
+	/*Adds a plot to an existing location. Arguments are as in the plots_init widget, but the second argument and beyond are shifted down one.*/
 	<<set $_plotsInLocation to $plots[_args[0]]>>
 	<<set $_last to $_plotsInLocation.length>>
 	<<set $_plotsInLocation.push(clone(setup.tending.plot_base))>>
@@ -28,11 +27,12 @@
 <</widget>>
 
 <<widget "clear_plot">>
-	<!-- Returns a plot to its default state.
-		First argument: location.
-		Second argument: index of plot to be reset.
-		OR
-		First argument: the plot to operate on. -->
+	/*Returns a plot to its default state.
+	First argument: location.
+	Second argument: index of plot to be reset.
+	OR
+	First argument: the plot to operate on.
+	*/
 	<<if _args[1] isnot undefined>>
 		<<set $_plot to $plots[_args[0]][_args[1]]>>
 	<<else>>
@@ -80,7 +80,7 @@
 	<</switch>>
 <</silently>><<print $_result>><</widget>>
 
-<<widget "display_plot">> <!-- Argument is the plot location you want to display. -->
+<<widget "display_plot">><!-- Argument is the plot location you want to display. -->
 	<<set _location to _args[0]>>
 	<<set $_plotsHere to $plots[_location]>>
 	<<set _water_needed to 0>>
@@ -451,23 +451,10 @@
 	<<if $foodstuff[$_type] is undefined>>
 		<<set $foodstuff[$_type] to {"amount": 0}>>
 	<</if>>
-	<!-- Harvests are not affected by the "affected_by_tending_skill" flag. -->
 	<<switch $_plot.size>>
-		<!-- For small and medium plots, a player with Tending F will grow between (5 to 15) and (10 to 30) crops, respectively.
-			This averages out to 10 and 20 crops for small and medium plots.
-
-			A player with Tending S will be able to grow (25 to 45) and (40 to 80) crops, increasing the averages to 35 and 60,
-			respectively. This roughly triples the player's average harvest, and doubles the range they can receive. -->
-		<<case "small">>
-			<<set _tending_amount to
-				random(5 + (currentSkillValue('tending') * 20/1000), 15 + (currentSkillValue('tending') * 30/1000))
-				>>
-		<<case "medium">>
-			<<set _tending_amount to
-				random(10, (currentSkillValue('tending') * 30/1000), 30 + (currentSkillValue('tending') * 50/1000))
-				>>
-		<<default>>
-			ERROR (tendingHarvest): Invalid field size.
+		<<case "small">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 20) + 10)>>
+		<<case "medium">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 10) + 20)>>
+		<<default>> <<set _tending_amount to random(10, (currentSkillValue('tending') / 2) + 50)>>
 	<</switch>>
 	<<set _tending_amount *= setup.foodstuff[$_type].tending.yield_multiplier>>
 	<<switch Math.clamp($_plot.quality, 1, 4)>>
@@ -484,7 +471,7 @@
 	<<if $backgroundTraits.includes("greenthumb")>>
 		<<set _tending_amount *= 1.2>>
 	<</if>>
-	<!-- The game's default setting sets the tendingYieldModifer to 5x. 1x is for the "Legacy" Hard Mode. -->
+
 	<<set _tending_amount *= $settings.tendingYieldModifier>>
 
 	<<set _tending_amount to Math.trunc(_tending_amount)>>
@@ -496,9 +483,11 @@
 <</widget>>
 
 <<widget "tending_pick">>
-	<!--First argument: plant type.
-		Second argument: minimum number picked.
-		Third argument: maximum number picked. -->
+	/*
+	* First argument: plant type.
+	* Second argument: minimum number picked.
+	* Third argument: maximum number picked.
+	*/
 	<<set $_type to _args[0]>>
 	<<if $foodstuff[$_type] is undefined>>
 		<<set $foodstuff[$_type] to {"amount": 0}>>
@@ -510,9 +499,6 @@
 		<<set _tending_amount to random(1, 5)>>
 	<</if>>
 
-	<!-- If a foodstuff's "affected_by_tending_skill" is true, it will add up to a 2x multiplier on the
-		amount of crops the player can gather. Combined with the Green Thumb trait, a player can gather up
-		to 2.4x the original amount. -->
 	<<if setup.foodstuff[$_type].tending?.affected_by_tending_skill>>
 		<<set _tending_amount *= (1 + (currentSkillValue('tending') / 1000))>>
 	<</if>>
@@ -611,27 +597,4 @@
 	<</if>>
 
 	<<updatePlants>>
-<</widget>>
-
-<<widget "foodstuffReport">>
-	<<set _name to _args[0]>>
-	<<set _quantity to _args[1]>>
-	<<set _icon to _args[2] ? _args[2] : "">>
-	
-	<<if _quantity is 1>>
-		<<if (["a","e","i","o","u","A","E","I","O","U"].some(letter => _name.startsWith(letter)))>>
-			an
-		<<else>>
-			a
-		<</if>>
-		<<if _icon is not "">>
-			<<foodstufficon _icon>>
-		<</if>>
-		<<print setup.foodstuff[_name].name.replace(/_/g," ")>>\
-	<<else>>
-		<<if _icon is not "">>
-			<<foodstufficon _icon>>
-		<</if>>
-		<<number _quantity>> <<print setup.foodstuff[_name].plural>>\
-	<</if>>
 <</widget>>

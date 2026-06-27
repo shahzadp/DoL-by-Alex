@@ -1219,11 +1219,7 @@ function clothesIndex(slot, itemToIndex) {
 }
 window.clothesIndex = clothesIndex;
 
-/**
- * @param {string} skill The name of the requested skill.
- * @param {number} disableModifiers How much of an effect that modifiers will have on the player's current skill. Higher values means a lower effect. Stops at 2.
- * @returns Returns the current value of the requested skill, accounting for potential modifiers.
- */
+
 function currentSkillValue(skill, disableModifiers = 0) {
 	let result = V[skill];
 	if (!result && result !== 0) {
@@ -3065,16 +3061,9 @@ function isBeastSceneAllowed() {
 }
 window.isBeastSceneAllowed = isBeastSceneAllowed;
 
-/**
- * Check if an event is going to be dangerous based on rng and the player's Allure. Another target's Allure can
- * be substitued as needed.
- * 
- * For consistency, danger rng is rolled once per passage, unless specified through the "reroll" parameter.
- * 
- * Lowering the floor increases the player's flat probability of triggering an event. Changing the mod
- * increases / decreases the chance of triggering the event with increasing / decreasing Allure.
- * 
- * For a guaranteed activation at 8,000 Allure, set a mod of 1.25, or a floor of 8,000.
+/** 
+ * check if event is going to be dangerous based on rng and player allure
+ * for consistency, danger rng is rolled once per passage, unless specified otherwise
  *
  * @param {number} mod allure multiplier
  * @param {number} floor how high of a bar rng(1,10000) needs to pass to qualify as dangerous with 0 allure. default is 9900 (1% chance of danger event)
@@ -3083,17 +3072,6 @@ window.isBeastSceneAllowed = isBeastSceneAllowed;
  * @returns {boolean} whether the roll is dangerous
  */
 function dangerEvent(mod = 1, floor = 9900, allure = V.allure, reroll = false) {
-	/**
-	 * (mod = 1, floor = 8,000)
-	 * * 8,000 Allure: 100% pass chance
-	 * * 6,000 Allure:  80% pass chance
-	 * *	 0 Allure:  20% pass chance
-	 * 
-	 * (mod = 1.25, floor = 9,900)
-	 * * 8,000 Allure: 100% pass chance
-	 * * 6,000 Allure:  76% pass chance
-	 * *	 0 Allure:   1% pass chance
-	 */
 	if (!T.danger || reroll) T.danger = random(1, 10000);
 	return T.danger >= floor - allure * mod;
 }
