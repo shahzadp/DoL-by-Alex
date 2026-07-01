@@ -2287,7 +2287,7 @@ function earnHourlyFeats() {
 		earnFeat("Broodmother Zoologist");
 	}
 
-	if (V.spraymax >= 7) earnFeat("Max Those Shots");
+	if (V.spraymax >= 8) earnFeat("Max Those Shots");
 	if ((V.semen_volume >= 2000 && V.semen_amount >= V.semen_volume) || (V.milk_volume >= 2000 && V.milk_amount >= V.milk_volume)) earnFeat("Feeling Full");
 	if (V.cool >= 400) earnFeat("Social Butterfly");
 	if (V.cool <= 2 && !V.backgroundTraits.includes("nerd")) earnFeat("Anti-Social Moth");

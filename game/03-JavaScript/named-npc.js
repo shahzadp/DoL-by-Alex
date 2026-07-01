@@ -219,6 +219,8 @@ function averySchedule() {
 		return T.avery_available;
 	}
 
+	if (!V.avery_mansion) return;
+
 	if (V.avery_mansion.schedule === "away" && V.avery_skyscraper_fire_time <= 0 && V.avery_injury) V.avery_mansion.schedule = "return";
 	else if (
 		V.avery_mansion.schedule === "away" &&
