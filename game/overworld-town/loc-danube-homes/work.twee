@@ -1272,12 +1272,23 @@ You are led to the sprawling back garden, the extent of which is concealed by se
 	<<clearsinglenpc 0>>
 	<<beastNEWinit 1 dog>>	
 	<<set $NPCList[0].fullDescription to "Brutus">>
-	<<set _available_events to ($settings.tentaclesEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover")))+($monster is 1 or $settings.bestialityEnabled)>>
-	<<set $phase to random(1,3-_available_events)>>
-	/* Disabling content will not increase how much you gain */
+	<<set _dogEnabled to ($monster is 1 or $settings.bestialityEnabled)>>
+	<<set _plantsEnabled to ($settings.tentaclesEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover")))>>
+	<<set _available_events to _plantsEnabled+_dogEnabled>>
+	<<set $phase to random(1,3-_available_events) === 1 ? 1 : -2>>
+	/* 
+	$phase is passed to Danube Garden Sex Finish to determine payout for that event. 
+	Disabling toggles leads to statistically lower payouts, since it makes things less dangerous. 
+	Other dangerous events have constant payouts. 
+	
+	If everything is enabled, then regular sex/molest events consistently pay 450
+	If plants or dogs are disabled, there's a 50% chance for sex/molest events to pay 450 and a 50% chance to pay 120 (average 285)
+	If plants and dogs are disabled, there's a 33% chance for sex/molest events to pay 450 and a 66% chance to pay 120 (average 230)
+	$phase=1 pays out 450, $phase=-2 pays out 120. 0 and -1 are reserved for bound molest, which has different payouts
+	*/
 	<<cleareventpool>>
 	<<if pcAreArmsBound("any") or $feetuse is "bound">>
-		<<if ($monster is 1 or $settings.bestialityEnabled)>>
+		<<if _dogEnabled>>
 			<<addinlineevent "bound dog" 6>>
 				<<clearNPC "danube_garden_0">>
 				<<clearNPC "danube_garden_1">>
@@ -1296,7 +1307,7 @@ You are led to the sprawling back garden, the extent of which is concealed by se
 				<br>
 			<</addinlineevent>>
 		<</if>>
-		<<addinlineevent "bound molest" `9-6*($monster is 1 or $settings.bestialityEnabled)`->>
+		<<addinlineevent "bound molest" `(_dogEnabled) ? 3 : 9`>> /* odds: 3 if bound dog can happen, 3+6 if it can't, so sum of relative weight remains 9 */
 			<<clearsinglenpc 0>>
 			<<clearsinglenpc 2>>
 			<<generate1>>
@@ -1305,8 +1316,8 @@ You are led to the sprawling back garden, the extent of which is concealed by se
 			<<loadNPC 1 "danube_garden_1">>
 			<<clearNPC "danube_garden_0">>
 			<<clearNPC "danube_garden_1">>
-			<<set $phase to 1-random(1,2-($monster is 1 or $settings.bestialityEnabled))>>
-			/* Disabling content will not increase how much you gain */
+			<<set $phase to (_dogEnabled ? 0 : random(-1,0))>>
+			/* pays out 300 if dogs are enabled. otherwise, 50/50 to pay out 300 or 200 (average 250) */
 			growls with irritation. "Is this a joke to you? Wasting my time? What work can you do like that?"
 			<br><br>
 
@@ -1325,7 +1336,7 @@ You are led to the sprawling back garden, the extent of which is concealed by se
 			<br>
 		<</addinlineevent>>
 	<</if>>
-	<<if $settings.tentaclesEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
+	<<if _plantsEnabled>>
 		<<addinlineevent "plant">>
 			<<if pcAreArmsBound("any") or $feetuse is "bound">>
 				sighs with exasperation. "Well you're not going to get any work done like that, are you?"
@@ -1353,7 +1364,7 @@ You are led to the sprawling back garden, the extent of which is concealed by se
 			<br>
 		<</addinlineevent>>
 	<</if>>
-	<<if ($monster is 1 or $settings.bestialityEnabled)>>
+	<<if _dogEnabled>>
 		<<addinlineevent "dog">>
 			<<clearNPC "danube_garden_0">>
 			<<clearNPC "danube_garden_1">>
@@ -1509,7 +1520,7 @@ You hum a gentle tune.
 	<span class="green">The tendrils loosen their grasp,</span> and you pull yourself free.
 	<br><br>
 
-	You continue your work. Now wary, you stay far from the denser foliage. After another two hours, the <<person>> seems satisfied, and hands you <<moneyGain 120>>.
+	You continue your work. Now wary, you stay far from the denser foliage. After another two hours, the <<person2>><<person>> seems satisfied, and hands you <<moneyGain 120>>.
 	<<physique 6>>
 	<<pass 2 hours>>
 	<br><br>
@@ -1854,10 +1865,11 @@ You continue your work. Now wary, you stay far from the denser foliage. After an
 
 	<<tearful>> you take the
 		<<switch $phase>>
+			<<case -2>><<moneyGain 120>>.
 			<<case -1>><<moneyGain 200>>.
 			<<case 0>><<moneyGain 300>>.
 			<<case 1>><<moneyGain 450>>.
-			<<default>><<moneyGain 120>>.
+			<<default>><<moneyGain 420.69>> (this is an error, please report it!)
 		<</switch>>
 	<br><br>
 

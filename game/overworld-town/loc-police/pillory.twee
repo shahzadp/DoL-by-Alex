@@ -103,7 +103,7 @@ With <<him>> gone, some onlookers lose interest and return to their routines. Ot
 <<set $pillory.audience to 1>>
 <</if>>
 
-<<if $pillory.time is undefined or $pillory.time.end is undefined>>
+<<if $pillory.time?.end is undefined>>
 	<<set $pillory.time to {
 		start: Time.date.timeStamp,
 		end: new DateTime(Time.date).addMinutes(60 - Time.date.minute).timeStamp
@@ -121,48 +121,18 @@ You have <<number _timeLeft>> hours left until release.
 You should be released any moment from now.
 <</if>>
 
-<<if $pillory.audience + $exposed is 1>>
-
-<span class="teal">A few people stop to look at you but most just glance then continue their business.</span>
-
-<<elseif $pillory.audience + $exposed is 2>>
-
-<span class="lblue">You've attracted a small crowd of onlookers.</span>
-
-<<elseif $pillory.audience + $exposed is 3>>
-
-<span class="blue">You've attracted a growing crowd of onlookers.</span>
-
-<<elseif $pillory.audience + $exposed is 4>>
-
-<span class="purple">A large group has gathered around you, big enough that the crowd itself is attracting more people to see what the fuss is about.</span>
-
-<<elseif $pillory.audience + $exposed is 5>>
-
-<span class="pink">A large crowd has gathered around you. People throw jeers and insults your way.</span>
-
-<<else>>
-
-<span class="red">A huge crowd has gathered around you. People jeer and insult you. Some throw litter.</span>
-
-<</if>>
+<<switch $pillory.audience + $exposed>>
+<<case 1>><span class="teal">A few people stop to look at you but most just glance then continue their business.</span>
+<<case 2>><span class="lblue">You've attracted a small crowd of onlookers.</span>
+<<case 3>><span class="blue">You've attracted a growing crowd of onlookers.</span>
+<<case 4>><span class="purple">A large group has gathered around you, big enough that the crowd itself is attracting more people to see what the fuss is about.</span>
+<<case 5>><span class="pink">A large crowd has gathered around you. People throw jeers and insults your way.</span>
+<<default>><span class="red">A huge crowd has gathered around you. People jeer and insult you. Some throw litter.</span>
+<</switch>>
 
 <<if $exposed gte 1>>
-
-You can do nothing about your <<lewdness>> displayed for everyone to see, humiliating you further.
-<<if $exposed gte 2>> <<trauma 1>><<gtrauma>><</if>>
-
-	<<if $exposed is 1>>
-		<<if $pillory.audience gte 1>>
-			<<fameexhibitionism $pillory.audience>>
-		<</if>>
-	<</if>>
-	<<if $exposed is 2>>
-		<<if $pillory.audience gte 1>>
-			<<set _audienceFactor to $pillory.audience * 2>>
-			<<fameexhibitionism _audienceFactor>>
-		<</if>>
-	<</if>>
+	You can do nothing about your <<lewdness>> displayed for everyone to see, humiliating you further.<<if $exposed gte 2>> <<trauma 1>><<gtrauma>><</if>>
+	<<fameexhibitionism `$pillory.audience * 2`>>
 <</if>>
 
 <<if $exposed gte 1 and $pillory.audience and random(0, 9) gte 7>>
@@ -183,11 +153,7 @@ You can do nothing about your <<lewdness>> displayed for everyone to see, humili
 		"I bet <<pshe>> gets off on the humiliation anyway.",
 		"Do you like having your <<undies 2>> photographed?"
 	].pluck()>>"
-	<<if $exposed is 1>>
-		<<trauma 1>><<gtrauma>>
-	<<else>>
-		<<trauma 2>><<gtrauma>>
-	<</if>>
+	<<trauma `$exposed===1 ? 1 : 2`>><<gtrauma>>
 	<<fameexhibitionism 10 "pic">>
 <</if>>
 <<if $exposed gte 2 and $pillory.audience and $player.penisExist and random(0, 9) gte 7>><<pillorypeniscomment>><</if>>
