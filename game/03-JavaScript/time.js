@@ -1677,7 +1677,9 @@ function dailyNPCEffects() {
 }
 
 function dailyPlayerEffects() {
-	V.willpower *= 0.99;
+	if(V.fallenangel < 4){
+		V.willpower *= 0.99;
+	}
 
 	if (V.awareness <= -200 && V.innocencestate !== 1) {
 		V.innocencestate = 1;
