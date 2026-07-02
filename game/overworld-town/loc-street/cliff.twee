@@ -117,7 +117,33 @@ There's a path leading down to the beach.
 
 <<elseif $chef_event gte random(1, 100) and $exposed lte 0 and !$possessed>>
 	<<rng>><<run statusCheck("Gwylan")>>
-	<<if $chef_sus gte 100>>
+	<<if $chef_sus gte 100 and $chef_threat and (crimeSumCurrent() gte 2500  or $community_service gte 1)>>
+		<<set $chef_sus to 0>>
+		<<generatePolice 1>><<generatePolice 2>><<generatePolice 3>>
+		<<set $NPCList[0].traits.push("unforgiving")>>
+		<<set $NPCList[0].description to "stern-looking">>
+		<<if $NPCList[0].pronoun is "m">>
+			<<set $NPCList[0].fullDescription to "stern-looking man">>
+		<<elseif $NPCList[_n].pronoun is "f">>
+			<<set $NPCList[0].fullDescription to "stern-looking woman">>
+		<</if>>
+		A police car pulls up besides you. A <<person2>><<person>> steps out first, visibly tense. <<pShes>> followed by a <<person1>><<person>>.
+		<br>
+		"<<pShe>> is indeed well known to our services," the <<person1>><<person>> says. "I did well to insist on coming when you reported <<phim>>."
+		<br><br>
+
+		"Get in," <<he>> says. "We wouldn't normally send a patrol simply for safety violations, but you did some serious things."
+		<br><br>
+
+		<<link [[Get in|Chef Police Journey]]>><<crimeUp 1000 "assault" "food">><<sub 1>><</link>>
+		<br>
+		<<link [[Refuse|Chef Police Refuse]]>><<crimeUp 300 "resisting">><<def 1>><</link>><<crime "resisting">>
+		<br>
+		<<link [[Run Away|Chef Police Run]]>><<crimeUp 1500 "resisting">><</link>><<crime "resisting">><<athleticsdifficulty 500 1500>>
+		/* Refusing the blackmail encounter + running away here leads to > 5000 crime, and to the prison.
+		The other options lead to 3500-4300 crime, which gives a chance to avoid the prison.
+		The default is always 1000 crime, which should be enough for players to try avoiding it. */
+	<<elseif $chef_sus gte 100>>
 		<<set $chef_sus to 30>>
 		<<generatePolice 1>><<person1>>A police car pulls up beside you, and a <<person>> steps out. "You're in trouble <<girl>>," <<he>> says. "Heard some disturbing stories about your cream business. About you making a mockery of health and safety. We take that very seriously, so we did some tests." <<He>> opens the passenger door.
 		<br><br>
@@ -126,7 +152,7 @@ There's a path leading down to the beach.
 
 		<<link [[Get in|Chef Blackmail Car]]>><<sub 1>><</link>>
 		<br>
-		<<link [[Refuse|Chef Blackmail Car Refuse]]>><<crimeUp 3000 "resisting">><<def 1>><</link>><<crime "resisting">>
+		<<link [[Refuse|Chef Blackmail Car Refuse]]>><<crimeUp 2500 "resisting">><<def 1>><</link>><<crime "resisting">>
 	<<elseif !isGwylanAbsent() and _gwylanStatus?.includes("met") and !_gwylanStatus?.includes("reunion") and !$gwylanSeen?.includes("cafe_chef_truth") and $chef_speech isnot "truth" and !$weekly.gwylanCafeConfront and $rng lte 50>>
 		<<set $weekly.gwylanCafeConfront to true>>
 		<<npc Gwylan>><<person1>>
