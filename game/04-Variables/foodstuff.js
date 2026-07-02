@@ -34,7 +34,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 400,
+				sell_price: 350,
 			},
 		},
 		white_rose: {
@@ -55,7 +55,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 400,
+				sell_price: 350,
 			},
 		},
 		orchid: {
@@ -76,7 +76,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 1000,
+				sell_price: 500,
 			},
 		},
 		daisy: {
@@ -91,13 +91,13 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 7,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 100,
+				sell_price: 150,
 			},
 		},
 		tulip: {
@@ -112,7 +112,7 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 12,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["autumn"],
 				tags: [],
@@ -154,7 +154,7 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 10,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
@@ -175,7 +175,7 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 8,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
@@ -367,7 +367,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 40,
+				sell_price: 80,
 			},
 		},
 		onion: {
@@ -424,13 +424,13 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 7,
-				yield_multiplier: 4,
+				yield_multiplier: 5,
 				has_seeds: true,
 				seasons: ["spring", "autumn", "winter"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 20,
+				sell_price: 50,
 			},
 		},
 		strange_flower: {
@@ -455,7 +455,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 900,
+				sell_price: 400,
 			},
 			food: {
 				tags: ["aphrodisiac"],
@@ -554,7 +554,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 50,
+				sell_price: 90,
 			},
 		},
 		turnip: {
@@ -575,7 +575,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 80,
+				sell_price: 130,
 			},
 		},
 		broccoli: {
@@ -596,7 +596,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 50,
+				sell_price: 100,
 			},
 		},
 		ghostshroom: {
@@ -638,13 +638,13 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 3,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["autumn"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 60,
+				sell_price: 200,
 			},
 		},
 		bird_egg: {
@@ -685,13 +685,13 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 12,
-				yield_multiplier: 1,
+				yield_multiplier: 2,
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 320,
+				sell_price: 250,
 			},
 		},
 		oyster_pearl: {
@@ -826,7 +826,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 30,
+				sell_price: 70,
 			},
 		},
 		cheese: {
@@ -938,14 +938,14 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 9,
-				yield_multiplier: 5,
+				yield_multiplier: 12,
 				has_seeds: true,
 				seed_name: "wheat",
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 10,
+				sell_price: 40,
 			},
 		},
 		prawn_bisque: {
@@ -1364,7 +1364,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 60,
+				sell_price: 100,
 			},
 		},
 		kedgeree: {
@@ -2808,14 +2808,14 @@ function initFoodstuff() {
 			tending: {
 				planting_bed: "earth",
 				growth_days: 10,
-				yield_multiplier: 10,
+				yield_multiplier: 6,
 				has_seeds: true,
 				seed_name: "spinach",
 				seasons: ["spring", "autumn"],
 				tags: [],
 			},
 			shop: {
-				sell_price: 10,
+				sell_price: 60,
 			},
 		},
 		salad: {
@@ -2960,7 +2960,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 480,
+				sell_price: 400,
 			},
 		},
 		oats: {
@@ -3088,7 +3088,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 500,
+				sell_price: 400,
 			},
 		},
 		valentines_chocolate: {

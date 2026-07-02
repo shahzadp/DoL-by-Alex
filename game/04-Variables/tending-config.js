@@ -11,7 +11,7 @@ function initTendingConfig() {
 		wateringTimes: {
 			small: 5,
 			medium: 15,
-			large: 60,
+			large: 30,
 		},
 	};
 }

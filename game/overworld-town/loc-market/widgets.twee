@@ -10,6 +10,9 @@
 		<<link [[Next|Connudatus Street]]>><<endevent>><<endstall>><<clotheson>><<set $eventskip to 1>><</link>>
 		<br>
 	<<else>>
+		<<silently>><<stall_inventory>><</silently>>
+		<<stall_chance>>
+		<br><br>
 		<<if random(1, 10000) is 10000>>
 			<<stallicon "open">><<link [[Capitalism ho! (0:20)|Stall]]>><<endevent>><<endstall>><<pass 20>><</link>>
 			<br>
@@ -47,7 +50,7 @@
 			<</if>>
 		<</if>>
 		<<if hasSexStat("exhibitionism", 3)>>
-			<<skinicon "masturbate">><<link [[Masturbate|Stall Masturbation]]>><<endevent>><<endstall>><<set $phase to 0>><<set $masturbationstart to 1>><</link>><<if $daily.ex.stall isnot 1>><<exhibitionist3>><</if>>
+			<<skinicon "masturbate">><<link [[Masturbate|Stall Masturbation]]>><<endevent>><<endstall>><<set $phase to 0>><<set $masturbationstart to 1>><</link>><<if $daily.ex.stall isnot 1>><<exhibitionist3>><</if>><<if $daily.stall_lewdity is 0>><<glewdity>><</if>>
 			<br>
 		<</if>>
 		<<connudatusicon>><<link [[Leave|Connudatus Street]]>><<endevent>><<endstall>><<clotheson>><<set $eventskip to 1>><</link>>
@@ -205,8 +208,10 @@
 <</widget>>
 
 <<widget "eventsstall">>
+	/* $stall_rejected is now a dead variable, but kept in case it is reintroduced later. */
 	<<rng 10>>
-	<<if $stall_rejected gte random(1, 200)>>
+	<<if $daily.stall_lewdity gt 0 and $daily.stall_lewdity+2 gte random(1, 18)>>
+		/* Bad events happen between 1/6 and 1/3 of the cases */
 		<<if $rng is 1>>
 			<<generate1>><<person1>>
 			You hear movement behind you.
@@ -244,9 +249,9 @@
 					<br><br>
 				<</if>>
 			<</if>>
-			<<link [[Endure (0:05)|Stall Endure]]>><<pass 5>><<trauma 6>><<stress 6>><<arousal 300 "genitals">><<arousal 300 "breasts">><</link>><<gtrauma>><<gstress>><<garousal>>
+			<<link [[Endure (0:05)|Stall Endure]]>><<pass 5>><<trauma 6>><<stress 6>><<arousal 300 "genitals">><<arousal 300 "breasts">><<lewdity 1>><</link>><<glewdity>><<gtrauma>><<gstress>><<garousal>>
 			<br>
-			<<link [[Shove|Stall Shove]]>><<set $stall_rejected += 1>><<trauma -6>><</link>><<glewdity>><<ltrauma>>
+			<<link [[Shove|Stall Shove]]>><<trauma -6>><</link>><<ltrauma>>
 			<br>
 		<<elseif $rng is 2>>
 			<<generate1>><<person1>>
@@ -286,7 +291,7 @@
 			<<stall_actions>>
 		<<elseif $rng is 5>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 20>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<set $enemytrust -= 20>>
 			A <<person>> walks up to your display. <<He>> <<stall_check_text>>. "How much for <span class="green"><<stall_amount>></span> of these?" <<he>> asks. <<He>> leers at you openly.
 			<br><br>
 
@@ -296,7 +301,7 @@
 			<<stall_sell_actions>>
 		<<elseif $rng is 6>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 20>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<set $enemytrust -= 20>>
 			A <<person>> walks up to your display. <<He>> <<stall_check_text>>. "How much for <span class="green"><<stall_amount>></span> of these?" <<he>> asks. "And don't try to sweet talk me. I've heard about you."
 			<br><br>
 
@@ -306,7 +311,7 @@
 			<<stall_sell_actions>>
 		<<elseif $rng is 7>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 20>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<set $enemytrust -= 20>>
 			You see a <<person>> watching you from afar. <<He>> walks over when your eyes meet. <<He>> <<stall_check_text>>. "How much for <span class="green"><<stall_amount>></span> of these?" <<he>> asks.
 			<br><br>
 
@@ -316,7 +321,7 @@
 			<<stall_sell_actions>>
 		<<elseif $rng is 8>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 20>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<set $enemytrust -= 20>>
 			A <<person>> walks by, and stops in front of your stall. <<His>> eyes flicker over your face and chest as <<he>> <<stall_check_text>>. "How much for <span class="green"><<stall_amount>></span> of these?" <<he>> asks.
 			<br><br>
 
@@ -326,7 +331,7 @@
 			<<stall_sell_actions>>
 		<<elseif $rng is 9>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 40>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<stallCustomerArousal>><<set $stall_seduced to 1>><<set $enemytrust -= 20>>
 			A <<person>> swaggers up to your display. Without warning, <<he>> reaches forward and grasps your arm. <<He>> tugs you forward, until you're leaning over the table, then <<he>> leans in and licks your cheek.
 			<<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
 			<br><br>
@@ -339,7 +344,7 @@
 			<<stall_sell_actions>>
 		<<else>>
 			<<generate1>><<person1>>
-			<<stall_init>><<set $enemyarousal += 20>><<set $enemytrust -= 20>>
+			<<stall_init>><<stallCustomerArousal>><<set $enemytrust -= 20>>
 			A <<person>> walks up to your display. <<He>> <<stall_check_text>>. "How much for <span class="green"><<stall_amount>></span> of these?" <<he>> asks, leaning against the table.
 			<br><br>
 
@@ -412,13 +417,13 @@
 	<<elseif $rng is 6>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		<<set $enemyarousal += 20>>
+		<<stallCustomerArousal>>
 		A <<person>> swaggers up and leans against the table. "Hey beautiful," <<he>> says. "Nice goods you got there." <<His>> eyes remain on you. <<He>> doesn't even glance at the display.
 		<br><br>
 
 		<<link [[Encourage <<him>> to buy something|Stall Encourage]]>><</link>>
 		<br>
-		<<link [[Flirt|Stall Flirt]]>><<set $enemytrust += 20>><<set $enemyarousal += 20>><</link>><<promiscuous1>><<gtrust>><<glust>>
+		<<link [[Flirt|Stall Flirt]]>><<set $enemytrust += 20>><<stallCustomerArousal>><<set $stall_seduced to 1>><</link>><<promiscuous1>><<gtrust>><<glust>>
 		<br>
 		<<link [[Tell <<him>> to leave|Stall Leave]]>><</link>>
 		<br>
@@ -474,6 +479,7 @@
 	<<else>>
 		<<generate1>><<person1>>
 		<<stall_init>>
+		
 		A <<person1>><<person>> is impressed by your <span class="green"><<print setup.foodstuff[$stall_foodstuff].plural>></span>. "How much for <span class="green"><<stall_amount>></span>?" <<he>> asks.
 		<br><br>
 
@@ -530,13 +536,13 @@
 	<<else>>
 		<span class="pink">little.</span>
 	<</if>>
-	<<if $foodstuff_inventory.length gte 6>>
+	<<if $foodstuff_inventory.length gte 10>>
 		You have an <span class="green">excellent</span> variety on display.
-	<<elseif $foodstuff_inventory.length gte 5>>
+	<<elseif $foodstuff_inventory.length gte 8>>
 		You have a <span class="teal">great</span> variety on display.
-	<<elseif $foodstuff_inventory.length gte 4>>
+	<<elseif $foodstuff_inventory.length gte 6>>
 		You have a <span class="lblue">good</span> variety on display.
-	<<elseif $foodstuff_inventory.length gte 3>>
+	<<elseif $foodstuff_inventory.length gte 4>>
 		You have an <span class="blue">okay</span> variety on display.
 	<<elseif $foodstuff_inventory.length gte 2>>
 		You have a <span class="purple">poor</span> variety on display.
@@ -545,14 +551,26 @@
 	<<else>>
 		<span class="red">You're out of stock!</span>
 	<</if>>
-	<<if $stall_rejected gte 100>>
-		A <span class="lewd">lewd</span> aura permeates the area. <span class="red">Groups of people openly leer at you from afar.</span>
-	<<elseif $stall_rejected gte 60>>
-		A <span class="lewd">lewd</span> aura permeates the area. <span class="pink">You think you see people watching you from afar, but they turn away when you look.</span>
-	<<elseif $stall_rejected gte 30>>
-		A <span class="lewd">lewd</span> aura permeates the area. <span class="purple">People cast strange looks in your direction now and then.</span>
-	<<elseif $stall_rejected gte 10>>
-		A <span class="lewd">lewd</span> aura permeates the area.
+	<<if $daily.stall_lewdity gte 1>>
+		<br>
+		A <span class="lewd">lewd</span> aura permeates the area. 
+		<<switch $daily.stall_lewdity>>
+			<<case 1>>
+			<<case 3>><span class="pink">You think you see people watching you from afar, but they turn away when you look.</span>
+			<<case 2>><span class="purple">People cast strange looks in your direction now and then.</span>
+			<<default>><span class="red">Groups of people openly leer at you from afar.</span>
+		<</switch>>
+		Naughty activities have
+		<<if $daily.stall_lewdity gte 4>>
+			an <span class="lewd">excellent</span>
+		<<elseif $daily.stall_lewdity gte 3>>
+			a <span class="teal">good</span>
+		<<elseif $daily.stall_lewdity gte 2>>
+			a <span class="lblue">decent</span>
+		<<else>>
+			a <span class="blue">small</span>
+		<</if>>
+		chance to attract customers.
 	<</if>>
 <</widget>>
 
@@ -571,15 +589,20 @@
 	<<else>>
 		<span class="pink">angry.</span>
 	<</if>>
-	<<if $enemyarousal gte 20>>
+	<<if $enemyarousal gte 10>>
 	<<He>> also looks
 		<<if $enemyarousal gte 100>>
 			<span class="red">lecherous.</span>
-		<<elseif $enemyarousal gte 80>>
-			<span class="pink">lustful.</span>
+			/* Will ask for sex. */
+		<<elseif $enemyarousal gte 90>>
+			<span class="lewd">desperate for release.</span>
+			/* Guaranteed to ask for sex at the next sale. */
 		<<elseif $enemyarousal gte 60>>
-			<span class="purple">horny.</span>
+			<span class="pink">lustful.</span>
+			/* Has a chance to ask for sex at the next sale. */
 		<<elseif $enemyarousal gte 40>>
+			<span class="purple">horny.</span>
+		<<elseif $enemyarousal gte 20>>
 			<span class="blue">aroused.</span>
 		<<else>>
 			<span class="lblue">flirty.</span>
@@ -601,8 +624,8 @@
 <</widget>>
 
 <<widget "stall_sell_man">>
-	<<if $enemyarousal gte random(50, 150)>>
-		The <<person1>><<person>> leans over the table and grasps your arm. "I've paid enough," <<he>> whispers. "Time for you to give up the actual goods."
+	<<if $enemyarousal gte 100>>
+		The <<person1>><<person>> leans over the table and grasps your arm. "I've paid enough," <<he>> whispers. "Time for you to give up the actual goods."<<glewdity>><<lewdity 1>>
 		<br><br>
 
 		<<if hasSexStat("promiscuity", 4)>>
@@ -612,7 +635,7 @@
 			<<insufficientStat "promiscuity" "to offer anything">>
 			<br>
 		<</if>>
-		<<link [[Pull away|Stall Pull]]>><</link>><<glewdity>>
+		<<link [[Pull away|Stall Pull]]>><</link>>
 		<br>
 	<<elseif $enemytrust gte random(-50, 50)>>
 		The <<person1>><<person>> gives in.
@@ -644,25 +667,28 @@
 			<br><br>
 
 			<<if $stall_seduced is 0>>
-				<<link [[Reel <<him>> back with a flirt|Stall Seduce]]>><</link>><<promiscuous1>><<glust>>
+				<<link [[Reel <<him>> back with a flirt (0:05)|Stall Seduce]]>><<pass 5>><</link>><<promiscuous1>><<glust>>
 				<br>
 			<<elseif $stall_seduced is 1>>
-				<<link [[Reel <<him>> back by flaunting your body|Stall Seduce]]>><</link>><<exhibitionist1>><<glust>>
+				<<link [[Reel <<him>> back by flaunting your body (0:05)|Stall Seduce]]>><<pass 5>><</link>><<exhibitionist1>><<glust>>
 				<br>
 			<<elseif $stall_seduced is 2 and hasSexStat("promiscuity", 2)>>
-				<<link [[Reel <<him>> back with a kiss|Stall Seduce]]>><</link>><<promiscuous2>><<glust>>
+				<<link [[Reel <<him>> back with a kiss (0:05)|Stall Seduce]]>><<pass 5>><</link>><<promiscuous2>><<glust>>
 				<br>
-			<<elseif $stall_seduced gte 3 and $worn.lower.type.includes("naked")>>
+			<<elseif $stall_seduced is 3 and $worn.lower.type.includes("naked")>>
 				<<if $worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-					<<link [[Reel <<him>> back by revealing your lack of clothing|Stall Seduce]]>><</link>><<exhibitionist3>><<gglust>>
+					<<link [[Reel <<him>> back by revealing your lack of clothing (0:05)|Stall Seduce]]>><<pass 5>><</link>><<exhibitionist3>><<gglust>>
 					<br>
 				<<elseif !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 2)>>
-					<<link [[Reel <<him>> back by revealing your lack of clothing|Stall Seduce]]>><</link>><<exhibitionist2>><<glust>>
+					<<link [[Reel <<him>> back by revealing your lack of clothing (0:05)|Stall Seduce]]>><<pass 5>><</link>><<exhibitionist2>><<glust>>
 					<br>
 				<</if>>
+			<<elseif $stall_seduced is 4 and $worn.lower.type.includes("naked") and $worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 4)>>
+				<<link [[Reel <<him>> back by offering <<him>> a better look (0:05)|Stall Seduce]]>><<pass 5>><</link>><<exhibitionist4>><<gglust>>
+					<br>
 			<</if>>
 
-			<<link [[Let <<him>> go (0:20)|Stall]]>><<endevent>><<endstall>><<pass 20>><</link>>
+			<<link [[Let <<him>> go|Stall Ready]]>><<endevent>><<endstall>><</link>>
 			<br>
 			<<link [[Leave your stall|Connudatus Street]]>><<endevent>><<endstall>><<set $eventskip to 1>><<clotheson>><</link>>
 			<br>
@@ -692,19 +718,26 @@
 
 <<widget "stall_init">>
 	<<set $stall_foodstuff to $foodstuff_inventory.random()>>
-	<<stall_update>>
 	<<set $enemytrust to 0>>
 	<<set $enemyarousal to 0>>
 	<<set $stall_seduced to 0>>
+	<<stall_update>>
 <</widget>>
 
 <<widget "stall_update">>
+	<<set _stall_multiplier to Math.max(1,Math.pow(2,Math.max(0,$stall_seduced-2)))>> 
+	/* Range of 2-5 becomes 1-8, for a gentle exponential scaling */
 	<<if setup.foodstuff[$stall_foodstuff].shop.stall_size is "large">>
-		<<set $stall_amount to 1>>
+		<<set $stall_amount to random(1,2 * _stall_multiplier)>>
 	<<elseif setup.foodstuff[$stall_foodstuff].shop.stall_size is "small">>
-		<<set $stall_amount to random(110, 300)>>
+		<<set $stall_amount to random(25 * _stall_multiplier, 75 * _stall_multiplier)>>
 	<<else>>
-		<<set $stall_amount to random(11, 30)>>
+		<<if $stall_seduced lte 1>>
+			<<set $stall_amount to random(1, 10)>>
+		<<else>>
+			<<set $stall_amount to random(5 * _stall_multiplier, 15 * _stall_multiplier)>> 
+			/* At most 120 products in one unlikely sale. Averages are (5,10,20,40,80) */
+		<</if>>
 	<</if>>
 	<<if $stall_amount gte $foodstuff[$stall_foodstuff].amount>>
 		<<set $stall_amount to clone($foodstuff[$stall_foodstuff].amount)>>
@@ -787,6 +820,78 @@
 
 	<<set _text_output to $_examines + " one of the <span class='green'>" + (setup.foodstuff[$stall_foodstuff].plural) + "</span>" + $_reacts>>
 <</silently>><<print _text_output>><</widget>>
+
+<<widget "stallCustomerArousal">>
+	<<set $enemyarousal += 10*random(1,2)*random(1,2)>>
+	/* 
+	25% +10 arousal 
+	50% +20 arousal
+	25% +40 arousal
+	*/
+<</widget>>
+
+<<widget "stall_autosale">>
+	/* 1/3 no sale, 1/3 normal sale, 1/3 double sale. Averages to 1 sale. */
+    <<silently>><<stall_inventory>><</silently>>
+    <<stall_init>>
+   
+    <<if Math.min(10000,3000 + $attractiveness/2 + $fame.business + (currentSkillValue('tending') * 2) + (Math.min($foodstuff_inventory.length,10) * 500)) gte random(1, 15000)>>
+        /* No sale in 1/3 of the cases. */
+		<<set _stall_attention to 2>>
+        <<set $stall_foodstuff to $foodstuff_inventory.random()>>
+        
+        /* Decide between 1 item, doubled amount, or 2 different items. */
+        <<if random(1, 2) is 2>>
+            <<if random(1, 2) is 2>>
+                <<set $stall_seduced to 2>>  /* Doubles the amount sold. */
+            <<else>>
+                /* Try to sell two different products */
+                <<if $foodstuff_inventory.length gte 2>>
+                    <<set $_food2 to $foodstuff_inventory.random()>>
+                    <<if $_food2 is $stall_foodstuff>>
+                        <<set $stall_seduced to 2>>  /* Fallback to doubling if same. */
+                    <</if>>
+                <<else>>
+                    <<set $stall_seduced to 2>>  /* Not enough variety. */
+                <</if>>
+            <</if>>
+        <</if>>
+
+        <<stall_update>>
+        <<generate1>><<person1>>
+        
+		
+	    <<silently>><<stall_sell>><</silently>>        
+        A <<person>> buys 
+        <<if $stall_amount gte 2>>
+            <span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
+        <<else>>
+            <span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
+        <</if>>
+        for 
+		<<if $_food2 is undefined>><<printmoney `$stall_cost * $stall_amount`>>. 
+		<<else>>
+			<<printmoney `$stall_cost * $stall_amount`>> and
+			<<set $stall_foodstuff to $_food2>>
+			<<stall_update>>
+			<<silently>><<stall_sell>><</silently>>   
+            <<if $stall_amount gte 2>>
+                <span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
+            <<else>>
+                <span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
+            <</if>>
+            for <<printmoney `$stall_cost * $stall_amount`>>.
+        <</if>>
+		<br>
+        
+        <<set $stall_seduced to 0>>
+        <<endstall>>
+        <<silently>><<stall_inventory>><</silently>>
+        <<famebusiness 1>>
+        <<endevent>>
+       
+    <</if>>
+<</widget>>
 
 <<widget "marketStockDisplay">>
 	<div id="marketStockDisplay" class="food_ui no-numberify">

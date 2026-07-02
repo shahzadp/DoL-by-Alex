@@ -127,9 +127,9 @@
 				<span class="green">The <<print $_plantedPlant.tending?.seed_name ? `$_plantedPlant.tending.seed_name is` : `$_plantedPlant.plural are`>> flowering and ready for picking.</span>
 				<br>
 				<<switch _plantbed.size>>
-					<<case "small">> <<set $_timeStr to "0:05">><<set _pass to 5>>
+					<<case "small">> <<set $_timeStr to "0:10">><<set _pass to 10>>
 					<<case "medium">> <<set $_timeStr to "0:15">><<set _pass to 15>>
-					<<default>> <<set $_timeStr to "1:00">><<set _pass to 60>>
+					<<default>> <<set $_timeStr to "0:20">><<set _pass to 20>>
 				<</switch>>
 
 				<<if pcAreArmsBound("both")>>
@@ -217,7 +217,7 @@
 	<<switch _plantbed.size>>
 		<<case "small">><<set _tStatup to 1>><<set _tPass to 5>>
 		<<case "medium">><<set _tStatup to 2>><<set _tPass to 15>>
-		<<default>><<set _tStatup to 6>><<set _tPass to 60>>
+		<<default>><<set _tStatup to 6>><<set _tPass to 30>>
 	<</switch>>
 
 	<<set $_time to getTimeString(_tPass)>>
@@ -267,9 +267,9 @@
 			<!-- comparing soil types; check if target bed is compatible with the seed's soil type -->
 			<<if $_plant.tending.planting_bed is _plantbed.bed>>
 				<<switch _plantbed.size>>
-					<<case "small">><<set _passTime to 30>>
-					<<case "medium">><<set _passTime to 90>>
-					<<default>><<set _passTime to 180>>
+					<<case "small">><<set _passTime to 20>>
+					<<case "medium">><<set _passTime to 40>>
+					<<default>><<set _passTime to 120>>
 				<</switch>>
 				<<set $_timeString to getTimeString(_passTime)>>
 				<<capture _passTime _plantbed _plantType>>
@@ -299,20 +299,20 @@
 	<<set _plantbed to _args[0]>>
 
 	<<if currentSkillValue('tending') gte 1500>>
-		<<set _baseTime to 3>>
+		<<set _baseTime to 5>>
 		<<set _baseTiredness to 1>>
 	<<else>>
 		<<set $_ti to Math.clamp(Math.floor(currentSkillValue('tending') / 200), 0, 6)>>
-		<<set _baseTime to [30,25,20,15,10,5,4][$_ti]>>
+		<<set _baseTime to [40,30,25,20,15,10,7][$_ti]>>
 		<<set _baseTiredness to [6,5,4,3,2,1,1][$_ti]>>
 	<</if>>
 
 	<<if _plantbed.size is "medium">>
-		<<set _baseTime *= 3>>
+		<<set _baseTime *= 2>>
 		<<set _baseTiredness *= 2>>
 	<<elseif _plantbed.size is "large">>
-		<<set _baseTime *= 12>>
-		<<set _baseTiredness *= 6>>
+		<<set _baseTime *= 4>>
+		<<set _baseTiredness *= 4>>
 	<</if>>
 
 	<<set _timeString to getTimeString(_baseTime)>>
@@ -385,7 +385,7 @@
 		<br>
 	<</if>>
 	<<if $tendingvars.harvest>>
-		You harvest <<number $tendingvars.harvest_amount>> <<print $tendingvars.harvest_name>>.
+		You harvest <<number $tendingvars.harvest_amount>> <<print $tendingvars.harvest_name>>. <<harvestText>>
 		<<if $tendingvars.plotDecay>>
 			The fertiliser effect has decayed<<if $tendingvars.plotDecay is 2>> completely<</if>>.
 		<</if>>
@@ -452,9 +452,25 @@
 		<<set $foodstuff[$_type] to {"amount": 0}>>
 	<</if>>
 	<<switch $_plot.size>>
-		<<case "small">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 20) + 10)>>
-		<<case "medium">> <<set _tending_amount to random(10, (currentSkillValue('tending') / 10) + 20)>>
-		<<default>> <<set _tending_amount to random(10, (currentSkillValue('tending') / 2) + 50)>>
+		<!-- For small, medium and large plots, a player with Tending F and multiplier 1x will grow between 
+		(6 to 12), (6 to 18), and (12 to 24) crops, respectively.
+		This averages out to 9, 12, and 18 crops for small, medium and large plots.
+
+		A player with Tending S will be able to grow (12 to 24), (18 to 36) and (36,72) crops, increasing 
+		the averages to 18, 27, and 54, respectively.  
+		A fully optimized field with 5x multiplier yields 500 crops on average. -->
+		<<case "small">>
+			<<set _tending_amount to
+				random(Math.floor(6 + (Math.floor(currentSkillValue('tending')/100) * 0.6)), Math.floor(12 + (Math.floor(currentSkillValue('tending')/100) * 1.2)))
+				>>
+		<<case "medium">>
+			<<set _tending_amount to
+				random(Math.floor(6 + (Math.floor(currentSkillValue('tending')/100) * 1.2)), Math.floor(18 + (Math.floor(currentSkillValue('tending')/100) * 1.8)))
+				>>
+		<<default>>
+			<<set _tending_amount to
+				random(Math.floor(12 + (Math.floor(currentSkillValue('tending')/100) * 2.4)), Math.floor(24 + (Math.floor(currentSkillValue('tending')/100) * 4.8)))
+				>>
 	<</switch>>
 	<<set _tending_amount *= setup.foodstuff[$_type].tending.yield_multiplier>>
 	<<switch Math.clamp($_plot.quality, 1, 4)>>
@@ -471,7 +487,7 @@
 	<<if $backgroundTraits.includes("greenthumb")>>
 		<<set _tending_amount *= 1.2>>
 	<</if>>
-
+	<!-- The game's default setting sets the tendingYieldModifer to 3x. 1x is for the "Legacy" Hard Mode. -->
 	<<set _tending_amount *= $settings.tendingYieldModifier>>
 
 	<<set _tending_amount to Math.trunc(_tending_amount)>>
@@ -597,4 +613,47 @@
 	<</if>>
 
 	<<updatePlants>>
+<</widget>>
+
+<<widget "foodstuffReport">>
+	<<set _name to _args[0]>>
+	<<set _quantity to _args[1]>>
+	<<set _icon to _args[2] ? _args[2] : "">>
+	
+	<<if _quantity is 1>>
+		<<if (["a","e","i","o","u","A","E","I","O","U"].some(letter => _name.startsWith(letter)))>>
+			an
+		<<else>>
+			a
+		<</if>>
+		<<if _icon is not "">>
+			<<foodstufficon _icon>>
+		<</if>>
+		<<print setup.foodstuff[_name].name.replace(/_/g," ")>>\
+	<<else>>
+		<<if _icon is not "">>
+			<<foodstufficon _icon>>
+		<</if>>
+		<<number _quantity>> <<print setup.foodstuff[_name].plural>>\
+	<</if>>
+<</widget>>
+
+<<widget "harvestText">>
+	<<if currentSkillValue('tending') gte 100>>
+		Your tending skill improves the yield 
+		<<switch Math.floor(currentSkillValue('tending') / 100)>>
+			<<case 10>><span class = "green">tremendously</span>.
+			<<case 9>><span class = "teal">hugely</span>.
+			<<case 8>><span class = "teal">greatly</span>.
+			<<case 7>><span class = "lblue">substantially</span>.
+			<<case 6>><span class = "lblue">significantly</span>.
+			<<case 5>><span class = "blue">noticeably</span>.
+			<<case 4>><span class = "blue">decently</span>.
+			<<case 3>><span class = "purple">modestly</span>.
+			<<case 2>><span class = "purple">a little</span>.
+			<<default>><span class = "pink">slightly</span>.
+		<</switch>>
+	<<else>>
+		Your tending skill is <span class = "red">too low</span> to improve the yield.
+	<</if>>
 <</widget>>
