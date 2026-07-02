@@ -392,7 +392,15 @@ You hear them escape the way they came.
 	<<set $masturbationstart to 0>>
 	<<set $masturbationstat += 1>>
 	<<masturbationstart>>
-	<<set $timer to 60>>
+	<<set $timer to (60+Math.max(random(1,11),random(1,11))-Math.max(random(1,11),random(1,11)))>> 
+	/* Range of 50-70. Average 64, and 86% to be above the old average of 60. */
+	<<set $ticks to []>>
+	<<set _remaining to $timer>>
+	<<for _i to 0; _i lt 5; _i++>>
+		<<set _interval to $timer / 6 + random(-2,2)>>
+		<<set _remaining to Math.max(5-_i,_remaining - _interval)>>
+		<<set $ticks[_i] to _remaining>>
+	<</for>>
 	<<set $masturbation_bowl to 1>>
 	<<set $mouth to "disabled">>
 	You make sure you're alone in the kitchen, and place a bowl in front of you.
@@ -401,13 +409,14 @@ You hear them escape the way they came.
 <<masturbationeffects>>
 <<masturbationactions>>
 
-<<if $timer gte 50>>
+
+<<if $timer gte $ticks[0]>>
 	<span class="teal">Sam is occupied.</span>
-<<elseif $timer gte 40>>
+<<elseif $timer gte $ticks[1]>>
 	<span class="lblue">Sam is occupied.</span>
-<<elseif $timer gte 30>>
+<<elseif $timer gte $ticks[2]>>
 	<span class="blue">Sam will want to check on you soon.</span>
-<<elseif $timer gte 20>>
+<<elseif $timer gte $ticks[3]>>
 	<span class="purple">You hear Sam chatting near the door.</span>
 <<else>>
 	<span class="pink">You hear Sam right outside the door!</span>
@@ -432,11 +441,17 @@ You hear them escape the way they came.
 <<wearProp "whisk">>
 
 <<if $masturbation_fluid gte 30>>
-	<<if _temp_timer lte 10>>
+	<<if _temp_timer lte $ticks[4]>>
 		Sam barges through the door. You barely cover yourself in time. <<He>> frowns. "Just checking up on you," <<he>> says.
 		<br><br>
 		You assure <<him>> everything is under control, and <<he>> nods. <<He>> returns to the main room, but wedges the kitchen door open.
-		<<gsuspicion>><<set $chef_sus += 5>>
+		<<gsuspicion>>
+		<<if $daily.chef_sus>>
+			<<set $chef_sus += 2>>
+		<<else>>
+			<<set $daily.chef_sus to true>>
+			<<set $chef_sus += 5>>
+		<</if>>
 		<br><br>
 	<</if>>
 
@@ -470,11 +485,17 @@ You hear them escape the way they came.
 	<<sellbuns>>
 
 <<else>>
-	<<if _temp_timer lte 10>>
+	<<if _temp_timer lte $ticks[4]>>
 		Sam barges through the door. You barely cover yourself in time. <<He>> frowns. "Just checking up on you," <<he>> says.
 		<br><br>
 		You assure <<him>> everything is under control, and <<he>> nods. <<He>> returns to the main room, but wedges the kitchen door open.
-		<<gsuspicion>><<set $chef_sus += 5>>
+		<<gsuspicion>>
+		<<if $daily.chef_sus>>
+			<<set $chef_sus += 2>>
+		<<else>>
+			<<set $daily.chef_sus to true>>
+			<<set $chef_sus += 5>>
+		<</if>>
 		<br><br>
 	<</if>>
 
@@ -489,6 +510,7 @@ You hear them escape the way they came.
 
 <</if>>
 
+<<unset $ticks>>
 <<pass 50>>
 <<timeTrackingEndCafe>>
 
@@ -1790,7 +1812,12 @@ The interior is pitch black. Four others step out of the dark, each wearing a po
 :: Chef Blackmail Car Refuse
 
 <<set $outside to 0>><<set $location to "cafe">><<effects>>
-You turn your back on the <<person>>, and walk away. <<He>> doesn't stop you.
+You turn your back on the <<person>> and start walking away.
+<br><br>
+"Come back here!" the <<person1>><<person>> barks. "Walk away now and I'll report it. They'll send half the bloody force after you."
+<br>
+You hear a passenger door slam and the engine start as you leave.
+<<set $chef_threat to true>>
 <br><br>
 <<link [[Next|Cliff Street]]>><<endevent>><<set $eventskip to 1>><</link>>
 <br>
@@ -1930,3 +1957,96 @@ You turn your back on the <<person>>, and walk away. <<He>> doesn't stop you.
 <<endevent>>
 <<chefwork>>
 
+:: Chef Police Journey
+
+They cuff your hands being your back, and you climb into the back of the patrol car.  <<if $worn.handheld.name isnot "naked">>Your $worn.handheld.name is confiscated.<</if>>
+<br><br>
+The <<person1>><<person>> sits beside you while the other officer takes the front passenger seat, next to a <<person3>><<person>> at the driver's seat.
+<br><br>
+
+<<set $leftarm to "bound">><<set $rightarm to "bound">><<handheldruined>>
+<<set $outside to 0>><<set $location to "town">><<effects>>
+<<He>> puts a firm hand on your shoulder.
+<br>
+"The law is harsh, but it is the law," <<he>> says gravely. "Taking your just punishment is the only path to rehabilitation."
+<br><br>
+<<link [[Next|Hospital Arrest Sit]]>><</link>>
+
+:: Chef Police Refuse
+
+You turn your back on the officers and start walking away.
+<br>
+"Enough of this," the <<person2>><<person>> snaps, <<his>> voice sharp and impatient.
+<br><br>
+Before you can take more than a few steps, the <<person1>><<person>> grabs your wrist roughly.
+<br>
+"Looks like we're doing this the hard way," <<he>> says.
+<br><br>
+<<link [[Next|Chef Police Fight]]>><<set $fightstart to 1>><<set $phase to 0>><</link>>
+
+:: Chef Police Run
+You turn and bolt, trying to escape.
+<br><br>
+
+<<if $athleticsSuccess>>
+	You sprint down the road as fast as you can. Shouts and heavy footsteps erupt behind you, but you manage to duck between two buildings and <span class="green">lose them in the back alleys</span>.
+	<br><br>
+	Your heart is pounding as you finally slow down, gasping for breath. That was too close.
+	<br><br>
+	<<link [[Next|Cliff Street]]>><<endevent>><<set $eventskip to 1>><</link>>
+<<else>>
+	You barely make it ten steps before the <<person1>><<person>> <span class="red">tackles you</span>, while the others run behind. 
+	<br><br>
+	<<He>> shakes <<his>> head, looking disappointed. "Why do they always run..."
+	<br><br>
+	<<link [[Next|Chef Police Fight]]>><<set $fightstart to 1>><<set $phase to 1>><</link>>
+<</if>>
+
+:: Chef Police Fight
+<<if $fightstart is 1>>
+	You brace yourself, ready to fight the cops off.
+	<<set $fightstart to 0>>
+	<<neutral 1>>
+	<<maninit>>
+	<<if $phase is 0>>
+		<<set $enemytrust -= 50>>
+		<<set $enemyanger += 150>>
+	<<else>>
+		<<set $enemytrust -= 100>>
+		<<set $enemyanger += 250>>
+	<</if>>
+	<<npcidlegenitals>>
+	<<crimeUp 500 "assault">>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate "<span class='red'>You scream, but no one comes to your aid against the police.</span>">>
+<<man>>
+<<stateman>>
+<<actionsman>>
+
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0)>>
+	<span id="next"><<link [[Next|Chef Police Fight Finish]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Chef Police Fight]]>><</link>></span>
+<</if>>
+
+:: Chef Police Fight Finish
+<<if $enemyhealth lte 0 or $enemyarousal gte $enemyarousalmax>>
+	They back off from you<<if $enemyhealth lte 0>>, surprised by your strength<</if>>. <<tearful>> you run into an alley and escape before they can stop you.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Cliff Street]]>><<set $stress -= 1000>><<set $eventskip to 1>><</link>>
+<<else>>
+	You are left helpless and writhing in pain. You can do nothing as the cops pick you up and bring you back to their car. 
+	<<bind>>
+	<<tearful>> you try to get your bearings. They carry you away.
+	<<saveNPC 1 "police_chef_0">><<saveNPC 2 "police_chef_1">><<saveNPC 3 "police_chef_3">>
+	<br><br>
+	<<endcombat>>
+	<<loadNPC 0 "police_chef_0">><<loadNPC 1 "police_chef_1">><<loadNPC 2 "police_chef_3">>
+	<<clearNPC "police_chef_0">><<clearNPC "police_chef_1">><<clearNPC "police_chef_3">>
+	<<link [[Next|Chef Police Journey]]>><<crimeUp 1000 "assault" "food">><</link>>
+<</if>>
