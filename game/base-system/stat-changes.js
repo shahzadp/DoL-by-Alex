@@ -1045,6 +1045,15 @@ const statChange = (() => {
 	}
 	DefineMacro("hallucinogen", hallucinogen);
 
+	function lewdity(amount) {
+		if (isNaN(amount)) paramError("lewdity", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		if (amount) {
+			V.daily.stall_lewdity = Math.clamp(V.daily.stall_lewdity + amount, 0, 4);
+		}
+	}
+	DefineMacro("lewdity", lewdity);
+
 	function wet(type, amount) {
 		if (isNaN(amount)) paramError("wet", "amount", amount, "Expected a number.");
 		amount = Number(amount);

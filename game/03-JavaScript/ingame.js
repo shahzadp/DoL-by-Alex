@@ -3166,7 +3166,7 @@ function averageBunPrice(toSell = T.buns_sold) {
 		pricePerBun = V.bun_value / harmonics;
 	}
 
-	V.daily.buns_sold += toSell;
+	V.daily.buns_sold += T.buns_sold;
 
 	return totalRevenue / toSell;
 }
