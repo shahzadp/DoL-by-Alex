@@ -337,25 +337,21 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} state
 	 */
 	function compressState(state) {
-		try {
-			const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
-			const compressor = new JsonCompressor(dictionary);
-			const zstate = compressor.compress(state);
-			zstate.dictionary = COMPRESSOR_CURRENT_DICTIONARY_ID;
-			zstate.title =
-				"This save is compressed and is not compatible with old versions of Degrees of Lewdity. If you want to load this save in an older game build, use exporting.";
-			zstate.variables = {};
-			if (shouldVerifyCompression()) {
-				// Sanity check
-				const uzstate = decompressState(zstate);
-				if (JSON.stringify(state) !== JSON.stringify(uzstate)) {
-					throw new Error("Decompression check failed");
-				}
+		const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
+		const compressor = new JsonCompressor(dictionary);
+		const zstate = compressor.compress(state);
+		zstate.dictionary = COMPRESSOR_CURRENT_DICTIONARY_ID;
+		zstate.title =
+			"This save is compressed and is not compatible with old versions of Degrees of Lewdity. If you want to load this save in an older game build, use exporting.";
+		zstate.variables = {};
+		if (shouldVerifyCompression()) {
+			// Sanity check
+			const uzstate = decompressState(zstate);
+			if (JSON.stringify(state) !== JSON.stringify(uzstate)) {
+				throw new Error("Decompression check failed");
 			}
-			return zstate;
-		} catch (e) {
-			console.warn("Something went wrong", e);
 		}
+		return zstate;
 	}
 
 	/**
