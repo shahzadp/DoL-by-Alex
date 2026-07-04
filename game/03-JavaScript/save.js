@@ -16,7 +16,7 @@ const DoLSave = ((Story, Save) => {
 	// see game/00-framework-tools/03-compression/dictionaries.js
 	const COMPRESSOR_DICTIONARIES = DoLCompressorDictionaries;
 	// id of the dictionary to use for saving
-	const COMPRESSOR_CURRENT_DICTIONARY_ID = "v2";
+	const COMPRESSOR_CURRENT_DICTIONARY_ID = "v3";
 	/**
 	 * When saving, decompress and compare with the original.
 	 * If results differ, report an error and save the uncompressed version instead.
