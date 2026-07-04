@@ -361,21 +361,17 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} zstate
 	 */
 	function decompressState(zstate) {
-		try {
-			if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
-			const dicid = zstate.dictionary;
-			if (!(dicid in COMPRESSOR_DICTIONARIES))
-				throw new Error(
-					"Unable do decompress the save - the dictionary " +
-						JSON.stringify(dicid) +
-						" is unknown to this game version (trying to load newer save from older game?)"
-				);
-			const dictionary = COMPRESSOR_DICTIONARIES[dicid];
-			const decompressor = new JsonDecompressor(dictionary);
-			return decompressor.decompress(zstate);
-		} catch (e) {
-			console.warn("Something went wrong", e);
-		}
+		if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
+		const dicid = zstate.dictionary;
+		if (!(dicid in COMPRESSOR_DICTIONARIES))
+			throw new Error(
+				"Unable to decompress the save - the dictionary " +
+					JSON.stringify(dicid) +
+					" is unknown to this game version (trying to load newer save from older game?)"
+			);
+		const dictionary = COMPRESSOR_DICTIONARIES[dicid];
+		const decompressor = new JsonDecompressor(dictionary);
+		return decompressor.decompress(zstate);
 	}
 	function enableCompression() {
 		V.compressSave = true;
@@ -424,19 +420,27 @@ const DoLSave = ((Story, Save) => {
 		saveObj.state.history = saveObj.state.history.map(state => {
 			state.dictionary = dictOverride;
 			if (JsonDecompressor.isCompressed(state)) {
-				let decompressed = decompressState(state);
-				if (!decompressed.variables || !decompressed.prng || !decompressed.variables.saveVersions) {
+				// decompressing with the wrong dictionary can throw or produce nonsense, treat both as a failed attempt
+				const tryDecompress = () => {
+					try {
+						const result = decompressState(state);
+						return result.variables && result.prng && result.variables.saveVersions ? result : null;
+					} catch {
+						return null;
+					}
+				};
+				let decompressed = tryDecompress();
+				if (!decompressed) {
 					// Before giving up, check if dictionary is mislabeled
 					const otherDicts = Object.keys(COMPRESSOR_DICTIONARIES).filter(d => d !== dictOverride);
-					for (let k = 0; k < otherDicts.length; k++) {
+					for (let k = 0; k < otherDicts.length && !decompressed; k++) {
 						state.dictionary = otherDicts[k];
-						decompressed = decompressState(state);
-						if (decompressed.variables && decompressed.prng && decompressed.variables.saveVersion) {
-							dictOverride = otherDicts[k];
-							break;
-						}
+						decompressed = tryDecompress();
+						if (decompressed) dictOverride = otherDicts[k];
 					}
 				}
+				if (!decompressed)
+					throw new Error("Unable to decompress the save with any of the game's dictionaries (save is labeled " + JSON.stringify(dictOverride) + ")");
 				return decompressed;
 			} else return state;
 		});

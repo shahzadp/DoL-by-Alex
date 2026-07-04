@@ -2068,7 +2068,11 @@ function featsMerge() {
 	if (localStorageSaves) {
 		if (localStorageSaves.autosave) {
 			localStorageSaves.autosave.state.history = State.deltaDecode(localStorageSaves.autosave.state.delta);
-			DoLSave.decompressIfNeeded(localStorageSaves.autosave);
+			try {
+				DoLSave.decompressIfNeeded(localStorageSaves.autosave);
+			} catch {
+				// a save that cannot be decompressed has no feats to read, skip it
+			}
 
 			if (localStorageSaves.autosave.state?.history?.[localStorageSaves.autosave.state.index]?.variables) {
 				const variables = localStorageSaves.autosave.state.history[localStorageSaves.autosave.state.index].variables;
@@ -2084,7 +2088,11 @@ function featsMerge() {
 			localStorageSaves.slots.forEach(slot => {
 				if (slot) {
 					slot.state.history = State.deltaDecode(slot.state.delta);
-					DoLSave.decompressIfNeeded(slot);
+					try {
+						DoLSave.decompressIfNeeded(slot);
+					} catch {
+						// a save that cannot be decompressed has no feats to read, skip it
+					}
 					if (slot.state.history?.[slot.state.index]?.variables) {
 						const variables = slot.state.history[slot.state.index].variables;
 						if (variables.feats) {
