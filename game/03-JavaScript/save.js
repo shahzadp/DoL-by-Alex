@@ -205,7 +205,8 @@ const DoLSave = ((Story, Save) => {
 		const saveDetails = getSaveDetails();
 		if (saveDetails == null || saveDetails.id !== Story.domId || forceRun) {
 			const scSaveDetails = Save.get();
-			const dolSaveDetails = Object.assign({}, DEFAULT_DETAILS);
+			// clone so we don't fill in the shared template and leave ghost saves
+			const dolSaveDetails = clone(DEFAULT_DETAILS);
 			/* Search SugarCube's autosave property, if it exists, reflect this in the save details. */
 			if (scSaveDetails.autosave != null) {
 				dolSaveDetails.autosave = {
