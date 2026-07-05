@@ -99,8 +99,10 @@ const DoLSave = ((Story, Save) => {
 	 */
 	function load(slot, saveObj, overrides) {
 		const save = saveObj == null ? (slot === "auto" ? Save.autosave.get() : Save.slots.get(slot)) : saveObj;
-		const saveDetails = JSON.parse(localStorage.getItem(KEY_DETAILS));
-		const metadata = slot === "auto" ? saveDetails.autosave.metadata : saveDetails.slots[slot].metadata;
+		// the details record can be missing (storage cleared) or lack this slot's row, so default to safe empties and don't crash
+		const saveDetails = JSON.parse(localStorage.getItem(KEY_DETAILS)) ?? { autosave: null, slots: [] };
+		const details = slot === "auto" ? saveDetails.autosave : saveDetails.slots[slot];
+		const metadata = details?.metadata ?? {};
 		/* Check if metadata for save matches the save's computed md5 hash. If it matches, the ironman save was not tampered with.
 			Bypass this check if on a mobile, because they are notoriously difficult to grab saves from in the event of issues. */
 		if (metadata.ironman && !Browser.isMobile.any()) {
