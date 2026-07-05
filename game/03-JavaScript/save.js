@@ -431,14 +431,12 @@ const DoLSave = ((Story, Save) => {
 					}
 				};
 				let decompressed = tryDecompress();
-				if (!decompressed) {
-					// Before giving up, check if dictionary is mislabeled
-					const otherDicts = Object.keys(COMPRESSOR_DICTIONARIES).filter(d => d !== dictOverride);
-					for (let k = 0; k < otherDicts.length && !decompressed; k++) {
-						state.dictionary = otherDicts[k];
-						decompressed = tryDecompress();
-						if (decompressed) dictOverride = otherDicts[k];
-					}
+				// if that failed, the dictionary might be mislabeled, so try the others until one works
+				const otherDicts = Object.keys(COMPRESSOR_DICTIONARIES).filter(d => d !== dictOverride);
+				for (let k = 0; k < otherDicts.length && !decompressed; k++) {
+					state.dictionary = otherDicts[k];
+					decompressed = tryDecompress();
+					if (decompressed) dictOverride = otherDicts[k];
 				}
 				if (!decompressed)
 					throw new Error("Unable to decompress the save with any of the game's dictionaries (save is labeled " + JSON.stringify(dictOverride) + ")");
