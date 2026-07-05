@@ -73,7 +73,9 @@ const DoLSave = ((Story, Save) => {
 			return;
 		}
 		const save = slot === "auto" ? Save.autosave.get() : Save.slots.get(slot);
-		if (typeof save !== "object") {
+		// an empty slot gives back null, which is not the same as an empty save. JavaScript treats null as an object.
+		// so checking the type alone would let an empty slot through and crash - isObject rules out null
+		if (!isObject(save)) {
 			Errors.report("Could not find a valid save at that slot.", {});
 			return;
 		}
