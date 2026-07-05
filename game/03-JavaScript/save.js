@@ -109,11 +109,9 @@ const DoLSave = ((Story, Save) => {
 				return;
 			}
 		}
-		if (slot === "auto") {
-			Save.autosave.load();
-		} else {
-			Save.slots.load(slot);
-		}
+		const loaded = slot === "auto" ? Save.autosave.load() : Save.slots.load(slot);
+		// if the load failed, stop here so ironman mode doesn't delete the player's other saves for nothing
+		if (!loaded) return;
 		if (V.ironmanmode) {
 			// (ironman) remove all saves(except auto-save) with the same saveId than loaded save
 			[0, 1, 2, 3, 4, 5, 6, 7].forEach(id => {
