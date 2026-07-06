@@ -715,7 +715,7 @@ function isInPark(name) {
 		case "sam":
 			// prettier-ignore
 			return C.npc.Sam.init === 1
-				&& (Time.hour >= 6 && Time.hour < 7)
+				&& (Time.hour >= 6 && Time.hour < 7 && Time.minute <= 55)
 				&& Weather.precipitation === "none";
 		default:
 			return false;
