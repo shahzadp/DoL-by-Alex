@@ -1390,7 +1390,7 @@ function dailyNPCEffects() {
 		V.averyseen = 0;
 		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
-			if (V.averydateattended !== 1) V.averydatemissed = 1;
+			if (V.averydateattended !== 1 && !$avery_injury) V.averydatemissed = 1;
 			V.averydateattended = 0;
 		}
 		delete V.averydatedone;
