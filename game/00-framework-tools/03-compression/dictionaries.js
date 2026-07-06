@@ -1965,12 +1965,18 @@ const DoLCompressorDictionaries = (() => {
 	];
 
 	const dict_v0 = [...v0_mostCommonvalues, ...v0_variableNames];
+	// splice returns the removed items, so these two came out as empty arrays.
+	// Despite being broken, we have to leave this here because saves already recorded against v1 and v2.
 	const dict_v1 = [...dict_v0].splice(132, 0, "antiqueobsidiandisc", "antiquewoodenmask", "antiquetrilobitefossil", "antiqueislandarrow");
 	const dict_v2 = [...dict_v1].filter(d => !["clothing_number", "nextWeather", "sidebarRenderer", "startday", "starthour", "startingseason"].includes(d));
+	// v3 does what v1 and v2 intended: add the antique items, drop the six unused keys.
+	const dict_v3 = [...dict_v0, "antiqueobsidiandisc", "antiquewoodenmask", "antiquetrilobitefossil", "antiqueislandarrow"].filter(
+		d => !["clothing_number", "nextWeather", "sidebarRenderer", "startday", "starthour", "startingseason"].includes(d)
+	);
 
 	// template for next versions
-	// const dict_v1 = [
-	// 	...dict_v0,
+	// const dict_v4 = [
+	// 	...dict_v3,
 	// 	"newKey1", "newKey2"
 	// ]
 
@@ -1978,6 +1984,7 @@ const DoLCompressorDictionaries = (() => {
 		v0: dict_v0,
 		v1: dict_v1,
 		v2: dict_v2,
+		v3: dict_v3,
 	};
 })();
 for (const k in DoLCompressorDictionaries) {

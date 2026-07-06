@@ -16,7 +16,7 @@ const DoLSave = ((Story, Save) => {
 	// see game/00-framework-tools/03-compression/dictionaries.js
 	const COMPRESSOR_DICTIONARIES = DoLCompressorDictionaries;
 	// id of the dictionary to use for saving
-	const COMPRESSOR_CURRENT_DICTIONARY_ID = "v2";
+	const COMPRESSOR_CURRENT_DICTIONARY_ID = "v3";
 	/**
 	 * When saving, decompress and compare with the original.
 	 * If results differ, report an error and save the uncompressed version instead.
@@ -73,7 +73,9 @@ const DoLSave = ((Story, Save) => {
 			return;
 		}
 		const save = slot === "auto" ? Save.autosave.get() : Save.slots.get(slot);
-		if (typeof save !== "object") {
+		// an empty slot gives back null, which is not the same as an empty save. JavaScript treats null as an object.
+		// so checking the type alone would let an empty slot through and crash - isObject rules out null
+		if (!isObject(save)) {
 			Errors.report("Could not find a valid save at that slot.", {});
 			return;
 		}
@@ -97,8 +99,10 @@ const DoLSave = ((Story, Save) => {
 	 */
 	function load(slot, saveObj, overrides) {
 		const save = saveObj == null ? (slot === "auto" ? Save.autosave.get() : Save.slots.get(slot)) : saveObj;
-		const saveDetails = JSON.parse(localStorage.getItem(KEY_DETAILS));
-		const metadata = slot === "auto" ? saveDetails.autosave.metadata : saveDetails.slots[slot].metadata;
+		// the details record can be missing (storage cleared) or lack this slot's row, so default to safe empties and don't crash
+		const saveDetails = JSON.parse(localStorage.getItem(KEY_DETAILS)) ?? { autosave: null, slots: [] };
+		const details = slot === "auto" ? saveDetails.autosave : saveDetails.slots[slot];
+		const metadata = details?.metadata ?? {};
 		/* Check if metadata for save matches the save's computed md5 hash. If it matches, the ironman save was not tampered with.
 			Bypass this check if on a mobile, because they are notoriously difficult to grab saves from in the event of issues. */
 		if (metadata.ironman && !Browser.isMobile.any()) {
@@ -109,11 +113,9 @@ const DoLSave = ((Story, Save) => {
 				return;
 			}
 		}
-		if (slot === "auto") {
-			Save.autosave.load();
-		} else {
-			Save.slots.load(slot);
-		}
+		const loaded = slot === "auto" ? Save.autosave.load() : Save.slots.load(slot);
+		// if the load failed, stop here so ironman mode doesn't delete the player's other saves for nothing
+		if (!loaded) return;
 		if (V.ironmanmode) {
 			// (ironman) remove all saves(except auto-save) with the same saveId than loaded save
 			[0, 1, 2, 3, 4, 5, 6, 7].forEach(id => {
@@ -205,7 +207,8 @@ const DoLSave = ((Story, Save) => {
 		const saveDetails = getSaveDetails();
 		if (saveDetails == null || saveDetails.id !== Story.domId || forceRun) {
 			const scSaveDetails = Save.get();
-			const dolSaveDetails = Object.assign({}, DEFAULT_DETAILS);
+			// clone so we don't fill in the shared template and leave ghost saves
+			const dolSaveDetails = clone(DEFAULT_DETAILS);
 			/* Search SugarCube's autosave property, if it exists, reflect this in the save details. */
 			if (scSaveDetails.autosave != null) {
 				dolSaveDetails.autosave = {
@@ -337,25 +340,21 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} state
 	 */
 	function compressState(state) {
-		try {
-			const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
-			const compressor = new JsonCompressor(dictionary);
-			const zstate = compressor.compress(state);
-			zstate.dictionary = COMPRESSOR_CURRENT_DICTIONARY_ID;
-			zstate.title =
-				"This save is compressed and is not compatible with old versions of Degrees of Lewdity. If you want to load this save in an older game build, use exporting.";
-			zstate.variables = {};
-			if (shouldVerifyCompression()) {
-				// Sanity check
-				const uzstate = decompressState(zstate);
-				if (JSON.stringify(state) !== JSON.stringify(uzstate)) {
-					throw new Error("Decompression check failed");
-				}
+		const dictionary = COMPRESSOR_DICTIONARIES[COMPRESSOR_CURRENT_DICTIONARY_ID];
+		const compressor = new JsonCompressor(dictionary);
+		const zstate = compressor.compress(state);
+		zstate.dictionary = COMPRESSOR_CURRENT_DICTIONARY_ID;
+		zstate.title =
+			"This save is compressed and is not compatible with old versions of Degrees of Lewdity. If you want to load this save in an older game build, use exporting.";
+		zstate.variables = {};
+		if (shouldVerifyCompression()) {
+			// Sanity check
+			const uzstate = decompressState(zstate);
+			if (JSON.stringify(state) !== JSON.stringify(uzstate)) {
+				throw new Error("Decompression check failed");
 			}
-			return zstate;
-		} catch (e) {
-			console.warn("Something went wrong", e);
 		}
+		return zstate;
 	}
 
 	/**
@@ -365,21 +364,17 @@ const DoLSave = ((Story, Save) => {
 	 * @param {object} zstate
 	 */
 	function decompressState(zstate) {
-		try {
-			if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
-			const dicid = zstate.dictionary;
-			if (!(dicid in COMPRESSOR_DICTIONARIES))
-				throw new Error(
-					"Unable do decompress the save - the dictionary " +
-						JSON.stringify(dicid) +
-						" is unknown to this game version (trying to load newer save from older game?)"
-				);
-			const dictionary = COMPRESSOR_DICTIONARIES[dicid];
-			const decompressor = new JsonDecompressor(dictionary);
-			return decompressor.decompress(zstate);
-		} catch (e) {
-			console.warn("Something went wrong", e);
-		}
+		if (!("dictionary" in zstate)) throw new Error("Unable to load - compressed save has no dictionary");
+		const dicid = zstate.dictionary;
+		if (!(dicid in COMPRESSOR_DICTIONARIES))
+			throw new Error(
+				"Unable to decompress the save - the dictionary " +
+					JSON.stringify(dicid) +
+					" is unknown to this game version (trying to load newer save from older game?)"
+			);
+		const dictionary = COMPRESSOR_DICTIONARIES[dicid];
+		const decompressor = new JsonDecompressor(dictionary);
+		return decompressor.decompress(zstate);
 	}
 	function enableCompression() {
 		V.compressSave = true;
@@ -428,19 +423,25 @@ const DoLSave = ((Story, Save) => {
 		saveObj.state.history = saveObj.state.history.map(state => {
 			state.dictionary = dictOverride;
 			if (JsonDecompressor.isCompressed(state)) {
-				let decompressed = decompressState(state);
-				if (!decompressed.variables || !decompressed.prng || !decompressed.variables.saveVersions) {
-					// Before giving up, check if dictionary is mislabeled
-					const otherDicts = Object.keys(COMPRESSOR_DICTIONARIES).filter(d => d !== dictOverride);
-					for (let k = 0; k < otherDicts.length; k++) {
-						state.dictionary = otherDicts[k];
-						decompressed = decompressState(state);
-						if (decompressed.variables && decompressed.prng && decompressed.variables.saveVersion) {
-							dictOverride = otherDicts[k];
-							break;
-						}
+				// decompressing with the wrong dictionary can throw or produce nonsense, treat both as a failed attempt
+				const tryDecompress = () => {
+					try {
+						const result = decompressState(state);
+						return result.variables && result.prng && result.variables.saveVersions ? result : null;
+					} catch {
+						return null;
 					}
+				};
+				let decompressed = tryDecompress();
+				// if that failed, the dictionary might be mislabeled, so try the others until one works
+				const otherDicts = Object.keys(COMPRESSOR_DICTIONARIES).filter(d => d !== dictOverride);
+				for (let k = 0; k < otherDicts.length && !decompressed; k++) {
+					state.dictionary = otherDicts[k];
+					decompressed = tryDecompress();
+					if (decompressed) dictOverride = otherDicts[k];
 				}
+				if (!decompressed)
+					throw new Error("Unable to decompress the save with any of the game's dictionaries (save is labeled " + JSON.stringify(dictOverride) + ")");
 				return decompressed;
 			} else return state;
 		});
