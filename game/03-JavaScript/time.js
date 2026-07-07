@@ -187,6 +187,7 @@ const Time = (() => {
 				// reset BodyTemperature effects
 				delete T.bodyActivity;
 			}
+			/* eslint-disable no-useless-catch */
 		} catch (ex) {
 			// we only need to catch it so "finally" can run, so, right back at you
 			throw ex;
@@ -1390,7 +1391,7 @@ function dailyNPCEffects() {
 		V.averyseen = 0;
 		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
-			if (V.averydateattended !== 1 && !$avery_injury) V.averydatemissed = 1;
+			if (V.averydateattended !== 1 && !V.avery_injury) V.averydatemissed = 1;
 			V.averydateattended = 0;
 		}
 		delete V.averydatedone;
@@ -1414,7 +1415,7 @@ function dailyNPCEffects() {
 				}
 
 				// We skipped/missed, if the party is finished properly we handle the next guest SOMEWHERE ELSE
-				if (V.avery_mansion.party_state !== "finished") {
+				if (V.avery_mansion.party_state !== "finished" && V.avery_mansion.party_state !== "started") {
 					// If Bailey is the guest we repeat Bailey, otherwise we rotate, skipping Jordan as appropriate
 					const rotation = {
 						Bailey: "Bailey",
@@ -1429,7 +1430,8 @@ function dailyNPCEffects() {
 				}
 
 				// If the state is still "missed" we don't reset the state. We still need to trigger Avery being angry we missed a party
-				if (V.avery_mansion.party_state !== "missed") {
+				// Do not reset the state if the party is still on going
+				if (V.avery_mansion.party_state !== "missed" && V.avery_mansion.party_state !== "started") {
 					V.avery_mansion.party_state = "waiting";
 				}
 			}
@@ -1677,7 +1679,7 @@ function dailyNPCEffects() {
 }
 
 function dailyPlayerEffects() {
-	if(V.fallenangel < 4){
+	if (V.fallenangel < 4) {
 		V.willpower *= 0.99;
 	}
 
@@ -1802,7 +1804,6 @@ function dailyPlayerEffects() {
 		if (playerNormalPregnancyTotal() < 3) {
 			statChange.acceptance("pregnancy", -5);
 		}
-
 	}
 
 	for (const bodypart of setup.bodyparts) {
