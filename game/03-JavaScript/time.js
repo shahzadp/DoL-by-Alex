@@ -729,7 +729,7 @@ function dayPassed() {
 	if (V.lake_ice_broken >= 1) V.lake_ice_broken--;
 	if (V.lake_ice_broken < 1) delete V.lake_ice_broken;
 	if (V.community_service >= 1) {
-		if (V.community_service_done !== 1 && !["asylum", "prison"].includes(V.location)) {
+		if (V.community_service_done !== 1 && !["asylum", "prison"].includes(V.location) && !V.daily?.asylumPrison) {
 			wikifier("crimeUp", 200, "obstruction");
 			V.effectsmessage = 1;
 			V.community_message = "missed";
@@ -1027,6 +1027,11 @@ function dayPassed() {
 	}
 
 	localStorage.removeItem("gwylanTalk");
+
+	delete V.daily.asylumPrison;
+	if (["asylum", "prison"].includes(V.location)) {
+		V.daily.asylumPrison = 1;
+	}
 }
 
 function hourPassed(hours) {
