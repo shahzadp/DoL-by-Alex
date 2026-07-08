@@ -581,7 +581,7 @@ You're sure it'll be fine. You shut and lock the door.
 	<<if $farm.beasts.pigs lte -5 and $rng gte 51>>
 		<<if $farm_work.pig.monster is true>>
 			You try to shove the <<farm_text pig>> away from you, <span class="red">but <<farm_he pig>> shoves back,
-			and you fall to the ground.</span><<lrespect>><<farm_pigs -1>><<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+			and you fall to the ground.</span><<farm_pigs -1>><<trauma 6>><<stress 6>><<lrespect>><<gtrauma>><<gstress>>
 			<br><br>
 		<<else>>
 			You try to shove the pig away from you, <span class="red">but the weight pushes you to the ground.</span>
@@ -614,7 +614,7 @@ You're sure it'll be fine. You shut and lock the door.
 :: Farm Pigs Endure
 <<effects>>
 
-<<if $farm.beasts.pigs lte -5 and $rng gte 51>>
+<<if $farm.beasts.pigs lt -5 and $rng gte 51>>
 
 	<<if $farm_work.pig.monster is true>>
 		You endure as the <<farm_text pig>> humps you. Unsatisfied, <<farm_he pig>> wrestles you to the ground.
@@ -628,7 +628,7 @@ You're sure it'll be fine. You shut and lock the door.
 
 <<else>>
 	<<if $farm_work.pig.monster is true>>
-		You endure as the <<farm_text pig>> humps you. <<farm_He pig>> soon tires, and steps away. You close the pen after <<farm_him pig>>
+		You endure as the <<farm_text pig>> humps you. <<farm_He pig>> soon tires, and steps away. You close the pen after <<farm_him pig>>.
 	<<else>>
 		You endure as the pig humps you. It soon tires, or is otherwise satisfied, and drops to the ground. You close the pen after it.
 	<</if>>
@@ -906,11 +906,17 @@ You're sure it'll be fine. You shut and lock the door.
 
 
 :: Farm Pigs Feed Scold
-<<effects>>
-<<outfitChecks>>
+<<set _firstSuccess to $phase>>
+<<effects>><<outfitChecks>>
 
 <<if $tendingSuccess>>
-	"Down!" you say, <span class="green">your voice firm and sure.</span> The <<farm_text pig>> releases you, and returns to its feed.<<farm_pigs 1>><<grespect>>
+	"Down!" you say, <span class="green">your voice firm and sure.</span> The <<farm_text pig>> releases your
+	<<if _firstSuccess is 0>> <<hairDetails>>,
+	<<elseif _firstSuccess is 1>> _top.name,
+	<<else>> _bottom.name,
+	<</if>>
+	and returns to its feed.
+	<<farm_pigs 1>><<grespect>>
 	<br><br>
 
 	<<link [[Next|Farm Work]]>><</link>>
@@ -927,15 +933,24 @@ You're sure it'll be fine. You shut and lock the door.
 		The <<farm_text pig>> rips away a piece of fabric.
 	<</if>>
 	<br><br>
+
 	<<link [[Next|Farm Work]]>><</link>>
 	<br>
+
 <</if>>
 
 :: Farm Pigs Feed Help
+<<set _firstSuccess to $phase>>
 <<effects>><<outfitChecks>>
 
 <<npc Alex>><<person1>>
-You call for help. "I'm coming!" Alex shouts in response. <<He>> enters the sty and rushes over, before bonking the <<farm_text pig>> on the head with <<his>> broom. The <<farm_text pig>> releases your _bottom.name and retreats into the middle of the pen.
+You call for help. "I'm coming!" Alex shouts in response. <<He>> enters the sty and rushes over, before bonking the <<farm_text pig>> on the head with <<his>> broom.
+The <<farm_text pig>> releases your
+<<if _firstSuccess is 0>> <<hairDetails>>
+<<elseif _firstSuccess is 1>> _top.name
+<<else>> _bottom.name
+<</if>>
+and retreats into the middle of the pen.
 <br><br>
 
 "They'll eat anything," Alex laughs. "It pays to wear something sturdy."
@@ -946,18 +961,22 @@ You call for help. "I'm coming!" Alex shouts in response. <<He>> enters the sty 
 
 
 :: Farm Pigs Feed Extreme Scold
-<<effects>>
 <<effects>><<outfitChecks>>
 
 You open your mouth to scold, but you only manage a yell as you are yanked over the fence. You land in a pile of mud with a squelch.
 <br><br>
 
+The <<farm_text_many pig>> surround you, their
+<<if $farm_work.pig.monster is true>> hands and tongues
+<<else>> tongues
+ <</if>>
+exploring your body. You push them away as best you can.
+<<stress 6>><<arousal 600>><<gstress>><<garousal>>
+<br><br>
 
 <<if $tendingSuccess>>
-	The <<farm_text_many pig>> surround you, their <<if $farm_work.pig.monster is true>>hands and <</if>>tongues exploring your body. You push them away as best you can.<<gstress>><<garousal>><<stress 6>><<arousal 600>>
-	<br><br>
-
-	"Away!" you shout, <span class="green">your voice firm and sure.</span> The <<farm_text_many pig>> back away from you, giving you space to stand.<<ggrespect>><<farm_pigs 3>>
+	"Away!" you shout, <span class="green">your voice firm and sure.</span>
+	The <<farm_text_many pig>> back away from you, giving you space to stand.<<farm_pigs 3>><<ggrespect>>
 	<br><br>
 
 	<<if $farm_work.pig.monster is true>>
@@ -973,11 +992,14 @@ You open your mouth to scold, but you only manage a yell as you are yanked over 
 	<<link [[Next|Farm Work]]>><</link>>
 	<br>
 <<else>>
-
-	The <<farm_text_many pig>> surround you, their <<if $farm_work.pig.monster is true>>hands and <</if>>tongues exploring your body. You push them away as best you can.<<gstress>><<garousal>><<stress 6>><<arousal 600>>
-	<br><br>
-
-	"A-Away," you say, <span class="red">but your voice trembles and the <<farm_text_many pig>> ignore you.</span> They continue their assault. They grasp and tear, and soon have your <span class="pink">clothes reduced to tatters.</span><<clothesruined>>
+	"A-Away," you say, <span class="red">but your voice trembles and the <<farm_text_many pig>> ignore you.</span>
+	They continue their assault.
+	<<if _top or _bottom>>
+		They grasp and tear, and soon have your <span class="pink">clothes reduced to tatters.</span><<clothesruined>>
+	<<else>>
+		<!-- Small stress and arousal punishment if the player is already naked. -->
+		You shudder as they <<if $farm_work.pig.monster is true>> grope and <</if>> lick your exposed skin.<<stress 3>><<arousal 300>>
+	<</if>>
 	<br><br>
 
 	<<link [[Next|Farm Pigs Feed Extreme]]>><</link>>
@@ -987,16 +1009,17 @@ You open your mouth to scold, but you only manage a yell as you are yanked over 
 
 :: Farm Pigs Feed Extreme
 <<effects>>
-
-Their tongues attack from all angles, licking you all over. At last, they back away. But only so a particularly large <<farm_text pig>> has space to climb atop you.
+You try to push them away, but they force you to the ground. Their tongues attack from all angles, licking you all over.
+<<stress 6>><<arousal 600>><<gstress>><<garousal>>
 <br><br>
 
-<<link [[Next|Farm Pig Rape]]>><<set $molestationstart to 1>><</link>>
+At last, they back away. But only so a particularly large <<farm_text pig>> has space to climb on top of you.
+<br><br>
+
+<<link [[Next|Farm Pigs Rape Extreme]]>><<set $molestationstart to 1>><</link>>
 <br>
 
-
-
-:: Farm Pigs Rape
+:: Farm Pigs Rape Extreme
 <<if $molestationstart is 1>>
 	<<set $molestationstart to 0>>
 	<<controlloss>>
@@ -1025,13 +1048,13 @@ Their tongues attack from all angles, licking you all over. At last, they back a
 <<actionsman>>
 
 <<if _combatend>>
-	<span id="next"><<link [[Next|Farm Pigs Rape Finish]]>><</link>></span><<nexttext>>
+	<span id="next"><<link [[Next|Farm Pigs Rape Extreme Finish]]>><</link>></span><<nexttext>>
 <<else>>
-	<span id="next"><<link [[Next|Farm Pigs Rape]]>><</link>></span><<nexttext>>
+	<span id="next"><<link [[Next|Farm Pigs Rape Extreme]]>><</link>></span><<nexttext>>
 <</if>>
 
 
-:: Farm Pigs Rape Finish
+:: Farm Pigs Rape Extreme Finish
 <<effects>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
@@ -1191,7 +1214,7 @@ Alex arrives at the edge of the pen, and laughs. <<He>> hauls <<himself>> over w
 	<</if>>
 
 	<<beastCombatInit>>
-	<<set $NPCList[_n].stance to "top">>
+	<<set $NPCList[0].stance to "top">>
 
 	<<if $farm_work.horse.genitals is "penis">>
 		<<set $position to "doggy">>

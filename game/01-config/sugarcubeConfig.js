@@ -744,6 +744,12 @@ Config.navigation.override = function (dest) {
 				return "Sewers Scones Eat";
 			case "Sewers Rats Pretend":
 				return "Sewers Scones Pretend";
+
+			case "Farm Pig Rape":
+				return "Farm Pigs Rape Extreme";
+			case "Farm Pig Rape Finish":
+				return "Farm Pigs Rape Extreme Finish";
+
 			default:
 				return false;
 		}

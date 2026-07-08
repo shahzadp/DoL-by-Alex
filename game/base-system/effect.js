@@ -288,8 +288,6 @@ function effects() {
 		element("i", "Your innocence has been replaced by trauma.");
 	}
 
-
-
 	if (V.eventskipoverrule) V.eventskipoverrule = 0;
 
 	if (V.underwatercheck > 0) {

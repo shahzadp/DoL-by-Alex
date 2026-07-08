@@ -1,11 +1,15 @@
 :: Widgets Tending [widget]
 <<widget "plots_init">>
-	<!-- First argument: location.
+	<!--
+		First argument: location.
 		Second argument: number of plots.
 		Third argument: ground type (earth, water).
 		Fourth argument: plot quality
-		Fifth argument: plot size -->
-	<!-- Note: if you plan to add a new plot size, make sure to update all the places where plot size is hardcoded. -->
+		Fifth argument: plot size ("small", "medium", "large")
+	-->
+	<!--
+		Note: The "large" plot size is checked in the "default" branch of switch statements. If a new plot size is added, this will need to be changed.
+	-->
 	<<set $_plotsInLocation to []>>
 	<<for _i to 0; _i lt _args[1]; _i++>>
 		<<set $_plotsInLocation[_i] to clone(setup.tending.plot_base)>>
@@ -17,7 +21,9 @@
 <</widget>>
 
 <<widget "add_plot">>
-	/*Adds a plot to an existing location. Arguments are as in the plots_init widget, but the second argument and beyond are shifted down one.*/
+	<!--
+		Adds a plot to an existing location. Arguments are as in the plots_init widget, but the second argument and beyond are shifted down one.
+	-->
 	<<set $_plotsInLocation to $plots[_args[0]]>>
 	<<set $_last to $_plotsInLocation.length>>
 	<<set $_plotsInLocation.push(clone(setup.tending.plot_base))>>
@@ -27,12 +33,14 @@
 <</widget>>
 
 <<widget "clear_plot">>
-	/*Returns a plot to its default state.
-	First argument: location.
-	Second argument: index of plot to be reset.
-	OR
-	First argument: the plot to operate on.
-	*/
+	<!--
+		Returns a plot to its default state.
+		
+		First argument: location.
+		Second argument: index of plot to be reset.
+		OR
+		First argument: the plot to operate on.
+	-->
 	<<if _args[1] isnot undefined>>
 		<<set $_plot to $plots[_args[0]][_args[1]]>>
 	<<else>>
@@ -80,7 +88,7 @@
 	<</switch>>
 <</silently>><<print $_result>><</widget>>
 
-<<widget "display_plot">><!-- Argument is the plot location you want to display. -->
+<<widget "display_plot">> <!-- Argument is the plot location you want to display. -->
 	<<set _location to _args[0]>>
 	<<set $_plotsHere to $plots[_location]>>
 	<<set _water_needed to 0>>
@@ -451,12 +459,13 @@
 	<<if $foodstuff[$_type] is undefined>>
 		<<set $foodstuff[$_type] to {"amount": 0}>>
 	<</if>>
+	<!-- Harvests are not affected by the "affected_by_tending_skill" flag. -->
 	<<switch $_plot.size>>
 		<!-- For small, medium and large plots, a player with Tending F and multiplier 1x will grow between 
 		(6 to 12), (6 to 18), and (12 to 24) crops, respectively.
 		This averages out to 9, 12, and 18 crops for small, medium and large plots.
 
-		A player with Tending S will be able to grow (12 to 24), (18 to 36) and (36,72) crops, increasing 
+		A player with Tending S will be able to grow (12 to 24), (18 to 36) and (36 to 72) crops, increasing 
 		the averages to 18, 27, and 54, respectively.  
 		A fully optimized field with 5x multiplier yields 500 crops on average. -->
 		<<case "small">>
@@ -487,7 +496,7 @@
 	<<if $backgroundTraits.includes("greenthumb")>>
 		<<set _tending_amount *= 1.2>>
 	<</if>>
-	<!-- The game's default setting sets the tendingYieldModifer to 3x. 1x is for the "Legacy" Hard Mode. -->
+	<!-- The game's default setting sets the tendingYieldModifer to 5x. 1x is for the "Legacy" Hard Mode. -->
 	<<set _tending_amount *= $settings.tendingYieldModifier>>
 
 	<<set _tending_amount to Math.trunc(_tending_amount)>>
@@ -499,11 +508,11 @@
 <</widget>>
 
 <<widget "tending_pick">>
-	/*
-	* First argument: plant type.
-	* Second argument: minimum number picked.
-	* Third argument: maximum number picked.
-	*/
+	<!--
+		First argument: plant type.
+		Second argument: minimum number picked.
+		Third argument: maximum number picked.
+	-->
 	<<set $_type to _args[0]>>
 	<<if $foodstuff[$_type] is undefined>>
 		<<set $foodstuff[$_type] to {"amount": 0}>>
@@ -515,6 +524,9 @@
 		<<set _tending_amount to random(1, 5)>>
 	<</if>>
 
+	<!--
+		The multiplier is only applied if the item's "affected_by_tending_skill" variable in "game\04-Variables\foodstuff.js" is set to true.
+	-->
 	<<if setup.foodstuff[$_type].tending?.affected_by_tending_skill>>
 		<<set _tending_amount *= (1 + (currentSkillValue('tending') / 1000))>>
 	<</if>>
