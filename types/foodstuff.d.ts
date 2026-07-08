@@ -31,7 +31,7 @@ declare global {
 		seed_name?: string; // Name of the seed for this item when it has a special seed label.
 		seasons?: Season[]; // The seasons that this item can be planted in.
 		tags: string[]; // Any tending/planting related tags that would apply to this item.
-		affected_by_tending_skill?: boolean; // If false, the number of items harvested does not get increased by the tending skill.
+		affected_by_tending_skill?: boolean; // If true, the number of items harvested gets increased by the tending skill. Does not apply when harvesting from plots.
 	}
 
 	export interface FoodstuffShopData {
