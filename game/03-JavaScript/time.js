@@ -1707,6 +1707,11 @@ function dailyPlayerEffects() {
 	V.hairlength += 3;
 	V.fringelength += 3;
 	calchairlengthstage();
+	/**
+	 * Each day, the PC's beauty will increase by 100, scaling down to -100 at maximum trauma.
+	 *
+	 * This is equivalent to a 1% increase or decrease.
+	 */
 	statChange.skill("beauty", 100 - (V.trauma / V.traumamax) * 200);
 	lustfulUpdate();
 
