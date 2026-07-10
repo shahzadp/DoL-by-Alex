@@ -222,7 +222,62 @@
 :: Pub
 <<set $outside to 0>><<set $location to "pub">><<effects>><<set $bus to "harvest">>
 
-<<if $exposed gte 1>>
+<!-- If the PC maxes out their stress while they're wasted, they'll wake up at a random passout location.  -->
+<<if $stress gte $stressmax and $drunk gte 500>>
+	The countertop is swirling. You try to get up, but you end up walking into the floor.
+	<br><br>
+
+	<!--
+		Generic Environment Weight: 3
+		Specific Location Weight: 2
+		Complex Location Weight: 1
+	 -->
+	<<cleareventpool>>
+		<!-- Waking up in an alley. -->
+		<<addinlineevent "alley" 3>>
+			<<passoutalley>>
+		<</addinlineevent>>
+
+		<!-- Waking up on the street. -->
+		<<addinlineevent "street" 3>>
+			<<passoutstreet>>
+		<</addinlineevent>>
+
+		<!-- Waking up at the park. -->
+		<<addinlineevent "park" 2>>
+			<<passoutpark>>
+		<</addinlineevent>>
+
+		<!-- Waking up on the beach. -->
+		<<addinlineevent "beach" 2>>
+			<<passoutbeach>>
+		<</addinlineevent>>
+
+		<!-- Waking up on bus. -->
+		<<addinlineevent "bus" 1>>
+			<<set $phase to 1>>
+			<<set $phase2 to 0>>
+			<<passoutbus>>
+		<</addinlineevent>>
+
+		<!-- Waking up in the arcade. -->
+		<<if Time.dayState is "day" or Time.dayState is "dusk">>
+			<<addinlineevent "arcade" 1>>
+				<<passoutarcade>>
+			<</addinlineevent>>
+		<</if>>
+
+		<!-- Waking up in the adult shop. -->
+		<<if $adultshopunlocked isnot undefined
+			and (Time.hour gte 21 or Time.weekDay is 1 or (Time.weekDay is 7 ? Time.hour lt 9 : Time.hour lt 16))
+			and not (Time.hour is $closinghour and Time.weekDay isnot 1)
+			and $adultshopstate is not "closed">>
+			<<addinlineevent "adult_shop" 1>>
+				<<passoutadultshop>>
+			<</addinlineevent>>
+		<</if>>
+	<<runeventpool>>
+<<elseif $exposed gte 1>>
 	You are hiding in a trolley to conceal your <<lewdness>>. Everyone's too busy or intoxicated to notice you.
 	<br><br>
 
