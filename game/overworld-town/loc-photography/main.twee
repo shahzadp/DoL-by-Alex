@@ -56,7 +56,7 @@ cover the wall behind <<him>>, most of them suggestive, but all tasteful. <<He>>
 "Studio's upstairs," <<he>> says, removing the white stick from <<his>> mouth and flicking it into a bin. "A photoshoot takes up to three hours. You get paid upfront. <<printmoney 45000>> per shoot." <<He>> gestures at the wall behind <<him>>. "This is the sort of thing we do."
 <br><br>
 
-<<He>> pulls a lollipop from <<his>> pocket, and sticks it in <<his>> mouth. "One shoot a week. What do you think?"
+<<He>> pulls a lollipop from <<his>> pocket, and sticks it in <<his>> mouth. "One shoot a week. We can also connect you with clients for other work. Variable pay. What do you think?"
 <br><br>
 
 <<link [[Accept|Photo Accept]]>><<npcincr Niki love 1>><</link>><<glove>>
@@ -121,6 +121,20 @@ Niki nods. "You know where I am if you change your mind."
 	<br><br>
 
 	<<link [[Next|Photo]]>><<endevent>><</link>>
+	<br>
+<<elseif $photo_high_money>>
+	<<npc Niki>><<person1>>
+	Niki looks up from <<his>> desk as you enter the photo studio.
+	<br><br>
+	"I'm glad you're okay," <<he>> says. "It was as if the ground swallowed you up." <<He>> checks something on <<his>> screen.
+	<<if $photo_high_money gte 1>>
+		"I have your money here." <<He>> reaches into a draw, then hands you <<moneyGain $photo_high_money>>. "Make sure you don't push yourself too hard next time."
+		<br><br>
+	<<else>>
+		"We didn't make any money I'm afraid. Make sure you don't push yourself too hard next time."
+		<br><br>
+	<</if>>
+	<<link [[Next|Photo]]>><<unset $photo_high_money>><<endevent>><</link>>
 	<br>
 <<else>>
 	<<npc Niki>><<person1>>
@@ -194,7 +208,7 @@ Niki nods. "You know where I am if you change your mind."
 			<<else>>
 				Mickey's contact should be somewhere on the wall of photos.
 				<br>
-				<<investigateicon>><<link [[Examine (0:05)|Photo Examine]]>><<pass 5>><<set $pubfame.niki.examined to true>><</link>>
+				<<investigateicon>><<link [[Examine (0:05)|Photo Examine]]>><<set $pubfame.niki.examined to true>><</link>>
 			<</if>>
 			<br><br>
 		<</if>>
@@ -206,14 +220,13 @@ Niki nods. "You know where I am if you change your mind."
 			<<icon "model.png">><<link [[Model (Up to 3:00)|Photo Model]]>><<set $photo.shoot to 1>><</link>><<exhibitionist1>>
 			<br>
 		<</if>>
-		/*
-		<<link [[Ask for other work|Photo Ask]]>><</link>>
-		<br>
-		<<if $photo.silly is "done">>
-			<<link [[Get paid for the silly outfit job|Photo Street Paid]]>><<set $photo.silly to "paid">><</link>>
+		<<if $photo.job>>
+			<<ind>><span class="blue">You've already completed a client job with week.</span>
+			<br>
+		<<else>>
+			<<ind>><<link [[Ask for other work|Photo Ask]]>><</link>>
 			<br>
 		<</if>>
-		*/
 		<<nightingaleicon>><<link [[Leave|Nightingale Street]]>><<endevent>><</link>>
 		<br>
 
@@ -224,15 +237,21 @@ Niki nods. "You know where I am if you change your mind."
 :: Photo Ask
 <<effects>>
 
-Niki nods, and stares at <<his>> screen a moment longer.
-<br><br>
 
-<<if !$photo.silly>>
+<<if !$photo.job>>
 	<<set _work_available to true>>
-	"Business owner needs someone to stand outside their shop in a silly outfit. Not glamorous, but it pays <<printmoney 10000>>. Everyone starts somewhere."
+	Niki nods, and stares at <<his>> screen a moment longer.
+	<br><br>
+	"Business owner needs someone to hand out flyers in a kaiju costume. Not glamorous, but pays £1 per flyer, plus an overall performance bonus. Soon adds up, and
+	<<if $fame.model gte 200>>
+		should keep you on people's minds."
+	<<else>>
+		everyone starts somewhere."
+	<</if>>
 	<br><br>
 <</if>>
 
+/*
 <<if !_work_available>>
 	<<if fameTotal() lt 3000>>
 		<<He>> shakes <<his>> head. "Nothing for you," <<he>> says. <span class="purple">"Maybe if you were known better."</span>
@@ -241,39 +260,28 @@ Niki nods, and stares at <<his>> screen a moment longer.
 	<</if>>
 	<br><br>
 <<else>>
-	"Jobs takes a few hours."
+	"Jobs take a couple of hours, once there."
 	<br><br>
 <</if>>
+*/
 
-<<if !$photo.silly>>
-	<<link [[Accept silly outfit job|Photo Silly]]>><<set $photo.silly to "accepted">><</link>>
+"I'll accompany you and take pictures for their advertisements. Jobs take a couple of hours once there."
+<br><br>
+
+<<if !$photo.job>>
+	<<ind>><<link [[Accept kaiju job (2:10)|Photo High Start]]>><<pass 5>><<set $photo.job to "kaiju">><</link>>
 	<br>
 <</if>>
-
-<<link [[Leave|Nightingale Street]]>><<endevent>><</link>>
+<<if $photo.shoot is 1>>
+	<span class="blue">You've already worked as a model this week.</span>
+	<br>
+<<else>>
+	<<ind>><<link [[Model (Up to 3:00)|Photo Model]]>><<set $photo.shoot to 1>><</link>><<exhibitionist1>>
+	<br>
+<</if>>
+<<nightingaleicon>><<link [[Leave|Nightingale Street]]>><<endevent>><</link>>
 <br>
 
-:: Photo Silly Paid
-<<effects>>
-
-Niki throws you a small bundle of notes. You make <<moneyGain 100>>.
-<br><br>
-
-<<link [[Ask for work|Photo Ask]]>><</link>>
-<br>
-<<link [[Leave|Nightingale Street]]>><<endevent>><</link>>
-<br>
-
-:: Photo Silly
-<<effects>>
-
-Niki nods. "Shop's on High Street." <<He>> hands you the business card with the address. "Come back after for your pay."
-<br><br>
-
-<<link [[Ask for work|Photo Ask]]>><</link>>
-<br>
-<<link [[Leave|Nightingale Street]]>><<endevent>><</link>>
-<br>
 
 :: Photography Chef
 <<set $outside to 0>><<set $location to "town">><<effects>>

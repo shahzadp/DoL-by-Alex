@@ -556,7 +556,7 @@ function weekPassed() {
 	}
 	if (V.syndromewolves === 1) V.wolfcavepatrol = 1;
 	if (V.photo) {
-		if (V.photo.silly === "paid") V.photo.silly = 0;
+		V.photo.job = 0;
 		V.photo.shoot = 0;
 	}
 	if (V.nightmareTimer && V.nightmareTimer > 0) {

@@ -750,6 +750,9 @@ function initProps() {
 		restored_spear: {
 			overUnderSplit: true,
 		},
+		flyers: {
+			zIndex: "handheld_over_sleeve",
+		},
 	};
 
 	/*

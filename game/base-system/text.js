@@ -857,6 +857,13 @@ statDisplay.create("gworldcorruptionhard", () =>
 	statDisplay.statChange("A new hole forms in the world...", 0, "tentacle", () => V.temple_confessor_intro || V.gwylanSeen?.includes("ritual_beast"))
 );
 
+statDisplay.create("lheat", () => statDisplay.statChange("Heat", -1, "green"));
+statDisplay.create("llheat", () => statDisplay.statChange("Heat", -2, "green"));
+statDisplay.create("lllheat", () => statDisplay.statChange("Heat", -3, "green"));
+statDisplay.create("gheat", () => statDisplay.statChange("Heat", 1, "red"));
+statDisplay.create("ggheat", () => statDisplay.statChange("Heat", 2, "red"));
+statDisplay.create("gggheat", () => statDisplay.statChange("Heat", 3, "red"));
+
 // These rely on the 'statChange' function in 'stat-changes.js'
 statDisplay.create("gharmony", (amount = 1) => statChange.harmony(amount));
 statDisplay.create("lharmony", (amount = 1) => statChange.harmony(-amount));
