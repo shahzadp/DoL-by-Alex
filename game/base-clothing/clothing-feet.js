@@ -2022,7 +2022,7 @@ function initFeet() {
 			name_cap: "Ballet pumps",
 			variable: "balletpumps",
 			combat: {
-			reference: "stripperheels",
+				reference: "stripperheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2034,7 +2034,7 @@ function initFeet() {
 			plural: 1,
 			colour: 0,
 			colour_sidebar: 1,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_combat: 0,
 			type: ["dance"],
 			gender: "n",
@@ -2044,7 +2044,7 @@ function initFeet() {
 			shop: ["clothing"],
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			notuck: 1,
 			location: 0,
@@ -2058,7 +2058,7 @@ function initFeet() {
 			name_cap: "Butterfly heels",
 			variable: "butterflyheels",
 			combat: {
-			reference: "stripperheels",
+				reference: "stripperheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2069,10 +2069,10 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
-			type: ["formal","heels"],
+			type: ["formal", "heels"],
 			gender: "f",
 			femininity: 200,
 			warmth: 1,
@@ -2081,7 +2081,7 @@ function initFeet() {
 			shop: ["clothing"],
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			notuck: 1,
 			location: 0,
@@ -2113,7 +2113,7 @@ function initFeet() {
 			description: "Full of charms.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 0,
@@ -2135,8 +2135,8 @@ function initFeet() {
 			name_cap: "Double strap sandals",
 			variable: "doublestrapsandals",
 			combat: {
-			reference: "wedgesandals",
-			accColour: "primary",
+				reference: "wedgesandals",
+				accColour: "primary",
 			},
 			state: 0,
 			state_base: 0,
@@ -2153,7 +2153,7 @@ function initFeet() {
 			description: "Doubly secure.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 1,
@@ -2172,8 +2172,8 @@ function initFeet() {
 			name_cap: "Flat sandals",
 			variable: "flatsandals",
 			combat: {
-			reference: "wedgesandals",
-			accColour: "#cdb493",
+				reference: "wedgesandals",
+				accColour: "#cdb493",
 			},
 			state: 0,
 			state_base: 0,
@@ -2190,7 +2190,7 @@ function initFeet() {
 			description: "Good for the beach.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 1,
@@ -2209,7 +2209,7 @@ function initFeet() {
 			name_cap: "Floral rain boots",
 			variable: "floralrainboots",
 			combat: {
-			reference: "bootheels",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2219,19 +2219,19 @@ function initFeet() {
 			reveal: 150,
 			word: "n",
 			plural: 1,
-			type: ["normal","waterproof"],
+			type: ["normal", "waterproof"],
 			gender: "n",
 			warmth: 3,
 			cost: 4500,
 			description: "Brightens rainy days.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			notuck: 0,
 			location: 0,
@@ -2245,8 +2245,8 @@ function initFeet() {
 			name_cap: "Floral ribbon trainers",
 			variable: "floralribbontrainers",
 			combat: {
-			reference: "lightuptrainers",
-			accColour: "primary",
+				reference: "lightuptrainers",
+				accColour: "primary",
 			},
 			state: 0,
 			state_base: 0,
@@ -2264,12 +2264,12 @@ function initFeet() {
 			description: "Laced up.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
 			pattern_options: ["detail"],
@@ -2288,7 +2288,7 @@ function initFeet() {
 			name_cap: "Fuzzy-bow boots",
 			variable: "fuzzybowboots",
 			combat: {
-			reference: "bootheels",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2306,12 +2306,12 @@ function initFeet() {
 			description: "Cuteness overload.",
 			shop: ["clothing"],
 			colour: 0,
-			colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			colour_combat: 0,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: ["black","blue","brown","green","pink","purple","red","tangerine","teal","white","yellow","custom"],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			notuck: 0,
 			location: 0,
@@ -2327,7 +2327,7 @@ function initFeet() {
 			description: "Won't help you run.",
 			cost: 5500,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "none",
 			},
@@ -2340,19 +2340,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 100,
@@ -2372,7 +2364,7 @@ function initFeet() {
 			description: "Classic.",
 			cost: 9500,
 			shop: ["clothing"],
-			type: ["normal","heels","formal"],
+			type: ["normal", "heels", "formal"],
 			combat: {
 				reference: "anklecuffs",
 			},
@@ -2385,19 +2377,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 100,
@@ -2417,7 +2401,7 @@ function initFeet() {
 			description: "Zippers on the back.",
 			cost: 9500,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "anklecuffs",
 			},
@@ -2430,19 +2414,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 4,
@@ -2474,19 +2450,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 4,
@@ -2505,7 +2473,7 @@ function initFeet() {
 			description: "Beauty takes time.",
 			cost: 10500,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "anklecuffs",
 			},
@@ -2518,19 +2486,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 200,
@@ -2550,7 +2510,7 @@ function initFeet() {
 			description: "Laced with elegance.",
 			cost: 18000,
 			shop: ["clothing"],
-			type: ["normal","heels","formal"],
+			type: ["normal", "heels", "formal"],
 			combat: {
 				reference: "stripperheels",
 			},
@@ -2563,19 +2523,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 200,
@@ -2608,19 +2560,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 6,
@@ -2639,7 +2583,7 @@ function initFeet() {
 			description: "Vintage charm.",
 			cost: 10500,
 			shop: ["clothing"],
-			type: ["normal","formal"],
+			type: ["normal", "formal"],
 			combat: {
 				reference: "kittenheels",
 			},
@@ -2652,11 +2596,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 0,
 			accessory_colour: 0,
@@ -2679,7 +2619,7 @@ function initFeet() {
 			description: "Hugs the legs.",
 			cost: 14000,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "bootheels",
 			},
@@ -2692,19 +2632,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 100,
@@ -2737,19 +2669,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 2,
@@ -2778,19 +2702,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
 			pattern_options: ["detail"],
@@ -2826,19 +2742,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
 			pattern_options: ["detail"],
@@ -2861,7 +2769,7 @@ function initFeet() {
 			description: "Ready for puddles.",
 			cost: 5500,
 			shop: ["clothing"],
-			type: ["normal","waterproof"],
+			type: ["normal", "waterproof"],
 			combat: {
 				reference: "bootheels",
 			},
@@ -2874,19 +2782,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 3,
@@ -2918,19 +2818,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 4,
@@ -2949,7 +2841,7 @@ function initFeet() {
 			description: "Smell the roses.",
 			cost: 21000,
 			shop: ["clothing"],
-			type: ["normal","formal"],
+			type: ["normal", "formal"],
 			combat: {
 				reference: "stripperheels",
 			},
@@ -2962,19 +2854,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 200,
@@ -3007,19 +2891,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 100,
@@ -3039,7 +2915,7 @@ function initFeet() {
 			description: "Wraps the ankles.",
 			cost: 19500,
 			shop: ["clothing"],
-			type: ["normal","formal"],
+			type: ["normal", "formal"],
 			combat: {
 				reference: "stripperheels",
 			},
@@ -3052,19 +2928,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 200,
@@ -3097,11 +2965,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
@@ -3123,7 +2987,7 @@ function initFeet() {
 			description: "Watch for bouncing pom-poms.",
 			cost: 11500,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "stripperheels",
 			},
@@ -3136,19 +3000,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "f",
 			femininity: 200,
@@ -3178,19 +3034,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			pattern: 0,
 			pattern_options: ["detail"],
@@ -3225,19 +3073,11 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
-			accessory_colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			accessory_colour_sidebar: 1,
 			gender: "n",
 			warmth: 2,
@@ -3269,11 +3109,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 1,
 			accessory_colour: 0,
@@ -3295,7 +3131,7 @@ function initFeet() {
 			description: "Office ready.",
 			cost: 12000,
 			shop: ["clothing"],
-			type: ["normal","formal"],
+			type: ["normal", "formal"],
 			combat: {
 				reference: "kittenheels",
 			},
@@ -3308,11 +3144,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 0,
 			accessory_colour: 0,
@@ -3335,7 +3167,7 @@ function initFeet() {
 			description: "Timeless elegance.",
 			cost: 13500,
 			shop: ["clothing"],
-			type: ["normal","formal","heels"],
+			type: ["normal", "formal", "heels"],
 			combat: {
 				reference: "kittenheels",
 			},
@@ -3348,11 +3180,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 0,
 			accessory_colour: 0,
@@ -3375,7 +3203,7 @@ function initFeet() {
 			description: "Made with soft leather.",
 			cost: 16000,
 			shop: ["clothing"],
-			type: ["normal","heels"],
+			type: ["normal", "heels"],
 			combat: {
 				reference: "bootheels",
 			},
@@ -3388,11 +3216,7 @@ function initFeet() {
 			word: "n",
 			plural: 1,
 			colour: 0,
-			colour_options: [
-				"black", "navy blue", "wine", "brown", "olive",
-				"pink", "light pink", "purple", "lilac", "red",
-				"tangerine", "teal", "white", "yellow", "custom"
-			],
+			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
 			accessory: 0,
 			accessory_colour: 0,
