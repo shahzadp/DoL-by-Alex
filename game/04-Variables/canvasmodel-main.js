@@ -356,6 +356,7 @@ Renderer.CanvasModels.main = {
 			"fox_tail_layer": "front",
 			"fox_ears_type": "disabled",
 			"fox_cheeks_type": "disabled",
+			"tf_ears_layer": "back",
 			// body writings
 			"writing_forehead": "",
 			"writing_left_cheek": "",
@@ -2794,7 +2795,7 @@ Renderer.CanvasModels.main = {
 			},
 		}),
 		"lower_detail": genlayer_clothing_detail("lower", {
-			z:ZIndices.lower,
+			z:ZIndices.lower + 10,
 			masksrcfn(options) {
 				return options.lowerMask;
 			},
@@ -3670,6 +3671,16 @@ Renderer.CanvasModels.main = {
 			},
 			masksrcfn(options) {
 				return options.legsMask;
+			},
+		}),
+		"legs_detail": genlayer_clothing_detail('legs', {
+			showfn(options) {
+				return options.show_clothes
+					&& options.worn.legs.index > 0
+					&& options.worn.legs.setup.mainImage !== 0
+					&& options.worn.legs.setup.pattern_layer === "tertiary"
+					&& !!options.worn.legs.pattern
+					&& !options.hide_all;
 			},
 		}),
 		"legs_back_acc": genlayer_clothing_back_img_acc('legs'),
@@ -5187,7 +5198,7 @@ function genlayer_ears(tf, hair, overrideOptions) {
 			if (options.hideHeadAcc) {
 				return ZIndices.over_head;
 			}
-			return ZIndices.basehead;
+			return options.tf_ears_layer === "front" ? ZIndices.front_hair +1 : ZIndices.basehead;
 		}
 	}, overrideOptions))
 }

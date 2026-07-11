@@ -67,6 +67,7 @@ module.exports = {
 		Stack: "readonly",
 		Wikifier: "readonly",
 		// DoL other namespaces/objects
+		ClothesItem: "readonly",
 		Constants: "readonly",
 		ConstantsLoader: "readonly",
 		Cooker: "readonly",

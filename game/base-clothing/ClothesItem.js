@@ -1,5 +1,4 @@
 class ClothesItem {
-
 	/* Index of Clothing | REQUIRED | MUST BE UNIQUE TO SLOT | INT */
 	index;
 
@@ -21,8 +20,8 @@ class ClothesItem {
 	/* Maximum Integrity of clothing | SHOULD BE THE SAME AS INTEGRITY | INT */
 	integrity_max = 100;
 
-	/* */
-	fabric_strength;
+	/* Currently not used much | INT */
+	fabric_strength = 25;
 
 	/* */
 	reveal;
@@ -57,11 +56,11 @@ class ClothesItem {
 	/* */
 	plural;
 
-	/* */
-	colour;
+	/* Filter storage, always 0 | REQUIRED | AUTOFILL | INT */
+	colour = 0;
 
-	/* */
-	colour_options;
+	/* Filter options | REQUIRED | AUTOFILL | ARRAY */
+	colour_options = [];
 
 	/* */
 	exposed = 0;
@@ -76,7 +75,7 @@ class ClothesItem {
 	set;
 
 	/* Gender of the clothing | REQUIRED | STRING */
-	gender;
+	gender = "n";
 
 	/* Warmth value of clothing | INT */
 	warmth = 0;
@@ -90,14 +89,14 @@ class ClothesItem {
 	/* */
 	shop;
 
-	/* */
-	accessory;
+	/* Whether have acc | REQUIRED | INT */
+	accessory = 0;
 
-	/* */
-	accessory_colour;
+	/* Acc filter storage, always 0 | REQUIRED | AUTOFILL | INT */
+	accessory_colour = 0;
 
-	/* */
-	accessory_colour_options;
+	/* Acc filter options | REQUIRED | ARRAY */
+	accessory_colour_options = [];
 
 	/* */
 	sleeve_img;
@@ -108,14 +107,14 @@ class ClothesItem {
 	/* Is the clothing cursed? | INT */
 	cursed = 0;
 
-	/* */
-	location;
+	/* Closet location storage, always 0 | REQUIRED | INT */
+	location = 0;
 
 	/* */
 	iconFile;
 
 	/* */
-	accIcon;
+	accIcon = 0;
 
 	/* */
 	mainImage;
@@ -129,7 +128,7 @@ class ClothesItem {
 	/* */
 	combat;
 
-	/* */
+	/* Whether main image is recolourable | AUTOFILL | INT */
 	colour_sidebar;
 
 	/* */
@@ -150,7 +149,7 @@ class ClothesItem {
 	/* */
 	accessory_colour_combat;
 
-	/* */
+	/* Whether acc is recolourabl | AUTOFILL | INT */
 	accessory_colour_sidebar;
 
 	/* */
@@ -159,7 +158,7 @@ class ClothesItem {
 	/* */
 	formfitting;
 
-	/* */
+	/* Pattern choice storage | AUTOFILL | INT */
 	pattern;
 
 	/* */
@@ -312,22 +311,46 @@ class ClothesItem {
 	/* */
 	penisSize;
 
-
 	constructor(props) {
 		/* parses passed object and populates class properties */
 		Object.keys(props).forEach(prop => {
 			this[prop] = props[prop];
 		});
-		
+
+		/* pattern autofill */
+		if (this.pattern_options) this.pattern = this.pattern_options.length ? 0 : undefined;
+
 		/* cleans up unused properties */
 		Object.keys(this).forEach(key => {
-			if(this[key] === undefined) delete this[key];
+			if (this[key] === undefined) delete this[key];
 		});
-		
+
 		/* autofill properties */
-		if(this.name && !this.name_cap) this.name_cap = this.name.substring(0,1).toUpperCase() + this.name.slice(1);
-		if(this.slot && this.name && !this.set) this.set = this.outfitPrimary || this.outfitSecondary ? this.name : this.slot
-		if(!this.one_piece) this.one_piece = this.outfitPrimary || this.outfitSecondary ? 1 : 0;
+		if (this.name && !this.name_cap) this.name_cap = this.name.substring(0, 1).toUpperCase() + this.name.slice(1);
+		if (this.slot && this.name && !this.set) this.set = this.outfitPrimary || this.outfitSecondary ? this.name : this.slot;
+		if (!this.one_piece) this.one_piece = this.outfitPrimary || this.outfitSecondary ? 1 : 0;
+		if (this.colour_options) this.colour_sidebar = this.colour_options.length ? 1 : 0;
+		if (this.accessory_colour_options) this.accessory_colour_sidebar = this.accessory_colour_options.length ? 1 : 0;
+
+		/* slot specific defaults */
+		if (this.slot.includes("upper")) {
+			this.exposed ??= 0;
+			this.exposed_base ??= 0;
+			this.state ??= "waist";
+			this.state_base ??= "waist";
+			this.state_top ??= "chest";
+			this.state_top_base ??= "chest";
+		}
+		if (this.slot.includes("lower")) {
+			this.exposed ??= 0;
+			this.exposed_base ??= 0;
+			this.vagina_exposed ??= 0;
+			this.vagina_exposed_base ??= 0;
+			this.anus_exposed ??= 0;
+			this.anus_exposed_base ??= 0;
+			this.state ??= "waist";
+			this.state_base ??= "waist";
+		}
 	}
 }
 

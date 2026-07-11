@@ -50,16 +50,26 @@
 	<<set _iconName to clothingSlotToIconName($clothingShopSlot, _outfits)>>
 	<<shopCategoryTabs _iconName>>
 
-	<!-- Search bar -->
+	<!-- Search bar + items per page options-->
 	<<if !_shopNameFilter>>
 		<<set _shopNameFilter to "">>
 	<</if>>
-	<span class="searchButtons">
-		Search: <<textbox "_shopNameFilterTextbox" _shopNameFilter>>
-		<<button Clear>>
-			<<set _shopNameFilter to "">>
-			<<shopCategoryReplace `clothingSlotToIconName($clothingShopSlot, _outfits)`>>
-		<</button>>
+	<span class="optionsBar">
+		<span class="searchGroup">
+			<label class="searchBar">
+				Search: <<textbox "_shopNameFilterTextbox" _shopNameFilter>>
+			</label>
+			<<button Clear>>
+				<<set _shopNameFilter to "">>
+				<<shopCategoryReplace `clothingSlotToIconName($clothingShopSlot, _outfits)`>>
+			<</button>>
+		</span>
+			<label class="itemsPerPageLabel">
+			Items per page:
+			<<listbox "$shopItemsPerPage" autoselect>>
+				<<optionsfrom [4, 8, 12, 16, 24, 32]>>
+			<</listbox>>
+			</label>
 	</span>
 	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gte 0) or ($earSlime.forcedDressing and $earSlime.forcedDressing.days) or playerBellySize() gte 12 or $location is "forest_shop">>
 	<<if _unavailableItems>>
@@ -81,6 +91,10 @@
 			updateShop();
 		});
 		$('#checkbox-shopclothingfilterunavailableonly').on('change', e => {
+			updateShop();
+		});
+		$('.itemsPerPageLabel select').on('change', e => {
+		$shopPage = 0;
 			updateShop();
 		});
 		var updateShop = () => {
