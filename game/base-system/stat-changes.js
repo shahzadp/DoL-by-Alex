@@ -168,11 +168,23 @@ const statChange = (() => {
 	function alcohol(amount) {
 		if (isNaN(amount)) paramError("alcohol", "amount", amount, "Expected a number.");
 		amount = Number(amount);
-		if (amount) {
-			let mod = V.alcoholMod;
-			if (V.backgroundTraits.includes("plantlover") && amount > 0) mod = 1.5;
-			V.drunk += amount * mod;
-		}
+		/**
+		 * Modify the effect of alcohol on the player, based on their alcohol tolerance.
+		 *
+		 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
+		 *
+		 * Because of that, V.alcoholMod is applied to both positive and negative changes to the player's alcohol level.
+		 */
+		let mod = V.alcoholMod;
+
+		/**
+		 * The "Dendrophile" trait amplifies the impact of alcohol consumption, without affecting how quickly the player
+		 * recovers.
+		 */
+		if (V.backgroundTraits.includes("plantlover") && amount > 0) mod *= 1.5;
+
+		V.drunk += amount * mod;
+
 		alcoholClamp();
 	}
 	DefineMacro("alcohol", alcohol);
@@ -180,12 +192,43 @@ const statChange = (() => {
 	function tiredness(amount, source) {
 		if (isNaN(amount)) paramError("tiredness", "amount", amount, "Expected a number.");
 		amount = Number(amount);
-		if (amount > 0 && (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) && !V.statFreeze) {
-			amount *= 1.5;
+
+		// See "game\03-JavaScript\weather\02-main\02-body-temperature.js" for the effects of body temperature on fatigue.
+
+		// For increases to the player's fatigue. Theoretical maximum increase is 50% + 100% + 200% = 350% increased fatigue.
+		let fatigueMod = 1;
+		if (amount > 0) {
+			// Wearing clothing with the "Heavy" trait increases the player's fatigue gains by 50%.
+			if ((V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) && !V.statFreeze) {
+				fatigueMod += 0.5;
+			}
+
+			/**
+			 * Calculate the overflow value as heel_reveal - feetskill. The current minimum and maximum values are 0-1,000.
+			 *
+			 * All fatigue gains will be increased by up to 100%, depending on the overflow value.
+			 */
+			if (V.worn.feet.reveal > V.worn.feet.type.includes("heels") && currentSkillValue("feetskill")) {
+				fatigueMod += (V.worn.feet.reveal - currentSkillValue("feetskill")) / 1000;
+			}
+
+			// The player's body temperature being too high will increase their fatigue gains by up to 200%
+			fatigueMod += Weather.BodyTemperature.fatigueModifier - 1;
 		}
-		if (amount) {
-			V.tiredness += Math.round(amount * Weather.BodyTemperature.fatigueModifier * (amount > 0 ? 15 : 20));
+
+		// The passage of time changes the player's fatigue by 0.05% = 1 $tiredness per point.
+		if (source === "pass") {
+			V.tiredness += amount * fatigueMod;
 		}
+		// Positive amounts increase the player's fatigue by 0.75% = 15 $tiredness per point.
+		else if (amount > 0) {
+			V.tiredness += amount * 15 * fatigueMod;
+		}
+		// Negative amounts decrease the player's fatigue by 1% = 20 $tiredness per point.
+		else if (amount < 0) {
+			V.tiredness += amount * 20 * fatigueMod;
+		}
+
 		fatigueClamp();
 	}
 	DefineMacro("tiredness", tiredness);
@@ -206,7 +249,7 @@ const statChange = (() => {
 				if (V.drunk <= 0) {
 					stressMod = 40;
 				} else {
-					const drunkMod = Math.clamp(Math.floor(V.drunk / 120), 0, 4);
+					const drunkMod = Math.clamp(V.drunk / 120, 0, 4);
 					stressMod = 30 - drunkMod * 5;
 				}
 				V.stress += amount * stressMod;
@@ -216,7 +259,7 @@ const statChange = (() => {
 	}
 	DefineMacro("stress", stress);
 
-	function trauma(amount) {
+	function trauma(amount, source) {
 		if (isNaN(amount)) return paramError("trauma", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
@@ -226,18 +269,20 @@ const statChange = (() => {
 				if (V.bestialitytrait >= 1 && V.enemytype === "beast") traumaMod *= 0.7;
 				if (V.tentacletrait >= 1 && V.enemytype === "tentacles") traumaMod *= 0.7;
 				// increase trauma by 3x amount at 0 control, 1.5x at full, then go trait reductions
-				V.trauma += Math.trunc(amount * (3 - 1.5 * (V.control / V.controlmax)) * traumaMod);
+				V.trauma += amount * (3 - 1.5 * (V.control / V.controlmax)) * traumaMod;
 			} else {
 				// good doctors know how to help you
 				if (["asylum", "hospital"].includes(V.location)) traumaMod *= 2;
 				// decrease trauma by 1.5x amount with no control, 3x with full control
-				V.trauma += Math.trunc(amount * (1.5 + 1.5 * (V.control / V.controlmax)) * traumaMod);
+				V.trauma += amount * (1.5 + 1.5 * (V.control / V.controlmax)) * traumaMod;
 			}
 		}
 
-		updatePlayerTraumaState();
-		updateHallucinations();
 		traumaClamp();
+		if (source !== "combat") {
+			updatePlayerTraumaState();
+			updateHallucinations();
+		}
 	}
 	DefineMacro("trauma", trauma);
 
@@ -245,20 +290,11 @@ const statChange = (() => {
 		if (isNaN(amount)) paramError("combattrauma", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		if (amount) {
-			if (amount >= 0) {
-				let traumaMod = 1;
-
-				if (V.rapetrait) traumaMod *= 0.7;
-				if (V.bestialitytrait >= 1 && V.enemytype === "beast") traumaMod *= 0.7;
-				if (V.tentacletrait >= 1 && V.enemytype === "tentacles") traumaMod *= 0.7;
-
-				// eslint-disable-next-line prettier/prettier
-				V.trauma += Math.trunc(((amount * 1) - ((amount * 0.5) * (V.control / V.controlmax))) * traumaMod)
+			if (amount > 0) {
+				trauma(amount / 2, "combat");
 			} else {
-				// eslint-disable-next-line prettier/prettier
-				V.trauma += Math.trunc((amount * 1) + ((amount * 0.5) * (V.control / V.controlmax)));
+				trauma(amount);
 			}
-			traumaClamp();
 		}
 	}
 	DefineMacro("combattrauma", combattrauma);

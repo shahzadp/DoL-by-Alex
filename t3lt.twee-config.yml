@@ -594,12 +594,14 @@ sugarcube-2:
       name: alarmstate
     alcohol:
       description: |-
-        Adds alcohol to pc's system
+        Changes the PC's alcohol levels, where `$drunk` is a measure of the PC's intoxication.
+        - Goes from 0 to 1,000, where 0 means the PC is sober.
+        - While `$drunk` goes up to 1,000, its effects stop increasing after `$drunk gte 480`. Values past this point are just a way for the PC to extend the duration of its effects.
 
-        `$drunk` is a measure of how much alcohol is in the pc's system where 0 is none (0-1,000)
+        1 point of `change` = 1 point of `$drunk`.
 
         `<<alcohol change>>`
-        - **change**: `number` - +/- change to apply
+        - **change**: `number` - +/- change to apply.
       parameters:
         - number
     alcoholClamp:
@@ -3502,7 +3504,6 @@ sugarcube-2:
         This trauma is half of normal trauma gain
 
         Trauma effects on pc are not updated after change.
-        Consider refactoring to call `<<trauma>>` instead of `<<traumaClamp>>`
 
         `<<combattrauma change>>`
         - **change**: `number` - +/- change to apply
@@ -16184,14 +16185,17 @@ sugarcube-2:
       name: streetwhorebodywriting
     stress:
       description: |-
-        Adds stress to pc with appropriate modifiers
+        Changes the PC's stress, where `$stress` is a measure of the PC's stress.
+        - Goes from 0 to 10,000, where 0 means the PC is serene.
 
-        `$stress` is pc's stress amount where 0 is healthy (0-10,000)
+        +1 point of `change` = 40 points of `$stress`.
+        - Being intoxicated will reduce stress gains by 25%. This reduction increases up to 75%, capping off when `$drunk` >= 480.
+
+        -1 point of `change` = -80 points of `$stress`.
 
         `<<stress change multiplierOverride?>>`
-        - **change**: `number` - +/- change to apply
-        - **multiplierOverride** _optional_: `number` - multiplier to use in place of calculated one
-          - Defaults to some modification of `1` or `0.8` if negative
+        - **change**: `number` - +/- change to apply.
+        - **multiplierOverride** _optional_: `number` - multiplier to use in place of the pre-set amount.
       parameters:
         - "number |+ number"
     stresscaption:
@@ -16830,16 +16834,23 @@ sugarcube-2:
       name: tipset
     tiredness:
       description: |-
-        Adds tiredness to pc's state
+        Changes the PC's tiredness, where `$tiredness` is a measure of the PC's fatigue.
+        - Goes from 0 to 2,000, where 0 means the PC is refreshed.
 
-        `$tiredness` is pc's amount of tiredness where 0 is not-tired (0-2,000)
+        When `source` is `"pass"`, 1 point of `change` = 1 point of `$tiredness`.
 
-        tiredness is unclamped and source is unused. Consider refactoring
+        When `source` isn't `"pass"`, +1 point of `change` = +15 points of `$tiredness`.
+        - Heavy clothing increases this by 50%.
+        - Wearing heels with an inadequate Feet Skill increases this by up to 100%.
+        - The PC overheating increases this up to 200%.
+        - If all 3 conditions are maxed, the PC will gain 350% more $tiredness than normal.
+
+        When `source` isn't `"pass"`, -1 point of `change` = -20 points of `tiredness`.
 
         `<<tiredness change source?>>`
-        - **change**: `number` - +/- change to apply
-        - **source** _optional_: `string` - source of tiredness change
-          - `"pass"`: tiredness gained from passage of time, not affected by modifiers
+        - **change**: `number` - +/- change to apply.
+        - **source** _optional_: `string` - The source of the fatigue change.
+          - `"pass"`: Fatigue gained from the passage of time.
       parameters:
         - 'number |+ "pass"'
       tags: ["refactor"]
@@ -17038,20 +17049,28 @@ sugarcube-2:
       name: trashSelect
     trauma:
       description: |-
-        Adds trauma to pc based on control and trait modifiers
+        Changes the PC's trauma, where `$trauma` is a measure of the PC's trauma.
+        - Goes from 0 to 5,000, where 0 means the PC is healthy.
 
-        `$trauma` is pc's trauma amount where 0 is healthy (0-5,000)
+        +1 point of `change` = 1.5 points of `$trauma`.
+        - Trauma gains are reduced by 0.7x if the PC has the "Fucktoy" trait.
+        - Trauma gains are reduced by 0.7x if the PC has the "Bitch" trait while having sex with beasts.
+        - Trauma gains are reduced by 0.7x if the PC has the "Prey" trait while having sex with tentacles.
+        - Trauma gains are increased by up to 100%, if the PC has low `$control`.
 
-        See `<<combattrauma>>` and `<<straighttrauma>>` for other use cases
+        -1 point of `change` = -1.5 points of `$trauma`.
+        - Trauma losses are increased by 2x while at the Asylum or the Hospital.
+        - Trauma losses are increased by up to 100%, if the PC has high `$control`.
 
-        `unusedArg` is not implemented. Consider refactoring to remove or implement
+        See `<<combattrauma>>` and `<<straighttrauma>>` for other use cases.
 
-        `<<trauma change? unusedArg?>>`
-        - **change** _optional_: `number` - +/- change to apply
-          - if not provided, just updates pc's trauma effects
-        - **unusedArg** _optional_: `boolean` - doesn't do anything (truthy)
+        `<<trauma change source?>>`
+        - **change**: `number` - +/- change to apply.
+          - If set to 0, just updates the PC's trauma effects.
+        - **source**: _optional_ - The source of the trauma change.
+          - `"combat"`: Fatigue gained from the passage of time. If used, the PC's trauma traits will not be updated.
       parameters:
-        - number
+        - 'number |+ "combat"'
       tags: ["refactor"]
     traumacaption:
       name: traumacaption
