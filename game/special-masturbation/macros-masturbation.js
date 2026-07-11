@@ -42,7 +42,13 @@ function skipToOrgasm(modifiers = "") {
 			if (modifiers.includes("audience")) masturbationAudienceSkip();
 			if (modifiers.includes("stallInterrupt")) masturbationStallInterrupt();
 		}
-	} while (count < 100 && (V.arousal > startArousal || count <= 6) && V.arousal < V.arousalmax && (V.timer > 0 || !modifiers.includes("timer")) && (V.phase <= 1 || !modifiers.includes("stallInterrupt")));
+	} while (
+		count < 100 &&
+		(V.arousal > startArousal || count <= 6) &&
+		V.arousal < V.arousalmax &&
+		(V.timer > 0 || !modifiers.includes("timer")) &&
+		(V.phase <= 1 || !modifiers.includes("stallInterrupt"))
+	);
 }
 DefineMacroS("skipToOrgasm", skipToOrgasm);
 
