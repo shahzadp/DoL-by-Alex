@@ -1,4 +1,4 @@
-/* global ClothesItem, ClothedSlots, paramError */
+/* global ClothesItem, ClothedSlots, paramError, drunkModifier */
 
 function mapMove(moveTo) {
 	const currentPassage = V.passage;
@@ -1485,17 +1485,58 @@ window.sexStatNameMapper = sexStatNameMapper;
  * @param {number} statValue
  */
 function drunkSexStatModifier(statValue) {
-	if (V.drunk === 0) return 0;
+	if (V.drunk <= C.stats.alcohol.min) return 0;
 
-	const maxValue = 40; // The maximum value of the curve.
-	const valueAdjust = Math.clamp(maxValue - Math.floor(statValue / 4), 0, maxValue); // The curve is less effective with higher base stat.
-	const growthRate = 3; // How fast the curve grows as the drunk value increases.
-	const midpoint = 500; // Needs to be half of the max drunk value.
-	const shifter = 0.85; // Decreases this value to make lower drunk values give higher results and higher drunk values give lower results.
-	const drunkMod = (V.drunk - midpoint) / 500; // Adjusts the drunk values to be scaled correctly with the equation and max stat value.
-	const denominator = 1 + shifter * Math.E ** (-1 * growthRate * drunkMod);
+	// Modifiers are between 0 and 1.
+	const statMod = statValue / 100;
 
-	return Math.floor(valueAdjust / denominator);
+	// Alcohol past the limit will get clamped back down
+	const drunkMod = drunkModifier();
+
+	/**
+	 * Can think of the following code as a square piece of fabric being pulled in 4 different directions.
+	 *
+	 * At (Sex = 1, Alcohol = 1), Bonus = C.stats.alcohol.mod.minSex.minAlcohol
+	 * At (Sex = 1, Alcohol = Max), Bonus = C.stats.alcohol.mod.minSex.maxAlcohol
+	 * At (Sex = Max, Alcohol = 1), Bonus = C.stats.alcohol.mod.maxSex.minAlcohol
+	 * At (Sex = Max, Alcohol = Max), Bonus = C.stats.alcohol.mod.maxSex.maxAlcohol
+	 *
+	 * The formulas below pull the cloth so that each corner of the cloth touches one of those points. The PC's bonus sex stats from their intoxication and existing sex stats then scale linearly between the 4 points as they move around the cloth.
+	 */
+
+	/**
+	 * y = a * x + b
+	 *
+	 * y = Sex Stat Bonus
+	 * x = Sex Stat Modifier = Current Sex Stat / 100
+	 *
+	 * a = Scaling Sex Stat Increase
+	 * b = Base Sex Increase
+	 *
+	 * a = a_v * d + a_0
+	 * b = b_v * d + b_0
+	 *
+	 * d = Alcohol Modifer (Clamped to 0.0 - 1.0) = $drunk / Alcohol Limit
+	 * a_v = Scaling Sex Stat increase, scales with Alcohol
+	 * a_0 = Scaling Sex Stat increase, does not scale with Alcohol
+	 * b_v = Scaling Alcohol increase, does not scale with Sex Stat
+	 * b_0 = Base Alcohol Increase, does not scale with Sex Stat
+	 */
+
+	const aV =
+		// eslint-disable-next-line prettier/prettier
+		(C.stats.alcohol.mod.maxSex.maxAlcohol - C.stats.alcohol.mod.maxSex.minAlcohol) -
+		(C.stats.alcohol.mod.minSex.maxAlcohol - C.stats.alcohol.mod.minSex.minAlcohol);
+	const a0 = C.stats.alcohol.mod.maxSex.minAlcohol - C.stats.alcohol.mod.minSex.minAlcohol;
+	const a = aV * drunkMod + a0;
+
+	const bV = C.stats.alcohol.mod.minSex.maxAlcohol - C.stats.alcohol.mod.minSex.minAlcohol;
+	const b0 = C.stats.alcohol.mod.minSex.minAlcohol;
+	const b = bV * drunkMod + b0;
+
+	const y = a * statMod + b;
+
+	return Math.ceil(y);
 }
 window.drunkSexStatModifier = drunkSexStatModifier;
 
