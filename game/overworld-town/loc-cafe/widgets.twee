@@ -158,14 +158,14 @@
 
 <<widget "sellbuns">>
 	<<if _buns_sold gt 0>>
-		<<set _bun_effective_value to 100*Math.floor(averageBunPrice(_buns_sold)/100)>>
+		<<set _bun_effective_value to Math.max(100,averageBunPrice(_buns_sold))>> /* We dont want buns below £1 */
 	<<else>>
 		<<set _bun_effective_value to $bun_value>>
 	<</if>>
-	<<set _bun_money to (1000 + ((_bun_effective_value * $bun_cut) * _buns_sold))>>
+	<<set _bun_money to 10 * (Math.floor((1000 + ((_bun_effective_value * $bun_cut) * _buns_sold)) / 10))>> /* We don't want to be paid £0.3333 */
 	Buns sold: _buns_sold
 	<br>
-	Bun Value: £<<print (_bun_effective_value / 100)>>
+	Bun Value: £<<print (Math.floor(_bun_effective_value / 100))>> /* The bun value must be an integer */
 	<<if _bun_effective_value lt $bun_value>> 
 		| <span class="gold">You made so many buns today that Sam had to lower their price to sell them all!</span>
 	<</if>>

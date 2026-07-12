@@ -183,7 +183,7 @@ const constants = {
 	// 		min: 0,
 	// 	},
 	// 	semenVolume: {
-	// 		cowMax: 6000,
+	// 		cowMax: 4000,
 	// 		normalMax: 3000,
 	// 		min: 0,
 	// 	},
