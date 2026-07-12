@@ -184,7 +184,7 @@ function initOverLower() {
 			accessory_colour: 0,
 			accessory_colour_options: [],
 			high_img: 0,
-			back_img: 0,
+			back_img: 1,
 			cursed: 0,
 			location: 0,
 			iconFile: 0,
