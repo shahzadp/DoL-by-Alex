@@ -479,7 +479,7 @@
 	<<else>>
 		<<generate1>><<person1>>
 		<<stall_init>>
-		
+
 		A <<person1>><<person>> is impressed by your <span class="green"><<print setup.foodstuff[$stall_foodstuff].plural>></span>. "How much for <span class="green"><<stall_amount>></span>?" <<he>> asks.
 		<br><br>
 
@@ -553,7 +553,7 @@
 	<</if>>
 	<<if $daily.stall_lewdity gte 1>>
 		<br>
-		A <span class="lewd">lewd</span> aura permeates the area. 
+		A <span class="lewd">lewd</span> aura permeates the area.
 		<<switch $daily.stall_lewdity>>
 			<<case 1>>
 			<<case 3>><span class="pink">You think you see people watching you from afar, but they turn away when you look.</span>
@@ -725,7 +725,7 @@
 <</widget>>
 
 <<widget "stall_update">>
-	<<set _stall_multiplier to Math.max(1,Math.pow(2,Math.max(0,$stall_seduced-2)))>> 
+	<<set _stall_multiplier to Math.max(1,Math.pow(2,Math.max(0,$stall_seduced-2)))>>
 	/* Range of 2-5 becomes 1-8, for a gentle exponential scaling */
 	<<if setup.foodstuff[$stall_foodstuff].shop.stall_size is "large">>
 		<<set $stall_amount to random(1,2 * _stall_multiplier)>>
@@ -735,7 +735,7 @@
 		<<if $stall_seduced lte 1>>
 			<<set $stall_amount to random(1, 10)>>
 		<<else>>
-			<<set $stall_amount to random(5 * _stall_multiplier, 15 * _stall_multiplier)>> 
+			<<set $stall_amount to random(5 * _stall_multiplier, 15 * _stall_multiplier)>>
 			/* At most 120 products in one unlikely sale. Averages are (5,10,20,40,80) */
 		<</if>>
 	<</if>>
@@ -823,8 +823,8 @@
 
 <<widget "stallCustomerArousal">>
 	<<set $enemyarousal += 10*random(1,2)*random(1,2)>>
-	/* 
-	25% +10 arousal 
+	/*
+	25% +10 arousal
 	50% +20 arousal
 	25% +40 arousal
 	*/
@@ -832,65 +832,65 @@
 
 <<widget "stall_autosale">>
 	/* 1/3 no sale, 1/3 normal sale, 1/3 double sale. Averages to 1 sale. */
-    <<silently>><<stall_inventory>><</silently>>
-    <<stall_init>>
-   
-    <<if Math.min(10000,3000 + $attractiveness/2 + $fame.business + (currentSkillValue('tending') * 2) + (Math.min($foodstuff_inventory.length,10) * 500)) gte random(1, 15000)>>
-        /* No sale in 1/3 of the cases. */
-		<<set _stall_attention to 2>>
-        <<set $stall_foodstuff to $foodstuff_inventory.random()>>
-        
-        /* Decide between 1 item, doubled amount, or 2 different items. */
-        <<if random(1, 2) is 2>>
-            <<if random(1, 2) is 2>>
-                <<set $stall_seduced to 2>>  /* Doubles the amount sold. */
-            <<else>>
-                /* Try to sell two different products */
-                <<if $foodstuff_inventory.length gte 2>>
-                    <<set $_food2 to $foodstuff_inventory.random()>>
-                    <<if $_food2 is $stall_foodstuff>>
-                        <<set $stall_seduced to 2>>  /* Fallback to doubling if same. */
-                    <</if>>
-                <<else>>
-                    <<set $stall_seduced to 2>>  /* Not enough variety. */
-                <</if>>
-            <</if>>
-        <</if>>
+	<<silently>><<stall_inventory>><</silently>>
+	<<stall_init>>
 
-        <<stall_update>>
-        <<generate1>><<person1>>
-        
-		
-	    <<silently>><<stall_sell>><</silently>>        
-        A <<person>> buys 
-        <<if $stall_amount gte 2>>
-            <span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
-        <<else>>
-            <span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
-        <</if>>
-        for 
-		<<if $_food2 is undefined>><<printmoney `$stall_cost * $stall_amount`>>. 
+	<<if Math.min(10000,3000 + $attractiveness/2 + $fame.business + (currentSkillValue('tending') * 2) + (Math.min($foodstuff_inventory.length,10) * 500)) gte random(1, 15000)>>
+	    /* No sale in 1/3 of the cases. */
+		<<set _stall_attention to 2>>
+		<<set $stall_foodstuff to $foodstuff_inventory.random()>>
+
+		/* Decide between 1 item, doubled amount, or 2 different items. */
+		<<if random(1, 2) is 2>>
+			<<if random(1, 2) is 2>>
+				<<set $stall_seduced to 2>>  /* Doubles the amount sold. */
+			<<else>>
+				/* Try to sell two different products */
+				<<if $foodstuff_inventory.length gte 2>>
+					<<set $_food2 to $foodstuff_inventory.random()>>
+					<<if $_food2 is $stall_foodstuff>>
+						<<set $stall_seduced to 2>>  /* Fallback to doubling if same. */
+					<</if>>
+				<<else>>
+					<<set $stall_seduced to 2>>  /* Not enough variety. */
+				<</if>>
+			<</if>>
+		<</if>>
+
+		<<stall_update>>
+		<<generate1>><<person1>>
+
+
+		<<silently>><<stall_sell>><</silently>>
+		A <<person>> buys
+		<<if $stall_amount gte 2>>
+			<span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
+		<<else>>
+			<span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
+		<</if>>
+		for
+		<<if $_food2 is undefined>>
+			<<printmoney `$stall_cost * $stall_amount`>>.
 		<<else>>
 			<<printmoney `$stall_cost * $stall_amount`>> and
 			<<set $stall_foodstuff to $_food2>>
 			<<stall_update>>
-			<<silently>><<stall_sell>><</silently>>   
-            <<if $stall_amount gte 2>>
-                <span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
-            <<else>>
-                <span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
-            <</if>>
-            for <<printmoney `$stall_cost * $stall_amount`>>.
-        <</if>>
+			<<silently>><<stall_sell>><</silently>>
+			<<if $stall_amount gte 2>>
+				<span class="green">$stall_amount <<print setup.foodstuff[$stall_foodstuff].plural>></span>
+			<<else>>
+				<span class="green">one <<print setup.foodstuff[$stall_foodstuff].name.replace(/_/g," ")>></span>
+			<</if>>
+			for <<printmoney `$stall_cost * $stall_amount`>>.
+		<</if>>
 		<br>
-        
-        <<set $stall_seduced to 0>>
-        <<endstall>>
-        <<silently>><<stall_inventory>><</silently>>
-        <<famebusiness 1>>
-        <<endevent>>
-       
-    <</if>>
+
+		<<set $stall_seduced to 0>>
+		<<endstall>>
+		<<silently>><<stall_inventory>><</silently>>
+		<<famebusiness 1>>
+		<<endevent>>
+	<</if>>
 <</widget>>
 
 <<widget "marketStockDisplay">>
