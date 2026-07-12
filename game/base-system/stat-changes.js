@@ -265,16 +265,27 @@ const statChange = (() => {
 		if (amount) {
 			let traumaMod = 1;
 			if (amount >= 0) {
+				// Reduce the PC's trauma gains by 0.7x if they have the "Fucktoy" / "Survivor" trait
 				if (V.rapetrait) traumaMod *= 0.7;
+				// Reduce the PC's trauma gains by 0.7x if they have the "Bitch" / "Tamer" trait while being fucked by beasts.
 				if (V.bestialitytrait >= 1 && V.enemytype === "beast") traumaMod *= 0.7;
+				// Reduce the PC's trauma gains by 0.7x if they have the "Prey" / "Witch" trait while being fucked by tentacles.
 				if (V.tentacletrait >= 1 && V.enemytype === "tentacles") traumaMod *= 0.7;
-				// increase trauma by 3x amount at 0 control, 1.5x at full, then go trait reductions
-				V.trauma += amount * (3 - 1.5 * (V.control / V.controlmax)) * traumaMod;
+
+				// Increase trauma gains by up to 2x if the player is at low control.
+				const controlMod = 2 - V.control / V.controlmax;
+
+				// +1 point of "amount" = +1.5 points of $trauma. Amplified by "traumaMod" and "controlMod".
+				V.trauma += amount * 1.5 * traumaMod * controlMod;
 			} else {
-				// good doctors know how to help you
-				if (["asylum", "hospital"].includes(V.location)) traumaMod *= 2;
-				// decrease trauma by 1.5x amount with no control, 3x with full control
-				V.trauma += amount * (1.5 + 1.5 * (V.control / V.controlmax)) * traumaMod;
+				// Increase the PC's trauma losses by 2x if they are at the Asylum or the Hospital, but not during combat.
+				if (["asylum", "hospital"].includes(V.location) && source !== "combat") traumaMod *= 2;
+
+				// Increase trauma losses by up to 2x if the player is at high control.
+				const controlMod = 1 + V.control / V.controlmax;
+
+				// -1 point of "amount" = -1.5 points of $trauma. Amplified by "traumaMod" and "controlMod".
+				V.trauma += amount * 1.5 * traumaMod * controlMod;
 			}
 		}
 

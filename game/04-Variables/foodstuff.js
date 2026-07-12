@@ -1700,7 +1700,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 600,
@@ -1718,7 +1718,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 800,
@@ -2243,7 +2243,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 50,
@@ -2334,7 +2334,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 20,
@@ -2376,7 +2376,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 250,
@@ -2515,7 +2515,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 600,
@@ -2557,7 +2557,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 400,
@@ -3048,7 +3048,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 1000,
@@ -3066,7 +3066,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 700,
@@ -3106,7 +3106,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 100,
@@ -3125,7 +3125,7 @@ function initFoodstuff() {
 			prop_folder: "ingredient",
 			tending: {
 				affected_by_tending_skill: true,
-				tags: []
+				tags: [],
 			},
 			shop: {
 				sell_price: 300,

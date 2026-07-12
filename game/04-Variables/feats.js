@@ -2340,9 +2340,9 @@ function earnHourlyFeats() {
 	if (V.produce_sold >= 100) earnFeat("Hawker");
 	if (V.produce_sold >= 1000) earnFeat("Vendor");
 	if (V.produce_sold >= 5000) earnFeat("Merchant");
-	let total_seeds = Object.values(setup.foodstuff).filter(plant => plant.tending?.has_seeds).length;
-	if (V.plants_known.length >= total_seeds / 2) earnFeat("Seedy");
-	if (V.plants_known.length >= total_seeds) earnFeat("Breedy");
+	const totalSeeds = Object.values(setup.foodstuff).filter(plant => plant.tending?.has_seeds).length;
+	if (V.plants_known.length >= totalSeeds / 2) earnFeat("Seedy");
+	if (V.plants_known.length >= totalSeeds) earnFeat("Breedy");
 	if (V.daily.ex.road === 1 && V.daily.ex.cream === 1 && V.daily.ex.flyover === 1) earnFeat("A Lewd Adventure");
 	if (V.athletics >= 1000) earnFeat("Swift");
 
@@ -2414,7 +2414,7 @@ function earnHourlyFeats() {
 	}
 
 	// Should be last
-	let currentMax = Object.values(setup.feats).reduce((sum, feat) => sum + feat.difficulty, 0);
+	const currentMax = Object.values(setup.feats).reduce((sum, feat) => sum + feat.difficulty, 0);
 	if (V.feats.allSaves.points >= Math.floor(currentMax * 0.5)) earnFeat("My Collection of Feats");
 	if (V.feats.allSaves.points >= Math.floor(currentMax * 0.95)) earnFeat("My Timeless Collection of Feats");
 

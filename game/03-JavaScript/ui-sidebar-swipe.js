@@ -17,7 +17,9 @@ function handleTouchMove(ev) {
 	if (ev.target.tagName === "INPUT") return;
 
 	// Activate the swipe only when finger is over the UI Bar
+	// eslint-disable-next-line no-unused-vars
 	const stowedWidth = 60; // appx. width of stowed UI Bar in px
+	// eslint-disable-next-line no-unused-vars
 	const unstowedWidth = 300; // same for unstowed UI Bar
 
 	const xUp = ev.touches[0].clientX;
@@ -37,9 +39,8 @@ function handleTouchMove(ev) {
 		// allow opening and then closing sidebar without breaking the touch
 		xDown = xUp;
 		yDown = yUp;
-		return;
-	}
-	else {
+	} else {
+		// eslint-disable-next-line prettier/prettier
 		if (yDiff > 0); // up swipe
 		else; // down swipe
 		// nothing yet, just reset the values

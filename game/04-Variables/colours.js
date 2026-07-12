@@ -1015,7 +1015,8 @@ setup.colours.eyes = [
 			blend: "#917742",
 		},
 	},
-	{variable: "brown",
+	{
+		variable: "brown",
 		name: "brown",
 		name_cap: "Brown",
 		csstext: "brown",

@@ -76,7 +76,11 @@ throwError = function (place, message, source, isExportable = true, isLogged = t
 	// add game version and active passage info at the start of the error box
 	const header = `${StartConfig.version} ${L10n.get("errorTitle")} (:: ${passage()}): `;
 	// nested reports are implemented with military-grade stupidity, but informative enough for the screenshots
-	if (typeof message === "string") message = message.replace(/Export(\)+?)?$/, "$1").replaceAll("Export;", ";").replaceAll(header, "");
+	if (typeof message === "string")
+		message = message
+			.replace(/Export(\)+?)?$/, "$1")
+			.replaceAll("Export;", ";")
+			.replaceAll(header, "");
 
 	const $wrapper = jQuery(document.createElement("div"));
 	const $toggle = jQuery(document.createElement("button"));
