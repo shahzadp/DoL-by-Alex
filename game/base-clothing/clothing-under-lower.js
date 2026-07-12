@@ -2567,9 +2567,9 @@ function initUnderLower() {
 			integrity_max: 50,
 			fabric_strength: 25,
 			reveal: 400,
-			word: "a",
+			word: "n",
 			one_piece: 0,
-			plural: 0,
+			plural: 1,
 			colour: 0,
 			colour_options: [
 				"black",
