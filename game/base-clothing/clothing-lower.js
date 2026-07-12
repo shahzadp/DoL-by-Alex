@@ -11876,7 +11876,7 @@ function initLower() {
 			pattern_layer: "tertiary",
 			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 3, 5: 5, 6: 5 },
 			notuck: 1,
-			iconFile: "pinafore.png",
+			iconFile: "denimpinafore.png",
 			accIcon: "denimpinafore-acc.png",
 			pregType: "cover",
 		}),
@@ -11914,7 +11914,6 @@ function initLower() {
 			description: "Just a little too loose.",
 			cost: 2500,
 			shop: ["clothing", "school", "adult"],
-			shopGroup: "schoolshorts",
 			type: ["school", "cool"],
 			combat: {
 				reference: "shorts",
@@ -11928,11 +11927,11 @@ function initLower() {
 			plural: 0,
 			colour_options: ["black", "white", "navy blue", "wine", "brown", "light pink", "lilac", "red", "tangerine", "teal", "yellow", "custom"],
 			accessory: 1,
-			accessory_colour_options: ["black", "white", "navy blue", "wine", "brown", "light pink", "lilac", "red", "tangerine", "teal", "yellow", "custom"],
+			accessory_colour_options: ["steel", "blue steel", "bronze", "gold", "rose gold", "silver"],
 			gender: "m",
 			feminity: -100,
 			warmth: 2,
-			iconFile: "shorts.png",
+			iconFile: "unbuttoned-shorts.png",
 		}),
 	];
 	setup.clothes.lower = clothing;

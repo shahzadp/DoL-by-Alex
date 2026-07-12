@@ -1927,6 +1927,7 @@ function initUnderUpper() {
 			feminity: 100,
 			warmth: 1,
 			iconFile: "ruffled-swimsuit.png",
+			formfitting: 1,
 			outfitPrimary: { under_lower: "ruffled swimsuit" },
 		}),
 		new ClothesItem({
