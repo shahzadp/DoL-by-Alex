@@ -98,7 +98,7 @@ const constants = {
 	// 		max: 5000,
 	// 		min: 0,
 	// 	},
-		
+
 	// 	// Core Characteristic Constants
 	// 	/**
 	// 	 * Awareness has a negative range where it turns into Innocence. "Base" will refer to 0 Awareness.
@@ -146,7 +146,7 @@ const constants = {
 	// 		max: 1000,
 	// 		min: 0,
 	// 	},
-		
+
 	// 	// Secondary Characteristic Constants
 	// 	fringeLength: {
 	// 		max: 1000,
@@ -175,7 +175,7 @@ const constants = {
 	// 		max: 2000,
 	// 		min: 0,
 	// 	},
-		
+
 	// 	// Fluid Production Constants
 	// 	milkVolume: {
 	// 		cowMax: 6000,
@@ -193,7 +193,7 @@ const constants = {
 	// 	 *
 	// 	 * See "game\base-system\orgasm.twee" for the code.
 	// 	 */
-		
+
 	// 	// Core Skill Constants
 	// 	athletics: {
 	// 		max: 1000,
@@ -225,7 +225,7 @@ const constants = {
 	// 		max: 1000,
 	// 		min: 0,
 	// 	},
-		
+
 	// 	// School Skill Constants
 	// 	english: {
 	// 		max: 1000,
@@ -243,7 +243,7 @@ const constants = {
 	// 		max: 1000,
 	// 		min: 0,
 	// 	},
-		
+
 	// 	// Sex Skill Constants
 	// 	/**
 	// 	 * Variable name: "analskill"

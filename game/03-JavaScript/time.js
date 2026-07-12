@@ -1180,6 +1180,7 @@ function minutePassed(minutes) {
 	const temperature = V.outside ? Weather.apparentTemperature : Weather.insideTemperature;
 	if (!V.possessed) Weather.BodyTemperature.update(temperature, minutes);
 	V.stress += Math.round(Weather.BodyTemperature.stressModifier * minutes);
+	statChange.stressClamp();
 
 	// Snow & ice
 	Weather.setAccumulatedSnow(minutes);
@@ -1202,6 +1203,8 @@ function minutePassed(minutes) {
 	// prevent fatigue from being an issue when passing days (actually 20+ hours) at a time
 	if (minutes < 1200) statChange.tiredness(minutes / 15);
 	statChange.pain(minutes, -0.5);
+
+	// If passive Trauma decreases ever get implemented, they will need to be handled in a way that prevents the "trauma" widget from automatically updating the PC's trauma traits during combat.
 
 	// Arousal
 	const arousalMultiplier = V.backgroundTraits.includes("lustful") ? 0.2 * (12 - Math.floor(V.purity / 80)) + 1 + (V.purity <= 50 ? 1 : 0) : -10;
@@ -1338,7 +1341,11 @@ function dailyNPCEffects() {
 	if (C.npc.Robin.trauma > 0) wikifier("npcincr", "Robin", "trauma", -1);
 
 	if (V.robindebtevent === 0) V.robinmissing = 0;
-	if (V.robinpaid >= 1) statChange.trauma(-25);
+	if (V.robinpaid >= 1) {
+		// Edge case for when the PC is in combat at midnight.
+		if (V.combat === 1) statChange.trauma(-25, "combat");
+		else statChange.trauma(-25);
+	}
 	if (V.robinromance === 1 && C.npc.Robin.dom >= 40) wikifier("npcincr", "Robin", "lust", 1);
 	if (V.robinPilloryFail) {
 		delete V.robinPilloryFail;
@@ -1631,7 +1638,11 @@ function dailyNPCEffects() {
 						: new DateTime(Time.date).addDays(2).timeStamp;
 					const traumaDevotion = 10 * V.hypnosis_traits.devotion;
 					const hallucinogenDevotion = 40 * V.hypnosis_traits.devotion;
-					statChange.trauma(traumaDevotion);
+
+					// Edge case for when the PC is in combat at midnight.
+					if (V.combat === 1) statChange.trauma(traumaDevotion, "combat");
+					else statChange.trauma(traumaDevotion);
+
 					statChange.hallucinogen(hallucinogenDevotion);
 					if (["meetAtShop", "meetAtCafe"].includes(V.gwylan.request.event)) {
 						V.hypnosis_devotion_message = V.gwylan.request.event;
@@ -1893,7 +1904,13 @@ function dailyTransformationEffects() {
 		const scarTrauma = V.auriga_scar * 25;
 		const scarAwareness = V.auriga_scar;
 		const scarPurity = V.auriga_scar * -5;
-		if (V.trauma <= (V.traumamax / 5) * 3) statChange.trauma(scarTrauma);
+
+		if (V.trauma <= (V.traumamax / 5) * 3) {
+			// Edge case for when the PC is in combat at midnight.
+			if (V.combat === 1) statChange.trauma(scarTrauma, "combat");
+			else statChange.trauma(scarTrauma);
+		}
+
 		statChange.awareness(scarAwareness);
 		statChange.purity(scarPurity);
 	}
@@ -2101,11 +2118,15 @@ function dailySchoolEffects() {
 			V.englishPlay = "missed";
 		}
 	}
-	if (V.schooltrait >= 4) statChange.trauma(-25);
-	else if (V.schooltrait === 3) statChange.trauma(-20);
-	else if (V.schooltrait === 2) statChange.trauma(-15);
-	else if (V.schooltrait === 1) statChange.trauma(-10);
-	else statChange.trauma(-5);
+	let schoolTrauma = -5;
+	if (V.schooltrait >= 4) schoolTrauma = -25;
+	else if (V.schooltrait >= 3) schoolTrauma = -20;
+	else if (V.schooltrait >= 2) schoolTrauma = -15;
+	else if (V.schooltrait >= 1) schoolTrauma = -10;
+
+	// Edge case for when the PC is in combat at midnight.
+	if (V.combat === 1) statChange.trauma(schoolTrauma, "combat");
+	else statChange.trauma(schoolTrauma);
 
 	if (Time.isSchoolDay(Time.yesterday) && V.location !== "prison") {
 		const attended = Object.keys(V.daily.school.attended).length;

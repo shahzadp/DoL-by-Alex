@@ -1,7 +1,7 @@
-function struggleSoftlockPrevent(){
-	if(V.cheatClothes && pcAreArmsBound("any")){
+function struggleSoftlockPrevent() {
+	if (V.cheatClothes && pcAreArmsBound("any")) {
 		Object.keys(V.struggle.enemy).forEach(enemy => {
-			if(V.struggle.enemy[enemy].health <= 0 && V.struggle.enemy[enemy].location !== "fled"){
+			if (V.struggle.enemy[enemy].health <= 0 && V.struggle.enemy[enemy].location !== "fled") {
 				V.struggle.enemy[enemy].location = "fleeing";
 			} else {
 				V.struggle.enemy[enemy].health -= 1;

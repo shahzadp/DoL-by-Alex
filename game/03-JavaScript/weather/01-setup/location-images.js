@@ -890,7 +890,7 @@ setup.LocationImages = {
 				animation: {
 					frameDelay: 250,
 					cycleDelay: () => random(3, 7, true) * 1000,
-				}
+				},
 			},
 		},
 		emissive: {

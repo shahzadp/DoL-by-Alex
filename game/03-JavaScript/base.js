@@ -166,7 +166,7 @@ function pluralise(count, singular, plural) {
 		that: "those",
 		is: "are",
 		it: "them",
-		potato: "potatoes"
+		potato: "potatoes",
 	});
 
 	count = Wikifier.getValue(count);

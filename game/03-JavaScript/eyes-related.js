@@ -97,9 +97,7 @@ function fixChildEyeColours() {
 	const validEyeColours = [...setup.colours.eyes.map(e => e.variable), ...(V.custom_eyecolours ?? []).map(e => e.variable)];
 	const fixEye = record => {
 		if (!record.features || validEyeColours.includes(record.features.eyeColour)) return;
-		const known = [record.mother, record.father]
-			.map(p => (p === "pc" ? V.eyeselect : C.npc[p] ? C.npc[p].eyeColour : undefined))
-			.filter(Boolean);
+		const known = [record.mother, record.father].map(p => (p === "pc" ? V.eyeselect : C.npc[p] ? C.npc[p].eyeColour : undefined)).filter(Boolean);
 		record.features.eyeColour = eyeColourCalc(known.length ? known[random(0, known.length - 1)] : undefined);
 	};
 	Object.values(V.children).forEach(fixEye);
