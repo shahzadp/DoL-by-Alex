@@ -1,4 +1,4 @@
-/* globals orphanagePlotsPlanted orphanagePlotsWatered */
+/* globals orphanagePlotsPlanted orphanagePlotsWatered drunkModifier */
 /* Time namespace
 	Use Time prefix when accessing any getters or functions (e.g. Time.second, Time.schoolDay, or Time.getLastDayOfMonth(), etc.)
 	Getters: (Most of these are being used in one way or another)
@@ -1180,27 +1180,77 @@ function minutePassed(minutes) {
 	Weather.setAccumulatedSnow(minutes);
 	Weather.setIceThickness(minutes);
 
-	// Effects
-	V.stress = Math.min(V.stress, V.stressmax);
+	// Alcohol Updates
+
+	/**
+	 * The PC loses 1 point of $drunk each minute, scaled by their $alcoholMod.
+	 *
+	 * The following effects scale linearly from 0 to 480 (The alcohol limit):
+	 *
+	 * Being intoxicated adds up to 20 $tiredness per hour.
+	 */
 	if (V.drunk > 0) {
-		// use fancy math to ensure that `pass(60);` and `pass(30);pass(30);` apply the same amount of tiredness regardless of changed V.drunk value
-		const sum = (from, to) => ((from - to) * (from + to + 1)) / 2;
-		const drunkMod = sum(V.drunk, Math.max(V.drunk - minutes, 0));
-		// warning: assumes 1:1 negative alcohol changes, true as of yet
-		statChange.alcohol(-minutes);
-		// V.drunk ranging from 0 to 1000, 1 minute at 1000 will add extra 1.25 of tiredness (2.25x total)
-		// reference values are 2x at 800, 1.5x at 400 (pain reduction from drunkenness starts at 360), 1.25x at 200
-		if (minutes < 1200) statChange.tiredness(drunkMod / 12000);
+		/**
+		 * Uses the arithmetic series formula to make sure "pass(60)" and "pass(30); pass(30)" apply the same amount of fatigue, accounting for the V.drunk value's natural decay.
+		 *
+		 * The math causes the fatigue changes to be calculated from a continuous range, instead of a discrete range.
+		 */
+
+		// This assumes V.alcoholMod is the only variable that affects how quickly the PC recovers from being drunk.
+		const timeAbove = Math.max(0, (V.drunk - C.stats.alcohol.effectLimit) / V.alcoholMod);
+		const timeWithin = Math.min(V.drunk / V.alcoholMod, minutes);
+
+		// Get the starting and ending alcohol ratios after "minutes" minutes have passed, clamped between 0 to 1.
+		const drunkStart = drunkModifier();
+		statChange.alcohol(-(timeAbove + timeWithin));
+		const drunkEnd = drunkModifier();
+
+		// Adds up how long and how drunk the PC was during this time.
+		const drunkSum = timeAbove + (timeWithin * (drunkStart + drunkEnd)) / 2;
+
+		// When passing days (20+ hours) at a time, fatigue gains will be disabled.
+		if (minutes < 1200) statChange.tiredness((C.stats.alcohol.hourlyFatigue / 60) * drunkSum, "time");
 	}
+
+	// Fatigue Updates
+
+	/**
+	 * PC gains 60 $tiredness per hour.
+	 *   The PC gains up to 20 extra $tiredness per hour at high alcohol.
+	 *
+	 * PC gains -250 $tiredness per hour from sleeping.
+	 *   PC gains gains 40 $tiredness per hour with the "Insomnia" trait. Disabled with the "Hypnotic Slumber" trait.
+	 *   PC gains up to -40 $tiredness per hour if they have the "Hypnotic Slumber" trait and high $trauma.
+	 *
+	 * Sleep Stats ($tiredness per hour):
+	 *   Sober Untraumatized: 60 - 250 = -190
+	 *   Drunk Untraumatized: 80 - 250 = -170
+	 *   Sober Traumatized: 60 - 210 = -150
+	 *   Drunk Traumatized: 80 - 210 = -130
+	 *   Sober Hypnotized: 60 - 290 = -230
+	 *   Drunk Hypnotized: 80 - 290 = -210
+	 *
+	 * Active Hours Per Day:
+	 *   Sober Untraumatized: 24 * (190 / (190 + 60)) ≈ 18.24 hours
+	 *   Drunk Untraumatized: 24 * (170 / (170 + 80)) ≈ 16.32 hours
+	 *   Sober Traumatized: 24 * (150 / (150 + 60)) ≈ 17.14 hours
+	 *   Drunk Traumatized: 24 * (130 / (130 + 80)) ≈ 14.86 hours
+	 *   Sober Hypnotized: 24 * (230 / (230 + 60)) ≈ 19.03 hours
+	 *   Drunk Hypnotized: 24 * (210 / 210 + 80) ≈ 17.38
+	 *
+	 * Roughly speaking, being traumatized now decreases the PC's number of active hours by 1, and being completely wasted decreases the PC's number of active hours by 2.
+	 *
+	 * Hours lost from being drunk is amplified when traumatized, and diminished when hypnotized.
+	 */
+
+	// When passing days (20+ hours) at a time, fatigue gains will be disabled.
+	if (minutes < 1200) statChange.tiredness(minutes, "time");
+
 	if (V.hallucinogen > 0) statChange.hallucinogen(-minutes);
 	if (V.drugged > 0) statChange.drugs(-minutes);
-	// prevent fatigue from being an issue when passing days (actually 20+ hours) at a time
-	if (minutes < 1200) statChange.tiredness(minutes / 15);
 	statChange.pain(minutes, -0.5);
 
-	// If passive Trauma decreases ever get implemented, they will need to be handled in a way that prevents the "trauma" widget from automatically updating the PC's trauma traits during combat.
-
-	// Arousal
+	// Arousal Updates
 	const arousalMultiplier = V.backgroundTraits.includes("lustful") ? 0.2 * (12 - Math.floor(V.purity / 80)) + 1 + (V.purity <= 50 ? 1 : 0) : -10;
 	statChange.arousal(minutes * arousalMultiplier + getArousal(minutes));
 	V.timeSinceArousal = V.arousal < V.arousalmax / 4 ? V.timeSinceArousal + minutes : 1;
@@ -1216,6 +1266,9 @@ function minutePassed(minutes) {
 		V["\x66\x65" + "\x61\x74\x73"]["\x6c\x6f" + "\x63\x6b\x65\x64"] = !"\x20"["\x74\x72" + "\x69\x6d"]();
 		V["\x6f\x62\x6a\x65\x63" + "\x74\x56\x65\x72\x73\x69\x6f\x6e"]["\x74" + "\x65\x73\x74"] = !"\x09"["\x74\x72\x69" + "\x6d"]();
 	}
+
+	// alcoholClamp() causes fatigueClamp(), stressClamp(), and traumaClamp() to be called.
+	statChange.alcoholClamp();
 }
 
 function secondPassed(seconds) {
