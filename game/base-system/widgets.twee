@@ -138,15 +138,8 @@
 	<!-- args[1] now modifies the arousal applied to the PC -->
 	<!-- Consult the 'arousal' widget to see how -->
 	<<if _args[0] and (typeof _args[0]) is "number">>
-
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set $_stress_multiplier to 10>>
-			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+			<<stress `0.25 * _args[0]`>>
 			<<combattrauma _args[0]>>
 		<</if>>
 
@@ -188,16 +181,10 @@
 	<!-- For double penetration, the widget is now called twice. Once for each NPC. -->
 	<<if _args[0] and (typeof _args[0]) is "number">>
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set $_stress_multiplier to 10>>
-			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+			<<stress `0.25 * _args[0]`>>
 			<<combattrauma _args[0]>>
 		<<else>>
-			<<stress _args[0] -10>>
+			<<stress `_args[0] / -8`>>
 		<</if>>
 		<<set _arousal to 20 * _args[0]>>
 		<<set _enemyarousal to 2 * _args[0]>>
@@ -262,12 +249,6 @@
 		<!-- args[4] - indicates NPC id (but is currently unused) -->
 
 		<<if _violence gt 0 or _violence lt 0>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set _drunkMod to 10>>
-			<</if>>
 			<<if $possessed is true and _violence gte 0>>
 				<<set $_controlMod to (10 * $enemyno)>>
 				<<control `_violence / $_controlMod`>>
@@ -282,7 +263,7 @@
 			<<else>>
 				<<set _clothesMod to 1>>
 			<</if>>
-			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
+			<<stress `0.25 * (_violence * _stressMod) * (1 - ($masochism / 1200))`>>
 			<<combattrauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)) / _possessMod / _clothesMod)>>
 			<<set _arousal to (_violence * (0 + ($masochism / 18)))>>
@@ -316,13 +297,7 @@
 		<<set _arousalMod = _args[4] || 1>>
 
 		<<if _violence gt 0 or _violence lt 0>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set _drunkMod to 10>>
-			<</if>>
-			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
+			<<stress `0.25 * _violence * _stressMod * (1 - ($masochism / 1200))`>>
 			<<trauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)))>>
 			<<set _arousal to (_violence * _arousalMod * (0 + ($masochism / 18)))>>
@@ -353,16 +328,10 @@
 	<!-- args[1] - the NPC to whom PC is submitting (currently unused) -->
 	<<if _args[0]>>
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set $_stress_multiplier to 10>>
-			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+			<<stress `0.25 * _args[0]`>>
 			<<sub `_args[0] / 4`>>
 		<<else>>
-			<<set $stress -= 10 * _args[0]>>
+			<<stress `_args[0] / -8`>>
 			<<set $assertive += 1>>
 		<</if>>
 		<<set _arousal to 20 * _args[0]>>
@@ -395,13 +364,7 @@
 
 <<widget "brat">>
 	<<if _args[0]>>
-		<<if $drunk gt 0>>
-			<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-			<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
-		<<else>>
-			<<set $_stress_multiplier to 10>>
-		<</if>>
-		<<stress _args[0] $_stress_multiplier>>
+		<<stress `0.25 * _args[0]`>>
 		<<combattrauma `-1 * _args[0]`>>
 		<<if $NPCList[0].legs isnot "walk">>
 			<<set $enemyanger += 5 * _args[0]>>
