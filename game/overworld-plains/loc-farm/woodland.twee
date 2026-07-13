@@ -394,15 +394,17 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 			<<set _basketTypes to ["strawberry", "peach", "plum"]>>
 			You have found
 			<span class="green">
+				<<set _uniqueCounter to 0>>
 				<<for $_j = 0; $_j < 3; $_j++>>
-					<<if _uniqueItems is 1>>
-						<<if $tempBasket[$_j] gt 0>>
+					<<if $tempBasket[$_j] gt 0>>
+						<<set _uniqueCounter += 1>>
+						<<if _uniqueItems is 1>>
 							<<foodstuffReport _basketTypes[$_j] $tempBasket[$_j] _basketTypes[$_j]>>.
+						<<elseif _uniqueCounter is _uniqueItems>>
+							and <<foodstuffReport _basketTypes[$_j] $tempBasket[$_j] _basketTypes[$_j]>>.
+						<<else>>
+							<<foodstuffReport _basketTypes[$_j] $tempBasket[$_j] _basketTypes[$_j]>>,
 						<</if>>
-					<<elseif $tempBasket[$_j] gt 0 and $_j + 1 < _uniqueItems>>
-						<<foodstuffReport _basketTypes[$_j] $tempBasket[$_j] _basketTypes[$_j]>>,
-					<<else>>
-						and <<foodstuffReport _basketTypes[$_j] $tempBasket[$_j] _basketTypes[$_j]>>.
 					<</if>>
 				<</for>>
 			</span>
@@ -592,9 +594,19 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<<else>>
 			They stare at your basket. You think the implication is clear.
 		<</if>>
-		You could give them your harvest, but money is tight and you were going to sell it on the market.
+		<br><br>
+
+		<<if $rentmoney gt $money>>
+			You think about giving them your harvest, but you're barely scraping by. Can you really afford it?
+		<<elseif $rentmoney * 2 gt $money>>
+			You think about giving them your harvest, but money is tight. Can you still make enough for next week?
+		<<else>>
+			You think about giving them your harvest. All things considered, you can afford to lose some
+			<<if $tempBasket[0] gt 0>> mushrooms.
+			<<else>> truffles.
+			<</if>>
+		<</if>>
 		<<if hasSexStat("deviancy", 5)>> You could offer them your body, but how many times will you need to satisfy them?<</if>>
-		You hesitate.
 		<br><br>
 
 		<<foodstufficon "mushroom">><<link [[Offer your harvest (?:??)|Farm Woodland Forage Reward Extreme]]>>
@@ -1709,12 +1721,10 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 				<<set $foodstuff["truffle"].amount -= 1>>
 			<</if>>
 
-			<<if $farm_work["pig"].monster>>
-				A <<if random(1, 2) is 1>> pigboy <<else>> piggirl <</if>> munches on a _foodTarget from your basket.
-			<<else>>
-				A pig munches on a _foodTarget from your basket.
-			<</if>>
+			<!-- There are much more than 5 pigs in audience, so trying to track them all is impractical. Instead, re-roll the pig's gender every time the pigs succeed at stealing from the PC's basket. -->
+			<<farm_gen pig>>
 			<br><br>
+			A <<farm_text pig $farm_work.pig.gender>> munches on a _foodTarget from your basket.
 		<</if>>
 	<</for>>
 <</if>>
@@ -2503,9 +2513,9 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	Your basket lays at your side. No other <<farm_text_many pig>> are nearby.
 <<elseif $tempPigTracker.length is 1>>
 	<<if $tempBasket[0] + $tempBasket[1] gt 0>>
-		A <<farm_text pig>> glances between you and your basket.
+		A <<farm_text pig $tempPigTracker[0]>> glances between you and your basket.
 	<<else>>
-		A <<farm_text pig>> watches you, sad that your basket is empty.
+		A <<farm_text pig $tempPigTracker[0]>> watches you, sad that your basket is empty.
 	<</if>>
 <<elseif $tempPigTracker.length is 2>>
 	<<if $tempBasket[0] + $tempBasket[1] gt 0>>
@@ -2542,9 +2552,8 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 <!-- Pig generation checks -->
 <<if random(1, 5) is 1>>
-	<<if random(1, 2) is 1>><<set _pigGender to "m">>
-	<<else>><<set _pigGender to "f">>
-	<</if>>
+	<<farm_gen pig>>
+	<<set _pigGender to $farm_work.pig.gender>>
 
 	A <<farm_text pig _pigGender>> pokes <<farm_his pig _pigGender>> head out of the treeline. <<farm_He pig _pigGender>> glances between you and your basket.
 
