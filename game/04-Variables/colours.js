@@ -1832,6 +1832,96 @@ setup.colours.mascara = [
 		},
 	},
 	{
+		variable: "brown waterproof",
+		name: "brown (waterproof)",
+		name_cap: "Brown (waterproof)",
+		csstext: "brown",
+		canvasfilter: {
+			blend: "#5a422e",
+		},
+	},
+	{
+		variable: "light brown waterproof",
+		name: "light brown (waterproof)",
+		name_cap: "Lught brown (waterproof)",
+		csstext: "light brown",
+		canvasfilter: {
+			blend: "#907b6a",
+		},
+	},
+	{
+		variable: "red waterproof",
+		name: "red (waterproof)",
+		name_cap: "Red (waterproof)",
+		csstext: "red",
+		canvasfilter: {
+			blend: "#97190b",
+		},
+	},
+	{
+		variable: "orange waterproof",
+		name: "orange (waterproof)",
+		name_cap: "Orange (waterproof)",
+		csstext: "orange",
+		canvasfilter: {
+			blend: "#cb6d10",
+		},
+	},
+	{
+		variable: "yellow waterproof",
+		name: "yellow (waterproof)",
+		name_cap: "Yellow (waterproof)",
+		csstext: "yellow",
+		canvasfilter: {
+			blend: "#cfb72c",
+		},
+	},
+	{
+		variable: "green waterproof",
+		name: "green (waterproof)",
+		name_cap: "Green (waterproof)",
+		csstext: "green",
+		canvasfilter: {
+			blend: "#0ba41d",
+		},
+	},
+	{
+		variable: "blue waterproof",
+		name: "blue (waterproof)",
+		name_cap: "Blue (waterproof)",
+		csstext: "blue",
+		canvasfilter: {
+			blend: "#1b3eb4",
+		},
+	},
+	{
+		variable: "pink waterproof",
+		name: "pink (waterproof)",
+		name_cap: "Pink (waterproof)",
+		csstext: "pink",
+		canvasfilter: {
+			blend: "#cb24a7",
+		},
+	},
+	{
+		variable: "purple waterproof",
+		name: "purple (waterproof)",
+		name_cap: "Purple (waterproof)",
+		csstext: "purple",
+		canvasfilter: {
+			blend: "#5d07a4",
+		},
+	},
+	{
+		variable: "white waterproof",
+		name: "white (waterproof)",
+		name_cap: "White (waterproof)",
+		csstext: "white",
+		canvasfilter: {
+			blend: "#eeeeee",
+		},
+	},
+	{
 		variable: "black waterproof",
 		name: "black (waterproof)",
 		name_cap: "Black (waterproof)",
