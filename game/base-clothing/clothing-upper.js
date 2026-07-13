@@ -13476,8 +13476,11 @@ function initUpper() {
 			variable: "sheer puff sleeve cardigan",
 			description: "Not covering much.",
 			cost: 5500,
-			shop: ["clothing"],
+			shop: ["clothing", "adult"],
 			type: ["bellyShow"],
+			combat: {
+				reference: "regularshirt",
+			},
 			integrity: 50,
 			integrity_max: 50,
 			fabric_strength: 25,
@@ -13504,6 +13507,9 @@ function initUpper() {
 			cost: 4500,
 			shop: ["clothing"],
 			type: ["normal"],
+			combat: {
+				reference: "regularshirt",
+			},
 			integrity: 200,
 			integrity_max: 200,
 			fabric_strength: 25,

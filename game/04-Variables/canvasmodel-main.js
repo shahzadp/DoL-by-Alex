@@ -3185,6 +3185,17 @@ Renderer.CanvasModels.main = {
 				return ZIndices.under_upper_arms - 0.1;
 			},
 		}),
+		"under_upper_rightarm_acc": genlayer_clothing_arm_acc("right", "under_upper", {
+			zfn(options) {
+				return options.arm_right === "cover" || options.arm_right === "hold" ?
+					options.zupperright - 1 : ZIndices.under_upper_arms;
+			},
+		}),
+		"under_upper_leftarm_acc": genlayer_clothing_arm_acc("left", "under_upper", {
+			zfn(options) {
+				return options.arm_left === "cover" ? options.zupperleft - 1 : ZIndices.under_upper_arms;
+			},
+		}),
 		/***
 		 *    ██   ██  █████  ███    ██ ██████  ███████
 		 *    ██   ██ ██   ██ ████   ██ ██   ██ ██
@@ -5104,7 +5115,6 @@ function genlayer_clothing_arm_acc(arm, slot, overrideOptions) {
 		},
 		showfn(options) {
 			return options.worn[slot].index > 0
-				&& options.worn[slot].setup.sleeve_img === 1
 				&& options.worn[slot].setup.sleeve_acc_img === 1
 				&& options[`arm_${arm}`] !== "none";
 		},

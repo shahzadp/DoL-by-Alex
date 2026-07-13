@@ -2608,7 +2608,10 @@ function initUnderLower() {
 			description: "Frills for the beach.",
 			cost: 0,
 			shop: ["clothing"],
-			type: ["swim", "school"],
+			type: ["swim", "school", "dance"],
+			combat: {
+				reference: "plainpanties",
+			},
 			integrity: 100,
 			integrity_max: 100,
 			fabric_strength: 25,
@@ -2632,6 +2635,9 @@ function initUnderLower() {
 			cost: 4500,
 			shop: ["clothing"],
 			type: ["swim"],
+			combat: {
+				reference: "bikini",
+			},
 			integrity: 50,
 			integrity_max: 50,
 			fabric_strength: 25,
