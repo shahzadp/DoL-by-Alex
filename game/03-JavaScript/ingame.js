@@ -3154,7 +3154,7 @@ function averageBunPrice(toSell = T.buns_sold) {
 	let harmonics = 1;
 
 	/* Calculates the current divisor for buns */
-	for (let soldToday = 20; soldToday < V.daily.buns_sold; soldToday += 20) {
+	for (let soldToday = 20; soldToday <= V.daily.buns_sold; soldToday += 20) {
 		if (batch === 1) {
 			harmonics += 0.5;
 		} else {
