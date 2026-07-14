@@ -552,7 +552,11 @@ function gwylanSchedule() {
 	} else if (Time.hour === 5 || (Time.hour === 6 && Time.minute < 45)) {
 		return "garden"; // ToDo: Gwylan: watching Gwylan sleep or stretch in the garden during temperate weather
 	} else if (!V.daily.gwylan.cafeSkip && Time.hour === 7 && Time.minute < 20 && !V.daily.gwylan.cafe) {
-		return "walking_to_cafe";
+		if (between(V.chef_state, 7, 8) && V.chef_rework <= 30) {
+			return "cliff";
+		} else {
+			return "walking_to_cafe";
+		}
 	} else if (
 		!V.daily.gwylan.cafeSkip &&
 		((Time.hour === 7 && (Time.minute >= 20 || V.daily.gwylan.cafe)) || Time.hour === 8 || (Time.hour === 9 && Time.minute <= 20))
