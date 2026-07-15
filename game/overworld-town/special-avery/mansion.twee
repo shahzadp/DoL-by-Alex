@@ -6459,7 +6459,13 @@ You start helping Avery set the table.
 				<br><br>
 			<</if>>
 		<<case 4>> /* Whispering */
-			You lean close to whisper into <<his>> ear, telling <<him>> you're excited to see what you'll get up to at the end of your next date. When you pull back, you see Avery's eyes are hooded, and there's a smirk on <<his>> lips. <<npcincr Avery love 1>><<glove>><<npcincr Avery lust 1>><<glust>>
+			<<if $averydate is 1 and $averydatedone isnot 1>>
+				You lean close to whisper into <<his>> ear, telling <<him>> you're excited to see what you'll get up to at the end of your next date. When you pull back, you see Avery's eyes are hooded, and there's a smirk on <<his>> lips. 
+				<<set $phase to 1>> /* Date */
+			<<else>>
+				You lean close to whisper into <<his>> ear. When you pull back, you see Avery's eyes are hooded, and there's a smirk on <<his>> lips. 
+			<</if>>
+			<<npcincr Avery love 1>><<glove>><<npcincr Avery lust 1>><<glust>>
 			<br><br>
 			<<if C.npc.Avery.lust gte 60>>
 				"Why wait?" <<he>> asks. <<He>> wraps an arm around your waist to pull you back in. "I can show you right now..."
@@ -6468,11 +6474,12 @@ You start helping Avery set the table.
 		<</switch>>
 
 		<<if C.npc.Avery.lust gte 60>>
+			<<if !$phase>><<set $phase to 2>><</if>> /* Generic Refusal */
 			<<if hasSexStat("promiscuity", 2) or isLoveInterest("Avery")>>
 				<<link [[Give in|Mansion Talk Sex]]>><<set $sexstart to 1>><<npcincr Avery love 1>><<npcincr Avery dom 1>><</link>><<promiscuous2>><<glove>><<gdom>>
 				<br>
 			<</if>>
-			<<link [[Pull away|Mansion Talk Flirt 2]]>><<set $phase to 1>><<npcincr Avery dom -1>><<npcincr Avery lust 5>><</link>><<ldom>><<glust>>
+			<<link [[Pull away|Mansion Talk Flirt 2]]>><<npcincr Avery dom -1>><<npcincr Avery lust 5>><</link>><<ldom>><<glust>>
 		<<else>>
 			<<endevent>>
 			<<avery_mansion_end_links>>
@@ -6480,9 +6487,9 @@ You start helping Avery set the table.
 	<<elseif $rng is 2>> /* Kiss */
 		As you talk, you happen to meet eyes with Avery, who <<= $averyragerevealed is 1 and C.npc.Avery.rage gte 20 ? `smirks` : `smiles`>> at you, and tilts <<his>> head slightly. The two of you are close enough that you could kiss <<him>> right now.
 		<br><br>
-		<<link [[Kiss Avery|Mansion Talk Flirt 2]]>><<set $phase to 2>><<npcincr Avery love 1>><<npcincr Avery lust 1>><</link>><<glove>><<glust>><<kissvirginitywarning>>
+		<<link [[Kiss Avery|Mansion Talk Flirt 2]]>><<set $phase to 3>><<npcincr Avery love 1>><<npcincr Avery lust 1>><</link>><<glove>><<glust>><<kissvirginitywarning>>
 		<br>
-		<<link [[Do nothing|Mansion Talk Flirt 2]]>><<set $phase to 3>><</link>>
+		<<link [[Do nothing|Mansion Talk Flirt 2]]>><<set $phase to 0>><</link>>
 	<<else>> /* Compliment */
 		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
 			"You, um... You look nice today, Avery," you say.
@@ -6510,29 +6517,29 @@ You start helping Avery set the table.
 	<<avery_mansion_end_links>>
 <</if>>
 :: Mansion Talk Flirt 2
-<<if $phase is 1>>
-	<<if $averydate is 1 and $averydatedone isnot 1>>
-		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
-			"Er, I would rather wait..." you say, gently pulling away. "Wouldn't that spoil the surprise...?"
-		<<elseif $speech_attitude is "bratty">>
-			"How about we wait until that date, huh?" You pull out of Avery's embrace. "Delayed gratification, and all that."
-		<<else>>
-			"I don't want the surprise to be spoiled," you say, pulling away. "Let's just wait until then, all right?"
-		<</if>>
-		<br><br>
-		Avery's brows furrow slightly for a moment before smoothing out as <<he>> smiles.<<if $averyragerevealed gte 1>> It doesn't hide <<his>> disappointment.<</if>> "Very well," <<he>> replies. "I suppose you have a point. Until then, <<pcpetname "Avery">>." <<He>> watches you withdraw with keen eyes.
+<<if $phase is 1>> /* Date Tease */
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"Er, I would rather wait..." you say, gently pulling away. "Wouldn't that spoil the surprise...?"
+	<<elseif $speech_attitude is "bratty">>
+		"How about we wait until that date, huh?" You pull out of Avery's embrace. "Delayed gratification, and all that."
 	<<else>>
-		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
+		"I don't want the surprise to be spoiled," you say, pulling away. "Let's just wait until then, all right?"
+	<</if>>
+	<br><br>
+	Avery's brows furrow slightly for a moment before smoothing out as <<he>> smiles.<<if $averyragerevealed gte 1>> It doesn't hide <<his>> disappointment.<</if>> "Very well," <<he>> replies. "I suppose you have a point. Until then, <<pcpetname "Avery">>." <<He>> watches you withdraw with keen eyes.
+	<<ldom>><<glust>>
+<<elseif $phase is 2>> /* Generic Refusal */
+	<<if $speech_attitude is "meek" or $speech_attitude_avery>>
 		"Er, thank you, but..." You gently pull away. "M-maybe another time?"
-		<<elseif $speech_attitude is "bratty">>
+	<<elseif $speech_attitude is "bratty">>
 		"How about another time, huh?" You pull out of Avery's embrace. "Delayed gratification, and all that."
-		<<else>>
+	<<else>>
 		"Thank you," you say, pulling away. "But how about another time?"
 	<</if>>
 	<br><br>
 	Avery's brows furrow slightly for a moment before smoothing out as <<he>> smiles.<<if $averyragerevealed gte 1>> It doesn't hide <<his>> disappointment.<</if>> "Very well," <<he>> replies. "I suppose I can be patient. Until then, <<pcpetname "Avery">>." <<He>> watches you withdraw with keen eyes.
-	<</if>><<ldom>><<glust>>
-<<elseif $phase is 2>>
+	<<ldom>><<glust>>
+<<elseif $phase is 3>> /* Kiss */
 	You lean in and<<if $speech_attitude is "meek" or $speech_attitude_avery>> shyly<</if>> kiss Avery. <<He>> seems surprised for a brief moment, though <<he>> recovers quick,
 	<<if $player.virginity.kiss is true>>
 		and <<laughs>> against your lips. One hand comes to the back of your head to pull you in closer as <<he>> teaches you how to navigate a kiss. <<takeKissVirginity "Avery" "romantic">><<arousal 100 "oral">><<garousal>>
