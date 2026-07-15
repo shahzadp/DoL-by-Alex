@@ -208,7 +208,7 @@ const statChange = (() => {
 			 *
 			 * All fatigue gains will be increased by up to 100%, depending on the overflow value.
 			 */
-			if (V.worn.feet.reveal > V.worn.feet.type.includes("heels") && currentSkillValue("feetskill")) {
+			if (V.worn.feet.reveal > currentSkillValue("feetskill") && V.worn.feet.type.includes("heels")) {
 				fatigueMod += (V.worn.feet.reveal - currentSkillValue("feetskill")) / 1000;
 			}
 
