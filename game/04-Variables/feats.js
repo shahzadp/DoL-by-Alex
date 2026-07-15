@@ -213,8 +213,17 @@ setup.feats = {
 		title: "Science Fair Winner",
 		desc: "Blind them with science.",
 		difficulty: 2,
-		series: "",
+		series: "scienceFair",
 		filter: ["All", "General"],
+		softLockable: true,
+	},
+	"Thesis Offence": {
+		title: "Thesis Offence",
+		desc: "You maintained your scientific integrity by force.",
+		difficulty: 3,
+		series: "scienceFair",
+		filter: ["All", "General"],
+		hint: "Hint: Blind them with something not-quite-scientific.",
 		softLockable: true,
 	},
 	"Maths Competition Winner": {
@@ -2316,6 +2325,7 @@ function earnHourlyFeats() {
 	}
 
 	if (V.spraymax >= 8) earnFeat("Max Those Shots");
+	if (V.spraymax > 8) console.warn("pepper spray count above 8! does feat threshold need to be increased?");
 	if ((V.semen_volume >= 2000 && V.semen_amount >= V.semen_volume) || (V.milk_volume >= 2000 && V.milk_amount >= V.milk_volume)) earnFeat("Feeling Full");
 	if (V.cool >= 400) earnFeat("Social Butterfly");
 	if (V.cool <= 2 && !V.backgroundTraits.includes("nerd")) earnFeat("Anti-Social Moth");
