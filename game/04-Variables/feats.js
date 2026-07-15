@@ -1874,7 +1874,7 @@ setup.feats = {
 	},
 	"Hear Me Roar": {
 		title: "Hear Me Roar",
-		desc: "Handed out event more flyers on the High Street.",
+		desc: "Handed out even more flyers on the High Street.",
 		difficulty: 2,
 		series: "Flyers",
 		filter: ["All", "Discoveries-Town"],
