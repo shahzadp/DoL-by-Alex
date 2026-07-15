@@ -11,9 +11,9 @@ const StartConfig = {
 	debug: false,
 	enableImages: true,
 	enableLinkNumberify: true,
-	version: "0.5.11.3",
-	versionName: `"Name Pending" edition`,
-	sneaky: true,
+	version: "0.5.11.4",
+	versionName: `"The Great Equaliser" edition`,
+	sneaky: false,
 	socialMediaEnabled: true,
 	sourceLinkEnabled: false,
 };

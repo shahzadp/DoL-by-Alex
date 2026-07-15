@@ -1929,7 +1929,7 @@ function initUnderUpper() {
 			accessory: 1,
 			accessory_colour_options: ["black", "white", "navy blue", "wine", "brown", "light pink", "lilac", "red", "tangerine", "teal", "yellow", "custom"],
 			accessory_integrity_img: 1,
-			sleeve_acc_img: 1,
+			sleeve_acc_img: 0,
 			gender: "f",
 			feminity: 200,
 			warmth: 1,
