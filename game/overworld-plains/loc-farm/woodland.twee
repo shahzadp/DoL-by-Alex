@@ -536,7 +536,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 			Once the Pig's Respect is less than -20, they will take the PC deep into the woodland at the end of the foraging session, and demand a reward. The PC will have the option to give them their harvest, reward them with their body, or refuse.
 
-			The pigs will initially want to have sex with the PC 4 times (tempPigsLeft will be 4). If the PC offers them their harvest, each tempPigsLeft will try to eat a random (20 to 40) amount of fungi from the PC's basket, repeating 5 times (150 fungi on average). Each fully satisfied attempt will reduce tempPigsLeft by 1. If the pigs can eat their fill at least 4 times, they will leave the PC alone.
+			The pigs will initially want to have sex with the PC 4 times. If the PC offers them their harvest, each "attempt" will eat up a random (20 to 40) amount of fungi from the PC's basket, repeating 5 times (150 fungi on average). Each fully satisfied attempt will reduce the number of pigs by 1. If the pigs can eat their fill at least 4 times, they will leave the PC alone.
 
 			If the pigs can eat their fill 5 times, they will leave the PC with whatever food is left over, then rest and head back to the farm.
 
@@ -544,7 +544,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 			Pigs will eat the truffles first, then the mushrooms.
 
-			If the PC refuses, tempPigsLeft will increase by 1 to a total of 5, and all remaining encounters will become non-consensual.
+			If the PC refuses, the number of attempts will increase by 1 to a total of 5, and all remaining encounters will become non-consensual.
 		-->
 		You've been here for a while. You decide to count up your harvest, then head back towards the farm.
 
@@ -1128,7 +1128,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 			<<farm_gen pig>>
 
 			<<if $farm_work.pig.monster>>
-				"Give too little," a <<farm_text_many pig>> says. "Very little. Still hungry. You satisfy."
+				"Give too little," a <<farm_text pig>> says. "Very little. Still hungry. You satisfy."
 			<<else>>
 				You can tell they're still hungry. They look at you with lust.
 			<</if>>
@@ -1141,22 +1141,22 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<<if hasSexStat("deviancy", 5)>>
 			<<link [[Submit to them|Farm Woodland Pigs Reward]]>>
 				<<set $sexstart to 1>>
+				<<beastNEWinit _pigsUnsatisfied pig>>
+
 				<<set $tempRewardHelpful to false>>
-				<<set $tempConsensual to true>>
 				<<set $tempTrueConsensual to false>>
-				<<set $tempPigsLeft to _pigsUnsatisfied>>
 				<<set $tempResponse to "submissive">>
 				<<set $tempLocation to "woodland">>
 			<</link>><<deviant5>>
 			<br>
 		<</if>>
 
-		<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>>
-			<<set $sexstart to 1>>
+		<<link [[Fight them off|Farm Woodland Pigs Reward]]>>
+			<<set $molestationstart to 1>>
+			<<beastNEWinit _pigsUnsatisfied pig>>
+
 			<<set $tempRewardHelpful to false>>
-			<<set $tempConsensual to false>>
 			<<set $tempTrueConsensual to false>>
-			<<set $tempPigsLeft to _pigsUnsatisfied>>
 			<<set $tempResponse to "defiant">>
 			<<set $tempLocation to "woodland">>
 		<</link>>
@@ -1167,6 +1167,9 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<!--
 		The PC will satisfy a pig with their body (+1 Pig's Respect). If the PC has good Science and Tending, they will recognize and reward a pig that was particularly helpful (+1 Pig's Respect).
 	-->
+	<<beastNEWinit 4 pig>>
+	<<set $farm_work.pig.gender to $NPCList[0].gender>>
+	
 	You look among the <<farm_text_many pig>> gathered before you, deciding which one you'll offer your body to.
 	<br><br>
 
@@ -1178,13 +1181,13 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<!-- Going to hell for this lol -->
 	<<if _checkResults[0] and _checkResults[1]>>
 
-		<<farm_gen pig>>
-
 		<span class="teal">You recognize a <<farm_text pig>> who was particularly helpful.</span>
 		<br><br>
 
 		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> reaches your waist, you hold <<farm_him pig>> there with your legs.
-		<<if $farm_work.pig.monster>>"Reward?" <<farm_he pig>> asks.<<else>>It hesitates, unsure of your intentions.<</if>>
+		<<if $farm_work.pig.monster>> "Reward?" <<farm_he pig>> asks.
+		<<else>> It hesitates, unsure of your intentions.
+		<</if>>
 		<<deviancy5>>
 
 		You address the rest of the <<farm_text_many pig>>.
@@ -1221,11 +1224,10 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 		<<link [[Next|Farm Woodland Pigs Reward]]>>
 			<<set $sexstart to 1>>
+
 			<<set $tempRewardHelpful to true>>
 			<<set $tempGenderHelpful to $farm_work.pig.gender>>
-			<<set $tempConsensual to true>>
 			<<set $tempTrueConsensual to false>>
-			<<set $tempPigsLeft to 4>>
 			<<set $tempResponse to "submissive">>
 			<<set $tempLocation to "woodland">>
 		<</link>>
@@ -1234,11 +1236,10 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<span class="teal">You have a hard time telling them apart,</span> and end up selecting one who looks vaguely familiar.
 		<br><br>
 
-		<<farm_gen pig>>
-
-		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> crawls up to
-		your waist, you hold <<farm_him pig>> there with your legs.
-		<<if $farm_work.pig.monster>>"For me?" <<farm_he pig>> asks.<<else>>It presses against you, unsure of your intentions.<</if>>
+		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> reaches your waist, you hold <<farm_him pig>> there with your legs.
+		<<if $farm_work.pig.monster>> "For me?" <<farm_he pig>> asks.
+		<<else>> It presses against you, unsure of your intentions.
+		<</if>>
 		<<deviancy5>>
 
 		You address the rest of the <<farm_text_many pig>>.
@@ -1272,15 +1273,16 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 		<<link [[Next|Farm Woodland Pigs Reward]]>>
 			<<set $sexstart to 1>>
+
 			<<set $tempRewardHelpful to false>>
-			<<set $tempConsensual to true>>
 			<<set $tempTrueConsensual to false>>
-			<<set $tempPigsLeft to 4>>
 			<<set $tempResponse to "submissive">>
 			<<set $tempLocation to "woodland">>
 		<</link>>
 	<</if>>
 <<else>>
+	<<farm_gen pig>>
+
 	<<if $speech_attitude is "meek">>
 		"But..." You look into your basket. "But these are mine."
 	<<elseif $speech_attitude is "bratty">>
@@ -1290,21 +1292,19 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<</if>>
 	<br><br>
 
-	<<if $farm_work.pig.monster>>
-		Another <<farm_text pig>> responds. "Stupid human. Not ask you, we take. You satisfy."
-	<<else>>
-		Your response only seems to aggravate them. They advance on you, uncaring.
+	<<if $farm_work.pig.monster>> Another <<farm_text pig>> responds. "Stupid human, not ask you. We take. You satisfy."
+	<<else>> Your response only seems to aggravate them.
 	<</if>>
-	They circle around you, as if to block your escape. You're deep in the woodland. There's nowhere to run.
+	They advance on you, uncaring. You're deep in the woodland. There's nowhere to run.
 	<br><br>
 
 	<!-- Good luck. -->
-	<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>>
-		<<set $sexstart to 1>>
+	<<link [[Fight them off|Farm Woodland Pigs Reward]]>>
+		<<set $molestationstart to 1>>
+		<<beastNEWinit 5 pig>>
+
 		<<set $tempRewardHelpful to false>>
-		<<set $tempConsensual to false>>
 		<<set $tempTrueConsensual to false>>
-		<<set $tempPigsLeft to 5>>
 		<<set $tempResponse to "defiant">>
 		<<set $tempLocation to "woodland">>
 	<</link>>
@@ -1314,8 +1314,6 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 :: Farm Woodland Forage Reward
 <<effects>>
-
-<<farm_gen pig>>
 
 <!-- rewardType can be "potato", "carrot", "apple", "body", or "nothing" -->
 <!-- Reward Tradeoffs:
@@ -1459,6 +1457,17 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<!--
 		The PC will satisfy a pig with their body (+1 Pig's Respect). If the PC has good Science and Tending, they will recognize and reward a pig that was particularly helpful (+1 Pig's Respect).
 	-->
+	<<if $farm.beasts.pigs gte 5>>
+		<<set _pigsUnsatisfied to 1>>
+	<<elseif $farm.beasts.pigs gte -5>>
+		<<set _pigsUnsatisfied to 2>>
+	<<else>>
+		<<set _pigsUnsatisfied to 3>>
+	<</if>>
+
+	<<beastNEWinit _pigsUnsatisfied pig>>
+	<<set $farm_work.pig.gender to $NPCList[0].gender>>
+
 	You look among the <<farm_text_many pig>> gathered before you, deciding which one you'll reward.
 	<br><br>
 
@@ -1469,9 +1478,6 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	]>>
 	<!-- Going to hell for this lol -->
 	<<if _checkResults[0] and _checkResults[1]>>
-
-		<<farm_gen pig>>
-
 		<span class="teal">You recognize a <<farm_text pig>> who was particularly helpful.</span>
 		<br><br>
 
@@ -1511,20 +1517,12 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<span class="green">The <<farm_text_many pig>> are impressed by your discernment.</span><<farm_pigs 1>><<grespect>>
 		<br><br>
 
-		<<if $farm.beasts.pigs gte 5>>
-			<<set $tempPigsLeft to 1>>
-		<<elseif $farm.beasts.pigs gte -5>>
-			<<set $tempPigsLeft to 2>>
-		<<else>>
-			<<set $tempPigsLeft to 3>>
-		<</if>>
-
 		<!-- This is the only instance of non-forced consensual sex betwen the PC and a pig, where the PC actually has the option to ask the pig to stop. -->
 		<<link [[Next|Farm Woodland Pigs Reward]]>>
 			<<set $sexstart to 1>>
+
 			<<set $tempRewardHelpful to true>>
 			<<set $tempGenderHelpful to $farm_work.pig.gender>>
-			<<set $tempConsensual to true>>
 			<<set $tempTrueConsensual to true>>
 			<<set $tempResponse to "submissive">>
 			<<set $tempLocation to "treeline">>
@@ -1533,8 +1531,6 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<<else>>
 		<span class="teal">You have a hard time telling them apart,</span> and end up selecting one who looks vaguely familiar.
 		<br><br>
-
-		<<farm_gen pig>>
 
 		You close your basket and lie against it, guiding <<farm_him pig>> towards you. When <<farm_he pig>> crawls up to
 		your waist, you hold <<farm_him pig>> there with your legs.
@@ -1569,19 +1565,10 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 		The <<farm_text_many pig>> crowd around to watch you.
 		<br><br>
-
-		<<if $farm.beasts.pigs gte 5>>
-			<<set $tempPigsLeft to 1>>
-		<<elseif $farm.beasts.pigs gte -5>>
-			<<set $tempPigsLeft to 2>>
-		<<else>>
-			<<set $tempPigsLeft to 3>>
-		<</if>>
-
 		<<link [[Next|Farm Woodland Pigs Reward]]>>
 			<<set $sexstart to 1>>
+
 			<<set $tempRewardHelpful to false>>
-			<<set $tempConsensual to true>>
 			<<set $tempTrueConsensual to false>>
 			<<set $tempResponse to "submissive">>
 			<<set $tempLocation to "treeline">>
@@ -1598,10 +1585,11 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<</link>>
 		<br>
 	<<else>>
+		<<beastNEWinit 1 pig>>
+		<<set $farm_work.pig.gender to $NPCList[0].gender>>
+
 		They consider you, then snort and trot away.
 		<br><br>
-
-		<<farm_gen pig>>
 
 		As they do, a <<farm_text pig>> stays behind.
 
@@ -1621,11 +1609,10 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<br><br>
 
 		<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>>
-			<<set $sexstart to 1>>
+			<<set $molestationstart to 1>>
+
 			<<set $tempRewardHelpful to false>>
-			<<set $tempConsensual to false>>
 			<<set $tempTrueConsensual to false>>
-			<<set $tempPigsLeft to 3>>
 			<<set $tempResponse to "defiant">>
 			<<set $tempLocation to "treeline">>
 		<</link>>
@@ -1636,8 +1623,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 
 :: Farm Woodland Pigs Reward
 
-<<if $sexstart is 1>>
-	<<set $sexstart to 0>>
+<<if $sexstart is 1 or $molestationstart is 1>>
 	<<if $tempLocation is "treeline">>
 		<span class="green">You are at the edge of the woodland. Alex might be able to hear you.</span>
 		<br><br>
@@ -1648,29 +1634,26 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		ERROR (Farm Woodland Pigs Reward): Invalid tempLocation "$tempLocation".
 	<</if>>
 
-	<<if $tempConsensual>>
-		<<deviancy5>>
-	<</if>>
-
-	<<if $tempConsensual>>
-		<<consensual>>
+	<<if $sexstart is 1>>
+		<<set $sexstart to 0>>
 		<<set $consensual to 1>>
+
+		<<deviancy5>>
+		<<consensual>>
 		<<neutral 1>>
 		<<set $position to "missionary">>
 	<<else>>
+		<<set $molestationstart to 0>>
 		<<set $consensual to 0>>
+
 		<<controlloss>>
 		<<violence 1>>
 		<<neutral 1>>
 		<<molested>>
 	<</if>>
 
-	<<if $farm_work.pig.monster>>
-		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals monster>>
-	<<else>>
-		<<beastNEWinit 1 pig $farm_work.pig.gender $farm_work.pig.genitals beast>>
-	<</if>>
 	<<beastCombatInit>>
+	<<beastTrainGenerate>>
 
 	<<if $tempLocation is "treeline" and Time.betweenHours(5, 20)>>
 		<<enable_rescue>>
@@ -1702,12 +1685,12 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 <<beast $enemyno>>
 <br>
 
-<<if $tempConsensual>>The other <<farm_text_many pig>> crowd around you, eager to see you moan.
+<<if $consensual is 1>>The other <<farm_text_many pig>> crowd around you, eager to see you moan.
 <<else>>The other <<farm_text_many pig>> crowd around you, eager to see you squeal.
 <</if>>
 
 <!-- Fungi stealing checks for if the PC non-consensually "rewards" the pigs deep in the woodland. -->
-<<if $tempLocation is "woodland" and $tempConsensual is false>>
+<<if $tempLocation is "woodland" and $consensual is 0>>
 <!-- PC effectively loses 1 fungi per turn. -->
 	<<for $_i = 0; $_i < 5; $_i++>>
 		<<if ($tempBasket[0] + $tempBasket[1] gt 0) and random(1, 5) is 1>>
@@ -1721,9 +1704,9 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 				<<set $foodstuff["truffle"].amount -= 1>>
 			<</if>>
 
-			<!-- There are much more than 5 pigs in audience, so trying to track them all is impractical. Instead, re-roll the pig's gender every time the pigs succeed at stealing from the PC's basket. -->
-			<<farm_gen pig>>
+			<!-- There are much more than 5 pigs in the audience, so trying to track them all is impractical. Instead, re-roll the pig's gender every time the pigs succeed at stealing from the PC's basket. -->
 			<br><br>
+			<<farm_gen pig>>
 			A <<farm_text pig $farm_work.pig.gender>> munches on a _foodTarget from your basket.
 		<</if>>
 	<</for>>
@@ -1735,25 +1718,127 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 <<actionsman>>
 
 <<if _combatend>>
-	<span id="next"><<link [[Next|Farm Woodland Pigs Reward Finish]]>>
-		<<set $tempPigsLeft -= 1>>
-	<</link>></span><<nexttext>>
+	<span id="next"><<link [[Next|Farm Woodland Pigs Reward Finish]]>><</link>></span><<nexttext>>
 <<else>>
 	<span id="next"><<link [[Next|Farm Woodland Pigs Reward]]>><</link>></span><<nexttext>>
 <</if>>
 
 :: Farm Woodland Pigs Reward Finish
 
-<<if $enemyarousal gte $enemyarousalmax>>
+<!-- Fighting off the pig will remove the option for consensual sex. -->
+<<if $enemyhealth lte 0>>
+	<<beastwound>>
+	The <<farm_text pig>> backs away from you, cowed. The others make room after seeing how you fought.<<farm_pigs 1>><<grespect>>
+	<br><br>
+
+	<<tearful>> you try to push yourself back up.
+
+	<<if $combatTrain.length gt 0>>
+		<<combatTrainAdvance>>
+		<<set $farm_work.pig.gender to $NPCList[0].gender>>
+
+		As you do, another <<farm_text pig>> approaches you.
+
+		<<if $farm_work.pig.monster>>
+			<<if random(1, 3) is 1>>
+				"Not enough. Not satisfy." <<farm_He pig>> says. "Need breed more."
+			<<elseif random(1, 2) is 1>>
+				"More breed," <<farm_he pig>> says. "Too pretty."
+			<<else>>
+				"Too pretty," <<farm_he pig>> says. "We not satisfied."
+			<</if>>
+		<<else>>
+			<<farm_He pig>> paws at the ground.
+		<</if>>
+		Despite your display, you can tell <<farm_he pig>> thinks you're worth the risk.
+		<br><br>
+
+		You look around. The other <<farm_text_many pig>> seem just as lustful. How many more will you need to fight off?
+		<br><br>
+
+		<<link [[Next|Farm Woodland Pigs Reward]]>>
+			<<set $consensual to 0>>
+			<<set $tempTrueConsensual to false>>
+			<<set $tempResponse to "defiant">>
+		<</link>>
+		<br>
+	<<else>>
+		<<clotheson>>
+		<<endcombat>>
+
+		<<if $tempLocation is "treeline">>
+			They don't stop you. You grab your basket and start walking back towards the farm.
+			<br><br>
+		<<else>>
+			<<set _passTime to random(30, 40)>>
+			<<pass _passTime>>
+			<!-- Pigs immediately flee to the farm if they are fought off, but since they don't directly guide the
+				player back, the player needs to spend some extra time orienting themselves. -->
+			The <<farm_text_many pig>> have had enough of your violence. One runs away. You clench your fist. Another flees. And then another. Soon, only stragglers remain. Most of the <<farm_text_many pig>> flee in the same direction. You suspect they're running back to the farm. You follow them.
+			<br><br>
+
+			<!-- Tending skill of B. -->
+			You come across many different animal tracks on your way back.
+			<<if $sciencetrait gte 3>>
+				<span class="green">You remember your lessons from science class.</span>
+				You follow the pig prints back to the farm.
+			<<else>>
+				<<pass 20>>
+				The indents all look the same. You spend some time going in circles, until at last, you see some familiar
+				buildings through the treeline.
+			<</if>>
+			<br><br>
+
+			Throughout it all, you find yourself wondering what exactly just happened.
+			<br><br>
+
+			Where did they take you?
+			<<stress 6>><<gstress>>
+			<br><br>
+			<br><br>
+
+			Why were they so organized?
+			<<stress 6>><<gstress>>
+			<br><br>
+			<br><br>
+			<br><br>
+
+			Does anyone know?
+			<<stress 6>><<gstress>>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+			<br><br>
+
+			Will anyone believe you?
+			<<stress 6>><<gstress>>
+			<br><br>
+		<</if>>
+
+		<<link [[Next|Farm Woodland]]>>
+			<<endWoodlandForage>>
+		<</link>>
+		<br>
+	<</if>>
+
+<<elseif $enemyarousal gte $enemyarousalmax>>
 	<<beastejaculation>>
 
 	The <<farm_text pig>> climbs off you, satisfied.
 
 	<<if $farm_work.pig.monster>>
 		The others cheer.
+		<!-- +1 Respect if done consensually. -1 Respect if non-consensual. -->
+		<<if $consensual is 1>>
+			<<grespect>><<farm_pigs 1>>
+		<<else>>
+			<<lrespect>><<farm_pigs -1>>
+		<</if>>
 		<br>
 
-		<<if $tempConsensual>>
+		<<if $consensual is 1>>
 			<<if random(1, 2) is 2>>
 				"<<pShe>> so breedable."
 			<<else>>
@@ -1798,19 +1883,14 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<<else>>
 		The others crowd around it. They sniff and lick it, then turn back to you.
 	<</if>>
-	<!-- +1 Respect if done consensually. -1 Respect if non-consensual. -->
-	<<if $tempConsensual>>
-		<<grespect>><<farm_pigs 1>>
-	<<else>>
-		<<lrespect>><<farm_pigs -1>>
-	<</if>>
 	<br><br>
 
 	<<tearful>> you try to push yourself back up.
 
-	<<farm_gen pig>>
+	<<if $combatTrain.length gt 0>>
+		<<combatTrainAdvance>>
+		<<set $farm_work.pig.gender to $NPCList[0].gender>>
 
-	<<if $tempPigsLeft gte 1>>
 		As you do, another <<farm_text pig>> approaches you.
 
 		<<if $farm_work.pig.monster>>
@@ -1839,19 +1919,17 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 			You look around. The other <<farm_text_many pig>> seem just as lustful. How many more will you need to satisfy?
 			<br><br>
 
-			<<if $tempConsensual and hasSexStat("deviancy", 5)>>
+			<!-- Does not make following encounters consensual, if they are already non-consensual. Pigs will just start off less angry. -->
+			<<if hasSexStat("deviancy", 5)>>
 				<<link [[Submit to them|Farm Woodland Pigs Reward]]>>
-					<<set $sexstart to 1>>
-					<<set $tempConsensual to true>>
 					<<set $tempTrueConsensual to false>>
 					<<set $tempResponse to "submissive">>
 				<</link>><<deviant5>>
 			<br>
 			<</if>>
 
-			<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>>
-				<<set $sexstart to 1>>
-				<<set $tempConsensual to false>>
+			<<link [[Fight them off|Farm Woodland Pigs Reward]]>>
+				<<set $consensual to 0>>
 				<<set $tempTrueConsensual to false>>
 				<<set $tempResponse to "defiant">>
 			<</link>>
@@ -1859,11 +1937,15 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<</if>>
 	<<else>>
 		They don't stop you.
-		<<if $tempLocation is "treeline" and $tempConsensual>>
+		
+		<<clotheson>>
+		<<endcombat>>
+
+		<<if $tempLocation is "treeline" and $consensual>>
 			You grab your basket and start walking back towards the farm.
 		<<elseif $tempLocation is "treeline">>
 			You grab your basket and stagger back towards the farm.
-		<<elseif $tempLocation is "woodland" and $tempConsensual>>
+		<<elseif $tempLocation is "woodland" and $consensual>>
 			<<set _passTime to random(30, 40)>>
 			<<pass _passTime>>
 			<!-- Grand Pig Conspiracy when? -->
@@ -1934,99 +2016,6 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<br>
 	<</if>>
 
-<!-- Fighting off the pig will remove the option for consensual sex. -->
-<<elseif $enemyhealth lte 0>>
-	The <<farm_text pig>> backs away from you, cowed. The others make room after seeing how you fought.<<farm_pigs 1>><<grespect>>
-	<br><br>
-
-	<<tearful>> you try to push yourself back up.
-
-	<<farm_gen pig>>
-
-	<<if $tempPigsLeft gte 1>>
-		As you do, another <<farm_text pig>> approaches you.
-
-		<<if $farm_work.pig.monster>>
-			<<if random(1, 3) is 1>>
-				"Not enough. Not satisfy." <<farm_He pig>> says. "Need breed more."
-			<<elseif random(1, 2) is 1>>
-				"More breed," <<farm_he pig>> says. "Too pretty."
-			<<else>>
-				"Too pretty," <<farm_he pig>> says. "We not satisfied."
-			<</if>>
-		<<else>>
-			<<farm_He pig>> paws at the ground.
-		<</if>>
-		Despite your display, you can tell <<farm_he pig>> thinks you're worth the risk.
-		<br><br>
-
-		You look around. The other <<farm_text_many pig>> seem just as lustful. How many more will you need to fight off?
-		<br><br>
-
-		<<link [[Next|Farm Woodland Pigs Reward]]>>
-			<<set $sexstart to 1>>
-			<<set $tempConsensual to false>>
-			<<set $tempTrueConsensual to false>>
-			<<set $tempResponse to "defiant">>
-		<</link>>
-		<br>
-	<<else>>
-		<<if $tempLocation is "treeline">>
-			They don't stop you. You grab your basket and start walking back towards the farm.
-			<br><br>
-		<<else>>
-			<<set _passTime to random(30, 40)>>
-			<<pass _passTime>>
-			<!-- Pigs immediately flee to the farm if they are fought off, but since they don't directly guide the
-				player back, the player needs to spend some extra time orienting themselves. -->
-			The <<farm_text_many pig>> have had enough of your violence. One runs away. You clench your fist. Another flees. And then another. Soon, only stragglers remain. Most of the <<farm_text_many pig>> flee in the same direction. You suspect they're running back to the farm. You follow them.
-			<br><br>
-
-			<!-- Tending skill of B. -->
-			You come across many different animal tracks on your way back.
-			<<if $sciencetrait gte 3>>
-				<span class="green">You remember your lessons from science class.</span>
-				You follow the pig prints back to the farm.
-			<<else>>
-				<<pass 20>>
-				The indents all look the same. You spend some time going in circles, until at last, you see some familiar
-				buildings through the treeline.
-			<</if>>
-			<br><br>
-
-			Throughout it all, you find yourself wondering what exactly just happened.
-			<br><br>
-
-			Where did they take you?
-			<<stress 6>><<gstress>>
-			<br><br>
-			<br><br>
-
-			Why were they so organized?
-			<<stress 6>><<gstress>>
-			<br><br>
-			<br><br>
-			<br><br>
-
-			Does anyone know?
-			<<stress 6>><<gstress>>
-			<br><br>
-			<br><br>
-			<br><br>
-			<br><br>
-			<br><br>
-			<br><br>
-
-			Will anyone believe you?
-			<<stress 6>><<gstress>>
-			<br><br>
-		<</if>>
-
-		<<link [[Next|Farm Woodland]]>>
-			<<endWoodlandForage>>
-		<</link>>
-		<br>
-	<</if>>
 <<elseif $alarm is 1 and $rescue gte 1>><<set $rescued += 1>>
 	"I'm coming!" It's Alex. The <<farm_text_many pig>> back away from you at the sound. They start fleeing into the undergrowth.
 	<<farm_pigs -3>><<llrespect>>
@@ -2091,7 +2080,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 <<effects>>
 
 <!--
-	Your pig has a 40% chance of winning you the +Respect and -1 tempPigsLeft. Your power of horni fills it with determination! Unfortunately it just had sex with you, and you milked it RATHER good.
+	Your pig has a 40% chance of winning you the +1 Respect and -1 pig. Your power of horni fills it with determination! Unfortunately it just had sex with you, and you milked it RATHER good.
 -->
 <<if random(1, 5) lte 3>>
 	At last, the other <<farm_text pig>> presses your <<farm_text pig $tempGenderHelpful>> into the dirt. The <<farm_text_many pig>> look between you and your <<farm_text pig $tempGenderHelpful>>.
@@ -2110,11 +2099,14 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		While your horni savior may have lost, their valiant struggle gives them a 50% chance of convincing the other pigs to be nicer to you! If you lose the coinflip, #SkillIssue.
 	-->
 	<<if random(1, 2) is 1>>
-		<<set $tempPigsLeft -= 1>>
+		<<set $phase to 0>>
+		<<combatTrainAdvance>>
+	<<else>>
+		<!-- If the helpful pig loses, AND fails to persuade the other pigs, a new pig will speak out but the original pig will advance on the PC. -->
+		<<set $phase to 1>>
 	<</if>>
 
 <<else>>
-	<<set $tempPigsLeft -= 1>>
 	At last, your <<farm_text pig $tempGenderHelpful>> presses the other <<farm_text pig>> into the dirt.
 	<<if $farm_work.pig.monster>>
 		Panting, <<farm_he pig $tempGenderHelpful>> looks at the other <<farm_text_many pig>> and repeats himself.
@@ -2126,6 +2118,9 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<br><br>
 
 	The other <<farm_text_many pig>> look between you and your <<farm_text pig $tempGenderHelpful>>. You can tell your <<farm_text pig $tempGenderHelpful>> is too tired to fight another <<farm_text_neutral pig>>, if they insist.
+
+	<<set $phase to 0>>
+	<<combatTrainAdvance>>
 <</if>>
 <br><br>
 
@@ -2135,14 +2130,20 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 :: Farm Woodland Pigs Helpful Results
 <<effects>>
 
-<<if $tempPigsLeft is 0>>
+<<if $combatTrain.length gt 0>>
 	<<if $farm_work.pig.monster>>
 		They respect <<farm_his pig $tempGenderHelpful>> statement.
 	<<else>>
-		They lose interest.
+		They respect its efforts.
 	<</if>>
 
-	The other <<farm_text_many pig>> start trickling back into the woodland, looking for other things to interest them. Picking up your basket, you find your <<farm_text pig $tempGenderHelpful>> standing in front of you.
+	The other <<farm_text_many pig>> start trickling back into the woodland, looking for other things to interest them.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	Picking up your basket, you find your <<farm_text pig $tempGenderHelpful>> standing in front of you.
 
 	<<if $farm_work.pig.monster>>
 		"Good sex," <<farm_he pig $tempGenderHelpful>> says. "Wanted to thank."
@@ -2161,8 +2162,21 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<br>
 <<else>>
 	<!-- BROTHER. MAY I HAVE SOME OATS?!?!?! -->
+	<!--
+		The branches of potential pigs that can enter this situation is kind of scuffed.
 
-	<<farm_gen pig>>
+		They are:
+		1. Helpful Wins ("combatTrainAdvance" called. New pig talks. New pig advances on PC.)
+		2. Helpful Loses, Persuasion Successful ("combatTrainAdvance" called. New pig talks. New pig advances on PC.)
+		3. Helpful Loses, Persuasion Failed ("combatTrainAdvance" not called. New pig talks. Same pig advances on PC.)
+
+		Would make sense in the 3rd case if the same pig starts out extra tired from wrestling with the helpful pig, but there isn't a clean way to convert that stat into Enemy Pain / Arousal / Anger / Trust.
+	-->
+	<<if $phase is 0>>
+		<<set $farm_work.pig.gender to $NPCList[0].gender>>
+	<<else>>
+		<<farm_gen pig>>
+	<</if>>
 
 	Another <<farm_text pig>> steps forward.
 	<<if $farm_work.pig.monster>>
@@ -2173,20 +2187,15 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<<else>>
 			"Still reward too few," <<farm_he pig>> says. "We not satisfy."
 		<</if>>
-		The other pigpeople murmur in agreement. Your <<farm_text pig $tempGenderHelpful>> looks at you, then moves to
-		the side. "Sorry. Tried. Can't protect," <<farm_he pig $tempGenderHelpful>> says. <<farm_He pig $tempGenderHelpful>>
-		watches, remorseful, as the <<farm_text pig>> approaches you.
+		The other pigpeople murmur in agreement. Your <<farm_text pig $tempGenderHelpful>> looks at you, then deflates. "Sorry. Tried. Can't protect," <<farm_he pig $tempGenderHelpful>> says. <<farm_He pig $tempGenderHelpful>> watches, remorseful, as the <<farm_text pig>> approaches you.
 	<<else>>
-		It oinks at your pig, then growls at you. The other pigs growl as well. Your pig looks at you, whining. The other
-		pigs begin to growl at it. When the other pig steps towards it, it moves to the side. It looks on, remorseful,
-		as the other pig approaches you.
+		It oinks at your pig, then growls at you. The other pigs growl as well. Your pig looks at you, whining. The other pigs begin to growl at it. When another pig steps towards it, it deflates. It looks on, remorseful, as the other pig approaches you.
 	<</if>>
 	<br><br>
 
-	<<if $tempConsensual and hasSexStat("deviancy", 5)>>
+	<!-- Shouldn't be possible for a PC to reach this scene without already having Deviancy 5, but just in case. -->
+	<<if hasSexStat("deviancy", 5)>>
 		<<link [[Submit to them|Farm Woodland Pigs Reward]]>>
-			<<set $sexstart to 1>>
-			<<set $tempConsensual to true>>
 			<<set $tempTrueConsensual to false>>
 			<<set $tempResponse to "submissive">>
 		<</link>><<deviant5>>
@@ -2194,8 +2203,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 	<</if>>
 
 	<<link [[Fight <<farm_him pig>> off|Farm Woodland Pigs Reward]]>>
-		<<set $sexstart to 1>>
-		<<set $tempConsensual to false>>
+		<<set $consensual to 0>>
 		<<set $tempTrueConsensual to false>>
 		<<set $tempResponse to "defiant">>
 	<</link>>
@@ -2586,6 +2594,7 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<<else>>
 			The others cheer.
 		<</if>>
+		<<lrespect>><<farm_pigs -1>>
 		<br>
 
 		<<if random(1, 2) is 2>>
@@ -2607,10 +2616,12 @@ You look away as Alex saws through the branch. "Here it comes," <<he>> says. It 
 		<<elseif $tempPigTracker.length gt 3>>
 			"I bet <<pshe>> like that."
 		<</if>>
+	<<else>>
+		<<lrespect>><<farm_pigs -1>>
 	<</if>>
 	<br><br>
 
-	<<tearful>> you pick up your basket and stagger away from them.<<lrespect>><<farm_pigs -1>>
+	<<tearful>> you pick up your basket and stagger away from them.
 	<br><br>
 
 	You check your basket.
