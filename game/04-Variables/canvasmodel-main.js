@@ -922,7 +922,7 @@ Renderer.CanvasModels.main = {
 			options.underUpperMask.push(options.shirt_mask_clip_src)
 			options.upperMask.push(options.shirt_mask_clip_src)
 		} else {
-			options.underUpperMask.push(options.upper_fitted_clip_src)
+			options.underUpperMask.push(options.under_upper_fitted_clip_src)
 			options.upperMask.push(options.upper_fitted_clip_src)
 		};
 
@@ -3158,6 +3158,7 @@ Renderer.CanvasModels.main = {
 					return options.worn.under_upper.setup.pregType === "split"
 						&& options.shirt_mask_clip_src;
 
+				if (!(options.worn.under_upper.setup.formfittingDisabled ?? []).includes("acc"))
 				return options.underUpperMask;
 			}
 		}),
@@ -4567,6 +4568,7 @@ function genlayer_clothing_fitted_left_acc(slot, overrideOptions) {
 				&& options.worn[slot].setup.accImage !== 0
 				&& options.worn[slot].setup.accessory === 1
 				&& ((options.worn[slot].setup.formfitting === 1 && ["curvy", "slender"].includes(options.body_type)) || (options.body_type === "soft" && (V.bellyTucked || V.worn[slot].setup.one_piece)))
+				&& !(options.worn[slot].setup.formfittingDisabled ?? []).includes("acc")
 				&& !between(options.belly, 8, 24);
 			return checks;
 		},
@@ -4598,6 +4600,7 @@ function genlayer_clothing_fitted_right_acc(slot, overrideOptions) {
 				&& options.worn[slot].setup.accImage !== 0
 				&& options.worn[slot].setup.accessory === 1
 				&& ((options.worn[slot].setup.formfitting === 1 && options.body_type == "curvy") || (options.body_type === "soft" && (V.bellyTucked || V.worn[slot].setup.one_piece)))
+				&& !(options.worn[slot].setup.formfittingDisabled ?? []).includes("acc")
 				&& !between(options.belly, 8, 24);
 			return checks;
 		},
@@ -5153,6 +5156,7 @@ function genlayer_clothing_arm_acc_fitted(arm, slot, overrideOptions) {
 				&& ["curvy", "slender"].includes(options.body_type)
 				&& options.arm_left === "idle"
 				&& !(options.belly > 7)
+				&& !(options.worn.under_upper.setup.formfittingDisabled ?? []).includes("sleeve_acc")
 				&& options[`arm_${arm}`] !== "none";
 		},
 		masksrcfn(options) {

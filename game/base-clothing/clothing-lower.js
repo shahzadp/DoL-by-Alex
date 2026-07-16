@@ -12337,7 +12337,7 @@ function initLower() {
 			shopGroup: "schoolpinafore",
 			accessory: 1,
 			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
-			pattern_options: ["clovers", "flowers", "sparkles"],
+			pattern_options: ["plain", "clovers", "flowers", "sparkles"],
 			pattern_layer: "tertiary",
 			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 3, 5: 5, 6: 5 },
 			notuck: 1,
