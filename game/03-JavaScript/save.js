@@ -427,7 +427,7 @@ const DoLSave = ((Story, Save) => {
 				const tryDecompress = () => {
 					try {
 						const result = decompressState(state);
-						return result.variables && result.prng && result.variables.saveVersions ? result : null;
+						return result.variables && result.variables.saveVersions ? result : null;
 					} catch {
 						return null;
 					}
