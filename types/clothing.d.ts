@@ -345,6 +345,8 @@ declare global {
 		shopGroup?: string;
 		pregType?: 0 | string;
 		formfitting?: 1;
+		// Parts that exclude form formfitting, available options: "acc" "sleeve_acc"
+		formfittingDisabled?: string[];
 		oldVariable?: {
 			name: string;
 			variable: string;
