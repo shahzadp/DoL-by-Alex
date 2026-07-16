@@ -16,7 +16,7 @@ var IronMan = (Save => {
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
 	/* DO NOT MODIFY WITHOUT UPDATING SCHEMA */
-	const schema = 5;
+	const schema = 6;
 	const keys = [
 		"ironmanmode",
 		"debug",
@@ -91,7 +91,21 @@ var IronMan = (Save => {
 	 * @returns {string} The hashed (md5) signature.
 	 */
 	function getSignature(save = null) {
-		const target = save == null ? V : save.state.delta[0].variables;
+		let target;
+		if (save == null) {
+			target = V;
+		} else {
+			const frame = save.state.delta[0];
+			if (JsonDecompressor.isCompressed(frame)) {
+				try {
+					target = DoLSave.decompressState(frame).variables;
+				} catch {
+					target = frame.variables;
+				}
+			} else {
+				target = frame.variables;
+			}
+		}
 		const subset = keys.map(key => resolve(target, key));
 		const encodedSubset = JSON.stringify(subset);
 		const signature = md5(encodedSubset);
