@@ -1055,7 +1055,14 @@ function hourPassed(hours) {
 			});
 		});
 
-		if (V.ejactrait >= 1 && V.tiredness < C.tiredness.max) V.stress -= (V.goocount + V.semencount) * 10;
+		/**
+		 * fatigueOverflow adds 15 $stress and 0.25 $trauma per minute, for a total of 900 $stress and 15 $trauma per hour.
+		 *
+		 * PC's will technically be able to stay awake indefinitely if they can get 90 sources of fluids on their body. However, they will also get 360 $trauma each day they do this. The Allure increase from all the fluids, plus the "buffs" from their highly traumatized state should balance their lack of sleep.
+		 *
+		 * Seems fine to treat the Trauma traits gained from the passive $trauma increase like IRL versions of microsleeping.
+		 */
+		if (V.ejactrait >= 1) statChange.stress(-10 * (V.goocount + V.semencount), "time");
 		if (V.kylarwatched) V.kylarwatchedtimer--;
 		if (V.parasite.nipples.name) statChange.milkvolume(1);
 		if (V.worn.head.name === "hairpin" || V.sexStats.pills.pills["Hair Growth Formula"].doseTaken) {
@@ -1150,35 +1157,36 @@ function hourPassed(hours) {
 }
 
 function minutePassed(minutes) {
-	// Stress
-	// decay/rise and crossdresser trait
-	const isCrossdresser = V.backgroundTraits.includes("crossdresser");
-	// Not using isCrossdressing() since the stress gains/penalties should not be based on NudeGenderDC
-	const isCrossdressing = V.player.sex !== V.player.gender_appearance && V.player.sex !== "h";
-	if (V.controlled === 0 && V.anxiety >= 2) V.stress += minutes * ((isCrossdresser && !isCrossdressing) + 1);
-	else if (V.stress < V.stressmax && (V.controlled === 1 || V.anxiety === 0)) V.stress -= minutes * ((isCrossdresser && isCrossdressing) + 1);
-
+	// Parasite Updates
 	parasiteProgressTime(minutes);
 	parasiteProgressTime(minutes, "vagina");
 	// eslint-disable-next-line no-undef
 	if (isPregnancyEnding()) {
 		// To prevent new events from occurring, allowing players to more easily go to the hospital or similar locations
 		V.eventskip = 1;
-		V.stress += Math.floor(minutes * 40);
+		statChange.stress(40 * minutes, "time");
 	}
 
-	// Tanning
+	// Tanning Updates
 	Skin.applyTanningGain(minutes);
 
-	// Body temperature
+	// Temperature Updates
 	const temperature = V.outside ? Weather.apparentTemperature : Weather.insideTemperature;
 	if (!V.possessed) Weather.BodyTemperature.update(temperature, minutes);
-	V.stress += Math.round(Weather.BodyTemperature.stressModifier * minutes);
-	statChange.stressClamp();
+	statChange.stress(Weather.BodyTemperature.stressModifier * minutes, "time");
 
-	// Snow & ice
+	// Weather Updates
 	Weather.setAccumulatedSnow(minutes);
 	Weather.setIceThickness(minutes);
+
+	// Crossdresser Updates
+	const isCrossdresser = V.backgroundTraits.includes("crossdresser");
+	// Not using isCrossdressing() since the stress gains/penalties should not be based on NudeGenderDC
+	const isCrossdressing = V.player.sex !== V.player.gender_appearance && V.player.sex !== "h";
+	// +1 stress per minute if the PC has the "Crossdresser" trait and isn't crossdressing.
+	if (isCrossdresser && !isCrossdressing) statChange.stress(minutes, "time");
+	// -1 stress per minute if the PC has the "Crossdresser" trait and is crossdressing.
+	else if (isCrossdresser && isCrossdressing) statChange.stress(-minutes, "time");
 
 	// Alcohol Updates
 
@@ -1188,6 +1196,9 @@ function minutePassed(minutes) {
 	 * The following effects scale linearly from 0 to 480 (The alcohol limit):
 	 *
 	 * Being intoxicated adds up to 20 $tiredness per hour.
+	 * Being intoxicated reduces $stress gains by up to 75%.
+	 * Being intoxicated adds up to -2 $stress each minute (ignores trauma traits).
+	 *   When combined with the "Severe Anxiety Disorder" trait, a wasted high trauma PC gains -1.75 $stress each minute.
 	 */
 	if (V.drunk > 0) {
 		/**
@@ -1202,7 +1213,7 @@ function minutePassed(minutes) {
 
 		// Get the starting and ending alcohol ratios after "minutes" minutes have passed, clamped between 0 to 1.
 		const drunkStart = drunkModifier();
-		statChange.alcohol(-(timeAbove + timeWithin));
+		statChange.alcohol(-(timeAbove + timeWithin), "time");
 		const drunkEnd = drunkModifier();
 
 		// Adds up how long and how drunk the PC was during this time.
@@ -1210,6 +1221,8 @@ function minutePassed(minutes) {
 
 		// When passing days (20+ hours) at a time, fatigue gains will be disabled.
 		if (minutes < 1200) statChange.tiredness((C.stats.alcohol.hourlyFatigue / 60) * drunkSum, "time");
+
+		statChange.stress((C.stats.alcohol.hourlyStress / 60) * drunkSum, "time");
 	}
 
 	// Fatigue Updates
@@ -1246,8 +1259,20 @@ function minutePassed(minutes) {
 	// When passing days (20+ hours) at a time, fatigue gains will be disabled.
 	if (minutes < 1200) statChange.tiredness(minutes, "time");
 
+	// Stress Updates
+
+	// +1 stress per minute if the PC has the "Severe Anxiety Disorder" trait.
+	if (V.controlled === 0 && V.anxiety >= 2) statChange.stress(minutes, "time");
+	// -1 stress per minute if the PC also doesn't have the "Anxiety Disorder" trait.
+	else if (V.controlled === 1 || V.anxiety === 0) statChange.stress(-minutes, "time");
+
+	// Hallucinogen Updates
 	if (V.hallucinogen > 0) statChange.hallucinogen(-minutes);
+
+	// Drug Updates
 	if (V.drugged > 0) statChange.drugs(-minutes);
+
+	// Pain Updates
 	statChange.pain(minutes, -0.5);
 
 	// Arousal Updates
