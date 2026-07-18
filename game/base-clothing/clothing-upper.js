@@ -196,7 +196,7 @@ function initUpper() {
 			accessory_colour: 0,
 			accessory_colour_options: [],
 			sleeve_img: 0,
-			breast_img: { 0: null, 1: null, 2: null, 3: 3, 4: 4, 5: 5, 6: 5 },
+			breast_img: { 0: 0, 1: 0, 2: 0, 3: 3, 4: 3, 5: 5, 6: 5 },
 			cursed: 0,
 			location: 0,
 			iconFile: "towel.png",
