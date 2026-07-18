@@ -1720,22 +1720,27 @@
 				<<for _labelWW, _valueWW range _outfitPrimary>>
 					<<if _valueWW isnot "broken" and _valueWW isnot "split">>
 						<<for _j to 0; _j lt $_selectedWardrobe[_labelWW].length; _j++>>
-							<<if $_selectedWardrobe[_labelWW][_j].name is _valueWW and _item.colour is $_selectedWardrobe[_labelWW][_j].colour and _item.accessory_colour is $_selectedWardrobe[_labelWW][_j].accessory_colour and _item.pattern is $_selectedWardrobe[_labelWW][_j].pattern>>
-								<<if $_selectedWardrobe[_labelWW][_j].outfitSecondary[1] isnot _item.name>>
+							<<set _selectedItem to $_selectedWardrobe[_labelWW][_j]>>
+							<<if $_selectedWardrobe[_labelWW][_j].name is _valueWW and _item.colour is _selectedItem.colour and _item.pattern is _selectedItem.pattern>>
+								<<if _item.accessory_colour isnot 0 and _selectedItem.accessory_colour isnot 0 /* Give some leniency when selecting outfit pieces when one doesn't use accessory colours */
+									and _item.accessory_colour isnot _selectedItem.accessory_colour>>
+									<<continue>>
+								<</if>>
+								<<if _selectedItem.outfitSecondary[1] isnot _item.name>>
 									<<continue>>
 								<</if>>
 								<<set _matched to 0>>
-								<<if $_selectedWardrobe[_labelWW][_j].colour isnot "custom">>
+								<<if _selectedItem.colour isnot "custom">>
 									<<set _matched++>>
-								<<elseif _item.colourCustom isnot undefined and $_selectedWardrobe[_labelWW][_j].colourCustom isnot undefined>>
-									<<if _item.colourCustom is $_selectedWardrobe[_labelWW][_j].colourCustom>>
+								<<elseif _item.colourCustom isnot undefined and _selectedItem.colourCustom isnot undefined>>
+									<<if _item.colourCustom is _selectedItem.colourCustom>>
 										<<set _matched++>>
 									<</if>>
 								<</if>>
-								<<if $_selectedWardrobe[_labelWW][_j].accessory is 0 or $_selectedWardrobe[_labelWW][_j].accessory_colour isnot "custom">>
+								<<if _selectedItem.accessory is 0 or _selectedItem.accessory_colour isnot "custom">>
 									<<set _matched++>>
-								<<elseif _item.accessory_colourCustom isnot undefined and $_selectedWardrobe[_labelWW][_j].accessory_colourCustom isnot undefined>>
-									<<if _item.accessory_colourCustom is $_selectedWardrobe[_labelWW][_j].accessory_colourCustom>>
+								<<elseif _item.accessory_colourCustom isnot undefined and _selectedItem.accessory_colourCustom isnot undefined>>
+									<<if _item.accessory_colourCustom is _selectedItem.accessory_colourCustom>>
 										<<set _matched++>>
 									<</if>>
 								<</if>>
