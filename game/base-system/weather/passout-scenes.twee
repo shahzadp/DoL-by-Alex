@@ -1594,6 +1594,8 @@ You spread your <<= $harpy gte 6 ? "wings" : "arms">> wide, feeling the cool win
 <<set $location to "tower">><<setTowerTemp>>
 <<npc "Great Hawk">><<person1>>
 <<set _eggs to Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer))>>
+<<set $tempHatched to Object.values($children).filter(child => (child.location is "tower" and !child.eggTimer))>>
+<<if $tempHatched.length > 0>><<childSelect $tempHatched[0].childId>><</if>>
 <<outfitChecks>>
 <<if _bottom>><<set _bottom.integrity -=5>><<set _damagedClothes to _bottom.name>><</if>>
 <<if _top>><<set _top.integrity -= 5>><<set _damagedClothes to _top.name>><</if>>
@@ -1602,6 +1604,12 @@ You spread your <<= $harpy gte 6 ? "wings" : "arms">> wide, feeling the cool win
 <<set Weather.Temperature.override.increase.outside(5, "Feathers and fabric warm your body.")>>
 
 You awaken in the Great Hawk's nest, naked but warm. You stir, <<= _eggs ? "careful not to disturb the actual eggs in the nest" : "letting <<bhim>> know you're awake">>.
+
+<<if $tempHatched.length > 1 >>
+	Your children hug you, doing their part and trying their best to help keep you warm.
+<<elseif $tempHatched.length == 1>>
+	<<childname>> hugs you, doing <<childhis>> part and trying <<childhis>> best to help keep you warm.
+<</if>>
 <br><br>
 
 <<if $monster is 1>>
@@ -1609,7 +1617,7 @@ You awaken in the Great Hawk's nest, naked but warm. You stir, <<= _eggs ? "care
 <<else>>
 	<<your_bird_text "cap">> seems relieved when <<bhe>> notices you, but <<bhe>> doesn't move, save for wrapping <<bhis>> wings around you. Perhaps <<bhe>> wants to keep you warm.
 <</if>>
-You allow your breathing to still, relaxing into the comfort of <<bhis>> warm body.
+You allow your breathing to still, relaxing into the comfort of <<= $tempHatched.length > 0 ? "their warm bodies.":"<<bhis>> warm body.">>
 <br><br>
 
 After a few minutes, <<bhe>> gets off of you. <<if $monster is 1>>"Wait here," <<bhe>> says.<</if>>
@@ -1650,6 +1658,11 @@ After a few minutes, <<bhe>> gets off of you. <<if $monster is 1>>"Wait here," <
 <<if understandsBirdBehaviour()>>You realise that <<bhe>> must be trapping air in the feathers.<</if>><<if $monster is 1>> You smile when <<bhe>> confirms it by saying, "<<= _feathered ? "<<Wife>> should do the same. Keep air in feathers for warmth." : "Poor landbound <<wife>>, can't keep air in feathers for warmth.">>"<</if>>
 <<if _feathered>>
 	You follow suit, fluffing up your plumage.
+	<<if $tempHatched.length > 1 >>
+		Enthusiastically, your children get on your lap and copy you two.
+	<<elseif $tempHatched.length == 1>>
+		Enthusiastically, <<childname>> gets on your lap and copies you two.
+	<</if>>
 <<elseif !understandsBirdBehaviour()>>
 	<<gscience>><<scienceskill>>
 <</if>>
@@ -1718,6 +1731,15 @@ The Great Hawk <<= $monster is 1 ? "beams" : "perks up">> at that, and <<bhe>> r
 <<else>>
 	<<bHe>> looks you over and chirps, eyes bright and shiny. <<bHe>> hops away, then spreads <<bhis>> wings and launches from the tower.
 <</if>>
+<br><br>
+
+<<if $tempHatched.length > 1 >>
+	After making sure you're warm, your children hug you farewell and go off to do their own thing.
+<<elseif $tempHatched.length == 1>>
+	<<childSelect $tempHatched[0].childId>>
+	After making sure you're warm, <<childname>> hugs you farewell and goes off to do <<childhis>> own thing.
+<</if>>
+<<unset $tempHatched>>
 <br><br>
 
 <<link [[Next (0:30)|Passout Bird Hypothermia End]]>><<pass 30>><</link>>
