@@ -593,16 +593,16 @@ const statChange = (() => {
 			}
 
 			// Adjusts modifier for body part sensitivity, if applicable
+			// Sensitivity 4: 2x arousal multiplier
+			// Sensitivity 3: 1.66x arousal multiplier
+			// Sensitivity 2: 1.33x arousal multiplier
+			// Sensitivity 1: 1x arousal multiplier (default)
 			if (amount > 0) {
-				let sensitivityMod = (sensitivity - 1) ** 2 / 4;
-				// Halve sensitivity boosts during chef job
-				// todo: rebalance chef job better
-				if (V.masturbation_bowl) sensitivityMod /= 2;
-				mod += sensitivityMod;
+				mod *= 1 + ((sensitivity - 1) / 3);
 			}
 
 			// Reduce the mod if masturbating while in heat and/or rut
-			if (source && source.includes("masturbation")) {
+			if (source?.includes("masturbation")) {
 				mod *= 1 - Math.clamp(playerHeatMinArousal() + playerRutMinArousal(), 0, 4000) / 5000;
 			}
 
