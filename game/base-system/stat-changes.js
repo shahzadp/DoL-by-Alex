@@ -1,5 +1,15 @@
 /* global statDisplay */
 
+/**
+ * Returns a modifier based on the strength of the PC's intoxication. Goes from 0 to 1.
+ *
+ * @returns {number}
+ */
+function drunkModifier() {
+	return Math.clamp(V.drunk / C.stats.alcohol.effectLimit, 0, 1);
+}
+window.drunkModifier = drunkModifier;
+
 const statChange = (() => {
 	function paramError(functionName = "", param = "", value, expectedValues = "") {
 		if (typeof value === "object") value = JSON.stringify(value);
@@ -15,6 +25,7 @@ const statChange = (() => {
 			}`
 		);
 	}
+
 	// Overflow (Clamp) Code Section
 
 	/**
@@ -1505,6 +1516,7 @@ const statChange = (() => {
 	DefineMacro("badEndTrackingEnd", (source, optional) => badEndTrackingEnd(source, optional));
 
 	return {
+		drunkModifier,
 		alcoholClamp,
 		fatigueClamp,
 		stressClamp,
