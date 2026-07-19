@@ -1547,7 +1547,14 @@ window.drunkSexStatModifier = drunkSexStatModifier;
  * @returns {number}
  */
 function heatRutSexStatModifier(input) {
-	const maxMinArousal = 5000; // Maximum value for minArousal.
+	/**
+	 * While PC's arousal can technically go higher than 2,500, a PC with only a Penis / Vagina and no MPreg or Ear Slimes has their arousal max out at 2,500 (Risk = 0 and taking Fertility Pills).
+	 *
+	 * To account for this, the PC's Sex Stat mods will have their boosts max out at 2,500 minimum arousal to make the effects more noticeable.
+	 *
+	 * The PC's actual maximum minimum arousal threshold, meanwhile, is handled in a separate function.
+	 */
+	const maxMinArousal = 2500; // Maximum value for minArousal.
 	const minArousal = Math.clamp(playerHeatMinArousal() + playerRutMinArousal(), 0, maxMinArousal);
 	if (minArousal === 0) return 0;
 
@@ -1562,7 +1569,7 @@ function heatRutSexStatModifier(input) {
 
 	if (statName === "exhibitionism") return 0;
 
-	const maxHeatRutSexStatModifier = 40; // Maximum modifier for sexStat() from minArousal.
+	const maxHeatRutSexStatModifier = 30; // Maximum modifier for sexStat() from minArousal.
 	const heatRutSexStatModifierExponent = 0.6; // Lower to raise the final modifier at lower levels of minArousal.
 	const heatRutSexStatModifier = (maxHeatRutSexStatModifier / maxMinArousal ** heatRutSexStatModifierExponent) * minArousal ** heatRutSexStatModifierExponent;
 
