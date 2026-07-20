@@ -149,7 +149,7 @@ class ClothesItem {
 	/* */
 	accessory_colour_combat;
 
-	/* Whether acc is recolourabl | AUTOFILL | INT */
+	/* Whether acc is recolourable | AUTOFILL | INT */
 	accessory_colour_sidebar;
 
 	/* */
