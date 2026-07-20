@@ -162,7 +162,7 @@ namespace Renderer {
 	export const globalC2D = createCanvas(1, 1);
 
 	/**
-	 * Creates a cutout of color in shape of sourceImage
+	 * Creates a cutout of colour in shape of sourceImage
 	 */
 	export function cutout(
 		sourceImage: CanvasImageSource,
@@ -172,7 +172,7 @@ namespace Renderer {
 		let sw = sourceImage.width as number;
 		let sh = sourceImage.height as number;
 		canvas.clearRect(0, 0, sw, sh);
-		// Fill with target color
+		// Fill with target colour
 		canvas.globalCompositeOperation = 'source-over';
 		canvas.fillStyle = color;
 		canvas.fillRect(0, 0, sw, sh);
@@ -191,7 +191,7 @@ namespace Renderer {
 	}
 
 	/**
-	 * Paints sourceImage over cutout of it filled with color.
+	 * Paints sourceImage over cutout of it filled with colour.
 	 */
 	export function composeOverCutout(
 		sourceImage: CanvasImageSource,
@@ -209,7 +209,7 @@ namespace Renderer {
 
 	/**
 	 * Repeatedly fill all sub-frames of canvas with same style.
-	 * (Makes sense with gradient and pattern fills, to keep consistents across all sub-frames)
+	 * (Makes sense with gradient and pattern fills, to keep consistent across all sub-frames)
 	 */
 	export function fillFrames(
 		fillStyle: string | CanvasGradient | CanvasPattern,
@@ -338,7 +338,7 @@ namespace Renderer {
 	}
 
 	/**
-	 * Paints sourceImage over same-sized canvas filled with color
+	 * Paints sourceImage over same-sized canvas filled with colour
 	 */
 	export function composeOverRect(sourceImage: CanvasImageSource,
 		color: string,
@@ -346,7 +346,7 @@ namespace Renderer {
 		targetCanvas: CanvasRenderingContext2D = createCanvas(sourceImage.width as number,
 			sourceImage.height as number)
 	): CanvasRenderingContext2D {
-		// Fill with target color
+		// Fill with target colour
 		targetCanvas.globalCompositeOperation = 'source-over';
 		targetCanvas.fillStyle = color;
 		targetCanvas.fillRect(0, 0, sourceImage.width as number, sourceImage.height as number);
@@ -357,7 +357,7 @@ namespace Renderer {
 	}
 
 	/**
-	 * Paints over sourceImage a cutout of it filled with color.
+	 * Paints over sourceImage a cutout of it filled with colour.
 	 */
 	export function composeUnderCutout(sourceImage: CanvasImageSource,
 		color: string,
@@ -376,7 +376,7 @@ namespace Renderer {
 	}
 
 	/**
-	 * Paints over sourceImage a same-sized canvas filled with color
+	 * Paints over sourceImage a same-sized canvas filled with colour
 	 */
 	export function composeUnderRect(sourceImage: CanvasImageSource,
 		color: string,
@@ -814,25 +814,23 @@ namespace Renderer {
 
 		render(image: HTMLCanvasElement, compositeLayer: CompositeLayer, renderContext: Renderer.RenderPipelineContext): HTMLCanvasElement {
 			const maskCanvas = Renderer.ensureCanvas(image).getContext('2d');
-			// If convert is true, forget about the rest, can't be asked to integrate it atm. Rushed for time.
 			function processConvertStep(image: HTMLCanvasElement, layer: CompositeLayer, parentCtx: Renderer.RenderPipelineContext): HTMLCanvasElement | undefined {
-				let maskImg = layer.mask;
-				// No need to support arrays of masks yet. Can be done later.
-				if (Array.isArray(maskImg)) {
-					if (maskImg.length === 0) {
-						return;
-					}
-					maskImg = maskImg[0];
+				let maskImg: CanvasImageSource[]
+				if (Array.isArray(layer.mask)) {
+					maskImg = layer.mask
+				} else if (layer.mask) {
+					maskImg = [layer.mask]
+				} else {
+					return
 				}
-				if (!layer.maskOptions?.convert) {
-					return;
-				}
-				// Our mask should be a proper CanvasImageSource by this point.
 				const ctx = Renderer.createCanvas(image.width, image.height);
+				for (let index = 0; index < maskImg.length; index++) {
+					ctx.drawImage(maskImg[index], 0, 0, image.width, image.height);
+					ctx.globalCompositeOperation = "destination-in";
+				}
+				ctx.globalCompositeOperation = "source-in";
 				ctx.fillStyle = "#fff";
 				ctx.fillRect(0, 0, image.width, image.height);
-				ctx.globalCompositeOperation = "destination-in";
-				ctx.drawImage(maskImg, 0, 0, image.width, image.height);
 				// Our ctx should be prepared for the final cutout
 				return Renderer.cutoutFrom(maskCanvas, ctx.canvas, layer.maskBlendMode).canvas;
 			}

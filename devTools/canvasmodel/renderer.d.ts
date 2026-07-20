@@ -1,3 +1,5 @@
+/// <reference path="model.d.ts" />
+/// <reference types="tinycolor2" />
 declare namespace Renderer {
     export function isMaskObject(mask: string | HTMLCanvasElement | CanvasImageSource | MaskObject | undefined | null): mask is MaskObject;
     export function isMaskOffsetObject(mask: string | HTMLCanvasElement | CanvasImageSource | MaskObject | undefined | null): mask is MaskObject;
@@ -51,7 +53,7 @@ declare namespace Renderer {
      */
     export const globalC2D: CanvasRenderingContext2D;
     /**
-     * Creates a cutout of color in shape of sourceImage
+     * Creates a cutout of colour in shape of sourceImage
      */
     export function cutout(sourceImage: CanvasImageSource, color: string | CanvasGradient | CanvasPattern, canvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     /**
@@ -60,12 +62,12 @@ declare namespace Renderer {
      */
     export function cutoutFrom(base: CanvasRenderingContext2D, stencil: CanvasImageSource, operation?: GlobalCompositeOperation): CanvasRenderingContext2D;
     /**
-     * Paints sourceImage over cutout of it filled with color.
+     * Paints sourceImage over cutout of it filled with colour.
      */
     export function composeOverCutout(sourceImage: CanvasImageSource, color: string | CanvasGradient | CanvasPattern, blendMode?: GlobalCompositeOperation, canvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     /**
      * Repeatedly fill all sub-frames of canvas with same style.
-     * (Makes sense with gradient and pattern fills, to keep consistents across all sub-frames)
+     * (Makes sense with gradient and pattern fills, to keep consistent across all sub-frames)
      */
     export function fillFrames(fillStyle: string | CanvasGradient | CanvasPattern, canvas: CanvasRenderingContext2D, frameCount: number, frameWidth: number, blendMode: GlobalCompositeOperation): void;
     export let Patterns: Dict<CanvasPattern>;
@@ -85,15 +87,15 @@ declare namespace Renderer {
      */
     export function composeUnderSpecialRect(sourceImage: CanvasImageSource, fillStyle: CanvasGradient | CanvasPattern, blendMode: GlobalCompositeOperation, frameCount: number, targetCanvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     /**
-     * Paints sourceImage over same-sized canvas filled with color
+     * Paints sourceImage over same-sized canvas filled with colour
      */
     export function composeOverRect(sourceImage: CanvasImageSource, color: string, blendMode: GlobalCompositeOperation, targetCanvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     /**
-     * Paints over sourceImage a cutout of it filled with color.
+     * Paints over sourceImage a cutout of it filled with colour.
      */
     export function composeUnderCutout(sourceImage: CanvasImageSource, color: string, blendMode?: GlobalCompositeOperation, canvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     /**
-     * Paints over sourceImage a same-sized canvas filled with color
+     * Paints over sourceImage a same-sized canvas filled with colour
      */
     export function composeUnderRect(sourceImage: CanvasImageSource, color: string, blendMode?: GlobalCompositeOperation, targetCanvas?: CanvasRenderingContext2D): CanvasRenderingContext2D;
     export let ImageCaches: {
