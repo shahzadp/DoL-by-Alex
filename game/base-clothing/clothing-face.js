@@ -1212,8 +1212,11 @@ function initFace() {
 			index: 36,
 			slot: "face",
 			name: "wood muzzle",
-			name_cap: "wood muzzle",
+			name_cap: "Wood muzzle",
 			variable: "wood muzzle",
+			combat: {
+				reference: "bitgag",
+			},
 			state: 0,
 			state_base: 0,
 			integrity: 30,
@@ -1644,6 +1647,9 @@ function initFace() {
 			slot: "face",
 			name: "swirly glasses",
 			variable: "swirly glasses",
+			combat: {
+				reference: "glasses",
+			},
 			description: "Nothing suspicious at all.",
 			cost: 5000,
 			shop: ["clothing"],
@@ -1662,6 +1668,9 @@ function initFace() {
 			slot: "face",
 			name: "teardrop glasses",
 			variable: "teardrop glasses",
+			combat: {
+				reference: "glasses",
+			},
 			description: "Trendy tear-shaped frames.",
 			cost: 5000,
 			shop: ["clothing"],

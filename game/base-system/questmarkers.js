@@ -5,7 +5,7 @@ const events = [
 		// conditions for the reminder to show up
 		// must be specific enough to no longer trigger once the event is actually attended. mandatory.
 		condition() {
-			return Time.schoolDay && Object.keys(V.daily.school.attended).length < 5;
+			return Time.schoolDay && (Object.keys(V.daily.school.attended).length < 5 || Time.hour < 15);
 		},
 		// arriving at any time during this hour brings no penalties to the event
 		starthour: 8,
