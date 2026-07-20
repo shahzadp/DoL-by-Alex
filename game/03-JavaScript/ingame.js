@@ -1582,6 +1582,8 @@ function heatRutSexStatModifier(input) {
 window.heatRutSexStatModifier = heatRutSexStatModifier;
 
 /**
+ * Check if a PC's sex stats are high enough to meet the required tier.
+ *
  * @param {string} input
  * @param {number} required
  * @param {boolean} modifiers
