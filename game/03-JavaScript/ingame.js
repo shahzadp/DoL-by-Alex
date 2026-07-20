@@ -1270,7 +1270,6 @@ function currentSkillValue(skill, disableModifiers = 0) {
 		case "skulduggery":
 			if (V.worn.hands.type.includes("sticky_fingers")) result = Math.floor(result * 1.05);
 			if (V.transformationParts.traits.sharpEyes !== "disabled") result = Math.floor(result * 1.05);
-			if (V.fox >= 6) result = Math.floor(result * 1.1);
 			break;
 		case "physique":
 			if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
