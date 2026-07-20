@@ -598,7 +598,7 @@ const statChange = (() => {
 			// Sensitivity 2: 1.33x arousal multiplier
 			// Sensitivity 1: 1x arousal multiplier (default)
 			if (amount > 0) {
-				mod *= 1 + ((sensitivity - 1) / 3);
+				mod *= 1 + (sensitivity - 1) / 3;
 			}
 
 			// Reduce the mod if masturbating while in heat and/or rut
