@@ -2366,7 +2366,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal", "heels", "formal"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2403,7 +2403,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal", "heels"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2439,7 +2439,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2475,7 +2475,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal", "heels"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "stripperheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2549,7 +2549,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
@@ -2807,7 +2807,7 @@ function initFeet() {
 			shop: ["clothing"],
 			type: ["normal"],
 			combat: {
-				reference: "anklecuffs",
+				reference: "bootheels",
 			},
 			state: 0,
 			state_base: 0,
