@@ -1240,7 +1240,7 @@ function currentSkillValue(skill, disableModifiers = 0) {
 	) {
 		result = Math.floor(result * (1 + V.moorLuck / 100));
 	}
-	if (["physique", "danceskill", "swimmingskill", "athletics"].includes(skill) && playerBellySize() >= 10 && playerNormalPregnancyTotal() < 50) {
+	if (["physique", "danceskill", "swimmingskill", "athletics"].includes(skill) && playerBellySize() >= 10 && playerNormalPregnancyTotal() < 20) {
 		switch (playerNormalPregnancyTotal()) {
 			case 0:
 				T.pregnancyModifier = 36;
@@ -1254,8 +1254,6 @@ function currentSkillValue(skill, disableModifiers = 0) {
 			case 3:
 			case 4:
 			case 5:
-				T.pregnancyModifier = 78;
-				break;
 			case 6:
 			case 7:
 				T.pregnancyModifier = 96;
