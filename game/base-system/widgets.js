@@ -575,7 +575,7 @@ function calculateallure() {
 	if (!V.worn.over_upper.type.includes("naked")) {
 		baseattractiveness += V.worn.over_upper.reveal;
 	} else {
-		const topmult = V.worn.lower.type.includes("overalls") ? 1 : 1;
+		const topmult = V.worn.lower.type.includes("overalls") ? 0.5 : 1;
 		baseattractiveness += V.worn.upper.reveal * topmult;
 		if (V.worn.upper.type.includes("naked")) baseattractiveness += V.worn.under_upper.reveal * topmult;
 	}
