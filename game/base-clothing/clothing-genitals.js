@@ -471,7 +471,7 @@ function initGenitals() {
 			index: 8,
 			slot: "genitals",
 			name: "chastity parasite",
-			name_cap: "chastity parasite",
+			name_cap: "Chastity parasite",
 			variable: "slimechastitycage",
 			integrity: 500,
 			integrity_max: 500,

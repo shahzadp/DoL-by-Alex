@@ -3972,7 +3972,7 @@ function initHead() {
 			name_cap: "Large lace bow",
 			variable: "large lace bow",
 			combat: {
-				reference: "bow",
+				reference: "bigbow",
 			},
 			description: "An oversized lace bow.",
 			cost: 8000,
@@ -4338,7 +4338,7 @@ function initHead() {
 			name_cap: "Silky hair bow",
 			variable: "silky hair bow",
 			combat: {
-				reference: "bow",
+				reference: "bigbow",
 			},
 			description: "Smooth and flowing.",
 			cost: 7000,
