@@ -1614,6 +1614,30 @@
 				<br>
 			<</if>>
 		<</if>>
+		<<if $debug is 1>>
+			<br><br>
+			''DEBUG ONLY''
+			<br><br>
+
+
+			<<link [[Suggest making Avery a drink|Mansion Return Drink Accept]]>><<npcincr Avery dom 1>><</link>><<gdom>>
+			<br>
+			<<link [[Suggest having a massage in the bathroom (0:30)|Mansion Return Massage Accept]]>><<pass 30>><<npcincr Avery dom 1>><</link>><<gdom>><br>
+			<<link [[Suggest dogwalk petplay outside (0:30)|Mansion Return Walk Dog]]>><<set $phase to 1>><<npcincr Avery dom 3>><</link>><<exhibitionist5>><<ggdom>><br>
+			<<link [[Suggest going for a walk outside (0:30)|Mansion Return Walk]]>><</link>>
+			<br>
+			<<link [[Suggest going for a walk ouside in underwear (0:30)|Mansion Return Walk Undies Strip]]>><<set $phase to 1>><</link>><<exhibitionist3>><br>
+			<<link [[Suggest going for a walk ouside nude (0:30)|Mansion Return Walk Naked Strip]]>><<set $phase to 1>><</link>><<exhibitionist5>><br>
+			<<link [[Suggest watching TV (0:30)|Mansion Return Sit]]>><<pass 30>><<npcincr Avery love 1>><</link>><<glove>>
+			<br>
+			<<link [[Suggest going to the hot tub (0:30)|Mansion Return Bathe]]>><<pass 10>><<npcincr Avery love 1>><</link>><<glove>><br>
+			<<link [[Suggest to ride the sports car (0:30)|Mansion Return Ride]]>><<pass 10>><</link>><br>
+			<<link [[Suggest a game of badminton (0:30)|Mansion Return Badminton]]>><<pass 10>><</link>><br>
+			<<if $avery_mansion.jobs.includes("dungeon")>>
+				<<link [["Suggest " + $NPCList[0].pronouns.he + " take you to the dungeon instead"|Mansion Dungeon Intro Ask]]>><<npcincr Avery dom 1>><</link>><<gdom>>
+				<br>
+			<</if>>
+		<</if>>
 	<</if>>
 <</widget>>
 
@@ -2906,6 +2930,30 @@
 	<<storeon "avery_dungeon_handheld">>
 <</widget>>
 
+<<widget "debug_avery_skip_to_return">>
+	<<if Time.betweenHours(0,20) && !Time.isWeekEnd()>>
+		<<passTimeUntil 21>>
+	<<elseif Time.betweenHours(21, 23) && !Time.isWeekEnd()>>
+		<<passTimeUntil 23 59>>
+		<<pass 1 min>>
+		<<run console.log(`It's ${Time.weekDayName}!`)>>
+		<<if Time.weekDay === 7>>
+			<<pass 1 day>>
+			<<passTimeUntil 18>>
+		<</if>>
+		<<passTimeUntil 21>>
+	<<elseif Time.weekDay === 7>>
+		<<pass 1 day>>
+		<<passTimeUntil 18>>
+	<<elseif Time.betweenHours(0, 17) && Time.weekDay === 1>>
+		<<passTimeUntil 18>>
+	<<else>>
+		<<passTimeUntil 23 59>>
+		<<pass 1 min>>
+		<<passTimeUntil 21>>
+	<</if>>
+<</widget>>
+
 <<widget "avery_mansion_contents">>/* Contents of main "room" passages in Avery's mansion. The room description is separated from the main body so the conditional outcomes between them don't have to be copy pasted in every room. */
 	<<if $bus is "avery_pool">>
 		You are beside Avery's pool.
@@ -3758,6 +3806,91 @@
 					<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
 				<</if>>
 				<br><br>
+				<<if $debug is 1>>
+					''DEBUG ONLY''
+					<br><br>
+
+					Basics:
+					<br>
+					
+					<<link [[Skip to Avery's mansion return|Mansion Enter]]>><<set $avery_mansion.schedule = "work">>
+					<<debug_avery_skip_to_return>>
+					<</link>><br>
+
+					<<link [[Trigger Avery's Rageout|Mansion Enter]]>><<npcincr Avery rage 100>><<set $avery_mansion.rage.timer to 0>><<set $avery_mansion.rage.apologetic to false>><<set $avery_mansion.rage.assess to 20>><<set $avery_mansion.schedule = "work">>
+					<<debug_avery_skip_to_return>>
+					<</link>><br>
+
+					<<link [[Trigger Avery's apologetic return|Mansion Enter]]>><<npcset Avery rage 25>><<set $avery_mansion.rage.timer to 25>><<set $avery_mansion.rage.apologetic to true>><<set $avery_mansion.schedule = "away">>
+					<<debug_avery_skip_to_return>>
+					<</link>><br>
+
+					<<link [[Clear all Avery tasks|$passage]]>><<set $avery_mansion.jobs to []>><</link>><br>
+					<<link [[Add all Avery tasks|$passage]]>>
+						<<set $avery_mansion.jobs.push("lounge")>>
+						<<set $avery_mansion.jobs.push("bow")>>
+						<<set $avery_mansion.jobs.push("bedroom")>>
+						<<set $avery_mansion.jobs.push("formal")>>
+						<<set $avery_mansion.jobs.push("dining")>>
+						<<set $avery_mansion.jobs.push("hairlength")>>
+						<<set $avery_mansion.jobs.push("kitchen")>>
+						<<set $avery_mansion.jobs.push("maid")>>
+						<<set $avery_mansion.jobs.push("pool")>>
+						<<set $avery_mansion.jobs.push("hairstyle")>>
+						<<set $avery_mansion.jobs.push("bathroom")>>
+						<<set $avery_mansion.jobs.push("garden")>>
+						<<set $avery_mansion.jobs.push("knees")>>
+						<<set $avery_mansion.jobs.push("display")>>
+						<<set $avery_mansion.jobs.pushUnique("dungeon")>>
+						<<set $avery_mansion.jobs.push("meek")>>
+						<<set $avery_mansion.jobs to [...new Set($avery_mansion.jobs)]>>
+					<</link>>
+
+					<br><br>
+
+					Skyscraper plot functions:
+					<br>
+
+					<<link [[Start Brown Fox Heist|Mansion Fox Heist]]>><<set $avery_mansion.fox.task to "heist">><<set $auriga_artefact to "Avery">><<unset $avery_fate>><<passTimeUntil 23>><</link>> (Puts Avery to sleep during the event if they didn't rage out first)<br>
+
+					<<link [[Finish skyscraper|Mansion Enter]]>><<set $avery_mansion.schedule = "work">><<debug_avery_skip_to_return>><<set $avery_tower.stage to 2>><<set $avery_tower.progress to 100>>
+					<</link>> 
+
+					<br> 
+					<<link [[Go to skyscraper ceremony|Mansion Enter]]>><<set $avery_mansion.schedule = "work">><<run Time.timeTravel(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>><<set $moonstate to "evening">><<unset $avery_fate>><<set $avery_tower.stage to 3>>
+					<</link>>
+					<br>
+
+					<<link [[Don't swap the stones and go to skyscraper ceremony|Mansion Enter]]>><<set $avery_mansion.schedule = "work">><<run Time.timeTravel(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>><<set $moonstate to "evening">><<unset $avery_fate>><<set $avery_tower.stage to 3>><<set $fake_artefact to "pc">>
+					<</link>>
+					<br>
+
+					<<link [[Swap the stones and go to skyscraper ceremony|Mansion Enter]]>><<set $avery_mansion.schedule = "work">><<run Time.timeTravel(new DateTime(Time.year, Time.month, Time.lastDayOfMonth, 21, 0))>><<set $moonstate to "evening">><<unset $avery_fate>><<set $avery_tower.stage to 3>><<set $fake_artefact to "Avery">><<set $auriga_artefact to "pc">>
+					<</link>>
+					<br>
+
+					<<link [[Destroy Avery's mansion|Danube Street]]>><<set $avery_mansion_fire_time to 3>><<if !$wardrobe_residential_alleys>><<set $wardrobe_residential_alleys to 1>><</if>><<avery_antiques_end>><<set $avery_fate to "fallen">><<dismissAvery "hard">><</link>> (This action is irreversible)
+
+					<br><br>
+					Valentines:
+					<br>
+
+					<<link [[Valentine's Day Start|Mansion Enter]]>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><</link>>
+					<br>
+
+					<<link [[Start to Valentine's Day with Ascended Avery|Mansion Enter]]>><<set $avery_fate to "ascended">><<npc Gwylan>><<npc Harper>><<npc Remy>><<set C.npc.Avery.title to "crimson hound">><<set C.npc.Harper.title to "silver fox">><<set C.npc.Remy.title to "high elk">><<set $auriga_scar++>><<gwylanNobody>><<if $gwylan>><<set $gwylan.wary += 3>><</if>><<set $avery_tower.progress to 100>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><</link>><br>
+
+					<<link [[Start to Valentine's Day with Saved Avery|Mansion Enter]]>><<set $avery_fate to "saved">><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><<npcincr Avery dom -9>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><<npcincr Avery rage -39>><<set $avery_mansion.rage.timer to 30>><</link>>
+
+					<br><br>
+					Miscellaneous:
+					<br>
+
+					<<link [[Avery Sex Start|Mansion Sleep Sex]]>><<endcombat>><<set $sexstart to 1>><<npc Avery>><<person1>><</link>><br>
+					<<link [[Avery Rape Start|Mansion Date Rape]]>><<endcombat>><<set $molestationstart to 1>><<npc Avery>><<person1>><</link>><br>
+
+
+				<</if>>
 			<</if>>
 		<</if>>
 	<<else>>

@@ -4797,6 +4797,47 @@
 	<<set $rentstage to 1>>
 <</widget>>
 
+<<widget "cheatAveryMansion">>
+	<<cheatStart>>
+
+	/* init Avery  */
+	<<npc Avery>>
+	<<set C.npc.Avery.init to 1>>
+	<<if C.npc.Avery.state is "dismissed">><<unDismissAvery>><</if>>
+
+	/* Consequences of the 4th date if Avery wins  */
+	<<if $auriga_artefact is undefined>>
+		<<world_corruption "hard" 1>>
+		<<set $auriga_artefact to "Avery">> /* Avery owns the stones */
+		<<loveInterestAdd "Avery">>
+	<</if>>
+
+	/* Hard requirements */
+	<<npcincr Avery love 90>>
+	<<set $housekeeping to 600>>
+
+	<<set _lv_1_recipes to Object.keys(setup.foodstuff)
+		.filter(key => setup.foodstuff[key].recipe?.difficulty === 1)>>
+
+	<<set _random_recipes to (function() {
+		const copy = _lv_1_recipes.slice();
+		const result = [];
+		const count = Math.min(12, copy.length);
+		for (let i = 0; i < count; i++) {
+			const idx = Math.floor(Math.random() * copy.length);
+			result.push(copy[idx]);
+			copy.splice(idx, 1);
+		}
+		return result;
+	})()>>
+
+	<<for _recipe range _random_recipes>>
+		<<learn_recipe _recipe>>
+	<</for>>
+
+	<<set $dateCount.Avery = 12>>
+<</widget>>
+
 <<widget "swim_check">>
 	<<if ($worn.lower.type.includes("swim") or $worn.under_lower.type.includes("swim")) or ($worn.lower.type.includes("naked") and $worn.upper.type.includes("naked") and $worn.under_upper.type.includes("naked") and $worn.under_lower.type.includes("naked"))>>
 		<<set _swim_check to 1>>
