@@ -1695,7 +1695,7 @@ function dailyNPCEffects() {
 }
 
 function dailyPlayerEffects() {
-	if (V.fallenangel < 4) {
+	if (V.fallenangel === undefined || V.fallenangel < 4) {
 		V.willpower *= 0.99;
 	}
 

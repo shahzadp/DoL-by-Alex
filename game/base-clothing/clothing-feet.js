@@ -2583,7 +2583,7 @@ function initFeet() {
 			description: "Vintage charm.",
 			cost: 10500,
 			shop: ["clothing"],
-			type: ["normal", "formal"],
+			type: ["normal", "formal", "heels"],
 			combat: {
 				reference: "kittenheels",
 			},
@@ -2841,7 +2841,7 @@ function initFeet() {
 			description: "Smell the roses.",
 			cost: 21000,
 			shop: ["clothing"],
-			type: ["normal", "formal"],
+			type: ["normal", "formal", "heels"],
 			combat: {
 				reference: "stripperheels",
 			},
@@ -2915,7 +2915,7 @@ function initFeet() {
 			description: "Wraps the ankles.",
 			cost: 19500,
 			shop: ["clothing"],
-			type: ["normal", "formal"],
+			type: ["normal", "formal", "heels"],
 			combat: {
 				reference: "stripperheels",
 			},
