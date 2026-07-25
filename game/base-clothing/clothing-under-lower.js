@@ -2635,7 +2635,7 @@ function initUnderLower() {
 			variable: "shell bikini",
 			description: "Made with handpicked shells.",
 			cost: 4500,
-			shop: ["clothing"],
+			shop: ["clothing", "adult"],
 			type: ["swim"],
 			combat: {
 				reference: "bikini",
