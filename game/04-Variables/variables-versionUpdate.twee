@@ -7320,5 +7320,42 @@
 	<!-- These variables were used in Woodland update's sneaky release, but have since been patched out. -->
 	<<unset $tempConsensual>>
 	<<unset $tempPigsLeft>>
+
+	<!-- 0.5.11.8 -->
+	<!-- Fix persistent NPC issues, mainly in prison. Original code by note leven and Rukarin, see perNPCFix 4 -->
+	<<if $perNPCFix isnot 5>>
+		<<set $perNPCFix to 5>>
+		<!-- clean nulls and undefineds from name lists -->
+		<<run $NPC_names_f.delete(null, undefined)>>
+		<<run $NPC_names_m.delete(null, undefined)>>
+
+		<<set $_per_keys to Object.keys($per_npc)>>
+		<<for $_per_ctrl range $_per_keys>>
+			<<if !$per_npc[$_per_ctrl]>>
+				<!-- remove null and undefined -->
+				<<run delete $per_npc[$_per_ctrl]>>
+			<<elseif !$per_npc[$_per_ctrl].type>>
+				<!-- type fix -->
+				<<set $per_npc[$_per_ctrl].type to "human">>
+			<</if>>
+		<</for>>
+
+		<!-- prison npcs -->
+		<<for $_npc range ["anxious_guard", "methodical_guard", "relaxed_guard", "veteran_guard", "scarred_inmate"]>>
+			<<if $per_npc[$_npc]>>
+				<!-- restore null names-->
+				<<if !$per_npc[$_npc].name>>
+					<<set $per_npc[$_npc].name to ($per_npc[$_npc].pronoun is "m" ? $NPC_names_m.pluck() : $NPC_names_f.pluck())>>
+				<</if>>
+				<!-- fix descriptions -->
+				<<if $per_npc[$_npc].name_known>>
+					<<set $per_npc[$_npc].fullDescription to $per_npc[$_npc].name>>
+				<<else>>
+					<<set $per_npc[$_npc].fullDescription to $_npc.replace('_', ' ')>>
+				<</if>>
+			<</if>>
+		<</for>>
+	<</if>>
+
 <</widget>>
 
