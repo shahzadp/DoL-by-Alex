@@ -3239,6 +3239,7 @@ function initFeet() {
 			index: 87,
 			slot: "feet",
 			name: "spat shoes",
+			name_cap: "Spat shoes",
 			variable: "spat shoes",
 			combat: {
 				reference: "lightuptrainers",

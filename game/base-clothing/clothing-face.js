@@ -1646,6 +1646,7 @@ function initFace() {
 			index: 48,
 			slot: "face",
 			name: "swirly glasses",
+			name_cap: "Swirly glasses",
 			variable: "swirly glasses",
 			combat: {
 				reference: "glasses",
@@ -1667,6 +1668,7 @@ function initFace() {
 			index: 49,
 			slot: "face",
 			name: "teardrop glasses",
+			name_cap: "Teardrop glasses",
 			variable: "teardrop glasses",
 			combat: {
 				reference: "glasses",
