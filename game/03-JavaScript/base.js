@@ -647,11 +647,11 @@ function weightedRandom(...options) {
 
 	const random = (rngInstance ? rngInstance.random() : State.random()) * totalWeight;
 	for (const [value, cumulativeWeight] of processedOptions) {
-		if (cumulativeWeight >= random) {
+		if (random < cumulativeWeight) {
 			return value;
 		}
 	}
-	console.error("weightedRandom: Unreachable code reached. Returning " + options[0][0]);
+	console.error("weightedRandom: nothing to draw from. Weights must add up to more than 0. Returning " + options[0][0]);
 	return options[0][0];
 }
 window.weightedRandom = weightedRandom;
