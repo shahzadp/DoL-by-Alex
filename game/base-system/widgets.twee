@@ -1124,7 +1124,16 @@
 	<<if Number.isFinite($tiredness)>>
 		<div id="tirednesscaption" @title="'Fatigue: ' + $tiredness.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				Fatigue:
+				<<if $drunk gt 0>>
+					<span class = "'white'"><mouse class = "tooltip-small">
+						Fatigue:
+						<span class="red">
+							Increasing your fatigue: alcohol
+						</span>
+					</mouse></span>
+				<<else>>
+					Fatigue:
+				<</if>>
 				<<if $options.showCaptionText is true>>
 					<<if $tiredness gte C.tiredness.max>>
 						<span class="red">You are exhausted.</span>
@@ -1172,7 +1181,18 @@
 	<<if Number.isFinite($stress)>>
 		<div id="stresscaption" @title="'Stress: ' + $stress.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				Stress:
+				<<if $drunk gt 0>>
+					<span class = "'white'"><mouse class = "tooltip-small">
+						Stress:
+						<span class="green">
+							Decreasing your stress: alcohol
+							<br>
+							Reducing your stress increases: alcohol
+						</span>
+					</mouse></span>
+				<<else>>
+					Stress:
+				<</if>>
 				<<if $options.showCaptionText is true>>
 					<<if $stress gte $stressmax>>
 						<span class="red">You are overwhelmed!</span>
@@ -1458,21 +1478,21 @@
 
 <<widget "drunkcaption">>
 	<<if $drunk gt 0>>
-		<<set $_colour to getColourClassFromPercentage($drunk * (100 / 480), "drunk")>>
+		<<set $_colour to getColourClassFromPercentage(100 * drunkModifier(), "drunk")>>
 		<<set $_barColour to $_colour + "bar">>
-		<<set $_percent to Math.floor(($drunk/1000)*100)>>
+		<<set $_percent to Math.floor(100 * ($drunk / C.stats.alcohol.max))>>
 		<<set $_barWidth to `width:${$_percent}%`>>
 
 		<div id="drunkcaption" @title="'Drunk: ' + $drunk.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
 				<<if $options.showCaptionText is true>>
-					<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4) * 120>>
+					<<set $_drunk_level to Math.floor(4 * drunkModifier())>>
 					<<switch $_drunk_level>>
 						<<case 0>><span @class="$_colour">You are woozy.</span>
-						<<case 120>><span @class="$_colour">You are tipsy.</span>
-						<<case 240>><span @class="$_colour">You are drunk.</span>
-						<<case 360>><span @class="$_colour">You are smashed.</span>
-						<<case 480>><span @class="$_colour">You are wasted.</span>
+						<<case 1>><span @class="$_colour">You are tipsy.</span>
+						<<case 2>><span @class="$_colour">You are drunk.</span>
+						<<case 3>><span @class="$_colour">You are smashed.</span>
+						<<case 4>><span @class="$_colour">You are wasted.</span>
 					<</switch>>
 				<<else>>
 					Drunk:
@@ -1533,7 +1553,16 @@
 	<<if Number.isFinite($pain)>>
 		<div id="paincaption" @title="'Pain: ' + $pain.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				Pain:
+				<<if $drunk gt 0>>
+					<span class = "'white'"><mouse class = "tooltip-small">
+						Pain:
+						<span class="green">
+							Reducing your pain increases: alcohol
+						</span>
+					</mouse></span>
+				<<else>>
+					Pain:
+				<</if>>
 				<<if $options.showCaptionText is true>>
 					<<if $pain gte 100 and $willpowerpain is 0>><span class="red">You sob uncontrollably.</span>
 					<<elseif $pain gte 80>><span class="pink">You cry and whimper.</span>
