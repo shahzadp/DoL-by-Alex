@@ -1299,6 +1299,21 @@ function currentSkillValue(skill, disableModifiers = false) {
 		if (numberOfEarSlime() >= 2 && V.earSlime.growth > 50) {
 			result *= 0.9 - 0.1 * Math.clamp((V.earSlime.growth - 50) / 100, 0, 1);
 		}
+	} else if (skill === "promiscuity") {
+		// Increase Promiscuity by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+
+		// Increase Promiscuity by 0.0-22.5, if the PC is in heat or rut. Scales based on minimum arousal.
+		result += 0.75 * heatRutSexStatModifier(skill);
+	} else if (skill === "exhibitionism") {
+		// Increase Exhibitionism by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+	} else if (skill === "deviancy") {
+		// Increase Deviancy by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+
+		// Increase Deviancy by 0.0-30.0, if the PC is in heat or rut. Scales based on minimum arousal.
+		result += heatRutSexStatModifier(skill);
 	} else if (skill === "skulduggery") {
 		// Increase Skulduggery by 1.05x if the PC's hand item has the "Sticky Fingers" trait.
 		if (V.worn.hands.type.includes("sticky_fingers")) {
@@ -1533,7 +1548,7 @@ function hasSexStat(input, required, modifiers = true) {
 		});
 		return false;
 	}
-	let statValue = V[statName];
+	let statValue = currentSkillValue(statName, !modifiers);
 	// check if value of stat is valid.
 	if (!Number.isFinite(statValue)) {
 		Errors.report(`[hasSexStat]: sex stat '${statName}' unknown.`, {
@@ -1541,13 +1556,6 @@ function hasSexStat(input, required, modifiers = true) {
 			statName,
 		});
 		return false;
-	}
-	if (modifiers) {
-		// modify effective stat value based on inebriation.
-		statValue += drunkSexStatModifier(statValue);
-
-		// modify effective stat value based on heat/rut/minArousal.
-		statValue += heatRutSexStatModifier(statName);
 	}
 	statValue = Math.clamp(statValue, 0, 100);
 
