@@ -13425,6 +13425,7 @@ function initUpper() {
 			type: ["athletic"],
 			combat: {
 				reference: "tshirt",
+				hasSleevesAcc: false,
 			},
 			integrity: 100,
 			integrity_max: 100,
