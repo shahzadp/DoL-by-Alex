@@ -9480,6 +9480,7 @@ function initLower() {
 			back_integrity_img: 1,
 			back_img_colour: "primary",
 			cursed: 0,
+			notuck: 1,
 			location: 0,
 			iconFile: "nun's_sparring_habit.png",
 			detailIcon: "pattern",

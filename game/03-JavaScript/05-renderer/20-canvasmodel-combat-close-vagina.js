@@ -156,7 +156,7 @@ const combatCloseVagina = {
 				return `${options.src}vagina/${options.position}/${options.chastity || "chastity-belt"}.png`;
 			},
 			showfn(options) {
-				return !!options.showVagina && playerChastity();
+				return !!options.showVagina && !!playerChastity() && !playerHasStrapon();
 			},
 			animationfn(options) {
 				return options.animKeyVagina;
