@@ -563,29 +563,55 @@ function goocount() {
 }
 DefineMacro("goocount", goocount);
 
-/* set $allure to allure, set $attractiveness to attractiveness */
+/**
+ * Sets $allure to the calculated allure, and $attractiveness to the calculated attractiveness
+ */
 function calculateallure() {
-	/* attractiveness calcs */
+	// Attractiveness Calculations
 	let attractiveness;
-	/* baseline, reused later for allure danger mods */
+	// Increase attractiveness by 1/3 of $beauty and 1/4 of $hairlength
 	let baseattractiveness = V.beauty / 3 + V.hairlength / 4;
+
 	if (!V.worn.over_upper.type.includes("naked")) {
+		// Increase attractiveness by the reveal of the PC's upper overclothes, if the clothing slot isn't naked.
 		baseattractiveness += V.worn.over_upper.reveal;
 	} else {
+		// Otherwise, increase attractiveness by the reveal of the PC's upper clothes.
+		// If the PC is wearing overalls, halve the reveal from their upper clothing slot being naked.
 		const topmult = V.worn.lower.type.includes("overalls") ? 0.5 : 1;
 		baseattractiveness += V.worn.upper.reveal * topmult;
+
+		// If the PC's upper clothing slot has the "Naked" trait, add the reveal of their under upperclothes.
+		// If the PC is wearing overalls, halve the reveal from their upper underclothes.
 		if (V.worn.upper.type.includes("naked")) baseattractiveness += V.worn.under_upper.reveal * topmult;
 	}
 	if (!V.worn.over_lower.type.includes("naked")) {
+		// Increase attractiveness by the reveal of the PC's lower overclothes, if the clothing slot isn't naked.
 		baseattractiveness += V.worn.over_lower.reveal;
 	} else {
+		// Otherwise, increase Attractiveness by the reveal of the PC's lower clothes.
 		baseattractiveness += V.worn.lower.reveal;
+		// If the PC's lower clothing slot has the "Naked" trait, add the reveal of their lower underclothes.
 		if (V.worn.lower.type.includes("naked")) baseattractiveness += V.worn.under_lower.reveal;
 	}
 	attractiveness = baseattractiveness;
-	/* extra attractiveness from accessories */
+
+	// Add the reveal of each accessory to the PC's attractiveness.
 	for (const slot of ["head", "face", "neck", "legs", "feet", "handheld", "hands"]) attractiveness += V.worn[slot].reveal || 0;
-	/* tf bonuses */
+
+	/**
+	 * Bonus attractiveness from transformations
+	 *
+	 * Demon:			200-500
+	 * Angel:			200-500
+	 * Fallen Angel:	200-500
+	 * Wolf:			200-500
+	 * Cat:				200-500
+	 * Cow:				200-500
+	 * Harpy:			200-500
+	 * Fox:				200-800
+	 */
+
 	const partsHidden = (tf, parts) => parts.filter(part => V.transformationParts[tf][part] === "hidden").length;
 	if (V.demon >= 6) attractiveness += 500 - 100 * partsHidden("demon", ["horns", "tail", "wings"]);
 	if (V.angel >= 6) attractiveness += 500 - 150 * partsHidden("angel", ["halo", "wings"]);
@@ -594,39 +620,50 @@ function calculateallure() {
 	if (V.cat >= 6) attractiveness += 500 - 150 * partsHidden("cat", ["tail", "ears"]);
 	if (V.cow >= 6) attractiveness += 500 - 100 * partsHidden("cow", ["ears", "horns", "tail"]);
 	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird", ["tail", "eyes", "wings", "malar", "plumage"]);
-	if (V.fox >= 6) attractiveness += 750 - 175 * partsHidden("fox", ["ears", "tail", "cheeks"]);
-	/* makeup */
+	if (V.fox >= 6) attractiveness += 800 - 200 * partsHidden("fox", ["ears", "tail", "cheeks"]);
+
+	// Each source of makeup adds 100 attractiveness.
 	for (const makeup of ["lipstick", "mascara", "eyeshadow", "blusher"]) {
 		if (V.makeup[makeup]) attractiveness += 100;
 	}
 	V.attractiveness = Math.floor(attractiveness);
 
-	/* allure calcs */
+	// Allure calculations
 	let allure = attractiveness;
-	/* night and exposed mods to base attractiveness. minus one, because it's already included into attractiveness above */
+
+	// Allure changes from the time of day and the PC's exposure. Max increase of 2.1x.
 	const nightMod = Weather.dayState === "night" ? 1.5 : 1;
 	const exposedMod = 1 + V.exposed / 5;
-	allure += baseattractiveness * (nightMod * exposedMod - 1);
-	/* bodyliquid danger */
+	allure *= nightMod * exposedMod;
+
+	// Allure changes from lewd fluids
 	goocount();
 	allure += V.liquidcount * 50;
-	/* ear slime */
+
+	// Allure changes from ear slimes
 	if (V.earSlime.growth > 50) allure += (V.earSlime.growth - 50) * 10;
-	/* fame mods */
+
+	// Allure changes from fame
 	if (!["island"].includes(V.location)) {
 		for (const badfame of ["sex", "prostitution", "rape", "bestiality", "exhibitionism", "pregnancy", "impreg"]) allure += V.fame[badfame] / 10;
 		for (const goodfame of ["good", "scrap", "business", "social", "model", "pimp"]) allure -= V.fame[goodfame] / 2;
 	}
-	/* bloodmoon */
+
+	// Allure changes from the bloodmoon
 	if (Time.isBloodMoon()) allure += 2000;
-	/* Elk-scarred trait */
+
+	// Allure changes from the "Elk-scarred" trait
 	if (V.auriga_scar) allure += V.auriga_scar * 500;
 	allure = Math.clamp(allure, 0, 8000);
-	V.baseAllure = allure;
-	/* extra modifiers */
-	allure *= V.settings.allureModifier;
+
+	// Allure changes from Moor Luck
 	if (V.moorLuck > 0) allure *= 1 - V.moorLuck / 100;
 
+	// Base allure for feats
+	V.baseAllure = allure;
+
+	// Final allure after applying difficulty mods
+	allure *= V.settings.allureModifier;
 	V.allure = Math.floor(allure);
 }
 DefineMacro("calculateallure", calculateallure);
