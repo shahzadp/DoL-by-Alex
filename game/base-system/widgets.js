@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 /* eslint-disable jsdoc/require-description-complete-sentence */
+/* global drunkModifier */
 function setfemininitymultiplierfromgender(gender) {
 	if (gender === "f") {
 		T.femininity_multiplier = 1;
@@ -631,6 +632,10 @@ function calculateallure() {
 	// Allure calculations
 	let allure = attractiveness;
 
+	// Allure changes from alcohol
+	if (V.drunk > 0) {
+		allure += C.stats.alcohol.allureBonus * drunkModifier();
+	}
 	// Allure changes from the time of day and the PC's exposure. Max increase of 2.1x.
 	const nightMod = Weather.dayState === "night" ? 1.5 : 1;
 	const exposedMod = 1 + V.exposed / 5;
