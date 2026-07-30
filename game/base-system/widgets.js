@@ -79,7 +79,7 @@ function calculatePenisBulge() {
 	if (!V.player.penisExist || compressed) return 0;
 
 	if (V.worn.genitals.type.includes("cage")) {
-		return Math.clamp(V.player.penissize, 0, Infinity);
+		return Math.max(V.player.penissize, 0);
 	}
 	// Mentioned in combat about npcs `trying to force an erection`, when below the specific arousal checks
 	if ((V.arousal > 9000 && V.player.penissize === 1) || (V.arousal > 9500 && V.player.penissize === 0)) return 1;
@@ -90,7 +90,7 @@ function calculatePenisBulge() {
 	} else if (V.arousal >= 6000) {
 		erectionState = 2;
 	}
-	return Math.clamp((V.player.penissize - 1) * erectionState, 0, Infinity);
+	return Math.max((V.player.penissize - 1) * erectionState, 0);
 }
 window.calculatePenisBulge = calculatePenisBulge;
 
@@ -109,9 +109,9 @@ function nudeGenderAppearance() {
 	}
 	if (!(V.sexStats === undefined || !playerBellyVisible() || V.settings.nudeGenderPerception === 0)) {
 		if (V.settings.nudeGenderPerception === 1)
-			T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0, Infinity);
-		else if (playerBellySize() >= 18) T.apparent_femininity_nude += Math.clamp(10000, 0, Infinity);
-		else if (playerBellySize() >= 8) T.apparent_femininity_nude += Math.clamp((playerBellySize() - 7) * 250, 0, Infinity);
+			T.apparent_femininity_nude += Math.max((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0);
+		else if (playerBellySize() >= 18) T.apparent_femininity_nude += 10000;
+		else if (playerBellySize() >= 8) T.apparent_femininity_nude += Math.max((playerBellySize() - 7) * 250, 0);
 	}
 	Object.keys(V.skin).forEach(label => {
 		if (["m", "f"].includes(V.skin[label].gender)) {
@@ -219,7 +219,7 @@ function genderappearancecheck() {
 	if (T.under_lower_protected && V.settings.nudeGenderPerception > 0) {
 		addfemininityfromfactor(T.bulge_size * -60, "Bulge visible through underwear", "noow");
 	} else if ((T.over_lower_protected || T.lower_protected) && V.settings.nudeGenderPerception > 0) {
-		addfemininityfromfactor(-Math.clamp((T.bulge_size - 6) * 60, 0, Infinity), "Bulge visible through clothing", "noow");
+		addfemininityfromfactor(-Math.max((T.bulge_size - 6) * 60, 0), "Bulge visible through clothing", "noow");
 	} else if (V.worn.genitals.exposed && V.settings.nudeGenderPerception === 1) {
 		if (V.player.penisExist) {
 			addfemininityfromfactor((V.player.penissize + 0.5) * -150, "Penis exposed", "noow");
@@ -274,7 +274,7 @@ function genderappearancecheck() {
 		T.bottom_visibility *= 0.75;
 		/* Bulge covered by lower clothes */
 		if (V.settings.nudeGenderPerception > 0) {
-			addfemininityfromfactor(-Math.clamp((T.bulge_size - 6) * 60, 0, Infinity), "Bulge visible through clothing");
+			addfemininityfromfactor(-Math.max((T.bulge_size - 6) * 60, 0), "Bulge visible through clothing");
 		}
 	}
 	/* Upper clothing and breasts */
@@ -295,11 +295,11 @@ function genderappearancecheck() {
 			addfemininityfromfactor((V.player.perceived_breastsize - 0.5) * 100, V.player.perceived_breastsize > 0 ? "Exposed breasts" : "Exposed flat chest");
 		} else {
 			/* Breasts covered by only underwear */
-			addfemininityfromfactor(Math.clamp((V.player.perceived_breastsize - 2) * 100, 0, Infinity), "Breast size visible through underwear");
+			addfemininityfromfactor(Math.max((V.player.perceived_breastsize - 2) * 100, 0), "Breast size visible through underwear");
 		}
 	} else {
 		/* Breast fully covered */
-		addfemininityfromfactor(Math.clamp((V.player.perceived_breastsize - 4) * 100, 0, Infinity), "Breast size visible through clothing");
+		addfemininityfromfactor(Math.max((V.player.perceived_breastsize - 4) * 100, 0), "Breast size visible through clothing");
 	}
 	/* Bottom */
 	addfemininityfromfactor(Math.trunc(V.player.bottomsize * T.bottom_visibility * 50), "Bottom size (" + Math.trunc(T.bottom_visibility * 100) + "% visible)");
@@ -308,16 +308,13 @@ function genderappearancecheck() {
 		// do glorious nothing
 	} else if (V.settings.nudeGenderPerception === 1) {
 		addfemininityfromfactor(
-			Math.clamp((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0, Infinity),
+			Math.max((playerBellySize() - 7) * (V.settings.nudeGenderPerception === 1 ? 90 : 70), 0),
 			playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly"
 		);
 	} else if (playerBellySize() >= 18) {
-		addfemininityfromfactor(Math.clamp(10000, 0, Infinity), playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly");
+		addfemininityfromfactor(10000, playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly");
 	} else if (playerBellySize() >= 8) {
-		addfemininityfromfactor(
-			Math.clamp((playerBellySize() - 7) * 250, 0, Infinity),
-			playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly"
-		);
+		addfemininityfromfactor(Math.max((playerBellySize() - 7) * 250, 0), playerAwareTheyArePregnant() ? "Pregnant Belly" : "Pregnant Looking Belly");
 	}
 	/* Body writing */
 	bodywritingExposureCheck(true);

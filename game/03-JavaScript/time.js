@@ -2508,7 +2508,7 @@ function getArousal(passMinutes) {
 			} else if (V.earSlime.vibration > 0) {
 				addedArousal += Math.clamp(minuteMultiplier * 4, 0, V.earSlime.vibration * 40) * V.genitalsensitivity;
 				V.earSlime.vibration -= Math.clamp(passMinutes, 0, V.earSlime.vibration);
-				V.earSlime.lastVibration = Math.clamp(passMinutes - V.earSlime.vibration, 0, Infinity);
+				V.earSlime.lastVibration = Math.max(passMinutes - V.earSlime.vibration, 0);
 			}
 		}
 	} else {

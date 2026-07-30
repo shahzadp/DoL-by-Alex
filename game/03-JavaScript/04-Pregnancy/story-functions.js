@@ -425,7 +425,7 @@ function playerPregnancyRisk() {
 			if (daysTillEnd > 2) {
 				if (V.skin.pubic.type === "magic" && V.skin.pubic.special === "pregnancy") multi += 1;
 				if (pills.pills["fertility booster"].doseTaken >= 2) multi += 1;
-				daysTillEnd = Math.clamp(Math.ceil(daysTillEnd / multi), 2, Infinity);
+				daysTillEnd = Math.max(Math.ceil(daysTillEnd / multi), 2);
 			}
 			daysTillEnd += 4;
 
@@ -434,7 +434,7 @@ function playerPregnancyRisk() {
 				daysTillEnd = menstruation.currentDaysMax - menstruation.currentDay + menstruation.stages[3];
 				if (V.skin.pubic.type === "magic" && V.skin.pubic.special === "pregnancy") multi += 1;
 				if (pills.pills["fertility booster"].doseTaken >= 2) multi += 1;
-				daysTillEnd = Math.clamp(Math.ceil(daysTillEnd / multi), 2, Infinity);
+				daysTillEnd = Math.max(Math.ceil(daysTillEnd / multi), 2);
 				daysTillEnd += 4;
 			}
 
