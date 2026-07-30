@@ -2796,39 +2796,41 @@
 <</widget>>
 
 <<widget "farm_attack_auto">>
-	<<set _farm_fight to 0>>
-	<<if $farm.kennel gte 1>>
-		<<set _farm_fight += 1>>
-	<</if>>
-	<<if $farm.wall gte 4>>
-		<<set _farm_fight += 4>>
-	<<elseif $farm.wall gte 3>>
-		<<set _farm_fight += 3>>
-	<<elseif $farm.wall gte 2>>
-		<<set _farm_fight += 2>>
-	<<elseif $farm.wall gte 1>>
-		<<set _farm_fight += 1>>
-	<</if>>
-	<<if $farm.tower gte 2 and $farm.tower_guard>>
-		<<set _farm_fight += Math.trunc($farm.tower_guard_skill / 250)>>
-	<<elseif $farm.tower gte 1 and $farm.tower_guard>>
-		<<set _farm_fight += Math.trunc($farm.tower_guard_skill / 500)>>
-	<</if>>
 	<<switch $farm_stage>>
 		<<case 12>>
-			<<set _farm_damage to (9 - _farm_fight)>>
+			<<set _farm_damage to 9>>
 		<<case 11>>
-			<<set _farm_damage to (8 - _farm_fight)>>
+			<<set _farm_damage to 8>>
 		<<case 10>>
-			<<set _farm_damage to (7 - _farm_fight)>>
+			<<set _farm_damage to 7>>
 		<<case 9>>
-			<<set _farm_damage to (6 - _farm_fight)>>
+			<<set _farm_damage to 6>>
 		<<case 8>>
-			<<set _farm_damage to (5 - _farm_fight)>>
+			<<set _farm_damage to 5>>
 		<<default>>
-			<<set _farm_damage to (4 - _farm_fight)>>
+			<<set _farm_damage to 4>>
 	<</switch>>
-	<<if _farm_damage is 0 and $farm_stage gte 12>>
+	<<if $bailey_encroach>>
+		<<set _farm_damage += 2>>
+	<</if>>
+	<<if $farm.kennel gte 1>>
+		<<set _farm_damage -= 1>>
+	<</if>>
+	<<if $farm.wall gte 4>>
+		<<set _farm_damage -= 4>>
+	<<elseif $farm.wall gte 3>>
+		<<set _farm_damage -= 3>>
+	<<elseif $farm.wall gte 2>>
+		<<set _farm_damage -= 2>>
+	<<elseif $farm.wall gte 1>>
+		<<set _farm_damage -= 1>>
+	<</if>>
+	<<if $farm.tower gte 2 and $farm.tower_guard>>
+		<<set _farm_damage -= Math.trunc($farm.tower_guard_skill / 250)>>
+	<<elseif $farm.tower gte 1 and $farm.tower_guard>>
+		<<set _farm_damage -= Math.trunc($farm.tower_guard_skill / 500)>>
+	<</if>>
+	<<if _farm_damage lte 0 and $farm_stage gte 12>>
 		<<run $timeMessages.pushUnique("heroicVictory")>>
 	<</if>>
 	<<damage_farm "loop" _farm_damage>>
