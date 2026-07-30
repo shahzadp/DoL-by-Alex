@@ -18,6 +18,8 @@
 			<<else>>
 				<<set $NPC_names_m.delete($NPCList[$_slot].name)>>
 			<</if>>
+			<!-- Regenerate the name lists if empty. -->
+			<<regenerateNPCNameLists>>
 		<<else>>
 			<<run Errors.report(`saveNPC called with invalid or empty NPCList slot (${$_slot})`,
 			{
@@ -291,4 +293,20 @@
 	<<for $_per_keys range Object.keys($per_npc)>>
 		<<set $per_npc[$_per_keys][_args[0]][_args[1]] to _args[2]>>
 	<</for>>
+<</widget>>
+
+<<widget "regenerateNPCNameLists">>
+	<<if !$NPC_names_m or $NPC_names_m.length is 0 or !$NPC_names_f or $NPC_names_f.length is 0>>
+		<<init_names>>
+		<!-- Remove names that are already assigned to persistent NPCs -->
+		<<set $_per_k to Object.keys($per_npc)>>
+		<<for $_per_c range $_per_k>>
+			<<set $NPC_names_m.delete($per_npc[$_per_c].name)>>
+			<<set $NPC_names_f.delete($per_npc[$_per_c].name)>>
+		<</for>>
+		<!-- Ensure the deleted names do not leave the lists empty again -->
+		<<if $NPC_names_m.length is 0 or or $NPC_names_f.length is 0>>
+			<<init_names>>
+		<</if>>
+	<</if>>
 <</widget>>
