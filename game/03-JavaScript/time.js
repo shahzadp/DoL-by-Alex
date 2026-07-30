@@ -769,28 +769,22 @@ function dayPassed() {
 	if (V.valentines && Time.monthDay === 13) V.timeMessages.pushUnique("valentinesTomorrow");
 	if (V.valentines && Time.monthDay === 14) V.timeMessages.pushUnique("valentinesToday");
 
-	if (V.avery_mansion && V.avery_fate !== "fallen" && V.avery_fate !== "kicked") {
-		// Avery takes on the PC's debt, but stops if unsatisfied
-		if (Time.weekDay !== 1) {
-			V.avery_mansion.days_absent++;
-		}
-		if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) {
-			V.renttime--;
-			// Not seen bailey for more than 2 weeks, tracks missed rent
-			if (V.renttime < 0 && V.renttime % 7 === 0) {
-				V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
-				V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+	// Avery takes on the PC's debt, but stops if unsatisfied
+	const rentPaused = inRentPausedBadEnd();
+	const hasMansion = V.avery_mansion && V.avery_fate !== "fallen" && V.avery_fate !== "kicked";
+	if (!rentPaused) {
+		if (hasMansion) {
+			if (Time.weekDay !== 1) {
+				V.avery_mansion.days_absent++;
 			}
-		}
-		V.avery_mansion.study_unlocked = 0;
-	} else {
-		V.renttime--;
-		// Not seen bailey for more than 2 weeks, tracks missed rent
-		if (V.renttime < 0 && V.renttime % 7 === 0) {
-			V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
-			V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+			if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) {
+				passRentTick();
+			}
+		} else {
+			passRentTick();
 		}
 	}
+	if (hasMansion) V.avery_mansion.study_unlocked = 0;
 
 	if (V.flashbacktown > 0) V.flashbacktown--;
 	if (V.flashbackhome > 0) V.flashbackhome--;
@@ -1420,7 +1414,7 @@ function dailyNPCEffects() {
 		if (V.avery_mansion) {
 			V.avery_mansion.days++;
 			V.avery_mansion.date_ready = false;
-			if (Time.weekDay === 2 && !V.avery_injury) {
+			if (Time.weekDay === 2 && !V.avery_injury && !inRentPausedBadEnd()) {
 				if (["waiting", "skipped"].includes(V.avery_mansion.party_state)) {
 					V.avery_mansion.party_state = "missed";
 					V.avery_mansion.party_missed_guest = V.avery_mansion.guest;
@@ -1448,7 +1442,7 @@ function dailyNPCEffects() {
 				}
 			}
 
-			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury) {
+			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury && !inRentPausedBadEnd()) {
 				if (V.avery_valentines?.done && Time.monthDay === 15 && Time.monthName === "February") {
 					// do not spoil the valentines
 				} else {
@@ -2673,3 +2667,18 @@ function supermarketWeekly() {
 	});
 }
 DefineMacro("supermarketWeekly", supermarketWeekly);
+
+function inRentPausedBadEnd() {
+	const badEnd = V.badEndStats?.last();
+	if (!Number.isFinite(badEnd?.trackedStart) || badEnd.trackedEnd !== undefined) return false;
+	return window.Constants.badEndsThatPauseRent.includes(badEnd.source);
+}
+
+/* Not seen bailey for more than 2 weeks, tracks missed rent */
+function passRentTick() {
+	V.renttime--;
+	if (V.renttime < 0 && V.renttime % 7 === 0) {
+		V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
+		V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+	}
+}

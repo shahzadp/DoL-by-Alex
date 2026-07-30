@@ -22,6 +22,9 @@ const constants = {
 		hoursToLoseTime: 8,
 	},
 
+	// Soft ends that pause Bailey's rent
+	badEndsThatPauseRent: ["Prison", "Asylum", "Underground Farm", "Underground Dungeon"],
+
 	/**
 	 * Minimum and maximum values for the player's stats
 	 *
