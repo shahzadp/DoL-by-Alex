@@ -160,12 +160,12 @@ function playerPregnancyAttempt(baseMulti = 1, genital = "vagina") {
 	const [trackedNPCs, spermArray] = spermObjectToArray(V.sexStats[genital].sperm, true);
 
 	const pills = V.sexStats.pills;
-	const contraceptive = Math.clamp(pills.pills.contraceptive.doseTaken || 0, 0, Infinity);
+	const contraceptive = Math.max(pills.pills.contraceptive.doseTaken || 0, 0);
 
 	if (spermArray.length === 0 || (contraceptive && (random(0, 100) >= 10 || contraceptive > 1))) return false;
 	let fertilityBoost = 1;
 
-	fertilityBoost -= Math.clamp(Math.clamp(pills.pills["fertility booster"].doseTaken || 0, 0, Infinity) * 0.2, 0, 0.7);
+	fertilityBoost -= Math.clamp((pills.pills["fertility booster"].doseTaken || 0) * 0.2, 0, 0.7);
 
 	if (V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy") {
 		fertilityBoost -= 0.4;
@@ -206,7 +206,7 @@ function playerPregnancyHawkAttempt(genital = "vagina") {
 	const [trackedNPCs, spermArray] = spermObjectToArray(V.sexStats[genital].sperm, true);
 
 	const pills = V.sexStats.pills;
-	const contraceptive = Math.clamp(pills.pills.contraceptive.doseTaken || 0, 0, Infinity);
+	const contraceptive = Math.max(pills.pills.contraceptive.doseTaken || 0, 0);
 
 	if (spermArray.length === 0 || (contraceptive && (random(0, 100) >= 10 || contraceptive > 1))) return false;
 
@@ -948,9 +948,9 @@ function recordSperm({
 		if (spermOwnerName === "pc") {
 			const pills = V.sexStats.pills;
 			if (pills.pills["fertility booster"].doseTaken) {
-				rngModifier += Math.clamp(pills.pills["fertility booster"].doseTaken || 0, 0, Infinity) * 25;
+				rngModifier += Math.max(pills.pills["fertility booster"].doseTaken || 0, 0) * 25;
 			} else if (pills.pills.contraceptive.doseTaken) {
-				rngModifier -= Math.clamp(pills.pills.contraceptive.doseTaken || 0, 0, Infinity) * 50;
+				rngModifier -= Math.max(pills.pills.contraceptive.doseTaken || 0, 0) * 50;
 			}
 		} else if (C.npc[spermOwnerName] && C.npc[spermOwnerName].pregnancy) {
 			switch (C.npc[spermOwnerName].pregnancy.pills) {
