@@ -2149,7 +2149,7 @@ Renderer.CanvasModels.main = {
 			showfn(options) {
 				return options.show_face
 					&& !!options.drip_mouth
-					&& !options.worn.face.setup.type.includesAny("mask", "face_covering");
+					&& !options.worn.face.setup.type.includesAny("face_covering");
 			},
 			dxfn(options) {
 				return options.facestyle === "small-eyes" ? 2 : 0;
