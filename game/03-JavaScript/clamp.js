@@ -3,6 +3,7 @@ function clampAlexRelations() {
 	alex.love = Math.clamp(alex.love, -50, 100);
 	alex.dom = Math.clamp(alex.dom, -50, 100);
 	alex.lust = Math.clamp(alex.lust, 0, 100);
+	alex.trust = Math.clamp(alex.trust, -100, 300);
 }
 
 Macro.add("alexclamp", {
