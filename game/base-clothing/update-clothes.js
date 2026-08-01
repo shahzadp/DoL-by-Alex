@@ -428,7 +428,7 @@ function updateClothesItem(slot, item, debug) {
 			item.type = ["costume", "formal"];
 			break;
 		case "skeleton mask":
-			item.type = ["costume", "mask"];
+			item.type = ["costume", "mask", "face_covering"];
 			break;
 		case "riding helmet":
 		case "racing helmet":
