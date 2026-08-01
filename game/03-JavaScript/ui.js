@@ -592,10 +592,22 @@ window.getLargestSexStatModifierCssClasses = getLargestSexStatModifierCssClasses
 /**
  * Used to display the drunk text, with animations if enabled, otherwise just the glow effect.
  *
+ * Use "level" to set the strength of the effect (1-3). Defaults to 1.
+ *
+ * @param {number} level
  * @returns {string}
  */
-function basicDrunkCss() {
-	return V.options.textAnimsAll && V.options.textAnimsDrunk ? "drunk-text drunk-1" : "drunk-text";
+function basicDrunkCss(level = 1) {
+	switch (level) {
+		case 3:
+			return V.options.textAnimsAll && V.options.textAnimsDrunk ? "drunk-text drunk-3" : "drunk-text";
+		case 2:
+			return V.options.textAnimsAll && V.options.textAnimsDrunk ? "drunk-text drunk-2" : "drunk-text";
+		case 1:
+			return V.options.textAnimsAll && V.options.textAnimsDrunk ? "drunk-text drunk-1" : "drunk-text";
+		default:
+			return "";
+	}
 }
 window.basicDrunkCss = basicDrunkCss;
 
