@@ -133,15 +133,14 @@ Macro.add("addevent", {
 Macro.add("runeventpool", {
 	skipArgs: true,
 	handler() {
-		let pick = T.eventpool.find(e => e.name === V.eventPoolOverride);
-		if (pick) {
+		let pick;
+		if (V.eventPoolOverride !== undefined) {
+			pick = T.eventpool.find(e => e.name === V.eventPoolOverride);
 			delete V.eventPoolOverride;
-		} else if (T.eventpool.includes(V.eventPoolOverride)) {
-			pick = V.eventPoolOverride;
-			delete V.eventPoolOverride;
-		} else {
-			pick = rollWeightedRandomFromArray(T.eventpool);
 		}
+
+		if (!pick) pick = rollWeightedRandomFromArray(T.eventpool);
+
 		if (!pick) throw new Error("Event pool is empty");
 		// Jimmy: For tracking where in the code you may be.
 		// E.G: ['eventAmbient', >>'autumn_anystreet_2'<<, 'generate1']
