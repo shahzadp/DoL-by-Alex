@@ -11881,8 +11881,6 @@ function initLower() {
 			accessory_integrity_img: 1,
 			set: "striped sweater",
 			outfitSecondary: ["upper", "striped sweater"],
-			altposition: "none",
-			altdisabled: [],
 			cursed: 0,
 			location: 0,
 			notuck: 1,
