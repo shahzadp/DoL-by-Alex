@@ -3044,6 +3044,11 @@ function teensPresentCheck(location) {
 }
 window.teensPresentCheck = teensPresentCheck;
 
+function beachCampfirePartyPresent() {
+	return Time.dayState === "night" && !Weather.isOvercast;
+}
+window.beachCampfirePartyPresent = beachCampfirePartyPresent;
+
 function insecurityExists(type) {
 	const [possible, returnedType] = statChange.insecurityPossible(type);
 	return possible && returnedType === type && V["insecurity_" + type] > 0;
