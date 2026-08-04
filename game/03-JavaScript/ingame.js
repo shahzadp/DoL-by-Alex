@@ -1,4 +1,4 @@
-/* global ClothesItem, ClothedSlots, paramError */
+/* global ClothesItem, ClothedSlots, paramError, drunkModifier */
 
 function mapMove(moveTo) {
 	const currentPassage = V.passage;
@@ -1219,7 +1219,7 @@ function clothesIndex(slot, itemToIndex) {
 }
 window.clothesIndex = clothesIndex;
 
-function currentSkillValue(skill, disableModifiers = 0) {
+function currentSkillValue(skill, disableModifiers = false) {
 	let result = V[skill];
 	if (!result && result !== 0) {
 		/* console.log(`currentSkillValue - skill '${skill}' unknown`); */
@@ -1229,178 +1229,232 @@ function currentSkillValue(skill, disableModifiers = 0) {
 		});
 		return 0;
 	}
-	// Prevents infinite loops, any call to `currentSkillValue` in this function should be written like 'currentSkillValue("skillName", disableModifiers + 1)'
-	if (disableModifiers >= 2) return result;
+
+	// To prevent infinite loops, the "Feet" skill should not have its value modified by ANY other skill. Or, if it does, it must be done using "currentSkillValue('skill', true)"
+	if (disableModifiers) return result;
+
+	// Adjust the results based on the PC's condition.
 	if (
-		// prettier-ignore
 		[
-			"skulduggery", "physique", "danceskill", "swimmingskill", "athletics", "willpower", "tending", "science", "maths", "english", "history", "housekeeping"
+			"physique",
+			"willpower",
+			"skulduggery",
+			"danceskill",
+			"swimmingskill",
+			"athletics",
+			"tending",
+			"housekeeping",
+			"science",
+			"maths",
+			"english",
+			"history",
 		].includes(skill) &&
 		V.moorLuck > 0
 	) {
-		result = Math.floor(result * (1 + V.moorLuck / 100));
+		// Increase the PC's result by 1.0-1.1x for skills that can be affected by Moor Luck.
+		result *= 1 + 0.01 * V.moorLuck;
 	}
+	// Decrease the PC's result for certain skills while they are pregnant. Scales based on the PC's belly size and the number of times they've given birth. No decrease if the PC has the "Gaia" trait.
 	if (["physique", "danceskill", "swimmingskill", "athletics"].includes(skill) && playerBellySize() >= 10 && playerNormalPregnancyTotal() < 20) {
-		switch (playerNormalPregnancyTotal()) {
-			case 0:
-				T.pregnancyModifier = 36;
-				break;
-			case 1:
-				T.pregnancyModifier = 48;
-				break;
-			case 2:
-				T.pregnancyModifier = 60;
-				break;
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-				T.pregnancyModifier = 96;
-				break;
-			default:
-				T.pregnancyModifier = 120;
-				break;
+		const bellyMod = (playerBellySize() - 10) / 14;
+		let birthMod;
+		if (playerNormalPregnancyTotal() >= 8) {
+			// Decrease the PC's result by 1.0-0.85x if they have the "Broodmother" trait.
+			birthMod = 0.15;
+		} else if (playerNormalPregnancyTotal() >= 3) {
+			// Otherwise, decrease the PC's result by 1.0-0.7x if they have the "Mother" trait.
+			birthMod = 0.3;
+		} else if (playerNormalPregnancyTotal() >= 2) {
+			// Otherwise, decrease the PC's result by 1.0-0.55x if they have the "Second Time Mother" trait.
+			birthMod = 0.45;
+		} else if (playerNormalPregnancyTotal() >= 1) {
+			// Otherwise, decrease the PC's result by 1.0-0.4x if they have the "First Time Mother" trait.
+			birthMod = 0.6;
+		} else {
+			// Otherwise, decrease the PC's result by 1.0-0.25x.
+			birthMod = 0.75;
 		}
-		result = Math.floor(result * (1 - playerBellySize() / T.pregnancyModifier));
+
+		result *= 1 - bellyMod * birthMod;
 	}
-	switch (skill) {
-		case "skulduggery":
-			if (V.worn.hands.type.includes("sticky_fingers")) result = Math.floor(result * 1.05);
-			if (V.transformationParts.traits.sharpEyes !== "disabled") result = Math.floor(result * 1.05);
-			break;
-		case "physique":
-			if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
-				if (V.worn.feet.type.includes("heels")) {
-					result = Math.floor(result * (1 - V.worn.feet.reveal / 5000));
-				}
-				if (V.worn.feet.type.includes("rugged")) {
-					result = Math.floor(result * (1 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
-				}
+
+	if (skill === "physique") {
+		// Rugged Terrain + Footwear Check
+		if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
+			// Decrease Physique by 1.0-0.8x if the PC's footwear has the "Heels" trait. Scales based on heel reveal.
+			if (V.worn.feet.type.includes("heels")) {
+				result *= 1 - 0.2 * (V.worn.feet.reveal / 1000);
 			}
-			if (V.auriga_artefact === "pc") {
-				result = Math.floor(result * 1.1);
+			// Increase Physique by 1.0-1.1x if the PC's footwear has the "Rugged" trait. Scales based on feet skill.
+			if (V.worn.feet.type.includes("rugged")) {
+				result *= 1 + 0.1 * (currentSkillValue("feetskill") / 1000);
 			}
-			break;
-		case "danceskill":
-			if (
-				V.worn.under_upper.type.includesAny("dance", "naked") &&
-				V.worn.under_lower.type.includesAny("dance", "naked") &&
-				V.worn.upper.type.includesAny("dance", "naked") &&
-				V.worn.lower.type.includesAny("dance", "naked")
-			) {
-				result = Math.floor(result * 1.05);
+		}
+		// Increase Physique by up to 1.1x, if the PC possesses the Auriga Artefact.
+		if (V.auriga_artefact === "pc") {
+			result *= 1.1;
+		}
+	} else if (skill === "willpower") {
+		// Decrease Willpower by 0.9-0.8x, if the PC has 2 or more Ear Slimes. Scales based on Ear Slime growth.
+		if (numberOfEarSlime() >= 2 && V.earSlime.growth > 50) {
+			result *= 0.9 - 0.1 * Math.clamp((V.earSlime.growth - 50) / 100, 0, 1);
+		}
+	} else if (skill === "promiscuity") {
+		// Increase Promiscuity by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+
+		// Increase Promiscuity by 0.0-22.5, if the PC is in heat or rut. Scales based on minimum arousal.
+		result += 0.75 * heatRutSexStatModifier(skill);
+	} else if (skill === "exhibitionism") {
+		// Increase Exhibitionism by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+	} else if (skill === "deviancy") {
+		// Increase Deviancy by 1.0-30.0, if the PC is drunk. Scales based on the existing stat value and the PC's intoxication.
+		result += drunkSexStatModifier(result);
+
+		// Increase Deviancy by 0.0-30.0, if the PC is in heat or rut. Scales based on minimum arousal.
+		result += heatRutSexStatModifier(skill);
+	} else if (skill === "skulduggery") {
+		// Increase Skulduggery by 1.05x if the PC's hand item has the "Sticky Fingers" trait.
+		if (V.worn.hands.type.includes("sticky_fingers")) {
+			result *= 1.05;
+		}
+		// Increase Skulduggery by 1.05x if the PC has the "Sharp Eyes" trait.
+		if (V.transformationParts.traits.sharpEyes !== "disabled") {
+			result *= 1.05;
+		}
+	} else if (skill === "danceskill") {
+		// Increase Dance by 1.05x if the PC's upper and lower clothing slots are naked.
+		if (
+			V.worn.under_upper.type.includesAny("dance", "naked") &&
+			V.worn.under_lower.type.includesAny("dance", "naked") &&
+			V.worn.upper.type.includesAny("dance", "naked") &&
+			V.worn.lower.type.includesAny("dance", "naked")
+		) {
+			result *= 1.05;
+		}
+		// Decrease Dance by 0.5x if the PC's footwear has the "Shackle" trait.
+		if (V.worn.feet.type.includes("shackle")) {
+			result *= 0.5;
+		}
+		// Decrease Dance by 0.0-0.75x if the PC's upper or lower clothing has the "Heavy" trait. Scales based on physique.
+		if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
+			result *= 0.75 * (currentSkillValue("physique") / V.physiquesize);
+		}
+	} else if (skill === "swimmingskill") {
+		// Increase Swimming by 1.05x if the PC's upper and lower clothing slots are naked.
+		if (
+			V.worn.under_upper.type.includesAny("swim", "naked") &&
+			V.worn.under_lower.type.includesAny("swim", "naked") &&
+			V.worn.upper.type.includesAny("swim", "naked") &&
+			V.worn.lower.type.includesAny("swim", "naked")
+		) {
+			result *= 1.05;
+		}
+		const feetMod = currentSkillValue("feetskill") / 1000;
+
+		if (V.worn.feet.type.includes("swim")) {
+			// Increase Swimming by 1.0-1.1x if their footwear has the "Swim" trait. Scales based on feet skill.
+			result *= 1 + 0.1 * feetMod;
+		} else if (V.worn.feet.type.includes("heels")) {
+			// Decrease Swimming by 0.8-0.9x if their footwear has the "Heels" trait. Scales based on feet skill.
+			result *= 0.8 + 0.1 * feetMod;
+		} else if (!V.worn.feet.type.includes("naked")) {
+			// Decrease Swimming by 0.9-1.0x by default. Scales based on feet skill.
+			result *= 0.9 + 0.1 * feetMod;
+		}
+		// Decrease Swimming by 0.5x if the PC's footwear has the "Shackle" trait.
+		if (V.worn.feet.type.includes("shackle")) {
+			result *= 0.5;
+		}
+		// Decrease Swimming by 0.0-0.2x if the PC's upper or lower clothing has the "Heavy" trait. Scales based on physique.
+		if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
+			result *= 0.2 * (currentSkillValue("physique") / V.physiquesize);
+		}
+	} else if (skill === "athletics") {
+		// Rugged Terrain + Footwear Check
+		if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
+			// Decrease Athletics by 1.0-0.8x if the PC's footwear has the "Heels" trait. Scales based on heel reveal.
+			if (V.worn.feet.type.includes("heels")) {
+				result *= 1 - 0.2 * (V.worn.feet.reveal / 1000);
 			}
-			if (V.worn.feet.type.includes("shackle")) {
-				result = Math.floor(result * 0.5);
+			// Increase Athletics by 1.0-1.1x if the PC's footwear has the "Rugged" trait. Scales based on feet skill.
+			if (V.worn.feet.type.includes("rugged")) {
+				result *= 1 + 0.1 * (currentSkillValue("feetskill") / 1000);
 			}
-			if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
-				result *= V.physique / V.physiquesize / 3;
-			}
-			break;
-		case "swimmingskill":
-			if (
-				V.worn.under_upper.type.includesAny("swim", "naked") &&
-				V.worn.under_lower.type.includesAny("swim", "naked") &&
-				V.worn.upper.type.includesAny("swim", "naked") &&
-				V.worn.lower.type.includesAny("swim", "naked")
-			) {
-				result = Math.floor(result * 1.05);
-			}
-			if (V.worn.feet.type.includes("swim")) {
-				result = Math.floor(result * (1 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
-			} else if (V.worn.feet.type.includes("heels")) {
-				result = Math.floor(result * (0.8 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
-			} else if (!V.worn.feet.type.includes("naked")) {
-				result = Math.floor(result * (0.9 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
-			}
-			if (V.worn.feet.type.includes("shackle")) {
-				result = Math.floor(result * 0.5);
-			}
-			if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
-				result *= V.physique / V.physiquesize / 3;
-			}
-			break;
-		case "athletics":
-			if (["forest", "moor", "farm", "alex_farm"].includes(V.location)) {
-				if (V.worn.feet.type.includes("heels")) {
-					result = Math.floor(result * (1 - V.worn.feet.reveal / 5000));
-				}
-				if (V.worn.feet.type.includes("rugged")) {
-					result = Math.floor(result * (1 + currentSkillValue("feetskill", disableModifiers + 1) / 10000));
-				}
-			}
-			if (V.transformationParts.traits.chase !== "disabled") result = Math.floor(result * 1.1);
-			if (V.worn.feet.type.includes("shackle")) result /= 10;
-			if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
-				result *= V.physique / V.physiquesize / 1.5;
-			}
-			break;
-		case "willpower":
-			if (numberOfEarSlime() >= 2 && V.earSlime.growth > 50) {
-				result = Math.floor(result * (0.9 - Math.clamp((V.earSlime.growth - 50) / 1000, 0, 0.1)));
-			} else if (numberOfEarSlime() >= 2) {
-				result = Math.floor(result * 0.9);
-			}
-			break;
-		case "tending":
-			if (V.backgroundTraits.includes("plantlover")) {
-				result = Math.floor(result * (1 + V.trauma / (V.traumamax * 2)));
-			}
-			break;
-		case "housekeeping":
-			if (V.worn.upper.type.includes("maid")) {
-				result = Math.floor(result * 1.05);
-			}
-			if (V.worn.lower.type.includes("maid")) {
-				result = Math.floor(result * 1.05);
-			}
-			if (V.worn.head.type.includes("maid")) {
-				result = Math.floor(result * 1.05);
-			}
-			if (V.worn.handheld.type.includes("maid")) {
-				result = Math.floor(result * 1.05);
-			}
-			break;
-		case "vaginalskill":
-			if (V.earSlime.growth > 100) {
-				if (V.earSlime.focus === "pregnancy") {
-					result = Math.floor(result * (1 + (V.earSlime.growth - 100) / 500));
-				} else if (V.earSlime.focus === "impregnation") {
-					result = Math.floor(result * (1 - (V.earSlime.growth - 100) / 400));
-				}
-			}
-			if (playerHeatMinArousal()) {
-				result = Math.floor(result * (1 + Math.clamp(playerHeatMinArousal(), 0, 4000) / 20000));
-			}
-			break;
-		case "penileskill":
-			if (V.earSlime.growth > 100) {
-				if (V.earSlime.focus === "impregnation") {
-					result = Math.floor(result * (1 + (V.earSlime.growth - 100) / 500));
-				} else if (V.earSlime.focus === "pregnancy") {
-					result = Math.floor(result * (1 - (V.earSlime.growth - 100) / 400));
-				}
-			}
-			if (playerRutMinArousal()) {
-				result = Math.floor(result * (1 + Math.clamp(playerRutMinArousal(), 0, 4000) / 20000));
-			}
-			break;
-		case "analskill":
-			if (V.earSlime.growth > 100 && !V.player.vaginaExist && V.earSlime.focus === "pregnancy") {
-				result = Math.floor(result * (1 + (V.earSlime.growth - 100) / 500));
-			}
-			if (playerHeatMinArousal() && canBeMPregnant()) {
-				result = Math.floor(result * (1 + Math.clamp(playerHeatMinArousal(), 0, 4000) / 20000));
-			}
-			break;
-		case "seductionskill":
-			if (V.earSlime.growth > 50 && !V.earSlime.defyCooldown) {
-				result = Math.floor(result * (1 + (V.earSlime.growth - 50) / 600));
-			}
-			break;
+		}
+
+		// Increase Athletics by 1.1x if the PC has the "Thrill of the Chase" trait.
+		if (V.transformationParts.traits.chase !== "disabled") result *= 1.1;
+		// Decrease Athletics by 0.1x if the PC's footwear has the "Shackle" trait.
+		if (V.worn.feet.type.includes("shackle")) result *= 0.1;
+		// Decrease Athletics by 0.0-0.75x if the PC's upper or lower clothing has the "Heavy" trait. Scales based on physique.
+		if (V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) {
+			result *= 0.75 * (currentSkillValue("physique") / V.physiquesize);
+		}
+	} else if (skill === "tending") {
+		// Increase Tending by 1.0-1.5x, if the PC has the "Dendrophile" / "Plant Lover" trait. Scales based on trauma.
+		if (V.backgroundTraits.includes("plantlover")) {
+			result *= 1 + 0.5 * (V.trauma / V.traumamax);
+		}
+	} else if (skill === "housekeeping") {
+		// Increase Housekeeping by 1.05x if the PC's upper clothing has the "Maid" trait.
+		if (V.worn.upper.type.includes("maid")) {
+			result *= 1.05;
+		}
+		// Increase Housekeeping by 1.05x if the PC's lower clothing has the "Maid" trait.
+		if (V.worn.lower.type.includes("maid")) {
+			result *= result * 1.05;
+		}
+		// Increase Housekeeping by 1.05x if the PC's headwear has the "Maid" trait.
+		if (V.worn.head.type.includes("maid")) {
+			result *= result * 1.05;
+		}
+		// Increase Housekeeping by 1.05x if the PC's handheld has the "Maid" trait.
+		if (V.worn.handheld.type.includes("maid")) {
+			result *= 1.05;
+		}
+	} else if (skill === "vaginalskill") {
+		if (V.earSlime.focus === "pregnancy") {
+			// Increase Vaginal by 1.0-1.2x if the PC's Ear Slime has the "Pregnancy" focus. Scales based on Ear Slime Growth.
+			result *= 1 + 0.2 * Math.max(0, (V.earSlime.growth - 100) / 100);
+		} else if (V.earSlime.focus === "impregnation") {
+			// Decrease Vaginal by 1.0-0.8x if the PC's Ear Slime has the "Impregnation" focus. Scales based on Ear Slime Growth.
+			result *= 1 - 0.2 * Math.max(0, (V.earSlime.growth - 100) / 100);
+		}
+		// Increase Vaginal by 1.0-1.2x if the PC is in heat. Scales based on the PC's minimum arousal.
+		if (playerHeatMinArousal()) {
+			result *= 1 + 0.2 * Math.clamp(playerHeatMinArousal() / 4000, 0, 1);
+		}
+	} else if (skill === "penileskill") {
+		if (V.earSlime.focus === "pregnancy") {
+			// Decrease Penile by 1.0-0.8x if the PC's Ear Slime has the "Pregnancy" focus. Scales based on Ear Slime Growth.
+			result *= 1 - 0.2 * Math.max(0, (V.earSlime.growth - 100) / 100);
+		} else if (V.earSlime.focus === "impregnation") {
+			// Increase Penile by 1.0-1.2x if the PC's Ear Slime has the "Impregnation" focus. Scales based on Ear Slime Growth.
+			result *= 1 + 0.2 * Math.max(0, (V.earSlime.growth - 100) / 100);
+		}
+		// Increase Penile by 1.0-1.2x if the PC is in rut. Scales based on the PC's minimum arousal.
+		if (playerRutMinArousal()) {
+			result *= 1 + 0.2 * Math.clamp(playerRutMinArousal() / 4000, 0, 1);
+		}
+	} else if (skill === "analskill") {
+		// Increase Anal by 1.0-1.2x if the PC doesn't have a vagina and their Ear Slime has the "Pregnancy" focus. Scales based on Ear Slime Growth.
+		if (!V.player.vaginaExist && V.earSlime.focus === "pregnancy") {
+			result *= 1 + 0.2 * Math.max(0, (V.earSlime.growth - 100) / 100);
+		}
+		// Increase Anal by 1.0-1.2x if the PC is in heat and can be MPregnant. Scales based on the PC's minimum arousal.
+		if (playerHeatMinArousal() && canBeMPregnant()) {
+			result *= 1 + 0.2 * Math.clamp(playerHeatMinArousal() / 4000, 0, 1);
+		}
+	} else if (skill === "seductionskill") {
+		// Increase Seduction by 1.0-1.25x if the PC's Ear Slime Defy isn't on cooldown. Scales based on Ear Slime Growth.
+		if (V.earSlime.growth > 50 && !V.earSlime.defyCooldown) {
+			result *= 1 + 0.25 * Math.max(0, (V.earSlime.growth - 50) / 150);
+		}
 	}
-	return result;
+
+	return Math.round(result);
 }
 window.currentSkillValue = currentSkillValue;
 
@@ -1431,17 +1485,58 @@ window.sexStatNameMapper = sexStatNameMapper;
  * @param {number} statValue
  */
 function drunkSexStatModifier(statValue) {
-	if (V.drunk === 0) return 0;
+	if (V.drunk <= C.stats.alcohol.min) return 0;
 
-	const maxValue = 40; // The maximum value of the curve.
-	const valueAdjust = Math.clamp(maxValue - Math.floor(statValue / 4), 0, maxValue); // The curve is less effective with higher base stat.
-	const growthRate = 3; // How fast the curve grows as the drunk value increases.
-	const midpoint = 500; // Needs to be half of the max drunk value.
-	const shifter = 0.85; // Decreases this value to make lower drunk values give higher results and higher drunk values give lower results.
-	const drunkMod = (V.drunk - midpoint) / 500; // Adjusts the drunk values to be scaled correctly with the equation and max stat value.
-	const denominator = 1 + shifter * Math.E ** (-1 * growthRate * drunkMod);
+	// Modifiers are between 0 and 1.
+	const statMod = statValue / 100;
 
-	return Math.floor(valueAdjust / denominator);
+	// Alcohol past the limit will get clamped back down
+	const drunkMod = drunkModifier();
+
+	/**
+	 * Can think of the following code as a square piece of fabric being pulled in 4 different directions.
+	 *
+	 * At (Sex = 1, Alcohol = 1), Bonus = C.stats.alcohol.mod.minSex.minAlcohol
+	 * At (Sex = 1, Alcohol = Max), Bonus = C.stats.alcohol.mod.minSex.maxAlcohol
+	 * At (Sex = Max, Alcohol = 1), Bonus = C.stats.alcohol.mod.maxSex.minAlcohol
+	 * At (Sex = Max, Alcohol = Max), Bonus = C.stats.alcohol.mod.maxSex.maxAlcohol
+	 *
+	 * The formulas below pull the cloth so that each corner of the cloth touches one of those points. The PC's bonus sex stats from their intoxication and existing sex stats then scale linearly between the 4 points as they move around the cloth.
+	 */
+
+	/**
+	 * y = a * x + b
+	 *
+	 * y = Sex Stat Bonus
+	 * x = Sex Stat Modifier = Current Sex Stat / 100
+	 *
+	 * a = Scaling Sex Stat Increase
+	 * b = Base Sex Increase
+	 *
+	 * a = a_v * d + a_0
+	 * b = b_v * d + b_0
+	 *
+	 * d = Alcohol Modifer (Clamped to 0.0 - 1.0) = $drunk / Alcohol Limit
+	 * a_v = Scaling Sex Stat increase, scales with Alcohol
+	 * a_0 = Scaling Sex Stat increase, does not scale with Alcohol
+	 * b_v = Scaling Alcohol increase, does not scale with Sex Stat
+	 * b_0 = Base Alcohol Increase, does not scale with Sex Stat
+	 */
+
+	const aV =
+		// eslint-disable-next-line prettier/prettier
+		(C.stats.alcohol.mod.maxSex.maxAlcohol - C.stats.alcohol.mod.maxSex.minAlcohol) -
+		(C.stats.alcohol.mod.minSex.maxAlcohol - C.stats.alcohol.mod.minSex.minAlcohol);
+	const a0 = C.stats.alcohol.mod.maxSex.minAlcohol - C.stats.alcohol.mod.minSex.minAlcohol;
+	const a = aV * drunkMod + a0;
+
+	const bV = C.stats.alcohol.mod.minSex.maxAlcohol - C.stats.alcohol.mod.minSex.minAlcohol;
+	const b0 = C.stats.alcohol.mod.minSex.minAlcohol;
+	const b = bV * drunkMod + b0;
+
+	const y = a * statMod + b;
+
+	return Math.ceil(y);
 }
 window.drunkSexStatModifier = drunkSexStatModifier;
 
@@ -1452,7 +1547,14 @@ window.drunkSexStatModifier = drunkSexStatModifier;
  * @returns {number}
  */
 function heatRutSexStatModifier(input) {
-	const maxMinArousal = 5000; // Maximum value for minArousal.
+	/**
+	 * While PC's arousal can technically go higher than 2,500, a PC with only a Penis / Vagina and no MPreg or Ear Slimes has their arousal max out at 2,500 (Risk = 0 and taking Fertility Pills).
+	 *
+	 * To account for this, the PC's Sex Stat mods will have their boosts max out at 2,500 minimum arousal to make the effects more noticeable.
+	 *
+	 * The PC's actual maximum minimum arousal threshold, meanwhile, is handled in a separate function.
+	 */
+	const maxMinArousal = 2500; // Maximum value for minArousal.
 	const minArousal = Math.clamp(playerHeatMinArousal() + playerRutMinArousal(), 0, maxMinArousal);
 	if (minArousal === 0) return 0;
 
@@ -1467,7 +1569,7 @@ function heatRutSexStatModifier(input) {
 
 	if (statName === "exhibitionism") return 0;
 
-	const maxHeatRutSexStatModifier = 40; // Maximum modifier for sexStat() from minArousal.
+	const maxHeatRutSexStatModifier = 30; // Maximum modifier for sexStat() from minArousal.
 	const heatRutSexStatModifierExponent = 0.6; // Lower to raise the final modifier at lower levels of minArousal.
 	const heatRutSexStatModifier = (maxHeatRutSexStatModifier / maxMinArousal ** heatRutSexStatModifierExponent) * minArousal ** heatRutSexStatModifierExponent;
 
@@ -1480,6 +1582,8 @@ function heatRutSexStatModifier(input) {
 window.heatRutSexStatModifier = heatRutSexStatModifier;
 
 /**
+ * Check if a PC's sex stats are high enough to meet the required tier.
+ *
  * @param {string} input
  * @param {number} required
  * @param {boolean} modifiers
@@ -1494,7 +1598,7 @@ function hasSexStat(input, required, modifiers = true) {
 		});
 		return false;
 	}
-	let statValue = V[statName];
+	let statValue = currentSkillValue(statName, !modifiers);
 	// check if value of stat is valid.
 	if (!Number.isFinite(statValue)) {
 		Errors.report(`[hasSexStat]: sex stat '${statName}' unknown.`, {
@@ -1502,13 +1606,6 @@ function hasSexStat(input, required, modifiers = true) {
 			statName,
 		});
 		return false;
-	}
-	if (modifiers) {
-		// modify effective stat value based on inebriation.
-		statValue += drunkSexStatModifier(statValue);
-
-		// modify effective stat value based on heat/rut/minArousal.
-		statValue += heatRutSexStatModifier(statName);
 	}
 	statValue = Math.clamp(statValue, 0, 100);
 
