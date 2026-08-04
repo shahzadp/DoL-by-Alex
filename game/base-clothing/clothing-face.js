@@ -639,7 +639,7 @@ function initFace() {
 			colour: 0,
 			colour_options: [],
 			colour_combat: "white",
-			type: ["costume"],
+			type: ["costume", "mask", "face_covering"],
 			gender: "n",
 			warmth: 1,
 			cost: 500,
