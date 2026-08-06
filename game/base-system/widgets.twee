@@ -138,8 +138,15 @@
 	<!-- args[1] now modifies the arousal applied to the PC -->
 	<!-- Consult the 'arousal' widget to see how -->
 	<<if _args[0] and (typeof _args[0]) is "number">>
+
 		<<if $consensual isnot 1>>
-			<<stress `0.25 * _args[0]`>>
+			<<if $drunk gt 0>>
+				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<else>>
+				<<set $_stress_multiplier to 10>>
+			<</if>>
+			<<stress _args[0] $_stress_multiplier>>
 			<<combattrauma _args[0]>>
 		<</if>>
 
@@ -181,10 +188,16 @@
 	<!-- For double penetration, the widget is now called twice. Once for each NPC. -->
 	<<if _args[0] and (typeof _args[0]) is "number">>
 		<<if $consensual isnot 1>>
-			<<stress `0.25 * _args[0]`>>
+			<<if $drunk gt 0>>
+				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<else>>
+				<<set $_stress_multiplier to 10>>
+			<</if>>
+			<<stress _args[0] $_stress_multiplier>>
 			<<combattrauma _args[0]>>
 		<<else>>
-			<<stress `_args[0] / -8`>>
+			<<stress _args[0] -10>>
 		<</if>>
 		<<set _arousal to 20 * _args[0]>>
 		<<set _enemyarousal to 2 * _args[0]>>
@@ -249,6 +262,12 @@
 		<!-- args[4] - indicates NPC id (but is currently unused) -->
 
 		<<if _violence gt 0 or _violence lt 0>>
+			<<if $drunk gt 0>>
+				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
+			<<else>>
+				<<set _drunkMod to 10>>
+			<</if>>
 			<<if $possessed is true and _violence gte 0>>
 				<<set $_controlMod to (10 * $enemyno)>>
 				<<control `_violence / $_controlMod`>>
@@ -263,7 +282,7 @@
 			<<else>>
 				<<set _clothesMod to 1>>
 			<</if>>
-			<<stress `0.25 * (_violence * _stressMod) * (1 - ($masochism / 1200))`>>
+			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
 			<<combattrauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)) / _possessMod / _clothesMod)>>
 			<<set _arousal to (_violence * (0 + ($masochism / 18)))>>
@@ -297,7 +316,13 @@
 		<<set _arousalMod = _args[4] || 1>>
 
 		<<if _violence gt 0 or _violence lt 0>>
-			<<stress `0.25 * _violence * _stressMod * (1 - ($masochism / 1200))`>>
+			<<if $drunk gt 0>>
+				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
+			<<else>>
+				<<set _drunkMod to 10>>
+			<</if>>
+			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
 			<<trauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)))>>
 			<<set _arousal to (_violence * _arousalMod * (0 + ($masochism / 18)))>>
@@ -328,10 +353,16 @@
 	<!-- args[1] - the NPC to whom PC is submitting (currently unused) -->
 	<<if _args[0]>>
 		<<if $consensual isnot 1>>
-			<<stress `0.25 * _args[0]`>>
+			<<if $drunk gt 0>>
+				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<else>>
+				<<set $_stress_multiplier to 10>>
+			<</if>>
+			<<stress _args[0] $_stress_multiplier>>
 			<<sub `_args[0] / 4`>>
 		<<else>>
-			<<stress `_args[0] / -8`>>
+			<<set $stress -= 10 * _args[0]>>
 			<<set $assertive += 1>>
 		<</if>>
 		<<set _arousal to 20 * _args[0]>>
@@ -364,7 +395,13 @@
 
 <<widget "brat">>
 	<<if _args[0]>>
-		<<stress `0.25 * _args[0]`>>
+		<<if $drunk gt 0>>
+			<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
+			<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+		<<else>>
+			<<set $_stress_multiplier to 10>>
+		<</if>>
+		<<stress _args[0] $_stress_multiplier>>
 		<<combattrauma `-1 * _args[0]`>>
 		<<if $NPCList[0].legs isnot "walk">>
 			<<set $enemyanger += 5 * _args[0]>>
@@ -1124,16 +1161,7 @@
 	<<if Number.isFinite($tiredness)>>
 		<div id="tirednesscaption" @title="'Fatigue: ' + $tiredness.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				<<if $drunk gt 0>>
-					<span class = "'white'"><mouse class = "tooltip-small">
-						Fatigue:
-						<span class="red">
-							Increasing your fatigue: alcohol
-						</span>
-					</mouse></span>
-				<<else>>
-					Fatigue:
-				<</if>>
+				Fatigue:
 				<<if $options.showCaptionText is true>>
 					<<if $tiredness gte C.tiredness.max>>
 						<span class="red">You are exhausted.</span>
@@ -1181,18 +1209,7 @@
 	<<if Number.isFinite($stress)>>
 		<div id="stresscaption" @title="'Stress: ' + $stress.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				<<if $drunk gt 0>>
-					<span class = "'white'"><mouse class = "tooltip-small">
-						Stress:
-						<span class="green">
-							Decreasing your stress: alcohol
-							<br>
-							Reducing your stress increases: alcohol
-						</span>
-					</mouse></span>
-				<<else>>
-					Stress:
-				<</if>>
+				Stress:
 				<<if $options.showCaptionText is true>>
 					<<if $stress gte $stressmax>>
 						<span class="red">You are overwhelmed!</span>
@@ -1478,21 +1495,21 @@
 
 <<widget "drunkcaption">>
 	<<if $drunk gt 0>>
-		<<set $_colour to getColourClassFromPercentage(100 * drunkModifier(), "drunk")>>
+		<<set $_colour to getColourClassFromPercentage($drunk * (100 / 480), "drunk")>>
 		<<set $_barColour to $_colour + "bar">>
-		<<set $_percent to Math.floor(100 * ($drunk / C.stats.alcohol.max))>>
+		<<set $_percent to Math.floor(($drunk/1000)*100)>>
 		<<set $_barWidth to `width:${$_percent}%`>>
 
 		<div id="drunkcaption" @title="'Drunk: ' + $drunk.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
 				<<if $options.showCaptionText is true>>
-					<<set $_drunk_level to Math.floor(4 * drunkModifier())>>
+					<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4) * 120>>
 					<<switch $_drunk_level>>
 						<<case 0>><span @class="$_colour">You are woozy.</span>
-						<<case 1>><span @class="$_colour">You are tipsy.</span>
-						<<case 2>><span @class="$_colour">You are drunk.</span>
-						<<case 3>><span @class="$_colour">You are smashed.</span>
-						<<case 4>><span @class="$_colour">You are wasted.</span>
+						<<case 120>><span @class="$_colour">You are tipsy.</span>
+						<<case 240>><span @class="$_colour">You are drunk.</span>
+						<<case 360>><span @class="$_colour">You are smashed.</span>
+						<<case 480>><span @class="$_colour">You are wasted.</span>
 					<</switch>>
 				<<else>>
 					Drunk:
@@ -1553,16 +1570,7 @@
 	<<if Number.isFinite($pain)>>
 		<div id="paincaption" @title="'Pain: ' + $pain.toFixed(2)">
 			<div @class="($options.showCaptionText is true ? '' : 'rightMeterText')">
-				<<if $drunk gt 0>>
-					<span class = "'white'"><mouse class = "tooltip-small">
-						Pain:
-						<span class="green">
-							Reducing your pain increases: alcohol
-						</span>
-					</mouse></span>
-				<<else>>
-					Pain:
-				<</if>>
+				Pain:
 				<<if $options.showCaptionText is true>>
 					<<if $pain gte 100 and $willpowerpain is 0>><span class="red">You sob uncontrollably.</span>
 					<<elseif $pain gte 80>><span class="pink">You cry and whimper.</span>

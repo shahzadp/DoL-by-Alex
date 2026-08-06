@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable jsdoc/require-description-complete-sentence */
-/* globals hasSexStat, sexStatNameMapper, heatRutSexStatModifier, drunkModifier */
+/* globals hasSexStat, sexStatNameMapper, heatRutSexStatModifier, drunkSexStatModifier */
 
 function overlayShowHide(elementId) {
 	const div = document.getElementById(elementId);
@@ -525,7 +525,7 @@ function moneyStatsProcess(stats) {
 window.moneyStatsProcess = moneyStatsProcess;
 
 /**
- * If hasSexStat() modifiers are allowing the player to see an additional option, return the CSS class for the largest individual modifier.
+ * If hasSexStat() modifiers are allowing the player to see an aditional option, return the css class for the largest individual modifier.
  * If the modifiers are not high enough to show a new option, don't return a class.
  * Passing in 0 or nothing for requiredLevel returns the classes for the largest modifier regardless of if the player is being shown an aditional option.
  *
@@ -547,60 +547,39 @@ function getLargestSexStatModifierCssClasses(input, requiredLevel = 0) {
 		return "";
 	}
 
-	// Code may break if drunkValue or heatValue ever becomes negative.
+	const drunkSexStatModifierValue = drunkSexStatModifier(V[statName]);
+	const heatRutSexStatModifierValue = heatRutSexStatModifier(statName);
 
-	// Scales between 0 and 1, depending on the PC's intoxication.
-	const drunkValue = drunkModifier();
-	// Scales between 0 and 30, depending on the PC's heat.
-	const heatValue = heatRutSexStatModifier(statName);
+	// If there is a modifier and either requiredLevel is 0 or the modifiers put the player up a level of the sexStat.
+	if (
+		drunkSexStatModifierValue + heatRutSexStatModifierValue > 0 &&
+		(requiredLevel === 0 || (!hasSexStat(statName, requiredLevel, false) && hasSexStat(statName, requiredLevel, true)))
+	) {
+		const modifiers = [
+			{ value: drunkSexStatModifierValue, class: "drunk" },
+			{ value: heatRutSexStatModifierValue, class: "jitter" },
+		];
 
-	/**
-	 * Requirements:
-	 *   PC is drunk or in heat
-	 *
-	 *   requiredLevel is 0
-	 *   OR the stat boost the PC gains from being drunk and / or in heat allows them to qualify for the next sex action level.
-	 */
-	if (drunkValue + heatValue > 0 && (requiredLevel === 0 || (!hasSexStat(statName, requiredLevel, false) && hasSexStat(statName, requiredLevel, true)))) {
-		// Prioritize the PC's jitter CSS animation over the drunk animation. Only use the drunk animation when its level is at least 1 level higher than the jitter animation's level.
-		let largestModifier = "jitter";
-		if ((drunkValue > 2 / 3 && heatValue <= 20) || (drunkValue > 1 / 3 && heatValue <= 10) || (drunkValue > 0 && heatValue <= 0)) {
-			largestModifier = "drunk";
-		}
+		// Gets the largest modifier.
+		const largestModifier = modifiers.reduce((max, current) => (current.value > max.value ? current : max), modifiers[0]);
 
-		// Adds the base effect.
-		let modifierClasses = "";
-		if (largestModifier === "jitter") {
-			modifierClasses += "jitter-text";
-		} else {
-			modifierClasses += "drunk-text";
-		}
+		// Gets the base class for effect.
+		let modifierClasses = `${largestModifier.class}-text`;
 
-		/**
-		 * Adds the effect animations, if they're enabled.
-		 *
-		 * The jitter animations will have a randomized offset to make them less predictable.
-		 *
-		 * However, after some testing, randomized drunk animations only made the GUI look confusing, so their animations will be synchronized.
-		 */
-		if (V.options.textAnimsAll && largestModifier === "jitter" && V.options.textAnimsHeat) {
-			if (heatValue > 20) {
-				modifierClasses += " jitter-3";
-			} else if (heatValue > 10) {
-				modifierClasses += " jitter-2";
+		if (
+			V.options.textAnimsAll &&
+			((largestModifier.class === "jitter" && V.options.textAnimsHeat) || (largestModifier.class === "drunk" && V.options.textAnimsDrunk))
+		) {
+			// Sets the animation based on how large the modifier is.
+			if (largestModifier.value > 20) {
+				modifierClasses += ` ${largestModifier.class}-3`;
+			} else if (largestModifier.value > 10) {
+				modifierClasses += ` ${largestModifier.class}-2`;
 			} else {
-				modifierClasses += " jitter-1";
+				modifierClasses += ` ${largestModifier.class}-1`;
 			}
 
 			modifierClasses += ` animation-offset-${Math.floor(Math.random() * 10)}`;
-		} else if (V.options.textAnimsAll && largestModifier === "drunk" && V.options.textAnimsDrunk) {
-			if (drunkValue > 2 / 3) {
-				modifierClasses += " drunk-3";
-			} else if (drunkValue > 1 / 3) {
-				modifierClasses += " drunk-2";
-			} else {
-				modifierClasses += " drunk-1";
-			}
 		}
 
 		return modifierClasses;

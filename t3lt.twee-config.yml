@@ -598,24 +598,12 @@ sugarcube-2:
         - Goes from 0 to 1,000, where 0 means the PC is sober.
         - While `$drunk` goes up to 1,000, its effects stop increasing after `$drunk gte 480`. Values past this point are just a way for the PC to extend the duration of its effects.
 
-        When `source` is `"pure"`, 1 point of `change` = 1 point of `$drunk`.
-        - This change is not affected by ANY modifiers.
+        1 point of `change` = 1 point of `$drunk`.
 
-        When `source` is `"time"`, 1 point of `change` = 1 point of `$drunk`.
-        - Affected by other modifiers to alcohol.
-        - Changes will NOT be clamped.
-
-        When `source` is empty, 1 point of `change` = 1 point of `$drunk`.
-        - The amount of alcohol gained and lost is affected by the PC's `$alcoholMod`.
-        - Alcohol gains increase by 1.5x when the PC has the "Dendrophile" / "Plant Lover" trait.
-
-        `<<alcohol change source?>>`
+        `<<alcohol change>>`
         - **change**: `number` - +/- change to apply.
-        - **source** _optional_: `string` - The source of the alcohol change.
-          - `"pure"`: For changes to the PC's alcohol levels that shouldn't be modified.
-          - `"time"`: For changes to the PC's alcohol levels from the passage of time.
       parameters:
-        - 'number |+ "pure"|"time"'
+        - number
     alcoholClamp:
       description: |-
         Converts 1 point of excess $drunk into 1 point of $tiredness and 0.25 points of $trauma.
@@ -16326,25 +16314,16 @@ sugarcube-2:
         Changes the PC's stress, where `$stress` is a measure of the PC's stress.
         - Goes from 0 to 10,000, where 0 means the PC is serene.
 
-        When `source` is `"pure"`, 1 point of `change` = 1 point of `$stress`.
-        - This change is not affected by ANY modifiers.
-
-        When `source` is `"time"`, 1 point of `change` = 1 point of `$stress`.
-        - Affected by other modifiers to stress.
-        - Changes will NOT be clamped.
-
-        When `source` is empty, +1 point of `change` = 40 points of `$stress`.
+        +1 point of `change` = 40 points of `$stress`.
         - Being intoxicated will reduce stress gains by 25%. This reduction increases up to 75%, capping off when `$drunk` >= 480.
 
-        When `source` is empty, -1 point of `change` = -80 points of `$stress`.
+        -1 point of `change` = -80 points of `$stress`.
 
-        `<<stress change source?>>`
+        `<<stress change multiplierOverride?>>`
         - **change**: `number` - +/- change to apply.
-        - **source** _optional_: `string` - The source of the stress change.
-          - `"pure"`: For changes to the PC's stress that shouldn't be modified.
-          - `"time"`: For changes to the PC's stress from the passage of time.
+        - **multiplierOverride** _optional_: `number` - multiplier to use in place of the pre-set amount.
       parameters:
-        - 'number |+ "pure"|"time"'
+        - "number |+ number"
     stresscaption:
       name: stresscaption
     stressClamp:
@@ -16984,28 +16963,23 @@ sugarcube-2:
         Changes the PC's tiredness, where `$tiredness` is a measure of the PC's fatigue.
         - Goes from 0 to 2,000, where 0 means the PC is refreshed.
 
-        When `source` is `"pure"`, 1 point of `change` = 1 point of `$tiredness`.
-        - This change is not affected by ANY modifiers.
+        When `source` is `"pass"`, 1 point of `change` = 1 point of `$tiredness`.
 
-        When `source` is `"time"`, 1 point of `change` = 1 point of `$tiredness`.
-        - Affected by other modifiers to fatigue.
-        - Changes will NOT be clamped.
-
-        When `source` is empty, +1 point of `change` = +15 points of `$tiredness`.
+        When `source` isn't `"pass"`, +1 point of `change` = +15 points of `$tiredness`.
         - Heavy clothing increases this by 50%.
         - Wearing heels with an inadequate Feet Skill increases this by up to 100%.
         - The PC overheating increases this up to 200%.
         - If all 3 conditions are maxed, the PC will gain 350% more $tiredness than normal.
 
-        When `source` is empty, -1 point of `change` = -20 points of `tiredness`.
+        When `source` isn't `"pass"`, -1 point of `change` = -20 points of `tiredness`.
 
         `<<tiredness change source?>>`
         - **change**: `number` - +/- change to apply.
         - **source** _optional_: `string` - The source of the fatigue change.
-          - `"pure"`: For changes to the PC's fatigue that shouldn't be modified.
-          - `"time"`: For changes to the PC's fatigue from the passage of time.
+          - `"pass"`: Fatigue gained from the passage of time.
       parameters:
-        - 'number |+ "pure"|"time"'
+        - 'number |+ "pass"'
+      tags: ["refactor"]
     tirednesscaption:
       name: tirednesscaption
     titleBlackjackHelp:
@@ -17204,20 +17178,13 @@ sugarcube-2:
         Changes the PC's trauma, where `$trauma` is a measure of the PC's trauma.
         - Goes from 0 to 5,000, where 0 means the PC is healthy.
 
-        When `source` is `"pure"`, 1 point of `change` = 1 point of `$trauma`.
-        - This change is not affected by ANY modifiers.
-
-        When `source` is `"time"`, 1 point of `change` = 1 point of `$trauma`.
-        - Affected by other modifiers to trauma.
-        - Changes will NOT be clamped.
-
-        When `source` is empty, +1 point of `change` = 1.5 points of `$trauma`.
+        +1 point of `change` = 1.5 points of `$trauma`.
         - Trauma gains are reduced by 0.7x if the PC has the "Fucktoy" trait.
         - Trauma gains are reduced by 0.7x if the PC has the "Bitch" trait while having sex with beasts.
         - Trauma gains are reduced by 0.7x if the PC has the "Prey" trait while having sex with tentacles.
         - Trauma gains are increased by up to 100%, if the PC has low `$control`.
 
-        When `source` is empty, -1 point of `change` = -1.5 points of `$trauma`.
+        -1 point of `change` = -1.5 points of `$trauma`.
         - Trauma losses are increased by 2x while at the Asylum or the Hospital.
         - Trauma losses are increased by up to 100%, if the PC has high `$control`.
 
@@ -17227,11 +17194,10 @@ sugarcube-2:
         - **change**: `number` - +/- change to apply.
           - If set to 0, just updates the PC's trauma effects.
         - **source**: _optional_ - The source of the trauma change.
-          - `"pure"`: For changes to the PC's trauma that shouldn't be modified.
-          - `"time"`: For changes to the PC's trauma from the passage of time.
-          - `"combat"`: Trauma gained from combat. If used, the PC's trauma traits will not be updated.
+          - `"combat"`: Fatigue gained from the passage of time. If used, the PC's trauma traits will not be updated.
       parameters:
-        - 'number |+ "pure"|"time"|"combat"'
+        - 'number |+ "combat"'
+      tags: ["refactor"]
     traumacaption:
       name: traumacaption
     traumaClamp:
