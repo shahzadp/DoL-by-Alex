@@ -24,13 +24,7 @@ function playerNormalPregnancyTotal() {
 }
 window.playerNormalPregnancyTotal = playerNormalPregnancyTotal;
 
-/**
- * `pregnancyOnly` is there intentially, please make use of it if you add to this function
- *
- * Returns a value between 0 and 24
- *
- * @param {boolean} pregnancyOnly
- */
+// `pregnancyOnly` is there intentially, please make use of it if you add to this function
 function playerBellySize(pregnancyOnly = false) {
 	let bellySize = V.bellySizeDebug || 0;
 	const vpregnancy = V.sexStats.vagina.pregnancy;
