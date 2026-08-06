@@ -971,6 +971,9 @@ function gwylanCanForceRitual(ritual = "any") {
 window.gwylanCanForceRitual = gwylanCanForceRitual;
 
 function gwylanCanRescueFromWraith() {
+	if (isGwylanAbsent()) {
+		return false;
+	}
 	if (V.gwylanRescue?.seen?.includes("Wraith")) {
 		return (
 			C.npc.Gwylan.init === 1 &&
