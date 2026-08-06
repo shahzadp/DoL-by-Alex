@@ -462,7 +462,7 @@ const statChange = (() => {
 		if (amount) {
 			if (amount > 0) lactationPressure(V.cow >= 6 ? 2 : 1);
 			if (V.lactating) {
-				if (V.cow >= 6) amount *= 1.25;
+				if (V.cow >= 6) amount *= 2;
 				V.milk_volume = Math.clamp(V.milk_volume + amount, 24, V.milk_max);
 			}
 		}
