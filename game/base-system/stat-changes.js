@@ -1,15 +1,5 @@
 /* global statDisplay */
 
-/**
- * Returns a modifier based on the strength of the PC's intoxication. Goes from 0 to 1.
- *
- * @returns {number}
- */
-function drunkModifier() {
-	return Math.clamp(V.drunk / C.stats.alcohol.effectLimit, 0, 1);
-}
-window.drunkModifier = drunkModifier;
-
 const statChange = (() => {
 	function paramError(functionName = "", param = "", value, expectedValues = "") {
 		if (typeof value === "object") value = JSON.stringify(value);
@@ -25,7 +15,6 @@ const statChange = (() => {
 			}`
 		);
 	}
-
 	// Overflow (Clamp) Code Section
 
 	/**
@@ -48,14 +37,18 @@ const statChange = (() => {
 		// Overflow check
 		const overflow = V.drunk - 1000;
 		if (overflow > 0) {
+			// Add 100% of the overflow to fatigue.
 			V.tiredness += overflow;
 
+			// Increase trauma gains by up to 2x if the player is at low control.
 			const controlMod = 2 - V.control / 1000;
+
+			// Add 25-50% of the overflow to the player's trauma, depending on the controlMod.
 			V.trauma += overflow * 0.25 * controlMod;
 		}
 
 		// Clamps for safety.
-		V.drunk = Math.clamp(V.drunk, C.stats.alcohol.min, C.stats.alcohol.max);
+		V.drunk = Math.clamp(V.drunk, 0, 1000);
 		fatigueClamp(); // Calls stressClamp() and traumaClamp()
 	}
 	DefineMacro("alcoholClamp", alcoholClamp);
@@ -80,9 +73,13 @@ const statChange = (() => {
 		// Overflow check
 		const overflow = V.tiredness - 2000;
 		if (overflow > 0) {
+			// Add 15x the overflow to the player's stress.
 			V.stress += overflow * 15;
 
+			// Increase trauma gains by up to 2x if the player is at low control.
 			const controlMod = 2 - V.control / 1000;
+
+			// Add 25-50% of the overflow to the player's trauma, depending on the controlMod.
 			V.trauma += overflow * 0.25 * controlMod;
 		}
 
@@ -114,7 +111,10 @@ const statChange = (() => {
 		// Overflow check
 		const overflow = V.stress - V.stressmax;
 		if (overflow > 0) {
+			// Increase trauma gains by up to 2x if the player is at low control.
 			const controlMod = 2 - V.control / 1000;
+
+			// Add 1-2% of the overflow to the player's trauma, depending on the controlMod.
 			V.trauma += overflow * 0.01 * controlMod;
 		}
 
@@ -154,6 +154,7 @@ const statChange = (() => {
 		// Overflow check
 		const overflow = V.trauma - V.traumamax;
 		if (overflow > 0) {
+			// Remove 20% of the overflow from the player's beauty.
 			V.beauty -= overflow * 0.2;
 		}
 
@@ -164,153 +165,131 @@ const statChange = (() => {
 
 	// Overflow-Using Code Section
 
-	function alcohol(change, source) {
-		if (isNaN(change)) paramError("alcohol", "change", change, "Expected a number.");
-		change = Number(change);
-		if (source === "pure") {
-			V.drunk += change;
-		} else {
-			/**
-			 * Modify the effect of alcohol on the player, based on their alcohol tolerance.
-			 *
-			 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
-			 *
-			 * Because of that, V.alcoholMod is applied to both positive and negative changes to the player's alcohol level.
-			 */
-			let mod = V.alcoholMod;
+	function alcohol(amount) {
+		if (isNaN(amount)) paramError("alcohol", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		/**
+		 * Modify the effect of alcohol on the player, based on their alcohol tolerance.
+		 *
+		 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
+		 *
+		 * Because of that, V.alcoholMod is applied to both positive and negative changes to the player's alcohol level.
+		 */
+		let mod = V.alcoholMod;
 
-			/**
-			 * The "Dendrophile" / "Plant Lover" trait amplifies the impact of alcohol consumption, without affecting how quickly the player recovers.
-			 */
-			if (V.backgroundTraits.includes("plantlover") && change > 0) mod *= 1.5;
+		/**
+		 * The "Dendrophile" trait amplifies the impact of alcohol consumption, without affecting how quickly the player
+		 * recovers.
+		 */
+		if (V.backgroundTraits.includes("plantlover") && amount > 0) mod *= 1.5;
 
-			V.drunk += change * mod;
-		}
+		V.drunk += amount * mod;
 
-		// Clamps for the passage of time are handled in the "game\03-JavaScript\time.js" file.
-		if (source !== "time") {
-			alcoholClamp();
-		}
+		alcoholClamp();
 	}
 	DefineMacro("alcohol", alcohol);
 
-	function tiredness(change, source) {
-		if (isNaN(change)) paramError("tiredness", "change", change, "Expected a number.");
-		change = Number(change);
+	function tiredness(amount, source) {
+		if (isNaN(amount)) paramError("tiredness", "amount", amount, "Expected a number.");
+		amount = Number(amount);
 
 		// See "game\03-JavaScript\weather\02-main\02-body-temperature.js" for the effects of body temperature on fatigue.
 
-		if (source === "pure") {
-			V.tiredness += change;
-		} else {
-			// For increases to the player's fatigue. Theoretical maximum increase is 50% + 100% + 200% = 350% increased fatigue.
-			let fatigueMod = 1;
-			if (change > 0) {
-				// Wearing clothing with the "Heavy" trait increases the player's fatigue gains by 50%.
-				if ((V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) && !V.statFreeze) {
-					fatigueMod += 0.5;
-				}
-
-				/**
-				 * Calculate the overflow value as heel_reveal - feetskill. The current minimum and maximum values are 0-1,000.
-				 *
-				 * All fatigue gains will be increased by up to 100%, depending on the overflow value.
-				 */
-				if (V.worn.feet.reveal > currentSkillValue("feetskill") && V.worn.feet.type.includes("heels")) {
-					fatigueMod += (V.worn.feet.reveal - currentSkillValue("feetskill")) / 1000;
-				}
-
-				/**
-				 * The fatigue modifier starts at 1 and goes up to 3.
-				 *
-				 * The player's body temperature being too high will increase their fatigue gains by up to 200%
-				 */
-				fatigueMod += Weather.BodyTemperature.fatigueModifier - 1;
+		// For increases to the player's fatigue. Theoretical maximum increase is 50% + 100% + 200% = 350% increased fatigue.
+		let fatigueMod = 1;
+		if (amount > 0) {
+			// Wearing clothing with the "Heavy" trait increases the player's fatigue gains by 50%.
+			if ((V.worn.upper.type.includes("heavy") || V.worn.lower.type.includes("heavy")) && !V.statFreeze) {
+				fatigueMod += 0.5;
 			}
 
-			if (source === "time") {
-				V.tiredness += change * fatigueMod;
-			} else if (change > 0) {
-				V.tiredness += change * 15 * fatigueMod;
-			} else if (change < 0) {
-				V.tiredness += change * 20 * fatigueMod;
+			/**
+			 * Calculate the overflow value as heel_reveal - feetskill. The current minimum and maximum values are 0-1,000.
+			 *
+			 * All fatigue gains will be increased by up to 100%, depending on the overflow value.
+			 */
+			if (V.worn.feet.reveal > currentSkillValue("feetskill") && V.worn.feet.type.includes("heels")) {
+				fatigueMod += (V.worn.feet.reveal - currentSkillValue("feetskill")) / 1000;
 			}
+
+			// The player's body temperature being too high will increase their fatigue gains by up to 200%
+			fatigueMod += Weather.BodyTemperature.fatigueModifier - 1;
 		}
 
-		// Clamps for the passage of time are handled in the "game\03-JavaScript\time.js" file.
-		if (source !== "time") {
-			fatigueClamp();
+		// The passage of time changes the player's fatigue by 0.05% = 1 $tiredness per point.
+		if (source === "pass") {
+			V.tiredness += amount * fatigueMod;
 		}
+		// Positive amounts increase the player's fatigue by 0.75% = 15 $tiredness per point.
+		else if (amount > 0) {
+			V.tiredness += amount * 15 * fatigueMod;
+		}
+		// Negative amounts decrease the player's fatigue by 1% = 20 $tiredness per point.
+		else if (amount < 0) {
+			V.tiredness += amount * 20 * fatigueMod;
+		}
+
+		fatigueClamp();
 	}
 	DefineMacro("tiredness", tiredness);
 
-	function stress(change, source) {
-		if (isNaN(change)) paramError("stress", "change", change, "Expected a number.");
-		change = Number(change);
-
-		if (source === "pure") {
-			V.stress += change;
-		} else {
-			let stressMod = 1;
-			if (change > 0) {
-				// Increase the PC's stress tolerance by up to 300%, depending on their intoxication.
-				stressMod /= 1 + 3 * drunkModifier();
-			}
-
-			if (source === "time") {
-				V.stress += change * stressMod;
-			} else if (change > 0) {
-				V.stress += change * 40 * stressMod;
-			} else if (change < 0) {
-				V.stress += change * 80 * stressMod;
+	function stress(amount, multiplierOverride) {
+		if (isNaN(amount)) paramError("stress", "amount", amount, "Expected a number.");
+		if (multiplierOverride && isNaN(multiplierOverride)) paramError("stress", "multiplierOverride", multiplierOverride, "Expected a number.");
+		amount = Number(amount);
+		multiplierOverride = Number(multiplierOverride);
+		if (amount) {
+			if (multiplierOverride) {
+				V.stress += amount * multiplierOverride;
+			} else if (amount < 0) {
+				// if stress is being lowered, and a custom multiplier was not provided, multiply it by 80
+				V.stress += amount * 80;
+			} else {
+				let stressMod;
+				if (V.drunk <= 0) {
+					stressMod = 40;
+				} else {
+					const drunkMod = Math.clamp(V.drunk / 120, 0, 4);
+					stressMod = 30 - drunkMod * 5;
+				}
+				V.stress += amount * stressMod;
 			}
 		}
-
-		// Clamps for the passage of time are handled in the "game\03-JavaScript\time.js" file.
-		if (source !== "time") {
-			stressClamp();
-		}
+		stressClamp();
 	}
 	DefineMacro("stress", stress);
 
-	function trauma(change, source) {
-		if (isNaN(change)) return paramError("trauma", "change", change, "Expected a number.");
-		change = Number(change);
-
-		if (source === "pure") {
-			V.trauma += change;
-		} else {
+	function trauma(amount, source) {
+		if (isNaN(amount)) return paramError("trauma", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		if (amount) {
 			let traumaMod = 1;
-			let controlMod = 1;
-			if (change >= 0) {
-				// For "Fucktoy" / "Survivor" trait
+			if (amount >= 0) {
+				// Reduce the PC's trauma gains by 0.7x if they have the "Fucktoy" / "Survivor" trait
 				if (V.rapetrait) traumaMod *= 0.7;
-				// For the "Bitch" / "Tamer" trait while being fucked by beasts.
+				// Reduce the PC's trauma gains by 0.7x if they have the "Bitch" / "Tamer" trait while being fucked by beasts.
 				if (V.bestialitytrait >= 1 && V.enemytype === "beast") traumaMod *= 0.7;
-				// For the "Prey" / "Witch" trait while being fucked by tentacles.
+				// Reduce the PC's trauma gains by 0.7x if they have the "Prey" / "Witch" trait while being fucked by tentacles.
 				if (V.tentacletrait >= 1 && V.enemytype === "tentacles") traumaMod *= 0.7;
 
-				controlMod = 2 - V.control / V.controlmax;
+				// Increase trauma gains by up to 2x if the player is at low control.
+				const controlMod = 2 - V.control / V.controlmax;
+
+				// +1 point of "amount" = +1.5 points of $trauma. Amplified by "traumaMod" and "controlMod".
+				V.trauma += amount * 1.5 * traumaMod * controlMod;
 			} else {
 				// Increase the PC's trauma losses by 2x if they are at the Asylum or the Hospital, but not during combat.
 				if (["asylum", "hospital"].includes(V.location) && source !== "combat") traumaMod *= 2;
 
-				controlMod = 1 + V.control / V.controlmax;
-			}
+				// Increase trauma losses by up to 2x if the player is at high control.
+				const controlMod = 1 + V.control / V.controlmax;
 
-			if (source === "time") {
-				V.trauma += change * traumaMod * controlMod;
-			} else {
-				V.trauma += change * 1.5 * traumaMod * controlMod;
+				// -1 point of "amount" = -1.5 points of $trauma. Amplified by "traumaMod" and "controlMod".
+				V.trauma += amount * 1.5 * traumaMod * controlMod;
 			}
 		}
 
-		// Clamps for the passage of time are handled in the "game\03-JavaScript\time.js" file.
-		if (source !== "time") {
-			traumaClamp();
-		}
-
-		// Update the PC's hallucinations and trauma traits if the trauma is applied while out of combat.
+		traumaClamp();
 		if (source !== "combat") {
 			updatePlayerTraumaState();
 			updateHallucinations();
@@ -318,24 +297,24 @@ const statChange = (() => {
 	}
 	DefineMacro("trauma", trauma);
 
-	function combattrauma(change) {
-		if (isNaN(change)) paramError("combattrauma", "change", change, "Expected a number.");
-		change = Number(change);
-		if (change) {
-			if (change > 0) {
-				trauma(change / 2, "combat");
+	function combattrauma(amount) {
+		if (isNaN(amount)) paramError("combattrauma", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		if (amount) {
+			if (amount > 0) {
+				trauma(amount / 2, "combat");
 			} else {
-				trauma(change);
+				trauma(amount);
 			}
 		}
 	}
 	DefineMacro("combattrauma", combattrauma);
 
-	function straighttrauma(change) {
-		if (isNaN(change)) paramError("straighttrauma", "change", change, "Expected a number.");
-		change = Number(change);
-		if (change) {
-			V.trauma += change;
+	function straighttrauma(amount) {
+		if (isNaN(amount)) paramError("straighttrauma", "amount", amount, "Expected a number.");
+		amount = Number(amount);
+		if (amount) {
+			V.trauma += amount;
 			traumaClamp();
 		}
 	}
@@ -666,11 +645,10 @@ const statChange = (() => {
 			let pain = amount * modifier;
 
 			if (pain > 0) {
-				// Decrease pain by 1.0-0.6x, depending on the PC's Science level.
+				// science reduction
 				pain *= 1 - V.sciencetrait / 10;
 
-				// Increase the PC's pain tolerance by up to 20%, depending on their intoxication.
-				pain /= 1 + 0.2 * drunkModifier();
+				if (V.drunk >= 360) pain *= Math.min(0.95, 0.95 - 0.1 * ((V.drunk - 360) / 640));
 
 				// Including masochism effect for all pain NG v2.7
 				if (V.masochism >= 100) {
@@ -843,7 +821,7 @@ const statChange = (() => {
 	DefineMacro("asylumstatus", asylumstatus);
 
 	function humiliation10() {
-		stress(1);
+		stress(40, 1);
 		trauma(1);
 	}
 	DefineMacro("humiliation10", humiliation10);
@@ -1527,7 +1505,6 @@ const statChange = (() => {
 	DefineMacro("badEndTrackingEnd", (source, optional) => badEndTrackingEnd(source, optional));
 
 	return {
-		drunkModifier,
 		alcoholClamp,
 		fatigueClamp,
 		stressClamp,
