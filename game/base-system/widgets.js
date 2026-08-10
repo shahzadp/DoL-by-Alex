@@ -822,3 +822,58 @@ function getTransformParts(parts = []) {
 	else return false;
 }
 window.getTransformParts = getTransformParts;
+
+function wetStage(amount) {
+	if (amount >= 100) return 3;
+	if (amount >= 80) return 2;
+	if (amount >= 50) return 1;
+	return 0;
+}
+
+function wetUpper(amount = 200) {
+	const stage = wetStage(amount);
+	// if the clothing is waterproof, protect it and layers below from getting wet
+	if (waterproofCheck(V.worn.over_upper)) return;
+	if (!V.worn.over_upper.type.includes("naked")) {
+		V.overupperwet = Math.max(V.overupperwet, amount);
+		V.overupperwetstage = Math.max(V.overupperwetstage, stage);
+	}
+	if (waterproofCheck(V.worn.upper)) return;
+	if (!V.worn.upper.type.includes("naked")) {
+		// skin wetness system is not implemented... yet?
+		V.upperwet = Math.max(V.upperwet, amount);
+		V.upperwetstage = Math.max(V.upperwetstage, stage);
+	}
+	if (waterproofCheck(V.worn.under_upper)) return;
+	if (!V.worn.under_upper.type.includes("naked")) {
+		V.underupperwet = Math.max(V.underupperwet, amount);
+		V.underupperwetstage = Math.max(V.underupperwetstage, stage);
+	}
+}
+DefineMacro("wetUpper", wetUpper);
+
+function wetLower(amount = 200) {
+	const stage = wetStage(amount);
+	if (waterproofCheck(V.worn.over_lower)) return;
+	if (!V.worn.over_lower.type.includes("naked")) {
+		V.overlowerwet = Math.max(V.overlowerwet, amount);
+		V.overlowerwetstage = Math.max(V.overlowerwetstage, stage);
+	}
+	if (waterproofCheck(V.worn.lower)) return;
+	if (!V.worn.lower.type.includes("naked")) {
+		V.lowerwet = Math.max(V.lowerwet, amount);
+		V.lowerwetstage = Math.max(V.lowerwetstage, stage);
+	}
+	if (waterproofCheck(V.worn.under_lower)) return;
+	if (!V.worn.under_lower.type.includes("naked")) {
+		V.underlowerwet = Math.max(V.underlowerwet, amount);
+		V.underlowerwetstage = Math.max(V.underlowerwetstage, stage);
+	}
+}
+DefineMacro("wetLower", wetLower);
+
+function wetAll(amount = 200) {
+	wetUpper(amount);
+	wetLower(amount);
+}
+DefineMacro("wetAll", wetAll);
