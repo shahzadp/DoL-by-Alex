@@ -2055,6 +2055,7 @@ function featsMerge() {
 	}
 
 	if (!featData.specialClothes) featData.specialClothes = [];
+	if (!featData.seeds) featData.seeds = [];
 	// eslint-disable-next-line prettier/prettier
 	if (!Array.isArray(featData.specialClothes)) featData.specialClothes = getUnlockedSpecialSets(updateSpecialClothesNames(featData.specialClothes)).filter(set => setup.specialClothesSets[set].feat);
 	const loadFeats = (data = {}) => {
@@ -2064,6 +2065,11 @@ function featsMerge() {
 					? date
 					: getUnlockedSpecialSets(updateSpecialClothesNames(date)).filter(set => setup.specialClothesSets[set].feat);
 				clothes.forEach(a => featData.specialClothes.pushUnique(a));
+				return;
+			}
+			if (key === "seeds") {
+				const seeds = Array.isArray(date) ? date : V.plants_known.filter(plant => setup.foodstuff[plant].tending?.featCost);
+				seeds.forEach(a => featData.seeds.pushUnique(a));
 				return;
 			}
 			if (!featData[key] || new Date(date).getTime() < new Date(featData[key]).getTime()) {
@@ -2438,7 +2444,7 @@ function updateFeats() {
 	let coins = 0;
 	let writeFlag = false;
 	// some entries within the feats object are not actually feats
-	const notFeats = ["points", "specialClothes"];
+	const notFeats = ["points", "specialClothes", "seeds"];
 	// at the game start, V.feats is not yet imported
 	const allFeats = (passage() === "Start" ? JSON.parse(localStorage.getItem("dolFeats")) : V.feats.allSaves) || {};
 	const curFeats = V.feats.currentSave;
@@ -2496,6 +2502,20 @@ function updateFeats() {
 		});
 	}
 	allFeats.specialClothes = specialClothes;
+
+	const seeds = allFeats.seeds || [];
+	if (V.plants_known && V.plants_known.length && !V.feats.locked && !V.cheatsEnabled) {
+		const unlockedSeeds = V.plants_known.filter(plant => setup.foodstuff[plant].tending?.featCost);
+		// merge unlockedSeeds into seeds
+		unlockedSeeds.forEach(seed => {
+			if (!seeds.includes(seed)) {
+				seeds.push(seed);
+				writeFlag = true;
+			}
+		});
+	}
+	allFeats.seeds = seeds;
+
 	V.feats.allSaves = allFeats;
 
 	// update permanent feat storage
@@ -2527,6 +2547,7 @@ function setupFeatBoosts(force) {
 		},
 		sexToys: [{}, {}, {}, {}, {}, {}],
 		specialClothesSets: {},
+		seeds: {},
 		earSlimeType: "immaturePassive",
 	};
 
@@ -2648,6 +2669,12 @@ function setupFeatBoosts(force) {
 			required: ["Curious Attire", "Wicked Wardrobe"],
 			cost: 0,
 			missing: "Unlock this boost by obtaining a hidden feat (" + setup.feats["Curious Attire"].hint + ")",
+		},
+		seeds: {
+			name: "Starting Seeds",
+			required: ["Seedy", "Breedy"],
+			cost: 0,
+			missing: "Unlock this boost by obtaining the 'Seedy' feat",
 		},
 		sexToys: {
 			name: "Sex Toys",
@@ -2840,6 +2867,13 @@ function applyFeatBoosts() {
 		/* Level 3 upgrade - everything is remembered. */
 		unlocked.forEach(c => {
 			if (V.featsBoosts.specialClothesSets[c] === true) specialClothesUnlock("set", c, Math.clamp(level, 2, 3));
+		});
+	}
+
+	// seeds
+	if (upgrades.seeds) {
+		V.feats.allSaves.seeds.forEach(c => {
+			if (V.featsBoosts.seeds[c] === true) V.plants_known.push(c);
 		});
 	}
 

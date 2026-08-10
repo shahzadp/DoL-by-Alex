@@ -32,6 +32,7 @@ declare global {
 		seasons?: Season[]; // The seasons that this item can be planted in.
 		tags: string[]; // Any tending/planting related tags that would apply to this item.
 		affected_by_tending_skill?: boolean; // If true, the number of items harvested gets increased by the tending skill. Does not apply when harvesting from plots.
+		featCost?: number; // The cost of feat booster with this seed
 	}
 
 	export interface FoodstuffShopData {
