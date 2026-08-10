@@ -318,6 +318,16 @@
 					<</if>>
 				</li>
 			<</if>>
+
+			<<if $pubfame>>
+				<li>
+					<<if $pubfame.status is "finished" or $pubfame.status is "hidingKnown">>
+						'Mickey' will be ready to see you in <span class="gold"><<number $pubfame.timer>></span> <<pluralise $pubfame.timer "day">>.
+					<<elseif $pubfame.status is "ready">>
+						<span class="gold">'Mickey' is ready to see you</span>.
+					<</if>>
+				</li>
+			<</if>>
 		</ul>
 	<</if>>
 
@@ -1212,6 +1222,9 @@
 			<<if $panties_held gt 0>>
 				<li><span class="clothes-white"><<icon "clothes/plain-panties.png">></span> <<print $panties_held is 1 ? "a pair" : "<span class='green'>$panties_held</span> pairs">> of stolen underwear. You can sell <<pluralise $panties_held "it">> during lunchtime in the school rear courtyard.</li>
 			<</if>>
+			<<if $fertiliser.current gt 0>>
+				<li><<gardenicon "fertiliser">> <span class="green">$fertiliser.current</span> <<pluralise $fertiliser.current "bag">> of fertiliser.</li>
+			<</if>>
 			<<if _hasProduce>>
 				<li><<stallicon "open">> <span class="green">Products</span> for sale. You can sell them by renting a stand on Connudatus Street at dawn.</li>
 			<</if>>
@@ -1247,6 +1260,67 @@
 				});>>
 			</details>
 		<</if>>
+	<</if>>
+
+
+	<<if Object.keys($plots).length gte 1>> /* display plot readiness */
+		<hr>
+		<h1 class="header gold bold">Gardens</h1>
+		<<for $_plotToDisplay range ["garden", "farm", "wolf", "eden", "asylum"]>>
+			<<if $plots[$_plotToDisplay]>>
+				<<set $_currentPlot to $plots[$_plotToDisplay]>>
+				<<set $_plotsToWater to $_currentPlot.filter(plot => plot.stage >= 1 && plot.stage < 5 && plot.bed !== "water" && plot.water === 0).length>>
+				<<set $_plotsToPick  to $_currentPlot.filter(plot => plot.stage >= 5 ).length>>
+				<<set $_plotsEmpty   to $_currentPlot.filter(plot => !(plot.stage >= 1)).length>>
+				<<set $_plotsGrowing to ($_currentPlot.length - $_plotsEmpty - $_plotsToPick - $_plotsToWater)>>
+				<ul class="journal">
+					<li> 
+						<<switch $_plotToDisplay>>
+							<<case "garden">> Orphanage <<if $alex_greenhouse gte 3>>greenhouse<<else>>garden<</if>>
+							<<case "farm">>   Alex's farm
+							<<case "wolf">>   Wolves' cave 
+							<<case "eden">>   Clearing near Eden's cabin 
+							<<case "asylum">> Your asylum 
+							<<default>> Garden $_plotToDisplay
+						<</switch>>
+						<<if $_currentPlot.length gt 1>>
+							has <<number $_currentPlot.length>>
+							<<switch $_currentPlot[0].size>>
+								<<case "small">> <span class="lblue"><<pluralise $_currentPlot.length "bed">></span>,
+								<<case "medium">><span class="teal"> <<pluralise $_currentPlot.length "plot">></span>,
+								<<default>>      <span class="green"><<pluralise $_currentPlot.length "field">></span>,
+							<</switch>>
+							<<if $_plotsGrowing == $_currentPlot.length>>
+								all of which are <span class="teal">healthy</span>. /* rephrase to show that the plants on the plots are growing/thriwing */
+							<<elseif $_plotsEmpty == $_currentPlot.length>>
+								all of which are empty.
+							<<elseif $_plotsToWater == $_currentPlot.length>>
+								all of which need <span class="lblue">watering</span>.
+							<<elseif $_plotsToPick == $_currentPlot.length>>
+								all of which are <span class="green">ready for harvest</span>.
+							<<else>>
+								of which
+								<<if $_plotsToPick>>
+									<<if $_plotsEmpty>>  <span class="gold">$_plotsEmpty  </span> <<pluralise $_plotsEmpty "is">> empty<<if $_plotsToWater>>,<</if>><</if>>
+									<<if $_plotsToWater>><span class="gold">$_plotsToWater</span> need watering<</if>>
+									and <span class="gold">$_plotsToPick </span> <<pluralise $_plotsToPick  "is">> ready for harvest.
+								<<else>>
+									<<if $_plotsEmpty>><span class="gold">$_plotsEmpty</span> <<pluralise $_plotsEmpty "is">> empty and <</if>>
+									<span class="gold">$_plotsToWater</span> need watering.
+								<</if>>
+							<</if>>
+						<<elseif $_currentPlot.length is 1>>
+							<<switch $_currentPlot[0].size>>
+								<<case "small">> <span class="lblue">bed</span>
+								<<case "medium">><span class="teal">plot</span>
+								<<default>>      <span class="green">field</span>
+							<</switch>>
+							<<if $_plotsEmpty>>is empty<<elseif $_plotsToWater>>needs watering<<elseif $_plotsGrowing>>is growing<<elseif $_plotsToPick>>is ready for harvest<</if>>.
+						<</if>>
+					</li>
+				</ul>
+			<</if>>
+		<</for>>
 	<</if>>
 
 	<<if $museumintro is 1 or $plants_known.length gte 0>>
