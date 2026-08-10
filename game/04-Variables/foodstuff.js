@@ -33,6 +33,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 350,
@@ -55,6 +56,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 350,
@@ -77,6 +79,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["summer"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 500,
@@ -99,6 +102,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
+				featCost: 1,
 			},
 			shop: {
 				sell_price: 150,
@@ -121,6 +125,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 200,
@@ -143,6 +148,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn", "winter"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 300,
@@ -165,6 +171,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 200,
@@ -187,6 +194,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 200,
@@ -418,6 +426,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 80,
@@ -440,6 +449,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 120,
@@ -462,6 +472,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["autumn"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 100,
@@ -484,6 +495,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn", "winter"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 50,
@@ -626,6 +638,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "winter"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 90,
@@ -648,6 +661,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn", "winter"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 130,
@@ -670,6 +684,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 100,
@@ -727,6 +742,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["autumn"],
 				tags: [],
+				featCost: 20,
 			},
 			shop: {
 				sell_price: 200,
@@ -779,6 +795,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 250,
@@ -915,6 +932,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["summer", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 70,
@@ -1035,6 +1053,7 @@ function initFoodstuff() {
 				seed_name: "wheat",
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 40,
@@ -1371,6 +1390,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["summer", "autumn"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 80,
@@ -1455,6 +1475,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "winter"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 100,
@@ -1502,6 +1523,7 @@ function initFoodstuff() {
 				seed_name: "rice",
 				seasons: ["spring", "summer", "autumn"],
 				tags: [],
+				featCost: 20,
 			},
 			shop: {
 				sell_price: 50,
@@ -2936,6 +2958,7 @@ function initFoodstuff() {
 				seed_name: "spinach",
 				seasons: ["spring", "autumn"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 60,
@@ -3090,6 +3113,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["spring", "summer", "autumn", "winter"],
 				tags: [],
+				featCost: 10,
 			},
 			shop: {
 				sell_price: 400,
@@ -3266,6 +3290,7 @@ function initFoodstuff() {
 				has_seeds: true,
 				seasons: ["summer"],
 				tags: [],
+				featCost: 5,
 			},
 			shop: {
 				sell_price: 300,

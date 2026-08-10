@@ -219,6 +219,18 @@
 												.join("<br>")>>
 											</span>
 										<</foldout>>
+								<<case "seeds">>
+									Starting Seeds: <span class="gold"><<print $featsBoosts.upgrades[_upgradeNames[$_i]]>></span> <<pluralise $featsBoosts.upgrades[_upgradeNames[$_i]] "coin">>
+									<br>
+										<<foldout false "_unlockedSeed">>
+											<span class="gold">Unlocked Seeds</span>
+											<span class="descriptunlocked-hint">
+												<<= Object.keys($featsBoosts.seeds)
+												.filter(k => $featsBoosts.seeds[k])
+												.map(k => `${k.replace(/_/g," ").toUpperFirst()}: <span class="gold">${setup.foodstuff[k].tending.featCost}</span> coins`)
+												.join("<br>")>>
+											</span>
+										<</foldout>>
 								<<default>>
 									<<= $featsBoosts.name[_upgradeNames[$_i]]>>: <span class="gold"><<print $featsBoosts.upgrades[_upgradeNames[$_i]]>></span> <<pluralise $featsBoosts.upgrades[_upgradeNames[$_i]] "coin">>
 							<</switch>>
@@ -259,6 +271,8 @@
 				<span class="gold">Starting Tattoos</span>
 			<<case "specialClothing">>
 				<span class="gold">Special Clothing</span>
+			<<case "seeds">>
+				<span class="gold">Starting Seeds</span>
 			<<case "sexToys">>
 				<span class="gold">Sex Toys</span>
 			<<default>>
@@ -335,6 +349,14 @@
 							You can purchase <span class="teal">up to half</span> of special clothing sets from the Forest Shop to start the game with them <span class="green">unlocked</span>, if you've unlocked it in any other save.
 						<<else>>
 							You can purchase <span class="teal">any amount</span> of special clothing sets from the Forest Shop to start the game with them <span class="green">unlocked</span>, if you've unlocked it in any other save.
+						<</if>>
+					<<case "seeds">>
+						<<if _purchasedUpgrades is 0>>
+							You will start the game <span class='red'>without</span> any seeds.
+						<<elseif _purchasedUpgrades is 1>>
+							You can purchase <span class="teal">up to half</span> of seeds to start the game with them <span class="green">unlocked</span>, if you've unlocked them in any other save.
+						<<else>>
+							You can purchase <span class="teal">any amount</span> of seeds to start the game with them <span class="green">unlocked</span>, if you've unlocked them in any other save.
 						<</if>>
 					<<case "sexToys">>
 						You will start the game with
@@ -460,6 +482,9 @@
 				<<if _name is "specialClothing">>
 					<div id="specialClothing"><<specialClothingFeatUI>></div>
 				<</if>>
+				<<if _name is "seeds">>
+					<div id="seeds"><<seedsFeatUI>></div>
+				<</if>>
 			<</if>>
 		<<else>>
 			<span class="red"><<print $featsBoosts.missing[_name]>></span>
@@ -570,6 +595,12 @@
 				Select the first upgrade to purchase up to half of previously unlocked special clothes. Purchase the second rank to purchase any number of previously unlocked special clothes.
 			<<else>>
 				Select the first upgrade to purchase up to half of previously unlocked special clothes. Acquire a secret feat to purchase any number of previously unlocked special clothes.
+			<</if>>
+		<<case "seeds">>
+			<<if _maxUpgrades is 2>>
+				Select the first upgrade to purchase up to half of previously unlocked seeds. Purchase the second rank to purchase more seeds.
+			<<else>>
+				Select the first upgrade to purchase up to half of previously unlocked seeds. Acquire a feat 'Breedy' to purchase more seeds.
 			<</if>>
 		<<case "sexToys">>
 			Each purchased upgrade will give you three starting sex toys of your choice.
@@ -813,6 +844,76 @@
 						new Wikifier(null, `<<updateFeatsPointsMenu "specialClothing" setup.specialClothesSets["${id}"].featCost>>`);
 					} else {
 						new Wikifier(null, `<<updateFeatsPointsMenu "specialClothing" setup.specialClothesSets["${id}"].featCost "subtract">>`);
+					}
+				}
+			);
+		>>
+	<</if>>
+<</widget>>
+
+<<widget "seedsFeatUI">>
+	<<if $featsBoosts.upgradeDetails.seeds.purchased>>
+		<<set _totalSeeds to Object.keys(setup.foodstuff).filter(food => setup.foodstuff[food].tending?.featCost)>>
+		<<set _totalUnlockedSeeds to $feats.allSaves.seeds>>
+		<<set _totalUnlockedSeedsLimit to $featsBoosts.upgradeDetails.seeds.purchased gte 2 ? Math.ceil(_totalUnlockedSeeds.length / 1) : Math.ceil(_totalUnlockedSeeds.length / 2)>>
+		<<if !Object.values($featsBoosts.seeds).length>>
+			<!-- Populate object -->
+			<<for $_labelPop, $_valuePop range _totalSeeds>>
+				<<set $featsBoosts.seeds[$_valuePop] to false>>
+			<</for>>
+		<</if>>
+		<<run $(() => { $('[data-limit-group]').first().trigger('change.macros') })>>
+		<br>
+		<div class="settingsHeader" style="margin-bottom: 0.5em">Seeds To Unlock</div>
+		<form>
+			<fieldset>
+				<legend>Select up to _totalUnlockedSeedsLimit seeds</legend>
+					<div class="red" style="padding-left: 10px">If you find that certain seeds aren't unlocked when they should be, try loading a save with the seed unlocked, move a passage, and save.</div>
+					<div class="settingsGridSmall">
+						<<for $_labelC, $_valueC range $featsBoosts.seeds>>
+							<label>
+								<div class="settingsToggleItem" id="specialClothesFeatBooster">
+									<<capture $_labelC>>
+										<<set $_seed to clone(setup.foodstuff[$_labelC])>>
+										<<set $_canAfford to ($feats.allSaves.points - $featsBoosts.pointsUsed) - $_seed.tending.featCost gte 0>>
+										<<set $_costDisplay to "<<print $_seed.tending.featCost>>"+ ($options.images is 1 ? " <img class='imgButton' src='img/ui/coin-gold.gif'/>" : "Vrelcoins")>>
+
+										<<if _totalUnlockedSeeds.includes($_labelC)>>
+											<<if $_canAfford or $featsBoosts.seeds[$_labelC]>>
+												<<checkbox "$featsBoosts.seeds[$_labelC]" false true autocheck "seedsFeatSelect" _totalUnlockedSeedsLimit "<span class='red'>Selection limit reached!</span>">>
+												<<icon `"tending/" + $_seed.icon`>>
+												<span class="gold"><<print $_seed.name.toUpperFirst()>></span>
+											<<else>>
+												<<set $_listText to "<span class='red'>Not enough VrelCoins!</span>">>
+												<input type="checkbox" class="black tooltip-anchor" @tooltip="$_listText" disabled>
+												<<icon `"tending/" + $_seed.icon`>>
+												<span class="gold tooltip-anchor" @tooltip="$_listText"><<print $_seed.name.toUpperFirst()>></span>
+											<</if>>
+											<div class="gold" style="display:inline-block">($_costDisplay)</div>
+										<<else>>
+											<<set $_hints to []>>
+											<<set $_hintText to $_hints.length ? "<br><span class='black'>Hint: " + formatList($_hints, 'or', true).toUpperFirst() + "</span>" : "">>
+											<<set $_listText to "<span class='red'>Not earned!</span>" + $_hintText>>
+											<input type="checkbox" class="black tooltip-anchor" @tooltip="$_listText" disabled>
+											<<lockicon>>
+											<span class="black tooltip-anchor" @tooltip="$_listText"><<print $_seed.name.toUpperFirst()>></span>
+											<div class="black" style="display:inline-block">($_costDisplay)</div>
+										<</if>>
+									<</capture>>
+								</div>
+							</label>
+						<</for>>
+					</div>
+			</fieldset>
+		</form>
+			<<run $(document).off("change.specialClothesFeat").on("change.specialClothesFeat", /* ???? */
+				'input[type="checkbox"][data-limit-group="seedsFeatSelect"]',
+				function () {
+					const id = $(this).attr("id").replace(/^checkbox-featsboostsseeds-/, "").replace(/-/g, "_"); /* featsboostsseeds is $featsBoosts.seeds[$_labelC] */
+					if ($(this).prop("checked")) {
+						new Wikifier(null, `<<updateFeatsPointsMenu "seeds" setup.foodstuff["${id}"].tending.featCost>>`);
+					} else {
+						new Wikifier(null, `<<updateFeatsPointsMenu "seeds" setup.foodstuff["${id}"].tending.featCost "subtract">>`);
 					}
 				}
 			);
