@@ -33,7 +33,7 @@ const statChange = (() => {
 	 * 60 $tiredness (1 hour of time)
 	 * 15-30 $trauma.
 	 */
-	function alcoholClamp() {
+	function drunkClamp() {
 		// Overflow check
 		const overflow = V.drunk - V.drunkmax;
 		if (overflow > 0) {
@@ -51,7 +51,7 @@ const statChange = (() => {
 		V.drunk = Math.clamp(V.drunk, 0, V.drunkmax);
 		fatigueClamp(); // Calls stressClamp() and traumaClamp()
 	}
-	DefineMacro("alcoholClamp", alcoholClamp);
+	DefineMacro("drunkClamp", drunkClamp);
 
 	/**
 	 * Fatigue ($tiredness) has a maximum value of 2,000.
@@ -185,7 +185,7 @@ const statChange = (() => {
 
 		V.drunk += amount * mod;
 
-		alcoholClamp();
+		drunkClamp();
 	}
 	DefineMacro("alcohol", alcohol);
 
@@ -1505,7 +1505,7 @@ const statChange = (() => {
 	DefineMacro("badEndTrackingEnd", (source, optional) => badEndTrackingEnd(source, optional));
 
 	return {
-		alcoholClamp,
+		drunkClamp,
 		fatigueClamp,
 		stressClamp,
 		traumaClamp,
