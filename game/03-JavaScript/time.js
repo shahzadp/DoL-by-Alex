@@ -2134,7 +2134,9 @@ function dailySchoolEffects() {
 		V.schoolLessonsMissed.english += !Number(V.daily.school.attended.english);
 		V.schoolLessonsMissed.history += !Number(V.daily.school.attended.history);
 		V.schoolLessonsMissed.swimming += !Number(V.daily.school.attended.swimming);
-		V.lessonmissed += 5 - attended * 2; // Reduce lessonmissed if lessons are attended
+		const BREAKPOINTS = [200, 400, 700, 1000];
+		const bonus = BREAKPOINTS.filter(t => V.school / 4 >= t).length;
+		V.lessonmissed += 5 - attended * (2 + bonus); // Reduce lessonmissed if lessons are attended
 		V.lessonmissed = Math.max(0, V.lessonmissed);
 		V.lessonmissedtext = 5 - attended;
 	}
