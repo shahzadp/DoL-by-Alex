@@ -1261,7 +1261,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Booze`, stayOnPassageFn],
-			widgets: [`<<alcohol 60>>`],
+			widgets: [`<<drunk 60>>`],
 		},
 		{
 			link: [`Drugged`, stayOnPassageFn],

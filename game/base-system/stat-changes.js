@@ -18,12 +18,12 @@ const statChange = (() => {
 	// Overflow (Clamp) Code Section
 
 	/**
-	 * Alcohol ($drunk) has a maximum value of 1,000.
+	 * $drunk has a maximum value of 1,000.
 	 *
 	 * Fatigue ($tiredness) has a maximum value of 2,000.
 	 * Trauma ($trauma) has a maximum value of 5,000.
 	 *
-	 * Conversion rates for excess alcohol are:
+	 * Conversion rates for excess $drunk are:
 	 * 1 $drunk ==> 1 $tiredness
 	 * 1 $drunk ==> 0.25 $trauma
 	 *
@@ -137,7 +137,7 @@ const statChange = (() => {
 	 *
 	 * A regular PC can technically drink 2,000 (fatigue) / 60 (alcohol) = 33 bottles of alcohol before their $tiredness overflows into $stress. After their $tiredness overflows, they can drink 11 more bottles before they pass out from the $stress overflow.
 	 *
-	 * If the PC starts drinking at maximum alcohol, minimum fatigue, minimum stress, maximum trauma, and minimum control, they will be able to drink 44 bottles before passing out. This translates to 44 * 75 = 3,300 $trauma, which would overflow into -660 beauty.
+	 * If the PC starts drinking at maximum $drunk, minimum fatigue, minimum stress, maximum trauma, and minimum control, they will be able to drink 44 bottles before passing out. This translates to 44 * 75 = 3,300 $trauma, which would overflow into -660 beauty.
 	 *
 	 * That is, a PC under those circumstances can theoretically reduce their beauty by 6.6% each day without passing out. In comparison, a PC at maximum trauma loses a maximum of 1% beauty at the start of each day.
 	 *
@@ -165,11 +165,11 @@ const statChange = (() => {
 
 	// Overflow-Using Code Section
 
-	function alcohol(amount) {
-		if (isNaN(amount)) paramError("alcohol", "amount", amount, "Expected a number.");
+	function drunk(amount) {
+		if (isNaN(amount)) paramError("drunk", "amount", amount, "Expected a number.");
 		amount = Number(amount);
 		/**
-		 * Modify the effect of alcohol on the player, based on their alcohol tolerance.
+		 * Modify the effect of drunk on the player, based on their drunk tolerance.
 		 *
 		 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
 		 *
@@ -187,7 +187,7 @@ const statChange = (() => {
 
 		drunkClamp();
 	}
-	DefineMacro("alcohol", alcohol);
+	DefineMacro("drunk", drunk);
 
 	function tiredness(amount, source) {
 		if (isNaN(amount)) paramError("tiredness", "amount", amount, "Expected a number.");
@@ -1509,7 +1509,7 @@ const statChange = (() => {
 		fatigueClamp,
 		stressClamp,
 		traumaClamp,
-		alcohol,
+		drunk,
 		tiredness,
 		stress,
 		trauma,
