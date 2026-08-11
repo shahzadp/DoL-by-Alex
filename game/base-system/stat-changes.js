@@ -35,7 +35,7 @@ const statChange = (() => {
 	 */
 	function alcoholClamp() {
 		// Overflow check
-		const overflow = V.drunk - 1000;
+		const overflow = V.drunk - V.drunkmax;
 		if (overflow > 0) {
 			// Add 100% of the overflow to fatigue.
 			V.tiredness += overflow;
@@ -48,7 +48,7 @@ const statChange = (() => {
 		}
 
 		// Clamps for safety.
-		V.drunk = Math.clamp(V.drunk, 0, 1000);
+		V.drunk = Math.clamp(V.drunk, 0, V.drunkmax);
 		fatigueClamp(); // Calls stressClamp() and traumaClamp()
 	}
 	DefineMacro("alcoholClamp", alcoholClamp);
