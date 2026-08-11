@@ -173,9 +173,9 @@ const statChange = (() => {
 		 *
 		 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
 		 *
-		 * Because of that, V.alcoholMod is applied to both positive and negative changes to the player's alcohol level.
+		 * Because of that, V.drunkSensitivity is applied to both positive and negative changes to the player's drunk level.
 		 */
-		let mod = V.alcoholMod;
+		let mod = V.drunkSensitivity;
 
 		/**
 		 * The "Dendrophile" trait amplifies the impact of alcohol consumption, without affecting how quickly the player
