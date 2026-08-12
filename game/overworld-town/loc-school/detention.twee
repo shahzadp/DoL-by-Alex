@@ -14,9 +14,16 @@
 <<npc Leighton>><<person1>><<rng>>
 <<set $daily.school.detentionAttended to 1>>
 
+/*
+Detention weights: each level is 4 times more likely to appear than all previous levels combined.
+For example, at 30 detention there's a 75% of getting either "car wash" or "paddle give" events.
+"spank" and "paddle receive" have normal versions at 40+ detention and harsher variants at 50+, explaining the custom weight calculation
+Some events are replaced with more severe events if PC is deemed (randomly) to be delinquent (see _delinquent).
+*/
+
 <<cleareventpool>>
 <<if $detention lte 10>>
-	<<addinlineevent "sit">>
+	<<addinlineevent "sit" 1>>
 		You enter Leighton's office. <<He>> takes <<his>> seat in front of <<his>> desk and beckons you to sit at a small desk in the corner.
 		<br><br>
 		"It's only a minor infringement, I won't keep you long." <<He>> turns to <<his>> computer and seemingly forgets about you.
@@ -28,7 +35,7 @@
 		<<link [[Next|Hallways]]>><<endevent>><</link>>
 	<</addinlineevent>>
 
-	<<addinlineevent "notes">>
+	<<addinlineevent "notes" 1>>
 		You enter Leighton's office. <<He>> sits at <<his>> desk and looks up at you.
 		<<if $delinquency gte 400>>
 			"Every day, the same faces," <<he>> sighs. "So what now?"
@@ -48,8 +55,9 @@
 	<</addinlineevent>>
 <<else>>
 	<<set _detention_above_50 to $detention gte 50 ? true : false>>
+	<<set _delinquent to $delinquency gte random(1, 1000)>>
 
-	<<addinlineevent "lines">>
+	<<addinlineevent "lines" 1>>
 		You enter Leighton's office. <<He>> takes <<his>> seat in front of <<his>> desk, then points at the whiteboard opposite <<him>>. "Write 'I will obey the rules,' repeatedly. Don't stop until I say stop."
 		<br><br>
 		<<if pcAreArmsBound("any") or $feetuse is "bound">>
@@ -67,7 +75,7 @@
 	<</addinlineevent>>
 
 	<<if $detention gte 20>>
-		<<addinlineevent "grope">>
+		<<addinlineevent "grope" 1.5>>
 			<<generates2>>
 			<<wearProp "marker">>
 			You enter Leighton's office. A <<person2>><<person>> stands sheepishly in the corner. "Two of you today." <<person1>>Leighton says, taking the seat at <<his>> desk. <<He>> points at the whiteboard opposite <<him>>. "Write 'I will obey the rules,' repeatedly. Both of you. Don't stop until I say stop."
@@ -89,7 +97,7 @@
 			<br>
 		<</addinlineevent>>
 
-		<<addinlineevent "paddle watch">>
+		<<addinlineevent "paddle watch" 1.5>>
 			<<generates2>>
 			You enter the office to find Leighton sitting at <<his>> desk, a <<person2>><<person>> sitting opposite looking sorry for <<himself>>. Leighton pauses and turns to you as you enter, cutting off an angry lecture. "Ah, there you are, young <<lady>>. Today you get to see what happens to naughty <<personsimple>>s who break the rules." The <<person>> slumps down in <<his>> chair. It seems <<he>> knows what this means. "<<He>> was caught touching another student inappropriately during <<his>> maths lesson. Isn't that right?"
 			<br><br>
@@ -118,7 +126,7 @@
 	<</if>>
 
 	<<if $detention gte 30>>
-		<<addinlineevent "car">>
+		<<addinlineevent "car wash" 6>>
 			You enter Leighton's office. "I have something special I need you to do today." <<He>> points out the window, at <<his>> car. "It needs a wash. I left everything you'll need out there, I'll keep an eye on you from here. You'll want to strip down to your underwear for this job, no sense getting your clothes wet and dirty."
 			<br><br>
 
@@ -148,7 +156,7 @@
 			<br>
 		<</addinlineevent>>
 
-		<<addinlineevent "paddle give">>
+		<<addinlineevent "paddle give" 6>>
 			<<generateyv2>>
 			You enter the office to find Leighton sitting at <<person1>><<his>> desk, a <<person2>><<person>> sitting opposite looking sorry for <<himself>>. Leighton pauses and turns to you as you enter, cutting off an angry lecture.
 			<br><br>
@@ -178,24 +186,11 @@
 	<</if>>
 
 	<<if $detention gte 40>>
-		<<addinlineevent "spank" `_detention_above_50 ? 2 : 1`>>
+		<<if _delinquent>>
+			<<addinlineevent "paddle receive" `_detention_above_50 ? 240 : 48`>>
 				<<if _detention_above_50>>
-					<<set $phase to random(1,2)>>
-				<<else>>
-					<<set $phase to 2>>
-				<</if>>
-
-				You enter Leighton's office. <<He>> sits at <<his>> desk and beckons you over. When you're close, <<he>> grabs you by the arms and bends you over <<his>> knee.
-				<br><br>
-
-				<<link [[Next|School Detention Spank]]>><<set $molestationstart to 1>><</link>>
-				<br>
-		<</addinlineevent>>
-
-		<<if $delinquency gte random(1, 1000)>>
-			<<addinlineevent "paddle receive" `_detention_above_50 ? 8 : 4`>>
-				<<if _detention_above_50>>
-					<<set $phase to random(0,1)>>
+					/* phase 1 is harsher (than 0) and due to higher detention has a higher weight (4:1) */
+					<<set $phase to weightedRandom([1, 4], [0, 1])>>
 				<<else>>
 					<<set $phase to 0>>
 				<</if>>
@@ -246,12 +241,27 @@
 				<<link [[Next|School Detention Paddle 1]]>><<set $molestationstart to 1>><</link>>
 				<br>
 			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent "spank" `_detention_above_50 ? 240 : 48`>>
+				<<if _detention_above_50>>
+					/* phase 1 is harsher (than 2) and due to higher detention has a higher weight (4:1) */
+					<<set $phase to weightedRandom([1, 4], [2, 1])>>
+				<<else>>
+					<<set $phase to 2>>
+				<</if>>
+
+				You enter Leighton's office. <<He>> sits at <<his>> desk and beckons you over. When you're close, <<he>> grabs you by the arms and bends you over <<his>> knee.
+				<br><br>
+
+				<<link [[Next|School Detention Spank]]>><<set $molestationstart to 1>><</link>>
+				<br>
+			<</addinlineevent>>
 		<</if>>
 	<</if>>
 
 	<<if $detention gte 60>>
-		<<if $delinquency gte random(1, 1000)>>
-			<<addinlineevent "paddle audience" 4>>
+		<<if _delinquent>>
+			<<addinlineevent "paddle audience" 768>>
 				/* Leighton paddling PC while other watches */
 				<<generates2>><<person1>>
 				You enter the office to find Leighton sitting at <<his>> desk, a <<person2>><<person>> sitting opposite, looking sorry for <<himself>>. Leighton pauses and turns to you as you enter, cutting off an angry lecture. "It's your lucky day, young <<print $pronoun is "m" ? "man" : "lady">>. Today you can observe what happens to naughty <<girls>> who break the rules."
@@ -282,66 +292,66 @@
 				<<link [[Next|School Detention Paddle 2]]>><<set $molestationstart to 1>><</link>>
 				<br>
 			<</addinlineevent>>
-		<</if>>
-
-		<<addinlineevent "spank naked">>
-			You enter Leighton's office.
-			"Lock the door," <<he>> demands. "You're in big trouble."
-			You comply.
-			"Give me your clothes. All of them. Now. I'm searching them for drugs. And yes, I'm serious."
-			<br><br>
-
-			<<if pcAreArmsBound("any") or $feetuse is "bound">>
-				You roll your eyes and turn to show <<him>> your bound <<if pcAreArmsBound("any")>>arms<<if $feetuse is "bound">> and <</if>><</if>><<if $feetuse is "bound">>legs<</if>>.
-
-				<<His>> eyes flash. For a moment you think you see lust. "How did you..? Never mind." <<He>> walks over to you. "I really don't want to know."
+		<<else>>
+			<<addinlineevent "spank naked" 768>>
+				You enter Leighton's office.
+				"Lock the door," <<he>> demands. "You're in big trouble."
+				You comply.
+				"Give me your clothes. All of them. Now. I'm searching them for drugs. And yes, I'm serious."
 				<br><br>
 
-				You feel your limbs come loose.<<unbind>>
-				<br><br>
-				"Continue," <<he>> says. "Your clothes."
-				<br><br>
-			<</if>>
-			<<if $worn.upper.name isnot "naked">>
-				You remove your $worn.upper.name and your $worn.lower.name and hand them to <<him>>. <<He>> makes a show of searching through them.
-			<<else>>
-				You remove your $worn.lower.name and hand them to <<him>>. <<He>> makes a show of searching through them.
-			<</if>>
-			<br><br>
-			<<upperstrip>><<lowerstrip>>
-			<<if !$worn.under_lower.type.includes("naked")>>
-				"I said everything," <<he>> states, pointing at your $worn.under_lower.name.
-				"Hurry up."
-				<br>
-				Hiding any feelings, you strip your<<if !$worn.under_upper.type.includes("naked")>> $worn.under_lower.name and $worn.under_upper.name handing <<underlowerit>> to <<him>>.<<else>> $worn.under_lower.name and hand <<underlowerit>> to <<him>>.<</if>> <<He>> examines <<underlowerit>> closely.
-				"Drugs," <<he>> says. "I smell drugs."
-				<<He>> holds your $worn.under_lower.name to <<his>> nose and inhales deeply several times. "I'm confiscating these for drug testing."
-				<br><br>
-				<<underlowerruined>><<underupperruined>><<set $phase to 4>>
-			<<else>>
-				"No underwear?" <<he>> comments. "That's against the rules,
-				<<if $player.penisExist and $player.vaginaExist>>
-					young... <<lady>>?"
+				<<if pcAreArmsBound("any") or $feetuse is "bound">>
+					You roll your eyes and turn to show <<him>> your bound <<if pcAreArmsBound("any")>>arms<<if $feetuse is "bound">> and <</if>><</if>><<if $feetuse is "bound">>legs<</if>>.
+
+					<<His>> eyes flash. For a moment you think you see lust. "How did you..? Never mind." <<He>> walks over to you. "I really don't want to know."
+					<br><br>
+
+					You feel your limbs come loose.<<unbind>>
+					<br><br>
+					"Continue," <<he>> says. "Your clothes."
+					<br><br>
+				<</if>>
+				<<if $worn.upper.name isnot "naked">>
+					You remove your $worn.upper.name and your $worn.lower.name and hand them to <<him>>. <<He>> makes a show of searching through them.
 				<<else>>
-					young <<lady>>."
+					You remove your $worn.lower.name and hand them to <<him>>. <<He>> makes a show of searching through them.
 				<</if>>
 				<br><br>
-			<</if>>
-			<<if playerChastity()>>
-				<<He>> does a double-take. "Oh, you're wearing <<if $worn.genitals.name is "chastity parasite">>a... parasite?<<else>>a $worn.genitals.name.<</if>>
-				Okay, let me see that." <<He>> crouches by you, closely examining and probing around your $worn.genitals.name with <<his>> fingers.<<if $worn.genitals.name is "chastity parasite">> It squirms in response to the touch.<<garousal>><<arousal 200 "genitals">><br><br><</if>> "Doesn't feel like you're hiding anything," <<he>> says.
+				<<upperstrip>><<lowerstrip>>
+				<<if !$worn.under_lower.type.includes("naked")>>
+					"I said everything," <<he>> states, pointing at your $worn.under_lower.name.
+					"Hurry up."
+					<br>
+					Hiding any feelings, you strip your<<if !$worn.under_upper.type.includes("naked")>> $worn.under_lower.name and $worn.under_upper.name handing <<underlowerit>> to <<him>>.<<else>> $worn.under_lower.name and hand <<underlowerit>> to <<him>>.<</if>> <<He>> examines <<underlowerit>> closely.
+					"Drugs," <<he>> says. "I smell drugs."
+					<<He>> holds your $worn.under_lower.name to <<his>> nose and inhales deeply several times. "I'm confiscating these for drug testing."
+					<br><br>
+					<<underlowerruined>><<underupperruined>><<set $phase to 4>>
+				<<else>>
+					"No underwear?" <<he>> comments. "That's against the rules,
+					<<if $player.penisExist and $player.vaginaExist>>
+						young... <<lady>>?"
+					<<else>>
+						young <<lady>>."
+					<</if>>
+					<br><br>
+				<</if>>
+				<<if playerChastity()>>
+					<<He>> does a double-take. "Oh, you're wearing <<if $worn.genitals.name is "chastity parasite">>a... parasite?<<else>>a $worn.genitals.name.<</if>>
+					Okay, let me see that." <<He>> crouches by you, closely examining and probing around your $worn.genitals.name with <<his>> fingers.<<if $worn.genitals.name is "chastity parasite">> It squirms in response to the touch.<<garousal>><<arousal 200 "genitals">><br><br><</if>> "Doesn't feel like you're hiding anything," <<he>> says.
+					<br><br>
+				<</if>>
+				<<He>> sits back at <<his>> desk and beckons you over. When you're close, <<he>> grabs you by the arms and bends you over <<his>> knee.
 				<br><br>
-			<</if>>
-			<<He>> sits back at <<his>> desk and beckons you over. When you're close, <<he>> grabs you by the arms and bends you over <<his>> knee.
-			<br><br>
 
-			<<link [[Next|School Detention Spank]]>><<set $molestationstart to 1>><</link>>
-			<br>
-		<</addinlineevent>>
+				<<link [[Next|School Detention Spank]]>><<set $molestationstart to 1>><</link>>
+				<br>
+			<</addinlineevent>>
+		<</if>>
 	<</if>>
 
 	<<if $detention gte 70>>
-		<<addinlineevent "paddle large audience" 4>>
+		<<addinlineevent "paddle large audience" 1024>>
 			<<generates2>><<generates3>><<generates4>>
 			You enter the office to find Leighton sitting at <<his>> desk. Three students are sitting opposite, looking <<print either (`bored`,`sorry for themselves`,`bitter`)>>. Leighton pauses and faces you as you enter, cutting off an angry lecture.
 			<br><br>
