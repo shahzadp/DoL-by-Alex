@@ -1816,7 +1816,7 @@ function initFeet() {
 			colour: 0,
 			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
-			type: ["costume", "dance", "fetish", "heels"],
+			type: ["costume", "dance", "fetish", "heels", "dark"],
 			gender: "f",
 			femininity: 200,
 			warmth: 1,

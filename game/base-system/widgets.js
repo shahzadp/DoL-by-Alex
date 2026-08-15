@@ -664,6 +664,8 @@ function calculateallure() {
 
 	// Final allure after applying difficulty mods
 	allure *= V.settings.allureModifier;
+
+	allure = Math.clamp(allure, 0, 16000);
 	V.allure = Math.floor(allure);
 }
 DefineMacro("calculateallure", calculateallure);
