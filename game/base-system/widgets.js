@@ -599,6 +599,7 @@ function calculateallure() {
 	// Add the reveal of each accessory to the PC's attractiveness.
 	for (const slot of ["head", "face", "neck", "legs", "feet", "handheld", "hands"]) attractiveness += V.worn[slot].reveal || 0;
 
+	/* eslint-disable prettier/prettier, jsdoc/require-param */
 	/**
 	 * Bonus attractiveness from transformations
 	 *
@@ -609,18 +610,20 @@ function calculateallure() {
 	 * Cat:				200-500
 	 * Cow:				200-500
 	 * Harpy:			200-500
-	 * Fox:				225-750
+	 * Fox:				200-750
 	 */
-
 	const partsHidden = (tf, parts) => parts.filter(part => V.transformationParts[tf][part] === "hidden").length;
-	if (V.demon >= 6) attractiveness += 500 - 100 * partsHidden("demon", ["horns", "tail", "wings"]);
-	if (V.angel >= 6) attractiveness += 500 - 150 * partsHidden("angel", ["halo", "wings"]);
-	if (V.fallenangel >= 2) attractiveness += 500 - 150 * partsHidden("fallenAngel", ["halo", "wings"]);
-	if (V.wolfgirl >= 6) attractiveness += 500 - 100 * partsHidden("wolf", ["tail", "ears", "cheeks"]);
-	if (V.cat >= 6) attractiveness += 500 - 150 * partsHidden("cat", ["tail", "ears"]);
-	if (V.cow >= 6) attractiveness += 500 - 100 * partsHidden("cow", ["ears", "horns", "tail"]);
-	if (V.harpy >= 6) attractiveness += 500 - 60 * partsHidden("bird", ["tail", "eyes", "wings", "malar", "plumage"]);
-	if (V.fox >= 6) attractiveness += 750 - 175 * partsHidden("fox", ["ears", "tail", "cheeks"]);
+	let transformationBonus = 0;
+	if (V.demon >= 6) transformationBonus += 		500 - 300 * (partsHidden("demon", ["horns", "tail", "wings"]) / 3);
+	if (V.angel >= 6) transformationBonus += 		500 - 300 * (partsHidden("angel", ["halo", "wings"]) / 2);
+	if (V.fallenangel >= 2) transformationBonus += 	500 - 300 * (partsHidden("fallenAngel", ["halo", "wings"]) / 2);
+	if (V.wolfgirl >= 6) transformationBonus += 	500 - 300 * (partsHidden("wolf", ["tail", "ears", "cheeks"]) / 3);
+	if (V.cat >= 6) transformationBonus += 			500 - 300 * (partsHidden("cat", ["tail", "ears"]) / 2);
+	if (V.cow >= 6) transformationBonus += 			500 - 300 * (partsHidden("cow", ["ears", "horns", "tail"]) / 3);
+	if (V.harpy >= 6) transformationBonus += 		500 - 300 * (partsHidden("bird", ["tail", "eyes", "wings", "malar", "plumage"]) / 5);
+	if (V.fox >= 6) transformationBonus += 			750 - 550 * (partsHidden("fox", ["ears", "tail", "cheeks"]) / 3);
+	attractiveness += Math.round(transformationBonus);
+	/* eslint-enable prettier/prettier, jsdoc/require-param */
 
 	// Each source of makeup adds 100 attractiveness.
 	for (const makeup of ["lipstick", "mascara", "eyeshadow", "blusher"]) {
