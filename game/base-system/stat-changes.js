@@ -33,7 +33,7 @@ const statChange = (() => {
 	 * 60 $tiredness (1 hour of time)
 	 * 15-30 $trauma.
 	 */
-	function alcoholClamp() {
+	function drunkClamp() {
 		// Overflow check
 		const overflow = V.drunk - V.drunkmax;
 		if (overflow > 0) {
@@ -51,7 +51,7 @@ const statChange = (() => {
 		V.drunk = Math.clamp(V.drunk, 0, V.drunkmax);
 		fatigueClamp(); // Calls stressClamp() and traumaClamp()
 	}
-	DefineMacro("alcoholClamp", alcoholClamp);
+	DefineMacro("drunkClamp", drunkClamp);
 
 	/**
 	 * Fatigue ($tiredness) has a maximum value of 2,000.
@@ -173,9 +173,9 @@ const statChange = (() => {
 		 *
 		 * Note that their tolerance only changes how much they're IMPACTED by alcohol consumption. A heavyweight may be able to drink more than a lightweight, but their bodies will still flush out alcohol at the same rate.
 		 *
-		 * Because of that, V.alcoholMod is applied to both positive and negative changes to the player's alcohol level.
+		 * Because of that, V.drunkSensitivity is applied to both positive and negative changes to the player's drunk level.
 		 */
-		let mod = V.alcoholMod;
+		let mod = V.drunkSensitivity;
 
 		/**
 		 * The "Dendrophile" trait amplifies the impact of alcohol consumption, without affecting how quickly the player
@@ -185,7 +185,7 @@ const statChange = (() => {
 
 		V.drunk += amount * mod;
 
-		alcoholClamp();
+		drunkClamp();
 	}
 	DefineMacro("alcohol", alcohol);
 
@@ -1505,7 +1505,7 @@ const statChange = (() => {
 	DefineMacro("badEndTrackingEnd", (source, optional) => badEndTrackingEnd(source, optional));
 
 	return {
-		alcoholClamp,
+		drunkClamp,
 		fatigueClamp,
 		stressClamp,
 		traumaClamp,

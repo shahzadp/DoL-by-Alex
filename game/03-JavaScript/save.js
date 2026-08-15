@@ -971,7 +971,7 @@ function settingsObjects(type) {
 					textMap: { 1: "Normal", 2: "Sensitive", 3: "Very Sensitive" },
 					randomize: "characterTrait",
 				},
-				alcoholMod: {
+				drunkSensitivity: {
 					min: 0.5,
 					max: 1.5,
 					decimals: 1,
