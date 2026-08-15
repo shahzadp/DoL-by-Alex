@@ -286,7 +286,7 @@ function initSpecialClothes() {
 		// Valentines
 		valentines: {
 			text: "collection of Valentine's Day clothes",
-			requirements: () => Time.hasDatePassed(2, 7),
+			requirements: () => Time.hasDatePassed(2, 6),
 			hint: "in stock from <<= getFormattedDate(new DateTime(Time.year, 2, 7))>>",
 			shop: ["forest"],
 			feat: false,

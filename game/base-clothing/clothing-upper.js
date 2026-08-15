@@ -10740,7 +10740,7 @@ function initUpper() {
 			colour_sidebar: 1,
 			exposed: 0,
 			exposed_base: 0,
-			type: ["costume", "fetish", "bellyShow"],
+			type: ["costume", "fetish", "bellyShow", "dark"],
 			set: "upper",
 			gender: "f",
 			femininity: 200,

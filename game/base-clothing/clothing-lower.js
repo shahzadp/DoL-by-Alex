@@ -8931,7 +8931,7 @@ function initLower() {
 			anus_exposed: 0,
 			anus_exposed_base: 0,
 			type: ["holy", "costume"],
-			set: "nun",
+			set: "nunlong",
 			gender: "f",
 			femininity: 200,
 			warmth: 4,
@@ -12237,7 +12237,7 @@ function initLower() {
 			description: "Top of the class.",
 			cost: 0,
 			shop: ["clothing"],
-			type: ["school"],
+			type: ["school", "formal"],
 			combat: {
 				reference: "skirt",
 			},
