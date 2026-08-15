@@ -580,6 +580,13 @@ function updateClothes() {
 			for (const item of V.store[slot]) updateClothesItem(slot, item);
 		}
 
+		/* Bailey Confiscation System */
+		if (V.bailey_confiscation && Array.isArray(V.bailey_confiscation.items)) {
+			for (const held of V.bailey_confiscation.items) {
+				if (held.source === "clothing" && held.slot === slot && held.item) updateClothesItem(slot, held.item);
+			}
+		}
+
 		/* === $outfit section === */
 		for (const outfit of V.outfit) {
 			switch (outfit[slot]) {
@@ -740,6 +747,7 @@ function wardrobesUpdate() {
 	if (!V.wardrobes.temple) {
 		V.wardrobes.temple = clone(defWardrobe);
 		V.wardrobes.temple.unlocked = V.temple_rank === "monk";
+		V.wardrobes.temple.isolated = true;
 		V.wardrobes.temple.space = 20;
 	}
 	if (!V.wardrobes.temple.name) {
@@ -803,6 +811,9 @@ function wardrobesUpdate() {
 		V.wardrobes.avery_mansion.locationRequirement.pushUnique("alley");
 		/* remove broken temporary clothes creeped into main wardrobe */
 		V.wardrobe.lower = V.wardrobe.lower.filter(s => !s.temp);
+	}
+	if (V.objectVersion.wardrobes < 18) {
+		V.wardrobes.temple.isolated = true;
 	}
 }
 DefineMacro("wardrobesUpdate", wardrobesUpdate);

@@ -253,6 +253,11 @@
 	<<if $robinpaid>>
 		<<npcincr Robin trauma -7>>
 	<</if>>
+	<<if $bailey_confiscation>>
+		<<run baileyConfiscationRestore()>>
+		<span class="blue">Bailey has returned your confiscated belongings to you.</span>
+		<br><br>
+	<</if>>
 <</widget>>
 
 <<widget "rentRobinPunishment">>
@@ -1344,3 +1349,178 @@ You're escorted by Bailey back to your bedroom and left alone.
 <br><br>
 
 <<link [[Next|Bedroom]]>><<endevent>><</link>>
+
+:: Widgets Bailey Confiscation [widget]
+/* Bailey Confiscation System */
+
+<<widget "baileyConfiscationList">>
+	<<set _list to baileyConfiscationParts()>><<if _list.length is 0>>your things<</if>><<for _p range _list>><<print _p.sep>><<if _p.kind is "furniture">><<if _p.icon>><<furnitureicon _p.icon>> <</if>><<elseif _p.kind is "clothing">><<clothingicon _p.item _p.slot>> <</if>><<print _p.name>><</for>>
+<</widget>>
+
+<<widget "baileyConfiscationListFull">>
+	<<set _list to baileyConfiscationGrouped()>><<if _list.length is 0>>your things<</if>><<for _p range _list>><<print _p.sep>><<if _p.count gt 1>><<print _p.count>>× <</if>><<if _p.kind is "furniture">><<if _p.icon>><<furnitureicon _p.icon>> <</if>><<elseif _p.kind is "clothing">><<clothingicon _p.item _p.slot>> <</if>><<print _p.name>><</for>>
+<</widget>>
+
+<<widget "baileyRentConfiscation">>
+	<<babyRent true>>
+	<<set _weekRent to $rentmoney + ($babyRent || 0)>>
+	<<set _bundle to baileyConfiscationBundle(_weekRent)>>
+	<<if _bundle.items.length is 0>>
+		A hand rests on your shoulder from behind. <span class="red">It's Bailey.</span>
+		<<if $robinfirstrentfight and ($baileypaychain lt 2 or $renttime lte -1) and _robinAtOrphanage>>
+			<<rentduerobin 0>>
+		<<else>>
+			<<rentdue 0>>
+		<</if>>
+	<<else>>
+		<<npc Bailey>><<person1>>
+		<<run baileyConfiscationApply(_bundle)>>
+
+		You step into the orphanage and see someone leaning against the hallway outside your room. <span class="red">It's Bailey.</span>
+		<br><br>
+
+		Across from <<him>>, you see a few goons carrying your <<baileyConfiscationList>> out of your room.	<span class="red">They're taking your belongings!</span> Bailey watches them work, unbothered.
+		<br><br>
+
+		"You've been dodging rent for weeks," <<he>> says. "Did you think I'd just let that slide?"
+		<br><br>
+
+		The goons start filing past you, whisking your stuff away without sparing you a glance.
+		<br><br>
+
+		"You have one week to pay up properly in my office before I pawn off your junk." <<He>> turns away from you, tossing a hand over <<his>> shoulder dismissively. "Don't make me come looking again."
+		<br><br>
+
+		<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+		<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<br>
+		<<link [[Fight|Bailey Confiscation Fight]]>><<set $fightstart to 1>><<generateRole 1 0 "thug">><<generateRole 2 0 "thug">><<generateRole 3 0 "thug">><</link>><<dangerousText>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "baileyRentReclaimOption">>
+	<<if $bailey_confiscation>>
+		<<babyRent true>>
+		<<set _owed to $rentmoney + ($babyRent or 0)>>
+		<<if $money gte _owed>>
+			<<highicon>><<link [[Reclaim your confiscated things|Bailey Rent Reclaim]]>><</link>> (<<printmoney _owed>>)
+			<br>
+		<<else>>
+			<span class="blue">Reclaim your confiscated things <<printmoney _owed>> (You can't afford it)</span>
+			<br>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "baileyConfiscationNotice">>
+	<<if $bailey_confiscation_lost is 1>>
+		<<set $bailey_confiscation_lost to 0>>
+		<span class="red">You didn't pay Bailey in time to get your things back.</span> <<nnpc_He "Bailey">> has probably pawned them off.
+		<br><br>
+	<</if>>
+<</widget>>
+
+:: Bailey Rent Reclaim
+<<effects>>
+<<npc Bailey>><<person1>>
+<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+<<babyRent>>
+
+<<rentpay>>
+
+<<link [[Next|Orphanage]]>><<endevent>><</link>>
+
+:: Bailey Confiscation Fight
+<<if $fightstart is 1>>
+	<<set $enemyno to 4>>
+	<<set $enemynomax to 4>>
+	<<set $fightstart to 0>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemyanger += 200>>
+	<<npcidlegenitals>>
+	"You'll pay up one way or the other." Bailey says.
+	<br><br>
+	<<set $phase to 1>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+
+<<if $phase is 1>>
+	<<set $phase to 2>>
+	Orphans arrive to watch the fight, drawn by the noise.
+	<br><br>
+<</if>>
+
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0)>>
+	<span id="next"><<link [[Next|Bailey Confiscation Fight Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Bailey Confiscation Fight]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Bailey Confiscation Fight Finish
+<<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation "short">><<set $baileydefeatedlewd += 1>><<set $baileydefeatedchain += 1>><<earnFeat "Bailey's Trouble Maker">>
+
+	<<person1>>One of the watching orphans giggles. Bailey spins to find the culprit, but another laughs behind <<him>>.
+	Soon the whole room is filled with laughter. <<He>> looks back at you. "You'll pay for this," <<he>> says, before storming from the room.
+	<br><br>
+
+	The <<person2>><<person>> drops your stuff. The <<person3>><<person>> follows Bailey out and the <<person4>><<person>> slinks out after them.
+	<br><br>
+
+	The orphans watching cheer loudly over your victory. They help you gather your belongings back into the room.
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<br><br>
+
+	<<run baileyConfiscationRestore()>>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Bedroom]]>><</link>>
+<<elseif $enemyhealth lte 0>>
+	<<set $baileydefeated += 1>><<set $baileydefeatedchain += 1>>
+
+	<<person1>><<He>> backs off for a moment, surprised by your aggression and nursing a bruise.
+	<<He>> notices the crowd formed around the hall. "You'll pay for this. Mark my words." <<He>> storms out.
+	<br><br>
+
+	The <<person2>><<person>> drops your stuff. The <<person3>><<person>> follows Bailey out and the <<person4>><<person>> slinks out after them.
+	<br><br>
+
+	The orphans watching cheer loudly over your victory. They help you gather your belongings back into the room.
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<br><br>
+
+	<<run baileyConfiscationRestore()>>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Bedroom]]>><</link>>
+<<else>>
+	<<set $baileydefeatedchain to 0>>
+	<<set $baileyRefusedToPay to 0>>
+	<<unset $bailey_encroach>>
+
+	You fall to the ground, too hurt to move.
+	<<lreb>><<reb -1>>
+	<br><br>
+
+	<<set $upperoff to 0>>
+	<<set $loweroff to 0>>
+	<<set $underloweroff to 0>>
+	<<set $underupperoff to 0>>
+	<<endcombat>>
+
+	<<link [[Next|Rent Intro]]>><</link>>
+<</if>>
+<br>

@@ -731,3 +731,213 @@ const Furniture = (() => {
 	});
 })();
 window.Furniture = Furniture;
+
+/* Bailey Confiscation System */
+
+const BAILEY_FURNITURE_TABS = ["bed", "table", "chair", "desk", "decoration", "windowsill"];
+
+// Bailey only takes stuff that can be rebought "easily"
+function baileyClothingEligible(item, slot) {
+	if (V.specialClothes.some(sc => sc.name === item.name)) return false;
+	if (item.type.includes("event")) return false;
+	if (item.cursed || item.type.includes("heavy")) return false;
+	const base = setup.clothes[slot][clothesIndex(slot, item)];
+	if (!base || base.name !== item.name || !Array.isArray(base.shop)) return false;
+	return base.shop.includes("clothing");
+}
+
+function baileyFurnitureEligible(id, category) {
+	if (!BAILEY_FURNITURE_TABS.includes(category)) return false;
+	const f = setup.furniture.get(id);
+	if (!f) return false;
+	if (f.type.includes("starter")) return false; // skips starter furniture
+	if (f.showCheck === "disabled") return false;
+	return true;
+}
+
+// Gather everything Bailey can take
+// Returns { clothing:[{slot,index,name,value}], furniture:[{category,id,name,value}] }.
+window.baileyConfiscationPool = function () {
+	Furniture.in("bedroom");
+
+	const clothing = [];
+	const furniture = [];
+
+	setup.clothes_all_slots.forEach(slot => {
+		if (!Array.isArray(V.wardrobe[slot])) return;
+		V.wardrobe[slot].forEach((item, index) => {
+			if (!baileyClothingEligible(item, slot)) return;
+			const value = getClothingCost(item, slot);
+			if (value <= 0) return;
+			clothing.push({ source: "clothing", slot, index, name: item.name, value });
+		});
+	});
+
+	const bedroom = V.furniture.bedroom;
+	Object.keys(bedroom).forEach(category => {
+		const id = bedroom[category].id;
+		if (!id || !baileyFurnitureEligible(id, category)) return;
+		const f = Furniture.get(id, true);
+		furniture.push({ source: "furniture", category, id, name: f.name, value: Furniture.setPrice(f.cost) });
+	});
+
+	return { clothing, furniture };
+};
+
+window.baileyConfiscationBundle = function (target) {
+	const pool = window.baileyConfiscationPool();
+	const clothing = pool.clothing.slice().sort((a, b) => b.value - a.value);
+	const furniture = pool.furniture.slice();
+
+	let baseMask = 0;
+	let baseTotal = 0;
+	for (let mask = 1; mask < 1 << furniture.length; mask++) {
+		let sum = 0;
+		for (let i = 0; i < furniture.length; i++) {
+			if (mask & (1 << i)) sum += furniture[i].value;
+		}
+		if (sum <= target && sum > baseTotal) {
+			baseTotal = sum;
+			baseMask = mask;
+		}
+	}
+
+	const items = [];
+	let total = 0;
+	for (let i = 0; i < furniture.length; i++) {
+		if (baseMask & (1 << i)) {
+			items.push(furniture[i]);
+			total += furniture[i].value;
+		}
+	}
+	for (const c of clothing) {
+		if (total >= target) break;
+		items.push(c);
+		total += c.value;
+	}
+	if (total < target) {
+		for (let i = 0; i < furniture.length; i++) {
+			if (!(baseMask & (1 << i))) {
+				items.push(furniture[i]);
+				total += furniture[i].value;
+			}
+		}
+	}
+
+	return { items, total };
+};
+
+// Take the chosen items out of the bedroom and into Bailey's hold
+// Dye and colours are maintained
+window.baileyConfiscationApply = function (bundle) {
+	if (!bundle.items.length) return;
+	if (V.bailey_confiscation) return;
+	Furniture.in("bedroom");
+
+	const clothing = bundle.items.filter(i => i.source === "clothing").sort((a, b) => b.index - a.index);
+	const furniture = bundle.items.filter(i => i.source === "furniture");
+
+	const held = [];
+	clothing.forEach(c => held.push({ source: "clothing", slot: c.slot, item: clone(V.wardrobe[c.slot][c.index]), name: c.name, value: c.value }));
+	furniture.forEach(f => held.push({ source: "furniture", category: f.category, id: f.id, name: f.name, value: f.value }));
+
+	V.bailey_confiscation = { items: held, day: Time.days };
+
+	clothing.forEach(c => V.wardrobe[c.slot].deleteAt(c.index));
+	furniture.forEach(f => {
+		Furniture.delete(f.category);
+		// replaces with original starter furniture
+		for (const [key, cand] of setup.furniture) {
+			if (Array.isArray(cand.type) && cand.type.includes("starter") && Array.isArray(cand.category) && cand.category[0] === f.category) {
+				Furniture.set(key, f.category);
+				break;
+			}
+		}
+	});
+	Furniture.wardrobeUpdate();
+};
+
+window.baileyConfiscationRestore = function () {
+	const hold = V.bailey_confiscation;
+	if (!hold) {
+		V.bailey_confiscation = null;
+		return;
+	}
+	Furniture.in("bedroom");
+
+	hold.items.forEach(entry => {
+		if (entry.source === "clothing") {
+			V.wardrobe[entry.slot].push(clone(entry.item));
+		} else if (entry.source === "furniture") {
+			// If player buys furniture while furniture is confiscated and Bailey returns furniture to the same slot, it keeps whatever is more expensive.
+			const current = Furniture.get(entry.category);
+			const seizedCost = setup.furniture.get(entry.id).cost;
+			const currentCost = current ? current.cost : -1;
+			if (seizedCost >= currentCost) {
+				Furniture.set(entry.id, entry.category);
+			}
+		}
+	});
+
+	Furniture.wardrobeUpdate();
+	V.bailey_confiscation = null;
+};
+
+function finalizeParts(parts) {
+	parts.sort((a, b) => b.value - a.value || a.name.localeCompare(b.name));
+	const total = parts.length;
+	parts.forEach((p, i) => {
+		p.sep = i === 0 ? "" : i === total - 1 ? (total > 2 ? ", and " : " and ") : ", ";
+	});
+	return parts;
+}
+
+window.baileyConfiscationParts = function () {
+	const items = V.bailey_confiscation && Array.isArray(V.bailey_confiscation.items) ? V.bailey_confiscation.items : [];
+	const furniture = items.filter(i => i.source === "furniture");
+	const clothing = items.filter(i => i.source === "clothing").sort((a, b) => b.value - a.value);
+	const shown = clothing.slice(0, 5);
+	const rest = Math.max(0, clothing.length - 5);
+
+	const parts = [];
+	furniture.forEach(f => {
+		const fd = Furniture.get(f.id, true);
+		parts.push({ kind: "furniture", icon: fd && fd.iconFile ? fd.iconFile : "", name: f.name, value: f.value });
+	});
+	shown.forEach(c => parts.push({ kind: "clothing", item: c.item, slot: c.slot, name: c.name, value: c.value }));
+	if (rest > 0) parts.push({ kind: "text", name: rest + (rest === 1 ? " piece" : " pieces") + " of your clothing", value: -1 });
+
+	return finalizeParts(parts);
+};
+
+window.baileyConfiscationGrouped = function () {
+	const items = V.bailey_confiscation && Array.isArray(V.bailey_confiscation.items) ? V.bailey_confiscation.items : [];
+	const parts = [];
+
+	items
+		.filter(i => i.source === "furniture")
+		.forEach(f => {
+			const fd = Furniture.get(f.id, true);
+			parts.push({ kind: "furniture", icon: fd && fd.iconFile ? fd.iconFile : "", name: f.name, count: 1, value: f.value });
+		});
+
+	const groups = new Map();
+	items
+		.filter(i => i.source === "clothing")
+		.forEach(c => {
+			const g = groups.get(c.name);
+			if (g) g.count++;
+			else groups.set(c.name, { kind: "clothing", item: c.item, slot: c.slot, name: c.name, count: 1, value: c.value });
+		});
+	groups.forEach(g => parts.push(g));
+
+	return finalizeParts(parts);
+};
+
+window.baileyConfiscationTick = function () {
+	const hold = V.bailey_confiscation;
+	if (hold && Time.days >= hold.day + 8) {
+		V.bailey_confiscation = null;
+		V.bailey_confiscation_lost = 1;
+	}
+};
