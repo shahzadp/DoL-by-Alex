@@ -1554,6 +1554,10 @@ Renderer.CanvasModels.main = {
 					"sleek",
 					"bedhead",
 					"classic",
+					"cornrows",
+					"french curls",
+					"jellyfish bob",
+					"princess ponytail"
 				];
 
 				const path = `img/hair/back/${options.hair_sides_type}`;

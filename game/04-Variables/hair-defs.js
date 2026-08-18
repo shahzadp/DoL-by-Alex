@@ -24,6 +24,7 @@ setup.hair = {
 				"straight",
 				"swept right",
 				"classic",
+				"jellyfish bob"
 			],
 			devolve: ["ruffled", "bedhead"],
 		},
@@ -40,6 +41,7 @@ setup.hair = {
 				"side tail right",
 				"thick ponytail",
 				"thick sidetail",
+				"princess ponytail"
 			],
 			devolve: ["messy ponytail"],
 		},
@@ -59,6 +61,9 @@ setup.hair = {
 				"thick pigtails",
 				"thick twintails",
 				"twintails",
+				"princess twintails",
+				"princess ribbons",
+				"magical ribbons",
 			],
 			devolve: ["twintails"],
 		},
@@ -69,12 +74,12 @@ setup.hair = {
 		},
 		{
 			name: "double bun",
-			list: ["sailor buns", "space buns"],
+			list: ["sailor buns", "space buns", "fairy low buns"],
 			devolve: ["sailor buns"],
 		},
 		{
 			name: "double braid",
-			list: ["bubble tails", "twin braids", "twin fishtails", "twin double braids"],
+			list: ["bubble tails", "twin braids", "twin fishtails", "twin double braids", "little doll"],
 			devolve: ["twin braids"],
 		},
 		{
@@ -90,7 +95,7 @@ setup.hair = {
 		{
 			/* immune to being ruined (because devolve list is empty) */
 			name: "special",
-			list: ["dreads", "shaved"],
+			list: ["dreads", "shaved", "dread bun", "bantu knots", "cornrows", "dreadlock twintails", "french curl ponytail", "french curls"],
 			devolve: [],
 		},
 	],
@@ -140,13 +145,20 @@ setup.hair = {
 				"trident",
 				"wide flaps",
 				"classic",
+				"fairy waves",
+				"little doll",
+				"micro bangs",
+				"opened curtain",
+				"french bob",
+				"sweep",
+				"round",
 			],
 			devolve: ["messy", "trident", "thin flaps", "ruffled", "bedhead"],
 		},
 		{
 			/* immune to being ruined (because devolve list is empty) */
 			name: "special",
-			list: ["fro", "dreads", "dread bun"],
+			list: ["fro", "dreads", "curtain locks", "bantu crown", "cornrows", "droopy locks", "framing locks", "french curls", "heart rows", "star rows"],
 			devolve: [],
 		},
 	],
