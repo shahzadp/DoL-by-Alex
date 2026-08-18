@@ -213,7 +213,7 @@ window.wetnessKeyword = wetnessKeyword;
 
 /**
  * Returns an optional wetness prefix for the article of clothing.
- 
+
  * @param {string} slot clothing article slot used
  * @returns {string} printable integrity prefix
  */
