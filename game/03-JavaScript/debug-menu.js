@@ -241,7 +241,7 @@ setup.debugMenu.eventList = {
 				`
 				<<for _i to 0; _i lt $specialClothes.length; _i++>>
 					<<set $specialClothes[_i].unlocked to 3>>
-				<</for>>	
+				<</for>>
 			`,
 			],
 		},

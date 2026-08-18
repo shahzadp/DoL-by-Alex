@@ -711,8 +711,8 @@ window.shopHuntWithinPlayerSight = shopHuntWithinPlayerSight;
 
 /**
  * @param {number} actor The actor id
- * @param {?boolean} flip Whether to flip the colors, so it returns green for enemies, etc. Defaults to false
- * @returns {string} an appropriate color for the actor specified, based on their role
+ * @param {?boolean} flip Whether to flip the colours, so it returns green for enemies, etc. Defaults to false
+ * @returns {string} an appropriate colour for the actor specified, based on their role
  */
 function shopHuntActorColor(actor, flip = false) {
 	const colors = ["red", "blue", "green"];

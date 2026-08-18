@@ -76,7 +76,7 @@ const combatMainPc = {
 		 *     ██  ██  ██    ██ ██   ██ ██
 		 *      ████    ██████  ██   ██ ███████
 		 */
-		/* Pre 0.5.10.0 code for old images 
+		/* Pre 0.5.10.0 code for old images
 		voreBack: {
 			srcfn(options) {
 				return `${options.src}vore/back-${options.vore.stage}.png`;

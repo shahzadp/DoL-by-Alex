@@ -11142,7 +11142,7 @@ function initLower() {
 			name: "cardigan sailor uniform",
 			name_cap: "Cardigan sailor uniform",
 			variable: "cardigan sailor uniform",
-			description: "Cozy layering piece.",
+			description: "Cosy layering piece.",
 			cost: 0,
 			shop: ["clothing", "school"],
 			type: ["school", "normal", "bellyHide"],

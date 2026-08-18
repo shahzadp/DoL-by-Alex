@@ -53,7 +53,7 @@ const constants = {
 			/**
 			 * The PC's required level of intoxication to achieve its maximum effects.
 			 *
-			 * Also determines the scaling of the drunk stat's descriptions and colors in the ""
+			 * Also determines the scaling of the drunk stat's descriptions and colours in the ""
 			 */
 			effectLimit: 500,
 			/**
