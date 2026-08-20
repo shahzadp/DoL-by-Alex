@@ -1208,6 +1208,7 @@ const DoLCompressorDictionaries = (() => {
 		"panicattacks",
 		"panicparalysis",
 		"panicviolence",
+		"panicviolenceRecent",
 		"pantiesSoaked",
 		"panty_thief",
 		"parasite",
