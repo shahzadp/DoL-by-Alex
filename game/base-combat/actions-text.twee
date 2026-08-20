@@ -829,6 +829,34 @@
 	<</if>>
 <</widget>>
 
+/* Special widget for Angel TF's unique "Forgive" action */
+<<widget "actionsforgive">>
+	<<checkforloveinterests>>
+	<<if $enemytype is "beast">>
+		"You don't know any better. You're just a <<beasttype>>," you say. "I forgive you."
+	<<else>>
+		<<if _loveInterest isnot undefined>> 
+			/* Removing RNG since it's straightforward. Might add `and random(0, 100) lte 15` back if the situation calls for it */
+			<<set $speechnamedrop to $npc.includes(_loveInterest) ? 0 : 1>>
+			<<rng>>
+			<<switch _loveInterest>>
+				<<case "Avery">>
+					<<if $npc.includes("Avery")>>
+						<<if $avery_fate is undefined>>
+							"You're just angry," you say. "Everyone gets angry sometimes. I forgive you."
+						<<else>>
+							"Now I understand why you get so angry, Avery," you say. "And I forgive you."
+						<</if>>
+					<</if>>
+				<<default>>
+					"Even though you're doing such a horrible thing, don't worry," you say. "I forgive you."
+			<</switch>>
+		<<else>>
+			"Even though you're doing such a horrible thing, don't worry," you say. "I forgive you."
+		<</if>>
+	<</if>>
+<</widget>>
+
 <<widget "actionsplead">>
 	<<checkforloveinterests>>
 	<<if $robinRentEvent is 1 and ["Robin","pay","still"].includes($combatPhase)>>
@@ -1293,7 +1321,22 @@
 					<<famebestiality $enemyno>>
 				<<case "Avery">>
 					<<if $npc.includes("Avery")>>
-						"Was this all the date was for...?"
+						<<set _possibleSentences to []>>
+						<<if !isAveryMansionUnlocked()>>
+							<<set _possibleSentences.push({ sentence: `"Was this all the date was for...?"`, dialogueID: "avery_plead_premansion" })>>
+						<<else>>
+							<<if isAveryHuntingPlayer()>>
+								<<set _possibleSentences.push({ sentence: `"I'm sorry! I didn't mean to!"`, dialogueID: "avery_plead_hunting_1" })>>
+								<<set _possibleSentences.push({ sentence: `"Please, I promise I'll do better! I promise...!"`, dialogueID: "avery_plead_hunting_2" })>>
+							<<elseif $averyromance is 1>>
+								<<set _possibleSentences.push({ sentence: `"I love you, Avery. Please don't do this to me!"`, dialogueID: "avery_plead_romance" })>>
+							<<else>>
+								<<set _possibleSentences.push({ sentence: `"I'm sorry, Avery, please forgive me...!"`, dialogueID: "avery_plead_mansion" })>>
+							<</if>>
+						<</if>>
+						<<set _chosenSentence to _possibleSentences.random()>>
+						<<set $speechspecialdialogue to _chosenSentence.dialogueID>>
+						<<print _chosenSentence.sentence>>
 					<<elseif $vaginastate is "imminent" or $penisstate is "imminent" or $penisstate is "otheranusimminent">>
 						<<if $player.virginity.vaginal is true and $player.virginity.penile is true>>
 							<<if $awarelevel gte 1>>
@@ -1804,7 +1847,27 @@
 			<<case "Eden">>
 				"I belong to you, and you alone."
 			<<case "Avery">>
-				"You're worth more than any payout."
+				<<set _possibleSentences to []>>
+				/* Daddy variable is set if Avery is male, PC is submissive and the odds are 1-to-4 */
+				<<set _daddy to $NPCList[0].pronoun is 'm' and $submissive gte 1150 and random(1, 4) is 1>>
+				<<if $avery_fate is "ascended">>
+					<<set _possibleSentences.push({ sentence: `"I'm all yours, Hound."`, dialogueID: "avery_moan_ascended"})>>
+				<<elseif $averyromance>>
+					<<set _possibleSentences.push({ sentence: `"I love you, Avery."`, dialogueID: "avery_moan_romance"})>>
+				<<elseif _daddy>>
+					<<set _possibleSentences.push({ sentence: `"Put me in my place, daddy."`, dialogueID: "avery_moan_daddy"})>>
+				<<elseif isLoveInterest("Avery")>> 
+					<<if !isAveryMansionUnlocked()>>
+						<<set _possibleSentences.push({ sentence: `"Take me away from that place, take me with you."`, dialogueID: "avery_moan_premansion"})>>
+					<<else>>
+						<<set _possibleSentences.push({ sentence: `"Let me show you how grateful I am, use me as much as you want."`, dialogueID: "avery_moan_mansion"})>>
+					<</if>>
+				<<else>>
+					<<set _possibleSentences.push({ sentence: `"You're worth more than any payout."`, dialogueID: "avery_moan_default"})>>
+				<</if>>
+				<<set _chosenSentence to _possibleSentences.random()>>
+				<<set $speechspecialdialogue to _chosenSentence.dialogueID>>
+				<<print _chosenSentence.sentence>>
 			<<case "Alex">>
 				"I couldn't ask for a better partner."
 			<<case "Kylar">>
@@ -2737,7 +2800,21 @@
 
 				<<case "Avery">>
 					<<if $npc.includes("Avery")>>
-						"You don't pay me enough to treat me like this!"
+						<<set _possibleSentences to []>>
+						<<if !isAveryMansionUnlocked()>>
+							<<set _possibleSentences.push({ sentence: `"You don't pay me enough to treat me like this!"`, dialogueID: "avery_demand_default"})>>
+						<<else>>
+							<<if isAveryHuntingPlayer()>>
+								<<set _possibleSentences.push({ sentence: `"Get the hell away from me! You're taking this too far, Avery!"`, dialogueID: "avery_demand_hunting"})>>
+							<<elseif $averyromance is 1>>
+								<<set _possibleSentences.push({ sentence: `"I told you I loved you, but I won't hesitate to leave if you don't stop this right now!"`, dialogueID: "avery_demand_romance"})>>
+							<<else>>
+								<<set _possibleSentences.push({ sentence: `"Stop it, Avery! I'm<<if $averySeen.includes("walkParkSOYes") or $averyromance>> your <<girlfriend>>,<</if>> not your punching bag!"`, dialogueID: "avery_demand_mansion"})>>
+							<</if>>
+						<</if>>
+						<<set _chosenSentence to _possibleSentences.random()>>
+						<<set $speechspecialdialogue to _chosenSentence.dialogueID>>
+						<<print _chosenSentence.sentence>>
 					<<elseif $vaginastate is "imminent" or $penisstate is "imminent" or $penisstate is "otheranusimminent">>
 						<<if $player.virginity.vaginal is true and $player.virginity.penile is true>>
 							<<if $awarelevel gte 1>>
