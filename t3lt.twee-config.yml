@@ -195,7 +195,20 @@ sugarcube-2:
     actionscheekrub:
       name: actionscheekrub
     actionschoke:
-      name: actionschoke
+      description: |-
+        Prints the player's speech when they request the NPC to choke them during encounters. Contains variations depending of level of awareness, asphyxiophilia trait, and a special `_daddy` variant if the NPC is male and the player's submissiveness is above 1150.
+
+        Speech variations are currently determined by the value of `$speechcycle`, increasing at each turn and resetted after the last available option.
+
+        Speech can be adapted for NNPCs. See `$NPCList[$mouthtarget].fullDescription` variable.
+
+        Example of what the player can say:
+        ```
+        You moan. "Hold me by the neck, please."
+
+        You yip. "Harder, daddy! Choke me harder!"
+        ```
+      tags: ["text"]
     actionsclitrub:
       name: actionsclitrub
     actionsclitstroke:
@@ -220,6 +233,19 @@ sugarcube-2:
       name: actionsfencingtake
     actionsfencingtease:
       name: actionsfencingtease
+    actionsforgive:
+      description: |-
+        Prints the player's speech when they forgive the NPC with the Angel TF. Unlike the "Plead" action, RNG has been removed since it can be only used once per encounter.
+
+        Speech can be adapted for NNPCs. See `_loveInterest` variable. If writers wish to do so, they can add variants where the player forgives them (if `$npc.includes(_loveInterest)`) or forgive on behalf of them (if `!$npc.includes(_loveInterest)`).
+
+        Example of what the player can say:
+        ```
+        "Even though you're doing such a horrible thing, don't worry," you say. "I forgive you."
+
+        "Now I understand why you get so angry, Avery," you say. "And I forgive you."
+        ```
+      tags: ["text"]
     actionsgrabrub:
       name: actionsgrabrub
     actionsgrowl:
@@ -247,7 +273,22 @@ sugarcube-2:
     actionsmoan:
       name: actionsmoan
     actionsmock:
-      name: actionsmock
+      description: |-
+        Prints the player's speech when they mock (disparage for players with the fallen angel TF) the NPC over one of their potential insecurities. The chosen insecurity is stored in `$mockaction` and can take on the following variables: `"penis"`, `"vagina"`, `"weak"`, `"looks"` and `"skill"`. When undefined, the `"ethics"` speech lines are displayed.
+
+        The widget contains variants based on whether the player is penetrated or penetrating, for regular NPCs. Hitting the NPC's insecurity (`$mockaction` equals `$NPCList[$mouthtarget].insecurity`) should make them react. 
+
+        Speech variations are currently determined by the value of `$mockcycle`, increasing at each turn and resetted after the last available option, which defaults to 5.
+
+        Speech can be adapted for NNPCs. See `$NPCList[$mouthtarget].fullDescription` variable. 
+
+        Example of what the player can say:
+        ```
+        "The last cock was much larger," you say in a teasing tone. <span class="pink">He isn't impressed by your words.</span> | +Control
+
+        "You'll be punished for this," you say in a mocking tone. <span class="teal">She winces at your words.</span> | +Control
+        ```
+      tags: ["text"]
     actionsmouthbottomrub:
       name: actionsmouthbottomrub
     actionsmouththighrub:
@@ -701,7 +742,27 @@ sugarcube-2:
         <<skinicon "banish">><<link [[Banish|Banishment]]>><<angelBanishUse>><</link>><<angelBanishNote>>
         ```
     angelTransform:
-      name: angelTransform
+      description: |-
+        Indicates how the Angel TF should be handled depending of a code passed as an optional argument. If nothing is passed, the widget sets the full Angel TF.
+
+        - 0-5 means the widget can either make the player progress to the next stage of angel transformation or set them back to the previous one, depending of the amount of angelicness they've amassed.
+        - 6 sets the player to stage 5 of the angel transformation when their angelicness is not enough to maintain a full transformation.
+        - 99 disables the transformation entirely and is either used in cheats or when the player falls from having their virginity taken away.
+
+        Example:
+        ```
+        <<angelTransform>>
+        <<angelTransform 1>>
+        <<angelTransform 99>>
+        ```
+
+        Usage:
+        ```
+        <<angelTransform angelCode?>>
+        ```
+        - **angelCode**: `number?` - The code indicating which action the widget should take. If not argument is provided, forces full Angel TF.
+      parameters:
+        - '|+ number'
     animalsemenswallowedstat:
       name: animalsemenswallowedstat
     animateCombat:
@@ -818,7 +879,20 @@ sugarcube-2:
         - **secondArg**: `any` - something else to store
       tags: ["unused"]
     askrough:
-      name: askrough
+      description: |-
+        Prints the player's speech when they ask the NPC to be more rough. Contains variations based on the player's personality through `$speech_attitude`.
+
+        Speech variations are currently determined by the value of `$speechcycle`, increasing at each turn and resetted after the last available option.
+
+        Speech can be adapted for NNPCs. See `$NPCList[$mouthtarget].fullDescription` variable.
+
+        Example of what the player can say:
+        ```
+        You plead for rougher treatment. "Treat me like dirt."
+
+        You demand. "Fuck me up, I dare you."
+        ```
+      tags: ["text"]
     asktomeasurephallus:
       description: |-
         Prints request by pc to measure the currently selected NPC's phallus
@@ -926,9 +1000,18 @@ sugarcube-2:
     autoTakePillCheck:
       name: autoTakePillCheck
     avery_antiques_end:
-      name: avery_antiques_end
+      description: Widget called after the destruction of Avery's mansion. Sets the state of Avery's antiques as stolen, so the player can retrieve them in the mansion's ruins.
     avery_antiques_init:
-      name: avery_antiques_init
+      description: |- 
+        Initializes the `$avery_antiques` object variable with the following attributes:
+
+        - **progress**: `{0,1}` - Flag triggering the possibility of working the bolts free.
+        - **bolts**: `integer` - Number of bolts to unscrew. Defaults to 10.
+        - **bolt_progress**: `{0..5}` - Counts the number of times the player works the bolts free. When the count reaches 5, one of the bolts comes loose. Defaults to 0.
+        - **exposed**: `string[]` - The antiques that are no longer sealed by the bolts, but still in their display case. 
+        - **stolen**: `string[]` - The stolen antiques that ended up in the player's possession
+        - **noticed**: `string[]` - The stolen antiques that Avery noticed during the display room inspection. All antiques from `$avery_antiques.stolen` are transferred there.
+        - **confront**: `string[]` - Unused attribute.
     avery_cards_drink_text:
       description: |-
         Prints drink type of target NPC
@@ -951,9 +1034,11 @@ sugarcube-2:
 
         `$cards_win` is a string of who won that round followed by `_cards_win` (ie, `avery_cards_win`)
     avery_current_room_dirty_check:
-      name: avery_current_room_dirty_check
+      description: |-
+        When triggered, checks which rooms from Avery's mansion need cleaning. If any room needs claning, sets the temporary variable `_dirty_room` to `true`.
     avery_daily_talk:
-      name: avery_daily_talk
+      description: |-
+        Resets or initiates variables from Avery's daily talk. See `<<avery_mansion_init>>` for more details.
     avery_date_approach:
       name: avery_date_approach
     avery_date_missed_approach:
@@ -975,9 +1060,28 @@ sugarcube-2:
     avery_mansion_chase_caught:
       name: avery_mansion_chase_caught
     avery_mansion_chase_end:
-      name: avery_mansion_chase_end
+      description: |-
+        Empties the `$avery_mansion.chase` object when Avery no longer chases the player.
     avery_mansion_chase_init:
-      name: avery_mansion_chase_init
+      description: |-
+        Initializes the variables related to Avery's chase sequence, triggered when they are mad enough when they return from work. The `chase` object is then temporarily added to `$avery_mansion`, then deactivated when `<<avery_mansion_chase_end>>` is called. It will also push "chase" into `$averySeen`.
+
+        The `$avery_mansion.chase` object has the following attributes:
+        - **active**: `boolean` - Indicates if Avery is actively chasing the player 
+        - **victory**: `integer` - The number of times the player successfully fended off Avery or made them cum during the chase
+        - **health**: `{0..3}` - Avery's frustration. Decreases everytime the player takes actions against Avery by winning encounters or setting traps. Defaults to 3. Avery gives up if it hits 0.
+        - **bus**: `string` - The location of the player. Depends of the place where the chase is being initialized.
+        - **avery_bus**: `string` - Avery's location. Depends of the place where the chase is being initialized.
+        - **sound**: `string` - The location of the mansion where Avery can be heard.
+        - **player_sound**: `string` - The location of the mansion where the player can be heard.
+        - **key**: `boolean` - Whether the player obtained the key or not.
+        - **key_checked**: `string[]` - The possible locations of the key, between "bedroom", "bathroom", "study", "lounge" or "garage".
+        - **gear**: `string[]` - Items the player can grab to set a trap, like "marbles" or "oil".
+        - **trap**: `string[]` - Active traps the player has set.
+        - **trap_done**: `string[]` - Total traps the player has set, active or not.
+        - **state**: `"tutorial"|"trap"|"victory"|"chase"|"caught"` - The state of the chase. Defaults to "tutorial".
+        - **key_location**: `string` - The location of the key. Randomly generated between "bedroom", "bathroom", "study", "lounge" or "garage"
+
     avery_mansion_chase_location:
       name: avery_mansion_chase_location
     avery_mansion_chase_run:
@@ -1019,9 +1123,16 @@ sugarcube-2:
     avery_mansion_dom_events:
       name: avery_mansion_dom_events
     avery_mansion_dungeon_end:
-      name: avery_mansion_dungeon_end
+      description: |-
+        Unsets the `dungeon` object variable for Avery's mansion and returns the player's handheld item.
     avery_mansion_dungeon_init:
-      name: avery_mansion_dungeon_init
+      description: |-
+        Initializes the `dungeon` object variable for Avery's mansion with the following attributes:
+
+        - **tool**: `string` - The tool Avery plans to use on the player. Defaults to "tickler".
+        - **timer**: `integer` - The time left (in minutes) before exiting the dungeon. Defaults to 120 minutes.
+
+        Also stores temporarily what the PC is holding.
     avery_mansion_dungeon_links:
       name: avery_mansion_dungeon_links
     avery_mansion_end_links:
@@ -1031,7 +1142,74 @@ sugarcube-2:
     avery_mansion_housework_total:
       name: avery_mansion_housework_total
     avery_mansion_init:
-      name: avery_mansion_init
+      description: |-
+        Initializes Avery's mansion variable object when called. Avery's mansion can only be instanciated in-game when Avery decides to adopt the player, if the player scored high enough according to the `averyMansionScore()` function.
+
+        The mansion has the following attributes:
+
+        - **version**: `integer` - Version number of the mansion. Currently at V3.
+        - The following attributes describe the state of disorder or dirtiness of the following rooms, of type `integer` going from 0 to 4, 0 being the cleanest state and 4 being the worst state of disorder. They get reset at 0 if the player cleans Avery's mansion and increases by 1 at the end of the day. Some places like the kitchen can be dirtied if PC cooks however.
+          - **pool**, **kitchen**, **lounge**, **display**, **bedroom**, **bathroom**, **dining**, and **garden**
+        - **jobs**: `string[]` - Array of jobs Avery pushes onto the player as their dominance stat increases
+        - **schedule**: `string` - What Avery is currently doing. Determined by the `averySchedule()` function, set on "home" by default.
+        - **days**: `integer` - The number of days since the player moved in with Avery. Defaults to 0.
+        - **days_absent**: `integer` - Number of days where PC hasn't been seen at the mansion. Increases by 1 every day through the `dayPassed()` function on everyday, except Sunday.
+        - **walk_cycle:** `{0..3}` - The level of daring of Avery's walk minidate, 0 being the tamest level and 3 being the lewdest.
+        - **food**: `string` - Name of the recipe requested by Avery for the next time player has to serve them. Defaults to "hamburger".
+        - **food_last**: `string` - Name of the last meal Avery had. Defaults to "none".
+        - **date_ready**: `boolean` - Indicates whether Avery is ready for the date with the player.	
+        - **rage**: `Object` - Object managing Avery's rage inside the mansion over dinners and the state of the rooms. Indicates whether Avery is ready to triggers a mansion chase sequence
+          - **work**: `boolean` - Indicates whether Avery is away at work	or not 
+          - **apologetic**: `boolean` - Indicates whether Avery is ready to apologize for the last chase sequence
+          - **dinner_missed**: `integer` - Indicates the number of dinner missed by the player. Increases by 1 everytime the player forgets to serve Avery and resets after a mansion chase sequence or by giving 5 meals per week.
+          - **dinner_done**: `{0..1}` - Indicates whether dinner has been served or not.
+          - **dinner_wrong**: `integer` - The number of dinners served that weren't what Avery requested.
+          - **assess**: `integer` - The total state of the house, computed when Avery returns from work. This number is computed from dinners missed, the state of the house and Avery's requested presentation. This count is then converted into Avery's rage points.
+          - **timer**: `integer` - Number of days left before Avery can trigger a mansion chase sequence. Defaults to 0, set to 30 when a chase sequence starts, decreases of 1 daily.
+        - **fox**: `Object` - Object pertaining to the Brown Fox (aka Gwylan) during the skyscraper quest.
+          - **progress:** `integer` - The points of trust you build with BF
+          - **known:** `boolean` - Whether the player has met the BF or not
+        - **date_seen:** `boolean` - Checks whether Avery asked for a Saturday date
+        - **party_state**: `string` - Indicates the state of Sunday's party. Set to "first sunday skip" if the mansion was initialized on Sunday, "waiting" otherwise by default. Can be updated with "missed", "skipped", "started" and "finished".
+        - **guest:** `string` - Name of the guest attending the next party on Sunday. Defaults to "Bailey".
+        - **kitchen_made:** `integer` - Accounts of the state of the kitchen while cooking there.
+        - **vault_progress:** `{0..100}` - The progress of the player cracking the vault inside Avery's mansion.
+        - **kitchen_stock**: `Object` - Describes the state of Avery's stocked food.
+          - **normal:** `string[]` - The ingredients that will always be available in Avery's kitchen: `["salt", "vegetable_oil", "bottle_of_milk", "flour", "chicken_egg", "beef", "pork", "truffle", "cream", "tomato", "red_wine", "white_wine", "rice", "chilli_pepper", "banana"]`
+          - **requested:** `string[]` - Ingredients requested by the player`. can be added when the player gives Avery the wrong dinner.
+        - **recipe:** `string[]` - Recipes the player can learn from Avery's study. Updated everytime the player tells Avery they can't make a specific dinner.
+        - **attend**: `Object` - Object detailling the number of unique events Avery can attend on request of the player (ie. school projects)
+
+        Unusued attributes:
+        - **study:** `integer` - State of disorder of Avery's study
+        - **garage:** `integer` - State of disorder of Avery's garage
+        - **state**: `string` - Unusued
+        - **display_antiques**: `integer` - Unusued
+        - **landry:** `integer` - Unused, moved to `landry_told`
+    
+        Alongside the mansion, initializes the `talk` object in Avery's daily section, as well as `ask` and `housekeeping_events`.
+
+        The housekeeping events keep track of the triggered events whenever the player is cleaning in the same room as Avery. The `ask` object keeps track of whether the player asked Avery to attend an event like the science fair (**science**), maths competition (**maths**) or English play (**english**).
+
+        The `talk` object possesses the following attributes:
+
+        - **ignore:** `boolean` - Whether Avery ignores you for the rest of the day once you exceed the talk limit.
+        - **limit:** `boolean` - Whether Avery ignores you for the rest of the day once you exceed the talk limit.
+        - **flirt:** `boolean` - Flag indicating if you flirted with Avery daily
+        - **seduce:** `boolean` - Flag indicating if you seduced Avery daily
+        - **count:** `integer` - The number of times the player has interacted with Avery
+        - **annoyed:** `integer` - The number of times Avery is annoyed by the player's interruptions
+        - **chat:** `integer` - The number of times Avery had casual talk with the player
+
+        Additionally, this widget starts the skyscraper quest variables, with the `avery_tower` object:
+
+        - **progress:** `{0..100}` - The progress of the skyscraper. Must reach 100 to achieve completion.
+        - **effects:** `string[]` - Effects pertaining to the advancement of the skyscraper's constuction, which can either add or subtract progress points depending of them. Defaults to `["theft"]`.
+        - **stage:** `{0..3}` - Stage of advancement of the skyscraper. Defaults to 0 (unbuilt). Goes up to 3 (finished and the ceremony starts).
+        - **intro:** `{0,1}` - Introduces the skyscraper to the player, usually during the very first party with Bailey.
+
+        This widget also triggers the `<<avery_antiques_init>>` and the `<<avery_mansion_start_clothes>>` widgets. It will also allow the player to use Avery's wardrobe.
+
     avery_mansion_interrupt:
       name: avery_mansion_interrupt
     avery_mansion_links:
@@ -1047,7 +1225,18 @@ sugarcube-2:
     avery_mansion_party_guests_links:
       name: avery_mansion_party_guests_links
     avery_mansion_party_init:
-      name: avery_mansion_party_init
+      description: |-
+        Initialises the $avery_party object when the party begins. Adds 15 points of socialite fame and sets `$avery_mansion.party_state` to "started".
+
+        The `$avery_party` object has the following attributes:
+        - **speech_guest**: `string[]` - Keywords related to what the player got from the guest.
+        - **speech_avery**: `string[]` - Keywords related to what the player got from Avery.
+        - **guests**: `string[]` - Only available when Remy is the party guest. Indicates the location of Remy's notorious people.
+        - **stage**: `integer` - Only available when Remy is the party guest. Counts the number of opportunities to interact with guests before the buffet.
+        - **current_speech**: to "intro"
+        - **mood_guest**: `integer` - The mood of the guest. Can be negative.
+        - **mood_avery**: `integer` - Avery's mood. Can be negative.
+        - **task**: `boolean?` - Whether the brown fox gave the player a task for the current party or not.
     avery_mansion_party_mood:
       name: avery_mansion_party_mood
     avery_mansion_party_speech:
@@ -1067,7 +1256,8 @@ sugarcube-2:
     avery_mansion_skyscraper_week_estimate:
       name: avery_mansion_skyscraper_week_estimate
     avery_mansion_start_clothes:
-      name: avery_mansion_start_clothes
+      description: |-
+        Initializes Avery's wardrobe with the following fancy clothes: ballgown, maid dress, hanfu, tuxedo jacket, shadbelly coat, dress shirt, ghost jumper, tuxedo trousers, short school skirt, school shorts, swimsuit, camisole, lace panties, bikini bottoms, maid band, lace choker, necktie, regal parasol, messenger bag, feather duster, sheer stockings, dress sandals, cordovan loafers, court heels, tuxedo shoes and school shoes.
     avery_mansion_study_unlock:
       name: avery_mansion_study_unlock
     avery_mansion_tower:
@@ -1091,19 +1281,117 @@ sugarcube-2:
     avery_valentines_init:
       description: |-
         Initialises the $avery_valentines object, used for Avery's Valentine's date.
+    averyBaseSpeech:
+      description: |-
+        Avery's default speech when no speech flag or specific scenario plays out.
+
+        Contains rage variations, comments on player's transformations and clothes.
+    averyBodywritingSpeech:
+      description: |-
+        Avery comments on the player's bodywriting. A small daily rage reduction is provided depending of the nature of the player's bodywriting, as well as Avery's mood.
+
+        `<<averyBodywritingSpeech bodywritingPart>>`
+        - **bodywritingPart**: `BodywritingObject` - the player's body part that has been written on
+      parameters:
+        - bareword|var
+    averyCondomUseSpeech:
+      description: |-
+        Avery speech variations over condom usage when the player asks them to use a condom. Contains rage and lust dialogue variations.
+
+        `<<averyCondomUseSpeech "acceptHas">>`
+
+        - **condomSpeech**: `"accept"|"acceptHas"|"acceptGive"|"refuse"` - The different scenario cases for condom usage
+      parameters:
+        - '"accept"|"acceptHas"|"acceptGive"|"refuse"'
+    averyFondlingSpeech:
+      description: |-
+        Avery speech widget where Avery comments the player's body part when groping.
+
+        `<<averyFondlingSpeech bodyPart>>`
+        - **bodyPart**: `string` - the player's body part. Can be `chest`, `bottom`, or `breasts`
+      parameters:
+        - string
+    averyKissSkin:
+      description: |-
+        Avery speech widget where Avery comments the player's body part when about to kiss the player.
+
+        `<<averyKissSkin bodyPart>>`
+        - **bodyPart**: `string` - the player's body part. Can be `chest`, `bottom`, `forehead` or `thighs`
+      parameters:
+        - string
     averyofficeoptions:
-      name: averyofficeoptions
+      description: |-
+        Displays links available to the player while working in Avery's office, leading to the following passages:
+
+        - `:: Avery Office Off Work` (past 15:00)
+        - `:: Avery Office Work` (before 15:00, add an hour and counts as an hour worked for Avery)
+        - `:: Avery Office Leave`
+    averyMansionChaseSpeech:
+      description: |-
+        Avery's speech pertaining to Mansion Chase Fight encounters
     averyofficewage:
-      name: averyofficewage
+      description: |-
+        Avery's hourly pay at the assistant job at the office. Computes the pay according to the following formula: 
+        
+        ```
+        Avery's love / 2 + Office endearment x 2 - Avery's rage
+        ```
+
+        The result can't be lower than 5£.
+
+        ```
+        <<averyofficewage "pay">>
+        ```
+        - **pay**: `"pay"` - If passed as an argument, prints the player's earnings
+      parameters:
+        - '|+ "pay"'
+    averyLungingForGenitalsAss:
+      description: |-
+        Displays a custom sentence for Avery everytime the player moves lips, genitals or anus to Avery's genitals or ass
+    averyOralImminent:
+      description: |-
+        Speech lines when Avery is about to give the player oral. 
+
+        Has consensual and noncon variants.
     averySchedule:
       description: |-
         Sets _avery_available to "office", "office invite", "office unlock", "pickup", "date", or "talk".
 
         Sets $avery_mansion.schedule to "away", "sleep", "bath", "breakfast", "work", "return", "dinner", "garden", "pool", "study", "lounge", "drink", or "date".
     averyscore:
-      name: averyscore
+      description: |-
+        Shows the player's rating at the end of Avery's saturday date, determined by Avery's love and endearment at the date.
+
+        Example:
+
+        ```
+        Avery's impression:
+        Love: C
+        Endearment: B
+        ```
     averyspa:
-      name: averyspa
+      description: |-
+        Widget referring to Avery's spa event. Can be discovered if
+
+        - The player already encountered Avery
+        - The player works at the spa
+        - Avery isn't injured or dismissed 
+        - You have been on dates with Avery at least once 
+        - It's Sunday 
+        - You haven't upset Avery during the last encounter at the spa (see `$averySpaBanWeeks`)
+        
+    averySpeechDaddyChoke:
+      description: |-
+        Speech variations when Avery chokes the player after being called "daddy" (`_daddy` is set to true). Contains rage variations.
+    averyTfComments:
+      description: |-
+        Avery speech comments on the player's transformation parts
+    averyUndergroundBrothelSpeech:
+      description: |-
+        Avery speech pertaining to the player and Avery's reunion on the underground brothel
+    averyUndressReaction:
+      description: |-
+        Makes Avery react to the player using the "Undress/Unbutton" action
     awardVirginityFeat:
       description: |-
         Awards virginity loss feat if the NPC gives one. 
@@ -2684,7 +2972,8 @@ sugarcube-2:
     checkfloor:
       name: checkfloor
     checkforloveinterests:
-      name: checkforloveinterests
+      description: |-
+        Randomly picks one of the player's selected love interests and stores it in `_loveInterest`. If no love interest is found, `_loveInterest` defaults to `undefined`.
     checkWraith:
       name: checkWraith
     cheeklick:
@@ -3615,6 +3904,14 @@ sugarcube-2:
       name: CosmeticsGenericDepartment
     cottage_bailey_options:
       name: cottage_bailey_options
+    countBrokenVows:
+      description: |-
+        Keeps a count for everytime the player have broken the vow, for each nnpc
+
+        `<<countBrokenVows vowTaker>>`
+        - **vowTaker**: `string` - The name of the one taking the vow; generic npcs and beasts are added to `$brokenVow.Undefined`
+      parameters:
+       - "string"
     courtyard:
       name: courtyard
     courtyardrevealresponse:
@@ -3872,7 +4169,12 @@ sugarcube-2:
       tags: ["text"]
     debug_avery_skip_to_return:
       description: |-
-        [DEBUG] Advances time in the mansion until Avery returns
+        Advances time in the mansion until Avery returns
+      tags: ["debug"]
+    debugUnlockAllLoveInterests:
+      description: |-
+        Widget automatically unlocking all love interests and fulfilling conditions for them to become so. 
+      tags: ["debug"]
     def:
       description: |-
         Adds defiant quality to pc's state and applies effects
@@ -4328,7 +4630,11 @@ sugarcube-2:
         Used when the player returns to the cabin, or when the player gains freedom in the first place.
     effects:
       description: |-
-        Does a LOT of different things. Should be called at the start of every passage.
+        Does a LOT of different things. Should be called at the start of every passage. 
+
+        This widget updates your stats according to time, water, makeup effects, etc...
+
+        To examine the effect widget, go to `./game/base-system/effect.js`
     effects_prison:
       name: effects_prison
     effectsabomination:
@@ -5085,7 +5391,14 @@ sugarcube-2:
     fallenDescend:
       name: fallenDescend
     fallenTransform:
-      name: fallenTransform
+      description: |-
+        Turns an Angel TF in a Fallen Angel TF when the player loses their virginity. Once fallen, the player can no longer become a full Angel.
+
+        Displays the following in case of full transformation:
+
+        ```
+        <span class="red">Your halo shatters and your wings blacken. An overwhelming sense of loss overcomes you.</span>
+        ```
     fame:
       description: |-
         Changes fame values without any checks or safeguards
@@ -5429,7 +5742,16 @@ sugarcube-2:
     farm_horses:
       name: farm_horses
     farm_init:
-      name: farm_init
+      description: |-
+        Initializes the farm variables if the player accepts to work at the farm after Alex's introduction. Also calls the `<<farm_work_update>>` and `<<farm_update>>` widgets. This widget first readjusts `$farm_work` variables before initializing the `$farm` object. 
+
+        The `$farm` object has the following attributes:
+        - **beasts**: `Object` - Contains the level of affection from each beast category at the farm.
+          - **[beast]**: `{-30..30}` - The level of respect each category of beast has for the player. Defaults to 0 as the neutral value. Can be `pigs`, `horses`, `cattle` or `dogs`.
+        - **clearing**: `{0..100}` - The level of clearing of the field. Defaults to 100 and must be lowered down to 0 to expand the farm.
+
+        The widget also enables `$farm_naked_alex`, a flag that can be set off once the player asks to work at the farm naked. 
+        It also enables `$fields_damaged`, an array of numbers corresponding to the fields that have been damaged during the farm's attacks.
     farm_knotted:
       name: farm_knotted
     farm_milk_actions:
@@ -5500,7 +5822,16 @@ sugarcube-2:
     farm_trust:
       name: farm_trust
     farm_update:
-      name: farm_update
+      description: |-
+        Adds the `milking` object and the `build_finished` array of strings to the `$farm` object.
+
+        `$farm.build_finished` is an array of strings containing the number of farm upgrades the player purchased that are currently operational.
+
+        `$farm.milking` contains the following attributes:
+        - **caught**: `boolean` - Indicates if Alex caught the player milking themselves or not.
+        - **alexNightEvent**: `boolean` - Allows the player to replay the `"AlexFarmSelfMilkingCaught"` event in the scene viewer.
+        - **catchChance**: `number` - The probability of Alex catching the player milking themselves, computed by `<<farmCatchChance>>`.
+        - **dayMilking**: `boolean` - Allows the player to milk themselves in the barn during the day after Alex caught them.
     farm_upgrades_current:
       name: farm_upgrades_current
     farm_upgrades_status:
@@ -11984,7 +12315,23 @@ sugarcube-2:
 
         Results in low level exhibitionism increases
     npc:
-      name: npc
+      description: |-
+        Widget generating the named NPC passed as an argument, with the settings of the game, and the settings proper to that NPC.
+
+        Example:
+
+        ```
+        <<npc Bailey>>
+        ```
+        The widget is used as such
+
+        ```
+        <<npc namedNPCName>>
+        ``` 
+        - **namedNPCName**: `npcObject` - The NPC to instanciate
+          - %namedNPCDesc%
+      parameters:
+        - "%namedNPC%"
     npc_attempt_sex:
       name: npc_attempt_sex
     npc_pillory:
@@ -12196,7 +12543,22 @@ sugarcube-2:
         - 'bareword|var &+ "upper"|"lower"|"both" |+ "name"|"desc"'
       tags: ["text"]
     npcset:
-      name: npcset
+      description: |-
+        Changes the value of the stat of a particular NPC. In-game, it's mostly used to change the state of NPCs (ie. undismissing them), but the widget can be used for any stats as long as they exist in the NPC's object.
+
+        Example:
+        ```
+        <<npcset Kylar state "active">>
+        ```
+
+        `<<npcset npcObject statName statValue>>`
+        - **npcObject**: `object` - NPC object to check
+        - **statName**: `object` - The NPC's stat name
+          - love|dom|trust|lust|rage|state|init|trauma|purity|corruption
+        - **statValue**: `string|number` - The value of the NPC's stat name to change
+
+      parameters:
+        - 'bareword|var &+ love|dom|trust|lust|rage|state|init|trauma|purity|corruption &+ number|string'
     npcSettings:
       name: npcSettings
     npcSettingsMenu:
@@ -16111,7 +16473,20 @@ sugarcube-2:
       parameters:
         - "number &+ text|string"
     storeon:
-      name: storeon
+      description: |-
+        The `<<storeon>>` widgets retrieve the clothing stored with the ``<<[slotname]undress>>` widgets, that weren't put in a wardrobe. 
+        
+        Requires the same argument that was used to store the clothing in order to correctly identify. Optionally accepts a second argument:
+        
+        - Inputting "delete" will destroy the stored item, rather than wear it. 
+        - Inputting "check" will set _store_check to 1, for when you want to check whether or not an item exists in a given location.
+        - Inputting "return" will return the item to the wardrobe.
+
+        Example:
+
+        ```
+        <<storeon "bed" "return">>
+        ```
     storeonface:
       name: storeonface
       tags: ["unused"]
@@ -17445,7 +17820,8 @@ sugarcube-2:
     undiestrauma:
       name: undiestrauma
     unDismissAvery:
-      name: unDismissAvery
+      description: |-
+        Resets Avery back to active state. Can only be called in-game to undo the soft dismissal.
     undress:
       name: undress
     undressclothes:

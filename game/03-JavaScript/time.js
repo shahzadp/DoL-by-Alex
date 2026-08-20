@@ -1397,6 +1397,7 @@ function dailyNPCEffects() {
 	if (C.npc.Avery.state !== "dismissed") {
 		V.averyschoolpickup = 0;
 		V.averyseen = 0;
+		V.averyBodyWritingSeen = false;
 		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
 			if (V.averydateattended !== 1 && !V.avery_injury) V.averydatemissed = 1;

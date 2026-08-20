@@ -1269,6 +1269,7 @@
 			<</if>>
 		<</if>>
 
+		/* Undress NPC with both hands */
 		<<if $rightaction is "rightUndressOther" and $leftaction is "leftUndressOther" and $lefttarget is $righttarget and $undressLeftTarget is $undressRightTarget>>
 			<<if $undressLeftTarget is "rest">>
 				<<set $leftaction to 0>><<set $rightaction to 0>><<set $leftactiondefault to "rest">><<set $rightactiondefault to "rest">>
@@ -1299,6 +1300,9 @@
 						<<default>>
 							You try to undress <<him>>, but grab nothing but the air. <span class="red">Improper clothes target: $_clothesTarget. Please report this bug.</span>
 					<</switch>>
+					<<if $_npc.fullDescription is "Avery">>
+						<<averyUndressReaction>>
+					<</if>>
 				<<else>>
 					You try to <<npcUndressText $_npc $_clothesTarget>>, but <<he>> holds on to <<his>> clothes.
 					<<set $_npc.clothes[$_clothesTarget].integrity -= Math.floor((currentSkillValue("handskill") / 100) * 1.5)>>
@@ -1307,6 +1311,7 @@
 			<<unset $undressLeftTarget>><<unset $undressRightTarget>>
 		<</if>>
 
+		/* Undress NPC with right hand */
 		<<if $rightaction is "rightUndressOther">>
 			<<if $undressRightTarget is "rest">>
 				<<set $rightaction to 0>><<set $rightactiondefault to "rest">>
@@ -1336,6 +1341,9 @@
 						<<default>>
 							You try to undress <<him>>, but grab nothing but the air. <span class="red">Improper clothes target: $_clothesTarget. Please report this bug.</span>
 					<</switch>>
+					<<if $_npc.fullDescription is "Avery">>
+						<<averyUndressReaction>>
+					<</if>>
 				<<else>>
 					You try to <<npcUndressText $_npc $_clothesTarget>>, but <<he>> holds on to <<his>> clothes.
 					<<set $_npc.clothes[$_clothesTarget].integrity -= Math.floor(currentSkillValue("handskill") / 100)>>
@@ -1344,6 +1352,7 @@
 			<<unset $undressRightTarget>>
 		<</if>>
 
+		/* Undress NPC with left hand */
 		<<if $leftaction is "leftUndressOther">>
 			<<if $undressLeftTarget is "rest">>
 				<<set $leftaction to 0>><<set $leftactiondefault to "rest">>
@@ -1373,6 +1382,9 @@
 						<<default>>
 							You try to undress <<him>>, but grab nothing but the air. <span class="red">Improper clothes target: $_clothesTarget. Please report this bug.</span>
 					<</switch>>
+					<<if $_npc.fullDescription is "Avery">>
+						<<averyUndressReaction>>
+					<</if>>
 				<<else>>
 					You try to <<npcUndressText $_npc $_clothesTarget>>, but <<he>> holds on to <<his>> clothes.
 					<<set $_npc.clothes[$_clothesTarget].integrity -= Math.floor(currentSkillValue("handskill") / 100)>>
@@ -3298,6 +3310,7 @@
 			<<set $mouthaction to 0>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "plead with <<him>>">>
+				<<set $speechwheezeaction to "plead">>
 			<<else>>
 				<<set $mouthactiondefault to "plead">>
 				<<actionsplead>><<set $speechplead to 1>>
@@ -3312,6 +3325,7 @@
 			<<set $mouthaction to 0>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "say something sexy" 2>><<set $speechmoan to 1>>
+				<<set $speechwheezeaction to "moan">>
 			<<else>>
 				<<set $mouthactiondefault to "moan">>
 				<<actionsmoan>><<set $speechmoan to 1>>
@@ -3326,10 +3340,11 @@
 			<<set $mouthaction to 0>><<unset $askAction>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "ask to choke you" 1>>
+				<<set $speechwheezeaction to "askChoke">>
 			<<else>>
 				<<set $askedtochoke to 1>>
 				<<set $mouthactiondefault to 0>>
-				<<actionschoke>>
+				<<actionschoke>> /* todo: add a case where it doesn't work */
 				<<if $role is "islander" and (!$islander_language or $islander_language lt 100)>>
 					<span class="red"><<if $enemyno gte 2>>They don't<<else>><<He>> doesn't<</if>> understand your words,</span> and <<if $enemyno gte 2>>ignore<<else>>ignores<</if>> them.
 				<</if>>
@@ -3341,6 +3356,7 @@
 			<<set $mouthaction to 0>><<unset $askAction>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "ask to be rougher" 2>>
+				<<set $speechwheezeaction to "askRough">>
 			<<else>>
 				<<askrough>>
 				<<if $role is "islander" and (!$islander_language or $islander_language lt 100)>>
@@ -3364,6 +3380,7 @@
 				<<else>>
 					<<wheeze "demand something">>
 				<</if>>
+				<<set $speechwheezeaction to "demand">>
 			<<else>>
 				<<set $mouthactiondefault to "demand">>
 				<<if $submissive gte 850 and $wolfgirl gte 6>>
@@ -3388,6 +3405,7 @@
 			<<set $mouthaction to 0>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "mock <<him>>">>
+				<<set $speechwheezeaction to "mock">>
 			<<else>>
 				<<if _disparage is false>>
 					<<set $mouthactiondefault to "mock">>
@@ -3422,6 +3440,11 @@
 					<<set $NPCList[$mouthtarget].penis to "mouthentrance">><<set $mouthactiondefault to "lick">><<set $mouthuse to "penis">><<set $mouthstate to "entrance">>
 					<span class="lblue">You <<oraltext>> move your mouth to <<hisselect $mouthtarget>> <<npcPenis $mouthtarget>><<if !$npcSub>> and <<he>> waits expectantly<</if>>.</span>
 					<<if $enemytype is "beast">><<set $NPCList[$mouthtarget].stance to "topface">><</if>>
+					<<set $_npcn to $npc[$npcrow.indexOf($mouthtarget)]>>
+					<<switch $_npcn>>
+						<<case "Avery">>
+							<<averyLungingForGenitalsAss>>
+					<</switch>>
 					<<set $NPCList[$mouthtarget].location.genitals to "head">>
 				<<else>>
 					<span class="blue">You try to move your mouth to <<hisselect $mouthtarget>> <<npcPenis $mouthtarget>>, but the phallus is already occupied.</span>
@@ -3470,6 +3493,11 @@
 					<span class="lblue">You <<oraltext>> move your mouth to <<hisselect $mouthtarget>> <<npcVagina $mouthtarget>><<if !$npcSub>> and <<he>> waits expectantly<</if>>.</span>
 					<<set $NPCList[$mouthtarget].vagina to "mouth">><<set $mouthstate to "othervagina">><<set $mouthuse to "othervagina">>
 					<<if $enemytype is "beast">><<set $NPCList[$mouthtarget].stance to "topface">><</if>><<set $mouthactiondefault to "vaginalick">>
+					<<set $_npcn to $npc[$npcrow.indexOf($mouthtarget)]>>
+					<<switch $_npcn>>
+						<<case "Avery">>
+							<<averyLungingForGenitalsAss>>
+					<</switch>>
 					<<set $NPCList[$mouthtarget].location.genitals to "head">>
 				<<else>>
 					<span class="blue">You try to move your mouth to <<hisselect $mouthtarget>> <<npcVagina $mouthtarget>>, but the entrance is already occupied.</span>
@@ -3610,6 +3638,7 @@
 			<<set $mouthaction to 0>><<set _sound to 1>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "scream for help">>
+				<<set $speechwheezeaction to "scream">>
 			<<elseif $drugged gt 0 or $arousal gte $arousalmax * 0.9>>
 				You try to scream for help, <span class="pink">but <<= $drugged gt 0 ? "your drugged state of mind" : "your arousal">> makes it sound like a lewd moan.</span>
 				<<neutral 1>><<set $speechmoan to 1>>
@@ -3678,6 +3707,7 @@
 			<<set _unforgiver to $NPCList.find(npc => npc.traits.includes("unforgiving"))>>
 			<<if $neckuse is "hand" and $oxygen lt $oxygenmax and $settings.asphyxiaLevel gte 2>>
 				<<wheeze "apologise">>
+				<<set $speechwheezeaction to "apologize">>
 			<<elseif $enemytype is "beast">>
 				You tell <<him>> you're sorry for being bad.
 				<<set $mouthactiondefault to "plead">>
@@ -3781,11 +3811,7 @@
 				<<set $mouthactiondefault to "plead">>
 				<<set $trauma -= $traumagain>><<set $traumagain to 0>><<set $speechforgive to 1>><<set $angelforgive to 1>>
 				<<traumaClamp>>
-				<<if $enemytype is "beast">>
-					"You don't know any better. You're just a <<beasttype>>," you say. "I forgive you."
-				<<else>>
-					"Even though you're doing such a horrible thing, don't worry," you say. "I forgive you."
-				<</if>>
+				<<actionsforgive>>
 			<</if>>
 		<</if>>
 
@@ -4339,6 +4365,7 @@
 			<</if>>
 		<</if>>
 
+		/* Ask <<him>> to put a condom on */
 		<<if $mouthaction is "ask" and $askAction is "condoms">>
 			<<set $mouthaction to 0>><<unset $askAction>><<set _sound to 1>>
 			<<personselect $mouthtarget>>
@@ -4532,6 +4559,9 @@
 									<<case "reject">>
 										<<He_Short>> grins. "Nah, <span class="lewd">I don't think you deserve it.</span>"
 								<</switch>>
+							<<case "Avery">>
+								/*Default pregnancyAvoidance is 50*/
+								<<averyCondomUseSpeech $_speech>>
 							<<case "Alex">>
 								/*Default pregnancyAvoidance is 50, but always forgets to bring a condom.*/
 								<<switch $_speech>>
@@ -6537,8 +6567,10 @@
 	<<switch _args[1]>>
 		<<case 1>>
 			You try to _action, <span class="purple">but only a wheeze comes out because you are already being choked.</span>
+			<<set $speechwheezeaskchokerough to 1>>
 		<<case 2>>
 			You try to _action, <span class="lewd">but only a lewd moan comes out because the hand around your throat prevents you from talking.</span>
+			<<set $speechwheezelewd to 1>>
 		<<default>>
 			You try to _action, <span class="red">but only a choked wheeze comes out because of the hand squeezing your throat.</span><<gwillpower>><<willpower 1>>
 			<<set $speechwheeze to 1>>

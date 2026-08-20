@@ -84,6 +84,10 @@ setup.debugMenu.eventList = {
 			widgets: [`<<give_all_foodstuff>>`],
 		},
 		{
+			link: [`Unlock All Love Interests`, stayOnPassageFn],
+			widgets: [`<<debugUnlockAllLoveInterests>>`],
+		},
+		{
 			link: [`Strip`, stayOnPassageFn],
 			widgets: [`<<undressclothes "wardrobe">>`],
 		},
@@ -708,6 +712,30 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Avery Date`, `Domus Street`],
 			widgets: [`<<set $averydate to 1>>`, `<<set Time.setTime(20, 0)>>`],
+		},
+		{
+			link: [`Avery Sex Me In The Car`, `Avery Date Sex`],
+			widgets: [`<<endcombat>>`, `<<set $sexstart to 1>>`, `<<npc Avery>>`, `<<person1>>`],
+		},
+		{
+			link: [`Avery Sex Me At The Hotel`, `Avery Hotel Sex`],
+			widgets: [
+				`<<endcombat>>`,
+				`<<set $sexstart to 1>>`,
+				`<<npc Avery>>`,
+				`<<person1>>`,
+				`<<set $outside to 0>>`,
+				`<<set $location to "hotel">>`,
+				`<<undressSleep "averyhotel">>`,
+				`<<set $uppertemp to "init">>`,
+				`<<upperwear "babydoll lingerie">>`,
+				`<<set $worn.upper.colour to either("black", "blue", "brown", "green", "pink", "purple", "red", "tangerine")>>`,
+				`<<set $phase to 1>>`,
+			],
+		},
+		{
+			link: [`Avery Rape Me In The Car`, `Avery Walk Rape`],
+			widgets: [`<<endcombat>>`, `<<set $molestationstart to 1>>`, `<<npc Avery>>`, `<<person1>>`],
 		},
 		{
 			link: [`Black Wolf Forced`, `Forest Wolf Molestation`],
