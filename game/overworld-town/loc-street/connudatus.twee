@@ -37,6 +37,7 @@ You are on Connudatus Street. The numerous clubs, bars and restaurants make it t
 <</if>>
 <<streeteffects>>
 <br><br>
+
 <<if $exposed gte 1>>
 	<<if $exposed is 1 and $connudatus_stripped gte 1>>
 		Around half the street have stripped to their underwear, a trend you started. Your state of dress is nothing out of the ordinary.
@@ -107,7 +108,21 @@ You are on Connudatus Street. The numerous clubs, bars and restaurants make it t
 	<br>
 	<<link [[Ignore|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
 	<br>
+<<elseif $rng gte 91 and Time.dayState isnot "night" and !$daily.fruitSell>>
+	<<set _pool to Object.keys(setup.foodstuff).filter(k => setup.foodstuff[k].tending and (setup.foodstuff[k].category is "fruit" and !setup.foodstuff[k].tending.tags.includes("aphrodisiac")))>>
+	<<set $streetFruit to _pool.random()>>
+	<<set $daily.fruitSell to true>>
 
+	<<generate1>><<person1>>"Hey, you! The one with the $worn.upper.colour $worn.upper.name!" a voice calls from near the market.
+	<br><br>
+
+	You turn to see a <<person>> waving at you, with a small sack of <<recipe_name $streetFruit plural>> in <<his>> other hand, and a bag of other produce deposited at <<his>> feet.
+	<br><br>
+
+	<<link [[Approach|Fruit Street See]]>><</link>>
+	<br>
+	<<link [[Leave|Fruit Street Leave]]>><</link>>
+	<br>
 <<else>>
 
 	<<if (dangerEvent() or $eventforced) and $eventskip is 0>>
@@ -172,8 +187,7 @@ You are on Connudatus Street. The numerous clubs, bars and restaurants make it t
 			<</if>>
 		<</if>>
 		<<if Time.hour gte 6 and Time.hour lte 20 and $exposed lte 0>>
-			/* SANITY CHECK: All outcomes pass 30 minutes in total, time difference is intentional */
-			<<stallicon "open">><<link [[Explore the markets (0:30)|Connudatus Markets]]>><<pass 15>><</link>>
+			<<stallicon "open">><<link [[Explore the markets (0:15)|Connudatus Markets]]>><<pass 15>><</link>>
 			<br>
 		<</if>>
 		<<if Time.dayState is "night" and $exposed gte 2 and hasSexStat("exhibitionism", 4) and $daily.ex.connudatus isnot 1>>
@@ -517,3 +531,355 @@ The <<person1>><<person>> scoffs and removes <<his>> hand.
 <<endcombat>>
 
 <<link [[Next|Connudatus Street]]>><<pass 15>><<endevent>><</link>>
+
+:: Fruit Street See
+<<effects>>
+
+You decide to see what <<he>> wants from you.
+<br><br>
+
+Seeing you approach, the <<personsimple>> lowers <<his>> hand and extends the bag of <<recipe_name $streetFruit plural>> to you.
+<br><br>
+
+"Oh thank god. I got this extra bag of <<recipe_name $streetFruit plural>> from the market by accident, and my <<spouse>>'s gonna kill me! Please take these off my hands, no one's wanted to so far."
+<br><br>
+
+<<link [[Accept|Fruit Street See Accept]]>><</link>>
+<br>
+<<link [[Refuse|Fruit Street See Refuse]]>><</link>>
+<br>
+
+:: Fruit Street Leave
+<<effects>>
+
+Politely declining, you choose to leave. You'd rather not know what random strangers with produce want from you.
+<br><br>
+
+<<unset $streetFruit>>
+<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+<br>
+
+
+:: Fruit Street See Accept
+<<effects>>
+You decide to help the poor <<person1>><<personsimple>> and accept to take the bag of <<recipe_name $streetFruit plural>> off <<his>> hands. 
+<br><br>
+
+<<if $fame.rape gte 200>>
+	<<if $rng gte 71>>
+		"Actually-" <<He>> takes the bag away from your reach. "I spent a lot on this stuff. I think it's fair that you also pay me, don't you think?"
+		<br><br>
+
+		<<He>> takes you by the wrist before you can do anything and turns to the direction of a nearby alley.
+		<br><br>
+
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Accept|Fruit Street See Accept Sex]]>><<set $sexstart to 1>><</link>>
+			<br>
+		<</if>>
+		<<link [[Wrench yourself free|Fruit Street Struggle]]>><</link>><<physiquedifficulty 1 15000>>
+		<br>
+	<<else>>
+		"Oh, thank you! Thank you so much!" <<he>> says, a visible burden being lifted from <<his>> shoulders, and hands you the fruits. <<tending_pick $streetFruit>>
+		<br><br>
+
+		You think you've helped <<him>>, in a way.<<stress -3>><<llstress>>
+		<br><br>
+		<<unset $streetFruit>>
+		<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	"Oh, thank you! Thank you so much!" <<he>> says, a visible burden being lifted from <<his>> shoulders, and hands you the fruits. <<tending_pick $streetFruit>>
+	<br><br>
+
+	You think you've helped <<him>>, in a way.<<stress -3>><<llstress>>
+	<br><br>
+	<<unset $streetFruit>>
+	<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+	<br>
+<</if>>
+
+:: Fruit Street See Refuse
+<<effects>>
+
+You don't either. This situation feels too odd for you. You turn to leave,
+
+<<if $fame.rape gte 200>>
+	<<if $rng gte 71>>
+		but the <<personsimple>> snatches your wrist before you can. <<pain 1>><<gpain>>
+		<br><br>
+
+		"Damn it. I knew I should have toned it down. Come here, you whore."
+		<br><br>
+
+		<<link [[Next|Fruit Street See Refuse Rape]]>><<set $molestationstart to 1>><</link>>
+		<br>
+	<<else>>
+		ignoring the <<personsimple>>'s pleas.
+		<br><br>
+		<<unset $streetFruit>>
+		<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	ignoring the <<personsimple>>'s pleas.
+	<br><br>
+	<<unset $streetFruit>>
+	<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+	<br>
+<</if>>
+
+:: Fruit Street See Accept Sex
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemytrust += 100>>
+	You and the <<person>> find a nearby alley for some privacy.
+	<<promiscuity2>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Fruit Street See Accept Sex Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Fruit Street See Accept Sex]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Fruit Street See Accept Sex Finish
+<<effects>>
+<<if $enemyhealth lte 0>>
+	"Fuck! Damn bitch, I thought we had an agreement!"
+	<br><br>
+
+	<<He>> cradles <<his>> injuries and weakly throws the bag of <<recipe_name $streetFruit plural>> at you.
+	<br><br>
+
+	"Take them. Not that you deserve them. I'd rather not face both you and my <<spouse>>." <<He>> shudders and walks away. <<tearful>> you struggle to your feet. <<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	"Thanks, <<girl>>," <<he>> says, and hands you the bag of <<recipe_name $streetFruit plural>>.
+	<br><br>
+
+	"Don't- don't uh… if you ever see my <<spouse>>, don't tell that I did that, though." <<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $finish is 1>>
+	"Well that's a bummer, but a deal's a deal, I guess," he says, reluctantly, and gives you the <<recipe_name $streetFruit plural>>.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $alarm is 1 or $rescue is 1>>
+
+	<<set $rescued += 1>>
+	Your screaming attracts the attention of a few stray dogs, which have come to investigate.
+	<br><br>
+
+	The <<personsimple>> stills for a moment, before quickly getting off of you and bolting out of the alleyway. It looks like <<he>>'s scared of them.
+	<br><br>
+
+	<<He>> also dropped <<his>> bag of <<recipe_name $streetFruit plural>>. Not wanting to take any chance with the animals, you grab the fruits and make yourself scarce. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<else>>
+	The <<person>> throws the bag of <<recipe_name $streetFruit plural>> at you.
+	<br><br>
+
+	"Here. I don't have time for both you and to get home," <<he>> says, and turns away, leaving you in the alleyway.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<</if>>
+<<unset $streetFruit>>
+<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+<br>
+
+:: Fruit Street See Accept Rape
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>>
+	<<enable_rescue>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Fruit Street See Accept Rape Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Fruit Street See Accept Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Fruit Street See Accept Rape Finish
+<<effects>>
+
+<<if $enemyhealth lte 0>>
+	"God damn it, why are they always like this…" <<he>> mutters under his breath, clutching himself in pain.
+	<br><br>
+
+	The bag slips from the <<person>>'s grip. <<He>> looks to be contemplating picking them up, before a grimace of pain crosses <<his>> face.
+	<br><br>
+
+	"You can have the- damn things. For all that I care." <<He>> tries to sound menacing, but <<his>> current state leaves a lot to be desired. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	"Thanks, <<girl>>," <<he>> says, and hands you the bag of <<recipe_name $streetFruit plural>>.
+	<br><br>
+
+	"Don't- don't uh… if you ever see <<spouse>>, don't tell that I did that, though." <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $alarm is 1 and $rescue is 1>>
+	<<set $rescued += 1>>
+	Your screaming attracts the attention of a few stray dogs, which have come to investigate.
+	<br><br>
+
+	The <<personsimple>> stills for a moment, before quickly getting off of you and bolting out of the alleyway. It looks like <<he>>'s scared of them.
+	<br><br>
+
+	<<He>> also dropped <<his>> bag of <<recipe_name $streetFruit plural>>. Not wanting to take any chance with the animals, you grab it and make yourself scarce. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<else>>
+	The <<person>> throws the bag of <<recipe_name $streetFruit plural>> at you and turns around, apparently done. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<</if>>
+<<unset $streetFruit>>
+<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+<br>
+
+:: Fruit Street Struggle
+<<effects>>
+
+<<if $physiqueSuccess>>
+	You manage to escape the <<personsimple>>'s grip. Fortunately, <<he>> doesn't come after you.
+	<br><br>
+	<<unset $streetFruit>>
+	<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
+	<br>
+<<else>>
+	You try to wrench yourself free, <span class="red">but fail</span>. "Where do you think you're going? You already agreed to help me."
+	<br><br>
+	<<link [[Next|Fruit Street See Refuse Rape]]>><<set $molestationstart to 1>><</link>>
+	<br>
+<</if>>
+
+:: Fruit Street See Refuse Rape
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>><<set $enemytrust -= 40>><<set $enemyanger += 30>>
+	<<enable_rescue>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Fruit Street See Refuse Rape Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Fruit Street See Refuse Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Fruit Street See Refuse Rape Finish
+<<effects>>
+<<if $enemyhealth lte 0>>
+	"God damn it, why are they always like this…" <<he>> mutters under his breath, clutching himself in pain.
+	<br><br>
+
+	The bag slips from the <<person>>'s grip. <<He>> looks to be contemplating picking them up, before a grimace of pain crosses <<his>> face.
+	<br><br>
+
+	"You can have the- damn things. For all that I care." <<He>> tries to sound menacing, but <<his>> current state leaves a lot to be desired. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	"Here," <<he>> says, throwing the bag of <<recipe_name $streetFruit plural>> at you. "I didn't actually lie about the fact that I can't bring them home." <<tearful>> you recover.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $alarm is 1 and $rescue is 1>>
+	<<set $rescued += 1>>
+	Your screaming attracts the attention of a few stray dogs, which have come to investigate.
+	<br><br>
+
+	The <<personsimple>> stills for a moment, before quickly getting off of you and bolting out of the alleyway. It looks like <<he>>'s scared of them.
+	<br><br>
+
+	<<He>> also dropped <<his>> bag of <<recipe_name $streetFruit plural>>. Not wanting to take any chance with the animals, you grab it and make yourself scarce. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<<else>>
+	The <<person>> throws the bag of <<recipe_name $streetFruit plural>> at you and turns around, apparently done. <<tearful>> you struggle to your feet.
+	<<tending_pick $streetFruit>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+<</if>>
+
+<<unset $streetFruit>>
+<<link [[Next|Connudatus Street]]>><<set $eventskip to 1>><<endevent>><</link>>
