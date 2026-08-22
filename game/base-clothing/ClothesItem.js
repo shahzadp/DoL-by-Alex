@@ -11,7 +11,7 @@ class ClothesItem {
 	/* Capitalized name of clothing | AUTOFILL | STRING */
 	name_cap;
 
-	/* Clothing name for variable purpose | REQUIRED | MUST BE UNIQUE | STRING */
+	/* Clothing name for variable purpose | REQUIRED | MUST BE UNIQUE TO SLOT | MUST MATCH OTHER OUTFIT PARTS | STRING */
 	variable;
 
 	/* Integrity of clothing | INT */
@@ -71,7 +71,7 @@ class ClothesItem {
 	/* */
 	type;
 
-	/* Clothing set | AUTOFILL | STRING */
+	/* Clothing set | AUTOFILL | MUST BE UNIQUE TO SLOT | MUST MATCH OTHER OUTFIT PARTS | STRING */
 	set;
 
 	/* Gender of the clothing | REQUIRED | STRING */
