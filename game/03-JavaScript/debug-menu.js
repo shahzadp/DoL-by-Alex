@@ -340,10 +340,10 @@ setup.debugMenu.eventList = {
 			link: [() => `Set all pregnancy events to next `, stayOnPassageFn],
 			widgets: [
 				`<<set _pregnancy to $sexStats.anus.pregnancy>>`,
-				() => (T.pregnancy[0] == null ? "" : `<<set _pregnancy.fetus[0].timeLeft to 1>>`),
-				() => (T.pregnancy[1] == null ? "" : `<<set _pregnancy.fetus[1].timeLeft to 1>>`),
-				() => (T.pregnancy[2] == null ? "" : `<<set _pregnancy.fetus[2].timeLeft to 1>>`),
-				() => (T.pregnancy[3] == null ? "" : `<<set _pregnancy.fetus[3].timeLeft to 1>>`),
+				() => (T.pregnancy.fetus[0] == null ? "" : `<<set _pregnancy.fetus[0].timeLeft to 1>>`),
+				() => (T.pregnancy.fetus[1] == null ? "" : `<<set _pregnancy.fetus[1].timeLeft to 1>>`),
+				() => (T.pregnancy.fetus[2] == null ? "" : `<<set _pregnancy.fetus[2].timeLeft to 1>>`),
+				() => (T.pregnancy.fetus[3] == null ? "" : `<<set _pregnancy.fetus[3].timeLeft to 1>>`),
 			],
 		},
 		{
@@ -370,7 +370,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Repair Pregnancy Objects`, stayOnPassageFn],
-			widgets: [`<<prenancyObjectRepair>>`],
+			widgets: [`<<pregnancyObjectRepair>>`],
 		},
 		{
 			link: [`Reset Pregnancy Objects`, stayOnPassageFn],
@@ -385,7 +385,7 @@ setup.debugMenu.eventList = {
 		{
 			text_only: `Player is already pregnant\n`,
 			condition() {
-				return V.player.penisExist === false && getPregnancyObject().fetus.length !== 0;
+				return V.player.penisExist === false && playerIsPregnant();
 			},
 		},
 		{
@@ -396,7 +396,7 @@ setup.debugMenu.eventList = {
 				},
 			],
 			condition() {
-				return V.player.penisExist === false && getPregnancyObject().fetus.length === 0;
+				return V.player.penisExist === false && !playerIsPregnant();
 			},
 		},
 		{
@@ -407,21 +407,27 @@ setup.debugMenu.eventList = {
 				},
 			],
 			condition() {
-				return V.player.penisExist === false && getPregnancyObject().fetus.length === 0;
+				return V.player.penisExist === false && !playerIsPregnant();
 			},
 		},
 		{
 			link: [`Progress Pregnancy to the end`, stayOnPassageFn],
-			widgets: [`<<set $sexStats.vagina.pregnancy.timer to $sexStats.vagina.pregnancy.timerEnd>>`],
+			widgets: [
+				() => {
+					const preg = getPlayerPregnancy();
+					if (preg) preg.conceivedDate = Time.date.timeStamp - (getDueDate(preg) - preg.conceivedDate);
+					return "";
+				},
+			],
 			condition() {
-				return V.player.penisExist === false && getPregnancyObject().fetus.length !== 0;
+				return V.player.penisExist === false && playerIsPregnant();
 			},
 		},
 		{
 			link: [`End pregnancy and send children to default locations`, stayOnPassageFn],
 			widgets: [
 				() => {
-					switch (getPregnancyObject().type) {
+					switch (playerNormalPregnancyType()) {
 						case "human":
 							endPlayerPregnancy("hospital", "home");
 							break;
@@ -436,7 +442,7 @@ setup.debugMenu.eventList = {
 				},
 			],
 			condition() {
-				return V.player.penisExist === false && getPregnancyObject().fetus.length !== 0;
+				return V.player.penisExist === false && playerIsPregnant();
 			},
 		},
 		{
@@ -447,11 +453,11 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Get Robin Pregnant with PCs children`, stayOnPassageFn],
-			widgets: [`<<namedNpcPregnancy "Robin" "pc" "human" true undefined true>>`],
+			widgets: [`<<namedNpcPregnancy "Robin" "pc" "human" true true>>`],
 		},
 		{
 			link: [`Get Whitney Pregnant with Black Wolf pups`, stayOnPassageFn],
-			widgets: [`<<namedNpcPregnancy "Whitney" "Black Wolf" "wolf" true undefined true>>`],
+			widgets: [`<<namedNpcPregnancy "Whitney" "Black Wolf" "wolf" true true>>`],
 		},
 		{
 			link: [`Basic NPC Compression Test`, stayOnPassageFn],

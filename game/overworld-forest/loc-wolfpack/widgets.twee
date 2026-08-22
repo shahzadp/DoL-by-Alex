@@ -44,7 +44,7 @@
 		<<if playerNormalPregnancyType() isnot "wolf" and playerIsPregnant() and playerAwareTheyArePregnant() and playerBellyVisible()>>
 			<<addevent "CaveHumanPregnancyDiscovered" 5000>>
 		<</if>>
-		<<if Object.values($children).find(child => child.mother === "pc" && child.location === "wolf_cave") and $lactating isnot 1 and Time.dayState is "day">>
+		<<if getBornChildren().find(child => getPregnancyOf(child).carrier === "pc" && child.development.location === "wolf_cave") and $lactating isnot 1 and Time.dayState is "day">>
 			<<addevent "wolfwetnurse" 0.5>>
 		<</if>>
 		<<if $weekly.babyRabbit isnot 1 and $wolfstate isnot "hunt" and $rng gte 56 and $dissociation gte 1 and $syndromewolves gte 1 and $wolfpackharmony gte 10>>
@@ -654,8 +654,8 @@
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "bwpcinteraction">>
-	<<set _pregnancy to C.npc["Black Wolf"].pregnancy>>
-	<<set _pregnancyProgress to Math.clamp(_pregnancy.timer / _pregnancy.timerEnd, 0, 1)>>
+	<<set _pregnancy to getActivePregnancies("Black Wolf")[0]>>
+	<<set _pregnancyProgress to _pregnancy ? pregnancyProgress(_pregnancy) : 0>>
 
 	<<if playerIsPregnant() and playerAwareTheyArePregnant() and knowsAboutPregnancy("pc","Black Wolf")>>
 
@@ -697,7 +697,7 @@
 
 		<<if between(_pregnancyProgress, 0.7, 1)>>
 			<<if $monster is 1>>
-				<<bHe>> shifts, looking down at <<bhis>> pregnant belly. You can see a little <<if _pregnancy.fetus[0].features.monster>>foot<<else>>paw<</if>> kicking against it.
+				<<bHe>> shifts, looking down at <<bhis>> pregnant belly. You can see a little <<if getChildrenOf(_pregnancy.pregnancyId)[0].features.monster>>foot<<else>>paw<</if>> kicking against it.
 				<br><br>
 
 				"Pups already strong." You can hear pride in <<bhis>> voice.

@@ -87,7 +87,7 @@ You are in the wolf cave. The ceiling hangs low. There's a breeze blowing from t
 
 :: Wolf Cave Clearing
 <<set $outside to 1>><<set $location to "wolf_cave">><<effects>><<getTarget true>>
-<<set _bwmother to Object.values($children).find(child => child.mother === "Black Wolf" && child.location === "wolf_cave")>>
+<<set _bwmother to getBornChildren().find(child => getPregnancyOf(child).carrier === "Black Wolf" && child.development.location === "wolf_cave")>>
 
 <<set $wolfpackharmony = Math.clamp($wolfpackharmony, 0, 22)>>
 <<set $wolfpackferocity = Math.clamp($wolfpackferocity, 0, 22)>><<set $bus to "wolfcaveclearing">>
@@ -358,17 +358,11 @@ You rub your binds against a sharp rock and they soon come loose.
 :: Wolf Cave Bed
 
 <<effects>>
-<<switch statusCheck("Black Wolf").gender>>
-	<<case "m">>
-		<<set _BWGender to 1>>
-	<<default>>
-		<<set _BWGender to 0>>
-<</switch>>
 <<if lastVisited("Wolf Relax") is 1>>
 	You get up and follow the Black Wolf into the cave to sleep.
 	<br><br>
 <</if>>
-<<if Time.dayState is "night" and $wolfstate is "cave" and (statusCheck("Black Wolf").love gte 100 or $wolfpackleader is 1 or playerIsPregnant() and playerBellySize() gte 15 or parentFunction.findParent("Black Wolf", _BWGender, true))>>
+<<if Time.dayState is "night" and $wolfstate is "cave" and (statusCheck("Black Wolf").love gte 100 or $wolfpackleader is 1 or playerIsPregnant() and playerBellySize() gte 15 or playerConceivedWith("Black Wolf"))>>
 	<<npc "Black Wolf">> <<set $bedGuest to "Black Wolf">> <<set $blackWolfSleep to true>>
 	You find an empty spot to lie on and close your eyes. After a moment, you feel an enormous mass of fur engulf you. You open your eyes to see the Black Wolf curling up beside you. <<bHe>> regards you for just a moment before laying <<bhis>> head down, facing away towards the mouth of the cave. You rest your head against <<bhim>>.
 	<<lstress>><<ltrauma>><<stress -10>><<trauma -10>>

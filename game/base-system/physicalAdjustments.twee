@@ -50,19 +50,6 @@
 	<<if $sexStats.anus is undefined>>
 		<<set $sexStats.anus to {
 			"pregnancy": {
-				/*//0: null,old variables, kept for debugging
-				//1: null,
-				//2: null,
-				//3: null,
-				//"count": 0,
-				//"maxCount": 1,
-				//"fertile": false,
-				//"fertilised": false,
-				//"lowestDaysLeft": null,
-				//"lowestTimeLeft": null,
-				//"givenBirth": 0,
-				//seenDoctor: 0, replaced with $pregnancyStats.parasiteDoctorEvents
-				//namesChildren: false, replaced with $pregnancyStats.namesParasitesChild*/
 				fetus: [],
 				givenBirth: 0,
 				parasiteBirthEvents: 0,
@@ -71,11 +58,9 @@
 				awareOf: null,
 				timer: null,
 				timerEnd: null,
-				type: null,
 				potentialFathers: [],
 				totalBirthEvents: 0,
 			},
-			"sperm":[],
 		}>>
 	<</if>>
 	<<if $sexStats.anus.pregnancy.fetus is undefined>>
@@ -113,12 +98,9 @@
 		<<set $sexStats.anus.pregnancy.awareOf to null>>
 		<<set $sexStats.anus.pregnancy.timer to null>>
 		<<set $sexStats.anus.pregnancy.timerEnd to null>>
-		<<set $sexStats.anus.pregnancy.timerEnd to null>>
 		<<set $sexStats.anus.pregnancy.waterBreaking to false>>
 		<<set $sexStats.anus.pregnancy.potentialFathers to []>>
 		<<set $sexStats.anus.pregnancy.totalBirthEvents to 0>>
-
-		<<set $sexStats.anus.sperm to []>>
 
 		<<run delete $sexStats.anus.pregnancy.maxCount>>
 		<<run delete $sexStats.anus.pregnancy.count>>
@@ -145,16 +127,13 @@
 	<<if $sexStats.anus.pregnancy.potentialFathers is undefined>>
 		<<set $sexStats.anus.pregnancy.potentialFathers to []>>
 	<</if>>
-	<<if !Array.isArray($sexStats.anus.sperm)>>
-		<<set $sexStats.anus.sperm to []>>
-		<<if Array.isArray($sexStats.anus.pregnancy.potentialFathers) and $sexStats.anus.pregnancy.potentialFathers.length>>
-			<<for $_i to 0; $_i lt $sexStats.anus.pregnancy.potentialFathers.length; $_i++>>
-				<<set $sexStats.anus.pregnancy.potentialFathers[$_i] to {
-					type: $sexStats.anus.pregnancy.potentialFathers[$_i][0],
-					source: $sexStats.anus.pregnancy.potentialFathers[$_i][1],
-				}>>
-			<</for>>
-		<</if>>
+	<<if Array.isArray($sexStats.anus.pregnancy.potentialFathers?.[0])>>
+		<<for $_i to 0; $_i lt $sexStats.anus.pregnancy.potentialFathers.length; $_i++>>
+			<<set $sexStats.anus.pregnancy.potentialFathers[$_i] to {
+				type: $sexStats.anus.pregnancy.potentialFathers[$_i][0],
+				source: $sexStats.anus.pregnancy.potentialFathers[$_i][1],
+			}>>
+		<</for>>
 	<</if>>
 
 	<<if $sexStats.vagina is undefined>>
@@ -170,16 +149,8 @@
 		<<set _currentDaysMax to _baseDays + random(0, _baseDaysRng)>>
 		/*
 			- pregnancy has multiple slots, but pregnancy should only occur when none are taken
-			- "baseDays", "baseDaysRng", "lastDaysMax", "currentDaysMax" values should not be changed by multipliers, but by percent if you want a faster/slower cycle during calculations only, do not modifier the values themselves
-			- Sperm Template -
-			"sperm":{
-				"Robin":{"type":"npc", "count":[[daysTillRemoval,cummed inside],[4,3],[3,2]]},
-				"Avery":{"type":"npc", "count":[[daysTillRemoval,cummed inside],[5,1]]},
-				"slender man":{"type":"npc", "count":[[daysTillRemoval,cummed inside],[5,1]]},
-				"Beast":{"type":"dog", "count":[[daysTillRemoval,cummed inside],[5,1]]},
-			}
-			- Sperm data should be deleted after 3-5 days worth of the base, the entire named object after it is cleared.
-			- "CurrentDay" should never be above "lastDaysMax" or "currentDaysMax", "lastDaysMax" should be set to "currentDaysMax" on releasing the egg
+			- "baseDays", "baseDaysRng", "currentDaysMax" values should not be changed by multipliers, but by percent if you want a faster/slower cycle during calculations only, do not modifier the values themselves
+			- "CurrentDay" should never be above "currentDaysMax"
 			- "recoveryTime" and "recoveryTimeStart" are to track how long the player needs to recover before they can get pregnant again. "recoveryTime" is reduced faster by taking fertility pills and when "totalBirthEvents" is more than 2.
 			- "recoveryStage" ranges from 0 to 4, to help with any story text regarding how the player is feeling after giving birth
 			- "periodEnabled" is only to prevent the first period based events after recovering from giving birth
@@ -202,7 +173,6 @@
 				"baseDays": _baseDays,
 				"baseDaysRng": _baseDaysRng,
 				"currentDay": random(0, _baseDays + random(0,_baseDaysRng)),
-				"lastDaysMax": _currentDaysMax,
 				"currentDaysMax": _currentDaysMax,
 				"currentState": "normal",
 				"recoveryTime": null,
@@ -212,20 +182,10 @@
 				"running": false,
 				"stages": [0, 0, 0, 0],
 			},
-			"sperm":[]
 		}>>
 		<<set _menstruation to $sexStats.vagina.menstruation>>
-		<<set _stage2 to Math.round(_menstruation.currentDaysMax * 0.17)>>
-		<<if _stage2 gte 4>>
-			<<set _stage2-->>
-		<</if>>
-		<<set _stage3 to Math.round(_menstruation.currentDaysMax * 0.5)>>
-		<<if _stage3 lt 13>>
-			<<set _stage3++>>
-		<<elseif _stage3 gte 18>>
-			<<set _stage3-->>
-		<</if>>
-		<<set _menstruation.stages to [0, _stage2, _stage3, _stage3 + random(1,2) * 0.5]>>
+		<<set _menstruation.stages to rollMenstrualStages(_menstruation.currentDaysMax)>>
+		<<set _menstruation.fertileLeadDays to random(PregnancyConstants.menstrualCycle.fertileLeadDaysMin, PregnancyConstants.menstrualCycle.fertileLeadDaysMax)>>
 
 		<<if $player.vaginaExist>>
 			<<set $sexStats.vagina.menstruation.running = true>>
@@ -254,28 +214,20 @@
 		<<run delete $sexStats.vagina.pregnancy.bellySize>>
 		<<run delete $sexStats.vagina.pregnancy.timerStart>>
 	<</if>>
-	<<if $sexStats.vagina.menstruation.nonCycleRng is undefined>>
-		<<set $sexStats.vagina.menstruation.nonCycleRng to [random(0,6),random(0,6),random(0,6)]>>
+	<<if $sexStats.vagina.menstruation.nonCycleFertility is undefined>>
+		<<set $sexStats.vagina.menstruation.nonCycleFertility to 1 / 4 ** random(0,6)>>
 	<</if>>
-	<<if !Array.isArray($sexStats.vagina.sperm)>>
-		<<set $sexStats.vagina.sperm to []>>
-		<<if Array.isArray($sexStats.vagina.pregnancy.potentialFathers) and $sexStats.vagina.pregnancy.potentialFathers.length>>
-			<<for $_i to 0; $_i lt $sexStats.vagina.pregnancy.potentialFathers.length; $_i++>>
-				<<set $sexStats.vagina.pregnancy.potentialFathers[$_i] to {
-					type: $sexStats.vagina.pregnancy.potentialFathers[$_i][0],
-					source: $sexStats.vagina.pregnancy.potentialFathers[$_i][1],
-				}>>
-			<</for>>
-		<</if>>
+	<<if Array.isArray($sexStats.vagina.pregnancy.potentialFathers?.[0])>>
+		<<for $_i to 0; $_i lt $sexStats.vagina.pregnancy.potentialFathers.length; $_i++>>
+			<<set $sexStats.vagina.pregnancy.potentialFathers[$_i] to {
+				type: $sexStats.vagina.pregnancy.potentialFathers[$_i][0],
+				source: $sexStats.vagina.pregnancy.potentialFathers[$_i][1],
+			}>>
+		<</for>>
 	<</if>>
 	<<menstruationCycleState>>
-	<<if $parentList is undefined>>
-		<<set $parentList to parentFunction.parentList>>
-	<</if>>
 	<<if !$objectVersion.pregnancyFix>>
-		<<run $sexStats.vagina.sperm.forEach(s => {if(s.source.toLowerCase().includes("wolf") && s.type === "human") s.type = "wolf"})>>
 		<<run $sexStats.vagina.pregnancy.potentialFathers.forEach(s => {if(s.source.toLowerCase().includes("wolf") && s.type === "human") s.type = "wolf"})>>
-		<<run $sexStats.anus.sperm.forEach(s => {if(s.source.toLowerCase().includes("wolf") && s.type === "human") s.type = "wolf"})>>
 		<<run $sexStats.anus.pregnancy.potentialFathers.forEach(s => {if(s.source.toLowerCase().includes("wolf") && s.type === "human") s.type = "wolf"})>>
 		<<if $sexStats.vagina.pregnancy.type is "human" and $sexStats.vagina.pregnancy.fetus[0]?.father.toLowerCase().includes("wolf")>>
 			<<set $sexStats.vagina.pregnancy.type to "wolf">>
@@ -327,8 +279,18 @@
 
 		<<set _breastMulti += (Math.clamp($sexStats.breasts.playedWith, 0, 500) / 250)>>
 
-		<<set _breastMulti += Math.clamp($sexStats.anus.pregnancy.fetus.length / 10,0,0.5)>>
-		<<set _breastMulti += Math.clamp($sexStats.vagina.pregnancy.fetus.length / 10,0,0.5)>>
+		<<set _vaginaPregnancy to getActivePregnancy("pc", "vagina")>>
+		<<set _anusPregnancy to getActivePregnancy("pc", "anus")>>
+		<<if _vaginaPregnancy>>
+			<<set _breastMulti += Math.clamp(getChildrenOf(_vaginaPregnancy.pregnancyId).length / 10, 0, 0.5)>>
+		<<elseif $sexStats.vagina.pregnancy.type is "parasite">>
+			<<set _breastMulti += Math.clamp($sexStats.vagina.pregnancy.fetus.length / 10, 0, 0.5)>>
+		<</if>>
+		<<if _anusPregnancy>>
+			<<set _breastMulti += Math.clamp(getChildrenOf(_anusPregnancy.pregnancyId).length / 10, 0, 0.5)>>
+		<<elseif $sexStats.anus.pregnancy.type is "parasite">>
+			<<set _breastMulti += Math.clamp($sexStats.anus.pregnancy.fetus.length / 10, 0, 0.5)>>
+		<</if>>
 
 		<<if $purity gte 990>>
 			<<set _breastMulti -= 1>>

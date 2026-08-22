@@ -156,8 +156,8 @@ You are inside the hospital foyer. <<if $harper_appointments.enabled>>You see a 
 				<br>
 			<</if>>
 		<</if>>
-		<<set _pregnancy to getPregnancyObject()>>
-		<<if _pregnancy.awareOf and !$daily.ultrasoundDone and between(_pregnancy.timer / _pregnancy.timerEnd, 0.1, 1)>>
+		<<set _pregnancy to getPlayerPregnancy()>>
+		<<if playerAwareTheyArePregnant() and !$daily.ultrasoundDone and _pregnancy and between(pregnancyProgress(_pregnancy), 0.1, 1)>>
 			<<socialiseicon "ask">><<link [[Enquire about getting an ultrasound (0:10)|Pregnancy ultrasound]]>>
 				<<pass 10>><<set $daily.ultrasoundDone to true>>
 			<</link>>
@@ -968,8 +968,7 @@ You lie down. <<He>> presses a mask against your face, and you feel your conscio
 
 :: Hospital Paternity Test Done
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
-<<set _father to getPregnancyObject().fetus[0].father>>
-<<set _pregnancy to getPregnancyObject()>>
+<<set _pregnancy to getPlayerPregnancy()>>
 
 You awaken in the same room you passed out in. You don't feel any different.
 <br><br>
@@ -982,13 +981,13 @@ You look at the slip of paper. You are the mother,
 <<if $paternityTestNPC is "Alex">>
 	<<run delete C.npc.Alex.pregnancy.sample>>
 
-	<<if _father is "Alex">>
-		<<set _pregnancy.potentialFathers to [{type: _pregnancy.type, source: _pregnancy.fetus[0].father}]>>
+	<<if _pregnancy.donor is "Alex">>
+		<<set _pregnancy.possibleDonors to [{name: "Alex", species: _pregnancy.donorSpecies}]>><<run setKnowsDonor(_pregnancy.pregnancyId, "pc")>>
 		<<set C.npc.Alex.pregnancy.test to true>>
 		<span class="lewd">and Alex is the father.</span>
 
 	<<else>>
-		<<set _pregnancy.potentialFathers to _pregnancy.potentialFathers.filter(father => father.source isnot $paternityTestNPC)>>
+		<<set _pregnancy.possibleDonors to _pregnancy.possibleDonors.filter(donor => donor.name isnot $paternityTestNPC)>><<run resolvePaternity(_pregnancy.pregnancyId)>>
 		<span class="red">but Alex is not the father</span>.
 
 	<</if>>

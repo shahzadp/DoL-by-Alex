@@ -24,7 +24,7 @@ setup.hair = {
 				"straight",
 				"swept right",
 				"classic",
-				"jellyfish bob"
+				"jellyfish bob",
 			],
 			devolve: ["ruffled", "bedhead"],
 		},
@@ -41,7 +41,7 @@ setup.hair = {
 				"side tail right",
 				"thick ponytail",
 				"thick sidetail",
-				"princess ponytail"
+				"princess ponytail",
 			],
 			devolve: ["messy ponytail"],
 		},

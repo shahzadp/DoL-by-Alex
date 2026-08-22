@@ -370,7 +370,6 @@ declare global {
 		filter: string[];
 		hint?: string;
 		pregnancyLockable?: boolean;
-		pregnancySillyLockable?: boolean;
 		softLockable?: boolean;
 	}
 

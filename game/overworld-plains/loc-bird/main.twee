@@ -980,16 +980,16 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 
 <<if isPregnancyEnding() and !$possessed>>
 	<<pregnancyPassout "castle">>
-<<elseif !$possessed and Object.values($children).find(child => (child.type is "hawk" and child.location is "inventory") or (child.location is "tower" and Time.date.timeStamp gte child.eggTimer))>>
+<<elseif !$possessed and getBornChildren().find(child => (child.species is "hawk" and child.development.location is "inventory") or (child.development.location is "tower" and childIsUnhatchedEgg(child) and Time.date.timeStamp gte getHatchDate(getPregnancyOf(child))))>>
 	/* Move hawk eggs that the player has to the nest */
-	<<run Object.values($children).forEach(child => {
-		if (child.type is "hawk" and child.location is "inventory") {
+	<<run getBornChildren().forEach(child => {
+		if (child.species is "hawk" and child.development.location is "inventory") {
 			if (!V.eggsMoved) V.eggsMoved = [];
 			V.eggsMoved.push(child.childId);
 			T.movedToTower to true;
-			child.location to "tower";
+			child.development.location to "tower";
 		}
-		if (child.location is "tower" and Time.date.timeStamp gte child.eggTimer) {
+		if (child.development.location is "tower" and childIsUnhatchedEgg(child) and Time.date.timeStamp gte getHatchDate(getPregnancyOf(child))) {
 			if (!V.eggsHatched) V.eggsHatched = [];
 			V.eggsHatched.push(child.childId);
 			T.readyToHatch to true;
@@ -1024,7 +1024,7 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 		<<if $eggsHatched.length gte 2>>
 			<span class="green">Some of your eggs are hatching!</span>
 		<<else>>
-			<<if Object.values($children).filter(child => child.location is "tower" and Time.date.timeStamp lt child.eggTimer).length gte 2>>
+			<<if getChildrenAt("tower").filter(child => childIsUnhatchedEgg(child) and Time.date.timeStamp lt getHatchDate(getPregnancyOf(child))).length gte 2>>
 				<span class="green">One of your eggs is hatching!</span>
 			<<else>>
 				<span class="green">Your egg is hatching!</span>
@@ -1048,7 +1048,7 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 			<</switch>>
 			puffing out <<bhis>> plumage in surprise upon realising what <<bhe>> sees.
 			<<if $monster is 1>>
-				<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+				<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 					"I'm so happy, <<wife>>. <span class="lewd">We have more children</span>!" <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you don't bother resisting<</if>>.
 				<<else>>
 					<span class="lewd">"Great Hawk and <<wife>> have children!"</span> <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you don't bother resisting<</if>>.
@@ -1092,7 +1092,7 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 	<<npc "Great Hawk">>
 	You see <<your_bird_text>> looking into the nest with awe. <<bHes>> found your <<pluralise $bird.eggReact "egg">>. <<bHe>> looks up, finally noticing you.
 	<<if $monster is 1>>
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 			"I'm so happy, <<wife>>. <span class="lewd">We have more children</span>!" <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you don't bother resisting<</if>>.
 		<<else>>
 			<span class="lewd">"Great Hawk and <<wife>> have children!"</span> <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you don't bother resisting<</if>>.
@@ -1376,7 +1376,7 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 					<<your_bird_text "cap">> is adding to the nest.
 				<</if>>
 			<<case "brood">>
-				<<set _eggCountNest to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+				<<set _eggCountNest to nestEggCount()>>
 				<<your_bird_text "cap">> sits in the nest, brooding on the <<pluralise _eggCountNest "egg">>.
 			<<default>>
 				<<your_bird_text "cap">> rests in <<bhis>> nest.
@@ -1518,8 +1518,8 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 
 	<<birdicon "nest">><<link [[Sleep in the nest|Bird Tower Bed]]>><</link>>
 	<br>
-	<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer))>>
-		<<set _eggIcon to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+	<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsUnhatchedEgg(child))>>
+		<<set _eggIcon to nestEggCount()>>
 		<<if _eggIcon gte 2>>
 			<<birdicon "eggs">><<link [[Brood on your eggs (0:30)|Bird Tower Brood]]>><<set $phase to 1>><<transform bird 1>><<trauma -3>><</link>><<ltrauma>>
 			<br>
@@ -1528,8 +1528,8 @@ You are inside <<if $syndromebird is 1>>your tower<<else>>a ruined tower<</if>>,
 			<br>
 		<</if>>
 	<</if>>
-	<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
-		<<set _childrenTotal to Object.values($children).filter(child => child.location is "tower" and child.eggTimer is undefined).length>>
+	<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
+		<<set _childrenTotal to getChildrenAt("tower").filter(child => childIsBorn(child)).length>>
 		<<if _childrenTotal gte 2>>
 			<<birdicon "children">><<link [[Check on your children|Childrens Home]]>><<set $exitPassage to $passage>><</link>>
 		<<else>>
@@ -2868,7 +2868,7 @@ You put it in the wardrobe.
 	<<case 2>>It's comfortable enough.
 	<<case 3>>You melt into its softness and warmth.
 <</switch>>
-<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+<<set _eggCount to nestEggCount()>>
 <<if _eggCount>>
 	<<Number _eggCount>> <<pluralise _eggCount "egg is" "eggs are">> protected in the nest. You bring <<pluralise _eggCount "it">> close for safekeeping.
 <</if>>
@@ -2944,7 +2944,7 @@ You sit by the rainwater pool.
 			<<your_bird_text "cap">> is adding to the nest.
 		<</if>>
 	<<case "brood">>
-		<<set _eggCountNest to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+		<<set _eggCountNest to nestEggCount()>>
 		<<your_bird_text "cap">> sits in the nest, brooding on the <<pluralise _eggCountNest "egg">>.
 	<<default>>
 		<<your_bird_text "cap">> rests in <<bhis>> nest.
@@ -3032,9 +3032,8 @@ You sit by the rainwater pool.
 		<<birdEggLayEvent "sleep">>
 	<<elseif _eggLayingWake is true>>
 		<<npc "Great Hawk">>
-		<<set _eggnant to getPregnancyObject()>>
-		<<if playerIsPregnant() and _eggnant.type is "hawk">>
-			<<set $eggLayNumber to _eggnant.fetus.length>>
+		<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
+			<<set $eggLayNumber to getLabouringLitter("pc").length>>
 		<<else>>
 			<<set $eggLayNumber to $harpyEggs.count>>
 		<</if>>
@@ -3085,7 +3084,7 @@ You sit by the rainwater pool.
 		<<specialClothesUnlock "set" "bird">>
 		<<link [[Next|Bird Tower]]>><<endevent>><</link>>
 		<br>
-	<<elseif $bird.state is "home" and playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and playerBellyVisible() and !talkedAboutPregnancy("pc","Great Hawk")>>
+	<<elseif $bird.state is "home" and playerIsPregnant() and playerNormalPregnancyType() is "hawk" and playerBellyVisible() and !talkedAboutPregnancy("pc","Great Hawk")>>
 		<<setKnowsAboutPregnancy "pc" "Great Hawk">><<setTalkedAboutPregnancy "pc" "Great Hawk">>
 		<<npc "Great Hawk">>
 		You awaken to a light pressure on your belly.
@@ -3096,7 +3095,7 @@ You sit by the rainwater pool.
 		<</if>>
 		<br><br>
 
-		<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+		<<set _eggCount to nestEggCount()>>
 		<<if _eggCount gte 1>>
 			<<bHe>> starts to fuss over the nest, making room for more eggs.
 		<<else>>
@@ -3123,7 +3122,7 @@ You sit by the rainwater pool.
 		<<setKnowsAboutPregnancy "Great Hawk" "pc">><<setTalkedAboutPregnancy "Great Hawk" "pc">>
 		<<npc "Great Hawk">>
 		You awaken to see <<your_bird_text>> fussing over the nest.
-		<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+		<<set _eggCount to nestEggCount()>>
 		<<if _eggCount gte 1>>
 			<<bHe>> seems to be making room for something.
 		<<else>>
@@ -3827,7 +3826,7 @@ You bring your attentive touch down towards <<bhis>> groin.
 					<<your_bird_text "cap">> is adding to the nest.
 				<</if>>
 			<<case "brood">>
-				<<set _eggCountNest to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+				<<set _eggCountNest to nestEggCount()>>
 				<<your_bird_text "cap">> sits in the nest, brooding on the <<pluralise _eggCountNest "egg">>.
 			<<default>>
 				<<your_bird_text "cap">> rests back in <<bhis>> nest.
@@ -4249,7 +4248,7 @@ You bring your attentive touch down towards <<bhis>> groin.
 		<</addinlineevent>>
 	<</if>>
 
-	<<if playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and talkedAboutPregnancy("pc","Great Hawk")>>
+	<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk" and talkedAboutPregnancy("pc","Great Hawk")>>
 		<<addinlineevent "bird_bask_pregnant_sing_player">>
 			The <<beasttype>> lowers <<bhis>> head to your <<bellyDescription>>, and continues singing softly. <<bHes>> singing to your unborn chicks. <<lltrauma>><<trauma -6>>
 			<br><br>
@@ -5296,8 +5295,8 @@ You join the Great Hawk at your nest.
 	<<bHe>> chirps
 <</if>>
 before starting to pick wood away.
-<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
-<<if _eggcount>>
+<<set _eggCount to nestEggCount()>>
+<<if _eggCount>>
 	You gently remove your <<pluralise _eggCount "egg">> and place <<pluralise _eggCount "it">> on a folded piece of fabric.
 <</if>>
 You layer leaves in between sticks, and add some larger pieces of wood for better support. You smooth down the inner nest and make a comfortable sheet of fabric over the surface.
@@ -5335,8 +5334,8 @@ You join the Great Hawk at your nest, carrying some materials and the toolbox wi
 <<else>>
 	<<bHe>> chirps<<if understandsBirdBehaviour()>> mournfully, but seems to cheer up quickly<</if>>.
 <</if>>
-<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
-<<if _eggcount>>
+<<set _eggCount to nestEggCount()>>
+<<if _eggCount>>
 	You gently remove your <<pluralise _eggCount "egg">> and place <<pluralise _eggCount "it">> on a folded piece of fabric.
 <</if>>
 <br><br>
@@ -7183,9 +7182,9 @@ You look up to the sky.
 
 :: Bird Tower Great Hawk Egg Laying
 <<setTowerTemp>><<effects>>
-<<set _hawkPregnancy to getPregnancyObject("Great Hawk")>>
-<<if birdEggsReady("Great Hawk") is "fertilised">>
-	<<set $eggLayNumber to _hawkPregnancy.fetus.length>>
+<<set _hawkPregnancy to getActivePregnancies("Great Hawk").find(p => childBaseSpecies(p.donorSpecies) is "hawk")>>
+<<if birdEggsReady("Great Hawk") is "fertilised" and _hawkPregnancy>>
+	<<set $eggLayNumber to getChildrenOf(_hawkPregnancy.pregnancyId).length>>
 <<else>>
 	<<set $eggLayNumber to random(2,4)>>
 <</if>>
@@ -7284,11 +7283,11 @@ You look up to the sky.
 
 :: Bird Tower Great Hawk Egg Laying 2
 <<setTowerTemp>><<effects>>
-<<set _hawkPregnancy to getPregnancyObject("Great Hawk")>>
+<<set _hawkPregnancy to C.npc["Great Hawk"].pregnancy>>
 <<if birdEggsReady("Great Hawk") is "unfertilised">>
 	<<if $monster is 1>>
 		<<bHe>> gently picks up <<if $eggLayNumber gt 1>>one of the eggs<<else>>the egg<</if>>.
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 			"Don't worry, <<wife>>. No more children yet, not from <<if $eggLayNumber gt 1>>these eggs<<else>>this egg<</if>>."
 		<<else>>
 			<<if playerCanBreedWith("Great Hawk")>>
@@ -7312,7 +7311,7 @@ You look up to the sky.
 	<br><br>
 
 	<<set $daily.hawkUnfertilisedEggs to true>>
-	<<run delete _hawkPregnancy.nonCycleRngHasEggs>>
+	<<run delete _hawkPregnancy.nonCycleHasEggs>>
 
 	<<if _optionReassure>>
 		<<link [[Reassure|Bird Tower Eggs Reassure]]>><<npcincr "Great Hawk" love 1>><<bird_stockholm 3>><</link>><<glove>><<ggbirdstockholm>>
@@ -7333,7 +7332,7 @@ You look up to the sky.
 <<else>>
 	<<if $monster is 1>>
 		<<bHe>> gently picks up <<if $eggLayNumber gt 1>>one of the eggs<<else>>the egg<</if>> and smells it. <<bHis>> eyes light up.
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 			"I'm so happy, <<wife>>. <span class="lewd">We have more children</span>!" <<bHe>> tries to sweep you up in a hug, but seems too weak at the moment.
 		<<else>>
 			"Alive... <span class="lewd">Great Hawk and <<wife>> have children</span>..." a tear runs down <<bhis>> cheek. <<bHe>> turns to you and hugs you tightly.
@@ -7476,10 +7475,10 @@ You take the unfertilised <<pluralise $eggLayNumber "egg">> from the nest. <<you
 	You push <<bhim>> away, and start to breathe heavily.
 <</if>>
 <br><br>
-<<set [_eggnant, _eggnantGenital] to getPregnancyObject("pc", true)>>
+<<set _eggnantGenital to playerLabouringOrifice()>>
 <<set _eggnantGenital to _eggnantGenital is "vagina" ? "cervix" : "ass">>
 
-<<if playerIsPregnant() and _eggnant.type is "hawk">>
+<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
 	The <<pluralise $eggLayNumber "egg feels" "eggs feel">> huge, sending waves of both pain and pleasure as you're stretched from within. <<arousal 3000>><<ggarousal>><<pain 10>><<gpain>>
 	<br>
 <</if>>
@@ -7504,7 +7503,7 @@ You let out a short gasp as you feel
 		<span class="lewd">You have laid $eggLayNumber eggs.</span>
 	<<else>>
 		the egg pass through your cervix. It sends shivers through your whole body as it glides down your vaginal canal. You grip <<if $phase is 0>><<your_bird_text>>'s <<if $monster is 1>>arms<<else>>wings<</if>><<else>>the nest<</if>> as the egg begins to crown.
-		<<if playerIsPregnant() and _eggnant.type is "hawk">>
+		<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
 			It's only one, but it might as well be a regular human baby with how large it feels. You spread your legs further. Your <<pussy>> stretches more, trying to make room for it to escape. After several minutes of tortured pushing, it finally escapes you. You pant in exertion, feeling dizzy.
 		<<else>>
 			Without other eggs to help push it along, it gets stuck. Your <<pussy>> remains half-open with the egg plugging you. It retracts back in after a moment. You try to catch your breath, but each one is heavy. You push again, this time managing to get it all the way out.
@@ -7529,10 +7528,10 @@ You're filled with a sense of maternal bliss.
 <<else>>
 	<<your_bird_text "cap">> sniffs <<if $eggLayNumber gte 2>>one of the eggs<<else>>the egg<</if>>.
 <</if>>
-<<if playerIsPregnant() and _eggnant.type is "hawk">>
+<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
 	<<if $monster is 1>>
 		<<bHis>> eyes light up.
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 			"I'm so happy, <<wife>>. <span class="lewd">We have more children</span>!" <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you're too disoriented to resist<</if>>.
 		<<else>>
 			"Alive! <span class="lewd">Great Hawk and <<wife>> have children</span>!" <<bHe>> sweeps you up in a hug, <<if $syndromebird gte 1>>which you can't help but return<<else>>which you're too disoriented to resist<</if>>.
@@ -7569,7 +7568,7 @@ You're filled with a sense of maternal bliss.
 	<<set $harpyEggsPrevent to 28>>
 <<else>>
 	<<if $monster is 1>>
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined))>>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child))>>
 			"Don't worry, <<wife>>. No more children yet, not from <<if $eggLayNumber gt 1>>these eggs<<else>>this egg<</if>>."
 		<<else>>
 			<<if playerCanBreedWith("Great Hawk")>>
@@ -7675,7 +7674,7 @@ You're filled with a sense of maternal bliss.
 <<setTowerTemp>><<effects>>
 <<npc "Great Hawk">>
 <<bird_schedule>>
-<<set _eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+<<set _eggCount to nestEggCount()>>
 <<if $phase is 1>>
 	<<if ["rest","brood","sleep"].includes($bird.activity)>>
 		<<set $birdBrood to true>>
@@ -7714,25 +7713,32 @@ You're filled with a sense of maternal bliss.
 <<set _eggsCloseHatching to 0>>
 <<set _eggsHalfHatching to 0>>
 <<set _eggsFarHatching to 0>>
-<<run Object.values($children).forEach(child => {
-	if (child.location === "tower" && child.eggTimer) {
-		child.eggTimer -= (2 * TimeConstants.secondsPerHour);
-		const hatchTime = new DateTime(child.eggTimer);
-		if (Time.date.timeStamp >= child.eggTimer) {
-			if (!V.eggsHatched) V.eggsHatched = [];
-			V.eggsHatched.push(child.childId);
-			T.readyToHatch to true;
-		} else if (Time.date.compareWith(hatchTime).days <= 1) {
-			T.eggsNearHatching ++;
-		} else if (Time.date.compareWith(hatchTime).days <= 6) {
-			T.eggsCloseHatching ++;
-		} else if (Time.date.compareWith(hatchTime).days <= 11) {
-			T.eggsOverHalfHatching ++;
-		} else if (Time.date.compareWith(hatchTime).days <= 14) {
-			T.eggsHalfHatching ++;
-		} else {
-			T.eggsFarHatching ++;
-		}
+/* hatchDelay is per clutch, so brooding care is applied once per pregnancy. */
+<<run T.eggsAtNest = getChildrenAt("tower").filter(child => childIsUnhatchedEgg(child))>>
+<<run T.broodedPregnancies = []>>
+<<run T.eggsAtNest.forEach(child => {
+	if (!T.broodedPregnancies.includes(child.pregnancyId)) {
+		T.broodedPregnancies.push(child.pregnancyId);
+		addEggCare(child.pregnancyId, 2 * TimeConstants.secondsPerHour);
+	}
+})>>
+<<run T.eggsAtNest.forEach(child => {
+	const hatchDate = getHatchDate(getPregnancyOf(child));
+	const hatchTime = new DateTime(hatchDate);
+	if (Time.date.timeStamp >= hatchDate) {
+		if (!V.eggsHatched) V.eggsHatched = [];
+		V.eggsHatched.push(child.childId);
+		T.readyToHatch to true;
+	} else if (Time.date.compareWith(hatchTime).days <= 1) {
+		T.eggsNearHatching ++;
+	} else if (Time.date.compareWith(hatchTime).days <= 6) {
+		T.eggsCloseHatching ++;
+	} else if (Time.date.compareWith(hatchTime).days <= 11) {
+		T.eggsOverHalfHatching ++;
+	} else if (Time.date.compareWith(hatchTime).days <= 14) {
+		T.eggsHalfHatching ++;
+	} else {
+		T.eggsFarHatching ++;
 	}
 })>>
 <<if _eggsNearHatching>>
@@ -7876,7 +7882,7 @@ begins to poke at the shell, but stops <<bhimself>>.
 The top of <<if $eggsHatched.length gte 2>>one of the eggs<<else>>the egg<</if>> breaches.
 
 <<childSelect $eggsHatched[0]>>
-<<if $children[$eggsHatched[0]].features.monster is "monster">>
+<<if $childRecords[$eggsHatched[0]].features.monster is "monster">>
 	A surprisingly human face greets you, using <<childhis>> tiny hands to push away the broken edges of the egg. <<childHe>> trills as <<childhis>> eyes slowly open for the first time, beholding <<childhis>> parents.
 	<br><br>
 
@@ -7959,7 +7965,7 @@ You carefully pluck away the last bits of egg shell from <<if $eggsHatched.lengt
 <br><br>
 <<if $monster is 1>>
 	The <<beasttype>> frowns. "<<Wife>> needs to eat," <<bhe>> says, tearing a piece off the creature with <<bhis>> talons.
-	<<if playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and talkedAboutPregnancy("pc","Great Hawk")>>
+	<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk" and talkedAboutPregnancy("pc","Great Hawk")>>
 		"Need to feed eggs so they can grow healthy."
 	<<else>>
 		<<if $phase is 0>> /* Scold */

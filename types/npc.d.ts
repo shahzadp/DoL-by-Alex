@@ -98,7 +98,7 @@ declare global {
 			men: string;
 		};
 
-		pregnancy: {};
+		pregnancy: Partial<NpcPregnancyCycle>;
 		pregnancyAvoidance: number;
 
 		adult: 0 | 1;

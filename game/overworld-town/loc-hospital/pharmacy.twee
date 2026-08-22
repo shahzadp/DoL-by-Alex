@@ -642,10 +642,10 @@ The <<person>> looks at the <<print $pharmacyItem.name>> you're holding.
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
 You ask the nurse for morning after pills.
 <br><br>
-<<if playerBellyVisible() or getPregnancyObject().awareOf>>
+<<if playerBellyVisible() or playerAwareTheyArePregnant()>>
 	"You <<if $pregnancyStats.aftermorningpills>>already know you <</if>>can't take these pills if you are pregnant, and it's obvious you are. It's very dangerous for your health and it won't have the desired effects," <<he>> tells you while looking openly at your <<bellyDescription "pc">>. "If you still want to take it, £500 please. For legal reasons, we're unable to sell these in bulk. You'll have to take it while I'm supervising you, just in case issues occur."
 	<br><br>
-	<<if not getPregnancyObject().awareOf>>
+	<<if not playerAwareTheyArePregnant()>>
 		<<if $money gte 50000>>
 			<<link [[Hand over the money and take the pill anyway (0:15)|Pharmacy Morning After pill 2]]>><<pass 15>><</link>>
 		<<else>>
@@ -662,7 +662,7 @@ You ask the nurse for morning after pills.
 	<br><br>
 	<<He>> opens a drawer and pulls out a blister with a single pill. "£500 please. For legal reasons, we're unable to sell these in bulk. You'll have to take it while I'm supervising you, just in case issues occur."
 	<br><br>
-	<<if getPregnancyObject().awareOf>>
+	<<if playerAwareTheyArePregnant()>>
 		You know you are pregnant and won't take any risks.
 	<<elseif $money gte 50000>>
 		<<link [[Hand over the money and take the pill (0:15)|Pharmacy Morning After pill 2]]>><<pass 15>><</link>>
@@ -678,26 +678,26 @@ You ask the nurse for morning after pills.
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
 <<money -50000 "pharmacyAfterPill">>
 <<set $pregnancyStats.aftermorningpills++>>
-<<pregnancyMorningAfterPill>>
+<<set _morningAfterPillResult to takeMorningAfterPill()>>
 
 The nurse points you to a chair to sit on and you take the pill while <<he>> watches you carefully.
 <br><br>
 <<switch _morningAfterPillResult>>
-	<<case "no pregnant">>
+	<<case "notPregnant">>
 		You sit on the chair and wait for it to take effect. You only feel a cold sensation in your belly. After a few minutes, the nurse checks your pupils and your blood pressure. "Everything is fine, you can go." <<lllarousal>> <<llstress>>
 		<br><br>
 		<<arousal -5000>>
 		<<stress -12>>
 		<<link [[Go back|Pharmacy]]>><</link>>
-	<<case "successful">>
+	<<case "success">>
 		You sit on the chair and wait for it to take effect. You feel a cold sensation in your belly and a little pain. After a few minutes, the nurse checks your pupils and your blood pressure. <<He>> can see the discomfort in your face. "It seems that the pill has taken effect. You may feel some pain, but it will pass quickly. You can go now." <<lllarousal>> <<llstress>> <<gpain>>
 		<br><br>
 		<<arousal -5000>>
 		<<stress -12>>
 		<<pain 2>>
 		<<link [[Go back|Pharmacy]]>><</link>>
-	<<case "a little late">>
-		You sit on the chair and wait for it to take effect. You feel an unpleasant sensation in your belly and a sharp pain. The nurse notices your pained face and approaches you. <<He>> check your pupils and your blood pressure. "It seems that the pill has taken effect, but you have reached the limit of time. If you ever need this pill again, don't wait for so long. The pain you feel now will disappear after a while. You can go now." <<lllarousal>> <<llstress>> <<ggpain>>
+	<<case "aLittleLate">>
+		You sit on the chair and wait for it to take effect. You feel an unpleasant sensation in your belly and a sharp pain. The nurse notices your pained face and approaches you. <<He>> checks your pupils and your blood pressure. "It seems that the pill has taken effect, but you have reached the limit of time. If you ever need this pill again, don't wait for so long. The pain you feel now will disappear after a while. You can go now." <<lllarousal>> <<llstress>> <<ggpain>>
 		<br><br>
 		<<arousal -5000>>
 		<<stress -12>>
@@ -710,7 +710,7 @@ The nurse points you to a chair to sit on and you take the pill while <<he>> wat
 		<<trauma 20>>
 		<<pain 20>>
 		<<link [[Go back|Pharmacy]]>><</link>>
-	<<case "too late">>
+	<<case "tooLate">>
 		You sit on the chair and wait for it to take effect. You feel an unpleasant sensation in your belly and immediately writhe in pain. The nurse rushes over to you and checks your pupils and your blood pressure. <<He>> can see the discomfort in your face. "It seems like it's been too long since..." You feel a sharp pain in your belly, bend over, and fall from the chair. Your vision blurs, the pain is unbearable. <<lllarousal>> <<ggtrauma>> <<ggpain>>
 		<br><br>
 		<<set $arousal to 0>>
@@ -734,7 +734,7 @@ You feel your body rise, being moved, you hear voices around you. You open your 
 <br><br>
 Before you can answer, you feel another intense and painful cramp in your belly. <<ggtrauma>> <<gggpain>>
 <br><br>
-<<set getPregnancyObject().awareOf to "pharmacy">>
+<<run setPlayerLearnedPregnancyFrom("pharmacy")>>
 <<stress 12>>
 <<trauma 50>>
 <<pain 200>>

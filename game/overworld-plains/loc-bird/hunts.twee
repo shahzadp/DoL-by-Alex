@@ -81,7 +81,7 @@
 
 	<<link [[Next|Bird Tower No Hunt]]>><</link>>
 	<br>
-<<elseif playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and playerBellyVisible() and talkedAboutPregnancy("pc","Great Hawk") and playerBellySize() gte 15>>
+<<elseif playerIsPregnant() and getActivePregnancies("pc").some(p => childBaseSpecies(p.donorSpecies) === "hawk") and playerBellyVisible() and talkedAboutPregnancy("pc","Great Hawk") and playerBellySize() gte 15>>
 	<!-- TOO PREGGY -->
 	<<if $monster is 1>>
 		<<bHe>> looks at you for a moment, then down to your <<bellyDescription>>. "I hunt for <<wife>>. <<Wife>> must stay home. For now."
@@ -1000,20 +1000,12 @@ What will you hunt for?
 		<</addinlineevent>>
 	<</if>>
 
-	<<if $bird.hunts.duo is true and (_distanceNorthSouth gte 4 or _distanceEastWest gte 4) and !Object.values($children).find(child => child.childId == "orphanHawk1") and Object.values($children).length lt 1000>>
+	<<if $bird.hunts.duo is true and (_distanceNorthSouth gte 4 or _distanceEastWest gte 4) and $orphanHawkChildId is undefined and $orphanHawkPreview is undefined and getBornChildren().length lt 1000>>
 		<<addinlineevent "bird_hunt_orphan" 2>>
-			<!-- Shut up I'll convert this to a function later, I'm dealing with a lot of hardcoded stuff and this is the only way I could do this without polluting important objects -->
 			<<set _hatchedTime to new DateTime(Time.date).addDays(random(-120, -60))>>
 			<<set _laidTime to new DateTime(_hatchedTime).addDays(random(-30, -21))>>
 			<<set _conceivedTime to new DateTime(_hatchedTime).addDays(random(-44, -30))>>
-			<<set $children["orphanHawk1"] to {
-				childId: "orphanHawk1",
-				birthId: 0,
-				mother: "unknown hawk",
-				father: "unknown hawk",
-				motherKnown: false,
-				fatherKnown: false,
-				type: "hawk",
+			<<set $orphanHawkPreview to {
 				gender: random(0, 100) > 50 ? "f" : "m",
 				features: {
 					size: ["tiny", "small", "normal", "normal"][random(0, 3)],
@@ -1022,17 +1014,17 @@ What will you hunt for?
 					skinColour: random(1, 100) lte $settings.darkSkinChance ? "dark" : "light",
 					monster: ((V.settings.monsterChance >= random(1, 100) && (V.hallucinations >= 1 || !V.settings.monsterHallucinationsOnly)) || V.greathawkmonster === 2) ? "monster" : 0
 				},
-				conceived: {day: _conceivedTime.day, month: _conceivedTime.monthName, year: _conceivedTime.year},
-				conceivedLocation: "unknown",
-				laid: {day: _laidTime.day, month: _laidTime.monthName, year: _laidTime.year},
-				born: {day: _hatchedTime.day, month: _hatchedTime.monthName, year: _hatchedTime.year}
+				conceivedDate: _conceivedTime.timeStamp,
+				laidDate: _laidTime.timeStamp,
+				hatchedDate: _hatchedTime.timeStamp,
+				name: null
 			}>>
-			<<childSelect "orphanHawk1">>
+			<<set $cmonster to ($orphanHawkPreview.features.monster is "monster" ? 1 : 0)>>
 			<<npc "Great Hawk">><<person1>>
 			Your <<if $monster is 1>><<nnpc_wife "Great Hawk">> gasps<<else>>partner lets out a surprised chirp<</if>>, and directs your attention to the brush below.
 			<br><br>
 
-			<span class="gold">A baby <<if $cmonster is 1>>harpy<<else>>hawk<</if>> lies on the ground.</span> <span class="red">There's no sign of <<childhis>> parents.</span>
+			<span class="gold">A baby <<if $cmonster is 1>>harpy<<else>>hawk<</if>> lies on the ground.</span> <span class="red">There's no sign of <<orphanHawkhis>> parents.</span>
 			<br><br>
 
 			<<link "Land (0:05)" "Bird Hunt Chick Approach">><<bird_pass 5>><</link>>
@@ -6186,12 +6178,12 @@ Your stomach rises as you plummet. You try to get your bearings, and your attack
 
 :: Bird Hunt Chick Approach
 <<effects>>
-You swoop down and land near the <<childtype>>, your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>> landing next to you. You spot the remains of a nest nearby.
+You swoop down and land near the <<orphanHawktype>>, your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>> landing next to you. You spot the remains of a nest nearby.
 <br><br>
 
-The <<childtype>> shuffles away from you, looking <<if $cmonster is 1>>guarded<<else>>wary<</if>>.
+The <<orphanHawktype>> shuffles away from you, looking <<if $cmonster is 1>>guarded<<else>>wary<</if>>.
 <<if $tending gte 500 or $birdbuild gte 60>>
-	<span class="red"><<childHe>> looks hungry.</span>
+	<span class="red"><<orphanHawkHe>> looks hungry.</span>
 <</if>>
 <br><br>
 
@@ -6199,59 +6191,59 @@ The <<childtype>> shuffles away from you, looking <<if $cmonster is 1>>guarded<<
 	<<link [[Offer a lurker|Bird Hunt Chick Feed]]>><<npcincr "Great Hawk" love 1>><</link>><<glove>>
 	<br>
 <</if>>
-<<link "Try to calm <<childhim>> down" "Bird Hunt Chick Calm">><</link>><<tendingdifficulty `600 - 4*$birdbuild` `1200 - 1.5*$birdbuild`>>
+<<link "Try to calm <<orphanHawkhim>> down" "Bird Hunt Chick Calm">><</link>><<tendingdifficulty `600 - 4*$birdbuild` `1200 - 1.5*$birdbuild`>>
 <br>
 <<link [[Leave|Bird Hunt Chick Abandon]]>><<npcincr "Great Hawk" love -20>><<npcincr "Great Hawk" dom -10>><<set $phase to 1>><</link>><<llllove>><<lldom>>
 <br>
 
 :: Bird Hunt Chick Feed
 <<effects>>
-Slowly, so as to not startle <<childhim>>, you take one of the lurkers that you were carrying and<<if $physique lte 4000>>, with some difficulty,<</if>> tear a strip of leathery meat off of the creature. The <<childtype>> perks up, staring at the strip of lurker meat intensely. <<flight_hunt_remove "lurkers" 1>>
+Slowly, so as to not startle <<orphanHawkhim>>, you take one of the lurkers that you were carrying and<<if $physique lte 4000>>, with some difficulty,<</if>> tear a strip of leathery meat off of the creature. The <<orphanHawktype>> perks up, staring at the strip of lurker meat intensely. <<flight_hunt_remove "lurkers" 1>>
 <br><br>
 
-You step forward and reach out, placing the strip of meat on the ground in front of <<childhim>> before stepping back to give <<childhim>> some space. Immediately, the <<childtype>> lunges for the food, snapping it up and devouring it in moments. <<childHe>> looks at you curiously, then <<if $cmonster is 1>>crawls<<else>>hops<</if>> closer, trilling softly.
+You step forward and reach out, placing the strip of meat on the ground in front of <<orphanHawkhim>> before stepping back to give <<orphanHawkhim>> some space. Immediately, the <<orphanHawktype>> lunges for the food, snapping it up and devouring it in moments. <<orphanHawkHe>> looks at you curiously, then <<if $cmonster is 1>>crawls<<else>>hops<</if>> closer, trilling softly.
 <br><br>
 
-<<link "Take <<childhim>> back to the nest" "Bird Hunt Chick Adopt">><</link>><<note "This will end the current hunting session" "teal">>
+<<link "Take <<orphanHawkhim>> back to the nest" "Bird Hunt Chick Adopt">><</link>><<note "This will end the current hunting session" "teal">>
 <br>
-<<link "Leave <<childhim>>" "Bird Hunt Chick Abandon">><<npcincr "Great Hawk" love -15>><<npcincr "Great Hawk" dom -5>><<set $phase to 2>><</link>><<lllove>><<ldom>>
+<<link "Leave <<orphanHawkhim>>" "Bird Hunt Chick Abandon">><<npcincr "Great Hawk" love -15>><<npcincr "Great Hawk" dom -5>><<set $phase to 2>><</link>><<lllove>><<ldom>>
 <br>
 
 :: Bird Hunt Chick Calm
 <<effects>>
-Slowly, you reach out, trying to coax the <<childtype>> over to you.
+Slowly, you reach out, trying to coax the <<orphanHawktype>> over to you.
 
 <<if $tendingSuccess>>
-	<span class="green"><<childHe>> seems wary, but curious.</span> <<childHe>> slowly makes <<childhis>> way over to you, then hesitantly nuzzles into your arms, chirping softly.
+	<span class="green"><<orphanHawkHe>> seems wary, but curious.</span> <<orphanHawkHe>> slowly makes <<orphanHawkhis>> way over to you, then hesitantly nuzzles into your arms, chirping softly.
 <<else>>
-	<span class="red">Despite your efforts, <<childhe>> doesn't seem to trust you enough.</span> Fortunately, your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>> is with you, and steps up to try. The <<childtype>> seems to trust <<bhim>> more, and slowly makes <<childhis>> way over to the Great Hawk, finally settling down in the shelter provided by <<bhis>> massive wings.
+	<span class="red">Despite your efforts, <<orphanHawkhe>> doesn't seem to trust you enough.</span> Fortunately, your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>> is with you, and steps up to try. The <<orphanHawktype>> seems to trust <<bhim>> more, and slowly makes <<orphanHawkhis>> way over to the Great Hawk, finally settling down in the shelter provided by <<bhis>> massive wings.
 	<<gdom>><<npcincr "Great Hawk" dom 2>>
 <</if>>
 <br><br>
 
-<<link "Take <<childhim>> back to the nest" "Bird Hunt Chick Adopt">><</link>><<note "This will end the current hunting session" "teal">>
+<<link "Take <<orphanHawkhim>> back to the nest" "Bird Hunt Chick Adopt">><</link>><<note "This will end the current hunting session" "teal">>
 <br>
-<<link "Leave <<childhim>>" "Bird Hunt Chick Abandon">><<npcincr "Great Hawk" love -50>><<npcincr "Great Hawk" dom -25>><<set $phase to 3>><</link>><<llllove>><<lldom>>
+<<link "Leave <<orphanHawkhim>>" "Bird Hunt Chick Abandon">><<npcincr "Great Hawk" love -50>><<npcincr "Great Hawk" dom -25>><<set $phase to 3>><</link>><<llllove>><<lldom>>
 <br>
 
 :: Bird Hunt Chick Abandon
 <<effects>>
 You manage to convince the Great Hawk that
 <<switch $speech_attitude>>
-	<<case "meek">>you won't be able to care for the <<childtype>> right now.
-	<<case "bratty">>the <<childtype>> will probably be fine.
-	<<default>>you won't be able to bring the <<childtype>> back to the nest.
+	<<case "meek">>you won't be able to care for the <<orphanHawktype>> right now.
+	<<case "bratty">>the <<orphanHawktype>> will probably be fine.
+	<<default>>you won't be able to bring the <<orphanHawktype>> back to the nest.
 <</switch>>
 <<bHe>> seems <<if $phase is 1>>dismayed<<elseif $phase is 2>>saddened<<elseif $phase is 3>>distraught<</if>> by this.
 <br><br>
 
-Despite your words, the Great Hawk doesn't move. <<bHe>> starts to sing into the air quite loudly. After some time, <<bhe>> picks the <<childtype>> up and carries <<childhim>> to the top of a small tree, before returning to your side.
+Despite your words, the Great Hawk doesn't move. <<bHe>> starts to sing into the air quite loudly. After some time, <<bhe>> picks the <<orphanHawktype>> up and carries <<orphanHawkhim>> to the top of a small tree, before returning to your side.
 <<if $monster is 1>>
-	"Called out to... other hawks. One will come take <<childhim>>. Give <<childhim>> a home."
+	"Called out to... other hawks. One will come take <<orphanHawkhim>>. Give <<orphanHawkhim>> a home."
 <<else>>
 	<<bHe>> looks to the south for a long moment. You follow <<bhis>> gaze, and see a tiny shape approaching from quite a distance away. It seems <<bhe>> called out for another hawk to come take the orphaned chick.
 <</if>>
-<<bHe>> <<if $monster is 1>>sighs<<else>>trills<</if>> mournfully, but nevertheless takes to the skies with you. You leave the <<childtype>> behind,
+<<bHe>> <<if $monster is 1>>sighs<<else>>trills<</if>> mournfully, but nevertheless takes to the skies with you. You leave the <<orphanHawktype>> behind,
 <<switch $phase>>
 	<<case 1>>watching you warily.
 	<<case 2>>watching you sadly.
@@ -6260,16 +6252,16 @@ Despite your words, the Great Hawk doesn't move. <<bHe>> starts to sing into the
 Abandoned again. You weren't so different. <<trauma 100>><<gggtrauma>>
 <br><br>
 
-<<run delete $children["orphanHawk1"]>>
+<<set $orphanHawkPreview to undefined>>
 <<endevent>>
 <<flight_hunt_options>>
 
 :: Bird Hunt Chick Adopt
 <<effects>>
-Your eyes lock with <<childhers>>. You bring your face closer, seeing your reflection in them. You know that look. Confusion. Fear. An orphan, just like you. You're not so different.
+Your eyes lock with <<orphanHawkhers>>. You bring your face closer, seeing your reflection in them. You know that look. Confusion. Fear. An orphan, just like you. You're not so different.
 <br><br>
 
-You gently <<if $tendingSuccess>>hold<<else>>pick up<</if>> the <<childtype>>, and take to the skies alongside your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>>.
+You gently <<if $tendingSuccess>>hold<<else>>pick up<</if>> the <<orphanHawktype>>, and take to the skies alongside your <<if $monster is 1>><<nnpc_wife "Great Hawk">><<else>>partner<</if>>.
 
 <<flight_distance_check>>
 <<flight_time_check _returnTime "silent">>
@@ -6282,32 +6274,31 @@ You gently <<if $tendingSuccess>>hold<<else>>pick up<</if>> the <<childtype>>, a
 <<effects>>
 
 <<switch $speech_attitude>>
-	<<case "meek">>"L-let's go," you say. "<<childHis>> parents are probably around here somewhere."
+	<<case "meek">>"L-let's go," you say. "<<orphanHawkHis>> parents are probably around here somewhere."
 	<<case "bratty">>You say nothing, flying onward and gesturing for the Great Hawk to follow you.
-	<<default>>"C'mon," you say, gesturing for the Great Hawk to follow you. "<<childHis>> parents are probably looking for <<childhim>>."
+	<<default>>"C'mon," you say, gesturing for the Great Hawk to follow you. "<<orphanHawkHis>> parents are probably looking for <<orphanHawkhim>>."
 <</switch>>
 <br><br>
 
 Despite your words, the Great Hawk dives down to land. You can't quite see what's happening from up here, but after a few minutes, <<bhe>> starts to sing into the air quite loudly. You circle the location for a while, waiting for <<bhim>> to be done.
 <br><br>
 
-After some time, <<bhe>> picks the <<childtype>> up, carrying <<childhim>> to the top of a small tree, before returning to your side.
+After some time, <<bhe>> picks the <<orphanHawktype>> up, carrying <<orphanHawkhim>> to the top of a small tree, before returning to your side.
 <<if $monster is 1>>
-	"Called out to... other hawks. One will come take <<childhim>>. Give <<childhim>> a home."
+	"Called out to... other hawks. One will come take <<orphanHawkhim>>. Give <<orphanHawkhim>> a home."
 <<else>>
 	<<bHe>> looks to the south for a long moment. You follow <<bhis>> gaze, and see a tiny shape approaching from quite a distance away. It seems <<bhe>> called out for another hawk to come take the orphaned chick.
 <</if>>
 <<bHe>> <<if $monster is 1>>sighs<<else>>trills<</if>> mournfully, but follows you as you fly onward. <<llove>>
 <br><br>
 
-<<run delete $children["orphanHawk1"]>>
+<<set $orphanHawkPreview to undefined>>
 <<endevent>>
 <<flight_hunt_options>>
 
 :: Bird Hunt Return Chick Adopt
 <<effects>><<set $outside to 0>><<set $location to "tower">>
 <<npc "Great Hawk">><<person1>>
-<<childSelect "orphanHawk1">>
 <<set $moor to 100>>
 <<set $bird.timer to 120>>
 
@@ -6324,26 +6315,47 @@ The three of you land back on the perch<<if $bird.upgrades.decor gte 3>> and pus
 <</switch>>
 <br>
 
-You gently place the <<if $cmonster is 1>>baby harpy<<else>>hawk chick<</if>> in your nest. <<childHe>> immediately flops over and starts chirping happily. <<childHe>> may not be blood, but <<childhe>>'s family all the same now. Orphans need to stick together, like birds of a feather. <<earnFeat "Birds of a Feather">>
+You gently place the <<if $cmonster is 1>>baby harpy<<else>>hawk chick<</if>> in your nest. <<orphanHawkHe>> immediately flops over and starts chirping happily. <<orphanHawkHe>> may not be blood, but <<orphanHawkhe>>'s family all the same now. Orphans need to stick together, like birds of a feather. <<earnFeat "Birds of a Feather">>
 <br><br>
 
-<<your_bird_text "cap">> looks relieved as <<bhe>> watches your new <<childson>> explore the nest. <<childHe>> needs a name.
+<<your_bird_text "cap">> looks relieved as <<bhe>> watches your new <<orphanHawkson>> explore the nest. <<orphanHawkHe>> needs a name.
 
 
 <div id="birthUi">
-	<<set _dateAdopted to { day: Time.monthDay, month: Time.monthName, year: Time.year }>>
-	<<set $children["orphanHawk1"].adopted to clone(_dateAdopted)>>
-	<<set $children["orphanHawk1"].birthLocation to "unknown">>
-	<<set $children["orphanHawk1"].location to "tower">>
-	<<set $children["orphanHawk1"].localVariables to {}>>
-	<div @id="'child-orphanHawk1'" class="childUi">
-		<<birthChildElement $children["orphanHawk1"]>>
+	<<if $orphanHawkChildId is undefined>>
+	<<set _newPregnancyId to pushPregnancyRecord({
+		carrier: "unknown hawk",
+		carrierSpecies: "hawk",
+		donor: "unknown hawk",
+		donorSpecies: "hawk",
+		conceivedDate: $orphanHawkPreview.conceivedDate,
+		conceivedLocation: "unknown",
+		orifice: "vagina",
+		deliveredDate: $orphanHawkPreview.laidDate,
+		deliveredLocation: "unknown"
+	})>>
+	<<set $orphanHawkChildId to pushChildRecord({
+		pregnancyId: _newPregnancyId,
+		species: "hawk",
+		features: clone($orphanHawkPreview.features),
+		gender: $orphanHawkPreview.gender,
+		bornDate: $orphanHawkPreview.hatchedDate
+	})>>
+	<<run beginRearing($childRecords[$orphanHawkChildId], "tower", "unknown")>>
+	<<set $childRecords[$orphanHawkChildId].development.adoptedDate to Time.date.timeStamp>>
+	<</if>>
+	<<childSelect $orphanHawkChildId>>
+	<div @id="'child-' + $orphanHawkChildId" class="childUi">
+		<<birthChildElement $childRecords[$orphanHawkChildId]>>
 	</div>
 </div>
 <br>
 
 <<link [[Next|Bird Hunt Chick Adopt End]]>>
-	<<if !$children["orphanHawk1"].name>><<set $children["orphanHawk1"].name = generateBabyName(undefined, $children["orphanHawk1"].gender)>><</if>>
+	<<if !$childRecords[$orphanHawkChildId].name>>
+		<<set $childRecords[$orphanHawkChildId].name to generateBabyName(undefined, $childRecords[$orphanHawkChildId].gender, $orphanHawkChildId)>>
+	<</if>>
+	<<set $orphanHawkPreview to undefined>>
 <</link>>
 <br>
 
@@ -6770,7 +6782,7 @@ You bring the lurker to your spouse. <<bHe>> quickly devours it.
 
 :: Bird Tower Hunt End Children
 <<effects>>
-<<getChildrenIds `{location:"tower", eggTimer:undefined}` "both">>
+<<getChildrenIds `{location:"tower", excludeUnhatched:true}` "both">>
 <<set _childrenTotal to _childrenIds.length>>
 You put a lurker in the nest for
 <<if _childrenTotal gte 10>>

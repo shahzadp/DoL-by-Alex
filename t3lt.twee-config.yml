@@ -3661,6 +3661,22 @@ sugarcube-2:
       name: combathandhold
     combatinit:
       name: combatinit
+    combatInseminate:
+      description: |-
+        Call this when an NPC climaxes in combat. The ejaculation widgets already do, so a new prose
+        variant needs no call at all, just sit it in the branch matching where the cum goes.
+        Pass which slot came and the fight fills in the rest: the hole and depth from the penis state,
+        species from the enemy type, potency from penis size and the knot. Stores nothing for
+        strap-ons, contained condoms, chastity, or species that can't impregnate.
+
+        `<<combatInseminate slot beast?>>`
+        - **slot**: `number` - which $NPCList slot climaxed, usually `_nn`
+        - **beast** _optional_: `bool` - pass `true` from the beast widget so a beast keeps its own species in a mixed fight
+
+        The NPC in slot _nn came: `<<combatInseminate _nn>>`
+        From the beast widget: `<<combatInseminate _jj true>>`
+      parameters:
+        - "number |+ bool"
     combatListColor:
       description: |-
         Use `combatListColor()` instead
@@ -12608,6 +12624,26 @@ sugarcube-2:
       parameters:
         - "|+ number"
       tags: ["text"]
+    npcPregnancyRoll:
+      description: |-
+        Call this when someone cums inside an NPC who could get pregnant from it.
+        One roll on the spot decides it: a win writes the pregnancy record with this moment's time
+        and place. NPCs store no loads, this roll is their whole conception.
+
+        `<<npcPregnancyRoll carrier carrierSpecies donor donorSpecies orifice depth? location? donorFertility?>>`
+        - **carrier**: `string` - the NPC who might get pregnant. A name, or a generated one like "lissome man"
+        - **carrierSpecies**: `string` - what the carrier is, e.g. `"human"`
+        - **donor**: `string` - who came inside them. An NPC's name, or "pc"
+        - **donorSpecies**: `string` - the donor's species, e.g. `"human"`
+        - **orifice**: `"vagina"|"anus"` - where the cum went
+        - **depth** _optional_: `"outside"|"imminent"|"deep"` - where it landed. Deep when not given, a spill rolls at its depth's low weight
+        - **location** _optional_: `string` - where it happened. Left out reads the player's location, pass one when the scene runs off-screen
+        - **donorFertility** _optional_: `number` - extra multiplier on the conception chance from the donor's side (e.g. the pc's low-semen or earSlime state)
+
+        A normal creampie: `<<npcPregnancyRoll "Robin" "human" "pc" "human" "vagina">>`
+        A spill that never went in: `<<npcPregnancyRoll "Robin" "human" "someone" "human" "vagina" "imminent">>`
+      parameters:
+        - 'text &+ text &+ text &+ text &+ "vagina"|"anus" |+ "outside"|"imminent"|"deep" |+ text |+ number'
     npcPregnancyUpdater:
       name: npcPregnancyUpdater
     npcrelationship:
@@ -13317,6 +13353,8 @@ sugarcube-2:
       name: parasite
     parasiteinit:
       name: parasiteinit
+    parasiteSlotBlock:
+      name: parasiteSlotBlock
     park:
       name: park
     parkeventend:
@@ -14057,10 +14095,6 @@ sugarcube-2:
       name: playerPrebirth
     playerPregnancy:
       name: playerPregnancy
-    playerPregnancyAttempt:
-      name: playerPregnancyAttempt
-    playerPregnancyHawkAttempt:
-      name: playerPregnancyHawkAttempt
     playLinePool:
       name: playLinePool
     playReadiness:
@@ -14272,6 +14306,8 @@ sugarcube-2:
       name: pregnancyBirthWolfCave
     pregnancyDailyEvent:
       name: pregnancyDailyEvent
+    pregnancyFatherHint:
+      name: pregnancyFatherHint
     pregnancyFeats:
       name: pregnancyFeats
     pregnancyGendersText:
@@ -14282,6 +14318,8 @@ sugarcube-2:
       name: pregnancyPassout
     pregnancySettings:
       name: pregnancySettings
+    pregnancyStatusBlock:
+      name: pregnancyStatusBlock
     pregnancyTest:
       name: pregnancyTest
     pregnancyType:
@@ -14767,12 +14805,6 @@ sugarcube-2:
           - `"article"`: Include article (a/the) if present in recipe name
       parameters:
         - 'text|string |+ "cap"|"difficulty"|"article"|"plural"'
-    recordAnusSperm:
-      name: recordAnusSperm
-    recordSperm:
-      name: recordSperm
-    recordVaginalSperm:
-      name: recordVaginalSperm
     regenerateNPCNameLists:
       name: regenerateNPCNameLists
     rehideTransformations:
@@ -15223,6 +15255,26 @@ sugarcube-2:
       name: sayexhibproud
     scarred_inmate:
       name: scarred_inmate
+    sceneInseminate:
+      description: |-
+        Call this when a scene puts cum inside the player outside of combat (combat uses combatInseminate).
+        Say who it came from and where it landed, the pregnancy system does the rest: the cum is stored
+        as a load future pregnancy rolls can pick, and in fetish and silly mode it can also impregnate on the spot.
+
+        `<<sceneInseminate orifice donor donorSpecies depth quantity? days?>>`
+        - **orifice**: `"vagina"|"anus"` - where the cum went
+        - **donor**: `string` - who it came from. An NPC's name, or "pc"
+        - **donorSpecies**: `string` - the donor's species, e.g. `"human"`
+        - **depth**: `"outside"|"imminent"|"deep"` - where it landed. Outside and imminent can be washed off, deep cannot
+        - **quantity** _optional_: `number` - how many loads land
+          - Defaults to `1`
+        - **days** _optional_: `number` - how long the loads keep counting
+          - Defaults to a 4 to 8 day roll
+
+        A normal creampie: `<<sceneInseminate "vagina" "Whitney" "human" "deep">>`
+        Six loads that last 12 days: `<<sceneInseminate "anus" "Harper's serum" "human" "deep" 6 12>>`
+      parameters:
+        - '"vagina"|"anus" &+ text &+ text &+ "outside"|"imminent"|"deep" |+ number |+ number'
     schismEnd:
       description: |-
         Restores the values frozen by `<<schismStart>>` and passes time until 6:00am
@@ -18443,8 +18495,6 @@ sugarcube-2:
       name: wash_mouth
     washmakeup:
       name: washmakeup
-    washRecordedSperm:
-      name: washRecordedSperm
     water:
       name: water
     wateraction:

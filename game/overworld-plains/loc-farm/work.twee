@@ -276,7 +276,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 		<br><br>
 	<</if>>
 
-	<<if playerIsPregnant() and playerAwareTheyArePregnant() and getPregnancyObject().potentialFathers.find(s => s.source === "Alex") and (C.npc.Alex.pregnancy.pcKnowledge isnot true or C.npc.Alex.pregnancy.test is true) and C.npc.Alex.pregnancy.ultraSound isnot "requested">>
+	<<if playerIsPregnant() and playerAwareTheyArePregnant() and getActivePregnancies("pc").some(p => couldBeDonor(p, "Alex")) and (C.npc.Alex.pregnancy.pcKnowledge isnot true or C.npc.Alex.pregnancy.test is true) and C.npc.Alex.pregnancy.ultraSound isnot "requested">>
 		<<pcPregnancyRevealToAlex>>
 
 	<<else>>
@@ -572,7 +572,8 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 		<<if $farm_stage gte 7 and $alex_countdown is undefined>>
 			You notice Alex staring at your belly in horror. "You're...you're pregnant?! You didn't tell me anything..."
 
-			<<if getPregnancyObject().potentialFathers.length gte 2 or !getPregnancyObject().potentialFathers.find(s => s.source === "Alex")>>
+			<<set _preg to getPlayerPregnancy()>>
+			<<if _preg and (_preg.possibleDonors.length gte 2 or !couldBeDonor(_preg, "Alex"))>>
 				<<He>> sounds disappointed.
 				<br><br>
 
@@ -603,7 +604,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 	<<elseif C.npc.Alex.pregnancy.missedBirth is true>>
 		<<npc "Alex">><<run delete C.npc.Alex.pregnancy.missedBirth>>
 
-		<<if C.npc.Alex.pregnancy.selfKnowledge is undefined and Object.values($children).find(child => child.mother === "Alex" && child.location === "home")>>
+		<<if C.npc.Alex.pregnancy.selfKnowledge is undefined and getChildrenAt("home").find(child => getPregnancyOf(child).carrier === "Alex")>>
 			<<set C.npc.Alex.pregnancy.selfKnowledge to true>>
 
 			<<if C.npc.Alex.pregnancy.missedBirthCount is 1>>
@@ -696,7 +697,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 
 		<<link [[Next|Farm Alex Orphanage Trip]]>><</link>>
 
-	<<elseif $exposed lte 0 and (Object.values($children).find(child => child.mother === "Alex" && child.location === "alex_cottage") or Object.values($children).find(child => child.father === "Alex" && child.location === "alex_cottage")) and !$daily.farmBabyInteraction and $rng gte 56 and Time.betweenHours(8, 15)>>
+	<<elseif $exposed lte 0 and (getChildrenAt("alex_cottage").find(child => getPregnancyOf(child).carrier === "Alex") or getChildrenAt("alex_cottage").find(child => getPregnancyOf(child).donor === "Alex")) and !$daily.farmBabyInteraction and $rng gte 56 and Time.betweenHours(8, 15)>>
 		<<alex_baby_interactions>>
 
 	<<elseif $farm_yield_alex gte 1 and !(Time.betweenHours(22, 5) or (Time.hour is 21 and $farm_end is 1)) and $farm_work.alex isnot "shower">>
@@ -731,7 +732,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 
 		<<alex_pregnancy_comment>>
 
-		<<if playerIsPregnant() and playerAwareTheyArePregnant() and getPregnancyObject().potentialFathers.find(s => s.source === "Alex") and (C.npc.Alex.pregnancy.pcKnowledge isnot true or C.npc.Alex.pregnancy.test is true) and C.npc.Alex.pregnancy.ultraSound isnot "requested">>
+		<<if playerIsPregnant() and playerAwareTheyArePregnant() and getActivePregnancies("pc").some(p => couldBeDonor(p, "Alex")) and (C.npc.Alex.pregnancy.pcKnowledge isnot true or C.npc.Alex.pregnancy.test is true) and C.npc.Alex.pregnancy.ultraSound isnot "requested">>
 			<<pcPregnancyRevealToAlex>>
 		<<else>>
 			<<link [[Next|Farm Work]]>><<endevent>><</link>>
@@ -1322,7 +1323,7 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 <br><br>
 
 <<if _fullyNaked or dangerEvent(1.25)>>
-	<<if !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(getPregnancyObject().timer, 24, 86)>>
+	<<if !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(pregnancyProgress(getPlayerPregnancy()), 0.1, 0.3)>>
 		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns,
 		and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps,
 		trying to will your stomach to settle.
@@ -1532,7 +1533,7 @@ You empty the buckets in the troughs.
 	<<set _attemptTwo to random(0, 2)>>
 	<<set _grabbed to ((_checkResults[_attemptOne]) or (not _checkResults[3] and _checkResults[_attemptTwo]))>>
 
-	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(getPregnancyObject().timer, 24, 86)>>
+	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(pregnancyProgress(getPlayerPregnancy()), 0.1, 0.3)>>
 		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns, and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps, trying to will your stomach to settle.
 		<br><br>
 
@@ -2492,7 +2493,7 @@ You sneak up to the shed, and push the door open.
 	<<if (npcIsPregnant("Alex") and C.npc.Alex.pregnancy.selfKnowledge is true) or npcBellyVisible("Alex")>>
 		With <<his>> eyes still closed, Alex places <<his>> hands over <<his>> belly and gently starts to massage it.
 
-		<<if pregnancyCountBetweenParents("Alex", "PC", true) is 0>>
+		<<if pregnancyCountFromParents("Alex", "pc") is 0>>
 			<<if npcBellyVisible("Alex")>>
 				"You sure take up a lot of space for something so small,"
 
@@ -2502,11 +2503,11 @@ You sneak up to the shed, and push the door open.
 			<</if>>
 
 		<<else>>
-			<<if pregnancyCountBetweenParents("Alex","pc",true) gte 1>>
-				"Strangely, I've missed this feeling. This feeling of fullness,"
+			<<if childrenBetweenParents("Alex", "pc").some(child => child.development.location === "alex_cottage")>>
+				"Hope you get along with your <<if childrenCountBetweenParents("Alex","pc") is 1>>sibling<<else>>siblings<</if>>,"
 
 			<<else>>
-				"Hope you get along with your <<if childrenCountBetweenParents("Alex","pc") is 1>>sibling<<else>>siblings<</if>>,"
+				"Strangely, I've missed this feeling. This feeling of fullness,"
 
 			<</if>>
 
@@ -2839,7 +2840,7 @@ You sneak up to the shed, and push the door open.
 			You put your hand on Alex's <<bellyDescription "Alex">>, and <<he>> kisses your temple. As <<he>> does so, you feel the baby kick - and naturally, so does <<he>>.
 			"Strong little bugger in there," <<he>> chuckles. "Reminds me of someone I know." <<He>> smiles at you.
 			<br><br>
-		<<elseif playerIsPregnant() and playerAwareTheyArePregnant() and playerBellyVisible() and getPregnancyObject().fetus[0].father is "Alex" and talkedAboutPregnancy("pc","Alex")>>
+		<<elseif playerIsPregnant() and playerAwareTheyArePregnant() and playerBellyVisible() and getActivePregnancies("pc").some(p => p.donor === "Alex") and talkedAboutPregnancy("pc","Alex")>>
 			Alex puts <<his>> hand on your <<bellyDescription "pc">> and kisses your temple. As <<he>> does so, you feel the baby kick - and evidently, so does <<he>>.
 			"Strong little bugger in there," <<he>> chuckles. "Reminds me of someone I know." <<He>> smiles at you.
 			<br><br>

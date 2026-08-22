@@ -932,11 +932,10 @@ setup.feats = {
 		filter: ["All", "Pregnancy"],
 		hint: "Hint: Gained something but not at the cost of something else.",
 		pregnancyLockable: true,
-		pregnancySillyLockable: true,
 	},
 	"Bicycle Mother": {
 		title: "Bicycle Mother",
-		desc: "Gave birth without knowing who the father is.",
+		desc: "Gave birth without knowing who the donor is while having five or more possible suspects.",
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Pregnancy"],
@@ -2198,8 +2197,7 @@ function earnFeat(featName) {
 	if (
 		V.feats.currentSave[featName] !== undefined ||
 		(V.feats.soft && setup.feats[featName].softLockable) ||
-		(V.feats.pregnancyLocked && setup.feats[featName].pregnancyLockable) ||
-		(V.feats.pregnancySillyLocked && setup.feats[featName].pregnancySillyLockable)
+		(V.feats.pregnancyLocked && setup.feats[featName].pregnancyLockable)
 	)
 		return;
 
@@ -2413,10 +2411,10 @@ function earnHourlyFeats() {
 	}
 
 	if (
-		Object.values(V.children).reduce((prev, curr) => {
-			if (curr.mother === "pc") prev.pushUnique(curr.type);
+		getBornChildren().reduce((prev, curr) => {
+			if (getPregnancyOf(curr).carrier === "pc") prev.pushUnique(curr.species);
 			return prev;
-		}, []).length >= Object.keys(pregnancyGenerator).filter(type => setup.pregnancy.typesEnabled.includes(type)).length
+		}, []).length >= new Set(setup.pregnancy.typesEnabled.map(childBaseSpecies)).size
 	) {
 		earnFeat("Diversity of Life");
 	}

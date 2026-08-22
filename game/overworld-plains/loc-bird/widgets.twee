@@ -393,7 +393,7 @@
 	<<set $bird.state to "home">>
 	<<if $bird.eggIntro is 1>>
 		<<set _bird_loot_select to "rocks">>
-	<<elseif Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined)) and !$daily.birdBabyFeed>>
+	<<elseif getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child)) and !$daily.birdBabyFeed>>
 		<<set _bird_loot_select to "lurker_for_children">>
 	<<elseif $syndromebird isnot 1 and $hunger gte 2000 and !$daily.birdForcefeed and $rng gte 51>>
 		<<set _bird_loot_select to "lurker_for_player">>
@@ -402,7 +402,7 @@
 	<<case "lurker">>
 		<<bHe>> carries a <<if $bird.hunts.lurkers is true>>lurker<<else>>strange, leathery and many-limbed creature<</if>> in <<bhis>> <<if $monster is 1>>talons<<else>>mouth<</if>>.
 		<<if $monster is 1>>
-			<<if playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and talkedAboutPregnancy("pc","Great Hawk") and !$daily.birdPregFeed>>
+			<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk" and talkedAboutPregnancy("pc","Great Hawk") and !$daily.birdPregFeed>>
 				<<set $daily.birdPregFeed to true>>
 				<<bHe>> doesn't take a bite for <<bhimself>>, instead offering the whole thing to you.
 				"<<print either(
@@ -618,7 +618,7 @@
 		<<link [[Ignore the "egg"|Bird Tower Stone Warm]]>><<set $phase to 0>><<npcincr "Great Hawk" dom -1>><<npcincr "Great Hawk" love -10>><</link>><<ldom>><<llllove>>
 		<br>
 	<<case "lurker_for_children">>
-		<<getChildrenIds `{location:"tower", eggTimer:undefined}` "both">>
+		<<getChildrenIds `{location:"tower", excludeUnhatched:true}` "both">>
 		<<set _childrenTotal to _childrenIds.length>>
 		<<set $daily.birdBabyFeed to true>>
 		<<bHe>> carries a <<if $bird.hunts.lurkers is true>>lurker<<else>>strange, leathery and many-limbed creature<</if>> in <<bhis>> <<if $monster is 1>>talons<<else>>mouth<</if>>. <<bHe>> shows it to you, before turning back to the nest.
@@ -787,7 +787,7 @@
 <</widget>>
 
 <<widget "bird_schedule">>
-	<<set $_eggCount to Object.values($children).filter(child => child.location is "tower" and child.eggTimer).length>>
+	<<set $_eggCount to nestEggCount()>>
 	<<if $syndromebird gte 1 and !$daily.birdNightFlightCheck and !$weekly.birdNightFlight and !Weather.bloodMoon and !Weather.isFrozen("lake") and !$bird.injured>>
 		<<set $daily.birdNightFlightCheck to true>>
 		<<if $rng lte C.npc["Great Hawk"].love>>
@@ -1904,8 +1904,8 @@
 
 	<<if $_lurkerLoot gte 1>>
 		<<if $bird.hunts.duo is true and $_lurkerLoot gte 2>>
-			<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined)) and !$daily.birdBabyFeed>>
-				<<getChildrenIds `{location:"tower", eggTimer:undefined}` "both">>
+			<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child)) and !$daily.birdBabyFeed>>
+				<<getChildrenIds `{location:"tower", excludeUnhatched:true}` "both">>
 				<<set _childrenTotal to _childrenIds.length>>
 				<<set $daily.birdBabyFeed to true>>
 				Your spouse brings one of the lurkers to the nest. <<set $bird.materials.lurkers -=1>>
@@ -1922,8 +1922,8 @@
 			<br>
 		<</if>>
 
-		<<if Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer is undefined)) and !$daily.birdBabyFeed>>
-			<<getChildrenIds `{location:"tower", eggTimer:undefined}` "both">>
+		<<if getChildrenAt("tower").find(child => child.species is "hawk" and childIsBorn(child)) and !$daily.birdBabyFeed>>
+			<<getChildrenIds `{location:"tower", excludeUnhatched:true}` "both">>
 			<<set _childrenTotal to _childrenIds.length>>
 			<<if _childrenTotal gte 2>>
 				<<link [[Feed your children a lurker|Bird Tower Hunt End Children]]>><<set $bird.materials.lurkers -=1>><<endevent>><</link>>
@@ -2021,12 +2021,8 @@
 	<<if $harpyEggsPrevent and !$harpyEggs and !playerIsPregnant()>>
 		<<set $harpyEggsPrevent-->>
 		<span class="lewd">You feel your body recover from laying eggs a little faster.</span>
-	<<elseif playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk">>
-		<<set [$_eggnant, $_eggnantGenital] to getPregnancyObject("pc", true)>>
-		<<set $sexStats[$_eggnantGenital].pregnancy.timer += 0.25>>
-		<<for $_b to 0; $_b lt $sexStats[$_eggnantGenital].pregnancy.fetus.length; $_b++>>
-			<<set $sexStats[$_eggnantGenital].pregnancy.fetus[$_b].eggTimer -= (6 * TimeConstants.secondsPerHour)>>
-		<</for>>
+	<<elseif playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
+		<<run addEggCare(getLabouringPregnancy("pc").pregnancyId, 6 * TimeConstants.secondsPerHour)>>
 		<<if playerAwareTheyArePregnant()>>
 			<span class="lewd">Your eggs are nourished. They'll be ready for laying sooner.</span>
 		<<else>>
@@ -2040,11 +2036,9 @@
 	<<if $bird.injured gt 1>>
 		<<set $bird.injured-->>
 	<</if>>
-	<<if npcIsPregnant("Great Hawk")>>
-		<<set C.npc["Great Hawk"].pregnancy.timer += 0.25>>
-		<<for $_b to 0; $_b lt C.npc["Great Hawk"].pregnancy.fetus.length; $_b++>>
-			<<set C.npc["Great Hawk"].pregnancy.fetus[$_b].eggTimer -= (6 * TimeConstants.secondsPerHour)>>
-		<</for>>
+	<<set _hawkPregnancy to getActivePregnancies("Great Hawk").find(p => childBaseSpecies(p.donorSpecies) is "hawk")>>
+	<<if _hawkPregnancy>>
+		<<run addEggCare(_hawkPregnancy.pregnancyId, 6 * TimeConstants.secondsPerHour)>>
 	<</if>>
 <</widget>>
 
@@ -2886,23 +2880,24 @@
 <</widget>>
 
 <<widget "playerEggLayEvent">>
-	<<set [$_eggnant, $_eggnantGenital] to getPregnancyObject("pc", true)>>
+	<<set $_eggnantGenital to playerLabouringOrifice()>>
 	<<set $_eggnantGenital to $_eggnantGenital is "vagina" ? "cervix" : "ass">>
-	<<if $passage is "Bird Tower Sleep" and ($bedGuest is "Great Hawk" or $bird.state is "home" or (playerIsPregnant() and $_eggnant.type is "hawk" and $bird.state is "hunting"))>>
+	<<set _litter to getLabouringLitter("pc")>>
+	<<if $passage is "Bird Tower Sleep" and ($bedGuest is "Great Hawk" or $bird.state is "home" or (playerIsPregnant() and playerNormalPregnancyType() is "hawk" and $bird.state is "hunting"))>>
 		<<set _eggLayingWake to true>>
 	<<elseif ($passage is "Robin Sleep" or $passage is "Sleep") and $robinbed>>
 		<<set _eggLayingWake to true>>
 	<<else>>
-		<<if playerIsPregnant() and $_eggnant.type is "hawk">>
+		<<if playerIsPregnant() and playerNormalPregnancyType() is "hawk">>
 			<<if $location is "tower">>
-				<<set _eggIcon to $_eggnant.fetus.length>><<wearProp `"hawk egg " + Math.clamp(_eggIcon, 1, 3)`>>
+				<<set _eggIcon to _litter.length>><<wearProp `"hawk egg " + Math.clamp(_eggIcon, 1, 3)`>>
 				You awaken feeling disoriented, and feel a building pressure in your abdomen. A bestial instinct washes over you. You <<if $harpy gte 6 and V.transformationParts.bird.plumage isnot "hidden">>ruffle your feathers and <</if>>get on your hands and knees.
 				Something big is moving around inside of you, sending waves of both pain and pleasure as it rubs against your walls. <<arousal 4000>><<pain 12>><<gggarousal>><<ggpain>>
 				<br><br>
 
 				You gasp as you feel
 				<<if $_eggnantGenital is "cervix">>
-					<<if $_eggnant.fetus.length gte 2>>
+					<<if _litter.length gte 2>>
 						the eggs pass through your cervix. They send shivers through your whole body as they glide down your vaginal canal. You grip the nest as the eggs begin to crown.
 						The first one is the hardest. Your passage repeatedly contracts, sending even more waves of pleasure through you. It escapes partially, before going back in. You push for a full minute, and it finally pops out. <<arousal 4000>><<garousal>>
 						<br>
@@ -2911,9 +2906,9 @@
 						<<else>>
 							<br>
 						<</if>>
-						<<if $_eggnant.fetus.length is 2>>
+						<<if _litter.length is 2>>
 							The second egg passes much easier, joining its sibling in your nest.
-						<<elseif $_eggnant.fetus.length is 3>>
+						<<elseif _litter.length is 3>>
 							The second egg passes easily, but the third one gets stuck, having nothing behind it to help push. You sit there pushing for more agonising minutes, but eventually you manage to push it out. Your <<pussy>> remains slightly opened. You pant in exertion, feeling dizzy.
 						<<else>>
 							The next eggs pass easily, but the last one gets stuck, having nothing behind it to help push. You sit there pushing for more agonising minutes, but eventually you manage to push it out. Your <<pussy>> remains slightly opened. You pant in exertion, feeling dizzy.
@@ -2923,8 +2918,8 @@
 						It's only one, but it might as well be a regular human baby with how large it feels. You spread your legs further. Your <<pussy>> stretches more, trying to make room for it to escape. After several minutes of tortured pushing, it finally escapes you. You pant in exertion, feeling dizzy.
 					<</if>>
 				<<else>>
-					<<if $_eggnant.fetus.length gte 2>>
-						<span class="lewd">$_eggnant.fetus.length fertilised bird eggs</span> pass through your $_eggnantGenital, each one slowly spreading your entrance before plopping out and landing in your nest.
+					<<if _litter.length gte 2>>
+						<span class="lewd"><<= _litter.length>> fertilised bird eggs</span> pass through your $_eggnantGenital, each one slowly spreading your entrance before plopping out and landing in your nest.
 					<<else>>
 						<span class="lewd">a fertilised bird egg</span> pass through your $_eggnantGenital, slowly spreading your entrance before plopping out and landing in your nest.
 					<</if>>
@@ -2935,21 +2930,21 @@
 					<br><br>
 				<</if>>
 
-				You're filled with a sense of maternal bliss. Your spouse will be excited. <<Number $_eggnant.fetus.length>> <<birdicon "eggs">> fertilised bird <<pluralise $_eggnant.fetus.length "egg has" "eggs have">> been added to the nest.
-				<<if $_eggnant.fetus.length gte 2>>They're quite large, and you're left wondering how they all fit inside of you to begin with.<<else>>It's quite large, and you're left wondering why passing it didn't hurt more.<</if>>
-				<<set $bird.eggReact to $_eggnant.fetus.length>>
+				You're filled with a sense of maternal bliss. Your spouse will be excited. <<Number `_litter.length`>> <<birdicon "eggs">> fertilised bird <<pluralise `_litter.length` "egg has" "eggs have">> been added to the nest.
+				<<if _litter.length gte 2>>They're quite large, and you're left wondering how they all fit inside of you to begin with.<<else>>It's quite large, and you're left wondering why passing it didn't hurt more.<</if>>
+				<<set $bird.eggReact to _litter.length>>
 				<<pregnancyFeats "pc">>
 				<<endPlayerPregnancy "tower" "tower">>
 				<<set $harpyEggsPrevent to 28>>
 			<<else>>
-				<<set _eggIcon to $_eggnant.fetus.length>><<wearProp `"hawk egg " + Math.clamp(_eggIcon, 1, 3)`>>
+				<<set _eggIcon to _litter.length>><<wearProp `"hawk egg " + Math.clamp(_eggIcon, 1, 3)`>>
 				You awaken feeling disoriented, and feel a building pressure in your abdomen. A bestial instinct washes over you. You <<if $harpy gte 6 and V.transformationParts.bird.plumage isnot "hidden">>ruffle your feathers and <</if>>get on your hands and knees.
 				Something big is moving around inside of you, sending waves of both pain and pleasure through you as it rubs against your walls. <<arousal 4000>><<garousal>>
 				<br><br>
 
 				You gasp as you feel
 				<<if $_eggnantGenital is "cervix">>
-					<<if $_eggnant.fetus.length gte 2>>
+					<<if _litter.length gte 2>>
 						the eggs pass through your cervix. They send shivers through your whole body as they glide down your vaginal canal. You grip your surroundings as the eggs begin to crown.
 						The first one is the hardest. Your passage repeatedly contracts, sending even more waves of pleasure through you. It escapes partially, before going back in. You push for a full minute, and it finally pops out. <<arousal 4000>><<garousal>>
 						<br>
@@ -2958,9 +2953,9 @@
 						<<else>>
 							<br>
 						<</if>>
-						<<if $_eggnant.fetus.length is 2>>
+						<<if _litter.length is 2>>
 							The second egg passes much easier, joining its sibling on your bed.
-						<<elseif $_eggnant.fetus.length is 3>>
+						<<elseif _litter.length is 3>>
 							The second egg passes easily, but the third one gets stuck, having nothing behind it to help push. You sit there pushing for more agonising minutes, but eventually you manage to push it out. Your <<pussy>> remains slightly opened. You pant in exertion, feeling dizzy.
 						<<else>>
 							The next eggs pass easily, but the last one gets stuck, having nothing behind it to help push. You sit there pushing for more agonising minutes, but eventually you manage to push it out. Your <<pussy>> remains slightly opened. You pant in exertion, feeling dizzy.
@@ -2970,8 +2965,8 @@
 						It's only one, but it might as well be a regular human baby with how large it feels. You spread your legs further. Your <<pussy>> stretches more, trying to make room for it to escape. After several minutes of tortured pushing, it finally escapes you. You pant in exertion, feeling dizzy.
 					<</if>>
 				<<else>>
-					<<if $_eggnant.fetus.length gte 2>>
-						<span class="lewd">$_eggnant.fetus.length fertilised bird eggs</span> pass through your $_eggnantGenital, each one slowly spreading your entrance before plopping out and landing in your nest.
+					<<if _litter.length gte 2>>
+						<span class="lewd"><<= _litter.length>> fertilised bird eggs</span> pass through your $_eggnantGenital, each one slowly spreading your entrance before plopping out and landing in your nest.
 					<<else>>
 						<span class="lewd">a fertilised bird egg</span> pass through your $_eggnantGenital, slowly spreading your entrance before plopping out and landing in your nest.
 					<</if>>
@@ -2982,8 +2977,8 @@
 					<br><br>
 				<</if>>
 
-				You're filled with a sense of maternal bliss, as well as a nagging sense of urgency. <span class="blue">You need to bring <<if $_eggnant.fetus.length gte 2>>them<<else>>it<</if>> to your nest.</span> You pick up <<number $_eggnant.fetus.length>> <<birdicon "eggs">> fertilised bird <<pluralise $_eggnant.fetus.length "egg">>.
-				<<if $_eggnant.fetus.length gte 2>>They're quite large, and you're left wondering how they all fit inside of you to begin with.<<else>>It's quite large, and you're left wondering why passing it didn't hurt more.<</if>>
+				You're filled with a sense of maternal bliss, as well as a nagging sense of urgency. <span class="blue">You need to bring <<if _litter.length gte 2>>them<<else>>it<</if>> to your nest.</span> You pick up <<number `_litter.length`>> <<birdicon "eggs">> fertilised bird <<pluralise `_litter.length` "egg">>.
+				<<if _litter.length gte 2>>They're quite large, and you're left wondering how they all fit inside of you to begin with.<<else>>It's quite large, and you're left wondering why passing it didn't hurt more.<</if>>
 				/* Might be best changing the location variable here */
 				<<pregnancyFeats "pc">>
 				<<endPlayerPregnancy $location "inventory">>
@@ -3193,7 +3188,7 @@
 			<<set _child3 to _childrenIds.pluck()>>
 			<<set _childrenEating to [_child1, _child2, _child3]>>
 			gently lowering it into the nest. <<childSelect _child1>><<childname>>
-			<<if $children[_child1].features.monster is "monster">>
+			<<if $childRecords[_child1].features.monster is "monster">>
 				clumsily grabs at it with <<childhis>> little hands, and starts to gum on it.
 			<<else>>
 				grabs the soft mass in <<childhis>> beak.
@@ -3310,9 +3305,9 @@
 	<<runeventpool>>
 	<<for $_cc to 0; $_cc lt _childrenEating.length; $_cc++>>
 		<<updateChildActivity _childrenEating[$_cc]>>
-		<<set $children[_childrenEating[$_cc]].localVariables.activityDay to Time.days>>
-		<<set $children[_childrenEating[$_cc]].localVariables.activityHour to (Time.hour - 3)>>
-		<<set $children[_childrenEating[$_cc]].localVariables.activity to "lurkerEat">>
+		<<set $childRecords[_childrenEating[$_cc]].development.activityDay to Time.days>>
+		<<set $childRecords[_childrenEating[$_cc]].development.activityHour to (Time.hour - 3)>>
+		<<set $childRecords[_childrenEating[$_cc]].development.activity to "lurkerEat">>
 	<</for>>
 <</widget>>
 
@@ -3406,3 +3401,13 @@
 		<<set $transformationParts.bird.wings to "default">>
 	<</if>>
 <</widget>>
+
+/* Orphan hawk preview pronouns. */
+<<widget "orphanHawkHe">><<if $orphanHawkPreview.gender is "m">>He<<else>>She<</if>><</widget>>
+<<widget "orphanHawkhe">><<if $orphanHawkPreview.gender is "m">>he<<else>>she<</if>><</widget>>
+<<widget "orphanHawkHis">><<if $orphanHawkPreview.gender is "m">>His<<else>>Her<</if>><</widget>>
+<<widget "orphanHawkhis">><<if $orphanHawkPreview.gender is "m">>his<<else>>her<</if>><</widget>>
+<<widget "orphanHawkhim">><<if $orphanHawkPreview.gender is "m">>him<<else>>her<</if>><</widget>>
+<<widget "orphanHawkhers">><<if $orphanHawkPreview.gender is "m">>his<<else>>hers<</if>><</widget>>
+<<widget "orphanHawkson">><<if $orphanHawkPreview.gender is "m">>son<<else>>daughter<</if>><</widget>>
+<<widget "orphanHawktype">><<if $orphanHawkPreview.features.monster is "monster">>nestling<<else>>chick<</if>><</widget>>
