@@ -661,6 +661,10 @@ function calculateallure() {
 
 	// Base allure for feats
 	V.baseAllure = allure;
+	/* Location/Time specific modifiers */
+	if (V.asylum_tunnels >= 6 && Time.dayState === "night" && V.location === "forest") allure -= 150;
+	/* extra modifiers */
+	allure *= V.settings.allureModifier;
 
 	// Allure changes from Moor Luck
 	if (V.moorLuck > 0) allure *= 1 - V.moorLuck / 100;
