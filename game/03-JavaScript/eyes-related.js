@@ -100,7 +100,8 @@ function fixChildEyeColours() {
 		const known = [record.mother, record.father].map(p => (p === "pc" ? V.eyeselect : C.npc[p] ? C.npc[p].eyeColour : undefined)).filter(Boolean);
 		record.features.eyeColour = eyeColourCalc(known.length ? known[random(0, known.length - 1)] : undefined);
 	};
-	Object.values(V.children).forEach(fixEye);
+	// Reads V.children from old pregnancy code and repairs broken eyeColours before migration to new pregnancy code.
+	Object.values(V.children ?? {}).forEach(fixEye);
 	[V.sexStats?.vagina?.pregnancy, V.sexStats?.anus?.pregnancy].forEach(p => p?.fetus?.forEach(fixEye));
 	(V.NPCName ?? []).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye));
 	Object.values(V.storedNPCs ?? {}).forEach(npc => npc?.pregnancy?.fetus?.forEach(fixEye));

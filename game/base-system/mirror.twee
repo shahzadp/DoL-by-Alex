@@ -513,13 +513,9 @@
 	<</if>>
 	<br><br>
 
-	<<if getPregnancyObject().potentialFathers.length is 1>>
-		<<set $_fatherName to pregnancyNameCorrection(getPregnancyObject().potentialFathers[0].source)>>
-		<span class="lewd">It's clear that <<print $_fatherName === "yourself" ? "you are" : $_fatherName + " is">> the father.</span>
-	<<else>>
-		<span class="red">You wonder who the father is.</span>
-	<</if>>
-	<<set getPregnancyObject().awareOf to "mirror">>
+	<<set _preg to getPlayerPregnancy()>>
+	<<pregnancyFatherHint _preg>>
+	<<run setPlayerLearnedPregnancyFrom("mirror")>>
 <</widget>>
 
 <<widget "mirrorBodywriting">>
@@ -983,7 +979,7 @@
 			<</if>>
 		<</if>>
 	<</if>>
-	<<if ($player.vaginaExist or ($sexStats.anus.pregnancy.awareOf or $sexStats.anus.pregnancy.givenBirth gte 1)) and hasSexStat("promiscuity", 5)>>
+	<<if ($player.vaginaExist or (playerAwareTheyArePregnant() or $sexStats.anus.pregnancy.totalBirthEvents gte 1)) and hasSexStat("promiscuity", 5)>>
 		<<set _bodyWritingOptions.Pregnancy to {}>>
 		<<set _bodyWritingOptions.Pregnancy["Brood mother"] to "brood_mother">>
 		<<set _bodyWritingOptions.Pregnancy["Inseminate me"] to "inseminate_me">>

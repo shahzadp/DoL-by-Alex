@@ -1520,7 +1520,7 @@ class PlayerCombatMapper {
 			V.femaleclimax !== 1 &&
 			!hasChastityBelt &&
 			!playerHasStrapon() &&
-			wearingCondom("player") !== "worn" &&
+			condomState("player") !== "worn" &&
 			(V.parasite.penis.name === "parasite" || V.parasite.penis.name == null);
 		/** @type {Penetrator} */
 		const penetrator = {

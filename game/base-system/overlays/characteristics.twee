@@ -123,34 +123,37 @@
 	<br><br>
 
 	<!--Pregnancy Details-->
-	<<set $_pregnancy to getPregnancyObject()>>
 	<<set $_menstruation to $sexStats.vagina.menstruation>>
 	<<set $_pills to $sexStats.pills>>
 	<<set $_knowsTheyCanBecomePregnant to ($settings.playerPregnancyHumanEnabled or $settings.playerPregnancyBeastEnabled) and playerAwareTheyCanBePregnant()>>
 	<<set $_heatArousal to playerHeatMinArousal()>>
 	<<set $_rutArousal to playerRutMinArousal()>>
 	<<set $_heatRutDisplay to ($_heatArousal and playerAwareTheyAreInHeat() ? "heat" : "") + ($_heatArousal and playerAwareTheyAreInHeat() and $_rutArousal ? " and " : "") + ($_rutArousal ? "rut" : "")>>
-	<<if $_pregnancy.fetus.length and $_pregnancy.awareOf>>
-		<<if $_pregnancy.timer / $_pregnancy.timerEnd lte 0.33>>
+	<<set _preg to getActivePregnancies("pc").find(p => knowsPregnancy(p.pregnancyId, "pc"))>>
+	<<if _preg>>
+		<<set _progress to pregnancyProgress(_preg)>>
+		<<if _progress lte 0.33>>
 			<<set _trimester to "first">>
-		<<elseif $_pregnancy.timer / $_pregnancy.timerEnd lte 0.66>>
+		<<elseif _progress lte 0.66>>
 			<<set _trimester to "second">>
 		<<else>>
 			<<set _trimester to "third">>
 		<</if>>
-		<<if $_pregnancy.awareOfDetails || $_pregnancy.potentialFathers.every((father, index, array) => father.type === array[0].type)>>
-			<<if $_pregnancy.awareOfDetails>>
-				<<set $_number to $_pregnancy.fetus.length>>
-			<<elseif $_pregnancy.awareOfMultiple>>
-				<<set $_number to $_pregnancy.fetus.length is 1 ? 1 : "more than one">>
+		<<set _litter to getChildrenOf(_preg.pregnancyId)>>
+		<<set _species to childBaseSpecies(_preg.donorSpecies)>>
+		<<if playerKnowsLitterSpecies(_preg)>>
+			<<if playerKnowsLitterDetails(_preg)>>
+				<<set $_number to _litter.length>>
+			<<elseif _preg.awareOfMultiple>>
+				<<set $_number to _litter.length is 1 ? 1 : "more than one">>
 			<<else>>
 				<<set $_number to "an unknown number of">>
 			<</if>>
-			<<switch $_pregnancy.type>>
+			<<switch _species>>
 				<<case "human">>
 					<<if $_number isnot "an unknown number of" and $_number isnot "more than one" and $_number gt 1>>
 						<<set _childType to "">>
-						<<if $_pregnancy.fetus[0].features.identical is true and $_pregnancy.awareOfDetails>>
+						<<if _litter[0].identical isnot null and playerKnowsLitterDetails(_preg)>>
 							<<set _childType += "identical ">>
 						<</if>>
 						<<set _childType += ($_number is 3 ? "triplets" : "twins")>>
@@ -162,7 +165,7 @@
 				<<case "hawk">>
 					<<set _childType to ($_number is 1 || $_number is "more than one" ? "hawk egg" : "hawk eggs")>>
 			<</switch>>
-			<<if $_pregnancy.type is "hawk">>
+			<<if _species is "hawk">>
 				You're pregnant with <<number $_number>> _childType,
 				<<switch _trimester>>
 					<<case "first">>and it will be a while before you can lay <<if $_number is 1>>it<<else>>them<</if>>.
@@ -175,15 +178,17 @@
 		<<else>>
 			You know you're in the _trimester trimester of your pregnancy.
 		<</if>>
-		<<if between($_pregnancy.timer / $_pregnancy.timerEnd, 0.1, 1) and !$daily.ultrasoundDone>>
+		<<if between(_progress, 0.1, 1) and !$daily.ultrasoundDone>>
 			<span class="blue">You can get an ultrasound done at the hospital.</span>
 		<</if>>
-		<<if $_pregnancy.potentialFathers.length is 1>>
-			You know that the father is <<print pregnancyNameCorrection($_pregnancy.potentialFathers[0].source)>>.
-		<<elseif $_pregnancy.potentialFathers.length is 2>>
-			You're sure that the father is either <<print pregnancyNameCorrection($_pregnancy.potentialFathers[0].source)>> or <<print pregnancyNameCorrection($_pregnancy.potentialFathers[1].source)>>.
-		<<elseif $_pregnancy.potentialFathers.length is 3>>
-			You're pretty sure that the father is either <<print pregnancyNameCorrection($_pregnancy.potentialFathers[0].source)>>, <<print pregnancyNameCorrection($_pregnancy.potentialFathers[1].source)>> or <<print pregnancyNameCorrection($_pregnancy.potentialFathers[2].source)>>.
+		<<if knowsDonor(_preg.pregnancyId, "pc")>>
+			You know that the father is <<print pregnancyNameCorrection(_preg.donor)>>.
+		<<elseif _preg.possibleDonors.length is 1>>
+			You know that the father is <<print pregnancyNameCorrection(_preg.possibleDonors[0].name)>>.
+		<<elseif _preg.possibleDonors.length is 2>>
+			You're sure that the father is either <<print pregnancyNameCorrection(_preg.possibleDonors[0].name)>> or <<print pregnancyNameCorrection(_preg.possibleDonors[1].name)>>.
+		<<elseif _preg.possibleDonors.length is 3>>
+			You're pretty sure that the father is either <<print pregnancyNameCorrection(_preg.possibleDonors[0].name)>>, <<print pregnancyNameCorrection(_preg.possibleDonors[1].name)>> or <<print pregnancyNameCorrection(_preg.possibleDonors[2].name)>>.
 		<<else>>
 			You're unsure who the father is.
 		<</if>>
@@ -198,13 +203,9 @@
 	<<elseif $_knowsTheyCanBecomePregnant and (($sciencetrait gte 4 and $awareness gte 200) or $awareness gte 500)>>
 		<<set $_risk to playerPregnancyRisk()>>
 		<<if $_risk isnot undefined>>
-			<<switch $_risk>>
-				<<case 6>><<set $_pregnancyRisk to "very safe">><<set $_pregnancyRiskColour to "green">>
-				<<case 5>><<set $_pregnancyRisk to "safe">><<set $_pregnancyRiskColour to "teal">>
-				<<case 3 4>><<set $_pregnancyRisk to "somewhat safe">><<set $_pregnancyRiskColour to "lblue">>
-				<<case 1 2>><<set $_pregnancyRisk to "risky">><<set $_pregnancyRiskColour to "pink">>
-				<<case 0>><<set $_pregnancyRisk to "dangerous">><<set $_pregnancyRiskColour to "red">>
-			<</switch>>
+			<<set _riskLabel to PregnancyConstants.riskMeterLabels[$_risk]>>
+			<<set $_pregnancyRisk to _riskLabel.text>>
+			<<set $_pregnancyRiskColour to _riskLabel.colour>>
 
 			<<if $_heatArousal or $_rutArousal>>
 				<<heatRutDisplay>>

@@ -857,7 +857,7 @@ class CombatRenderer {
 		if (playerHasStrapon()) {
 			return false;
 		}
-		if (wearingCondom("player") === "worn") {
+		if (condomState("player") === "worn") {
 			return false;
 		}
 		return V.orgasmdown >= 1 && V.orgasmcount < 25 && V.femaleclimax !== 1;

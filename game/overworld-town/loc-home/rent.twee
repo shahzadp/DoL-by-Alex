@@ -205,14 +205,12 @@
 
 <<widget "babyRent">><<silently>>
 	<<set _skipReductions to _args[0]>>
-	<<set $_childrenRentCount to Object.values($children).reduce((prev, curr) => {
-		if(curr.location === "home") {
-			if(!(curr.localVariables.interactions >= 6)) {
-				if (!T.skipReductions) curr.localVariables.interactions = 0;
-				return prev + 1;
-			}
-			if (!T.skipReductions) curr.localVariables.interactions = 0;
+	<<set $_childrenRentCount to getChildrenAt("home").reduce((prev, curr) => {
+		if(!(curr.development.interactions >= 6)) {
+			if (!T.skipReductions) curr.development.interactions = 0;
+			return prev + 1;
 		}
+		if (!T.skipReductions) curr.development.interactions = 0;
 		return prev;
 	}, 0)>>
 	<<set $_milkRentReduction to Math.clamp(Math.floor($pregnancyStats.orphanageMilkBottles / 7), 0, Math.min(Math.floor($pregnancyStats.orphanageMilkBottles / 7), $_childrenRentCount))>>
@@ -390,16 +388,17 @@
 		prev.pushUnique(curr.mother + curr.birthId);
 		return prev;
 	}, [])>>
-	<<run Object.values($children).forEach(child => {
-		if(T.birthIds.includes(child.mother + child.birthId)){
-			if(child.mother === "pc"){
+	<<run getBornChildren().forEach(child => {
+		const carrier = getPregnancyOf(child).carrier;
+		if(T.birthIds.includes(carrier + child.pregnancyId)){
+			if(carrier === "pc"){
 				T.playerBornChildren.push(child.childId);
-				T.playerChildrenBirthLocations.pushUnique(child.birthLocation);
+				T.playerChildrenBirthLocations.pushUnique(child.development.birthLocation);
 			} else {
 				T.playerFatheredChildren.push(child.childId);
 			}
-			child.localVariables.interactionsTotal = 0;
-			child.localVariables.interactions = 7 - Math.clamp(V.renttime, 0, 7);
+			child.development.interactionsTotal = 0;
+			child.development.interactions = 7 - Math.clamp(V.renttime, 0, 7);
 		}
 	})>>
 	<<person1>>
@@ -428,8 +427,8 @@
 		<<for _key, _value range $babyIntros.Bailey.filter(child => child.mother !== "pc")>>
 			<!--
 			<<set _childIds to []>>
-			<<run Object.values($children).forEach(child => {
-				if(child.mother === T.value.mother && child.birthId === T.value.birthId){T.childIds.push(child.childId)}
+			<<run getBornChildren().forEach(child => {
+				if(getPregnancyOf(child).carrier === T.value.mother && child.pregnancyId === T.value.birthId){T.childIds.push(child.childId)}
 			})>> -->
 			<<switch _value.children>>
 				<<case 1>><<set _childrenText to "a brat">>

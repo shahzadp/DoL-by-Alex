@@ -1313,14 +1313,15 @@ You remove your clothing, wishing it wasn't quite so cold in here. Jordan rubs w
 <br><br>
 The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work. <<He>> stands back and looks at you.
 <<arousal 1000 "genitals">>
-<<set [_pregnancyObject, _pregnancyGenital] to getPregnancyObject("pc", true)>>
+<<set _pregnancyObject to getPlayerPregnancy()>>
+<<set _pregnancyGenital to _pregnancyObject ? _pregnancyObject.orifice : null>>
 <<if $phase is 2>>
 	<<if $player.virginity.penile is true and $player.virginity.vaginal is true or $player.virginity.temple is true>>
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and (($player.virginity.vaginal is true and _pregnancyGenital is "vagina") or _pregnancyGenital is "anus") and !$templeVirginPregnancy>>
-			<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and (($player.virginity.vaginal is true and _pregnancyGenital is "vagina") or _pregnancyGenital is "anus") and !$templeVirginPregnancy>>
+			<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
 			<<He>> fails to conceal <<his>> happiness.
-			<<if !_preggy.awareOf>>
-				<<set _preggy.awareOf to "temple">>
+			<<if !_preggy.playerLearnedFrom>>
+				<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 				<<if _pregnancyGenital is "vagina">>
 					"<span class="green">You are unblemished.</span> And yet, <span class="lewd">you are with child</span>. My sincerest congratulations. You've been blessed with a miracle."
 				<<else>>
@@ -1329,12 +1330,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 				<br><br>
 
 				Your legs feel weak. Jordan quickly helps you sit.
-				<<if _preggy.potentialFathers.length is 1>>
-					<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-					<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-				<<else>>
-					<span class="red">You wonder who the father is.</span>
-				<</if>>
+				<<pregnancyFatherHint _preggy>>
 				<br><br>
 
 				"I'm sorry. It was careless of me to reveal this to you so suddenly." <<He>> sits by your side until you're confident you can stand again.
@@ -1396,10 +1392,10 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 	<<else>>
 		<<set $templetest to "failed">>
 		"I'm sorry, but you are spoilt." <<His>> voice shakes slightly, but you're not sure if you imagined it.
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and !playerAwareTheyArePregnant>>
-			<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">>
-			<<if !_preggy.awareOf>>
-				<<set _preggy.awareOf to "temple">>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and !playerAwareTheyArePregnant()>>
+			<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">>
+			<<if !_preggy.playerLearnedFrom>>
+				<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 				<<if _pregnancyGenital is "vagina">>
 					"And... <span class="red">you are with child</span>."
 				<<else>>
@@ -1408,12 +1404,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 				<br><br>
 
 				Your legs feel weak.
-				<<if _preggy.potentialFathers.length is 1>>
-					<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-					<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-				<<else>>
-					<span class="red">You wonder who the father is.</span>
-				<</if>>
+				<<pregnancyFatherHint _preggy>>
 				<br><br>
 			<</if>>
 		<</if>>
@@ -1427,11 +1418,11 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 <<elseif $phase is 1>>
 	<<if $player.virginity.penile is true and $player.virginity.vaginal is true>>
 		<<inittemple>>
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and (($player.virginity.vaginal is true and _pregnancyGenital is "vagina") or _pregnancyGenital is "anus") and !$templeVirginPregnancy>>
-			<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and (($player.virginity.vaginal is true and _pregnancyGenital is "vagina") or _pregnancyGenital is "anus") and !$templeVirginPregnancy>>
+			<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
 			<<He>> fails to conceal <<his>> happiness.
-			<<if !_preggy.awareOf>>
-				<<set _preggy.awareOf to "temple">>
+			<<if !_preggy.playerLearnedFrom>>
+				<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 				<<if _pregnancyGenital is "vagina">>
 					"<span class="green">You are unblemished.</span> And yet, <span class="lewd">you are with child</span>. My sincerest congratulations. You've been blessed with a miracle."
 				<<else>>
@@ -1440,12 +1431,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 				<br><br>
 
 				Your legs feel weak. Jordan quickly helps you sit.
-				<<if _preggy.potentialFathers.length is 1>>
-					<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-					<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-				<<else>>
-					<span class="red">You wonder who the father is.</span>
-				<</if>>
+				<<pregnancyFatherHint _preggy>>
 				<br><br>
 
 				"I'm sorry. It was careless of me to reveal this to you so suddenly." <<He>> sits by your side until you're confident you can stand again.
@@ -1478,7 +1464,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 		<<else>>
 			"You are unblemished, and may it stay that way. You are now an initiate of the temple. Welcome, <<sister>>."
 			<<if playerChastity() and $worn.genitals.origin is "temple">>
-				<<if playerChastity("hidden") and playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and knowsAboutPregnancy("pc", "Jordan")>>
+				<<if playerChastity("hidden") and playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and knowsAboutPregnancy("pc", "Jordan")>>
 					"I'm sorry, but I can't return your chastity belt while you are bearing children. It's unsafe."
 					<<set $worn.genitals.type.push("broken")>>
 					<<genitalsruined>>
@@ -1500,10 +1486,10 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 	<<else>>
 		<<set $templetest to "failed">>
 		"I'm sorry, but you are spoilt." <<His>> voice shakes slightly, but you're not sure if you imagined it.
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and !playerAwareTheyArePregnant()>>
-			<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">>
-			<<if !_preggy.awareOf>>
-				<<set _preggy.awareOf to "temple">>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and !playerAwareTheyArePregnant()>>
+			<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">>
+			<<if !_preggy.playerLearnedFrom>>
+				<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 				<<if _pregnancyGenital is "vagina">>
 					"And... <span class="red">you are with child</span>."
 				<<else>>
@@ -1512,12 +1498,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 				<br><br>
 
 				Your legs feel weak.
-				<<if _preggy.potentialFathers.length is 1>>
-					<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-					<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-				<<else>>
-					<span class="red">You wonder who the father is.</span>
-				<</if>>
+				<<pregnancyFatherHint _preggy>>
 				<br><br>
 			<</if>>
 		<</if>>
@@ -1527,12 +1508,12 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 	<</if>>
 <<else>>
 	<<if $player.virginity.penile is true and $player.virginity.vaginal is true>>
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1>>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1>>
 			<<if !$templeVirginPregnancy>>
-				<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
+				<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">><<set $templeVirginPregnancy to true>>
 				<<He>> fails to conceal <<his>> happiness.
-				<<if !_preggy.awareOf>>
-					<<set _preggy.awareOf to "temple">>
+				<<if !_preggy.playerLearnedFrom>>
+					<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 					<<if _pregnancyGenital is "vagina">>
 						"<span class="green">You are unblemished.</span> And yet, <span class="lewd">you are with child.</span> My sincerest congratulations. You've been blessed with a miracle."
 					<<else>>
@@ -1541,12 +1522,7 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 					<br><br>
 
 					Your legs feel weak. Jordan quickly helps you sit.
-					<<if _preggy.potentialFathers.length is 1>>
-						<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-						<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-					<<else>>
-						<span class="red">You wonder who the father is.</span>
-					<</if>>
+					<<pregnancyFatherHint _preggy>>
 					<br><br>
 
 					"I'm sorry. It was careless of me to reveal this to you so suddenly." <<He>> sits by your side until you're confident you can stand again.
@@ -1609,20 +1585,15 @@ The fondling continues for a few minutes. Finally, <<he>> finishes <<his>> work.
 	<<else>>
 		<<set $templetest to "failed">>
 		"I'm sorry, but you are spoilt." <<His>> voice shakes slightly, but you're not sure if you imagined it.
-		<<if playerIsPregnant() and _pregnancyObject.timer / _pregnancyObject.timerEnd gte 0.1 and !playerAwareTheyArePregnant()>>
-			<<set _preggy to getPregnancyObject()>><<setKnowsAboutPregnancy "pc" "Jordan">>
-			<<if !_preggy.awareOf>>
-				<<set _preggy.awareOf to "temple">>
+		<<if playerIsPregnant() and pregnancyProgress(_pregnancyObject) gte 0.1 and !playerAwareTheyArePregnant()>>
+			<<set _preggy to _pregnancyObject>><<setKnowsAboutPregnancy "pc" "Jordan">>
+			<<if !_preggy.playerLearnedFrom>>
+				<<run setPlayerLearnedFrom(_preggy.pregnancyId, "temple")>>
 				"And... <span class="red">you are with child</span>."
 				<br><br>
 
 				Your legs feel weak.
-				<<if _preggy.potentialFathers.length is 1>>
-					<<set _fatherName to pregnancyNameCorrection(_preggy.potentialFathers[0].source)>>
-					<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-				<<else>>
-					<span class="red">You wonder who the father is.</span>
-				<</if>>
+				<<pregnancyFatherHint _preggy>>
 				<br><br>
 				"We won't be able to fit you with a belt for safety reasons<<if $player.penisExist>>, though we could fit you with the cage<</if>>." <<He>> walks out of the room, but stops in the doorway. "I'm sorry you were taken while still so young." <<He>> disappears around the corner.
 			<</if>>

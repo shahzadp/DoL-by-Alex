@@ -1593,8 +1593,8 @@ You spread your <<= $harpy gte 6 ? "wings" : "arms">> wide, feeling the cool win
 :: Passout Bird Hypothermia
 <<set $location to "tower">><<setTowerTemp>>
 <<npc "Great Hawk">><<person1>>
-<<set _eggs to Object.values($children).find(child => (child.type is "hawk" and child.location is "tower" and child.eggTimer))>>
-<<set $tempHatched to Object.values($children).filter(child => (child.location is "tower" and !child.eggTimer))>>
+<<set _eggs to getChildrenAt("tower").find(child => (child.species is "hawk" and childIsUnhatchedEgg(child)))>>
+<<set $tempHatched to getChildrenAt("tower").filter(child => !childIsUnhatchedEgg(child))>>
 <<if $tempHatched.length > 0>><<childSelect $tempHatched[0].childId>><</if>>
 <<outfitChecks>>
 <<if _bottom>><<set _bottom.integrity -=5>><<set _damagedClothes to _bottom.name>><</if>>
@@ -1749,7 +1749,7 @@ The Great Hawk <<= $monster is 1 ? "beams" : "perks up">> at that, and <<bhe>> r
 
 You rest in the nest, conserving your strength while the Great Hawk hunts. By the time <<bhe>> returns, you're feeling better and significantly warmer. <<your_bird_text "cap">> carries a <<if $bird.hunts.lurkers is true>>lurker<<else>>strange, leathery and many-limbed creature<</if>> in <<bhis>> <<if $monster is 1>>talons<<else>>mouth<</if>>.
 <<if $monster is 1>>
-	<<if playerIsPregnant() and getPregnancyObject().fetus[0].type is "hawk" and talkedAboutPregnancy("pc","Great Hawk") and !$daily.birdPregFeed>>
+	<<if playerIsPregnant() and getActivePregnancies("pc").some(p => childBaseSpecies(p.donorSpecies) === "hawk") and talkedAboutPregnancy("pc","Great Hawk") and !$daily.birdPregFeed>>
 		<<set $daily.birdPregFeed to true>>
 		<<bHe>> doesn't take a bite for <<bhimself>>, instead offering the whole thing to you.
 		"<<print either(

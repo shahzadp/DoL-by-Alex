@@ -924,8 +924,8 @@ function dayPassed() {
 	}
 
 	wikifier("menstruationCycle", "daily");
-	pregnancyProgress();
-	pregnancyProgress("anus");
+	advancePregnancy("vagina");
+	advancePregnancy("anus");
 	wikifier("rutCycle");
 	npcPregnancyCycle();
 	randomPregnancyProgress();
@@ -1069,8 +1069,6 @@ function hourPassed(hours) {
 			if (numberOfEarSlime() > 1 && V.earSlime.growth < 100) V.earSlime.defyCooldown--;
 			if (V.earSlime.defyCooldown <= 0) V.earSlime.defyCooldown = 0;
 		}
-		playerEndWaterProgress();
-
 		if (V.wolfpatrolsent >= 1) V.wolfpatrolsent++;
 
 		if (C.npc.Sydney.init === 1) {
@@ -1118,6 +1116,18 @@ function hourPassed(hours) {
 		if (i !== 0) {
 			minutePassed(60);
 			Time.set(V.timeStamp + 3600);
+		}
+		// Pregnancy uses the current time, so it runs after the clock moves forward above.
+		if (V.settings.pregnancyType !== "realistic") {
+			// Fetish mode. Pending conceptions from realistic mode are thrown out.
+			V.pendingPregnancies.vagina = null;
+			V.pendingPregnancies.anus = null;
+		}
+		hourlyPregnancyUpdate();
+		checkLabour();
+		if (V.settings.pregnancyType === "realistic") {
+			rollAndRecordConception("vagina");
+			rollAndRecordConception("anus");
 		}
 
 		if (V.fishing) {
@@ -1263,8 +1273,8 @@ function noonCheck() {
 	if (V.edenNightmareWake) delete V.edenNightmareWake;
 
 	wikifier("menstruationCycle");
-	pregnancyProgress();
-	pregnancyProgress("anus");
+	advancePregnancy("vagina");
+	advancePregnancy("anus");
 
 	if (V.weekly.schoolNightPoolParty && V.weekly.schoolNightPoolParty !== "intro") V.weekly.schoolNightPoolParty = false;
 	delete V.birdSleep;

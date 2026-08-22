@@ -45,7 +45,7 @@ declare global {
 		tiredness: {
 			max: number;
 		};
-		
+
 		/**
 		 * Minimum and maximum values for the player's stats
 		 *
@@ -73,7 +73,7 @@ declare global {
 				/**
 				 * The PC's required level of intoxication to achieve its maximum effects.
 				 */
-				effectLimit: number,
+				effectLimit: number;
 				/**
 				 * How much fatigue the PC gains at the drunk effect limit. This is also applied while the PC is sleeping.
 				 *
@@ -94,14 +94,14 @@ declare global {
 				// max: number,
 				mod: {
 					maxSex: {
-						minDrunk: number,
-						maxDrunk: number,
-					},
+						minDrunk: number;
+						maxDrunk: number;
+					};
 					minSex: {
-						minDrunk: number,
-						maxDrunk: number,
-					},
-				},
+						minDrunk: number;
+						maxDrunk: number;
+					};
+				};
 				/**
 				 * How much more pain the PC can tolerate at the drunk effect limit.
 				 *
@@ -118,14 +118,14 @@ declare global {
 				 *
 				 * The "Sprays", "Nets", "Batons", "Whips" should also be affected by drunk, but the "currentSkillValue" function doesn't currently handle them.
 				 */
-				skillPenalty: number,
+				skillPenalty: number;
 				/**
 				 * How much more stress the PC can tolerate at the drunk effect limit.
 				 *
 				 * The stress tolerance math is handled in the "stress" function.
 				 */
 				// stressTolerance: number,
-			},
+			};
 			// arousal: {
 			// 	max: number,
 			// 	min: number,
@@ -193,7 +193,7 @@ declare global {
 			// },
 			// /**
 			//  * The player's body can currently be 1 of 4 sizes:
-			//  * 
+			//  *
 			//  * Tiny, Small, Normal, and Large
 			//  */
 			// physique: {
@@ -261,7 +261,7 @@ declare global {
 			// /**
 			//  * It seems there's no upper limit on the amount of fluid a vagina can produce when it orgasms. May be added in
 			//  * a future update.
-			//  * 
+			//  *
 			//  * See "game\base-system\orgasm.twee" for the code.
 			//  */
 			//
@@ -379,7 +379,7 @@ declare global {
 			// 	max: number,
 			// 	min: number,
 			// },
-		},
+		};
 
 		// fames: {
 		// 	// Negative Fame Constants
@@ -459,7 +459,7 @@ declare global {
 		// 		min: number,
 		// 		/**
 		// 		 * If the player commits too much of the same type of crime in one day, they leave behind more evidence.
-		// 		 * 
+		// 		 *
 		// 		 * The dawnCheck() function in "game\03-JavaScript\time.js" will increase the player's crime by an additional
 		// 		 * 10% if their daily crime stat is creater than "spree".
 		// 		 */

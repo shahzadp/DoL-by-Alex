@@ -1985,7 +1985,11 @@
 	<</if>>
 
 
-	<<childrenSetup>>
+	<!-- $children only exists on pre-records saves. The old-save migrations below read it
+	directly, so make sure it is an object before they run. -->
+	<<if $children is undefined and !$objectVersion.pregnancyRecords>>
+		<<set $children to {}>>
+	<</if>>
 	<<if $basePlayerPregnancyChance is undefined>>
 		<<set $basePlayerPregnancyChance to 50>>
 		<<set $humanPregnancyMonths to 3>>
@@ -3416,7 +3420,7 @@
 	<</if>>
 
 	<!-- To update the player and named npc pregnancy objects from numbers to a single array -->
-	<<if $sexStats.vagina.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.type is undefined or $sexStats.anus.pregnancy.nonCycleRng is undefined or !Array.isArray($sexStats.vagina.sperm) or !$parentList>>
+	<<if $sexStats.vagina.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.type is undefined or $sexStats.vagina.menstruation?.nonCycleFertility is undefined>>
 		<<physicalAdjustmentsInit>>
 	<</if>>
 
@@ -4708,15 +4712,6 @@
 		<<set $sexStats.vagina.pregnancy.motherStatus to 2>>
 	<</if>>
 
-	<<if !$objectVersion.wardForceUnlock>>
-		<<if !$objectVersion.wardForceUnlock and !$ward_unlocked and Object.values($children).find(child => child.location is "home" and child.birthLocation isnot "hospital")>>
-			<<set $_childrenToIntro to Object.values($children).filter(child => child.location is "home" and child.birthLocation isnot "hospital")>>
-			<<run console.log($_childrenToIntro)>>
-			<<run $_childrenToIntro.forEach(child => wikifier("setBabyIntro", child.mother, "Bailey", child.birthId))>>
-		<</if>>
-		<<set $objectVersion.wardForceUnlock to 1>>
-	<</if>>
-
 	<<if $maleChanceMale is undefined>>
 		<<set $maleChanceMale to $malechance>>
 		<<set $maleChanceFemale to $malechance>>
@@ -4937,11 +4932,11 @@
 
 	<!-- Fix for alex pregnancy to allow for both the pc and Alex to be pregnant at the same time -->
 	<<if C.npc.Alex.pregnancy and C.npc.Alex.pregnancy.knowledge>>
-		<<set _pregnancyUpdate to getPregnancyObject()>>
+		<<set _pregnancyUpdate to getParasiteObject()>>
 		<<if _pregnancyUpdate.type is "human" and _pregnancyUpdate.fetus.length and _pregnancyUpdate.fetus[0].father is "Alex">>
 			<<set C.npc.Alex.pregnancy.pcKnowledge to true>>
 		<</if>>
-		<<set _pregnancyUpdate to getPregnancyObject("Alex")>>
+		<<set _pregnancyUpdate to C.npc.Alex.pregnancy>>
 		<<if _pregnancyUpdate.type is "human" and _pregnancyUpdate.fetus.length>>
 			<<set C.npc.Alex.pregnancy.selfKnowledge to true>>
 		<</if>>
@@ -5269,10 +5264,6 @@
 		<<set $managerGift to 1>>
 	<</if>>
 
-	/* Stat tracking for unsafe sex */
-	<<if $unsafeSexTimeStat is undefined>>
-		<<set $unsafeSexTimeStat to {}>>
-	<</if>>
 
 	<!-- V0.4.6.0 Draggletail fix -->
 	<<if $hairtype is "draggletail">>
@@ -5507,8 +5498,8 @@
 				if (child.features.skinColour === "black") child.features.skinColour = "dark";
 				if (child.features.skinColour === "white") child.features.skinColour = "light";
 			};
-			Object.values(V.children).forEach(child => fixChild(child));
-			getPregnancyObject().fetus.forEach(child => fixChild(child));
+			if (V.children) Object.values(V.children).forEach(child => fixChild(child));
+			getParasiteObject().fetus.forEach(child => fixChild(child));
 			Object.values(V.NPCName).forEach(npc => {
 				if (npc.pregnancy.fetus) {
 					npc.pregnancy.fetus.forEach(child => fixChild(child));
@@ -5703,38 +5694,6 @@
 			delete $storedNPCs[key];
 		})>>
 		<<set $objectVersion.npcCompressorDisable to 1>>
-	<</if>>
-	<<if $objectVersion.npcCompressorDisable lt 2>>
-		<<script>>
-			const decompress = (parent) => {
-				let result = parent;
-				try {
-					result = npcDecompressor(parent);
-				} catch (e) {
-					result = null;
-				}
-				return result;
-			};
-			V.parentList.fathers.forEach(parent => {
-				if (parent.compressed && parent.compressed !== "none") {
-					parent.npc = decompress(parent.compressed);
-					delete parent.compressed;
-				} else {
-					parent.npc = false;
-					delete parent.compressed;
-				}
-			});
-			V.parentList.mothers.forEach(parent => {
-				if (parent.compressed && parent.compressed !== "none") {
-					parent.npc = decompress(parent.compressed);
-					delete parent.compressed;
-				} else {
-					parent.npc = false;
-					delete parent.compressed;
-				}
-			});
-		<</script>>
-		<<set $objectVersion.npcCompressorDisable to 2>>
 	<</if>>
 
 	<!-- Fix for named npcs whose gender could be changed by the randomizer -->
@@ -6310,11 +6269,13 @@
 	<<unset $danger>>
 
 	<!-- Change all of PCs children with "gray" hair to "grey" hair -->
-	<<for _child range $children>>
-		<<if $children[_child.childId].features.hairColour is "gray">>
-			<<set $children[_child.childId].features.hairColour to "grey">>
-		<</if>>
-	<</for>>
+	<<if $children>>
+		<<for _child range $children>>
+			<<if $children[_child.childId].features.hairColour is "gray">>
+				<<set $children[_child.childId].features.hairColour to "grey">>
+			<</if>>
+		<</for>>
+	<</if>>
 
 	<<unset $topless>>
 
@@ -6991,7 +6952,6 @@
 		<<updatePlants>>
 		<<set $objectVersion.foodstuff to 6>>
 	<</if>>
-
 	<!-- UFarm variable refactor -->
 	<<if $livestock is undefined>>
 		<<set $livestock to {}>>
@@ -7364,6 +7324,117 @@
 			<</if>>
 		<</for>>
 	<</if>>
+
+	<<if $settings>>
+		<<if $settings.humanPregnancyMonths is undefined>>
+			<<set $settings.humanPregnancyMonths to 3>>
+		<</if>>
+		<<if $settings.wolfPregnancyWeeks is undefined>>
+			<<set $settings.wolfPregnancyWeeks to 4>>
+		<</if>>
+		<<if $settings.birdPregnancyWeeks is undefined>>
+			<<set $settings.birdPregnancyWeeks to 3>>
+		<</if>>
+		<<if $settings.analPregnancyEnabled is undefined>>
+			<<set $settings.analPregnancyEnabled to true>>
+		<</if>>
+		<<if $settings.mpregEnabled is undefined>>
+			<<set $settings.mpregEnabled to true>>
+		<</if>>
+	<</if>>
+
+	<!-- Pregnancy chance settings are stored as percentages. Convert the "1 in N" scale values
+	(player slider displayed "1 in (100 - value)", NPC "1 in (20 - value)") to the equivalent percent. -->
+	<<if $settings and !$objectVersion.pregnancyChancePercent>>
+		<<set $settings.basePlayerPregnancyChance to legacyPregnancyChanceToPercent($settings.basePlayerPregnancyChance, 100)>>
+		<<set $settings.baseNpcPregnancyChance to legacyPregnancyChanceToPercent($settings.baseNpcPregnancyChance, 20)>>
+		<<set $objectVersion.pregnancyChancePercent to 1>>
+	<</if>>
+
+	<!-- The non-cycle fertility roll is stored as the day's multiplier. Convert the old
+	pre-rolled level arrays (multiplier = 1/4^level) and drop them. -->
+	<<if $sexStats.vagina.menstruation.nonCycleRng isnot undefined>>
+		<<set $sexStats.vagina.menstruation.nonCycleFertility to 1 / 4 ** $sexStats.vagina.menstruation.nonCycleRng[0]>>
+		<<run delete $sexStats.vagina.menstruation.nonCycleRng>>
+	<</if>>
+	<<run $NPCNameList.forEach(name => {
+		const pregnancy = C.npc[name] && C.npc[name].pregnancy;
+		if (!pregnancy) return;
+		if (Array.isArray(pregnancy.nonCycleRng)) {
+			pregnancy.nonCycleFertility = 1 / 4 ** pregnancy.nonCycleRng[0];
+			delete pregnancy.nonCycleRng;
+		}
+		if ("nonCycleRngHasEggs" in pregnancy) {
+			pregnancy.nonCycleHasEggs = pregnancy.nonCycleRngHasEggs;
+			delete pregnancy.nonCycleRngHasEggs;
+		}
+	})>>
+	<<run Object.values($storedNPCs ?? {}).forEach(stored => {
+		if (stored && stored.pregnancy) {
+			delete stored.pregnancy.nonCycleRng;
+			delete stored.pregnancy.nonCycleRngHasEggs;
+		}
+	})>>
+
+	<!-- Init the records arrays outside migratePregnancyData, so a rolled-back migration
+	failure can't leave them undefined for every later reader. -->
+	<<if !Array.isArray($pregnancies)>><<set $pregnancies to []>><</if>>
+	<<if !Array.isArray($childRecords)>><<set $childRecords to []>><</if>>
+
+	<<if !$objectVersion.gestationVariance>>
+		<<run $pregnancies.forEach(pregnancy => {
+			if (pregnancy.gestationVariance === undefined) pregnancy.gestationVariance = 1;
+		})>>
+		<<set $objectVersion.gestationVariance to 1>>
+	<</if>>
+
+	<<if !$objectVersion.adoptedDateTimestamp>>
+		<<run $childRecords.forEach(child => {
+			const adopted = child.development.adoptedDate;
+			if (typeof adopted === "object") child.development.adoptedDate = oldDateToTimestamp(adopted);
+		})>>
+		<<set $objectVersion.adoptedDateTimestamp to 1>>
+	<</if>>
+
+	<<if $cumLoads is undefined>>
+		<<set $cumLoads to { vagina: [], anus: [] }>>
+	<</if>>
+
+	<<if $pendingPregnancies is undefined>>
+		<<set $pendingPregnancies to { vagina: null, anus: null }>>
+	<</if>>
+
+	<<if !$objectVersion.pregnancyRecords>>
+		<<run migratePregnancyData()>>
+	<</if>>
+
+	<!-- One-time ward unlock. Introduce the orphanage's non-hospital-born children to Bailey. Runs
+	after the records migration above so getChildrenAt reads the new records. -->
+	<<if !$objectVersion.wardForceUnlock>>
+		<<if !$ward_unlocked>>
+			<<run getChildrenAt("home").filter(child => child.development.birthLocation isnot "hospital").forEach(child => setBabyIntro(getPregnancyOf(child).carrier, "Bailey", child.pregnancyId))>>
+		<</if>>
+		<<set $objectVersion.wardForceUnlock to 1>>
+	<</if>>
+
+	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
+	<<if $settings and $settings.pregnancyType is "silly">>
+		<<set $settings.pregnancyType to "fetish">>
+	<</if>>
+	<<if $feats.pregnancySillyLocked isnot undefined>>
+		<<run delete $feats.pregnancySillyLocked>>
+	<</if>>
+
+	<!-- Old saves have no fertileLeadDays. Seed the midpoint for the PC and cycle-bearing NPCs
+	so their current cycle has a value. Fresh cycles roll their own. -->
+	<<if $sexStats and $sexStats.vagina.menstruation and $sexStats.vagina.menstruation.fertileLeadDays is undefined>>
+		<<set $sexStats.vagina.menstruation.fertileLeadDays to Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2)>>
+	<</if>>
+	<<run Object.values(C.npc).forEach(npc => {
+		if (npc && npc.pregnancy && npc.pregnancy.enabled && npc.pregnancy.fertileLeadDays === undefined) {
+			npc.pregnancy.fertileLeadDays = Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2);
+		}
+	})>>
 
 	<<if $objectVersion.NPCTrustFix is undefined>>
 		<<for _i = 0; _i lt $NPCName.length; _i++>>

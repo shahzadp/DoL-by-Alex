@@ -1,52 +1,54 @@
 :: Widgets children [widget]
-<<widget "childrenSetup">>
-	<<if $children is undefined>>
-		<<set $children to {}>>
-	<</if>>
-<</widget>>
-
-<<widget "getUsedChildrenNames">>
-	<<set _usedChildrenNames to []>>
-	<<for $_label, $_value range $children>>
-		<<run _usedChildrenNames.pushUnique($_value.name)>>
-	<</for>>
-<</widget>>
-
-/*args[0] - filter in the form of an object, args[1] - "both" to include unrelated children or "only" to exclude the player children*/
+/*args[0] - filter in the form of an object ({location, donor, excludeUnhatched: true to also exclude unhatched eggs})
+args[1] - "both" to include unrelated children or "only" to exclude the player children
+Results are ordered by birth, so _childrenIds.last() is the newest birth. Unhatched eggs come first.*/
 <<widget "getChildrenIds">>
 	<<set _childrenIds to []>>
-	<<run Object.values($children).forEach(child => {
-		if ((child.mother === "pc" || child.father === "pc") && _args[1] === "only") {
+	<<if _args[0]>>
+		<<run Object.keys(_args[0]).forEach(key => {
+			if (key !== "location" and key !== "donor" and key !== "excludeUnhatched") {
+				throw new Error(`getChildrenIds: unsupported filter key "${key}", only "location", "donor" and "excludeUnhatched" are supported`);
+			}
+		})>>
+	<</if>>
+	<<run getBornChildren().forEach(child => {
+		const pregnancy = getPregnancyOf(child);
+		if ((pregnancy.carrier === "pc" || pregnancy.donor === "pc") && _args[1] === "only") {
 			return;
-		} else if ((child.mother !== "pc" && child.father !== "pc") and !_args[1]) {
+		} else if ((pregnancy.carrier !== "pc" && pregnancy.donor !== "pc") and !_args[1]) {
 			return;
 		}
-		if (T.args[0] && !Object.entries(T.args[0]).every(([key, value]) => child[key] === value)) {
+		if (T.args[0] && T.args[0].location !== undefined && child.development.location !== T.args[0].location) {
 			return;
 		}
-		if (child.childId) T.childrenIds.push(child.childId);
+		if (T.args[0] && T.args[0].donor !== undefined && pregnancy.donor !== T.args[0].donor) {
+			return;
+		}
+		if (T.args[0] && T.args[0].excludeUnhatched && childIsUnhatchedEgg(child)) {
+			return;
+		}
+		if (child.childId !== undefined) T.childrenIds.push(child.childId);
 	})>>
+	<<run T.childrenIds.sort((a, b) => (V.childRecords[a].bornDate ?? 0) - (V.childRecords[b].bornDate ?? 0))>>
 <</widget>>
 
 /*args[0] - location, args[1] - min length requirement, args[2] - max length requirement,
-args[3] - "both" to include unrelated children or "only" to exclude the player children*/
+args[3] - "both" to include unrelated children or "only" to exclude the player children
+Groups littermates by pregnancyId.*/
 <<widget "getSameBirthChildrenIds">>
 	<<set _birthChildrenIds to {}>>
-	<<for $_label, $_value range $children>>
-		<<if $_value.mother isnot "pc" and $_value.father isnot "pc">>
-			<<if _args[3] isnot "both" and _args[3] isnot "only">>
-				<<continue>>
-			<</if>>
-		<<elseif _args[3] is "only">>
-			<<continue>>
-		<</if>>
-		<<if !$_value.eggTimer and (_args[0] is undefined or $_value.location is _args[0])>>
-			<<if _birthChildrenIds[$_value.birthId] is undefined>>
-				<<set _birthChildrenIds[$_value.birthId] to []>>
-			<</if>>
-			<<run _birthChildrenIds[$_value.birthId].push($_value.childId)>>
-		<</if>>
-	<</for>>
+	<<run getBornChildren().forEach(child => {
+		const pregnancy = getPregnancyOf(child);
+		if (pregnancy.carrier !== "pc" && pregnancy.donor !== "pc") {
+			if (T.args[3] !== "both" && T.args[3] !== "only") return;
+		} else if (T.args[3] === "only") {
+			return;
+		}
+		if (childIsUnhatchedEgg(child)) return;
+		if (T.args[0] !== undefined && child.development.location !== T.args[0]) return;
+		if (T.birthChildrenIds[child.pregnancyId] === undefined) T.birthChildrenIds[child.pregnancyId] = [];
+		T.birthChildrenIds[child.pregnancyId].push(child.childId);
+	})>>
 	<<if _args[1]>>
 		<<for $_label, $_value range _birthChildrenIds>>
 			<<if $_value.length lt _args[1] or $_value.length gt _args[2]>>
@@ -56,39 +58,22 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<</if>>
 <</widget>>
 
-/*args[0] - location, args[1] - birthId, args[2] - new location*/
-<<widget "moveChildren">>
-	<<if _args[0] and _args[1]>>
-		<<getSameBirthChildrenIds _args[0]>>
-		<<if _birthChildrenIds[_args[1]] isnot undefined>>
-			<<for $_i to 0; $_i lt _birthChildrenIds[_args[1]].length; $_i++>>
-				<<set $children[_birthChildrenIds[_args[1]][$_i]].location to _args[2]>>
-				<<if _args[2] is "home">>
-					<<run setKnowsAboutPregnancy($children[_birthChildrenIds[_args[1]][$_i]].mother, "Bailey", $children[_birthChildrenIds[_args[1]][$_i]].mother + $children[_birthChildrenIds[_args[1]][$_i]].birthId)>>
-				<</if>>
-			<</for>>
-		<</if>>
-	<</if>>
-<</widget>>
-
 /*args[0] - childId, args[1] - new name*/
 <<widget "childRename">>
-	<<if _args[0]>>
-		<<set $children[_args[0]].name to generateBabyName(_args[1], $children[_args[0]].gender, _args[0])>>
+	<<if _args[0] isnot undefined>>
+		<<set $childRecords[_args[0]].name to generateBabyName(_args[1], $childRecords[_args[0]].gender, _args[0])>>
 	<</if>>
 <</widget>>
 
 /*args[0] - childId, args[1] - set to display specific text output*/
 <<widget "childAge">><<silently>>
-	<<if _args[0]>>
-		<<set _date1 to $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>>
-		<<set _date2 to Time.monthDay + " " + Time.monthName + " " + Time.year>>
-		<<set $_calc to Math.abs(Date.parse(_date2) - Date.parse(_date1))>>
-		<<switch $children[_args[0]].type>>
+	<<if _args[0] isnot undefined>>
+		<<set _childTotalDaysRaw to childAgeOf($childRecords[_args[0]])>>
+		<<switch $childRecords[_args[0]].species>>
 			<<case "human" "wolf" "hawk">><<set _childTotalDaysCap to 200>>
 			<<default>><<set _childTotalDaysCap to 0>>
 		<</switch>>
-		<<set _childTotalDays to Math.clamp(Math.ceil($_calc / (1000 * 60 * 60 * 24)), 0, _childTotalDaysCap)>>
+		<<set _childTotalDays to Math.clamp(_childTotalDaysRaw, 0, _childTotalDaysCap)>>
 		<<set _childYears to Math.floor(_childTotalDays / 360)>>
 		<<set _childDays to Math.floor(_childTotalDays % 360)>>
 		<<switch _args[1]>>
@@ -109,8 +94,8 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 /*args[0] - childId*/
 <<widget "childSelect">>
 	<<if _args[0] isnot undefined>>
-		<<set $childSelected to $children[_args[0]]>>
-		<<if $children[_args[0]].type isnot "human" and $children[_args[0]].features.monster is "monster">>
+		<<set $childSelected to $childRecords[_args[0]]>>
+		<<if $childRecords[_args[0]].species isnot "human" and $childRecords[_args[0]].features.monster is "monster">>
 			<<set $cmonster to 1>>
 		<<else>>
 			<<set $cmonster to 0>>
@@ -126,7 +111,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<set $_text_output to $children[$_id].name>>
+		<<set $_text_output to $childRecords[$_id].name>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
 
@@ -135,7 +120,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<<if _args[0] isnot undefined>>
 		<<set $_text_output to "">>
 		<<for $_i to 0; $_i lt _args[0].length; $_i++>>
-			<<set $_text_output += $children[_args[0][$_i]].name>>
+			<<set $_text_output += $childRecords[_args[0][$_i]].name>>
 			<<if $_i is _args[0].length - 1>>
 			<<elseif $_i is _args[0].length - 2>>
 				<<set $_text_output += " and ">>
@@ -153,22 +138,24 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<<elseif $childSelected isnot undefined>>
 		<<set $_id to $childSelected.childId>>
 	<</if>>
-	<<if $_id>>
-		<<set $_localVariables to $children[$_id].localVariables>>
-		<<if $_localVariables.interactionsTotal is undefined>>
-			<<set $_localVariables.interactionsTotal to 0>>
-			<<set $_localVariables.interactions to 0>>
+	<<if $_id isnot undefined>>
+		<<set $_development to $childRecords[$_id].development>>
+		<<if $_development.interactionsTotal is undefined>>
+			<<set $_development.interactionsTotal to 0>>
+			<<set $_development.interactions to 0>>
 		<</if>>
-		<<set $_localVariables.interactionsTotal++>>
+		<<set $_development.interactionsTotal++>>
 		<<if $daily.childInteractions is undefined>><<set $daily.childInteractions to []>><</if>>
 		<<if !$daily.childInteractions.includes($_id)>>
-			<<set $_localVariables.interactions++>>
+			<<set $_development.interactions++>>
 			<<run $daily.childInteractions.push($_id)>>
 		<</if>>
 		<<set $pregnancyStats.childInteractions++>>
 		<<if $location is "home">><<set $pregnancyStats.orphanageInteractions++>><</if>>
 	<</if>>
 <</silently>><</widget>>
+
+/*Currently herm children default to she pronouns.*/
 
 /*args[0] - childId*/
 <<widget "childHe">><<silently>>
@@ -178,7 +165,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "He">>
 			<<case "f" "h">><<set $_text_output to "She">>
 			<<case "h">><<set $_text_output to "They">>
@@ -194,7 +181,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "he">>
 			<<case "f" "h">><<set $_text_output to "she">>
 			<<case "h">><<set $_text_output to "they">>
@@ -210,7 +197,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "His">>
 			<<case "f" "h">><<set $_text_output to "Her">>
 			<<case "h">><<set $_text_output to "Their">>
@@ -226,7 +213,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "his">>
 			<<case "f" "h">><<set $_text_output to "her">>
 			<<case "h">><<set $_text_output to "their">>
@@ -242,7 +229,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "Him">>
 			<<case "f" "h">><<set $_text_output to "Her">>
 			<<case "h">><<set $_text_output to "Them">>
@@ -258,7 +245,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "him">>
 			<<case "f" "h">><<set $_text_output to "her">>
 			<<case "h">><<set $_text_output to "them">>
@@ -273,7 +260,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "himself">>
 			<<case "f" "h">><<set $_text_output to "herself">>
 			<<case "h">><<set $_text_output to "themselves">>
@@ -289,7 +276,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "His">>
 			<<case "f" "h">><<set $_text_output to "Hers">>
 			<<case "h">><<set $_text_output to "Theirs">>
@@ -305,7 +292,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "his">>
 			<<case "f" "h">><<set $_text_output to "hers">>
 			<<case "h">><<set $_text_output to "theirs">>
@@ -321,7 +308,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "himself">>
 			<<case "f" "h">><<set $_text_output to "herself">>
 			<<case "h">><<set $_text_output to "themself">>
@@ -337,7 +324,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "brother">>
 			<<case "f">><<set $_text_output to "sister">>
 			<<case "h">><<set $_text_output to "sibling">>
@@ -351,14 +338,14 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_brothers to 0>><<set $_sisters to 0>>
 		<<if typeof _args[0] is "object">>
 			<<for $_i to 0; $_i lt _args[0].length; $_i++>>
-				<<switch $children[_args[0][$_i]].gender>>
+				<<switch $childRecords[_args[0][$_i]].gender>>
 					<<case "m">><<set $_brothers++>>
 					<<case "f" "h">><<set $_sisters++>>
 				<</switch>>
 			<</for>>
 		<<else>>
 			<<for $_i to 0; $_i lt _args.length; $_i++>>
-				<<switch $children[_args[$_i]].gender>>
+				<<switch $childRecords[_args[$_i]].gender>>
 					<<case "m">><<set $_brothers++>>
 					<<case "f" "h">><<set $_sisters++>>
 				<</switch>>
@@ -391,7 +378,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].gender>>
+		<<switch $childRecords[$_id].gender>>
 			<<case "m">><<set $_text_output to "son">>
 			<<case "f">><<set $_text_output to "daughter">>
 			<<case "h">><<set $_text_output to "child">>
@@ -405,14 +392,14 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_sons to 0>><<set $_daughters to 0>>
 		<<if typeof _args[0] is "object">>
 			<<for $_i to 0; $_i lt _args[0].length; $_i++>>
-				<<switch $children[_args[0][$_i]].gender>>
+				<<switch $childRecords[_args[0][$_i]].gender>>
 					<<case "m">><<set $_sons++>>
 					<<case "f" "h">><<set $_daughters++>>
 				<</switch>>
 			<</for>>
 		<<else>>
 			<<for $_i to 0; $_i lt _args.length; $_i++>>
-				<<switch $children[_args[$_i]].gender>>
+				<<switch $childRecords[_args[$_i]].gender>>
 					<<case "m">><<set $_sons++>>
 					<<case "f" "h">><<set $_daughters++>>
 				<</switch>>
@@ -445,10 +432,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "hand">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "paw">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "hand" : "wing")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "hand" : "wing")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -461,10 +448,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$childSelected.childId].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "hands">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "paws">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "hands" : "wings")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "hands" : "wings")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -476,10 +463,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "feet">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "paws">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "feet" : "legs")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "feet" : "legs")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -491,10 +478,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "toes">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "pads">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "toes" : "talons")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "toes" : "talons")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -506,10 +493,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "finger">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "claw">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "finger" : "wing")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "finger" : "wing")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -522,10 +509,10 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set _id to $childSelected.childId>>
 	<</if>>
 	<<if _id isnot undefined>>
-		<<switch $children[_id].type>>
+		<<switch $childRecords[_id].species>>
 			<<case "human">><<set $_text_output to "giggles">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "wags <<childhis _id>> tail">>
-			<<case "hawk">><<set $_text_output to ($children[_id].features.monster is "monster" ? "giggles" : "ruffles <<childhis _id>> feathers")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[_id].features.monster is "monster" ? "giggles" : "ruffles <<childhis _id>> feathers")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
@@ -538,7 +525,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "hair">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "fur">>
 			<<case "hawk">><<set $_text_output to "feathers">>
@@ -559,7 +546,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<else>>
 			<<set $_cry to 1>>
 		<</if>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">>
 				<<switch $_cry>>
 					<<case 1>><<set $_text_output to "sniffling">>
@@ -593,18 +580,18 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<set $_id to $childSelected.childId>>
 	<</if>>
 	<<if $_id isnot undefined>>
-		<<switch $children[$_id].type>>
+		<<switch $childRecords[$_id].species>>
 			<<case "human">><<set $_text_output to "child">>
 			<<case "wolf" "wolfboy" "wolfgirl">><<set $_text_output to "pup">>
-			<<case "hawk">><<set $_text_output to ($children[$_id].features.monster is "monster" ? "nestling" : "chick")>>
+			<<case "hawk">><<set $_text_output to ($childRecords[$_id].features.monster is "monster" ? "nestling" : "chick")>>
 		<</switch>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
 
 /*args[0] - child object*/
 <<widget "childTypeDisplay">><<silently>>
-	<<if _args[0] and _args[0].childId>>
-		<<if !(_args[0].type is "wolf" && _args[0].features.monster && _args[0].gender isnot "h")>>
+	<<if _args[0] and _args[0].childId isnot undefined>>
+		<<if !(_args[0].species is "wolf" && _args[0].features.monster && _args[0].gender isnot "h")>>
 			<<switch _args[0].gender>>
 				<<case "m">><<set $_text_output to "Male ">>
 				<<case "f">><<set $_text_output to "Female ">>
@@ -613,9 +600,9 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 		<<else>>
 			<<set $_text_output to "">>
 		<</if>>
-		<<if _args[0].type isnot "human">>
+		<<if _args[0].species isnot "human">>
 			<<if _args[0].features.monster>>
-				<<switch _args[0].type>>
+				<<switch _args[0].species>>
 					<<case "wolf">>
 						<<set $_text_output += "Wolf">>
 						<<switch _args[0].gender>>
@@ -627,7 +614,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 						<<set $_text_output += "Harpy">>
 				<</switch>>
 			<<else>>
-				<<set $_text_output += _args[0].type.toUpperFirst()>>
+				<<set $_text_output += _args[0].species.toUpperFirst()>>
 			<</if>>
 		<<else>>
 			<<set $_text_output += "Human<<if _args[0].features.beastTransform or _args[0].features.divineTransform>> (<<childTransform _args[0]>>)<</if>>">>
@@ -637,14 +624,14 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 <</widget>>
 
 <<widget "childTransform">><<silently>>
-	<<if _args[0] and _args[0].childId>>
+	<<if _args[0] and _args[0].childId isnot undefined>>
 		<<set $_child to _args[0]>>
 	<<elseif _args[0] isnot undefined>>
 		<<set $_id to _args[0]>>
-		<<set $_child to $children[$_id]>>
+		<<set $_child to $childRecords[$_id]>>
 	<<elseif $childSelected isnot undefined>>
 		<<set $_id to $childSelected.childId>>
-		<<set $_child to $children[$_id]>>
+		<<set $_child to $childRecords[$_id]>>
 	<</if>>
 	<<if $_child isnot undefined>>
 		<<set $_text_output to "">>
@@ -671,8 +658,8 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<<elseif $childSelected isnot undefined>>
 		<<set $_id to $childSelected.childId>>
 	<</if>>
-	<<if $_id isnot undefined and !$children[$_id].localVariables.firstWord>>
-		<<set $_text_output to $children[$_id].localVariables.firstWord.word>>
+	<<if $_id isnot undefined and $childRecords[$_id].development.firstWord>>
+		<<set $_text_output to $childRecords[$_id].development.firstWord>>
 	<</if>>
 <</silently>><<if $_text_output>><<print $_text_output>><</if>><</widget>>
 
@@ -713,7 +700,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 
 /*args[0] - location*/
 <<widget "childSelectRandom">>
-	<<set $childSelected to Object.values($children).filter(child => !_args[0] or child.location === _args[0]).random()>>
+	<<set $childSelected to getBornChildren().filter(child => !_args[0] or child.development.location === _args[0]).random()>>
 <</widget>>
 
 <<widget "childViewerDisplay">>
@@ -783,11 +770,11 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 	<<capture _args>>
 		<div class="childItem m-0 childName">
 			<div>
-				<label><div><<childrenicon _args[0]>></div><div>Name:</div> <div><<textbox "$children[_args[0]].name" `$children[_args[0]].name`>></div></label>
+				<label><div><<childrenicon _args[0]>></div><div>Name:</div> <div><<textbox "$childRecords[_args[0]].name" `$childRecords[_args[0]].name`>></div></label>
 			</div>
 		</div>
 		<div class="childItem m-0 childDetails">
-			<<childTypeDisplay $children[_args[0]]>>
+			<<childTypeDisplay $childRecords[_args[0]]>>
 			<span class="no-numberify">
 				| <<link "Extra Details">><<childViewerHiddenElementsUnhide _args[0]>><</link>>
 			</span>
@@ -798,67 +785,74 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 <</widget>>
 
 <<widget "childViewerHiddenElements">>
-	<<if _args[0]>>
+	<<if _args[0] isnot undefined>>
 		<div @id="'childViewerHidden-'+_args[0]" @class="'childViewerHidden' + (_args[1] ? '' : ' hidden')">
 			<span class="gold">Mother:</span>
-			<<if $children[_args[0]].motherKnown>>
-				<<print pregnancyNameCorrection($children[_args[0]].mother, true)>>
+			<<if knowsCarrier($childRecords[_args[0]].pregnancyId, "pc")>>
+				<<print pregnancyNameCorrection(getPregnancyOf($childRecords[_args[0]]).carrier, true)>>
 			<<else>>
 				????
 			<</if>>
 			| <span class="gold">Father:</span>
-			<<if $children[_args[0]].fatherKnown>>
-				<<print pregnancyNameCorrection($children[_args[0]].father, true)>>
+			<<if knowsDonor($childRecords[_args[0]].pregnancyId, "pc")>>
+				<<print pregnancyNameCorrection(getPregnancyOf($childRecords[_args[0]]).donor, true)>>
 			<<else>>
 				????
 			<</if>>
 			<br>
-			<<if $children[_args[0]].laid>>
-				<span class="gold">Laid:</span> <<print $children[_args[0]].laid.day + " " + $children[_args[0]].laid.month + " " + $children[_args[0]].laid.year>> |
-				<span class="gold">Hatched:</span> <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>>
+			<<if childIsUnhatchedEgg($childRecords[_args[0]])>>
+				<<set _laidDate to new DateTime(getPregnancyOf($childRecords[_args[0]]).deliveredDate)>>
+				<span class="gold">Laid:</span> <<print _laidDate.day + " " + _laidDate.monthName + " " + _laidDate.year>>
+			<<elseif $childRecords[_args[0]].species is "hawk" or $childRecords[_args[0]].species is "harpy">>
+				<<set _laidDate to new DateTime(getPregnancyOf($childRecords[_args[0]]).deliveredDate)>>
+				<<set _hatchedDate to new DateTime($childRecords[_args[0]].bornDate)>>
+				<span class="gold">Laid:</span> <<print _laidDate.day + " " + _laidDate.monthName + " " + _laidDate.year>> |
+				<span class="gold">Hatched:</span> <<print _hatchedDate.day + " " + _hatchedDate.monthName + " " + _hatchedDate.year>>
 			<<else>>
-				<span class="gold">Born:</span> <<print $children[_args[0]].born.day + " " + $children[_args[0]].born.month + " " + $children[_args[0]].born.year>>
+				<<set _bornDate to new DateTime($childRecords[_args[0]].bornDate)>>
+				<span class="gold">Born:</span> <<print _bornDate.day + " " + _bornDate.monthName + " " + _bornDate.year>>
 			<</if>>
-			<<if $children[_args[0]].adopted>>
-				| <span class="gold">Adopted:</span> <<print $children[_args[0]].adopted.day + " " + $children[_args[0]].adopted.month + " " + $children[_args[0]].adopted.year>>
+			<<if $childRecords[_args[0]].development.adoptedDate>>
+				<<set _adoptedDate to new DateTime($childRecords[_args[0]].development.adoptedDate)>>
+				| <span class="gold">Adopted:</span> <<print _adoptedDate.day + " " + _adoptedDate.monthName + " " + _adoptedDate.year>>
 			<</if>>
 			<br>
 			<span class="gold">Age:</span> <<childAge _args[0] "full">>
 			<br>
-			<span class="gold">Size:</span> <<print $children[_args[0]].features.size>>
-			<<if $children[_args[0]].features.hairColour>>
-				<<if $children[_args[0]].type.includes("human")>>
+			<span class="gold">Size:</span> <<print $childRecords[_args[0]].features.size>>
+			<<if $childRecords[_args[0]].features.hairColour>>
+				<<if $childRecords[_args[0]].species.includes("human")>>
 					| <span class="gold">Hair:</span>
-				<<elseif $children[_args[0]].type.includes("hawk")>>
+				<<elseif $childRecords[_args[0]].species.includes("hawk")>>
 					| <span class="gold">Plumage:</span>
 				<<else>>
 					| <span class="gold">Fur:</span>
 				<</if>>
-				<<hairmapcolourtext $children[_args[0]].features.hairColour>>
+				<<hairmapcolourtext $childRecords[_args[0]].features.hairColour>>
 			<</if>>
-			<<if $children[_args[0]].features.skinColour>>
-				| <span class="gold">Skin:</span> <<skinColourName $children[_args[0]].features.skinColour>>
+			<<if $childRecords[_args[0]].features.skinColour>>
+				| <span class="gold">Skin:</span> <<skinColourName $childRecords[_args[0]].features.skinColour>>
 			<</if>>
 			<br>
-			<<if $children[_args[0]].features.identical>>
-				<span class="gold">Identical:</span> <<print $children[_args[0]].features.identical>>
+			<<if $childRecords[_args[0]].identical isnot null>>
+				<span class="gold">Identical:</span> Yes
 				<br>
 			<</if>>
-			<<if $children[_args[0]].localVariables.interactionsTotal>>
-				<span class="gold">Total Interactions:</span> <<print $children[_args[0]].localVariables.interactionsTotal>>
+			<<if $childRecords[_args[0]].development.interactionsTotal>>
+				<span class="gold">Total Interactions:</span> <<print $childRecords[_args[0]].development.interactionsTotal>>
 				<br>
 			<</if>>
 			<span class="no-numberify">
 				<span class="gold">Rename:</span>
 				<<link "Random Name">>
-					<<set $children[_args[0]].name to generateBabyName(undefined, $children[_args[0]].gender, _args[0])>>
+					<<set $childRecords[_args[0]].name to generateBabyName(undefined, $childRecords[_args[0]].gender, _args[0])>>
 					<<replace `"#child-" + _args[0]`>><<childViewerElement _args[0] true>><</replace>>
 				<</link>>
 			</span>
 			<<if $debug is 1>>
 				<br>
 				<small>
-					ChildId: <<print $children[_args[0]].childId>> |
+					ChildId: <<print $childRecords[_args[0]].childId>> |
 					saveId: <<print $saveId>>
 					<<if $saveName isnot "">>
 						| name: <<print $saveName>>
@@ -871,20 +865,20 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 
 <<widget "childViewerHiddenElementsUnhide">>
 	<<capture _args>>
-		<<if _args[0]>>
+		<<if _args[0] isnot undefined>>
 			<<toggleclass `'#childViewerHidden-' + _args[0]` "hidden">>
 		<</if>>
 	<</capture>>
 <</widget>>
 
 <<widget "childActivity">>
-	<<if _args[0]>>
+	<<if _args[0] isnot undefined>>
 		<<childAge _args[0]>>
 		<<childSelect _args[0]>>
 		/*'updateChildActivity' Changes the current event if enough time has passed*/
 		<<updateChildActivity _args[0]>>
 		<hr>
-		<<switch $children[_args[0]].type>>
+		<<switch $childRecords[_args[0]].species>>
 			<<case "human">><<humanChildActivity _args[0]>>
 			<<case "wolf" "wolfboy" "wolfgirl">><<wolfChildActivity _args[0]>>
 			<<case "hawk">><<hawkChildActivity _args[0]>>
@@ -896,12 +890,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 <<widget "humanChildActivity">>
 	<<set _activityColour to !$daily.childInteractions or !$daily.childInteractions.includes(_args[0]) ? " childrensActivityGold" : "">>
 	<span @class="'no-numberify' + _activityColour">
-		<<switch $children[_args[0]].localVariables.activity>>
+		<<switch $childRecords[_args[0]].development.activity>>
 			<<case "noEvent">>
 				<<childHe>>'s sleeping soundly.
 			<<case "sleeping">>
 				<<childHe>>'s sleeping soundly.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<set _rng to random(1, 6)>>
 					<<switch _rng>>
@@ -921,13 +915,13 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<</if>>
 			<<case "restlessSleep">>
 				<<childHe>>'s moving restlessly in <<childhis>> sleep.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Calm <<childhim>> down (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"restlessSleep", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crying">>
 				<<childHe>>'s distressed and crying.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<set _rng to random(1, 6)>>
 					<<switch _rng>>
@@ -947,7 +941,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<</if>>
 			<<case "lonely">>
 				<<childHe>>'s looking lonely.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<set _rng to random(1, 10)>>
 					<<switch _rng>>
@@ -975,31 +969,31 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<</if>>
 			<<case "happy">>
 				<<childHe>>'s smiling and happily cooing.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Smile and laugh (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"smilesAndLaughs", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "talking">>
 				<<childHe>>'s gurgling and babbling to <<childherself>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Join in the babbling (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "talking2">>
 				<<childHe>>'s gurgling and attempting to make sounds to <<childherself>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Join in the talking (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"talking2", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "nappyChange">>
 				<<childHe>>'s looking uncomfortable and smells.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Clean up (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"nappyChange", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "bathe">>
 				<<childHe>> is looking ready for a bath.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<<switch random(1, 4)>>
 						<<case 1>>
 							<<link [[Bathe (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"batheGentle", childid:_args[0]}>><</link>>
@@ -1016,25 +1010,25 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childHe>>'s happily sucking on <<childhis>> thumb.
 			<<case "grumpyChild">>
 				<<childHe>>'s being irritable.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Tickle (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"grumpyChild", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crawlingAttempt">>
 				<<childHe>>'s lying on <<childhis>> belly and flailing about.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crawlingAttempt2">>
 				<<childHe>>'s slowly crawling about the room.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Help <<childhim>> out (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"crawlingAttempt2", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "readingAttempt">>
 				<<childHe>>'s looking at a children's book upside down.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Flip the book (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"readingAttempt", childid:_args[0]}>><</link>>
 				<</if>>
@@ -1044,7 +1038,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childtoy $location "baby rattles" "notext">>
 				<<if _toyid>>
 					<<childHe>>'s staring at a <<childtoy $location _toyid "lowercase">>.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyid>><<link [[Shake it (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"babyRattle", childid:_args[0], toyid:_toyid}>><</link>><</capture>> |
 					<</if>>
@@ -1055,7 +1049,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childtoy $location "teddy bears" "notext">>
 				<<if _toyid>>
 					<<childHe>>'s turning and tossing in <<childhis>> sleep by a <<childtoy $location _toyid "lowercase">>.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyid>><<link [["Give " + _toyName + " (0:05)"|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"teddyBear", childid:_args[0], toyid:_toyid}>><</link>><</capture>> |
 					<</if>>
@@ -1063,12 +1057,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<humanChildActivityNoToy _args[0]>>
 				<</if>>
 			<<case "teddyBear2">>
-				<<childHe>>'s sleeping soundly by <<childhis>> <<print $children[_args[0]].localVariables.toy>>.
+				<<childHe>>'s sleeping soundly by <<childhis>> <<print $childRecords[_args[0]].development.toy>>.
 			<<case "toyCar">>
 				<<childtoy $location "toy cars" "notext">>
 				<<if _toyid>>
 					<<childHe>>'s waving a <<childtoy $location _toyid "lowercase">> in the air.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyid>><<link [[Play with <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"toyCar", childid:_args[0], toyid:_toyid}>><</link>><</capture>> |
 					<</if>>
@@ -1080,7 +1074,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyid>>
 					<<set _rng to random(1,4)>>
 					<<childHe>>'s <<childcry _rng>>. There's a <<childtoy $location _toyid "lowercase">> on the floor nearby.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyid _rng>><<link [[Pacify (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"dummy", childid:_args[0], toyid:_toyid, childCry:_rng}>><</link>><</capture>> |
 					<</if>>
@@ -1093,7 +1087,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<childtoy $location "clown" "notext">>
 				<<if _toyid>>
 					<<childHe>>'s looking at a <<childtoy $location _toyid "lowercase">> with an unsure expression.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyid>><<link [[Play with <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"clown", childid:_args[0], toyid:_toyid}>><</link>><</capture>> |
 					<</if>>
@@ -1111,7 +1105,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<childHe>>'s happily sucking on <<childhis>> thumb.
 				<<else>>
 					Robin cradles <<childhim>>.
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Hold (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"Robin", childid:_args[0]}>><</link>>
 					<</if>>
@@ -1122,14 +1116,14 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"Wraith", childid:_args[0]}>><</link>>
 			<<default>>
 				<<childHe>>'s has figured out that they're in a video game (This is an error, please report).
-				<<print $children[_args[0]].localVariables.activity>>
+				<<print $childRecords[_args[0]].development.activity>>
 		<</switch>>
 	</span>
 <</widget>>
 
 <<widget "humanChildActivityNoToy">>
 	<<childHe>>'s sleeping soundly.
-	<<if $children[_args[0]].localVariables.event>>
+	<<if $childRecords[_args[0]].development.event>>
 		<br>
 		<<link [[Watch <<childhim>> (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"shiverInCot", childid:_args[0]}>><<set $child_played.pushUnique(_args[0])>><</link>>
 	<</if>>
@@ -1138,66 +1132,66 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 /*ToDo: Pregnancy Story Content: Lacking events. Wolf pups events which the place accesses by going to the childrens UI*/
 <<widget "wolfChildActivity">>
 	<span class="no-numberify">
-		<<switch $children[_args[0]].localVariables.activity>>
+		<<switch $childRecords[_args[0]].development.activity>>
 			<<case "noEvent">>
 				<<childHe>>'s sleeping soundly.
 			<<case "sleeping">>
 				<<childHe>>'s sleeping on <<childhis>> own.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStroke", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "sleepingWithWolf">>
 				<<childHe>>'s sound asleep while cuddled up against another <<if $monster is 1>>wolfgirl<<else>>female wolf<</if>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Cuddle up to (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"cuddleAndNap", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "crying">>
 				<<childHe>>'s distressed and <<childcry>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Comfort <<childhim>> (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"cryingWolf", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "playing">>
 				<<childHe>>'s playing with some other pups.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Join in (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"playing", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "watchingCurious">>
 				<<childHe>>'s watching you with a curious expression.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Sate curiosity (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"curiousGaze", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "watchingLonging">>
 				<<childHe>>'s watching you with a longing expression.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Scratch ears (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"longingGaze", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "playFighting">>
 				<<childHe>>'s play fighting with another pup.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Calm <<childhim>> (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"playFighting", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "staringOutside">>
 				<<childHe>>'s staring out of the cave.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Go for a walk (0:30)|Children Activity Events]]>><<pass 30>><<set $childActivityEvent to {event:"fieldTrip", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "grumpyWolf">>
 				<<childHe>>'s sitting alone and snapping at any who come near.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Cheer up (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"grumpyWolf", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "hungryWolf">>
 				<<childHe>>'s <<childcry>> in front of an overcrowded female <<wolf_cave_singular "f">>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Help finding a nipple (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"hungryWolf", childid:_args[0]}>><</link>>
 				<</if>>
@@ -1209,7 +1203,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 					<<case 3>>an old rubber boot. <<set $pupToy to "boot">>
 					<<case 4>>a dead branch. <<set $pupToy to "stick">>
 				<</switch>>
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Play tug of war (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"gnawing", childid:_args[0]}>><</link>>
 				<</if>>
@@ -1218,12 +1212,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("squeaky")>>
 					<<childHe>>'s looking at a _toyName with curiosity.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyName>><<link [[Give squeaky toy (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"squeakyToy", childid:_args[0]}>><<set $phase to _toyName>><</link>><</capture>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "squeakyToy2">>
@@ -1231,12 +1225,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("squeaky")>>
 					<<childHe>> sniffs the _toyName and bats it experimentally.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<capture _toyName>><<link [[Squeak the _toyName (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"squeakyToy2", childid:_args[0]}>><<set $phase to _toyName>><</link>><</capture>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "chewRope">>
@@ -1244,12 +1238,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("rope")>>
 					<<childHe>>'s chewing on a colourful rope toy.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Play tug of war (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"chewRope", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "chewRope2">>
@@ -1257,18 +1251,18 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("rope")>>
 					<<childHe>> sniffs the rope, then gives it an experimental nip.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Pull the rope (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"chewRope2", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "chewBone">>
 				<<silently>><<childtoy $location "chew toys" "lowercase">><</silently>>
 				<<if _toyName?.includes("bone")>>
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<<childHe>>'s trying to dig a hole.
 						<br>
 						<<link [[Help dig (0:20)|Children Activity Events]]>><<pass 20>><<set $childActivityEvent to {event:"chewBone", childid:_args[0]}>><</link>>
@@ -1276,7 +1270,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 						<<childHe>>'s guarding <<childhis>> buried bone.
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "chewBone2">>
@@ -1284,12 +1278,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("bone")>>
 					<<childHe>> sniffs the bone, then begins licking it.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Nudge bone (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"chewBone2", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "rollBall">>
@@ -1297,12 +1291,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("ball")>>
 					<<childHe>>'s nudging a ball closer to you.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Roll ball (0:15)|Children Activity Events]]>><<pass 15>><<set $childActivityEvent to {event:"rollBall", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<case "rollBall2">>
@@ -1310,24 +1304,24 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("ball")>>
 					<<childHe>> nuzzles the ball and rolls it along the ground.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Throw ball (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"rollBall2", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<wolfChildActivity _args[0]>>
 				<</if>>
 			<<default>>
 				<<childHe>>'s has figured out that they're in a video game (This is an error, please report).
-				<<print $children[_args[0]].localVariables.activity>>
+				<<print $childRecords[_args[0]].development.activity>>
 		<</switch>>
 	</span>
 <</widget>>
 
 <<widget "wolfChildActivityNoToy">>
 	<<childHe>>'s sleeping on <<childhis>> own.
-	<<if $children[_args[0]].localVariables.event>>
+	<<if $childRecords[_args[0]].development.event>>
 		<br>
 		<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStroke", childid:_args[0]}>><</link>>
 	<</if>>
@@ -1335,24 +1329,24 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 
 <<widget "hawkChildActivity">>
 	<span class="no-numberify">
-		<<switch $children[_args[0]].localVariables.activity>>
+		<<switch $childRecords[_args[0]].development.activity>>
 			<<case "noEvent">>
 				<<childHe>>'s sleeping soundly.
 			<<case "sleeping">>
 				<<childHe>>'s sleeping on <<childhis>> own.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Stroke head (0:10)|Children Activity Events]]>><<pass 10>><<set $childActivityEvent to {event:"sleepingStrokeHawk", childid:_args[0]}>><</link>>
 				<</if>>
 			<<case "sleepingWithGreatHawk">>
 				<<npc "Great Hawk">>
 				<<childHe>>'s sound asleep while cuddled up against <<your_bird_text>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link [[Cuddle up to (0:30)|Children Activity Events]]>>
 						<<set _otherChildrenIds to []>>
-						<<run Object.values($children).forEach(child => {
-							if (child.location is $location and child.localVariables.activity is "sleepingWithGreatHawk" and child.childId isnot T.args[0]) {
+						<<run getBornChildren().forEach(child => {
+							if (child.development.location is $location and child.development.activity is "sleepingWithGreatHawk" and child.childId isnot T.args[0]) {
 								T.otherChildrenIds.push(child.childId);
 							}
 						})>>
@@ -1362,7 +1356,7 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<endevent>>
 			<<case "crying">>
 				<<childHe>>'s distressed and <<childcry>>.
-				<<if $children[_args[0]].localVariables.event>>
+				<<if $childRecords[_args[0]].development.event>>
 					<br>
 					<<link "Comfort <<childhim>> (0:15)" "Children Activity Events">><<pass 15>><<set $childActivityEvent to {event:"cryingHawk", childid:_args[0]}>><</link>>
 				<</if>>
@@ -1411,12 +1405,12 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 				<<if _toyName?.includes("swing")>>
 					<<childHe>>'s trying to climb onto the swing.
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Help <<childhim>> up (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"swingToy", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<hawkChildActivity _args[0]>>
 				<</if>>
 			<<case "preeningToy">>
@@ -1429,17 +1423,17 @@ args[3] - "both" to include unrelated children or "only" to exclude the player c
 						<<childHe>>'s looking at the preening toy.
 					<</if>>
 
-					<<if $children[_args[0]].localVariables.event>>
+					<<if $childRecords[_args[0]].development.event>>
 						<br>
 						<<link [[Give preening toy (0:05)|Children Activity Events]]>><<pass 5>><<set $childActivityEvent to {event:"preeningToy", childid:_args[0]}>><</link>>
 					<</if>>
 				<<else>>
-					<<set $children[_args[0]].localVariables.activity to "sleeping">>
+					<<set $childRecords[_args[0]].development.activity to "sleeping">>
 					<<hawkChildActivity _args[0]>>
 				<</if>>
 			<<default>>
 				<<childHe>>'s has figured out that they're in a video game (This is an error, please report).
-				<<print $children[_args[0]].localVariables.activity>>
+				<<print $childRecords[_args[0]].development.activity>>
 		<</switch>>
 	</span>
 <</widget>>

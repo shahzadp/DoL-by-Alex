@@ -1425,7 +1425,7 @@ function currentSkillValue(skill, disableModifiers = 0) {
 			if (V.earSlime.growth > 100 && !V.player.vaginaExist && V.earSlime.focus === "pregnancy") {
 				result = Math.floor(result * (1 + (V.earSlime.growth - 100) / 500));
 			}
-			if (playerHeatMinArousal() && canBeMPregnant()) {
+			if (playerHeatMinArousal() && playerCanCarryAnally()) {
 				result = Math.floor(result * (1 + Math.clamp(playerHeatMinArousal(), 0, 4000) / 20000));
 			}
 			break;
@@ -3254,3 +3254,29 @@ function averageBunPrice(toSell = T.buns_sold) {
 	return totalRevenue / toSell;
 }
 window.averageBunPrice = averageBunPrice;
+
+/**
+ * The condom someone has on, and what shape it's in. "worn" is an intact one.
+ *
+ * @param {number|"player"} who an NPCList slot, or the player
+ * @returns {"none"|"worn"|"defective"|"sabotaged"}
+ */
+function condomState(who) {
+	const condom = who === "player" ? V.player.condom : V.NPCList[who]?.condom;
+	if (!condom || !condom.worn) return "none";
+	if (condom.state === "defective") return "defective";
+	if (condom.state === "sabotaged") return "sabotaged";
+	return "worn";
+}
+window.condomState = condomState;
+
+/**
+ * Whether someone has a condom on at all, whatever shape it's in.
+ *
+ * @param {number|"player"} who an NPCList slot, or the player
+ * @returns {boolean}
+ */
+function wearingCondom(who) {
+	return condomState(who) !== "none";
+}
+window.wearingCondom = wearingCondom;

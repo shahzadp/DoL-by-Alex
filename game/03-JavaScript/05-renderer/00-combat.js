@@ -576,7 +576,7 @@ class CombatSystem {
 	 * @returns {boolean}
 	 */
 	isNpcWearingCondom(index) {
-		return wearingCondom(index || 0) !== false;
+		return wearingCondom(index || 0);
 	}
 
 	/**
@@ -584,8 +584,7 @@ class CombatSystem {
 	 * @returns {boolean}
 	 */
 	isNpcCondomDefective(index) {
-		const state = wearingCondom(index);
-		return state && ["defective", "sabotaged"].includes(state);
+		return ["defective", "sabotaged"].includes(condomState(index));
 	}
 
 	isPcGenitalsVisible() {

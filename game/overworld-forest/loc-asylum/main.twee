@@ -2870,7 +2870,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 		The pain grows as time seems to rapidly speed up and slow down. You hear the words "breathe" and "push" many times, and you do your best to comply.
 		<br><br>
 
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Asylum 3]]>><<endevent>><<pass _timeCalc>><<playerPrebirth>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Asylum 3]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
 	<<case "wolf">>
 		Harper's voice floats through the fog. "Not human. This will be an abnormal delivery. Follow my instructions to the letter..."
 		<br><br>
@@ -2878,14 +2878,14 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 		The pain grows as time seems to rapidly speed up and slow down. You hear the words "breathe" and "push" many times, and you do your best to comply.
 		<br><br>
 
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Asylum Wolf]]>><<endevent>><<pass _timeCalc>><<playerPrebirth>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Asylum Wolf]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
 <</switch>>
 
 :: Pregnancy Birth Asylum 3
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 <<endevent>>
 <<generate1>><<person1>>
-<<set $litter_size to getPregnancyObject().fetus.length>>
+<<set $litter_size to getLabouringLitter("pc").length>>
 You awaken in another room. A smiling midwife stands beside your bed,
 <<if $litter_size is 1>>
 	holding a bundled baby in <<his>> arms.
@@ -2920,13 +2920,12 @@ You awaken in another room. A smiling midwife stands beside your bed,
 <</if>>
 
 <<set $bornChildrenIds to []>>
-<<run getPregnancyObject().fetus.forEach(child => $bornChildrenIds.push(child.childId))>>
-<<set $recentBirthId to getPregnancyObject().fetus[0].birthId>>
+<<run getLabouringLitter("pc").forEach(child => $bornChildrenIds.push(child.childId))>>
 <<birthUi "pc" "asylum" "home" "Pregnancy Birth Asylum 4" 120>>
 
 :: Pregnancy Birth Asylum 4
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 <<set _pregFame to ($litter_size * 5)>>
 <<famepregnancy _pregFame>>
 <<if $litter_size is 1>>
@@ -3027,12 +3026,12 @@ You awaken in another room. A smiling midwife stands beside your bed,
 	"Doctor Harper has completed your discharge papers, and you're being released. Someone's waiting for you outside. Your <<nnpc_mum "Bailey">> I think."
 	<br><br>
 	<<removeBabyIntro "pc" "Bailey" $recentBirthId>>
-	<<link [[Next|Pregnancy Birth Asylum End]]>><<endevent>><<unset $recentBirthId>><</link>>
+	<<link [[Next|Pregnancy Birth Asylum End]]>><<endevent>><</link>>
 <<else>>
 	"Your children will be sent to the orphanage for temporary care until your release, at which point they will be returned to your custody, once you're deemed mentally fit."
 	<br><br>
 	<<setBabyIntro "pc" "Bailey" $recentBirthId>>
-	<<link [[Next|Pregnancy Birth Asylum 6]]>><<endevent>><<unset $recentBirthId>><</link>>
+	<<link [[Next|Pregnancy Birth Asylum 6]]>><<endevent>><</link>>
 <</if>>
 
 :: Pregnancy Birth Asylum 6
@@ -3050,7 +3049,7 @@ You're returned to your cell. You already miss the embrace of <<childrenNames $b
 <<badEndTrackingEnd "Asylum" { reason: "asylumDischargedLabour" }>>
 
 <<npc "Bailey">><<person1>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 Bailey waits for you in front of the asylum. <<He>> smiles when <<he>> sees you. It almost looks real. "We've a place prepared," <<he>> says.
 <<if $litter_size is 1>>
 
@@ -3094,8 +3093,9 @@ The engine comes to life.
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
 <<endevent>>
 <<generate1>><<person1>>
-<<set $litter_size to getPregnancyObject().fetus.length>>
-<<set _baby_type to getPregnancyObject().fetus[0].type>>
+<<set _litter to getLabouringLitter("pc")>>
+<<set $litter_size to _litter.length>>
+<<set _baby_type to _litter[0]?.species>>
 You awaken in another room. You hear faint whimpering. A smiling midwife stands beside your bed,
 <<if $litter_size is 1>>
 	holding a bundled _baby_type pup in <<his>> arms.
@@ -3120,13 +3120,13 @@ You awaken in another room. You hear faint whimpering. A smiling midwife stands 
 <</if>>
 
 <<set $bornChildrenIds to []>>
-<<run getPregnancyObject().fetus.forEach(child => $bornChildrenIds.push(child.childId))>>
+<<run _litter.forEach(child => $bornChildrenIds.push(child.childId))>>
 
 <<birthUi "pc" "asylum" "wolf_cave" "Pregnancy Birth Asylum Wolf 2" 180>>
 
 :: Pregnancy Birth Asylum Wolf 2
 <<set $outside to 0>><<set $location to "asylum">><<asylumeffects>><<effects>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 <<famebestiality $litter_size>>
 <<if $litter_size is 1>>
 

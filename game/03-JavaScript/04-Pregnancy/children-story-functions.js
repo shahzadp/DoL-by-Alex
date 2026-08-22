@@ -1,103 +1,74 @@
+/* This was code left behind by the old pregnancy code for "first word" scenes that is not currently implemented.
 const setChildFirstWord = (childId, word, playerAbsent = false) => {
-	if (!childId && V.childSelected) childId = V.childSelected.childId;
-	if (!childId && !V.childSelected) return false;
+	if (childId === undefined && V.childSelected) childId = V.childSelected.childId;
+	if (childId === undefined && !V.childSelected) return false;
 
-	const child = V.children[childId];
+	const child = V.childRecords[childId];
 
-	// First word already set
-	if (child.localVariables.firstWord) return false;
+	if (child.development.firstWord) return false;
 
 	if (!word) {
 		const wordList = ["mama", "mummy", "dada", "daddy", "papa", "no", "nana", "yes", "uh oh", "bye", "bye-bye", "hello"];
-
-		// Should be last
-		if (random(0, Math.ceil(2000 / wordList.length)) === 0) {
-			wordList.push("Brouzouf");
-		}
 		word = wordList[random(0, wordList.length - 1)];
 	}
-	child.localVariables.firstWord = {
-		word,
-		date: { day: Time.monthDay, month: Time.monthName, year: Time.year },
-		playerAbsent,
-	};
+	child.development.firstWord = word;
 	return word;
 };
 DefineMacro("setChildFirstWord", setChildFirstWord);
+*/
 
 function updateChildActivity(childId) {
-	const child = V.children[childId];
-	if (!child) return null;
+	const child = V.childRecords[childId];
 
-	// Make sure the child has all the required local variables for all the relevant events
-	if (child.localVariables.activity === undefined) {
-		child.localVariables.activity = "noEvent";
-		child.localVariables.activityDay = Time.days;
-		child.localVariables.activityHour = Time.hour;
-		child.localVariables.crawling = 0;
-		child.localVariables.talking = 0;
-	}
-	const daysFromLastActivity = Math.clamp(Time.days - child.localVariables.activityDay, 0, Infinity);
-	const hoursFromLastActivity = Time.hour - (child.localVariables.activityHour - 24 * daysFromLastActivity);
+	const daysFromLastActivity = Math.clamp(Time.days - child.development.activityDay, 0, Infinity);
+	const hoursFromLastActivity = Time.hour - (child.development.activityHour - 24 * daysFromLastActivity);
 
-	if (hoursFromLastActivity >= 4 || (Time.hour === 7 && hoursFromLastActivity >= 2) || child.localVariables.activity === "noEvent") {
-		// Update the child's event
-		switch (child.type) {
+	if (hoursFromLastActivity >= 4 || (Time.hour === 7 && hoursFromLastActivity >= 2) || child.development.activity === "noEvent") {
+		switch (child.species) {
 			case "human":
 				humanChildActivity(childId);
 				break;
 			case "wolf":
-			case "wolfboy":
-			case "wolfgirl":
 				wolfChildActivity(childId);
 				break;
 			case "hawk":
 				hawkChildActivity(childId);
 				break;
 			default:
-				return null;
+				throw new Error(`updateChildActivity: child ${childId} has non-base species "${child.species}"`);
 		}
-		child.localVariables.activityDay = Time.days;
-		child.localVariables.activityHour = Time.hour;
+		child.development.activityDay = Time.days;
+		child.development.activityHour = Time.hour;
 	}
 }
 DefineMacro("updateChildActivity", updateChildActivity);
 
 function getChildDays(childId) {
-	const child = V.children[childId];
-	if (!child) return null;
+	const child = V.childRecords[childId];
 
-	const date1 = child.born.day + " " + child.born.month + " " + child.born.year;
-	const date2 = Time.monthDay + " " + Time.monthName + " " + Time.year;
-	const calc = Math.abs(Date.parse(date2) - Date.parse(date1));
-	let childTotalDaysCap = 0;
-	switch (child.type) {
-		case "human":
-		case "wolf":
-		case "hawk":
-			childTotalDaysCap = 200;
-			break;
-		default:
-			childTotalDaysCap = 0;
-			break;
-	}
-	const childTotalDays = Math.clamp(Math.ceil(calc / (1000 * 60 * 60 * 24)), 0, childTotalDaysCap);
-	return childTotalDays;
+	if (!["human", "wolf", "hawk"].includes(child.species)) throw new Error(`getChildDays: child ${childId} has non-base species "${child.species}"`);
+	return Math.clamp(childAgeOf(child), 0, 200);
 }
 window.getChildDays = getChildDays;
 
-function humanChildActivity(childId) {
-	const child = V.children[childId];
-	if (!child) return null;
-
+/**
+ * Children's toy sets stored at the current location.
+ *
+ * @returns {string[]}
+ */
+function gatherToySets() {
 	const toySets = [];
-	const toyNames = [];
 	if (V.storedChildrenToys && V.storedChildrenToys[V.location]) {
-		V.storedChildrenToys[V.location].forEach(toy => {
-			toySets.pushUnique(toy.set);
-			toyNames.pushUnique(toy.name);
-		});
+		V.storedChildrenToys[V.location].forEach(toy => toySets.pushUnique(toy.set));
 	}
+	return toySets;
+}
+
+function humanChildActivity(childId) {
+	const child = V.childRecords[childId];
+
+	const donor = getPregnancyOf(child).donor;
+	const toySets = gatherToySets();
 	statusCheck("Robin");
 	let activity = [];
 
@@ -130,7 +101,7 @@ function humanChildActivity(childId) {
 			}
 			if (toySets.includes("clown")) activity.push("clown");
 			if (T.robin_location === "orphanage") activity.push("Robin");
-			if (child.father === "Ivory Wraith") {
+			if (donor === "Ivory Wraith") {
 				wikifier("rngWraith", 1);
 				if (T.wraithEvent) activity.push("Wraith");
 			}
@@ -164,9 +135,9 @@ function humanChildActivity(childId) {
 				activity.push("crying");
 			}
 			if (toySets.includes("clown")) activity.push("clown");
-			if (child.localVariables.talking >= 10 && T.childTotalDays >= 150) activity.push("talking2");
+			if (child.development.talking >= 10 && T.childTotalDays >= 150) activity.push("talking2");
 			if (T.robin_location === "orphanage") activity.push("Robin");
-			if (child.father === "Ivory Wraith") {
+			if (donor === "Ivory Wraith") {
 				wikifier("rngWraith", 1);
 				if (T.wraithEvent) activity.push("Wraith");
 			}
@@ -174,34 +145,21 @@ function humanChildActivity(childId) {
 	}
 
 	/* ToDo: Pregnancy - To be added at a later date
-		if (child.localVariables.crawling <= 5) {
+		if (child.development.crawling <= 5) {
 			activity.push("crawlingAttempt");
 		} else {
 			activity.push("crawlingAttempt2");
 		}
 	*/
 
-	if (activity.length) {
-		child.localVariables.activity = activity[random(0, activity.length - 1)];
-		child.localVariables.event = true;
-	} else {
-		child.localVariables.activity = "noEvent";
-		child.localVariables.event = true;
-	}
+	child.development.activity = activity.length ? activity[random(0, activity.length - 1)] : "noEvent";
+	child.development.event = true;
 }
 
 function wolfChildActivity(childId) {
-	const child = V.children[childId];
-	if (!child) return null;
+	const child = V.childRecords[childId];
 
-	const toySets = [];
-	const toyNames = [];
-	if (V.storedChildrenToys && V.storedChildrenToys[V.location]) {
-		V.storedChildrenToys[V.location].forEach(toy => {
-			toySets.pushUnique(toy.set);
-			toyNames.pushUnique(toy.name);
-		});
-	}
+	const toySets = gatherToySets();
 	let activity = [];
 
 	if (toySets.includes("chew toys")) {
@@ -250,30 +208,17 @@ function wolfChildActivity(childId) {
 		}
 	}
 
-	if (activity.length) {
-		child.localVariables.activity = activity[random(0, activity.length - 1)];
-		child.localVariables.event = true;
-	} else {
-		child.localVariables.activity = "noEvent";
-		child.localVariables.event = true;
-	}
+	child.development.activity = activity.length ? activity[random(0, activity.length - 1)] : "noEvent";
+	child.development.event = true;
 }
 
 function hawkChildActivity(childId) {
-	const child = V.children[childId];
-	if (!child) return null;
+	const child = V.childRecords[childId];
 
-	const toySets = [];
-	const toyNames = [];
-	if (V.storedChildrenToys && V.storedChildrenToys[V.location]) {
-		V.storedChildrenToys[V.location].forEach(toy => {
-			toySets.pushUnique(toy.set);
-			toyNames.pushUnique(toy.name);
-		});
-	}
 	let activity = [];
 
 	/* ToDo: Waiting on additional writing and sprites in order to fully implement crafted hawk toys
+	const toySets = gatherToySets();
 	if (toySets.includes("hawk toys")) activity = activity.concat(["preeningToy", "swing"]);
 	*/
 	if (between(T.childTotalDays, 0, 100)) {
@@ -293,11 +238,6 @@ function hawkChildActivity(childId) {
 		activity.push("preen");
 	}
 
-	if (activity.length) {
-		child.localVariables.activity = activity[random(0, activity.length - 1)];
-		child.localVariables.event = true;
-	} else {
-		child.localVariables.activity = "noEvent";
-		child.localVariables.event = true;
-	}
+	child.development.activity = activity.length ? activity[random(0, activity.length - 1)] : "noEvent";
+	child.development.event = true;
 }

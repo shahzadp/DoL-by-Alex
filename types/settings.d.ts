@@ -30,6 +30,8 @@ declare module "twine-sugarcube" {
 			toyMultiplePenetrationEnabled: true | false;
 			multipleWardrobes: "all" | "isolated" | false;
 			maleChanceSplit: true | false;
+			analPregnancyEnabled: true | false;
+			mpregEnabled: true | false;
 			npcPregnancyEnabled: true | false;
 			monsterHallucinationsOnly: true | false;
 			parasitePregnancyEnabled: true | false;
@@ -39,7 +41,7 @@ declare module "twine-sugarcube" {
 			playerPregnancyEggLayingEnabled: true | false;
 			playerPregnancyBeastEnabled: true | false;
 			playerPregnancyHumanEnabled: true | false;
-			pregnancyType: "realistic" | "fetish" | "silly";
+			pregnancyType: "realistic" | "fetish";
 			pubicHairEnabled: true | false;
 			ruinedOrgasmEnabled: true | false;
 			skillCheckStyle: "percentage" | "words" | "skillname";

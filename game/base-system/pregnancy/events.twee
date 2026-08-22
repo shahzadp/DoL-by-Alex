@@ -588,16 +588,8 @@ You feel yourself being lifted. You hear a voice, but the words don't make sense
 The midwife places a mask over your face. You feel your consciousness fade. Several other figures appear around you, their forms ablur.
 <br><br>
 
-<<set $litter_potention_fathers to getPregnancyObject().potentialFathers.length>>
-
-/*Alex variables*/
-<<if (getPregnancyObject().potentialFathers.length is 1 or getPregnancyObject().potentialFathers.length is undefined) and getPregnancyObject().fetus[0]?.father is "Alex">>
-	<<set $alex_pregnancy to {}>>
-	<<set $alex_pregnancy.knows to knowsAboutPregnancy("pc","Alex")>>
-	<<set $alex_pregnancy.talked to talkedAboutPregnancy("pc","Alex")>>
-	<<set $alex_pregnancy.source to getPregnancyObject().fetus[0].father>>
-
-<</if>>
+<<set _pregnancy to getLabouringPregnancy("pc")>>
+<<set $alex_pregnancy to _pregnancy?.possibleDonors.length is 1 and _pregnancy?.donor is "Alex">>
 
 <<set _timeCalc to birthLaborTime()>>
 
@@ -615,7 +607,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 			<<birthDissociationVision>>
 		<</if>>
 
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Hospital 3]]>><<endevent>><<pass _timeCalc>><<playerPrebirth>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Hospital 3]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
 	<<case "wolf">>
 		Harper's voice floats through the fog. "Not human. This will be an abnormal delivery. Follow my instructions to the letter..."
 		<br><br>
@@ -627,14 +619,14 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 <<endevent>>
 <<generate1>><<person1>>
 
-<<set $litter_size to getPregnancyObject().fetus.length>>
+<<set $litter_size to getLabouringLitter("pc").length>>
 <<set _baby to $litter_size is 1 ? "baby" : "babies">>
 
 <<if $dissociation gte 1>>
 	You awaken in another room. Your eyes open slowly. You're in a hospital bed. A smiling midwife stands beside you, holding <<= $litter_size is 3 ? "a trio of" : $litter_size is 2 ? "two" : "a">> bundled _baby in <<his>> arms.
 	<br><br>
 
-	"Looks like mummy's awake," <<he>> says, passing you the _baby.
+	"Looks like <<pmummy>>'s awake," <<he>> says, passing you the _baby.
 	<<birthCradle "the midwife">>
 	<<birthDissociationGlee>>
 	<<birthBabySleeps>> <<trauma -100>><<llltrauma>>
@@ -642,7 +634,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 	You awaken in another room. A smiling midwife stands beside your bed, holding <<= $litter_size is 3 ? "a trio of" : $litter_size is 2 ? "two" : "a">> bundled _baby in <<his>> arms.
 	<br><br>
 
-	"Looks like mummy's awake," <<he>> says, passing you the _baby.
+	"Looks like <<pmummy>>'s awake," <<he>> says, passing you the _baby.
 	<<birthCradle "the midwife">>
 	<<birthBabySleeps>>
 <</if>>
@@ -652,13 +644,13 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 <br><br>
 
 <<set $bornChildrenIds to []>>
-<<run getPregnancyObject().fetus.forEach(child => $bornChildrenIds.push(child.childId))>>
+<<run getLabouringLitter("pc").forEach(child => $bornChildrenIds.push(child.childId))>>
 
 <<birthUi "pc" "hospital" "home" "Pregnancy Birth Hospital 4" _time>>
 
 :: Pregnancy Birth Hospital 4
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 <<set _pregFame to ($litter_size * 5)>>
 <<famepregnancy _pregFame>>
 <<if $litter_size is 1>>
@@ -746,7 +738,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 <</if>>
 "Someone's waiting for you.
 
-<<if $alex_pregnancy isnot undefined and $litter_potention_fathers is 1 and $alex_pregnancy.source is "Alex">>
+<<if $alex_pregnancy>>
 
 	<<if C.npc.Alex.pregnancy.nursery is true>>
 		Your <<nnpc_girlfriend "Alex">> I think."
@@ -774,7 +766,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 <<set $location to "town">><<effects>>
 
 <<npc "Bailey">><<person1>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 Bailey waits for you in the hospital foyer. <<He>> smiles when <<he>> sees you. It almost looks real. "We've a place prepared," <<he>> says.
 <<if $litter_size is 1>>
 
@@ -1081,9 +1073,9 @@ You hear a deep breath. You think it's yours. "Good. Breathe." Gwylan's voice is
 
 <<switch playerNormalPregnancyType()>>
 	<<case "human">>
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop 4]]>><<endevent>><<pass _timeCalc>><<playerPrebirth>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop 4]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
 	<<case "wolf">>
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop Wolf]]>><<endevent>><<pass _timeCalc>><<playerPrebirth>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop Wolf]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
 <</switch>>
 
 :: Pregnancy Birth Forest Shop 4
@@ -1091,7 +1083,7 @@ You hear a deep breath. You think it's yours. "Good. Breathe." Gwylan's voice is
 <<endevent>>
 <<npc Gwylan>><<person1>>
 
-<<set $litter_size to getPregnancyObject().fetus.length>>
+<<set $litter_size to getLabouringLitter("pc").length>>
 <<set _baby to $litter_size is 1 ? "baby" : "babies">>
 
 You hear that familiar humming again.
@@ -1100,7 +1092,7 @@ You hear that familiar humming again.
 	You awaken wrapped up tightly in blankets. Your eyes open slowly. Gwylan stands beside you, holding <<= $litter_size is 3 ? "a trio of" : $litter_size is 2 ? "two" : "a">> bundled _baby in <<his>> arms.
 	<br><br>
 
-	"Rise and shine, mummy," <<he>> says, passing you the _baby.
+	"Rise and shine, <<pmummy>>," <<he>> says, passing you the _baby.
 	<<birthCradle>>
 	<<birthDissociationGlee>>
 	<<birthBabySleeps>> <<trauma -100>><<llltrauma>>
@@ -1108,7 +1100,7 @@ You hear that familiar humming again.
 	You awaken wrapped up tightly in blankets. Gwylan stands beside you, holding <<= $litter_size is 3 ? "a trio of" : $litter_size is 2 ? "two" : "a">> bundled _baby in <<his>> arms.
 	<br><br>
 
-	"Rise and shine, mummy," <<he>> says, passing you the _baby.
+	"Rise and shine, <<pmummy>>," <<he>> says, passing you the _baby.
 	<<birthCradle>>
 	<<birthBabySleeps>>
 <</if>>
@@ -1118,13 +1110,13 @@ You hear that familiar humming again.
 <br><br>
 
 <<set $bornChildrenIds to []>>
-<<run getPregnancyObject().fetus.forEach(child => $bornChildrenIds.push(child.childId))>>
+<<run getLabouringLitter("pc").forEach(child => $bornChildrenIds.push(child.childId))>>
 
 <<birthUi "pc" "forest_shop" "home" "Pregnancy Birth Forest Shop 5" _time>>
 
 :: Pregnancy Birth Forest Shop 5
 <<effects>><<run statusCheck("Gwylan")>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 <<if $litter_size is 1>>
 	You cradle your baby for a while longer, enjoying <<childhis>> tiny breaths and movements. <<childHe>> spends most of the time sleeping, but opens <<childhis>> eyes occasionally and gazes into yours.
 	<br><br>
@@ -1218,7 +1210,7 @@ Gwylan shares some tea with you, and the two of you spend some time chatting. <<
 <<set $location to "town">><<effects>>
 
 <<npc "Bailey" 1>><<npc "Gwylan" 2>><<person2>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 
 Gwylan walks with you to the forest shop entrance, just in time for a knock at the door. Gwylan opens it with a smile. Bailey frowns down at <<him>>.
 <br><br>
@@ -1277,7 +1269,7 @@ The engine comes to life.
 :: Pregnancy Birth Forest Shop 8
 <<set $location to "town">><<effects>>
 <<npc "Bailey" 1>><<person1>>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 
 Bailey drives past the temple, onto Danube Street.
 <<if $phase is 1>>
@@ -1325,14 +1317,14 @@ You hear that familiar humming again, alongside some whimpering.
 You awaken wrapped up tightly in blankets. Your eyes open slowly. Gwylan stands beside you, holding your pups in a bundle in <<his>> arms
 <br><br>
 
-"Rise and shine, mummy," <<he>> says, passing you your pups one by one. Their eyes are shut, bellies rising and falling with gentle breaths.
+"Rise and shine, <<pmummy>>," <<he>> says, passing you your pups one by one. Their eyes are shut, bellies rising and falling with gentle breaths.
 <br><br>
 
 "It was a smooth process," <<he>> says. <<He>> looks wistful for a moment, but shakes it off and almost looks giddy seeing you and your pups together. "Every child of the forest needs a name. Have you thought of any?"
 <br><br>
 
 <<set $bornChildrenIds to []>>
-<<run getPregnancyObject().fetus.forEach(child => $bornChildrenIds.push(child.childId))>>
+<<run getLabouringLitter("pc").forEach(child => $bornChildrenIds.push(child.childId))>>
 
 <<birthUi "pc" "forest_shop" "wolf_cave" "Pregnancy Birth Forest Shop Wolf 2" _time>>
 
@@ -1433,45 +1425,30 @@ Player re-equips clothes.
 The packaging said to wait 3 minutes, but it feels like an eternity passes. <<gstress>><<stress 3>>
 <br><br>
 <<set $pregnancyStats.pregnancyTestsTaken++>>
-<<if !$player.vaginaExist>>
-	<<set _pregnancyTest to $sexStats.anus.pregnancy>>
-	<<if _pregnancyTest.type is null or _pregnancyTest.type is "parasite" or _pregnancyTest.timer is 0 or (between(_pregnancyTest.timer, 0, 3) and random(0,100) gte 10) or (between(_pregnancyTest.timer, 3, 6) and random(0,100) gte 15)>>
-		<span class="green">It's negative.</span> You wonder how it could ever be positive.
-	<<elseif _pregnancyTest.givenBirth >= 1>>
+<<rng>>
+<<set _pregnancyTest to getPlayerPregnancy()>>
+<<if _pregnancyTest ? _pregnancyTest.orifice is "anus" : !$player.vaginaExist>>
+	<<if !_pregnancyTest or (between(daysAlong(_pregnancyTest), 0, PregnancyConstants.pregnancyTest.veryEarlyDays) and $rng gt PregnancyConstants.pregnancyTest.veryEarlyNegativeRoll) or (between(daysAlong(_pregnancyTest), PregnancyConstants.pregnancyTest.veryEarlyDays, PregnancyConstants.pregnancyTest.earlyDays) and $rng gt PregnancyConstants.pregnancyTest.earlyNegativeRoll)>>
+		<span class="green">It's negative.</span><<if !$player.vaginaExist>> You wonder how it could ever be positive.<</if>>
+	<<elseif $sexStats.anus.pregnancy.totalBirthEvents >= 1>>
 		<span class="lewd">It's positive.</span> Many thoughts rush through your head, and you sit to collect yourself. <<gstress>><<stress 3>><<garousal>><<arousal 100>>
 		<br><br>
-		<<if _pregnancyTest.potentialFathers.length is 1>>
-			<<set _fatherName to pregnancyNameCorrection(_pregnancyTest.potentialFathers[0].source)>>
-			<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-		<<else>>
-			<span class="red">You wonder who the father is.</span>
-		<</if>>
-		<<set _pregnancyTest.awareOf to "pregnancyTest">>
+		<<pregnancyFatherHint _pregnancyTest>>
+		<<run setPlayerLearnedFrom(_pregnancyTest.pregnancyId, "pregnancyTest")>>
 	<<else>>
 		<span class="lewd">It's positive.</span> You briefly wonder if you're seeing things or have gone crazy. Many thoughts rush through your head, and you sit to collect yourself. <<ggstress>><<stress 10>><<ggarousal>><<arousal 200>>
 		<br><br>
-		<<if _pregnancyTest.potentialFathers.length is 1>>
-			<<set _fatherName to pregnancyNameCorrection(_pregnancyTest.potentialFathers[0].source)>>
-			<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-		<<else>>
-			<span class="red">You wonder who the father is.</span>
-		<</if>>
-		<<set _pregnancyTest.awareOf to "pregnancyTest">>
+		<<pregnancyFatherHint _pregnancyTest>>
+		<<run setPlayerLearnedFrom(_pregnancyTest.pregnancyId, "pregnancyTest")>>
 	<</if>>
 <<else>>
-	<<set _pregnancyTest to $sexStats.vagina.pregnancy>>
-	<<if _pregnancyTest.type is null or _pregnancyTest.type is "parasite" or _pregnancyTest.timer is 0 or (between(_pregnancyTest.timer, 0, 3) and random(0,100) gte 10) or (between(_pregnancyTest.timer, 3, 6) and random(0,100) gte 15)>>
+	<<if !_pregnancyTest or (between(daysAlong(_pregnancyTest), 0, PregnancyConstants.pregnancyTest.veryEarlyDays) and $rng gt PregnancyConstants.pregnancyTest.veryEarlyNegativeRoll) or (between(daysAlong(_pregnancyTest), PregnancyConstants.pregnancyTest.veryEarlyDays, PregnancyConstants.pregnancyTest.earlyDays) and $rng gt PregnancyConstants.pregnancyTest.earlyNegativeRoll)>>
 		<span class="green">It's negative.</span>
 	<<else>>
 		<span class="lewd">It's positive.</span> Many thoughts rush through your head, and you sit to collect yourself. <<gstress>><<stress 3>><<garousal>><<arousal 100>>
 		<br><br>
-		<<if _pregnancyTest.potentialFathers.length is 1>>
-			<<set _fatherName to pregnancyNameCorrection(_pregnancyTest.potentialFathers[0].source)>>
-			<span class="lewd">It's clear that <<print _fatherName === "yourself" ? "you are" : _fatherName + " is">> the father.</span>
-		<<else>>
-			<span class="red">You wonder who the father is.</span>
-		<</if>>
-		<<set _pregnancyTest.awareOf to "pregnancyTest">>
+		<<pregnancyFatherHint _pregnancyTest>>
+		<<run setPlayerLearnedFrom(_pregnancyTest.pregnancyId, "pregnancyTest")>>
 	<</if>>
 <</if>>
 
@@ -1482,10 +1459,10 @@ The packaging said to wait 3 minutes, but it feels like an eternity passes. <<gs
 <<widget "pregnancyTest">>
 	<<if _args[0]>>
 		<<if $pregnancyTest gt 0>>
-			<<if !getPregnancyObject().awareOf>>
+			<<if !playerAwareTheyArePregnant()>>
 				<<pregnancytesticon>><<link [[Take a pregnancy test (0:05)|pregnancyTest]]>><<pass 5>><<set $lastPassage to _args[0]>><</link>>
 				<br>
-			<<elseif getPregnancyObject().awareOf>>
+			<<elseif playerAwareTheyArePregnant()>>
 				<<pregnancytesticon>><span class="lewd"> You have a pregnancy test, but you already know you're pregnant.</span>
 				<br>
 			<</if>>
@@ -1524,13 +1501,13 @@ The packaging said to wait 3 minutes, but it feels like an eternity passes. <<gs
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
 
 /*Alex variables*/
-<<if getPregnancyObject().fetus[0].father is "Alex">>
+<<if getLabouringPregnancy("pc")?.donor is "Alex">>
 	<<set C.npc.Alex.pregnancy.ultraSoundPics to true>>
 <</if>>
 
 You strip and lie down.
-<<set [_pregnancy, _pregnancyGenital] to getPregnancyObject("pc", true)>>
-<<if _pregnancy.timer lte _pregnancy.timerEnd * 0.3>>
+<<set _pregnancy to getPlayerPregnancy()>><<set _pregnancyGenital to _pregnancy.orifice>><<set _litter to getChildrenOf(_pregnancy.pregnancyId)>>
+<<if pregnancyProgress(_pregnancy) lte 0.3>>
 	<<set _pregnancy.awareOfMultiple to true>>
 	"I'm afraid you're not far enough along for an abdominal ultrasound," Doctor Harper remarks. "But we can use the doppler to listen for cardiac activity."
 	<br><br>
@@ -1539,7 +1516,7 @@ You strip and lie down.
 	"There! Listen. A healthy child." A little more than two beats a second. The thrumming soothes you.<<lstress>>
 	<br><br>
 	<<stress -10>>
-	<<if _pregnancy.fetus.length gt 1>>
+	<<if _litter.length gt 1>>
 		<<He>> moves the wand a little more and fails to conceal surprise. "There's another one." You hear a second pulsing, slightly different in tempo.<<gstress>><<stress 6>>
 		<br><br>
 	<</if>>
@@ -1565,18 +1542,18 @@ You strip and lie down.
 	<</if>>
 	<<He>> runs the wand left and right over your lower abdomen as the screen changes and flashes different shades of grey over <<his>> face.
 	<br>
-	<<if _pregnancy.type isnot "human">>
+	<<if childBaseSpecies(_pregnancy.donorSpecies) isnot "human">>
 		Harper is quiet for a while as <<he>> pores over the equipment, and the technician gives a look of concern. It's making you nervous. There's a lot of clicking and typing on the computer as the technician measures different parts. Femur, head, humerus, and amniotic fluid levels.
 	<<else>>
 		There's a lot of clicking and typing on the computer as the technician measures different parts.
 	<</if>>
 	<br><br>
 
-	<<if _pregnancy.fetus.length gt 1>>
+	<<if _litter.length gt 1>>
 		<<set _multiple to true>>
 	<<else>>
 		<<set _multiple to false>>
-		<<switch _pregnancy.fetus[0].gender>>
+		<<switch _litter[0].gender>>
 			<<case "m">>
 				<<set _he to "he">>
 				<<set _He to "He">>
@@ -1600,32 +1577,32 @@ You strip and lie down.
 				<<set _gender to "hermaphrodite">>
 		<</switch>>
 	<</if>>
-	<<if _pregnancy.type isnot "human" and _pregnancy.fetus[0].features.monster>>
-		<<if _pregnancy.type is "hawk">>
+	<<if childBaseSpecies(_pregnancy.donorSpecies) isnot "human" and _litter[0].features.monster>>
+		<<if childBaseSpecies(_pregnancy.donorSpecies) is "hawk">>
 			<<set _type to "harpy">>
 		<<else>>
-			<<set _type to _pregnancy.fetus[0].type + "person">>
+			<<set _type to _litter[0].species + "person">>
 		<</if>>
 	<<else>>
-		<<set _type to _pregnancy.fetus[0].type>>
+		<<set _type to _litter[0].species>>
 	<</if>>
-	<<switch _pregnancy.type>>
+	<<switch childBaseSpecies(_pregnancy.donorSpecies)>>
 		<<case "human">>
 			<<He>> at last turns to you. "Would you like to see?"
 			<<He>> swings the monitor to face you.
-			<<if !_pregnancy.awareOfMultiple and _pregnancy.fetus.length gt 1>>
+			<<if !_pregnancy.awareOfMultiple and _litter.length gt 1>>
 				You're surprised by what you see.
 			<</if>>
 			<br><br>
 
-			You see <<if _multiple>><<if _pregnancy.fetus.length is 3>>three<<else>>two<</if>> sets<<else>>a pair<</if>> of eyes, arms, hands, legs, and feet as the doctor moves the wand across your belly. <<stress -5>><<lstress>>
+			You see <<if _multiple>><<if _litter.length is 3>>three<<else>>two<</if>> sets<<else>>a pair<</if>> of eyes, arms, hands, legs, and feet as the doctor moves the wand across your belly. <<stress -5>><<lstress>>
 			<br><br>
 
 			"Perfect," the doctor says. "I'll print them out for you to take home."
 			<br><br>
 
-			<<if !_pregnancy.genderKnown>>
-				<<set _pregnancy.genderKnown to true>>
+			<<if !knowsGender(_litter[0].childId, "pc")>>
+				<<run _litter.forEach(c => setKnowsGender(c.childId, "pc"))>>
 				"It's time," the doctor announces.
 				<<if _multiple>>
 					"I hope you're excited to know your children's sex."
@@ -1639,10 +1616,10 @@ You strip and lie down.
 					<br><br>
 
 					<<He>> glides the wand over your rounded abdomen. The pressure is uncomfortable.
-					<<if _pregnancy.fetus[0].gender is "m">>
+					<<if _litter[0].gender is "m">>
 						"It's a boy," <<he>> says. "Congratulations." You can't make out anything on the screen that would indicate this, but Harper seems confident.
 						<br><br>
-					<<elseif _pregnancy.fetus[0].gender is "f">>
+					<<elseif _litter[0].gender is "f">>
 						"It's a girl," <<he>> says. "Congratulations." You can't make out anything on the screen that would indicate this, but Harper seems confident.
 						<br><br>
 					<<else>>
@@ -1651,20 +1628,20 @@ You strip and lie down.
 					<</if>>
 				<</if>>
 			<</if>>
-			<<if _pregnancy.timer gte _pregnancy.timerEnd * 0.9>>
+			<<if pregnancyProgress(_pregnancy) gte 0.9>>
 			/* 36-40 weeks, full term */
 				<<if ! _multiple>>
 					"Good news," <<he>> continues. "Your baby has dropped and is head-down. This should ease some of the pressure you feel."
 				<</if>>
 				It'll be time to deliver soon. The doctor hands you some literature about labour and what to do when it begins. "Please come see us when your waters break. We will take good care of you."
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.8>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.8>>
 			/*32-36 weeks, preterm */
 				You feel several fluttery kicks as the doctor continues to probe. "Based on these measurements," the technician says, "you'll be full term in a few weeks. Have you made birth plans yet? Make sure you're getting rest and nutrition."
 				<br><br>
 				You know you'll need rest, and money.<<gstress>><<stress 6>>
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.7>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.7>>
 			/*28-32 weeks */
 				<<if !_multiple>>
 					"Look, <<print _he>> is moving around," the doctor says. "Can you see the fingers?" It almost appears <<print _his>> hand is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
@@ -1679,20 +1656,20 @@ You strip and lie down.
 					It's very important that you make healthy choices right now, as your children depend on your body for everything."
 				<</if>>
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.6>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.6>>
 			/* 24-28 weeks */
 				<<if _multiple>>
 					The doctor continues to probe your belly. As <<he>> does, you feel like there's a swarm of butterflies inside as your children turn back and forth in response to the prodding.
 					<br><br>
-					"Everything seems in order," Harper says. "Your babies are measuring <<print _pregnancy.fetus[0].features.size>> and are perfectly healthy. Please come see us in a few months, when you're almost ready to give birth."
+					"Everything seems in order," Harper says. "Your babies are measuring <<print _litter[0].features.size>> and are perfectly healthy. Please come see us in a few months, when you're almost ready to give birth."
 					<br><br>
 				<<else>>
 					The doctor continues to probe your belly. As <<he>> does, you feel like there's a swarm of butterflies inside as your child turns back and forth in response to the prodding.
 					<br><br>
-					"Everything seems in order," Harper says. "Your baby is measuring <<print _pregnancy.fetus[0].features.size>> and is perfectly healthy. Please come see us in a few months, when you're almost ready to give birth."
+					"Everything seems in order," Harper says. "Your baby is measuring <<print _litter[0].features.size>> and is perfectly healthy. Please come see us in a few months, when you're almost ready to give birth."
 					<br><br>
 				<</if>>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.4>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
 					"Your babies are doing fine," the doctor says. "They're a little smaller than if you just had the one, but they are responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy."
@@ -1707,7 +1684,7 @@ You strip and lie down.
 					On the screen you can see <<print _him>> moving around, legs and arms switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
 					<br><br>
 				<</if>>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.3>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 			/* 12-16 weeks */
 				<<if _multiple>>
 					"Your babies are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy."<<llstress>><<stress -8>>
@@ -1724,7 +1701,7 @@ You strip and lie down.
 			<</if>>
 
 		<<case "wolf">>
-			<<if !_pregnancy.awareOfDetails>>
+			<<if !knowsChild(_litter[0].childId, "pc")>>
 				"I'd like to congratulate you," <<he>> starts as <<he>> turns to you. "You're lucky to carry a very unusual pregnancy. Instead of a human child, <span class="lewd">you're pregnant with
 				<<if _multiple>>
 					a litter of _type pups.
@@ -1741,13 +1718,13 @@ You strip and lie down.
 			<<He>> swings the monitor to face you.
 			<br><br>
 
-			You see <<if _multiple>><<number _pregnancy.fetus.length>> sets<<else>>a pair<</if>> of eyes, legs, and paws as the doctor moves the wand across your full belly. <<stress -5>><<lstress>>
+			You see <<if _multiple>><<number _litter.length>> sets<<else>>a pair<</if>> of eyes, legs, and paws as the doctor moves the wand across your full belly. <<stress -5>><<lstress>>
 			<br><br>
 			"Perfect," the doctor says. "I'll print them out for you to take home."
 			<br><br>
 
-			<<if !_pregnancy.genderKnown>>
-				<<set _pregnancy.genderKnown to true>>
+			<<if !knowsGender(_litter[0].childId, "pc")>>
+				<<run _litter.forEach(c => setKnowsGender(c.childId, "pc"))>>
 				"It's time," the doctor announces.
 				<<if _multiple>>
 					"I hope you're excited to know your children's sex."
@@ -1761,10 +1738,10 @@ You strip and lie down.
 					<br><br>
 
 					<<He>> glides the wand over your rounded abdomen. The pressure is uncomfortable.
-					<<if _pregnancy.fetus[0].gender is "m">>
+					<<if _litter[0].gender is "m">>
 						"It's a boy," <<he>> says. "Congratulations." You can't make out anything on the screen that would indicate this, but Harper seems confident.
 						<br><br>
-					<<elseif _pregnancy.fetus[0].gender is "f">>
+					<<elseif _litter[0].gender is "f">>
 						"It's a girl," <<he>> says. "Congratulations." You can't make out anything on the screen that would indicate this, but Harper seems confident.
 						<br><br>
 					<<else>>
@@ -1773,20 +1750,20 @@ You strip and lie down.
 					<</if>>
 				<</if>>
 			<</if>>
-			<<if _pregnancy.timer gte _pregnancy.timerEnd * 0.9>>
+			<<if pregnancyProgress(_pregnancy) gte 0.9>>
 			/* 36-40 weeks, full term */
 				<<if ! _multiple>>
 					"Good news," <<he>> continues. "Your pup has dropped and is head-down. This should ease some of the pressure you feel."
 				<</if>>
 				It'll be time to deliver soon. The doctor hands you some literature about labour and what to do when it begins. There's nothing in it about wolves, though. "Please come see us when your waters break. We will take good care of you."
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.8>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.8>>
 			/*32-36 weeks, preterm */
 				You feel several fluttery kicks as the doctor continues to probe. "Based on these measurements," the technician says, "you'll be full term very soon. We think. It's very hard to tell with a... non-human pregnancy. Have you made birth plans yet? Make sure you're getting rest and nutrition."
 				<br><br>
 				You know you'll need rest and money. You wonder where you'll keep them.<<gstress>><<stress 6>>
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.7>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.7>>
 			/*28-32 weeks */
 				<<if !_multiple>>
 					"Look, <<print _he>> is moving around," the doctor says. "Can you see the toes?" It almost appears <<print _his>> paw is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
@@ -1801,20 +1778,20 @@ You strip and lie down.
 					It's very important that you make healthy choices right now, as your children depend on your body for everything. It's especially important that you take care with such an unusual pregnancy."
 				<</if>>
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.6>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.6>>
 			/* 24-28 weeks */
 				<<if _multiple>>
 					The doctor continues to probe your belly. As <<he>> does, you feel like there's a swarm of butterflies inside as your litter turns back and forth in response to the prodding.
 					<br><br>
-					"Everything seems in order," Harper says. "Your pups are measuring <<print _pregnancy.fetus[0].features.size>> and are perfectly healthy. Please come see us in a few weeks, when you're almost ready to give birth."
+					"Everything seems in order," Harper says. "Your pups are measuring <<print _litter[0].features.size>> and are perfectly healthy. Please come see us in a few weeks, when you're almost ready to give birth."
 					<br><br>
 				<<else>>
 					The doctor continues to probe your belly. As <<he>> does, you feel like there's a swarm of butterflies inside as your pup turns back and forth in response to the prodding.
 					<br><br>
-					"Everything seems in order," Harper says. "Your pup is measuring <<print _pregnancy.fetus[0].features.size>> and is perfectly healthy. Please come see us in a few weeks, when you're almost ready to give birth."
+					"Everything seems in order," Harper says. "Your pup is measuring <<print _litter[0].features.size>> and is perfectly healthy. Please come see us in a few weeks, when you're almost ready to give birth."
 					<br><br>
 				<</if>>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.4>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
 					"Your ba... litter, is doing fine," the doctor says. "They're a little smaller than if you just had the one, but they are responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
@@ -1829,7 +1806,7 @@ You strip and lie down.
 					On the screen you can see <<print _him>> moving around, legs switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
 					<br><br>
 				<</if>>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.3>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 			/* 12-16 weeks */
 				<<if _multiple>>
 					"Your pups are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
@@ -1845,7 +1822,7 @@ You strip and lie down.
 			/* Shouldn't get here. */
 			<</if>>
 		<<case "hawk">>
-			<<if !_pregnancy.awareOfDetails>>
+			<<if !knowsChild(_litter[0].childId, "pc")>>
 				"I'd like to congratulate you," <<he>> starts as <<he>> turns to you. "You're lucky to carry a very unusual pregnancy. Instead of a human child, <span class="lewd">you're pregnant with
 				<<if _multiple>>
 					a... clutch of bird eggs.
@@ -1866,25 +1843,25 @@ You strip and lie down.
 			<<He>> swings the monitor to face you.
 			<br><br>
 
-			You see <<if _multiple>><<number _pregnancy.fetus.length>> hard outlines, each containing a pair of eyes, legs,<<if _type is "harpy">> arms,<</if>> and tiny wings.<<else>>a hard outline, containing a pair of eyes, legs,<<if _type is "harpy">> arms,<</if>> and tiny wings.<</if>> It's a little hard to make out because of the egg shell, but you manage to see more as the doctor moves the wand across your full belly. <<stress -5>><<lstress>>
+			You see <<if _multiple>><<number _litter.length>> hard outlines, each containing a pair of eyes, legs,<<if _type is "harpy">> arms,<</if>> and tiny wings.<<else>>a hard outline, containing a pair of eyes, legs,<<if _type is "harpy">> arms,<</if>> and tiny wings.<</if>> It's a little hard to make out because of the egg shell, but you manage to see more as the doctor moves the wand across your full belly. <<stress -5>><<lstress>>
 			<br><br>
 
-			<<if !_pregnancy.genderKnown>>
+			<<if !knowsGender(_litter[0].childId, "pc")>>
 				"Unfortunately, the hardening shell is making it nearly impossible to tell the gender. I suspect you won't have to wait too long to find out for yourself, though." <<He>> continues moving the wand, trying to get a better angle, but the picture is too small and distorted.
 				<br><br>
 			<</if>>
-			<<if _pregnancy.timer gte _pregnancy.timerEnd * 0.8>>
+			<<if pregnancyProgress(_pregnancy) gte 0.8>>
 				<<if ! _multiple>>
 					"Good news," <<he>> continues. "Your <<if _pregnancyGenital is "vagina">>oviduct is expanding, in preparation for the egg<<if _multiple>>s<</if>> to pass through.<<else>>egg<<if _multiple>>s are<<else>> is<</if>> starting to move in preparation for laying.<</if>>"
 				<</if>>
 				It'll be time to deliver soon. The doctor hands you some literature about labour and what to do when it begins. There's nothing in it about birds or eggs, though. "The laying process should be something you can do at home. However, don't hesitate to come see us if you have further questions."
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.6>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.6>>
 				You feel a low rumble from within yourself. "Based on these measurements," the technician says, "you'll be full term very soon. We think. It's very hard to tell with a... non-human pregnancy. Have you made birth plans yet? Make sure you're getting rest and nutrition."
 				<br><br>
-				You know you'll need rest. You think about where to keep them. A nest? <<if _pregnancy.fetus[0].father is "Great Hawk">>The castle's tower comes to mind.<</if>>
+				You know you'll need rest. You think about where to keep them. A nest? <<if _pregnancy.donor is "Great Hawk">>The castle's tower comes to mind.<</if>>
 				<br><br>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.4>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
 					"Your ba... eggs, are doing fine," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
@@ -1895,7 +1872,7 @@ You strip and lie down.
 					<<llstress>> <<stress -8>>
 					<br><br>
 				<</if>>
-			<<elseif _pregnancy.timer gte _pregnancy.timerEnd * 0.3>>
+			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 				<<if _multiple>>
 					"Your eggs are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
 					<br><br>
@@ -1930,7 +1907,7 @@ You thank Doctor Harper for the scan as <<he>> hands you a warm towel. You wipe 
    drive-home (it's a separate scene, not duplicated prose). */
 <<effects>>
 <<npc "Alex">>
-<<getChildrenIds>><<childSelect _childrenIds.last()>>
+<<childSelect getChildrenOf($recentBirthId).last().childId>>
 
 <<if $alexRescued>>
 	Alex taps <<his>> foot as <<he>> waits for you in the hospital foyer. <<He>> runs over to you, very nearly knocking you over. "Partner! I'm so glad you're alright. You know how to scare a farm<<nnpc_gendery "Alex">>."
@@ -2053,8 +2030,9 @@ A long and deafening silence fills the environment. Bailey keeps staring at you 
 <<loadNPC 0 "alexs_parent1">>
 <<npc "Alex" 2>><<person2>>
 
-<<run Object.values(V.children).filter(child => {
-	if (child.location === "home" && (child.father === "Alex" || child.mother === "Alex")) child.location = "alex_cottage";
+<<run getChildrenAt("home").forEach(child => {
+	const pregnancy = getPregnancyOf(child);
+	if (pregnancy.donor === "Alex" || pregnancy.carrier === "Alex") child.development.location = "alex_cottage";
 })>>
 
 Alex's <<father>> waves at you two.
