@@ -1,0 +1,262 @@
+:: Fishing Pier Swarm
+<<effects>>
+<<set $swarmType to ($rng gte 50 ? "eels" : "fish")>>
+Your line snaps taut. Something beneath the surface wrenches it with tremendous force, trying to drag you over the railing and into the water below.
+<br><br>
+
+<<link [[Let go|Fishing Pier Swarm Let Go]]>><</link>>
+<br>
+<<link [[Hold on|Fishing Pier Swarm Hold]]>><</link>><<athleticsdifficulty -100 600>>
+
+
+:: Fishing Pier Swarm Let Go
+<<effects>>
+<<handheldruined>>
+
+You let go of your fishing rod as it's pulled into the depths. <<gstress>><<stress 1>>
+<br><br>
+
+<<link [[Next|Mer Pier]]>><</link>>
+
+
+:: Fishing Pier Swarm Hold
+<<effects>>
+<<if $athleticsSuccess>>
+	You brace and wrench your rod <span class="green">free from whatever's pulling it</span> as the line goes slack.
+	<br><br>
+
+	<<link [[Next|Fishing Pier Wait]]>><</link>>
+<<else>>
+	<span class="red">You can't hold on.</span> The force wrenching your line drags you over the railing and into the water below.
+	<br><br>
+
+	You surface, spluttering.
+	<<if $swarmType is "eels">>
+		Something slick coils around your ankle.<<gstress>><<stress 6>>
+	<<else>>
+		Darting silver shapes surge around you, brushing against your legs and torso.<<gstress>><<stress 6>>
+	<</if>>
+	<br><br>
+
+	<<link [[Next|Fishing Pier Swarm Loop]]>><<set $molestationstart to 1>><</link>>
+<</if>>
+
+
+:: Fishing Pier Swarm Loop
+<<if $location isnot "sea">><<location "sea">><</if>>
+<<effects>>
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<molested>>
+	<<controlloss>>
+	<<set $combat to 1>>
+	<<set $enemytype to "swarm">>
+	<<swarminit $swarmType "swarm" "moving towards you" "encircle you" "fend off" 5 5>>
+	<<set $swimdistance to 7>>
+	<<set $water to 1>>
+	<<set $timer to 10>>
+	<<set $pierSwarmClimbCount to 0>>
+<</if>>
+<<rng>>
+<<swarmeffects>>
+<<swarm>>
+
+<<if $swimdistance gte 5>>
+	The barnacle-crusted piling is a short swim away, you could probably try to climb up it.
+<<elseif $swimdistance gte 3>>
+	The pier piling is a short swim away.
+<<elseif $swimdistance gte 0>>
+	The piling is within reach!
+<</if>>
+
+<<if ["idle", "bet"].includes($daily.fishing.fishingPier.whitney.phase)>>
+	<br>
+	Whitney and <<nnpc_his "Whitney">> friends are clustered at the railing above, their laughter carrying over the water.<<if $rng gte 80>> An empty cider can arcs down and cracks off your head.<<gpain>><<pain 4>><</if>>
+<</if>>
+<<if $daily.fishing.fishingPier.fisher.phase is "fishing">>
+	<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+	<br>
+	<<if !$daily.fishing.fishingPier.fisher.noticeSwarm>>
+		<<if $rng gte (20 - $timer * 2) * 2>>
+			<<set $daily.fishing.fishingPier.fisher.noticeSwarm to true>>
+			The <<person1>><<person>> spins at the commotion, drops <<his>> rod, and sprints to the railing, crouching down with <<his>> arm outstretched toward you.
+		<<else>>
+			The <<person1>><<person>> continues to fish further down the pier, unaware of your struggle below.
+		<</if>>
+	<<else>>
+		<<if $swimdistance gte 5>>
+			The <<person1>><<person>> is hanging over the railing above, arm outstretched, shouting something you can't hear over the churn of the water.
+		<<elseif $swimdistance gte 2>>
+			The <<person1>><<person>> is hanging over the railing above, arm straining toward you.
+		<<else>>
+			The <<person1>><<person>> is leaning as far as <<he>> can over the railing, fingers nearly reaching yours.
+		<</if>>
+	<</if>>
+<</if>>
+
+<<swarmactions>>
+
+<<if $stress gte $stressmax>>
+	<span id="next"><<link [[Next|Fishing Pier Swarm Finish]]>><</link>></span>
+<<elseif $timer lte 0>>
+	<span id="next"><<link [[Next|Fishing Pier Swarm Finish]]>><</link>></span>
+<<elseif $swimdistance lte 0>>
+	<span id="next"><<link [[Next|Fishing Pier Swarm Reach]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Fishing Pier Swarm Loop]]>><</link>></span>
+<</if>>
+
+
+:: Fishing Pier Swarm Reach
+<<effects>>
+<<if $pierSwarmClimbCount is 0>>
+	Your fingers close around the cold, barnacled piling.
+<<elseif $pierSwarmClimbCount is 1>>
+	You haul yourself back through the water and grab the piling again, knuckles white.
+<<elseif $pierSwarmClimbCount is 2>>
+	Gasping, you drag yourself back to the piling again.
+<<elseif $pierSwarmClimbCount is 3>>
+	Barely keeping your head above the surface, you claw your way back to the piling.
+<<else>>
+	Trembling with exhaustion, you manage to reach the piling one more time.
+<</if>>
+<<if $swarm.amount.genital[1] gt 0 or $swarm.amount.butt[1] gt 0>>
+	The $swarm.type writhe around your legs and inside of you, but the pole is solid beneath your fingers.
+<<else>>
+	The $swarm.type writhe around your legs as you tread water, but the pole is solid beneath your fingers.
+<</if>>
+<br><br>
+
+<<if $daily.fishing.fishingPier.fisher.phase is "fishing" and $daily.fishing.fishingPier.fisher.noticeSwarm>>
+	<<unset $swarmType>>
+	<<person1>>
+	<<He>> lunges further over the railing as you reach the piling, fingers nearly brushing yours. You grab <<his>> wrist and <<He>> hauls you up through the $swarm.type, dragging you clear of the water.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+	<<link [[Thank <<him>>|Fishing Pier Fisher Saved From Water]]>><<endevent>><</link>>
+	<br>
+	<<link [[Tell <<him>> you didn't need help|Sea Docks Fisher No Help]]>><<endevent>><</link>>
+<<else>>
+	/* This check gets intentionally easier the more you fail */
+	<<set _climbMin to Math.max(100, 300 - $pierSwarmClimbCount * 40)>>
+	<<set _climbMax to Math.max(300, 700 - $pierSwarmClimbCount * 80)>>
+	<<link [[Haul yourself up|Fishing Pier Swarm Climb]]>><</link>><<athleticsdifficulty _climbMin _climbMax>>
+<</if>>
+
+
+:: Fishing Pier Swarm Climb
+<<effects>>
+<<if $athleticsSuccess>>
+	<<unset $swarmType>>
+	<span class="green">Your arms burn, but you drag yourself up hand over hand</span>, collapsing onto the planks above with a gasp. The $swarm.type churn the water below for a moment before dispersing.
+	<br><br>
+	<<if ["idle", "bet"].includes($daily.fishing.fishingPier.whitney.phase) and $whitneyromance isnot 1 and $rng lte 30>>
+		Just as you hoist yourself above the railing, Whitney's foot connects with your face and shoves you back into the water.<<gpain>><<pain 4>>
+		<br><br>
+		Whitney doubles over laughing, then waves <<nnpc_his "Whitney">> friends away from the railing. They file down the pier, jeering at you as they go.<<gstress>><<stress 4>>
+		<br><br>
+		<<set $daily.fishing.fishingPier.whitney.phase to "finished">>
+
+		/* When you re-enter combat, the actions you had selected are repeated as though another loop had happened. This essentially results in the fish getting an extra turn, but we need to account for any amount of swimming is done automatically when you re-enter combat. */
+		<<if $leftactiondefault is "swim" and $rightactiondefault is "swim">>
+			<<set $swimdistance to 4>>
+		<<elseif $leftactiondefault is "swim" or $rightactiondefault is "swim">>
+			<<set $swimdistance to 3>>
+		<<else>>
+			<<set $swimdistance to 2>>
+		<</if>>
+		<<if $pierSwarmClimbCount lt 4>><<set $pierSwarmClimbCount += 1>><</if>>
+		<<link [[Next|Fishing Pier Swarm Loop]]>><</link>>
+	<<else>>
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Next|Fishing Pier Wait]]>><</link>>
+	<</if>>
+<<else>>
+	<<if $pierSwarmClimbCount is 0>>
+		<span class="red">Your grip slips on the wet piling</span> and you drop back into the water with a splash. The $swarm.type close in again.<<gstress>><<stress 4>>
+	<<elseif $pierSwarmClimbCount is 1>>
+		Your grip slips <span class="red">again</span> and you plunge back into the water. The $swarm.type are on you instantly.<<gstress>><<stress 6>>
+	<<elseif $pierSwarmClimbCount is 2>>
+		<span class="red">Your arms give out</span> and you crash back into the water, panic rising in your chest. The $swarm.type surge around you.<<ggstress>><<stress 8>>
+	<<else>>
+		Your vision tunnels as you try to hoist yourself up, reaching one hand over another... but your grip <span class="red">fails completely</span> as you fall back into the cold water with a sobbing cry.<<ggstress>><<stress 10>><<gtrauma>><<trauma 4>>
+	<</if>>
+	<br><br>
+
+	/* When you re-enter combat, the actions you had selected are repeated as though another loop had happened. This essentially results in the fish getting an extra turn, but we need to account for any amount of swimming is done automatically when you re-enter combat. */
+	<<if $leftactiondefault is "swim" and $rightactiondefault is "swim">>
+		<<set $swimdistance to 4>>
+	<<elseif $leftactiondefault is "swim" or $rightactiondefault is "swim">>
+		<<set $swimdistance to 3>>
+	<<else>>
+		<<set $swimdistance to 2>>
+	<</if>>
+	<<if $pierSwarmClimbCount lt 4>><<set $pierSwarmClimbCount += 1>><</if>>
+	<<link [[Next|Fishing Pier Swarm Loop]]>><</link>>
+<</if>>
+
+
+:: Fishing Pier Swarm Finish
+<<effects>>
+<<unset $swarmType>>
+<<if $stress gte $stressmax>>
+	It's too much for you. You pass out.
+	<br><br>
+	<<if $upperoff isnot 0>>
+		<<upperruined>>
+	<</if>>
+	<<if $loweroff isnot 0>>
+		<<lowerruined>>
+	<</if>>
+	<<if $underloweroff isnot 0>>
+		<<underlowerruined>>
+	<</if>>
+	<<if $underupperoff isnot 0>>
+		<<underupperruined>>
+	<</if>>
+	<<endcombat>>
+	<<unset $pierSwarmClimbCount>>
+	<<passoutsea>>
+<<else>>
+	The $swarm.type eventually scatter, leaving you treading water alone beneath the pier.
+	<br><br>
+	<<tearful>> you tread water.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<unset $pierSwarmClimbCount>>
+	<<link [[Climb up the piling|Fishing Pier Swarm Climb Out]]>><</link>><<athleticsdifficulty 200 600>>
+<</if>>
+
+
+:: Fishing Pier Swarm Climb Out
+<<unset $swarmType>>
+<<effects>>
+<<if $athleticsSuccess>>
+	You wrap your arms around the barnacled piling, and <span class="green">adrenaline driving you up hand over hand</span>. Eventually, you drag yourself over the railing and collapse onto the planks, chest heaving.
+	<br><br>
+	<<link [[Next|Fishing Pier Wait]]>><</link>>
+<<else>>
+	You wrap your arms around the piling, but as you try to pull yourself up <span class="red">your grip slips on the wet wood</span> and you drop back into the cold water with a gasp. Thankfully, nothing assaults you for now.
+	<br><br>
+	<<link [[Next|Fishing Pier Wait]]>><<set $eventskip to 1>><</link>>
+<</if>>
+
+:: Sea Docks Fisher No Help
+<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+<<effects>>
+<<if $speech_attitude is "bratty">>
+	"I had it under control," you say.
+<<else>>
+	"I would've managed," you say.
+<</if>>
+<br><br>
+
+The <<personsimple>> snorts. "Sure you would." <<He>> turns back to <<his>> line.
+<br><br>
+
+<<link [[Next|Fishing Pier Wait]]>><</link>>

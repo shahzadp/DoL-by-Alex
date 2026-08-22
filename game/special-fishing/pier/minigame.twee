@@ -1,0 +1,86 @@
+:: Fishing Pier Minigame Loop
+<<effects>>
+<<set _fishingMinigameState to fishingMinigameState()>>
+<<if _fishingMinigameState is "start">>
+	<<fishingMinigameStartText>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+	<<fishingPierMinigameLinks>>
+
+<<elseif _fishingMinigameState is "caught">>
+	<<onFishCaught>>
+	<<fishingCatchFishText $fishingHookedFish>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi 0 "caught">>
+	<<run fishingMinigameEnd()>>
+	<br><br>
+
+	<<include "Fishing Pier Catch">>
+<<elseif _fishingMinigameState is "fighting">>
+	<<wearActiveFishingRodProp>>
+	<<fishingMinigameTurnResult>>
+	<br>
+	<<fishingMinigameArmFatigue>>
+	<br><br>
+
+	<<debugFishingMinigameInfo>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+
+	<<fishingPierMinigameLinks>>
+<<elseif _fishingMinigameState is "fishTooFar">>
+	<<if $rng gte 80>>
+		<<include "Fishing Pier Pulled In">>
+	<<else>>
+		<<include "Fishing Pier Fish Too Far">>
+	<</if>>
+<<elseif _fishingMinigameState is "lineSnapped">>
+	<<include "Fishing Pier Snapped">>
+<<else>>
+	<<error { message: "Fishing Pier Minigame Loop: unexpected outcome \"" + _fishingMinigameState + "\"" }>>
+<</if>>
+
+:: Widgets Fishing Pier Minigame [widget]
+<<widget "fishingPierMinigameLinks">>
+	<<if $fishingMinigame.fishAction === "run" or $fishingMinigame.fishAction === "thrash">>
+		<<link [[Reel in|Fishing Pier Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "reel">>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>><<fishingMinigameAthleticsCheck "reel">>
+		<br>
+		<<link [[Hold the line|Fishing Pier Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "hold">>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>><<fishingMinigameAthleticsCheck "hold">>
+	<<else>>
+		<<link [[Reel in|Fishing Pier Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>>
+		<br>
+		<<link [[Hold the line|Fishing Pier Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>>
+	<</if>>
+	<br>
+	<<link [[Put slack on the line|Fishing Pier Minigame Loop]]>>
+		<<run fishingMinigameResolveTurn("slack")>>
+	<</link>>
+	<br>
+	<<link [[Cut the line|Fishing Pier Cut]]>><</link>>
+
+	<<if V.debug === 1>>
+		<br><br>
+		Debug
+		<br>
+		<<link [[Line snapped|Fishing Pier Snapped]]>><</link>>
+		<br>
+		<<link [[Fish off hook|Fishing Pier Fish Too Far]]>><</link>>
+		<br>
+		<<link [[Pulled in|Fishing Pier Pulled In]]>><</link>>
+	<</if>>
+<</widget>>

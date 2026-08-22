@@ -1,0 +1,2109 @@
+:: Widgets Fishing [widget]
+<<widget "fishingLocationDescription">>
+	<<set _fishingLocation to _args[0]>>
+
+	<<if Weather.fog gte 0.3>>
+		<<switch _fishingLocation>>
+			<<case "fishingPier">>
+				<<set _fishingLocationText to "The pier boards creak softly beneath your feet, half-lost in fog">>
+			<<case "fishingBeach">>
+				<<set _fishingLocationText to "Foam slides in and out along the shoreline, blurred by fog">>
+			<<case "fishingForestLake">>
+				<<set _fishingLocationText to "Fog sits low across the water.">>
+			<<case "fishingCoastPath">>
+				<<set _fishingLocationText to "Waves crash against rocks hidden by fog">>
+			<<case "fishingMoor">>
+				<<set _fishingLocationText to "Dark pools sit between roots and reeds in thick fog">>
+			<<default>>
+				<<error { message: "fishingLocationDescription: unhandled location: " + _fishingLocation }>>
+		<</switch>>
+	<<else>>
+		<<switch _fishingLocation>>
+			<<case "fishingPier">>
+				<<set _fishingLocationText to "The boards of the pier creak softly beneath your feet">>
+			<<case "fishingBeach">>
+				<<set _fishingLocationText to "Foam slides in and out along the shoreline">>
+			<<case "fishingForestLake">>
+				<<set _fishingLocationText to "Small waves shiver across the surface">>
+			<<case "fishingCoastPath">>
+				<<set _fishingLocationText to "Waves crash against the rocks nearby">>
+			<<case "fishingMoor">>
+				<<set _fishingLocationText to "Dark pools stir between roots and reeds">>
+			<<default>>
+				<<error { message: "fishingLocationDescription: unhandled location: " + _fishingLocation }>>
+		<</switch>>
+	<</if>>
+
+	<<switch Weather.dayState>>
+		<<case "dawn">>
+			<<if ["heavyPrecipitation", "storm", "thunderstorm", "heavyClouds"].includes(Weather.name) or Weather.fog gte 0.3>>
+				<<set _fishingTimeText to "dim orange light breaks over the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<<else>>
+				<<set _fishingTimeText to "dawn light spreads over the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<</if>>
+		<<case "day">>
+			<<if ["heavyPrecipitation", "storm", "thunderstorm", "heavyClouds"].includes(Weather.name) or Weather.fog gte 0.3>>
+				<<set _fishingTimeText to "the sun is hidden above the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<<else>>
+				<<set _fishingTimeText to "daylight spreads across the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<</if>>
+		<<case "dusk">>
+			<<if ["heavyPrecipitation", "storm", "thunderstorm", "heavyClouds"].includes(Weather.name) or Weather.fog gte 0.3>>
+				<<set _fishingTimeText to "dusk settles over the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<<else>>
+				<<set _fishingTimeText to "shadows fall across the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<</if>>
+		<<case "night">>
+			<<if Time.isBloodMoon()>>
+				<<set _fishingTimeText to "red light falls across the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<<elseif ["heavyPrecipitation", "storm", "thunderstorm", "heavyClouds"].includes(Weather.name) or Weather.fog gte 0.3>>
+				<<set _fishingTimeText to "the moon is hidden above the " + fishingLocationWaterBodyName(_fishingLocation)>>
+			<<else>>
+				<<set _fishingTimeText to "night settles in and the " + fishingLocationWaterBodyName(_fishingLocation) + " darkens">>
+			<</if>>
+		<<default>>
+			<<error { message: "fishingLocationDescription: unhandled Weather.dayState: " + Weather.dayState }>>
+	<</switch>>
+
+	<<switch Weather.name>>
+		<<case "clear">>
+			<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+				<<set _fishingWeatherText to "The air is clear over the shore.">>
+			<<elseif _fishingLocation is "fishingForestLake">>
+				<<set _fishingWeatherText to "Clear air filters through the canopy.">>
+			<<elseif _fishingLocation is "fishingMoor">>
+				<<set _fishingWeatherText to "Clear air hangs over the reeds and peat.">>
+			<</if>>
+		<<case "lightClouds">>
+			<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+				<<set _fishingWeatherText to "Thin clouds drift above the shoreline.">>
+			<<elseif _fishingLocation is "fishingForestLake">>
+				<<set _fishingWeatherText to "Thin clouds pass above the treetops.">>
+			<<elseif _fishingLocation is "fishingMoor">>
+				<<set _fishingWeatherText to "Thin clouds pass above the moor.">>
+			<</if>>
+		<<case "heavyClouds">>
+			<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+				<<set _fishingWeatherText to "Heavy cloud cover darkens the shore.">>
+			<<elseif _fishingLocation is "fishingForestLake">>
+				<<set _fishingWeatherText to "Heavy cloud cover darkens the forest.">>
+			<<elseif _fishingLocation is "fishingMoor">>
+				<<set _fishingWeatherText to "Heavy clouds hang low above the reeds.">>
+			<</if>>
+		<<case "lightPrecipitation">>
+			<<if Weather.precipitation is "rain">>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Light rain taps along the shore.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Light rain taps through leaves.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Light rain spots the peat.">>
+				<</if>>
+			<<else>>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Light snow drifts along the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Light snow filters through branches and leaves.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Light snow catches in the heather.">>
+				<</if>>
+			<</if>>
+		<<case "heavyPrecipitation">>
+			<<if Weather.precipitation is "rain">>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Rain falls hard enough to blur the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Heavy rain drums through leaves.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Heavy rain lashes the reeds and peat.">>
+				<</if>>
+			<<else>>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Snow falls hard enough to blur the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Heavy snow falls between trunks and reeds.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Snow falls hard across the heather and peat.">>
+				<</if>>
+			<</if>>
+		<<case "storm">>
+			<<if Weather.precipitation is "rain">>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Wind and rain batter the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Wind shakes the branches as rain falls through the canopy.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Wind and rain sweep hard through the reeds.">>
+				<</if>>
+			<<else>>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Wind and snow whip along the shore.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Wind shakes the treetops and drives snow through the branches.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Wind and snow tear through the reeds.">>
+				<</if>>
+			<</if>>
+		<<case "thunderstorm">>
+			<<if Weather.precipitation is "rain">>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Wind and rain lash the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Wind shakes the trees as rain falls through the canopy.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Wind and rain lash the reeds and wet ground.">>
+				<</if>>
+			<<else>>
+				<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+					<<set _fishingWeatherText to "Wind and snow lash the shoreline.">>
+				<<elseif _fishingLocation is "fishingForestLake">>
+					<<set _fishingWeatherText to "Wind shakes the treetops as snow sweeps through the branches.">>
+				<<elseif _fishingLocation is "fishingMoor">>
+					<<set _fishingWeatherText to "Wind and snow drive across the reeds and peat.">>
+				<</if>>
+			<</if>>
+		<<default>>
+			<<error { message: "fishingLocationDescription: unhandled Weather.name: " + Weather.name }>>
+	<</switch>>
+
+	<<= _fishingLocationText + " as " + _fishingTimeText + ". " + _fishingWeatherText>>
+<</widget>>
+
+<<widget "fishingLocationPopulation">>
+	<<set _firstView to $daily.fishing[_args[0]]?.fishPopulation is undefined>>
+	<<run rollFishPopulation(_args[0])>>
+
+	<<if $daily.fishing[_args[0]]?.fishPopulation is "teeming">>
+		<<if _firstView>><span class="green">Fish are jumping all over the place today.</span><<else>>Fish are jumping all over the place today.<</if>>
+	<<elseif $daily.fishing[_args[0]]?.fishPopulation is "quiet">>
+		<<if _firstView>><span class="red">The water looks quiet today, not many fish about.</span><<else>>The water looks quiet today, not many fish about.<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingCatchFishText">>
+	<<set _fish to _args[0]>>
+	<<set _fishingRecordEntry to $fishing.record[_fish.type]>>
+	<<set _isBiggest to _fish.size is _fishingRecordEntry.largest>>
+
+	You swing the _fish.type out of the water.
+
+	<<if _isBiggest>><span class="green">_fish.size cm.</span><<else>>_fish.size cm.<</if>>
+	<<if _fishingRecordEntry.numCaught is 1>>
+		(The first _fish.type you've ever caught!)<<lstress>><<stress -10>>
+	<<elseif _isBiggest>>
+		(The biggest _fish.type you've ever caught!)<<lstress>><<stress -5>>
+	<<elseif not _skipCatchModifier>>
+		<<if $rng gte 94 and $world_corruption_soft gte 40>>
+			The _fish.type hangs limp on the hook, eyes clouded and grey. It looks like it's been dead for a while, but that doesn't make sense.<<gstress>><<stress 4>>
+		<<elseif $rng gte 91>>
+			The _fish.type thrashes wildly as you lift it up, whipping water all over you.<<wetUpper 80>><<gstress>><<stress 3>>
+		<<elseif $rng gte 87 and $world_corruption_soft gte 40>>
+			Something's wrong with this _fish.type. Its scales grow in uneven spirals, and pale growths cluster along its spine.<<gstress>><<stress 4>>
+		<<elseif $rng gte 80 and Time.isBloodMoon()>>
+			The _fish.type has too many eyes, and they all fix on you at once, reflecting the red light of the moon.<<ggstress>><<stress 8>>
+		<<else>>
+			<<lstress>><<stress -2>>
+		<</if>>
+	<<else>>
+		<<lstress>><<stress -2>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingEatFishTfProgress">>
+	<<if not $daily.fishing.eatenFishTf>>
+		<<set _fishEatTf to highestFishEatingTf()>>
+		<<transform _fishEatTf 1>>
+		<<set $daily.fishing.eatenFishTf to true>>
+	<</if>>
+<</widget>>
+
+<<widget "fishEatingTf">>
+	<<switch highestFishEatingTf()>>
+		<<case "fox">><<fox>>
+		<<case "bird">><<harpy>>
+		<<case "cat">><<cat>>
+	<</switch>>
+<</widget>>
+
+<<widget "fishingBob">>
+	<<print either("float", "bob")>>
+<</widget>>
+
+<<widget "fishingRipples">>
+	<<print either("ripples", "swirls", "eddies")>>
+<</widget>>
+
+
+<<widget "fishingWaitAmbient">>
+	<<set _fishingLocation to _args[0]>>
+
+	<<set _fishingRecentBadEndSource to $badEndStats.last()?.source>>
+	<<set _fishingWearingUpper to !$worn.over_upper.type.includes("naked") or !$worn.upper.type.includes("naked") or !$worn.under_upper.type.includes("naked")>>
+	<<set _fishingWearingFootwear to !$worn.feet.type.includes("naked")>>
+	<<set _fishingWearingClothes to _fishingWearingUpper or !$worn.over_lower.type.includes("naked") or !$worn.lower.type.includes("naked") or !$worn.under_lower.type.includes("naked")>>
+
+/*
+* ========== GENERIC ==========
+*/
+
+	<<addinlineevent 3>>
+		You <<print either("roll", "loosen")>> your shoulders and settle back into place.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You watch as slow <<fishingRipples>> move past your line.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You breathe out and keep your <<print either("attention", "eyes")>> on your line.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You watch for any <<print either("movement", "disturbance")>> on the surface of the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You keep your line <<print either("straight", "taut")>> and wait.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You adjust your stance and <<print either("set your feet", "settle your footing")>>.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You watch tiny <<fishingRipples>> spread and disappear.
+	<</addinlineevent>>
+	<<addinlineevent 1>>
+		You keep still and listen to the water.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You notice your line catching the light as it angles into the water.
+	<</addinlineevent>>
+
+	<<if $fishing.currentBait is undefined>>
+		<<addinlineevent 10>>
+			You wonder if you should be using bait.
+		<</addinlineevent>>
+		<<addinlineevent 15>>
+			You watch a fish swim past your empty hook.
+		<</addinlineevent>>
+	<</if>>
+
+	<<set _fishingSurfacingFish to fishingSurfacingFish(_fishingLocation)>>
+	<<if _fishingSurfacingFish.length gt 0>>
+		<<addinlineevent 10>>
+			<<set _fishingSurfacer to _fishingSurfacingFish.random()>>
+			You see <<a _fishingSurfacer>> break the surface for a moment.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<addinlineevent 3>>
+		Your hook hasn't attracted anything yet.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You watch your <<fishingBob>> rise and fall on the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You watch for any <<print either("twitching", "movement")>> on your line.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		A ripple passes by your line, but nothing bites.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You shift your weight and keep your rod <<print either("level", "steady")>>.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You <<print either("steady", "settle")>> your rod and wait.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You <<print either("reposition", "resettle")>> your hands on your rod.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You <<print either("shift", "adjust")>> your grip and keep your rod steady.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		Water drips from your line as you <<print either("shift", "lift")>> your rod.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You wind the reel <<print either("slightly", "a little")>> to take up some slack.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You shift your rod to ease the strain on your shoulders.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You keep your eyes on your <<fishingBob>> and watch for <<print either("any movement", "the slightest twitch")>>.
+	<</addinlineevent>>
+	<<addinlineevent 3>>
+		You test the tension of your line with a small lift of your rod.
+	<</addinlineevent>>
+
+	/* Cloudy */
+	<<if ["lightClouds", "heavyClouds"].includes(Weather.name)>>
+		<<addinlineevent 1>>
+			The shadows of clouds drift across the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+		<<if Weather.dayState is "day" and Weather.temperature lte 5>>
+			<<addinlineevent 1>>
+				The clouds part and sunlight warms you for a moment.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Raining */
+	<<if Weather.precipitation is "rain">>
+		<<addinlineevent 4>>
+			You watch as the raindrops make your <<fishingBob>> dance in the water.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> rain <<print either("patter", "drum")>> across the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> rain pepper the <<= fishingLocationWaterBodyName(_fishingLocation)>> surface.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You listen as steady rain dulls the sounds around you.
+		<</addinlineevent>>
+
+		<<if ["storm", "thunderstorm", "heavyPrecipitation"].includes(Weather.name)>>
+			<<addinlineevent 1>>
+				You squint through heavy rain.
+			<</addinlineevent>>
+
+			<<if $world_corruption_soft gt 70>>
+				<<addinlineevent 3>>
+					Wind and rain lash at you with hateful force, stinging your skin.<<gpain>><<pain 4>>
+				<</addinlineevent>>
+				<<addinlineevent 3>>
+					Hateful rain lashes your face as the wind shoves you toward the water's edge.<<gpain>><<pain 4>>
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+	<</if>>
+
+	/* No rain or snow */
+	<<if Weather.precipitation is "none">>
+		<<addinlineevent 2>>
+			A <<print either("gust", "breeze")>> catches your line, you adjust your rod to compensate.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			The wind tugs at the tip of your rod. You tighten your grip.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			The wind picks up for a moment, sending small <<fishingRipples>> running across the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You watch as your <<fishingBob>> drifts with the wind.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			The breeze stiffens, bowing your line.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			The wind shifts direction and carries the smell of the <<= fishingLocationWaterBodyName(_fishingLocation)>> to you.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Foggy */
+	<<if Weather.fog gte 0.3 and Weather.fog lt 0.8>>
+		<<addinlineevent 1>>
+			Fog drifts low across the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Distant shapes fade into the fog.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			Shapes beyond your line blur in the fog.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Weather.fog gte 0.8>>
+		<<addinlineevent 2>>
+			You can barely make out anything beyond your line in the fog.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Sound carries strangely through the thick fog.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Shapes in the fog blur and vanish when you try to focus on them.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Lightning */
+	<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+		<<addinlineevent 1>>
+			Lightning flickers across the sky.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			A flash of lightning turns the water silver for a moment.
+		<</addinlineevent>>
+
+		/* Dawn */
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				Thunder rolls across the shoreline in the pale dawn.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if Weather.dayState is "dusk">>
+			<<addinlineevent 1>>
+				Thunder booms across the water as evening closes in.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Thunder carries over the water as the sky darkens.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Lightning cuts through the darkening clouds over the water.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if Weather.dayState is "night">>
+			<<addinlineevent 1>>
+				Thunder shakes the night air and then fades back into rain.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Thunder rolls across the dark water.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Snow */
+	<<if Weather.precipitation is "snow">>
+		<<addinlineevent 3>>
+			A snowflake lands on the tip of your rod, then melts away.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You watch snowflakes drift into the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+
+		<<if ["storm", "thunderstorm", "heavyPrecipitation"].includes(Weather.name)>>
+			<<addinlineevent 1>>
+				You almost lose your footing against the harsh wind.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				The <<= fishingLocationWaterBodyName(_fishingLocation)>> churns as the <<= Weather.name>> crashes down.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if ["storm", "thunderstorm"].includes(Weather.name)>>
+			<<addinlineevent 1>>
+				The <<= Weather.name>> rages above.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Dawn */
+	<<if Weather.dayState is "dawn" and Weather.precipitation === "none">>
+		<<addinlineevent 1>>
+			You watch first light spread across the <<= fishingLocationWaterBodyName(_fishingLocation)>>.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Day / Dawn / Dusk */
+	<<if ["dawn", "day", "dusk"].includes(Weather.dayState) and Weather.precipitation === "none">>
+		<<addinlineevent 2>>
+			You squint as sunlight reflects off the water.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Dusk */
+	<<if Weather.dayState is "dusk">>
+		<<addinlineevent 1>>
+			It's getting dark.
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Weather.dayState isnot "night">>
+		<<addinlineevent 1>>
+			You watch birds circle overhead.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			A shadow passes over the water as birds cross above you.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Cold Weather */
+	<<if Weather.temperature lte 5>>
+		<<if !["disabled", "hidden"].includes($transformationParts.angel.wings)
+			or !["disabled", "hidden"].includes($transformationParts.fallenAngel.wings)
+			or !["disabled", "hidden"].includes($transformationParts.demon.wings)
+			or !["disabled", "hidden"].includes($transformationParts.bird.wings)>>
+			<<addinlineevent 4>>
+				You wrap your wings around yourself to keep warm.
+			<</addinlineevent>>
+		<</if>>
+
+		<<addinlineevent 3>>
+			The cold air leaves your hands stiff gripping your rod.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			Your fingers feel stiff in the cold, wrapped around your rod.
+		<</addinlineevent>>
+
+		<<addinlineevent 1>>
+			You <<print either("huff", "breathe")>> into your hands, trying to keep warm.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Cold air makes each breath feel <<print either("sharp", "raw")>>.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You feel cold.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Your hands are cold.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shiver in the cold.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You exhale and watch your breath <<print either("mist", "cloud")>> away.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You pull your shoulders in against the cold.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Cold air <<print either("bites", "nips")>> at your cheeks.
+		<</addinlineevent>>
+	<</if>>
+
+	/*
+	* ========== INSECTS ==========
+	*/
+
+	<<if ["fishingForestLake", "fishingMoor"].includes(_fishingLocation) and Time.season is not "winter">>
+		<<addinlineevent 2>>
+			A fly <<print either("buzzes", "drones")>> past your ear and circles back again. You wave it away.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You slap at an insect biting the back of your neck.<<gpain>><<pain 1>>
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			A cloud of midges drifts into your face. You wave them off and try to focus on your line.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			A small insect crawls across the back of your hand. You shake it off with a flick.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You <<print either("listen to", "hear")>> the <<print either("humming", "droning")>> of insects in the brush.
+		<</addinlineevent>>
+	<</if>>
+
+	/*
+	* ========== FOREST ==========
+	* (split out from lake since a river location might be added in the future)
+	*/
+	<<if _fishingLocation is "fishingForestLake">>
+
+		/* Generic */
+		<<addinlineevent 1>>
+			You watch gentle <<fishingRipples>> spread from the shore.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> small waves lap the bank.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch as a patch of reeds drifts along the bank.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch a ring of ripples widen and fade.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You idly <<print either("glance", "look")>> up and down the shoreline.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			You watch the <<fishingBob>> dip with each small chop.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shift your footing at the water's edge.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			The underbrush rustles around you.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> the <<print either("breeze", "wind")>> move through the trees.
+		<</addinlineevent>>
+
+		<<if !["disabled", "hidden"].includes($transformationParts.wolf.ears)>>
+			<<addinlineevent 1>>
+				You tilt your head and listen for distant howling.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Foggy */
+		<<if Weather.fog gte 0.3>>
+			<<addinlineevent 1>>
+				You watch fog move between the trees along the water's edge.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if Weather.fog gte 0.8>>
+			<<addinlineevent 1>>
+				Dense fog swallows the far bank.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Snow */
+		<<if V.weatherObj.snow > 450>>
+			<<addinlineevent 1>>
+				You hear a clump of snow fall from a tree.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Dawn */
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				Birdsong rises through the trees as morning starts.<<lstress>><<stress -1>>
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				A distant deer call carries softly through the woods.<<lstress>><<stress -1>>
+			<</addinlineevent>>
+		<</if>>
+
+		/* Day */
+		<<if Weather.dayState is "day">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> birds rustling in the trees.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You hear birds fluttering in the branches above you.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You hear a woodpecker tapping in the trees.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Dusk */
+		<<if Weather.dayState is "dusk">>
+			<<addinlineevent 1>>
+				Birds fall quiet one by one as the woods darken.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Night */
+		<<if Weather.dayState is "night">>
+			<<addinlineevent 1>>
+				An owl calls from somewhere in the trees.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> frogs calling from somewhere near the water.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if Weather.dayState isnot "night">>
+			<<addinlineevent 1>>
+				You hear something small scuttle through the undergrowth.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				A crow calls once from the trees, then goes quiet.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== LAKE ==========
+	*/
+	<<if _fishingLocation is "fishingForestLake">>
+
+		/* Foggy */
+		<<if Weather.fog gte 0.3>>
+			<<addinlineevent 1>>
+				You struggle to see the other side of the lake in the fog.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Lightning */
+		<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				Lightning rips through the low clouds above the lake.
+			<</addinlineevent>>
+
+			<<addinlineevent 1>>
+				Lightning flashes over the lake and in the trees.
+			<</addinlineevent>>
+
+			/* Night */
+			<<if Weather.dayState is "night">>
+				<<addinlineevent 1>>
+					Lightning makes the whole lakeshore flash into view.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Day */
+		<<if Weather.dayState is "day" and ["clear", "lightClouds"].includes(Weather.name) and Weather.fog lte 0.5>>
+			<<addinlineevent 1>>
+				You squint as sunlight glints off the lake.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== OCEAN ==========
+	*/
+	<<if ["fishingPier", "fishingBeach", "fishingCoastPath"].includes(_fishingLocation)>>
+		/* Generic */
+		<<addinlineevent 1>>
+			You breathe in the <<print either("sharp", "crisp")>> sea air.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You smell the salt in the air.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You brush salt spray from your face.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> the tide <<print either("pull", "drag")>> against the shore.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+
+		/* Foggy */
+		<<if Weather.fog gte 0.3>>
+			<<if Weather.dayState isnot "night">>
+				<<addinlineevent 1>>
+					Through the fog, you think you see dolphins moving out on the water.<<stress -1>><<lstress>>
+				<</addinlineevent>>
+			<</if>>
+
+			<<if Weather.fog lte 0.5 and Weather.dayState isnot "night">>
+				<<addinlineevent 1>>
+					You see dolphins swimming in the distance.<<stress -1>><<lstress>>
+				<</addinlineevent>>
+			<</if>>
+
+			<<if Weather.fog lte 0.8>>
+				<<addinlineevent 1>>
+					You watch a distant swell roll in.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					You watch a lone wave break farther from the shore.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					You idly <<print either("scan", "search")>> the horizon for boats.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Hot */
+		<<if Weather.temperature gte 20>>
+			<<addinlineevent 1>>
+				You breathe in the warm sea air.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Cold */
+		<<if Weather.temperature lte 5>>
+			<<addinlineevent 1>>
+				You breathe in the cold sea air.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Cold air and ocean spray bite at your cheeks.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Dawn */
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				You watch the sunrise.<<stress -1>><<lstress>>
+			<</addinlineevent>>
+		<</if>>
+
+		/* Day */
+		<<if Weather.dayState is "day">>
+			<<if ["clear", "lightClouds"].includes(Weather.name)>>
+				<<addinlineevent 1>>
+					You squint at the bright glare off the water near the shore.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Night */
+		<<if Weather.dayState is "night">>
+			<<if ["clear", "lightClouds"].includes(Weather.name)>>
+				<<addinlineevent 1>>
+					You pick out a few bright stars between drifting clouds.
+				<</addinlineevent>>
+			<</if>>
+
+			<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+				<<addinlineevent 1>>
+					Flashes of lightning briefly reveal open ocean.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		<<if Weather.dayState isnot "night">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> gulls <<print either("circling", "wheeling")>> overhead.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== BEACH ==========
+	*/
+	<<if _fishingLocation is "fishingBeach">>
+		/* Generic */
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> waves <<print either("folding", "breaking")>> onto the sand.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch a wave pull shells out to sea.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch a crab <<print either("scuttle", "skitter")>> along the sand.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shift your footing on the wet sand.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch the waves <<print either("drag", "pull")>> seaweed along the shore.
+		<</addinlineevent>>
+
+		/* Raining */
+		<<if Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> the rain hiss across the wet sand.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Lightning */
+		<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+			/* Day */
+			<<if Weather.dayState is "day">>
+				<<addinlineevent 1>>
+					Lightning snaps over the sea and lights up the wet sand.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder rumbles across the open beach.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Dusk */
+			<<if Weather.dayState is "dusk">>
+				<<addinlineevent 1>>
+					Thunder rolls over the beach as the night deepens.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Night */
+			<<if Weather.dayState is "night">>
+				<<addinlineevent 1>>
+					A flash of lightning turns the surf silver for an instant.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder booms over the beach and fades into the dark.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Day */
+		<<if Weather.dayState is "day" and ["clear", "lightClouds"].includes(Weather.name) and Weather.fog lte 0.5>>
+			<<addinlineevent 1>>
+				You squint as sunlight glints off the surf.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You bask in the warm beach sun.<<lstress>><<stress -1>>
+			<</addinlineevent>>
+		<</if>>
+
+		/* Night */
+		<<if Weather.dayState is "night">>
+			<<addinlineevent 1>>
+				The shoreline disappears into the dark.
+			<</addinlineevent>>
+		<</if>>
+
+		<<if Weather.dayState isnot "night" and Weather.precipitation === "none">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> the wind carry distant voices.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== PIER ==========
+	*/
+	<<if _fishingLocation is "fishingPier">>
+		/* Generic */
+		<<addinlineevent 1>>
+			You watch the waves <<print either("break", "crash")>> against the pier.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch foam <<print either("gather", "swirl")>> around the pilings.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch a small crab <<print either("skitter", "scuttle")>> across the wet boards.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You check your line for any fraying.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shift your footing on the damp planks.
+		<</addinlineevent>>
+
+		/* Snowing */
+		<<if Weather.precipitation is "snow">>
+			<<addinlineevent 1>>
+				You watch snowflakes melt on the rail.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Raining */
+		<<if Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> the drumming of rain on the wood of the pier.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Lightning */
+		<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				Thunder <<print either("rolls", "rumbles")>> above the harbour.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Thunder cracks above the docks and rattles the boards underfoot.
+			<</addinlineevent>>
+
+			<<if Weather.dayState is "day">>
+				<<addinlineevent 1>>
+					Lightning forks beyond the pier and lights up the sea.
+				<</addinlineevent>>
+			<</if>>
+
+			<<if Weather.dayState is "dusk">>
+				<<addinlineevent 1>>
+					Lightning cuts through the sky over the pier.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Day */
+		<<if Weather.dayState is "day" and ["clear", "lightClouds"].includes(Weather.name) and Weather.fog lte 0.5>>
+			<<addinlineevent 1>>
+				Sunlight glints off the water and into your eyes.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Working Day */
+		<<if Weather.dayState is "day" and Time.weekDay gte 2 and Time.weekDay lte 6>>
+			<<addinlineevent 1>>
+				You watch dock workers hauling crates along the pier.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You hear dock workers calling to each other over the water.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You see a pair of dock workers wrestling a load onto a cart.
+			<</addinlineevent>>
+
+			<<if fameTotal() gte 2000 and $docks.status gte 20>>
+				<<addinlineevent 1>>
+					You wonder if any of the dock workers recognize you from outside work.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Dusk */
+		<<if Weather.dayState is "dusk">>
+			<<addinlineevent 1>>
+				You watch the last light fade from the pier.
+			<</addinlineevent>>
+
+			<<if $docks.status gte 60>>
+				<<addinlineevent 1>>
+					You nod to a dock worker heading home.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					You call out a quick hello to a few dock workers packing up for the night.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Night */
+		<<if Weather.dayState is "night">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> the water slosh beneath the shadowed pier.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Hallucinogens */
+		<<if $hallucinogen gte 200>>
+			<<addinlineevent 1>>
+				You hear a voice in the surf, then only wind.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== CLIFF FACE ==========
+	*/
+	<<if _fishingLocation is "fishingCoastPath">>
+		/* Generic */
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> wind <<print either("scrape", "whistle")>> along the cliff face.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch spray <<print either("lifting", "rising")>> from the surf.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch foam <<print either("gather", "pool")>> in cracks between the rocks.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> gulls <<print either("calling", "crying")>> down from the cliff.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> waves rebound off the cliff.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			The <<print either("scent", "smell")>> of flowers wafts down from the meadow above.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+
+		/* Raining */
+		<<if Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> rain patter against stone and scrub along the path.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Lightning */
+		<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				Lightning forks across the sea beyond the path.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Thunder echoes along the cliff face.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				Lightning briefly outlines the waves against the rocks.
+			<</addinlineevent>>
+			<<addinlineevent 6>>
+				A sudden gust almost sends you into the water before you catch your footing.<<stress 10>><<ggstress>>
+			<</addinlineevent>>
+			<<addinlineevent 6>>
+				You skid on wet stone and stop yourself inches from the water.<<stress 10>><<ggstress>>
+			<</addinlineevent>>
+			<<addinlineevent 6>>
+				A hard gust shoves you toward the surf, and you plant your feet just in time.<<stress 10>><<ggstress>>
+			<</addinlineevent>>
+			<<addinlineevent 6>>
+				Loose, wet gravel shifts under you, and you catch yourself before you fall into the water.<<stress 10>><<ggstress>>
+			<</addinlineevent>>
+
+			/* Dawn */
+			<<if Weather.dayState is "dawn">>
+				<<addinlineevent 1>>
+					Thunder rolls in from open water as the dawn breaks.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Night */
+			<<if Weather.dayState is "night">>
+				<<addinlineevent 1>>
+					Flashes of lightning light up the cliff face above you.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder rolls along the coast.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+
+		/* Foggy Dawn */
+		<<if Weather.fog gte 0.3 and Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				Fog drifts down from the cliff face in the dawn light.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Dusk */
+		<<if Weather.dayState is "dusk">>
+			<<addinlineevent 1>>
+				The cliff face above you fades into shadow.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Cold */
+		<<if Weather.temperature lte 6>>
+			<<addinlineevent 1>>
+				Cold gusts off the sea make your fingers ache.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* ========== MOOR ==========
+	*/
+	<<if _fishingLocation is "fishingMoor">>
+		/* Generic */
+		<<addinlineevent 1>>
+			You watch dark water <<print either("swirl", "drift")>> through the reeds.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> soft <<print either("bubbling", "gurgling")>> from the peat.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			You check your line for snagging weeds.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shift to a drier patch of ground.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You shift your footing on the water's edge.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You <<print either("listen to", "hear")>> wind <<print either("dragging", "hissing")>> through the heather.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Your gaze drifts between the reeds.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You watch a <<print either("clump", "tuft")>> of moss drift by.
+		<</addinlineevent>>
+
+		/* Foggy */
+		<<if Weather.fog gte 0.3>>
+			<<addinlineevent 1>>
+				You watch insects skim over stagnant patches.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Heavy Fog */
+		<<if Weather.fog gte 0.8>>
+			<<addinlineevent 1>>
+				Darkness and thick fog pool around you.<<stress 1>><<gstress>>
+			<</addinlineevent>>
+		<</if>>
+
+		/* Rain */
+		<<if Weather.precipitation is "rain">>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> rain hiss through the reeds.
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You <<print either("listen to", "hear")>> rain pepper the muddy pools around you.
+			<</addinlineevent>>
+		<</if>>
+
+		/* Lightning */
+		<<if ["storm", "thunderstorm"].includes(Weather.name) and Weather.precipitation is "rain">>
+
+			/* Dawn */
+			<<if Weather.dayState is "dawn">>
+				<<addinlineevent 1>>
+					Lightning flickers over the moor in the morning light.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder rolls across the wet flats.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Day */
+			<<if Weather.dayState is "day">>
+				<<addinlineevent 1>>
+					Lightning flares above the reeds and shallow water.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder booms over the moor, heavy and close.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Dusk */
+			<<if Weather.dayState is "dusk">>
+				<<addinlineevent 1>>
+					Lightning splits the dim sky over the peat.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder echoes across the moor as dusk falls.
+				<</addinlineevent>>
+			<</if>>
+
+			/* Night */
+			<<if Weather.dayState is "night">>
+				<<addinlineevent 1>>
+					Brief flashes of lightning illuminate the moor.
+				<</addinlineevent>>
+				<<addinlineevent 1>>
+					Thunder rolls through the darkness above the moor.
+				<</addinlineevent>>
+			<</if>>
+
+		<</if>>
+		/* Hot */
+		<<if Weather.temperature gte 20>>
+			<<addinlineevent 1>>
+				Warm air carries the smell of the moor.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/*
+	* =========== SPECIFIC ===========
+	*/
+
+	<<if fameTotal() gte 2000 and Weather.dayState isnot "night" and !Time.isBloodMoon() and ["fishingPier", "fishingBeach"].includes(_fishingLocation)>>
+		<<addinlineevent 1>>
+			You wonder if anyone would recognize you here.
+		<</addinlineevent>>
+	<</if>>
+	<<if $community_service gte 1>>
+		<<addinlineevent 1>>
+			You think about how many hours of service you still owe.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $islander_language gte 100>>
+		<<addinlineevent 1>>
+			You quietly translate old island phrases in your head.
+		<</addinlineevent>>
+	<</if>>
+
+	/* School */
+	<<if $detention gte 1>>
+		<<addinlineevent 1>>
+			You wonder if you can dodge your next detention.
+		<</addinlineevent>>
+	<</if>>
+	<<if $schoolstate is "lunch">>
+		<<addinlineevent 1>>
+			You imagine where everyone is spending lunch right now.
+		<</addinlineevent>>
+	<</if>>
+	<<if Time.schoolTime>>
+		<<addinlineevent 1>>
+			You wonder how much trouble you'll get in for skipping class.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if Time.isSchoolDay(Time.tomorrow)>>
+		<<addinlineevent 1>>
+			You'll have to be up early for school tomorrow.
+		<</addinlineevent>>
+	<</if>>
+	<<if $scienceproject is "ongoing" and $scienceprojectdays is 0>>
+		<<addinlineevent 1>>
+			You wonder who's going to win the science fair today.
+		<</addinlineevent>>
+	<</if>>
+	<<if $scienceprojectdays is 1>>
+		<<addinlineevent 1>>
+			You wonder if you should go to the science fair tomorrow.
+		<</addinlineevent>>
+	<</if>>
+	<<if $mathsproject is "ongoing" and $mathsprojectdays is 0>>
+		<<if Time.dayState is "day">>
+			<<addinlineevent 1>>
+				You wonder if River has noticed your absence from the maths competition.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<if $mathsprojectdays gt 0>>
+		<<if $mathschance gte 1>>
+			<<addinlineevent 3>>
+				You can't stop counting the fish. The maths competition must be getting to you.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<if $mathsprojectdays is 1>>
+		<<addinlineevent 1>>
+			The maths competition is tomorrow. You wonder if you've actually prepared enough.
+		<</addinlineevent>>
+	<</if>>
+	<<if $englishPlay is "ongoing" and $englishPlayDays is 0>>
+		<<addinlineevent 1>>
+			The play is tonight. You wonder how it's going without you.
+		<</addinlineevent>>
+		<<if Time.hour gte 17>>
+			<<if $englishPlayRoles.Player isnot "none">>
+				<<addinlineevent 1>>
+					You had a part in tonight's play. Everyone will have noticed you're not there.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $englishPlayDays gt 0>>
+		<<if $englishPlayRoles.Player isnot "none">>
+			<<addinlineevent 1>>
+				Lines from the play keep surfacing in your head.
+			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent 1>>
+				You find yourself mentally composing sentences, the way you do before a school assignment.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<if $englishPlayDays is 1>>
+		<<addinlineevent 1>>
+			You wonder how the play will go tomorrow.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Temple */
+	<<if $templePromised is "Sydney">>
+		<<addinlineevent 1>>
+			You think about Sydney and vows.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $temple_rank is "priest">>
+		<<addinlineevent 1>>
+			You think about the weight of temple expectations.
+		<</addinlineevent>>
+	<</if>>
+	<<if $temple_rank is "initiate">>
+		<<addinlineevent 1>>
+			You wonder if you still look like a proper initiate.
+		<</addinlineevent>>
+	<</if>>
+	<<if $temple_event is 1>>
+		<<addinlineevent 1>>
+			You think about what waits for you at the temple.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Ear Slime */
+	<<if  numberOfEarSlime()>>
+		<<addinlineevent 1>>
+			You try not to dwell on what the slime wants you to do.
+		<</addinlineevent>>
+	<</if>>
+	<<if numberOfEarSlime()>>
+		<<addinlineevent 1>>
+			You try to ignore the whispers in your ear.
+		<</addinlineevent>>
+	<</if>>
+	<<if numberOfEarSlime()>>
+		<<addinlineevent 1>>
+			You wonder if you should be doing what the slime is asking you to do.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Rent */
+	<<if $renttime lte 0 and $money lt $rentmoney + ($babyRent ?? 0)>>
+		<<addinlineevent 1>>
+			You wonder how you'll make rent this week.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You worry about what will happen to you if you can't pay Bailey.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Clothing */
+	<<if $worn.neck.collared is 1>>
+		<<addinlineevent 1>>
+			You feel your collar shift as you breathe.
+		<</addinlineevent>>
+	<</if>>
+	<<if $worn.feet.type.includes("shackle")>>
+		<<addinlineevent 1>>
+			You shift to ease the pull at your ankles.
+		<</addinlineevent>>
+	<</if>>
+	<<if $worn.neck.collaredpolice is 1>>
+		<<addinlineevent 1>>
+			You feel the weight of state-issued metal around your neck.
+		<</addinlineevent>>
+	<</if>>
+	<<if Weather.temperature lte 5 and _fishingWearingUpper>>
+		<<addinlineevent 1>>
+			You hunker down into your $worn.upper.name and try to keep warm.
+		<</addinlineevent>>
+	<</if>>
+	<<if Weather.precipitation is "rain" and _fishingWearingUpper>>
+		<<addinlineevent 1>>
+			You feel rain bead along your sleeves.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Town Projects */
+	<<if $town_projects.bridge gte 4>>
+		<<addinlineevent 1>>
+			You think about how much safer the canal crossing feels with the new bridge.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $town_projects.road gte 4>>
+		<<addinlineevent 1>>
+			You hope that the lake will be safer to reach now.
+		<</addinlineevent>>
+	<</if>>
+	<<if $town_projects.diving gte 4>>
+		<<addinlineevent 1>>
+			You wonder what Winter will find at the lake.
+		<</addinlineevent>>
+	<</if>>
+	<<if $town_projects.thicket gte 4>>
+		<<addinlineevent 1>>
+			You wonder what kind of wildlife may appear in the new pond.
+		<</addinlineevent>>
+	<</if>>
+	<<if $town_projects.green gte 4>>
+		<<addinlineevent 1>>
+			You hope that people will enjoy the new school green.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Smugglers */
+	<<if $smuggler_known is 1 and $smuggler_timer is 0>>
+		<<addinlineevent 1>>
+			Tonight the smugglers move their cargo. You wonder who else knows.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Pregnancy */
+	<<if playerAwareTheyArePregnant()>>
+		<<addinlineevent 1>>
+			You think about the life inside of you.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You rest a hand on your belly for a moment.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You feel movement inside of you.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Other */
+	<<if $harper_appointments.enabled and Time.weekDay is 6 and $daily.harperVisit isnot 1>>
+		<<addinlineevent 1>>
+			You wonder if you should see Doctor Harper today.
+		<</addinlineevent>>
+	<</if>>
+	<<if $brothel_escortjob and !$brothel_escortjob.done and !$brothel_escortjob.missed and $brothel_escortjob.accept>>
+		<<addinlineevent 1>>
+			You turn over the details of your escort job later today.
+		<</addinlineevent>>
+	<</if>>
+	<<if $pub_hack_job gte 1>>
+		<<addinlineevent 1>>
+			Mickey's job sits unfinished at the back of your mind.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			Mickey wants a password to the police computer. You wonder why they need it.
+		<</addinlineevent>>
+	<</if>>
+
+	/*
+	* =========== LOVE INTERESTS ===========
+	*/
+	/* Generic Love Interest Thoughts */
+	<<if $loveInterest.primary isnot "None">>
+		<<addinlineevent 1>>
+			You wonder what <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.primary) ? "the " + $loveInterest.primary : $loveInterest.primary>> is doing right now.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You catch yourself thinking about <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.primary) ? "the " + $loveInterest.primary : $loveInterest.primary>>.
+		<</addinlineevent>>
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				You wonder if <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.primary) ? "the " + $loveInterest.primary : $loveInterest.primary>> has eaten yet today.
+			<</addinlineevent>>
+		<</if>>
+		<<if ["dawn", "day"].includes(Weather.dayState)>>
+			<<addinlineevent 1>>
+				You think about finding <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.primary) ? "the " + $loveInterest.primary : $loveInterest.primary>> after you finish fishing.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<if $loveInterest.secondary isnot "None">>
+		<<addinlineevent 1>>
+			Your thoughts drift to <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.secondary) ? "the " + $loveInterest.secondary : $loveInterest.secondary>>.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You catch yourself thinking about <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.secondary) ? "the " + $loveInterest.secondary : $loveInterest.secondary>>.
+		<</addinlineevent>>
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				You wonder if <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.secondary) ? "the " + $loveInterest.secondary : $loveInterest.secondary>> has eaten yet today.
+			<</addinlineevent>>
+		<</if>>
+		<<if ["dawn", "day"].includes(Weather.dayState)>>
+			<<addinlineevent 1>>
+				You think about finding <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.secondary) ? "the " + $loveInterest.secondary : $loveInterest.secondary>> after you finish fishing.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<if $loveInterest.tertiary isnot "None">>
+		<<addinlineevent 1>>
+			You wonder what <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.tertiary) ? "the " + $loveInterest.tertiary : $loveInterest.tertiary>> is doing right now.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You catch yourself thinking about <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.tertiary) ? "the " + $loveInterest.tertiary : $loveInterest.tertiary>>.
+		<</addinlineevent>>
+		<<if Weather.dayState is "dawn">>
+			<<addinlineevent 1>>
+				You wonder if <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.tertiary) ? "the " + $loveInterest.tertiary : $loveInterest.tertiary>> has eaten yet today.
+			<</addinlineevent>>
+		<</if>>
+		<<if ["dawn", "day"].includes(Weather.dayState)>>
+			<<addinlineevent 1>>
+				You think about finding <<= ["Black Wolf", "Great Hawk"].includes($loveInterest.tertiary) ? "the " + $loveInterest.tertiary : $loveInterest.tertiary>> after you finish fishing.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Robin */
+	<<if $robinromance gte 1>>
+		<<addinlineevent 1>>
+			You wonder if Robin is doing alright today.
+		<</addinlineevent>>
+	<</if>>
+	<<if getRobinLocation() is "beach">>
+		<<addinlineevent 1>>
+			You think about stopping by Robin's stand later.
+		<</addinlineevent>>
+	<</if>>
+	<<if C.npc.Robin.trauma gte 40>>
+		<<addinlineevent 1>>
+			You hope that you can help Robin.
+		<</addinlineevent>>
+	<</if>>
+	<<if $robinmissing>>
+		<<addinlineevent 1>>
+			You wonder where Robin is.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $robindebtevent gte 1 and $robinmissing isnot 0>>
+		<<addinlineevent 1>>
+			Robin is out there somewhere. You hope they're alright.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Whitney */
+	<<if isLoveInterest("Whitney")>>
+		<<addinlineevent 1>>
+			You wonder what trouble Whitney is getting into right now.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Sydney */
+	<<if isLoveInterest("Sydney")>>
+		<<addinlineevent 1>>
+			You think about Sydney's careful smile.
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You think about Sydney's bowed face at the temple.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Avery */
+	<<if isLoveInterest("Avery")>>
+		<<addinlineevent 1>>
+			You wonder what Avery is doing right now.
+		<</addinlineevent>>
+	<</if>>
+	<<if $averydate is 1 and $averydateattended isnot 1>>
+		<<addinlineevent 1>>
+			You wonder what Avery has planned for tonight.
+		<</addinlineevent>>
+	<</if>>
+	<<if $avery_mansion and !["missed", "started"].includes($avery_mansion.party_state)>>
+		<<addinlineevent 1>>
+			Avery's mansion party is soon. You're still not sure what to expect.
+		<</addinlineevent>>
+	<</if>>
+	<<if $avery_fate is "fallen">>
+		<<addinlineevent 1>>
+			You think about tall buildings.<<gtrauma>><<trauma 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $averyragerevealed is 1>>
+		<<addinlineevent 1>>
+			You think about the look Avery gives you when the mask slips.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $avery_mansion>>
+		<<if $avery_mansion.jobs?.length gte 1>>
+			<<addinlineevent 1>>
+				You think about how much work needs doing at Avery's manor.
+			<</addinlineevent>>
+		<</if>>
+		<<if ($avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bedroom + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden) gte 8>>
+			<<addinlineevent 1>>
+				You picture dusty corners and half-finished chores waiting for you at the manor.
+			<</addinlineevent>>
+		<</if>>
+		<<if $avery_mansion.food isnot "none">>
+			<<if $foodstuff[$avery_mansion.food]?.amount gte 1>>
+				<<addinlineevent 1>>
+					You hope Avery will like the <<= recipe_name($avery_mansion.food)>> you've made.
+				<</addinlineevent>>
+			<<else>>
+				<<if Time.weekDay gte 2 and Time.weekDay lte 6>>
+					<<addinlineevent 1>>
+						You wonder where you'll get <<= recipe_name($avery_mansion.food)>> for Avery before tonight.
+					<</addinlineevent>>
+				<</if>>
+			<</if>>
+		<</if>>
+		<<if $avery_mansion.schedule is "party">>
+			<<addinlineevent 1>>
+				You wonder what will happen tonight at Avery's party.
+			<</addinlineevent>>
+		<</if>>
+		<<if ["missed", "skipped"].includes($avery_mansion.party_state)>>
+			<<addinlineevent 1>>
+				You worry about the fallout from missing Avery's party.<<gstress>><<stress 1>>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Alex */
+	<<if isLoveInterest("Alex")>>
+		<<addinlineevent 1>>
+			You wonder how Alex's day at the farm is going.
+		<</addinlineevent>>
+	<</if>>
+	<<if $farm?.aggro gte 30>>
+		<<addinlineevent 1>>
+			You think about Remy's next move against the farm.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $farm_stage gte 7 and $farm_attack_timer is 0>>
+		<<addinlineevent 1>>
+			You can't stop thinking about what Remy might do to the farm tonight.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Black Wolf */
+
+
+	/* Kylar */
+	<<if isLoveInterest("Kylar")>>
+		<<addinlineevent 1>>
+			You wonder if Kylar knows where you are.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Kylar Bad End */
+	<<if $trauma gte ($traumamax / 5) * 3 and  $badEndStats.find(function (stat) { return stat.source is "Kylar Abduction"; }) and !isLoveInterest("Kylar")>>
+		<<set _fishingBadEndWeight to _fishingRecentBadEndSource is "Kylar Abduction" ? 2 : 0.5>>
+		<<addinlineevent _fishingBadEndWeight>>
+			You remember the walls of Kylar's manor closing in around you.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+		<<addinlineevent _fishingBadEndWeight>>
+			You remember how hard it was to stay calm after Kylar had you trapped.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+	<</if>>
+	<<if C.npc.Kylar.state === "prison">>
+		<<addinlineevent 1>>
+			You wonder what Kylar would do if <<nnpc_he "Kylar">> got out of prison.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+	<</if>>
+	/* Eden */
+	<<if isLoveInterest("Eden")>>
+		<<addinlineevent 1>>
+			You think about Eden's voice in the woods.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Eden Bad End */
+	<<if $trauma gte ($traumamax / 5) * 3 and $badEndStats.find(function (stat) { return stat.source is "Eden"; })>>
+		<<set _fishingBadEndWeight to _fishingRecentBadEndSource is "Eden" ? 2 : 0.5>>
+		<<if $syndromeeden gte 1 && isLoveInterest("Eden")>>
+			<<addinlineevent 1>>
+				Will Eden be upset because you're here?<<stress 1>><<gstress>>
+			<</addinlineevent>>
+			<<addinlineevent 1>>
+				You think about Eden... should you hate <<nnpc_him "Eden">>?<<stress 1>><<gstress>>
+			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent _fishingBadEndWeight>>
+				You remember the sound of the cabin door locking.<<trauma 1>><<gtrauma>>
+			<</addinlineevent>>
+			<<addinlineevent _fishingBadEndWeight>>
+				You remember the crack of Edens gun.<<trauma 1>><<gtrauma>>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	/* Great Hawk */
+	<<if isLoveInterest("Great Hawk")>>
+		<<addinlineevent 1>>
+			You think about the Great Hawk riding the wind.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $birdescaped gte 2 and $syndromebird isnot 1>>
+		<<addinlineevent 1>>
+			You wonder if the Great Hawk will ever give up.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Gwylan */
+	<<if $gwylan>>
+		<<addinlineevent 1>>
+			You wonder if Gwylan is out and about in the forest right now.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			You wonder if Gwylan would know anything about fishing.
+		<</addinlineevent>>
+		<<if $gwylan.ritualMissed>>
+			<<addinlineevent 1>>
+				You wonder how Gwylan is doing without your help at the shop.
+			<</addinlineevent>>
+		<</if>>
+		<<if $gwylan.hunting gte 1>>
+			<<addinlineevent 1>>
+				You think you feel curious eyes upon you. You keep your focus and ignore the feeling.
+			<</addinlineevent>>
+		<</if>>
+		<<if $gwylanTalked and $gwylanSeen>>
+			<<run statusCheck("Gwylan")>>
+			<<if _gwylanLovePercent gte 50 and _gwylanLovePercent lt 100>>
+				<<addinlineevent 1>>
+					Your thoughts turn to Gwylan. You spend some time thinking about what stories to tell <<nnpc_him "Gwylan">> next.
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+		<<if $gwylanSeen?.includes("ritual_beast")>>
+			<<addinlineevent 1>>
+				Gwylan claims the ritual seals something in the world. You're still not sure you understand it.<<gstress>><<stress 1>>
+			<</addinlineevent>>
+		<</if>>
+		<<if $hypnosis_traits.devotion gte 3>>
+			<<addinlineevent 1>>
+				<span @class="basicHypnoCss()">Your thoughts turn to Gwylan.</span>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	/* Museum */
+	<<if $museumAntiques.antiques.antiquebell is "stolen">>
+		<<addinlineevent 1>>
+			You wonder how you're going to get the bell back to the museum.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $museumAntiques.museumCount gte 20>>
+		<<addinlineevent 1>>
+			You think about how much help you've been to the museum.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $museuminterest gte 60>>
+		<<addinlineevent 1>>
+			You wonder if Winter is dealing with another crowd at the museum.
+		<</addinlineevent>>
+	<</if>>
+	/* 
+	* =========== TRANSFORMATIONS ===========
+	*/
+
+	/* Generic Fangs */
+	<<if !["disabled", "hidden"].includes($transformationParts.traits.fangs)>>
+		<<addinlineevent 1>>
+			You idly poke your fangs with your tongue.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			You wonder what it would be like to bite into a raw fish.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Angel */
+	<<if !["disabled", "hidden"].includes($transformationParts.angel.halo)>>
+		<<addinlineevent 1>>
+			You see your halo reflecting in the water.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Cat */
+	<<if !["disabled", "hidden"].includes($transformationParts.cat.ears)>>
+		<<addinlineevent 3>>
+			Your ears perk up when a bubble softly pops near your <<fishingBob>>.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			A fish jumps and splashes a few feet away, your ears swiveling toward the sound.
+		<</addinlineevent>>
+	<</if>>
+	<<if !["disabled", "hidden"].includes($transformationParts.cat.tail)>>
+		<<addinlineevent 3>>
+			Your tail twitches each time your line shifts.
+		<</addinlineevent>>
+	<</if>>
+	<<if $cat gte 1>>
+		<<addinlineevent 3>>
+			You resist the urge to pounce at a ripple in the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Wolf */
+	<<if !["disabled", "hidden"].includes($transformationParts.wolf.ears)>>
+		<<addinlineevent 3>>
+			A faint plop from the <<= fishingLocationWaterBodyName(_fishingLocation)>> makes your ears stand to attention.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			A fish jumps and splashes a few feet away, your ears swiveling toward the sound.
+		<</addinlineevent>>
+	<</if>>
+	<<if !["disabled", "hidden"].includes($transformationParts.wolf.tail)>>
+		<<addinlineevent 3>>
+			Your tail begins to wag when you see movement in the <<= fishingLocationWaterBodyName(_fishingLocation)>>.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Fox */
+	<<if !["disabled", "hidden"].includes($transformationParts.fox.ears)>>
+		<<addinlineevent 3>>
+			Your ears perk up when a bubble softly pops near your line.
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			A fish jumps and splashes a few feet away, your ears swiveling toward the sound.
+		<</addinlineevent>>
+	<</if>>
+	<<if !["disabled", "hidden"].includes($transformationParts.fox.tail)>>
+		<<addinlineevent 3>>
+			Your tail swishes back and forth as you wait for anything to bite.
+		<</addinlineevent>>
+	<</if>>
+
+	/* Fallen Angel */
+	<<if !["disabled", "hidden"].includes($transformationParts.fallenAngel.wings)>>
+
+	<</if>>
+	/* 
+	* =========== STATS ===========
+	*/
+
+	/* Arousal */
+	<<if $arousal gte ($arousalmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You breathe slowly and keep your mind on the <<fishingBob>>. <<arousal -1>><<larousal>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $arousal gte ($arousalmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You keep your breathing even and watch your line. <<arousal -1>><<larousal>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $arousal gte ($arousalmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You force your focus back to the <<fishingBob>>. <<arousal -1>><<larousal>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $arousal gte ($arousalmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You steady your stance and try to just think about the fish. <<arousal -1>><<larousal>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $arousal gte ($arousalmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You clench your jaw and try to try to focus on your line. <<arousal -1>><<larousal>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Stress */
+	<<if $stress gte ($stressmax / 5) * 3>>
+		<<addinlineevent 1>>
+			You force your shoulders to unclench.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $stress gte ($stressmax / 5) * 3>>
+		<<addinlineevent 1>>
+			You try to relax your shoulders.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $stress gte ($stressmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You breathe out slowly and watch the <<fishingRipples>>.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $stress gte ($stressmax / 5) * 3>>
+		<<addinlineevent 3>>
+			You force yourself to unclench your grip on your rod.<<stress -1>><<lstress>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Trauma */
+	<<if $trauma gte ($traumamax / 5) * 3>>
+		<<addinlineevent 1>>
+			You force your shoulders to unclench.<<trauma -1>><<ltrauma>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $trauma gte ($traumamax / 5) * 3>>
+		<<addinlineevent 1>>
+			You try to relax your shoulders.<<trauma -1>><<ltrauma>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $trauma gte ($traumamax / 5) * 3>>
+		<<addinlineevent 3>>
+			You keep your eyes on the water to quiet your thoughts.<<trauma -1>><<ltrauma>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $trauma gte ($traumamax / 5) * 3>>
+		<<addinlineevent 1>>
+			You steady your breath and try to stay calm.<<trauma -1>><<ltrauma>>
+		<</addinlineevent>>
+	<</if>>
+	<<if $trauma gte ($traumamax / 5) * 3>>
+		<<addinlineevent 3>>
+			You force yourself to unclench your grip on your rod.<<trauma -1>><<ltrauma>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Tiredness */
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 3>>
+			You fight a yawn and keep your line taut. 
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 3>>
+			You rub your eyes and refocus on the <<fishingBob>>.
+		<</addinlineevent>>
+	<</if>>
+		<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 1>>
+			You feel your eyelids drooping, but are able to remain awake. 
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 1>>
+			You shift your stance and try to stay awake. 
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 1>>
+			You blink slowly and force yourself to keep watch. 
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 1>>
+			You steady your rod and breathe through the fatigue.
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+		<<addinlineevent 3>>
+			You think about going to bed, but keep fishing anyway. 
+		<</addinlineevent>>
+	<</if>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 4>>
+		<<addinlineevent 3>>
+			Your eyelids droop, and you catch yourself almost falling into the water.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Hallucinations */
+	<<if $hallucinogen gte 200>>
+		<<addinlineevent 1>>
+			You blink and think the water moved wrong for a second.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You stare at a ripple until it looks like an eye.<<gstress>><<stress 1>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You look over your shoulder after hearing footsteps that aren't there.<<gstress>><<stress 2>>
+		<</addinlineevent>>
+		<<addinlineevent 1>>
+			You feel like something is watching you.<<gstress>><<stress 2>>
+		<</addinlineevent>>
+		<<if _fishingLocation is "fishingForestLake">>
+			<<addinlineevent .5>>
+				Branches snap in the forest behind you
+			<</addinlineevent>>
+		<</if>>
+		<<if _fishingLocation is "fishingMoor">>
+			<<addinlineevent .5>>
+				Something splashes low and heavy in the shallows.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Drunk */
+	<<if $drunk gte 100>>
+		<<addinlineevent 2>>
+			<span @class="basicDrunkCss()">You steady yourself and watch the <<fishingBob>> carefully.</span>
+		<</addinlineevent>>
+	<</if>>
+	<<if $drunk gte 100>>
+		<<addinlineevent 2>>
+			<span @class="basicDrunkCss()">You correct your balance and keep watching your line.</span>
+		<</addinlineevent>>
+	<</if>>
+	<<if $drunk gte 100>>
+		<<addinlineevent 2>>
+			<span @class="basicDrunkCss()">You blink hard and try to track the <<fishingBob>>.</span>
+		<</addinlineevent>>
+	<</if>>
+	<<if $drunk gte 100>>
+		<<addinlineevent 2>>
+			<span @class="basicDrunkCss()">You slow your movements, trying to keep your hands steady.</span>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Bird Dive event */
+	<<if Weather.dayState isnot "night">>
+		<<addinlineevent 2>>
+			A bird plunges into the <<= fishingLocationWaterBodyName(_fishingLocation)>> nearby and surfaces with a small fish in its beak, then flies off.
+		<</addinlineevent>>
+	<</if>>
+
+	/*
+	* =========== BAD END THOUGHTS ===========
+	*/
+
+	/* Underground Farm */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Underground Farm"; })>>
+		<<addinlineevent 1>>
+			You catch a whiff of straw on the wind and are reminded of Remy's farm.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+		<<if $skin.left_bottom.special is "cattle">>
+			<<addinlineevent 1>>
+				...your brand itches.<<trauma 1>><<gtrauma>>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Wolf Cave */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Wolf Cave"; }) and !isLoveInterest("Black Wolf")>>
+		<<addinlineevent 1>>
+			You hear what might sound like a howl, and hold your breath until the sound fades.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Island */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Island"; })>>
+		<<addinlineevent 1>>
+			You remember how alone the island nights felt.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Underground Dungeon */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Underground Dungeon"; })>>
+		<<addinlineevent 1>>
+			Your mind drifts to that underground brothel. Somewhere, someone is still watching what they did to you.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+		<<if $skin.left_shoulder.pen is "tattoo" and $skin.left_shoulder.special is "one_six_three">>
+			<<addinlineevent 1>>
+				You glance to your side, and can't help but see
+				<<if _fishingWearingUpper>>
+					where the edge of a tattoo peeks out from beneath your clothes. 163.<<trauma 2>><<gtrauma>>
+				<<else>>
+					where a tattoo reads 163.<<trauma 2>><<gtrauma>>
+				<</if>>
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Pound */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Pound"; })>>
+		<<addinlineevent 1>>
+			You remember the pound cages and the smell of wet concrete.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+	<</if>>
+
+	/* Prison */
+	<<if isPlayerFishingAlone() and $badEndStats.find(function (stat) { return stat.source is "Prison"; })>>
+		<<addinlineevent 1>>
+			You think you see a sharks tooth, but it's just a pebble.
+		<</addinlineevent>>
+		<<if _fishingLocation is "fishingBeach">>
+			<<addinlineevent 1>>
+				You can't help but look for shark teeth in the sand.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+
+	/* Wraith */
+	<<if $wraith.state and isPlayerFishingAlone() and Time.isBloodMoon()>>
+		<<addinlineevent 3>>
+			You think you heard someone call your name, but there's no one there.<<trauma 1>><<gtrauma>>
+		<</addinlineevent>>
+		<<if _fishingLocation is "fishingForestLake">>
+			<<addinlineevent 3>>
+				You keep glancing toward the trees, certain that something is waiting there.<<stress 1>><<gstress>>
+			<</addinlineevent>>
+		<</if>>
+		<<if _fishingLocation is "fishingMoor">>
+			<<addinlineevent 3>>
+				You keep glancing toward the reeds, certain that something is waiting there.<<stress 1>><<gstress>>
+			<</addinlineevent>>
+		<</if>>
+		<<addinlineevent 3>>
+			For a moment, the water's reflection looks like bright <<wraithEyes>> eyes.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+		<<addinlineevent 3>>
+			You feel as though something is following your reflection across the red-lit water.<<stress 1>><<gstress>>
+		<</addinlineevent>>
+	<</if>>
+<</widget>>

@@ -1,0 +1,261 @@
+:: Fishing Pier Catch
+<<if $daily.fishing.fishingPier.whitney.phase is "bet">>
+	<<fishingPierCatchWhitneyBet>>
+<<elseif $daily.fishing.fishingPier.whitney.phase is "idle" and $rng gte 90 and !$daily.fishing.fishingPier.whitney.fishKiss>>
+	<<set $daily.fishing.fishingPier.whitney.fishKiss to true>>
+	<<fishingPierCatchWhitneyKiss>>
+<<elseif $daily.fishing.fishingPier.fisher.phase is "fishing" and $daily.fishing.fishingPier.fisher.drunk gte 4 and $rng gte 80>>
+	<<fishingPierCatchFisherDrunk>>
+<<elseif Weather.dayState is "day" and [undefined, "finished"].includes($daily.fishing.fishingPier.whitney.phase) and [undefined, "finished"].includes($daily.fishing.fishingPier.fisher.phase) and $rng gte 90 and $daily.fishing.seagullSteal is undefined>>
+	<<fishingSeagullCatch $fishingHookedFish $bus>>
+<<else>>
+	<<fishingPierCatch>>
+<</if>>
+
+
+:: Widgets Fishing Pier Catch [widget]
+<<widget "fishingPierCatchWhitneyBet">>
+	<<effects>>
+	<<generatey1>><<saveNPC 0 "fishing_date_friend1">><<clearsinglenpc 0>>
+	<<set _skipCatchModifier to true>>
+
+	Whitney's eyes fix on the fish, <<nnpc_his "Whitney">> expression calculating.
+
+	<<if $fishingHookedFish.size gt 60>>
+		<<nnpc_He "Whitney">> stands slowly, a wide smile spreading across <<nnpc_his "Whitney">> face. "That's what I'm talking about." <<nnpc_He "Whitney">> looks you over. "I win, slut. Come here."
+		<br><br>
+
+		<<if hasSexStat("promiscuity", 3)>>
+			<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $molestationstart to 1>><</link>>
+			<br>
+		<<else>>
+			<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $molestationstart to 1>><<stress 6>><<trauma 6>><</link>><<gstress>><<gtrauma>>
+			<br>
+		<</if>>
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Comply eagerly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $sexstart to 1>><</link>><<promiscuous4>>
+			<br>
+		<</if>>
+		<<link [[Refuse|Fishing Whitney Pier Won Resist]]>><</link>>
+		<br>
+		<<link [[Lie about the size|Fishing Whitney Pier Bet Lie Big]]>><</link>><<englishdifficulty 300 1000>>
+
+	<<else>>
+		<<nnpc_He "Whitney">> clicks <<nnpc_his "Whitney">> tongue. "Too small." <<nnpc_He "Whitney">> glances over at <<nnpc_his "Whitney">> friends with a smirk. "All yours."
+		One of Whitney's friends steps forward, looking you over.
+		<br><br>
+
+		<<if hasSexStat("promiscuity", 3)>>
+			<<link [[Comply reluctantly|Fishing Whitney Pier Friend Won Sex]]>><<set $molestationstart to 1>><</link>>
+			<br>
+		<<else>>
+			<<link [[Comply reluctantly|Fishing Whitney Pier Friend Won Sex]]>><<set $molestationstart to 1>><<stress 6>><<trauma 6>><</link>><<gstress>><<gtrauma>>
+			<br>
+		<</if>>
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Comply eagerly|Fishing Whitney Pier Friend Won Sex]]>><<set $sexstart to 1>><</link>><<promiscuous4>>
+			<br>
+		<</if>>
+		<<link [[Refuse|Fishing Whitney Pier Friend Won Resist]]>><</link>>
+		<br>
+		<<link [[Lie about the size|Fishing Whitney Pier Bet Lie Small]]>><</link>><<englishdifficulty 300 1000>>
+	<</if>>
+	<<unset $fishingHookedFish>>
+<</widget>>
+
+
+<<widget "fishingPierCatchWhitneyKiss">>
+	<<effects>>
+
+	Before you can react, Whitney steps forward and plucks the fish from your hands. <<nnpc_He "Whitney">> holds the $fishingHookedFish.type up toward your face. "This little guy looks like he wants a kiss, don't you think?" <<nnpc_His "Whitney">> friends lean in, grinning.
+	<br><br>
+
+	<<if $player.virginity.kiss is true>>
+		<span class="red">Your first kiss is about to be taken. By a fish.</span>
+		<br><br>
+	<</if>>
+
+	<<link [[Refuse|Fishing Whitney Pier Kiss Fish Refuse]]>><<npcincr Whitney dom -1>><</link>><<ldom>><<athleticsdifficulty 600 1200>>
+	<br>
+	<<link [[Kiss the $fishingHookedFish.type|Fishing Whitney Pier Kiss Fish Accept]]>><<npcincr Whitney dom 1>><</link>><<deviant1>><<gdom>><<if $player.virginity.kiss is true>><<kissvirginitywarning>><</if>>
+<</widget>>
+
+
+<<widget "fishingPierCatchFisherDrunk">>
+	<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+
+	The <<person>> stares at your catch for a moment, eyes narrowing. <<He>> straightens up unsteadily and takes a step toward you. "That one's mine, I had a line right there. Hand it over."
+	<br><br>
+
+	<<link [[Give <<him>> the fish|Fishing Pier Fisher Take Fish Accept]]>><<endevent>><</link>>
+	<br>
+	<<link [[Refuse|Fishing Pier Fisher Take Fish Refuse]]>><<endevent>><</link>>
+<</widget>>
+
+
+<<widget "fishingPierCatch">>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+
+	<<if $fishingHookedFish.size gte 100 and Time.dayState is "day" and $docks.hired and $rng gte 80>>
+		In the distance, dock workers notice the size of it and a couple cheer for you from the docks.<<dockstatus 1>>
+		<br><br>
+	<</if>>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Pier Wait]]>>
+		<<tending_give $fishingHookedFish.type 1>>
+		<<set $fishingAmbientOverride to "stowAway">>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+	<<if _canEatFish>>
+		<br>
+		<<if $daily.fishing.fishingPier.fisher.phase is "fishing">>
+			<<link [[Eat the fish|Fishing Pier Cat Eat Fisher]]>><</link>><<fishEatingTf>>
+		<<else>>
+			<<link [[Eat the fish|Fishing Pier Cat Eat]]>><</link>><<fishEatingTf>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+
+:: Fishing Pier Cut
+<<effects>>
+<<if $daily.fishing.fishingPier.whitney.phase is "bet">>
+	<<fishingPierCutLineWhitneyBet>>
+<<else>>
+	<<fishingPierCut>>
+<</if>>
+
+
+:: Widgets Fishing Pier Cut [widget]
+<<widget "fishingPierCut">>
+	You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Mer Pier]]>><</link>>
+<</widget>>
+
+
+:: Fishing Pier Snapped
+<<if $daily.fishing.fishingPier.whitney.phase is "bet">>
+	<<fishingPierLineSnappedWhitneyBet>>
+<<else>>
+	<<fishingPierLineSnapped>>
+<</if>>
+
+
+:: Widgets Fishing Pier Snapped [widget]
+<<widget "fishingPierLineSnapped">>
+	Your line goes taut, then <span class="red">snaps.</span> The $fishingHookedFish.type is gone.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Mer Pier]]>><</link>>
+<</widget>>
+
+
+:: Fishing Pier Fish Too Far
+<<if $daily.fishing.fishingPier.whitney.phase is "bet">>
+	<<fishingPierLineSnappedWhitneyBet>>
+<<else>>
+	<<fishingPierFishTooFar>>
+<</if>>
+
+
+:: Widgets Fishing Pier Fish Too Far [widget]
+<<widget "fishingPierFishTooFar">>
+	The $fishingHookedFish.type reaches the end of your line, works the hook loose, and is <span class="red">gone</span>.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "fishOffHook">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Mer Pier]]>><</link>>
+<</widget>>
+
+
+:: Fishing Pier Pulled In
+<<if $daily.fishing.fishingPier.whitney.phase is "bet">>
+	<<fishingPierLineSnappedWhitneyBet>>
+<<elseif $daily.fishing.fishingPier.fisher.phase is "fishing" and random(1, 2) is 1>>
+	<<fishingPierPulledInFisherSaved>>
+<<elseif $daily.fishing.fishingPier.whitney.phase is "idle">>
+	<<fishingPierPulledInWhitney>>
+<<else>>
+	<<fishingPierPulledIn>>
+<</if>>
+
+
+:: Widgets Fishing Pier Pulled In [widget]
+<<widget "fishingPierPulledInWhitney">>
+	The $fishingHookedFish.type pulls harder, and you slip. You're <span class="red">dragged over the railing</span> into the water below, though you keep hold of your rod as you fall.<<gstress>><<stress 5>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "pulledIn">>
+
+	<<unset $fishingHookedFish>>
+	<<set $daily.fishing.fishingPier.whitney.playerFellOff to true>>
+	You surface to the sound of Whitney and <<nnpc_his "Whitney">> friends howling with laughter above you.
+	<br><br>
+
+	<<run fishingMinigameEnd()>>
+	<<link [[Next|Sea Docks]]>><<set $eventskip to 1>><</link>>
+<</widget>>
+
+
+<<widget "fishingPierPulledInFisherSaved">>
+	<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+	The $fishingHookedFish.type pulls harder, and you slip. <span class="red">You're hauled over the railing,</span> but the <<person>> next to you grabs you before you can be pulled in.<<gstress>><<stress 3>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+
+	<<unset $fishingHookedFish>>
+	"You okay?" <<he>> asks, breathing hard.
+	<br><br>
+
+	<<run fishingMinigameEnd()>>
+	<<link [[Say nothing|Fishing Pier Fisher Saved On Pier]]>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Thank <<him>>|Fishing Pier Fisher Saved On Pier]]>><<set $phase to 1>><</link>>
+	<br>
+	<<link [[Thank with a kiss|Fishing Pier Fisher Thank Kiss]]>><<set $phase to 2>><<promiscuous1>><<kissvirginitywarning>><</link>>
+<</widget>>
+
+
+
+<<widget "fishingPierPulledIn">>
+	The $fishingHookedFish.type pulls harder. You're <span class="red">dragged over the railing</span> into the water below, though you keep hold of your rod as you fall.<<gstress>><<stress 5>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "pulledIn">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Next|Sea Docks]]>><<set $eventskip to 1>><</link>>
+<</widget>>

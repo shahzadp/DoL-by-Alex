@@ -1,0 +1,163 @@
+:: Fishing Forest Lake Swarm
+<<effects>>
+Your line snaps taut. Something beneath the surface wrenches it with tremendous force, trying to pull you off the rocks and into the lake.
+<br><br>
+
+<<link [[Let go|Fishing Forest Lake Swarm Let Go]]>><</link>>
+<br>
+<<link [[Hold on|Fishing Forest Lake Swarm Hold]]>><</link>><<athleticsdifficulty -100 600>>
+
+
+:: Fishing Forest Lake Swarm Let Go
+<<effects>>
+<<handheldruined>>
+
+You let go of your fishing rod as it's pulled into the depths. <<gstress>><<stress 1>>
+<br><br>
+
+<<link [[Next|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Forest Lake Swarm Hold
+<<effects>>
+<<if $athleticsSuccess>>
+	You brace and wrench your rod <span class="green">free from whatever's pulling it</span> as the line goes slack.
+	<br><br>
+
+	<<link [[Next|Fishing Forest Lake Wait]]>><</link>>
+<<else>>
+	<span class="red">You can't hold on.</span> The force wrenching your line pulls you off the rocks and into the lake.
+	<br><br>
+
+	You surface, spluttering. The water erupts around you with darting silver shapes, fins cutting the surface in every direction.<<gstress>><<stress 6>>
+	<br><br>
+
+	<<link [[Next|Fishing Forest Lake Swarm Loop]]>><<set $molestationstart to 1>><</link>>
+<</if>>
+
+
+:: Fishing Forest Lake Swarm Loop
+<<if $location isnot "lake">><<location "lake">><</if>><<effects>>
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<molested>>
+	<<controlloss>>
+	<<set $combat to 1>>
+	<<set $enemytype to "swarm">>
+	<<swarminit "fish" "swarm" "moving towards you" "encircle you" "fend off" 5 5>>
+	<<set $swimdistance to 6>>
+	<<set $water to 1>>
+	<<set $timer to 10>>
+	<<set $lakeSwarmRockClimb to 0>>
+<</if>>
+<<swarmeffects>>
+<<swarm>>
+
+<<if $swimdistance gte 3>>
+	The rocky bank is a short swim away.
+<<elseif $swimdistance gte 1>>
+	You're almost at the bank.
+<<else>>
+	The bank is within reach!
+<</if>>
+
+<<swarmactions>>
+<<if $stress gte $stressmax>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Swarm Finish]]>><</link>></span>
+<<elseif $timer lte 0>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Swarm Finish]]>><</link>></span>
+<<elseif $swimdistance lte 0>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Swarm Reach]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Swarm Loop]]>><</link>></span>
+<</if>>
+
+
+:: Fishing Forest Lake Swarm Reach
+<<effects>>
+<<if $lakeSwarmRockClimb is 0>>
+	Your hands find the rocky bank, fingers curling around a jutting stone.
+<<elseif $lakeSwarmRockClimb is 1>>
+	You haul yourself back to the bank, hands scraping against wet rock, knuckles white.
+<<elseif $lakeSwarmRockClimb is 2>>
+	Gasping, you drag yourself back to the bank.
+<<elseif $lakeSwarmRockClimb is 3>>
+	Barely keeping your head above water, you claw your way back to the bank.
+<<else>>
+	Trembling with exhaustion, you manage to reach the bank one more time.
+<</if>>
+<<if $swarm.amount.genital[1] gt 0 or $swarm.amount.butt[1] gt 0>>
+	The $swarm.type dart around your legs and inside of you in the shallows, but you have a grip on solid ground.
+<<else>>
+	The $swarm.type dart around your legs in the shallows, but you have a grip on solid ground.
+<</if>>
+<br><br>
+
+/* This check gets intentionally easier the more you fail */
+<<set _climbMax to Math.max(200, 600 - $lakeSwarmRockClimb * 100)>>
+<<link [[Haul yourself up|Fishing Forest Lake Swarm Climb]]>><</link>><<athleticsdifficulty 1 _climbMax>>
+
+
+:: Fishing Forest Lake Swarm Climb
+<<effects>>
+<<if $athleticsSuccess>>
+	Your arms burn as you drag yourself up, collapsing onto the rocks above with a gasp. The $swarm.type churn the shallows below before dispersing back into deeper water.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Fishing Forest Lake Wait]]>><</link>>
+<<else>>
+	<<if $lakeSwarmRockClimb is 0>>
+		<span class="red">Your grip slips on the wet rock</span> and you slide back into the water. The $swarm.type close in again.<<gstress>><<stress 4>>
+	<<elseif $lakeSwarmRockClimb is 1>>
+		Your grip slips <span class="red">again</span> and you drop back into the water. The $swarm.type are on you instantly.<<gstress>><<stress 6>>
+	<<elseif $lakeSwarmRockClimb is 2>>
+		<span class="red">Your arms give out</span> and you crash back into the water, panic rising in your chest. The $swarm.type surge around you.<<ggstress>><<stress 8>>
+	<<else>>
+		Your vision tunnels as you try to hoist yourself up, reaching one hand over another... but your grip <span class="red">fails completely</span> as you fall back into the cold water with a sobbing cry.<<ggstress>><<stress 10>><<gtrauma>><<trauma 4>>
+	<</if>>
+	<br><br>
+
+	/* When you re-enter combat, the actions you had selected are repeated as though another loop had happened. This essentially results in the fish getting an extra turn, but we need to account for any amount of swimming is done automatically when you re-enter combat. */
+	<<if $leftactiondefault is "swim" and $rightactiondefault is "swim">>
+		<<set $swimdistance to 4>>
+	<<elseif $leftactiondefault is "swim" or $rightactiondefault is "swim">>
+		<<set $swimdistance to 3>>
+	<<else>>
+		<<set $swimdistance to 2>>
+	<</if>>
+	<<if $lakeSwarmRockClimb lt 4>><<set $lakeSwarmRockClimb += 1>><</if>>
+	<<link [[Next|Fishing Forest Lake Swarm Loop]]>><</link>>
+<</if>>
+
+
+:: Fishing Forest Lake Swarm Finish
+<<effects>>
+<<if $stress gte $stressmax>>
+	It's too much for you. You pass out.
+	<br><br>
+	<<if $upperoff isnot 0>>
+		<<upperruined>>
+	<</if>>
+	<<if $loweroff isnot 0>>
+		<<lowerruined>>
+	<</if>>
+	<<if $underloweroff isnot 0>>
+		<<underlowerruined>>
+	<</if>>
+	<<if $underupperoff isnot 0>>
+		<<underupperruined>>
+	<</if>>
+	<<endcombat>>
+	<<unset $lakeSwarmRockClimb>>
+	<<passoutlake>>
+<<else>>
+	The $swarm.type eventually scatter, leaving you treading water alone.
+	<br><br>
+	<<tearful>> you swim to the bank and haul yourself out.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<unset $lakeSwarmRockClimb>>
+	<<link [[Next|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+<</if>>

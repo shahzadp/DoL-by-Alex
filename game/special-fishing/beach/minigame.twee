@@ -1,0 +1,71 @@
+:: Fishing Beach Minigame Loop
+<<effects>>
+<<set _fishingMinigameState to fishingMinigameState()>>
+<<if _fishingMinigameState is "start">>
+	<<fishingMinigameStartText>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+	<<fishingBeachMinigameLinks>>
+	
+<<elseif _fishingMinigameState is "caught">>
+	<<onFishCaught>>
+	<<fishingCatchFishText $fishingHookedFish>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi 0 "caught">>
+	<<run fishingMinigameEnd()>>
+	<br><br>
+
+	<<include "Fishing Beach Catch">>
+<<elseif _fishingMinigameState is "fighting">>
+	<<wearActiveFishingRodProp>>
+	<<fishingMinigameTurnResult>>
+	<br>
+	<<fishingMinigameArmFatigue>>
+	<br><br>
+
+	<<debugFishingMinigameInfo>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+
+	<<fishingBeachMinigameLinks>>
+<<elseif _fishingMinigameState is "fishTooFar">>
+	<<include "Fishing Beach Fish Too Far">>
+<<elseif _fishingMinigameState is "lineSnapped">>
+	<<include "Fishing Beach Snapped">>
+<<else>>
+	<<error { message: "Fishing Beach Minigame Loop: unexpected outcome \"" + _fishingMinigameState + "\"" }>>
+<</if>>
+
+:: Widgets Fishing Beach Minigame [widget]
+<<widget "fishingBeachMinigameLinks">>
+	<<if $fishingMinigame.fishAction === "run" or $fishingMinigame.fishAction === "thrash">>
+		<<link [[Reel in|Fishing Beach Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "reel">>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>><<fishingMinigameAthleticsCheck "reel">>
+		<br>
+		<<link [[Hold the line|Fishing Beach Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "hold">>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>><<fishingMinigameAthleticsCheck "hold">>
+	<<else>>
+		<<link [[Reel in|Fishing Beach Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>>
+		<br>
+		<<link [[Hold the line|Fishing Beach Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>>
+	<</if>>
+	<br>
+	<<link [[Put slack on the line|Fishing Beach Minigame Loop]]>>
+		<<run fishingMinigameResolveTurn("slack")>>
+	<</link>>
+	<br>
+	<<link [[Cut the line|Fishing Beach Cut]]>><</link>>
+<</widget>>

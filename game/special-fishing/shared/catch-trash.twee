@@ -1,0 +1,58 @@
+:: Widgets Fishing Trash [widget]
+<<widget "fishingTrashCatchText">>
+	<<set _trash to _args[0]>>
+	<<if $daily.fishing.trashCaught is 0>>
+		Your hook snags on something, it doesn't feel like a fish. You reel it in.
+	<<elseif $daily.fishing.trashCaught lte 3>>
+		Your hook snags on something, it doesn't feel like a fish. More junk. You reel it in.
+	<<else>>
+		Your line gets snagged and you pull up more junk.
+	<</if>>
+	<br><br>
+
+	<<set _fishingWaterBody to fishingLocationWaterBodyName($bus)>>
+	<<switch _trash>>
+		<<case "boot">>
+			Hanging off the end of your hook is an old boot, dragged up out of the <<= _fishingWaterBody>>, half-rotten and waterlogged.
+		<<case "plasticBag">>
+			A plastic bag billows up out of the <<= _fishingWaterBody>> on your hook and you work it free.
+		<<case "fishingLine">>
+			A snarl of old fishing line comes up tangled around your hook. It takes a minute to pick it apart without cutting your fingers on the line. <<pass 2>>
+		<<case "netting">>
+			A scrap of netting comes up with your line, heavy with weed and wrapped tight around the hook. You pick it free bit by bit. <<pass 2>>
+		<<case "seaweed">>
+			A heavy clump of seaweed comes up with your hook. It takes a while to pick it all off your line before dropping it back into the <<= _fishingWaterBody>>. <<pass 2>>
+		<<case "conchShell">>
+			A conch shell dangles from your line, your hook somehow lodged inside. You free it and hold it up to your ear, listening to the sound of the sea for a moment.<<lstress>><<stress -2>>
+		<<case "mussel">>
+			A clump of mussels comes up fused together around your hook, already dead. You pry them free and drop them back.
+		<<case "tinCan">>
+			A dented tin can comes up on your hook, one end rusted clean through.
+		<<case "brokenBottle">>
+			A broken bottle neck is lodged on your hook. You work it off carefully and set it down.
+		<<case "leadSinkers">>
+			A cluster of old lead sinkers comes up, crimped together on a scrap of line.
+		<<case "driedCrabShell">>
+			A crab shell comes up on your hook, dry and brittle. It breaks apart as you pull it off.
+		<<case "barnacledRope">>
+			A waterlogged rope end surfaces, crusted with barnacles and heavier than it looks. You shake it free.
+		<<case "pondweed">>
+			A thick rope of pondweed has wound itself around your line. You spend a minute unwinding it before it finally comes free. <<pass 2>>
+		<<case "duckweed">>
+			A mat of duckweed comes up blanketing your line, you drag it off in handfuls.
+		<<case "rottingStick">>
+			A waterlogged stick comes up skewered on your hook, soft enough to pull apart with your fingers.
+		<<case "waterLilyPad">>
+			A lily pad surfaces trailing your line, the stem wound around the hook. You unwrap it and let it drift back.
+		<<default>>
+			<<error { message: "fishingTrashCatchText: unknown trash key: " + _trash }>>
+	<</switch>>
+	<<if setup.fishing.lootTables.fishingTrash[_trash].isLitter>>
+		<<if ["fishingBeach", "fishingPier"].includes($bus)>>
+			You walk it over to a nearby bin and throw it away.
+		<<else>>
+			You'll throw out once you're back in town.
+		<</if>>
+	<</if>>
+<</widget>>
+

@@ -1,0 +1,173 @@
+:: Fishing Coast Path Approach Down
+<<set $bus to "fishingCoastPathApproach">>
+<<effects>>
+<<silently>><<dancedifficulty 1 600>><</silently>>
+<<if $rng gte 20 and !$danceSuccess>>
+	You turn off the coastal path onto a narrow trail down the cliff face. The footing is uneven and it takes a bit of care, but you make it down without trouble.
+<<else>>
+	You turn off the coastal path onto a trail path down the cliff face. Your foot slips on a loose stone and you go down hard, <span class="red">scraping your hands and knees.</span>
+	<<gpain>><<pain 4>>
+<</if>>
+<br><br>
+
+<<link [[Next|Fishing Coast Path Approach]]>><</link>>
+
+
+:: Fishing Coast Path Approach
+<<set $bus to "fishingCoastPathApproach">>
+<<effects>>
+An old wooden dock juts out below, half-rotten and creaking in the wind, it looks ready to collapse. You don't think it's safe to stand on the dock, but the path before it is safe enough.
+<br><br>
+
+<<if canStartFishing()>>
+	<<fishingRodIcon>><<link [[Start fishing|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
+	<br>
+<<else>>
+	If you had a fishing rod, you could probably catch fish from here
+	<br>
+<</if>>
+<<link [[Hike up the path (0:10)|Fishing Coast Path Approach Up]]>><</link>>
+
+
+:: Fishing Coast Path Approach Up
+<<set $bus to "fishingCoastPathApproach">>
+<<effects>>
+<<silently>><<dancedifficulty 1 600>><</silently>>
+<<if $rng gte 20 and !$danceSuccess>>
+	You head up the cliff trail to the coastal path.
+<<else>>
+	You head up the cliff trail. Halfway up, your foot slips and you go down on your hands, <span class="red">catching yourself before you slide back down.</span>
+	<<gpain>><<pain 4>><<gstress>><<stress 3>>
+<</if>>
+<br><br>
+
+<<link [[Next|Coast Path]]>><<pass 10>><</link>>
+
+
+/* The PC gets sent here any time they start fishing or after an event. From here, they get sent into the wait loop, where events can happen. */
+:: Fishing Coast Path Wait
+<<run initFishingCoastPath()>>
+<<wearActiveFishingRodProp>>
+
+<<set _fishingEditBaitEnabled to true>>
+<<fishingLocationDescription $bus>>
+<<fishingLocationPopulation $bus>>
+<br><br>
+
+<<if $stress gte $stressmax>>
+	<<if isPregnancyEnding()>>
+		<<pregnancyPassout "fishingCoastPath">>
+	<<else>>
+		<<passoutbeach>>
+	<</if>>
+<<else>>
+	<<if $exposed gte 1>>
+		<<exhibitionism "coastPathFishing">>
+		<br><br>
+	<</if>>
+	<<if $arousal gte $arousalmax>>
+		<<orgasmFishingCoastPath>>
+	<<else>>
+		<<fishingCoastPathWaitAmbient>>
+	<</if>>
+	<br><br>
+
+	<<link [[Wait for a bite (0:05)|Fishing Coast Path Wait Loop]]>><<pass 5>><</link>>
+	<br>
+	<<link [[Leave|Fishing Coast Path Approach]]>><</link>>
+<</if>>
+
+<<if $options.fishingBaitSelection is "dropdown">>
+	<br><br>
+	<<baitMobileDropdown>>
+<<elseif $options.images isnot 1>>
+	<br>
+	<<link "Change bait">><<run openBaitOverlay()>><</link>>
+<</if>>
+
+<<fishingCoastPathDebugLinks>>
+
+
+
+:: Fishing Coast Path Wait Loop
+
+<<cleareventpool>>
+<<addinlineevent "bite" fishingCatchEventWeight("fishingCoastPath", 8)>>
+	<<set $fishingHookedFish to rollFish("fishingCoastPath")>>
+	<<run onBaitLoss()>>
+	<<if fishTriggersMinigame($fishingHookedFish)>>
+		<<run fishingMinigameStart($fishingHookedFish.type)>>
+		<<include "Fishing Coast Path Minigame Loop">>
+	<<else>>
+		<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
+		You feel a tug on your line as <<a $fishingHookedFish.type>><<if _isPreferredBait>> greedily<</if>> <<if $fishing.currentBait>>takes the bait<<else>>takes the hook<</if>>. You haul back on the line and pull it out of the water without a fight.
+		<<onFishCaught>>
+		<<fishingCatchFishText $fishingHookedFish>>
+		<br><br>
+
+		<<include "Fishing Coast Path Catch">>
+	<</if>>
+<</addinlineevent>>
+
+<<addinlineevent "trash" .2>>
+	<<set $fishingTrash to rollFishingTrash("fishingCoastPath")>>
+	<<include "Fishing Coast Path Trash Catch">>
+<</addinlineevent>>
+
+<<addinlineevent "clothing" .2>>
+	<<set $clothingItem to rollFishingClothing("fishingCoastPath")>>
+	<<include "Fishing Coast Path Clothing Catch">>
+<</addinlineevent>>
+
+/* Nothing happens, wait loop continues */
+<<addinlineevent "wait" 40>>
+	<<include "Fishing Coast Path Wait">>
+<</addinlineevent>>
+<<runeventpool>>
+
+
+:: Fishing Coast Path Cat Eat
+<<effects>>
+You open wide and drop the whole $fishingHookedFish.type in your mouth. <<fishingEatFishTfProgress>><<lstress>><<stress -6>>
+<<unset $fishingHookedFish>>
+<br><br>
+
+<<link [[Next|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
+
+
+:: Widgets Fishing Coast Path Wait Flavor [widget]
+<<widget "fishingCoastPathWaitAmbient">>
+	<<if $fishingAmbientOverride is "throwBack">>
+		<<if $fishing.currentBait>>
+			You toss the fish back into the surf before <<fishingRebaitMid>>
+		<<else>>
+			You toss the fish back into the surf.
+		<</if>>
+	<<elseif $fishingAmbientOverride is "stowAway">>
+		<<if $fishing.currentBait>>
+			You stow the fish away before <<fishingRebaitMid>>
+		<<else>>
+			You stow the fish away and cast back out.
+		<</if>>
+	<<elseif $fishingAmbientOverride is "reHook">>
+		<<if $fishing.currentBait>>
+			<<fishingRebaitStart>>
+		<<else>>
+			You re-hook your line and cast back out.
+		<</if>>
+	<<elseif $fishingAmbientOverride is "keepClothing">>
+		<<generalSend "wardrobe" $clothingItem.slot $clothingItem.item.name $clothingItem.colour>>
+		You wring out the <<= $clothingItem.item.name>> and stow <<= $clothingItem.item.word is "n" ? "them" : "it">> away.
+	<<elseif $fishingAmbientOverride is "tossClothing">>
+		You wring out the <<= $clothingItem.item.name>> and stow <<= $clothingItem.item.word is "n" ? "them" : "it">> away. You'll throw <<= $clothingItem.item.word is "n" ? "them" : "it">> away when you get back to town.
+		<<unset $fishingAmbientOverride>>
+	<<elseif $fishingAmbientOverride is "castOut">>
+		You cast out into the water.
+	<<else>>
+		<<cleareventpool>>
+		<<fishingWaitAmbient $bus>>
+		<<runeventpool>>
+	<</if>>
+
+	<<unset $fishingAmbientOverride>><<unset $clothingItem>>
+<</widget>>

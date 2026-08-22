@@ -753,6 +753,87 @@ function initProps() {
 		flyers: {
 			zIndex: "handheld_over_sleeve",
 		},
+		caught_haddock: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_salmon: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_trout: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_cod: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_whiting: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_mackerel: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_flounder: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_sole: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_roach: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_chub: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_pike: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_eel: {
+			folder: "fish",
+			armPosition: "clutch",
+		},
+		caught_bass: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_herring: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_grayling: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_perch: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		caught_baitfish: {
+			folder: "fish",
+			armPosition: "right_hold",
+			overUnderSplit: true,
+		},
+		active_fishing_rod: {
+			folder: "fish",
+			armPosition: "right_cover",
+		},
 	};
 
 	/*

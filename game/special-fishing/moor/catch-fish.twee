@@ -1,0 +1,300 @@
+:: Fishing Moor Catch
+<<if ["sit", "campfire"].includes($daily.fishing.fishingMoor.hikers.phase)>>
+	<<fishingMoorCatchHikers>>
+<<elseif $daily.fishing.fishingMoor.fox.phase is "watching">>
+	<<fishingMoorCatchFox>>
+<<else>>
+	<<fishingMoorCatch>>
+<</if>>
+
+:: Widgets Fishing Moor Catch [widget]
+<<widget "fishingMoorCatchHikers">>
+	<<loadNPC 0 "moor_hiker_1">><<person1>>
+	<<loadNPC 1 "moor_hiker_2">><<person2>>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+	<<set _cookOffer to $rng gte 50 and fishingHasMinutesPassedSinceNpcArrival(30) and canCookFish($fishingHookedFish.type) and $daily.fishing.fishingMoor.hikers.phase isnot "campfire">>
+
+	<<if _cookOffer>>
+		The <<person1>><<personsimple>> looks over the $fishingHookedFish.type. "We could probably start a fire and make a meal out of that, what do you think?"
+		<br><br>
+	<<elseif random(1, 5) is 1>>
+		<<switch random(1, 2)>>
+			<<case 1>>
+				The <<person1>><<personsimple>> nods approvingly at the fish, "nice catch."
+			<<case 2>>
+				The <<person2>><<personsimple>> leans forward to get a look at the fish. "Not bad."
+		<</switch>>
+		<br><br>
+	<</if>>
+
+	<<if _canEatFish>>
+		It's a small fish, you could probably just fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Moor Wait]]>>
+		<<tending_give $fishingHookedFish.type 1>>
+		<<set $fishingAmbientOverride to "stowAway">>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "throwBack">><<endevent>><</link>>
+	<<if _cookOffer>>
+		<br>
+		<<link [[Let them cook it|Fishing Moor Campfire Cook]]>><<endevent>><</link>>
+	<</if>>
+
+	<<if _canEatFish>>
+		<br>
+		<<link [[Eat the fish|Fishing Moor Cat Eat Hikers]]>><<endevent>><</link>><<fishEatingTf>>
+	<</if>>
+<</widget>>
+
+
+<<widget "fishingMoorCatchFox">>
+	<<effects>>
+	<<loadNPC 0 "moor_fishing_fox">>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+	<<set _foxLunges to $daily.fishing.fishingMoor.fox.closeness gte 8 and dangerEvent()>>
+
+	<<if _foxLunges>>
+		But before you can do anything, the <<beasttype>> lunges for the $fishingHookedFish.type.
+		<br><br>
+	<<else>>
+		<<if $daily.fishing.fishingMoor.fox.closeness gte 8>>
+			The <<beasttype>> watches your $fishingHookedFish.type intently.
+			<br><br>
+		<<else>>
+			The <<beasttype>> perks up as you pull up the $fishingHookedFish.type.
+			<br><br>
+		<</if>>
+
+		<<if _canEatFish>>
+			It's such a small fish, you could probably fit the whole thing in your mouth.
+			<br><br>
+		<</if>>
+	<</if>>
+
+	<<if _foxLunges>>
+		<<link [[Throw the fish at the fox|Fishing Moor Fox Angry Feed]]>><</link>>
+		<<if $settings.bestialityEnabled>>
+			<br>
+			<<link [[Hold on to the fish|Fishing Moor Fox Molestation]]>><<set $molestationstart to 1>><<set $fishingMoorFoxPhase to 1>><</link>>
+		<</if>>
+	<<else>>
+		<<if $daily.fishing.fishingMoor.fox.closeness gte 8>>
+			<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Moor Keep Fox]]>>
+				<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+				<<endevent>>
+			<</link>>
+		<<else>>
+			<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Moor Wait]]>>
+				<<tending_give $fishingHookedFish.type 1>>
+				<<set $fishingAmbientOverride to "stowAway">>
+				<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+				<<endevent>>
+			<</link>>
+		<</if>>
+		<br>
+		<<if $daily.fishing.fishingMoor.fox.closeness gte 8>>
+			<<link [[Throw it back|Fishing Moor Throw Back Fox]]>><</link>>
+		<<else>>
+			<<link [[Throw it back|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<</if>>
+		<<if _canEatFish>>
+			<br>
+			<<link [[Eat the fish|Fishing Moor Cat Eat Fox]]>><</link>><<fishEatingTf>>
+		<</if>>
+
+		<<if $daily.fishing.fishingMoor.fox.closeness gte 8>>
+			<br>
+			<<link [["Give the " + $fishingHookedFish.type + " to the fox"|Fishing Moor Fox Feed]]>><</link>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+
+<<widget "fishingMoorCatch">>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Moor Wait]]>>
+		<<tending_give $fishingHookedFish.type 1>>
+		<<set $fishingAmbientOverride to "stowAway">>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+	<<if _canEatFish>>
+		<br>
+		<<link [[Eat the fish|Fishing Moor Cat Eat]]>><</link>><<fishEatingTf>>
+	<</if>>
+<</widget>>
+
+
+:: Fishing Moor Cut
+<<if $daily.fishing.fishingMoor.fox.phase is "watching">>
+	<<fishingMoorLineCutFox>>
+<<else>>
+	<<fishingMoorLineCut>>
+<</if>>
+
+
+:: Widgets Fishing Moor Cut [widget]
+<<widget "fishingMoorLineCut">>
+	<<effects>>
+	You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<</widget>>
+
+
+<<widget "fishingMoorLineCutFox">>
+	<<effects>>
+	<<loadNPC 0 "moor_fishing_fox">>
+	You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<fishingMoorFoxFishLostReaction>>
+	<br><br>
+
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<endevent>><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<endevent>><<set $eventskip to 1>><</link>>
+<</widget>>
+
+<<widget "fishingMoorFoxFishLostReaction">>
+	<<switch random(1, 3)>>
+		<<case 1>>
+			The <<beasttype>> stares at the ripples where the fish was, then looks up at you. <<bHe>> lets out a short huff and lies down, chin on <<bhis>> paws.
+		<<case 2>>
+			The <<beasttype>>'s ears droop. <<bHe>> watches the water for a moment before looking away, clearly unimpressed.
+		<<case 3>>
+			The <<beasttype>> sniffs at the water's edge, then turns to look at you with a disappointed expression.
+	<</switch>>
+<</widget>>
+
+:: Fishing Moor Snapped
+<<if $daily.fishing.fishingMoor.fox.phase is "watching">>
+	<<fishingMoorLineSnappedFox>>
+<<elseif ["sit", "campfire"].includes($daily.fishing.fishingMoor.hikers.phase) and !(playerIsPregnant() and playerAwareTheyArePregnant())>>
+	<<fishingMoorLineSnappedHikers>>
+<<else>>
+	<<fishingMoorLineSnapped>>
+<</if>>
+
+
+:: Widgets Fishing Moor Snapped [widget]
+<<widget "fishingMoorLineSnappedFox">>
+	<<effects>>
+	<<loadNPC 0 "moor_fishing_fox">>
+	Your line suddenly goes slack, and the $fishingHookedFish.type disappears into the depths.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+
+	<<unset $fishingHookedFish>>
+	<<fishingMoorFoxFishLostReaction>>
+	<br><br>
+
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<endevent>><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<endevent>><<set $eventskip to 1>><</link>>
+<</widget>>
+
+
+<<widget "fishingMoorLineSnappedHikers">>
+	<<loadNPC 0 "moor_hiker_1">><<person1>>
+	<<loadNPC 1 "moor_hiker_2">><<person2>>
+	Your line suddenly goes slack, and the $fishingHookedFish.type disappears into the depths.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+
+	<<unset $fishingHookedFish>>
+	<<switch random(1, 3)>>
+		<<case 1>>
+			The <<person1>><<personsimple>> pats you once on the shoulder. "Ah, hard luck."
+		<<case 2>>
+			The <<person2>><<personsimple>> clicks <<his>> tongue sympathetically. "Nearly had it." 
+		<<case 3>>
+			The <<person1>><<personsimple>> winces. "That's rough. You almost had it."
+	<</switch>>
+
+	<<run fishingMinigameEnd()>>
+	<<if $daily.fishing.fishingMoor.hikers.drinkCount is 0 and $rng gte 50>>
+		<<he>> reaches into the bag and holds out a can. "Here, a consolation."
+		<br><br>
+
+		<<link [[Accept|Fishing Moor Wait]]>><<endevent>><<set $daily.fishing.fishingMoor.hikers.drinkCount to 10>><<set $daily.fishing.fishingMoor.hikers.drinkOffered to true>><</link>>
+		<br>
+		<<link [[Decline|Fishing Moor Wait]]>><<endevent>><</link>>
+	<<else>>
+		<br><br>
+
+		<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<endevent>><<pass 3>><</link>>
+		<br>
+		<<link [[Leave|Moor]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<</if>>
+<</widget>>
+
+
+<<widget "fishingMoorLineSnapped">>
+	Your line goes taut, then <span class="red">snaps.</span> The $fishingHookedFish.type is gone.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<</widget>>
+
+
+:: Fishing Moor Fish Too Far
+<<if $daily.fishing.fishingMoor.fox.phase is "watching">>
+	<<fishingMoorLineSnappedFox>>
+<<elseif ["sit", "campfire"].includes($daily.fishing.fishingMoor.hikers.phase) and !(playerIsPregnant() and playerAwareTheyArePregnant())>>
+	<<fishingMoorLineSnappedHikers>>
+<<else>>
+	<<fishingMoorFishTooFar>>
+<</if>>
+
+
+:: Widgets Fishing Moor Fish Too Far [widget]
+<<widget "fishingMoorFishTooFar">>
+	The $fishingHookedFish.type reaches the end of your line, works the hook loose, and is <span class="red">gone</span>.
+	<br><br><br>
+
+	<<fishingMinigameResultUi $fishingMinigame.fishDistance "fishOffHook">>
+	<br><br>
+
+	<<unset $fishingHookedFish>>
+	<<run fishingMinigameEnd()>>
+	<<link [[Re-hook the line and cast back out (0:03)|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<</widget>>

@@ -1,0 +1,75 @@
+:: Fishing Forest Lake Catch
+<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+
+<<if _canEatFish>>
+	It's such a small fish, you could probably fit the whole thing in your mouth.
+	<br><br>
+<</if>>
+
+<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Forest Lake Wait]]>>
+	<<tending_give $fishingHookedFish.type 1>>
+	<<set $fishingAmbientOverride to "stowAway">>
+	<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+	<<endevent>>
+<</link>>
+<br>
+<<link [[Throw it back|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+<<if _canEatFish>>
+	<br>
+	<<link [[Eat the fish|Fishing Forest Lake Cat Eat]]>><</link>><<fishEatingTf>>
+<</if>>
+
+
+:: Fishing Forest Lake Cut
+<<effects>>
+You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Forest Lake Snapped
+Your line goes taut, then <span class="red">snaps.</span> The $fishingHookedFish.type is gone.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Forest Lake Fish Too Far
+The $fishingHookedFish.type reaches the end of your line, works the hook loose, and is <span class="red">gone</span>.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "fishOffHook">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Forest Lake Pulled In
+The $fishingHookedFish.type pulls harder. Your feet <span class="red">slip</span> on the wet rock and you are dragged you into the lake, though you keep hold of your rod as you go under.<<gstress>><<stress 4>>
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "pulledIn">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Next|Lake Depths]]>><<set $eventskip to 1>><</link>>

@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-eval */
+/* eslint-disable no-undef */
 /* A standard function to reference to avoid declaring an anonymous function repeatedly. */
 const stayOnPassageFn = function () {
 	return V.passage;
@@ -73,6 +74,10 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Foodstuff Prop Debug`, `Foodstuff Prop Debug`],
+			widgets: [``],
+		},
+		{
+			link: [`Caught Fish Prop Debug`, `Caught Fish Prop Debug`],
 			widgets: [``],
 		},
 		{
@@ -963,6 +968,10 @@ setup.debugMenu.eventList = {
 			widgets: [`<<set $control to 0>>`, `<<set $possessed to true>>`],
 		},
 		{
+			link: [`Bait Shop Fish Request`, `Bait Shop Request`],
+			widgets: [``],
+		},
+		{
 			text_only: "\n\nBeast encounters",
 		},
 		{
@@ -1146,6 +1155,69 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Captured by The Great Hawk`, `Moor`],
 			widgets: [`<<set $moor to 50>>`, `<<set $eventskip to 1>>`, `<<moor_hunt_start>>`, `<<set $moor_hunt to 10>>`],
+		},
+		{
+			text_only: `\n\nFishing Minigame: `,
+		},
+		{
+			link: [`Fish: Haddock (runner)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "haddock">>`],
+		},
+		{
+			link: [`Fish: Salmon (panicked)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "salmon">>`],
+		},
+		{
+			link: [`Fish: Trout (darter)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "trout">>`],
+		},
+		{
+			link: [`Fish: Herring (panicked)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "herring">>`],
+		},
+		{
+			link: [`Fish: Whiting (runner)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "whiting">>`],
+		},
+		{
+			link: [`Fish: Mackerel (panicked)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "mackerel">>`],
+		},
+		{
+			link: [`Fish: Flounder (runner)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "flounder">>`],
+		},
+		{
+			link: [`Fish: Bass (darter)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "bass">>`],
+		},
+		{
+			link: [`Fish:  Roach (darter)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "roach">>`],
+		},
+		{
+			link: [`Fish: Perch (panicked)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "perch">>`],
+		},
+		{
+			link: [`Fish: Chub (runner)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "chub">>`],
+		},
+		{
+			link: [`Fish: Grayling (darter)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "grayling">>`],
+		},
+		{
+			link: [`Fish: Cod (anchor)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "cod">>`],
+		},
+		{
+			link: [`Fish: Pike (thrasher)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "pike">>`],
+		},
+		{
+			link: [`Fish: Eel (slipper)`, fishingMinigameDebugPassage],
+			widgets: [`<<fishingMinigameDebugTeleportWidget "eel">>`],
 		},
 	],
 	Character: [
@@ -1751,6 +1823,10 @@ setup.debugMenu.eventList = {
 			widgets: [`<<run unlockAllSeeds()>>`],
 		},
 		{
+			link: [`Complete fishing journal`, stayOnPassageFn],
+			widgets: [`<<run debugDiscoverAllFishing()>>`],
+		},
+		{
 			link: [`Super Debug Character`, stayOnPassageFn],
 			widgets: [
 				`<<set $school += 4000>>`,
@@ -2217,3 +2293,21 @@ function removeDebugCustomPassage() {
 	}
 }
 window.removeDebugCustomPassage = removeDebugCustomPassage;
+
+function fishingMinigameDebugPassage() {
+	switch (V.passage) {
+		case "Fishing Pier Wait":
+			return "Fishing Pier Minigame Loop";
+		case "Fishing Beach Wait":
+			return "Fishing Beach Minigame Loop";
+		case "Fishing Coast Path Wait":
+			return "Fishing Coast Path Minigame Loop";
+		case "Fishing Forest Lake Wait":
+			return "Fishing Forest Lake Minigame Loop";
+		case "Fishing Moor Wait":
+			return "Fishing Moor Minigame Loop";
+		default:
+			return "Fishing Pier Minigame Loop";
+	}
+}
+window.fishingMinigameDebugPassage = fishingMinigameDebugPassage;

@@ -1,0 +1,137 @@
+:: Fishing Beach Catch
+<<if Weather.dayState is "day" and ($daily.fishing.fishingBeach.fisher.phase is "finished" or $daily.fishing.fishingBeach.fisher.phase is undefined) and $rng gte 92 and $daily.fishing.seagullSteal is undefined>>
+	<<fishingSeagullCatch $fishingHookedFish $bus>>
+<<elseif $daily.fishing.fishingBeach.fisher.phase is "fishing" and fishingHasMinutesPassedSinceNpcArrival(60) and $daily.fishing.fishingBeach.fisher.drunk gte 1 and $rng gte 80>>
+	<<fishingBeachCatchFisherDrunk>>
+<<elseif beachCampfirePartyPresent() and $rng gte 75 and $daily.fishing.fishingBeach.partyFeed is undefined and canCookFish($fishingHookedFish.type)>>
+	<<fishingBeachCatchCampfireCook>>
+<<else>>
+	<<fishingBeachCatch>>
+<</if>>
+
+
+:: Widgets Fishing Beach Catch [widget]
+<<widget "fishingBeachCatchFisherDrunk">>
+	<<effects>>
+	<<loadNPC 0 "fishing_beach_npc_fisher">><<person1>>
+	<<onFishCaught>>
+	<<fishingCatchFishText $fishingHookedFish>>
+	<br><br><br>
+
+	The <<person>> stares at your catch for a moment, eyes narrowing. <<He>> straightens up unsteadily and takes a step toward you. "That one's mine, I had a line right there. Hand it over."
+	<br><br>
+
+	<<link [[Give <<him>> the fish|Fishing Beach Fisher Give Fish]]>><<endevent>><</link>>
+	<br>
+	<<link [[Refuse|Fishing Beach Fisher Give Fish Attack]]>><<endevent>><</link>>
+<</widget>>
+
+
+<<widget "fishingBeachCatchCampfireCook">>
+	<<effects>>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+	<<set $daily.fishing.fishingBeach.partyFeed to "offering">>
+
+	You hear cheers from the campfire. Someone calls out asking if you'll share the $fishingHookedFish.type so they can cook it for everyone.
+	<br><br>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<if ($exposed is 1 and !hasSexStat("exhibitionism", 3)) or ($exposed gte 2 and !hasSexStat("exhibitionism", 5))>>
+		<<insufficientStat "exhibitionism" "to walk over into the light of the campfire in such an exposed state">>
+		<br>
+	<<else>>
+		<<link [[Have them cook the fish (0:15)|Beach Party Fish Cook]]>>
+			<<pass 15>>
+			<<set $daily.fishing.fishingBeach.partyFeed to "accepted">>
+
+			/* The people around the campfire like you for doing this. So you shouldn't be assaulted at the campfire today */
+			<<set $daily.fishing.safeFromBeachCampfireDanger to true>>
+		<</link>>
+		<br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Beach Keep Party]]>>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Beach Throw Back Party]]>><</link>>
+	<br>
+	<<if _canEatFish>>
+		<<link [[Eat the fish|Fishing Beach Cat Eat Party]]>><</link>><<fishEatingTf>>
+	<</if>>
+<</widget>>
+
+
+<<widget "fishingBeachCatch">>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Beach Wait]]>>
+		<<tending_give $fishingHookedFish.type 1>>
+		<<set $fishingAmbientOverride to "stowAway">>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+	<<if _canEatFish>>
+		<br>
+		<<if $daily.fishing.fishingBeach.fisher.phase is "fishing">>
+			<<link [[Eat the fish|Fishing Beach Cat Eat Fisher]]>><</link>><<fishEatingTf>>
+		<<else>>
+			<<link [[Eat the fish|Fishing Beach Cat Eat]]>><</link>><<fishEatingTf>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+
+:: Fishing Beach Cut
+<<effects>>
+You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Beach]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Beach Snapped
+Your line goes taut, then <span class="red">snaps.</span> The $fishingHookedFish.type is gone.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Beach]]>><<set $eventskip to 1>><</link>>
+
+
+:: Fishing Beach Fish Too Far
+The $fishingHookedFish.type reaches the end of your line, works the hook loose, and is <span class="red">gone</span>.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "fishOffHook">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Beach]]>><<set $eventskip to 1>><</link>>
