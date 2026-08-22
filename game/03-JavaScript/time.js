@@ -966,6 +966,10 @@ function dayPassed() {
 		}
 	}
 
+	if (C.npc.Whitney.state === "dungeon") {
+		V.whitney.daysSinceCapture++;
+	}
+
 	if (V.pirate_journey > 1) {
 		V.pirate_journey--;
 	} else {
