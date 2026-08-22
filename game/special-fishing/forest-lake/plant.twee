@@ -1,0 +1,69 @@
+/* Hooks into and reuses the forest rescue system (<<forestRescueSetup>>, <<forestRescueCheck>>, <<forestRescue>> widgets) */
+:: Fishing Forest Lake Plant Attack
+<<effects>>
+You're leaning back on the rock, rod in hand, when roots surge up through the soil and tangle around your legs, spreading them apart and picking you off the ground.
+
+<<set $leftleg to "bound">><<set $rightleg to "bound">>
+<br><br>
+
+<<link [[Fight|Fishing Forest Lake Plant Molestation]]>><<set $molestationstart to 1>><</link>>
+
+
+:: Fishing Forest Lake Plant Molestation
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<molested>>
+	<<set $combat to 1>>
+	<<set $enemytype to "tentacles">>
+	<<tentaclestart 10 15 "root" "vine" true>>
+	<<forestRescueSetup>>
+<</if>>
+
+<<statetentacles>>
+
+<<effects>>
+<<effectstentacles>>
+
+<<forestRescueCheck>>
+
+<<tentacles>>
+<<actionstentacles>>
+
+<<if $tentacles.active lte ($tentacles.max / 2)>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Plant Molestation Finish]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Plant Molestation]]>><</link>></span>
+<</if>>
+
+
+:: Fishing Forest Lake Plant Molestation Finish
+<<effects>>
+<<set $fishing.fishingForestLake.event to "none">>
+<<set $fishing.fishingForestLake.eventDanger to 0>>
+<<if $alarm is 1 and $rescue is 1>>
+	<<forestRescue>>
+<<else>>
+	The vines lose interest in you, and withdraw into the mud. <<tearful>> you stand up and untangle your rod from the vines.
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Return to fishing|Fishing Forest Lake Wait]]>><</link>>
+	<br>
+	<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+<</if>>
+
+
+:: Widgets Fishing Forest Lake Plant [widget]
+/* Text that can appear while waiting if vines will attack soon */
+<<widget "fishingForestLakePlantAttackWaitAmbient">>
+	<<addinlineevent 20>>
+		<<print either(
+			"The smell of flowers drifts across the water, sweet and intoxicating.",
+			"You notice the vines hanging from nearby trees are curling in an odd way."
+		)>>
+		<<set $fishing.fishingForestLake.eventDanger += 1>>
+	<</addinlineevent>>
+<</widget>>

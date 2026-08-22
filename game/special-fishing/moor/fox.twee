@@ -1,0 +1,270 @@
+:: Fishing Moor Fox Arrive
+<<effects>>
+<<beastNEWinit 1 fox>><<saveNPC 0 "moor_fishing_fox">>
+<<set $daily.fishing.fishingMoor.fox.phase to "watching">>
+<<set $daily.fishing.fishingMoor.fox.closeness to 0>>
+
+A <<beasttype>> trots out of the heather and stops a short distance away, watching you with bright, curious eyes.<<stress -2>><<lstress>>
+<br><br>
+
+<<link [[Next|Fishing Moor Wait]]>><<endevent>><</link>>
+
+
+:: Fishing Moor Fox Feed
+<<effects>>
+<<loadNPC 0 "moor_fishing_fox">>
+<<if $fishingHookedFish.size gte 80>>
+	You toss the $fishingHookedFish.type down in front of the <<beasttype>>. <<bHe>> sniffs it, clamps down, and hauls it off across the moor.
+<<else>>
+	You toss the $fishingHookedFish.type to the <<beasttype>>. <<bHe>> catches it neatly and bolts off into the heather.
+<</if>>
+<<set $daily.fishing.fishingMoor.fox.phase to "finished">><<endevent>>
+<<unset $fishingHookedFish>>
+<br><br>
+
+<<link [[Next|Fishing Moor Wait]]>><</link>>
+
+
+:: Fishing Moor Fox Angry Feed
+<<effects>>
+<<loadNPC 0 "moor_fishing_fox">>
+You shove the $fishingHookedFish.type toward the <<beasttype>>. <<bHe>> snatches it from your hands and bolts off across the moor without looking back.
+<<set $daily.fishing.fishingMoor.fox.phase to "finished">><<endevent>>
+<<unset $fishingHookedFish>>
+<br><br>
+
+<<link [[Next|Fishing Moor Wait]]>><</link>>
+
+:: Fishing Moor Fox Molestation
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<loadNPC 0 "moor_fishing_fox">>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+	<<set $NPCList[0].stance to "top">>
+	<<set $enemytrust to -200>>
+	<<set $enemyanger to 200>>
+	<<hawkRescueSetup>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+
+<<actionsman>>
+
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0)>>
+	<span id="next"><<link [[Next|Fishing Moor Fox Molestation Finish]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Fishing Moor Fox Molestation]]>><</link>></span>
+<</if>>
+
+
+:: Fishing Moor Fox Molestation Finish
+<<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+	The <<beasttype>> pulls back from you, seeming confused. <<bHe>> shakes <<bhis>> head and disappears into the heather.
+	<<if $fishingMoorFoxPhase is 1>>
+		You stow the $fishingHookedFish.type safely away.
+		<<tending_give $fishingHookedFish.type 1>>
+		<<unset $fishingHookedFish>>
+	<</if>>
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">>
+	<br><br>
+
+	<<tearful>> you gather yourself.
+	<<clotheson>>
+	<<endcombat>>
+	<<unset $fishingMoorFoxPhase>>
+	<<link [[Return to fishing|Fishing Moor Wait]]>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<<elseif $alarm is 1 and $rescue is 1>>
+	Your cry for help is answered. A <<hawkScreechDesc>> pierces the air. <<hawkRescueApproachSentence>>
+	<br><br>
+
+	The <<beasttype>> pulls back at the noise and bolts into the heather.
+	<<if $fishingMoorFoxPhase is 1>>
+		You manage to hold on to the $fishingHookedFish.type.
+		<<tending_give $fishingHookedFish.type 1>>
+		<<unset $fishingHookedFish>>
+	<</if>>
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">>
+	<<clotheson>>
+	<<endcombat>>
+	<<unset $fishingMoorFoxPhase>>
+	<<npc "Great Hawk">><<person1>>
+	<<tearful>> you search the sky. You spot <<if $syndromebird is 1>>your<<else>>a<</if>> <<beasttype>> descending towards you.
+	<br><br>
+
+	<<set $phase to 0>>
+	<<if $syndromebird is 1>>
+		<<link [[Next|Bird Rescue Syndrome]]>><</link>>
+	<<else>>
+		<<link [[Next|Bird Rescue No Syndrome]]>><</link>>
+	<</if>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	<<beastwound>>
+	The <<beasttype>> yelps, backs away with <<bhis>> tail between <<bhis>> legs, then turns and bolts off into the heather.
+	<<if $fishingMoorFoxPhase is 1>>
+		You stow the $fishingHookedFish.type safely away.
+		<<tending_give $fishingHookedFish.type 1>>
+		<<unset $fishingHookedFish>>
+	<</if>>
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">>
+	<br><br>
+
+	<<tearful>> you wonder if all that was worth if for a $fishingHookedFish.type.
+
+	<<clotheson>>
+	<<endcombat>>
+	<<unset $fishingMoorFoxPhase>>
+	<<link [[Return to fishing|Fishing Moor Wait]]>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<<elseif $pain gte 100 and $willpowerpain is 0>>
+	<<if $fishingMoorFoxPhase is 1>>
+		You're too battered to continue fighting as the <<beasttype>> grabs your $fishingHookedFish.type and darts off into the heather.
+	<</if>>
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">>
+	<br><br>
+	
+	<<tearful>> you wonder if all that was worth if for a $fishingHookedFish.type.
+	<<unset $fishingHookedFish>>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Return to fishing|Fishing Moor Wait]]>><</link>>
+	<br>
+	<<link [[Leave|Moor]]>><<set $eventskip to 1>><</link>>
+<</if>>
+
+
+:: Fishing Moor Cat Eat Fox
+<<effects>>
+<<loadNPC 0 "moor_fishing_fox">>
+You glance at the fox, then open wide and drop the whole $fishingHookedFish.type in your mouth. <<fishingEatFishTfProgress>><<lstress>><<stress -6>>
+<<unset $fishingHookedFish>>
+<br><br>
+
+The <<beasttype>> stares at you, stunned. Then <<bhis>> expression darkens, <<bhis>> ears go flat, and <<bhe>> launches <<bhimself>> at you.
+<br><br>
+
+<<if $settings.bestialityEnabled>>
+	<<link [[Next|Fishing Moor Fox Molestation]]>><<set $molestationstart to 1>><<set $fishingMoorFoxPhase to 2>><</link>>
+<<else>>
+	You scramble back and shoo <<bhim>> off before <<bhe>> can attack you further, <<bhis>> claws scratching you before you force <<bhim>> away.<<beastescape>>
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">><<endevent>>
+	<br><br>
+
+	<<link [[Next|Fishing Moor Wait]]>><<endevent>><</link>>
+<</if>>
+
+
+:: Fishing Moor Keep Fox
+<<effects>>
+<<loadNPC 0 "moor_fishing_fox">>
+<<silently>><<dancedifficulty 1 1000>><</silently>>
+<<if $danceSuccess>>
+	The <<beasttype>> lunges for your $fishingHookedFish.type as you unhook it, but you're able to wrench it out of reach just in time.
+	<br><br>
+
+	You stow the $fishingHookedFish.type away, and the <<beasttype>> scampers back, ears flat against <<bhis>> head.
+	<<set $daily.fishing.fishingMoor.fox.closeness -= random(3, 4)>>
+	<<tending_give $fishingHookedFish.type 1>>
+	<<unset $fishingHookedFish>>
+<<else>>
+	As you unhook the $fishingHookedFish.type, the <<beasttype>> lunges and snatches it, and scampering off into the heather.
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">><<endevent>>
+	<<unset $fishingHookedFish>>
+<</if>>
+<br><br>
+
+<<link [[Next|Fishing Moor Wait]]>><<endevent>><</link>>
+
+
+:: Fishing Moor Throw Back Fox
+<<effects>>
+<<loadNPC 0 "moor_fishing_fox">>
+<<if $settings.bestialityEnabled and dangerEvent()>>
+	As you toss the $fishingHookedFish.type back, the <<beasttype>>'s eyes follow it into the water. <<bHe>> snaps <<bhis>> gaze to you, ears flat. <<bHe>> snarls, then throws <<bhimself>> at you.
+	<<unset $fishingHookedFish>>
+	<br><br>
+
+	<<link [[Next|Fishing Moor Fox Molestation]]>><<set $molestationstart to 1>><<set $fishingMoorFoxPhase to 2>><</link>>
+<<elseif $rng lt 30>>
+	As you throw the $fishingHookedFish.type back into the water, the <<beasttype>> darts forward and snatches it from the shallows before bounding off into the moor.
+	<<set $daily.fishing.fishingMoor.fox.phase to "finished">><<endevent>>
+	<<unset $fishingHookedFish>>
+	<br><br>
+
+	<<link [[Next|Fishing Moor Wait]]>><</link>>
+<<else>>
+	The <<beasttype>> watches as you throw the $fishingHookedFish.type back into the water. <<bHis>> shoulders sag and <<bhe>> looks up at you sadly.
+	<<unset $fishingHookedFish>>
+	<br><br>
+
+	<<link [[Next|Fishing Moor Wait]]>><<endevent>><</link>>
+<</if>>
+
+
+:: Widgets Fishing Moor Fox [widget]
+<<widget "fishingMoorFoxAmbient">>
+	<<loadNPC 0 "moor_fishing_fox">>
+	<<set _foxMoved to false>>
+	<<if $rng gte 70 and $daily.fishing.fishingMoor.fox.closeness lt 9 and !$daily.fishing.fishingMoor.fox.movedLastLoop>>
+		<<set $daily.fishing.fishingMoor.fox.closeness += 1>>
+		<<set _foxMoved to true>>
+	<</if>>
+	<<cleareventpool>>
+	<<if _foxMoved>>
+		<<if $daily.fishing.fishingMoor.fox.closeness lte 2>>
+			<<addinlineevent 1>>
+				The <<beasttype>> pads closer and settles down to watch you.
+			<</addinlineevent>>
+		<<elseif $daily.fishing.fishingMoor.fox.closeness lte 5>>
+			<<addinlineevent 1>>
+				The <<beasttype>> creeps nearer, crouching low in the heather.
+			<</addinlineevent>>
+		<<elseif $daily.fishing.fishingMoor.fox.closeness lte 7>>
+			<<addinlineevent 1>>
+				The <<beasttype>> slides closer, settling now only a few paces away.
+			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent 1>>
+				The <<beasttype>> slinks to within arm's reach and presses low against the ground.
+			<</addinlineevent>>
+		<</if>>
+	<<else>>
+		<<if $daily.fishing.fishingMoor.fox.closeness lte 2>>
+			<<addinlineevent 1>>
+				The <<beasttype>> watches you from the edge of the heather.
+			<</addinlineevent>>
+		<<elseif $daily.fishing.fishingMoor.fox.closeness lte 5>>
+			<<addinlineevent 1>>
+				The <<beasttype>> crouches in the heather nearby, eyes on your float.
+			<</addinlineevent>>
+		<<elseif $daily.fishing.fishingMoor.fox.closeness lte 7>>
+			<<addinlineevent 1>>
+				The <<beasttype>> sits a few paces away, completely absorbed in watching you.
+			<</addinlineevent>>
+		<<else>>
+			<<addinlineevent 1>>
+				The <<beasttype>> lies beside you, motionless, staring intently at your line.
+			<</addinlineevent>>
+		<</if>>
+	<</if>>
+	<<runeventpool>>
+	<<set $daily.fishing.fishingMoor.fox.movedLastLoop to _foxMoved>>
+<</widget>>

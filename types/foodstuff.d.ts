@@ -79,6 +79,7 @@ declare global {
 		shop: FoodstuffShopData; // The data for this foodstuff related to shops and purchasing.
 		recipe?: FoodstuffRecipeData; // The data for this foodstuff related to cooking and recipes. If not present, then this foodstuff cannot be used in recipes or cooked.
 		food?: FoodstuffFoodData; // The data for this foodstuff related to being a food item that can be gifted and eaten. If present, then this foodstuff can be gifted, but technically the giftability of a foodstuff is determined by the category of the item.
+		is_fishing_bait?: boolean; // true if this foodstuff can be used as bait while fishing.
 	}
 }
 

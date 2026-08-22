@@ -956,6 +956,41 @@ function getSetupClothing(slot, item) {
 }
 window.getSetupClothing = getSetupClothing;
 
+/**
+ * Checks whether the player owns the named clothing item in any of their wardrobes.
+ *
+ * @param {string} itemName
+ * @returns {boolean}
+ */
+function wardrobeContainsItem(itemName) {
+	const wardrobes = [V.wardrobe, ...Object.values(V.wardrobes)];
+	for (const wardrobe of wardrobes) {
+		for (const s of Object.keys(wardrobe)) {
+			if (Array.isArray(wardrobe[s]) && wardrobe[s].some(item => item?.name === itemName)) return true;
+		}
+	}
+	return false;
+}
+window.wardrobeContainsItem = wardrobeContainsItem;
+
+/**
+ * Takes in the name of a clothing item, then returns everything needed to call <<generalSend "wardrobe">> to add that clothing item to your wardrobe.
+ *
+ * @param {string} name
+ * @returns {{slot: string, item: string, colour: string}}
+ */
+function generateClothingItem(name) {
+	for (const [slot, items] of Object.entries(setup.clothes)) {
+		const item = items.find(i => i.name === name);
+		if (item) {
+			const colour = item.colour_options.filter(c => c !== "custom").random();
+			return { slot, item, colour };
+		}
+	}
+	throw new Error(`generateClothingItem: no clothing item found with name "${name}"`);
+}
+window.generateClothingItem = generateClothingItem;
+
 function clothesDataTrimmerLoop() {
 	if (!V.passage || V.passage === "Start") return;
 	const wardrobeKeys = Object.keys(V.wardrobes);
@@ -2928,6 +2963,29 @@ function ingredientsNextAlternative(mainIngredient, recipe) {
 	V.foodstuff[mainIngredient].alternative = options[nextIndex];
 }
 window.ingredientsNextAlternative = ingredientsNextAlternative;
+
+/**
+ * Returns the key of a random recipe that contains the given ingredient.
+ *
+ * @param {string} ingredient
+ * @param {boolean} allowKnownRecipes true if you want this to return recipes that the player already knows
+ * @returns {string|undefined}
+ */
+function rollRecipeWithIngredient(ingredient, allowKnownRecipes) {
+	const matches = new Set();
+	for (const [key, data] of Object.entries(setup.foodstuff)) {
+		if (!data.recipe) continue;
+		if (!allowKnownRecipes && V.foodstuff[key]?.knows_recipe) continue;
+		if (data.recipe.ingredients.includes(ingredient)) {
+			matches.add(key);
+			continue;
+		}
+		const alts = [...Object.values(data.recipe.ingredient_alternatives?.normal ?? {}), ...Object.values(data.recipe.ingredient_alternatives?.lewd ?? {})];
+		if (alts.some(arr => arr.includes(ingredient))) matches.add(key);
+	}
+	return [...matches].random();
+}
+window.rollRecipeWithIngredient = rollRecipeWithIngredient;
 
 function kitchenFilter() {
 	T.recipeKeys = [];

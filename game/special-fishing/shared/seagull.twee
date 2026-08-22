@@ -1,0 +1,133 @@
+:: Fishing Seagull Shoo
+<<effects>>
+<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+<<if $athleticsSuccess>>
+	The seagull <span class="green">startles and backs away</span>, then flies off over the water.
+	<br><br>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<if $bus is "fishingBeach">>
+		<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Beach Wait]]>>
+			<<tending_give $fishingHookedFish.type 1>>
+			<<set $fishingAmbientOverride to "stowAway">>
+			<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+			<<endevent>>
+		<</link>>
+		<br>
+		<<link [[Throw it back|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<<if _canEatFish>>
+			<br>
+			<<link [[Eat the fish|Fishing Beach Cat Eat]]>><</link>><<fishEatingTf>>
+		<</if>>
+	<<elseif $bus is "fishingPier">>
+		<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Pier Wait]]>>
+			<<tending_give $fishingHookedFish.type 1>>
+			<<set $fishingAmbientOverride to "stowAway">>
+			<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+			<<endevent>>
+		<</link>>
+		<br>
+		<<link [[Throw it back|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<<if _canEatFish>>
+			<br>
+			<<link [[Eat the fish|Fishing Pier Cat Eat]]>><</link>><<fishEatingTf>>
+		<</if>>
+	<<elseif $bus is "fishingCoastPath">>
+		<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Coast Path Wait]]>>
+			<<tending_give $fishingHookedFish.type 1>>
+			<<set $fishingAmbientOverride to "stowAway">>
+			<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+			<<endevent>>
+		<</link>>
+		<br>
+		<<link [[Throw it back|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<<if _canEatFish>>
+			<br>
+			<<link [[Eat the fish|Fishing Coast Path Cat Eat]]>><</link>><<fishEatingTf>>
+		<</if>>
+	<</if>>
+<<else>>
+	Despite your efforts, the seagull darts in and <span class="red">snatches</span> the fish right from your hand and flies off with it.
+	<<unset $fishingHookedFish>>
+	<br><br>
+
+	<<if $bus is "fishingBeach">>
+		<<link [[Next|Fishing Beach Wait]]>><</link>>
+	<<elseif $bus is "fishingPier">>
+		<<link [[Next|Fishing Pier Wait]]>><</link>>
+	<<elseif $bus is "fishingCoastPath">>
+		<<link [[Next|Fishing Coast Path Wait]]>><</link>>
+	<</if>>
+<</if>>
+
+
+:: Fishing Seagull Give
+<<effects>>
+You hold the $fishingHookedFish.type out. The seagull eyes it, then takes it from your hand and flies off.<<lstress>><<stress -2>>
+<<unset $fishingHookedFish>>
+<br><br>
+
+<<if $bus is "fishingBeach">>
+	<<link [[Next|Fishing Beach Wait]]>><</link>>
+<<elseif $bus is "fishingPier">>
+	<<link [[Next|Fishing Pier Wait]]>><</link>>
+<<elseif $bus is "fishingCoastPath">>
+	<<link [[Next|Fishing Coast Path Wait]]>><</link>>
+<</if>>
+
+/* =================================== */
+/* ===== Minigame Result Widgets ===== */
+/* =================================== */
+
+:: Widgets Fishing Seagull Catch [widget]
+<<widget "fishingSeagullCatch">>
+	<<set _fish to _args[0]>>
+	<<set _fishingLocation to _args[1]>>
+	<<effects>>
+	<<set $daily.fishing.seagullSteal to true>>
+
+	<<if _fish.size gte 120>>
+		A seagull circles overhead, spots the _fish.type, and lands beside you. It clamps its beak onto the fish and heaves. Nothing moves. It heaves again, harder, and still the fish doesn't budge. The seagull gives it one last look, then waddles then waddles away with the energy of a creature that has decided this never happened.
+		<br><br>
+
+		<<if _fishingLocation is "fishingBeach">>
+			<<link [["Stow the " + _fish.type + " away"|Fishing Beach Wait]]>>
+				<<tending_give _fish.type 1>>
+				<<set $fishingAmbientOverride to "stowAway">>
+				<<if baitShopWants(_fish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+				<<endevent>>
+			<</link>>
+			<br>
+			<<link [[Throw it back|Fishing Beach Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<<elseif _fishingLocation is "fishingPier">>
+			<<link [["Stow the " + _fish.type + " away"|Fishing Pier Wait]]>>
+				<<tending_give _fish.type 1>>
+				<<set $fishingAmbientOverride to "stowAway">>
+				<<if baitShopWants(_fish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+				<<endevent>>
+			<</link>>
+			<br>
+			<<link [[Throw it back|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<<elseif _fishingLocation is "fishingCoastPath">>
+			<<link [["Stow the " + _fish.type + " away"|Fishing Coast Path Wait]]>>
+				<<tending_give _fish.type 1>>
+				<<set $fishingAmbientOverride to "stowAway">>
+				<<if baitShopWants(_fish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+				<<endevent>>
+			<</link>>
+			<br>
+			<<link [[Throw it back|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+		<</if>>
+	<<else>>
+		A seagull lands nearby and eyes your _fish.type. After a moment it hops forward and lunges for your catch.
+		<br><br>
+
+		<<link [[Shoo it away|Fishing Seagull Shoo]]>><</link>><<athleticsdifficulty -100 200>>
+		<br>
+		<<link [[Let it have the $fishingHookedFish.type|Fishing Seagull Give]]>><</link>>
+	<</if>>
+<</widget>>

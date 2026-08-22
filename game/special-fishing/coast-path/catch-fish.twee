@@ -1,0 +1,73 @@
+:: Fishing Coast Path Catch
+<<if Weather.dayState is "day" and $rng gte 90 and $daily.fishing.seagullSteal is undefined>>
+	<<fishingSeagullCatch $fishingHookedFish $bus>>
+<<else>>
+	<<fishingCoastPathCatch>>
+<</if>>
+
+
+:: Widgets Fishing Coast Path Catch [widget]
+<<widget "fishingCoastPathCatch">>
+	<<set _canEatFish to canEatFishTf($fishingHookedFish)>>
+
+	<<if _canEatFish>>
+		It's such a small fish, you could probably fit the whole thing in your mouth.
+		<br><br>
+	<</if>>
+
+	<<link [["Stow the " + $fishingHookedFish.type + " away"|Fishing Coast Path Wait]]>>
+		<<tending_give $fishingHookedFish.type 1>>
+		<<set $fishingAmbientOverride to "stowAway">>
+		<<if baitShopWants($fishingHookedFish.type)>><<set $daily.fishing.baitShopRequest to "ready">><</if>>
+		<<endevent>>
+	<</link>>
+	<br>
+	<<link [[Throw it back|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "throwBack">><</link>>
+	<<if _canEatFish>>
+		<br>
+		<<link [[Eat the fish|Fishing Coast Path Cat Eat]]>><</link>><<fishEatingTf>>
+	<</if>>
+<</widget>>
+
+
+:: Fishing Coast Path Cut
+<<effects>>
+You <span class="purple">cut</span> the line and the $fishingHookedFish.type swims away into the depths.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "cut">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Fishing Coast Path Approach]]>><</link>>
+
+
+:: Fishing Coast Path Snapped
+Your line goes taut, then <span class="red">snaps.</span> The $fishingHookedFish.type is gone.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "lineSnapped">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Fishing Coast Path Approach]]>><</link>>
+
+
+:: Fishing Coast Path Fish Too Far
+The $fishingHookedFish.type reaches the end of your line, works the hook loose, and is <span class="red">gone</span>.
+<br><br><br>
+
+<<fishingMinigameResultUi $fishingMinigame.fishDistance "fishOffHook">>
+<br><br>
+
+<<unset $fishingHookedFish>>
+<<run fishingMinigameEnd()>>
+<<link [[Re-hook the line and cast back out (0:03)|Fishing Coast Path Wait]]>><<set $fishingAmbientOverride to "reHook">><<pass 3>><</link>>
+<br>
+<<link [[Leave|Fishing Coast Path Approach]]>><</link>>

@@ -1,0 +1,75 @@
+:: Fishing Forest Lake Minigame Loop
+<<effects>>
+<<set _fishingMinigameState to fishingMinigameState()>>
+<<if _fishingMinigameState is "start">>
+	<<fishingMinigameStartText>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+	<<fishingForestLakeMinigameLinks>>
+
+<<elseif _fishingMinigameState is "caught">>
+	<<onFishCaught>>
+	<<fishingCatchFishText $fishingHookedFish>>
+	<br><br><br>
+
+	<<fishingMinigameResultUi 0 "caught">>
+	<<run fishingMinigameEnd()>>
+	<br><br>
+
+	<<include "Fishing Forest Lake Catch">>
+<<elseif _fishingMinigameState is "fighting">>
+	<<wearActiveFishingRodProp>>
+	<<fishingMinigameTurnResult>>
+	<br>
+	<<fishingMinigameArmFatigue>>
+	<br><br>
+
+	<<debugFishingMinigameInfo>>
+	<<fishingMinigameUi $fishingMinigame.fishDistance $fishingMinigame.fishAction $fishingMinigame.armFatigue>>
+	<br>
+	<<fishingMinigameFishStatus>>
+	<br><br>
+
+	<<fishingForestLakeMinigameLinks>>
+<<elseif _fishingMinigameState is "fishTooFar">>
+	<<if $rng gte 80>>
+		<<include "Fishing Forest Lake Pulled In">>
+	<<else>>
+		<<include "Fishing Forest Lake Fish Too Far">>
+	<</if>>
+<<elseif _fishingMinigameState is "lineSnapped">>
+	<<include "Fishing Forest Lake Snapped">>
+<<else>>
+	<<error { message: "Fishing Forest Lake Minigame Loop: unexpected outcome \"" + _fishingMinigameState + "\"" }>>
+<</if>>
+
+:: Widgets Fishing Forest Lake Minigame [widget]
+<<widget "fishingForestLakeMinigameLinks">>
+	<<if $fishingMinigame.fishAction === "run" or $fishingMinigame.fishAction === "thrash">>
+		<<link [[Reel in|Fishing Forest Lake Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "reel">>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>><<fishingMinigameAthleticsCheck "reel">>
+		<br>
+		<<link [[Hold the line|Fishing Forest Lake Minigame Loop]]>>
+			<<fishingMinigameAthleticsCheck "hold">>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>><<fishingMinigameAthleticsCheck "hold">>
+	<<else>>
+		<<link [[Reel in|Fishing Forest Lake Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("reel")>>
+		<</link>>
+		<br>
+		<<link [[Hold the line|Fishing Forest Lake Minigame Loop]]>>
+			<<run fishingMinigameResolveTurn("hold")>>
+		<</link>>
+	<</if>>
+	<br>
+	<<link [[Put slack on the line|Fishing Forest Lake Minigame Loop]]>>
+		<<run fishingMinigameResolveTurn("slack")>>
+	<</link>>
+	<br>
+	<<link [[Cut the line|Fishing Forest Lake Cut]]>><</link>>
+<</widget>>

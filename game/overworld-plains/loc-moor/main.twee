@@ -1,5 +1,5 @@
 :: Moor
-<<set $location to "moor">><<set $outside to 1>><<effects>>
+<<set $location to "moor">><<set $bus to "moor">><<set $outside to 1>><<effects>>
 <<if $moor_hunt gte 1>>
 	A terrible shadow passes. <span class="red">You are being hunted.</span>
 	<br><br>
@@ -34,8 +34,10 @@
 <<if $moor gte 100>>
 	A great castle looms above, despite being ruined and half-sunken into the peat.
 	<<earnFeat "Wet and Ruined">>
-<<elseif $moor gte 51>>
+<<elseif $moor gte 61>>
 	Water bubbles up from unseen wells, running between the bushes and rocks. The ground is uneven and treacherous.
+<<elseif $moor gte 51>>
+	Water bubbles up from unseen wells, running between the bushes and rocks into large pools teaming with life.
 <<elseif $moor gte 21>>
 	The bushes and rock formations make travelling difficult.
 <<elseif $moor gte 1>>
@@ -146,7 +148,20 @@
 		<<foresticon "bog">><<link [[Enter the bog (0:15)|Bog]]>><<unset $moor_hunt>><<pass 15>><<set $bogdepth to 1>><<set $bogwater to 0>><</link>>
 		<br><br>
 	<</if>>
-	<<if $moor gte 51>>
+	<<if $moor gte 51 and $moor lte 60>>
+		<<if canStartFishing()>>
+			<<if !$fishing.locationsFound.includes("fishingMoor")>>
+				<<run V.fishing.locationsFound.pushUnique("fishingMoor")>>
+				<span class="gold">Looks like this could be a good spot for fishing</span>.
+				<br>
+			<</if>>
+			<<fishingRodIcon>><<link [[Start fishing|Fishing Moor Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
+			<br><br>
+		<<elseif !$fishing.locationsFound.includes("fishingMoor")>>
+			<span class="gold">If you had a fishing rod, you could probably catch fish here</span>.
+			<<run V.fishing.locationsFound.pushUnique("fishingMoor")>>
+			<br><br>
+		<</if>>
 		<<if $pubtask is "moor" and $pubtask2 isnot 1>>
 			<<if $pubtasksetting is "lurkers" and $settings.bestialityEnabled and $settings.lurkersEnabled>>
 				<<crimeicon "black box">><<link [[Search for Landry's black box|Moor Box Lurkers]]>><</link>>
@@ -893,5 +908,3 @@ You crouch to retrieve the box. The <<person>> is gone by the time you rise. <<c
 
 <<link [[Next|Moor]]>><<endevent>><<clearNPC moor>><<set $eventskip to 1>><</link>>
 <br>
-
-

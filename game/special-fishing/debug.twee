@@ -1,0 +1,475 @@
+:: Widgets Fishing Debug [widget]
+<<widget "fishingMinigameDebugTeleportWidget">>
+	<<if !["Fishing Pier Wait", "Fishing Beach Wait", "Fishing Coast Path Wait", "Fishing Forest Lake Wait", "Fishing Moor Wait"].includes($passage)>>
+		<<set $location to "mer_pier">>
+		<<set $outside to 1>>
+		<<set $bus to "fishingPier">>
+		<<set $worn.handheld to clone(setup.clothes.handheld.find(item => item.name is "fishing rod"))>>
+		<<tending_give bait_worm 100>>
+		<<run initFishingPier()>>
+	<</if>>
+	<<set $fishingHookedFish to { type: _args[0], size: setup.fishing.lootTables.fish[_args[0]].maxSize }>>
+	<<run fishingMinigameStart(_args[0])>>
+<</widget>>
+
+<<widget "fishingBeachDebugLinks">>
+	<<if V.debug is 1>>
+		<br><br><br><br><br>
+		Fishing Event Debug
+		<br>
+		<<link [[Bite|Fishing Beach Catch]]>>
+			<<set $fishingHookedFish to rollFish("fishingBeach")>>
+		<</link>>
+		<br>
+		<<link [[Minigame|Fishing Beach Minigame Loop]]>>
+			<<set $fishingHookedFish to rollFish("fishingBeach")>>
+			<<for _i to 0; _i lt 67 and !setup.fishing.lootTables.fish[$fishingHookedFish.type].minigame; _i++>>
+				<<set $fishingHookedFish to rollFish("fishingBeach")>>
+			<</for>>
+			<<set $fishingHookedFish.size to Math.max(setup.fishing.lootTables.fish[$fishingHookedFish.type].maxSize, 35)>>
+
+			<<run fishingMinigameStart($fishingHookedFish.type)>>
+		<</link>>
+		<br>
+		<<link [[Trash catch|Fishing Beach Trash Catch]]>>
+			<<set $fishingTrash to rollFishingTrash("fishingBeach")>>
+		<</link>>
+		<br>
+		<<link [[Fisher arrive|Fishing Beach Fisher Arrive]]>>
+			<<set $daily.fishing.fishingBeach.fisher.phase to undefined>>
+			<<run Weather.set("clear", true)>>
+		<</link>>
+		<br>
+		<<link [[Molestation|Fishing Beach Molestation]]>>
+			<<set $daily.fishing.fishingBeach.fisher.phase to undefined>>
+		<</link>>
+		<br>
+		<<link [[Night tentacles|Fishing Beach Tentacles]]>><</link>>
+		<br>
+		<<link [[Beach wind|Fishing Beach Wait Loop]]>><<set $eventPoolOverride to "beachWind">><</link>>
+		<br>
+		<<link [[Beach dog|Fishing Beach Wait Loop]]>>
+			<<set $eventPoolOverride to "beachDog">>
+			<<set $daily.fishing.fishingBeach.fisher.phase to undefined>>
+		<</link>>
+		<br>
+		<<link [[Beach parent|Fishing Debug Beach Parent]]>><</link>>
+		<br>
+		<<link [[Classmates|Fishing Beach Classmates]]>><</link>>
+		<br>
+		<<link [[Fisher leave night|Fishing Beach Fisher Leave Night]]>>
+			<<set $daily.fishing.fishingBeach.fisher.phase to "fishing">>
+		<</link>> (Fisher Arrive should be ran first)
+		<br>
+		<<link [[Fisher leave weather|Fishing Beach Fisher Leave Weather]]>>
+			<<set $daily.fishing.fishingBeach.fisher.phase to "fishing">>
+			<<run Weather.set("storm", true)>>
+		<</link>> (Fisher Arrive should be ran first)
+		<br>
+		<<link [[Night dog|Fishing Debug Beach Night Dog]]>><</link>>
+		<br>
+		<<link [[Night molestation|Fishing Debug Beach Night Molestation]]>><</link>>
+		<br>
+		<<link [[Wave|Fishing Beach Wave]]>><</link>>
+		<br>
+		<<link [[Catch: seagull|Fishing Debug Beach Catch Seagull]]>><</link>>
+		<br>
+		<<link [[Catch: campfire cook|Fishing Debug Beach Catch Campfire Cook]]>><</link>>
+		<br>
+		<<link [[Catch: fisher drunk|Fishing Debug Beach Catch Fisher Drunk]]>><</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Clothing catch|Fishing Beach Clothing Catch]]>>
+			<<set $clothingItem to rollFishingClothing("fishingBeach")>>
+		<</link>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingCoastPathDebugLinks">>
+	<<if V.debug is 1>>
+		<br><br><br><br><br>
+		Fishing Event Debug
+		<br><br>
+		<<link [[Bite|Fishing Coast Path Catch]]>>
+			<<set $fishingHookedFish to rollFish("fishingCoastPath")>>
+		<</link>>
+		<br>
+		<<link [[Minigame|Fishing Coast Path Minigame Loop]]>>
+			<<set $fishingHookedFish to rollFish("fishingCoastPath")>>
+			<<for _i to 0; _i lt 67 and !setup.fishing.lootTables.fish[$fishingHookedFish.type].minigame; _i++>>
+				<<set $fishingHookedFish to rollFish("fishingCoastPath")>>
+			<</for>>
+			<<set $fishingHookedFish.size to Math.max(setup.fishing.lootTables.fish[$fishingHookedFish.type].maxSize, 35)>>
+
+			<<run fishingMinigameStart($fishingHookedFish.type)>>
+		<</link>>
+		<br>
+		<<link [[Trash catch|Fishing Coast Path Trash Catch]]>>
+			<<set $fishingTrash to rollFishingTrash("fishingCoastPath")>>
+		<</link>>
+		<br>
+		<<link [[Catch: seagull|Fishing Debug Coast Path Catch Seagull]]>><</link>>
+		<br>
+		<<link [[Clothing catch|Fishing Coast Path Clothing Catch]]>>
+			<<set $clothingItem to rollFishingClothing("fishingCoastPath")>>
+		<</link>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingForestLakeDebugLinks">>
+	<<if V.debug is 1>>
+		<br><br><br><br><br>
+		Fishing Event Debug
+		<br><br>
+		<<link [[Bite|Fishing Forest Lake Catch]]>>
+			<<set $fishingHookedFish to rollFish("fishingForestLake")>>
+		<</link>>
+		<br>
+		<<link [[Minigame|Fishing Forest Lake Minigame Loop]]>>
+			<<set $fishingHookedFish to rollFish("fishingForestLake")>>
+			<<for _i to 0; _i lt 67 and !setup.fishing.lootTables.fish[$fishingHookedFish.type].minigame; _i++>>
+				<<set $fishingHookedFish to rollFish("fishingForestLake")>>
+			<</for>>
+			<<set $fishingHookedFish.size to Math.max(setup.fishing.lootTables.fish[$fishingHookedFish.type].maxSize, 35)>>
+
+			<<run fishingMinigameStart($fishingHookedFish.type)>>
+		<</link>>
+		<br>
+		<<link [[Trash catch|Fishing Forest Lake Trash Catch]]>>
+			<<set $fishingTrash to rollFishingTrash("fishingForestLake")>>
+		<</link>>
+		<br>
+		<<link [[Wolf attack|Fishing Forest Lake Wolf Attack]]>>
+			<<set $fishing.fishingForestLake.event to "none">>
+			<<set $fishing.fishingForestLake.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Bear attack|Fishing Forest Lake Bear Attack]]>>
+			<<set $fishing.fishingForestLake.event to "none">>
+			<<set $fishing.fishingForestLake.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Boar attack|Fishing Forest Lake Boar Attack]]>>
+			<<set $fishing.fishingForestLake.event to "none">>
+			<<set $fishing.fishingForestLake.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Plant person|Fishing Forest Lake Plant Kiss Encounter]]>>
+			<<set $fishing.fishingForestLake.event to "none">>
+			<<set $fishing.fishingForestLake.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Plant vines|Fishing Forest Lake Plant Attack]]>>
+			<<set $fishing.fishingForestLake.event to "none">>
+			<<set $fishing.fishingForestLake.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Rock slip|Fishing Debug Forest Lake Pulled In]]>><</link>>
+		<br>
+		<<link [[Swarm|Fishing Forest Lake Swarm]]>><</link>>
+		<br>
+		<<link [[Catch|Fishing Debug Forest Lake Catch]]>><</link>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingMoorDebugLinks">>
+	<<if V.debug is 1>>
+		<br><br><br><br><br>
+		Fishing Event Debug
+		<br><br>
+		<<link [[Bite|Fishing Moor Catch]]>>
+			<<set $fishingHookedFish to rollFish("fishingMoor")>>
+		<</link>>
+		<br>
+		<<link [[Minigame|Fishing Moor Minigame Loop]]>>
+			<<set $fishingHookedFish to rollFish("fishingMoor")>>
+			<<for _i to 0; _i lt 67 and !setup.fishing.lootTables.fish[$fishingHookedFish.type].minigame; _i++>>
+				<<set $fishingHookedFish to rollFish("fishingMoor")>>
+			<</for>>
+			<<set $fishingHookedFish.size to Math.max(setup.fishing.lootTables.fish[$fishingHookedFish.type].maxSize, 35)>>
+
+			<<run fishingMinigameStart($fishingHookedFish.type)>>
+		<</link>>
+		<br>
+		<<link [[Trash catch|Fishing Moor Trash Catch]]>>
+			<<set $fishingTrash to rollFishingTrash("fishingMoor")>>
+		<</link>>
+		<br>
+		<<link [[Cat attack|Fishing Moor Cat Attack]]>>
+			<<set $fishing.fishingMoor.event to "none">>
+			<<set $fishing.fishingMoor.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Lurker attack|Fishing Moor Lurker Attack]]>>
+			<<set $fishing.fishingMoor.event to "none">>
+			<<set $fishing.fishingMoor.eventDanger to 0>>
+		<</link>>
+		<br>
+		<<link [[Hiker attack|Fishing Moor Hiker Attack]]>>
+			<<set $fishing.fishingMoor.event to "none">>
+			<<set $fishing.fishingMoor.eventDanger to 0>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to undefined>>
+		<</link>>
+		<br>
+		<<link [[Hiker arrive|Fishing Moor Hiker Arrive]]>>
+			<<set $fishing.fishingMoor.event to "moorHikers">>
+			<<set $fishing.fishingMoor.eventDanger to 0>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to undefined>>
+			<<run Weather.set("clear", true)>>
+		<</link>>
+		<br>
+		<<link [[Hiker drink offer|Fishing Moor Hiker Drink Offer]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+			<<set $daily.fishing.fishingMoor.hikers.drinkOffered to undefined>>
+			<<set $daily.fishing.fishingMoor.hikers.drinkCount to 0>>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Hiker leave|Fishing Moor Hiker Leave]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Hiker leave weather|Fishing Moor Hiker Leave Weather]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Hiker leave dusk|Fishing Moor Hiker Leave Dusk]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Hiker leave night|Fishing Moor Hiker Leave Night]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Fox arrive|Fishing Moor Fox Arrive]]>>
+			<<set $fishing.fishingMoor.event to "none">>
+			<<set $daily.fishing.fishingMoor.fox.phase to undefined>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to undefined>>
+		<</link>>
+		<br>
+		<<link [[Hiker flirt|Fishing Moor Hiker Flirt]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+			<<set $daily.fishing.fishingMoor.hikers.flirt to undefined>>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Spiked drink|Fishing Moor Spiked Drink 1]]>>
+			<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+			<<set $daily.fishing.fishingMoor.hikers.drinkCount to 1>>
+			<<set $daily.fishing.fishingMoor.hikers.spike to true>>
+		<</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Catch: hikers|Fishing Debug Moor Catch Hikers]]>><</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Catch: campfire cook|Fishing Debug Moor Catch Campfire Cook]]>><</link>> (run Hiker Arrive first)
+		<br>
+		<<link [[Catch: fox|Fishing Debug Moor Catch Fox]]>><</link>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingPierDebugLinks">>
+	<<if V.debug is 1>>
+		<br><br><br><br><br>
+		Fishing Event Debug
+		<br><br>
+		<<link [[Bite|Fishing Pier Catch]]>>
+			<<set $fishingHookedFish to rollFish("fishingPier")>>
+		<</link>>
+		<br>
+		<<for _fishKey, _fishConfig range setup.fishing.lootTables.fish>>
+			<<if _fishConfig.minigame>>
+				<<capture _fishKey, _fishConfig>>
+					<<link [["Minigame: " + _fishKey + " (" + _fishConfig.minigame.behavior + ")" + " (" + _fishConfig.minigame.maxStamina + ")"|Fishing Pier Minigame Loop]]>>
+						<<set $fishingHookedFish to { type: _fishKey, size: _fishConfig.maxSize }>>
+						<<run fishingMinigameStart(_fishKey)>>
+					<</link>>
+				<</capture>>
+				<br>
+			<</if>>
+		<</for>>
+		<<link [[Trash catch|Fishing Pier Trash Catch]]>>
+			<<set $fishingTrash to rollFishingTrash("fishingPier")>>
+		<</link>>
+		<br>
+		<<link [[Fisher arrive|Fishing Pier Fisher Arrive]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to undefined>>
+			<<set $daily.fishing.fishingPier.whitney.phase to undefined>>
+			<<run Weather.set("clear", true)>>
+		<</link>>
+		<br>
+		<<link [[Whitney bully fisher|Fishing Pier Whitney Bully Fisher]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+			<<set $daily.fishing.fishingPier.whitney.phase to undefined>>
+		<</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Tentacles|Fishing Pier Tentacles]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to undefined>>
+		<</link>>
+		<br>
+		<<link [[Wind|Fishing Pier Wind]]>>
+			<<run Weather.set("storm", true)>>
+		<</link>>
+		<br>
+		<<link [[Fisher leave night|Fishing Pier Fisher Leave Night]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+		<</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Fisher leave weather|Fishing Pier Fisher Leave Weather]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+		<</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Fisher saved on pier|Fishing Pier Fisher Saved On Pier]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+			<<set $phase to 0>>
+		<</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Fisher saved from water|Fishing Pier Fisher Saved From Water]]>>
+			<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+			<<set $phase to 1>>
+		<</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Whitney cider offer|Fishing Whitney Drink Offer]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+			<<set $daily.fishing.fishingPier.whitney.pcCider to 0>>
+		<</link>>
+		<br>
+		<<link [[Whitney bet|Fishing Whitney Pier Bet]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+		<</link>>
+		<br>
+		<<link [[Whitney idle leave|Fishing Pier Whitney Idle Leave]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+			<<set $daily.fishing.fishingPier.whitney.age to 13>>
+		<</link>>
+		<br>
+		<<link [[Whitney idle leave: heavy weather|Fishing Pier Whitney Idle Leave Weather Heavy]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+		<</link>>
+		<br>
+		<<link [[Whitney idle leave: night|Fishing Pier Whitney Leave Night]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+		<</link>>
+		<br>
+		<<link [[Whitney bet leave: heavy weather|Fishing Pier Whitney Bet Leave Weather Heavy]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "bet">>
+		<</link>>
+		<br>
+		<<link [[Whitney bet leave: night|Fishing Pier Whitney Bet Leave Night]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "bet">>
+		<</link>>
+		<br>
+		<<link [[Whitney bet: light rain stay|Fishing Pier Whitney Bet Weather Light]]>>
+			<<set $daily.fishing.fishingPier.whitney.phase to "bet">>
+			<<set $daily.fishing.fishingPier.whitney.rainLeave to undefined>>
+		<</link>>
+		<br>
+		<<link [[Wave|Fishing Pier Wave]]>><</link>>
+		<br>
+		<<link [[Swarm|Fishing Pier Swarm]]>><</link>>
+		<br>
+		<<link [[Catch: seagull|Fishing Debug Pier Catch Seagull]]>><</link>>
+		<br>
+		<<link [[Catch: Whitney kiss|Fishing Debug Pier Catch Whitney Kiss]]>><</link>>
+		<br>
+		<<link [[Catch: Whitney bet win|Fishing Debug Pier Catch Whitney Bet]]>><</link>>
+		<br>
+		<<link [[Catch: fisher drunk|Fishing Debug Pier Catch Fisher Drunk]]>><</link>> (run Fisher Arrive first)
+		<br>
+		<<link [[Clothing catch|Fishing Pier Clothing Catch]]>>
+			<<set $clothingItem to rollFishingClothing("fishingPier")>>
+		<</link>>
+	<</if>>
+<</widget>>
+
+
+:: Fishing Debug Forest Lake Catch
+<<set $fishingHookedFish ??= rollFish("fishingForestLake")>>
+<<include "Fishing Forest Lake Catch">>
+
+
+:: Fishing Debug Forest Lake Pulled In
+<<set $fishingHookedFish ??= rollFish("fishingForestLake")>>
+<<run fishingMinigameStart($fishingHookedFish.type)>>
+<<include "Fishing Forest Lake Pulled In">>
+
+
+:: Fishing Debug Beach Parent
+<<beachday3>>
+
+
+:: Fishing Debug Beach Night Dog
+<<beachnight1>>
+
+
+:: Fishing Debug Beach Night Molestation
+<<beachnight2>>
+
+
+:: Fishing Debug Beach Catch Seagull
+<<set $fishingHookedFish ??= rollFish("fishingBeach")>>
+<<set $daily.fishing.seagullSteal to undefined>>
+<<fishingSeagullCatch $fishingHookedFish "fishingBeach">>
+
+
+:: Fishing Debug Beach Catch Campfire Cook
+<<set $fishingHookedFish ??= rollFish("fishingBeach")>>
+<<set $daily.fishing.fishingBeach.partyFeed to undefined>>
+<<fishingBeachCatchCampfireCook>>
+
+
+:: Fishing Debug Beach Catch Fisher Drunk
+<<set $fishingHookedFish ??= rollFish("fishingBeach")>>
+<<set $daily.fishing.fishingBeach.fisher.phase to "fishing">>
+<<set $daily.fishing.fishingBeach.fisher.drunk to 1>>
+<<fishingBeachCatchFisherDrunk>>
+
+
+:: Fishing Debug Coast Path Catch Seagull
+<<set $fishingHookedFish ??= rollFish("fishingCoastPath")>>
+<<set $daily.fishing.seagullSteal to undefined>>
+<<fishingSeagullCatch $fishingHookedFish "fishingCoastPath">>
+
+
+:: Fishing Debug Pier Catch Seagull
+<<set $fishingHookedFish ??= rollFish("fishingPier")>>
+<<set $daily.fishing.seagullSteal to undefined>>
+<<fishingSeagullCatch $fishingHookedFish "fishingPier">>
+
+
+:: Fishing Debug Pier Catch Whitney Kiss
+<<set $fishingHookedFish ??= rollFish("fishingPier")>>
+<<set $daily.fishing.fishingPier.whitney.phase to "idle">>
+<<set $daily.fishing.fishingPier.whitney.fishKiss to undefined>>
+<<fishingPierCatchWhitneyKiss>>
+
+
+:: Fishing Debug Pier Catch Whitney Bet
+<<set $fishingHookedFish ??= rollFish("fishingPier")>>
+<<set $daily.fishing.fishingPier.whitney.phase to "bet">>
+<<fishingPierCatchWhitneyBet>>
+
+
+:: Fishing Debug Pier Catch Fisher Drunk
+<<set $fishingHookedFish ??= rollFish("fishingPier")>>
+<<set $daily.fishing.fishingPier.fisher.phase to "fishing">>
+<<set $daily.fishing.fishingPier.fisher.drunk to 4>>
+<<fishingPierCatchFisherDrunk>>
+
+
+:: Fishing Debug Moor Catch Hikers
+<<set $fishingHookedFish ??= rollFish("fishingMoor")>>
+<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+<<fishingMoorCatchHikers>>
+
+
+:: Fishing Debug Moor Catch Campfire Cook
+<<set $fishingHookedFish ??= rollFish("fishingMoor")>>
+<<set $daily.fishing.fishingMoor.hikers.phase to "sit">>
+<<loadNPC 0 "moor_hiker_1">><<person1>>
+<<loadNPC 1 "moor_hiker_2">><<person2>>
+<<include "Fishing Moor Campfire Cook">>
+
+
+:: Fishing Debug Moor Catch Fox
+<<set $fishingHookedFish ??= rollFish("fishingMoor")>>
+<<beastNEWinit 1 fox>><<saveNPC 0 "moor_fishing_fox">>
+<<set $daily.fishing.fishingMoor.fox.phase to "watching">>
+<<set $daily.fishing.fishingMoor.fox.closeness to 8>>
+<<fishingMoorCatchFox>>

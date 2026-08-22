@@ -727,6 +727,17 @@
 		</ul>
 	<</if>>
 
+	<<if ["requested", "ready"].includes($daily?.fishing?.baitShopRequest) and Time.hour lt 19>>
+		<hr>
+		<h1 class="header gold bold">Fishing</h1>
+		<ul class="journal">
+			<<icon `"fish/" + $daily.fishing.baitShopRequestFish + ".png"`>> The bait shop owner wants a freshly-caught <span class="gold">$daily.fishing.baitShopRequestFish</span>, brought to them before they close at <<ampm 19 00>>.
+			<<if $daily.fishing.baitShopRequest is "ready">>
+				<span class="green">You've caught one to hand over.</span>
+			<</if>>
+		</ul>
+	<</if>>
+
 	<<if ($valentines is 1) or $halloween is 1 or $christmas is 1>>
 		<hr>
 		<h1 class="header gold bold">Holidays</h1>
@@ -1548,6 +1559,91 @@
 						<</if>>
 					<</for>>
 				</div>
+			</details>
+		<</if>>
+		<<if $fishing.locationsFound.length>>
+			<br><br>
+			<<set _fishingLocations to ["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"]>>
+			<<set _fishKeys to Object.keys(setup.fishing.lootTables.fish)>>
+			<details class="journal">
+				<summary class="journal">Fishing</summary>
+				<div class="itemCollectible">
+					<<for _location range _fishingLocations>>
+						<<if $fishing.locationsFound.includes(_location)>>
+							<div class="item" @tooltip="fishingLocationDisplayName(_location)">
+								<<if _location is "fishingCoastPath">>
+									<<icon "cliff-dock.png">>
+								<<elseif _location is "fishingForestLake">>
+									<<icon "lake-rock.png">>
+								<<elseif _location is "fishingMoor">>
+									<<icon "moor.png">>
+								<<elseif _location is "fishingBeach">>
+									<<icon "beach.gif">>
+								<<elseif _location is "fishingPier">>
+									<<icon "mer-pier.png">>
+								<</if>>
+							</div>
+						<<else>>
+							<div class="item unknown" tooltip="Unknown fishing spot">
+								<<mysteryicon>>
+							</div>
+						<</if>>
+					<</for>>
+				</div>
+				<<for _location range _fishingLocations>>
+					<<if $fishing.locationsFound.includes(_location)>>
+						<details class="journal" style="margin: .5rem 0.5rem 0;">
+							<summary class="journal"><<= fishingLocationDisplayName(_location)>></summary>
+							<div class="itemCollectible">
+								<<set _locationFish to _fishKeys.filter(fish => setup.fishing.lootTables.fish[fish].locations[_location] > 0)>>
+								<<for _fishKey range _locationFish>>
+									<<set _fishName to setup.foodstuff[_fishKey].name>>
+									<<if $fishing.record[_fishKey]?.foundIn.includes(_location)>>
+										<div class="item" @tooltip="_fishName.toUpperFirst()">
+											<<icon `"fish/" + _fishKey + ".png"`>>
+										</div>
+									<<else>>
+										<div class="item unknown" tooltip="Unknown fish">
+											<<mysteryicon>>
+										</div>
+									<</if>>
+								<</for>>
+							</div>
+						</details>
+					<</if>>
+				<</for>>
+				<details class="journal" style="margin: .5rem;">
+					<summary class="journal">Records</summary>
+					<div class="fishingRecords">
+						<<for _fishKey range _fishKeys>>
+							<<set _fishName to setup.foodstuff[_fishKey].name>>
+							<<set _fishRecord to $fishing.record[_fishKey]>>
+							<<if _fishRecord and _fishRecord.numCaught gt 0>>
+								<<set _fishConfig to setup.fishing.lootTables.fish[_fishKey]>>
+								<<set _largestSizePercent to (_fishRecord.largest - _fishConfig.minSize) / (_fishConfig.maxSize - _fishConfig.minSize)>>
+								<div class="fishingRecord">
+									<div class="item" @tooltip="_fishName.toUpperFirst()">
+										<<icon `"fish/" + _fishKey + ".png"`>>
+									</div>
+									<div>
+										<span class="gold bold"><<= _fishName.toUpperFirst()>></span><br>
+										Caught: <<= _fishRecord.numCaught>><br>
+										Biggest: <<= _fishRecord.largest>> cm
+										<<if _largestSizePercent gte 1>>
+											<span class="journalFishingRecordStar" tooltip="Biggest possible!"><<iconUi "star-gold.png">></span>
+										<</if>>
+									</div>
+								</div>
+							<<else>>
+								<div class="fishingRecord">
+									<div class="item unknown" tooltip="Unknown fish">
+										<<mysteryicon>>
+									</div>
+								</div>
+							<</if>>
+						<</for>>
+					</div>
+				</details>
 			</details>
 		<</if>>
 	<</if>>

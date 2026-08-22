@@ -1,0 +1,156 @@
+/* Hooks into and reuses the forest rescue system (<<forestRescueSetup>>, <<forestRescueCheck>>, <<forestRescue>> widgets) */
+:: Fishing Forest Lake Wolf Attack
+<<effects>>
+<<if Weather.dayState is "night">>
+	<<set $fishingWolfCount to 2>>
+<<else>>
+	<<set $fishingWolfCount to 1>>
+<</if>>
+<<beastNEWinit $fishingWolfCount wolf>>
+<<if $settings.bestialityEnabled>>
+	<<set $fishingWolfMouthTarget to random(1, 4)>>
+	You're watching your line drift across the water when snarling erupts from the treeline.
+	<<if $fishingWolfCount is 1>>
+		A <<beasttype>> surges out of the forest,
+		<<if $fishingWolfMouthTarget is 1>>
+			<span class="red">clamping <<bhis>> jaws around your neck</span> before you can react.
+		<<elseif $fishingWolfMouthTarget is 2>>
+			<span class="red">snapping at your face</span> before you can react.
+		<<else>>
+			charging you before you can react.
+		<</if>>
+	<<else>>
+		Two <<beasttype>>s surge out of the forest,
+		<<if $fishingWolfMouthTarget is 1>>
+			<span class="red">one clamping its jaws around your neck</span> before you can react.
+		<<elseif $fishingWolfMouthTarget is 2>>
+			<span class="red">one jumping on top of you</span> and snapping at your face before you can react.
+		<<else>>
+			surrounding you at the lake's edge before you can react.
+		<</if>>
+	<</if>>
+	<br><br>
+
+	<<link [[Fight|Fishing Forest Lake Wolf Molestation]]>><<set $molestationstart to 1>><</link>>
+<<else>>
+	You're watching your line drift across the water when snarling erupts from the treeline.
+	<<if $fishingWolfCount is 1>>
+		A <<beasttype>> surges out, snapping at you. You manage to fend it off, but you don't escape unscathed.
+	<<else>>
+		Two <<beasttype>>s surge out, snarling. You manage to fend them off, but you don't escape unscathed.
+	<</if>><<beastescape>>
+	<br><br>
+
+	<<link [[Next|Fishing Forest Lake Wait]]>><<endevent>><</link>>
+<</if>>
+
+
+:: Fishing Forest Lake Wolf Molestation
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<beastCombatInit>>
+	<<beastTrainGenerate>>
+	<<unset $fishingWolfCount>>
+	<<set $enemytrust -= 40>>
+	<<set $enemyhealthmax to 600>>
+	<<set $enemyhealth to 600>>
+	<<set $enemyarousalmax to 500>>
+	<<if $fishingWolfMouthTarget is 1>>
+		<<set $NPCList[0].mouth to "neck">>
+		<<set $head to "grappled">>
+	<<elseif $fishingWolfMouthTarget is 2>>
+		<<set $NPCList[0].mouth to "hair">>
+		<<set $head to "grappled">>
+	<</if>>
+	<<unset $fishingWolfMouthTarget>>
+	<<forestRescueSetup>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+
+<<forestRescueCheck>>
+<br>
+<<beast $enemyno>>
+<br><br>
+
+<<stateman>>
+<br><br>
+
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Wolf Molestation Finish]]>><</link>></span>
+<<else>>
+	<span id="next"><<link [[Next|Fishing Forest Lake Wolf Molestation]]>><</link>></span>
+<</if>>
+
+
+:: Fishing Forest Lake Wolf Molestation Finish
+<<effects>>
+<<set $fishing.fishingForestLake.event to "none">>
+<<set $fishing.fishingForestLake.eventDanger to 0>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<beastejaculation>>
+	<<if $combatTrain.length gt 0>>
+		The <<beasttype>> grunts in satisfaction and is shoved off of you by the second <<beasttype>>, who takes <<bhis>> place.
+		<br><br>
+
+		<<combatTrainAdvance>>
+		<<link [[Next|Fishing Forest Lake Wolf Molestation]]>><</link>>
+	<<else>>
+		The <<beasttype>> grunts in satisfaction and retreats away from the lakeshore.
+		<br><br>
+
+		<<tearful>> you pick up your rod and gather your things.
+		<br><br>
+
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Return to fishing|Fishing Forest Lake Wait]]>><</link>>
+		<br>
+		<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+	<</if>>
+<<elseif $enemyhealth lte 0>>
+	<<if $combatTrain.length gt 0>>
+		The <<beasttype>> yelps and flees into the forest. Undeterred, the second <<beasttype>> approaches you.
+		<br><br>
+
+		<<combatTrainAdvance>>
+		<<link [[Next|Fishing Forest Lake Wolf Molestation]]>><</link>>
+	<<else>>
+		The <<beasttype>> yelps and flees into the forest, leaving you alone.
+		<br><br>
+
+		<<tearful>> you pick up your rod and gather your things.
+		<br><br>
+
+		<<clotheson>>
+		<<endcombat>>
+
+		<<link [[Return to fishing|Fishing Forest Lake Wait]]>><</link>>
+		<br>
+		<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+	<</if>>
+<<elseif $rescue is 1 and $alarm is 1>>
+	<<forestRescue>>
+<</if>>
+
+
+:: Widgets Fishing Forest Lake Wolf [widget]
+/* Text that can appear while waiting if a wolf will attack soon */
+<<widget "fishingForestLakeWolfAttackWaitAmbient">>
+	<<addinlineevent 20>>
+		<<print either(
+			"The musty smell of wet fur drifts on the breeze.",
+			"Branches snap in the forest behind you.",
+			"You feel like something is watching you."
+		)>>
+		<<set $fishing.fishingForestLake.eventDanger += 1>>
+	<</addinlineevent>>
+<</widget>>

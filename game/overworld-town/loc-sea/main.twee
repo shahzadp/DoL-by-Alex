@@ -464,6 +464,8 @@ You are swimming in the sea near the docks, east of the beach.
 			<<docksicon>><<link [[Climb onto the docks (0:02)|Mer Street]]>><<pass 2>><</link>>
 		<</if>>
 		<br>
+		<<docksicon>><<link [[Climb the pilings (0:05)|Sea Docks Climb]]>><<pass 5>><</link>><<athleticsdifficulty 600 1500>>
+		<br>
 		<<swimicon "back">><<link [[Practise swimming (0:30)|Sea Docks]]>><<stress -6>><<tiredness 6>><<set $seaswim to 1>><<slimeEventEnd "swimming">><</link>><<gswimming>><<lstress>><<gtiredness>>
 		<br>
 		<<swimicon>><<link [[Swim out to sea (0:10)|Sea]]>><<pass 10>><<tiredness 2>><<set $sea to 0>><</link>><<gtiredness>><<swimmingdifficulty 1 100>>
@@ -475,6 +477,58 @@ You are swimming in the sea near the docks, east of the beach.
 	<</if>>
 <</if>>
 <<set $eventskip to 0>>
+
+:: Sea Docks Climb
+<<effects>>
+
+<<if $daily.fishing.fishingPier.fisher.phase is "fishing">>
+	<<loadNPC 0 "fishing_pier_npc_fisher">><<person1>>
+	As you try and climb the piling, you see the <<person1>><<person>> above you, leaning over the railing with <<his>> arm outstretched, fishing rod forgotten on the planks of the pier. You grasp <<his>> hand, and <<he>> hauls you up and over the railing.
+	<br><br>
+
+	<<link [[Thank <<him>>|Fishing Pier Fisher Saved From Water]]>><</link>>
+	<br>
+	<<link [[Tell <<him>> you didn't need help|Sea Docks Fisher No Help]]>><</link>>
+<<else>>
+	You grab one of the pilings and try to haul yourself up, but the wood is slick with slime with nothing to get a proper grip on.
+	<br><br>
+
+	<<if $athleticsSuccess>>
+		<span class="green">But despite that, manage to get your arms over a cross-beam</span> and drag yourself up onto the pier over the railing.
+		<br><br>
+		<<if ["idle", "bet"].includes($daily.fishing.fishingPier.whitney.phase) and $whitneyromance isnot 1 and $rng lte 10>>
+			Just as you begin to climb up over the railing, Whitney's foot connects with your face and shoves you back down into the water.<<pain 4>><<gpain>>
+			<br><br>
+
+			When you surface again, you see Whitney doubled over with laughter, and soon waves to <<nnpc_he "Whitney">> friends and they begin walking down the pier, laughing and jeering at you as they walk away.<<stress 4>><<gstress>>
+			<br><br>
+
+			<<set $daily.fishing.fishingPier.whitney.phase to "finished">>
+			<<link [[Next|Sea Docks]]>><<set $eventskip to 1>><</link>>
+		<<else>>
+			<<link [[Next|Mer Pier]]>><</link>>
+		<</if>>
+	<<else>>
+		<span class="red">Your grip slips</span> and you drop back into the water.
+		<br><br>
+		<<if ["idle", "bet"].includes($daily.fishing.fishingPier.whitney.phase)>>
+			<<set $daily.fishing.fishingPier.whitney.climbAttempt to ($daily.fishing.fishingPier.whitney.climbAttempt ?? 0) + 1>>
+			<<if $daily.fishing.fishingPier.whitney.climbAttempt is 1>>
+				As you surface, you hear Whitney and <<nnpc_his "Whitney">> friends burst out in laughter.<<gstress>><<stress 4>>
+				<br><br>
+			<<elseif $daily.fishing.fishingPier.whitney.climbAttempt is 2>>
+				As you surface, you hear Whitney and <<nnpc_his "Whitney">> friends burst out in laughter. An empty can of cider bounces off your head.<<gpain>><<pain 5>><<gstress>><<stress 7>>
+				<br><br>
+			<<else>>
+				As you surface, Whitney leans over the railing. "You're pathetic, you know that?" <<nnpc_He "Whitney">> says. "Only good for one thing." <<nnpc_He "Whitney">> laughs, then jerks <<nnpc_his "Whitney">> head at <<nnpc_his "Whitney">> friends, and they all begin walking off the pier, laughing and jeering as they go.<<gstress>><<stress 7>>
+				<br><br>
+				<<set $daily.fishing.fishingPier.whitney.phase to "finished">>
+			<</if>>
+		<</if>>
+		<<link [[Next|Sea Docks]]>><<set $eventskip to 1>><</link>>
+	<</if>>
+<</if>>
+
 
 :: Sea Cliffs
 

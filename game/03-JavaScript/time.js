@@ -1119,6 +1119,18 @@ function hourPassed(hours) {
 			minutePassed(60);
 			Time.set(V.timeStamp + 3600);
 		}
+
+		if (V.fishing) {
+			// Decrease fishing danger values by 0.5 per hour, and remove the event if the danger is 0.
+			Object.values(V.fishing).forEach(location => {
+				if (location?.eventDanger > 0) {
+					location.eventDanger = Math.max(0, location.eventDanger - 0.5);
+					if (location.eventDanger === 0) {
+						location.event = "none";
+					}
+				}
+			});
+		}
 	}
 	/* changes that can be applied just once. consider if using V.hourly would make better sense before putting things here */
 	calchairlengthstage();

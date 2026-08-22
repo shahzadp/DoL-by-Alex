@@ -1,3 +1,5 @@
+/* global numberOfFishCaught */
+
 /**
  * @param {string | Array | null} override forced event or custom weighted random pool
  */
@@ -630,48 +632,65 @@ function gwylanRequestIngredients() {
 	const ingredientWhitelist = [
 		{ key: "apple", difficulty: 1 },
 		{ key: "banana", difficulty: 1 },
+		{ key: "bass", difficulty: 1, weight: 0.4 },
 		{ key: "bird_egg", difficulty: 1 },
 		{ key: "blackberry", difficulty: 1 },
 		{ key: "blood_lemon", difficulty: 2 },
 		{ key: "carnation", difficulty: 1 },
 		{ key: "cherry", difficulty: 1 },
+		{ key: "chub", difficulty: 1, weight: 0.4 },
+		{ key: "cod", difficulty: 2, weight: 0.4 },
 		{ key: "daisy", difficulty: 1 },
 		{ key: "date", difficulty: 1 },
+		{ key: "eel", difficulty: 2, weight: 0.4 },
+		{ key: "flounder", difficulty: 1, weight: 0.4 },
 		{ key: "ghostshroom", difficulty: 1 },
+		{ key: "grayling", difficulty: 1, weight: 0.4 },
+		{ key: "haddock", difficulty: 1, weight: 0.4 },
+		{ key: "herring", difficulty: 1, weight: 0.4 },
 		{ key: "lemon", difficulty: 1 },
 		{ key: "lily", difficulty: 1 },
 		{ key: "lime", difficulty: 1 },
 		{ key: "lotus", difficulty: 2 },
+		{ key: "mackerel", difficulty: 1, weight: 0.4 },
 		{ key: "mushroom", difficulty: 1 },
 		{ key: "orchid", difficulty: 2 },
 		{ key: "peach", difficulty: 1 },
 		{ key: "pear", difficulty: 1 },
+		{ key: "perch", difficulty: 1, weight: 0.4 },
+		{ key: "pike", difficulty: 2, weight: 0.4 },
 		{ key: "plum", difficulty: 1 },
 		{ key: "plumeria", difficulty: 1 },
 		{ key: "poppy", difficulty: 2 },
 		{ key: "red_rose", difficulty: 1 },
 		{ key: "red_wine", difficulty: 1 },
+		{ key: "roach", difficulty: 1, weight: 0.4 },
+		{ key: "salmon", difficulty: 1, weight: 0.4 },
 		{ key: "salt", difficulty: 1 },
 		{ key: "strange_flower", difficulty: 3 },
 		{ key: "strawberry", difficulty: 1 },
 		{ key: "sugar", difficulty: 1 },
+		{ key: "trout", difficulty: 1, weight: 0.4 },
 		{ key: "truffle", difficulty: 4 },
 		{ key: "tulip", difficulty: 1 },
 		{ key: "vegetable_oil", difficulty: 1 },
 		{ key: "white_rose", difficulty: 1 },
 		{ key: "white_wine", difficulty: 1 },
+		{ key: "whiting", difficulty: 1, weight: 0.4 },
 		{ key: "wild_honeycomb", difficulty: 3 },
 		{ key: "wolfshroom", difficulty: 1 },
 	];
 	const requiresSeeds = ["carnation", "daisy", "lotus", "plumeria", "poppy", "strange_flower", "white_rose"]; // items that can only be asked for if the player has their seeds due to remote location or no wild harvest
 
 	const removeIngredient = ingredientKey => {
-		const index = eligibleIngredientKeys.indexOf(ingredientKey);
+		const index = eligibleIngredientKeys.findIndex(([key]) => key === ingredientKey);
 		if (index !== -1) eligibleIngredientKeys.splice(index, 1);
 	};
 
 	// Remove ingredients that are too difficult
-	const eligibleIngredientKeys = ingredientWhitelist.filter(entry => allowedForageDifficulties.includes(entry.difficulty)).map(entry => entry.key);
+	const eligibleIngredientKeys = ingredientWhitelist
+		.filter(entry => allowedForageDifficulties.includes(entry.difficulty))
+		.map(entry => [entry.key, entry.weight ?? 1]);
 
 	// Remove ghostshrooms until the you are bffs with kylar
 	if (!V.syndromekylar) {
@@ -711,7 +730,14 @@ function gwylanRequestIngredients() {
 		removeIngredient("wolfshroom");
 	}
 
-	for (const ingredientKey of [...eligibleIngredientKeys]) {
+	// Remove baitfish-requiring fish until the player has caught enough to know what they're doing
+	if (numberOfFishCaught() < 25) {
+		removeIngredient("cod");
+		removeIngredient("pike");
+		removeIngredient("eel");
+	}
+
+	for (const [ingredientKey] of [...eligibleIngredientKeys]) {
 		// PC must have the seeds for these plants
 		if (requiresSeeds.includes(ingredientKey) && !V.plants_known.includes(ingredientKey)) {
 			removeIngredient(ingredientKey);
@@ -747,7 +773,11 @@ function gwylanRequestIngredients() {
 	}
 
 	for (let ingredientIndex = 0; ingredientIndex < ingredientSlotCount; ingredientIndex++) {
-		const ingredientKey = eligibleIngredientKeys.pluck();
+		const ingredientKey = weightedRandom(...eligibleIngredientKeys, seedrng);
+		eligibleIngredientKeys.splice(
+			eligibleIngredientKeys.findIndex(([key]) => key === ingredientKey),
+			1
+		);
 		const setupItem = clone(setup.foodstuff[ingredientKey]);
 		if (!eligibleIngredientKeys.length) {
 			if (!V.gwylan.request.items.length) {
@@ -774,6 +804,12 @@ function gwylanRequestIngredients() {
 			requestItem.need = Math.min(requestItem.need, 3);
 		} else if (setupItem.name === "blood lemon") {
 			requestItem.need = Math.min(requestItem.need, 6); // Ensure that it only takes one succesfull pick to complete the blood lemon request. The 6 comes from the min number of blood lemons you can harvest in one succesful attempt.
+		} else if (["cod", "pike", "eel"].includes(ingredientKey)) {
+			requestItem.need = Math.max(1, Math.ceil(requestItem.need / 3));
+		} else if (
+			["bass", "chub", "flounder", "grayling", "haddock", "herring", "mackerel", "perch", "roach", "salmon", "trout", "whiting"].includes(ingredientKey)
+		) {
+			requestItem.need = Math.max(1, Math.ceil(requestItem.need / 2));
 		} else {
 			const yieldMultiplier = setupItem.tending?.yield_multiplier ?? 1;
 			requestItem.need = ingredientBaseAmount * random(yieldMultiplier, yieldMultiplier + 2);

@@ -1,0 +1,312 @@
+:: Widgets Fishing Minigame [widget]
+<<widget "fishingMinigameStartText">>
+	<<wearActiveFishingRodProp>>
+	<<set _initialMinigameAction to setup.fishingMinigame.behaviors[setup.fishing.lootTables.fish[$fishingHookedFish.type].minigame.behavior].initialAction>>
+	<<set _minSize to setup.fishing.lootTables.fish[$fishingHookedFish.type].minSize>>
+	<<set _maxSize to setup.fishing.lootTables.fish[$fishingHookedFish.type].maxSize>>
+	<<set _isHuge to $fishingHookedFish.size gt _minSize + (_maxSize - _minSize) * 0.8>>
+	<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
+	
+	<<if _isHuge>>A <span class="pink">huge</span> $fishingHookedFish.type<<else>><<A $fishingHookedFish.type>><</if>><<if _isPreferredBait>> greedily<</if>> bites the <<print $fishing.currentBait ? setup.foodstuff[$fishing.currentBait].name.replace(/_/g, " ") + " on your hook" : "hook">> and starts to _initialMinigameAction.
+	<br><br><br>
+<</widget>>
+
+<<widget "onFishCaught">>
+	<<run updateFishRecord($fishingHookedFish.type, $fishingHookedFish.size, $bus)>>
+	<<set _fishPropName to "caught-" + $fishingHookedFish.type>>
+	<<wearProp _fishPropName>>
+<</widget>>
+
+<<widget "debugFishingMinigameInfo">>
+	<<if V.debug === 1>>
+		(Debug) | Stamina: $fishingMinigame.fishStamina / $fishingMinigame.maxStamina
+		| Distance: $fishingMinigame.fishDistance
+		| ArmFatigue: $fishingMinigame.armFatigue
+		| Escape timer: $fishingMinigame.fishEscapeTimer
+		| Behaviour: $fishingMinigame.behavior
+		<br><br>
+	<</if>>
+<</widget>>
+
+<<widget "fishingMinigameArmFatigue">>
+	<<set _totalArmFatigue to $fishingMinigame.armFatigue * $fishingMinigame.armFatigueDifficulty>>
+	<<if _totalArmFatigue gte 800>>
+		Your arms are burning.
+	<<elseif _totalArmFatigue gte 400>>
+		Your arms are starting to ache.
+	<</if>>
+<</widget>>
+
+/* The result of the last turn, where the player is told if they successfully reeled/held the fish or not. We're doing _totalArmFatigue gte random(1, 4) * 200 to display the tired arm fail message so that the more total arm fatigue you have, the more likely that you'll see the message attributing your failure to the tired arms. */
+<<widget "fishingMinigameTurnResult">>
+	<<set _totalArmFatigue to $fishingMinigame.armFatigue * $fishingMinigame.armFatigueDifficulty>>
+	<<switch $fishingMinigame.lastFishAction>>
+		<<case "run">>
+			<<switch $fishingMinigame.lastPlayerAction>>
+				<<case "reel">>
+					<<if $athleticsSuccess>>
+						You <span class="green">reel</span> the $fishingMinigame.fishName in as it tries to swim away.<<tiredness 0.2>>
+					<<elseif _totalArmFatigue gte random(1, 4) * 200>>
+						Your arms are too worn to keep up and the $fishingMinigame.fishName <span class="pink">pulls away</span>.<<tiredness 0.2>>
+					<<else>>
+						You try to reel in the $fishingMinigame.fishName, but it <span class="pink">pulls away</span>.<<tiredness 0.2>>
+					<</if>>
+				<<case "hold">>
+					<<if $athleticsSuccess>>
+						You <span class="green">hold</span> the $fishingMinigame.fishName still as it tries to swim away.<<tiredness 0.2>>
+					<<elseif _totalArmFatigue gte random(1, 4) * 200>>
+						Your arms are too tired to hold the line as the $fishingMinigame.fishName <span class="pink">swims further out</span>.<<tiredness 0.2>>
+					<<else>>
+						You <span class="pink">struggle</span> to hold the line as the $fishingMinigame.fishName swims further out.<<tiredness 0.2>>
+					<</if>>
+				<<case "slack">>
+					You let the line go slack and the $fishingMinigame.fishName swims further out.
+				<<default>>
+					<<error { message: "fishingMinigameTurnResult: unexpected player action \"" + $fishingMinigame.lastPlayerAction + "\"" }>>
+			<</switch>>
+		<<case "idle">>
+			<<switch $fishingMinigame.lastPlayerAction>>
+				<<case "reel">>
+					You <span class="green">reel</span> the $fishingMinigame.fishName in while it rests.
+				<<case "hold">>
+					You hold the line while the $fishingMinigame.fishName rests.
+				<<case "slack">>
+					<<if _totalArmFatigue gte 400>>
+						You let the line go slack while the $fishingMinigame.fishName rests, giving your arms a break.
+					<<else>>
+						You let the fish sit idle.
+					<</if>>
+				<<default>>
+					<<error { message: "fishingMinigameTurnResult: unexpected player action \"" + $fishingMinigame.lastPlayerAction + "\"" }>>
+			<</switch>>
+		<<case "thrash">>
+			<<switch $fishingMinigame.lastPlayerAction>>
+				<<case "reel">>
+					<<if $athleticsSuccess>>
+						You <span class="green">reel</span> the $fishingMinigame.fishName in while it thrashes.<<tiredness 0.2>>
+					<<elseif _totalArmFatigue gte random(1, 4) * 200>>
+						Your tired arms start to give as the $fishingMinigame.fishName's thrashing <span class="pink">stops you</span> from reeling in.<<tiredness 0.2>>
+					<<else>>
+						You try to reel, but the $fishingMinigame.fishName's thrashing <span class="pink">stops you</span>.<<tiredness 0.2>>
+					<</if>>
+				<<case "hold">>
+					<<if $athleticsSuccess>>
+						You <span class="green">hold</span> the line against the $fishingMinigame.fishName's thrashing and it tires a little.<<tiredness 0.2>>
+					<<elseif _totalArmFatigue gte random(1, 4) * 200>>
+						You try to hold the $fishingMinigame.fishName still as it thrashes, but your burning arms <span class="pink">give out.</span><<tiredness 0.2>>
+					<<else>>
+						You try and <span class="pink">fail</span> to hold the $fishingMinigame.fishName still as it thrashes.<<tiredness 0.2>>
+					<</if>>
+				<<case "slack">>
+					You let the line go slack while the $fishingMinigame.fishName thrashes.
+				<<default>>
+					<<error { message: "fishingMinigameTurnResult: unexpected player action \"" + $fishingMinigame.lastPlayerAction + "\"" }>>
+			<</switch>>
+		<<default>>
+			<<error { message: "fishingMinigameTurnResult: unexpected fish action \"" + $fishingMinigame.lastFishAction + "\"" }>>
+	<</switch>>
+<</widget>>
+
+
+/* What the fish is doing right now */
+<<widget "fishingMinigameFishStatus">>
+	<<switch $fishingMinigame.fishAction>>
+		<<case "run">>
+			<<if $fishingMinigame.lastFishAction is "run">>
+				The $fishingMinigame.fishName is <span class="blue">running</span>.
+			<<elseif $fishingMinigame.lastFishAction is "idle">>
+				The $fishingMinigame.fishName perks up and starts to <span class="blue">run</span>.
+			<<elseif $fishingMinigame.lastFishAction is "thrash">>
+				The $fishingMinigame.fishName stops thrashing and starts to <span class="blue">run</span>.
+			<<else>>
+				The $fishingMinigame.fishName is <span class="blue">running</span>.
+			<</if>>
+		<<case "idle">>
+			<<if $fishingMinigame.lastFishAction is "idle">>
+				The $fishingMinigame.fishName sits <span class="green">motionless</span>.
+			<<else>>
+				The $fishingMinigame.fishName has stopped to <span class="green">rest</span>.
+			<</if>>
+		<<case "thrash">>
+			<<if $fishingMinigame.lastFishAction is "thrash">>
+				The $fishingMinigame.fishName is <span class="purple">thrashing</span> on the hook.
+			<<else>>
+				The $fishingMinigame.fishName starts to <span class="purple">thrash</span> violently on the hook.
+			<</if>>
+		<<default>>
+			<<error { message: "fishingMinigameFishStatus: unexpected fish action \"" + $fishingMinigame.fishAction + "\"" }>>
+	<</switch>>
+
+	<<if $fishingMinigame.fishDistance lte 1>>
+		<<set _distanceText to "almost within reach">>
+	<<elseif $fishingMinigame.fishDistance lte 3>>
+		<<set _distanceText to "close">>
+	<<elseif $fishingMinigame.fishDistance lte 6>>
+		<<set _distanceText to "a fair way out">>
+	<<elseif $fishingMinigame.fishDistance gte 7>>
+		<<set _distanceText to "far out">>
+	<</if>>
+
+	<<if $fishingMinigame.fishStamina is 0>>
+		<<set _staminaText to ", and completely worn out.">>
+	<<elseif $fishingMinigame.fishStamina lte 1>>
+		<<set _staminaText to ", and almost worn out.">>
+	<<elseif $fishingMinigame.fishStamina lte Math.ceil($fishingMinigame.maxStamina / 2)>>
+		<<set _staminaText to ", and starting to tire.">>
+	<<else>>
+		<<set _staminaText to ".">>
+	<</if>>
+
+	It's <<= _distanceText + _staminaText>>
+<</widget>>
+
+<<widget "fishingMinigameAthleticsCheck">>
+	<<athleticsdifficulty -250 `fishingMinigameAthleticsCheckDifficulty(_args[0])`>>
+<</widget>>
+
+<<widget "fishingMinigameFrame">>
+	<<set _frame to _args[0]>>
+	<<set _fishingBlockCount to fishingMinigameBlockCount()>>
+	<<set _waterImage to Time.isBloodMoon() ? 'base-water-red.png' : 'base-water.png'>>
+	<<set _fishDistance to Math.clamp(_frame.fishDistance, 0, 10)>>
+	<<set _fishBlock to Math.max(Math.ceil(_fishDistance * _fishingBlockCount / 10), 1)>>
+	<<if $bus is "fishingBeach">>
+		<<set _groundImg to "base-sand.png">>
+	<<elseif $bus is "fishingMoor" || $bus is "fishingCoastPath">>
+		<<set _groundImg to "base-grass.png">>
+	<<elseif $bus is "fishingForestLake">>
+		<<set _groundImg to "base-rock.png">>
+	<<elseif $bus is "fishingPier">>
+		<<set _groundImg to "base-pier.png">>
+	<</if>>
+
+	<div class="fishing-minigame-container" @style="'width: ' + ((_fishingBlockCount + 1) * 64) + 'px'">
+		<img @src="'img/misc/fishing-minigame/' + _groundImg">
+		<img @class="_frame.playerCss ? _frame.playerCss : ''" @src="'img/misc/fishing-minigame/' + _frame.playerImg">
+		<<if _frame.sweat gte 6>>
+			<img class="fishing-minigame-sweat" src="img/misc/fishing-minigame/sweat-3.png">
+		<<elseif _frame.sweat gte 4>>
+			<img class="fishing-minigame-sweat" src="img/misc/fishing-minigame/sweat-2.png">
+		<<elseif _frame.sweat gte 2>>
+			<img class="fishing-minigame-sweat" src="img/misc/fishing-minigame/sweat-1.png">
+		<</if>>
+		<<for _i to 0; _i lt _fishingBlockCount; _i++>>
+			<img @style="'left: ' + ((_i + 1) * 64) + 'px'" @src="'img/misc/fishing-minigame/' + _waterImage">
+		<</for>>
+		<<if _frame.showFish>>
+			<img @class="_frame.fishCss" @style="'left: ' + (_fishBlock * 64) + 'px'" @src="'img/misc/fishing-minigame/' + _frame.fishImg">
+			<<if _frame.splashImg>>
+				<img class="fishing-minigame-splash" @style="'left: ' + (_fishBlock * 64) + 'px'" @src="'img/misc/fishing-minigame/' + _frame.splashImg">
+			<</if>>
+		<</if>>
+	</div>
+<</widget>>
+
+<<widget "fishingMinigameUi">>
+	<<if $options.images is 1>>
+		<<set _fishDistance to Math.clamp(_args[0], 0, 10)>>
+		<<set _fishAction to _args[1]>>
+
+		/* Player image reflects the last action taken. The default covers the first turn, before any action. */
+		<<switch $fishingMinigame.lastPlayerAction>>
+			<<case "reel">>
+				<<set _playerImg to "pc-reel-in.png">>
+			<<case "hold">>
+				<<if $fishingMinigame.lastFishAction is "run">>
+					<<set _playerImg to "pc-reel-in.png">>
+				<<else>>
+					<<set _playerImg to "pc-hold-the-line.png">>
+				<</if>>
+			<<case "slack">>
+				<<set _playerImg to "pc-put-slack.png">>
+			<<default>>
+				<<set _playerImg to "pc-hold-the-line.png">>
+		<</switch>>
+
+		<<if _fishDistance lte 1>>
+			<<set _fishSpriteVariation to 1>>
+		<<elseif _fishDistance lte 3>>
+			<<set _fishSpriteVariation to 2>>
+		<<elseif _fishDistance lte 6>>
+			<<set _fishSpriteVariation to 3>>
+		<<else>>
+			<<set _fishSpriteVariation to 4>>
+		<</if>>
+
+		<<switch _fishAction>>
+			<<case "run">>
+				<<if $fishingMinigame.lastFishAction is "idle">>
+					<<set _splashImg to Time.isBloodMoon() ? "splash-1-red.png" : "splash-1.png">>
+				<</if>>
+				<<set _fishImg to "fish-running-" + _fishSpriteVariation + ".png">>
+				<<set _fishCss to "fish-running">>
+			<<case "thrash">>
+				<<set _splashImg to Time.isBloodMoon() ? "splash-2-red.png" : "splash-2.png">>
+				<<set _fishImg to "fish-thrashing-" + _fishSpriteVariation + ".png">>
+				<<set _fishCss to "fish-thrashing">>
+			<<case "idle">>
+				<<if $fishingMinigame.fishStamina lt $fishingMinigame.maxStamina / 2>>
+					<<set _fishImg to "fish-very-tired-" + _fishSpriteVariation + ".png">>
+					<<set _fishCss to "fish-very-tired">>
+				<<else>>
+					<<set _fishImg to "fish-tired-" + _fishSpriteVariation + ".png">>
+					<<set _fishCss to "fish-tired">>
+				<</if>>
+			<<default>>
+				<<error { message: "fishingMinigameUi: unexpected fish action \"" + _fishAction + "\"" }>>
+		<</switch>>
+
+		<<fishingMinigameFrame { fishDistance: _fishDistance, playerImg: _playerImg, playerCss: _playerCss, fishImg: _fishImg, splashImg: _splashImg, fishCss: _fishCss, sweat: _args[2], showFish: true }>>
+	<</if>>
+<</widget>>
+
+<<widget "fishingMinigameResultUi">>
+	<<if $options.images is 1>>
+		<<set _fishDistance to Math.clamp(_args[0], 0, 10)>>
+		<<set _outcome to _args[1]>>
+		<<set _showFish to true>>
+
+		<<if _fishDistance lte 1>>
+			<<set _fishSpriteVariation to 1>>
+		<<elseif _fishDistance lte 3>>
+			<<set _fishSpriteVariation to 2>>
+		<<elseif _fishDistance lte 6>>
+			<<set _fishSpriteVariation to 3>>
+		<<else>>
+			<<set _fishSpriteVariation to 4>>
+		<</if>>
+
+		<<switch _outcome>>
+			<<case "caught">>
+				<<set _playerImg to $bus is "fishingPier" ? "pc-caught-fish-pier.png" : "pc-caught-fish.png">>
+				<<set _showFish to false>>
+			<<case "cut">>
+				<<set _playerImg to "pc-swimming-away.png">>
+				<<set _fishImg to "fish-snapped.png">>
+				<<set _fishCss to "fish-snapped">>
+			<<case "lineSnapped">>
+				<<set _playerImg to "pc-snapped.png">>
+				<<set _fishImg to "fish-snapped.png">>
+				<<set _fishCss to "fish-snapped">>
+			<<case "fishOffHook">>
+				<<set _playerImg to "pc-snapped.png">>
+				<<set _fishImg to "fish-off-hook.png">>
+				<<set _fishCss to "fish-off-hook">>
+			<<case "pulledIn">>
+				<<set _playerImg to $bus is "fishingPier" ? "pc-fall-pier.png" : "pc-fall.png">>
+				<<set _playerCss to $bus is "fishingPier" ? "pc-pulled-in-pier" : "pc-pulled-in">>
+				<<set _fishImg to "fish-running-" + _fishSpriteVariation + ".png">>
+				<<set _fishCss to "fish-running">>
+			<<default>>
+				<<error { message: "fishingMinigameResultUi: unexpected outcome \"" + _outcome + "\"" }>>
+		<</switch>>
+
+		<<fishingMinigameFrame { fishDistance: _fishDistance, playerImg: _playerImg, playerCss: _playerCss, fishImg: _fishImg, splashImg: _splashImg, fishCss: _fishCss, sweat: 0, showFish: _showFish }>>
+	<</if>>
+<</widget>>
+
+<<widget "wearActiveFishingRodProp">>
+	<<if $worn.handheld.type.includes("fishing_rod")>>
+		<<wearProp "active fishing rod">>
+	<</if>>
+<</widget>>

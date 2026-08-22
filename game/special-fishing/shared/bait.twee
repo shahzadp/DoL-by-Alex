@@ -1,0 +1,159 @@
+:: Fishing Bait Widgets [widget]
+
+<<widget "baitOverlay">>
+	<<fishingBaitList>>
+	<label class="fishing-select-bait-radio">
+		<<checkbox "$fishing.autoRebait" false true autocheck>> Automatically re-bait
+	</label>
+	<br><br>
+
+	<<if $fishingSelectedBait is "none" or _fishingHaveBait is true>>
+		<<link "Change bait">>
+			<<if $fishing.currentBait and $fishing.currentBait isnot $fishingSelectedBait>>
+				<<set $foodstuff[$fishing.currentBait].amount += 1>>
+			<</if>>
+			<<if $fishingSelectedBait is "none">>
+				<<unset $fishing.currentBait>>
+			<<else>>
+				<<if $fishingSelectedBait isnot $fishing.currentBait>>
+					<<set $foodstuff[$fishingSelectedBait].amount -= 1>>
+				<</if>>
+				<<set $fishing.currentBait to $fishingSelectedBait>>
+			<</if>>
+			<<unset $fishingSelectedBait>>
+			<<set _hasBait to $fishing.currentBait and setup.foodstuff[$fishing.currentBait]>>
+			<<set _newBaitTooltip to _hasBait ? "Bait: " + setup.foodstuff[$fishing.currentBait].name.replace(/_/g, " ").toUpperFirst() + " (" + $foodstuff[$fishing.currentBait].amount + " left)" : "No bait on your line (click to change)">>
+			<<if elementExists("#bait-sidebar")>>
+				<<replace "#bait-sidebar">>
+					<<if _hasBait>>
+						<<foodstufficon $fishing.currentBait>>
+					<<else>>
+						<<icon `"fish/hook.png"`>>
+					<</if>>
+				<</replace>>
+				<<run jQuery("#bait-sidebar").attr("tooltip", "<span>" + _newBaitTooltip + "</span>").removeData("tooltip-settings")>>
+			<</if>>
+			<<if elementExists("#bait-mobile-sidebar")>>
+				<<replace "#bait-mobile-sidebar">>
+					<<if _hasBait>>
+						<<foodstufficon $fishing.currentBait>>
+					<<else>>
+						<<icon `"fish/hook.png"`>>
+					<</if>>
+				<</replace>>
+				<<run jQuery("#bait-mobile-sidebar").attr("tooltip", "<span>" + _newBaitTooltip + "</span>").removeData("tooltip-settings")>>
+			<</if>>
+			<<run closeOverlay()>>
+		<</link>>
+		<br>
+	<</if>>
+	<<link "Close">><<unset $fishingSelectedBait>><<run closeOverlay()>><</link>>
+	<br>
+<</widget>>
+
+<<widget "fishingBaitHelp">>
+	The goal of fishing is to reel in a fish before it works its way lose from your hook or gets too far out and snaps your line. Fish behave differently from each other, however they each fall into a category that defines how it behaves, and many fish share the same category. Learn how to treat different fish to influence their actions so you can catch them easier!
+	<br><br>
+	Each fish prefers a specific kind of bait, and fishing without any bait will not attract many fish. Bait worms are an easy bait to acquire, but aren't very good at attracting anything other than baitfish. Various kinds of food can be used as bait, and are all effective at catching your average fish. Each fish has a favorite type of bait, experiment to find out which fish like which bait so you can better catch what you want!
+<</widget>>
+
+<<widget "fishingRebaitMid">>
+	<<if $foodstuff[$fishing.currentBait].amount lte 0>>
+		baiting your last piece of <<print setup.foodstuff[$fishing.currentBait].plural>> on the hook and casting back out.
+	<<else>>
+		re-baiting your line and casting back out. You have <<= $foodstuff[$fishing.currentBait].amount>> <<print setup.foodstuff[$fishing.currentBait].plural>> left.
+	<</if>>
+<</widget>>
+
+<<widget "fishingRebaitStart">>
+	<<if $foodstuff[$fishing.currentBait].amount lte 0>>
+		You bait your last piece of <<print setup.foodstuff[$fishing.currentBait].plural>> on the hook and cast back out.
+	<<else>>
+		You re-bait your line and cast back out. You have <<= $foodstuff[$fishing.currentBait].amount>> <<print setup.foodstuff[$fishing.currentBait].plural>> left.
+	<</if>>
+<</widget>>
+
+<<widget "fishingBaitList">>
+	<<unset $fishingSelectedBait>>
+
+	<label class="fishing-select-bait-radio">
+		<<icon `"fish/hook.png"`>> None
+		<<if !$fishing.currentBait>>
+			<<radiobutton "$fishingSelectedBait" "none" checked>>
+		<<else>>
+			<<radiobutton "$fishingSelectedBait" "none">>
+		<</if>>
+		|
+	</label>
+
+	<<set _foodKeys to ["bait_worm", "baitfish"].concat(Object.keys(setup.foodstuff).filter(k => !["bait_worm", "baitfish"].includes(k)))>>
+	<<for _i to 0; _i lt _foodKeys.length; _i++>>
+		<<set _food to _foodKeys[_i]>>
+		<<if setup.foodstuff[_food].is_fishing_bait is true and $foodstuff[_food]?.amount gte 1>>
+			<<set _fishingHaveBait to true>>
+			<<if !$fishingSelectedBait and $fishing.currentBait is _food>>
+				<<set $fishingSelectedBait to _food>>
+			<</if>>
+			<label class="fishing-select-bait-radio">
+				<<foodstufficon _food>><<recipe_name _food "cap">> (<<= $foodstuff[_food].amount>>)
+				<<if _food is $fishingSelectedBait>>
+					<<radiobutton "$fishingSelectedBait" _food checked>>
+				<<else>>
+					<<radiobutton "$fishingSelectedBait" _food>>
+				<</if>>
+				|
+			</label>
+		<</if>>
+	<</for>>
+	<br><br>
+<</widget>>
+
+<<widget "baitSidebar">>
+	<<set _baitEditEnabled to ["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes($bus) ? _fishingEditBaitEnabled : true>>
+	<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
+		<<set _baitTooltip to "Bait: " + setup.foodstuff[$fishing.currentBait].name.replace(/_/g, " ").toUpperFirst() + " (" + $foodstuff[$fishing.currentBait].amount + " left)">>
+	<<else>>
+		<<set _baitTooltip to "No bait on your line (click to change)">>
+	<</if>>
+	<button type="button" id="bait-sidebar" @class="'bait-sidebar' + (_baitEditEnabled ? '' : ' bait-sidebar-disabled')" tooltip="<span>_baitTooltip</span>" onclick="openBaitOverlay()">
+		<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
+			<<foodstufficon $fishing.currentBait>>
+		<<else>>
+			<<icon `"fish/hook.png"`>>
+		<</if>>
+	</button>
+<</widget>>
+
+<<widget "baitMobileDropdown">>
+	<select id="fishing-bait-select" onchange="fishingChangeBaitFromDropdown(this.value)">
+		<option value="none">None</option>
+		<<set _foodKeys to ["bait_worm", "baitfish"].concat(Object.keys(setup.foodstuff).filter(k => !["bait_worm", "baitfish"].includes(k)))>>
+		<<for _i to 0; _i lt _foodKeys.length; _i++>>
+			<<set _food to _foodKeys[_i]>>
+			<<if setup.foodstuff[_food].is_fishing_bait is true and ($foodstuff[_food]?.amount gte 1 or $fishing.currentBait is _food)>>
+				<option @value="_food"><<= setup.foodstuff[_food].name.replace(/_/g, " ").toUpperFirst()>> (<<= $foodstuff[_food].amount>>)</option>
+			<</if>>
+		<</for>>
+	</select>
+	<<timed 0s>><<run $("#fishing-bait-select").val($fishing.currentBait ? $fishing.currentBait : "none")>><</timed>>
+	<br>
+	<label class="fishing-select-bait-radio">
+		<<checkbox "$fishing.autoRebait" false true autocheck>> Automatically re-bait
+	</label>
+<</widget>>
+
+<<widget "baitMobileSidebar">>
+	<<set _baitEditEnabled to ["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes($bus) ? _fishingEditBaitEnabled : true>>
+	<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
+		<<set _baitTooltip to "Bait: " + setup.foodstuff[$fishing.currentBait].name.replace(/_/g, " ").toUpperFirst() + " (" + $foodstuff[$fishing.currentBait].amount + " left)">>
+	<<else>>
+		<<set _baitTooltip to "No bait on your line (click to change)">>
+	<</if>>
+	<button type="button" id="bait-mobile-sidebar" @class="'bait-mobile-sidebar' + (_baitEditEnabled ? '' : ' bait-sidebar-disabled')" tooltip="<span>_baitTooltip</span>" onclick="openBaitOverlay()">
+		<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
+			<<foodstufficon $fishing.currentBait>>
+		<<else>>
+			<<icon `"fish/hook.png"`>>
+		<</if>>
+	</button>
+<</widget>>
