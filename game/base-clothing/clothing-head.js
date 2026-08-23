@@ -877,7 +877,7 @@ function initHead() {
 			warmth: 1,
 			cost: 2000,
 			description: "Shields you from the sun.",
-			shop: ["clothing", "adult", "baitShop"],
+			shop: ["baitShop"],
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],

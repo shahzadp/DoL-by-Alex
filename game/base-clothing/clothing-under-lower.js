@@ -145,7 +145,7 @@ function initUnderLower() {
 			warmth: 1,
 			cost: 2000,
 			description: "Revealing swimwear.",
-			shop: ["baitShop"],
+			shop: ["clothing", "baitShop"],
 			shopGroup: "bikinibottom",
 			accessory: 0,
 			accessory_colour: 0,

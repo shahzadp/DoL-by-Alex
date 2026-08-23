@@ -837,7 +837,7 @@ function initFeet() {
 			warmth: 2,
 			cost: 2000,
 			description: "Lets you dive faster.",
-			shop: ["baitShop"],
+			shop: ["clothing", "baitShop"],
 			accessory: 0,
 			accessory_colour: 0,
 			accessory_colour_options: [],
