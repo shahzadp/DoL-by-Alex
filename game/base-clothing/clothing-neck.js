@@ -1122,7 +1122,7 @@ function initNeck() {
 			colour: 0,
 			colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
 			colour_sidebar: 1,
-			type: ["baitShop"],
+			type: ["normal"],
 			gender: "n",
 			warmth: 0,
 			cost: 1000,
