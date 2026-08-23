@@ -441,6 +441,7 @@ function initFishingBeach() {
 	V.daily.fishing.fishingBeach ??= {};
 	V.daily.fishing.fishingBeach.sessionStartTime ??= Time.date.timeStamp;
 	V.daily.fishing.fishingBeach.fisher ??= {};
+	V.daily.fishing.fishingBeach.fisher.age ??= 0;
 	V.daily.fishing.fishingBeach.fisher.drunk ??= 0;
 	V.daily.fishing.fishingBeach.fisherOgle ??= 1;
 	resetFishingCatchState();
@@ -480,6 +481,7 @@ function initFishingMoor() {
 	V.daily.fishing.fishingMoor ??= {};
 	V.daily.fishing.fishingMoor.sessionStartTime ??= Time.date.timeStamp;
 	V.daily.fishing.fishingMoor.fox ??= {};
+	V.daily.fishing.fishingMoor.fox.closeness ??= 0;
 	V.daily.fishing.fishingMoor.hikers ??= {};
 	V.daily.fishing.fishingMoor.hikers.drinkCount ??= 0;
 	if (V.moor_hunt >= 1) {
@@ -503,9 +505,11 @@ function initFishingPier() {
 	V.daily.fishing.fishingPier ??= {};
 	V.daily.fishing.fishingPier.sessionStartTime ??= Time.date.timeStamp;
 	V.daily.fishing.fishingPier.fisher ??= {};
+	V.daily.fishing.fishingPier.fisher.age ??= 0;
 	V.daily.fishing.fishingPier.fisher.drunk ??= 0;
 	V.daily.fishing.fishingPier.fisherOgle ??= 1;
 	V.daily.fishing.fishingPier.whitney ??= {};
+	V.daily.fishing.fishingPier.whitney.age ??= 0;
 	V.daily.fishing.fishingPier.whitney.pcCider ??= 0;
 	V.daily.fishing.fishingPier.whitney.pcCiderTotal ??= 0;
 	resetFishingCatchState();
