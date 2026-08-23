@@ -196,7 +196,7 @@ function endPlayerPregnancy(birthLocation, location) {
 	birthRecordedLitter(pregnancy.pregnancyId, birthLocation, location);
 
 	// Record the birth on the player's per-orifice body stats. These drive the hymen and
-	// vaginal-looseness lines, recovery, and the anal mpreg gate. Kept off records on purpose bc
+	// vaginal-looseness lines, recovery, and the anal pregnancy gate. Kept off records on purpose bc
 	// Virginity-restoration events (schism, scarlet) reset them to 0
 	const bodyStats = V.sexStats[pregnancy.orifice].pregnancy;
 	bodyStats.totalBirthEvents += 1;

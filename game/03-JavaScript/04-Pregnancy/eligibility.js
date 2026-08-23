@@ -36,7 +36,7 @@ function canPlayerConceive(orifice, donor, donorSpecies) {
 	// Forced impregnation ignores disableNormalImpregnation.
 	const forced = (orifice === "vagina" && V.vaginaaction === "forceImpregnation") || (orifice === "anus" && V.anusaction === "forceImpregnation");
 	if (!playerPregnancyEligible(donor, donorSpecies, forced)) return false;
-	if (orifice === "anus" && !(V.player.vaginaExist ? V.settings.analPregnancyEnabled : playerCanCarryAnally())) return false;
+	if (orifice === "anus" && !playerCanCarryAnally()) return false;
 	return true;
 }
 window.canPlayerConceive = canPlayerConceive;
@@ -56,8 +56,8 @@ function canNpcConceive(orifice, carrier, infertile) {
 	// A named NPC the player toggled off stays off — the compatibility check enforces this, the roll must too.
 	if (C.npc[carrier] && C.npc[carrier].pregnancy && C.npc[carrier].pregnancy.enabled === false) return false;
 	if (orifice === "anus") {
-		if (!V.settings.analPregnancyEnabled) return false;
-		if (!carrierHasWomb(carrier) && !V.settings.mpregEnabled) return false;
+		if (!V.settings.npcAnalPregnancyEnabled) return false;
+		if (C.npc[carrier] && C.npc[carrier].pregnancy && C.npc[carrier].pregnancy.analEnabled === false) return false;
 	}
 	return !infertile;
 }
@@ -100,45 +100,30 @@ function playerSpeciesPregnancyEnabled(species) {
 window.playerSpeciesPregnancyEnabled = playerSpeciesPregnancyEnabled;
 
 /**
- * Does the carrier have a womb to carry in? The player, a named NPC, or a generated one from the scene.
- * A carrier we can't resolve is treated as having no womb, so mpreg is required rather than assumed.
- *
- * @param {string} carrier "pc" for the player, or an NPC's name / generated description
- * @returns {boolean}
- */
-function carrierHasWomb(carrier) {
-	if (carrier === "pc") return V.player.vaginaExist;
-	// A named NPC keeps their anatomy in C.npc, where "none" means no vagina.
-	if (C.npc[carrier]) return C.npc[carrier].vagina !== "none";
-	// A generated NPC is only in the scene's NPCList. Their gender is their anatomy, f or h has a womb.
-	const npc = V.NPCList?.find(n => n.fullDescription === carrier);
-	return !!npc && (npc.gender === "f" || npc.gender === "h");
-}
-window.carrierHasWomb = carrierHasWomb;
-
-/**
- * Whether pc can carry an anal pregnancy through an acquired method like the magic tattoo
- * or earslime. Always false while pc has a vagina.
+ * Whether pc has acquired a way to carry an anal pregnancy, like the magic tattoo or earslime.
+ * This is what "exceptional circumstances" means. Always false while pc has a vagina.
  *
  * @returns {boolean}
  */
-function canBeMPregnant() {
+function hasExceptionalAnalPregnancy() {
 	return (
 		!V.player.vaginaExist &&
 		((V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy") ||
 			(V.earSlime.growth >= 100 && ["pregnancy", "mixed"].includes(V.earSlime.focus)))
 	);
 }
-window.canBeMPregnant = canBeMPregnant;
+window.hasExceptionalAnalPregnancy = hasExceptionalAnalPregnancy;
 
 /**
- * Only PCs without a vagina/womb can carry a pregnancy anally right now.
- *
+ * Whether pc can carry a pregnancy anally right now. "always" treats it like any other pregnancy,
+ * "exceptional" needs one of the acquired methods (earslime, magic tattoo), and false disables it.
  *
  * @returns {boolean}
  */
 function playerCanCarryAnally() {
-	return !V.player.vaginaExist && V.settings.analPregnancyEnabled && (V.settings.mpregEnabled || canBeMPregnant());
+	if (V.settings.analPregnancy === "always") return true;
+	if (V.settings.analPregnancy === "exceptional") return hasExceptionalAnalPregnancy();
+	return false;
 }
 window.playerCanCarryAnally = playerCanCarryAnally;
 
@@ -239,8 +224,11 @@ function NPCPregnancyPossibleWithPlayer(NPC) {
 	if (V.settings.npcPregnancyEnabled === false) return false;
 	if (!setup.pregnancy.typesEnabled.includes(resolvedNpc.type)) return false;
 	if (!V.player.penisExist) return false;
-	// A male NPC can carry only anally, and only under the mpreg + anal toggles.
-	if (resolvedNpc.gender === "m" && !(V.settings.mpregEnabled && V.settings.analPregnancyEnabled)) return false;
+	// A male NPC can carry only anally, so it needs the NPC anal and pregnancy toggle.
+	if (resolvedNpc.gender === "m") {
+		if (!V.settings.npcAnalPregnancyEnabled) return false;
+		if (named && resolvedNpc.pregnancy.analEnabled === false) return false;
+	}
 	return true;
 }
 window.NPCPregnancyPossibleWithPlayer = NPCPregnancyPossibleWithPlayer;

@@ -30,8 +30,8 @@ declare module "twine-sugarcube" {
 			toyMultiplePenetrationEnabled: true | false;
 			multipleWardrobes: "all" | "isolated" | false;
 			maleChanceSplit: true | false;
-			analPregnancyEnabled: true | false;
-			mpregEnabled: true | false;
+			analPregnancy: "always" | "exceptional" | false;
+			npcAnalPregnancyEnabled: true | false;
 			npcPregnancyEnabled: true | false;
 			monsterHallucinationsOnly: true | false;
 			parasitePregnancyEnabled: true | false;
