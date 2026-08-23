@@ -1290,6 +1290,11 @@
 				<<set $_plotsToPick  to $_currentPlot.filter(plot => plot.stage >= 5 ).length>>
 				<<set $_plotsEmpty   to $_currentPlot.filter(plot => !(plot.stage >= 1)).length>>
 				<<set $_plotsGrowing to ($_currentPlot.length - $_plotsEmpty - $_plotsToPick - $_plotsToWater)>>
+				<<set $_descriptors to [
+					$_plotsEmpty  ?`<span class="gold">$_plotsEmpty  </span> <<pluralise $_plotsEmpty   "is">> empty`:``,
+					$_plotsToWater?`<span class="gold">$_plotsToWater</span> <<pluralise $_plotsToWater "needs" "need">> watering`:``,
+					$_plotsToPick ?`<span class="gold">$_plotsToPick </span> <<pluralise $_plotsToPick  "is">> ready for harvest`:``,
+				].filter(str=>str.length)>>
 				<ul class="journal">
 					<li>
 						<<switch $_plotToDisplay>>
@@ -1316,20 +1321,12 @@
 							<<elseif $_plotsToPick == $_currentPlot.length>>
 								all of which are <span class="green">ready for harvest</span>.
 							<<else>>
-								of which
-								<<if $_plotsToPick>>
-									<<if $_plotsEmpty>>  <span class="gold">$_plotsEmpty  </span> <<pluralise $_plotsEmpty "is">> empty<<if $_plotsToWater>>,<</if>><</if>>
-									<<if $_plotsToWater>><span class="gold">$_plotsToWater</span> need watering<</if>>
-									and <span class="gold">$_plotsToPick </span> <<pluralise $_plotsToPick  "is">> ready for harvest.
-								<<else>>
-									<<if $_plotsEmpty>><span class="gold">$_plotsEmpty</span> <<pluralise $_plotsEmpty "is">> empty and <</if>>
-									<span class="gold">$_plotsToWater</span> need watering.
-								<</if>>
+								of which <<print formatList($_descriptors)>>.
 							<</if>>
 						<<elseif $_currentPlot.length is 1>>
 							<<switch $_currentPlot[0].size>>
 								<<case "small">> <span class="lblue">bed</span>
-								<<case "medium">><span class="teal">plot</span>
+								<<case "medium">><span class="teal"> plot</span>
 								<<default>>      <span class="green">field</span>
 							<</switch>>
 							<<if $_plotsEmpty>>is empty<<elseif $_plotsToWater>>needs watering<<elseif $_plotsGrowing>>is growing<<elseif $_plotsToPick>>is ready for harvest<</if>>.
