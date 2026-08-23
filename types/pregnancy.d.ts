@@ -281,7 +281,18 @@ declare global {
 	function canPlayerConceive(orifice: "vagina" | "anus", donor: string, donorSpecies: string): boolean;
 	function canNpcConceive(orifice: "vagina" | "anus", carrier: string, infertile: boolean): boolean;
 	function impregnationDisabled(forced: boolean): boolean;
-	function carrierHasWomb(carrier: string): boolean;
+	function playerPregnancyEligible(name: string, species: string, forced: boolean): boolean;
+	function playerSpeciesPregnancyEnabled(species: string): boolean;
+	function hasExceptionalAnalPregnancy(): boolean;
+	function playerCanCarryAnally(): boolean;
+	function playerCanBreedWith(NPC: string | object): boolean;
+	function pregnancyCompatible(NPC: string | object): boolean;
+	function resolvePregnancyNpc(NPC: string | object): { npc: object | null; name: string; named: boolean };
+	function playerPregnancyPossibleWith(NPC: string | object): boolean;
+	function NPCPregnancyPossibleWithPlayer(NPC: string | object): boolean;
+	function orificeHasParasites(orifice: "vagina" | "anus"): boolean;
+	function maxParasites(orifice?: "vagina" | "anus"): number;
+	function canImpregnateParasite(orifice?: "vagina" | "anus"): boolean;
 }
 
 export {};

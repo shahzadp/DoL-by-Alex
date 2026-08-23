@@ -1488,7 +1488,7 @@ window.drunkSexStatModifier = drunkSexStatModifier;
  */
 function heatRutSexStatModifier(input) {
 	/**
-	 * While the PC's minimum arousal can technically go higher than 2500, a PC with only a penis has this arousal max out at 1500, and a PC with only a vagina has this arousal max out at 2500 (when risk = 0 and taking fertility pills). This also assumes the PC does not have ear slimes and mpreg is disabled.
+	 * While the PC's minimum arousal can technically go higher than 2500, a PC with only a penis has this arousal max out at 1500, and a PC with only a vagina has this arousal max out at 2500 (when risk = 0 and taking fertility pills). This also assumes the PC does not have ear slimes and anal pregnancy is disabled.
 	 *
 	 * To account for this, the PC's Sex Stat mods will have their boosts max out at 2,500 minimum arousal to make the effects more noticeable.
 	 *

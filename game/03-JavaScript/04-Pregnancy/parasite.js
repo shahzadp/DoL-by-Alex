@@ -149,6 +149,17 @@ function maxParasites(orifice = "anus") {
 window.maxParasites = maxParasites;
 
 /**
+ * Whether parasites are occupying an orifice. The other orifice is unaffected.
+ *
+ * @param {"anus"|"vagina"} orifice the orifice to check
+ * @returns {boolean}
+ */
+function orificeHasParasites(orifice) {
+	return V.sexStats[orifice].pregnancy.fetus.length > 0;
+}
+window.orificeHasParasites = orificeHasParasites;
+
+/**
  * Whether pc can take a new parasite in this orifice right now: parasites enabled, no anti-parasite
  * cream active, no real pregnancy there, and a free slot left.
  *

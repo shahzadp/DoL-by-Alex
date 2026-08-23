@@ -196,6 +196,7 @@ window.hourlyConceptionChance = hourlyConceptionChance;
 function rollAndRecordConception(orifice) {
 	// One real pregnancy per body: a pending or active pregnancy in either orifice prevents a new pregnancy.
 	if (V.pendingPregnancies[orifice] !== null || getActivePregnancies("pc").length > 0) return;
+	if (orificeHasParasites(orifice)) return;
 
 	// Only loads past the grace period are in the running. The hourly trim already dropped the expired ones.
 	const now = Time.date.timeStamp;
@@ -305,6 +306,10 @@ function startDuePregnancies() {
 		const pending = V.pendingPregnancies[orifice];
 		if (pending === null) continue;
 		if (Time.date.timeStamp - pending.conceivedDate < PregnancyConstants.implantationWindow) continue;
+		if (orificeHasParasites(orifice)) {
+			V.pendingPregnancies[orifice] = null;
+			continue;
+		}
 		createPregnancy(
 			"pc",
 			pending.carrierSpecies,

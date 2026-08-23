@@ -399,7 +399,7 @@
 		<<if $_pregnancyLitter.length is 3 and $_pregnancyLitter[0].species is "human">>
 			<<earnFeat "Life Comes in Threes">>
 		<</if>>
-		<<if ($player.virginity.anal is true && !$player.vaginaExist) || ($player.virginity.vaginal is true && $player.vaginaExist)>>
+		<<if $_pregnancy and $_pregnancy.orifice is "vagina" and $player.virginity.vaginal is true>>
 			<<earnFeat "Hail Mary">>
 		<</if>>
 		<<if !$player.vaginaExist>>
@@ -2086,6 +2086,9 @@
 			/*For saves that have the variables set, but have no need to be there*/
 			<<set C.npc[$_name].pregnancy to {}>>
 		<</if>>
+		<<if C.npc[$_name].pregnancy.enabled isnot undefined and C.npc[$_name].pregnancy.analEnabled is undefined>>
+			<<set C.npc[$_name].pregnancy.analEnabled to true>>
+		<</if>>
 			/* 0 = never uses a condom, Kylar has a special exception
 			* 50 = Will use a condom, but will refrain if asked
 			* 100 = Always uses a condom, will not remove it
@@ -2137,11 +2140,7 @@
 						<</if>>
 					</div>
 					<<if $options.images is 1>>
-						<<if $player.vaginaExist>>
-							<<set $_fCum to Math.clamp(setup.bodyliquid.combined("vagina"),1,5)>>
-						<<else>>
-							<<set $_fCum to Math.clamp(setup.bodyliquid.combined("anus"),1,5)>>
-						<</if>>
+						<<set $_fCum to Math.clamp(setup.bodyliquid.combined(playerLabouringOrifice()),1,5)>>
 						<img class="fertilization" @src="'img/sex/fertilisation/impregnate-' + $_fCum + '.gif'">
 					<</if>>
 				</div>

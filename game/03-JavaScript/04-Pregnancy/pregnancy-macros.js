@@ -4,6 +4,7 @@
 // Cum inside an NPC is one <<npcPregnancyRoll>> on the spot, NPCs store no loads.
 
 // Which impregnable hole and landing depth each penis state means.
+// The names come from the $NPCList[n].penis states during combat/sex.
 // States not listed here (mouth, thighs, etc.) leave nothing behind.
 const depthFromPenisState = {
 	vaginaentrance: ["vagina", "outside"],
@@ -100,6 +101,7 @@ function instantConception(orifice, load, force = false) {
 	const forced = force && !load.canWash;
 	if (!forced && V.settings.pregnancyType !== "fetish") return;
 	if (getActivePregnancies("pc").length) return;
+	if (orificeHasParasites(orifice)) return;
 	const won = forced ? load : fetishPregnancyRoll(load);
 	if (won) conceiveNow(orifice, won);
 }

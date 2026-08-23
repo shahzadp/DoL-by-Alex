@@ -1234,8 +1234,8 @@ function settingsObjects(type) {
 					multipleWardrobes: { strings: [false, "isolated"], displayName: "Multiple wardrobes:" }, //, "all"
 					maleChanceSplit: { bool: true, displayName: "NPC attraction split by gender appearance:" },
 					npcPregnancyEnabled: { bool: true, displayName: "NPC pregnancy:" },
-					analPregnancyEnabled: { bool: true, displayName: "Anal pregnancy:" },
-					mpregEnabled: { bool: true, displayName: "Male pregnancy:" },
+					analPregnancy: { strings: [false, "exceptional", "always"], displayName: "PC anal pregnancy:" },
+					npcAnalPregnancyEnabled: { bool: true, displayName: "NPC anal pregnancy:" },
 					maleChanceMale: { min: 0, max: 100, decimals: 0, displayName: "NPCs who are attracted to men:", randomize: "encounter" },
 					maleChanceFemale: { min: 0, max: 100, decimals: 0, displayName: "NPCs who are attracted to women:", randomize: "encounter" },
 					nudeGenderPerception: {
