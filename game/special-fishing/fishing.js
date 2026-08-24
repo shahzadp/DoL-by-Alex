@@ -293,6 +293,8 @@ function updateFishRecord(fishKey, fishSize, bus) {
 		foundIn: [],
 	};
 
+	V.fishing.waitsSinceLastCatch = 0;
+
 	const fishRecord = V.fishing.record[fishKey];
 	fishRecord.numCaught += 1;
 	fishRecord.largest = Math.max(fishRecord.largest, fishSize);
@@ -547,6 +549,7 @@ window.isPlayerFishingAlone = isPlayerFishingAlone;
 
 function openBaitOverlay() {
 	if (["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes(V.bus) && !T.fishingEditBaitEnabled) return;
+	V.fishing.displayBaitNotification = false;
 	wikifier("overlayReplace", '"bait"');
 }
 window.openBaitOverlay = openBaitOverlay;
@@ -687,7 +690,10 @@ window.fishingDangerEventWeight = fishingDangerEventWeight;
 function fishingCatchEventWeight(bus, defaultEventWeight) {
 	const fishingIntroMultiplier = numberOfFishCaught() <= 5 ? 3 : 1;
 
-	return defaultEventWeight * fishingCatchWeightPopulationMultiplier(bus) * fishingCatchWeightBaitMultiplier() * fishingIntroMultiplier;
+	const pity = V.fishing.waitsSinceLastCatch;
+	const pityMultiplier = pity > 6 ? Math.min(2, 1 + (pity - 6) * 0.17) : 1;
+
+	return defaultEventWeight * fishingCatchWeightPopulationMultiplier(bus) * fishingCatchWeightBaitMultiplier() * fishingIntroMultiplier * pityMultiplier;
 }
 window.fishingCatchEventWeight = fishingCatchEventWeight;
 
