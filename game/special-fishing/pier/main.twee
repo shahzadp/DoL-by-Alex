@@ -1,49 +1,7 @@
-:: Mer Pier
-<<set $outside to 1>><<set $location to "mer_pier">><<set $bus to "merPier">>
-<<run rollIfBaitShopRequestsFishToday()>>
-A long pier stretches out over the sea, its salt-bleached planks worn smooth by foot traffic. Waves roll below, visible through the gaps between the boards. A small shack with the word "Bait" hung over the door sits near the end of the walkway.
-<br><br>
-
-<<if $daily?.fishing?.fishingPier?.whitney?.phase is "idle">>
-	<<if ["dusk", "night"].includes(Weather.dayState)>>
-		<<set $daily.fishing.fishingPier.whitney.phase to "finished">>
-	<<else>>
-		Whitney and <<nnpc_his "Whitney">> friends are spread along the railing further down, cans in hand, fishing rods hanging over the edge.
-		<br><br>
-	<</if>>
-<</if>>
-
-<<if canStartFishing()>>
-	<<if !$fishing.locationsFound.includes("fishingPier")>>
-		<<run V.fishing.locationsFound.pushUnique("fishingPier")>>
-		<span class="gold">Looks like this could be a good spot for fishing</span>.
-		<br>
-	<</if>>
-	<<fishingRodIcon>><<link [[Start fishing|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
-	<br>
-<<elseif !$fishing.locationsFound.includes("fishingPier")>>
-	<<run V.fishing.locationsFound.pushUnique("fishingPier")>>
-	<span class="gold">If you had a fishing rod, you could probably catch fish from here</span>.
-	<br>
-<</if>>
-<<if baitShopOpen()>>
-	<<if $daily.fishing.baitShopRequest === "willRequest" and $fishing.baitShopIntro is "fullIntro">>
-		<<baitShopIcon>><<link [[Bait Shop|Bait Shop Request]]>><</link>>
-	<<else>>
-		<<baitShopIcon>><<link [[Bait Shop|Bait Shop]]>>
-			<<set $showPcEnterBaitShopText to true>>
-		<</link>>
-	<</if>>
-<<else>>
-	<<baitShopIcon>><<link [[Bait Shop|Bait Shop Lock]]>><</link>>
-<</if>>
-<br>
-<<mericon>><<link [[Leave|Mer Street]]>><</link>>
-
-
-/* The PC gets sent here any time they start fishing or after an event. From here, they get sent into the wait loop, where events can happen. */
+﻿/* The PC gets sent here any time they start fishing or after an event. From here, they get sent into the wait loop, where events can happen. */
 :: Fishing Pier Wait
 <<effects>>
+<<set $outside to 0>>
 <<run initFishingPier()>>
 <<wearActiveFishingRodProp>>
 <<set _fishingEditBaitEnabled to true>>
@@ -103,6 +61,7 @@ A long pier stretches out over the sea, its salt-bleached planks worn smooth by 
 
 
 :: Fishing Pier Wait Loop
+<<run V.fishing.waitsSinceLastCatch++>>
 <<cleareventpool>>
 
 <<addinlineevent "bite" fishingCatchEventWeight("fishingPier", 10)>>
@@ -165,11 +124,7 @@ A long pier stretches out over the sea, its salt-bleached planks worn smooth by 
 
 /* Whitney leaves */
 <<if $daily.fishing.fishingPier.whitney.phase is "idle">>
-	<<if ["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
-		<<addinlineevent "whitneyIdleLeaveWeather" 10>>
-			<<include "Fishing Pier Whitney Idle Leave Weather Heavy">>
-		<</addinlineevent>>
-	<<elseif Time.hour gte 20>>
+	<<if Time.hour gte 20>>
 		<<addinlineevent "whitneyIdleLeaveNight" 10>>
 			<<include "Fishing Pier Whitney Leave Night">>
 		<</addinlineevent>>
@@ -179,17 +134,9 @@ A long pier stretches out over the sea, its salt-bleached planks worn smooth by 
 		<</addinlineevent>>
 	<</if>>
 <<elseif $daily.fishing.fishingPier.whitney.phase is "bet">>
-	<<if ["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
-		<<addinlineevent "whitneyBetLeaveWeather" 10>>
-			<<include "Fishing Pier Whitney Bet Leave Weather Heavy">>
-		<</addinlineevent>>
-	<<elseif Time.hour gte 20>>
+	<<if Time.hour gte 20>>
 		<<addinlineevent "whitneyBetLeaveNight" 10>>
 			<<include "Fishing Pier Whitney Bet Leave Night">>
-		<</addinlineevent>>
-	<<elseif Weather.name is "lightPrecipitation" and $daily.fishing.fishingPier.whitney.rainLeave is undefined>>
-		<<addinlineevent "whitneyRainStay" 10>>
-			<<include "Fishing Pier Whitney Bet Weather Light">>
 		<</addinlineevent>>
 	<</if>>
 <</if>>
@@ -213,10 +160,6 @@ A long pier stretches out over the sea, its salt-bleached planks worn smooth by 
 	<<if Time.hour gte 20>>
 		<<addinlineevent "fisherLeaveNight" 10>>
 			<<include "Fishing Pier Fisher Leave Night">>
-		<</addinlineevent>>
-	<<elseif ["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
-		<<addinlineevent "fisherLeaveWeather" 10>>
-			<<include "Fishing Pier Fisher Leave Weather">>
 		<</addinlineevent>>
 	<</if>>
 <</if>>
@@ -243,7 +186,7 @@ A long pier stretches out over the sea, its salt-bleached planks worn smooth by 
 <</if>>
 
 /* Wind blow event: weight 1 at 0 dance skill, 0.1 at 600 */
-<<if ["storm", "thunderstorm", "heavyClouds", "heavyPrecipitation"].includes(Weather.name)>>
+<<if ["storm", "thunderstorm"].includes(Weather.name)>>
 	<<set _windChance to Math.clamp(1 - currentSkillValue('danceskill') * 0.9 / 600, 0.1, 1)>>
 	<<addinlineevent "wind" _windChance>>
 		<<if $daily.fishing.fishingPier.whitney.phase is "idle">>
@@ -339,10 +282,20 @@ You open wide and drop the whole $fishingHookedFish.type in your mouth. <<fishin
 	<<elseif $fishingAmbientOverride is "castOut">>
 		You cast out into the water.
 	<<else>>
-		<<cleareventpool>>
-		<<fishingWaitAmbient $bus>>
+		<<set $daily.fishing.fishingPier.sheltered ??= Weather.precipitation is "rain">>
+		<<if (Weather.precipitation is "rain") isnot $daily.fishing.fishingPier.sheltered>>
+			<<set $daily.fishing.fishingPier.sheltered to Weather.precipitation is "rain">>
+			<<if Weather.precipitation is "rain">>
+				As the rain picks up, you step back under the pavilion roof.
+			<<else>>
+				The rain lets up. You step back out to the railing.
+			<</if>>
+		<<else>>
+			<<cleareventpool>>
+			<<fishingWaitAmbient $bus>>
 
-		<<runeventpool>>
+			<<runeventpool>>
+		<</if>>
 	<</if>>
 	<<unset $fishingAmbientOverride>><<unset $clothingItem>>
 <</widget>>

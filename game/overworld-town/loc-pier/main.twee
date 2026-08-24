@@ -1,0 +1,44 @@
+:: Mer Pier
+<<set $outside to 1>><<set $location to "mer_pier">><<set $bus to "merPier">>
+<<run rollIfBaitShopRequestsFishToday()>>
+A long pier stretches out over the sea, its salt-bleached planks worn smooth by foot traffic. Waves roll below, visible through the gaps between the boards. A small shack with the word "Bait" hung over the door sits near the end of the walkway.
+<br><br>
+
+<<if $daily?.fishing?.fishingPier?.whitney?.phase is "idle">>
+	<<if ["dusk", "night"].includes(Weather.dayState)>>
+		<<set $daily.fishing.fishingPier.whitney.phase to "finished">>
+	<<else if Weather.precipitation is "rain">>
+		Whitney and <<nnpc_his "Whitney">> friends are huddled against the rain underneath the pavilion at the end of the pier, cans in hand, fishing rods hanging over the edge.
+		<br><br>
+	<<else>>
+		Whitney and <<nnpc_his "Whitney">> friends are spread along the railing further down, cans in hand, fishing rods hanging over the edge.
+		<br><br>
+	<</if>>
+<</if>>
+
+<<if canStartFishing()>>
+	<<if !$fishing.locationsFound.includes("fishingPier")>>
+		<<run V.fishing.locationsFound.pushUnique("fishingPier")>>
+		<span class="gold">Looks like this could be a good spot for fishing</span>.
+		<br>
+	<</if>>
+	<<fishingRodIcon>><<link [[Start fishing|Fishing Pier Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
+	<br>
+<<elseif !$fishing.locationsFound.includes("fishingPier")>>
+	<<run V.fishing.locationsFound.pushUnique("fishingPier")>>
+	<span class="gold">If you had a fishing rod, you could probably catch fish from here</span>.
+	<br>
+<</if>>
+<<if baitShopOpen()>>
+	<<if $daily.fishing.baitShopRequest === "willRequest" and $fishing.baitShopIntro is "fullIntro">>
+		<<baitShopIcon>><<link [[Bait Shop|Bait Shop Request]]>><</link>>
+	<<else>>
+		<<baitShopIcon>><<link [[Bait Shop|Bait Shop]]>>
+			<<set $showPcEnterBaitShopText to true>>
+		<</link>>
+	<</if>>
+<<else>>
+	<<baitShopIcon>><<link [[Bait Shop|Bait Shop Lock]]>><</link>>
+<</if>>
+<br>
+<<mericon>><<link [[Leave|Mer Street]]>><</link>>

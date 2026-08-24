@@ -2873,6 +2873,7 @@ function initFoodstuff() {
 			food: {
 				tags: ["vegetarian", "sweet"],
 			},
+			is_fishing_bait: true,
 		},
 		red_wine: {
 			index: 129,

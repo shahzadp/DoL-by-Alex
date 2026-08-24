@@ -109,13 +109,14 @@
 <</widget>>
 
 <<widget "baitSidebar">>
+	<<set $fishing.displayBaitNotification ??= true>>
 	<<set _baitEditEnabled to ["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes($bus) ? _fishingEditBaitEnabled : true>>
 	<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
 		<<set _baitTooltip to "Bait: " + setup.foodstuff[$fishing.currentBait].name.replace(/_/g, " ").toUpperFirst() + " (" + $foodstuff[$fishing.currentBait].amount + " left)">>
 	<<else>>
 		<<set _baitTooltip to "No bait on your line (click to change)">>
 	<</if>>
-	<button type="button" id="bait-sidebar" @class="'bait-sidebar' + (_baitEditEnabled ? '' : ' bait-sidebar-disabled')" tooltip="<span>_baitTooltip</span>" onclick="openBaitOverlay()">
+	<button type="button" id="bait-sidebar" @class="'bait-sidebar' + (_baitEditEnabled ? '' : ' bait-sidebar-disabled') + ($fishing.displayBaitNotification ? ' bait-sidebar-notify' : '')" tooltip="<span>_baitTooltip</span>" onclick="openBaitOverlay(); this.classList.remove('bait-sidebar-notify');">
 		<<if $fishing?.currentBait and setup.foodstuff[$fishing.currentBait]>>
 			<<foodstufficon $fishing.currentBait>>
 		<<else>>

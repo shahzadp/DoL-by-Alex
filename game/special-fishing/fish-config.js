@@ -15,7 +15,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "runner",
 				maxStamina: 6,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/haddock.png",
 			preferredBait: "apple",
@@ -35,7 +35,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "panicked",
 				maxStamina: 5,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/salmon.png",
 			preferredBait: "wild_carrot",
@@ -54,7 +54,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "darter",
 				maxStamina: 5,
-				armFatigueDifficulty: 310,
+				armFatigueDifficulty: 2900,
 			},
 			icon: "fish/trout.png",
 			preferredBait: "onion",
@@ -74,7 +74,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "panicked",
 				maxStamina: 4,
-				armFatigueDifficulty: 180,
+				armFatigueDifficulty: 1600,
 			},
 			icon: "fish/herring.png",
 			preferredBait: "pear",
@@ -94,7 +94,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "runner",
 				maxStamina: 4,
-				armFatigueDifficulty: 200,
+				armFatigueDifficulty: 1800,
 			},
 			icon: "fish/whiting.png",
 			preferredBait: "potato",
@@ -114,7 +114,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "panicked",
 				maxStamina: 4,
-				armFatigueDifficulty: 180,
+				armFatigueDifficulty: 1600,
 			},
 			icon: "fish/mackerel.png",
 			preferredBait: "bread",
@@ -134,7 +134,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "runner",
 				maxStamina: 5,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/flounder.png",
 			preferredBait: "peach",
@@ -154,7 +154,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "darter",
 				maxStamina: 6,
-				armFatigueDifficulty: 280,
+				armFatigueDifficulty: 2600,
 			},
 			icon: "fish/bass.png",
 			preferredBait: "lemon",
@@ -173,7 +173,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "darter",
 				maxStamina: 4,
-				armFatigueDifficulty: 160,
+				armFatigueDifficulty: 1400,
 			},
 			icon: "fish/roach.png",
 			preferredBait: "pepper",
@@ -192,7 +192,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "panicked",
 				maxStamina: 4,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/perch.png",
 			preferredBait: "garlic_bulb",
@@ -211,7 +211,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "runner",
 				maxStamina: 4,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/chub.png",
 			preferredBait: "strawberry",
@@ -229,7 +229,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "darter",
 				maxStamina: 4,
-				armFatigueDifficulty: 200,
+				armFatigueDifficulty: 1800,
 			},
 			icon: "fish/grayling.png",
 			preferredBait: "blackberry",
@@ -250,7 +250,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "anchor",
 				maxStamina: 3,
-				armFatigueDifficulty: 300,
+				armFatigueDifficulty: 2500,
 			},
 			icon: "fish/cod.png",
 		},
@@ -268,7 +268,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "thrasher",
 				maxStamina: 2,
-				armFatigueDifficulty: 330,
+				armFatigueDifficulty: 3000,
 			},
 			icon: "fish/pike.png",
 		},
@@ -286,7 +286,7 @@ function initFishingFishConfig() {
 			minigame: {
 				behavior: "slipper",
 				maxStamina: 3,
-				armFatigueDifficulty: 220,
+				armFatigueDifficulty: 2000,
 			},
 			icon: "fish/eel.png",
 		},
