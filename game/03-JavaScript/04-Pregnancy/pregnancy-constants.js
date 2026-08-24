@@ -8,7 +8,7 @@ const PregnancyConstants = ConstantsLoader.init({
 	// How long a pending conception takes to become a pregnancy record (in seconds).
 	// Until then, the morning-after pill can still discard it.
 	implantationWindow: 172800, // 2 days
-	// How much each ejaculation depth weighs in the pick, before potency applies.
+	// How much each ejaculation depth multiplies the conception chance, before potency applies.
 	// outside (washable), imminent (washable), deep (inside, not washable)
 	depthWeight: { outside: 0.05, imminent: 0.15, deep: 1 },
 	// Fertility-booster doses past this stop counting.
@@ -40,6 +40,9 @@ const PregnancyConstants = ConstantsLoader.init({
 		ovulationStartCycleFraction: 0.5, // ovulation starts mid-cycle
 		fertileLeadDaysMin: 5, // fertile from this many days before ovulation...
 		fertileLeadDaysMax: 7, // ...up to this many, rolled per cycle.
+		lutealTailDays: 2, // fertility fades away over this many days after the window closes
+		baselineFertility: 0.01, // baseline fertillity so pregnancy chance is never 0
+		riskyFertility: 0.375, // what fertillity counts as "risky"
 		postOvulationDays: 1, // NPC fertile window stays this many days past cycleDangerousDay
 	},
 

@@ -78,7 +78,7 @@
 	<<set $settings.schoolClothingCostModifier to 1>>
 	<<set $settings.lewdClothingCostModifier to 1>>
 	<<set $settings.furnitureCostModifier to 1>>
-	<<set $settings.basePlayerPregnancyChance to 5>>
+	<<set $settings.basePlayerPregnancyChance to 2>>
 	<<set $settings.baseNpcPregnancyChance to 8>>
 	<<set $settings.humanPregnancyMonths to 3>>
 	<<set $settings.wolfPregnancyWeeks to 4>>
@@ -2050,7 +2050,7 @@
 	<<checkbox "$settings.fertilityCycleEnabled" false true autocheck>> Enable fertility cycles
 	<mouse class="tooltip linkBlue">(?)<span>
 		<div>When enabled, the player's menstruation cycle will determine when they can get pregnant.</div>
-		<div>When disabled, each day's pregnancy chance will be randomised.</div>
+		<div>When disabled, fertility is always at its highest. Heat no longer applies. Rut and heat caused by fertillity boosters are unaffected.</div>
 	</span></mouse>
 <</widget>>
 
@@ -2062,15 +2062,18 @@
 <<widget "pregnancySettings">>
 	<div class="solidBorderContainer settings-container">
 		<div class="settingsGrid">
+			<div class="settingsToggleItemWide">
+				<span class="red">Changing these toggles will not stop existing pregnancy or prevent the player from interacting with their children.</span>
+			</div>
 			<div class="settingsHeader">
 				Pregnancy Chances
 			</div>
-			<div class="settingsToggleItemWide">
-				<div class="numberslider-inline basePlayerPregnancyChance-container">
-					<span class="gold">Base Player Pregnancy Chance:</span>
-					<<numberslider "$settings.basePlayerPregnancyChance" $settings.basePlayerPregnancyChance 0 100 1>>
-					<div class="small-description">Chance of conceiving when inseminated at the right time. Some events may leave you with more than one helping of cum. Other effects may modify the base chance, to both increase and decrease the chance of pregnancy.</div>
-				</div>
+			<div class="settingsToggleItem numberslider-inline basePlayerPregnancyChance-container">
+				<span class="gold">Base Player Pregnancy Chance:</span>
+				<<numberslider "$settings.basePlayerPregnancyChance" $settings.basePlayerPregnancyChance 0 100 1>>
+				<div class="small-description">Chance of a load of cum impregnating you each day, at peak fertility. A load keeps its chance for as long as it lasts, so it rolls again each day. Some events may leave you with more than one helping of cum.<br>
+				In <span class="green">Realistic</span> mode, other effects can modify fertility, such as fertility cycles, increasing and decreasing the chance of pregnancy. On safe days, your chance might still be close to 0 even with this setting toggled up.<br>
+				In <span class="pink">Fetishised</span> mode, this is just the chance of conception when a load of cum hits you.</div>
 			</div>
 			<<run $(() => { $('.basePlayerPregnancyChance-container input').on('input change', e => {
 				let valSpan = $(e.currentTarget).siblings().first();
@@ -2079,10 +2082,11 @@
 				valSpan.text((i, value) => value + "%");
 			}).trigger('change') })>>
 
-			<div class="settingsToggleItemWide numberslider-inline basenpcpregnancychance-container">
+			<div class="settingsToggleItem numberslider-inline basenpcpregnancychance-container">
 				<span class="gold">Base NPC Pregnancy Chance:</span>
 				<<numberslider "$settings.baseNpcPregnancyChance" $settings.baseNpcPregnancyChance 0 100 1>>
-				<div class="small-description">Chance of an NPC conceiving when inseminated at the right time.</div>
+				<div class="small-description">Chance of an NPC conceiving when inseminated at peak fertility. <br>
+				Note: Some NNPCs might take birth control or fertility boosters, which will impact this chance.</div>
 			</div>
 			<<run $(() => { $('.basenpcpregnancychance-container input').on('input change', e => {
 				let valSpan = $(e.currentTarget).siblings().first();
@@ -2090,63 +2094,16 @@
 
 				valSpan.text((i, value) => value + "%");
 			}).trigger('change') })>>
-		</div>
-		<hr>
-		<div class="settingsGrid">
-			<div class="settingsHeader">
-				Pregnancy Length
-			</div>
-			<<if playerPregnancyProgress() gte 0.9>>
-				<span class="red">You cannot currently change pregnancy length settings, as you are close to the end of your current pregnancy.</span>
-			<</if>>
-				<div class="settingsToggleItem numberslider-inline humanPregnancyMonths-container" data-target="humanPregnancyMonths" @data-disabledif="playerPregnancyProgress() gte 0.9">
-					<span class="gold">Human Pregnancy Length:</span>
-					<<numberslider "$settings.humanPregnancyMonths" $settings.humanPregnancyMonths 1 9 1 { value: (v) => v + pluralise(v, " month") }>>
-				</div>
-				<div class="settingsToggleItem numberslider-inline wolfPregnancyWeeks-container" data-target="wolfPregnancyWeeks" @data-disabledif="playerPregnancyProgress() gte 0.9">
-					<span class="gold">Wolf Pregnancy Length:</span>
-					<<numberslider "$settings.wolfPregnancyWeeks" $settings.wolfPregnancyWeeks 2 12 1 { value: (v) => v + pluralise(v, " week") }>>
-				</div>
-				<<run $(() => { $('.humanPregnancyMonths-container input, .wolfPregnancyWeeks-container input').on('input change', e => {
-					if(V.feats.pregnancyLocked){
-						$('#pregnancyFeatsDisabled').text("Some Pregnancy Feats are disabled.");
-						$('#pregnancyFeatsDisabled').css('display', 'block');
-					} else if(V.settings.humanPregnancyMonths < 3 || V.settings.wolfPregnancyWeeks < 4){
-						$('#pregnancyFeatsDisabled').text("Some Pregnancy Feats will be disabled.");
-						$('#pregnancyFeatsDisabled').css('display', 'block');
-					} else{
-						$('#pregnancyFeatsDisabled').text("");
-						$('#pregnancyFeatsDisabled').css('display', 'none');
-					}
-				}).trigger('change') })>>
-				<div id="pregnancyFeatsDisabled" class="red"></div>
-		</div>
-		<hr>
-		<div class="settingsGrid">
-			<div class="settingsHeader">
-				Pregnancy Toggles
+			<div class="settingsToggleItem">
+				<label>
+					Pregnancy type:
+					<<pregnancyType>>
+				</label>
 			</div>
 			<div class="settingsToggleItem">
-				<span class="red">Changing these toggles will not stop existing pregnancy or prevent the player from interacting with their children.</span>
-			</div>
-			<div class="settingsToggleItem">
-				Condoms
-				<<numberslider "$settings.condomLevel" $settings.condomLevel 0 3 1 {
-				value: v => {
-					switch (v) {
-						case 0:
-							return `<span class="small-description"><span class='red inline-colour'>Everyone is allergic to latex and safe sex.</span></span>`;
-						case 1:
-							return `<span class="small-description">Only <span class='green inline-colour'>you</span> may use condoms. You may still give condoms to NPCs.</span>`;
-						case 2:
-							return `<span class="small-description">NPCs will only have condoms if <span class='blue inline-colour'>pregnancy</span> between them and the player is possible.</span>`;
-						case 3:
-							return `<span class="small-description">NPCs may have and use condoms <span class='pink inline-colour'>whenever they please</span>.</span>`;
-						default:
-							return `<span class="small-description">Error: bad value: " + ${v}`;
-					}
-				}
-			}>>
+				<label>
+					<<fertilityCycles>>
+				</label>
 			</div>
 			<div class="settingsToggleItem">
 				<label>
@@ -2190,6 +2147,61 @@
 				<label><<radiobutton "$settings.npcAnalPregnancyEnabled" true autocheck>> On</label> |
 				<label><<radiobutton "$settings.npcAnalPregnancyEnabled" false autocheck>> Off</label>
 			</div>
+		</div>
+		<hr>
+		<div class="settingsGrid">
+			<div class="settingsHeader">
+				Pregnancy Length
+			</div>
+			<<if playerPregnancyProgress() gte 0.9>>
+				<span class="red">You cannot currently change pregnancy length settings, as you are close to the end of your current pregnancy.</span>
+			<</if>>
+				<div class="settingsToggleItem numberslider-inline humanPregnancyMonths-container" data-target="humanPregnancyMonths" @data-disabledif="playerPregnancyProgress() gte 0.9">
+					<span class="gold">Human Pregnancy Length:</span>
+					<<numberslider "$settings.humanPregnancyMonths" $settings.humanPregnancyMonths 1 9 1 { value: (v) => v + pluralise(v, " month") }>>
+				</div>
+				<div class="settingsToggleItem numberslider-inline wolfPregnancyWeeks-container" data-target="wolfPregnancyWeeks" @data-disabledif="playerPregnancyProgress() gte 0.9">
+					<span class="gold">Wolf Pregnancy Length:</span>
+					<<numberslider "$settings.wolfPregnancyWeeks" $settings.wolfPregnancyWeeks 2 12 1 { value: (v) => v + pluralise(v, " week") }>>
+				</div>
+				<<run $(() => { $('.humanPregnancyMonths-container input, .wolfPregnancyWeeks-container input').on('input change', e => {
+					if(V.feats.pregnancyLocked){
+						$('#pregnancyFeatsDisabled').text("Some Pregnancy Feats are disabled.");
+						$('#pregnancyFeatsDisabled').css('display', 'block');
+					} else if(V.settings.humanPregnancyMonths < 3 || V.settings.wolfPregnancyWeeks < 4){
+						$('#pregnancyFeatsDisabled').text("Some Pregnancy Feats will be disabled.");
+						$('#pregnancyFeatsDisabled').css('display', 'block');
+					} else{
+						$('#pregnancyFeatsDisabled').text("");
+						$('#pregnancyFeatsDisabled').css('display', 'none');
+					}
+				}).trigger('change') })>>
+				<div id="pregnancyFeatsDisabled" class="red"></div>
+		</div>
+		<hr>
+		<div class="settingsGrid">
+			<div class="settingsHeader">
+				Pregnancy Toggles
+			</div>
+			<div class="settingsToggleItem">
+				Condoms
+				<<numberslider "$settings.condomLevel" $settings.condomLevel 0 3 1 {
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description"><span class='red inline-colour'>Everyone is allergic to latex and safe sex.</span></span>`;
+						case 1:
+							return `<span class="small-description">Only <span class='green inline-colour'>you</span> may use condoms. You may still give condoms to NPCs.</span>`;
+						case 2:
+							return `<span class="small-description">NPCs will only have condoms if <span class='blue inline-colour'>pregnancy</span> between them and the player is possible.</span>`;
+						case 3:
+							return `<span class="small-description">NPCs may have and use condoms <span class='pink inline-colour'>whenever they please</span>.</span>`;
+						default:
+							return `<span class="small-description">Error: bad value: " + ${v}`;
+					}
+				}
+			}>>
+			</div>
 			<div class="settingsToggleItem">
 				<label>
 					<<checkbox "$settings.parasitePregnancyEnabled" false true autocheck>> Enable parasitic pregnancy
@@ -2197,19 +2209,8 @@
 			</div>
 			<div class="settingsToggleItem">
 				<label>
-					<<fertilityCycles>>
-				</label>
-			</div>
-			<div class="settingsToggleItem">
-				<label>
 					<<checkbox "$settings.playerPregnancyEggLayingEnabled" false true autocheck>> Enable egg laying
 					<mouse class="tooltip linkBlue">(?)<span>Required for Hawk and Harpy pregnancy.</span></mouse>
-				</label>
-			</div>
-			<div class="settingsToggleItem">
-				<label>
-					Pregnancy type:
-					<<pregnancyType>>
 				</label>
 			</div>
 			<div class="settingsToggleItem">
@@ -2668,7 +2669,7 @@
 		}>>
 		</div>
 		<div class="settingsToggleItem">
-			<span data-target="npcname-pregnancy" data-disabledif="setup.pregnancy.infertile.includes(V.NPCName[T.npcId].nam)||V.NPCName[T.npcId].pregnancy.enabled===undefined||getActivePregnancies(V.NPCName[T.npcId].nam).length||!setup.pregnancy.typesEnabled.includes(V.NPCName[T.npcId].type)">
+			<span data-target="npcname-pregnancy" data-disabledif="!V.settings.npcPregnancyEnabled||setup.pregnancy.infertile.includes(V.NPCName[T.npcId].nam)||V.NPCName[T.npcId].pregnancy.enabled===undefined||getActivePregnancies(V.NPCName[T.npcId].nam).length||!setup.pregnancy.typesEnabled.includes(V.NPCName[T.npcId].type)">
 				<span class="gold">Enable Pregnancy for NPC:</span>
 				<mouse class="tooltip linkBlue">(?)<span>Requires "NPC Pregnancy" toggle to be enabled. May also require the "incomplete pregnancy content" toggle to be enabled. Disabling will not stop an existing pregnancy.</span></mouse>
 				<br>
@@ -2677,7 +2678,7 @@
 			</span>
 		</div>
 		<div class="settingsToggleItem">
-			<span data-target="npcname-analpregnancy" data-disabledif="setup.pregnancy.infertile.includes(V.NPCName[T.npcId].nam)||V.NPCName[T.npcId].pregnancy.enabled===undefined||getActivePregnancies(V.NPCName[T.npcId].nam).length||!setup.pregnancy.typesEnabled.includes(V.NPCName[T.npcId].type)">
+			<span data-target="npcname-analpregnancy" data-disabledif="!V.settings.npcPregnancyEnabled||!V.settings.npcAnalPregnancyEnabled||setup.pregnancy.infertile.includes(V.NPCName[T.npcId].nam)||V.NPCName[T.npcId].pregnancy.enabled===undefined||getActivePregnancies(V.NPCName[T.npcId].nam).length||!setup.pregnancy.typesEnabled.includes(V.NPCName[T.npcId].type)">
 				<span class="gold">Enable Anal Pregnancy for NPC:</span>
 				<mouse class="tooltip linkBlue">(?)<span>"NPC Pregnancy" and "NPC Anal Pregnancy" must be toggled on in the global game settings for this to work. May also require the "incomplete pregnancy content" toggle to be enabled. Pregnancy for this NPC must be toggled on, as well. NPCs with vaginas will be able to carry both vaginally and anally if this is toggled on for them.</span></mouse>
 				<br>

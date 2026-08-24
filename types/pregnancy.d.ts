@@ -114,6 +114,8 @@ declare global {
 		canWash: boolean;
 		lifespan: number;
 		location: string;
+		/** The day of the load's own life it last took a conception roll on. Absent until its first roll. */
+		rolledDay?: number;
 	}
 
 	export interface PendingPregnancy {
@@ -133,7 +135,6 @@ declare global {
 		baseDaysRng: number;
 		stages: number[];
 		fertileLeadDays: number;
-		nonCycleFertility: number;
 		periodEnabled: boolean;
 		running: boolean;
 		awareOfPeriodDelay: boolean;
@@ -153,7 +154,6 @@ declare global {
 		cycleDaysTotal: number;
 		cycleDay: number;
 		cycleDangerousDay: number;
-		nonCycleFertility: number;
 		fertileLeadDays: number;
 		pills: "fertility" | "contraceptive" | null;
 	}
@@ -233,7 +233,9 @@ declare global {
 	function washLoads(): void;
 	function hourlyPregnancyUpdate(): void;
 	function rollAndRecordConception(orifice: "vagina" | "anus"): void;
-	function hourlyConceptionChance(encounterChance: number): number;
+	function readyToCarry(): boolean;
+	function fertilityOnCycleDay(day: number): number;
+	function loadAgeDay(load: Load): number;
 	function recordPendingPregnancy(orifice: "vagina" | "anus", load: Load): void;
 	function startDuePregnancies(): void;
 	function fetishPregnancyRoll(load: Load): Load | null;

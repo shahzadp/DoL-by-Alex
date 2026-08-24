@@ -302,14 +302,9 @@ function npcPregnancyCycle() {
 			continue;
 		}
 		if (pregnancy.enabled && V.settings.npcPregnancyEnabled === true) {
-			if (V.settings.fertilityCycleEnabled === true) {
-				pregnancy.cycleDay++;
-				if (pregnancy.cycleDay >= pregnancy.cycleDaysTotal) {
-					pregnancy.cycleDay = 1;
-				}
-			} else {
-				pregnancy.nonCycleFertility = 1 / 4 ** random(0, 4);
-				if (npcName === "Great Hawk" && pregnancy.nonCycleFertility === 1) pregnancy.nonCycleHasEggs = true;
+			pregnancy.cycleDay++;
+			if (pregnancy.cycleDay >= pregnancy.cycleDaysTotal) {
+				pregnancy.cycleDay = 1;
 			}
 		}
 	}

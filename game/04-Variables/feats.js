@@ -926,7 +926,7 @@ setup.feats = {
 	},
 	"Hail Mary": {
 		title: "Hail Mary",
-		desc: "Gave birth as a virgin.",
+		desc: "Have a vaginal birth as a virgin.",
 		difficulty: 4,
 		series: "",
 		filter: ["All", "Pregnancy"],

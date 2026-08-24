@@ -3420,7 +3420,7 @@
 	<</if>>
 
 	<!-- To update the player and named npc pregnancy objects from numbers to a single array -->
-	<<if $sexStats.vagina.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.type is undefined or $sexStats.vagina.menstruation?.nonCycleFertility is undefined>>
+	<<if $sexStats.vagina.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.fetus is undefined or $sexStats.anus.pregnancy.type is undefined>>
 		<<physicalAdjustmentsInit>>
 	<</if>>
 
@@ -7350,24 +7350,15 @@
 		<<set $settings.baseNpcPregnancyChance to legacyPregnancyChanceToPercent($settings.baseNpcPregnancyChance, 20)>>
 		<<set $objectVersion.pregnancyChancePercent to 1>>
 	<</if>>
-
-	<!-- The non-cycle fertility roll is stored as the day's multiplier. Convert the old
-	pre-rolled level arrays (multiplier = 1/4^level) and drop them. -->
-	<<if $sexStats.vagina.menstruation.nonCycleRng isnot undefined>>
-		<<set $sexStats.vagina.menstruation.nonCycleFertility to 1 / 4 ** $sexStats.vagina.menstruation.nonCycleRng[0]>>
-		<<run delete $sexStats.vagina.menstruation.nonCycleRng>>
-	<</if>>
+	<<run delete $sexStats.vagina.menstruation.nonCycleRng>>
+	<<run delete $sexStats.vagina.menstruation.nonCycleFertility>>
 	<<run $NPCNameList.forEach(name => {
 		const pregnancy = C.npc[name] && C.npc[name].pregnancy;
 		if (!pregnancy) return;
-		if (Array.isArray(pregnancy.nonCycleRng)) {
-			pregnancy.nonCycleFertility = 1 / 4 ** pregnancy.nonCycleRng[0];
-			delete pregnancy.nonCycleRng;
-		}
-		if ("nonCycleRngHasEggs" in pregnancy) {
-			pregnancy.nonCycleHasEggs = pregnancy.nonCycleRngHasEggs;
-			delete pregnancy.nonCycleRngHasEggs;
-		}
+		delete pregnancy.nonCycleRng;
+		delete pregnancy.nonCycleRngHasEggs;
+		delete pregnancy.nonCycleFertility;
+		delete pregnancy.nonCycleHasEggs;
 	})>>
 	<<run Object.values($storedNPCs ?? {}).forEach(stored => {
 		if (stored && stored.pregnancy) {
