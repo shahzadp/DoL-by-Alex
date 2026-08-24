@@ -118,12 +118,7 @@ function birdEggsReady(npc) {
 	if (getActivePregnancies(npc).some(p => childBaseSpecies(p.donorSpecies) === "hawk" && (p.waterBreaking || Time.date.timeStamp >= getDueDate(p))))
 		return "fertilised";
 	if (npc === "Great Hawk" && V.daily.hawkUnfertilisedEggs) return undefined;
-	if (
-		!npcIsPregnant(npc) &&
-		((V.settings.fertilityCycleEnabled === true && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) ||
-			(V.settings.fertilityCycleEnabled === false && pregnancy.nonCycleFertility < 1 && pregnancy.nonCycleHasEggs))
-	)
-		return "unfertilised";
+	if (!npcIsPregnant(npc) && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) return "unfertilised";
 }
 window.birdEggsReady = birdEggsReady;
 
@@ -344,17 +339,20 @@ window.playerPregnancyRisk = playerPregnancyRisk;
  */
 function menstrualFertileDates() {
 	const m = V.sexStats.vagina.menstruation;
+	const c = PregnancyConstants.menstrualCycle;
 	const [, , ovulationStart, ovulationEnd] = m.stages;
-	const riskyStart = ovulationStart - m.fertileLeadDays;
-	const cycleShift = m.currentDay > ovulationEnd ? m.currentDaysMax : 0;
+	const riskyStart = ovulationStart - m.fertileLeadDays * (1 - c.riskyFertility);
+	const riskyEnd = ovulationEnd + c.lutealTailDays * (1 - c.riskyFertility);
+	const cycleShift = m.currentDay > riskyEnd ? m.currentDaysMax : 0;
 	const dateFor = cycleDay => {
 		const d = new DateTime(Time.date).addDays(Math.round(cycleDay + cycleShift - m.currentDay));
 		return `${String(d.month).padStart(2, "0")}/${String(d.day).padStart(2, "0")}`;
 	};
-	const fertility = menstrualFertility();
-	const today = fertility >= 1 ? "dangerous" : fertility > 0 ? "risky" : "safe";
+	const risk = playerPregnancyRisk();
+	const levels = PregnancyConstants.riskMeterLabels.length - 1;
+	const today = risk >= levels ? "dangerous" : risk >= 2 ? "risky" : "safe";
 	return {
-		risky: `${dateFor(riskyStart)} to ${dateFor(ovulationStart - 1)}`,
+		risky: `${dateFor(Math.ceil(riskyStart))} to ${dateFor(Math.floor(riskyEnd))}`,
 		dangerous: `${dateFor(ovulationStart)} to ${dateFor(Math.ceil(ovulationEnd))}`,
 		today,
 	};
@@ -409,7 +407,7 @@ function playerHeatMinArousal() {
 	let minArousal = 0;
 
 	// Should always be the first to modify minArousal
-	if (risk >= levels - 1 && pills.contraceptive.doseTaken === 0) {
+	if (V.settings.fertilityCycleEnabled !== false && risk >= levels - 1 && pills.contraceptive.doseTaken === 0) {
 		if (V.earSlime.growth > 50 && V.earSlime.focus === "pregnancy" && !V.earSlime.defyCooldown) {
 			minArousal += Math.clamp(V.earSlime.growth, 0, 200) * 5 * (risk - (levels - 2));
 		}
@@ -452,7 +450,11 @@ function playerRutMinArousal() {
 window.playerRutMinArousal = playerRutMinArousal;
 
 function playerAwareTheyCanBePregnant() {
-	return V.player.vaginaExist || (playerCanCarryAnally() && V.sexStats.anus.pregnancy.totalBirthEvents >= 1) || playerAwareTheyArePregnant();
+	return (
+		V.player.vaginaExist ||
+		(playerCanCarryAnally() && (V.settings.analPregnancy === "always" || V.sexStats.anus.pregnancy.totalBirthEvents >= 1)) ||
+		playerAwareTheyArePregnant()
+	);
 }
 window.playerAwareTheyCanBePregnant = playerAwareTheyCanBePregnant;
 

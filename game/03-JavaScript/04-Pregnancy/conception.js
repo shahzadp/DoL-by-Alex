@@ -1,8 +1,9 @@
 // Did a pregnancy happen, and who caused it?
 //
-// In realistic mode, loads of cum are stored per orifice. Once past their grace period they compete
-// in a weighted draw. The winning load becomes a pending conception by that donor and implants two
-// days later. Heavier loads (deeper cum, higher potency) win more often.
+// In realistic mode, loads of cum are stored per orifice.
+// Once past their washing grace period, each one takes its own roll, once per day, at that day's fertility.
+// Heavier loads (deeper cum, higher potency) carry a better chance.
+// The winner becomes a pending conception which implants two days later.
 // Fetish mode rolls each load's odds the moment it lands (instantConception) and stores nothing.
 
 /**
@@ -106,35 +107,69 @@ function playerConceptionModifier() {
 window.playerConceptionModifier = playerConceptionModifier;
 
 /**
- * Fertility curve that turns days until ovulation into a weight.
- * 1 at ovulation, then sliding down to 0 when you're leadDays before ovulation.
+ * The fertility curve's slope: 1 at the peak, sliding to 0 windowDays away from it.
  *
- * @param {number} daysBeforeOvulation days until ovulation (0 = at or past it)
- * @param {number} leadDays how many days before ovulation fertility reaches 0
+ * @param {number} daysFromPeak days from the fertile peak (0 or less = at it)
+ * @param {number} windowDays how far from the peak fertility reaches 0
  * @returns {number} 0 = no chance, 1 = most chance
  */
-function fertilityRamp(daysBeforeOvulation, leadDays) {
-	if (daysBeforeOvulation <= 0) return 1;
-	return Math.clamp(1 - daysBeforeOvulation / leadDays, 0, 1);
+function fertilityRamp(daysFromPeak, windowDays) {
+	if (daysFromPeak <= 0) return 1;
+	return Math.clamp(1 - daysFromPeak / windowDays, 0, 1);
 }
 window.fertilityRamp = fertilityRamp;
 
 /**
- * How likely conception is on a given day.
- * Reads the current cycle day and ramps toward ovulation.
- * With the fertility cycle setting off, the day's rolled nonCycleFertility multiplier applies instead.
+ * Whether the body can take on a new pregnancy at all.
+ * Already carrying a pregnancy or recovering from one means no.
+ * Covers both orifices, and holds whatever the mode or the cycle setting.
  *
- * @returns {number} 0 for no chance (past the fertile window, pregnant, or recovering) up to 1 at ovulation
+ * @returns {boolean}
+ */
+function readyToCarry() {
+	return V.sexStats.vagina.menstruation.currentState === "normal";
+}
+window.readyToCarry = readyToCarry;
+
+/**
+ * How likely conception is on a day of the cycle: a long rise into ovulation, a short fall out of it.
+ * With the fertility cycle setting off, every day is fertile.
+ *
+ * @param {number} day the day of the cycle to read
+ * @returns {number} 0 while carrying or recovering, otherwise the baselineFertility at worst, up to 1 at ovulation
+ */
+function fertilityOnCycleDay(day) {
+	if (!readyToCarry()) return 0;
+	if (V.settings.fertilityCycleEnabled === false) return 1;
+	const c = PregnancyConstants.menstrualCycle;
+	const m = V.sexStats.vagina.menstruation;
+	const [, , ovulationStart, ovulationEnd] = m.stages; // [cycleStart, menstrualEnd, ovulationStart, ovulationEnd]
+	const fertility = day > ovulationEnd ? fertilityRamp(day - ovulationEnd, c.lutealTailDays) : fertilityRamp(ovulationStart - day, m.fertileLeadDays);
+	return Math.max(fertility, c.baselineFertility);
+}
+window.fertilityOnCycleDay = fertilityOnCycleDay;
+
+/**
+ * How fertile pc is today.
+ *
+ * @returns {number} 0 for no chance up to 1 at ovulation
  */
 function menstrualFertility() {
-	const m = V.sexStats.vagina.menstruation;
-	if (m.currentState !== "normal") return 0; // pregnant or recovering, whatever the cycle setting
-	if (V.settings.fertilityCycleEnabled === false) return m.nonCycleFertility;
-	const [, , ovulationStart, ovulationEnd] = m.stages; // [cycleStart, menstrualEnd, ovulationStart, ovulationEnd]
-	if (m.currentDay > ovulationEnd) return 0; // luteal, past the window
-	return fertilityRamp(ovulationStart - m.currentDay, m.fertileLeadDays);
+	return fertilityOnCycleDay(V.sexStats.vagina.menstruation.currentDay);
 }
 window.menstrualFertility = menstrualFertility;
+
+/**
+ * Which day of the load's own life this is. A load takes one conception roll per day it lives,
+ * counted from when it landed, so no two loads roll on the same hour.
+ *
+ * @param {Load} load
+ * @returns {number} 0 on the day it landed, 1 the next, and so on
+ */
+function loadAgeDay(load) {
+	return Math.floor((Time.date.timeStamp - load.time) / TimeConstants.secondsPerDay);
+}
+window.loadAgeDay = loadAgeDay;
 
 /**
  * How fertile an NPC carrier is right now.
@@ -147,7 +182,7 @@ window.menstrualFertility = menstrualFertility;
 function npcMenstrualFertility(carrier) {
 	const p = C.npc[carrier] && C.npc[carrier].pregnancy;
 	if (!p || !p.enabled) return 1;
-	if (V.settings.fertilityCycleEnabled === false) return p.nonCycleFertility;
+	if (V.settings.fertilityCycleEnabled === false) return 1;
 	if (carrier === "Great Hawk") return p.cycleDay >= p.cycleDangerousDay ? 1 : 0;
 	if (p.cycleDay > p.cycleDangerousDay + PregnancyConstants.menstrualCycle.postOvulationDays) return 0;
 	return fertilityRamp(p.cycleDangerousDay - p.cycleDay, p.fertileLeadDays);
@@ -172,24 +207,8 @@ function npcConceptionModifier(carrier) {
 window.npcConceptionModifier = npcConceptionModifier;
 
 /**
- * Takes the pregnancy chance setting and turns it into per hour chances to roll on.
- * If a player chooses a 25% chance of pregnancy, that means that is the
- *  approximate chance of impregnation per load of cum over the course of its lifespan.
- *
- * @param {number} encounterChance the encounter conception chance, 0 to 100
- * @returns {number} the per hour chance, 0 to 100
- */
-function hourlyConceptionChance(encounterChance) {
-	const days = (PregnancyConstants.loadLifespanDays.min + PregnancyConstants.loadLifespanDays.max) / 2;
-	const rolls = (days * TimeConstants.secondsPerDay - PregnancyConstants.loadGracePeriod) / TimeConstants.secondsPerHour;
-	return 100 * (1 - (1 - encounterChance / 100) ** (1 / rolls));
-}
-window.hourlyConceptionChance = hourlyConceptionChance;
-
-/**
- * Realistic pregnancy runs one weighted draw for an orifice, once per game hour.
- * Every load past its grace period competes by its stored weight against one "nothing happens" entry.
- * The winning load, if any, becomes the pending conception.
+ * Realistic pregnancy gives every load one roll per day of its life, at that day's fertility.
+ * Risk builds up across the fertile window. A winner becomes the pending conception.
  *
  * @param {"vagina"|"anus"} orifice
  */
@@ -197,24 +216,28 @@ function rollAndRecordConception(orifice) {
 	// One real pregnancy per body: a pending or active pregnancy in either orifice prevents a new pregnancy.
 	if (V.pendingPregnancies[orifice] !== null || getActivePregnancies("pc").length > 0) return;
 	if (orificeHasParasites(orifice)) return;
+	if (!readyToCarry()) return; // carrying or recovering: nothing to roll for
 
-	// Only loads past the grace period are in the running. The hourly trim already dropped the expired ones.
 	const now = Time.date.timeStamp;
 	const grace = PregnancyConstants.loadGracePeriod;
-	const inWindow = V.cumLoads[orifice].filter(load => now - load.time >= grace);
-	if (inWindow.length === 0) return;
-	const clutchLoads = V.harpyEggs ? inWindow.filter(load => childBaseSpecies(load.donorSpecies) === "hawk") : [];
+	const eligible = V.cumLoads[orifice].filter(load => now - load.time >= grace);
+	if (eligible.length === 0) return;
+	const clutchLoads = V.harpyEggs ? eligible.filter(load => childBaseSpecies(load.donorSpecies) === "hawk") : [];
 	const ripeClutch = clutchLoads.length > 0;
-	const running = ripeClutch ? clutchLoads : inWindow;
+	const running = ripeClutch ? clutchLoads : eligible;
 	const setting = V.settings.basePlayerPregnancyChance;
 	const baseChance = ripeClutch && setting > 0 ? 100 : setting;
 	const fertility = ripeClutch ? 1 : menstrualFertility();
 
-	const encounterChance = Math.clamp(baseChance * playerConceptionModifier() * fertility, 0, 100);
-	if (encounterChance <= 0) return; // nothing fertile today, or the chance is zeroed out
-	const chance = hourlyConceptionChance(encounterChance);
-	const picked = weightedRandom(...running.map(load => [load, load.weight * chance]), [null, 100 - chance]);
-	if (picked) recordPendingPregnancy(orifice, picked);
+	const winners = [];
+	for (const load of running) {
+		const ageDay = loadAgeDay(load);
+		if (load.rolledDay === ageDay) continue;
+		load.rolledDay = ageDay;
+		const chance = Math.clamp(baseChance * playerConceptionModifier() * fertility * load.weight, 0, 100);
+		if (State.random() * 100 < chance) winners.push(load);
+	}
+	if (winners.length > 0) recordPendingPregnancy(orifice, winners[random(0, winners.length - 1)]);
 }
 window.rollAndRecordConception = rollAndRecordConception;
 
@@ -333,7 +356,8 @@ window.startDuePregnancies = startDuePregnancies;
  * @returns {Load|null} the load when it took, or null when nothing happened
  */
 function fetishPregnancyRoll(load) {
-	const chance = V.settings.basePlayerPregnancyChance * playerConceptionModifier() * menstrualFertility();
-	return State.random() < Math.clamp((load.weight * chance) / 100, 0, 1) ? load : null;
+	if (!readyToCarry()) return null;
+	const chance = V.settings.basePlayerPregnancyChance * playerConceptionModifier();
+	return State.random() * 100 < Math.clamp(chance * load.weight, 0, 100) ? load : null;
 }
 window.fetishPregnancyRoll = fetishPregnancyRoll;
