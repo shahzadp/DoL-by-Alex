@@ -122,6 +122,8 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 		<br><br>
 		While placing a stack of books on a particularly high shelf, you nearly lose your footing. You grip the tread of the stepladder with your toes to maintain your balance and look back at the <<person1>><<person>> in embarrassment. <<He>> is staring intently at your feet.
 	<</if>>
+	<br><br>
+	<<link [[Next|Office Executive Work Finish]]>><</link>>
 <<else>>
 	<<wearProp "papers">>
 	The <<person1>><<person>> asks you to clean <<his>> desk and file the large stacks of papers sitting on it.
@@ -135,9 +137,19 @@ You take a lift to <<checkfloor>> and make your way to the office in question. Y
 		<br><br>
 		Hastily running back and forth feels easier without shoes, and you occasionally catch the <<person1>><<person>> tracking your movements from behind <<his>> computer screen, <<his>> eyes locked on your feet.
 	<</if>>
+	<<rng>>
+	<<if $rng gte 51>>
+		<br><br>
+		You notice a strange file amidst the pile.<br><br>
+		<<link [[Look closer|Office Executive Work File]]>><</link>><br>
+		<<link [[Leave it alone|Office Executive Work Finish]]>><</link>>
+	<<else>>
+		You continue sorting the papers.
+		<br><br>
+		<<link [[Next|Office Executive Work Finish]]>><</link>>
+	<</if>>
+
 <</if>>
-<br><br>
-<<link [[Next|Office Executive Work Finish]]>><</link>>
 
 :: Office Executive Work Finish
 <<effects>>
@@ -405,6 +417,132 @@ You manage to push the <<person1>><<person>> off of you and gather up your cloth
 <br><br>
 <<endcombat>>
 <<link [[Next|Office Streak]]>><</link>>
+
+:: Office Executive Work File
+	<<set $stripCount to 0>>
+	<<rng>>
+	You look at the file.
+	<<if $rng gte 61>>
+		<<rng>>
+		<<if $rng gte 66>>
+			It looks like a list of business dealings with important people. Someone in the black market might be interested in this.<br><br>
+			<<set $skulduggerydifficulty to 500>>
+			<<link [[Steal|Office Executive Work Steal]]>><</link>><<skulduggerydifficulty>><br>
+			<<link [[Ignore|Office Executive Work Finish]]>><</link>>
+		<<elseif $rng gte 33>>
+			It looks like a letter from another executive. It has sensitive information. Someone in the black market might be interested in this.<br><br>
+			<<set $skulduggerydifficulty to 500>>
+			<<link [[Steal|Office Executive Work Steal]]>><</link>><<skulduggerydifficulty>><br>
+			<<link [[Ignore|Office Executive Work Finish]]>><</link>>
+		<<else>>
+			It looks like a spreadsheet of expenditures.
+			<<if currentSkillValue('maths') gte random(100, 1000)>>
+				The numbers don't quite match up. Someone in the black market might be interested in this.<br><br>
+				<<set $skulduggerydifficulty to 500>>
+				<<link [[Steal|Office Executive Work Steal]]>><</link>><<skulduggerydifficulty>><br>
+				<<link [[Ignore|Office Executive Work Finish]]>><</link>>
+			<<else>>
+				You don't see anything strange in it. You move on to the next file.<br>
+				<<link [[Next|Office Executive Work Finish]]>><</link>>
+			<</if>>
+		<</if>>
+	<<else>>
+		<<if random(1,3) is 1>>
+			It's just a blank sheet of paper.
+		<<elseif random(1,3) is 2>>
+			It looks like nothing special.
+		<<else>>
+			It seems to be a printer test page.
+		<</if>>
+		<br><br>
+		<<link [[Next|Office Executive Work Finish]]>><</link>>
+	<</if>>
+
+:: Office Executive Work Steal
+	<<set $skulduggerysuccess to 0>>
+	<<skulduggerycheck>>
+	<<if $skulduggerysuccess is 1>>
+		<<crimeUp 5 "thievery">>
+		The <<person1>><<person>> doesn't even glance at you as you slip the file away. <<lstress>>
+		<br><br>
+		<<link [[Next|Office Executive Work Finish]]>><</link>>
+	<<else>>
+		The <<person1>><<person>> puts a hand on your shoulder. "What do you think you're doing? You little thief, you aren't going to get away with this!"
+		<br><br>
+		<<link [[Next|Office Executive Steal Rape]]>><<set $molestationstart to 1>><</link>>
+	<</if>>
+
+:: Office Executive Steal Rape
+	<<if $molestationstart is 1>>
+		<<set $molestationstart to 0>>
+		<<controlloss>>
+		<<violence 1>>
+		<<neutral 1>>
+		<<molested>>
+		<<maninit>>
+		<<set $enemytrust -= 40>>
+		<<set $enemyanger += 30>>
+		<<rng>>
+		<<if $rng gte 51>><<enable_rescue>><</if>>
+	<</if>>
+	<<effects>>
+	<<effectsman>>
+	<<alarmstate>>
+	<<man>>
+	<<stateman>>
+	<br><br>
+	<<actionsman>>
+
+	<<if _combatend>>
+		<span id="next"><<link [[Next|Office Executive Rape Finish]]>><</link>></span><<nexttext>>
+	<<else>>
+		<span id="next"><<link [[Next|Office Executive Steal Rape]]>><</link>></span><<nexttext>>
+	<</if>>
+
+:: Office Executive Rape Finish
+	<<if $enemyhealth lte 0>>
+		<<effects>>
+		You manage to push the <<person1>><<person>> off of you.
+		<br><br>
+		"You <<bitch>>!" you hear <<him>> scream as you run out of the room to safety. <<set $officecomplaints += 2>>
+		<br><br>
+		<<clotheson>>
+		<<endcombat>>
+		<<if $exposed lte 1>>
+			<<link [[Return to lobby|Office Lobby]]>><</link>>
+		<<else>>
+			<<link [[Next|Office Streak]]>><</link>>
+		<</if>>
+	<<elseif $enemyarousal gte $enemyarousalmax>>
+		<<effects>>
+		<<ejaculation>>
+		<<clotheson>>
+		The <<person1>><<person>> keeps an eye on you as <<he>> presses a button on his desk. Soon after, a security guard comes into the office.
+		<br><br>
+		"Good," the executive says. "I expect you'll deal with this troublemaker properly."
+		<<endcombat>>
+		The security guard nods. <<set $officecomplaints += 1>>
+		<br><br>
+		<<link [[Next|Office Security Escort]]>><</link>>
+	<<elseif $alarm is 1 and $rescue is 1>>
+		<<effects>>
+		Your cries for help are noticed as a secretary, a <<generate2>><<person2>><<person>>, bursts into the room.
+		<br>
+		The <<person1>><<person>> quickly lets you go and returns to <<his>> desk as <<he>> clears <<his>> throat. "I think we're done here. I believe that was enough for you to learn your lesson about stealing. You two can go now."
+		<br><br>
+		<<clotheson>>
+		The <<person2>><<person>> escorts you out of the room.
+		<br><br>
+		<<He>> walks you to <<his>> desk and sits you down. "I know that the execs here can be awful, but stealing isn't acceptable here. I won't report you, but don't do this again."
+		<<if $exposed gte 1>>
+			<br><br>
+			<<He>> hands you a towel. "Here, you can't walk around dressed like that." <<towelup>>
+		<</if>>
+		<br><br><<set $officecomplaints += 1>>
+		<<endcombat>>
+		<<link [[Return to lobby|Office Lobby]]>><</link>>
+	<</if>>
+
 
 :: Widgets Office Executive [widget]
 <<widget "execstripperform">>
