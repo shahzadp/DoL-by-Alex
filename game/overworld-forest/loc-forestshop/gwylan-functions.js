@@ -804,6 +804,8 @@ function gwylanRequestIngredients() {
 			requestItem.need = Math.min(requestItem.need, 3);
 		} else if (setupItem.name === "blood lemon") {
 			requestItem.need = Math.min(requestItem.need, 6); // Ensure that it only takes one succesfull pick to complete the blood lemon request. The 6 comes from the min number of blood lemons you can harvest in one succesful attempt.
+		} else if (setupItem.name === "wolfshroom") {
+			requestItem.need = Math.min(requestItem.need, 6);
 		} else if (["cod", "pike", "eel"].includes(ingredientKey)) {
 			requestItem.need = Math.max(1, Math.ceil(requestItem.need / 3));
 		} else if (
