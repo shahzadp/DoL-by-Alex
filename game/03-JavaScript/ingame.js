@@ -41,7 +41,12 @@ function toggleAllHairTraitsFilter() {
 }
 window.toggleAllHairTraitsFilter = toggleAllHairTraitsFilter;
 
-// A wrapper for wikifyEval, only use for singular macro calls.
+/**
+ * A wrapper for wikifyEval, only use for singular macro calls.
+ *
+ * @param {string} widget Name of the widget.
+ * @param {...any} args Potential arguments for the widget.
+ */
 function wikifier(widget, ...args) {
 	if (widget == null) return document.createDocumentFragment();
 	return Wikifier.wikifyEval("<<" + widget + (args.length ? " " + args.join(" ") : "") + ">>");
