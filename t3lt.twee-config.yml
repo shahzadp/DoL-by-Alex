@@ -633,6 +633,26 @@ sugarcube-2:
       name: ahis
     alarmstate:
       name: alarmstate
+    alcohol:
+      description: |-
+        Changes the PC's alcohol levels, where `$drunk` is a measure of the PC's intoxication.
+        - Goes from 0 to 1,000, where 0 means the PC is sober.
+        - While `$drunk` goes up to 1,000, its effects stop increasing after `$drunk gte 480`. Values past this point are just a way for the PC to extend the duration of its effects.
+
+        1 point of `change` = 1 point of `$drunk`.
+
+        `<<alcohol change>>`
+        - **change**: `number` - +/- change to apply.
+      parameters:
+        - number
+    alcoholClamp:
+      description: |-
+        Converts 1 point of excess $drunk into 1 point of $tiredness and 0.25 points of $trauma.
+
+        Trauma gains increase by up to 100% at low $control.
+
+        Called at the end of every "alcohol" function call.
+      name: alcoholClamp
     alex_baby_interactions:
       name: alex_baby_interactions
     alex_cottage_pregnancy_reveal:
@@ -917,10 +937,6 @@ sugarcube-2:
         - **type**: `string` - 'punish' destroys clothing, otherwise sends stripped clothing to wardrobe and gives underwear
     asylumClothesOn:
       name: asylumClothesOn
-    asylum_depths_mirror_links:
-      description: |-
-        Prints links for placing mirrors in the Asylum mirror event
-      name: asylum_depths_mirror_links
     asylumeffects:
       name: asylumeffects
     asylumend:
@@ -1294,10 +1310,11 @@ sugarcube-2:
       description: |-
         Avery comments on the player's bodywriting. A small daily rage reduction is provided depending of the nature of the player's bodywriting, as well as Avery's mood.
 
-        `<<averyBodywritingSpeech bodywritingPart>>`
+        `<<averyBodywritingSpeech bodywritingPart bodypartId>>`
         - **bodywritingPart**: `BodywritingObject` - the player's body part that has been written on
+        - **bodypartID**: `string` - the ID of the bodypart, mostly used as a fallback for generic use cases if Avery doesn't react to that specific situation yet
       parameters:
-        - bareword|var
+        - 'bareword|var +& string'
     averyCondomUseSpeech:
       description: |-
         Avery speech variations over condom usage when the player asks them to use a condom. Contains rage and lust dialogue variations.
@@ -1487,14 +1504,6 @@ sugarcube-2:
           - **notes** _optional_: `string` - additional text to include
       parameters:
         - '|+ string |+ ...(var|bareword|text)'
-    baitMobileDropdown:
-       name: baitMobileDropdown
-    baitMobileSidebar:
-       name: baitMobileSidebar
-    baitOverlay:
-      name: baitOverlay
-    baitSidebar:
-      name: baitSidebar
     balloonRobinAngryHelp:
       name: balloonRobinAngryHelp
       tags: ["text"]
@@ -3665,22 +3674,6 @@ sugarcube-2:
       name: combathandhold
     combatinit:
       name: combatinit
-    combatInseminate:
-      description: |-
-        Call this when an NPC climaxes in combat. The ejaculation widgets already do, so a new prose
-        variant needs no call at all, just sit it in the branch matching where the cum goes.
-        Pass which slot came and the fight fills in the rest: the hole and depth from the penis state,
-        species from the enemy type, potency from penis size and the knot. Stores nothing for
-        strap-ons, contained condoms, chastity, or species that can't impregnate.
-
-        `<<combatInseminate slot beast?>>`
-        - **slot**: `number` - which $NPCList slot climaxed, usually `_nn`
-        - **beast** _optional_: `bool` - pass `true` from the beast widget so a beast keeps its own species in a mixed fight
-
-        The NPC in slot _nn came: `<<combatInseminate _nn>>`
-        From the beast widget: `<<combatInseminate _jj true>>`
-      parameters:
-        - "number |+ bool"
     combatListColor:
       description: |-
         Use `combatListColor()` instead
@@ -4282,8 +4275,6 @@ sugarcube-2:
       name: destination_tentacle_forest
     destination5:
       name: destination5
-    destinationBeach:
-      name: destinationBeach
     destinationbondage:
       name: destinationbondage
     destinationbusrandom:
@@ -4298,14 +4289,10 @@ sugarcube-2:
       tags: ["unused"]
     destinationfarmroad:
       name: destinationfarmroad
-    destinationForest:
-      name: destinationForest
     destinationlake:
       name: destinationlake
     destinationlakeruin:
       name: destinationlakeruin
-    destinationMoor:
-      name: destinationMoor
     destinationpoolchangingroom:
       name: destinationpoolchangingroom
     destinationsewers:
@@ -4535,31 +4522,8 @@ sugarcube-2:
         - **change**: `number` - +/- change to apply
       parameters:
         - number
-    drunk:
-      description: |-
-        Changes the PC's drunk levels, where `$drunk` is a measure of the PC's intoxication.
-        - Goes from 0 to 1,000, where 0 means the PC is sober.
-        - While `$drunk` goes up to 1,000, its effects stop increasing after `$drunk gte C.stats.drunk.effectLimit`. Values past this point are just a way for the PC to extend the duration of its effects.
-
-        1 point of `change` = 1 point of `$drunk`.
-        - The amount of drunk gained and lost is affected by the PC's `$drunkSensitivity`.
-        - Drunk gains increase by 1.5x when the PC has the "Dendrophile" / "Plant Lover" trait.
-
-        `<<drunk change>>`
-        - **change**: `number` - +/- change to apply.
-      name: drunk
-      parameters:
-        - 'number |+ "pure"|"time"'
     drunkcaption:
       name: drunkcaption
-    drunkClamp:
-      description: |-
-        Converts 1 point of excess $drunk into 1 point of $tiredness and 0.25 points of $trauma.
-
-        Trauma gains increase by up to 100% at low $control.
-
-        Called at the end of every "drunk" function call.
-      name: drunkClamp
     dry:
       name: dry
     dry_full:
@@ -6109,80 +6073,6 @@ sugarcube-2:
       name: firepitActions
     firepitTime:
       name: firepitTime
-    fisherPerson:
-      name: fisherPerson
-    fishingBaitList:
-      name: fishingBaitList
-    fishingBeachDebugLinks:
-      name: fishingBeachDebugLinks
-    fishingBeachMinigameLinks:
-      name: fishingBeachMinigameLinks
-    fishingCoastPathDebugLinks:
-      name: fishingCoastPathDebugLinks
-    fishingCoastPathMinigameLinks:
-      name: fishingCoastPathMinigameLinks
-    fishEatingTf:
-      name: fishEatingTf
-    fishingBob:
-      name: fishingBob
-    fishingRipples:
-      name: fishingRipples
-    fishingEatFishTfProgress:
-      name: fishingEatFishTfProgress
-    fishingCatchFishText:
-      name: fishingCatchFishText
-    fishingClothingCatchText:
-      name: fishingClothingCatchText
-    fishingTrashCatchText:
-      name: fishingTrashCatchText
-    fishingMinigameDebugTeleportWidget:
-        name: fishingMinigameDebugTeleportWidget
-    fishingMinigameFrame:
-      name: fishingMinigameFrame
-    fishingMinigameUi:
-      name: fishingMinigameUi
-    fishingMinigameResultUi:
-      name: fishingMinigameResultUi
-    fishingMinigameStartText:
-      name: fishingMinigameStartText
-    fishingMinigameArmFatigue:
-      name: fishingMinigameArmFatigue
-    fishingMinigameAthleticsCheck:
-      name: fishingMinigameAthleticsCheck
-    debugFishingMinigameInfo:
-      name: debugFishingMinigameInfo
-    fishingMinigameTurnResult:
-      name: fishingMinigameTurnResult
-    fishingMinigameFishStatus:
-      name: fishingMinigameFishStatus
-    fishingForestLakeDebugLinks:
-      name: fishingForestLakeDebugLinks
-    fishingForestLakeMinigameLinks:
-      name: fishingForestLakeMinigameLinks
-    fishingLocationDescription:
-      name: fishingLocationDescription
-    fishingLocationDisplayName:
-      name: fishingLocationDisplayName
-    fishingLocationPopulation:
-      name: fishingLocationPopulation
-    fishingRodIcon:
-      name: fishingRodIcon
-    fishingMoorDebugLinks:
-      name: fishingMoorDebugLinks
-    fishingMoorMinigameLinks:
-      name: fishingMoorMinigameLinks
-    fishingPierDebugLinks:
-      name: fishingPierDebugLinks
-    fishingPierMinigameLinks:
-      name: fishingPierMinigameLinks
-    fishingBaitHelp:
-      name: fishingBaitHelp
-    fishingRebaitMid:
-      name: fishingRebaitMid
-    fishingRebaitStart:
-      name: fishingRebaitStart
-    wearActiveFishingRodProp:
-      name: wearActiveFishingRodProp
     flashbackbeach:
       name: flashbackbeach
     flashbackhome:
@@ -6417,6 +6307,10 @@ sugarcube-2:
       description: |-
         Prints `| + Remy's Encroachment`
       tags: ["text"]
+    galcohol:
+      description: |-
+        Prints `| + Alcohol`
+      tags: ["text"]
     gallerySettings:
       name: gallerySettings
     gameMode:
@@ -6575,10 +6469,6 @@ sugarcube-2:
     gdrugged:
       description: |-
         Prints `| + Drugged`
-      tags: ["text"]
-    gdrunk:
-      description: |-
-        Prints `| + Alcohol`
       tags: ["text"]
     gencolourpicker:
       name: gencolourpicker
@@ -7356,12 +7246,6 @@ sugarcube-2:
 
         See `<<lady_npc>>`
       tags: ["text"]
-    gentleman_bnpc:
-      description: |-
-        Prints `gentleman` or `lady` depending on beast gender
-
-        See `<<lady_npc>>`
-      tags: ["text"]
     gescape_chance:
       description: |-
         Prints `| + Escape chance`
@@ -7425,6 +7309,10 @@ sugarcube-2:
     ggaggro:
       description: |-
         Prints `| + + Remy's Encroachment`
+      tags: ["text"]
+    ggalcohol:
+      description: |-
+        Prints `| + + Alcohol`
       tags: ["text"]
     ggapproval:
       name: ggapproval
@@ -7545,10 +7433,6 @@ sugarcube-2:
       description: |-
         Prints `| + + Drugged`
       tags: ["unused", "text"]
-    ggdrunk:
-      description: |-
-        Prints `| + + Alcohol`
-      tags: ["text"]
     ggendear:
       description: |-
         Prints `| + + Endearment`
@@ -7570,6 +7454,10 @@ sugarcube-2:
     gggaggro:
       description: |-
         Prints `| + + + Remy's Encroachment`
+      tags: ["unused", "text"]
+    gggalcohol:
+      description: |-
+        Prints `| + + + Alcohol`
       tags: ["unused", "text"]
     gggapproval:
       name: gggapproval
@@ -7690,10 +7578,6 @@ sugarcube-2:
       description: |-
         Prints `| + + + Drugged`
       tags: ["text"]
-    gggdrunk:
-      description: |-
-        Prints `| + + + Alcohol`
-      tags: ["unused", "text"]
     gggendear:
       description: |-
         Prints `| + + + Endearment`
@@ -11279,15 +11163,11 @@ sugarcube-2:
       name: Ma
     maam:
       description: |-
-        Prints `sir` or `ma'am` from `$pronoun`, the pronoun of the NPC last selected by `<<personX>>` (`$NPCList[$index].pronoun`)
-
-        Use `<<psir>>` for the PC
+        Prints `sir` or `maam` depending on pc's appearance
       tags: ["text"]
     Maam:
       description: |-
-        Prints capitalised `Sir` or `Ma'am` from `$pronoun`, the pronoun of the NPC last selected by `<<personX>>` (`$NPCList[$index].pronoun`).
-
-        Use `<<pSir>>` for the PC
+        Prints capitalised `Sir` or `Maam` depending on pc's appearance
       tags: ["text"]
     machine_actions:
       name: machine_actions
@@ -12628,26 +12508,6 @@ sugarcube-2:
       parameters:
         - "|+ number"
       tags: ["text"]
-    npcPregnancyRoll:
-      description: |-
-        Call this when someone cums inside an NPC who could get pregnant from it.
-        One roll on the spot decides it: a win writes the pregnancy record with this moment's time
-        and place. NPCs store no loads, this roll is their whole conception.
-
-        `<<npcPregnancyRoll carrier carrierSpecies donor donorSpecies orifice depth? location? donorFertility?>>`
-        - **carrier**: `string` - the NPC who might get pregnant. A name, or a generated one like "lissome man"
-        - **carrierSpecies**: `string` - what the carrier is, e.g. `"human"`
-        - **donor**: `string` - who came inside them. An NPC's name, or "pc"
-        - **donorSpecies**: `string` - the donor's species, e.g. `"human"`
-        - **orifice**: `"vagina"|"anus"` - where the cum went
-        - **depth** _optional_: `"outside"|"imminent"|"deep"` - where it landed. Deep when not given, a spill rolls at its depth's low weight
-        - **location** _optional_: `string` - where it happened. Left out reads the player's location, pass one when the scene runs off-screen
-        - **donorFertility** _optional_: `number` - extra multiplier on the conception chance from the donor's side (e.g. the pc's low-semen or earSlime state)
-
-        A normal creampie: `<<npcPregnancyRoll "Robin" "human" "pc" "human" "vagina">>`
-        A spill that never went in: `<<npcPregnancyRoll "Robin" "human" "someone" "human" "vagina" "imminent">>`
-      parameters:
-        - 'text &+ text &+ text &+ text &+ "vagina"|"anus" |+ "outside"|"imminent"|"deep" |+ text |+ number'
     npcPregnancyUpdater:
       name: npcPregnancyUpdater
     npcrelationship:
@@ -12921,8 +12781,6 @@ sugarcube-2:
       description:
         - Enumerates and prints alternative wear options for current clothing
       tags: ["dom", "legacy"]
-    onFishCaught:
-      name: onFishCaught
     openinghours:
       description: |-
         Prints the standard description of a store's opening hours. Uses `<<ampm>>` to format the hours.
@@ -13008,24 +12866,6 @@ sugarcube-2:
       name: orgasmbog
     orgasmcount:
       name: orgasmcount
-    orgasmFishing:
-      description: |-
-        Triggers an orgasm and prints location-appropriate text for fishing locations
-
-        `<<orgasmFishing location>>`
-        - **location** `string` - fishing location key (`"beach"`, `"pier"`, `"lake"`, `"moor"`, `"coast_path"`)
-      parameters:
-        - 'bareword|text'
-    orgasmFishingBeach:
-      name: orgasmFishingBeach
-    orgasmFishingCoastPath:
-      name: orgasmFishingCoastPath
-    orgasmFishingForestLake:
-      name: orgasmFishingForestLake
-    orgasmFishingMoor:
-      name: orgasmFishingMoor
-    orgasmFishingPier:
-      name: orgasmFishingPier
     orgasmforest:
       name: orgasmforest
     orgasmHourlyRecovery:
@@ -13357,8 +13197,6 @@ sugarcube-2:
       name: parasite
     parasiteinit:
       name: parasiteinit
-    parasiteSlotBlock:
-      name: parasiteSlotBlock
     park:
       name: park
     parkeventend:
@@ -14099,6 +13937,10 @@ sugarcube-2:
       name: playerPrebirth
     playerPregnancy:
       name: playerPregnancy
+    playerPregnancyAttempt:
+      name: playerPregnancyAttempt
+    playerPregnancyHawkAttempt:
+      name: playerPregnancyHawkAttempt
     playLinePool:
       name: playLinePool
     playReadiness:
@@ -14310,8 +14152,6 @@ sugarcube-2:
       name: pregnancyBirthWolfCave
     pregnancyDailyEvent:
       name: pregnancyDailyEvent
-    pregnancyFatherHint:
-      name: pregnancyFatherHint
     pregnancyFeats:
       name: pregnancyFeats
     pregnancyGendersText:
@@ -14322,8 +14162,6 @@ sugarcube-2:
       name: pregnancyPassout
     pregnancySettings:
       name: pregnancySettings
-    pregnancyStatusBlock:
-      name: pregnancyStatusBlock
     pregnancyTest:
       name: pregnancyTest
     pregnancyType:
@@ -14809,8 +14647,12 @@ sugarcube-2:
           - `"article"`: Include article (a/the) if present in recipe name
       parameters:
         - 'text|string |+ "cap"|"difficulty"|"article"|"plural"'
-    regenerateNPCNameLists:
-      name: regenerateNPCNameLists
+    recordAnusSperm:
+      name: recordAnusSperm
+    recordSperm:
+      name: recordSperm
+    recordVaginalSperm:
+      name: recordVaginalSperm
     rehideTransformations:
       description: |-
         Restores the "hidden" state of any transformations hidden by the 'revealTransformations' widget
@@ -15134,15 +14976,6 @@ sugarcube-2:
       name: robinInfirmaryCDUndressLower
     robinInfirmaryVariableCleanup:
       name: robinInfirmaryVariableCleanup
-    robinMemoryHeal:
-      description: |-
-        During sex/combat, Robin can bring up past memories and get -Trauma. This widget makes it so that Robin only gets -Trauma the first time he/she brings up the memory.
-
-        `<<robinMemoryHeal key>>`
-        - **key**: `string` - `$robinSeen` key recording that this memory's -Trauma has been given
-      parameters:
-        - "key|string"
-      name: robinMemoryHeal
     robinOpen:
       name: robinOpen
     robinoptions:
@@ -15259,26 +15092,6 @@ sugarcube-2:
       name: sayexhibproud
     scarred_inmate:
       name: scarred_inmate
-    sceneInseminate:
-      description: |-
-        Call this when a scene puts cum inside the player outside of combat (combat uses combatInseminate).
-        Say who it came from and where it landed, the pregnancy system does the rest: the cum is stored
-        as a load future pregnancy rolls can pick, and in fetish and silly mode it can also impregnate on the spot.
-
-        `<<sceneInseminate orifice donor donorSpecies depth quantity? days?>>`
-        - **orifice**: `"vagina"|"anus"` - where the cum went
-        - **donor**: `string` - who it came from. An NPC's name, or "pc"
-        - **donorSpecies**: `string` - the donor's species, e.g. `"human"`
-        - **depth**: `"outside"|"imminent"|"deep"` - where it landed. Outside and imminent can be washed off, deep cannot
-        - **quantity** _optional_: `number` - how many loads land
-          - Defaults to `1`
-        - **days** _optional_: `number` - how long the loads keep counting
-          - Defaults to a 4 to 8 day roll
-
-        A normal creampie: `<<sceneInseminate "vagina" "Whitney" "human" "deep">>`
-        Six loads that last 12 days: `<<sceneInseminate "anus" "Harper's serum" "human" "deep" 6 12>>`
-      parameters:
-        - '"vagina"|"anus" &+ text &+ text &+ "outside"|"imminent"|"deep" |+ number |+ number'
     schismEnd:
       description: |-
         Restores the values frozen by `<<schismStart>>` and passes time until 6:00am
@@ -16081,15 +15894,11 @@ sugarcube-2:
         - "number |+ bool"
     sir:
       description: |-
-        Prints `sir` or `miss` from `$pronoun`, the pronoun of the NPC last selected by `<<personX>>` (`$NPCList[$index].pronoun`)
-
-        Use `<<psir>>` for the PC
+        Prints `sir` or `miss` depending on pc's appearance
       tags: ["text"]
     Sir:
       description: |-
-        Prints capitalised `Sir` or `Miss` from `$pronoun`, the pronoun of the NPC last selected by `<<personX>>` (`$NPCList[$index].pronoun`)
-
-        Use `<<pSir>>` for the PC
+        Prints capitalised `Sir` or `Miss` depending on pc's appearance
       tags: ["text"]
     sister:
       name: sister
@@ -17547,8 +17356,6 @@ sugarcube-2:
       tags: ["refactor"]
     tirednesscaption:
       name: tirednesscaption
-    titleBait:
-      name: titleBait
     titleBlackjackHelp:
       name: titleBlackjackHelp
     titleCharacteristics:
@@ -18499,6 +18306,8 @@ sugarcube-2:
       name: wash_mouth
     washmakeup:
       name: washmakeup
+    washRecordedSperm:
+      name: washRecordedSperm
     water:
       name: water
     wateraction:
@@ -18545,12 +18354,12 @@ sugarcube-2:
     weatherinit:
       name: weatherinit
       tags: ["unused"]
-    wetAll:
-      name: wetAll
-    wetLower:
-      name: wetLower
-    wetUpper:
-      name: wetUpper
+    wet_all:
+      name: wet_all
+    wet_lower:
+      name: wet_lower
+    wet_upper:
+      name: wet_upper
     wetDream:
       description: |
         Gives the player a wet dream based on lustful specialClothesEffects or maximum arousal.
