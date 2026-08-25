@@ -301,7 +301,7 @@ function npcPregnancyCycle() {
 			}
 			continue;
 		}
-		if (pregnancy.enabled && V.settings.npcPregnancyEnabled === true) {
+		if (pregnancy.enabled && V.settings.nnpcPregnancyEnabled === true) {
 			pregnancy.cycleDay++;
 			if (pregnancy.cycleDay >= pregnancy.cycleDaysTotal) {
 				pregnancy.cycleDay = 1;
@@ -338,7 +338,7 @@ window.offspringSpecies = offspringSpecies;
  * @returns {boolean} true if a pregnancy was created
  */
 function namedNpcPregnancy(carrier, donor, donorInputSpecies, donorKnown = false, awareOf = false) {
-	if (V.settings.npcPregnancyEnabled === false) return false; // Npc pregnancy disabled
+	if (V.settings.nnpcPregnancyEnabled === false) return false; // Named NPC pregnancy disabled
 	const namedNpc = C.npc[carrier];
 	// The carrier conceives in their monster form on the monster-chance roll, or always when locked into it.
 	const monsterForm = lockedFlag =>
@@ -424,6 +424,55 @@ function endNpcPregnancyTest(npcName, birthLocation, location) {
 }
 window.endNpcPregnancyTest = endNpcPregnancyTest;
 /* Named NPC pregnancy ends here */
+
+/**
+ * Copies a generated NPC out of their $NPCList slot into $storedNPCs, keyed by the given name and the
+ * lowest free number after it ("pregnancy_#"). Twee callers read the key back from _lastStoredName.
+ *
+ * `<<storeNPC $penistarget "pregnancy">>`
+ *
+ * @param {number} slot the $NPCList index to store
+ * @param {string} name what to store them under
+ * @returns {string|null} the key they are stored under, null when the slot holds no one
+ */
+function storeNPC(slot, name) {
+	if (!EventSystem.isSlotTaken(slot)) {
+		Errors.report(`storeNPC called with invalid or empty NPCList slot (${slot})`, { Stacktrace: Utils.GetStack(), Name: name, Slot: slot });
+		return null;
+	}
+	let index = 0;
+	while (V.storedNPCs[`${name}_${index}`]) index++;
+	const key = `${name}_${index}`;
+	const npc = V.NPCList[slot];
+	V.storedNPCs[key] = {
+		npc: {
+			adult: npc.adult,
+			breastsize: npc.breastsize,
+			breastdesc: npc.breastdesc,
+			breastsdesc: npc.breastsdesc,
+			description: npc.description,
+			fullDescription: npc.fullDescription,
+			gender: npc.gender,
+			insecurity: npc.insecurity,
+			name: npc.name,
+			monster: npc.monster,
+			penis: npc.penis,
+			penisdesc: npc.penisdesc,
+			penissize: npc.penissize,
+			pregnancy: npc.pregnancy,
+			pregnancyAvoidance: npc.pregnancyAvoidance,
+			pronoun: npc.pronoun,
+			skincolour: npc.skincolour,
+			teen: npc.teen,
+			type: npc.type,
+			vagina: npc.vagina,
+		},
+	};
+	T.lastStoredName = key;
+	return key;
+}
+window.storeNPC = storeNPC;
+DefineMacro("storeNPC", storeNPC);
 
 /**
  * Ages every stored NPC's records pregnancy.

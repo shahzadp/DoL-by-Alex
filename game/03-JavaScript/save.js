@@ -681,6 +681,14 @@ function compatibilityConversion(rawData) {
 			settings.baseNpcPregnancyChance = legacyPregnancyChanceToPercent(settings.baseNpcPregnancyChance, 20);
 		}
 	}
+
+	// A settings file exported before NNPC and generic pregnancy became separate toggles carries only
+	// the one flag. It governed both kinds of NPC, so both inherit it.
+	const incoming = processed.general.settings;
+	if (incoming.npcPregnancyEnabled !== undefined && incoming.nnpcPregnancyEnabled === undefined) {
+		incoming.nnpcPregnancyEnabled = incoming.npcPregnancyEnabled;
+	}
+
 	return JSON.stringify(processed);
 }
 
@@ -1233,7 +1241,8 @@ function settingsObjects(type) {
 					toyMultiplePenetrationEnabled: { bool: true, displayName: "Multiple penetration with sex toys:" },
 					multipleWardrobes: { strings: [false, "isolated"], displayName: "Multiple wardrobes:" }, //, "all"
 					maleChanceSplit: { bool: true, displayName: "NPC attraction split by gender appearance:" },
-					npcPregnancyEnabled: { bool: true, displayName: "NPC pregnancy:" },
+					npcPregnancyEnabled: { bool: true, displayName: "Generic NPC pregnancy:" },
+					nnpcPregnancyEnabled: { bool: true, displayName: "NNPC/LI pregnancy:" },
 					analPregnancy: { strings: [false, "exceptional", "always"], displayName: "PC anal pregnancy:" },
 					npcAnalPregnancyEnabled: { bool: true, displayName: "NPC anal pregnancy:" },
 					maleChanceMale: { min: 0, max: 100, decimals: 0, displayName: "NPCs who are attracted to men:", randomize: "encounter" },

@@ -358,6 +358,7 @@ window.startDuePregnancies = startDuePregnancies;
 function fetishPregnancyRoll(load) {
 	if (!readyToCarry()) return null;
 	const chance = V.settings.basePlayerPregnancyChance * playerConceptionModifier();
+	if (chance >= 100) return load;
 	return State.random() * 100 < Math.clamp(chance * load.weight, 0, 100) ? load : null;
 }
 window.fetishPregnancyRoll = fetishPregnancyRoll;
