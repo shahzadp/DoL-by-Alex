@@ -29,31 +29,7 @@
 	<<if !baitShopOpen()>>
 		You're alone in the bait shop. Reels, hooks, and coils of line cover every surface.
 	<<else>>
-		<<if $fishing.baitShopAmbient is "acceptedFishRequest" or $fishing.baitShopAmbient is "declinedFishRequest">>
-			<<set _requestFishKey to $daily.fishing.baitShopRequestFish>>
-			<<set _coastUnlocked to $fishing.locationsFound.includes("fishingCoastPath")>>
-			<<set _fishSpot to Object.keys(setup.fishing.lootTables.fish[_requestFishKey].locations).filter(loc => loc !== "fishingCoastPath" || _coastUnlocked).random()>>
-			<<switch _fishSpot>>
-				<<case "fishingBeach">><<set _fishSpotPhrase to "off the beach">>
-				<<case "fishingPier">><<set _fishSpotPhrase to "off the pier, right outside">>
-				<<case "fishingCoastPath">><<set _fishSpotPhrase to "down by the cliffs outside of town">>
-				<<case "fishingMoor">><<set _fishSpotPhrase to "out on the moor">>
-				<<case "fishingForestLake">><<set _fishSpotPhrase to "in the lake through the forest">>
-			<</switch>>
-			<<set $fishing.record[_requestFishKey] ??= { numCaught: 0, largest: 0, foundIn: [] }>>
-			<<if not $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
-				<<run $fishing.record[_requestFishKey].foundIn.push(_fishSpot)>>
-			<</if>>
-		<</if>>
-		<<if $fishing.baitShopAmbient is "acceptedFishRequest">>
-			<<He>> smiles. "Thanks! I'm looking forward to it! But no worries if you can't catch one, I know how lady luck can be. You can usually find them <span class="gold"><<= _fishSpotPhrase>></span>. Need anything else?"
-			<<unset $fishing.baitShopAmbient>>
-
-		<<elseif $fishing.baitShopAmbient is "declinedFishRequest">>
-			<<He>> shrugs. "No worries, I can see if I have time on my lunch to grab one myself. You can usually find them <span class="gold"><<= _fishSpotPhrase>></span> if you change your mind. Need anything else?"
-			<<unset $fishing.baitShopAmbient>>
-
-		<<elseif $fishing.baitShopAmbient is "declinedRecipe">>
+		<<if $fishing.baitShopAmbient is "declinedRecipe">>
 			<<He>> shrugs. "No skin off my back. Need anything else?"
 			<<unset $fishing.baitShopAmbient>>
 		
@@ -82,8 +58,8 @@
 	</div>
 	<br><br>
 
-	<<clothingcategoryicon "handheld">>
-	<<link "Browse equipment">><<replace "#clothingShop-div">><<HandheldShop>><</replace>><</link>>
+	<<baitShopStoreIcon>>
+	<<link "Browse equipment">><<replace "#clothingShop-div">><<AllShop>><</replace>><</link>>
 	<br>
 	<<if baitShopOpen()>>
 		<<if $money gte 600>>
@@ -145,18 +121,16 @@
 		<<if playerOwnsFishingRod() and baitShopOpen()>>
 			<<if $fishing.baitShopIntro is undefined>>
 				<<if Time.hour lt 13 and $daily.fishing.baitShopRequest isnot "requested">>
-					<<set $fishing.baitShopIntro to "fullIntro">>
 					<<set _exitPassage to "Bait Shop Owner Full Intro">>
 				<<else>>
-					<<set $fishing.baitShopIntro to "halfIntro">>
 					<<set _exitPassage to "Bait Shop Owner Half Intro">>
 				<</if>>
 			<<elseif $fishing.baitShopIntro is "halfIntro">>
 				<<if Time.hour lt 13>>
-					<<set $fishing.baitShopIntro to "fullIntro">>
 					<<if $daily.fishing.baitShopRequest is "willRequest">>
 						<<set _exitPassage to "Bait Shop Owner Half Intro Request">>
 					<<else>>
+						<<set $fishing.baitShopIntro to "fullIntro">>
 						<<set _exitPassage to "Mer Pier">>
 					<</if>>
 				<<else>>
@@ -184,6 +158,45 @@
 	<</if>>
 <</widget>>
 
+
+<<widget "baitShopFishBehaviorHelp">>
+	<<loadNPC 0 "bait_shop_owner">><<person1>>
+	<<set _requestFish to setup.fishing.lootTables.fish[$daily.fishing.baitShopRequestFish]>>
+	<<switch _requestFish.minigame.behavior>>
+		<<case "runner">>
+			"Fish like <<a $daily.fishing.baitShopRequestFish>> are pretty reliable and easy to catch. They just <span class="blue">run</span> until they get tired, and then rest. Try to hold them in place while they run, or if you're confident in your strength, power through its run and just reel it in. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you hook one. What do you think? I know you could catch one for me."
+		<<case "darter">>
+			"<<A $daily.fishing.baitShopRequestFish>> isn't a hard thing to catch. It'll run, stop, run, stop, but if you can't stop it while it's running, it'll get away. Just be confident in your ability to hold a line and you'll be fine. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you hook one. What do you think? I know you could catch one for me."
+		<<case "panicked">>
+			"Fish like <<a $daily.fishing.baitShopRequestFish>> tend to run and thrash about, but it's a pretty dumb fish, so if you give it some slack it'll probably just forget you're there and calm down. Though they tend to <span class="blue">panic,</span> thrashing about once you get one close to the shore, if it even notices. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you hook one. What do you think? I know you could catch one for me."
+		<<case "thrasher">> /* Only pike */
+			"<<A $daily.fishing.baitShopRequestFish>> is an energetic bugger, and loves to <span class="blue">thrash</span> all over the place. Not easy to catch. You're always going to be fighting these things, and if you can't reel it in while it's thrashing, you won't be able to catch it. It's not going to forget about you either, so don't try to reel it in while it's just sitting there or it'll bolt. It'll honestly still run on you at least once, and you'd better be ready to stop it when it does. They seem to like <span class="green">baitfish</span> the best, I've always struggled to get them to bite them without. What do you think? I know you could catch one for me."
+		<<case "slipper">> /* Only eel */
+			"<<A $daily.fishing.baitShopRequestFish>> is <span class="blue">slippery</span>, you'll need to be careful about when you reel it in, the more stamina it has when you pull it close to the bank, the more likely it is to shoot off with terrifying speed. They seem to like <span class="green">baitfish</span> the best, I've always struggled to get them to bite without. What do you think? I know you could catch one for me."
+		<<case "anchor">> /* Only cod */
+			"Reeling in <<a $daily.fishing.baitShopRequestFish>> is like trying to reel in an <span class="blue">anchor.</span> It's slow, hard, and your arms will get tired. But, they're also not fast runners, so don't be afraid to give your arms a bit of a rest if you need. They seem to like <span class="green">baitfish</span> the best, I've always struggled to get them to bite without. What do you think? I know you could catch one for me."
+		<<default>>
+			<<error { message: "Fish behavior not found for " + $daily.fishing.baitShopRequestFish }>>
+	<</switch>>
+	<br><br>
+<</widget>>
+
+<<widget "baitShopFishLocationHint">>
+	<<set _coastUnlocked to $fishing.locationsFound.includes("fishingCoastPath")>>
+	<<set _fishSpot to Object.keys(setup.fishing.lootTables.fish[$daily.fishing.baitShopRequestFish].locations).filter(loc => loc !== "fishingCoastPath" || _coastUnlocked).random()>>
+	<<switch _fishSpot>>
+		<<case "fishingBeach">><<set _fishSpotPhrase to "off the beach">>
+		<<case "fishingPier">><<set _fishSpotPhrase to "off the pier, right outside">>
+		<<case "fishingCoastPath">><<set _fishSpotPhrase to "down by the cliffs outside of town">>
+		<<case "fishingMoor">><<set _fishSpotPhrase to "out on the moor">>
+		<<case "fishingForestLake">><<set _fishSpotPhrase to "in the lake through the forest">>
+	<</switch>>
+	<<set $fishing.record[$daily.fishing.baitShopRequestFish] ??= { numCaught: 0, largest: 0, foundIn: [] }>>
+	<<if not $fishing.record[$daily.fishing.baitShopRequestFish].foundIn.includes(_fishSpot)>>
+		<<run $fishing.record[$daily.fishing.baitShopRequestFish].foundIn.push(_fishSpot)>>
+	<</if>>
+	<span class="gold"><<= _fishSpotPhrase>></span>
+<</widget>>
 
 :: Bait Shop Lock
 <<set $outside to 1>><<effects>><<set $lock to 200>>
@@ -257,26 +270,23 @@ You deftly open the cash register and count out the money inside. There's <<prin
 :: Bait Shop Owner Full Intro
 <<set $outside to 0>><<effects>>
 <<loadNPC 0 "bait_shop_owner">><<person1>>
-<<set $daily.fishing ??= {}>>
+<<set $fishing.baitShopIntro to "fullIntro">>
 <<set $daily.fishing.baitShopRequestFish to "haddock">>
 
-As you turn to go, the <<person>> at the counter speaks up. "If you plan on fishing in these parts, be careful, there're some strange things in the waters here." <<He>> pauses. "But if you're heading out anyway, bring me back a haddock for my dinner and I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "Either way, I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
+As you turn to go, the <<person>> at the counter speaks up. "If you plan on fishing in these parts, be careful, there're some strange things in the waters here." <<He>> pauses. "But if you're heading out anyway, bring me back <span class="blue">a haddock</span> for my dinner and I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "Either way, I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
 <br><br>
 
 <<link [[Ask how to catch <<a $daily.fishing.baitShopRequestFish>>|Bait Shop Request Fish Catch Help]]>>
-	<<set $phase to 1>>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Accept|Mer Pier]]>>
+<<link [[Accept|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "requested">>
-	<<set $fishing.baitShopAmbient to "acceptedFishRequest">>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Decline|Mer Pier]]>>
+<<link [[Decline|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "notToday">>
-	<<set $fishing.baitShopAmbient to "declinedFishRequest">>
 	<<endevent>>
 <</link>>
 
@@ -284,6 +294,7 @@ As you turn to go, the <<person>> at the counter speaks up. "If you plan on fish
 :: Bait Shop Owner Half Intro
 <<set $outside to 0>><<effects>>
 <<loadNPC 0 "bait_shop_owner">><<person1>>
+<<set $fishing.baitShopIntro to "halfIntro">>
 
 As you turn to go, the <<person>> at the counter speaks up. "If you plan on fishing in these parts, be careful, there're some strange things in the waters here, especially at night."
 <br><br>
@@ -294,24 +305,23 @@ As you turn to go, the <<person>> at the counter speaks up. "If you plan on fish
 :: Bait Shop Owner Half Intro Request
 <<set $outside to 0>><<effects>>
 <<loadNPC 0 "bait_shop_owner">><<person1>>
+<<set $fishing.baitShopIntro to "fullIntro">>
+<<set $daily.fishing.baitShopRequestFish to baitShopRequestFish()>>
 
-As you turn to go, the <<person>> behind the counter speaks up. "Glad to see repeat customers around here, I hope you've caught something good since I last saw you!" <<He>> pauses. "If you're going out tonight, you could bring me back <<a $daily.fishing.baitShopRequestFish>> for my dinner and I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "Either way, I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
+As you turn to go, the <<person>> behind the counter speaks up. "Glad to see repeat customers around here, I hope you've caught something good since I last saw you!" <<He>> pauses. "If you're going out tonight, you could bring me back <span class="blue"><<a $daily.fishing.baitShopRequestFish>></span> for my dinner and I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "Either way, I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
 <br><br>
 
 <<link [[Ask how to catch <<a $daily.fishing.baitShopRequestFish>>|Bait Shop Request Fish Catch Help]]>>
-	<<set $phase to 1>>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Accept|Mer Pier]]>>
+<<link [[Accept|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "requested">>
-	<<set $fishing.baitShopAmbient to "acceptedFishRequest">>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Decline|Mer Pier]]>>
+<<link [[Decline|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "notToday">>
-	<<set $fishing.baitShopAmbient to "declinedFishRequest">>
 	<<endevent>>
 <</link>>
 
@@ -321,26 +331,23 @@ As you turn to go, the <<person>> behind the counter speaks up. "Glad to see rep
 <<set $daily.fishing.baitShopRequestFish to baitShopRequestFish()>>
 As you step in, the <<person>> at the counter glances up at you.
 <<if $fishing.baitShopRequestsCompleted is 0>>
-	"Glad to see repeat customers around here, I hope you've caught something good since I last saw you!" <<He>> pauses. "If you're going out tonight, if you bring me back <<a $daily.fishing.baitShopRequestFish>> for my dinner, I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
+	"Glad to see repeat customers around here, I hope you've caught something good since I last saw you!" <<He>> pauses. "If you're going out tonight, if you bring me back <span class="blue"><<a $daily.fishing.baitShopRequestFish>></span> for my dinner, I'd pay good money for it. It'd have to be caught fresh today though, I can buy smelly fish at the market." <<He>> shrugs. "I'll be here until we close at <<ampm 19 00>>, then I'll need to figure out dinner."
 <<else>>
-	"Hello! Glad to see my favourite <<fisherPerson>>. I'd love to get some <<= $daily.fishing.baitShopRequestFish>> for my dinner tonight, if you're interested. Caught fresh, as always. Fancy finding one for me again? I'll be here 'til we close at <<ampm 19 00>>, then I'll need to figure out dinner."
+	"Hello! Glad to see my favourite <<fisherPerson>>. I'd love to get a <span class="blue"><<= $daily.fishing.baitShopRequestFish>></span> for my dinner tonight, if you're interested. Caught fresh, as always. Fancy finding one for me again? I'll be here 'til we close at <<ampm 19 00>>, then I'll need to figure out dinner."
 <</if>>
 <br><br>
 
 <<link [[Ask how to catch <<a $daily.fishing.baitShopRequestFish>>|Bait Shop Request Fish Catch Help]]>>
-	<<set $phase to 1>>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Accept|Bait Shop]]>>
+<<link [[Accept|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "requested">>
-	<<set $fishing.baitShopAmbient to "acceptedFishRequest">>
 	<<endevent>>
 <</link>>
 <br>
-<<link [[Decline|Bait Shop]]>>
+<<link [[Decline|Bait Shop Owner Fish Request Response]]>>
 	<<set $daily.fishing.baitShopRequest to "notToday">>
-	<<set $fishing.baitShopAmbient to "declinedFishRequest">>
 	<<endevent>>
 <</link>>
 
@@ -386,7 +393,6 @@ You set the <<= _fish>> on the counter. The <<person>> picks it up and turns it 
 	<<link [[Next|Bait Shop Teach Dish]]>><</link>>
 <<else>>
 	<<link [[Next|Bait Shop]]>><<endevent>><</link>>
-	<<endevent>>
 <</if>>
 
 
@@ -420,11 +426,15 @@ You set the <<= _fish>> on the counter. The <<person>> picks it up and turns it 
 <<loadNPC 0 "bait_shop_owner">><<person1>>
 <<set $daily.fishing.baitShopRequestFish to baitShopRequestFish()>>
 
-Footsteps sound on the planks behind you. You glance back to see the <<person>> from the bait shop walking over, a steaming mug and sandwich in hand. "Thought that was you out here. Just taking my lunch." <<He>> nods out at the water. "Since you're already at it, fancy bringing me back <<a $daily.fishing.baitShopRequestFish>> for my dinner? <<if $fishing.baitShopRequestsCompleted gte 1>> Caught fresh today, and I'll pay well, as always.<<else>>Caught fresh today, and I'll pay well. I can buy old fish at the market.<</if>> I'll be at the shack 'til we close at <<ampm 19 00>> if you do."
+Footsteps sound on the planks behind you. You glance back to see the <<person>> from the bait shop walking over, mug and sandwich in hand.
+<<if $fishing.baitShopRequestsCompleted gte 1>>
+	"Thought that was you out here. Just taking my lunch." <<He>> nods out at the water. "Since you're already at it, fancy bringing me back <<a $daily.fishing.baitShopRequestFish>> for my dinner? Caught fresh today, and I'll pay well, as always. I'll be at the shack 'til we close at <<ampm 19 00>> if you do. Sound good?"
+<<else>>
+	"You were in the shop earlier, right? Good to see it getting some use already" <<he>> says nodding at your fishing rod. "If you plan on fishing for much longer today, any chance you could catch me <<a $daily.fishing.baitShopRequestFish>> for my dinner while you're out here? I'd do it myself, but I've got the shop to watch. Fresh today, and I'll pay well. I'll be at the shack 'til we close at <<ampm 19 00>>. Sound good?"
+<</if>>
 <br><br>
 
-<<link [[Ask how to catch <<a $daily.fishing.baitShopRequestFish>>|Bait Shop Request Fish Catch Help]]>>
-	<<set $phase to 2>>
+<<link [[Ask how to catch <<a $daily.fishing.baitShopRequestFish>>|Fishing Pier Shack Owner Break Catch Help]]>>
 	<<endevent>>
 <</link>>
 <br>
@@ -441,48 +451,44 @@ Footsteps sound on the planks behind you. You glance back to see the <<person>> 
 <</link>>
 
 :: Bait Shop Request Fish Catch Help
-<<loadNPC 0 "bait_shop_owner">><<person1>>
-<<set _requestFish to setup.fishing.lootTables.fish[$daily.fishing.baitShopRequestFish]>>
-<<switch setup.fishing.lootTables.fish[$daily.fishing.baitShopRequestFish].minigame.behavior>>
-	<<case "runner">>
-		"Fish like <<a $daily.fishing.baitShopRequestFish>> are pretty reliable and easy to catch. They just <span class="blue">run</span> until they get tired, and then rest. Try to hold them in place while they run, or if you're confident in your strength, power through its run and just reel it in. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you catch one. What do you think? I know you could catch one for me."
-	<<case "darter">>
-		"<<A $daily.fishing.baitShopRequestFish>> isn't a hard thing to catch. It'll run, stop, run, stop, but if you can't stop it while it's running, it'll get away. Just be confident in your ability to hold a line and you'll be fine. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you catch one. What do you think? I know you could catch one for me."
-	<<case "panicked">>
-		"Fish like <<a $daily.fishing.baitShopRequestFish>> tend to run and thrash about, but it's a pretty dumb fish, so if you give it some slack it'll probably just forget you're there and calm down. Though they tend to <span class="blue">panic,</span> thrashing about once you get one close to the shore, if it even notices. They seem to like <span class="green"><<print setup.foodstuff[_requestFish.preferredBait].plural>>,</span> if you have any for bait that'll help you catch one. What do you think? I know you could catch one for me."
-	<<case "thrasher">> /* Only pike */
-		"<<A $daily.fishing.baitShopRequestFish>> is an energetic bugger, and loves to <span class="blue">thrash</span> all over the place. Not easy to catch. You're always going to be fighting these things, and if you can't reel it in while it's thrashing, you won't be able to catch it. It's not going to forget about you either, so don't try to reel it in while it's just sitting there or it'll bolt. It'll honestly still run on you at least once, and you'd better be ready to stop it when it does. They seem to like <span class="green">baitfish</span> the best, I've always struggled to catch them without. What do you think? I know you could catch one for me."
-	<<case "slipper">> /* Only eel */
-		"<<A $daily.fishing.baitShopRequestFish>> is <span class="blue">slippery</span>, you'll need to be careful about when you reel it in, the more stamina it has when you pull it close to the bank, the more likely it is to shoot off with terrifying speed. They seem to like <span class="green">baitfish</span> the best, I've always struggled to catch them without. What do you think? I know you could catch one for me."
-	<<case "anchor">> /* Only cod */
-		"Reeling in <<a $daily.fishing.baitShopRequestFish>> is like trying to reel in an <span class="blue">anchor.</span> It's slow, hard, and your arms will get tired. But, they're also not fast runners, so don't be afraid to give your arms a bit of a rest if you need. They seem to like <span class="green">baitfish</span> the best, I've always struggled to catch them without. What do you think? I know you could catch one for me."
-	<<default>>
-		<<error { message: "Fish behavior not found for " + $daily.fishing.baitShopRequestFish }>>
-<</switch>>
-<br><br>
-<<if $phase is 1>>
-	<<link [[Accept|Bait Shop]]>>
-		<<set $daily.fishing.baitShopRequest to "requested">>
-		<<set $fishing.baitShopAmbient to "acceptedFishRequest">>
-		<<endevent>>
-	<</link>>
-	<br>
-	<<link [[Decline|Bait Shop]]>>
-		<<set $daily.fishing.baitShopRequest to "notToday">>
-		<<set $fishing.baitShopAmbient to "declinedFishRequest">>
-		<<endevent>>
-	<</link>>
-<<else>>
-	<<link [[Accept|Fishing Pier Wait]]>>
-		<<set $daily.fishing.baitShopRequest to "requested">>
-		<<set $fishingAmbientOverride to "acceptedFishingRequest">>
-		<<endevent>>
-	<</link>>
-	<br>
-	<<link [[Decline|Fishing Pier Wait]]>>
-		<<set $daily.fishing.baitShopRequest to "notToday">>
-		<<set $fishingAmbientOverride to "declinedFishingRequest">>
-		<<endevent>>
-	<</link>>
-<</if>>
+<<baitShopFishBehaviorHelp>>
+<<link [[Accept|Bait Shop Owner Fish Request Response]]>>
+	<<set $daily.fishing.baitShopRequest to "requested">>
+	<<endevent>>
+<</link>>
+<br>
+<<link [[Decline|Bait Shop Owner Fish Request Response]]>>
+	<<set $daily.fishing.baitShopRequest to "notToday">>
+	<<endevent>>
+<</link>>
 
+
+
+:: Bait Shop Owner Fish Request Response
+<<set $outside to 0>><<effects>>
+<<loadNPC 0 "bait_shop_owner">><<person1>>
+
+<<if $daily.fishing.baitShopRequest is "requested">>
+	<<He>> smiles. "Thanks! I'm looking forward to it! But no worries if you can't catch one, I know how lady luck can be. You can usually find them <<baitShopFishLocationHint>>."
+<<elseif $daily.fishing.baitShopRequest is "notToday">>
+	<<He>> shrugs. "No worries, I can see if I have time on my lunch to grab one myself. You can usually find them <<baitShopFishLocationHint>> if you change your mind."
+<</if>>
+<br><br>
+
+<<getouticon>><<link [[Head out|Mer Pier]]>><<endevent>><</link>>
+
+
+
+:: Fishing Pier Shack Owner Break Catch Help
+<<baitShopFishBehaviorHelp>>
+<<link [[Accept|Fishing Pier Wait]]>>
+	<<set $daily.fishing.baitShopRequest to "requested">>
+	<<set $fishingAmbientOverride to "acceptedFishingRequest">>
+	<<endevent>>
+<</link>>
+<br>
+<<link [[Decline|Fishing Pier Wait]]>>
+	<<set $daily.fishing.baitShopRequest to "notToday">>
+	<<set $fishingAmbientOverride to "declinedFishingRequest">>
+	<<endevent>>
+<</link>>
