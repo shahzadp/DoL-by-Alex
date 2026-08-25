@@ -624,6 +624,9 @@ You are at the waterfall.
 <</if>>
 <<if Weather.isFrozen("lake")>>
 	<<= Weather.precipitation is "snow" ? "Snow settles on the ice" : "The ice is serene">>.
+	<<if $lake_fishing_ice_broken is undefined and canStartFishing()>>
+		<span class="blue">The ice is thin here; you could probably break a hole to fish through.</span>
+	<</if>>
 <<else>>
 	The water is <<= Weather.precipitation is "rain" ? "alive with motion as rain breaks its surface" : "calm">>.
 <</if>>
@@ -669,9 +672,12 @@ You are at the waterfall.
 		<<if !Weather.isFrozen("lake")>>
 			<br>
 			<<fishingRodIcon>><<link [[Start fishing|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
+		<<elseif $lake_fishing_ice_broken isnot undefined>>
+			<br>
+			<<fishingRodIcon>><<link [[Start fishing|Fishing Forest Lake Wait]]>><<set $fishingAmbientOverride to "castOut">><</link>>
 		<<else>>
 			<br>
-			The lake is frozen over, you won't be able to fish.
+			<<swimicon "break">><<link [[Break through the ice (0:20)|Lake Fishing Rock Ice Break]]>><<pass 20>><<set $lake_fishing_ice_broken to 2>><<tiredness 3>><</link>><<gtiredness>>
 		<</if>>
 	<<elseif !$fishing.locationsFound.includes("fishingForestLake")>>
 		<br>
@@ -1384,7 +1390,15 @@ You lift the shovel, and thrust it into the ice. It's hard work, but you manage 
 <br><br>
 
 <<link [[Next|Lake Depths Ice]]>><</link>>
-<br>
+
+
+:: Lake Fishing Rock Ice Break
+<<effects>>
+
+You use the butt of your fishing rod to chip through the ice at the edge of the rock. It's hard work, but you manage to make a sizeable hole.
+<br><br>
+
+<<link [[Next|Lake Fishing Rock]]>><</link>>
 
 
 :: Lake Dock

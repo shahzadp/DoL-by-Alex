@@ -547,8 +547,20 @@ function isPlayerFishingAlone() {
 }
 window.isPlayerFishingAlone = isPlayerFishingAlone;
 
+/**
+ * Whether the player is currently allowed to open the bait overlay.
+ *
+ * @returns {boolean}
+ */
+function canOpenBaitOverlay() {
+	if (V.combat === 1) return false;
+	if (["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes(V.bus) && !T.fishingEditBaitEnabled) return false;
+	return true;
+}
+window.canOpenBaitOverlay = canOpenBaitOverlay;
+
 function openBaitOverlay() {
-	if (["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes(V.bus) && !T.fishingEditBaitEnabled) return;
+	if (!canOpenBaitOverlay()) return;
 	V.fishing.displayBaitNotification = false;
 	wikifier("overlayReplace", '"bait"');
 }

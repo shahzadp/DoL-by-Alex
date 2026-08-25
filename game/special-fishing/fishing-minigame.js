@@ -314,7 +314,7 @@ setup.fishingMinigame = {
 						};
 					} else {
 						return {
-							fishStamina: [0, 2].random(),
+							fishStamina: [0, 1, 2].random(),
 						};
 					}
 				}
@@ -373,8 +373,6 @@ setup.fishingMinigame = {
 						];
 					}
 
-					V.thrasherHasRan = true;
-
 					return [["run", 100]];
 				} else {
 					return [
@@ -392,14 +390,11 @@ setup.fishingMinigame = {
 				}
 
 				if (fishDistance <= 2 && !V.thrasherHasRan) {
-					V.thrasherHasRan = true;
 					return [["run", 100]];
 				}
 
 				if (playerAction === "slack") {
 					if (!V.thrasherHasRan) {
-						V.thrasherHasRan = true;
-
 						return [["run", 100]];
 					} else {
 						return [

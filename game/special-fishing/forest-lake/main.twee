@@ -155,6 +155,17 @@
 	<</addinlineevent>>
 <</if>>
 
+/* Fishing hole has frozen over while the player was fishing */
+<<if Weather.isFrozen("lake") and $lake_fishing_ice_broken is undefined>>
+	<<addinlineevent "fishingHoleFrozen" 50>>
+		The fishing hole you made in the ice has started to freeze over again.
+		<br><br>
+		<<swimicon "break">><<link [[Break through the ice (0:15)|Fishing Forest Lake Wait]]>><<pass 15>><<set $lake_fishing_ice_broken to 2>><<tiredness 3>><<set $fishingAmbientOverride to "breakIce">><</link>><<gtiredness>>
+		<br>
+		<<link [[Leave|Lake Fishing Rock]]>><<set $eventskip to 1>><</link>>
+	<</addinlineevent>>
+<</if>>
+
 /* Nothing happens, wait loop continues */
 <<addinlineevent "wait" 40>>
 	<<include "Fishing Forest Lake Wait">>
@@ -191,6 +202,8 @@ You open wide and drop the whole $fishingHookedFish.type in your mouth. <<fishin
 		<<else>>
 			You re-hook your line and cast back out.
 		<</if>>
+	<<elseif $fishingAmbientOverride is "breakIce">>
+		You use the butt of your rod to chip open the hole in the ice again then cast back out into the water.
 	<<elseif $fishingAmbientOverride is "castOut">>
 		You cast out into the water.
 	<<else>>
