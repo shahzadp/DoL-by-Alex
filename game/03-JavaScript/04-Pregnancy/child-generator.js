@@ -50,10 +50,23 @@ function rollLitterSize(base) {
 window.rollLitterSize = rollLitterSize;
 
 /**
- * A parent's gender and colours, read live from their name.
- * The parent is the PC, a known NPC, or an unknown generated donor with no stored details.
+ * The child gene pool's name for a parent's skin colour.
  *
- * @param {NpcNames|"pc"} name
+ * @param {string} skincolour a parent's skincolour
+ * @returns {string}
+ */
+function parentSkinColour(skincolour) {
+	if (skincolour === "black") return "dark";
+	if (skincolour === "white") return "light";
+	return skincolour;
+}
+
+/**
+ * A parent's gender and colours, read live from their name.
+ * The parent is the PC, a named NPC, a generated one stored under their own key, or a donor
+ * known by name alone with no details anywhere.
+ *
+ * @param {NpcNames|"pc"|string} name a named NPC, "pc", or a $storedNPCs key
  * @returns {ChildParent}
  */
 function resolveChildParent(name) {
@@ -69,12 +82,12 @@ function resolveChildParent(name) {
 		else if (hasVagina) gender = "f";
 		else if (hasPenis) gender = "m";
 		else throw new Error(`parent "${name}" has no genitals`);
-		let skinColour = npc.skincolour;
-		if (skinColour === "black") skinColour = "dark";
-		else if (skinColour === "white") skinColour = "light";
-		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour };
+		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour: parentSkinColour(npc.skincolour) };
 	}
-	// an unknown generated donor has nothing stored to inherit from
+	const stored = V.storedNPCs[name];
+	if (stored) {
+		return { gender: stored.npc.gender, hairColour: null, eyeColour: null, skinColour: parentSkinColour(stored.npc.skincolour) };
+	}
 	return { gender: null, hairColour: null, eyeColour: null, skinColour: null };
 }
 window.resolveChildParent = resolveChildParent;

@@ -79,31 +79,8 @@
 					<</if>>
 					<<if $abomination is 1>>
 						/*ToDo: Pregnancy, figure out how the Wraith, plantpeople, etc will handle pregnancy.*/
-					<<elseif $npcrow.includes($penistarget)>>
-						<<npcPregnancyRoll $NPCList[$penistarget].fullDescription `($enemytype is "man" ? "human" : $NPCList[$penistarget].type)` "pc" "human" "vagina" "deep" $location `_orgasmSpermRng / 100`>>
-					<<elseif $NPCList[$penistarget].pregnancy is 0 and $settings.npcPregnancyEnabled and !$activeNightmare and !impregnationDisabled(_npcForceImpregnation) and ["realistic", "fetish"].includes($settings.pregnancyType)>>
-						/* Stored NPCs currently carrying a pregnancy */
-						<<set $_count to Object.keys($storedNPCs).reduce((prev, key) => getActivePregnancies(key).length ? prev + 1 : prev, 0)>>
-						/* Pregnancy chance checks */
-						<<set $_impregnatedChance to $settings.baseNpcPregnancyChance>>
-						<<if V.sexStats.pills.pills["fertility booster"].doseTaken gt 0>>
-							<<set $_impregnatedChance to Math.ceil($_impregnatedChance * (1 + (V.sexStats.pills.pills["fertility booster"].doseTaken * PregnancyConstants.conceptionModifiers.fertilityMultiplierPerDose)))>>
-						<</if>>
-						<<if V.sexStats.pills.pills["contraceptive"].doseTaken gt 0>>
-							<<set $_impregnatedChance to Math.ceil($_impregnatedChance * PregnancyConstants.conceptionModifiers.contraceptiveMultiplier)>>
-						<</if>>
-						<<set $_impregnatedChance to Math.floor($_impregnatedChance * (_orgasmSpermRng / 100))>>
-						<<if ($_impregnatedChance gte random(1,100) or _npcForceImpregnation)>>
-							<<if ["human", "wolf", "wolfgirl", "wolfboy"].includes($NPCList[$penistarget].type)>>
-								<<if $consensual is 1 and ((random(0, 1 + $_count) is 0 and $_count lte 10) or (setup.pregnancy.randomAlwaysKeep.includes($location) and $_count lte 15))>>
-									<<storeNPC $penistarget "pregnancy">>
-									<<set _offspringSpecies to $NPCList[$penistarget].type>>
-									<<run createPregnancy(_lastStoredName, $NPCList[$penistarget].type, "pc", _offspringSpecies, [{name:"pc", species:"human"}], Time.date.timeStamp, "vagina", $location)>>
-								<</if>>
-								<<if $settings.pregnancyType is "fetish">><<set _pregnantNpc to $NPCList[$penistarget].fullDescription>><</if>>
-								<<set $NPCList[$penistarget].pregnancy to 1>>
-							<</if>>
-						<</if>>
+					<<else>>
+						<<npcPregnancyRoll $NPCList[$penistarget].fullDescription `($enemytype is "man" ? "human" : $NPCList[$penistarget].type)` "pc" "human" "vagina" "deep" $location `_orgasmSpermRng / 100` $penistarget>>
 					<</if>>
 				<<elseif $NPCList[$penistarget].vagina is "penisimminent" or $NPCList[$penistarget].vagina is "penisentrance">>
 					<<personselect $penistarget>>
@@ -116,7 +93,7 @@
 						<<penileejacstat>>
 						<span class="pink">You are overcome by sensation and ejaculate<<if _cumDesc isnot "cum">> _cumDesc<</if>> deep into <<his>> bowels.</span>
 						<<internalejac>><<creampie "npc" "anus">><<fillOther>>
-						<<if $abomination isnot 1 and $npcrow.includes($_i)>>
+						<<if $abomination isnot 1>>
 							<<if $earSlime.focus is "pregnancy" and $earSlime.growth gte 75>>
 								<<set _orgasmSpermRng to 25>>
 							<<elseif $earSlime.focus is "impregnation" and $earSlime.growth gte 75>>
@@ -127,7 +104,7 @@
 							<<if $semen_amount lte ($semen_volume * (6 / 24))>>
 								<<set _orgasmSpermRng to Math.floor(_orgasmSpermRng / 2)>>
 							<</if>>
-							<<npcPregnancyRoll $NPCList[$_i].fullDescription `($enemytype is "man" ? "human" : $NPCList[$_i].type)` "pc" "human" "anus" "deep" $location `_orgasmSpermRng / 100`>>
+							<<npcPregnancyRoll $NPCList[$_i].fullDescription `($enemytype is "man" ? "human" : $NPCList[$_i].type)` "pc" "human" "anus" "deep" $location `_orgasmSpermRng / 100` $_i>>
 						<</if>>
 					<<elseif $NPCList[$_i].penis is "otheranusimminent" or $NPCList[$_i].penis is "otheranusentrance" or $NPCList[$_i].vagina is "otheranusimminent" or $NPCList[$_i].vagina is "otheranusentrance">>
 						<<personselect $_i>>

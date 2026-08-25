@@ -42,7 +42,7 @@ function canPlayerConceive(orifice, donor, donorSpecies) {
 window.canPlayerConceive = canPlayerConceive;
 
 /**
- * Can this NPC conceive here? Yes or no. NPC pregnancy must be on, and the anus has rules.
+ * Can this NPC conceive here? Yes or no. Proper settings must be on and the anus has rules.
  * An unknown orifice throws.
  *
  * @param {"vagina"|"anus"} orifice which impregnable hole the cum went in
@@ -52,7 +52,7 @@ window.canPlayerConceive = canPlayerConceive;
  */
 function canNpcConceive(orifice, carrier, infertile) {
 	if (orifice !== "vagina" && orifice !== "anus") throw new Error(`unknown orifice "${orifice}"`);
-	if (!V.settings.npcPregnancyEnabled) return false;
+	if (!(C.npc[carrier] ? V.settings.nnpcPregnancyEnabled : V.settings.npcPregnancyEnabled)) return false;
 	// A named NPC the player toggled off stays off — the compatibility check enforces this, the roll must too.
 	if (C.npc[carrier] && C.npc[carrier].pregnancy && C.npc[carrier].pregnancy.enabled === false) return false;
 	if (orifice === "anus") {
@@ -221,7 +221,7 @@ function NPCPregnancyPossibleWithPlayer(NPC) {
 	} else if (resolvedNpc.pregnancy) {
 		return false;
 	}
-	if (V.settings.npcPregnancyEnabled === false) return false;
+	if ((named ? V.settings.nnpcPregnancyEnabled : V.settings.npcPregnancyEnabled) === false) return false;
 	if (!setup.pregnancy.typesEnabled.includes(resolvedNpc.type)) return false;
 	if (!V.player.penisExist) return false;
 	// A male NPC can carry only anally, so it needs the NPC anal and pregnancy toggle.

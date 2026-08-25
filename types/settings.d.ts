@@ -32,6 +32,7 @@ declare module "twine-sugarcube" {
 			maleChanceSplit: true | false;
 			analPregnancy: "always" | "exceptional" | false;
 			npcAnalPregnancyEnabled: true | false;
+			nnpcPregnancyEnabled: true | false;
 			npcPregnancyEnabled: true | false;
 			monsterHallucinationsOnly: true | false;
 			parasitePregnancyEnabled: true | false;
