@@ -27,7 +27,7 @@ You stand in the ominous corridor. Through doors you see rooms, their contents c
 
 	<<link [[Next|Asylum]]>><</link>>
 	<br>
-<<elseif $asylumstate is "exercise">>
+<<elseif $asylumstate is "exercise" and $daily.asylumExercise isnot 1>>
 	It's time for exercise back in the inhabited part of the asylum. You return before your absence is noticed.
 	<br><br>
 
@@ -340,7 +340,11 @@ You investigate the staircase. It leads up, and seems sound enough, until you tu
 	You explore one of the decrepit rooms. It's empty, save for an object in the far corner. It's the same height as you, and covered in a sheet.
 	<br><br>
 
-	<<link [[Remove the sheet|Asylum Depths Mirror Intro]]>><<set $asylum_mirror to 1>><</link>>
+	<<if !pcAreArmsBound("any")>>
+		<<link [[Remove the sheet|Asylum Depths Mirror Intro]]>><<set $asylum_mirror to 1>><</link>>
+		<br>
+	<</if>>
+	<<link [[Return to the hallways|Asylum Depths]]>><</link>>
 	<br>
 <<elseif !$asylum_office>>
 	<<set $asylum_office to 1>>
@@ -348,8 +352,13 @@ You investigate the staircase. It leads up, and seems sound enough, until you tu
 	<br><br>
 	The interior is even more decrepit than the other rooms. Furniture lean against each other in haphazard fashion, surrounded by piles of old notes. Most of the room is obscured.
 	<br><br>
-	<<link [[Try to clear some space (0:20)|Asylum Depths Office 1 Clear]]>><<pass 20>><</link>><<housekeepingdifficulty 1 100>>
-	<br>
+	<<if pcAreArmsBound("any")>>
+		<span class="blue">You can't clear the office with your arms bound.</span>
+		<br>
+	<<else>>
+		<<link [[Try to clear some space (0:20)|Asylum Depths Office 1 Clear]]>><<pass 20>><</link>><<housekeepingdifficulty 1 100>>
+		<br>
+	<</if>>
 	<<link [[Return to the hallways|Asylum Depths]]>><</link>>
 	<br>
 <<elseif !$asylum_garden>>
@@ -361,14 +370,23 @@ You investigate the staircase. It leads up, and seems sound enough, until you tu
 	You find a set of garden tools just inside the asylum proper, including shears and secateurs.
 	<br><br>
 
-	<<link [[Trim the tangle|Asylum Depths Garden 1 Trim]]>><</link>><<tendingdifficulty 1 100>>
+	<<if pcAreArmsBound("any")>>
+		<span class="blue">You can't trim the tangle with your arms bound.</span>
+		<br>
+	<<else>>
+		<<link [[Trim the tangle|Asylum Depths Garden 1 Trim]]>><</link>><<tendingdifficulty 1 100>>
 	<br>
+	<</if>>
 	<<link [[Return to the hallways|Asylum Depths]]>><</link>>
 	<br>
 <</if>>
 
 :: Asylum Depths Mirror Intro
 <<effects>>
+
+<<set $asylum_mirror_small_carried to 0>>
+<<set $asylum_mirror_medium_carried to 0>>
+<<set $asylum_mirror_large_carried to 0>>
 
 <<generate1>><<person1>>
 
@@ -378,8 +396,10 @@ You remove the sheet. Beneath it stands a tall mirror, metal filigree decorating
 You whirl on the spot, but there's no one there. You turn back to the mirror. The <<person>> stil watches you, as if expecting something. You now see that the room in the mirror is different from the room in which you stand. It's larger, and richly decorated, if old-fashioned.
 <br><br>
 
-<<link [[Wave at the <<person>>|Asylum Depths Mirror Intro Wave]]>><</link>>
-<br>
+<<if !pcAreArmsBound("any")>>
+	<<link [[Wave at the <<person>>|Asylum Depths Mirror Intro Wave]]>><</link>>
+	<br>
+<</if>>
 <<link [[Talk to the <<person>>|Asylum Depths Mirror Intro Talk]]>><</link>>
 <br>
 <<link [[Dance|Asylum Depths Mirror Intro Dance]]>><<set $asylum_mirror to 2>><</link>>
@@ -394,7 +414,7 @@ You whirl on the spot, but there's no one there. You turn back to the mirror. Th
 You return to the room with the tall mirror. It's as you left it. You look in the mirror, and see a <<person>> on the other side, watching you.
 <br><br>
 
-<<if !pcAreArmsBound("both")>>
+<<if !pcAreArmsBound("any")>>
 	<<link [[Wave at the <<person>>|Asylum Depths Mirror Intro Wave]]>><</link>>
 	<br>
 <</if>>
@@ -451,9 +471,6 @@ You start dancing, nothing spectacular, just movement with a rhythm. <span class
 <<set $asylum_mirror_small to 0>>
 <<set $asylum_mirror_medium to 0>>
 <<set $asylum_mirror_large to 1>>
-<<set $asylum_mirror_small_carried to 0>>
-<<set $asylum_mirror_medium_carried to 0>>
-<<set $asylum_mirror_large_carried to 0>>
 
 <<if $tiredness gte C.tiredness.max>>
 	<span class="blue">You're too tired to dance right now.</span>
@@ -1032,7 +1049,7 @@ Several desks are crammed together, taking up most of the room.
 	<br><br> 
 	You shift the mirror, and find a sheet of paper underneath.
 	<br>
-	<i>"Tell those upstarts I don't care what they're offering. The mirrors work, and I'm not replacing them with their jiggery-pokery.</i>
+	<i>"Tell those upstarts I don't care what they're offering. The mirrors work, and I'm not replacing them with their jiggery-pokery."</i>
 	<br><br>
 
 	You return to the hallways.
@@ -1142,7 +1159,7 @@ You trim the worst of the brambles, but they seem to strike back, the branches f
 	You persist, <span class="green">and manage to create a path deeper into the garden.</span>
 	<br><br>
 
-	You find a small mirror by your feet, previously sheltered by the brmables.
+	You find a small mirror by your feet, previously sheltered by the brambles.
 	<<if $asylum_mirror gte 2>>
 		Perhaps it would be happier in the mirror room.<<lawareness>><<ltrauma>><<awareness -6>><<trauma -6>>
 	<<else>>

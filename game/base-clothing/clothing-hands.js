@@ -606,7 +606,7 @@ function initHands() {
 			colour: 0,
 			colour_options: [],
 			colour_sidebar: 0,
-			type: ["costume", "fetish"],
+			type: ["costume", "fetish", "dark"],
 			gender: "f",
 			warmth: 1,
 			cost: 12000,
