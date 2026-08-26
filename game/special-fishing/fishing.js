@@ -373,7 +373,7 @@ function rollIfBaitShopRequestsFishToday() {
 	V.daily.fishing ??= {};
 	if (V.daily.fishing.baitShopRequest !== undefined) return;
 
-	if (random(1, 100) >= 70) {
+	if (random(1, 100) <= 70 + V.fishing.baitShopRequestsCompleted) {
 		V.daily.fishing.baitShopRequest = "willRequest";
 	} else {
 		V.daily.fishing.baitShopRequest = "notToday";
