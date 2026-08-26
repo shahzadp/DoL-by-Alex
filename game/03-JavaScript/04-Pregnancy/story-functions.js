@@ -426,7 +426,7 @@ window.playerPregnancyRisk = playerPregnancyRisk;
  * A span already under way is reported from today rather than from the day it opened, and dangerous
  * comes back null once ovulation itself is behind the PC while the luteal tail still runs.
  *
- * @returns {{risky: string|null, dangerous: string|null, today: string, passed: boolean, nextWindow: {min: number, max: number}|null}} today is a riskMeterLabels text
+ * @returns {{risky: string|null, dangerous: string|null, today: string, todayColour: string, passed: boolean, nextWindow: {min: number, max: number}|null}} today/todayColour are a riskMeterLabels entry
  */
 function menstrualFertileDates() {
 	const m = V.sexStats.vagina.menstruation;
@@ -458,6 +458,7 @@ function menstrualFertileDates() {
 		dangerous: passed ? null : spanOver(dangerousBound),
 		nextWindow: passed ? menstrualNextWindowIn() : null,
 		today: labels[playerPregnancyRisk()].text, // the same label the character screen reads
+		todayColour: labels[playerPregnancyRisk()].colour, // ...and the same colour it is printed in there
 	};
 }
 window.menstrualFertileDates = menstrualFertileDates;
