@@ -182,8 +182,18 @@
 <</widget>>
 
 <<widget "baitShopFishLocationHint">>
+	<<set _requestFishKey to $daily.fishing.baitShopRequestFish>>
 	<<set _coastUnlocked to $fishing.locationsFound.includes("fishingCoastPath")>>
-	<<set _fishSpot to Object.keys(setup.fishing.lootTables.fish[$daily.fishing.baitShopRequestFish].locations).filter(loc => loc !== "fishingCoastPath" || _coastUnlocked).random()>>
+	<<set $fishing.record[_requestFishKey] ??= { numCaught: 0, largest: 0, foundIn: [] }>>
+	<<if !_coastUnlocked>>
+		<<set _locationPriority to ["fishingPier", "fishingBeach", "fishingForestLake", "fishingMoor"]>>
+	<<else>>
+		<<set _locationPriority to ["fishingPier", "fishingBeach", "fishingForestLake", "fishingCoastPath", "fishingMoor"]>>
+	<</if>>
+	/* Locations this fish can actually be found in, in preference order */
+	<<set _recommendableLocations to _locationPriority.filter(loc => setup.fishing.lootTables.fish[_requestFishKey].locations[loc] > 0)>>
+	/* Recommend the highest-priority spot the player doesn't know about. If the player knows all of them, use the highest-priority spot */
+	<<set _fishSpot to _recommendableLocations.find(loc => !$fishing.record[_requestFishKey].foundIn.includes(loc)) ?? _recommendableLocations[0]>>
 	<<switch _fishSpot>>
 		<<case "fishingBeach">><<set _fishSpotPhrase to "off the beach">>
 		<<case "fishingPier">><<set _fishSpotPhrase to "off the pier, right outside">>
@@ -191,9 +201,8 @@
 		<<case "fishingMoor">><<set _fishSpotPhrase to "out on the moor">>
 		<<case "fishingForestLake">><<set _fishSpotPhrase to "in the lake through the forest">>
 	<</switch>>
-	<<set $fishing.record[$daily.fishing.baitShopRequestFish] ??= { numCaught: 0, largest: 0, foundIn: [] }>>
-	<<if not $fishing.record[$daily.fishing.baitShopRequestFish].foundIn.includes(_fishSpot)>>
-		<<run $fishing.record[$daily.fishing.baitShopRequestFish].foundIn.push(_fishSpot)>>
+	<<if not $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
+		<<run $fishing.record[_requestFishKey].foundIn.push(_fishSpot)>>
 	<</if>>
 	<span class="gold"><<= _fishSpotPhrase>></span>
 <</widget>>
