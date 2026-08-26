@@ -106,12 +106,19 @@ window.playerSpeciesPregnancyEnabled = playerSpeciesPregnancyEnabled;
  * @returns {boolean}
  */
 function hasExceptionalAnalPregnancy() {
-	return (
-		!V.player.vaginaExist &&
-		((V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy") ||
-			(V.earSlime.growth >= 100 && ["pregnancy", "mixed"].includes(V.earSlime.focus)))
-	);
+	return !V.player.vaginaExist && (hasPregnancyTattoo() || (V.earSlime.growth >= 100 && ["pregnancy", "mixed"].includes(V.earSlime.focus)));
 }
+
+/**
+ * Whether the PC wears the magic pregnancy tattoo, which raises conception. It no longer touches the
+ * cycle's pace -- the cycle runs at one day per day whatever is worn.
+ *
+ * @returns {boolean}
+ */
+function hasPregnancyTattoo() {
+	return V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy";
+}
+window.hasPregnancyTattoo = hasPregnancyTattoo;
 window.hasExceptionalAnalPregnancy = hasExceptionalAnalPregnancy;
 
 /**

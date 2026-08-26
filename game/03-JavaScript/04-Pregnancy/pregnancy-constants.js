@@ -41,9 +41,33 @@ const PregnancyConstants = ConstantsLoader.init({
 		fertileLeadDaysMin: 5, // fertile from this many days before ovulation...
 		fertileLeadDaysMax: 7, // ...up to this many, rolled per cycle.
 		lutealTailDays: 2, // fertility fades away over this many days after the window closes
+		// The cycle advances by this much each <<menstruationCycle>>, which dayPassed and noonCheck
+		// spend once each. Two ticks a day means one cycle day per real day, always: pills change how
+		// fertile the body is, never how fast time runs, so a cycle day and a calendar day are the
+		// same unit and a projected date is subtraction rather than a simulation.
+		cycleDaysPerTick: 0.5,
+		// The day a freshly restarted cycle begins on, so a projection of the next cycle and
+		// restartMenstruationCycle itself agree on where it starts.
+		cycleRestartDay: 0.5,
+		// How many <<menstruationCycle>> ticks a real day holds: dayPassed and noonCheck, one each.
+		cycleTicksPerDay: 2,
 		baselineFertility: 0.01, // baseline fertillity so pregnancy chance is never 0
+		// How much each fertility-booster dose lifts the floor under the day's fertility, up to
+		// fertilityMaxDoses. A booster's job is to make the body fertile NOW rather than to
+		// fast-forward the cycle, so a dose raises the floor instead of the clock: the floor is what
+		// stops a dose being multiplied into a dead cycle day, and
+		// conceptionModifiers.fertilityMultiplierPerDose is what makes an open window potent.
+		// Tuned against what the pill UI can actually reach: take_condition is doseTaken < 2, so a
+		// player gets 0, 1 or 2, and the game calls 2 an overdose (traits.twee, and taking the second
+		// fires PillCollectionSecondDosePregnancy). Measured on the reported save's dead day, cycle 29
+		// of 30: 1 dose reads "safe" and an overdose reads "risky", where 0.2 flat left one dose
+		// indistinguishable from none -- a pill you take and watch do nothing.
+		fertilityFloorPerDose: 0.3,
 		riskyFertility: 0.375, // what fertillity counts as "risky"
 		postOvulationDays: 1, // NPC fertile window stays this many days past cycleDangerousDay
+		// playerHeatMinArousal's two tiers, read against the day's fertility rather than the meter's
+		// label, so retuning what the player is told never retunes what their body does.
+		heatFertility: { partial: 0.625, full: 0.875 },
 	},
 
 	/* === GESTATION / SYMPTOMS / DETECTION === */
@@ -74,13 +98,29 @@ const PregnancyConstants = ConstantsLoader.init({
 		// below hiddenMin bellyHide clothing can still hide it.
 		visibility: { bareMin: 8, clothedMin: 13, hiddenMin: 18 },
 	},
-	// The character-screen fertility meter. playerPregnancyRisk() indexes it.
+	// The character-screen fertility meter. playerPregnancyRisk() takes the first label whose upTo
+	// menstrualExposure() still falls under, and menstrualFertileDates() bands its printed date
+	// ranges on the SAME function against these SAME bounds -- so the label and the dates two lines
+	// under it cannot disagree. That coherence is structural now; it does not rest on two separate
+	// constants being kept equal, which is how the panel came to contradict itself for a quarter of
+	// the cycle while every constant still matched.
+	//
+	// upTo is an EXPOSURE fraction (0-1): the fertility a load left today can expect to meet across
+	// its life, weighted by how likely it is to still be alive to meet it. The meter deliberately
+	// does not read the odds directly, because settings.basePlayerPregnancyChance is a 0-100 slider
+	// -- at the top of its range every day of the month reads dangerous, at the bottom ovulation
+	// itself reads safe, and either way the reading stops describing the cycle. Exposure is very
+	// nearly proportional to the real odds regardless of where that slider sits (measured: the ratio
+	// holds within 3% across the whole cycle), so these bounds carry real meaning without it.
+	//
+	// Tuned so a 30-day cycle spreads 17/3/2/3/5 across the five bands. Banding on the peak instead
+	// of the integral collapsed that to 25 of 30 days reading either "very safe" or "dangerous".
 	riskMeterLabels: [
-		{ text: "very safe", colour: "green" },
-		{ text: "safe", colour: "teal" },
-		{ text: "somewhat safe", colour: "lblue" },
-		{ text: "risky", colour: "pink" },
-		{ text: "dangerous", colour: "red" },
+		{ text: "very safe", colour: "green", upTo: 0.05 },
+		{ text: "safe", colour: "teal", upTo: 0.15 },
+		{ text: "somewhat safe", colour: "lblue", upTo: 0.28 },
+		{ text: "risky", colour: "pink", upTo: 0.5 },
+		{ text: "dangerous", colour: "red", upTo: Infinity },
 	],
 	// Pregnancy test early negatives
 	pregnancyTest: {

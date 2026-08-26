@@ -204,7 +204,8 @@ window.daysAlong = daysAlong;
  * @param {"vagina"|"anus"} orifice which orifice to check
  */
 function getActivePregnancy(carrier, orifice) {
-	return V.pregnancies.find(p => p.carrier === carrier && p.orifice === orifice && p.deliveredDate === null);
+	// initnpcgendersingle calls this before a new game initialises $pregnancies, as getActivePregnancies notes.
+	return (V.pregnancies ?? []).find(p => p.carrier === carrier && p.orifice === orifice && p.deliveredDate === null);
 }
 window.getActivePregnancy = getActivePregnancy;
 
