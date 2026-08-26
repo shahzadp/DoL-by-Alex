@@ -13,6 +13,13 @@ declare module "twine-sugarcube" {
 		};
 
 		sexStats: SexStats;
+		pregnancyStats: PregnancyStats;
+		storedNPCs: Record<string, { npc: Partial<Npc> }>;
+		babyIntros: Record<string, BabyIntro[]>;
+		harpyEggs?: { count: number; daysTillLaying: number };
+		harpyEggsPrevent?: number;
+		childSelected?: Child;
+		recentBirthId?: number;
 	}
 }
 
@@ -155,7 +162,43 @@ declare global {
 		cycleDay: number;
 		cycleDangerousDay: number;
 		fertileLeadDays: number;
+		analEnabled: boolean;
 		pills: "fertility" | "contraceptive" | null;
+	}
+
+	export interface BabyIntro {
+		birthId: number;
+		mother: string;
+		children: number[];
+	}
+
+	export interface PregnancyStats {
+		playerChildren: number;
+		humanChildren: number;
+		wolfChildren: number;
+		hawkChildren: number;
+		npcChildren: number;
+		npcChildrenUnrelatedToPlayer: number;
+		npcTotalBirthEvents: number;
+		humanToysUnlocked: boolean;
+		wolfToysUnlocked: boolean;
+		hawkToysUnlocked: boolean;
+		aftermorningpills: number;
+		pregnancyTestsTaken: number;
+		parasiteBook: number;
+		parasiteDoctorEvents: number;
+		morningSicknessGeneral: number;
+		morningSicknessWaking: number;
+		childInteractions: number;
+		childBreastfedInteractions: number;
+		childBottlefedInteractions: number;
+		childFirstWordInteractions: number;
+		orphanageInteractions: number;
+		orphanageMilkBottles: number;
+		orphanageMilkBottlesTotal: number;
+		playerVirginBirths: number[];
+		totalDaysPregnant: number;
+		totalDaysPregnancyKnown: number;
 	}
 
 	export type MorningAfterPillResult = "notPregnant" | "success" | "aLittleLate" | "late" | "tooLate";
@@ -234,7 +277,27 @@ declare global {
 	function hourlyPregnancyUpdate(): void;
 	function rollAndRecordConception(orifice: "vagina" | "anus"): void;
 	function readyToCarry(): boolean;
-	function fertilityOnCycleDay(day: number): number;
+	function doseTakenIn(pill: string, daysAhead?: number): number;
+	function fertilityFloor(daysAhead?: number): number;
+	function fertilityOnCycleDay(day: number, daysAhead?: number): number;
+	function menstrualFertility(): number;
+	function menstrualDayIn(days: number): number;
+	function playerConceptionModifier(daysAhead?: number): number;
+	function menstrualOutlook(): number;
+	function menstrualExposure(daysFromNow?: number): number;
+	function cycleFertilityRamp(day: number): number;
+	function menstrualCycleFertility(): number;
+	function loadSurvival(daysAfterLanding: number): number;
+	function contraceptiveGuard(daysAhead?: number): number;
+	function playerPregnancyRisk(): number;
+	function menstrualFertileDates(): {
+		risky: string | null;
+		dangerous: string | null;
+		today: string;
+		passed: boolean;
+		nextWindow: { min: number; max: number } | null;
+	};
+	function menstrualNextWindowIn(): { min: number; max: number };
 	function loadAgeDay(load: Load): number;
 	function recordPendingPregnancy(orifice: "vagina" | "anus", load: Load): void;
 	function startDuePregnancies(): void;
@@ -277,7 +340,8 @@ declare global {
 		orifice: "vagina" | "anus",
 		depth?: "outside" | "imminent" | "deep",
 		location?: string,
-		donorFertility?: number
+		donorFertility?: number,
+		slot?: number | null
 	): number | null;
 
 	function canPlayerConceive(orifice: "vagina" | "anus", donor: string, donorSpecies: string): boolean;

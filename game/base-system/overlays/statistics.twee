@@ -1010,17 +1010,25 @@
 				<<if $_menstruation.running>>
 					<<set _fertile to menstrualFertileDates()>>
 					<br>
-					Risky days: <<print _fertile.risky>>
-					<br>
-					Dangerous days: <<print _fertile.dangerous>>
-					<br>
-					<<if _fertile.today is "dangerous">>
-						Today is a dangerous day.
-					<<elseif _fertile.today is "risky">>
-						Today is a risky day.
+					<<if _fertile.passed>>
+						/*The next cycle's length and fertile window aren't rolled until it begins, so the span is all that can honestly be given.*/
+						This cycle's fertile days have passed.
+						<br>
+						<<if _fertile.nextWindow.min is _fertile.nextWindow.max>>
+							Your next fertile days begin in about <<print _fertile.nextWindow.min>> <<= _fertile.nextWindow.min is 1 ? "day" : "days">>.
+						<<else>>
+							Your next fertile days begin in about <<print _fertile.nextWindow.min>> to <<print _fertile.nextWindow.max>> days.
+						<</if>>
 					<<else>>
-						Today is safe.
+						Risky days: <<print _fertile.risky>>
+						/*Ovulation can be behind the PC while the luteal tail still runs, and a span that is over is not printed.*/
+						<<if _fertile.dangerous>>
+							<br>
+							Dangerous days: <<print _fertile.dangerous>>
+						<</if>>
 					<</if>>
+					<br>
+					Sex today is <<print _fertile.today>>.
 					<br>
 					Current day in cycle: <<print $_menstruation.currentDay>>
 					<br>
@@ -1037,9 +1045,9 @@
 		<<foldout false "_extraPregnancyFoldout">>
 			<span class="gold">Pregnancy</span>
 			/* Previously commented out for being a major spoil, but caused players to think a bug had occurred */
-			Total days being pregnant: <<print Math.floor($pregnancyStats.totalDaysPregnant)>>
+			Total days being pregnant in this lifetime: <<print Math.floor($pregnancyStats.totalDaysPregnant)>>
 			<br>
-			Total days knowingly being pregnant: <<print Math.floor($pregnancyStats.totalDaysPregnancyKnown)>>
+			Total days knowingly being pregnant in this lifetime: <<print Math.floor($pregnancyStats.totalDaysPregnancyKnown)>>
 			<br>
 			<<if $player.vaginaExist>>
 				<<pregnancyStatusBlock "vagina">>

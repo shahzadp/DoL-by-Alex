@@ -66,13 +66,14 @@ function gatherToySets() {
 
 function humanChildActivity(childId) {
 	const child = V.childRecords[childId];
+	const childDays = getChildDays(childId);
 
 	const donor = getPregnancyOf(child).donor;
 	const toySets = gatherToySets();
 	statusCheck("Robin");
 	let activity = [];
 
-	if (between(T.childTotalDays, 0, 100)) {
+	if (between(childDays, 0, 100)) {
 		if (Time.dayState === "night") {
 			activity = activity.concat(["sleeping", "sleeping", "sleeping", "sleeping", "sleeping", "restlessSleep", "restlessSleep", "crying", "nappyChange"]);
 		} else {
@@ -90,7 +91,7 @@ function humanChildActivity(childId) {
 				"bathe",
 			]);
 
-			if (T.childTotalDays >= 50) activity.push("happy");
+			if (childDays >= 50) activity.push("happy");
 			if (toySets.includes("baby rattles")) activity.push("babyRattle");
 			if (toySets.includes("teddy bears")) activity.push("teddyBear");
 			if (toySets.includes("toy cars")) activity.push("toyCar");
@@ -106,7 +107,7 @@ function humanChildActivity(childId) {
 				if (T.wraithEvent) activity.push("Wraith");
 			}
 		}
-	} else if (between(T.childTotalDays, 100, 200)) {
+	} else if (between(childDays, 100, 200)) {
 		if (Time.dayState === "night") {
 			activity = activity.concat(["sleeping", "sleeping", "sleeping", "sleeping", "sleeping", "restlessSleep", "restlessSleep", "crying", "nappyChange"]);
 		} else {
@@ -124,7 +125,7 @@ function humanChildActivity(childId) {
 				"bathe",
 			]);
 
-			if (T.childTotalDays >= 180) activity.push("readingAttempt");
+			if (childDays >= 180) activity.push("readingAttempt");
 
 			if (toySets.includes("baby rattles")) activity.push("babyRattle");
 			if (toySets.includes("teddy bears")) activity.push("teddyBear");
@@ -135,7 +136,7 @@ function humanChildActivity(childId) {
 				activity.push("crying");
 			}
 			if (toySets.includes("clown")) activity.push("clown");
-			if (child.development.talking >= 10 && T.childTotalDays >= 150) activity.push("talking2");
+			if (child.development.talking >= 10 && childDays >= 150) activity.push("talking2");
 			if (T.robin_location === "orphanage") activity.push("Robin");
 			if (donor === "Ivory Wraith") {
 				wikifier("rngWraith", 1);
@@ -158,6 +159,7 @@ function humanChildActivity(childId) {
 
 function wolfChildActivity(childId) {
 	const child = V.childRecords[childId];
+	const childDays = getChildDays(childId);
 
 	const toySets = gatherToySets();
 	let activity = [];
@@ -166,7 +168,7 @@ function wolfChildActivity(childId) {
 		activity = activity.concat(["squeakyToy", "squeakyToy2", "chewRope", "chewRope2", "chewBone", "chewBone2", "rollBall", "rollBall2"]);
 	}
 
-	if (between(T.childTotalDays, 0, 100)) {
+	if (between(childDays, 0, 100)) {
 		if (Time.dayState === "night") {
 			activity = activity.concat(["sleepingWithWolf", "sleepingWithWolf", "sleepingWithWolf", "sleeping"]);
 		} else {
@@ -185,7 +187,7 @@ function wolfChildActivity(childId) {
 				"gnawing",
 			]);
 		}
-	} else if (between(T.childTotalDays, 100, 200)) {
+	} else if (between(childDays, 100, 200)) {
 		if (Time.dayState === "night") {
 			activity = activity.concat(["sleepingWithWolf", "sleepingWithWolf", "sleepingWithWolf", "sleeping"]);
 		} else {
@@ -214,6 +216,7 @@ function wolfChildActivity(childId) {
 
 function hawkChildActivity(childId) {
 	const child = V.childRecords[childId];
+	const childDays = getChildDays(childId);
 
 	let activity = [];
 
@@ -221,20 +224,20 @@ function hawkChildActivity(childId) {
 	const toySets = gatherToySets();
 	if (toySets.includes("hawk toys")) activity = activity.concat(["preeningToy", "swing"]);
 	*/
-	if (between(T.childTotalDays, 0, 100)) {
+	if (between(childDays, 0, 100)) {
 		if (Time.dayState === "night" && V.bird.state === "home" && ["sleep", "rest", "brood"].includes(V.bird.activity)) {
 			activity = activity.concat(["sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleeping"]);
 		} else {
 			activity = activity.concat(["sleeping", "sleeping", "sleeping", "crying", "reaching", "flap", "flap", "perch", "bathe"]);
 		}
-	} else if (between(T.childTotalDays, 100, 200)) {
+	} else if (between(childDays, 100, 200)) {
 		if (Time.dayState === "night" && V.bird.state === "home" && ["sleep", "rest", "brood"].includes(V.bird.activity)) {
 			activity = activity.concat(["sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleepingWithGreatHawk", "sleeping"]);
 		} else {
 			activity = activity.concat(["sleeping", "sleeping", "crying", "reaching", "flap", "perch", "batheSelf"]);
 		}
 	}
-	if (T.childTotalDays >= 14) {
+	if (childDays >= 14) {
 		activity.push("preen");
 	}
 

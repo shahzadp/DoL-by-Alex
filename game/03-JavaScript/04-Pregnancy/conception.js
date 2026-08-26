@@ -82,6 +82,18 @@ function washLoads() {
 window.washLoads = washLoads;
 
 /**
+ * A fertility pill's dose count as it will stand a number of days from now.
+ *
+ * @param {string} pill a key of V.sexStats.pills.pills
+ * @param {number} [daysAhead=0] real days from now
+ * @returns {number} doses still in effect that day
+ */
+function doseTakenIn(pill, daysAhead = 0) {
+	return Math.max(0, V.sexStats.pills.pills[pill].doseTaken - daysAhead);
+}
+window.doseTakenIn = doseTakenIn;
+
+/**
  * Conception modifier that influences how likely pc is to get pregnant.
  *
  * Contraceptive pills are 90% effective, or 100% at 2+ pills.
@@ -92,15 +104,15 @@ window.washLoads = washLoads;
  *
  * Earslime gives 2x when focused on pc conceiving, 0.5x when focused on pc impregnating others.
  *
+ * @param {number} [daysAhead=0] real days from now, so a projection reads that day's doses
  * @returns {number} a multiplier on the base pregnancy chance
  */
-function playerConceptionModifier() {
+function playerConceptionModifier(daysAhead = 0) {
 	const c = PregnancyConstants.conceptionModifiers;
-	const pills = V.sexStats.pills.pills;
-	if (pills.contraceptive.doseTaken >= c.contraceptiveDosesToBlock) return 0;
-	let modifier = pills.contraceptive.doseTaken >= 1 ? c.contraceptiveMultiplier : 1;
-	modifier *= 1 + c.fertilityMultiplierPerDose * Math.clamp(pills["fertility booster"].doseTaken, 0, PregnancyConstants.fertilityMaxDoses);
-	if (V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy") modifier *= c.pregnancyTattooMultiplier;
+	let modifier = contraceptiveGuard(daysAhead);
+	if (modifier === 0) return 0;
+	modifier *= 1 + c.fertilityMultiplierPerDose * Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
+	if (hasPregnancyTattoo()) modifier *= c.pregnancyTattooMultiplier;
 	if (V.earSlime.growth >= 100) modifier *= c.earSlimeMultiplier[V.earSlime.focus] ?? 1;
 	return modifier;
 }
@@ -132,22 +144,102 @@ function readyToCarry() {
 window.readyToCarry = readyToCarry;
 
 /**
+ * How much the fertility boosters in the PC lift conception on a given day
+ *
+ * @param {number} [daysAhead=0] days from now
+ * @returns {number} 1 with no boosters, rising with the dose
+ */
+function fertilityBoost(daysAhead = 0) {
+	const c = PregnancyConstants.conceptionModifiers;
+	return 1 + c.fertilityMultiplierPerDose * Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
+}
+window.fertilityBoost = fertilityBoost;
+
+/**
+ * How far birth control holds conception down on a given day, leaving out everything that only
+ * scales potency. 1 is no protection at all, 0 is full protection.
+ *
+ * @param {number} [daysAhead=0] days from now
+ * @returns {number} 0 to 1
+ */
+function contraceptiveGuard(daysAhead = 0) {
+	const c = PregnancyConstants.conceptionModifiers;
+	const doses = doseTakenIn("contraceptive", daysAhead);
+	if (doses >= c.contraceptiveDosesToBlock) return 0;
+	return doses >= 1 ? c.contraceptiveMultiplier : 1;
+}
+window.contraceptiveGuard = contraceptiveGuard;
+
+/**
+ * The floor under any day's fertility, so conception is never flatly impossible.
+ * Fertility boosters raise it so a dose makes the body fertile now.
+ *
+ * @param {number} [daysAhead=0] days from now
+ * @returns {number} 0 to 1
+ */
+function fertilityFloor(daysAhead = 0) {
+	const c = PregnancyConstants.menstrualCycle;
+	const doses = Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
+	return Math.clamp(Math.max(c.baselineFertility, doses * c.fertilityFloorPerDose), 0, 1);
+}
+window.fertilityFloor = fertilityFloor;
+
+/**
  * How likely conception is on a day of the cycle: a long rise into ovulation, a short fall out of it.
  * With the fertility cycle setting off, every day is fertile.
  *
  * @param {number} day the day of the cycle to read
- * @returns {number} 0 while carrying or recovering, otherwise the baselineFertility at worst, up to 1 at ovulation
+ * @param {number} [daysAhead=0] real days from now, so a projection reads that day's pill doses
+ * @returns {number} 0 while carrying or recovering, otherwise the fertility floor at worst, up to 1 at ovulation
  */
-function fertilityOnCycleDay(day) {
+function fertilityOnCycleDay(day, daysAhead = 0) {
 	if (!readyToCarry()) return 0;
 	if (V.settings.fertilityCycleEnabled === false) return 1;
+	return Math.max(cycleFertilityRamp(day), fertilityFloor(daysAhead));
+}
+window.fertilityOnCycleDay = fertilityOnCycleDay;
+
+/**
+ * Where a day sits on the cycle's own curve, with no floor and no pills.
+ * Heat reads this rather than fertilityOnCycleDay.
+ *
+ * @param {number} day the day of the cycle to read
+ * @returns {number} 0 well away from ovulation, up to 1 at it
+ */
+function cycleFertilityRamp(day) {
 	const c = PregnancyConstants.menstrualCycle;
 	const m = V.sexStats.vagina.menstruation;
 	const [, , ovulationStart, ovulationEnd] = m.stages; // [cycleStart, menstrualEnd, ovulationStart, ovulationEnd]
-	const fertility = day > ovulationEnd ? fertilityRamp(day - ovulationEnd, c.lutealTailDays) : fertilityRamp(ovulationStart - day, m.fertileLeadDays);
-	return Math.max(fertility, c.baselineFertility);
+	return day > ovulationEnd ? fertilityRamp(day - ovulationEnd, c.lutealTailDays) : fertilityRamp(ovulationStart - day, m.fertileLeadDays);
 }
-window.fertilityOnCycleDay = fertilityOnCycleDay;
+window.cycleFertilityRamp = cycleFertilityRamp;
+
+/**
+ * Today's place on the cycle curve. What heat runs on.
+ *
+ * @returns {number} 0 to 1
+ */
+function menstrualCycleFertility() {
+	if (!readyToCarry()) return 0;
+	if (V.settings.fertilityCycleEnabled === false) return 1;
+	return cycleFertilityRamp(V.sexStats.vagina.menstruation.currentDay);
+}
+window.menstrualCycleFertility = menstrualCycleFertility;
+
+/**
+ * The share of loads still alive this many days after landing.
+ * A load's lifespan is rolled uniformly across loadLifespanDays, so it is certain to see the first
+ * min days and progressively less likely to see each one after.
+ *
+ * @param {number} daysAfterLanding 0 on the day it landed
+ * @returns {number} 0 to 1
+ */
+function loadSurvival(daysAfterLanding) {
+	const { min, max } = PregnancyConstants.loadLifespanDays;
+	const rolls = max - min + 1;
+	return Math.clamp(max - Math.max(daysAfterLanding, min - 1), 0, rolls) / rolls;
+}
+window.loadSurvival = loadSurvival;
 
 /**
  * How fertile pc is today.
@@ -357,7 +449,7 @@ window.startDuePregnancies = startDuePregnancies;
  */
 function fetishPregnancyRoll(load) {
 	if (!readyToCarry()) return null;
-	const chance = V.settings.basePlayerPregnancyChance * playerConceptionModifier();
+	const chance = V.settings.basePlayerPregnancyChance * playerConceptionModifier() * menstrualFertility();
 	if (chance >= 100) return load;
 	return State.random() * 100 < Math.clamp(chance * load.weight, 0, 100) ? load : null;
 }

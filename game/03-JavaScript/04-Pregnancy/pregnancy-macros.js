@@ -188,7 +188,7 @@ function npcPregnancyRoll(carrier, carrierSpecies, donor, donorSpecies, orifice,
 	if (!setup.pregnancy.typesEnabled.includes(donorSpecies)) return null; // a quiet no for everyday non-impregnating species
 	const generated = slot !== null && !C.npc[carrier];
 	if (generated && (V.NPCList[slot].pregnancy || !randomCarrierTypes.includes(carrierSpecies))) return null;
-	if (getActivePregnancy(carrier, orifice)) return null;
+	if (getActivePregnancies(carrier).length) return null; // one pregnancy per body, as the player has
 	// Unfinished pregnancy content toggle
 	if (!V.settings.incompletePregnancyEnabled && C.npc[carrier] && !setup.pregnancy.canBePregnant.includes(carrier)) return null;
 	// Dream sex leaves nothing behind, so a nightmare counts as a disabled scene.

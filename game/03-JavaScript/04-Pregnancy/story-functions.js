@@ -320,61 +320,168 @@ function pregnancyNameCorrection(name, caps = false) {
 window.pregnancyNameCorrection = pregnancyNameCorrection;
 
 /**
- * The character-screen fertility meter. Indexes riskMeterLabels, 0 (safe) up to the most fertile.
+ * The day of the cycle the PC reaches in a number of real days.
+ *
+ * The cycle keeps one pace: cycleDaysPerTick a tick, cycleTicksPerDay ticks a day. Pills change how
+ * fertile the body is, never how fast the cycle runs, so a cycle day and a real day are the same
+ * unit and this is addition rather than a simulation. The next cycle is walked with this one's
+ * shape, since its own length and stages are not rolled until it begins.
+ *
+ * @param {number} days real days ahead
+ * @returns {number} a day of the cycle
+ */
+function menstrualDayIn(days) {
+	const c = PregnancyConstants.menstrualCycle;
+	const m = V.sexStats.vagina.menstruation;
+	let day = m.currentDay + days * c.cycleDaysPerTick * c.cycleTicksPerDay;
+	while (day >= m.currentDaysMax) day -= m.currentDaysMax;
+	return day;
+}
+window.menstrualDayIn = menstrualDayIn;
+
+/**
+ * The fertility a load left in the PC on a given day can expect to meet across its whole life,
+ * weighted by how likely it is to still be alive to meet it, and after birth control.
+ *
+ * The INTEGRAL, deliberately, not the peak. A peak is bimodal -- it reads 1 the moment ovulation
+ * comes within sperm range and stays there, so 25 of 30 days land in "very safe" or "dangerous" and
+ * the days between say nothing. The integral spreads the cycle across all five bands, and because
+ * every day of the load's life is weighted by loadSurvival it is very nearly proportional to the
+ * real odds the conception roll produces, which a peak is not.
+ *
+ * This, not a probability, is still what the meter reports. A probability would have to carry
+ * settings.basePlayerPregnancyChance, a 0-100 slider the player set once and already knows about --
+ * at the top of its range every day of the month reads dangerous, at the bottom ovulation itself
+ * reads safe, and either way the reading stops saying anything about the cycle.
+ *
+ * menstrualFertileDates bands its printed ranges on this same function, so the label and the dates
+ * beside it cannot disagree: one quantity, one set of thresholds, coherence by construction rather
+ * than by two constants that happen to match.
+ *
+ * @param {number} [daysFromNow=0] read the load as landing this many days from today
+ * @returns {number} 0 for no chance at all; 1 is every day of the load's life at unmedicated ovulation,
+ * and fertility boosters can carry it past 1
+ */
+function menstrualExposure(daysFromNow = 0) {
+	let sum = 0;
+	let weight = 0;
+	for (let d = 0; d < PregnancyConstants.loadLifespanDays.max; d++) {
+		const alive = loadSurvival(d);
+		if (alive === 0) continue;
+		const ahead = daysFromNow + d;
+		sum += alive * fertilityOnCycleDay(menstrualDayIn(ahead), ahead) * contraceptiveGuard(ahead) * fertilityBoost(ahead);
+		weight += alive;
+	}
+	return weight === 0 ? 0 : sum / weight;
+}
+window.menstrualExposure = menstrualExposure;
+
+/**
+ * What the fertility meter reads: today's exposure, once everything that would stop the conception
+ * roll outright has been ruled out.
+ *
+ * @returns {number} 0 for no chance at all, up to 1
+ */
+function menstrualOutlook() {
+	// The same things that stop rollAndRecordConception rolling at all.
+	if (!readyToCarry()) return 0;
+	if (V.pendingPregnancies.vagina !== null || V.pendingPregnancies.anus !== null) return 0;
+	if (V.settings.basePlayerPregnancyChance <= 0) return 0; // the slider's floor turns pregnancy off
+	// A parasited orifice never rolls. Only a body with no clear orifice left is safe by it.
+	const orifices = [V.player.vaginaExist && "vagina", playerCanCarryAnally() && "anus"].filter(Boolean);
+	if (orifices.length && orifices.every(orifice => orificeHasParasites(orifice))) return 0;
+	return menstrualExposure(0);
+}
+window.menstrualOutlook = menstrualOutlook;
+
+/**
+ * The character-screen fertility meter. Indexes riskMeterLabels: 0 very safe, 4 dangerous.
  *
  * @returns {number}
  */
 function playerPregnancyRisk() {
-	const levels = PregnancyConstants.riskMeterLabels.length - 1;
 	if (V.settings.playerPregnancyHumanEnabled === false && V.settings.playerPregnancyBeastEnabled === false) return 0; // player pregnancy disabled
 	if (!V.player.vaginaExist && !playerCanCarryAnally()) return 0;
-	return Math.clamp(Math.round(menstrualFertility() * levels), 0, levels);
+	const outlook = menstrualOutlook();
+	// findIndex gives -1 on a NaN outlook, and every caller indexes riskMeterLabels with this.
+	return Math.max(
+		0,
+		PregnancyConstants.riskMeterLabels.findIndex(label => outlook <= label.upTo)
+	);
 }
 window.playerPregnancyRisk = playerPregnancyRisk;
 
 /**
- * The PC's risky and dangerous days as calendar dates (MM/DD), for the stats screen.
+ * The PC's risky and dangerous days as calendar dates, in the player's date format, for the stats
+ * screen.
  *
- * @returns {{risky: string, dangerous: string, today: "safe"|"risky"|"dangerous"}}
+ * A cycle day is a real day, so a date is the days between and nothing has to be simulated. Only
+ * this cycle is projected: restartMenstruationCycle re-rolls the next one's length, stages and
+ * fertileLeadDays, so a date past this window would be a number the game has not generated yet.
+ * Once the window has passed, risky and dangerous come back null. The next cycle's start IS known --
+ * it is whatever is left of this one -- and its length and lead days are rolled from known ranges, so
+ * nextWindow carries how many days away the next fertile window can be, as a span rather than a date
+ * the game has not settled on.
+ *
+ * A span already under way is reported from today rather than from the day it opened, and dangerous
+ * comes back null once ovulation itself is behind the PC while the luteal tail still runs.
+ *
+ * @returns {{risky: string|null, dangerous: string|null, today: string, passed: boolean, nextWindow: {min: number, max: number}|null}} today is a riskMeterLabels text
  */
 function menstrualFertileDates() {
 	const m = V.sexStats.vagina.menstruation;
-	const c = PregnancyConstants.menstrualCycle;
-	const [, , ovulationStart, ovulationEnd] = m.stages;
-	const riskyStart = ovulationStart - m.fertileLeadDays * (1 - c.riskyFertility);
-	const riskyEnd = ovulationEnd + c.lutealTailDays * (1 - c.riskyFertility);
-	const cycleShift = m.currentDay > riskyEnd ? m.currentDaysMax : 0;
-	const dateFor = cycleDay => {
-		const d = new DateTime(Time.date).addDays(Math.round(cycleDay + cycleShift - m.currentDay));
-		return `${String(d.month).padStart(2, "0")}/${String(d.day).padStart(2, "0")}`;
+	const labels = PregnancyConstants.riskMeterLabels;
+	const riskyBound = labels[labels.findIndex(l => l.text === "risky") - 1].upTo;
+	const dangerousBound = labels[labels.length - 2].upTo;
+	const dateIn = days => {
+		const d = new DateTime(Time.date).addDays(days);
+		return new Date(d.year, d.month - 1, d.day).toLocaleDateString(returnTimeFormat(), { day: "2-digit", month: "2-digit" });
 	};
-	const risk = playerPregnancyRisk();
-	const levels = PregnancyConstants.riskMeterLabels.length - 1;
-	const today = risk >= levels ? "dangerous" : risk >= 2 ? "risky" : "safe";
+	// Walk the rest of this cycle with the very function the label bands, so the two cannot disagree.
+	// Only this cycle: restartMenstruationCycle re-rolls the next one's length, stages and lead days,
+	// so a date past it would be a number the game has not generated.
+	const daysLeft = Math.ceil(m.currentDaysMax - m.currentDay);
+	const exposure = [];
+	for (let day = 0; day <= daysLeft; day++) exposure.push(menstrualExposure(day));
+	const spanOver = bound => {
+		const first = exposure.findIndex(e => e > bound);
+		if (first === -1) return null;
+		let last = first;
+		while (last + 1 < exposure.length && exposure[last + 1] > bound) last++;
+		return first === last ? dateIn(first) : `${dateIn(first)} to ${dateIn(last)}`;
+	};
+	const risky = spanOver(riskyBound);
+	const passed = risky === null;
 	return {
-		risky: `${dateFor(Math.ceil(riskyStart))} to ${dateFor(Math.floor(riskyEnd))}`,
-		dangerous: `${dateFor(ovulationStart)} to ${dateFor(Math.ceil(ovulationEnd))}`,
-		today,
+		passed,
+		risky,
+		dangerous: passed ? null : spanOver(dangerousBound),
+		nextWindow: passed ? menstrualNextWindowIn() : null,
+		today: labels[playerPregnancyRisk()].text, // the same label the character screen reads
 	};
 }
 window.menstrualFertileDates = menstrualFertileDates;
 
 /**
- * Advance the cycle by up to a day.
- * Fertility boosters (2+ doses) and the magic tattoo each add half a day.
- * The base half-day is skipped when a contraceptive blocks it.
+ * How many real days away the NEXT cycle's fertile window can be, as a span.
  *
- * @param {Menstruation} menstruation V.sexStats.vagina.menstruation
- * @param {object} pills V.sexStats.pills
+ * restartMenstruationCycle rolls the next cycle's length from baseDays/baseDaysRng and its lead days
+ * from a fixed range, and rollMenstrualStages places ovulation at a fixed fraction of the length. So
+ * the earliest and latest the window can open are both known, even though the day it lands on is not.
+ *
+ * @returns {{min: number, max: number}} real days from today
  */
-function advanceMenstrualDay(menstruation, pills) {
-	if (pills.pills["fertility booster"].doseTaken >= 2) menstruation.currentDay += 0.5;
-	if (V.skin.pubic.pen === "magic" && V.skin.pubic.special === "pregnancy") menstruation.currentDay += 0.5;
-	const contraceptive = pills.pills.contraceptive.doseTaken;
-	const blocked = (contraceptive >= 1 && random(0, 100) >= 50) || contraceptive >= 2;
-	if (!blocked) menstruation.currentDay += 0.5;
+function menstrualNextWindowIn() {
+	const c = PregnancyConstants.menstrualCycle;
+	const m = V.sexStats.vagina.menstruation;
+	const lengths = [m.baseDays, m.baseDays + m.baseDaysRng];
+	const riskyStartFor = (length, leadDays) => Math.round(length * c.ovulationStartCycleFraction) - leadDays * (1 - c.riskyFertility);
+	const daysAway = cycleDay => m.currentDaysMax - m.currentDay + (cycleDay - c.cycleRestartDay);
+	const soonest = daysAway(riskyStartFor(Math.min(...lengths), c.fertileLeadDaysMax));
+	const latest = daysAway(riskyStartFor(Math.max(...lengths), c.fertileLeadDaysMin));
+	return { min: Math.max(0, Math.round(soonest)), max: Math.max(0, Math.round(latest)) };
 }
-window.advanceMenstrualDay = advanceMenstrualDay;
+window.menstrualNextWindowIn = menstrualNextWindowIn;
 
 /**
  * Roll a fresh cycle's phase boundaries from its length.
@@ -401,20 +508,28 @@ function playerHeatMinArousal() {
 	if (!V.player.vaginaExist && !playerCanCarryAnally()) return 0;
 	if (playerIsPregnant() && !V.pregnancyStats.heatStillEnabled) return 0;
 
+	// Heat used to run off playerPregnancyRisk, which returns 0 when player pregnancy is switched
+	// off entirely. Reading fertility directly dropped that gate, so a player with both pregnancy
+	// settings off still went into heat.
+	if (V.settings.playerPregnancyHumanEnabled === false && V.settings.playerPregnancyBeastEnabled === false) return 0;
+
 	const pills = V.sexStats.pills.pills;
-	const risk = playerPregnancyRisk();
-	const levels = PregnancyConstants.riskMeterLabels.length - 1;
+	const heat = PregnancyConstants.menstrualCycle.heatFertility;
+	// The cycle's own curve, NOT fertilityOnCycleDay: a fertility booster lifts that to 0.8 on every
+	// day of the month, which would leave a beast-TF player permanently in heat.
+	const fertility = menstrualCycleFertility();
+	const tier = fertility >= heat.full ? 2 : fertility >= heat.partial ? 1 : 0;
 	let minArousal = 0;
 
 	// Should always be the first to modify minArousal
-	if (V.settings.fertilityCycleEnabled !== false && risk >= levels - 1 && pills.contraceptive.doseTaken === 0) {
+	if (V.settings.fertilityCycleEnabled !== false && tier > 0 && pills.contraceptive.doseTaken === 0) {
 		if (V.earSlime.growth > 50 && V.earSlime.focus === "pregnancy" && !V.earSlime.defyCooldown) {
-			minArousal += Math.clamp(V.earSlime.growth, 0, 200) * 5 * (risk - (levels - 2));
+			minArousal += Math.clamp(V.earSlime.growth, 0, 200) * 5 * tier;
 		}
-		if (V.wolfgirl >= 2) minArousal += Math.clamp(V.wolfbuild, 0, 100) * 10 * (risk - (levels - 2));
-		if (V.cat >= 2) minArousal += Math.clamp(V.catbuild, 0, 100) * 10 * (risk - (levels - 2));
-		if (V.cow >= 2) minArousal += Math.clamp(V.cowbuild, 0, 100) * 10 * (risk - (levels - 2));
-		if (V.fox >= 2) minArousal += Math.clamp(V.foxbuild, 0, 100) * 10 * (risk - (levels - 2));
+		if (V.wolfgirl >= 2) minArousal += Math.clamp(V.wolfbuild, 0, 100) * 10 * tier;
+		if (V.cat >= 2) minArousal += Math.clamp(V.catbuild, 0, 100) * 10 * tier;
+		if (V.cow >= 2) minArousal += Math.clamp(V.cowbuild, 0, 100) * 10 * tier;
+		if (V.fox >= 2) minArousal += Math.clamp(V.foxbuild, 0, 100) * 10 * tier;
 	}
 	if (minArousal === 0) V.pregnancyStats.heatStillEnabled = !playerIsPregnant();
 

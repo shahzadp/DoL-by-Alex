@@ -124,27 +124,10 @@
 					<<giveHarpyEggs>>
 				<<elseif _menstruation.currentDay lt _menstruation.currentDaysMax>>
 					/*Continue the cycle again*/
-					<<if _menstruation.currentDay lt _menstruation.stages[1]>>
-						/*Menstrual phase - period occurs right at the start of this part*/
-						<<run advanceMenstrualDay(_menstruation, _pills)>>
-					<<elseif _menstruation.currentDay lt _menstruation.stages[2]>>
-						/*Follicular phase*/
-						<<if _pills.pills["fertility booster"].doseTaken gte 2 and _menstruation.currentDay lt _menstruation.stages[2]>>
-							<<set _menstruation.currentDay += 0.5>>
-						<</if>>
-						<<if $skin.pubic.pen is "magic" and $skin.pubic.special is "pregnancy" and _menstruation.currentDay lt _menstruation.stages[2]>>
-							<<set _menstruation.currentDay += 0.5>>
-						<</if>>
-						<<if _menstruation.currentDay lt _menstruation.stages[2]>>
-							<<set _menstruation.currentDay += 0.5>>
-						<</if>>
-					<<elseif _menstruation.currentDay lt _menstruation.stages[3]>>
-						/*Ovulation phase*/
-						<<set _menstruation.currentDay += 0.5>>
+					<<set _ovulating to _menstruation.currentDay gte _menstruation.stages[2] and _menstruation.currentDay lt _menstruation.stages[3]>>
+					<<set _menstruation.currentDay += PregnancyConstants.menstrualCycle.cycleDaysPerTick>>
+					<<if _ovulating>>
 						<<giveHarpyEggs>>
-					<<else>>
-						/*Luteal phase*/
-						<<run advanceMenstrualDay(_menstruation, _pills)>>
 					<</if>>
 				<<else>>
 					/*Start the cycle again*/
@@ -154,21 +137,7 @@
 			<<case "pregnant">>
 				/*To progress as normal so that the heat cycle and pregnancy risk still works as normal, will be reset in the recovering stage*/
 				<<if _menstruation.currentDay lt _menstruation.currentDaysMax>>
-					<<if (_pills.pills["contraceptive"].doseTaken gte 1 and random(0,100) gte 50) or _pills.pills["contraceptive"].doseTaken gte 2>>
-					<<else>>
-						<<set _menstruation.currentDay += 0.5>>
-					<</if>>
-					<<if _menstruation.currentDay lt _menstruation.currentDaysMax>>
-						<<if $skin.pubic.pen is "magic" and $skin.pubic.special is "pregnancy">>
-							<<set _menstruation.currentDay += 0.5>>
-						<</if>>
-						<<if _pills.pills["fertility booster"].doseTaken gte 2>>
-							<<set _menstruation.currentDay += 0.5>>
-						<</if>>
-						<<if _menstruation.currentDay gt _menstruation.currentDaysMax>>
-							<<set _menstruation.currentDay to _menstruation.currentDaysMax>>
-						<</if>>
-					<</if>>
+					<<set _menstruation.currentDay to Math.min(_menstruation.currentDay + PregnancyConstants.menstrualCycle.cycleDaysPerTick, _menstruation.currentDaysMax)>>
 				<</if>>
 				<<if !playerIsPregnant()>>
 					<<restartMenstruationCycle>>
@@ -234,7 +203,7 @@
 /*Don't call outside of the menstruationCycle widget*/
 <<widget "restartMenstruationCycle">>
 	<<set $_menstruation to $sexStats.vagina.menstruation>>
-	<<set $_menstruation.currentDay to 0.5>>
+	<<set $_menstruation.currentDay to PregnancyConstants.menstrualCycle.cycleRestartDay>>
 	<<set $_menstruation.currentDaysMax to $_menstruation.baseDays + random(0, $_menstruation.baseDaysRng)>>
 	<<set $_menstruation.stages to rollMenstrualStages($_menstruation.currentDaysMax)>>
 	<<set $_menstruation.fertileLeadDays to random(PregnancyConstants.menstrualCycle.fertileLeadDaysMin, PregnancyConstants.menstrualCycle.fertileLeadDaysMax)>>
