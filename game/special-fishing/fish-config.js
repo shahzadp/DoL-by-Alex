@@ -6,7 +6,6 @@ function initFishingFishConfig() {
 			maxSize: 90,
 			preferredSeason: ["autumn"],
 			preferredLocation: ["fishingPier"],
-			preferredWeather: ["heavyClouds", "storm", "thunderstorm"],
 			locations: {
 				fishingPier: 0.5,
 				fishingCoastPath: 0.5,
@@ -25,7 +24,6 @@ function initFishingFishConfig() {
 			maxSize: 120,
 			preferredSeason: ["autumn"],
 			preferredLocation: ["fishingForestLake", "fishingCoastPath", "fishingPier"],
-			preferredWeather: ["lightClouds", "storm", "thunderstorm"],
 			locations: {
 				fishingPier: 1,
 				fishingCoastPath: 1,
@@ -45,7 +43,6 @@ function initFishingFishConfig() {
 			maxSize: 80,
 			preferredSeason: ["spring"],
 			preferredLocation: ["fishingForestLake"],
-			preferredWeather: ["clear", "storm", "thunderstorm"],
 			locations: {
 				fishingForestLake: 1,
 				fishingMoor: 1,
@@ -64,7 +61,6 @@ function initFishingFishConfig() {
 			maxSize: 45,
 			preferredSeason: ["autumn", "winter"],
 			preferredLocation: ["fishingBeach", "fishingPier"],
-			preferredWeather: ["lightClouds", "heavyClouds", "storm"],
 			locations: {
 				fishingBeach: 1,
 				fishingPier: 1,
@@ -84,7 +80,6 @@ function initFishingFishConfig() {
 			maxSize: 60,
 			preferredSeason: ["winter"],
 			preferredLocation: ["fishingPier", "fishingCoastPath"],
-			preferredWeather: ["heavyClouds", "storm", "thunderstorm"],
 			locations: {
 				fishingBeach: 1,
 				fishingPier: 1,
@@ -104,7 +99,6 @@ function initFishingFishConfig() {
 			maxSize: 50,
 			preferredSeason: ["summer"],
 			preferredLocation: ["fishingBeach", "fishingCoastPath"],
-			preferredWeather: ["clear", "lightClouds", "heavyClouds"],
 			locations: {
 				fishingBeach: 1,
 				fishingPier: 1,
@@ -124,7 +118,6 @@ function initFishingFishConfig() {
 			maxSize: 60,
 			preferredSeason: ["spring", "summer"],
 			preferredLocation: ["fishingBeach", "fishingCoastPath"],
-			preferredWeather: ["clear", "lightClouds", "heavyClouds"],
 			locations: {
 				fishingBeach: 1,
 				fishingPier: 1,
@@ -144,7 +137,6 @@ function initFishingFishConfig() {
 			maxSize: 95,
 			preferredSeason: ["summer", "autumn"],
 			preferredLocation: ["fishingPier", "fishingCoastPath"],
-			preferredWeather: ["clear", "lightClouds", "storm"],
 			locations: {
 				fishingBeach: 1,
 				fishingPier: 1,
@@ -164,7 +156,6 @@ function initFishingFishConfig() {
 			maxSize: 45,
 			preferredSeason: ["spring", "summer"],
 			preferredLocation: ["fishingForestLake", "fishingMoor"],
-			preferredWeather: ["clear", "lightClouds", "lightPrecipitation"],
 			locations: {
 				fishingForestLake: 1,
 				fishingMoor: 0.5,
@@ -183,7 +174,6 @@ function initFishingFishConfig() {
 			maxSize: 60,
 			preferredSeason: ["autumn"],
 			preferredLocation: ["fishingForestLake", "fishingMoor"],
-			preferredWeather: ["lightClouds", "heavyClouds", "lightPrecipitation"],
 			locations: {
 				fishingForestLake: 1,
 				fishingMoor: 1,
@@ -202,7 +192,6 @@ function initFishingFishConfig() {
 			maxSize: 80,
 			preferredSeason: ["summer", "autumn"],
 			preferredLocation: ["fishingForestLake", "fishingMoor"],
-			preferredWeather: ["clear", "lightClouds", "heavyClouds"],
 			locations: {
 				fishingForestLake: 0.5,
 				fishingMoor: 0.25,
@@ -221,7 +210,6 @@ function initFishingFishConfig() {
 			maxSize: 60,
 			preferredSeason: ["winter"],
 			preferredLocation: ["fishingForestLake"],
-			preferredWeather: ["clear", "lightClouds", "heavyClouds"],
 			locations: {
 				fishingForestLake: 0.25,
 			},
@@ -239,7 +227,6 @@ function initFishingFishConfig() {
 			maxSize: 140,
 			preferredSeason: ["winter"],
 			preferredLocation: ["fishingCoastPath"],
-			preferredWeather: ["heavyClouds", "storm", "thunderstorm"],
 			locations: {
 				fishingBeach: 0.5,
 				fishingPier: 0.65,
@@ -259,7 +246,6 @@ function initFishingFishConfig() {
 			maxSize: 130,
 			preferredSeason: ["autumn", "winter"],
 			preferredLocation: ["fishingForestLake", "fishingMoor"],
-			preferredWeather: ["heavyClouds", "storm", "thunderstorm"],
 			locations: {
 				fishingForestLake: 1,
 			},
@@ -277,9 +263,8 @@ function initFishingFishConfig() {
 			maxSize: 120,
 			preferredSeason: ["summer", "autumn"],
 			preferredLocation: ["fishingForestLake", "fishingMoor"],
-			preferredWeather: ["heavyClouds", "lightPrecipitation", "storm", "thunderstorm"],
 			locations: {
-				fishingMoor: 0.5,
+				fishingMoor: 1,
 			},
 			requiresBaitFish: true,
 			cookable: false,
@@ -295,7 +280,6 @@ function initFishingFishConfig() {
 			maxSize: 14,
 			preferredSeason: ["spring", "summer", "autumn", "winter"],
 			preferredLocation: ["fishingForestLake", "fishingBeach"],
-			preferredWeather: ["clear", "lightClouds"],
 			locations: {
 				fishingForestLake: 1,
 				fishingBeach: 1,

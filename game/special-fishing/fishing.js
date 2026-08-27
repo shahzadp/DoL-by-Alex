@@ -98,7 +98,7 @@ window.fishingBaitWeightMultiplier = fishingBaitWeightMultiplier;
 function fishingPreferredBaitWeight(fishKey) {
 	const bait = V.fishing.currentBait;
 	const fish = setup.fishing.lootTables.fish[fishKey];
-	return fish.preferredBait === bait ? 1.5 : 1;
+	return bait !== undefined && fish.preferredBait === bait ? 3 : 1;
 }
 window.fishingPreferredBaitWeight = fishingPreferredBaitWeight;
 
@@ -176,11 +176,10 @@ function rollFish(bus) {
 	for (const [fishKey, fishConfig] of Object.entries(setup.fishing.lootTables.fish)) {
 		const locationWeight = fishConfig.locations[bus];
 		if (locationWeight > 0) {
-			const weatherMultiplier = fishConfig.preferredWeather.includes(Weather.name) ? 2 : 0.5;
 			const baitTypeMultiplier = fishingBaitWeightMultiplier(fishKey);
 			const preferredBaitMultiplier = fishingPreferredBaitWeight(fishKey);
 
-			possibleFish.push([fishKey, locationWeight * weatherMultiplier * baitTypeMultiplier * preferredBaitMultiplier]);
+			possibleFish.push([fishKey, locationWeight * baitTypeMultiplier * preferredBaitMultiplier]);
 		}
 	}
 	const fishKey = weightedRandom(...possibleFish);
@@ -193,15 +192,15 @@ function rollFish(bus) {
 window.rollFish = rollFish;
 
 /**
- * Returns the fish currently more active at the location than normal, so they can be shown breaking the surface as a wait ambient.
+ * Returns the fish found at the location as [fishKey, weight] pairs, weighted by location rarity, for use with weightedRandom.
  *
  * @param {string} location
  * @returns {Array}
  */
 function fishingSurfacingFish(location) {
 	return Object.entries(setup.fishing.lootTables.fish)
-		.filter(([, fishConfig]) => fishConfig.locations[location] > 0 && fishConfig.preferredWeather.includes(Weather.name))
-		.map(([fishKey]) => fishKey);
+		.filter(([, fishConfig]) => fishConfig.locations[location] > 0)
+		.map(([fishKey, fishConfig]) => [fishKey, fishConfig.locations[location]]);
 }
 window.fishingSurfacingFish = fishingSurfacingFish;
 
