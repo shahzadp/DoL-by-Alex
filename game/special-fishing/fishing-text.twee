@@ -176,7 +176,7 @@
 	<<if $daily.fishing[_args[0]]?.fishPopulation is "teeming">>
 		<<if _firstView>><span class="green">Fish are jumping all over the place today.</span><<else>>Fish are jumping all over the place today.<</if>>
 	<<elseif $daily.fishing[_args[0]]?.fishPopulation is "quiet">>
-		<<if _firstView>><span class="red">The water looks quiet today, not many fish about.</span><<else>>The water looks quiet today, not many fish about.<</if>>
+		<<if _firstView>><span class="purple">The water looks quiet today, not many fish about.</span><<else>>The water looks quiet today, not many fish about.<</if>>
 	<</if>>
 <</widget>>
 
@@ -193,11 +193,11 @@
 	<<elseif _isBiggest>>
 		(The biggest _fish.type you've ever caught!)<<lstress>><<stress -5>>
 	<<elseif isPlayerFishingAlone()>>
-		<<if $rng gte 94 and $world_corruption_soft gte 40>>
+		<<if $rng gte 98 and $world_corruption_soft gte 40>>
 			The _fish.type hangs limp on the hook, eyes clouded and grey. It looks like it's been dead for a while, but that doesn't make sense.<<gstress>><<stress 4>>
-		<<elseif $rng gte 91>>
+		<<elseif $rng gte 96>>
 			The _fish.type thrashes wildly as you lift it up, whipping water all over you.<<wetUpper 80>><<gstress>><<stress 3>>
-		<<elseif $rng gte 87 and $world_corruption_soft gte 40>>
+		<<elseif $rng gte 94 and $world_corruption_soft gte 40>>
 			Something's wrong with this _fish.type. Its scales grow in uneven spirals, and pale growths cluster along its spine.<<gstress>><<stress 4>>
 		<<elseif $rng gte 80 and Time.isBloodMoon()>>
 			The _fish.type has too many eyes, and they all fix on you at once, reflecting the red light of the moon.<<ggstress>><<stress 8>>
@@ -283,13 +283,10 @@
 		<</addinlineevent>>
 	<</if>>
 
-	<<set _fishingSurfacingFish to fishingSurfacingFish(_fishingLocation)>>
-	<<if _fishingSurfacingFish.length gt 0>>
-		<<addinlineevent 10>>
-			<<set _fishingSurfacer to _fishingSurfacingFish.random()>>
-			You see <<a _fishingSurfacer>> break the surface for a moment.<<lstress>><<stress -1>>
-		<</addinlineevent>>
-	<</if>>
+	<<addinlineevent 6>>
+		<<set _fishingSurfacer to weightedRandom(... fishingSurfacingFish(_fishingLocation))>>
+		You see <<a _fishingSurfacer>> break the surface for a moment.<<lstress>><<stress -1>>
+	<</addinlineevent>>
 
 	<<addinlineevent 3>>
 		Your hook hasn't attracted anything yet.
@@ -1581,65 +1578,66 @@
 	<</if>>
 
 	/* Avery */
-	<<if isLoveInterest("Avery") and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
-		<<addinlineevent 1>>
-			You wonder what Avery is doing right now.
-		<</addinlineevent>>
-	<</if>>
-	<<if $averydate is 1 and $averydateattended isnot 1 and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
-		<<addinlineevent 1>>
-			You wonder what Avery has planned for tonight.
-		<</addinlineevent>>
-	<</if>>
-	<<if $avery_mansion and !["missed", "started"].includes($avery_mansion.party_state) and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
-		<<addinlineevent 1>>
-			Avery's mansion party is soon. You're still not sure what to expect.
-		<</addinlineevent>>
-	<</if>>
-	<<if $avery_fate is "fallen">>
+	<<if !["fallen", "kicked"].includes($avery_fate)>> 
+		<<if isLoveInterest("Avery")>>
+			<<addinlineevent 1>>
+				You wonder what Avery is doing right now.
+			<</addinlineevent>>
+		<</if>>
+		<<if $averydate is 1 and $averydateattended isnot 1>>
+			<<addinlineevent 1>>
+				You wonder what Avery has planned for tonight.
+			<</addinlineevent>>
+		<</if>>
+		<<if $avery_mansion and !["missed", "started"].includes($avery_mansion.party_state)>>
+			<<addinlineevent 1>>
+				Avery's mansion party is soon. You're still not sure what to expect.
+			<</addinlineevent>>
+		<</if>>
+		<<if $averyragerevealed is 1>>
+			<<addinlineevent 1>>
+				You think about the look Avery gives you when the mask slips.<<stress 1>><<gstress>>
+			<</addinlineevent>>
+		<</if>>
+		<<if $avery_mansion>>
+			<<if $avery_mansion.jobs?.length gte 1>>
+				<<addinlineevent 1>>
+					You think about how much work needs doing at Avery's manor.
+				<</addinlineevent>>
+			<</if>>
+			<<if ($avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bedroom + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden) gte 8>>
+				<<addinlineevent 1>>
+					You picture dusty corners and half-finished chores waiting for you at the manor.
+				<</addinlineevent>>
+			<</if>>
+			<<if $avery_mansion.food isnot "none">>
+				<<if $foodstuff[$avery_mansion.food]?.amount gte 1>>
+					<<addinlineevent 1>>
+						You hope Avery will like the <<recipe_name $avery_mansion.food>> you've made.
+					<</addinlineevent>>
+				<<else>>
+					<<if Time.weekDay gte 2 and Time.weekDay lte 6>>
+						<<addinlineevent 1>>
+							You wonder where you'll get <<recipe_name $avery_mansion.food>> for Avery before tonight.
+						<</addinlineevent>>
+					<</if>>
+				<</if>>
+			<</if>>
+			<<if $avery_mansion.schedule is "party">>
+				<<addinlineevent 1>>
+					You wonder what will happen tonight at Avery's party.
+				<</addinlineevent>>
+			<</if>>
+			<<if ["missed", "skipped"].includes($avery_mansion.party_state)>>
+				<<addinlineevent 1>>
+					You worry about the fallout from missing Avery's party.<<gstress>><<stress 1>>
+				<</addinlineevent>>
+			<</if>>
+		<</if>>
+	<<else>>
 		<<addinlineevent 1>>
 			You think about tall buildings.<<gtrauma>><<trauma 1>>
 		<</addinlineevent>>
-	<</if>>
-	<<if $averyragerevealed is 1 and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
-		<<addinlineevent 1>>
-			You think about the look Avery gives you when the mask slips.<<stress 1>><<gstress>>
-		<</addinlineevent>>
-	<</if>>
-	<<if $avery_mansion and $avery_fate isnot "fallen" and $avery_fate isnot "kicked">>
-		<<if $avery_mansion.jobs?.length gte 1>>
-			<<addinlineevent 1>>
-				You think about how much work needs doing at Avery's manor.
-			<</addinlineevent>>
-		<</if>>
-		<<if ($avery_mansion.pool + $avery_mansion.kitchen + $avery_mansion.lounge + $avery_mansion.display + $avery_mansion.bedroom + $avery_mansion.bathroom + $avery_mansion.dining + $avery_mansion.garden) gte 8>>
-			<<addinlineevent 1>>
-				You picture dusty corners and half-finished chores waiting for you at the manor.
-			<</addinlineevent>>
-		<</if>>
-		<<if $avery_mansion.food isnot "none">>
-			<<if $foodstuff[$avery_mansion.food]?.amount gte 1>>
-				<<addinlineevent 1>>
-					You hope Avery will like the <<recipe_name $avery_mansion.food>> you've made.
-				<</addinlineevent>>
-			<<else>>
-				<<if Time.weekDay gte 2 and Time.weekDay lte 6>>
-					<<addinlineevent 1>>
-						You wonder where you'll get <<recipe_name $avery_mansion.food>> for Avery before tonight.
-					<</addinlineevent>>
-				<</if>>
-			<</if>>
-		<</if>>
-		<<if $avery_mansion.schedule is "party">>
-			<<addinlineevent 1>>
-				You wonder what will happen tonight at Avery's party.
-			<</addinlineevent>>
-		<</if>>
-		<<if ["missed", "skipped"].includes($avery_mansion.party_state)>>
-			<<addinlineevent 1>>
-				You worry about the fallout from missing Avery's party.<<gstress>><<stress 1>>
-			<</addinlineevent>>
-		<</if>>
 	<</if>>
 
 	/* Alex */
@@ -1958,7 +1956,7 @@
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 1>>
-			You steady your rod and breathe through the fatigue.
+			You steady your rod and blink through the fatigue.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
