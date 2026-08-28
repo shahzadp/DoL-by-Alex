@@ -983,7 +983,7 @@ function generateClothingItem(name) {
 	for (const [slot, items] of Object.entries(setup.clothes)) {
 		const item = items.find(i => i.name === name);
 		if (item) {
-			const colour = item.colour_options.filter(c => c !== "custom").random();
+			const colour = item.colour_options.filter(c => c !== "custom").random() ?? "";
 			return { slot, item, colour };
 		}
 	}
