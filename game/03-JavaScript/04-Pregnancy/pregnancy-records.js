@@ -182,7 +182,9 @@ window.getHatchDate = getHatchDate;
  * @param {Pregnancy} pregnancy any pregnancy, delivered or still active
  */
 function pregnancyProgress(pregnancy) {
-	return Math.clamp((Time.date.timeStamp - pregnancy.conceivedDate) / (getDueDate(pregnancy) - pregnancy.conceivedDate), 0, 1);
+	const gestationSpan = getDueDate(pregnancy) - pregnancy.conceivedDate;
+	if (!(gestationSpan > 0)) return 1;
+	return Math.clamp((Time.date.timeStamp - pregnancy.conceivedDate) / gestationSpan, 0, 1);
 }
 window.pregnancyProgress = pregnancyProgress;
 
