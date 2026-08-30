@@ -553,6 +553,7 @@ window.isPlayerFishingAlone = isPlayerFishingAlone;
  */
 function canOpenBaitOverlay() {
 	if (V.combat === 1) return false;
+	if (V.tryOn?.tryingOn?.handheld?.type?.includes("fishing_rod")) return false;
 	if (["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"].includes(V.bus) && !T.fishingEditBaitEnabled) return false;
 	return true;
 }

@@ -35,7 +35,7 @@
 		
 		<<elseif $fishing.baitShopAmbient is "boughtBaitWorms">>
 			<<wearProp "bait_worm">>
-			<<He>> hands you a little can of bait worms. "Unless you're fishing for baitfish, you're better off using any bait other than these worms. But they're better than nothing, and they're all I've got. Need anything else?"
+			<<He>> hands you a little can of bait worms. "Unless you're fishing for <span class="blue">baitfish,</span> you're better off using any bait other than these worms. But they're better than nothing, and they're all I've got. Need anything else?"
 
 		<<elseif $showPcEnterBaitShopText>>
 			A <<person>> behind the cluttered counter looks up as the door creaks open. Reels, hooks, and coils of line cover every surface of the cramped shack.
@@ -58,7 +58,7 @@
 	</div>
 	<br><br>
 
-	<<icon "clothing-shop.png">><<link "Browse equipment">><<replace "#clothingShop-div">><<AllShop>><</replace>><<endevent>><</link>>
+	<<icon "clothing-shop.png">><<link "Browse equipment">><<unset _prop>><<updatesidebarimg>><<replace "#clothingShop-div">><<AllShop>><</replace>><<endevent>><</link>>
 	<br>
 	<<if baitShopOpen()>>
 		<<if $money gte 600>>
@@ -200,13 +200,10 @@
 		<<case "fishingMoor">><<set _fishSpotPhrase to "out on the moor">>
 		<<case "fishingForestLake">><<set _fishSpotPhrase to "in the lake through the forest">>
 	<</switch>>
-	<<if not $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
+	<<set _alreadyFound to $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
+	<<if !_alreadyFound>>
 		<<run $fishing.record[_requestFishKey].foundIn.push(_fishSpot)>>
-		<span class="gold"><<= _fishSpotPhrase>></span>
-	<<else>>
-		<span class="blue"><<= _fishSpotPhrase>></span>
-	<</if>>
-	
+	<</if>><span @class="_alreadyFound ? 'blue' : 'gold'"><<= _fishSpotPhrase>></span>
 <</widget>>
 
 :: Bait Shop Lock
