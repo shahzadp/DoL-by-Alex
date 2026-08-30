@@ -790,6 +790,7 @@ function importSettingsData(data) {
 		// eslint-disable-next-line no-var
 		for (let i = 0; i < V.NPCNameList.length; i++) {
 			if (overrides.npc[V.NPCNameList[i]] != null) {
+				const carriedGender = getActivePregnancies(V.NPCName[i].nam).length ? V.NPCName[i].gender : undefined;
 				// eslint-disable-next-line no-var
 				for (let j = 0; j < listKey.length; j++) {
 					// Overwrite to allow for "none" default value in the start passage to allow for rng to decide
@@ -802,11 +803,8 @@ function importSettingsData(data) {
 					} else if (validateValue(listObject[listKey[j]], overrides.npc[V.NPCNameList[i]][listKey[j]])) {
 						V.NPCName[i][listKey[j]] = overrides.npc[V.NPCNameList[i]][listKey[j]];
 					}
-					// Prevent the changing of gender with pregnant npc's
-					if (getActivePregnancies(V.NPCName[i].nam).length) {
-						V.NPCName[i].gender = "f";
-					}
 				}
+				if (carriedGender !== undefined) V.NPCName[i].gender = carriedGender;
 			}
 		}
 	}
