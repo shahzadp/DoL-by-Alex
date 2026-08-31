@@ -3553,6 +3553,37 @@ function initFoodstuff() {
 			},
 		},
 	};
+
+	setup.moddedFoodstuff = {};
+
+	mergeModdedFoodstuff();
 	finalizefoodstuff();
 }
 window.initFoodstuff = initFoodstuff;
+
+/** @param {FoodstuffItem} item */
+function verifyModdedFoodstuffItem(item) {
+	const label = `'${item.name ?? "unnamed"}'${item.modder ? ` from modder '${item.modder}'` : " (no 'modder' field set)"}`;
+	if (!item.modder) console.error(`Modded foodstuff ${label} is missing required field: 'modder'.`);
+	if (item.name === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'name'.`);
+	if (item.singular === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'singular'.`);
+	if (item.plural === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'plural'.`);
+	if (item.icon === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'icon'.`);
+	if (item.category === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'category'.`);
+	if (item.kitchen_item_type_icon === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'kitchen_item_type_icon'.`);
+	if (item.prop_folder === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'prop_folder'.`);
+	if (item.shop === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'shop'.`);
+}
+window.verifyModdedFoodstuffItem = verifyModdedFoodstuffItem;
+
+function mergeModdedFoodstuff() {
+	Object.entries(setup.moddedFoodstuff).forEach(([key, item], i) => {
+		verifyModdedFoodstuffItem(item);
+		if (setup.foodstuff[key]) {
+			console.error(`duplicate foodstuff key detected: ${key}`);
+		}
+		item.index = Object.keys(setup.foodstuff).length + i;
+		setup.foodstuff[key] = item;
+	});
+}
+window.mergeModdedFoodstuff = mergeModdedFoodstuff;
