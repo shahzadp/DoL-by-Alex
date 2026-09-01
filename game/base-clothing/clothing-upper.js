@@ -2771,11 +2771,12 @@ function initUpper() {
 			pregType: "split",
 		}),
 		new ClothesItem({
+			/* deprecated clothing item */
 			index: 52,
 			slot: "upper",
-			name: "swim shirt",
-			name_cap: "Swim shirt",
-			variable: "swimshirt",
+			name: "swim shirt_old",
+			name_cap: "Swim shirt_old",
+			variable: "swimshirt_old",
 			combat: {
 				reference: "tshirt",
 				mainColour: "#333333",
