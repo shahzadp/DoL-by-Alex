@@ -2569,8 +2569,8 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 600,
-				available_in: ["supermarket"],
+				sell_price: 700,
+				available_in: [],
 			},
 		},
 		fish_and_chips: {
@@ -3495,7 +3495,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
 			shop: {
-				sell_price: 400,
+				sell_price: 800,
 			},
 		},
 		eel: {
