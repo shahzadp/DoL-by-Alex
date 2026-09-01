@@ -1679,9 +1679,9 @@ function initFoodstuff() {
 			},
 			recipe: {
 				recipe_name: "cheeseburgers",
-				difficulty: 1,
+				difficulty: 2,
 				cook_minutes: 15,
-				servings: 2,
+				servings: 1,
 				ingredients: ["beef", "bread", "onion", "tomato", "cheese"],
 				tags: [],
 			},
