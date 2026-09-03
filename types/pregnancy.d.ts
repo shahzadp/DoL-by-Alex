@@ -243,7 +243,7 @@ declare global {
 
 	function getActivePregnancy(carrier: string, orifice: "vagina" | "anus"): Pregnancy | undefined;
 	function getActivePregnancies(carrier: string): Pregnancy[];
-	function storyCharacterPregnancies(): Pregnancy[];
+	function currentBodyPregnancies(): Pregnancy[];
 	function getLabouringPregnancy(carrier: string): Pregnancy | undefined;
 	function getLabouringLitter(carrier: string): Child[];
 	function getPregnancyOf(child: Child): Pregnancy;

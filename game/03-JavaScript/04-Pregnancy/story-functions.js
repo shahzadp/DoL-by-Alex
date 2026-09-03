@@ -123,18 +123,17 @@ function birdEggsReady(npc) {
 window.birdEggsReady = birdEggsReady;
 
 /**
- * Pregnancies belonging to story/painting characters and not PC.
+ * The active pregnancies belonging to the body the player is in right now.
+ * Including stories and paintings.
  */
-function storyCharacterPregnancies() {
-	const active = getActivePregnancies("pc");
-	if (!V.statFreeze) return active;
-	const carriedIntoTheScene = V.frozenValues?.pregnancies?.length ?? 0;
-	return active.filter(p => p.pregnancyId >= carriedIntoTheScene);
+function currentBodyPregnancies() {
+	const firstOfThisVision = V.statFreeze && V.frozenValues ? V.frozenValues.pregnancies.length : 0;
+	return getActivePregnancies("pc").filter(p => p.pregnancyId >= firstOfThisVision);
 }
-window.storyCharacterPregnancies = storyCharacterPregnancies;
+window.currentBodyPregnancies = currentBodyPregnancies;
 
 function playerIsPregnant() {
-	return storyCharacterPregnancies().length > 0;
+	return currentBodyPregnancies().length > 0;
 }
 window.playerIsPregnant = playerIsPregnant;
 
@@ -586,7 +585,7 @@ function playerAwareTheyCanBePregnant() {
 window.playerAwareTheyCanBePregnant = playerAwareTheyCanBePregnant;
 
 function playerAwareTheyArePregnant() {
-	return storyCharacterPregnancies().some(p => knowsPregnancy(p.pregnancyId, "pc"));
+	return currentBodyPregnancies().some(p => knowsPregnancy(p.pregnancyId, "pc"));
 }
 window.playerAwareTheyArePregnant = playerAwareTheyArePregnant;
 
