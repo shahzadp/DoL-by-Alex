@@ -122,8 +122,19 @@ function birdEggsReady(npc) {
 }
 window.birdEggsReady = birdEggsReady;
 
+/**
+ * Pregnancies belonging to story/painting characters and not PC.
+ */
+function storyCharacterPregnancies() {
+	const active = getActivePregnancies("pc");
+	if (!V.statFreeze) return active;
+	const carriedIntoTheScene = V.frozenValues?.pregnancies?.length ?? 0;
+	return active.filter(p => p.pregnancyId >= carriedIntoTheScene);
+}
+window.storyCharacterPregnancies = storyCharacterPregnancies;
+
 function playerIsPregnant() {
-	return getActivePregnancies("pc").length > 0;
+	return storyCharacterPregnancies().length > 0;
 }
 window.playerIsPregnant = playerIsPregnant;
 
@@ -575,7 +586,7 @@ function playerAwareTheyCanBePregnant() {
 window.playerAwareTheyCanBePregnant = playerAwareTheyCanBePregnant;
 
 function playerAwareTheyArePregnant() {
-	return getActivePregnancies("pc").some(p => knowsPregnancy(p.pregnancyId, "pc"));
+	return storyCharacterPregnancies().some(p => knowsPregnancy(p.pregnancyId, "pc"));
 }
 window.playerAwareTheyArePregnant = playerAwareTheyArePregnant;
 

@@ -528,10 +528,10 @@ function defaultBirthLocations(type, birthLocation, location) {
 }
 
 /**
- * Resolves paternity for every active player pregnancy and marks the player aware of each child.
+ * Resolves paternity for every pregnancy the story character is carrying, and marks them aware of each child. Works for stories and paintings.
  */
 function makeAwareOfDetails() {
-	getActivePregnancies("pc").forEach(p => {
+	storyCharacterPregnancies().forEach(p => {
 		resolvePaternity(p.pregnancyId);
 		getChildrenOf(p.pregnancyId).forEach(child => {
 			setKnowsChild(child.childId, "pc");
