@@ -290,21 +290,21 @@
 				<<if !$avery_mansion>>
 					<<His>> face darkens. "The little brat I keep seeing you with? I should've known."
 				<<else>> /* After moving in with Avery */
-					<<His>> face darkens. "I told you not to associate with <<nnpc_his "Robin">> kind, didn't I? You'd best not be going around behind my back, <<pcpetname "Avery">>." <<npcincr Avery rage 1>><<garage>>
+					<<His>> face darkens. "I told you not to associate with <<nnpc_his "Robin">> kind, didn't I? You'd best not be going around behind my back, <<pcpetname "Avery">>." <<if !$averyUniqueComments.includes("namedrop")>><<set $averyUniqueComments.pushUnique("namedrop")>><<npcincr Avery rage 1>><<garage>><</if>>
 				<</if>>
 			<<case "Black Wolf" "Great Hawk">>
 				<<His>> face darkens. "I don't pay you to let a filthy animal have its way with you."
 			<<case "Whitney">>
 				<<if $averySeen.includes("whitney_crash")>> /* After Whitney's car incident */
-					<<His>> face darkens. "That delinquent? The one that nearly destroyed my car? Absolutely not," <<he>> hisses. "The only name I should be hearing from you, <<pcpetname "Avery">>, is mine." <<npcincr Avery rage 1>><<garage>>
+					<<His>> face darkens. "That delinquent? The one that nearly destroyed my car? Absolutely not," <<he>> hisses. "The only name I should be hearing from you, <<pcpetname "Avery">>, is mine." <<if !$averyUniqueComments.includes("namedrop")>><<set $averyUniqueComments.pushUnique("namedrop")>><<npcincr Avery rage 1>><<garage>><</if>>
 				<</if>>
 			<<case "Kylar">>
 				<<if $avery_mansion?.attend.english_play>>
-					<<His>> gaze darkens. "That actor from your play?" <<he>> sneers. "How foolish. Do not waste your attention on someone who couldn't dream of giving you the life I do."<<npcincr Avery rage 1>><<garage>>
+					<<His>> gaze darkens. "That actor from your play?" <<he>> sneers. "How foolish. Do not waste your attention on someone who couldn't dream of giving you the life I do."<<if !$averyUniqueComments.includes("namedrop")>><<set $averyUniqueComments.pushUnique("namedrop")>><<npcincr Avery rage 1>><<garage>><</if>>
 				<</if>>
 			<<case "Sydney">>
 				<<if $avery_mansion?.attend.english_play>>
-					<<His>> gaze darkens. "That actor from your play?" <<he>> scoffs. "How quaint. Do keep your eyes where they belong."<<npcincr Avery rage 1>><<garage>>
+					<<His>> gaze darkens. "That actor from your play?" <<he>> scoffs. "How quaint. Do keep your eyes where they belong."<<if !$averyUniqueComments.includes("namedrop")>><<set $averyUniqueComments.pushUnique("namedrop")>><<npcincr Avery rage 1>><<garage>><</if>>
 				<</if>>
 			<<default>>
 				<<He>> wordlessly eyes you with contempt.
@@ -316,7 +316,10 @@
 			<<print `<<He>> looks at your $_sexToy and speaks. "` + [`Well, this is a nice change of pace.`, `Everyone has their tools of the trade.`][random(0,1)] + `"`>>
 		<<else>>
 			<<print `<<He>> looks at your $_sexToy and speaks. "` + [`Oh, no. I'm paying you too much for this.`, `You put that back this instant.`][random(0,1)] + `"`>>
-			<<set $enemyanger += 50>><<set $enemytrust -= 50>>
+			<<if !$averyUniqueComments.includes("sextoy")>>
+				<<set $averyUniqueComments.pushUnique("sextoy")>>
+				<<set $enemyanger += 50>><<set $enemytrust -= 50>>
+			<</if>>
 		<</if>>
 	<<elseif $speechdildovagina is 1 or $speechdildoanus is 1>>
 		<<if random(0,1) is 0>>
@@ -430,7 +433,10 @@
 				<<else>>
 					<<He>> <<= either("smiles","<<laughs>>")>>. "I know. It's adorable."
 				<</if>>
-				<<npcincr Avery rage -1>><<larage>>
+				<<if !$averyUniqueComments.includes("moan_romance")>>
+					<<set $averyUniqueComments.pushUnique("moan_romance")>>
+					<<npcincr Avery rage -1>><<larage>>
+				<</if>>
 			<<case "avery_moan_daddy">> /* Put me in my place, daddy */
 				<<set $averyUniqueComments.pushUnique("called_daddy")>>
 				<<His>> eyes widen for a moment, but then <<he>> smirks. You think <<he>> liked the sound of you calling <<him>> "<<nnpc_mummy "Avery">>".
@@ -782,7 +788,8 @@
 			"I am sick of your insolence. If I have to physically choke the disobedience out of you. I will."
 		<</if>>
 	<<elseif $speechvaginafoot is 1 or $speechpenisfoot is 1>>
-		<<set _probablyNudeFeet to (_avery.clothes.upper is "pyjama shirt" and _avery.clothes.lower is "pyjama bottoms") or (_avery.clothes.upper is "naked" and _avery.clothes.lower is "naked")>>
+		/* NPCs have no feet slot, so infer from the lower half: Avery wears business, formal or pyjamas */
+		<<set _probablyNudeFeet to _avery.clothes.lower.name is "naked" or _avery.clothes.lower.name is "pyjama bottoms">>
 		<<set _feetChoiceSentence to [
 			`"My, so responsive. And so little effort on my part."`,
 			`"Don't look so embarrassed. You're <<= $speechvaginafoot is 1 and $speechpenisfoot isnot 1 ? "taking it" : "responding">> so well."`,
@@ -964,7 +971,7 @@
 	<<elseif $speechleglock is 1>>
 		<<cleareventpool>>
 
-		<<if $wolf gte 2 and $averyragerevealed is 1 and (playerAwareTheyAreInHeat() or playerRutMinArousal() or playerHeatMinArousal())>>
+		<<if $wolfgirl gte 2 and $averyragerevealed is 1 and (playerAwareTheyAreInHeat() or playerRutMinArousal() or playerHeatMinArousal())>>
 			<<addinlineevent "avery_speech_leglock_wolf_tf" 2>>
 				"Like a little <<bitch>> in heat," <<he>> rumbles<<if C.npc.Avery.rage lt 60>>, sounding amused<</if>>. "And out of your mind with it, too."
 			<</addinlineevent>>
@@ -2392,14 +2399,14 @@
 		<<case "accept" "acceptHas">>
 			<<if $consensual>>
 				<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-					<<He_Short>> seems irritated at your request<<if C.npc.Avery.lust gte 60>>, looking like <<he>> wants to say no<</if>>. <span class="green"><<if playerPregnancyRisk() gte 3>>"Better safe than sorry," <<else>>"Fine," <</if>><<he>> says<<if C.npc.Avery.lust gte 60>> eventually<</if>></span>. "But don't presume to tell me what to do again, <<girl>>."<<if _avery.lefthand is 0 or _avery.righthand is 0>> <<He_Short>> <<= either("spanks your ass","slaps your thigh","smacks the back of your head")>> punitively.<</if>> "You're lucky I'm in a forgiving mood." <<set $enemyanger += 15>>
+					<<He_Short>> seems irritated at your request<<if C.npc.Avery.lust gte 60>>, looking like <<he>> wants to say no<</if>>. <span class="green"><<if playerPregnancyRisk() gte 3>>"Better safe than sorry," <<else>>"Fine," <</if>><<he>> says<<if C.npc.Avery.lust gte 60>> eventually<</if>></span>. "But don't presume to tell me what to do again, <<girl>>."<<if _avery.lefthand is 0 or _avery.righthand is 0>> <<He_Short>> <<= either("spanks your ass","slaps your thigh","smacks the back of your head")>> punitively.<</if>> "You're lucky I'm in a forgiving mood." <<if !$averyUniqueComments.includes("condom")>><<set $averyUniqueComments.pushUnique("condom")>><<set $enemyanger += 15>><</if>>
 				<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
 					<<He_Short>> <<= either(`rolls <<his>> eyes`,`sighs`,`purses <<his>> lips`)>><<if C.npc.Avery.lust gte 60>>, looking reluctant<</if>>. <span class="green">"If you insist," <<he>> says<<if C.npc.Avery.lust gte 60>> eventually<</if>></span>.
 				<<else>>
 					"A condom?" <<He_Short>> hums<<if C.npc.Avery.lust gte 60>>, looking conflicted<</if>>. After a weighty pause<<if $averyragerevealed gte 1>> and a put upon sigh<</if>>, <<he>> nods. <span class="green">"Very well."</span>
 				<</if>>
 			<<elseif C.npc.Avery.rage gte 60 or $enemyanger gt 100>>
-				<<He_Short>> seems irritated at your request<<if C.npc.Avery.lust gte 60>>, looking like <<he>> wants to say no<</if>>. <span class="green">"I will," <<he>> says. "But not because you told me to, <<girl>>. <<if playerPregnancyRisk() gte 3>>Only because I don't want to be presented with a nuisance in the near future.<</if>>"</span><<if _avery.lefthand is 0 or _avery.righthand is 0>> <<He_Short>> <<= either("spanks your ass","slaps your thigh","smacks the back of your head")>> punitively.<</if>><<set $enemyanger += 15>>
+				<<He_Short>> seems irritated at your request<<if C.npc.Avery.lust gte 60>>, looking like <<he>> wants to say no<</if>>. <span class="green">"I will," <<he>> says. "But not because you told me to, <<girl>>. <<if playerPregnancyRisk() gte 3>>Only because I don't want to be presented with a nuisance in the near future.<</if>>"</span><<if _avery.lefthand is 0 or _avery.righthand is 0>> <<He_Short>> <<= either("spanks your ass","slaps your thigh","smacks the back of your head")>> punitively.<</if>><<if !$averyUniqueComments.includes("condom")>><<set $averyUniqueComments.pushUnique("condom")>><<set $enemyanger += 15>><</if>>
 			<<elseif C.npc.Avery.rage gte 20 or $enemyanger gt 20>>
 				"You have some fucking nerve asking for that now," <<he>> snipes, narrowing <<his>> eyes at you.<<if C.npc.Avery.lust gte 60>> For a moment, it looks like <<he>> wants to say no.<</if>> <span class="green">"But fine."</span>
 			<<else>>
