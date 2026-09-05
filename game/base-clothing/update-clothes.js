@@ -754,6 +754,9 @@ function wardrobesUpdate() {
 	if (!V.wardrobes.temple.name) {
 		V.wardrobes.temple.name = "Temple";
 	}
+	if (!V.wardrobes.temple.locationRequirement?.length) {
+		V.wardrobes.temple.locationRequirement = ["temple"];
+	}
 	if (!V.wardrobes.pirate) {
 		V.wardrobes.pirate = clone(defWardrobe);
 		V.wardrobes.pirate.unlocked = V.pirate_rank >= 0;
