@@ -7,8 +7,8 @@ function initFishingFishConfig() {
 			preferredSeason: ["autumn"],
 			preferredLocation: ["fishingPier"],
 			locations: {
-				fishingPier: 0.5,
-				fishingCoastPath: 0.5,
+				fishingPier: 1,
+				fishingCoastPath: 0.25,
 			},
 			cookable: true,
 			minigame: {
@@ -23,11 +23,11 @@ function initFishingFishConfig() {
 			minSize: 45,
 			maxSize: 120,
 			preferredSeason: ["autumn"],
-			preferredLocation: ["fishingForestLake", "fishingCoastPath", "fishingPier"],
+			preferredLocation: ["fishingCoastPath"],
 			locations: {
-				fishingPier: 1,
+				fishingPier: 0.75,
 				fishingCoastPath: 1,
-				fishingForestLake: 0.5,
+				fishingForestLake: 0.25,
 			},
 			cookable: true,
 			minigame: {
@@ -44,7 +44,7 @@ function initFishingFishConfig() {
 			preferredSeason: ["spring"],
 			preferredLocation: ["fishingForestLake"],
 			locations: {
-				fishingForestLake: 1,
+				fishingForestLake: 0.5,
 				fishingMoor: 1,
 			},
 			cookable: true,
@@ -60,9 +60,9 @@ function initFishingFishConfig() {
 			minSize: 20,
 			maxSize: 45,
 			preferredSeason: ["autumn", "winter"],
-			preferredLocation: ["fishingBeach", "fishingPier"],
+			preferredLocation: ["fishingPier"],
 			locations: {
-				fishingBeach: 1,
+				fishingBeach: 0.75,
 				fishingPier: 1,
 				fishingCoastPath: 0.5,
 			},
@@ -79,11 +79,11 @@ function initFishingFishConfig() {
 			minSize: 25,
 			maxSize: 60,
 			preferredSeason: ["winter"],
-			preferredLocation: ["fishingPier", "fishingCoastPath"],
+			preferredLocation: ["fishingPier"],
 			locations: {
-				fishingBeach: 1,
+				fishingBeach: 0.5,
 				fishingPier: 1,
-				fishingCoastPath: 1,
+				fishingCoastPath: 0.5,
 			},
 			cookable: false,
 			minigame: {
@@ -98,11 +98,11 @@ function initFishingFishConfig() {
 			minSize: 22,
 			maxSize: 50,
 			preferredSeason: ["summer"],
-			preferredLocation: ["fishingBeach", "fishingCoastPath"],
+			preferredLocation: ["fishingBeach"],
 			locations: {
 				fishingBeach: 1,
-				fishingPier: 1,
-				fishingCoastPath: 1,
+				fishingPier: 0.5,
+				fishingCoastPath: 0.25,
 			},
 			cookable: false,
 			minigame: {
@@ -117,11 +117,11 @@ function initFishingFishConfig() {
 			minSize: 25,
 			maxSize: 60,
 			preferredSeason: ["spring", "summer"],
-			preferredLocation: ["fishingBeach", "fishingCoastPath"],
+			preferredLocation: ["fishingPier"],
 			locations: {
 				fishingBeach: 1,
-				fishingPier: 1,
-				fishingCoastPath: 1,
+				fishingPier: 0.5,
+				fishingCoastPath: 0.5,
 			},
 			cookable: false,
 			minigame: {
@@ -136,11 +136,11 @@ function initFishingFishConfig() {
 			minSize: 35,
 			maxSize: 95,
 			preferredSeason: ["summer", "autumn"],
-			preferredLocation: ["fishingPier", "fishingCoastPath"],
+			preferredLocation: ["fishingPier"],
 			locations: {
-				fishingBeach: 1,
+				fishingBeach: 0.5,
 				fishingPier: 1,
-				fishingCoastPath: 1,
+				fishingCoastPath: 0.75,
 			},
 			cookable: true,
 			minigame: {
@@ -155,7 +155,7 @@ function initFishingFishConfig() {
 			minSize: 15,
 			maxSize: 45,
 			preferredSeason: ["spring", "summer"],
-			preferredLocation: ["fishingForestLake", "fishingMoor"],
+			preferredLocation: ["fishingMoor"],
 			locations: {
 				fishingForestLake: 1,
 				fishingMoor: 0.5,
@@ -173,10 +173,10 @@ function initFishingFishConfig() {
 			minSize: 20,
 			maxSize: 60,
 			preferredSeason: ["autumn"],
-			preferredLocation: ["fishingForestLake", "fishingMoor"],
+			preferredLocation: ["fishingForestLake"],
 			locations: {
 				fishingForestLake: 1,
-				fishingMoor: 1,
+				fishingMoor: 0.25,
 			},
 			cookable: true,
 			minigame: {
@@ -191,10 +191,10 @@ function initFishingFishConfig() {
 			minSize: 25,
 			maxSize: 80,
 			preferredSeason: ["summer", "autumn"],
-			preferredLocation: ["fishingForestLake", "fishingMoor"],
+			preferredLocation: ["fishingMoor"],
 			locations: {
-				fishingForestLake: 0.5,
-				fishingMoor: 0.25,
+				fishingForestLake: 0.40,
+				fishingMoor: 0.80,
 			},
 			cookable: false,
 			minigame: {
@@ -211,7 +211,7 @@ function initFishingFishConfig() {
 			preferredSeason: ["winter"],
 			preferredLocation: ["fishingForestLake"],
 			locations: {
-				fishingForestLake: 0.25,
+				fishingForestLake: 0.75,
 			},
 			cookable: false,
 			minigame: {
@@ -245,7 +245,7 @@ function initFishingFishConfig() {
 			minSize: 45,
 			maxSize: 130,
 			preferredSeason: ["autumn", "winter"],
-			preferredLocation: ["fishingForestLake", "fishingMoor"],
+			preferredLocation: ["fishingForestLake"],
 			locations: {
 				fishingForestLake: 1,
 			},
@@ -262,7 +262,7 @@ function initFishingFishConfig() {
 			minSize: 45,
 			maxSize: 120,
 			preferredSeason: ["summer", "autumn"],
-			preferredLocation: ["fishingForestLake", "fishingMoor"],
+			preferredLocation: ["fishingMoor"],
 			locations: {
 				fishingMoor: 1,
 			},

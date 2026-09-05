@@ -160,7 +160,7 @@
 		<<set $fishing.fishingMoor.event to "none">>
 		<<include "Fishing Moor Hiker Attack">>
 	<</addinlineevent>>
-	<<if !["storm", "thunderstorm", "lightPrecipitation", "heavyPrecipitation", "heavyClouds"].includes(Weather.name) and !["dusk", "night"].includes(Weather.dayState)>>
+	<<if Time.hour gte 6 and !["storm", "thunderstorm", "lightPrecipitation", "heavyPrecipitation", "heavyClouds"].includes(Weather.name) and !["dusk", "night"].includes(Weather.dayState)>>
 		<<addinlineevent "moorHikersArrive" `$exposed gte 1 ? 0 : _moorHikersProbability + 1.5`>>
 			<<set $fishing.fishingMoor.eventDanger to 0>>
 			/* Setting the moor.event to this in order to prevent other moor events from triggering */
@@ -195,6 +195,10 @@
 			<<include "Fishing Moor Hiker Leave Night">>
 			<<set $fishing.fishingMoor.event to "none">>
 		<</addinlineevent>>
+
+		<<if Time.hour gte 22>>
+			<<set $eventPoolOverride to "hikerLeaveNight">>
+		<</if>>
 	<</if>>
 
 	<<addinlineevent "hikerLeave" $daily.fishing.fishingMoor.hikers.leaveChance>>
@@ -237,6 +241,9 @@ You open wide and drop the whole $fishingHookedFish.type in your mouth. <<fishin
 <<widget "fishingMoorLocationAmbient">>
 	<<if _foxStartled>>
 		<<loadNPC 0 "moor_fishing_fox">>The <<beasttype>> perks up, ears pricked forward, then quickly scampers away into the heather.<<clearnpc>>
+	<<elseif $daily.fishing.fishingMoor.fox.phase is "watching" and Time.hour gte 22>>
+		<<set $daily.fishing.fishingMoor.fox.phase to "finished">>
+		<<loadNPC 0 "moor_fishing_fox">>The <<beasttype>> yawns, then turns and wanders off into the dark.<<clearnpc>>
 	<<elseif $daily.fishing.fishingMoor.fox.phase is "watching">>
 		<<fishingMoorFoxAmbient>>
 	<<elseif $daily.fishing.fishingMoor.hikers.phase is "sit">>
