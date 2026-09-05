@@ -92,7 +92,7 @@
 <</addinlineevent>>
 
 /* Whitney arrive events */
-<<if  $daily.fishing.fishingPier.whitney.phase is undefined and C.npc.Whitney.init is 1 and !["dungeon", "pillory"].includes(C.npc.Whitney.state) and !Time.schoolTime and !isInPark("whitney") and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
+<<if  $daily.fishing.fishingPier.whitney.phase is undefined and C.npc.Whitney.init is 1 and !["dungeon", "pillory"].includes(C.npc.Whitney.state) and !Time.schoolTime and !isInPark("whitney") and Time.hour gte (Time.schoolDay ? 15 : 7) and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
 	/* Whitney bullies Fisher off the pier */
 	<<if $daily.fishing.fishingPier.fisher.phase is "fishing">>
 		<<addinlineevent "whitneyBullyFisher" 0.6>>
@@ -133,16 +133,25 @@
 			<<include "Fishing Pier Whitney Idle Leave">>
 		<</addinlineevent>>
 	<</if>>
+
+	<<if Time.hour gte 22 && $daily.fishing.fishingPier.whitney.phase is "idle">>
+		<<set $eventPoolOverride to "whitneyIdleLeaveNight">>
+	<</if>>
+
 <<elseif $daily.fishing.fishingPier.whitney.phase is "bet">>
 	<<if Time.hour gte 20>>
 		<<addinlineevent "whitneyBetLeaveNight" 10>>
 			<<include "Fishing Pier Whitney Bet Leave Night">>
 		<</addinlineevent>>
 	<</if>>
+
+	<<if Time.hour gte 22 && $daily.fishing.fishingPier.whitney.phase is "bet">>
+		<<set $eventPoolOverride to "whitneyBetLeaveNight">>
+	<</if>>
 <</if>>
 
 /* fisher event start */
-<<if [undefined, "finished"].includes($daily.fishing.fishingPier.whitney.phase) and $daily.fishing.fishingPier.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
+<<if [undefined, "finished"].includes($daily.fishing.fishingPier.whitney.phase) and $daily.fishing.fishingPier.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour gte 6 and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
 	<<addinlineevent "fisherArrive" 1>>
 		<<include "Fishing Pier Fisher Arrive">>
 	<</addinlineevent>>
@@ -161,6 +170,10 @@
 		<<addinlineevent "fisherLeaveNight" 10>>
 			<<include "Fishing Pier Fisher Leave Night">>
 		<</addinlineevent>>
+	<</if>>
+
+	<<if Time.hour gte 22>>
+		<<set $eventPoolOverride to "fisherLeaveNight">>
 	<</if>>
 <</if>>
 
@@ -202,12 +215,14 @@
 <</if>>
 
 /* Wave sprays up through the planks */
-<<addinlineevent "pierWave" 0.5>>
-	<<include "Fishing Pier Wave">>
-<</addinlineevent>>
+<<if isPlayerFishingAlone()>>
+	<<addinlineevent "pierWave" 0.5>>
+		<<include "Fishing Pier Wave">>
+	<</addinlineevent>>
+<</if>>
 
 /* Eel swarm drags the player into the water */
-<<if $settings.swarmsEnabled>>
+<<if $settings.swarmsEnabled and $daily.fishing.fishingPier.whitney.phase isnot "bet">>
 	<<addinlineevent "pierSwarm" fishingDangerEventWeight(0.25)>>
 		<<include "Fishing Pier Swarm">>
 	<</addinlineevent>>

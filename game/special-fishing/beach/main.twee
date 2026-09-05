@@ -84,7 +84,7 @@
 <</addinlineevent>>
 
 /* Fisher event start */
-<<if $daily.fishing.fishingBeach.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
+<<if $daily.fishing.fishingBeach.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour gte 6 and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
 	<<addinlineevent "fisherArrive" 0.5>>
 		<<include "Fishing Beach Fisher Arrive">>
 	<</addinlineevent>>
@@ -107,6 +107,10 @@
 		<<addinlineevent "fisherLeaveWeather" 10>>
 			<<include "Fishing Beach Fisher Leave Weather">>
 		<</addinlineevent>>
+	<</if>>
+
+	<<if Time.hour gte 22>>
+		<<set $eventPoolOverride to "fisherLeaveNight">>
 	<</if>>
 <</if>>
 
@@ -133,9 +137,11 @@
 <</addinlineevent>>
 
 /* Wave soaks the PC */
-<<addinlineevent "beachWave" .2>>
-	<<include "Fishing Beach Wave">>
-<</addinlineevent>>
+<<if isPlayerFishingAlone()>>
+	<<addinlineevent "beachWave" .2>>
+		<<include "Fishing Beach Wave">>
+	<</addinlineevent>>
+<</if>>
 
 /* Dog tearing at clothing */
 <<if [undefined, "finished"].includes($daily.fishing.fishingBeach.fisher.phase) and !$worn.lower.type.includes("naked")>>
