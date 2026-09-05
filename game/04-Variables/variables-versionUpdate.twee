@@ -3610,9 +3610,9 @@
 		<<set $objectVersion.feats to 2>>
 	<</if>>
 
-	<<if $objectVersion.wardrobes lt 18 or $objectVersion.wardrobes is undefined>>
+	<<if $objectVersion.wardrobes lt 19 or $objectVersion.wardrobes is undefined>>
 		<<wardrobesUpdate>>
-		<<set $objectVersion.wardrobes to 18>>
+		<<set $objectVersion.wardrobes to 19>>
 	<</if>>
 
 	<<if $objectVersion.museumAntiques lte 14 and $museumAntiques.antiques.antiquewhitescrystal isnot undefined>>
@@ -7427,11 +7427,19 @@
 	<<if $sexStats and $sexStats.vagina.menstruation and $sexStats.vagina.menstruation.fertileLeadDays is undefined>>
 		<<set $sexStats.vagina.menstruation.fertileLeadDays to Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2)>>
 	<</if>>
-	<<run Object.values(C.npc).forEach(npc => {
+	<<run Object.getOwnPropertyNames(C.npc).forEach(name => {
+		const npc = C.npc[name];
 		if (npc && npc.pregnancy && npc.pregnancy.enabled && npc.pregnancy.fertileLeadDays === undefined) {
 			npc.pregnancy.fertileLeadDays = Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2);
 		}
 	})>>
+
+	<<if $orphanHawkChildId is undefined and $pregnancies and $childRecords>>
+		<<set _orphanHawkRecord to $childRecords.find(child => child && $pregnancies[child.pregnancyId] && $pregnancies[child.pregnancyId].carrier === "unknown hawk")>>
+		<<if _orphanHawkRecord>>
+			<<set $orphanHawkChildId to _orphanHawkRecord.childId>>
+		<</if>>
+	<</if>>
 
 	<<if $objectVersion.NPCTrustFix is undefined>>
 		<<for _i = 0; _i lt $NPCName.length; _i++>>
