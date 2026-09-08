@@ -934,19 +934,28 @@
 	<<set _type to _args[1]>>
 
 	<<if _change>>
+		<!-- Change the PC's butt size based on how much exercise they're getting. -->
 		<<set $workouts += _change>>
 
 		<<if _change gt 0>>
+			<!-- Increase the PC's physique gains based on their exposure. -->
 			<<if $exposed gte 2>>
 				<<set _change *= 1.2>>
 			<<elseif $exposed is 1>>
 				<<set _change *= 1.1>>
 			<</if>>
 			
+			<!--
+				Track how much the PC exercised today. Used to decide if they should gain or lose physique at the end of the day.
+				
+				NOTE: The current physique code does NOT do this, and only prints a message that claims this happens. Instead, the PC simply loses X% of their physique each day.
+			-->
 			<<set $physiqueuse += _change>>
+
 			<<set Weather.BodyTemperature.addActivity("physique")>>
 		<</if>>
 	
+		<!-- 1 point of change = 10 points of $physique. -->
 		<<set $physique += 10 * _change>>
 
 		<<if _change gt 0>>
@@ -965,6 +974,7 @@
 			<</if>>
 		<</if>>
 
+		<!-- Clamps for safety. -->
 		<<set $physique = Math.clamp($physique, 0, $physiquesize)>>
 	<</if>>
 <</widget>>
