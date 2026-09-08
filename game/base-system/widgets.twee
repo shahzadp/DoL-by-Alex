@@ -3790,11 +3790,16 @@
 <</widget>>
 
 <<widget "breastfed">>
-	<<if _args[0]>>
-		<<set $milk_drank_stat += _args[0]>>
-		<<set $hunger -= _args[0]>><<set $thirst -= _args[0]>>
+	<<set _change to _args[0]>>
+
+	<<if _change>>
+		<<set $milk_drank_stat += _change>>
+
+		<<set $hunger -= _change>>
+		<<set $thirst -= _change>>
 	<<else>>
 		<<set $milk_drank_stat += random(1, 5)>>
+
 		<<if random(1, 100) gte 70>>
 			<<if $NPCList[0].type and $NPCList[0].type is "wolfgirl">>
 				<<transform wolf 1>>
@@ -3804,26 +3809,40 @@
 				<<transform cat 1>>
 			<</if>>
 		<</if>>
+
 		<<if $milkdranktrait is 1>><<physique 1>><</if>>
+
 		<<purity -1>>
-		<<set $hunger -= 200>><<set $thirst -= 200>>
+
+		<<set $hunger -= 200>>
+		<<set $thirst -= 200>>
 	<</if>>
 <</widget>>
 
 <<widget "nectarfed">>
-	<<set _nectarGain to 0>>
-	<<set _nectarGain += (Math.ceil(_args[0] / 10) + random(0,2))>>
+	<<set _change to _args[0]>>
+
+	<<set _nectarGain to (Math.ceil(_change / 10) + random(0,2))>>
+
 	<<set $nectar_drank_stat += _nectarGain>>
 	<<set $nectar_addiction += _nectarGain>>
-	<<if _args[0] gte 11>>
+
+	<<if _change gte 11>>
 		<<purity -1>>
 	<</if>>
-	<<set $hunger -= (_args[0] * 5)>><<set $thirst -= (_args[0] * 5)>>
-	<<drugs _args[0]>><<set $arousal += _args[0]>>
+
+	<<set $hunger -= (_change * 5)>>
+	<<set $thirst -= (_change * 5)>>
+
+	<<drugs _change>>
+
+	<<set $arousal += _change>>
+
 	<<if $ejaculating is 1>>
-		<<drunk `(_args[0] * 3)`>>
+		<<drunk `(_change * 3)`>>
 		<<bodyliquid "mouth" "nectar">>
 	<</if>>
+
 	<<if $backgroundTraits.includes("plantlover")>>
 		<<if $nectar_timer lte 14>>
 			<span class="green">You feel an overwhelming sense of relief.</span> <<stress -12>><<llstress>><<pain -4>><<lpain>>
@@ -3833,6 +3852,7 @@
 		<</if>>
 		<<set $nectar_timer to 21>>
 	<</if>>
+
 	<<set $nectar_addiction = Math.clamp($nectar_addiction, 0, 200)>>
 <</widget>>
 
