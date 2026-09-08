@@ -936,38 +936,36 @@
 	<<if _change>>
 		<<set $workouts += _change>>
 
-		<<if $exposed gte 2>>
-			<<set _change *= 1.2>>
-		<<elseif $exposed is 1>>
-			<<set _change *= 1.1>>
+		<<if _change gt 0>>
+			<<if $exposed gte 2>>
+				<<set _change *= 1.2>>
+			<<elseif $exposed is 1>>
+				<<set _change *= 1.1>>
+			<</if>>
+			
+			<<set $physiqueuse += _change>>
+			<<set Weather.BodyTemperature.addActivity("physique")>>
 		<</if>>
 	
 		<<set $physique += 10 * _change>>
-		<<set $physiqueuse += _change>>
 
-		<<if _type>>
-			<<if _type isnot "noMessage">>
-				<<if ($combat is 1 and _type isnot "workout") or _type is "invig">>
-					<span class="gold"> It invigorates you.</span>
-				<<else>>
-					<span class="gold"> You get a good workout.</span>
+		<<if _change gt 0>>
+			<<if _type>>
+				<<if _type isnot "noMessage">>
+					<<if ($combat is 1 and _type isnot "workout") or _type is "invig">>
+						<span class="gold"> It invigorates you.</span>
+					<<else>>
+						<span class="gold"> You get a good workout.</span>
+					<</if>>
 				<</if>>
+			<<elseif $combat is 1>>
+				<span class="gold"> It invigorates you.</span>
+			<<else>>
+				<span class="gold"> You get a good workout.</span>
 			<</if>>
-		<<elseif $combat is 1>>
-			<span class="gold"> It invigorates you.</span>
-		<<else>>
-			<span class="gold"> You get a good workout.</span>
 		<</if>>
 
 		<<set $physique = Math.clamp($physique, 0, $physiquesize)>>
-		<<set Weather.BodyTemperature.addActivity("physique")>>
-	<</if>>
-<</widget>>
-
-<<widget "physique_loss">>
-	<<if _args[0] and $statFreeze isnot true>>
-		<<set $physique -= (_args[0] * 10)>>
-		<<set $physique to Math.clamp($physique, 0, $physiquesize)>>
 	<</if>>
 <</widget>>
 
