@@ -3790,17 +3790,23 @@
 <</widget>>
 
 <<widget "breastfed">>
+	<!-- 1 point of "change" = 1 mL of milk. The PC drinks an average of ~30 mL of milk each time "breastfed" is called. -->
 	<<set _change to _args[0]>>
 
 	<<if _change>>
 		<<set $milk_drank_stat += _change>>
 
+		<!-- 1 mL of milk = -1 point of $hunger. -->
 		<<set $hunger -= _change>>
+
+		<!-- 1 mL of milk = -1 point of $thirst. -->
 		<<set $thirst -= _change>>
 	<<else>>
+		<!-- Add 10-50 mL to the PC's "milk_drank_stat". -->
 		<<set _milkDrank to random(10, 50)>>
 		<<set $milk_drank_stat += _milkDrank>>
 
+		<!-- The PC has a 30% chance of gaining transformation points when being breastfed. The point's type depends on the breast milk's source. -->
 		<<if random(1, 100) gte 70>>
 			<<if $NPCList[0].type and $NPCList[0].type is "wolfgirl">>
 				<<transform wolf 1>>
@@ -3811,11 +3817,16 @@
 			<</if>>
 		<</if>>
 
+		<!-- Increase the PC's physique if they have the "Milk Addict" / "Milk Enthusiast" trait. -->
 		<<if $milkdranktrait is 1>><<physique 1 "invig">><</if>>
 
+		<!-- Reduce the PC's purity. -->
 		<<purity -1>>
 
+		<!-- 1 mL of milk = -1 point of $hunger. -->
 		<<set $hunger -= _milkDrank>>
+
+		<!-- 1 mL of milk = -1 point of $thirst. -->
 		<<set $thirst -= _milkDrank>>
 	<</if>>
 <</widget>>
@@ -3825,25 +3836,32 @@
 
 	<<set _nectarGain to (Math.ceil(_change / 10) + random(0,2))>>
 
+	<!-- Increase the PC's "nectar_drank_stat" and their nectar addition by the amount of nectar that they gained. -->
 	<<set $nectar_drank_stat += _nectarGain>>
 	<<set $nectar_addiction += _nectarGain>>
 
+	<!-- If the PC drank a lot, decrease their purity. -->
 	<<if _change gte 11>>
 		<<purity -1>>
 	<</if>>
 
+	<!-- Reduce the PC's hunger and thirst by 5x the nectar that they drank. -->
 	<<set $hunger -= (_change * 5)>>
 	<<set $thirst -= (_change * 5)>>
 
+	<!-- Increase the PC's drugs by the amount of nectar that they drank. -->
 	<<drugs _change>>
 
+	<!-- Increase the PC's arousal by the amount of nectar that they drank. -->
 	<<set $arousal += _change>>
 
+	<!-- Increase the PC's drunk by 3x the nectar that they drank, if the source is ejaculating. -->
 	<<if $ejaculating is 1>>
 		<<drunk `(_change * 3)`>>
 		<<bodyliquid "mouth" "nectar">>
 	<</if>>
 
+	<!-- Print text and change the PC's condition if they have the "Dendrophile" / "Plank Lover" trait (Not the "Nectar Addict" trait). -->
 	<<if $backgroundTraits.includes("plantlover")>>
 		<<if $nectar_timer lte 14>>
 			<span class="green">You feel an overwhelming sense of relief.</span> <<stress -12>><<llstress>><<pain -4>><<lpain>>
@@ -3854,6 +3872,7 @@
 		<<set $nectar_timer to 21>>
 	<</if>>
 
+	<!-- Clamps for safety. -->
 	<<set $nectar_addiction = Math.clamp($nectar_addiction, 0, 200)>>
 <</widget>>
 
