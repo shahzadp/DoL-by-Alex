@@ -113,10 +113,11 @@ window.npcPregnancyEnding = npcPregnancyEnding;
  * @returns {"fertilised"|"unfertilised"|undefined}
  */
 function birdEggsReady(npc) {
-	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc] || C.npc[npc].vagina === "none") return undefined;
+	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc]) return undefined;
 	const pregnancy = C.npc[npc].pregnancy;
 	if (getActivePregnancies(npc).some(p => childBaseSpecies(p.donorSpecies) === "hawk" && (p.waterBreaking || Time.date.timeStamp >= getDueDate(p))))
 		return "fertilised";
+	if (C.npc[npc].vagina === "none") return undefined;
 	if (npc === "Great Hawk" && V.daily.hawkUnfertilisedEggs) return undefined;
 	if (!npcIsPregnant(npc) && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) return "unfertilised";
 }
