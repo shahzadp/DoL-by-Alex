@@ -3836,42 +3836,64 @@
 <</widget>>
 
 <<widget "nectarfed">>
+	<!-- 1 point of "change" = 1 mL of nectar. The PC drinks an average of ~10 mL of nectar each time "nectarfed" is called. -->
 	<<set _change to _args[0]>>
 
-	<<set _nectarGain to (Math.ceil(_change / 10) + random(0,2))>>
+	<<set $nectar_drank_stat += _change>>
 
-	<!-- Increase the PC's "nectar_drank_stat" and their nectar addition by the amount of nectar that they gained. -->
-	<<set $nectar_drank_stat += _nectarGain>>
-	<<set $nectar_addiction += _nectarGain>>
+	<!--
+		The PC needs to drink 750 mL of nectar to become an addict.
+		
+		Since the PC gains the "Nectar Addict" trait when V.nectar_addiction >= 150, 1 mL of nectar = 0.2 points of nectar addiction.
+	-->
+	<<set $nectar_addiction += 0.2 * _change>>
 
-	<!-- If the PC drank a lot, decrease their purity. -->
-	<<if _change gte 11>>
-		<<purity -1>>
-	<</if>>
+	<!-- 1 mL of nectar = -1 / 20 points of $purity. The ratio for nectar (1-to-20) is slightly higher than the ratio for milk (1-to-30) because plantpeople are more susceptible to corruption than humans. -->
+	<<purity `(-1 / 20) * _change`>>
 
-	<!-- Reduce the PC's hunger and thirst by 5x the nectar that they drank. -->
+	<!-- 1 mL of nectar = -5 points of $hunger. -->
 	<<set $hunger -= (_change * 5)>>
+
+	<!-- 1 mL of nectar = -5 points of $thirst. -->
 	<<set $thirst -= (_change * 5)>>
 
-	<!-- Increase the PC's drugs by the amount of nectar that they drank. -->
+	<!--
+		Nectar is ~20% ABV, and 1 mL alcohol = 3 points of $drunk.
+
+		1 mL of nectar = 0.2 mL alcohol = 0.6 points of $drunk.
+	-->
+	<<drunk `0.6 * _change`>>
+
+	<!-- 1 mL of nectar = 1 point of $drugged. -->
 	<<drugs _change>>
 
-	<!-- Increase the PC's arousal by the amount of nectar that they drank. -->
+	<!-- 1 mL of nectar = 1 point of $arousal. -->
 	<<set $arousal += _change>>
 
-	<!-- Increase the PC's drunk by 3x the nectar that they drank, if the source is ejaculating. -->
+	<!-- Print a special message if the nectar source is ejaculating. -->
 	<<if $ejaculating is 1>>
-		<<drunk `(_change * 3)`>>
 		<<bodyliquid "mouth" "nectar">>
 	<</if>>
 
 	<!-- Print text and change the PC's condition if they have the "Dendrophile" / "Plank Lover" trait (Not the "Nectar Addict" trait). -->
 	<<if $backgroundTraits.includes("plantlover")>>
 		<<if $nectar_timer lte 14>>
-			<span class="green">You feel an overwhelming sense of relief.</span> <<stress -12>><<llstress>><<pain -4>><<lpain>>
+			<span class="green">You feel an overwhelming sense of relief.</span>
+			<<pain -4>><<lpain>>
+			<<stress -12>><<llstress>>
 		<<else>>
-			<<set _nectarStress to (-1 * _nectarGain)>>
-			<<physique 1 "invig">><<stress _nectarStress>><<lstress>>
+			<!--
+				1 mL of nectar = 1 point of $physique.
+
+				Since physique(1) = 10 $physique, divide "change" by 10.
+			-->
+			<<physique `(1 / 10) * _change` "invig">>
+			<!--
+				Reduce the PC's stress by the amount of addiction that they've gained.
+
+				1 mL of nectar = 0.2 points of addiction = -16 points of $stress.
+			-->
+			<<stress `(-0.2 * _change)`>><<lstress>>
 		<</if>>
 		<<set $nectar_timer to 21>>
 	<</if>>
