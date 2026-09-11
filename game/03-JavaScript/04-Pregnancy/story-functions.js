@@ -128,7 +128,7 @@ window.birdEggsReady = birdEggsReady;
  * Including stories and paintings.
  */
 function currentBodyPregnancies() {
-	const firstOfThisVision = V.statFreeze && V.frozenValues ? V.frozenValues.pregnancies.length : 0;
+	const firstOfThisVision = V.statFreeze && V.frozenValues ? (V.frozenValues.pregnancies ?? V.pregnancies).length : 0;
 	return getActivePregnancies("pc").filter(p => p.pregnancyId >= firstOfThisVision);
 }
 window.currentBodyPregnancies = currentBodyPregnancies;
