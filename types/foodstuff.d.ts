@@ -75,7 +75,6 @@ declare global {
 	}
 
 	export interface FoodstuffItem {
-		index: number; // Unique index for the foodstuff.
 		name: string; // Name of the item.
 		singular: string; // Singular form of the item.
 		plural: string; // Plural form of the item.
