@@ -1504,6 +1504,69 @@ const statChange = (() => {
 	}
 	DefineMacro("badEndTrackingEnd", (source, optional) => badEndTrackingEnd(source, optional));
 
+	function transform(type, change) {
+		// Change the PC's transformation progress, depending on the specified type.
+		if (change) {
+			switch (type) {
+				case "wolf":
+					V.wolfbuild += change;
+					break;
+				case "cat":
+					V.catbuild += change;
+					break;
+				case "cow":
+					V.cowbuild += change;
+					break;
+				case "bird":
+					V.birdbuild += change;
+					break;
+				case "fox":
+					V.foxbuild += change;
+					break;
+				case "angel":
+					V.angelbuild += change;
+					break;
+				case "fallen":
+					V.fallenbuild += change;
+					break;
+				case "demon":
+					V.demonbuild += change;
+					break;
+			}
+		}
+
+		// If the PC gains points for an animal transformation and isn't wearing a cursed familiar collar.
+		if (!["angel", "fallen", "demon"].includes(type) && change > 0 && !(V.worn.neck.name === "familiar collar" && V.worn.neck.cursed === 1)) {
+			// Decrease the other animal TF points by an equivalent amount, unless the PC is wearing one of the animal TF's associated eerie items.
+			if (type !== "wolf" && V.worn.neck.name !== "spiked collar" && V.worn.neck.name !== "spiked collar with leash") {
+				V.wolfbuild -= change;
+			}
+			if (type !== "cat" && V.worn.neck.name !== "cat bell collar") {
+				V.catbuild -= change;
+			}
+			if (type !== "cow" && V.worn.neck.name !== "cow bell") {
+				V.cowbuild -= change;
+			}
+			if (type !== "bird" && V.worn.head.name !== "feathered hair clip" && V.worn.neck.name !== "feather necklace") {
+				V.birdbuild -= change;
+			}
+			if (type !== "fox" && V.worn.head.name !== "spirit mask" && V.worn.neck.name !== "jasper pendant") {
+				V.foxbuild -= change;
+			}
+		}
+
+		// Clamps for safety.
+		V.wolfbuild = Math.clamp(V.wolfbuild, 0, 100);
+		V.catbuild = Math.clamp(V.catbuild, 0, 100);
+		V.cowbuild = Math.clamp(V.cowbuild, 0, 100);
+		V.birdbuild = Math.clamp(V.birdbuild, 0, 100);
+		V.foxbuild = Math.clamp(V.foxbuild, 0, 100);
+		V.angelbuild = Math.clamp(V.angelbuild, 0, 100);
+		V.fallenbuild = Math.clamp(V.fallenbuild, 0, 100);
+		V.demonbuild = Math.clamp(V.demonbuild, 0, 100);
+	}
+	DefineMacro("transform", transform);
+
 	return {
 		drunkClamp,
 		fatigueClamp,
@@ -1573,6 +1636,7 @@ const statChange = (() => {
 		timeTrackingTotal,
 		badEndTracking,
 		badEndTrackingEnd,
+		transform,
 	};
 })();
 window.statChange = statChange;
