@@ -13,10 +13,9 @@ declare global {
 	export interface FoodstuffInventoryItem {
 		amount: number; // How many of this item the player is holding.
 		knows_recipe?: boolean; // Whether the player has learned this item's recipe.
-		supermarket?: number; // Remaining supermarket stock; refilled from the item's sell_price, decremented as the player buys.
+		supermarket?: number; // Remaining supermarket stock.
 		marketStall?: boolean; // Whether the player has this item switched on to sell at their market stall.
 		alternative?: string; // The foodstuff key the player has picked as this ingredient's substitute when cooking.
-		modder?: string; // Marks the item as belonging to a mod so it can be told apart from vanilla.
 	}
 
 	export type Season = "spring" | "summer" | "autumn" | "winter";
