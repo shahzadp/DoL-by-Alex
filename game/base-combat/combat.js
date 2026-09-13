@@ -63,3 +63,33 @@ function namedNpcComments(npcName) {
 }
 
 DefineMacroS("namedNpcComments", namedNpcComments);
+
+// NPCs reaction widgets, used namedNpcReaction() to append the relevant action.
+// Example: Avery + "kissSkin" -> <<reaction-avery-kissSkin>>
+const npcReactionWidgets = {
+	Avery: "reaction-avery",
+	Gwylan: "reaction-gwylan",
+	Sydney: "reaction-sydney",
+};
+
+/**
+ * Resolves a named NPC's reaction to something that just happened in combat.
+ * An NPC with no widget for that event renders nothing.
+ *
+ * `<<namedNpcReaction _n "kissSkin" "thighs">>` -> `<<reaction-avery-kissSkin "thighs">>`
+ *
+ * @param {string | number} index NPC index or identifier
+ * @param {string} event What just happened, e.g. "kissSkin".
+ * @param {string} [detail] Optional detail about the combat state, e.g. which body part.
+ * @returns {string} The NPC's reaction macro, or an empty string if none applies.
+ */
+function namedNpcReaction(index, event, detail) {
+	const family = npcReactionWidgets[V.NPCList[index]?.fullDescription];
+	if (!family || !event) return "";
+	const macro = `${family}-${event}`;
+	if (!Macro.has(macro)) return "";
+	return `<<${macro}${detail === undefined ? "" : " " + JSON.stringify(detail)}>>`;
+}
+
+window.namedNpcReaction = namedNpcReaction;
+DefineMacroS("namedNpcReaction", namedNpcReaction);

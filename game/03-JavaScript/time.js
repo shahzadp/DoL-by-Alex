@@ -1048,6 +1048,11 @@ function hourPassed(hours) {
 
 	/* code that needs to run every hour */
 	for (let i = 0; i < hours; i++) {
+		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
+		if (i !== 0) {
+			minutePassed(60);
+			Time.set(V.timeStamp + 3600);
+		}
 		if (V.innocencestate === 1 && V.control <= 0) statChange.awareness(1);
 		statChange.control(1);
 		wikifier("orgasmHourlyRecovery");
@@ -1118,11 +1123,7 @@ function hourPassed(hours) {
 		// time checks
 		if (Time.hour === 6) dawnCheck();
 		if (Time.hour === 12) noonCheck();
-		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
-		if (i !== 0) {
-			minutePassed(60);
-			Time.set(V.timeStamp + 3600);
-		}
+
 		// Pregnancy uses the current time, so it runs after the clock moves forward above.
 		if (V.settings.pregnancyType !== "realistic") {
 			// Fetish mode. Pending conceptions from realistic mode are thrown out.

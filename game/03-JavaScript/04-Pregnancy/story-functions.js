@@ -113,17 +113,28 @@ window.npcPregnancyEnding = npcPregnancyEnding;
  * @returns {"fertilised"|"unfertilised"|undefined}
  */
 function birdEggsReady(npc) {
-	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc] || C.npc[npc].vagina === "none") return undefined;
+	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc]) return undefined;
 	const pregnancy = C.npc[npc].pregnancy;
 	if (getActivePregnancies(npc).some(p => childBaseSpecies(p.donorSpecies) === "hawk" && (p.waterBreaking || Time.date.timeStamp >= getDueDate(p))))
 		return "fertilised";
+	if (C.npc[npc].vagina === "none") return undefined;
 	if (npc === "Great Hawk" && V.daily.hawkUnfertilisedEggs) return undefined;
 	if (!npcIsPregnant(npc) && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) return "unfertilised";
 }
 window.birdEggsReady = birdEggsReady;
 
+/**
+ * The active pregnancies belonging to the body the player is in right now.
+ * Including stories and paintings.
+ */
+function currentBodyPregnancies() {
+	const firstOfThisVision = V.statFreeze && V.frozenValues ? (V.frozenValues.pregnancies ?? V.pregnancies).length : 0;
+	return getActivePregnancies("pc").filter(p => p.pregnancyId >= firstOfThisVision);
+}
+window.currentBodyPregnancies = currentBodyPregnancies;
+
 function playerIsPregnant() {
-	return getActivePregnancies("pc").length > 0;
+	return currentBodyPregnancies().length > 0;
 }
 window.playerIsPregnant = playerIsPregnant;
 
@@ -575,7 +586,7 @@ function playerAwareTheyCanBePregnant() {
 window.playerAwareTheyCanBePregnant = playerAwareTheyCanBePregnant;
 
 function playerAwareTheyArePregnant() {
-	return getActivePregnancies("pc").some(p => knowsPregnancy(p.pregnancyId, "pc"));
+	return currentBodyPregnancies().some(p => knowsPregnancy(p.pregnancyId, "pc"));
 }
 window.playerAwareTheyArePregnant = playerAwareTheyArePregnant;
 

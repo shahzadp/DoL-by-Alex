@@ -296,6 +296,15 @@ function inflightConceivedDate(timer, timerEnd, species) {
 window.inflightConceivedDate = inflightConceivedDate;
 
 /**
+ * Drops pre-rework pregnancy that can't become a record because the carrier already has a live one there.
+ *
+ * @param {object} oldPregnancy the legacy pregnancy object
+ */
+function dropLegacyPregnancy(oldPregnancy) {
+	Object.assign(oldPregnancy, { fetus: [], type: null, timer: null, timerEnd: null, waterBreaking: false, potentialFathers: [] });
+}
+
+/**
  * Converts any in-flight pregnancy on the player's own body ($sexStats) into records, one orifice
  * at a time. Runs once, driven by variables-versionUpdate.twee. A parasite pregnancy, or an
  * orifice with nothing in progress, is left alone.
@@ -308,6 +317,10 @@ function migrateInflightPregnanciesToRecords() {
 		const oldPregnancy = V.sexStats[orifice] && V.sexStats[orifice].pregnancy;
 		if (!oldPregnancy || !oldPregnancy.fetus || !oldPregnancy.fetus.length) continue;
 		if (oldPregnancy.type === "parasite") continue;
+		if (getActivePregnancy("pc", orifice)) {
+			dropLegacyPregnancy(oldPregnancy);
+			continue;
+		}
 
 		const species = oldPregnancy.type;
 		if (!INFLIGHT_KNOWN_SPECIES.includes(species)) {
@@ -445,6 +458,10 @@ function migrateNpcInflightPregnanciesToRecords() {
 		const oldPregnancy = npc && npc.pregnancy;
 		if (!oldPregnancy || !Array.isArray(oldPregnancy.fetus) || !oldPregnancy.fetus.length) continue;
 		if (oldPregnancy.type === "parasite") continue;
+		if (getActivePregnancies(npcName).length) {
+			dropLegacyPregnancy(oldPregnancy);
+			continue;
+		}
 		migrateOne(npcName, npc.type || oldPregnancy.type, oldPregnancy);
 	}
 
@@ -454,6 +471,10 @@ function migrateNpcInflightPregnanciesToRecords() {
 		const oldPregnancy = stored && stored.pregnancy;
 		if (!oldPregnancy || typeof oldPregnancy !== "object" || !Array.isArray(oldPregnancy.fetus) || !oldPregnancy.fetus.length) continue;
 		if (oldPregnancy.type === "parasite") continue;
+		if (getActivePregnancies(npcKey).length) {
+			dropLegacyPregnancy(oldPregnancy);
+			continue;
+		}
 		migrateOne(npcKey, (stored.npc && stored.npc.type) || oldPregnancy.type, oldPregnancy);
 	}
 

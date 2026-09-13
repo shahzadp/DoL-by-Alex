@@ -633,6 +633,9 @@ var Renderer;
 				} else {
 					return;
 				}
+				if (!layer.maskOptions?.convert) {
+					return;
+				}
 				const ctx = Renderer.createCanvas(image.width, image.height);
 				for (let index = 0; index < maskImg.length; index++) {
 					ctx.drawImage(maskImg[index], 0, 0, image.width, image.height);

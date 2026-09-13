@@ -343,7 +343,7 @@ function averySchedule() {
 				else if (Time.hour <= 12) V.avery_mansion.schedule = "pool";
 				else if (Time.hour <= 15) V.avery_mansion.schedule = "study";
 				else if (Time.hour <= 19) V.avery_mansion.schedule = "lounge";
-				else if (Time.hour === 20) V.avery_mansion.schedule = "date";
+				else if (Time.hour === 20 && !V.averydatedone) V.avery_mansion.schedule = "date";
 				else V.avery_mansion.schedule = "drink";
 				break;
 		}

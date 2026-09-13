@@ -2771,11 +2771,12 @@ function initUpper() {
 			pregType: "split",
 		}),
 		new ClothesItem({
+			/* deprecated clothing item */
 			index: 52,
 			slot: "upper",
-			name: "swim shirt",
-			name_cap: "Swim shirt",
-			variable: "swimshirt",
+			name: "swim shirt_old",
+			name_cap: "Swim shirt_old",
+			variable: "swimshirt_old",
 			combat: {
 				reference: "tshirt",
 				mainColour: "#333333",
@@ -3060,7 +3061,7 @@ function initUpper() {
 			warmth: 2,
 			cost: 2800,
 			description: "For hot days away from shore.",
-			shop: ["clothing", "adult"],
+			shop: ["bait"],
 			accessory: 1,
 			accessory_colour: 0,
 			accessory_colour_options: ["black", "blue", "brown", "green", "pink", "purple", "red", "tangerine", "teal", "white", "yellow", "custom"],
@@ -12946,6 +12947,8 @@ function initUpper() {
 			one_piece: 1,
 			set: "striped sweater",
 			outfitPrimary: { lower: "striped sweater" },
+			altposition: "none",
+			altdisabled: [],
 			cursed: 0,
 			location: 0,
 			iconFile: "striped-sweater.png",
