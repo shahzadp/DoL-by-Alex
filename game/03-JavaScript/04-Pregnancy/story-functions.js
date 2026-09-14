@@ -394,9 +394,9 @@ window.menstrualExposure = menstrualExposure;
  * @returns {number} 0 for no chance at all, up to 1
  */
 function menstrualOutlook() {
-	// The same things that stop rollAndRecordConception rolling at all.
+	// The things that stop rollAndRecordConception rolling at all, except a pending conception: the
+	// player can't know about that one, and reading "very safe" the hour it lands would tell them.
 	if (!readyToCarry()) return 0;
-	if (V.pendingPregnancies.vagina !== null || V.pendingPregnancies.anus !== null) return 0;
 	if (V.settings.basePlayerPregnancyChance <= 0) return 0; // the slider's floor turns pregnancy off
 	// A parasited orifice never rolls. Only a body with no clear orifice left is safe by it.
 	const orifices = [V.player.vaginaExist && "vagina", playerCanCarryAnally() && "anus"].filter(Boolean);
