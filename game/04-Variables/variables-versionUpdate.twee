@@ -7420,6 +7420,18 @@
 		<<set $objectVersion.wardForceUnlock to 1>>
 	<</if>>
 
+	<!-- Fix for random carriers not having Bailey's intro. -->
+	<<if !$objectVersion.randomCarrierWardIntro>>
+		<<run $pregnancies.forEach(pregnancy => {
+			if (pregnancy.carrier === "pc" || C.npc[pregnancy.carrier] || pregnancy.deliveredLocation !== "home" || knowsPregnancy(pregnancy.pregnancyId, "Bailey")) return;
+			const litter = getChildrenOf(pregnancy.pregnancyId).filter(child => childIsBorn(child) && child.development.location === "home");
+			if (!litter.length) return;
+			addBabyIntro("Bailey", pregnancy.carrier, pregnancy.pregnancyId, litter.length, "stranger");
+			setKnowsPregnancy(pregnancy.pregnancyId, "Bailey");
+		})>>
+		<<set $objectVersion.randomCarrierWardIntro to 1>>
+	<</if>>
+
 	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
 	<<if $settings and $settings.pregnancyType is "silly">>
 		<<set $settings.pregnancyType to "fetish">>

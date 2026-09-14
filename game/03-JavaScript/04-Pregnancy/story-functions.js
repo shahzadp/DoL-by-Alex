@@ -670,14 +670,18 @@ window.knowsAboutPregnancy = knowsAboutPregnancy;
  * @param {string} carrier the carrier of the birth
  * @param {number} birthId the pregnancyId of the birth
  * @param {number} children how many children the birth produced
+ * @param {string} [description] used for NPCs that did not store information (calls them a "stranger")
  */
-function addBabyIntro(introFor, carrier, birthId, children) {
+function addBabyIntro(introFor, carrier, birthId, children, description) {
 	if (!V.babyIntros) V.babyIntros = {};
 	if (!V.babyIntros[introFor]) V.babyIntros[introFor] = [];
 	if (!V.babyIntros[introFor].find(intro => intro.birthId === birthId && intro.mother === carrier)) {
-		V.babyIntros[introFor].push({ birthId, mother: carrier, children });
+		const intro = { birthId, mother: carrier, children };
+		if (description) intro.description = description;
+		V.babyIntros[introFor].push(intro);
 	}
 }
+window.addBabyIntro = addBabyIntro;
 
 /**
  * Marks whoNowKnows aware of a pregnancy the carrier has. Without existingId, every pregnancy the
@@ -875,6 +879,7 @@ function setBabyIntro(carrier, introFor, birthId) {
 	}
 }
 DefineMacro("setBabyIntro", setBabyIntro);
+window.setBabyIntro = setBabyIntro;
 
 /**
  * Removes a queued baby introduction for one specific birth.
