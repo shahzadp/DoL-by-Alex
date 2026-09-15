@@ -2479,6 +2479,11 @@ function passArousalWetness(passMinutes) {
 			V.pantiesSoaked = V.underlowerwet >= 100;
 		}
 	}
+
+	if (V.vaginaArousalWetness < 60 || V.underlowerwet < 100) {
+		V.pantiesSoaked = false;
+	}
+
 	if (V.earSlime.focus === "pregnancy" && V.earSlime.growth >= 75) {
 		// Prevent it from dropping below 30 or 60 when the ear slime has fully grown with a focus on pregnancy
 		V.vaginaArousalWetness = Math.clamp(V.vaginaArousalWetness, V.earSlime.growth >= 100 ? 60 : 30, 100);
