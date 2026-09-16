@@ -1507,14 +1507,13 @@ function dailyNPCEffects() {
 				if (V.avery_mansion.injury_timer >= 1) {
 					V.avery_mansion.injury_timer--;
 				}
-				if (V.avery_mansion.injury_timer <= 0 && !["healing", "healed"].includes(V.avery_mansion.injury_stage)) {
+				if (V.avery_mansion.injury_timer <= 0) {
+					V.avery_mansion.injury_stage = "healed";
+				} else if (V.avery_mansion.injury_timer <= 15) {
 					V.avery_mansion.injury_stage = "healing";
-				} else if (V.avery_mansion.injury_timer <= 15 && !["cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)) {
+				} else if (V.avery_mansion.injury_timer < 50) {
 					V.avery_mansion.injury_stage = "cast";
-				} else if (
-					V.avery_mansion.injury_timer <= 30 &&
-					!["sling", "sling_done", "cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)
-				) {
+				} else {
 					V.avery_mansion.injury_stage = "sling";
 				}
 			}
