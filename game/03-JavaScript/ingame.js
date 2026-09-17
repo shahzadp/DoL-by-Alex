@@ -2442,7 +2442,7 @@ function dailyConvert() {
 window.dailyConvert = dailyConvert;
 
 function convertHairLengthToStage(hair, length) {
-	if (!hair || !length) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
+	if (!hair || length === undefined) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
 	if (hair === "fringe") {
 		if (length >= 900) return "feet";
 		else if (length >= 700) return "thighs";
