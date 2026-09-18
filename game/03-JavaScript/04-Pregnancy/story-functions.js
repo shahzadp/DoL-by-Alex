@@ -394,9 +394,9 @@ window.menstrualExposure = menstrualExposure;
  * @returns {number} 0 for no chance at all, up to 1
  */
 function menstrualOutlook() {
-	// The same things that stop rollAndRecordConception rolling at all.
+	// The things that stop rollAndRecordConception rolling at all, except a pending conception: the
+	// player can't know about that one, and reading "very safe" the hour it lands would tell them.
 	if (!readyToCarry()) return 0;
-	if (V.pendingPregnancies.vagina !== null || V.pendingPregnancies.anus !== null) return 0;
 	if (V.settings.basePlayerPregnancyChance <= 0) return 0; // the slider's floor turns pregnancy off
 	// A parasited orifice never rolls. Only a body with no clear orifice left is safe by it.
 	const orifices = [V.player.vaginaExist && "vagina", playerCanCarryAnally() && "anus"].filter(Boolean);
@@ -670,14 +670,18 @@ window.knowsAboutPregnancy = knowsAboutPregnancy;
  * @param {string} carrier the carrier of the birth
  * @param {number} birthId the pregnancyId of the birth
  * @param {number} children how many children the birth produced
+ * @param {string} [description] used for NPCs that did not store information (calls them a "stranger")
  */
-function addBabyIntro(introFor, carrier, birthId, children) {
+function addBabyIntro(introFor, carrier, birthId, children, description) {
 	if (!V.babyIntros) V.babyIntros = {};
 	if (!V.babyIntros[introFor]) V.babyIntros[introFor] = [];
 	if (!V.babyIntros[introFor].find(intro => intro.birthId === birthId && intro.mother === carrier)) {
-		V.babyIntros[introFor].push({ birthId, mother: carrier, children });
+		const intro = { birthId, mother: carrier, children };
+		if (description) intro.description = description;
+		V.babyIntros[introFor].push(intro);
 	}
 }
+window.addBabyIntro = addBabyIntro;
 
 /**
  * Marks whoNowKnows aware of a pregnancy the carrier has. Without existingId, every pregnancy the
@@ -875,6 +879,7 @@ function setBabyIntro(carrier, introFor, birthId) {
 	}
 }
 DefineMacro("setBabyIntro", setBabyIntro);
+window.setBabyIntro = setBabyIntro;
 
 /**
  * Removes a queued baby introduction for one specific birth.

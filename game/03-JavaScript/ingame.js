@@ -911,6 +911,7 @@ window.DefaultActions = {
 };
 
 function selectWardrobe(targetLocation = V.wardrobe_location, type) {
+	if (!V.settings.multipleWardrobes) return V.wardrobe;
 	let wardrobe = V.wardrobes[targetLocation];
 	if (type !== "return" && wardrobe?.locationRequirement?.length && !wardrobe.locationRequirement.includes(V.location)) {
 		V.wardrobe_location = "wardrobe";
@@ -2441,7 +2442,7 @@ function dailyConvert() {
 window.dailyConvert = dailyConvert;
 
 function convertHairLengthToStage(hair, length) {
-	if (!hair || !length) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
+	if (!hair || length === undefined) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
 	if (hair === "fringe") {
 		if (length >= 900) return "feet";
 		else if (length >= 700) return "thighs";
@@ -2461,13 +2462,16 @@ function convertHairLengthToStage(hair, length) {
 window.convertHairLengthToStage = convertHairLengthToStage;
 
 function calchairlengthstage() {
-	const stages = ["short", "shoulder", "chest", "navel", "thighs", "feet"];
+	// commenting old stage check just in case i'm dumb
+	// const stages = ["short", "shoulder", "chest", "navel", "thighs", "feet"];
 
 	V.hairlength = Math.clamp(V.hairlength, 0, 1000);
-	V.hairlengthstage = stages[Math.trunc(V.hairlength / 200)];
+	// V.hairlengthstage = stages[Math.trunc(V.hairlength / 200)];
+	V.hairlengthstage = convertHairLengthToStage("sides", V.hairlength);
 
 	V.fringelength = Math.clamp(V.fringelength, 0, 1000);
-	V.fringelengthstage = stages[Math.trunc(V.fringelength / 200)];
+	// V.fringelengthstage = stages[Math.trunc(V.fringelength / 200)];
+	V.fringelengthstage = convertHairLengthToStage("fringe", V.fringelength);
 }
 window.calchairlengthstage = calchairlengthstage;
 DefineMacro("calchairlengthstage", calchairlengthstage);

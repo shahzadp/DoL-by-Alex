@@ -7420,6 +7420,18 @@
 		<<set $objectVersion.wardForceUnlock to 1>>
 	<</if>>
 
+	<!-- Fix for random carriers not having Bailey's intro. -->
+	<<if !$objectVersion.randomCarrierWardIntro>>
+		<<run $pregnancies.forEach(pregnancy => {
+			if (pregnancy.carrier === "pc" || C.npc[pregnancy.carrier] || pregnancy.deliveredLocation !== "home" || knowsPregnancy(pregnancy.pregnancyId, "Bailey")) return;
+			const litter = getChildrenOf(pregnancy.pregnancyId).filter(child => childIsBorn(child) && child.development.location === "home");
+			if (!litter.length) return;
+			addBabyIntro("Bailey", pregnancy.carrier, pregnancy.pregnancyId, litter.length, "stranger");
+			setKnowsPregnancy(pregnancy.pregnancyId, "Bailey");
+		})>>
+		<<set $objectVersion.randomCarrierWardIntro to 1>>
+	<</if>>
+
 	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
 	<<if $settings and $settings.pregnancyType is "silly">>
 		<<set $settings.pregnancyType to "fetish">>
@@ -7522,6 +7534,36 @@
 
 	<<if C.npc.Kylar.init and C.npc.Kylar.state is 0>>
 		<<set C.npc.Kylar.init to 0>>
+	<</if>>
+
+	<<if $avery_mansion and $avery_mansion.version is 4>>
+		<<set $avery_mansion.version to 5>>
+		<<switch $avery_mansion.injury_stage>>
+		<<case "fresh">>
+			<<set $avery_mansion.injury_stage to "sling">>
+		<<case "fresh_done">>
+			<<set $avery_mansion.injury_stage to "sling">>
+			<<set $averySeen.pushUnique("injury_ask_sling")>>
+		<<case "sling">>
+			<<set $avery_mansion.injury_stage to "cast">>
+		<<case "sling_done">>
+			<<set $avery_mansion.injury_stage to "cast">>
+			<<set $averySeen.pushUnique("injury_ask_cast")>>
+		<<case "cast">>
+			<<set $avery_mansion.injury_stage to "healing">>
+		<<case "cast_done">>
+			<<set $avery_mansion.injury_stage to "healing">>
+			<<set $averySeen.pushUnique("injury_ask_healing")>>
+		<<case "healing">>
+			<<set $avery_mansion.injury_stage to "healed">>
+		<<case "healed">>
+			<<set $averySeen.pushUnique("injury_ask_healed")>>
+		<</switch>>
+	<</if>>
+
+	/*0.5.12.13 */
+	<<if $wrenHeist is false and $wrenHeistMonthly is undefined>>
+		<<unset $wrenHeist>>
 	<</if>>
 
 	<<if $plots is undefined>>
