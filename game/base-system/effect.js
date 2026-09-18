@@ -1214,8 +1214,10 @@ function effects() {
 						break;
 				}
 			});
-			if (arousalGain) sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
-			br();
+			if (arousalGain) {
+				sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
+				br();
+			}
 			delete V.daily.parasiteEvent;
 		}
 	}
