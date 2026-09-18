@@ -417,7 +417,7 @@
 	<<destinationeventend>>
 <</widget>>
 
-<<widget "streetex1">>
+<<widget "streetExposedNightFootsteps">>
 	<<generate1>><<person1>>
 	You move from shadow to shadow, dashing through patches of light as quickly as your legs will carry you.
 	<br><br>
@@ -431,7 +431,7 @@
 	<br><br>
 <</widget>>
 
-<<widget "streetex2">>
+<<widget "streetExposedNightTrip">>
 	<<generate1>><<person1>>You move from shadow to shadow, dashing through patches of light as quickly as your legs will carry you.
 	<br><br>
 
@@ -444,7 +444,7 @@
 	<br><br>
 <</widget>>
 
-<<widget "streetex3">>
+<<widget "streetExposedNightDog">>
 	You move from shadow to shadow, dashing through patches of light as quickly as your legs will carry you.
 	<br><br>
 	<<beastNEWinit 1 dog>>
@@ -474,7 +474,7 @@
 	<</if>>
 <</widget>>
 
-<<widget "streetex4">>
+<<widget "streetExposedNightWitnessAssault">>
 	<<generate1>><<generate2>><<generateyv3>><<person1>><<rng>>
 	You move from shadow to shadow, dashing through patches of light as quickly as your legs will carry you. You freeze between two bushes as you hear a noise very close by: first a squeal, then a muffled scream and struggling, followed by a loud impact, something like a body slamming to the ground. Then low, angry voices.
 	<br><br>
@@ -495,7 +495,7 @@
 	<br>
 <</widget>>
 
-<<widget "streetex5">>
+<<widget "streetExposedNightStairwell">>
 	You hear voices up ahead, and take cover down a stairwell leading to a basement.
 
 	<<if $rng gte 51>>
@@ -1011,7 +1011,7 @@
 	<br>
 <</widget>>
 
-<<widget "streetexday1">>
+<<widget "streetExposedDayCrowded">>
 	There are too many people around. You're sure to be seen.
 	<br><br>
 	<<link [[Hide beneath a car (0:10)|Street Ex Day1 Car]]>><<pass 10>><</link>>
@@ -1020,7 +1020,7 @@
 	<br>
 <</widget>>
 
-<<widget "streetexday2">>
+<<widget "streetExposedDayBusShelter">>
 	You take cover in a bus shelter, just as a bus rounds the corner. It slows down as it approaches.
 	<<gstress>><<stress 6>>
 	<br><br>
@@ -1511,75 +1511,71 @@
 <</widget>>
 
 <<widget "kylarwatched">>
-	<<set $dangerevent to random(1, 100)>>
 	<<run statusCheck("Kylar")>>
-	/* TODO: replace with eventpool */
 
 	<<if _kylarStatus.includes("Love") and $kylar_mad is 1 and $syndromekylar isnot 1>>
-		<<npc Kylar>><<person1>>
+		<<kylarStreetAbduction>>
+	<<else>>
+		<<cleareventpool>>
+		<<addevent "kylarWatchDart" 1>>
+		<<addevent "kylarWatchWink" 1>>
+		<<addevent "kylarWatchClothingTear" 1>>
+		<<if _kylarStatus.includesAll("Love", "Lust")>>
+			<<addevent "kylarWatchStalkSex" 2>>
+		<<elseif isPossibleLoveInterest("Kylar") and C.npc.Kylar.lust gte 25>>
+			<<addevent "kylarWatchStalkMolestation" 2>>
+		<<else>>
+			<<addevent "kylarWatchStaring" 2>>
+		<</if>>
+		<<runeventpool>>
+	<</if>>
+<</widget>>
 
-		<span class="red">A sharp pain pricks your neck.</span> You raise a weak hand, and feel a dart sticking from your flesh. You black out.
-		<br><br>
-		<<link [[Next|Kylar Abduction Intro]]>><<endevent>><<unset $kylar_mad>><<badEndTracking "Kylar Abduction" { reason: "kylarAbduction" }>><</link>>
-		<br>
-	<<elseif $dangerevent gte 81>>
-		<<set $kylarwatchedtimer -= 1>>
+<<widget "kylarStreetAbduction">>
+	<<npc Kylar>><<person1>>
 
-		<<generate1>><<person1>>You hear a <<person>> behind you. <<catcall>> Before you can respond, a pair of intruding hands grasp you, but only for a moment. <<He>> winces and clutches <<his>> neck. <<He>> pulls out a small dart, looks at it, and collapses.
-		<br><br>
+	<span class="red">A sharp pain pricks your neck.</span> You raise a weak hand, and feel a dart sticking from your flesh. You black out.
+	<br><br>
+	<<link [[Next|Kylar Abduction Intro]]>><<endevent>><<unset $kylar_mad>><<badEndTracking "Kylar Abduction" { reason: "kylarAbduction" }>><</link>>
+	<br>
+<</widget>>
 
-		<<link [[Rob|Street Kylar Rob]]>><</link>><<crime "petty">>
-		<br>
-		<<link [[Get help (0:10)|Street Kylar Help]]>><<pass 10>><<famegood 2>><</link>>
-		<br>
-		<<link [[Leave|Street Kylar Leave]]>><</link>>
-		<br>
+<<widget "kylarWatchDart">>
+	<<set $kylarwatchedtimer -= 1>>
 
-	<<elseif $dangerevent gte 61>>
-		<<set $kylarwatchedtimer -= 1>>
+	<<generate1>><<person1>>You hear a <<person>> behind you. <<catcall>> Before you can respond, a pair of intruding hands grasp you, but only for a moment. <<He>> winces and clutches <<his>> neck. <<He>> pulls out a small dart, looks at it, and collapses.
+	<br><br>
 
-		<<generate1>><<person1>>You catch a <<person>> checking you out. <<He>> winks.
-		<br><br>
+	<<link [[Rob|Street Kylar Rob]]>><</link>><<crime "petty">>
+	<br>
+	<<link [[Get help (0:10)|Street Kylar Help]]>><<pass 10>><<famegood 2>><</link>>
+	<br>
+	<<link [[Leave|Street Kylar Leave]]>><</link>>
+	<br>
+<</widget>>
 
-		<<link [[Wink back|Street Kylar Wink]]>><<npcincr Kylar rage 5>><</link>><<promiscuous1>><<gksuspicion>>
-		<br>
-		<<link [[Ignore|Street Kylar Ignore]]>><</link>>
-		<br>
+<<widget "kylarWatchWink">>
+	<<set $kylarwatchedtimer -= 1>>
 
-	<<elseif $dangerevent gte 41>>
-		<<set $kylarwatchedtimer -= 1>>
+	<<generate1>><<person1>>You catch a <<person>> checking you out. <<He>> winks.
+	<br><br>
 
-		<<if $worn.over_lower.name isnot "naked">>
-			You feel a tug on your $worn.over_lower.name,
-			<<set $lowercoloursaved to $worn.over_lower.colour>><<set $worn.over_lower.integrity -= 30>>
-			<<if $worn.over_lower.integrity lte 0>>
-				<<set _name to clone($worn.lower.name)>>
-				<<overlowerruined>><<exposure>>
-				<<if $exposed gte 1>>
-					then a tear as it is torn from your body by an invisible force. <<covered>> The fabric flies away from you.
-					<br><br>
+	<<link [[Wink back|Street Kylar Wink]]>><<npcincr Kylar rage 5>><</link>><<promiscuous1>><<gksuspicion>>
+	<br>
+	<<link [[Ignore|Street Kylar Ignore]]>><</link>>
+	<br>
+<</widget>>
 
-					<<link [[Chase|Street Kylar Chase]]>><<fameexhibitionism 10>><<trauma 6>><<stress 6>><</link>><<athleticsdifficulty 1 600>><<gtrauma>><<gstress>>
-					<br>
-					<<link [[Hide|Street Kylar Hide]]>><</link>>
-					<br>
-				<<else>>
-					then a tear as your _name is torn off by an invisible force. It flies through the air and disappears into an open window.
-					<br><br>
+<<widget "kylarWatchClothingTear">>
+	<<set $kylarwatchedtimer -= 1>>
 
-					<<destinationeventend>>
-				<</if>>
-			<<else>>
-				then a tear as a piece of fabric is torn off by an invisible force. It flies through the air and disappears into an open window.
-				<br><br>
-
-				<<destinationeventend>>
-			<</if>>
-		<<elseif $worn.lower.name isnot "naked">>
-			You feel a tug on your $worn.lower.name,
-			<<set $lowercoloursaved to $worn.lower.colour>><<set $worn.lower.integrity -= 30>>
-			<<if $worn.lower.integrity lte 0>>
-				<<lowerruined>><<exposure>>
+	<<if $worn.over_lower.name isnot "naked">>
+		You feel a tug on your $worn.over_lower.name,
+		<<set $lowercoloursaved to $worn.over_lower.colour>><<set $worn.over_lower.integrity -= 30>>
+		<<if $worn.over_lower.integrity lte 0>>
+			<<set _name to clone($worn.lower.name)>>
+			<<overlowerruined>><<exposure>>
+			<<if $exposed gte 1>>
 				then a tear as it is torn from your body by an invisible force. <<covered>> The fabric flies away from you.
 				<br><br>
 
@@ -1588,51 +1584,77 @@
 				<<link [[Hide|Street Kylar Hide]]>><</link>>
 				<br>
 			<<else>>
-				then a tear as a piece of fabric is torn off by an invisible force. It flies through the air and disappears into an open window.
+				then a tear as your _name is torn off by an invisible force. It flies through the air and disappears into an open window.
 				<br><br>
 
 				<<destinationeventend>>
 			<</if>>
 		<<else>>
+			then a tear as a piece of fabric is torn off by an invisible force. It flies through the air and disappears into an open window.
+			<br><br>
+
 			<<destinationeventend>>
 		<</if>>
+	<<elseif $worn.lower.name isnot "naked">>
+		You feel a tug on your $worn.lower.name,
+		<<set $lowercoloursaved to $worn.lower.colour>><<set $worn.lower.integrity -= 30>>
+		<<if $worn.lower.integrity lte 0>>
+			<<lowerruined>><<exposure>>
+			then a tear as it is torn from your body by an invisible force. <<covered>> The fabric flies away from you.
+			<br><br>
 
-	<<elseif _kylarStatus.includesAll("Love","Lust")>>
-		<<set $kylarwatchedtimer to 0>><<rngWraith 2 "night">>
-
-		<<npc Kylar>><<person1>>Something tugs your arm. It's Kylar. "H-hi," <<he>> gulps. <<He>> tries to pull you toward a dark alley. "We need privacy. I need you to do things to me."
-		<br><br>
-		<<if $wraith.state and _wraithEvent and (["haunt", "despair"].includes($wraith.state) or ["dead","sold"].includes($wraith.offspring))>>
-			<<set $wraith.mimic to "Kylar">><<set $wraith.exit to "town">>
-			<<link [[Go with Kylar|Wraith Mimic Fight]]>><<set $sexstart to 1>><</link>><<promiscuous1>><<gglove>><<llksuspicion>>
+			<<link [[Chase|Street Kylar Chase]]>><<fameexhibitionism 10>><<trauma 6>><<stress 6>><</link>><<athleticsdifficulty 1 600>><<gtrauma>><<gstress>>
 			<br>
-			<<link [[Refuse|Wraith Mimic Kylar]]>><</link>><<lllove>><<gggksuspicion>>
+			<<link [[Hide|Street Kylar Hide]]>><</link>>
+			<br>
 		<<else>>
-			<<link [[Go with Kylar|Street Kylar Sex]]>><<set $sexstart to 1>><<npcincr Kylar love 5>><<npcincr Kylar rage -10>><</link>><<promiscuous1>><<gglove>><<llksuspicion>>
-			<br>
-			<<link [[Refuse|Street Kylar Refuse]]>><<npcincr Kylar love -5>><<npcincr Kylar rage 20>><</link>><<lllove>><<gggksuspicion>>
+			then a tear as a piece of fabric is torn off by an invisible force. It flies through the air and disappears into an open window.
+			<br><br>
+
+			<<destinationeventend>>
 		<</if>>
-		<br><br>
-
-	<<elseif isPossibleLoveInterest("Kylar") and C.npc.Kylar.lust gte 25>>
-		<<set $kylarwatchedtimer to 0>>
-		<<npc Kylar>><<person1>>
-		<<set $NPCList[0].skills to {athletics: random(750, 1500), security: random(750, 1500)}>>
-
-
-		As you are walking, you see the reflection of a small figure behind you in a window. You quickly turn around, but there's nobody there.
-		<br><br>
-		<span class="purple">You are being followed.</span>
-		<br><br>
-		<<link [[Next|Street Kylar Stalk]]>><<set $molestationstart to 1>><</link>>
-
 	<<else>>
-		<<npc Kylar>><<person1>>You see Kylar staring at you from across the road. A bus passes between you. By the time it leaves, <<hes>> gone.
-		<<gstress>><<stress 6>>
-		<br><br>
-
 		<<destinationeventend>>
 	<</if>>
+<</widget>>
+
+<<widget "kylarWatchStalkSex">>
+	<<set $kylarwatchedtimer to 0>><<rngWraith 2 "night">>
+
+	<<npc Kylar>><<person1>>Something tugs your arm. It's Kylar. "H-hi," <<he>> gulps. <<He>> tries to pull you toward a dark alley. "We need privacy. I need you to do things to me."
+	<br><br>
+	<<if $wraith.state and _wraithEvent and (["haunt", "despair"].includes($wraith.state) or ["dead","sold"].includes($wraith.offspring))>>
+		<<set $wraith.mimic to "Kylar">><<set $wraith.exit to "town">>
+		<<link [[Go with Kylar|Wraith Mimic Fight]]>><<set $sexstart to 1>><</link>><<promiscuous1>><<gglove>><<llksuspicion>>
+		<br>
+		<<link [[Refuse|Wraith Mimic Kylar]]>><</link>><<lllove>><<gggksuspicion>>
+	<<else>>
+		<<link [[Go with Kylar|Street Kylar Sex]]>><<set $sexstart to 1>><<npcincr Kylar love 5>><<npcincr Kylar rage -10>><</link>><<promiscuous1>><<gglove>><<llksuspicion>>
+		<br>
+		<<link [[Refuse|Street Kylar Refuse]]>><<npcincr Kylar love -5>><<npcincr Kylar rage 20>><</link>><<lllove>><<gggksuspicion>>
+	<</if>>
+	<br><br>
+<</widget>>
+
+<<widget "kylarWatchStalkMolestation">>
+	<<set $kylarwatchedtimer to 0>>
+	<<npc Kylar>><<person1>>
+	<<set $NPCList[0].skills to {athletics: random(750, 1500), security: random(750, 1500)}>>
+
+
+	As you are walking, you see the reflection of a small figure behind you in a window. You quickly turn around, but there's nobody there.
+	<br><br>
+	<span class="purple">You are being followed.</span>
+	<br><br>
+	<<link [[Next|Street Kylar Stalk]]>><<set $molestationstart to 1>><</link>>
+<</widget>>
+
+<<widget "kylarWatchStaring">>
+	<<npc Kylar>><<person1>>You see Kylar staring at you from across the road. A bus passes between you. By the time it leaves, <<hes>> gone.
+	<<gstress>><<stress 6>>
+	<br><br>
+
+	<<destinationeventend>>
 <</widget>>
 
 <<widget "streetsexfame">>
@@ -3335,31 +3357,31 @@
 		<<if $exposed gte 1>>
 			/* Exposure events */
 			<<if $bus is "residential">>
-				<<addevent "residentialex1" 1>>
-				<<addevent "residentialex2" 1>>
-				<<addevent "residentialex3" 1>>
+				<<addevent "residentialExposedDumpsterAmbush" 1>>
+				<<addevent "residentialExposedDumpsterDog" 1>>
+				<<addevent "residentialExposedFootball" 1>>
 			<<elseif $bus is "commercial">>
-				<<addevent "commercialex1" 1>>
-				<<addevent "commercialex2" 1>>
-				<<addevent "commercialex3" 1>>
+				<<addevent "commercialExposedDoorCollision" 1>>
+				<<addevent "commercialExposedMannequin" 1>>
+				<<addevent "commercialExposedCardboardBox" 1>>
 			<<elseif $bus is "industrial">>
-				<<addevent "industrialex1" 1>>
-				<<addevent "industrialex2" 1>>
-				<<addevent "industrialex3" 1>>
+				<<addevent "industrialExposedPipeAttack" 1>>
+				<<addevent "industrialExposedDeadEnd" 1>>
+				<<addevent "industrialExposedVanBarrel" 1>>
 			<<elseif $bus is "park">>
-				<<addevent "parkex1" 1>>
-				<<addevent "parkex2" 1>>
-				<<addevent "parkex3" 1>>
+				<<addevent "parkExposedAmbush" 1>>
+				<<addevent "parkExposedDog" 1>>
+				<<addevent "parkExposedBridge" 1>>
 			<<else>>
 				<<if Time.dayState is "night">>
-					<<addevent "streetex1" 2>>
-					<<addevent "streetex2" 1>>
-					<<addevent "streetex3" 1>>
-					<<addevent "streetex4" 1>>
-					<<addevent "streetex5" 1>>
+					<<addevent "streetExposedNightFootsteps" 2>>
+					<<addevent "streetExposedNightTrip" 1>>
+					<<addevent "streetExposedNightDog" 1>>
+					<<addevent "streetExposedNightWitnessAssault" 1>>
+					<<addevent "streetExposedNightStairwell" 1>>
 				<<else>>
-					<<addevent "streetexday1" 1>>
-					<<addevent "streetexday2" 1>>
+					<<addevent "streetExposedDayCrowded" 1>>
+					<<addevent "streetExposedDayBusShelter" 1>>
 				<</if>>
 			<</if>>
 			/* Any alleyway */
