@@ -2077,7 +2077,7 @@ function initFeet() {
 			femininity: 200,
 			warmth: 1,
 			cost: 8000,
-			description: "Every step feels flightless",
+			description: "Every step feels flightless.",
 			shop: ["clothing"],
 			accessory: 1,
 			accessory_colour: 0,
