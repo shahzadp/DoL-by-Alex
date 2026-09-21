@@ -5,16 +5,27 @@ Weather.Renderer.Layers.add({
 	blur: null,
 	effects: [
 		{
+			effect: "lightningPulse",
+			drawCondition() {
+				return true;
+			},
+			params: {
+				duration: 1, // seconds
+				blur: 20, // px
+				color: "#ffffff",
+				maxWidth: 35, // px
+			},
+		},
+		{
 			effect: "imageOverlay",
 			drawCondition() {
 				return (
-					true ||
-					(!this.renderInstance.sidebarSkyDisabled &&
-						!Weather.bloodMoon &&
-						this.renderInstance.orbitals.sun.factor > 0.7 &&
-						this.renderInstance.orbitals.sun.factor < 0.85 &&
-						Weather.overcast < 1 &&
-						(Weather.precipitation === "rain" || Weather.fog > 0.4))
+					!this.renderInstance.sidebarSkyDisabled &&
+					!Weather.bloodMoon &&
+					this.renderInstance.orbitals.sun.factor > 0.7 &&
+					this.renderInstance.orbitals.sun.factor < 0.85 &&
+					Weather.overcast < 1 &&
+					(Weather.precipitation === "rain" || Weather.fog > 0.4)
 				);
 			},
 			compositeOperation: "destination-out",
@@ -26,18 +37,6 @@ Weather.Renderer.Layers.add({
 					speed: 0.5,
 				},
 				baseAlpha: 1,
-			},
-		},
-		{
-			effect: "lightningPulse",
-			drawCondition() {
-				return true;
-			},
-			params: {
-				duration: 1, // seconds
-				blur: 20, // px
-				color: "#ffffff",
-				maxWidth: 35, // px
 			},
 		},
 	],
