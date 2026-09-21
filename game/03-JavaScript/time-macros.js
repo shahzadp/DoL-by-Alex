@@ -123,3 +123,20 @@ function schoolTerm() {
 	return "School term starts on " + getFormattedDate(date, true) + ".";
 }
 DefineMacroS("schoolterm", schoolTerm);
+
+function printTime(minutes, numbersOnly) {
+	const hours = Math.floor(minutes / 60);
+	const leftoverMinutes = minutes % 60;
+	if (numbersOnly) {
+		// ex: "(00:10)"
+		return "(" + (hours < 10 ? "0" : "") + hours + ":" + (leftoverMinutes < 10 ? "0" : "") + leftoverMinutes + ")";
+	} else {
+		// ex: "5 hours and 29 minutes"
+		const array = [];
+		if (hours) array.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+		if (leftoverMinutes) array.push(`${leftoverMinutes} ${leftoverMinutes === 1 ? "minute" : "minutes"}`);
+		return array.join(" and ");
+	}
+}
+window.printTime = printTime;
+DefineMacroS("printTime", printTime);
