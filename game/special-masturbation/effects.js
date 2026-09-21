@@ -23,6 +23,7 @@ function masturbationEffects() {
 		return element;
 	};
 	const genitalsExposed = () => V.worn.over_lower.vagina_exposed >= 1 && V.worn.lower.vagina_exposed >= 1 && V.worn.under_lower.vagina_exposed >= 1;
+	const waterproofLower = [V.worn.over_lower, V.worn.lower].find(garment => garment.type.includes("waterproof"))?.name;
 	const breastsExposed = () => V.worn.over_upper.exposed >= 1 && V.worn.upper.exposed >= 1 && V.worn.under_upper.exposed >= 1;
 
 	const playerToys = listUniqueCarriedSextoys().filter(
@@ -170,12 +171,16 @@ function masturbationEffects() {
 		if (V.arousal >= V.arousalmax * (4 / 5) || (V.earSlime.focus === "impregnation" && V.earSlime.growth >= 100)) {
 			if (genitalsExposed()) {
 				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum leaks from the tip</span>.');
+			} else if (waterproofLower) {
+				sWikifier(`Your <<penis>> bucks eagerly, and <span class="pink">precum is trapped by your ${waterproofLower}.</span>`);
 			} else {
 				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum seeps through your <<exposedlower>>.</span>');
 			}
 		} else if (V.arousal >= V.arousalmax * (3 / 5)) {
 			if (genitalsExposed()) {
 				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">precum beads at the tip.</span>');
+			} else if (waterproofLower) {
+				sWikifier(`Your <<penis>> bucks eagerly, and <span class="pink">precum beads in your ${waterproofLower}.</span>`);
 			} else {
 				sWikifier('Your <<penis>> bucks eagerly, and <span class="pink">your precum creates a dark spot on your <<exposedlower>>.</span>');
 			}
@@ -202,6 +207,8 @@ function masturbationEffects() {
 						V.bugsinside && V.player.penissize >= 0 ? " covering some of the insects crawling over you" : ""
 					}.</span>`
 				);
+			} else if (waterproofLower) {
+				sWikifier(`Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum is trapped by your ${waterproofLower}.</span>`);
 			} else {
 				sWikifier('Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum seeps through your <<exposedlower>>.</span>');
 			}
@@ -212,6 +219,8 @@ function masturbationEffects() {
 						V.bugsinside && V.player.penissize >= 0 ? ", covering some of the insects crawling over you" : ""
 					}.</span>`
 				);
+			} else if (waterproofLower) {
+				sWikifier(`Your <<penis "strap-on">> bucks eagerly, and <span class="pink">precum beads in your ${waterproofLower}.</span>`);
 			} else {
 				sWikifier('Your <<penis "strap-on">> bucks eagerly, and <span class="pink">your precum creates a dark spot on your <<exposedlower>>.</span>');
 			}
