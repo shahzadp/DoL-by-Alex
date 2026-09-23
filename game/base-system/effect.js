@@ -950,7 +950,7 @@ function effects() {
 					break;
 				case "withdrawals":
 					sWikifier(
-						'<span class="red">Your body craves nectar and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique_loss 4>><<lphysique>>'
+						'<span class="red">Your body craves nectar and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique -4>><<lphysique>>'
 					);
 					br();
 					break;
@@ -1214,8 +1214,10 @@ function effects() {
 						break;
 				}
 			});
-			if (arousalGain) sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
-			br();
+			if (arousalGain) {
+				sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
+				br();
+			}
 			delete V.daily.parasiteEvent;
 		}
 	}

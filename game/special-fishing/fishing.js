@@ -196,17 +196,32 @@ function rollFish(bus) {
 window.rollFish = rollFish;
 
 /**
- * Returns the fish found at the location as [fishKey, weight] pairs, weighted by location rarity, for use with weightedRandom.
+ * Returns fish at the location whose preferred location includes the given location,
+ * as [fishKey, weight] pairs for use with weightedRandom.
  *
  * @param {string} location
  * @returns {Array}
  */
-function fishingSurfacingFish(location) {
+function preferredLocationFishList(location) {
 	return Object.entries(setup.fishing.lootTables.fish)
-		.filter(([, fishConfig]) => fishConfig.locations[location] > 0)
+		.filter(([, fishConfig]) => fishConfig.preferredLocation.includes(location))
 		.map(([fishKey, fishConfig]) => [fishKey, fishConfig.locations[location]]);
 }
-window.fishingSurfacingFish = fishingSurfacingFish;
+window.preferredLocationFishList = preferredLocationFishList;
+
+/**
+ * Returns fish at the location whose preferred season includes the current season,
+ * as [fishKey, weight] pairs for use with weightedRandom.
+ *
+ * @param {string} location
+ * @returns {Array}
+ */
+function preferredSeasonFishList(location) {
+	return Object.entries(setup.fishing.lootTables.fish)
+		.filter(([, fishConfig]) => fishConfig.locations[location] > 0 && fishConfig.preferredSeason.includes(Time.season))
+		.map(([fishKey, fishConfig]) => [fishKey, fishConfig.locations[location]]);
+}
+window.preferredSeasonFishList = preferredSeasonFishList;
 
 /**
  * If a fish you just hooked should be caught with the minigame.

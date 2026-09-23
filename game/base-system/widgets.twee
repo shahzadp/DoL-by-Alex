@@ -140,13 +140,12 @@
 	<<if _args[0] and (typeof _args[0]) is "number">>
 
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<if _args[0] gt 0>>
+				<<stress `0.25 * _args[0]`>>
 			<<else>>
-				<<set $_stress_multiplier to 10>>
+				<<stress `0.125 * _args[0]`>>
 			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+
 			<<combattrauma _args[0]>>
 		<</if>>
 
@@ -188,16 +187,19 @@
 	<!-- For double penetration, the widget is now called twice. Once for each NPC. -->
 	<<if _args[0] and (typeof _args[0]) is "number">>
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<if _args[0] gt 0>>
+				<<stress `0.25 * _args[0]`>>
 			<<else>>
-				<<set $_stress_multiplier to 10>>
+				<<stress `0.125 * _args[0]`>>
 			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+
 			<<combattrauma _args[0]>>
 		<<else>>
-			<<stress _args[0] -10>>
+			<<if _args[0] gt 0>>
+				<<stress `-0.125 * _args[0]`>>
+			<<else>>
+				<<stress `-0.25 * _args[0]`>>
+			<</if>>
 		<</if>>
 		<<set _arousal to 20 * _args[0]>>
 		<<set _enemyarousal to 2 * _args[0]>>
@@ -262,12 +264,6 @@
 		<!-- args[4] - indicates NPC id (but is currently unused) -->
 
 		<<if _violence gt 0 or _violence lt 0>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
-			<<else>>
-				<<set _drunkMod to 10>>
-			<</if>>
 			<<if $possessed is true and _violence gte 0>>
 				<<set $_controlMod to (10 * $enemyno)>>
 				<<control `_violence / $_controlMod`>>
@@ -282,7 +278,15 @@
 			<<else>>
 				<<set _clothesMod to 1>>
 			<</if>>
-			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
+
+			<<if _violence gt 0>>
+				<!-- Further reduce stress gains if the PC is a masochist. -->
+				<<set _stressChange to 0.25 * _violence * _stressMod * (1 - ($masochism / 1200))>>
+			<<else>>
+				<<set _stressChange to 0.125 * _violence * _stressMod>>
+			<</if>>
+			<<stress _stressChange>>
+
 			<<combattrauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)) / _possessMod / _clothesMod)>>
 			<<set _arousal to (_violence * (0 + ($masochism / 18)))>>
@@ -316,13 +320,14 @@
 		<<set _arousalMod = _args[4] || 1>>
 
 		<<if _violence gt 0 or _violence lt 0>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set _drunkMod to [9,8,6,4,3][$_drunk_level]>>
+			<<if _violence gt 0>>
+				<!-- Further reduce stress gains if the PC is a masochist. -->
+				<<set _stressChange to 0.25 * _violence * _stressMod * (1 - ($masochism / 1200))>>
 			<<else>>
-				<<set _drunkMod to 10>>
+				<<set _stressChange to 0.125 * _violence * _stressMod>>
 			<</if>>
-			<<set $stress += (_violence * _drunkMod * _stressMod) * (1 - ($masochism / 1200))>>
+			<<stress _stressChange>>
+
 			<<trauma `_violence * _traumaMod`>>
 			<<set $pain += (_violence * _painMod * (1 - ($masochism / 1200)) * (1 - ($sciencetrait / 10)))>>
 			<<set _arousal to (_violence * _arousalMod * (0 + ($masochism / 18)))>>
@@ -353,13 +358,12 @@
 	<!-- args[1] - the NPC to whom PC is submitting (currently unused) -->
 	<<if _args[0]>>
 		<<if $consensual isnot 1>>
-			<<if $drunk gt 0>>
-				<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-				<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+			<<if _args[0] gt 0>>
+				<<stress `0.25 * _args[0]`>>
 			<<else>>
-				<<set $_stress_multiplier to 10>>
+				<<stress `0.125 * _args[0]`>>
 			<</if>>
-			<<stress _args[0] $_stress_multiplier>>
+
 			<<sub `_args[0] / 4`>>
 		<<else>>
 			<<set $stress -= 10 * _args[0]>>
@@ -395,13 +399,12 @@
 
 <<widget "brat">>
 	<<if _args[0]>>
-		<<if $drunk gt 0>>
-			<<set $_drunk_level to Math.clamp(Math.floor($drunk / 120), 0, 4)>>
-			<<set $_stress_multiplier to [9,8,6,4,3][$_drunk_level]>>
+		<<if _args[0] gt 0>>
+			<<stress `0.25 * _args[0]`>>
 		<<else>>
-			<<set $_stress_multiplier to 10>>
+			<<stress `0.125 * _args[0]`>>
 		<</if>>
-		<<stress _args[0] $_stress_multiplier>>
+
 		<<combattrauma `-1 * _args[0]`>>
 		<<if $NPCList[0].legs isnot "walk">>
 			<<set $enemyanger += 5 * _args[0]>>
@@ -930,34 +933,52 @@
 		<<exit>>
 	<</if>>
 
-	<<if _args[0]>><<set _temp to _args[0]>><<set $workouts += _args[0]>><<else>><<set _temp to 1>><<set $workouts += 1>><</if>>
-	<<if $exposed gte 2>>
-		<<set _temp *= 1.2>>
-	<<elseif $exposed is 1>>
-		<<set _temp *= 1.1>>
-	<</if>>
-	<<set $physique += 10 * _temp>><<set $physiqueuse += _temp>>
-	<<if _args[1]>>
-		<<if _args[1] isnot "noMessage">>
-			<<if ($combat is 1 and _args[1] isnot "workout") or _args[1] is "invig">>
+	<<set _change to _args[0]>>
+	<<set _type to _args[1]>>
+
+	<<if _change>>
+		<!-- Change the PC's butt size based on how much exercise they're getting. -->
+		<<set $workouts += _change>>
+
+		<<if _change gt 0>>
+			<!-- Increase the PC's physique gains based on their exposure. -->
+			<<if $exposed gte 2>>
+				<<set _change *= 1.2>>
+			<<elseif $exposed is 1>>
+				<<set _change *= 1.1>>
+			<</if>>
+			
+			<!--
+				Track how much the PC exercised today. Used to decide if they should gain or lose physique at the end of the day.
+				
+				NOTE: The current physique code does NOT do this, and only prints a message that claims this happens. Instead, the PC simply loses X% of their physique each day.
+			-->
+			<<set $physiqueuse += _change>>
+
+			<<set Weather.BodyTemperature.addActivity("physique")>>
+		<</if>>
+	
+		<!-- 1 point of change = 10 points of $physique. -->
+		<<set $physique += 10 * _change>>
+
+		<<if _change gt 0>>
+			<<if _type>>
+				<<if _type isnot "noMessage">>
+					<<if ($combat is 1 and _type isnot "workout") or _type is "invig">>
+						<span class="gold"> It invigorates you.</span>
+					<<else>>
+						<span class="gold"> You get a good workout.</span>
+					<</if>>
+				<</if>>
+			<<elseif $combat is 1>>
 				<span class="gold"> It invigorates you.</span>
 			<<else>>
 				<span class="gold"> You get a good workout.</span>
 			<</if>>
 		<</if>>
-	<<elseif $combat is 1>>
-		<span class="gold"> It invigorates you.</span>
-	<<else>>
-		<span class="gold"> You get a good workout.</span>
-	<</if>>
-	<<set $physique = Math.clamp($physique, 0, $physiquesize)>>
-	<<set Weather.BodyTemperature.addActivity("physique")>>
-<</widget>>
 
-<<widget "physique_loss">>
-	<<if _args[0] and $statFreeze isnot true>>
-		<<set $physique -= (_args[0] * 10)>>
-		<<set $physique to Math.clamp($physique, 0, $physiquesize)>>
+		<!-- Clamps for safety. -->
+		<<set $physique = Math.clamp($physique, 0, $physiquesize)>>
 	<</if>>
 <</widget>>
 
@@ -3772,11 +3793,23 @@
 <</widget>>
 
 <<widget "breastfed">>
-	<<if _args[0]>>
-		<<set $milk_drank_stat += _args[0]>>
-		<<set $hunger -= _args[0]>><<set $thirst -= _args[0]>>
+	<!-- 1 point of "change" = 1 mL of milk. The PC drinks an average of ~30 mL of milk each time "breastfed" is called. -->
+	<<set _change to _args[0]>>
+
+	<<if _change>>
+		<<set $milk_drank_stat += _change>>
+
+		<!-- 1 mL of milk = -1 point of $hunger. -->
+		<<set $hunger -= _change>>
+
+		<!-- 1 mL of milk = -1 point of $thirst. -->
+		<<set $thirst -= _change>>
 	<<else>>
-		<<set $milk_drank_stat += random(1, 5)>>
+		<!-- Add 10-50 mL to the PC's "milk_drank_stat". -->
+		<<set _milkDrank to random(10, 50)>>
+		<<set $milk_drank_stat += _milkDrank>>
+
+		<!-- The PC has a 30% chance of gaining transformation points when being breastfed. The point's type depends on the breast milk's source. -->
 		<<if random(1, 100) gte 70>>
 			<<if $NPCList[0].type and $NPCList[0].type is "wolfgirl">>
 				<<transform wolf 1>>
@@ -3786,35 +3819,89 @@
 				<<transform cat 1>>
 			<</if>>
 		<</if>>
-		<<if $milkdranktrait is 1>><<physique 1>><</if>>
-		<<purity -1>>
-		<<set $hunger -= 200>><<set $thirst -= 200>>
+
+		<!--
+			If they have the "Milk Addict" / "Milk Enthusiast" trait, 3 mL of milk = 1 point of $physique.
+
+			Since physique(1) = 10 $physique, divide "milkDrank" by 30.
+		-->
+		<<if $milkdranktrait is 1>><<physique `(1 / 30) * _milkDrank` "invig">><</if>>
+
+		<!-- 30 mL of milk = -1 points of $purity. -->
+		<<purity `(-1 / 30) * _milkDrank`>>
+
+		<!-- 1 mL of milk = -1 point of $hunger. -->
+		<<set $hunger -= _milkDrank>>
+
+		<!-- 1 mL of milk = -1 point of $thirst. -->
+		<<set $thirst -= _milkDrank>>
 	<</if>>
 <</widget>>
 
 <<widget "nectarfed">>
-	<<set _nectarGain to 0>>
-	<<set _nectarGain += (Math.ceil(_args[0] / 10) + random(0,2))>>
-	<<set $nectar_drank_stat += _nectarGain>>
-	<<set $nectar_addiction += _nectarGain>>
-	<<if _args[0] gte 11>>
-		<<purity -1>>
-	<</if>>
-	<<set $hunger -= (_args[0] * 5)>><<set $thirst -= (_args[0] * 5)>>
-	<<drugs _args[0]>><<set $arousal += _args[0]>>
+	<!-- 1 point of "change" = 1 mL of nectar. The PC drinks an average of ~10 mL of nectar each time "nectarfed" is called. -->
+	<<set _change to _args[0]>>
+
+	<<set $nectar_drank_stat += _change>>
+
+	<!--
+		The PC needs to drink 750 mL of nectar to become an addict.
+		
+		Since the PC gains the "Nectar Addict" trait when V.nectar_addiction >= 150, 1 mL of nectar = 0.2 points of nectar addiction.
+	-->
+	<<set $nectar_addiction += 0.2 * _change>>
+
+	<!-- 1 mL of nectar = -1 / 20 points of $purity. The ratio for nectar (1-to-20) is slightly higher than the ratio for milk (1-to-30) because plantpeople are more susceptible to corruption than humans. -->
+	<<purity `(-1 / 20) * _change`>>
+
+	<!-- 1 mL of nectar = -5 points of $hunger. -->
+	<<set $hunger -= (_change * 5)>>
+
+	<!-- 1 mL of nectar = -5 points of $thirst. -->
+	<<set $thirst -= (_change * 5)>>
+
+	<!--
+		Nectar is ~20% ABV, and 1 mL alcohol = 3 points of $drunk.
+
+		1 mL of nectar = 0.2 mL alcohol = 0.6 points of $drunk.
+	-->
+	<<drunk `0.6 * _change`>>
+
+	<!-- 1 mL of nectar = 1 point of $drugged. -->
+	<<drugs _change>>
+
+	<!-- 1 mL of nectar = 1 point of $arousal. -->
+	<<set $arousal += _change>>
+
+	<!-- Print a special message if the nectar source is ejaculating. -->
 	<<if $ejaculating is 1>>
-		<<drunk `(_args[0] * 3)`>>
 		<<bodyliquid "mouth" "nectar">>
 	<</if>>
+
+	<!-- Print text and change the PC's condition if they have the "Dendrophile" / "Plank Lover" trait (Not the "Nectar Addict" trait). -->
 	<<if $backgroundTraits.includes("plantlover")>>
 		<<if $nectar_timer lte 14>>
-			<span class="green">You feel an overwhelming sense of relief.</span> <<stress -12>><<llstress>><<pain -4>><<lpain>>
+			<span class="green">You feel an overwhelming sense of relief.</span>
+			<<pain -4>><<lpain>>
+			<<stress -12>><<llstress>>
 		<<else>>
-			<<set _nectarStress to (-1 * _nectarGain)>>
-			<<physique 1 "invig">><<stress _nectarStress>><<lstress>>
+			<!--
+				1 mL of nectar = 1 point of $physique.
+
+				Since physique(1) = 10 $physique, divide "change" by 10.
+			-->
+			<<physique `(1 / 10) * _change` "invig">>
+			<!--
+				Reduce the PC's stress by the amount of addiction that they've gained.
+
+				1 mL of nectar = 0.2 points of addiction = -16 points of $stress.
+			-->
+			<<stress `(-0.2 * _change)`>><<lstress>>
 		<</if>>
 		<<set $nectar_timer to 21>>
 	<</if>>
+
+	<!-- Clamps for safety. -->
 	<<set $nectar_addiction = Math.clamp($nectar_addiction, 0, 200)>>
 <</widget>>
 
@@ -5440,4 +5527,33 @@
 
 	<<set _multi to $purity gte 1000 ? 2 : 1>>
 	<<defiance `($purity / 100) * _multi`>>
+<</widget>>
+
+<<widget "travelSpeedInfo">>
+	<<set _travelTimes to {quickly: 5, normally: 10, carefully: 30}>>
+	<<if $worn.feet.type.includes("shackle") and $travelSpeed is "quickly">>
+		<<set $travelSpeed to "normally">>
+	<</if>>
+	<<set _speedNow to $travelSpeed>>
+	<<set _travelTime to _travelTimes[_speedNow]>>
+	<<set _travelTimeString to getTimeString(_travelTime)>>
+<</widget>>
+
+<<widget "travelSpeedOptions">>
+	<<travelSpeedInfo>>
+	How do you want to proceed?
+	<br>
+	<<if $worn.feet.type.includes("shackle")>>
+		<<runicon>><span class="red">Your shackles stop you from running.</span>
+	<<else>>
+		<<runicon>><label><<radiovar "$travelSpeed" "quickly">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Quickly (<<print getTimeString(_travelTimes.quickly)>>)</label><<gharass>>
+	<</if>>
+	<br>
+	<<walkicon>><label><<radiovar "$travelSpeed" "normally">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Normally (<<print getTimeString(_travelTimes.normally)>>)</label>
+	<br>
+	<<sneakicon>><label><<radiovar "$travelSpeed" "carefully">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Carefully (<<print getTimeString(_travelTimes.carefully)>>)</label><<lharass>>
+	<<if $worn.feet.type.includes("heels") and !$possessed>>
+		<br>
+		<span class="red">Your heels only let you hobble, except when searching.</span>
+	<</if>>
 <</widget>>

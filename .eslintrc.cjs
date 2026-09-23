@@ -336,6 +336,10 @@ module.exports = {
 		migrateChildrenToRecords: "readonly",
 		migrateChildFeatures: "readonly",
 		migrateInflightPregnanciesToRecords: "readonly",
+		parentSkinColour: "readonly",
+		// Skin Tone Functions
+		randomSkinTone: "readonly",
+		skinToneSettingsFromDarkChance: "readonly",
 		// DoL math functions
 		round: "readonly",
 		normalise: "readonly",

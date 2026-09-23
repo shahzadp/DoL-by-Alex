@@ -1,11 +1,11 @@
 :: Widgets Beach [widget]
-<<widget "beachday1">>
+<<widget "beachDayTackle">>
 	<<generatey1>>You hear someone behind you. You turn just in time to see a <<person1>><<person>> rushing into you. <<He>> tackles you to the sand and tries to remove your clothes!
 	<br><br>
 	<<link [[Next|Beach Day Molestation]]>><<set $molestationstart to 1>><<set $eventskip to 1>><</link>>
 <</widget>>
 
-<<widget "beachday2">>
+<<widget "beachDayDogTug">>
 	<<outfitChecks>>
 	<<beastNEWinit 1 dog>>
 	You feel something yanking at your _bottom.name. Looking over your shoulder, you see a small <<beasttype>> with your clothes between <<bhis>> teeth.
@@ -29,7 +29,7 @@
 	<<destinationBeach "Next">><<set $eventskip to 1>><<endevent>><</destinationBeach>>
 <</widget>>
 
-<<widget "beachday3">>
+<<widget "beachDayParent">>
 	<<generate1>><<set $NPCList[0].virginity.penile to false>><<set $NPCList[0].virginity.vaginal to false>>You see a <<person1>><<person>> watching you. <<He>> seems to be here with <<his>> kids who are playing in the sand some way away. <<He>> looks away as you make eye contact.
 	<br><br>
 
@@ -39,7 +39,7 @@
 	<br>
 <</widget>>
 
-<<widget "beachday4">>
+<<widget "beachDayWind">>
 	A gust of wind blows in from the ocean, pleasantly caressing your skin.
 	<<lstress>><<stress -2>>
 	<br><br>
@@ -137,14 +137,14 @@
 	<</if>>
 <</widget>>
 
-<<widget "beachday5">>
+<<widget "beachDayClassmates">>
 	You are walking along the shoreline when you hear a commotion behind you. Looking over your shoulder, you see a few of your classmates running towards you.
 	<br><br>
 	<<link [[Stop and wait|Beach Day Classmates]]>><<set $phase to 0>><</link>><br>
 	<<link [[Run|Beach Day Classmates]]>><<set $phase to 1>><</link>><<athleticsdifficulty 1 800>>
 <</widget>>
 
-<<widget "beachday6">>
+<<widget "beachDaySandPrank">>
 	<<if setup.clothes.lower[clothesIndex('lower', $worn.lower)].skirt isnot 1 and !$worn.lower.type.includes("naked")>>
 	<<generatey1>><<person1>>
 	You are strolling along the coast when a <<person>> tugs on your waistband, exposing your <<bottom>>. Before you can react, <<he>> dumps a large bucket of sand into your <<if $worn.under_lower.name is "naked" or $worn.under_lower.one_piece is 1>>$worn.lower.name<<else>>$worn.under_lower.name<</if>>. <<He>> gives you a hard spank before running off, presumably to find another victim to prank.
@@ -160,7 +160,7 @@
 <</if>>
 <</widget>>
 
-<<widget "beachnight1">>
+<<widget "beachNightDog">>
 	<<beastNEWinit 1 dog>>
 	<<if $monster is 1>>
 		A <<beasttype>> emerges from the darkness. <<bHis>> shaggy body gives <<bhim>> a savage look. <<bHe>> bares <<bhis>> fangs, <span class="red">eyes alight with hunger</span> as <<bhe>> stares at you.
@@ -179,13 +179,13 @@
 	<</if>>
 <</widget>>
 
-<<widget "beachnight2">>
+<<widget "beachNightAmbush">>
 	<<generate1>>It's so dark, you don't see the <<person1>><<person>> lying on the sand until <<he>> grasps you by the ankle and pulls you to the ground.
 	<br><br>
 	<<link [[Next|Beach Night Molestation]]>><<set $molestationstart to 1>><</link>>
 <</widget>>
 
-<<widget "beachex1">>
+<<widget "beachExposedNoticed">>
 	<<generatey1>>A <<person1>><<person>> spots you in your fragile state and calls out, <<catcalllewd>> Other heads turn in response and you quickly find yourself the centre of attention.
 	<<if $panicattacks gte 1>>
 		You are overcome by anxiety. Robbed of higher thought, you can do nothing flee away from the crowds, chased by jeering laughter.
@@ -203,7 +203,7 @@
 	<</if>>
 <</widget>>
 
-<<widget "beachex2">>
+<<widget "beachExposedMolestation">>
 	<<generatey1>>A <<person1>><<person>> spots you in your fragile state and calls out to <<his>> friends. You quickly find yourself surrounded. The <<person>> speaks, "You know this isn't a nudist beach right? In fact, I think I should report you." You tense as <<he>> visibly inhales as if to shout, anticipating even more attention drawn to your predicament. Instead however, <<he>> and <<his>> friends burst into derisive laughter. "Or, you know, I could help you out, give you something to cover up with. Of course, I'll want something in return. Get on your knees."
 	<<fameexhibitionism 20>>
 	<br><br>
@@ -315,38 +315,26 @@
 <</widget>>
 
 :: Widgets Events Beach [widget]
-/* TODO: replace with eventpool */
 <<widget "eventsbeach">>
-	<<set $dangerevent to random(1, 100)>>
+	<<cleareventpool>>
 	<<if Time.dayState is "night">>
-		<<if $dangerevent lte 15>>
-			<<beachnight1>>
-		<<elseif $dangerevent lte 30>>
-			<<beachnight2>>
-		<<elseif $dangerevent lte 100>>
-			<<beachday4>>
-		<</if>>
+		<<addevent "beachNightDog" 15>>
+		<<addevent "beachNightAmbush" 15>>
+		<<addevent "beachDayWind" 70>>
 	<<elseif $exposed gte 1>>
-		<<if $dangerevent lte 80>>
-			<<beachex1>>
-		<<elseif $dangerevent lte 100>>
-			<<beachex2>>
-		<</if>>
+		<<addevent "beachExposedNoticed" 80>>
+		<<addevent "beachExposedMolestation" 20>>
 	<<else>>
-		<<if $dangerevent lte 10>>
-			<<beachday1>>
-		<<elseif $dangerevent lte 20 and !$worn.lower.type.includes("naked")>>
-			<<beachday2>>
-		<<elseif $dangerevent lte 50>>
-			<<beachday3>>
-		<<elseif $dangerevent lte 70>>
-			<<beachday4>>
-		<<elseif $dangerevent lte 90>>
-			<<beachday5>>
-		<<elseif $dangerevent lte 100>>
-			<<beachday6>>
+		<<addevent "beachDayTackle" 10>>
+		<<if !$worn.lower.type.includes("naked")>>
+			<<addevent "beachDayDogTug" 10>>
 		<</if>>
+		<<addevent "beachDayParent" 30>>
+		<<addevent "beachDayWind" 20>>
+		<<addevent "beachDayClassmates" 20>>
+		<<addevent "beachDaySandPrank" 10>>
 	<</if>>
+	<<runeventpool>>
 <</widget>>
 
 <<widget "eventsbeachphallus">>

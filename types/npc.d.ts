@@ -105,7 +105,8 @@ declare global {
 		teen: 0 | 1;
 
 		insecurity: string;
-		skincolour: string;
+		skincolour?: number;
+		skinType?: "skin" | "ghost";
 		eyeColour: string;
 		hairColour: string;
 
