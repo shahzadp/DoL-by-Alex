@@ -1474,7 +1474,13 @@ function dailyNPCEffects() {
 				}
 			}
 
-			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury && !inRentPausedBadEnd()) {
+			if (
+				V.avery_mansion.rage.dinner_done !== 1 &&
+				between(Time.weekDay, 3, 7) &&
+				!V.avery_injury &&
+				!inRentPausedBadEnd() &&
+				V.avery_mansion.rage.timer !== 30
+			) {
 				if (V.avery_valentines?.done && Time.monthDay === 15 && Time.monthName === "February") {
 					// do not spoil the valentines
 				} else {
