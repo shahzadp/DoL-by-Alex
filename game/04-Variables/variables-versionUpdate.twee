@@ -3928,7 +3928,21 @@
 	<</script>>
 	<!-- version 0.5.6.0 END Gameplay Options Variable Refactor END -->
 
-	 <!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
+	<!-- Must precede <<updateNewNamedNpcs>> -->
+	<<if $settings.skinToneMode is undefined>>
+		<<run Object.assign($settings, skinToneSettingsFromDarkChance($settings.darkSkinChance))>>
+		<<unset $settings.darkSkinChance>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (npc && npc.skincolour === 0) delete npc.skincolour;
+		})>>
+	<</if>>
+
+	<!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
 	<<updateNewNamedNpcs>>
 	<<npcPregnancyUpdater>>
 
@@ -4212,7 +4226,7 @@
 			<</if>>
 		<</for>>
 		<<if C.npc["Ivory Wraith"].init is 1>>
-			<<set C.npc["Ivory Wraith"].skincolour to "ghost">>
+			<<set C.npc["Ivory Wraith"].skinType to "ghost">>
 		<</if>>
 		<<for $_s to 0; $_s lt $NPCList.length; $_s++>>
 			<<if $NPCList[$_s].health and !$NPCList[$_s].skincolour>>
@@ -7530,6 +7544,24 @@
 
 	<<if $foodstuff.cod?.supermarket>>
 		<<unset $foodstuff.cod.supermarket>>
+	<</if>>
+
+	<!-- The dark skin percentage became a lightest/most common/darkest skin tone range
+	that goes from 0-100 from lightest to darkest tone.  Ivory Wraith's "ghost" is a skin type rather than a tone now. -->
+	<<if $objectVersion.skinTone is undefined>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			Object.values(V.storedNPCs).map(stored => stored.npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (!npc) return;
+			if (npc.skincolour === "ghost") { npc.skinType = "ghost"; delete npc.skincolour; }
+			else if (npc.skincolour === "white") npc.skincolour = 0;
+			else if (npc.skincolour === "black") npc.skincolour = 70;
+		})>>
+		<<set $objectVersion.skinTone to 1>>
 	<</if>>
 
 	<<if C.npc.Kylar.init and C.npc.Kylar.state is 0>>
