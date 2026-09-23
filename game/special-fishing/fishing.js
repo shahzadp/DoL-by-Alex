@@ -129,7 +129,7 @@ window.fishingCatchWeightBaitMultiplier = fishingCatchWeightBaitMultiplier;
 /**
  * Used to scale the likelihood of catching a fish. x1.5 when teeming, x0.7 when quiet, 1 otherwise.
  *
- * @param bus
+ * @param {string} bus
  * @returns {number}
  */
 function fishingCatchWeightPopulationMultiplier(bus) {
