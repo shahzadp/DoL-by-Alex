@@ -5528,3 +5528,32 @@
 	<<set _multi to $purity gte 1000 ? 2 : 1>>
 	<<defiance `($purity / 100) * _multi`>>
 <</widget>>
+
+<<widget "travelSpeedInfo">>
+	<<set _travelTimes to {quickly: 5, normally: 10, carefully: 30}>>
+	<<if $worn.feet.type.includes("shackle") and $travelSpeed is "quickly">>
+		<<set $travelSpeed to "normally">>
+	<</if>>
+	<<set _speedNow to $travelSpeed>>
+	<<set _travelTime to _travelTimes[_speedNow]>>
+	<<set _travelTimeString to getTimeString(_travelTime)>>
+<</widget>>
+
+<<widget "travelSpeedOptions">>
+	<<travelSpeedInfo>>
+	How do you want to proceed?
+	<br>
+	<<if $worn.feet.type.includes("shackle")>>
+		<<runicon>><span class="red">Your shackles stop you from running.</span>
+	<<else>>
+		<<runicon>><label><<radiovar "$travelSpeed" "quickly">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Quickly (<<print getTimeString(_travelTimes.quickly)>>)</label><<gharass>>
+	<</if>>
+	<br>
+	<<walkicon>><label><<radiovar "$travelSpeed" "normally">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Normally (<<print getTimeString(_travelTimes.normally)>>)</label>
+	<br>
+	<<sneakicon>><label><<radiovar "$travelSpeed" "carefully">><<travelSpeedInfo>><<replace ".travelTime">><<print _travelTimeString>><</replace>><</radiovar>> Carefully (<<print getTimeString(_travelTimes.carefully)>>)</label><<lharass>>
+	<<if $worn.feet.type.includes("heels") and !$possessed>>
+		<br>
+		<span class="red">Your heels only let you hobble, except when searching.</span>
+	<</if>>
+<</widget>>
