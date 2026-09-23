@@ -1092,3 +1092,56 @@
 		<<link [[_linkText|Moor]]>><<= _contents>><</link>>
 	<</if>>
 <</widget>>
+
+<<widget "moorTravel">>
+	<<travelSpeedInfo>>
+	<<switch _speedNow>>
+		<<case "quickly">><<set $forestmod to 3>><<set _huntGain to 0.5>><<set _move to "quick">><<set _searchMove to "quick_search">>
+		<<case "normally">><<set $forestmod to 1>><<set _huntGain to 1>><<set _move to "normal">><<set _searchMove to "normal_search">>
+		<<case "carefully">><<set $forestmod to 0.5>><<set _huntGain to 2>><<set _move to "careful">><<set _searchMove to "careful_search">>
+	<</switch>>
+	<<switch _args[0]>>
+		<<case "search">><<set _move to _searchMove>>
+		<<case "deeper">><<set $moor += 5>>
+		<<case "coast">><<set $moor -= 5>>
+	<</switch>>
+	<<set $moormove to _move>>
+	<<bird_pass _travelTime>>
+	<<if $moor_hunt gte 1>><<set $moor_hunt += _huntGain>><</if>>
+<</widget>>
+
+<<widget "moorShortcuts">>
+	<<if $harpy gte 6 and $birdFly gte 1 and !$plucked>>
+		Shortcuts
+		<br>
+		<<if $moor lt 100>>
+			<<glideicon>><<link `'Fly deeper into the moor (' + getTimeString(_hoursPassed, _minutesPassed) + ')'` "Moor">><<set $fatigueMod to _fatigueMod>><<set $flightTime to _flightTime>><<bird_pass _flightTime>><<set $moor += 5>><<set $forestmod to 1>><<set $moormove to "fly">><</link>><<flight_text>><<gtiredness>>
+			<br>
+		<</if>>
+		<<glideicon>><<link `'Fly and search nearby (' + getTimeString(_hoursPassedSearch, _minutesPassedSearch) + ')'` "Moor">><<set $fatigueMod to _fatigueMod>><<set $flightTime to _flightTimeSearch>><<bird_pass _flightTimeSearch>><<set $forestmod to 0.5>><<set $moormove to "fly_search">><</link>><<flight_text>><<gtiredness>><<lharass>>
+		<br>
+		<<if $moor gt 0>>
+			<<glideicon>><<link `'Fly towards the coast (' + getTimeString(_hoursPassed, _minutesPassed) + ')'` "Moor">><<set $fatigueMod to _fatigueMod>><<set $flightTime to _flightTime>><<bird_pass _flightTime>><<set $moor -= 5>><<set $forestmod to 1>><<set $moormove to "fly">><</link>><<flight_text>><<gtiredness>>
+			<br>
+		<</if>>
+		<br>
+	<</if>>
+<</widget>>
+
+<<widget "moorTravelIcon">>
+	<<if $moor lte 0>>
+		<<set _depth to "plain">>
+	<<elseif $moor lte 20>>
+		<<set _depth to "heather">>
+	<<elseif $moor lte 50>>
+		<<set _depth to "bushes">>
+	<<elseif $moor lte 99>>
+		<<set _depth to "wetland">>
+	<<else>>
+		<<set _depth to "castle">>
+	<</if>>
+	<<if Time.season is "winter">>
+		<<set _depth to _depth + "-winter">>
+	<</if>>
+	<<icon `_args[0] + "-" + _depth + ".png"`>>
+<</widget>>
