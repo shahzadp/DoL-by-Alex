@@ -737,11 +737,7 @@
 	<</if>>
 	<<set $NPCList[_n].chest to ($NPCList[_n].clothes.upper.name is "naked" ? 0 : "clothed")>>
 
-	<<if random(1, 100) lte $settings.darkSkinChance>>
-		<<set $NPCList[_n].skincolour to "black">>
-	<<else>>
-		<<set $NPCList[_n].skincolour to "white">>
-	<</if>>
+	<<set $NPCList[_n].skincolour to randomSkinTone()>>
 
 	<<rng>>
 	<<if $rng gte 81>>
@@ -930,7 +926,7 @@
 	<<generateNPCvirginity $NPCList[_n]>>
 
 	<!-- Sets females with strap-ons as adjustment-->
-	<<if $NPCList[_n].gender is "f" and !_strapIgnore and !npcHasStrapon(_n)>>
+	<<if $NPCList[_n].gender is "f" and !_strapIgnore and !_straponIgnore and !npcHasStrapon(_n)>>
 		<<if random(0, 99) lt $settings.straponChance>>
 			<<npcstrapon _n>>
 		<</if>>
@@ -996,6 +992,10 @@
 	<<if $NPCList[_n].pregnancy is undefined>>
 		<<set $NPCList[_n].pregnancy to 0>>
 	<</if>>
+
+	<<unset _strapIgnore>>
+	<<unset _straponIgnore>>
+	<<unset _condomIgnore>>
 <</widget>>
 
 <<widget "npcstrapon">>
@@ -1338,20 +1338,31 @@
 
 <<widget "generatetakevirginity">>
 	<<set $_n to _args[0]>>
-	<<set $_g to maleChance() gte random(1, 100) ? "m" : "f">>
+	<<set _male to maleChance() / 100>>
+	<<set _maleVagina to $settings.maleNPCVaginaChance / 100>>
+	<<set _femalePenis to $settings.femaleNPCPenisChance / 100>>
+	<<set _strapon to $settings.straponChance / 100>>
 
-	<<if $player.vaginaExist and $settings.straponChance is 0 and !unableTakeVirginity("vaginal")>>
-		<<if $settings.femaleNPCPenisChance gte 1>>
-			<<generateNPC $_n a $_g m>>
-		<<else>>
-			<<generateNPC $_n a m m>>
+	<<if $player.vaginaExist and !unableTakeVirginity("vaginal")>>
+		<<set _straponIgnore to 1>>
+		<<set _pick to weightedRandom(
+			[["m", "m"], _male * (1 - _maleVagina)],
+			[["f", "m"], (1 - _male) * _femalePenis],
+			[["m", "f"], _male * _maleVagina * _strapon],
+			[["f", "f"], (1 - _male) * (1 - _femalePenis) * _strapon]
+		)>>
+		<<generateNPC $_n a `_pick[0]` `_pick[1]`>>
+		<<if _pick[1] is "f">>
+			<<run $_n -= 1>>
+			<<npcstrapon $_n>>
 		<</if>>
 	<<elseif $player.penisExist and !$settings.analEnabled and !unableTakeVirginity("penile")>>
-		<<if $settings.maleNPCVaginaChance gte 1>>
-			<<generateNPC $_n a $_g f>>
-		<<else>>
-			<<generateNPC $_n a f f>>
-		<</if>>
+		<<set _straponIgnore to 1>>
+		<<set _pick to weightedRandom(
+			[["m", "f"], _male * _maleVagina],
+			[["f", "f"], (1 - _male) * (1 - _femalePenis)]
+		)>>
+		<<generateNPC $_n a `_pick[0]` `_pick[1]`>>
 	<<else>>
 		<<generateNPC $_n>>
 		<<run $_n -= 1>>

@@ -26,9 +26,9 @@ var SexTypes = Object.freeze(
 		{
 			ALL_DICKS: 3,
 			ALL_MALES: 2,
-			ALL_DICKGIRLS: 1,
+			ALL_FEMALE_PENISES: 1,
 			BOTH: 0,
-			ALL_CUNTBOYS: -1,
+			ALL_MALE_VAGINAS: -1,
 			ALL_FEMALES: -2,
 			ALL_VAGINAS: -3,
 		},

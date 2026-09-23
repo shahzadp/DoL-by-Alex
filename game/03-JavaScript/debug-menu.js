@@ -266,7 +266,7 @@ setup.debugMenu.eventList = {
 			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 0>>`, `<<set $settings.beastMaleChanceFemale to 0>>`],
 		},
 		{
-			link: [`Make all beasts cuntboys`, stayOnPassageFn],
+			link: [`Make all beasts male with vaginas`, stayOnPassageFn],
 			widgets: [
 				`<<set $settings.beastMaleChanceMale to 100>>`,
 				`<<set $settings.beastMaleChanceFemale to 100>>`,
@@ -274,7 +274,7 @@ setup.debugMenu.eventList = {
 			],
 		},
 		{
-			link: [`Make all beasts dickgirls`, stayOnPassageFn],
+			link: [`Make all beasts female with penises`, stayOnPassageFn],
 			widgets: [
 				`<<set $settings.beastMaleChanceMale to 0>>`,
 				`<<set $settings.beastMaleChanceFemale to 0>>`,

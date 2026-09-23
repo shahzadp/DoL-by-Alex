@@ -50,16 +50,29 @@ function rollLitterSize(base) {
 window.rollLitterSize = rollLitterSize;
 
 /**
- * The child gene pool's name for a parent's skin colour.
+ * What a parent contributes to the child's skin gene.
  *
- * @param {string} skincolour a parent's skincolour
- * @returns {string}
+ * @param {object} npc a named or stored NPC
+ * @returns {string|undefined} undefined for beasts, which have no skin tone to pass on
  */
-function parentSkinColour(skincolour) {
-	if (skincolour === "black") return "dark";
-	if (skincolour === "white") return "light";
-	return skincolour;
+function parentSkinGene(npc) {
+	if (npc.skinType === "ghost") return "ghost";
+	return Number.isFinite(npc.skincolour) ? parentSkinColour(npc.skincolour) : undefined;
 }
+window.parentSkinGene = parentSkinGene;
+
+/**
+ * The child gene pool's name for a skin tone.
+ *
+ * @param {number} tone 0-100
+ * @returns {string} "light", "medium" or "dark"
+ */
+function parentSkinColour(tone) {
+	if (tone < 30) return "light";
+	if (tone < 70) return "medium";
+	return "dark";
+}
+window.parentSkinColour = parentSkinColour;
 
 /**
  * A parent's gender and colours, read live from their name.
@@ -82,11 +95,11 @@ function resolveChildParent(name) {
 		else if (hasVagina) gender = "f";
 		else if (hasPenis) gender = "m";
 		else throw new Error(`parent "${name}" has no genitals`);
-		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour: parentSkinColour(npc.skincolour) };
+		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour: parentSkinGene(npc) };
 	}
 	const stored = V.storedNPCs[name];
 	if (stored) {
-		return { gender: stored.npc.gender, hairColour: null, eyeColour: null, skinColour: parentSkinColour(stored.npc.skincolour) };
+		return { gender: stored.npc.gender, hairColour: null, eyeColour: null, skinColour: parentSkinGene(stored.npc) };
 	}
 	return { gender: null, hairColour: null, eyeColour: null, skinColour: null };
 }
@@ -172,14 +185,14 @@ function rollChildEyeColour(carrierParent, donorParent) {
 window.rollChildEyeColour = rollChildEyeColour;
 
 /**
- * A child's skin colour: inherit from a parent, or fall back to the darkSkinChance roll.
+ * A child's skin colour: inherit from a parent, or fall back to a freshly rolled skin tone.
  *
  * @param {ChildParent} carrierParent
  * @param {ChildParent} donorParent
  * @returns {string}
  */
 function rollChildSkinColour(carrierParent, donorParent) {
-	return inheritTrait(carrierParent.skinColour, donorParent.skinColour, () => (random(1, 100) <= V.settings.darkSkinChance ? "dark" : "light"));
+	return inheritTrait(carrierParent.skinColour, donorParent.skinColour, () => parentSkinColour(randomSkinTone()));
 }
 window.rollChildSkinColour = rollChildSkinColour;
 
