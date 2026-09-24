@@ -12826,7 +12826,7 @@ function initUpper() {
 			shop: ["clothing"],
 			type: ["normal", "bellyShow"],
 			combat: {
-				reference: "tanktop",
+				reference: "tshirt",
 			},
 			state: "waist",
 			state_base: "waist",
