@@ -83,11 +83,9 @@ function conceiveNow(orifice, load) {
 		orifice,
 		load.location
 	);
-	if (V.settings.pregnancyType === "fetish") {
-		setKnowsDonor(pregnancyId, "pc");
-		setKnowsCarrier(pregnancyId, "pc");
-		T.playerIsNowPregnant = load.donor;
-	}
+	setKnowsDonor(pregnancyId, "pc");
+	setKnowsCarrier(pregnancyId, "pc");
+	if (V.settings.pregnancyType === "fetish") T.playerIsNowPregnant = load.donor; // the fetishPregnancyImg widget prints the banner from this
 	return pregnancyId;
 }
 

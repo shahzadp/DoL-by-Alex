@@ -7446,6 +7446,13 @@
 		<<set $objectVersion.randomCarrierWardIntro to 1>>
 	<</if>>
 
+	<!-- Fix for the player not knowing the parents of children they fathered. -->
+	<<if !$objectVersion.playerDonorBirths>>
+		<<run nameDeliveredRandomCarriers()>>
+		<<run $pregnancies.filter(pregnancy => pregnancy.deliveredDate isnot null).forEach(pregnancy => learnPlayerFatheredBirth(pregnancy.pregnancyId))>>
+		<<set $objectVersion.playerDonorBirths to 1>>
+	<</if>>
+
 	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
 	<<if $settings and $settings.pregnancyType is "silly">>
 		<<set $settings.pregnancyType to "fetish">>
