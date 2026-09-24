@@ -7,3 +7,8 @@ function isAveryHuntingPlayer() {
 	return !!V.avery_mansion?.chase?.active;
 }
 window.isAveryHuntingPlayer = isAveryHuntingPlayer;
+
+function averyPayout() {
+	return (C.npc.Avery.love * 10 + V.endear * 10 + 10) * 100;
+}
+window.averyPayout = averyPayout;
