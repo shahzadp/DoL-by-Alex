@@ -58,12 +58,12 @@
 
 <<addinlineevent "bite" fishingCatchEventWeight("fishingBeach", 10)>>
 	<<set $fishingHookedFish to rollFish("fishingBeach")>>
+	<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
 	<<run onBaitLoss()>>
 	<<if fishTriggersMinigame($fishingHookedFish)>>
 		<<run fishingMinigameStart($fishingHookedFish.type)>>
 		<<include "Fishing Beach Minigame Loop">>
 	<<else>>
-		<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
 		You feel a tug on your line as <<a $fishingHookedFish.type>><<if _isPreferredBait>> greedily<</if>> <<if $fishing.currentBait>>takes the bait<<else>>takes the hook<</if>>. You haul back on the line and pull it out of the water without a fight.
 		<<onFishCaught>>
 		<<fishingCatchFishText $fishingHookedFish>>
@@ -84,7 +84,7 @@
 <</addinlineevent>>
 
 /* Fisher event start */
-<<if $daily.fishing.fishingBeach.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
+<<if $daily.fishing.fishingBeach.fisher.phase is undefined and fishingMinutesIntoSession(30) and Time.hour gte 6 and Time.hour lt 20 and !["heavyPrecipitation", "storm", "thunderstorm"].includes(Weather.name)>>
 	<<addinlineevent "fisherArrive" 0.5>>
 		<<include "Fishing Beach Fisher Arrive">>
 	<</addinlineevent>>
@@ -92,7 +92,7 @@
 
 /* Fisher cliff tip */
 <<if $daily.fishing.fishingBeach.fisher.phase is "fishing" and numberOfFishCaught() gte 50 and !$fishing.locationsFound.includes("fishingCoastPath")>>
-	<<addinlineevent "fisherCliffTipOffer" 1>>
+	<<addinlineevent "fisherCliffTipOffer" 10>>
 		<<include "Fishing Beach Fisher Cliff Tip Offer">>
 	<</addinlineevent>>
 <</if>>
@@ -108,6 +108,10 @@
 			<<include "Fishing Beach Fisher Leave Weather">>
 		<</addinlineevent>>
 	<</if>>
+
+	<<if Time.hour gte 22>>
+		<<set $eventPoolOverride to "fisherLeaveNight">>
+	<</if>>
 <</if>>
 
 /* Fisher attacks if player is exposed */
@@ -120,27 +124,29 @@
 /* Bystander notices exposed player */
 <<if $exposed gte 1 and Weather.dayState is "day">>
 	<<addinlineevent "exposedNoticed" fishingDangerEventWeight(1)>>
-		<<beachex1>>
+		<<beachExposedNoticed>>
 	<</addinlineevent>>
 	<<addinlineevent "exposedMolestation" fishingDangerEventWeight(1)>>
-		<<beachex2>>
+		<<beachExposedMolestation>>
 	<</addinlineevent>>
 <</if>>
 
 /* Wind blows skirt */
 <<addinlineevent "beachWind" .2>>
-	<<beachday4>>
+	<<beachDayWind>>
 <</addinlineevent>>
 
 /* Wave soaks the PC */
-<<addinlineevent "beachWave" .2>>
-	<<include "Fishing Beach Wave">>
-<</addinlineevent>>
+<<if isPlayerFishingAlone()>>
+	<<addinlineevent "beachWave" .2>>
+		<<include "Fishing Beach Wave">>
+	<</addinlineevent>>
+<</if>>
 
 /* Dog tearing at clothing */
-<<if [undefined, "finished"].includes($daily.fishing.fishingBeach.fisher.phase)>>
+<<if [undefined, "finished"].includes($daily.fishing.fishingBeach.fisher.phase) and !$worn.lower.type.includes("naked")>>
 	<<addinlineevent "beachDog" fishingDangerEventWeight(0.75)>>
-		<<beachday2>>
+		<<beachDayDogTug>>
 	<</addinlineevent>>
 <</if>>
 
@@ -154,7 +160,7 @@
 
 	/* See a parent on the beach */
 	<<addinlineevent "beachParent" 1>>
-		<<beachday3>>
+		<<beachDayParent>>
 	<</addinlineevent>>
 
 	/* Classmates approach */
@@ -166,7 +172,7 @@
 
 <<if Weather.dayState is "night">>
 	<<addinlineevent "nightDog" fishingDangerEventWeight(0.75)>>
-		<<beachnight1>>
+		<<beachNightDog>>
 	<</addinlineevent>>
 	<<addinlineevent "beachNightTentacles" fishingDangerEventWeight(0.75)>>
 		<<include "Fishing Beach Tentacles">>

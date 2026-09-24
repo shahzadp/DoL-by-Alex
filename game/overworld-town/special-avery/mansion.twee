@@ -257,6 +257,9 @@ You walk up the hill towards Avery's mansion. The gates rattle open as you appro
 :: Mansion Display Loosen
 <<effects>>
 
+<<if $avery_antiques.progress is 0>>
+	<<set $avery_antiques.progress to 1>>
+<</if>>
 <<if $avery_antiques.bolt is 1>>
 	You try to loosen the bolt protecting the more valuable antiques.
 <<else>>
@@ -413,7 +416,7 @@ You take the gold mask. Dark eyes stare up at you. The metal around them is dama
 <<else>>
 	<<wakingEffects $sleepHoursTotal>>
 	<<if ["dryheaving","nausea"].includes(_wakingEffect)>>
-		<br><br>
+		<br>
 		You slept soundly, but now feel a little rough.
 		<br><br>
 	<<elseif $nightmares gte 1 and $controlled is 0>>
@@ -425,7 +428,7 @@ You take the gold mask. Dark eyes stare up at you. The metal around them is dama
 			You sleep soundly.
 			<br><br>
 		<<else>>
-			<br><br>
+			<br>
 		<</if>>
 	<</if>>
 
@@ -906,7 +909,7 @@ You begin to dress Avery, starting with <<his>> underwear and
 <</if>>
 <<avery_injury_check>>
 <<if _avery_injured>>
-	It's a bit tough to work with Avery's <<= $avery_mansion.injury_stage.includes("sling") ? "cast and sling" : "cast">>, but you manage.
+	It's a bit tough to work with Avery's <<= _avery_injured_sling ? "cast and sling" : "cast">>, but you manage.
 <</if>>
 <br><br>
 As you work, Avery has <<= either("a satisfied","a neutral","an amused","an impassive")>> look on <<his>> face. <<His>> eyes don't leave you for a moment.
@@ -1513,7 +1516,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			<<socialiseicon "ask">><<link [[Ask Avery why <<he>> stopped paying Bailey|Mansion Talk Ask]]>><<set $avery_ask to "bailey">><<set $weekly.baileymessageask to true>><</link>>
 			<br>
 		<</if>>
-		<<if $avery_fate is "saved" and ["fresh", "sling", "cast", "healing"].includes($avery_mansion.injury_stage)>>
+		<<if $avery_fate is "saved" and $avery_mansion.injury_stage and !$averySeen.includes("injury_ask_" + $avery_mansion.injury_stage)>>
 			<br>
 			<<socialiseicon "ask">><<link [[Ask Avery how <<his>> arm is doing|Mansion Talk Ask]]>><<set $avery_ask to "injury">><</link>>
 			<br>
@@ -1544,6 +1547,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 
 :: Mansion Talk Ask
 <<effects>>
+<<avery_injury_check>>
 
 <<if $avery_ask is "science" or $avery_ask is "maths" or $avery_ask is "english_play">>
 	<<if $avery_ask is "science">>
@@ -1685,13 +1689,13 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 		I <span class="pink">hadn't seen you in days</span>. What else did you expect?"
 	<</if>>
 	<br><br>
-	<<He>> <<= $avery_mansion.injury_stage is "sling" or $avery_pool is "swim" ? `huffs` : `crosses <<his>> arms`>>. "I don't ask for much of you. But if you can't keep track of your responsibilities here, then I presume you are prioritising your responsibilities elsewhere. In which case, I'm sure that you can pay Bailey yourself."
+	<<He>> <<= _avery_injured_sling or $avery_pool is "swim" ? `huffs` : `crosses <<his>> arms`>>. "I don't ask for much of you. But if you can't keep track of your responsibilities here, then I presume you are prioritising your responsibilities elsewhere. In which case, I'm sure that you can pay Bailey yourself."
 	<br><br>
 	Without a second look, Avery returns to what <<he>> was doing.
 	<br><br>
 
 <<elseif $avery_ask is "injury">>
-	<<if $avery_mansion.injury_stage isnot "healing">> /* Avery is still in a cast */
+	<<if $avery_mansion.injury_stage isnot "healed">> /* Avery is still in a cast */
 
 		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
 			"I just wanted to know how your arm is doing. Is there anything I can do to help?" you ask.
@@ -1701,8 +1705,8 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			"How is your arm doing?" you ask, peering at it. "If you need help with anything, let me know."
 		<</if>>
 		<br><br>
-		<<if $avery_mansion.injury_stage is "fresh">> /* Cast in a sling */
-			<<set $avery_mansion.injury_stage to "fresh_done">>
+		<<if $avery_mansion.injury_stage is "sling">> /* Cast in a sling */
+			<<set $averySeen.pushUnique("injury_ask_sling")>>
 			Avery <<= $averyragerevealed is 1 ? `scoffs` : `sighs`>>. "I appreciate the offer, <<pcpetname "Avery">>, but rest assured I can take care of
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
 				myself." Then <<his>> lip curls. "If you want to help, however, you could do so by doing as you're told. Then I'd have one less thing to trouble myself over."
@@ -1712,8 +1716,8 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 				myself. Taking care of <<= $avery_mansion.jobs.includes("lounge") ? `the cooking and cleaning` : `dinner`>> is enough."
 			<</if>>
 			<br><br>
-		<<elseif $avery_mansion.injury_stage is "sling">> /* Only wearing cast */
-			<<set $avery_mansion.injury_stage to "sling_done">>
+		<<elseif $avery_mansion.injury_stage is "cast">> /* Only wearing cast */
+			<<set $averySeen.pushUnique("injury_ask_cast")>>
 			Avery shakes <<his>> head. "Now that I don't have to wear the sling anymore, things are easier. Though," <<He>> <<= $averyragerevealed gte 1 ? `glares` : `frowns`>> at <<his>> cast. "This<<if $averyragerevealed gte 1>> bloody<</if>> thing is still a
 
 			<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
@@ -1725,7 +1729,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			<</if>>
 			<br><br>
 		<<else>> /* Only two weeks of recovery left */
-			<<set $avery_mansion.injury_stage to "cast_done">>
+			<<set $averySeen.pushUnique("injury_ask_healing")>>
 			Avery shakes <<his>> head. "I've gotten quite used to wearing a cast," <<he>> smiles. "Though it's not long until I'll be having it off. <<= $avery_mansion.injury_timer>> days from now. It can't come soon enough."
 			<br><br>
 			<span class="gold"><i>Once Avery's cast is removed, <<he>> will regain use of both hands in encounters.</i></span>
@@ -1733,7 +1737,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 		<</if>>
 
 	<<else>> /* Avery has fully recovered */
-		<<set $avery_mansion.injury_stage to "healed">>
+		<<set $averySeen.pushUnique("injury_ask_healed")>>
 		<<if $speech_attitude is "meek" or $speech_attitude_avery>>
 			"How is your arm doing, Avery?" you ask. "Now that it's out of the cast, I mean." You give <<him>> a small smile. "Better, I hope?"
 		<<elseif $speech_attitude is "bratty">>
@@ -1779,7 +1783,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	You ask Avery if <<he>> still has those reservations, and tell <<him>> you want to go to dinner after all.
 	<br><br>
 	<<if $averyragerevealed is 1 and C.npc.Avery.rage gte 60>>
-		Avery scowls at you<<if $avery_mansion.injury_stage isnot "sling">> as <<he>> crosses <<his>> arms<</if>>. "When you haven't even apologised for turning me down in the first place?" <<He>> scoffs. "Why don't you try asking again, properly this time?"
+		Avery scowls at you<<if !_avery_injured_sling>> as <<he>> crosses <<his>> arms<</if>>. "When you haven't even apologised for turning me down in the first place?" <<He>> scoffs. "Why don't you try asking again, properly this time?"
 		<br><br>
 	<<elseif $averyragerevealed is 1 and C.npc.Avery.rage gte 20>>
 		Avery sneers at you. "Bold of you to ask such a thing after turning me down in the first place. You haven't even apologised to me for it." <<He>> sniffs, offended. "But if you apologise now, then I'll consider it."
@@ -1819,7 +1823,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	"I just wanted to chat for a bit," you say. "If you have the time."
 <</if>>
 <br><br>
-<<if C.npc.Avery.rage gte 80 or C.npc.Avery.rage gte 20 and $avery_mansion.rage.assess gte 1>>
+<<if C.npc.Avery.rage gte 80 or (C.npc.Avery.rage gte 20 and $avery_mansion.rage.assess gte 5)>>
 	<<avery_current_room_dirty_check>>
 	Avery <<= $averyragerevealed gte 1 ? `sneers` : `frowns`>> at you. "I'm sure you have better things to be doing, <<pcpetname "Avery">>," <<he>> says<<if _dirty_room>>, pointedly<</if>>.
 
@@ -2118,7 +2122,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			<<if $rng is 1 and $averySeen.includes("officeAssistant")>> /* Already personal assistant */
 				<<He>> asks you if you <<= either(
 				`remember which account <<he>> was working on the last time you worked for <<him>>. You respond to the best of your ability`,
-				`plan on working for <<him>> <<if Time.hour lte 8 and Time.weekDay isnot 7>>today<<elseif Time.weekDay isnot 6>>on Sunday<<else>>tomorrow.<</if>>. You tell <<him>> you will if you can`,
+				`plan on working for <<him>> <<if Time.hour lte 8 and Time.weekDay isnot 7>>today<<elseif Time.weekDay isnot 6>>on Monday<<else>>tomorrow.<</if>>. You tell <<him>> you will if you can`,
 				`were interested in the restaurant <<he>> had you get lunch from. <<He>> mentions possibly taking you there in the future for dinner`
 				)>>.
 				<br><br>
@@ -2310,7 +2314,6 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	<<avery_housework_check>>
 	<<avery_current_room_dirty_check>>
 	<<if $avery_mansion.rage.assess gte 1 or $averypartymiss is 1>>
-		<<run console.log(_chat)>>
 		<<if _chat.rage_select is "hair">> /* Hair */
 			"Your hair." <<He>> raises a hand to curl a lock of it around <<his>> finger, tugging on it. "I seem to recall saying something about keeping it <<= $avery_mansion.jobs.includes("hairlength") and $hairlength gte 400 ? `neater than this when I get home—and shorter, too` : $hairtype isnot "neat" ? `neater than this when I get home` : `shorter than this`>>. Perhaps you simply didn't hear me?" <<He>> chuckles.<<if $averyragerevealed is 1 or $averySeen.includes("chase")>> It sounds more like a warning than a joke.<</if>>
 			<br><br>
@@ -2413,7 +2416,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 			<</if>>
 
 		<<else>>
-			<<link [[Sit on <<his>> lap|Mansion Talk Chat Lewd]]>><<set $phase to 1>><<npcincr Avery dom 1>><</link>><<gdom>><<promiscuous1>>
+			<<link [[Sit on <<his>> lap|Mansion Talk Chat Lewd]]>><<set $phase to 1>><<npcincr Avery dom 1>><</link>><<gdom>><<promiscuous2>>
 			<br>
 			<<link [[Decline|Mansion Talk Chat End]]>><<set $avery_chat_end to "calm">><<set $phase to 2>><</link>>
 			<br>
@@ -3003,14 +3006,14 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 	<br>
 <<else>> /* Sitting on lap */
 	You climb into Avery's lap, straddling it as you wrap your arms around Avery's neck. <<He>> seems quite pleased,
-	<<if $avery_mansion.injury_stage is "sling">>
+	<<if _avery_injured_sling>>
 		and <<his>> good hand moves to rest on your thigh. It
 	<<else>>
 		wrapping <<his>> own arm around your waist. <<His>> other hand rests on your thigh,
 	<</if>>
 	then travels up to start massaging your <<privates>>. <<arousal 600 "genitals">><<garousal>>
 	<br><br>
-	<<promiscuity1>>
+	<<promiscuity2>>
 	After keeping up the pretence of conversation for a few minutes, Avery suddenly pushes you down onto your back. <<= $outside is 1 ? `Without a care for <<his>> neighbours, <<he>>` : `<<He>>`>> begins <<= $exposed gte 2 ? `running <<his>> <<if _avery_injured>>hand<<else>>hands<</if>> over your body` : `pulling at your clothes`>>.
 	<br><br>
 	<<link [[Next|Mansion Talk Sex]]>><<set $sexstart to 1>><</link>>
@@ -3043,6 +3046,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 
 :: Mansion Talk Sex Finish
 <<pass 10>>
+<<avery_injury_check>>
 
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>>
@@ -3053,7 +3057,7 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 
 	<<elseif $avery_mansion.schedule is "pool">>
 		<<if $avery_pool is "coffee">>
-			slumps back into <<his>> seat, letting out a satisfied sigh. <<= $avery_mansion.injury_stage is "cast" ? `After` : `As`>> <<he>> fixes <<his>> hair, <<he>> takes a sip of <<his>> coffee.
+			slumps back into <<his>> seat, letting out a satisfied sigh. <<= _avery_injured ? `After` : `As`>> <<he>> fixes <<his>> hair, <<he>> takes a sip of <<his>> coffee.
 		<<elseif $avery_pool is "sunbathe">>
 			stretches on the pool lounger with a satisfied sigh. <<He>> looks dishevelled, but doesn't appear to care.
 		<<else>>
@@ -3208,11 +3212,12 @@ You climb from the pool, and dry yourself using the towels stacks just inside th
 <<avery_mansion_end_links>>
 
 :: Mansion Talk Chat End
+<<avery_injury_check>>
 
 <<if $avery_chat_end is "calm">>
 	<<pass 15>>
 	<<if $phase is 1>>
-		You climb into Avery's lap, sitting with one arm around Avery's neck. <<He>> seems quite pleased, wrapping <<his>> own arm around your waist.<<if !$avery_mansion.injury_stage is "sling">> <<His>> other hand rests on your thigh, and stays there.<</if>> As you talk, <<he>> gives it a squeeze now and then in accordance to <<his>> mood. <<gdom>>
+		You climb into Avery's lap, sitting with one arm around Avery's neck. <<He>> seems quite pleased, wrapping <<his>> own arm around your waist.<<if !_avery_injured_sling>> <<His>> other hand rests on your thigh, and stays there.<</if>> As you talk, <<he>> gives it a squeeze now and then in accordance to <<his>> mood. <<gdom>>
 		<br><br>
 		When the conversation comes to a natural end, Avery lets you off <<his>> lap
 	<<else>>
@@ -6232,7 +6237,7 @@ You head into the kitchen. How will you make Avery's coffee?
 <<if $phase is 1>>
 	You prepare Avery's coffee the way <<he>> likes it. You return to the dining room and place the coffee down in front of <<him>>. A slight tenseness in <<his>> shoulders loosens. <<He>> takes a sip. "Thank you," <<he>> says.
 <<elseif $phase is 2>>
-	You prepare Avery's coffee the way <<he>> likes it. You return to the dining room and place the coffee down in front of <<him>>. A slight tenseness in <<his>> shoulders loosens. <<He>> takes a sip, and <<his>> eyes widen for a fraction of a second. <<He>> purses <<his>> lips, sets down the cup, and says, "I'd prefer it with milk and sugar next time."
+	You prepare Avery's coffee black. You return to the dining room and place the coffee down in front of <<him>>. A slight tenseness in <<his>> shoulders loosens. <<He>> takes a sip, and <<his>> eyes widen for a fraction of a second. <<He>> purses <<his>> lips, sets down the cup, and says, "I'd prefer it with milk and sugar next time."
 <</if>>
 <br><br>
 
@@ -6674,7 +6679,7 @@ You start helping Avery set the table.
 		<<link [[Allow|Mansion Talk Seduce Sex]]>><<set $sexstart to 1>><</link>><<kissvirginitywarning>>
 	<<elseif $avery_mansion.schedule is "study">>
 		<<avery_injury_check>>
-		You begin to walk around Avery's study, putting on a show of looking for a book, bending over and stretching up to peruse the shelves. You're uncertain if your flaunting is successful until you pass by Avery and <span class="green">feel a hand wrap around your wrist</span>. Before you can react, you're being pulled into <<his>> lap<<if !_fullyNaked>>, and <<= $avery_mansion.injury_stage is "cast" ? `a hand begins` : `hands begin`>> to tug at your clothes<</if>>.
+		You begin to walk around Avery's study, putting on a show of looking for a book, bending over and stretching up to peruse the shelves. You're uncertain if your flaunting is successful until you pass by Avery and <span class="green">feel a hand wrap around your wrist</span>. Before you can react, you're being pulled into <<his>> lap<<if !_fullyNaked>>, and <<= _avery_injured ? `a hand begins` : `hands begin`>> to tug at your clothes<</if>>.
 		<br><br>
 		<<link [[Allow|Mansion Talk Seduce Sex]]>><<set $sexstart to 1>><</link>>
 	<<elseif $avery_mansion.schedule is "bath">>
@@ -6826,6 +6831,9 @@ You start helping Avery set the table.
 	<<neutral 1>>
 	<<maninit>>
 	<<set $enemytrust += 100>>
+	<<if $avery_mansion.schedule is "pool">>
+		<<npcexpose>>
+	<</if>>
 
 	<<if ["garden","lounge","drink","breakfast"].includes($avery_mansion.schedule) or $avery_pool is "swim">>
 		<<set $position to "missionary">>

@@ -20,7 +20,6 @@ type FishingFishKey =
 	| "minnow"
 	| "sprat";
 type FishingFishPreferredTime = "dawn" | "day" | "dusk" | "night" | "bloodMoon";
-type FishingFishPreferredWeather = "clear" | "lightClouds" | "heavyClouds" | "lightPrecipitation" | "heavyPrecipitation" | "storm" | "thunderstorm";
 
 declare module "twine-sugarcube" {
 	export interface SugarCubeSetupObject {
@@ -47,8 +46,6 @@ declare global {
 		preferredSeason: Season[];
 		preferredTime: FishingFishPreferredTime[];
 		preferredLocation: FishingLocationKey[];
-		// Preferred weather is also used to weight the spawning of fish with that preferred weather.
-		preferredWeather: FishingFishPreferredWeather[];
 		locations: Partial<Record<FishingLocationKey, number>>;
 		requiresBaitFish?: true;
 		isBaitFish?: true;

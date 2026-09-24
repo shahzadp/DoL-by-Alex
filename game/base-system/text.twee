@@ -1467,17 +1467,19 @@
 	<</if>>
 <</silently>>_text_output<</widget>>
 
-<<widget "breasts">><<silently>>
+<<widget "breasts">>
 	<<if Number.isInteger($player.breastsize)>>
 		<<if $player.breastsize lte 0>>
-			<<set _text_output to "nipples">>
+			<<print "nipples">>
 		<<else>>
-			<<set _text_output to setup.breastsizes[$player.breastsize] + " breasts">>
+			<<print setup.breastsizes[$player.breastsize]>>
+			<<if !_breastSensitivityDescribed or _args[0]>><<breastsensitivity>><</if>>
+			<<print " breasts">>\
 		<</if>>
 	<<elseif $options.debugdisable is "f">>
-		<<set _text_output to "ERROR - $$player.breastsize is not a number: $player.breastsize">>
-	<</if>>
-<</silently>><<if !_breastSensitivityDescribed or _args[0]>><<breastsensitivity>><</if>><<print _text_output>><</widget>>
+		<<print "ERROR - $$player.breastsize is not a number: $player.breastsize">>
+	<</if>>\
+<</widget>>
 
 <<widget "breastssimple">><<silently>>
 	<<if Number.isInteger($player.breastsize)>>
@@ -4893,15 +4895,19 @@
 	<</if>>
 <</widget>>
 
-<<widget "laughs">><<silently>>
+<<widget "laugh">><<silently>>
 	<<rng>>
 	<<if $npcadult isnot 1>>
-		<<set _text_output to either("giggles", "laughs")>>
+		<<set _text_output to either("giggle", "laugh")>>
 	<<elseif $pronoun is "f">> <!-- female adult -->
-		<<set _text_output to either("giggles", "chuckles", "laughs")>>
+		<<set _text_output to either("giggle", "chuckle", "laugh")>>
 	<<else>> <!-- male adult -->
-		<<set _text_output to either("chuckles", "laughs")>>
+		<<set _text_output to either("chuckle", "laugh")>>
 	<</if>>
+<</silently>><<print _text_output>><</widget>>
+<<widget "laughs">><<silently>>
+	<<laugh>>
+	<<set _text_output to _text_output += "s">>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "cursedtext">>
@@ -4999,7 +5005,11 @@
 	<<else>>
 		<<set _na to 0>>
 	<</if>>
-	<<set _text_output to $NPCList[_na].type>>
+  <<if $NPCList[_na].name_known is 1 and $NPCList[_na].fullDescription is "Black Wolf">>
+    <<set _text_output to $NPCList[_na].fullDescription>>
+  <<else>>
+    <<set _text_output to $NPCList[_na].type>>
+  <</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "beasttypes">> <<beasttype>>'s<</widget>>

@@ -330,9 +330,11 @@
 					<<if $pubfame.status is "finished" or $pubfame.status is "hidingKnown">>
 						'Mickey' will be ready to see you in <span class="gold"><<number $pubfame.timer>></span> <<pluralise $pubfame.timer "day">>.
 					<<elseif $pubfame.status is "ready">>
-						<span class="gold">'Mickey' is ready to see you</span>.
+						<span class="gold">'Mickey' is ready to help you with your fame</span>.
 					<<elseif $pubfame.status is "accepted">>
 						You've accepted a task from 'Mickey'.
+					<<elseif $pubfame.status is "done">>
+						You've completed the task 'Mickey' gave you.
 					<</if>>
 				</li>
 			<</if>>
@@ -1221,10 +1223,10 @@
 				</li>
 			<</if>>
 			<<if $antiquemoney gt 0>>
-				<li><<museumicon>><span class="green">£<<print $antiquemoney>></span> in antiques. You can sell them to the museum.</li>
+				<li><<museumicon>><span class="green">£<<print $antiquemoney.toLocaleString("en-GB")>></span> in antiques. You can sell them to the museum.</li>
 			<</if>>
 			<<if $blackmoney gt 0>>
-				<li><<highicon>><span class="green">£<<print $blackmoney>></span> in stolen goods. You can sell them to someone on the black market.</li>
+				<li><<highicon>><span class="green">£<<print $blackmoney.toLocaleString("en-GB")>></span> in stolen goods. You can sell them to someone on the black market.</li>
 			<</if>>
 			<<if $phials_held gt 0>>
 				<li><<icon "aphrodisiac.png">> <span class="green">$phials_held</span> <<pluralise $phials_held "phial">> of aphrodisiac. You can sell <<pluralise $phials_held "it">> on Elk Street.</li>
@@ -1282,12 +1284,12 @@
 	<</if>>
 
 
-	<<if Object.keys($plots).length gte 1>> /* display plot readiness */
+	<<if Object.values($plots).some(loc => loc.length)>> /* display plot readiness */
 		<hr>
 		<h1 class="header gold bold">Gardens</h1>
 		<<for $_plotToDisplay range ["garden", "farm", "wolf", "eden", "asylum"]>>
-			<<if $plots[$_plotToDisplay]>>
-				<<set $_currentPlot to $plots[$_plotToDisplay]>>
+			<<set $_currentPlot to $plots[$_plotToDisplay]>>
+			<<if $_currentPlot and $_currentPlot.filter(()=>true).length>>
 				<<set $_plotsToWater to $_currentPlot.filter(plot => plot.stage >= 1 && plot.stage < 5 && plot.bed !== "water" && plot.water === 0).length>>
 				<<set $_plotsToPick  to $_currentPlot.filter(plot => plot.stage >= 5 ).length>>
 				<<set $_plotsEmpty   to $_currentPlot.filter(plot => !(plot.stage >= 1)).length>>

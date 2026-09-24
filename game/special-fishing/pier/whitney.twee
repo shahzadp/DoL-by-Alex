@@ -164,17 +164,17 @@ One of Whitney's friends tosses their rod aside and lets out a long, theatrical 
 	<br><br>
 
 	<<if hasSexStat("promiscuity", 3)>>
-		<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $molestationstart to 1>><</link>>
+		<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<endevent>><<npc Whitney>><<person1>><<set $molestationstart to 1>><</link>>
 		<br>
 	<<else>>
-		<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $molestationstart to 1>><<stress 6>><<trauma 6>><</link>><<gstress>><<gtrauma>>
+		<<link [[Comply reluctantly|Fishing Whitney Pier Won Sex]]>><<endevent>><<npc Whitney>><<person1>><<set $molestationstart to 1>><<stress 6>><<trauma 6>><</link>><<gstress>><<gtrauma>>
 		<br>
 	<</if>>
 	<<if hasSexStat("promiscuity", 4)>>
-		<<link [[Comply eagerly|Fishing Whitney Pier Won Sex]]>><<npc Whitney>><<person1>><<set $sexstart to 1>><<npcincr Whitney love 3>><</link>><<gglove>><<promiscuous4>>
+		<<link [[Comply eagerly|Fishing Whitney Pier Won Sex]]>><<endevent>><<npc Whitney>><<person1>><<set $sexstart to 1>><<npcincr Whitney love 3>><</link>><<gglove>><<promiscuous4>>
 		<br>
 	<</if>>
-	<<link [[Refuse|Fishing Whitney Pier Won Resist]]>><<npcincr Whitney dom -2>><</link>><<lldom>>
+	<<link [[Refuse|Fishing Whitney Pier Won Resist]]>><<endevent>><<npcincr Whitney dom -2>><</link>><<lldom>>
 
 <<else>>
 	<<if $speech_attitude is "meek">>
@@ -250,6 +250,7 @@ One of Whitney's friends tosses their rod aside and lets out a long, theatrical 
 	<<ejaculation>>
 
 	"There," Whitney says, catching <<nnpc_his "Whitney">> breath. <<nnpc_He "Whitney">> adjusts <<nnpc_his "Whitney">> clothes, one hand staying possessively on your waist. <<npcincr Whitney lust -20>><<llust>>
+	<br><br>
 
 	<<clotheson>>
 	<<endcombat>>
@@ -339,7 +340,7 @@ One of Whitney's friends tosses their rod aside and lets out a long, theatrical 
 /* After the friend finishes with PC, Whitney and the group pack up and leave */
 :: Fishing Whitney Pier Friend Won Sex Finish
 <<effects>>
-<<loadNPC 0 "fishing_date_friend1">><<person1>>
+<<person1>>
 <<if $enemyarousal gte $enemyarousalmax>>
 	<<ejaculation>> The <<person>> climbs off of you with a satisfied look.
 	<br><br>
@@ -487,7 +488,12 @@ For a moment Whitney doesn't move. Then <<nnpc_he "Whitney">> sets down <<nnpc_h
 <<elseif $pain gte 100 and $willpowerpain is 0>>
 	<<tearful>> you're picked up by Whitney and shoved back towards the railing. "And now, you're going to play along."
 	<br><br>
-	
+	<<if !$worn.handheld.type.includes("fishing_rod")>>
+		<<nnpc_He "Whitney">> notices your empty hands, then snatches a fishing rod from one of <<nnpc_his "Whitney">> friends and shoves it into your grip.
+		<br><br>
+		<<set $worn.handheld to clone(setup.clothes.handheld.find(item => item.name is "fishing rod"))>>
+	<</if>>
+
 	<<set $daily.fishing.fishingPier.whitney.phase to "bet">>
 
 	<<clotheson>>
@@ -634,7 +640,7 @@ Whitney raises an eyebrow and takes a slow sip of cider. The <<person>> glances 
 	<<violence 1>>
 	<<neutral 1>>
 	<<molested>>
-	<<loadNPC 0 "fishing_date_friend1">><<person1>>
+	<<person1>>
 	<<set $enemyno to 1>>
 	<<maninit>>
 	<<set $enemytrust -= 100>>
@@ -675,7 +681,7 @@ Whitney raises an eyebrow and takes a slow sip of cider. The <<person>> glances 
 
 	<<link [[Next|Fishing Pier Wait]]>><<clearNPC "fishing_date_friend1">><</link>>
 <<elseif $enemyhealth lte 0>>
-	<<loadNPC 0 "fishing_date_friend1">><<person1>>
+	<<person1>>
 	<<tearful>> you pick yourself up off the ground as the <<person>> backs off, rubbing <<his>> jaw. Whitney laughs at <<nnpc_his "Whitney">> friend that you tossed off. "Now that that pathetic display is over, let's get going. Pack it up."
 	<br><br>
 
@@ -793,13 +799,13 @@ Whitney leans over and holds out a cold can of cider toward you without a word.
 			Whitney and <<nnpc_his "Whitney">> friends talk amongst themselves.
 		<</addinlineevent>>
 		<<addinlineevent 1>>
-			One of Whitney's friends lets out a whoop, reeling in hard and pulls up a small chub. "That's fucking pitiful, throw it back." Whitney says with a laugh.
+			One of Whitney's friends lets out a whoop, reeling in hard and pulls up a small <<print ["herring", "whiting", "mackerel"].random()>>. "That's fucking pitiful, <<print ["get rid of it", "throw it back"].random()>>." Whitney says with a laugh.
 		<</addinlineevent>>
 		<<addinlineevent 1>>
 			Two of Whitney's friends start arguing about something. Whitney just keeps <<nnpc_his "Whitney">> eyes on the water, pointedly ignoring them.
 		<</addinlineevent>>
 		<<addinlineevent 1>>
-			Whitney's rod jerks hard. <<nnpc_He "Whitney">> braces and reels in smoothly, lifting a decently sized mackerel clear of the water. <<nnpc_He "Whitney">> holds it up, eyes on you. "That's how it's done, slut."
+			Whitney's rod jerks hard. <<nnpc_He "Whitney">> braces and reels in smoothly, lifting a decently sized <<print ["herring", "whiting", "mackerel", "flounder"].random()>> clear of the water. <<nnpc_He "Whitney">> holds it up, eyes on you. "That's how it's done, slut."
 		<</addinlineevent>>
 		<<addinlineevent 1>>
 			Whitney tips back the last of <<nnpc_his "Whitney">> cider and drops the empty can into <<nnpc_his "Whitney">> bag, then grabs a fresh can.
@@ -857,7 +863,6 @@ You turn to leave, but one of Whitney's friends steps into your path before you'
 	<br>
 	<<link [[Leave|Mer Pier]]>><</link>>
 <<else>>
-	<<if $player.virginity.kiss is true>><<takeVirginity "a fish" "kiss">><</if>>
 	Whitney grabs the back of your head and shoves the fish against your face. The cold, wet body drags across your lips as <<nnpc_he "Whitney">> twists it around. <<nnpc_His "Whitney">> friends are howling with laughter.<<stress 3>><<gstress>>
 	<br><br>
 
@@ -875,7 +880,7 @@ You turn to leave, but one of Whitney's friends steps into your path before you'
 
 :: Fishing Whitney Pier Kiss Fish Accept
 <<effects>>
-Whitney tosses the $fishingHookedFish.type back to you, and you press your lips against the cold, clammy side of the fish. It wriggles. <<if $player.virginity.kiss is true>><<takeVirginity "a fish" "kiss">><</if>>
+Whitney tosses the $fishingHookedFish.type back to you, and you press your lips against the cold, clammy lips of the fish. It wriggles. <<if $player.virginity.kiss is true>><<takeVirginity "a fish" "kiss">><</if>>
 <br><br>
 
 Whitney watches with a wide grin. "I think it likes you!"

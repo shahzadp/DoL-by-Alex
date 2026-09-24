@@ -298,7 +298,7 @@ You help River work the kitchen. You cut vegetables ready for cooking and clean 
 			"Hullo, River!" a sing-songy voice says. You turn to see a familiar face smiling at you. It's Doren.
 			<<if !$dorenSeen.includes("soup_kitchen")>>
 				<<set $dorenSeen.pushUnique("soup_kitchen")>>
-			"Oh, heya, <<lassie>>! I didn't know you volunteered at the soup kitchen. Great to know someone keeping River company," <<he>> says with a cheeky smile. River ignores <<his>> teasing.
+			"Oh, heya, <<lassie>>! I didn't know you volunteered at the soup kitchen. Great to know someone's keeping River company," <<he>> says with a cheeky smile. River ignores <<his>> teasing.
 			<<else>>
 			"Heya, <<lassie>>!" <<He>> waves at you.
 			<</if>>
@@ -350,6 +350,33 @@ You help River work the kitchen. You cut vegetables ready for cooking and clean 
 
 			<<link [[Next|Soup Kitchen]]>><<endevent>><</link>>
 			<br>
+		<</addinlineevent>>
+	<</if>>
+	<<if C.npc.River.love gte 20>>
+		<<addinlineevent "soup_kitchen_teach_recipe" 0.2>>
+			<<set $soupKitchenTeachRecipe to ["porridge", "turnip_soup", "bread"].random()>>
+			<<npc River>><<person1>>
+			<<switch $soupKitchenTeachRecipe>>
+				<<case "porridge">>
+					River calls you to the kitchen and sets a bag of oats and a bottle of milk on the table beside you.
+					<br><br>
+					"Start preparing us some porridge <<he>> says before returning to the stove.
+				<<case "turnip_soup">>
+					River calls you to the kitchen and sets some turnips, potatoes and onions on the table beside you.
+					<br><br>
+					"Start preparing us some turnip soup <<he>> says before returning to the stove.
+				<<case "bread">>
+					River calls you over to the kitchen and sets a large bag of flour, alongside salt and vegetable oil on the table beside you.
+					<br><br>
+					"Start preparing us some dough <<he>> says before returning to the stove.
+			<</switch>>
+
+			<br><br>
+			<<if $foodstuff[$soupKitchenTeachRecipe]?.knows_recipe is true>>
+				<<link [[Get to work|Soup Kitchen Prepare Recipe]]>><</link>>
+			<<else>>
+				<<link [[Say you don't know the recipe|Soup Kitchen Learn Recipe]]>><</link>>
+			<</if>>
 		<</addinlineevent>>
 	<</if>>
 <</if>>
@@ -651,7 +678,7 @@ The rest of the hour passes without event.
 	<<elseif Time.weekDay is 3>>
 		<<ingredientsSupplied "vegetable_oil" "salt" "flour" "trout" "lemon">>
 	<<elseif Time.weekDay is 4>>
-		<<ingredientsSupplied "vegetable_oil" "salt" "flour" "cod" "potato">>
+		<<ingredientsSupplied "vegetable_oil" "salt" "flour" "haddock" "potato">>
 	<<elseif Time.weekDay is 5>>
 		<<ingredientsSupplied "vegetable_oil" "salt" "flour" "clam" "onion">>
 	<<elseif Time.weekDay is 6>>
@@ -666,3 +693,39 @@ The rest of the hour passes without event.
 	<<link [[Leave|Soup Kitchen]]>><<kitchenExit>><</link>>
 	<br>
 <</if>>
+
+:: Soup Kitchen Prepare Recipe
+
+<<set $outside to 0>><<set $location to "temple">><<effects>>
+<<npc River>><<person1>>
+<<switch $soupKitchenTeachRecipe>>
+	<<case "porridge">>
+		You measure out the oats, add the milk, and set the pot over the heat, stirring until it thickens up.
+	<<case "turnip_soup">>
+		You chop up the vegetables and get a pot going on the stove, tossing them in once they're ready.
+	<<case "bread">>
+		You mix together the flour, oil and salt. Once it begins to thicken, you knead until finished. You set your dough aside to rise, then take prepared dough to put in the oven.
+<</switch>>
+<br><br>
+River glances over when you're done. <<He>> gives a brief nod. "Good."
+<br><br>
+
+<<unset $soupKitchenTeachRecipe>>
+<<endevent>>
+<<link [[Next|Soup Kitchen]]>><</link>>
+<br>
+
+:: Soup Kitchen Learn Recipe
+
+<<set $outside to 0>><<set $location to "temple">><<effects>>
+<<npc River>><<person1>>
+River steps over to the counter. "Watch how I do it." <<learn_recipe $soupKitchenTeachRecipe>>
+<br><br>
+
+<<He>> <<if C.npc.River.love gte 40>>smiles. <<else>>nods. <</if>>"See? Just like that, it's simple enough."
+<br><br>
+
+<<unset $soupKitchenTeachRecipe>>
+<<endevent>>
+<<link [[Next|Soup Kitchen]]>><</link>>
+<br>

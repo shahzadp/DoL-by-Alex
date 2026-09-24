@@ -489,6 +489,12 @@ function randomPregnancyProgress() {
 		if (record && Time.date.timeStamp >= getDueDate(record)) {
 			const [birthLocation, location] = defaultBirthLocations(record.donorSpecies);
 			birthRecordedLitter(record.pregnancyId, birthLocation, location);
+			if (location === "home") {
+				addBabyIntro("Bailey", npcKey, record.pregnancyId, getChildrenOf(record.pregnancyId).length, V.storedNPCs[npcKey].npc?.fullDescription);
+				setKnowsPregnancy(record.pregnancyId, "Bailey");
+			} else if (location === "wolf_cave") {
+				setKnowsPregnancy(record.pregnancyId, "Black Wolf");
+			}
 			toDelete.push(npcKey);
 		}
 	});
@@ -528,10 +534,10 @@ function defaultBirthLocations(type, birthLocation, location) {
 }
 
 /**
- * Resolves paternity for every active player pregnancy and marks the player aware of each child.
+ * Resolves paternity for every pregnancy the story character is carrying, and marks them aware of each child. Works for stories and paintings.
  */
 function makeAwareOfDetails() {
-	getActivePregnancies("pc").forEach(p => {
+	currentBodyPregnancies().forEach(p => {
 		resolvePaternity(p.pregnancyId);
 		getChildrenOf(p.pregnancyId).forEach(child => {
 			setKnowsChild(child.childId, "pc");

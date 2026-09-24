@@ -113,11 +113,16 @@ You are in the garden behind the orphanage.
 <</if>>
 <<if $stress gte $stressmax>>
 	<<passouthome>>
-<<elseif $exposed gte 1 and Time.hour lt 22 and Time.hour gt 6>>
+<<elseif $exposed gte 1 and Time.hour lt 22 and Time.hour gte 6>>
 	<<exhibitionismgarden>>
 	You can't bear the thought of someone catching you like this. You hasten to your bedroom.
 	<br><br>
-	<<link [[Next|Bedroom]]>><</link>>
+	<<if $renttime lte 0>>
+		<<set $bus to "home">>
+		<<link [[Next|Bedroom Bailey]]>><</link>>
+	<<else>>
+		<<link [[Next|Bedroom]]>><</link>>
+	<</if>>
 <<elseif !$weekly.gardenBirdRobin and Weather.precipitation is "none" and getRobinLocation() is "orphanage" and C.npc.Robin.trauma lte 25 and C.npc.Robin.dom lte 60 and $rng gte 81>>
 	<<set $weekly.gardenBirdRobin to true>>
 
@@ -564,23 +569,12 @@ You decide not to investigate the source of the noise; you have your own things 
 	<</if>>
 <<elseif $phase is 1>>
 	<<set $phase to 0>>
-	/* TODO: eventpool */
-	<<if $rng gte 61 and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
-		Something brushes against your leg. You shake it off, assuming it an insect, but it happens again. You look down and see a stem curling around your ankle.
-		<br><br>
-
-		<<link [[Shake it off|Garden Stem Shake]]>><</link>>
-		<br>
-		<<link [[Look closer|Garden Stem Look]]>><</link>>
-		<br>
-	<<else>>
-		<<hallucinogen 60>>
-		A strange scent rises from the plants as you water. You feel lightheaded. <<ghallucinogens>><<if $backgroundTraits.includes("plantlover")>><<arousal 6>><<garousal>><</if>>
-		<br><br>
-
-		<<link [[Next|Garden Flowers]]>><</link>>
-		<br>
+	<<cleareventpool>>
+	<<if $hallucinations gte 2 or $backgroundTraits.includes("plantlover")>>
+		<<addevent "gardenStem" 2>>
 	<</if>>
+	<<addevent "gardenScent" 3>>
+	<<runeventpool>>
 <<elseif $phase2 is "watered" and $rng lte (C.npc.Robin.love - 50) and _robin_location is "orphanage" and _robin.trauma lt 80 and Weather.precipitation isnot "rain" and (Weather.precipitation isnot "snow" or $alex_greenhouse gte 3) and $daily.robin.tending isnot 1>>
 	<<set $daily.robin.tending to 1>><<set $phase to 1>><<set $phase2 to 0>>
 	<<npc Robin>><<person1>>
@@ -1102,7 +1096,7 @@ Soon, you both have flower crowns ready. <<if currentSkillValue('tending') lt 20
 	You relax and enjoy the peaceful atmosphere, almost dozing off when you hear Robin chime. "Done!"
 	<br><br>
 	You rub your eyes and examine your hair.
-	<<set _target to either("twin fishtails","left fishtail","right fishtail")>>
+	<<set _target to either("twin fishtails","fishtail left","fishtail right")>>
 	<<if $hairtype isnot _target>>
 		<<set $hairtype to _target>>
 		It's beautiful.

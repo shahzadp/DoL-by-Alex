@@ -17,7 +17,6 @@ function initFoodstuff() {
 	/** @type {Dict<FoodstuffItem>} */
 	setup.foodstuff = {
 		red_rose: {
-			index: 0,
 			name: "red rose",
 			singular: "red rose",
 			plural: "red roses",
@@ -40,7 +39,6 @@ function initFoodstuff() {
 			},
 		},
 		white_rose: {
-			index: 1,
 			name: "white rose",
 			singular: "white rose",
 			plural: "white roses",
@@ -63,7 +61,6 @@ function initFoodstuff() {
 			},
 		},
 		orchid: {
-			index: 2,
 			name: "orchid",
 			singular: "orchid",
 			plural: "orchids",
@@ -86,7 +83,6 @@ function initFoodstuff() {
 			},
 		},
 		daisy: {
-			index: 3,
 			name: "daisy",
 			singular: "daisy",
 			plural: "daisies",
@@ -109,7 +105,6 @@ function initFoodstuff() {
 			},
 		},
 		tulip: {
-			index: 4,
 			name: "tulip",
 			singular: "tulip",
 			plural: "tulips",
@@ -132,7 +127,6 @@ function initFoodstuff() {
 			},
 		},
 		lotus: {
-			index: 5,
 			name: "lotus",
 			singular: "lotus",
 			plural: "lotuses",
@@ -155,7 +149,6 @@ function initFoodstuff() {
 			},
 		},
 		lily: {
-			index: 6,
 			name: "lily",
 			singular: "lily",
 			plural: "lilies",
@@ -178,7 +171,6 @@ function initFoodstuff() {
 			},
 		},
 		poppy: {
-			index: 7,
 			name: "poppy",
 			singular: "poppy",
 			plural: "poppies",
@@ -201,7 +193,6 @@ function initFoodstuff() {
 			},
 		},
 		apple: {
-			index: 8,
 			name: "apple",
 			singular: "apple",
 			plural: "apples",
@@ -219,7 +210,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		orange: {
-			index: 9,
 			name: "orange",
 			singular: "orange",
 			plural: "oranges",
@@ -238,7 +228,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		banana: {
-			index: 10,
 			name: "banana",
 			singular: "banana",
 			plural: "bananas",
@@ -257,7 +246,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		lemon: {
-			index: 11,
 			name: "lemon",
 			singular: "lemon",
 			plural: "lemons",
@@ -275,7 +263,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		blood_lemon: {
-			index: 12,
 			name: "blood lemon",
 			singular: "blood lemon",
 			plural: "blood lemons",
@@ -296,7 +283,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		pear: {
-			index: 13,
 			name: "pear",
 			singular: "pear",
 			plural: "pears",
@@ -314,7 +300,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		strawberry: {
-			index: 14,
 			name: "strawberry",
 			singular: "strawberry",
 			plural: "strawberries",
@@ -332,7 +317,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		peach: {
-			index: 15,
 			name: "peach",
 			singular: "peach",
 			plural: "peaches",
@@ -350,7 +334,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		plum: {
-			index: 16,
 			name: "plum",
 			singular: "plum",
 			plural: "plums",
@@ -368,7 +351,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		mushroom: {
-			index: 17,
 			name: "mushroom",
 			singular: "mushroom",
 			plural: "mushrooms",
@@ -385,7 +367,6 @@ function initFoodstuff() {
 			},
 		},
 		wolfshroom: {
-			index: 18,
 			name: "wolfshroom",
 			singular: "wolfshroom",
 			plural: "wolfshrooms",
@@ -405,7 +386,6 @@ function initFoodstuff() {
 			},
 		},
 		wild_honeycomb: {
-			index: 19,
 			name: "wild honeycomb",
 			singular: "wild honeycomb",
 			plural: "wild honeycombs",
@@ -419,7 +399,6 @@ function initFoodstuff() {
 			},
 		},
 		wild_carrot: {
-			index: 20,
 			name: "wild carrot",
 			singular: "wild carrot",
 			plural: "carrots",
@@ -443,7 +422,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		onion: {
-			index: 21,
 			name: "onion",
 			singular: "onion",
 			plural: "onions",
@@ -467,7 +445,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		garlic_bulb: {
-			index: 22,
 			name: "garlic bulb",
 			singular: "garlic bulb",
 			plural: "garlic bulbs",
@@ -491,7 +468,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		potato: {
-			index: 23,
 			name: "potato",
 			singular: "potato",
 			plural: "potatoes",
@@ -515,7 +491,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		strange_flower: {
-			index: 24,
 			name: "strange flower",
 			singular: "strange flower",
 			plural: "strange flowers",
@@ -544,7 +519,6 @@ function initFoodstuff() {
 			},
 		},
 		truffle: {
-			index: 25,
 			name: "truffle",
 			singular: "truffle",
 			plural: "truffles",
@@ -561,7 +535,6 @@ function initFoodstuff() {
 			},
 		},
 		bottle_of_milk: {
-			index: 26,
 			name: "bottle of milk",
 			singular: "bottle of milk",
 			plural: "bottles of milk",
@@ -582,7 +555,6 @@ function initFoodstuff() {
 			},
 		},
 		chicken_egg: {
-			index: 27,
 			name: "chicken egg",
 			singular: "chicken egg",
 			plural: "chicken eggs",
@@ -603,7 +575,6 @@ function initFoodstuff() {
 			},
 		},
 		bottle_of_breast_milk: {
-			index: 28,
 			name: "bottle of breast milk",
 			singular: "bottle of breast milk",
 			plural: "bottles of breast milk",
@@ -617,7 +588,6 @@ function initFoodstuff() {
 			},
 		},
 		bottle_of_semen: {
-			index: 29,
 			name: "bottle of semen",
 			singular: "bottle of semen",
 			plural: "bottles of semen",
@@ -635,7 +605,6 @@ function initFoodstuff() {
 			},
 		},
 		cabbage: {
-			index: 30,
 			name: "cabbage",
 			singular: "cabbage",
 			plural: "cabbages",
@@ -658,7 +627,6 @@ function initFoodstuff() {
 			},
 		},
 		turnip: {
-			index: 31,
 			name: "turnip",
 			singular: "turnip",
 			plural: "turnips",
@@ -681,7 +649,6 @@ function initFoodstuff() {
 			},
 		},
 		broccoli: {
-			index: 32,
 			name: "broccoli",
 			singular: "broccoli",
 			plural: "broccoli",
@@ -704,7 +671,6 @@ function initFoodstuff() {
 			},
 		},
 		ghostshroom: {
-			index: 33,
 			name: "ghostshroom",
 			singular: "ghostshroom",
 			plural: "ghostshrooms",
@@ -721,7 +687,6 @@ function initFoodstuff() {
 			},
 		},
 		blackberry: {
-			index: 34,
 			name: "blackberry",
 			singular: "blackberry",
 			plural: "blackberries",
@@ -740,7 +705,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		carnation: {
-			index: 35,
 			name: "carnation",
 			singular: "carnation",
 			plural: "carnations",
@@ -763,7 +727,6 @@ function initFoodstuff() {
 			},
 		},
 		bird_egg: {
-			index: 36,
 			name: "bird egg",
 			singular: "bird egg",
 			plural: "bird eggs",
@@ -776,7 +739,6 @@ function initFoodstuff() {
 			},
 		},
 		baby_bottle_of_breast_milk: {
-			index: 37,
 			name: "baby bottle of breast milk",
 			singular: "baby bottle of breast milk",
 			plural: "baby bottles of breast milk",
@@ -793,7 +755,6 @@ function initFoodstuff() {
 			},
 		},
 		plumeria: {
-			index: 38,
 			name: "plumeria",
 			singular: "plumeria",
 			plural: "plumerias",
@@ -816,7 +777,6 @@ function initFoodstuff() {
 			},
 		},
 		oyster_pearl: {
-			index: 39,
 			name: "oyster pearl",
 			singular: "oyster pearl",
 			plural: "oyster pearls",
@@ -830,7 +790,6 @@ function initFoodstuff() {
 			},
 		},
 		bread: {
-			index: 40,
 			name: "bread",
 			singular: "piece of bread",
 			plural: "pieces of bread",
@@ -855,7 +814,6 @@ function initFoodstuff() {
 			},
 		},
 		flour: {
-			index: 41,
 			name: "flour",
 			singular: "spoonful of flour",
 			plural: "spoonfuls of flour",
@@ -876,7 +834,6 @@ function initFoodstuff() {
 			},
 		},
 		salt: {
-			index: 42,
 			name: "salt",
 			singular: "pinch of salt",
 			plural: "pinches of salt",
@@ -891,7 +848,6 @@ function initFoodstuff() {
 			},
 		},
 		vegetable_oil: {
-			index: 43,
 			name: "vegetable oil",
 			singular: "spoonful of vegetable oil",
 			plural: "spoonfuls of vegetable oil",
@@ -906,7 +862,6 @@ function initFoodstuff() {
 			},
 		},
 		pizza: {
-			index: 44,
 			name: "pizza",
 			singular: "pizza",
 			plural: "pizzas",
@@ -931,7 +886,6 @@ function initFoodstuff() {
 			},
 		},
 		tomato: {
-			index: 45,
 			name: "tomato",
 			singular: "tomato",
 			plural: "tomatoes",
@@ -954,7 +908,6 @@ function initFoodstuff() {
 			},
 		},
 		cheese: {
-			index: 46,
 			name: "cheese",
 			singular: "piece of cheese",
 			plural: "pieces of cheese",
@@ -979,7 +932,6 @@ function initFoodstuff() {
 			},
 		},
 		macaroni_cheese: {
-			index: 47,
 			name: "macaroni cheese",
 			singular: "serving of macaroni and cheese",
 			plural: "servings of macaroni and cheese",
@@ -1003,7 +955,6 @@ function initFoodstuff() {
 			},
 		},
 		pasta: {
-			index: 48,
 			name: "pasta",
 			singular: "serving of pasta",
 			plural: "servings of pasta",
@@ -1027,7 +978,6 @@ function initFoodstuff() {
 			},
 		},
 		cauliflower_cheese: {
-			index: 49,
 			name: "cauliflower cheese",
 			singular: "serving of cauliflower cheese",
 			plural: "servings of cauliflower cheese",
@@ -1051,7 +1001,6 @@ function initFoodstuff() {
 			},
 		},
 		wheat: {
-			index: 50,
 			name: "wheat",
 			singular: "cup of wheat",
 			plural: "cups of wheat",
@@ -1075,7 +1024,6 @@ function initFoodstuff() {
 			},
 		},
 		prawn_bisque: {
-			index: 51,
 			name: "prawn bisque",
 			singular: "serving of prawn bisque",
 			plural: "servings of prawn bisque",
@@ -1084,7 +1032,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1500,
+				sell_price: 1200,
 			},
 			recipe: {
 				recipe_name: "prawn bisque",
@@ -1099,7 +1047,6 @@ function initFoodstuff() {
 			},
 		},
 		cream: {
-			index: 52,
 			name: "cream",
 			singular: "spoonful of cream",
 			plural: "spoonfuls of cream",
@@ -1116,7 +1063,6 @@ function initFoodstuff() {
 			},
 		},
 		chelsea_bun: {
-			index: 53,
 			name: "chelsea bun",
 			singular: "Chelsea bun",
 			plural: "Chelsea buns",
@@ -1140,7 +1086,6 @@ function initFoodstuff() {
 			},
 		},
 		honey: {
-			index: 54,
 			name: "honey",
 			singular: "spoonful of honey",
 			plural: "spoonfuls of honey",
@@ -1161,7 +1106,6 @@ function initFoodstuff() {
 			},
 		},
 		butter: {
-			index: 55,
 			name: "butter",
 			singular: "spoonful of butter",
 			plural: "spoonfuls of butter",
@@ -1182,7 +1126,6 @@ function initFoodstuff() {
 			},
 		},
 		naan_bread: {
-			index: 56,
 			name: "naan bread",
 			singular: "piece of naan bread",
 			plural: "pieces of naan bread",
@@ -1206,7 +1149,6 @@ function initFoodstuff() {
 			},
 		},
 		pastry: {
-			index: 57,
 			name: "pastry",
 			singular: "piece of pastry",
 			plural: "pieces of pastry",
@@ -1227,7 +1169,6 @@ function initFoodstuff() {
 			},
 		},
 		quiche: {
-			index: 58,
 			name: "quiche",
 			singular: "serving of quiche",
 			plural: "servings of quiche",
@@ -1236,7 +1177,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 200,
+				sell_price: 600,
 			},
 			recipe: {
 				recipe_name: "quiche",
@@ -1251,7 +1192,6 @@ function initFoodstuff() {
 			},
 		},
 		bacon: {
-			index: 59,
 			name: "bacon",
 			singular: "rasher of bacon",
 			plural: "rashers of bacon",
@@ -1266,7 +1206,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		mince_pie: {
-			index: 60,
 			name: "mince pie",
 			singular: "mince pie",
 			plural: "mince pies",
@@ -1290,7 +1229,6 @@ function initFoodstuff() {
 			},
 		},
 		sugar: {
-			index: 61,
 			name: "sugar",
 			singular: "spoonful of sugar",
 			plural: "spoonfuls of sugar",
@@ -1305,7 +1243,6 @@ function initFoodstuff() {
 			},
 		},
 		sausage_roll: {
-			index: 62,
 			name: "sausage roll",
 			singular: "sausage roll",
 			plural: "sausage rolls",
@@ -1329,7 +1266,6 @@ function initFoodstuff() {
 			},
 		},
 		sausage: {
-			index: 63,
 			name: "sausage",
 			singular: "sausage",
 			plural: "sausages",
@@ -1344,7 +1280,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		potato_pancake: {
-			index: 64,
 			name: "potato pancake",
 			singular: "potato pancake",
 			plural: "potato pancakes",
@@ -1368,7 +1303,6 @@ function initFoodstuff() {
 			},
 		},
 		onion_bhaji: {
-			index: 65,
 			name: "onion bhaji",
 			singular: "onion bhaji",
 			plural: "onion bhajis",
@@ -1392,7 +1326,6 @@ function initFoodstuff() {
 			},
 		},
 		chilli_pepper: {
-			index: 66,
 			name: "chilli pepper",
 			singular: "chilli pepper",
 			plural: "chilli peppers",
@@ -1415,7 +1348,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		samosa: {
-			index: 67,
 			name: "samosa",
 			singular: "samosa",
 			plural: "samosas",
@@ -1439,7 +1371,6 @@ function initFoodstuff() {
 			},
 		},
 		sweet_and_sour_chicken: {
-			index: 68,
 			name: "sweet and sour chicken",
 			singular: "serving of sweet and sour chicken",
 			plural: "servings of sweet and sour chicken",
@@ -1463,7 +1394,6 @@ function initFoodstuff() {
 			},
 		},
 		chicken: {
-			index: 69,
 			name: "chicken",
 			singular: "serving of chicken",
 			plural: "servings of chicken",
@@ -1478,7 +1408,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		pepper: {
-			index: 70,
 			name: "pepper",
 			singular: "pepper",
 			plural: "peppers",
@@ -1502,7 +1431,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		kedgeree: {
-			index: 71,
 			name: "kedgeree",
 			singular: "serving of kedgeree",
 			plural: "servings of kedgeree",
@@ -1532,7 +1460,6 @@ function initFoodstuff() {
 			},
 		},
 		rice: {
-			index: 72,
 			name: "rice",
 			singular: "cup of rice",
 			plural: "cups of rice",
@@ -1556,7 +1483,6 @@ function initFoodstuff() {
 			},
 		},
 		haddock: {
-			index: 73,
 			name: "haddock",
 			singular: "haddock",
 			plural: "haddock",
@@ -1570,7 +1496,6 @@ function initFoodstuff() {
 			},
 		},
 		honeyed_pork: {
-			index: 74,
 			name: "honeyed pork",
 			singular: "serving of honeyed pork",
 			plural: "servings of honeyed pork",
@@ -1594,7 +1519,6 @@ function initFoodstuff() {
 			},
 		},
 		beef_wellington: {
-			index: 75,
 			name: "beef wellington",
 			singular: "serving of beef wellington",
 			plural: "servings of beef wellington",
@@ -1618,7 +1542,6 @@ function initFoodstuff() {
 			},
 		},
 		salmon_wellington: {
-			index: 76,
 			name: "salmon wellington",
 			singular: "serving of salmon wellington",
 			plural: "servings of salmon wellington",
@@ -1627,7 +1550,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1800,
+				sell_price: 1600,
 			},
 			recipe: {
 				recipe_name: "salmon wellington",
@@ -1642,7 +1565,6 @@ function initFoodstuff() {
 			},
 		},
 		hamburger: {
-			index: 77,
 			name: "hamburger",
 			singular: "hamburger",
 			plural: "hamburgers",
@@ -1666,7 +1588,6 @@ function initFoodstuff() {
 			},
 		},
 		cheeseburger: {
-			index: 78,
 			name: "cheeseburger",
 			singular: "cheeseburger",
 			plural: "cheeseburgers",
@@ -1679,9 +1600,9 @@ function initFoodstuff() {
 			},
 			recipe: {
 				recipe_name: "cheeseburgers",
-				difficulty: 1,
+				difficulty: 2,
 				cook_minutes: 15,
-				servings: 2,
+				servings: 1,
 				ingredients: ["beef", "bread", "onion", "tomato", "cheese"],
 				tags: [],
 			},
@@ -1690,7 +1611,6 @@ function initFoodstuff() {
 			},
 		},
 		chips: {
-			index: 79,
 			name: "chips",
 			singular: "packet of chips",
 			plural: "packets of chips",
@@ -1714,7 +1634,6 @@ function initFoodstuff() {
 			},
 		},
 		cheese_topped_trout: {
-			index: 80,
 			name: "cheese topped trout",
 			singular: "serving of cheese topped trout",
 			plural: "servings of cheese topped trout",
@@ -1738,7 +1657,6 @@ function initFoodstuff() {
 			},
 		},
 		salmon: {
-			index: 81,
 			name: "salmon",
 			singular: "salmon",
 			plural: "salmon",
@@ -1756,7 +1674,6 @@ function initFoodstuff() {
 			},
 		},
 		trout: {
-			index: 82,
 			name: "trout",
 			singular: "trout",
 			plural: "trout",
@@ -1774,7 +1691,6 @@ function initFoodstuff() {
 			},
 		},
 		spaghetti_bolognese: {
-			index: 83,
 			name: "spaghetti bolognese",
 			singular: "serving of spaghetti bolognese",
 			plural: "servings of spaghetti bolognese",
@@ -1798,7 +1714,6 @@ function initFoodstuff() {
 			},
 		},
 		lasagne: {
-			index: 84,
 			name: "lasagne",
 			singular: "serving of lasagne",
 			plural: "servings of lasagne",
@@ -1828,7 +1743,6 @@ function initFoodstuff() {
 			},
 		},
 		carbonara: {
-			index: 85,
 			name: "carbonara",
 			singular: "serving of carbonara",
 			plural: "servings of carbonara",
@@ -1837,7 +1751,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1000,
+				sell_price: 1200,
 			},
 			recipe: {
 				recipe_name: "carbonara",
@@ -1852,7 +1766,6 @@ function initFoodstuff() {
 			},
 		},
 		chicken_tikka_masala: {
-			index: 86,
 			name: "chicken tikka masala",
 			singular: "serving of chicken tikka masala",
 			plural: "servings of chicken tikka masala",
@@ -1876,7 +1789,6 @@ function initFoodstuff() {
 			},
 		},
 		chilli_con_carne: {
-			index: 87,
 			name: "chilli con carne",
 			singular: "serving of chilli con carne",
 			plural: "servings of chilli con carne",
@@ -1900,7 +1812,6 @@ function initFoodstuff() {
 			},
 		},
 		rich_biscuit: {
-			index: 88,
 			name: "rich biscuit",
 			singular: "rich biscuit",
 			plural: "rich biscuits",
@@ -1925,7 +1836,6 @@ function initFoodstuff() {
 			},
 		},
 		shortbread: {
-			index: 89,
 			name: "shortbread",
 			singular: "piece of shortbread",
 			plural: "pieces of shortbread",
@@ -1950,7 +1860,6 @@ function initFoodstuff() {
 			},
 		},
 		melting_moment: {
-			index: 90,
 			name: "melting moment",
 			singular: "melting moment",
 			plural: "melting moments",
@@ -1975,7 +1884,6 @@ function initFoodstuff() {
 			},
 		},
 		choc_chip_cookie: {
-			index: 91,
 			name: "choc chip cookie",
 			singular: "chocolate chip cookie",
 			plural: "chocolate chip cookies",
@@ -2000,7 +1908,6 @@ function initFoodstuff() {
 			},
 		},
 		cocoa_powder: {
-			index: 92,
 			name: "cocoa powder",
 			singular: "cup of cocoa powder",
 			plural: "cups of cocoa powder",
@@ -2015,7 +1922,6 @@ function initFoodstuff() {
 			},
 		},
 		chocolate: {
-			index: 93,
 			name: "chocolate",
 			singular: "slab of chocolate",
 			plural: "slabs of chocolate",
@@ -2039,7 +1945,6 @@ function initFoodstuff() {
 			},
 		},
 		apple_strudel: {
-			index: 94,
 			name: "apple strudel",
 			singular: "apple strudel",
 			plural: "apple strudels",
@@ -2063,7 +1968,6 @@ function initFoodstuff() {
 			},
 		},
 		souffle: {
-			index: 95,
 			name: "soufflé",
 			singular: "soufflé",
 			plural: "soufflés",
@@ -2072,7 +1976,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 3000,
+				sell_price: 1500,
 			},
 			recipe: {
 				recipe_name: "souffl\u00E9s",
@@ -2087,7 +1991,6 @@ function initFoodstuff() {
 			},
 		},
 		tart: {
-			index: 96,
 			name: "tart",
 			singular: "tart",
 			plural: "tarts",
@@ -2111,7 +2014,6 @@ function initFoodstuff() {
 			},
 		},
 		lemon_meringue_pie: {
-			index: 97,
 			name: "lemon meringue pie",
 			singular: "lemon meringue pie",
 			plural: "lemon meringue pies",
@@ -2120,7 +2022,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1600,
+				sell_price: 1100,
 			},
 			recipe: {
 				recipe_name: "lemon meringue pie",
@@ -2135,7 +2037,6 @@ function initFoodstuff() {
 			},
 		},
 		sponge_cake: {
-			index: 98,
 			name: "sponge cake",
 			singular: "sponge cake",
 			plural: "sponge cakes",
@@ -2160,7 +2061,6 @@ function initFoodstuff() {
 			},
 		},
 		swiss_roll: {
-			index: 99,
 			name: "swiss roll",
 			singular: "Swiss roll",
 			plural: "Swiss rolls",
@@ -2169,7 +2069,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1500,
+				sell_price: 1300,
 			},
 			recipe: {
 				recipe_name: "Swiss rolls",
@@ -2184,7 +2084,6 @@ function initFoodstuff() {
 			},
 		},
 		scone: {
-			index: 100,
 			name: "scone",
 			singular: "scone",
 			plural: "scones",
@@ -2208,7 +2107,6 @@ function initFoodstuff() {
 			},
 		},
 		brownie: {
-			index: 101,
 			name: "brownie",
 			singular: "brownie",
 			plural: "brownies",
@@ -2217,7 +2115,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 300,
+				sell_price: 500,
 			},
 			recipe: {
 				recipe_name: "brownies",
@@ -2232,7 +2130,6 @@ function initFoodstuff() {
 			},
 		},
 		carrot_cake: {
-			index: 102,
 			name: "carrot cake",
 			singular: "carrot cake",
 			plural: "carrot cakes",
@@ -2241,7 +2138,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1400,
+				sell_price: 800,
 			},
 			recipe: {
 				recipe_name: "carrot cake",
@@ -2257,7 +2154,6 @@ function initFoodstuff() {
 			},
 		},
 		creme_brulee: {
-			index: 103,
 			name: "crème brûlée",
 			singular: "pot of crème brûlée",
 			plural: "pots of crème brûlée",
@@ -2281,7 +2177,6 @@ function initFoodstuff() {
 			},
 		},
 		date: {
-			index: 104,
 			name: "date",
 			singular: "date",
 			plural: "dates",
@@ -2300,7 +2195,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		sticky_toffee_pudding: {
-			index: 105,
 			name: "sticky toffee pudding",
 			singular: "sticky toffee pudding",
 			plural: "sticky toffee puddings",
@@ -2309,7 +2203,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1200,
+				sell_price: 1000,
 			},
 			recipe: {
 				recipe_name: "sticky toffee pudding",
@@ -2324,7 +2218,6 @@ function initFoodstuff() {
 			},
 		},
 		chicken_vindaloo: {
-			index: 106,
 			name: "chicken vindaloo",
 			singular: "serving of chicken vindaloo",
 			plural: "servings of chicken vindaloo",
@@ -2348,7 +2241,6 @@ function initFoodstuff() {
 			},
 		},
 		flapjack: {
-			index: 107,
 			name: "flapjack",
 			singular: "flapjack square",
 			plural: "flapjack squares",
@@ -2373,7 +2265,6 @@ function initFoodstuff() {
 			},
 		},
 		cherry: {
-			index: 108,
 			name: "cherry",
 			singular: "cherry",
 			plural: "cherries",
@@ -2392,7 +2283,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		belgian_bun: {
-			index: 109,
 			name: "belgian bun",
 			singular: "Belgian bun",
 			plural: "Belgian buns",
@@ -2401,7 +2291,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1000,
+				sell_price: 600,
 			},
 			recipe: {
 				recipe_name: "Belgian buns",
@@ -2416,7 +2306,6 @@ function initFoodstuff() {
 			},
 		},
 		lime: {
-			index: 110,
 			name: "lime",
 			singular: "lime",
 			plural: "limes",
@@ -2435,7 +2324,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		linguine: {
-			index: 111,
 			name: "linguine",
 			singular: "serving of linguine",
 			plural: "servings of linguine",
@@ -2459,7 +2347,6 @@ function initFoodstuff() {
 			},
 		},
 		steak: {
-			index: 112,
 			name: "steak",
 			singular: "serving of steak",
 			plural: "servings of steak",
@@ -2483,7 +2370,6 @@ function initFoodstuff() {
 			},
 		},
 		full_english_breakfast: {
-			index: 113,
 			name: "full english breakfast",
 			singular: "full English breakfast",
 			plural: "full English breakfasts",
@@ -2507,7 +2393,6 @@ function initFoodstuff() {
 			},
 		},
 		apple_crumble: {
-			index: 114,
 			name: "apple crumble",
 			singular: "serving of apple crumble",
 			plural: "servings of apple crumble",
@@ -2531,7 +2416,6 @@ function initFoodstuff() {
 			},
 		},
 		bakewell_tart: {
-			index: 115,
 			name: "Bakewell tart",
 			singular: "Bakewell tart",
 			plural: "Bakewell tarts",
@@ -2556,7 +2440,6 @@ function initFoodstuff() {
 			},
 		},
 		cod: {
-			index: 116,
 			name: "cod",
 			singular: "cod",
 			plural: "cod",
@@ -2569,12 +2452,11 @@ function initFoodstuff() {
 				tags: [],
 			},
 			shop: {
-				sell_price: 600,
-				available_in: ["supermarket"],
+				sell_price: 700,
+				available_in: [],
 			},
 		},
 		fish_and_chips: {
-			index: 117,
 			name: "fish and chips",
 			singular: "serving of fish and chips",
 			plural: "servings of fish and chips",
@@ -2604,7 +2486,6 @@ function initFoodstuff() {
 			},
 		},
 		clam: {
-			index: 118,
 			name: "clam",
 			singular: "clam",
 			plural: "clams",
@@ -2622,7 +2503,6 @@ function initFoodstuff() {
 			},
 		},
 		clam_chowder: {
-			index: 119,
 			name: "clam chowder",
 			singular: "serving of clam chowder",
 			plural: "servings of clam chowder",
@@ -2646,7 +2526,6 @@ function initFoodstuff() {
 			},
 		},
 		cheese_and_crackers: {
-			index: 120,
 			name: "cheese and crackers",
 			singular: "serving of cheese and crackers",
 			plural: "servings of cheese and crackers",
@@ -2670,7 +2549,6 @@ function initFoodstuff() {
 			},
 		},
 		bangers_and_mash: {
-			index: 121,
 			name: "bangers and mash",
 			singular: "serving of bangers and mash",
 			plural: "servings of bangers and mash",
@@ -2679,7 +2557,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1200,
+				sell_price: 1000,
 			},
 			recipe: {
 				recipe_name: "bangers and mash",
@@ -2694,7 +2572,6 @@ function initFoodstuff() {
 			},
 		},
 		yorkshire_pudding: {
-			index: 122,
 			name: "yorkshire pudding",
 			singular: "yorkshire pudding",
 			plural: "yorkshire puddings",
@@ -2703,7 +2580,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1200,
+				sell_price: 700,
 			},
 			recipe: {
 				recipe_name: "yorkshire pudding",
@@ -2718,7 +2595,6 @@ function initFoodstuff() {
 			},
 		},
 		stuffing: {
-			index: 123,
 			name: "stuffing",
 			singular: "stuffing ball",
 			plural: "stuffing balls",
@@ -2742,7 +2618,6 @@ function initFoodstuff() {
 			},
 		},
 		roast_dinner: {
-			index: 124,
 			name: "roast dinner",
 			singular: "serving of roast dinner",
 			plural: "servings of roast dinner",
@@ -2779,7 +2654,6 @@ function initFoodstuff() {
 			},
 		},
 		crumpet: {
-			index: 125,
 			name: "crumpet",
 			singular: "crumpet",
 			plural: "crumpets",
@@ -2803,7 +2677,6 @@ function initFoodstuff() {
 			},
 		},
 		orange_juice: {
-			index: 126,
 			name: "orange juice",
 			singular: "glass of orange juice",
 			plural: "glasses of orange juice",
@@ -2827,7 +2700,6 @@ function initFoodstuff() {
 			},
 		},
 		lemonade: {
-			index: 127,
 			name: "lemonade",
 			singular: "glass of lemonade",
 			plural: "glasses of lemonade",
@@ -2851,7 +2723,6 @@ function initFoodstuff() {
 			},
 		},
 		banana_bread: {
-			index: 128,
 			name: "banana bread",
 			singular: "loaf of banana bread",
 			plural: "loaves of banana bread",
@@ -2876,7 +2747,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		red_wine: {
-			index: 129,
 			name: "red wine",
 			singular: "bottle of red wine",
 			plural: "bottles of red wine",
@@ -2890,7 +2760,6 @@ function initFoodstuff() {
 			},
 		},
 		white_wine: {
-			index: 130,
 			name: "white wine",
 			singular: "bottle of white wine",
 			plural: "bottles of white wine",
@@ -2904,7 +2773,6 @@ function initFoodstuff() {
 			},
 		},
 		poached_pear: {
-			index: 131,
 			name: "poached pear",
 			singular: "poached pear",
 			plural: "poached pears",
@@ -2928,7 +2796,6 @@ function initFoodstuff() {
 			},
 		},
 		peach_panzanella: {
-			index: 132,
 			name: "peach panzanella",
 			singular: "serving of peach panzanella",
 			plural: "servings of peach panzanella",
@@ -2952,7 +2819,6 @@ function initFoodstuff() {
 			},
 		},
 		plum_pudding: {
-			index: 133,
 			name: "plum pudding",
 			singular: "serving of plum pudding",
 			plural: "servings of plum pudding",
@@ -2961,7 +2827,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 1400,
+				sell_price: 1200,
 			},
 			recipe: {
 				recipe_name: "plum pudding",
@@ -2977,7 +2843,6 @@ function initFoodstuff() {
 			},
 		},
 		spinach: {
-			index: 134,
 			name: "spinach",
 			singular: "spinach leaf",
 			plural: "spinach leaves",
@@ -3001,7 +2866,6 @@ function initFoodstuff() {
 			},
 		},
 		salad: {
-			index: 135,
 			name: "salad",
 			singular: "serving of salad",
 			plural: "servings of salad",
@@ -3025,7 +2889,6 @@ function initFoodstuff() {
 			},
 		},
 		arancini: {
-			index: 136,
 			name: "arancini",
 			singular: "arancini ball",
 			plural: "arancini balls",
@@ -3034,7 +2897,7 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "food",
 			shop: {
-				sell_price: 700,
+				sell_price: 1400,
 			},
 			recipe: {
 				recipe_name: "arancini",
@@ -3049,7 +2912,6 @@ function initFoodstuff() {
 			},
 		},
 		wolfbrew: {
-			index: 137,
 			name: "wolfbrew",
 			singular: "bottle of wolfbrew",
 			plural: "bottles of wolfbrew",
@@ -3073,7 +2935,6 @@ function initFoodstuff() {
 			},
 		},
 		ghostbrew: {
-			index: 138,
 			name: "ghostbrew",
 			singular: "bottle of ghostbrew",
 			plural: "bottles of ghostbrew",
@@ -3097,7 +2958,6 @@ function initFoodstuff() {
 			},
 		},
 		beef: {
-			index: 139,
 			name: "beef",
 			singular: "serving of beef",
 			plural: "servings of beef",
@@ -3116,7 +2976,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		pork: {
-			index: 140,
 			name: "pork",
 			singular: "serving of pork",
 			plural: "servings of pork",
@@ -3135,7 +2994,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		cauliflower: {
-			index: 141,
 			name: "cauliflower",
 			singular: "cauliflower",
 			plural: "cauliflowers",
@@ -3158,7 +3016,6 @@ function initFoodstuff() {
 			},
 		},
 		oats: {
-			index: 142,
 			name: "oats",
 			singular: "cup of oat",
 			plural: "cups of oats",
@@ -3177,7 +3034,6 @@ function initFoodstuff() {
 			},
 		},
 		prawn: {
-			index: 143,
 			name: "prawn",
 			singular: "prawn",
 			plural: "prawns",
@@ -3196,7 +3052,6 @@ function initFoodstuff() {
 			is_fishing_bait: true,
 		},
 		omelette: {
-			index: 144,
 			name: "omelette",
 			singular: "omelette",
 			plural: "omelettes",
@@ -3220,7 +3075,6 @@ function initFoodstuff() {
 			},
 		},
 		porridge: {
-			index: 145,
 			name: "porridge",
 			singular: "serving of porridge",
 			plural: "servings of porridge",
@@ -3244,7 +3098,6 @@ function initFoodstuff() {
 			},
 		},
 		turnip_soup: {
-			index: 146,
 			name: "turnip soup",
 			singular: "serving of turnip soup",
 			plural: "servings of turnip soup",
@@ -3268,7 +3121,6 @@ function initFoodstuff() {
 			},
 		},
 		pink_rose: {
-			index: 147,
 			name: "pink rose",
 			singular: "pink rose",
 			plural: "pink roses",
@@ -3290,7 +3142,6 @@ function initFoodstuff() {
 			},
 		},
 		valentines_chocolate: {
-			index: 148,
 			name: "valentines chocolate",
 			singular: "slab of valentines chocolate",
 			plural: "slabs of valentines chocolate",
@@ -3314,7 +3165,6 @@ function initFoodstuff() {
 			},
 		},
 		sunflower: {
-			index: 149,
 			name: "sunflower",
 			singular: "sunflower",
 			plural: "sunflowers",
@@ -3336,7 +3186,6 @@ function initFoodstuff() {
 			},
 		},
 		jammie_dodger: {
-			index: 94,
 			name: "jammie dodger",
 			singular: "jammie dodger",
 			plural: "jammie dodgers",
@@ -3361,7 +3210,6 @@ function initFoodstuff() {
 			},
 		},
 		jam: {
-			index: 95,
 			name: "jam",
 			singular: "cup of jam",
 			plural: "cups of jam",
@@ -3382,7 +3230,6 @@ function initFoodstuff() {
 			},
 		},
 		herring: {
-			index: 152,
 			name: "herring",
 			singular: "herring",
 			plural: "herring",
@@ -3395,7 +3242,6 @@ function initFoodstuff() {
 			},
 		},
 		whiting: {
-			index: 153,
 			name: "whiting",
 			singular: "whiting",
 			plural: "whiting",
@@ -3408,7 +3254,6 @@ function initFoodstuff() {
 			},
 		},
 		mackerel: {
-			index: 154,
 			name: "mackerel",
 			singular: "mackerel",
 			plural: "mackerel",
@@ -3421,7 +3266,6 @@ function initFoodstuff() {
 			},
 		},
 		flounder: {
-			index: 155,
 			name: "flounder",
 			singular: "flounder",
 			plural: "flounder",
@@ -3434,7 +3278,6 @@ function initFoodstuff() {
 			},
 		},
 		bass: {
-			index: 156,
 			name: "bass",
 			singular: "bass",
 			plural: "bass",
@@ -3447,7 +3290,6 @@ function initFoodstuff() {
 			},
 		},
 		roach: {
-			index: 157,
 			name: "roach",
 			singular: "roach",
 			plural: "roach",
@@ -3460,7 +3302,6 @@ function initFoodstuff() {
 			},
 		},
 		perch: {
-			index: 158,
 			name: "perch",
 			singular: "perch",
 			plural: "perch",
@@ -3473,7 +3314,6 @@ function initFoodstuff() {
 			},
 		},
 		chub: {
-			index: 159,
 			name: "chub",
 			singular: "chub",
 			plural: "chub",
@@ -3486,7 +3326,6 @@ function initFoodstuff() {
 			},
 		},
 		pike: {
-			index: 160,
 			name: "pike",
 			singular: "pike",
 			plural: "pike",
@@ -3495,11 +3334,10 @@ function initFoodstuff() {
 			kitchen_item_type_icon: "recipe-seafood.png",
 			prop_folder: "ingredient",
 			shop: {
-				sell_price: 400,
+				sell_price: 800,
 			},
 		},
 		eel: {
-			index: 162,
 			name: "eel",
 			singular: "eel",
 			plural: "eels",
@@ -3512,7 +3350,6 @@ function initFoodstuff() {
 			},
 		},
 		grayling: {
-			index: 163,
 			name: "grayling",
 			singular: "grayling",
 			plural: "grayling",
@@ -3525,7 +3362,6 @@ function initFoodstuff() {
 			},
 		},
 		baitfish: {
-			index: 164,
 			name: "baitfish",
 			singular: "baitfish",
 			plural: "baitfish",
@@ -3539,7 +3375,6 @@ function initFoodstuff() {
 			},
 		},
 		bait_worm: {
-			index: 165,
 			name: "bait worm",
 			singular: "bait worm",
 			plural: "bait worms",
@@ -3553,6 +3388,36 @@ function initFoodstuff() {
 			},
 		},
 	};
+
+	setup.moddedFoodstuff = {};
+
+	mergeModdedFoodstuff();
 	finalizefoodstuff();
 }
 window.initFoodstuff = initFoodstuff;
+
+/** @param {FoodstuffItem} item */
+function verifyModdedFoodstuffItem(item) {
+	const label = `'${item.name ?? "unnamed"}'${item.modder ? ` from modder '${item.modder}'` : " (no 'modder' field set)"}`;
+	if (!item.modder) console.error(`Modded foodstuff ${label} is missing required field: 'modder'.`);
+	if (item.name === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'name'.`);
+	if (item.singular === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'singular'.`);
+	if (item.plural === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'plural'.`);
+	if (item.icon === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'icon'.`);
+	if (item.category === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'category'.`);
+	if (item.kitchen_item_type_icon === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'kitchen_item_type_icon'.`);
+	if (item.prop_folder === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'prop_folder'.`);
+	if (item.shop === undefined) console.error(`Modded foodstuff ${label} is missing required field: 'shop'.`);
+}
+window.verifyModdedFoodstuffItem = verifyModdedFoodstuffItem;
+
+function mergeModdedFoodstuff() {
+	Object.entries(setup.moddedFoodstuff).forEach(([key, item], i) => {
+		verifyModdedFoodstuffItem(item);
+		if (setup.foodstuff[key]) {
+			console.error(`duplicate foodstuff key detected: ${key}`);
+		}
+		setup.foodstuff[key] = item;
+	});
+}
+window.mergeModdedFoodstuff = mergeModdedFoodstuff;

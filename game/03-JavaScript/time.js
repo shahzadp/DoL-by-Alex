@@ -788,6 +788,8 @@ function dayPassed() {
 	}
 	if (hasMansion) V.avery_mansion.study_unlocked = 0;
 
+	if (V.avery_helicopter.timer > 0) V.avery_helicopter.timer--;
+
 	if (V.flashbacktown > 0) V.flashbacktown--;
 	if (V.flashbackhome > 0) V.flashbackhome--;
 	if (V.flashbackbeach > 0) V.flashbackbeach--;
@@ -1048,6 +1050,11 @@ function hourPassed(hours) {
 
 	/* code that needs to run every hour */
 	for (let i = 0; i < hours; i++) {
+		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
+		if (i !== 0) {
+			minutePassed(60);
+			Time.set(V.timeStamp + 3600);
+		}
 		if (V.innocencestate === 1 && V.control <= 0) statChange.awareness(1);
 		statChange.control(1);
 		wikifier("orgasmHourlyRecovery");
@@ -1118,11 +1125,7 @@ function hourPassed(hours) {
 		// time checks
 		if (Time.hour === 6) dawnCheck();
 		if (Time.hour === 12) noonCheck();
-		// the first hour already has minutes passed and time set before hourPassed even ran, but subsequent hours still need it
-		if (i !== 0) {
-			minutePassed(60);
-			Time.set(V.timeStamp + 3600);
-		}
+
 		// Pregnancy uses the current time, so it runs after the clock moves forward above.
 		if (V.settings.pregnancyType !== "realistic") {
 			// Fetish mode. Pending conceptions from realistic mode are thrown out.
@@ -1473,7 +1476,13 @@ function dailyNPCEffects() {
 				}
 			}
 
-			if (V.avery_mansion.rage.dinner_done !== 1 && between(Time.weekDay, 3, 7) && !V.avery_injury && !inRentPausedBadEnd()) {
+			if (
+				V.avery_mansion.rage.dinner_done !== 1 &&
+				between(Time.weekDay, 3, 7) &&
+				!V.avery_injury &&
+				!inRentPausedBadEnd() &&
+				V.avery_mansion.rage.timer !== 30
+			) {
 				if (V.avery_valentines?.done && Time.monthDay === 15 && Time.monthName === "February") {
 					// do not spoil the valentines
 				} else {
@@ -1506,14 +1515,13 @@ function dailyNPCEffects() {
 				if (V.avery_mansion.injury_timer >= 1) {
 					V.avery_mansion.injury_timer--;
 				}
-				if (V.avery_mansion.injury_timer <= 0 && !["healing", "healed"].includes(V.avery_mansion.injury_stage)) {
+				if (V.avery_mansion.injury_timer <= 0) {
+					V.avery_mansion.injury_stage = "healed";
+				} else if (V.avery_mansion.injury_timer <= 15) {
 					V.avery_mansion.injury_stage = "healing";
-				} else if (V.avery_mansion.injury_timer <= 15 && !["cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)) {
+				} else if (V.avery_mansion.injury_timer < 50) {
 					V.avery_mansion.injury_stage = "cast";
-				} else if (
-					V.avery_mansion.injury_timer <= 30 &&
-					!["sling", "sling_done", "cast", "cast_done", "healing", "healed"].includes(V.avery_mansion.injury_stage)
-				) {
+				} else {
 					V.avery_mansion.injury_stage = "sling";
 				}
 			}
@@ -1786,7 +1794,7 @@ function dailyPlayerEffects() {
 		V.vore_trait_message = 1;
 		V.voretrait = 1;
 	}
-	if (V.milk_drank_stat >= 1000 && V.milkdranktrait === 0) {
+	if (V.milk_drank_stat >= 10000 && V.milkdranktrait === 0) {
 		V.effectsmessage = 1;
 		V.milk_trait_message = 1;
 		V.milkdranktrait = 1;
@@ -2478,6 +2486,11 @@ function passArousalWetness(passMinutes) {
 			V.pantiesSoaked = V.underlowerwet >= 100;
 		}
 	}
+
+	if (V.vaginaArousalWetness < 60 || V.underlowerwet < 100) {
+		V.pantiesSoaked = false;
+	}
+
 	if (V.earSlime.focus === "pregnancy" && V.earSlime.growth >= 75) {
 		// Prevent it from dropping below 30 or 60 when the ear slime has fully grown with a focus on pregnancy
 		V.vaginaArousalWetness = Math.clamp(V.vaginaArousalWetness, V.earSlime.growth >= 100 ? 60 : 30, 100);

@@ -11,7 +11,7 @@
 
 <<widget "baitShopShop-main">>
 	<<if $tryOn.autoReset isnot false>><<tryOnReset>><</if>><<unset $tempDisable>>
-	<<set $outside to 0>><<set $location to "mer_pier">><<effects>>
+	<<set $outside to 0>><<set $location to "mer_pier">><<set $bus to "baitShop">><<effects>>
 	<<set $shopName = "baitShop">>
 	<<set _shopCloseOverride to !baitShopOpen()>>
 
@@ -35,7 +35,7 @@
 		
 		<<elseif $fishing.baitShopAmbient is "boughtBaitWorms">>
 			<<wearProp "bait_worm">>
-			<<He>> hands you a little can of bait worms. "Unless you're fishing for baitfish, you're better off using any bait other than these worms. But they're better than nothing, and they're all I've got. Need anything else?"
+			<<He>> hands you a little can of bait worms. "Unless you're fishing for <span class="blue">baitfish,</span> you're better off using any bait other than these worms. But they're better than nothing, and they're all I've got. Need anything else?"
 
 		<<elseif $showPcEnterBaitShopText>>
 			A <<person>> behind the cluttered counter looks up as the door creaks open. Reels, hooks, and coils of line cover every surface of the cramped shack.
@@ -58,8 +58,7 @@
 	</div>
 	<br><br>
 
-	<<baitShopStoreIcon>>
-	<<link "Browse equipment">><<replace "#clothingShop-div">><<AllShop>><</replace>><</link>>
+	<<icon "clothing-shop.png">><<link "Browse equipment">><<unset _prop>><<updatesidebarimg>><<replace "#clothingShop-div">><<AllShop>><</replace>><<endevent>><</link>>
 	<br>
 	<<if baitShopOpen()>>
 		<<if $money gte 600>>
@@ -201,10 +200,10 @@
 		<<case "fishingMoor">><<set _fishSpotPhrase to "out on the moor">>
 		<<case "fishingForestLake">><<set _fishSpotPhrase to "in the lake through the forest">>
 	<</switch>>
-	<<if not $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
+	<<set _alreadyFound to $fishing.record[_requestFishKey].foundIn.includes(_fishSpot)>>
+	<<if !_alreadyFound>>
 		<<run $fishing.record[_requestFishKey].foundIn.push(_fishSpot)>>
-	<</if>>
-	<span class="gold"><<= _fishSpotPhrase>></span>
+	<</if>><span @class="_alreadyFound ? 'blue' : 'gold'"><<= _fishSpotPhrase>></span>
 <</widget>>
 
 :: Bait Shop Lock
@@ -246,7 +245,7 @@ A small cash register sits on the cluttered counter. It's locked.
 		<<wearProp "lockpick">>
 		<span class="green">The lock looks easy to pick.</span>
 		<br><br>
-		<<lockicon "pick">><<link [[Pick it (0:10)|Bait Shop Register Sneak]]>><<pass 10>><<crimeUp 10 "thievery">><</link>><<crime "thievery">>
+		<<lockicon "pick">><<link [[Pick it (0:10)|Bait Shop Register Sneak]]>><<pass 10>><<crimeUp 10 "thievery">><<endevent>><</link>><<crime "thievery">>
 		<br>
 	<</if>>
 <<else>>
@@ -270,7 +269,7 @@ You deftly open the cash register and count out the money inside. There's <<prin
 <<if $rng gte 86>>
 	<<skulshopevents>>
 <<else>>
-	<<link [[Take it|Bait Shop]]>><<money $cash "thievery">><<crimeUp `$cash / 100` "thievery">><</link>><<crime "thievery">>
+	<<link [[Take it|Bait Shop]]>><<money $cash "thievery">><<crimeUp `$cash / 100` "thievery">><<endevent>><</link>><<crime "thievery">>
 	<br>
 	<<link [[Leave it|Bait Shop]]>><<endevent>><</link>>
 <</if>>
@@ -384,13 +383,19 @@ You set the <<= _fish>> on the counter. The <<person>> picks it up and turns it 
 	<<He>> nods as <<he>> takes it from you. "I'll fillet it and fry it up. Nothing fancy, but perch fries well and I'm not in the mood for something complicated tonight."<<llstress>><<ltrauma>><<trauma -3>><<stress -10>>
 <<elseif _fish is "cod">>
 	"Lovely." <<He>> grins. "I've been craving a fish pie all week. This'll do perfectly."<<llstress>><<ltrauma>><<trauma -3>><<stress -10>>
+
+	<<set _pay to Math.round(_pay * 1.5)>>
 <<elseif _fish is "pike">>
 	"Good catch." <<He>> hefts it. "This will take some work to prepare, but there's plenty of meat here. I'll get the bones out and make a proper meal of it, should keep me fed for a few days."<<llstress>><<ltrauma>><<trauma -3>><<stress -10>>
+
+	<<set _pay to Math.round(_pay * 1.5)>>
 <<elseif _fish is "eel">>
 	"Good catch." <<He>> hefts it. "No, it's a great catch! Thanks a ton, I can't wait to get this prepared." <<llstress>><<ltrauma>><<trauma -3>><<stress -10>>
 	<br><br>
 
 	"Have you ever had jellied eels? No? I'm sure you will at some point." <<gstress>>
+
+	<<set _pay to Math.round(_pay * 1.5)>>
 <</if>>
 <br><br>
 

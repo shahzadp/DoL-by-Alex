@@ -41,7 +41,12 @@ function toggleAllHairTraitsFilter() {
 }
 window.toggleAllHairTraitsFilter = toggleAllHairTraitsFilter;
 
-// A wrapper for wikifyEval, only use for singular macro calls.
+/**
+ * A wrapper for wikifyEval, only use for singular macro calls.
+ *
+ * @param {string} widget Name of the widget.
+ * @param {...any} args Potential arguments for the widget.
+ */
 function wikifier(widget, ...args) {
 	if (widget == null) return document.createDocumentFragment();
 	return Wikifier.wikifyEval("<<" + widget + (args.length ? " " + args.join(" ") : "") + ">>");
@@ -410,7 +415,7 @@ function featsPointsMenuReset() {
 DefineMacroS("featsPointsMenuReset", featsPointsMenuReset);
 
 function startingPlayerImageReset() {
-	jQuery(document).on("change", "#settingsDiv .macro-radiobutton,#settingsDiv ,#settingsDiv .macro-checkbox", () => {
+	jQuery(document).on("change", "#settingsDiv", () => {
 		Wikifier.wikifyEval("<<startingPlayerImageUpdate>>");
 	});
 	return "";
@@ -911,6 +916,7 @@ window.DefaultActions = {
 };
 
 function selectWardrobe(targetLocation = V.wardrobe_location, type) {
+	if (!V.settings.multipleWardrobes) return V.wardrobe;
 	let wardrobe = V.wardrobes[targetLocation];
 	if (type !== "return" && wardrobe?.locationRequirement?.length && !wardrobe.locationRequirement.includes(V.location)) {
 		V.wardrobe_location = "wardrobe";
@@ -983,7 +989,7 @@ function generateClothingItem(name) {
 	for (const [slot, items] of Object.entries(setup.clothes)) {
 		const item = items.find(i => i.name === name);
 		if (item) {
-			const colour = item.colour_options.filter(c => c !== "custom").random();
+			const colour = item.colour_options.filter(c => c !== "custom").random() ?? "";
 			return { slot, item, colour };
 		}
 	}
@@ -1993,15 +1999,15 @@ DefineMacro("validateTransformations", validateTransformations);
 // prettier-ignore
 function getSexesFromRandomGroup() {
 	if (maleChance() <= 0) { /* Only females. */
-		if (V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_FEMALES;		/* All females, no dickgirls. Always vaginal. */
-		if (V.settings.femaleNPCPenisChance >= 100) return SexTypes.ALL_DICKGIRLS;	/* All females, all dickgirls. Always penises. */
+		if (V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_FEMALES;		/* All females, none with penises. Always vaginal. */
+		if (V.settings.femaleNPCPenisChance >= 100) return SexTypes.ALL_FEMALE_PENISES;	/* All females, all with penises. Always penises. */
 	}
 	if (maleChance() >= 100) { /* Only males. */
-		if (V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_MALES;			/* All males, no cuntboys. Always males. */
-		if (V.settings.maleNPCVaginaChance >= 100) return SexTypes.ALL_CUNTBOYS;	/* All males, all cuntboys. Always vaginal. */
+		if (V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_MALES;			/* All males, none with vaginas. Always males. */
+		if (V.settings.maleNPCVaginaChance >= 100) return SexTypes.ALL_MALE_VAGINAS;	/* All males, all with vaginas. Always vaginal. */
 	}
-	if (V.settings.maleNPCVaginaChance >= 100 && V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but all males are cuntboys, and there are no dickgirls. */
-	if (V.settings.femaleNPCPenisChance >= 100 && V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_DICKS;	/* Both females and males, but all females are dickgirls, and there are no cuntboys. */
+	if (V.settings.maleNPCVaginaChance >= 100 && V.settings.femaleNPCPenisChance <= 0) return SexTypes.ALL_VAGINAS;	/* Both females and males, but all males have vaginas, and no females have penises. */
+	if (V.settings.femaleNPCPenisChance >= 100 && V.settings.maleNPCVaginaChance <= 0) return SexTypes.ALL_DICKS;	/* Both females and males, but all females have penises, and no males have vaginas. */
 	return SexTypes.BOTH;
 }
 window.getSexesFromRandomGroup = getSexesFromRandomGroup;
@@ -2441,7 +2447,7 @@ function dailyConvert() {
 window.dailyConvert = dailyConvert;
 
 function convertHairLengthToStage(hair, length) {
-	if (!hair || !length) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
+	if (!hair || length === undefined) throw new Error(`Hair AND Length must be provided to be converted: ${hair} / ${length}`);
 	if (hair === "fringe") {
 		if (length >= 900) return "feet";
 		else if (length >= 700) return "thighs";
@@ -2461,13 +2467,16 @@ function convertHairLengthToStage(hair, length) {
 window.convertHairLengthToStage = convertHairLengthToStage;
 
 function calchairlengthstage() {
-	const stages = ["short", "shoulder", "chest", "navel", "thighs", "feet"];
+	// commenting old stage check just in case i'm dumb
+	// const stages = ["short", "shoulder", "chest", "navel", "thighs", "feet"];
 
 	V.hairlength = Math.clamp(V.hairlength, 0, 1000);
-	V.hairlengthstage = stages[Math.trunc(V.hairlength / 200)];
+	// V.hairlengthstage = stages[Math.trunc(V.hairlength / 200)];
+	V.hairlengthstage = convertHairLengthToStage("sides", V.hairlength);
 
 	V.fringelength = Math.clamp(V.fringelength, 0, 1000);
-	V.fringelengthstage = stages[Math.trunc(V.fringelength / 200)];
+	// V.fringelengthstage = stages[Math.trunc(V.fringelength / 200)];
+	V.fringelengthstage = convertHairLengthToStage("fringe", V.fringelength);
 }
 window.calchairlengthstage = calchairlengthstage;
 DefineMacro("calchairlengthstage", calchairlengthstage);
@@ -3280,3 +3289,22 @@ function wearingCondom(who) {
 	return condomState(who) !== "none";
 }
 window.wearingCondom = wearingCondom;
+
+/**
+ * A skin tone for a newly generated NPC from 0 (lightest) to 100 (darkest).
+ * Tones cluster around the most common tone the player chose and never fall outside the
+ * lightest and darkest skin tones they chose.
+ *
+ * @returns {number} 0-100
+ */
+function randomSkinTone() {
+	const min = Math.clamp(V.settings.skinToneMin, 0, 100);
+	const max = Math.clamp(V.settings.skinToneMax, 0, 100);
+	if (max <= min) return min;
+	const mean = Math.clamp(V.settings.skinToneMode, min, max);
+	const roll = random(0, 10000) / 10000;
+	const peak = (mean - min) / (max - min);
+	const tone = roll < peak ? min + Math.sqrt(roll * (max - min) * (mean - min)) : max - Math.sqrt((1 - roll) * (max - min) * (max - mean));
+	return Math.round(Math.clamp(tone, min, max));
+}
+window.randomSkinTone = randomSkinTone;

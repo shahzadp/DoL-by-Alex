@@ -8,33 +8,7 @@ function isAveryHuntingPlayer() {
 }
 window.isAveryHuntingPlayer = isAveryHuntingPlayer;
 
-/**
- * Checks if Avery's mansion is unlocked.
- *
- * @returns {boolean} Indicates whether Avery's mansion is unlocked or not
- */
-function isAveryMansionUnlocked() {
-	return V.avery_mansion !== undefined;
+function averyPayout() {
+	return (C.npc.Avery.love * 10 + V.endear * 10 + 10) * 100;
 }
-window.isAveryMansionUnlocked = isAveryMansionUnlocked;
-
-/**
- * Checks if Avery is inside the dungeon
- *
- * @returns {boolean} Indicates whether Avery is in the dungeon or not
- */
-function isAveryInsideDungeon() {
-	return V.avery_dungeon !== undefined;
-}
-window.isAveryInsideDungeon = isAveryInsideDungeon;
-
-/**
- * Checks if Avery apologized at least once for hunting the player
- * Avery must have at least chased the player once and returned home with a bouquet of roses
- *
- * @returns {boolean} Indicates whether Avery apologized for hunting the player
- */
-function hasAveryApologizedForChase() {
-	return V.averySeen.includes("chase") && !V.avery_mansion?.rage?.apologetic;
-}
-window.hasAveryApologizedForChase = hasAveryApologizedForChase;
+window.averyPayout = averyPayout;

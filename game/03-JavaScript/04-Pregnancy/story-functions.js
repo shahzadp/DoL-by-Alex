@@ -113,17 +113,28 @@ window.npcPregnancyEnding = npcPregnancyEnding;
  * @returns {"fertilised"|"unfertilised"|undefined}
  */
 function birdEggsReady(npc) {
-	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc] || C.npc[npc].vagina === "none") return undefined;
+	if (V.settings.playerPregnancyEggLayingEnabled === false || !C.npc[npc]) return undefined;
 	const pregnancy = C.npc[npc].pregnancy;
 	if (getActivePregnancies(npc).some(p => childBaseSpecies(p.donorSpecies) === "hawk" && (p.waterBreaking || Time.date.timeStamp >= getDueDate(p))))
 		return "fertilised";
+	if (C.npc[npc].vagina === "none") return undefined;
 	if (npc === "Great Hawk" && V.daily.hawkUnfertilisedEggs) return undefined;
 	if (!npcIsPregnant(npc) && pregnancy.cycleDay === pregnancy.cycleDangerousDay + 2) return "unfertilised";
 }
 window.birdEggsReady = birdEggsReady;
 
+/**
+ * The active pregnancies belonging to the body the player is in right now.
+ * Including stories and paintings.
+ */
+function currentBodyPregnancies() {
+	const firstOfThisVision = V.statFreeze && V.frozenValues ? (V.frozenValues.pregnancies ?? V.pregnancies).length : 0;
+	return getActivePregnancies("pc").filter(p => p.pregnancyId >= firstOfThisVision);
+}
+window.currentBodyPregnancies = currentBodyPregnancies;
+
 function playerIsPregnant() {
-	return getActivePregnancies("pc").length > 0;
+	return currentBodyPregnancies().length > 0;
 }
 window.playerIsPregnant = playerIsPregnant;
 
@@ -383,9 +394,9 @@ window.menstrualExposure = menstrualExposure;
  * @returns {number} 0 for no chance at all, up to 1
  */
 function menstrualOutlook() {
-	// The same things that stop rollAndRecordConception rolling at all.
+	// The things that stop rollAndRecordConception rolling at all, except a pending conception: the
+	// player can't know about that one, and reading "very safe" the hour it lands would tell them.
 	if (!readyToCarry()) return 0;
-	if (V.pendingPregnancies.vagina !== null || V.pendingPregnancies.anus !== null) return 0;
 	if (V.settings.basePlayerPregnancyChance <= 0) return 0; // the slider's floor turns pregnancy off
 	// A parasited orifice never rolls. Only a body with no clear orifice left is safe by it.
 	const orifices = [V.player.vaginaExist && "vagina", playerCanCarryAnally() && "anus"].filter(Boolean);
@@ -575,7 +586,7 @@ function playerAwareTheyCanBePregnant() {
 window.playerAwareTheyCanBePregnant = playerAwareTheyCanBePregnant;
 
 function playerAwareTheyArePregnant() {
-	return getActivePregnancies("pc").some(p => knowsPregnancy(p.pregnancyId, "pc"));
+	return currentBodyPregnancies().some(p => knowsPregnancy(p.pregnancyId, "pc"));
 }
 window.playerAwareTheyArePregnant = playerAwareTheyArePregnant;
 
@@ -659,14 +670,18 @@ window.knowsAboutPregnancy = knowsAboutPregnancy;
  * @param {string} carrier the carrier of the birth
  * @param {number} birthId the pregnancyId of the birth
  * @param {number} children how many children the birth produced
+ * @param {string} [description] used for NPCs that did not store information (calls them a "stranger")
  */
-function addBabyIntro(introFor, carrier, birthId, children) {
+function addBabyIntro(introFor, carrier, birthId, children, description) {
 	if (!V.babyIntros) V.babyIntros = {};
 	if (!V.babyIntros[introFor]) V.babyIntros[introFor] = [];
 	if (!V.babyIntros[introFor].find(intro => intro.birthId === birthId && intro.mother === carrier)) {
-		V.babyIntros[introFor].push({ birthId, mother: carrier, children });
+		const intro = { birthId, mother: carrier, children };
+		if (description) intro.description = description;
+		V.babyIntros[introFor].push(intro);
 	}
 }
+window.addBabyIntro = addBabyIntro;
 
 /**
  * Marks whoNowKnows aware of a pregnancy the carrier has. Without existingId, every pregnancy the
@@ -864,6 +879,7 @@ function setBabyIntro(carrier, introFor, birthId) {
 	}
 }
 DefineMacro("setBabyIntro", setBabyIntro);
+window.setBabyIntro = setBabyIntro;
 
 /**
  * Removes a queued baby introduction for one specific birth.

@@ -243,6 +243,7 @@ declare global {
 
 	function getActivePregnancy(carrier: string, orifice: "vagina" | "anus"): Pregnancy | undefined;
 	function getActivePregnancies(carrier: string): Pregnancy[];
+	function currentBodyPregnancies(): Pregnancy[];
 	function getLabouringPregnancy(carrier: string): Pregnancy | undefined;
 	function getLabouringLitter(carrier: string): Child[];
 	function getPregnancyOf(child: Child): Pregnancy;
@@ -307,11 +308,11 @@ declare global {
 	function childBaseSpecies(donorSpecies: string): "human" | "wolf" | "hawk";
 	function isMonsterPerson(donorSpecies: string): boolean;
 	function rollLitterSize(base: string): number;
-	function resolveChildParent(name: string): { gender: string | null; hairColour: string | null; eyeColour: string | null; skinColour: string | null };
+	function resolveChildParent(name: string): { gender: string | null; hairColour: string | null; eyeColour: string | null; skinColour?: string | null };
 	function rollChildGender(carrierParent: { gender: string | null }, donorParent: { gender: string | null }, sameParent: boolean): "m" | "f" | "h";
 	function pcHeritage(): { beast: string | null; divine: string | null };
 	function rollChildEyeColour(carrierParent: { eyeColour: string | null }, donorParent: { eyeColour: string | null }): string;
-	function rollChildSkinColour(carrierParent: { skinColour: string | null }, donorParent: { skinColour: string | null }): string;
+	function rollChildSkinColour(carrierParent: { skinColour?: string | null }, donorParent: { skinColour?: string | null }): string;
 	function rollChildHairColour(
 		base: "human" | "wolf" | "hawk",
 		carrierParent: { hairColour: string | null },

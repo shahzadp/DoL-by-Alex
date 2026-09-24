@@ -54,7 +54,7 @@ function canNpcConceive(orifice, carrier, infertile) {
 	if (orifice !== "vagina" && orifice !== "anus") throw new Error(`unknown orifice "${orifice}"`);
 	if (!(C.npc[carrier] ? V.settings.nnpcPregnancyEnabled : V.settings.npcPregnancyEnabled)) return false;
 	// A named NPC the player toggled off stays off — the compatibility check enforces this, the roll must too.
-	if (C.npc[carrier] && C.npc[carrier].pregnancy && C.npc[carrier].pregnancy.enabled === false) return false;
+	if (C.npc[carrier] && C.npc[carrier].pregnancy && !C.npc[carrier].pregnancy.enabled) return false;
 	if (orifice === "anus") {
 		if (!V.settings.npcAnalPregnancyEnabled) return false;
 		if (C.npc[carrier] && C.npc[carrier].pregnancy && C.npc[carrier].pregnancy.analEnabled === false) return false;

@@ -49,12 +49,12 @@
 
 <<addinlineevent "bite" fishingCatchEventWeight("fishingForestLake", 10)>>
 	<<set $fishingHookedFish to rollFish("fishingForestLake")>>
+	<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
 	<<run onBaitLoss()>>
 	<<if fishTriggersMinigame($fishingHookedFish)>>
 		<<run fishingMinigameStart($fishingHookedFish.type)>>
 		<<include "Fishing Forest Lake Minigame Loop">>
 	<<else>>
-		<<set _isPreferredBait to $fishing.currentBait !== undefined && setup.fishing.lootTables.fish[$fishingHookedFish.type].preferredBait is $fishing.currentBait>>
 		You feel a tug on your line as <<a $fishingHookedFish.type>><<if _isPreferredBait>> greedily<</if>> <<if $fishing.currentBait>>takes the bait<<else>>takes the hook<</if>>. You haul back on the line and pull it out of the water without a fight.
 		<<onFishCaught>>
 		<<fishingCatchFishText $fishingHookedFish>>
@@ -100,7 +100,7 @@
 <</if>>
 
 /* Plant Person Kiss */
-<<if $settings.plantsEnabled>>
+<<if $settings.plantsEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 	<<if $fishing.fishingForestLake.event is "none">>
 		<<addinlineevent "plantPersonStart" fishingDangerEventWeight(0.75)>>
 			<<set $fishing.fishingForestLake.event to "plantPerson">>
@@ -117,7 +117,7 @@
 <</if>>
 
 /* Vine Attack Event */
-<<if $settings.tentaclesEnabled>>
+<<if $settings.tentaclesEnabled and ($hallucinations gte 2 or $backgroundTraits.includes("plantlover"))>>
 	<<if $fishing.fishingForestLake.event is "none">>
 		<<addinlineevent "plantStart" fishingDangerEventWeight(0.75)>>
 			<<set $fishing.fishingForestLake.event to "plant">>

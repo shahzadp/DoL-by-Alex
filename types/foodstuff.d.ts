@@ -1,10 +1,23 @@
 declare module "twine-sugarcube" {
 	export interface SugarCubeSetupObject {
 		foodstuff: Dict<FoodstuffItem>;
+		moddedFoodstuff: Dict<FoodstuffItem>;
+	}
+
+	export interface SugarCubeStoryVariables {
+		foodstuff: Dict<FoodstuffInventoryItem>;
 	}
 }
 
 declare global {
+	export interface FoodstuffInventoryItem {
+		amount: number; // How many of this item the player is holding.
+		knows_recipe?: boolean; // Whether the player has learned this item's recipe.
+		supermarket?: number; // Remaining supermarket stock.
+		marketStall?: boolean; // Whether the player has this item switched on to sell at their market stall.
+		alternative?: string; // The foodstuff key the player has picked as this ingredient's substitute when cooking.
+	}
+
 	export type Season = "spring" | "summer" | "autumn" | "winter";
 
 	export type FoodstuffCategory = "dish" | "flower" | "fruit" | "ingredient" | "meat" | "produce" | "seafood" | "mushroom" | "vegetable";
@@ -62,7 +75,6 @@ declare global {
 	}
 
 	export interface FoodstuffItem {
-		index: number; // Unique index for the foodstuff.
 		name: string; // Name of the item.
 		singular: string; // Singular form of the item.
 		plural: string; // Plural form of the item.
@@ -80,6 +92,7 @@ declare global {
 		recipe?: FoodstuffRecipeData; // The data for this foodstuff related to cooking and recipes. If not present, then this foodstuff cannot be used in recipes or cooked.
 		food?: FoodstuffFoodData; // The data for this foodstuff related to being a food item that can be gifted and eaten. If present, then this foodstuff can be gifted, but technically the giftability of a foodstuff is determined by the category of the item.
 		is_fishing_bait?: boolean; // true if this foodstuff can be used as bait while fishing.
+		modder?: string; // String naming the mod that added this item. Never set this for vanilla items.
 	}
 }
 

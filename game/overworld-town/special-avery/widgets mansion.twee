@@ -107,7 +107,7 @@
 
 <<widget "avery_mansion_init">>
 	<<set $avery_mansion to {}>>
-	<<set $avery_mansion.version to 3>>
+	<<set $avery_mansion.version to 5>>
 
 	<<set $avery_mansion.pool to 0>>
 	<<set $avery_mansion.kitchen to 0>>
@@ -924,6 +924,7 @@
 
 	<<if $avery_mansion.rage.apologetic is true>>
 		<<set $avery_mansion.rage.apologetic to false>>
+		<<set $averySeen.pushUnique("rage_apology")>>
 		<<He>> holds one hand behind <<his>> back, and flashes a nervous smile, before revealing a bundle of roses. "I'm sorry," <<he>> says, holding out the flowers. "I'm so fucking sorry. I just get so angry, but it's not your fault." <<He>> opens <<his>> mouth to continue, but looks away instead.<<lllarage>><<npcincr Avery rage -9>>
 		<br><br>
 
@@ -3089,9 +3090,9 @@
 			You hear another car door open, and close, in the garage. You investigate, and find Avery sat behind the wheel of <<his>> sports car. One arm is encased in a white cast, held aloft by a sling around <<his>> neck. The other clutches a bottle of cheap bourbon. <<He>> takes a swig.
 			<br><br>
 
-			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><</link>>
+			<<link [[Approach|Mansion Return Broken Approach]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "sling">><</link>>
 			<br>
-			<<link [[Just watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><<pass 10>><</link>>
+			<<link [[Just watch (0:10)|Mansion Return Broken Watch]]>><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "sling">><<pass 10>><</link>>
 			<br>
 		<<elseif _avery_interrupt is "valentines_missed">>
 			<<npc "Avery">><<person1>>
@@ -3507,7 +3508,7 @@
 			<<if $bus is "avery_bathroom">>
 				<<if $avery_mansion.schedule is "bath">>
 					<<if !$daily.avery.morning_bath>>
-						<<if !$daily.avery.bathroom_peek and !["Mansion Bathroom", "Mansion Bathe", "Mansion Brush", "Mansion Talk Chat 2", "Mansion Talk Leave"].includes($passagePrev) and random(1, 4) is 4>>
+						<<if !$daily.avery.bathroom_peek and !["Mansion Bathroom", "Mansion Bathe", "Mansion Brush", "Mansion Talk Chat 2", "Mansion Talk Leave", "Mansion Talk Flirt"].includes($passagePrev) and random(1, 4) is 4>>
 							<<set _hide_links to 1>>
 							<<npc "Avery">><<person1>>
 							<<set $daily.avery.bathroom_peek to true>>
@@ -3890,7 +3891,7 @@
 
 					<<link [[Start to Valentine's Day with Ascended Avery|Mansion Enter]]>><<set $avery_fate to "ascended">><<npc Gwylan>><<npc Harper>><<npc Remy>><<set C.npc.Avery.title to "crimson hound">><<set C.npc.Harper.title to "silver fox">><<set C.npc.Remy.title to "high elk">><<set $auriga_scar++>><<gwylanNobody>><<if $gwylan>><<set $gwylan.wary += 3>><</if>><<set $avery_tower.progress to 100>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><</link>><br>
 
-					<<link [[Start to Valentine's Day with Saved Avery|Mansion Enter]]>><<set $avery_fate to "saved">><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "fresh">><<npcincr Avery dom -9>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><<npcincr Avery rage -39>><<set $avery_mansion.rage.timer to 30>><</link>>
+					<<link [[Start to Valentine's Day with Saved Avery|Mansion Enter]]>><<set $avery_fate to "saved">><<set $avery_injury to false>><<set $avery_mansion.injury_timer to 90>><<set $avery_mansion.injury_stage to "sling">><<npcincr Avery dom -9>><<run Time.timeTravel(new DateTime(Time.year + ((Time.month < 2 || (Time.month === 2 && Time.day <= 12)) ? 0 : 1), 2, 12, 7, 0))>><<npcincr Avery rage -39>><<set $avery_mansion.rage.timer to 30>><</link>>
 
 					<br><br>
 					Miscellaneous:
@@ -3973,7 +3974,7 @@
 		<<set _avery_interrupt to "valentines_ready">>
 	<<elseif $_avery_present is true and $avery_injury>>
 		<<set _avery_interrupt to "injury">>
-	<<elseif $_avery_present is true and $avery_mansion.schedule is "return">>
+	<<elseif $_avery_present is true and $avery_mansion.schedule is "return" and !($avery_valentines and $avery_valentines.invite and Time.monthName is "February" and Time.monthDay is 14 and Time.hour gte 21)>>
 		<<set _avery_interrupt to "work">>
 	<<elseif $_avery_present is true and $avery_valentines_missed>>
 		<<set _avery_interrupt to "valentines_missed">>
@@ -3985,7 +3986,7 @@
 		<<set _avery_interrupt to "party">>
 	<<elseif $_avery_present is true and $avery_valentines and !$avery_valentines.init and Time.monthName is "February" and (Time.monthDay is 14 and Time.hour lt 21 or Time.monthDay lt 14)>>
 		<<set _avery_interrupt to "valentines_approach">>
-	<<elseif $_avery_present is true and $avery_mansion.date_seen is false and (Time.weekDay isnot 7 or Time.weekDay is 7 and Time.hour lte 19) and !_date_block>>
+	<<elseif $_avery_present is true and $avery_mansion.date_seen is false and (Time.weekDay isnot 7 or Time.weekDay is 7 and Time.hour lte 19) and !_date_block and !$averydate>>
 		<<set _avery_interrupt to "date_approach">>
 	<<elseif $_avery_present is true and $averydate is 1 and Time.hour is 20 and $averydatedone isnot 1 and $avery_mansion.date_ready isnot true and Time.weekDay is 7>>
 		<<set _avery_interrupt to "date_ready">>
@@ -4838,9 +4839,8 @@
 <</widget>>
 
 <<widget "avery_injury_check">>
-	<<if $avery_mansion and ($avery_mansion.injury_stage is "sling" or $avery_mansion.injury_stage is "sling_done" or $avery_mansion.injury_stage is "cast" or $avery_mansion.injury_stage is "cast_done")>>
-		<<set _avery_injured to true>>
-	<</if>>
+	<<set _avery_injured to ["sling", "cast", "healing"].includes($avery_mansion?.injury_stage)>>
+	<<set _avery_injured_sling to $avery_mansion?.injury_stage is "sling">>
 <</widget>>
 
 <<widget "avery_valentines_init">>
@@ -4872,8 +4872,8 @@
 	<<unset $avery_valentines_vow>>
 	<<unset $speechfallentransform>>
 
-	<<if $avery_mansion>>
-		<<set $avery_mansion.rage.dinner_done to true>>
+	<<if $avery_mansion and Time.monthName is "February" and Time.monthDay is 14>>
+		<<set $avery_mansion.rage.dinner_done to 1>>
 	<</if>>
 <</widget>>
 

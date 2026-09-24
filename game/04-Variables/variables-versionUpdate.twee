@@ -3610,9 +3610,9 @@
 		<<set $objectVersion.feats to 2>>
 	<</if>>
 
-	<<if $objectVersion.wardrobes lt 18 or $objectVersion.wardrobes is undefined>>
+	<<if $objectVersion.wardrobes lt 19 or $objectVersion.wardrobes is undefined>>
 		<<wardrobesUpdate>>
-		<<set $objectVersion.wardrobes to 18>>
+		<<set $objectVersion.wardrobes to 19>>
 	<</if>>
 
 	<<if $objectVersion.museumAntiques lte 14 and $museumAntiques.antiques.antiquewhitescrystal isnot undefined>>
@@ -3928,7 +3928,21 @@
 	<</script>>
 	<!-- version 0.5.6.0 END Gameplay Options Variable Refactor END -->
 
-	 <!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
+	<!-- Must precede <<updateNewNamedNpcs>> -->
+	<<if $settings.skinToneMode is undefined>>
+		<<run Object.assign($settings, skinToneSettingsFromDarkChance($settings.darkSkinChance))>>
+		<<unset $settings.darkSkinChance>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (npc && npc.skincolour === 0) delete npc.skincolour;
+		})>>
+	<</if>>
+
+	<!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
 	<<updateNewNamedNpcs>>
 	<<npcPregnancyUpdater>>
 
@@ -4212,7 +4226,7 @@
 			<</if>>
 		<</for>>
 		<<if C.npc["Ivory Wraith"].init is 1>>
-			<<set C.npc["Ivory Wraith"].skincolour to "ghost">>
+			<<set C.npc["Ivory Wraith"].skinType to "ghost">>
 		<</if>>
 		<<for $_s to 0; $_s lt $NPCList.length; $_s++>>
 			<<if $NPCList[$_s].health and !$NPCList[$_s].skincolour>>
@@ -6949,7 +6963,7 @@
 
 	<!-- Increment in variables-start.twee as well whenever new foodstuff objects are added -->
 	<<if !$objectVersion.foodstuff or $objectVersion.foodstuff lt 7>>
-		<<updatePlants>>
+		<<updateFoodstuff>>
 		<<set $objectVersion.foodstuff to 7>>
 	<</if>>
 	<!-- UFarm variable refactor -->
@@ -7328,13 +7342,17 @@
 	<</if>>
 
 	<<if $settings>>
-		<<if $settings.humanPregnancyMonths is undefined>>
+		<<if !Number.isFinite($settings.humanPregnancyMonths)>>
 			<<set $settings.humanPregnancyMonths to 3>>
+		<<else>>
+			<<set $settings.humanPregnancyMonths to Math.clamp($settings.humanPregnancyMonths, 1, 9)>>
 		<</if>>
-		<<if $settings.wolfPregnancyWeeks is undefined>>
+		<<if !Number.isFinite($settings.wolfPregnancyWeeks)>>
 			<<set $settings.wolfPregnancyWeeks to 4>>
+		<<else>>
+			<<set $settings.wolfPregnancyWeeks to Math.clamp($settings.wolfPregnancyWeeks, 2, 12)>>
 		<</if>>
-		<<if $settings.birdPregnancyWeeks is undefined>>
+		<<if !Number.isFinite($settings.birdPregnancyWeeks)>>
 			<<set $settings.birdPregnancyWeeks to 3>>
 		<</if>>
 		<<if $settings.analPregnancy is undefined>>
@@ -7401,6 +7419,12 @@
 		<<run migratePregnancyData()>>
 	<</if>>
 
+	<!-- Child migration fix for people in the middle of a Story/Memory. -->
+	<<if $children isnot undefined and $objectVersion.pregnancyRecords>>
+		<<run delete $objectVersion.pregnancyRecords>>
+		<<run migratePregnancyData()>>
+	<</if>>
+
 	<!-- One-time ward unlock. Introduce the orphanage's non-hospital-born children to Bailey. Runs
 	after the records migration above so getChildrenAt reads the new records. -->
 	<<if !$objectVersion.wardForceUnlock>>
@@ -7408,6 +7432,18 @@
 			<<run getChildrenAt("home").filter(child => child.development.birthLocation isnot "hospital").forEach(child => setBabyIntro(getPregnancyOf(child).carrier, "Bailey", child.pregnancyId))>>
 		<</if>>
 		<<set $objectVersion.wardForceUnlock to 1>>
+	<</if>>
+
+	<!-- Fix for random carriers not having Bailey's intro. -->
+	<<if !$objectVersion.randomCarrierWardIntro>>
+		<<run $pregnancies.forEach(pregnancy => {
+			if (pregnancy.carrier === "pc" || C.npc[pregnancy.carrier] || pregnancy.deliveredLocation !== "home" || knowsPregnancy(pregnancy.pregnancyId, "Bailey")) return;
+			const litter = getChildrenOf(pregnancy.pregnancyId).filter(child => childIsBorn(child) && child.development.location === "home");
+			if (!litter.length) return;
+			addBabyIntro("Bailey", pregnancy.carrier, pregnancy.pregnancyId, litter.length, "stranger");
+			setKnowsPregnancy(pregnancy.pregnancyId, "Bailey");
+		})>>
+		<<set $objectVersion.randomCarrierWardIntro to 1>>
 	<</if>>
 
 	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
@@ -7423,11 +7459,19 @@
 	<<if $sexStats and $sexStats.vagina.menstruation and $sexStats.vagina.menstruation.fertileLeadDays is undefined>>
 		<<set $sexStats.vagina.menstruation.fertileLeadDays to Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2)>>
 	<</if>>
-	<<run Object.values(C.npc).forEach(npc => {
+	<<run Object.getOwnPropertyNames(C.npc).forEach(name => {
+		const npc = C.npc[name];
 		if (npc && npc.pregnancy && npc.pregnancy.enabled && npc.pregnancy.fertileLeadDays === undefined) {
 			npc.pregnancy.fertileLeadDays = Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2);
 		}
 	})>>
+
+	<<if $orphanHawkChildId is undefined and $pregnancies and $childRecords>>
+		<<set _orphanHawkRecord to $childRecords.find(child => child && $pregnancies[child.pregnancyId] && $pregnancies[child.pregnancyId].carrier === "unknown hawk")>>
+		<<if _orphanHawkRecord>>
+			<<set $orphanHawkChildId to _orphanHawkRecord.childId>>
+		<</if>>
+	<</if>>
 
 	<<if $objectVersion.NPCTrustFix is undefined>>
 		<<for _i = 0; _i lt $NPCName.length; _i++>>
@@ -7497,6 +7541,88 @@
 	<<if $options.fishingBaitSelection is undefined>>
 		<<set $options.fishingBaitSelection to "sidebar">>
 	<</if>>
+
+	<<if $foodstuff.cod?.supermarket>>
+		<<unset $foodstuff.cod.supermarket>>
+	<</if>>
+
+	<!-- The dark skin percentage became a lightest/most common/darkest skin tone range
+	that goes from 0-100 from lightest to darkest tone.  Ivory Wraith's "ghost" is a skin type rather than a tone now. -->
+	<<if $objectVersion.skinTone is undefined>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			Object.values(V.storedNPCs).map(stored => stored.npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (!npc) return;
+			if (npc.skincolour === "ghost") { npc.skinType = "ghost"; delete npc.skincolour; }
+			else if (npc.skincolour === "white") npc.skincolour = 0;
+			else if (npc.skincolour === "black") npc.skincolour = 70;
+		})>>
+		<<set $objectVersion.skinTone to 1>>
+	<</if>>
+
+	<<if !$objectVersion.KylarFix and C.npc.Kylar.init and C.npc.Kylar.state is 0>>
+		<<set C.npc.Kylar.init to 0>>
+	<</if>>
+	<<set $objectVersion.KylarFix to 1>>
+
+	<<if $avery_mansion and $avery_mansion.version is 4>>
+		<<set $avery_mansion.version to 5>>
+		<<switch $avery_mansion.injury_stage>>
+		<<case "fresh">>
+			<<set $avery_mansion.injury_stage to "sling">>
+		<<case "fresh_done">>
+			<<set $avery_mansion.injury_stage to "sling">>
+			<<set $averySeen.pushUnique("injury_ask_sling")>>
+		<<case "sling">>
+			<<set $avery_mansion.injury_stage to "cast">>
+		<<case "sling_done">>
+			<<set $avery_mansion.injury_stage to "cast">>
+			<<set $averySeen.pushUnique("injury_ask_cast")>>
+		<<case "cast">>
+			<<set $avery_mansion.injury_stage to "healing">>
+		<<case "cast_done">>
+			<<set $avery_mansion.injury_stage to "healing">>
+			<<set $averySeen.pushUnique("injury_ask_healing")>>
+		<<case "healing">>
+			<<set $avery_mansion.injury_stage to "healed">>
+		<<case "healed">>
+			<<set $averySeen.pushUnique("injury_ask_healed")>>
+		<</switch>>
+	<</if>>
+
+	/*0.5.12.13 */
+	<<if $wrenHeist is false and $wrenHeistMonthly is undefined>>
+		<<unset $wrenHeist>>
+	<</if>>
+
+	<<if $tfFIX is undefined or $tfFIX lte 9>>
+		<<if $transformationParts.fallenAngel.wings is "classicfallenplus">><<set $transformationParts.fallenAngel.wings to "classic-fallenplus">><</if>>
+	<</if>>
+	<<set $tfFIX to 10>>
+
+	<<if $travelSpeed is undefined>>
+		<<set $travelSpeed to "normally">>
+	<</if>>
+
+	<<if $plots is undefined>>
+		<<set $plots to {}>>
+	<</if>>
+	<<for _plotLocation range ["garden", "farm", "wolf", "eden", "asylum"]>>
+		<<if $plots[_plotLocation] is undefined>>
+			<<set $plots[_plotLocation] to []>>
+		<</if>>
+	<</for>>
+
+	/* Adding $avery_helicopter for Avery's helicopter event */
+	<<if C.npc.Avery.init is 1 and !$avery_helicopter>>
+		<<set $avery_helicopter to []>>
+		<<set $avery_helicopter.timer to 0>>
+	<</if>>
+
 
 	<<if $ironmanmode and $options.maxStates is 1>>
 		<<set $options.maxStates to 5>>

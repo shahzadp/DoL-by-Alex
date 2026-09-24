@@ -24,7 +24,6 @@
 	<<set $background to "waif">>
 	<<set $startingseason to "autumn">>
 	<<set $gamemode to "normal">>
-	<<set $settings.darkSkinChance to 10>>
 	<<set $settings.swarmsEnabled to true>>
 	<<set $settings.spidersEnabled to true>>
 	<<set $settings.slugsEnabled to true>>
@@ -102,6 +101,9 @@
 	<<set $settings.tendingYieldModifier to 5>>
 	<<set $notifyUpdate = true>>
 	<<set _tan to 0>>
+	<<set $settings.skinToneMin to 0>>
+	<<set $settings.skinToneMode to 50>>
+	<<set $settings.skinToneMax to 100>>
 
 	<<startingPlayerImageReset>>
 <</widget>>
@@ -318,9 +320,6 @@
 			<<case "default">>
 				<div class="my-1"><span class="gold bold">Current Settings:</span> <i>Adjustable</i></div>
 				<<button "Start Game!">>
-					<<presets _kinkPreset "save">>
-					<<presets _namedNpcPreset "save">>
-					<<presets _monstersPreset "save">>
 					<<if _pregnancytype is "disabled">>
 						<<set $settings.playerPregnancyHumanEnabled to false>>
 						<<set $settings.playerPregnancyBeastEnabled to false>>
@@ -330,8 +329,6 @@
 					<<else>>
 						<<set $settings.pregnancyType to _pregnancytype or "realistic">>
 						<<set $settings.playerPregnancyHumanEnabled to true>>
-						<<set $settings.playerPregnancyBeastEnabled to true>>
-						<<set $settings.playerPregnancyEggLayingEnabled to true>>
 						<<set $settings.npcPregnancyEnabled to true>>
 						<<set $settings.nnpcPregnancyEnabled to true>>
 					<</if>>
@@ -513,8 +510,13 @@
 		<<set $feats.pregnancyLocked to true>>
 	<</if>>
 	<<updatehistorycontrols>>
-	<<presets _namedNpcPreset "save">>
 	<<initnpcgender>>
+	<<if _namedNpcFemaleGenitals and _namedNpcFemaleGenitals isnot "random">>
+		<<assignNPCGenitalsByPronounCore "f" _namedNpcFemaleGenitals true>>
+	<</if>>
+	<<if _namedNpcMaleGenitals and _namedNpcMaleGenitals isnot "random">>
+		<<assignNPCGenitalsByPronounCore "m" _namedNpcMaleGenitals true>>
+	<</if>>
 	<<updatePersistentNPCs>>
 	<<hirsuteHideCheck>>
 	<<generateTipsList>>
@@ -615,7 +617,6 @@
 
 			<div class="settingsToggleItem">
 				<<set _foundPregnancy to !!Object.values($NPCName).find(npc => npc.pregnancy && npc.pregnancy.enabled && getActivePregnancies(npc.fullDescription).length && !setup.pregnancy.canBePregnant.includes(npc.fullDescription))>>
-				<label>
 					<span class="gold">Pregnancy Mode:</span>
 					<br>
 					<<if $passage is "Start">>
@@ -625,15 +626,12 @@
 					<<else>>
 						<<pregnancyType>>
 					<</if>>
-				</label>
 				<br>
-				<label>
 					<<fertilityCycles>>
-				</label>
 				<br>
-				<label data-target='["settingsincompletepregnancyenabled", "pregnancytype", "settingsnnpcpregnancyenabled", "settingsplayerpregnancyhumanenabled", "settingsplayerpregnancybeastenabled"]' data-disabledif="(T.foundPregnancy&&V.settings.incompletePregnancyEnabled===true)||T.pregnancytype==='disabled'||(!V.settings.nnpcPregnancyEnabled&&!V.settings.playerPregnancyHumanEnabled&&!V.settings.playerPregnancyBeastEnabled)">
+				<span data-target='["settingsincompletepregnancyenabled", "pregnancytype", "settingsnnpcpregnancyenabled", "settingsplayerpregnancyhumanenabled", "settingsplayerpregnancybeastenabled"]' data-disabledif="(T.foundPregnancy&&V.settings.incompletePregnancyEnabled===true)||T.pregnancytype==='disabled'||(!V.settings.nnpcPregnancyEnabled&&!V.settings.playerPregnancyHumanEnabled&&!V.settings.playerPregnancyBeastEnabled)">
 					<<incompletePregnancy>>
-				</label>
+				</span>
 			</div>
 
 			<<if _selectedStart isnot "custom">>
@@ -694,12 +692,31 @@
 				</div>
 
 				<div class="settingsToggleItem">
-					<span class="gold">Named NPC Genders:</span>
+					<span class="gold">Named NPC Genders:</span> <mouse class="tooltip linkBlue">(?)<span>Sets the gender and genitals for every Named NPC. <span class='gold inline-colour'>Random Genders</span> have a chance of generating women with penises and men with vaginas, this can be changed under Custom Settings. <span class='blue inline-colour'>All Male</span> are generated with penises. <span class='pink inline-colour'>All Female</span> are generated with vaginas.<br><br>The genitals options override these default settings. Individual Named NPC Genders/Genitals can also be customized before starting the game or mid-game under Named NPC Settings.</span></mouse>
 					<br>
 					<<if _namedNpcPreset is undefined>><<set _namedNpcPreset to "namedNpcDefaultGender">><</if>>
-					<label>All Male <<radiobutton "_namedNpcPreset" "namedNpcAllMaleGender" autocheck>></label> |
-					<label><<print $passage is "Start" ? "Random Genders" : "Current Genders">> <<radiobutton "_namedNpcPreset" "namedNpcDefaultGender" autocheck>></label> |
-					<label>All Female <<radiobutton "_namedNpcPreset" "namedNpcAllFemaleGender" autocheck>></label>
+					<label>All Male <<radiovar "_namedNpcPreset" "namedNpcAllMaleGender">><<namedNpcGenderApply "namedNpcAllMaleGender">><</radiovar>></label> |
+					<label><<print $passage is "Start" ? "Random Genders" : "Current Genders">> <<radiovar "_namedNpcPreset" "namedNpcDefaultGender">><<namedNpcGenderApply "namedNpcDefaultGender">><</radiovar>></label> |
+					<label>All Female <<radiovar "_namedNpcPreset" "namedNpcAllFemaleGender">><<namedNpcGenderApply "namedNpcAllFemaleGender">><</radiovar>></label>
+					<div id="namedNpcGenderConfirm"><<namedNpcGenderConfirm>></div>
+				</div>
+
+				<div class="settingsToggleItem">
+					<span class="gold">Female Named NPC Genitals:</span>
+					<br>
+					<<if _namedNpcFemaleGenitals is undefined>><<set _namedNpcFemaleGenitals to "random">><</if>>
+					<label>Random <<radiobutton "_namedNpcFemaleGenitals" "random" autocheck>></label> |
+					<label>Penis <<radiobutton "_namedNpcFemaleGenitals" "m" autocheck>></label> |
+					<label>Vagina <<radiobutton "_namedNpcFemaleGenitals" "f" autocheck>></label>
+				</div>
+
+				<div class="settingsToggleItem">
+					<span class="gold">Male Named NPC Genitals:</span>
+					<br>
+					<<if _namedNpcMaleGenitals is undefined>><<set _namedNpcMaleGenitals to "random">><</if>>
+					<label>Random <<radiobutton "_namedNpcMaleGenitals" "random" autocheck>></label> |
+					<label>Penis <<radiobutton "_namedNpcMaleGenitals" "m" autocheck>></label> |
+					<label>Vagina <<radiobutton "_namedNpcMaleGenitals" "f" autocheck>></label>
 				</div>
 
 				<div class="settingsToggleItem">
@@ -765,9 +782,9 @@
 						<<if _monstersPreset is undefined>><<set _monstersPreset to "monstersDefault">><</if>>
 						<span class="gold">Replace Beasts with Monster People:</span>
 						<br>
-						<label>All the time <<radiobutton "_monstersPreset" "monstersAll" autocheck>></label> |
-						<label>Only when hallucinating <<radiobutton "_monstersPreset" "monstersDefault" autocheck>></label> |
-						<label>Never <<radiobutton "_monstersPreset" "monstersNone" autocheck>></label>
+						<label>All the time <<radiovar "_monstersPreset" "monstersAll">><<presets _monstersPreset "save">><</radiovar>></label> |
+						<label>Only when hallucinating <<radiovar "_monstersPreset" "monstersDefault">><<presets _monstersPreset "save">><</radiovar>></label> |
+						<label>Never <<radiovar "_monstersPreset" "monstersNone">><<presets _monstersPreset "save">><</radiovar>></label>
 					<<else>>
 						<<monsterSettings>>
 					<</if>>
@@ -778,13 +795,13 @@
 						<br>
 						<<if _kinkPreset is undefined>><<set _kinkPreset to "kinkDefault">><</if>>
 						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Vanilla<span>All beast-related toggles are disabled, as well as plant people, tentacles, slimes, lactation, facesitting, double penetration, and hypnosis.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkVanilla" autocheck>></label> |
+						<<radiovar "_kinkPreset" "kinkVanilla">><<presets _kinkPreset "save">><</radiovar>></label> |
 						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Reasonably Debauched<span>Default settings. All kinks are enabled, except for watersports.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkDefault" autocheck>></label> |
+						<<radiovar "_kinkPreset" "kinkDefault">><<presets _kinkPreset "save">><</radiovar>></label> |
 						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">No Beasts<span>All beast-related settings are disabled, including bestiality, swarms, vore, parasites, spiders, slugs, wasps, lurkers, bees, and horses.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkNoBeasts" autocheck>></label> |
+						<<radiovar "_kinkPreset" "kinkNoBeasts">><<presets _kinkPreset "save">><</radiovar>></label> |
 						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Anything Goes<span>All kinks are enabled, including watersports.</span></mouse>
-						<<radiobutton "_kinkPreset" "kinkEverything" autocheck>></label>
+						<<radiovar "_kinkPreset" "kinkEverything">><<presets _kinkPreset "save">><</radiovar>></label>
 					</div>
 					<div class="settingsToggleItem">
 						<i><<= _selectedStart is "custom" ? "To change" : "For more control over">> fetish and gameplay settings, visit the <span class="teal"><<= _selectedStart is "default" ? "Custom Start" : "Game Settings">></span> tab. Gameplay settings can still be changed after you start the game.</i>
@@ -1576,9 +1593,11 @@
 				</span>
 				<<numberslider "$settings.npcVirginChanceAdult" $settings.npcVirginChanceAdult 0 100 1>>
 			</div>
-			<div class="settingsToggleItemWide numberslider-inline">
-				<span class="gold">Likelihood of NPCs with Dark Skin:</span>
-				<<numberslider "$settings.darkSkinChance" $settings.darkSkinChance 0 100 1>>
+			<div class="settingsToggleItemWide">
+				<span class="gold">NPC Skin Tones:
+				<mouse class="tooltip linkBlue">(?)<span>Drag the handles to choose the lightest and darkest skin generated NPCs can have. Skin tones cluster around the most common tone. Randomly generated NNPC skin tones will fall within the boundaries. NNPCs can also have their skin tones manually set outside these values in their custom settings. Skin tone has no effect on gameplay. It only changes how NPCs look during sex/combat, and the skin tone their children inherit.</span></mouse>
+				</span>
+				<<skinToneRange>>
 			</div>
 		</div>
 	</div>
@@ -2034,7 +2053,7 @@
 <</widget>>
 
 <<widget "incompletePregnancy">>
-	<<checkbox "$settings.incompletePregnancyEnabled" false true autocheck>> Enable incomplete pregnancy content
+	<label><<checkbox "$settings.incompletePregnancyEnabled" false true autocheck>> Enable incomplete pregnancy content</label>
 	<<if _foundPregnancy>>
 		<mouse class="tooltip linkBlue">(!!!)<span>Cannot be disabled while a named NPC is pregnant.</span></mouse>
 	<<else>>
@@ -2046,7 +2065,7 @@
 <</widget>>
 
 <<widget "fertilityCycles">>
-	<<checkbox "$settings.fertilityCycleEnabled" false true autocheck>> Enable fertility cycles
+	<label><<checkbox "$settings.fertilityCycleEnabled" false true autocheck>> Enable fertility cycles</label>
 	<mouse class="tooltip linkBlue">(?)<span>
 		<div>When enabled, the player's menstruation cycle will determine when they can get pregnant.</div>
 		<div>When disabled, fertility is always at its highest. Heat no longer applies. Rut and heat caused by fertillity boosters are unaffected.</div>
@@ -2094,15 +2113,11 @@
 				valSpan.text((i, value) => value + "%");
 			}).trigger('change') })>>
 			<div class="settingsToggleItem">
-				<label>
 					Pregnancy type:
 					<<pregnancyType>>
-				</label>
 			</div>
 			<div class="settingsToggleItem">
-				<label>
 					<<fertilityCycles>>
-				</label>
 			</div>
 			<div class="settingsToggleItem">
 				<label>
@@ -2146,9 +2161,7 @@
 			<<set _foundPregnancy to !!Object.values($NPCName).find(npc => npc.pregnancy && npc.pregnancy.enabled && getActivePregnancies(npc.fullDescription).length && !setup.pregnancy.canBePregnant.includes(npc.fullDescription))>>
 			<span data-target='["settingsincompletepregnancyenabled", "settingsnnpcpregnancyenabled", "settingsplayerpregnancyhumanenabled", "settingsplayerpregnancybeastenabled"]' data-disabledif="(T.foundPregnancy&&V.settings.incompletePregnancyEnabled===true)||(!V.settings.nnpcPregnancyEnabled&&!V.settings.playerPregnancyHumanEnabled&&!V.settings.playerPregnancyBeastEnabled)">
 				<div class="settingsToggleItem humanPregnancyMonths-container">
-					<label>
 						<<incompletePregnancy>>
-					</label>
 				</div>
 			</span>
 		</div>
@@ -2393,7 +2406,7 @@
 				<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
 			<</link>>
 			|
-			<<link "Skin colours">>
+			<<link "Skin tones">>
 				<<initnpcskin "skincolour">>
 				<<updatePersistentNPCs "skincolour">>
 				<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
@@ -2415,6 +2428,18 @@
 				Genitals:
 				<<link "Penis">><<assignAllNPCs "gender" "m">><</link>> | <<link "Vagina">><<assignAllNPCs "gender" "f">><</link>>
 				<br>
+				<span @class="$passage is 'Start' ? 'link-disabled' : ''">
+					Male NNPC genitals:
+					<<link "Penises">><<assignNPCGenitalsByPronoun "m" "m">><</link>> | <<link "Vaginas">><<assignNPCGenitalsByPronoun "m" "f">><</link>>
+					<br>
+					Female NNPC genitals:
+					<<link "Vaginas">><<assignNPCGenitalsByPronoun "f" "f">><</link>> | <<link "Penises">><<assignNPCGenitalsByPronoun "f" "m">><</link>>
+				</span>
+				<br>
+				<<if $passage is "Start">>
+					<span class="small-description">These can only be set after you start a game.</span>
+					<br>
+				<</if>>
 				Penis size:
 				<<set _penisNames to ["", "Tiny", "Average", "Thick", "Huge"]>> /* the empty first element is necessary because _j starts at 1 */
 				<<for _j to 1; _j lt _penisNames.length; _j++>>
@@ -2433,8 +2458,8 @@
 					<</capture>>
 				<</for>>
 				<br>
-				Skin colour:
-				<<link "Pale">><<assignAllNPCs "skincolour" "white">><</link>> | <<link "Dark">><<assignAllNPCs "skincolour" "black">><</link>>
+				Skin tone:
+				<<link "Lightest">><<assignAllNPCs "skincolour" 0>><</link>> | <<link "Medium">><<assignAllNPCs "skincolour" 50>><</link>> | <<link "Darkest">><<assignAllNPCs "skincolour" 100>><</link>>
 			<</foldout>>
 		</div>
 		<hr>
@@ -2515,22 +2540,90 @@
 	<<set $_characteristic to _args[0]>>
 	<<set $_value to _args[1]>>
 	<<for $_i to 0; $_i lt $NPCName.length; $_i++>>
+		<<if $_characteristic is "gender" and getActivePregnancies($NPCName[$_i].nam).length>>
+			<<continue>>
+		<</if>>
 		<<set $NPCName[$_i][$_characteristic] to $_value>>
 		<<if $_characteristic is "breastsize">>
-			<<set $NPCName[$_i].breastdesc to $_i > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
-			<<set $NPCName[$_i].breastsdesc to $_i > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
+			<<set $NPCName[$_i].breastdesc to $_value > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
+			<<set $NPCName[$_i].breastsdesc to $_value > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
 		<</if>>
 	<</for>>
-	<<if $passage isnot "start" and $per_npc and Object.keys($per_npc).length gt 0>>
+	<<if $passage isnot "start" and $per_npc and Object.keys($per_npc).length gt 0 and ($_characteristic isnot "gender" or $_value isnot "h")>>
 		<<for $_i range Object.keys($per_npc)>>
 			<<set $per_npc[$_i][$_characteristic] to $_value>>
 			<<if $_characteristic is "breastsize">>
-				<<set $per_npc[$_i].breastdesc to $_i > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
-				<<set $per_npc[$_i].breastsdesc to $_i > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
+				<<set $per_npc[$_i].breastdesc to $_value > 0 ? setup.breastsizes[$_value] + " breast" : "nipple">>
+				<<set $per_npc[$_i].breastsdesc to $_value > 0 ? setup.breastsizes[$_value] + " breasts" : "nipples">>
 			<</if>>
 		<</for>>
 	<</if>>
+	<<if $_characteristic is "gender" or $_characteristic is "pronoun">>
+		<<initnpcgender>>
+		<<updatePersistentNPCs>>
+	<</if>>
 	<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
+<</widget>>
+
+<<widget "namedNpcGenderApply">>
+	<<if $passage is "Start" or _args[0] is "namedNpcDefaultGender">>
+		<<unset _namedNpcPendingGender>>
+		<<presets _args[0] "save">>
+		<<initnpcgender>>
+		<<updatePersistentNPCs>>
+	<<else>>
+		<<set _namedNpcPendingGender to _args[0]>>
+	<</if>>
+	<<replace #namedNpcGenderConfirm>><<namedNpcGenderConfirm>><</replace>>
+<</widget>>
+
+<<widget "namedNpcGenderConfirm">>
+	<<if _namedNpcPendingGender>>
+		<br>
+		<span class="red">This will turn every Named NPC <<= _namedNpcPendingGender is "namedNpcAllMaleGender" ? "male and give them all penises" : "female and give them all vaginas">>. Individual choices will be lost.</span>
+		<br>
+		<<button "Yes">>
+			<<presets _namedNpcPendingGender "save">>
+			<<initnpcgender>>
+			<<updatePersistentNPCs>>
+			<<unset _namedNpcPendingGender>>
+			<<replace #namedNpcGenderConfirm>><</replace>>
+		<</button>>
+		<<button "No">>
+			<<unset _namedNpcPendingGender>>
+			<<set _namedNpcPreset to "namedNpcDefaultGender">>
+			<<displaySettings "quickStart">>
+		<</button>>
+	<</if>>
+<</widget>>
+
+<<widget "nnpcGenderSetByHand">>
+	<<set _nnpcGenderByHand to _nnpcGenderByHand ?? []>>
+	<<run _nnpcGenderByHand.includes(_args[0]) || _nnpcGenderByHand.push(_args[0])>>
+<</widget>>
+
+<<widget "assignNPCGenitalsByPronoun">>
+	<<assignNPCGenitalsByPronounCore _args[0] _args[1]>>
+	<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
+<</widget>>
+
+<<widget "assignNPCGenitalsByPronounCore">>
+	<<set $_pronounFilter to _args[0]>>
+	<<set $_value to _args[1]>>
+	<<for $_i to 0; $_i lt $NPCName.length; $_i++>>
+		<<if $NPCName[$_i].pronoun is $_pronounFilter and !getActivePregnancies($NPCName[$_i].nam).length and !(_args[2] and (_nnpcGenderByHand ?? []).includes($_i))>>
+			<<set $NPCName[$_i].gender to $_value>>
+		<</if>>
+	<</for>>
+	<<if $_value isnot "h" and $passage isnot "Start" and $per_npc and Object.keys($per_npc).length gt 0>>
+		<<for $_i range Object.keys($per_npc)>>
+			<<if $per_npc[$_i].pronoun is $_pronounFilter>>
+				<<set $per_npc[$_i].gender to $_value>>
+			<</if>>
+		<</for>>
+	<</if>>
+	<<initnpcgender>>
+	<<updatePersistentNPCs>>
 <</widget>>
 
 <<widget "exportsettings">>
@@ -2643,9 +2736,9 @@
 			<span class="gold">Genitals:</span>
 			<br>
 			<span data-target="npcname-pregnancy" data-disabledif="getActivePregnancies(V.NPCName[T.npcId].nam).length">
-				<label><<radiobutton "$NPCName[_npcId].gender" "f" autocheck>> Vagina</label> |
-				<label><<radiobutton "$NPCName[_npcId].gender" "m" autocheck>> Penis</label>
-				<<if $debug is 1>>| <label><<radiobutton "$NPCName[_npcId].gender" "h" autocheck>> Both</label><</if>>
+				<label><<radiovar "$NPCName[_npcId].gender" "f">><<nnpcGenderSetByHand _npcId>><</radiovar>> Vagina</label> |
+				<label><<radiovar "$NPCName[_npcId].gender" "m">><<nnpcGenderSetByHand _npcId>><</radiovar>> Penis</label>
+				<<if $debug is 1>>| <label><<radiovar "$NPCName[_npcId].gender" "h">><<nnpcGenderSetByHand _npcId>><</radiovar>> Both</label><</if>>
 			</span>
 		</div>
 		<div class="settingsToggleItem">
@@ -2693,27 +2786,23 @@
 
 
 		<div class="settingsToggleItem">
-			<span class="gold">Skin Colour:</span>
+			<span class="gold">Skin Tone:</span>
 			<br>
 			<<if $NPCName[_npcId].nam is "Black Wolf">>/*disable skin colour toggle when player has BW set to 'always a beast'*/
 				<span data-target="blackwolfmonster" data-disabledif="V.blackwolfmonster===0">
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "white" autocheck>> Pale</label> |
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "black" autocheck>> Dark</label>
+				<<npcSkinTone>>
 				</span>
 			<<elseif $NPCName[_npcId].nam is "Great Hawk">>/*disable skin colour toggle when player has GH set to 'always a beast'*/
 				<span data-target="greathawkmonster" data-disabledif="V.greathawkmonster===0">
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "white" autocheck>> Pale</label> |
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "black" autocheck>> Dark</label>
+				<<npcSkinTone>>
 				</span>
 			<<elseif $NPCName[_npcId].nam is "Night Monster">>/*disable skin colour toggle when player has NM set to 'always a beast'*/
 				<span data-target="nightmonstermonster" data-disabledif="V.nightmonstermonster===0">
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "white" autocheck>> Pale</label> |
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "black" autocheck>> Dark</label>
+				<<npcSkinTone>>
 				</span>
 			<<else>>
-				<span data-target="npcname-npcidskincolour" data-disabledif="V.NPCName[T.npcId].skincolour==='ghost'">
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "white" autocheck>> Pale</label> |
-				<label><<radiobutton "$NPCName[_npcId].skincolour" "black" autocheck>> Dark</label>
+				<span data-target="npcname-npcidskincolour" data-disabledif="V.NPCName[T.npcId].skinType==='ghost'">
+				<<npcSkinTone>>
 				</span>
 			<</if>>
 		</div>
@@ -2907,10 +2996,15 @@
 				}>>
 			</div>
 			<div class="settingsToggleItem">
-				<span class="gold">Skin Colour:</span>
+				<span class="gold">Skin Tone:</span>
 				<br>
-				<label><<radiobutton "$per_npc[_pNPCId].skincolour" "white" autocheck>> Pale</label> |
-				<label><<radiobutton "$per_npc[_pNPCId].skincolour" "black" autocheck>> Dark</label>
+				<<if $per_npc[_pNPCId].skincolour isnot undefined>>
+					<<numberslider "$per_npc[_pNPCId].skincolour" $per_npc[_pNPCId].skincolour 0 100 1 {
+						value: v => setup.colours.getSkinToneSwatch(v),
+					}>>
+				<<else>>
+					<span class="small-description">Randomised.</span>
+				<</if>>
 			</div>
 		<</if>>
 	</div>
@@ -2963,6 +3057,37 @@
 		<</link>>
 	</div>
 	<<run $(() => {wikifier("featsMerge")})>>
+<</widget>>
+
+<<widget "skinToneRange">>
+	<div class="skinToneRange" @style="'--skin-gradient: linear-gradient(to right, ' + setup.colours.skin_options.gyaru.gradient.join(', ') + ')'">
+		<<for _handle range [["min", "Min", "Lightest"], ["mean", "Mode", "Most common"], ["max", "Max", "Darkest"]]>>
+			<<set _tone to $settings["skinTone" + _handle[1]]>>
+			<input type="range" min="0" max="100" step="1" @data-skin="_handle[0]" @data-tip="_handle[2] + ' skin tone'" @value="_tone"
+				@style="'--skin-thumb: ' + setup.colours.getSkinRgb(setup.colours.skin_options.gyaru, _tone / 100)">
+		<</for>>
+		<span class="skinToneTip"></span>
+	</div>
+<</widget>>
+
+<<widget "npcSkinTone">>
+	<<if $NPCName[_npcId].skinType is "ghost">>
+		<span class="small-description">Ghostly pale.</span>
+	<<elseif $NPCName[_npcId].skincolour isnot undefined>>
+		<<numberslider "$NPCName[_npcId].skincolour" $NPCName[_npcId].skincolour 0 100 1 {
+			value: v => setup.colours.getSkinToneSwatch(v),
+		}>>
+		<<link "Randomise">>
+			<<initnpcskinsingle _npcId "skincolour">>
+			<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
+		<</link>>
+	<<else>>
+		<span class="small-description">Randomised when the game starts.</span>
+		<<link "Set tone">>
+			<<set $NPCName[_npcId].skincolour to Math.clamp($settings.skinToneMode, 0, 100)>>
+			<<replace #npcSettingsMenu>><<npcSettingsMenu>><</replace>>
+		<</link>>
+	<</if>>
 <</widget>>
 
 :: Settings [exitCheckBypass]
