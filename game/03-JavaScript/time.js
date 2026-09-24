@@ -788,6 +788,8 @@ function dayPassed() {
 	}
 	if (hasMansion) V.avery_mansion.study_unlocked = 0;
 
+	if (V.avery_helicopter.timer > 0) V.avery_helicopter.timer--;
+
 	if (V.flashbacktown > 0) V.flashbacktown--;
 	if (V.flashbackhome > 0) V.flashbackhome--;
 	if (V.flashbackbeach > 0) V.flashbackbeach--;
