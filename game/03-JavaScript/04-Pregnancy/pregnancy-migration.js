@@ -511,3 +511,13 @@ function migratePregnancyData() {
 	}
 }
 window.migratePregnancyData = migratePregnancyData;
+
+function nameDeliveredRandomCarriers() {
+	for (const pregnancy of V.pregnancies) {
+		if (pregnancy.deliveredDate === null || !pregnancy.carrier.startsWith("pregnancy_")) continue;
+		const intro = V.babyIntros?.Bailey?.find(intro => intro.birthId === pregnancy.pregnancyId);
+		pregnancy.carrier = intro?.description ?? "stranger";
+		if (intro) intro.mother = pregnancy.carrier;
+	}
+}
+window.nameDeliveredRandomCarriers = nameDeliveredRandomCarriers;

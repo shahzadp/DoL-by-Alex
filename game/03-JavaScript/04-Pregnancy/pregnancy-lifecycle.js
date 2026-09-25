@@ -117,6 +117,7 @@ function birthRecordedLitter(pregnancyId, birthLocation, location) {
 	}
 
 	recordDelivery(pregnancyId, location);
+	learnPlayerFatheredBirth(pregnancyId);
 
 	for (const child of litter) {
 		beginRearing(child, location, birthLocation);
@@ -489,8 +490,9 @@ function randomPregnancyProgress() {
 		if (record && Time.date.timeStamp >= getDueDate(record)) {
 			const [birthLocation, location] = defaultBirthLocations(record.donorSpecies);
 			birthRecordedLitter(record.pregnancyId, birthLocation, location);
+			record.carrier = V.storedNPCs[npcKey].npc.fullDescription;
 			if (location === "home") {
-				addBabyIntro("Bailey", npcKey, record.pregnancyId, getChildrenOf(record.pregnancyId).length, V.storedNPCs[npcKey].npc?.fullDescription);
+				addBabyIntro("Bailey", record.carrier, record.pregnancyId, getChildrenOf(record.pregnancyId).length);
 				setKnowsPregnancy(record.pregnancyId, "Bailey");
 			} else if (location === "wolf_cave") {
 				setKnowsPregnancy(record.pregnancyId, "Black Wolf");

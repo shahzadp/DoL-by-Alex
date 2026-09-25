@@ -531,6 +531,21 @@ function setKnowsDonor(pregnancyId, who) {
 window.setKnowsDonor = setKnowsDonor;
 
 /**
+ * The player knows both parents of a birth when they're the only possible donor.
+ *
+ * @param {number} pregnancyId the pregnancy's index in V.pregnancies
+ */
+function learnPlayerFatheredBirth(pregnancyId) {
+	const pregnancy = V.pregnancies[pregnancyId];
+	const onlyPlayer = pregnancy.possibleDonors.length > 0 && pregnancy.possibleDonors.every(donor => donor.name === "pc");
+	if (onlyPlayer) {
+		setKnowsCarrier(pregnancyId, "pc");
+		setKnowsDonor(pregnancyId, "pc");
+	}
+}
+window.learnPlayerFatheredBirth = learnPlayerFatheredBirth;
+
+/**
  * Marks who knows a child exists.
  *
  * @param {number} childId the child's index in V.childRecords
