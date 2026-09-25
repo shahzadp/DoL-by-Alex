@@ -132,10 +132,7 @@ const getTooltipSettings = element => {
 	});
 	const messageAttr = $(element).attr("tooltip");
 	if (messageAttr) {
-		const message = $("<div>");
-		// eslint-disable-next-line no-new
-		new Wikifier(message, messageAttr);
-		settings.message = message.html();
+		settings.message = $("<div>").append(Wikifier.wikifyEval(messageAttr)).html();
 	}
 	return settings;
 };
