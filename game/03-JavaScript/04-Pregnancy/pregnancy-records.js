@@ -270,13 +270,15 @@ function playerLabouringOrifice() {
 window.playerLabouringOrifice = playerLabouringOrifice;
 
 /**
- * Mark the player's labouring pregnancy as actively giving birth.
+ * Mark the player's labouring litter as born. The pregnancy is active until birthUi.
  */
-function beginPlayerBirth() {
+function setPlayerLitterBorn() {
 	const pregnancy = getLabouringPregnancy("pc");
-	if (pregnancy) pregnancy.birthInProgress = true;
+	if (!pregnancy) return;
+	pregnancy.birthInProgress = true;
+	pregnancy.litterBorn = true;
 }
-window.beginPlayerBirth = beginPlayerBirth;
+window.setPlayerLitterBorn = setPlayerLitterBorn;
 
 /**
  * Marks a pregnancy as delivered now, at the given location.

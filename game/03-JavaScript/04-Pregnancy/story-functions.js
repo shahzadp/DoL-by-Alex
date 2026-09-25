@@ -32,11 +32,10 @@ function playerBellySize(pregnancyOnly = false) {
 	let bellySize = V.bellySizeDebug || 0;
 	if (!V.statFreeze) {
 		// Pregnancies live in records. The belly grows with progress
-		// toward a term size set by the litter count. Both
-		// orifices can carry at once, so their bellies add up.
+		// toward a term size set by the litter count.
 		for (const orifice of ["vagina", "anus"]) {
 			const pregnancy = getActivePregnancy("pc", orifice);
-			if (pregnancy) bellySize += pregnancyBellySize(pregnancy);
+			if (pregnancy && !pregnancy.litterBorn) bellySize += pregnancyBellySize(pregnancy);
 		}
 		// Parasites are a separate system from real pregnancies. They live directly on
 		// V.sexStats.*.pregnancy, not in records.
