@@ -194,7 +194,6 @@ var IronMan = (Save => {
 							'<<replace #sliderAllureMode>><<numberslider "$settings.allureModifier" $settings.allureModifier 0.2 2 0.1 $ironmanmode>><</replace>>'
 						);
 					}
-					V.options.maxStates = 1;
 					V.settings.cheatsEnabledToggle = false;
 					V.options.autosaveDisabled = true;
 					$(".ironman-slider input")
