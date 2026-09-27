@@ -143,9 +143,8 @@ Weather.BodyTemperature = (() => {
 	 * The closer the air temperature is to the body temperature - the less effective clothes are:
 	 * This is to not penalise the player too much from wearing a lot of clothes, especially in room temperature
 	 *
-	 * @param {number} outsideTemperature The current air temperature.
-	 * @param temperature
-	 * @param warmth
+	 * @param {number} temperature The current air temperature.
+	 * @param {number} warmth
 	 * @returns {number} The adjusted insulation factor.
 	 */
 	function calculateHeatDissipation(temperature, warmth) {
@@ -169,8 +168,8 @@ Weather.BodyTemperature = (() => {
 	 * Calculates heat generation based on the current activity level and difference from the base body temperature.
 	 * Increases heat generation if body temperature is below base and decreases if above.
 	 *
-	 * @param bodyTemperature
-	 * @param outsideTemperature
+	 * @param {number} bodyTemperature
+	 * @param {number} outsideTemperature
 	 */
 	function calculateHeatGeneration(bodyTemperature, outsideTemperature) {
 		outsideTemperature += settings.sunIntensityBaseModifier * Weather.sunIntensity;

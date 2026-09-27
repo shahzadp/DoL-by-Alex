@@ -1,3 +1,5 @@
+/* globals Partial */
+
 /**
  * @typedef {object} CookerItem
  * @property {string} name the name of the item, used by the cooker
