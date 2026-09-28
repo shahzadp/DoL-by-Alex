@@ -289,7 +289,7 @@ DefineMacro("modelprepare-player-body", function () {
 	} else if (V.stress >= (V.stressmax / 5) * 3 || !(V.control >= (V.controlmax / 5) * 1)) {
 		T.modeloptions.mouth = "neutral";
 	} else {
-		T.modeloptions.mouth = "smile";
+		T.modeloptions.mouth = V.defaultSidebarMouth;
 	}
 	if (T.prop?.folder === "food" && !T.prop.name.includes("gift")) {
 		const foodKey = T.prop.name
