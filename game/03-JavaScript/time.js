@@ -1431,7 +1431,7 @@ function dailyNPCEffects() {
 		V.averyBodyWritingSeen = false;
 		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
-			if (V.averydateattended !== 1 && !V.avery_injury) V.averydatemissed = 1;
+			if (V.averydateattended !== 1 && !V.avery_injury && !V.avery_mansion.away_timer > 0) V.averydatemissed = 1;
 			V.averydateattended = 0;
 		}
 		delete V.averydatedone;
