@@ -246,7 +246,7 @@ window.fishTriggersMinigame = fishTriggersMinigame;
 /**
  * Shared helper to roll an item from one of the fishing loot tables
  *
- * @param {Object<string, FishingTrashConfig|FishingClothingConfig>} lootTable
+ * @param {object} lootTable
  * @param {FishingLocationKey} bus
  * @returns {string}
  */
