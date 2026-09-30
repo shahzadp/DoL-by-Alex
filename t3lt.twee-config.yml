@@ -594,7 +594,7 @@ sugarcube-2:
         - **name** _optional_: `string` - The name of the event. If not provided, defaults to "".
         - **weight** _optional_: `number` - The relative probability of the event. An event with weight 2 will occur twice as often as an event with weight 1. If not provided, defaults to 1.
       parameters:
-        - "|+ (number | (string |+ number))"
+        - "|+ (string|number) |+ number"
 
     addNNPCOutfit:
       name: addNNPCOutfit
@@ -931,6 +931,10 @@ sugarcube-2:
       name: assignCombatDefaults
     assignmenttip:
       name: assignmenttip
+    assignNPCGenitalsByPronoun:
+      name: assignNPCGenitalsByPronoun
+    assignNPCGenitalsByPronounCore:
+      name: assignNPCGenitalsByPronounCore
     asylumassessment:
       name: asylumassessment
     asylumBind:
@@ -1477,16 +1481,28 @@ sugarcube-2:
           - **notes** _optional_: `string` - additional text to include
       parameters:
         - '|+ string |+ ...(var|bareword|text)'
+    baileyConfiscationList:
+      name: baileyConfiscationList
+    baileyConfiscationListFull:
+      name: baileyConfiscationListFull
+    baileyConfiscationNotice:
+      name: baileyConfiscationNotice
+    baileyRentConfiscation:
+      name: baileyRentConfiscation
+    baileyRentReclaimOption:
+      name: baileyRentReclaimOption
     baitMobileDropdown:
-       name: baitMobileDropdown
+      name: baitMobileDropdown
     baitMobileSidebar:
-       name: baitMobileSidebar
+      name: baitMobileSidebar
     baitOverlay:
       name: baitOverlay
     baitShopFishBehaviorHelp:
       name: baitShopFishBehaviorHelp
     baitShopFishLocationHint:
       name: baitShopFishLocationHint
+    baitShopShop-main:
+      name: baitShopShop-main
     baitSidebar:
       name: baitSidebar
     balloonRobinAngryHelp:
@@ -2845,7 +2861,7 @@ sugarcube-2:
         - **mode** _optional_: `string` - state to change the selected element to
           - `"On"` | `"Off"` | `"Disabled"`
       parameters:
-        - '|+ "On"|"Off"|"Disabled"'
+        - 'string |+ "On"|"Off"|"Disabled"'
       tags: ["temp"]
     changingRoomFeelings:
       name: changingRoomFeelings
@@ -4312,6 +4328,7 @@ sugarcube-2:
     destination5:
       name: destination5
     destinationBeach:
+      container: true
       name: destinationBeach
     destinationbondage:
       name: destinationbondage
@@ -4328,12 +4345,14 @@ sugarcube-2:
     destinationfarmroad:
       name: destinationfarmroad
     destinationForest:
+      container: true
       name: destinationForest
     destinationlake:
       name: destinationlake
     destinationlakeruin:
       name: destinationlakeruin
     destinationMoor:
+      container: true
       name: destinationMoor
     destinationpoolchangingroom:
       name: destinationpoolchangingroom
@@ -4598,7 +4617,7 @@ sugarcube-2:
         Dries given clothing slot
       name: dry_item
       parameters:
-        - "|+ slot (flatcase)|string"
+        - string
     dry_towel:
       name: dry_towel
     dungeonescape:
@@ -5018,6 +5037,8 @@ sugarcube-2:
       name: endmasturbation
     endnpc:
       name: endnpc
+      parameters:
+        - "|+ string"
     endNpcPregnancy:
       name: endNpcPregnancy
     endPlayerPregnancy:
@@ -11976,6 +11997,10 @@ sugarcube-2:
       name: namedNpcComments
     namedNpcEjaculation:
       name: namedNpcEjaculation
+    namedNpcGenderApply:
+      name: namedNpcGenderApply
+    namedNpcGenderConfirm:
+      name: namedNpcGenderConfirm
     namedNpcReaction:
       description: |-
         Resolves a named NPC's reaction to a combat action.
@@ -11994,9 +12019,7 @@ sugarcube-2:
           - `undress`
         - **detail**: `string` - optional combat-state detail, e.g. which body part
       parameters:
-        - number
-        - string
-        - string|null
+        - 'number &+ "choke"|"expose"|"fondle"|"initiative"|"kiss"|"kissDeep"|"kissImminent"|"kissSkin"|"undress" |+ string'
     namedNpcPregnancy:
       name: namedNpcPregnancy
     nDays:
@@ -12152,6 +12175,8 @@ sugarcube-2:
       name: nippleFlavorText
     nipples:
       name: nipples
+    nnpcGenderSetByHand:
+      name: nnpcGenderSetByHand
     nnpc_brother:
       description: |-
         Prints `brother` or `sister` for named NPC
@@ -12760,11 +12785,12 @@ sugarcube-2:
         - **depth** _optional_: `"outside"|"imminent"|"deep"` - where it landed. Deep when not given, a spill rolls at its depth's low weight
         - **location** _optional_: `string` - where it happened. Left out reads the player's location, pass one when the scene runs off-screen
         - **donorFertility** _optional_: `number` - extra multiplier on the conception chance from the donor's side (e.g. the pc's low-semen or earSlime state)
+        - **slot** _optional_: `number`
 
         A normal creampie: `<<npcPregnancyRoll "Robin" "human" "pc" "human" "vagina">>`
         A spill that never went in: `<<npcPregnancyRoll "Robin" "human" "someone" "human" "vagina" "imminent">>`
       parameters:
-        - 'text &+ text &+ text &+ text &+ "vagina"|"anus" |+ "outside"|"imminent"|"deep" |+ text |+ number'
+        - 'text &+ text &+ text &+ text &+ "vagina"|"anus" |+ "outside"|"imminent"|"deep" |+ text |+ number |+ number'
     npcPregnancyUpdater:
       name: npcPregnancyUpdater
     npcrelationship:
@@ -12807,13 +12833,15 @@ sugarcube-2:
         - **statValue**: `string|number` - The value of the NPC's stat name to change
 
       parameters:
-        - 'bareword|var &+ love|dom|trust|lust|rage|state|init|trauma|purity|corruption &+ number|string'
+        - 'bareword|var &+ "love"|"dom"|"trust"|"lust"|"rage"|"state"|"init"|"trauma"|"purity"|"corruption" &+ number|string'
     npcSettings:
       name: npcSettings
     npcSettingsMenu:
       name: npcSettingsMenu
     NPCSettingsReset:
       name: NPCSettingsReset
+    npcSkinTone:
+      name: npcSkinTone
     npcspank:
       name: npcspank
     npcspankgag:
@@ -13163,6 +13191,24 @@ sugarcube-2:
       name: orphanageWard
     orphanageWardOptions:
       name: orphanageWardOptions
+    orphanHawkHe:
+      name: orphanHawkHe
+    orphanHawkhe:
+      name: orphanHawkhe
+    orphanHawkhers:
+      name: orphanHawkhers
+    orphanHawkhim:
+      name: orphanHawkhim
+    orphanHawkHis:
+      name: orphanHawkHis
+    orphanHawkhis:
+      name: orphanHawkhis
+    orphanHawkson:
+      name: orphanHawkson
+    orphanHawkType:
+      name: orphanHawkType
+    orphanHawktype:
+      name: orphanHawktype
     otherOutfitChecks:
       name: otherOutfitChecks
     othersFeelings:
@@ -13635,8 +13681,6 @@ sugarcube-2:
     passoutshop:
       description: |-
         Passes out and prints links for players in the Shops
-      parameters:
-        - "pregLocation |+ Pregnancy Passout location"
       tags: ["links"]
     passoutstreet:
       description: |-
@@ -13990,6 +14034,8 @@ sugarcube-2:
         Arguments
         - **value**: `number` - Number to raise/lower the attention level by.
       name: photo_attention
+    photo_end:
+      name: photo_end
     photo_evidence_upload:
       name: photo_evidence_upload
     photo_heat:
@@ -14454,6 +14500,8 @@ sugarcube-2:
       name: pregnancyGendersText
     pregnancyMorningAfterPill:
       name: pregnancyMorningAfterPill
+    pregnancyObjectRepair:
+      name: pregnancyObjectRepair
     pregnancyPassout:
       name: pregnancyPassout
     pregnancySettings:
@@ -14539,6 +14587,9 @@ sugarcube-2:
       name: printpreggy
     printShopColourOptions:
       name: printShopColourOptions
+    printTime:
+      description: |-
+        Formats and prints an amount of time given as an argument, either as numbers `(xx:yy)` or words `xx hours and yy minutes`
     printTipsList:
       name: printTipsList
     prison_attention:
@@ -15297,7 +15348,7 @@ sugarcube-2:
         `<<robinMemoryHeal key>>`
         - **key**: `string` - `$robinSeen` key recording that this memory's -Trauma has been given
       parameters:
-        - "key|string"
+        - string
       name: robinMemoryHeal
     robinOpen:
       name: robinOpen
@@ -15665,6 +15716,8 @@ sugarcube-2:
       description: |-
         Prints colour-coded adjective of active seduction skill usage
       tags: ["unused", "text"]
+    seedsFeatUI:
+      name: seedsFeatUI
     seize_stolen_goods:
       description: |-
         Prints a scene where the player gets searched. Removes black market valuables and overdue/stolen books, although a high skulduggery skill may bypass this
@@ -16281,6 +16334,8 @@ sugarcube-2:
     skinColourVariableCombine:
       description: |-
         Combines `_skinTone` and `_skinShade` and applies that value to `$player.skin.color`.
+    skinToneRange:
+      name: skinToneRange
     skintonetext:
       description: |-
         Prints `X skin tone.`
