@@ -10893,7 +10893,7 @@ function initUpper() {
 			exposed: 0,
 			exposed_base: 0,
 			type: ["formal", "costume"],
-			set: "rose dress",
+			set: "mini rose dress",
 			gender: "f",
 			femininity: 200,
 			warmth: 4,
