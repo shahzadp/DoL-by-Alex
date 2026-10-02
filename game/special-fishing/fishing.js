@@ -3,8 +3,8 @@
 /**
  * Rolls the size of the input fish at the input location
  *
- * @param {string} bus
- * @param {string} fishKey
+ * @param {FishingLocationKey} bus
+ * @param {FishingFishKey} fishKey
  * @returns {number}
  */
 function rollFishSize(bus, fishKey) {
@@ -48,7 +48,7 @@ function rollFishSize(bus, fishKey) {
  *
  * Does not effect the odds of the catch event.
  *
- * @param {string} fishKey
+ * @param {FishingFishKey} fishKey
  * @returns {number}
  */
 function fishingBaitWeightMultiplier(fishKey) {
@@ -96,7 +96,7 @@ window.fishingBaitWeightMultiplier = fishingBaitWeightMultiplier;
 /**
  * Used to modify the weight of rolling a specific fish based on the current bait. Does not effect the odds of the catch event.
  *
- * @param {string} fishKey
+ * @param {FishingFishKey} fishKey
  * @returns {number}
  */
 function fishingPreferredBaitWeight(fishKey) {
@@ -129,7 +129,7 @@ window.fishingCatchWeightBaitMultiplier = fishingCatchWeightBaitMultiplier;
 /**
  * Used to scale the likelihood of catching a fish. x1.5 when teeming, x0.7 when quiet, 1 otherwise.
  *
- * @param bus
+ * @param {FishingLocationKey} bus
  * @returns {number}
  */
 function fishingCatchWeightPopulationMultiplier(bus) {
@@ -149,7 +149,7 @@ window.fishingCatchWeightPopulationMultiplier = fishingCatchWeightPopulationMult
  *
  * If the player is new to fishing, we don't want to add another thing to think about, nor have their fist fishing experience be one with few fish, so we default the population to "normal" if the user is new to fishing.
  *
- * @param {string} location
+ * @param {FishingLocationKey} location
  */
 function rollFishPopulation(location) {
 	V.daily.fishing ??= {};
@@ -172,8 +172,8 @@ window.rollFishPopulation = rollFishPopulation;
 /**
  * Rolls a fish for a given location, taking into account everything that contributes to the weights of the different fish, and generates the the size of the fish that gets rolled.
  *
- * @param {string} bus
- * @returns {{type: string, size: number}}
+ * @param {FishingLocationKey} bus
+ * @returns {FishingHookedFish}
  */
 function rollFish(bus) {
 	const possibleFish = [];
@@ -199,7 +199,7 @@ window.rollFish = rollFish;
  * Returns fish at the location whose preferred location includes the given location,
  * as [fishKey, weight] pairs for use with weightedRandom.
  *
- * @param {string} location
+ * @param {FishingLocationKey} location
  * @returns {Array}
  */
 function preferredLocationFishList(location) {
@@ -213,7 +213,7 @@ window.preferredLocationFishList = preferredLocationFishList;
  * Returns fish at the location whose preferred season includes the current season,
  * as [fishKey, weight] pairs for use with weightedRandom.
  *
- * @param {string} location
+ * @param {FishingLocationKey} location
  * @returns {Array}
  */
 function preferredSeasonFishList(location) {
@@ -226,7 +226,7 @@ window.preferredSeasonFishList = preferredSeasonFishList;
 /**
  * If a fish you just hooked should be caught with the minigame.
  *
- * @param {object} fish
+ * @param {FishingHookedFish} fish
  * @returns {boolean}
  */
 function fishTriggersMinigame(fish) {
@@ -247,7 +247,7 @@ window.fishTriggersMinigame = fishTriggersMinigame;
  * Shared helper to roll an item from one of the fishing loot tables
  *
  * @param {object} lootTable
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  * @returns {string}
  */
 function rollFishingLootKey(lootTable, bus) {
@@ -278,7 +278,7 @@ window.fishingAntiqueAvailable = fishingAntiqueAvailable;
 /**
  * Rolls for a piece of trash that the player has caught at the given location
  *
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  * @returns {string}
  */
 function rollFishingTrash(bus) {
@@ -289,8 +289,8 @@ window.rollFishingTrash = rollFishingTrash;
 /**
  * Rolls for a piece of clothing that the player has caught at the given location
  *
- * @param {string} bus
- * @returns {{slot: string, item: object, colour: string}}
+ * @param {FishingLocationKey} bus
+ * @returns {FishingCaughtClothing}
  */
 function rollFishingClothing(bus) {
 	return generateClothingItem(rollFishingLootKey(setup.fishing.lootTables.fishingClothing, bus));
@@ -300,9 +300,9 @@ window.rollFishingClothing = rollFishingClothing;
 /**
  * Updates the fishing record with the fish passed in
  *
- * @param {string} fishKey
+ * @param {FishingFishKey} fishKey
  * @param {number} fishSize
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  */
 function updateFishRecord(fishKey, fishSize, bus) {
 	V.fishing.record[fishKey] ??= {
@@ -358,7 +358,7 @@ window.baitShopOpen = baitShopOpen;
 /**
  * Picks a random fish the bait shop npc can request
  *
- * @returns {string}
+ * @returns {FishingFishKey}
  */
 function baitShopRequestFish() {
 	let allowedBehaviors = [];
@@ -403,7 +403,7 @@ window.rollIfBaitShopRequestsFishToday = rollIfBaitShopRequestsFishToday;
 /**
  * If the fish is the fish being requested
  *
- * @param {string} fishType
+ * @param {FishingFishKey} fishType
  * @returns {boolean}
  */
 function baitShopWants(fishType) {
@@ -414,7 +414,7 @@ window.baitShopWants = baitShopWants;
 /**
  * If the fish can be cooked
  *
- * @param {string} fishKey
+ * @param {FishingFishKey} fishKey
  * @returns {boolean}
  */
 function canCookFish(fishKey) {
@@ -621,7 +621,7 @@ window.onBaitLoss = onBaitLoss;
 /**
  * If the player can eat the fish as a cat, fox, or bird tf
  *
- * @param {object} fish
+ * @param {FishingHookedFish} fish
  * @returns {boolean}
  */
 function canEatFishTf(fish) {
@@ -677,7 +677,7 @@ function fishingMinutesIntoSession(minutes) {
 window.fishingMinutesIntoSession = fishingMinutesIntoSession;
 
 /**
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  * @returns {string}
  */
 function fishingLocationWaterBodyName(bus) {
@@ -715,7 +715,7 @@ window.fishingDangerEventWeight = fishingDangerEventWeight;
 /**
  * Gets the weight of the catch fish event for this location. If the player hasn't caught many fish yet, we want to have them be more likely to see the fish catch event than other events.
  *
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  * @param {number} defaultEventWeight
  * @returns {number}
  */
@@ -730,7 +730,7 @@ function fishingCatchEventWeight(bus, defaultEventWeight) {
 window.fishingCatchEventWeight = fishingCatchEventWeight;
 
 /**
- * @param {string} bus
+ * @param {FishingLocationKey} bus
  * @returns {string}
  */
 function fishingLocationDisplayName(bus) {

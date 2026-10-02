@@ -630,3 +630,17 @@ function basicHypnoCss() {
 	return V.options.textAnimsAll && V.options.textAnimsHypno ? "hypno-text hypno" : "hypno-text";
 }
 window.basicHypnoCss = basicHypnoCss;
+
+function toggleRelationCollapse(element) {
+	const box = element.closest(".relation-box");
+	const npcName = box.dataset.npc;
+	const idx = V.collapsedRelationBoxes.indexOf(npcName);
+	if (idx >= 0) {
+		V.collapsedRelationBoxes.splice(idx, 1);
+		box.classList.remove("is-collapsed");
+	} else {
+		V.collapsedRelationBoxes.push(npcName);
+		box.classList.add("is-collapsed");
+	}
+}
+window.toggleRelationCollapse = toggleRelationCollapse;

@@ -10178,7 +10178,7 @@ function initLower() {
 			anus_exposed: 0,
 			anus_exposed_base: 0,
 			type: ["formal", "costume"],
-			set: "rose dress",
+			set: "mini rose dress",
 			gender: "f",
 			femininity: 200,
 			warmth: 5,

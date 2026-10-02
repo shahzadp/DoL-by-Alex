@@ -41,6 +41,7 @@ declare global {
 		deliveredLocation: string | null;
 		waterBreaking?: boolean;
 		birthInProgress?: boolean;
+		litterBorn?: boolean;
 		termEffectsDone?: boolean;
 		ultrasoundDone?: boolean;
 		awareOfPregnancy: string[];

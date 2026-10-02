@@ -664,7 +664,6 @@ function gwylanRequestIngredients() {
 		{ key: "poppy", difficulty: 2 },
 		{ key: "red_rose", difficulty: 1 },
 		{ key: "red_wine", difficulty: 1 },
-		{ key: "roach", difficulty: 1, weight: 0.4 },
 		{ key: "salmon", difficulty: 1, weight: 0.4 },
 		{ key: "salt", difficulty: 1 },
 		{ key: "strange_flower", difficulty: 3 },

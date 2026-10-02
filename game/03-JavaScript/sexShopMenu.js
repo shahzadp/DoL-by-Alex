@@ -565,8 +565,7 @@ function sexShopIcon(item, colour, desc = false) {
 	// main icon
 	const id = desc ? `ssm_desc_icon_${item.name_underscore}` : `ssm_item_icon_${item.name_underscore}`;
 	const mainSpan = $("<span>", { class: `ssm_icon icon ${colour.replace(/\s/g, "-")}`, id })[0];
-	// eslint-disable-next-line no-new
-	new Wikifier(mainSpan, `<<icon "${item.icon}">>`);
+	mainSpan.append(Wikifier.wikifyEval(`<<icon "${item.icon}">>`));
 	itemIcon.append(mainSpan);
 
 	// nonrecolourable parts in front
@@ -575,8 +574,7 @@ function sexShopIcon(item, colour, desc = false) {
 			class: "ssm_icon icon infront",
 			id: `ssm_item_icon_front_${item.name_underscore}`,
 		})[0];
-		// eslint-disable-next-line no-new
-		new Wikifier(frontSpan, `<<icon "${item.iconFront}">>`);
+		frontSpan.append(Wikifier.wikifyEval(`<<icon "${item.iconFront}">>`));
 		itemIcon.prepend(frontSpan);
 	}
 

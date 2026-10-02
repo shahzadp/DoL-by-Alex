@@ -788,7 +788,7 @@ function dayPassed() {
 	}
 	if (hasMansion) V.avery_mansion.study_unlocked = 0;
 
-	if (V.avery_helicopter.timer > 0) V.avery_helicopter.timer--;
+	if (V.avery_helicopter?.timer > 0) V.avery_helicopter.timer--;
 
 	if (V.flashbacktown > 0) V.flashbacktown--;
 	if (V.flashbackhome > 0) V.flashbackhome--;
@@ -1431,7 +1431,7 @@ function dailyNPCEffects() {
 		V.averyBodyWritingSeen = false;
 		if (V.averydate && Time.weekDay === 1) {
 			V.averydate = 0;
-			if (V.averydateattended !== 1 && !V.avery_injury) V.averydatemissed = 1;
+			if (V.averydateattended !== 1 && !V.avery_injury && !V.avery_mansion.away_timer > 0) V.averydatemissed = 1;
 			V.averydateattended = 0;
 		}
 		delete V.averydatedone;
