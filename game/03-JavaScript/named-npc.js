@@ -432,7 +432,7 @@ function gwylanStatusCheck() {
 	T.gwylanLovePercent = Math.ceil((C.npc.Gwylan.love / (totalSets.length * 2)) * 100);
 
 	if (
-		T.gwylanLovePercent >= 65 &&
+		T.gwylanLovePercent >= 55 &&
 		V.gwylanSeen.includes("ritual_sex") &&
 		C.npc.Gwylan.dom >= 20 &&
 		C.npc.Gwylan.lust >= 40 &&
@@ -445,7 +445,7 @@ function gwylanStatusCheck() {
 	}
 
 	if (
-		T.gwylanLovePercent >= 75 &&
+		T.gwylanLovePercent >= 65 &&
 		V.gwylanSeen.includes("yearning") &&
 		C.npc.Gwylan.dom >= 50 &&
 		C.npc.Gwylan.lust >= 30 &&
@@ -460,7 +460,7 @@ function gwylanStatusCheck() {
 				gwylanStatus.push("heat");
 			}
 		if (
-			T.gwylanLovePercent >= 90 &&
+			T.gwylanLovePercent >= 80 &&
 			C.npc.Gwylan.dom >= 140 &&
 			gwylanStatus.includes("heat") &&
 			// eslint-disable-next-line no-undef
