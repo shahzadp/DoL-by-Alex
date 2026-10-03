@@ -3308,3 +3308,13 @@ function randomSkinTone() {
 	return Math.round(Math.clamp(tone, min, max));
 }
 window.randomSkinTone = randomSkinTone;
+
+/**
+ * Whether Whitney's friends are hanging out at Whitney's flat.
+ *
+ * @returns {boolean}
+ */
+function whitneyHasFriendsOver() {
+	return Time.dayState === "day" && Weather.precipitation === "none" && !Time.schoolDay && [3, 6, 7].includes(Time.weekDay);
+}
+window.whitneyHasFriendsOver = whitneyHasFriendsOver;
