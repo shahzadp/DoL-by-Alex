@@ -448,7 +448,7 @@
 				<<run Errors.report("Extra-Illegal crime committed of type; " + _crimeType + " defaulted to thievery")>>
 				<<set _crimeType to "thievery">>
 			<</if>>
-			<<set $_crimemod to Number(_args[0])>>
+			<<set $_crimeMod to Number(_args[0])>>
 			<<set $_crimeMult to 1>>
 
 			<<if !["coercion", "resisting", "food"].includes(_crimeType)>>
@@ -466,17 +466,17 @@
 					<<set $_stealthReduce1 to expCurve($_normcrime1, 3.0)>>
 					<!-- First 5k of crime at a curve to 5000 -->
 				*/
-				<<set $_stealthfactor to ( 0.15 * ( 1 - normalise($crime[_crimeType].current, C.crime.max ) ) )>>
+				<<set $_stealthFactor to ( 0.15 * ( 1 - normalise($crime[_crimeType].current, C.crime.max ) ) )>>
 				<!-- Stealth gives 15%, but reduced by existing crime stat down to 0 at C.crime.max -->
 				<!-- At 10k crime of the current type, stealthy equipment is effectively useless - too much evidence -->
 
 				<!-- Filter to all items with type "stealthy" and count them -->
 				<<set $_stealthMult to Object.values($worn).filter(item => item.type.includes("stealthy")).length>>
-				<<set $_crimeMult -= $_stealthfactor * $_stealthMult>>
+				<<set $_crimeMult -= $_stealthFactor * $_stealthMult>>
 
 				<!-- Filter to all items with type "unstealthy" and count them -->
-				<<set $_unstealthMult to Object.values($worn).filter(item => item.type.includes("unstealthy")).length>>
-				<<set $_crimeMult += 0.15 * $_unstealthMult>>
+				<<set $_unstealthyMult to Object.values($worn).filter(item => item.type.includes("unstealthy")).length>>
+				<<set $_crimeMult += 0.15 * $_unstealthyMult>>
 
 				<<if ["thievery", "petty", "trespassing"].includes(_crimeType)>>
 					<!-- For stealthy crimes, player skulduggery skill gives further reduction up to another 15%. 1000 is max skulduggery clamp, replace as needed -->
@@ -484,30 +484,30 @@
 					<<set $_crimeMult -= $_skillMult>>
 				<</if>>
 
-				<<set $_crimemod to Math.ceil($_crimemod * $_crimeMult)>>
+				<<set $_crimeMod to Math.ceil($_crimeMod * $_crimeMult)>>
 				<<if ["petty"].includes(_crimeType) and $skulduggery gte 500>>
 					<!-- Petty thievery has extra flat reduction if skulduggery skill above 500 (C+), possibly negating the crime gain entirely -->
-					<<set $_crimemod -= Math.floor($skulduggery / 10)>>
+					<<set $_crimeMod -= Math.floor($skulduggery / 10)>>
 				<</if>>
 			<</if>>
 
-			<<set $_crimemod to Math.clamp($_crimemod, 0, C.crime.max)>>
+			<<set $_crimeMod to Math.clamp($_crimeMod, 0, C.crime.max)>>
 
-			<<if $_crimemod gt 0>>
+			<<if $_crimeMod gt 0>>
 				<!-- If crime gain is still greater than 0, add to crime daily, history, count, and Avery crimetracker-->
-				<!-- crimemod lte 0 represents a crime the player completely got away with, so nothing is recorded-->
-				<<set C.crime[_crimeType] += $_crimemod>>
-				<<set C.crime[_crimeType + "History"] += $_crimemod>>
-				<<set C.crime[_crimeType + "Daily"] += $_crimemod>>
+				<!-- crimeMod lte 0 represents a crime the player completely got away with, so nothing is recorded-->
+				<<set C.crime[_crimeType] += $_crimeMod>>
+				<<set C.crime[_crimeType + "History"] += $_crimeMod>>
+				<<set C.crime[_crimeType + "Daily"] += $_crimeMod>>
 				<<set C.crime[_crimeType + "Count"] += 1>>
 				<<set C.crime[_crimeType + "CountHistory"] += 1>>
 				<<if $averyCrimeTracker neq null>>
-					<<set $averyCrimeTracker += $_crimemod>>
+					<<set $averyCrimeTracker += $_crimeMod>>
 				<</if>>
 				<<if $exposed gte 1 and _crimeType isnot "exposure">>
-					<<set C.crime.exposure += $_crimemod>>
-					<<set C.crime.exposureHistory += $_crimemod>>
-					<<set C.crime.exposureDaily += $_crimemod>>
+					<<set C.crime.exposure += $_crimeMod>>
+					<<set C.crime.exposureHistory += $_crimeMod>>
+					<<set C.crime.exposureDaily += $_crimeMod>>
 					<<set C.crime.exposureCount += 1>>
 					<<set C.crime.exposureCountHistory += 1>>
 				<</if>>
@@ -520,7 +520,7 @@
 					<!-- Resets daily at 6AM, in dawnCheck, time.js -->
 					<<set $foxCrimeProgress ||= 0>>
 					<<set $foxCrimeLimit ||= 0>>
-					<<set $foxCrimeProgress += $_crimemod>>
+					<<set $foxCrimeProgress += $_crimeMod>>
 					<<set $_foxCrimeRequired = Math.floor(25 * (1 + $foxbuild))>>
 					<<if $foxCrimeProgress gte $_foxCrimeRequired>>
 						<<transform fox 1>>
@@ -537,7 +537,7 @@
 					<<if !setup.crimeDescs[_description]>>
 						<<run Errors.report("Extra-Illegal crime committed of description; " + _description + " crime event not logged")>>
 					<<else>>
-						<<run C.crime.logEvent($_crimemod, _crimeType, _description)>>
+						<<run C.crime.logEvent($_crimeMod, _crimeType, _description)>>
 					<</if>>
 				<</if>>
 			<</if>>
@@ -564,11 +564,11 @@
 				<<run Errors.report("Extra-Illegal crime (flat) committed of type; " + _crimeType + " defaulted to thievery")>>
 				<<set _crimeType to "thievery">>
 			<</if>>
-			<<set $_crimemod to Number(_args[0])>>
+			<<set $_crimeMod to Number(_args[0])>>
 			<<if _args[0] gt 0>>
-				<<set C.crime[_crimeType] += $_crimemod>>
-				<<set C.crime[_crimeType + "History"] += $_crimemod>>
-				<<set C.crime[_crimeType + "Daily"] += $_crimemod>>
+				<<set C.crime[_crimeType] += $_crimeMod>>
+				<<set C.crime[_crimeType + "History"] += $_crimeMod>>
+				<<set C.crime[_crimeType + "Daily"] += $_crimeMod>>
 				<<set C.crime[_crimeType + "Count"] += 1>>
 				<<set C.crime[_crimeType + "CountHistory"] += 1>>
 			<</if>>
@@ -797,7 +797,7 @@
 	<</if>>
 <</widget>>
 
-<<widget "schoolskillgeneral">>
+<<widget "schoolSkillGeneral">>
 	<<if $statFreeze isnot true>>
 		<<set $_subject to _args[0]>>
 		<<set $_gain to _args[1] || 1>>
@@ -821,19 +821,19 @@
 <</widget>>
 
 <<widget "scienceskill">>
-	<<schoolskillgeneral "science" _args[0] _args[1]>>
+	<<schoolSkillGeneral "science" _args[0] _args[1]>>
 <</widget>>
 
 <<widget "mathsskill">>/* Faster in school to account for fewer lessons */
-	<<schoolskillgeneral "maths" `_args[0] * (V.location === "school" ? 1.2 : 1)` _args[1]>>
+	<<schoolSkillGeneral "maths" `_args[0] * (V.location === "school" ? 1.2 : 1)` _args[1]>>
 <</widget>>
 
 <<widget "englishskill">>
-	<<schoolskillgeneral "english" _args[0] _args[1]>>
+	<<schoolSkillGeneral "english" _args[0] _args[1]>>
 <</widget>>
 
 <<widget "historyskill">>
-	<<schoolskillgeneral "history" _args[0] _args[1]>>
+	<<schoolSkillGeneral "history" _args[0] _args[1]>>
 <</widget>>
 
 <<widget "passiveStudy">>
