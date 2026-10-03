@@ -48,10 +48,12 @@
 			<</if>>
 		<<elseif $whitney_toilet is 1 and C.npc.Whitney.state is "active" and $rng gte 51 and $daily.whitney.toiletCheck isnot 1>>
 			<<set $daily.whitney.toiletCheck to 1>>
-			<<if $player.penisExist and $player.vaginaExist>>
+			<<if ($player.penisExist and $player.vaginaExist) or $settings.nudeGenderPerception is 0>>
 				<<set _correctBathroom to (C.npc.Whitney.pronoun is "m" ? "boys" : "girls")>>
+			<<else>>
+				<<set _correctBathroom to (V.player.sex is "f" ? "boys" : "girls")>>
 			<</if>>
-			<<if $changingRoomGender is "boys" and $player.sex is "m" or $changingRoomGender is "girls" and $player.sex is "f" or ($player.penisExist and $player.vaginaExist) and $changingRoomGender isnot _correctBathroom>>
+			<<if $changingRoomGender isnot _correctBathroom>>
 				<<if $player.sex is C.npc.Whitney.pronoun>>
 					<<npc Whitney>><<person1>>
 					You bump into Whitney. <<His>> expression darkens. "What did I say about showing your face in here?" <<he>> says. "I guess I'll have to beat it into you."
@@ -79,7 +81,7 @@
 					<br>
 				<</if>>
 			<<else>>
-				<<if $player.sex is C.npc.Whitney.pronoun>>
+				<<if $player.sex is C.npc.Whitney.pronoun and $settings.nudeGenderPerception !== 0>>
 					A couple of Whitney's friends enter the bathroom. They laugh and nudge each other. They make no aggressive moves, but they refuse to leave you alone.
 					<br><br>
 					"We're just here to make sure you <<if $player.sex is "m">>sit down to pee<<else>>know how to use the urinal<</if>>. Whitney's orders."
@@ -753,7 +755,7 @@
 					<br>
 				<<elseif $cool gte 120>>
 					<<if $schoolrep.herm gte 5 and !$worn.face.type.includes("mask")>>
-						You pass by a group of students who break into whispers as you pass by. You hear something about a hermaphrodite.
+						You pass by a group of students who break into whispers as you pass by. You make out the word 'both', whispered louder than the rest.
 					<<elseif $schoolrep.crossdress gte 5 and !$worn.face.type.includes("mask")>>
 						You pass by a group of students who break into whispers as you pass by. You hear something about a crossdresser.
 					<<else>>
@@ -2594,8 +2596,8 @@
 		<<set $bullyevent += 1>>
 		<<if $whitney_toilet is undefined and $genderknown.includes("Whitney") and _whitney.dom gte 14>>
 			Whitney and <<his>> friends surround you. Whitney smirks and grasps your shoulders.
-			<!-- dev note: Keep in mind that this scene uses player.gender directly and not player.gender_appearance. That's why we have to do complicated things. -->
-			<<if $player.sex is _whitney.pronoun>>
+			<!-- dev note: Keep in mind that this scene uses player.sex directly and not player.gender_appearance. That's why we have to do complicated things. -->
+			<<if $player.sex is _whitney.pronoun and $settings.nudeGenderPerception !== 0>>
 				<<He>> tries to push you into the <<print ($player.sex is "m" ? "girl" : "boy")>>s' toilets.
 				<br><br>
 				"A new rule, slut," <<he>> says. "You're a failure of a <<print ($player.sex is "m" ? "boy" : "girl")>>. You don't deserve to use the same toilets as me."
@@ -2606,7 +2608,14 @@
 				<br><br>
 				<!-- dev note: This scene is weird for herm PCs that normally choose the same toilets as Whitney. They aren't hiding from Whitney. How should Whitney's rule apply to herms? -->
 				<!-- dev note: This is ALSO weird for crossdresser PCs, because gender_appearance is what dictates getting thrown out of bathrooms, not gender, so they're ALSO already using the bathroom Whitney wants. -->
-				"A new rule, slut," <<he>> says. "No more hiding from me in the bathroom. You may be a <<if $player.sex is "m">>boy<<elseif $player.penisExist and $player.vaginaExist>>freak<<else>>girl<</if>>, but you're also mine. I want you nearby in case I feel like using you. That means you're using the <<nnpc_gendery "Whitney">>s' toilets from now on."
+				"A new rule, slut," <<he>> says. "No more hiding from me in the bathroom. You may be a 
+				<<if ($player.penisExist and $player.vaginaExist) or $settings.nudeGenderPerception is 0>>
+					freak, <!-- if genitals are ignored for gender perception, this is just regular bullying/name-calling, since the line might not make sense otherwise -->
+				<<elseif $player.sex is "m">>
+					boy,
+				<<else>>
+					girl,
+				<</if>> but you're also mine. I want you nearby in case I feel like using you. That means you're only using the <<nnpc_gendery "Whitney">>s' toilets from now on."
 				<br><br>
 				<<He>> pushes you closer.
 			<</if>>
