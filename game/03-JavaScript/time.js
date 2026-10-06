@@ -2023,7 +2023,7 @@ function yearlyEventChecks() {
 		delete V.valentines_supermarket;
 	}
 
-	if (Time.monthName === "February" && Time.monthDay <= 14 && !V.avery_valentines && V.avery_mansion) {
+	if (Time.monthName === "February" && Time.monthDay <= 14 && !V.avery_valentines) {
 		V.avery_valentines = {};
 
 		V.avery_valentines.intro = false;
