@@ -1137,12 +1137,12 @@ function effects() {
 			}
 			if (!T.hasVaginaParasiteForEvent) {
 				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function (event) {
-					return !event.includes("vagina");
+					return !event?.includes("vagina");
 				});
 			}
 			if (!T.hasAnusParasiteForEvent) {
 				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function (event) {
-					return !event.includes("anus");
+					return !event?.includes("anus");
 				});
 			}
 		}
