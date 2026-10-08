@@ -1,6 +1,14 @@
 declare module "twine-sugarcube" {
 	export interface SugarCubeStoryVariables {
 		debug: 0 | 1;
+		debugLines?: boolean;
+		debugEnableHerms?: 0 | 1;
+		debug_favourite?: DebugMenuEvent[];
+		debug_custom_events?: {
+			Main: DebugMenuEvent[];
+			Character: DebugMenuEvent[];
+			Events: DebugMenuEvent[];
+		};
 		debugFireworks?: boolean;
 		debugWeatherBandBounds?: boolean;
 		debugSkyTestingLocation?: {
@@ -13,9 +21,9 @@ declare module "twine-sugarcube" {
 			schema: number;
 		};
 		/** @deprecated */
-		eventslot?: number;
+		eventslot?: number[];
 		/** @deprecated */
-		eventtime?: number;
+		eventtime?: number[];
 	}
 }
 
@@ -33,6 +41,12 @@ declare global {
 		slot: number;
 		time: number;
 		area: string[];
+	}
+
+	export interface DebugMenuEvent {
+		link: [string | (() => string), string | (() => string)];
+		widgets: (string | (() => string))[];
+		condition?: (() => boolean) | 1;
 	}
 }
 
