@@ -2720,18 +2720,14 @@ function fixIntegrityUpdater() {
 }
 window.fixIntegrityUpdater = fixIntegrityUpdater;
 
-// Set plots to watered if it rains
-// Temporary solution until a rework
-$(document).on(":onWeatherChange", () => {
-	if (!V.daily || V.daily?.plotsRain || Weather.precipitation !== "rain") return;
+function waterPlotsIfRaining() {
+	if (V.daily.plotsRain || Weather.precipitation !== "rain") return;
 	V.daily.plotsRain = true;
-	Object.entries(V.plots).forEach(([location, plots]) => {
-		// Don't water greenhouse plants from rain - disabled for now
-		// Alternate text about a rainwater harvester was added, so this may not be needed
-		// if (location === "garden" && V.alex_greenhouse === 3) return;
+	Object.entries(V.plots).forEach(([_location, plots]) => {
 		plots.forEach(plot => (plot.water = 1));
 	});
-});
+}
+window.waterPlotsIfRaining = waterPlotsIfRaining;
 
 // Returns true if one or more orphanage plots have been planted
 // Used to determine whether Robin should automatically water them
@@ -2748,7 +2744,7 @@ function orphanagePlotsPlanted() {
 window.orphanagePlotsPlanted = orphanagePlotsPlanted;
 
 // Returns true if all orphanage plots have been watered
-// Used to determine whether Robin sshould automatically water them
+// Used to determine whether Robin should automatically water them
 function orphanagePlotsWatered() {
 	if (V.plots?.garden) {
 		for (let i = 0; i < V.plots.garden.length; i++) {
@@ -2777,7 +2773,6 @@ function tendingDay() {
 				}
 			}
 
-			// Rain check moved to event in ingame.js
 			plot.water = irrigation >= 1 ? (irrigation--, 1) : 0;
 		});
 	});

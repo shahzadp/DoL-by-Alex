@@ -1,4 +1,4 @@
-/* globals orphanagePlotsPlanted orphanagePlotsWatered */
+/* globals orphanagePlotsPlanted orphanagePlotsWatered waterPlotsIfRaining */
 /* Time namespace
 	Use Time prefix when accessing any getters or functions (e.g. Time.second, Time.schoolDay, or Time.getLastDayOfMonth(), etc.)
 	Getters: (Most of these are being used in one way or another)
@@ -1103,6 +1103,9 @@ function hourPassed(hours) {
 		if (!V.avery_mansion || ["fallen", "kicked"].includes(V.avery_fate)) {
 			V.hoursGoneFromHome++;
 		}
+
+		// When you view a plot while it is raining, it automatically becomes watered, so we don't need to check frequently if it's raining to water plots. Hourly is good enough.
+		waterPlotsIfRaining();
 
 		// Robin autowatering
 		// Include "bath" as a location since bathing is from 17:00-17:29
