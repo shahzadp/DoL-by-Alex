@@ -1,6 +1,13 @@
 declare module "twine-sugarcube" {
 	export interface SugarCubeStoryVariables {
 		debug: 0 | 1;
+		debugFireworks?: boolean;
+		debugWeatherBandBounds?: boolean;
+		debugSkyTestingLocation?: {
+			location: string;
+			bus: string;
+		};
+		debugSkyTestingTemperature?: number;
 		event?: {
 			buffer: EventNpc[];
 			schema: number;

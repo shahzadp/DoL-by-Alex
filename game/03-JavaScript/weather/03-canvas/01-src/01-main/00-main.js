@@ -21,5 +21,6 @@ Weather.sidebar = new Weather.Renderer.Sky({
 		"sunGlow",
 		"fog",
 		"locationSmoke",
+		"fireworks",
 	],
 });
