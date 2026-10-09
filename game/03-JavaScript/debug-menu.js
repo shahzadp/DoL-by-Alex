@@ -310,9 +310,7 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Sky Testing`, `Sky Testing`],
-			widgets: [
-				`<<if $passage isnot "Sky Testing">><<set $lastPassage to $passage>><<set $debugSkyTestingLocation to { location: $location, bus: $bus }>><<unset $debugSkyTestingTemperature>><</if>>`,
-			],
+			widgets: [`<<if $passage isnot "Sky Testing">><<set $lastPassage to $passage>><<freezePlayerStats>><</if>>`],
 		},
 		{
 			text_only: `\n`,

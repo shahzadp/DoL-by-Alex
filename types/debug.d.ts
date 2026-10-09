@@ -11,10 +11,6 @@ declare module "twine-sugarcube" {
 		};
 		debugFireworks?: boolean;
 		debugWeatherBandBounds?: boolean;
-		debugSkyTestingLocation?: {
-			location: string;
-			bus: string;
-		};
 		debugSkyTestingTemperature?: number;
 		event?: {
 			buffer: EventNpc[];
