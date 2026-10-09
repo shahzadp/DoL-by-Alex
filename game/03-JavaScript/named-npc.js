@@ -50,7 +50,7 @@ function sydneyStatusCheck() {
 	else T.sydneyStatus = "neutral";
 
 	if (sydney.chastity.penis.includes("chastity") || sydney.chastity.vagina.includes("chastity")) T.sydneyChastity = 1;
-	if (sydney.virginity.vaginal && sydney.virginity.penile) T.sydneyVirgin = 1;
+	if (sydney.virginity.vaginal === true && sydney.virginity.penile === true) T.sydneyVirgin = 1;
 }
 
 function sydneySchedule() {

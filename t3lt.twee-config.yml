@@ -598,6 +598,34 @@ sugarcube-2:
 
     addNNPCOutfit:
       name: addNNPCOutfit
+    addPairedSpeechLine:
+      container: true
+      description: |-
+        Adds a PC line to the speech pool with a NNPC's reply. The NNPC's reply goes into their pool as a "pairedReply" line.
+
+        ```
+        <<addPairedSpeechLine "Whitney" "moan">>
+        	<<pcLine>>PC's line
+        <<npcLine>>
+        	Whitney's reply
+        <</addPairedSpeechLine>>
+        ```
+        `<<addPairedSpeechLine npc category>>`
+        - **npc**: `string` - the NPC who replies
+          - %namedNPCDesc%
+        - **category**: `string` - the PC action it belongs to ("moan", "plead", "demand", etc.) from `setup.speechCategories`
+      parameters:
+        - '%namedNPC% &+ string'
+    addSpeechLine:
+      container: true
+      description: |-
+        Adds a line to the open speech pool. Use `<<speechLine>>` to add several lines that share one conditional.
+
+        `<<addSpeechLine category [weight]>>line<</addSpeechLine>>`
+        - **category**: `string` - sets the line's priority and cooldown, from `setup.speechCategories`
+        - **weight** _optional_: `number` - weight, default 1
+      parameters:
+        - 'string |+ number'
     addVaginalWetness:
       name: addVaginalWetness
     adjust_school_traits:
@@ -11998,7 +12026,13 @@ sugarcube-2:
     museumtalk:
       name: museumtalk
     namedNpcComments:
-      name: namedNpcComments
+      description: |-
+        Plays the named NPC's speech lines for this turn. NPCs without a speech widget or that skip speaking this turn (passes) set `_noNameComment`, so generic comments or mouth actions play instead.
+
+        `<<namedNpcComments npc>>`
+        - **npc**: `string` - the NPC's `fullDescription`
+      parameters:
+        - string
     namedNpcEjaculation:
       name: namedNpcEjaculation
     namedNpcGenderApply:
@@ -12021,7 +12055,7 @@ sugarcube-2:
           - `kissImminent`
           - `kissSkin`
           - `undress`
-        - **detail**: `string` - optional combat-state detail, e.g. which body part
+        - **detail** _optional_: `string` - the body part, for `kissSkin` and `fondle`
       parameters:
         - 'number &+ "choke"|"expose"|"fondle"|"initiative"|"kiss"|"kissDeep"|"kissImminent"|"kissSkin"|"undress" |+ string'
     namedNpcPregnancy:
@@ -12725,6 +12759,9 @@ sugarcube-2:
       name: npcincr_avery
     npckiss:
       name: npckiss
+    npcLine:
+      description: |-
+        The named NPC's reply, inside `<<addPairedSpeechLine>>`.
     npcList:
       name: npcList
     npcNamed:
@@ -13728,6 +13765,78 @@ sugarcube-2:
         - "number |+ number"
     pbhairinit:
       name: pbhairinit
+    pc-line-alex-demand:
+      name: pc-line-alex-demand
+    pc-line-alex-moan:
+      name: pc-line-alex-moan
+    pc-line-alex-plead:
+      name: pc-line-alex-plead
+    pc-line-avery-demand:
+      name: pc-line-avery-demand
+    pc-line-avery-forgive:
+      name: pc-line-avery-forgive
+    pc-line-avery-moan:
+      name: pc-line-avery-moan
+    pc-line-avery-plead:
+      name: pc-line-avery-plead
+    pc-line-blackwolf-demand:
+      name: pc-line-blackwolf-demand
+    pc-line-blackwolf-moan:
+      name: pc-line-blackwolf-moan
+    pc-line-blackwolf-plead:
+      name: pc-line-blackwolf-plead
+    pc-line-eden-demand:
+      name: pc-line-eden-demand
+    pc-line-eden-moan:
+      name: pc-line-eden-moan
+    pc-line-eden-plead:
+      name: pc-line-eden-plead
+    pc-line-greathawk-demand:
+      name: pc-line-greathawk-demand
+    pc-line-greathawk-moan:
+      name: pc-line-greathawk-moan
+    pc-line-greathawk-plead:
+      name: pc-line-greathawk-plead
+    pc-line-gwylan-demand:
+      name: pc-line-gwylan-demand
+    pc-line-gwylan-moan:
+      name: pc-line-gwylan-moan
+    pc-line-gwylan-plead:
+      name: pc-line-gwylan-plead
+    pc-line-kylar-demand:
+      name: pc-line-kylar-demand
+    pc-line-kylar-moan:
+      name: pc-line-kylar-moan
+    pc-line-kylar-plead:
+      name: pc-line-kylar-plead
+    pc-line-robin-demand:
+      name: pc-line-robin-demand
+    pc-line-robin-moan:
+      name: pc-line-robin-moan
+    pc-line-robin-plead:
+      name: pc-line-robin-plead
+    pc-line-sydney-demand:
+      name: pc-line-sydney-demand
+    pc-line-sydney-moan:
+      name: pc-line-sydney-moan
+    pc-line-sydney-plead:
+      name: pc-line-sydney-plead
+    pc-line-whitney-demand:
+      name: pc-line-whitney-demand
+    pc-line-whitney-forgive:
+      name: pc-line-whitney-forgive
+    pc-line-whitney-moan:
+      name: pc-line-whitney-moan
+    pc-line-whitney-mock:
+      description: |-
+        Whitney's variants of the PC's mock line, added to the "pc" speech pool.
+
+        `<<pc-line-whitney-mock mockAction>>`
+        - **mockAction**: `string` - the insecurity the PC mocked, from `$mockaction`
+      parameters:
+        - '"penis"|"vagina"|"weak"|"looks"|"skill"|"ethics"'
+    pc-line-whitney-plead:
+      name: pc-line-whitney-plead
     pcFarmBirth:
       name: pcFarmBirth
     pcGender:
@@ -13741,6 +13850,9 @@ sugarcube-2:
       description: |-
         Prints "her", "his", or "their", based on the PC's chosen gender. ONLY to be used when the PC is referring to themself. NPCs should continue to refer to PC by `<<pher>>` if appropriate for the scene.
       tags: ["text"]
+    pcLine:
+      description: |-
+        The PC's line, inside `<<addPairedSpeechLine>>`.
     pcow:
       description: |-
         Prints "cow" or "bull", based on the PC's gender appearance.
@@ -16583,10 +16695,51 @@ sugarcube-2:
       name: specialClothesUpdate
     specialClothingFeatUI:
       name: specialClothingFeatUI
+    speech-alex:
+      name: speech-alex
+    speech-avery:
+      name: speech-avery
+    speech-bailey:
+      name: speech-bailey
+    speech-eden:
+      name: speech-eden
     speech-gwylan:
       name: speech-gwylan
+    speech-harper:
+      name: speech-harper
+    speech-kylar:
+      name: speech-kylar
+    speech-leighton:
+      name: speech-leighton
+    speech-morgan:
+      name: speech-morgan
+    speech-robin:
+      name: speech-robin
     speech-sydney:
       name: speech-sydney
+    speech-whitney:
+      name: speech-whitney
+    speech-zephyr:
+      name: speech-zephyr
+    speechLine:
+      description: |-
+        Starts another line inside `<<addSpeechLine>>`.
+    speechPool:
+      description: |-
+        Opens the speaker's speech pool for this turn. Lines are added to the open speech pool until `<<speechSay>>` says one of them.
+
+        `<<speechPool speaker ["noMouthAction"]>>`
+        - **speaker**: `string` - whose lines the pool holds
+          - `"pc"`: the player's lines
+          - %namedNPCDesc%
+        - **"noMouthAction"** _optional_: stops the NNPC from being able to pass to a mouth action instead of speaking
+      parameters:
+        - '%namedNPC%|"pc" |+ "noMouthAction"'
+    speechSay:
+      description: |-
+        Says one line from the open speech pool. Skips lines if its category is on cooldown and lines the speaker already said this combat. Once every line has been said, they all become available again, except the last one said.
+
+        An NPC can pass to a mouth action instead of speaking. Always passes when they have nothing to say, or passes 40% of the time when only `"idle"` lines are in the pool.
     speechWraith:
       description: |-
         Prints up to two relevant wraith lines
