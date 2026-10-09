@@ -17,9 +17,9 @@ declare module "twine-sugarcube" {
 			schema: number;
 		};
 		/** @deprecated */
-		eventslot?: number[];
+		eventslot?: number;
 		/** @deprecated */
-		eventtime?: number[];
+		eventtime?: number;
 	}
 }
 
