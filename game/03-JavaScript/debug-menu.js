@@ -305,6 +305,14 @@ setup.debugMenu.eventList = {
 			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 12))>>`],
 		},
 		{
+			link: [`Toggle Weather Band Bounds`, stayOnPassageFn],
+			widgets: [`<<set $debugWeatherBandBounds to !$debugWeatherBandBounds>>`],
+		},
+		{
+			link: [`Sky Testing`, `Sky Testing`],
+			widgets: [`<<if $passage isnot "Sky Testing">><<set $lastPassage to $passage>><<freezePlayerStats>><</if>>`],
+		},
+		{
 			text_only: `\n`,
 		},
 		{
@@ -494,10 +502,6 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Disable Debug Lines`, stayOnPassageFn],
 			widgets: [`<<set $debugLines to false>>`],
-		},
-		{
-			link: [`Toggle Weather Band Bounds`, stayOnPassageFn],
-			widgets: [`<<set $debugWeatherBandBounds to !$debugWeatherBandBounds>>`],
 		},
 		{
 			text_only: `\n`,
