@@ -1,59 +1,2275 @@
 :: Widgets speech-Whitney [widget]
 <<widget "speech-whitney">>
 	<<set _npc_speech to true>>
-	<<if ($speechpenisvirgin is 1 and $player.virginity.penile is "Whitney") or ($speechvaginavirgin is 1 and $player.virginity.vaginal is "Whitney")>>
-		<<He>> laughs. "No one can call you a virgin after this. You're my dirty slut now."
-	<<elseif $speechanusvirgin is 1 and $player.virginity.anal is "Whitney">>
-		<<He>> laughs. "Was this off limits? I want to hear you squeal, <<bitch>>!"
-	<<elseif $speechmouthvirgin is 1 and $player.virginity.oral is "Whitney">>
-		<<He>> laughs. "I bet you'll get addicted in no time!"
-	<<elseif $speechkissvirgin is 1 and $player.virginity.kiss is "Whitney">>
-		<<He>> laughs. "Why are you looking at me like that? I can't be your first, slut."
-	<<elseif $speechnamedrop is 1>>
-		<<set $speechnamedrop to 0>>
-		<<if _loveInterest is "Black Wolf">>
-			<<print `<<He>> laughs. "` + [`Did you just admit to fucking a dog? You're making this too easy.`, `I think I need to remind you whose <<bitch>> you actually are.`][random(0,1)] + `"`>>
-		<<elseif _loveInterest is "Great Hawk">>
-			<<print `<<He>> laughs. "` + [`Did you just admit to fucking a bird? You're making this too easy.`, `You can't fly away. Not from me.`][random(0,1)] + `"`>>
-		<<elseif random(1, 2) lte 1>>
-			<<switch _loveInterest>>
-				<<case "Robin">>
-					<<He>> laughs. "You've fallen for that weak little shit? I guess I know who to visit next."
-				<<case "Kylar">>
-					<<He>> scowls. "I should've known you'd fall for that freak."
-				<<case "Sydney">>
-					<<He>> laughs. "Two book criminals, sitting in a tree. Adorable."
-				<<default>>
-					<<He>> scowls. "Let me remind you why you don't have a choice."
-			<</switch>>
+	<<set _whitney to $NPCList.find(npc => npc.fullDescription === "Whitney")>>
+	<<if !$whitneyUniqueComments>>
+		<<set $whitneyUniqueComments to []>>
+	<</if>>
+	<<speechPool "Whitney">>
+	<<if ($speechVaginaVirgin and $player.virginity.vaginal is "Whitney") or ($speechPenisVirgin and $player.virginity.penile is "Whitney")>>
+		<<if $speechFallenTransform is 1 and $consensual is 0 and $audiencepresent gte 1>>
+			<<addSpeechLine "virginity">>
+				<<He>> falls silent when <<he>> sees you break, only to laugh. "Don't give me that! You like this, don't you?"
+			<</addSpeechLine>>
+		<<elseif $speechFallenTransform is 1 and $consensual is 0>>
+			<<addSpeechLine "virginity">>
+				<<He>> begins to laugh, but soon makes a face when <<he>> sees you break. "Cut that shit out. You're really creeping me out right now, slut."
+			<</addSpeechLine>>
+		<<elseif $speechFallenTransform is 1 and $consensual is 1>>
+			<<addSpeechLine "virginity">>
+				<<He>> begins to laugh, but falls silent and gives you uneasy glances when <<he>> sees you break. "...Hey. Hey!"
+			<</addSpeechLine>>
 		<<else>>
-			<<He>> laughs. "I don't care about your little crush. You belong to me."
+			<<if $player.virginity.vaginal is "Whitney" and $speechVaginaVirgin>>
+				<<addSpeechLine "virginity">>
+					<<He>> laughs. "No one can call you a virgin after this. You're my dirty slut now."
+				<</addSpeechLine>>
+			<</if>>
+			<<if $player.virginity.penile is "Whitney" and $speechPenisVirgin>>
+				<<addSpeechLine "virginity">>
+					<<He>> laughs. "Just watch, slut. I'll be your first, and the best you'll ever have!"
+				<</addSpeechLine>>
+			<</if>>
 		<</if>>
-	<<elseif $speechsextoy is 1>>
-		<<set $speechsextoy to 0>>
-		<<set $_sexToy to ($rightarm is "heldSexToy" and $leftarm is "heldSexToy" ? "sex toys" : "sex toy")>>
-		<<print `<<He>> looks at your $_sexToy and grins. "` + [`Good slut.`, `I knew you were a dirty slut.`, `Don't get any bright ideas.`, `What's wrong, is your slutty mouth getting tired?`][random(0,3)] + `"`>>
-	<<elseif $speechchastity is 1>>
+	<</if>>
+	<<if $player.virginity.anal is "Whitney">>
+		<<if $speechAnusVirgin>>
+			<<addSpeechLine "virginity">>
+				<<He>> laughs. "Was this off limits? I want to hear you squeal, <<bitch>>!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 1>>
+			<<if $speechAnusVirgin>>
+				<<addSpeechLine "virginity">>
+					<<He>> grins. "Breathe easy, <<slut>>. That's far from the worst thing I want to do to you."
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.love gte 20 and $speechAnusVirgin>>
+				<<addSpeechLine "virginity">>
+					<<He>> grins. "Relax, <<bitch>>. You can take it."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $player.virginity.oral is "Whitney" and $speechOralVirgin>>
+		<<addSpeechLine "virginity">>
+			<<He>> laughs. "I bet you'll get addicted in no time!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $player.virginity.kiss is "Whitney">>
+		<<if $speechKissVirgin>>
+			<<addSpeechLine "virginity">>
+				<<He>> laughs. "Why are you looking at me like that? I can't be your first, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 1 and !isLoveInterest("Whitney") and $speechKissVirgin>>
+			<<addSpeechLine "virginity">>
+				<<He>> briefly pulls away to look at you. "You haven't even gone this far yet? That's real sad, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCAnusVirgin>>
+		<<if !playerHasStrapon() and $player.penissize is 6 and C.npc.Whitney.penissize gte 4>>
+			<<addSpeechLine "virginity">>
+				"Only first I had left to give. Better be-" <<He>> cuts <<himself>> off with a grunt of pain, feeling your <<penis>> spread <<him>> wide. "Fuck! Is this what it feels like when I... Bloody hell."
+			<</addSpeechLine>>
+		<<elseif !playerHasStrapon() and $player.penissize is 6>>
+			<<addSpeechLine "virginity">>
+				"Only first I had left to give. Better be-" <<He>> cuts <<himself>> off with a grunt of pain, feeling your <<penis>> spread <<him>> wide. "You fucking prick! What are you, a bloody horse?!"
+				<<insecurity "penis_big" 1>><<ginsecurity "penis_big">>
+			<</addSpeechLine>>
+		<<elseif !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "virginity">>
+				<<set $whitneySeen.pushUnique("penisSmall")>>
+				"Only first I had left to give. Better be..." <<He>> blinks when <<he>> feels your <<penissize>> penis, before collapsing into a laughing fit.
+				<<insecurity "penis_small" 1>><<ginsecurity "penis_small">>
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "virginity">>
+				<<He>> grunts as you push into <<him>>. "Only first I had left to give. Better be fucking grateful, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechForgive>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "forgive">>
+				<<He>> recoils, before trying to save face. "Think I hit <<phim>> too hard. Yeah."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "forgive">>
+			<<speechLine>>
+				<<He>> scoffs. "You don't understand shit."
+			<<speechLine>>
+				<<He>> laughs. "What the hell?"
+			<<speechLine>>
+				<<He>> cringes. "Whatever shit you're on, I don't want it."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechPlead>>
+		<<if $audiencepresent gte 1 and C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "plead" 4>>
+				<<He>> mimics what you say in a babylike voice, prompting the crowd to laugh and repeat it in turn.
+			<</addSpeechLine>>
+		<<elseif $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "plead" 4>>
+				<<He>> mimics what you say in a babylike voice, only to be met with forced laughs.
+			<</addSpeechLine>>
+		<<elseif $enemyanger gt 100>>
+			<<addSpeechLine "plead">>
+				<<He>> sneers. "You're pathetic."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "plead">>
+			<<speechLine>>
+				<<He>> laughs. "Keep crying. See if I give a shit."
+			<<speechLine>>
+				<<He>> snickers. "Beg all you want, slut. I know what you like."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $mouthactiondefault is "mock" and $audiencepresent gte 1 and C.npc.Whitney.dom gte 15>>
+		<<if $speechDemand>>
+			<<addSpeechLine "demand">>
+				Your words elicit gasps and murmurs from the crowd, prompting Whitney to stop and glare at you. "You've crossed a line, slut. In fact, you just fucking leaped over it! You're dead!"
+			<</addSpeechLine>>
+		<</if>>
+	<<elseif $mouthactiondefault is "mock" and $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+		<<if $speechDemand>>
+			<<addSpeechLine "demand">>
+				Your words elicit soft giggles and laughter from the crowd, much to Whitney's bewilderment. "What the fuck are you all laughing at?!" No one answers <<him>>.
+			<</addSpeechLine>>
+		<</if>>
+	<<else>>
+		<<if $speechDemand>>
+			<<addSpeechLine "demand">>
+			<<speechLine>>
+				<<He>> snarls. "You'll fucking regret saying that!"
+			<<speechLine>>
+				<<He>> sneers. "Bloody <<bitch>>. You better shut the fuck up, or I'll shut you up myself."
+			<<speechLine>>
+				<<He>> scoffs. "Do you ever just shut up?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.dom lte 10>>
+			<<if $speechDemand>>
+				<<addSpeechLine "demand">>
+					<<He>> stops. "I let you get away with too much. I best fix that right fucking now."
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.love lte 10 and $speechDemand>>
+				<<addSpeechLine "demand">>
+					<<He>> stops. "I am <i>this</i> close to shutting you up for good. Don't fucking test me!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if playerChastity()>>
+		<<if $speechExposeGenitals>>
+			<<addSpeechLine "expose">>
+				<<He>> leers at your newly-exposed <<printChastity>>. "How big of a slut do you have to be to have ended up with that kind of gear?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechExposeGenitals>>
+			<<if $enemyanger lte 100>>
+				<<addSpeechLine "expose">>
+					<<He>> scoffs at your newly-exposed <<printChastity>>. "They had to chain down the slut to end all sluts somehow."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "expose">>
+					<<He>> sneers at your newly-exposed <<printChastity>>. "Think you're so fucking smart, keeping that lock on you like it'll stop anyone serious. I should rip it off you!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<<elseif !playerHasStrapon() and $player.penisExist and (!$player.vaginaExist or $rng lte 50)>>
+		<<if $player.penissize gte 5>>
+			<<if $speechExposeGenitals>>
+				<<addSpeechLine "expose">>
+					<<He>> laughs upon seeing your newly-exposed <<penis>>. "Looks like the monster's out of the cage!"<<insecurity "penis_big" 1>><<ginsecurity "penis_big">>
+				<</addSpeechLine>>
+			<</if>>
+			<<if $speechExposeGenitals>>
+				<<if $enemyanger lte 100>>
+					<<addSpeechLine "expose">>
+						<<He>> sneers upon seeing your newly-exposed <<penis>>. "Don't worry, slut. I'll make sure everyone's seen this monster by the time I'm done with you!"<<insecurity "penis_big" 1>><<ginsecurity "penis_big">>
+					<</addSpeechLine>>
+				<<else>>
+					<<addSpeechLine "expose">>
+						<<He>> clicks <<his>> tongue upon seeing your newly-exposed <<penis>>. "Now everyone knows you're a freak of nature!"<<insecurity "penis_big" 1>><<ginsecurity "penis_big">>
+					<</addSpeechLine>>
+				<</if>>
+			<</if>>
+		<<elseif $player.penissize lte 2>>
+			<<if $whitneySeen.includes("penisSmall") and $speechExposeGenitals>>
+				<<addSpeechLine "expose">>
+					<<He>> laughs hard enough for tears to come upon seeing your newly-exposed <<penis>>. "Seeing this never gets old!"<<insecurity "penis_small" 1>><<ginsecurity "penis_small">>
+				<</addSpeechLine>>
+			<</if>>
+			<<if $speechExposeGenitals>>
+				<<if $enemyanger lte 100>>
+					<<addSpeechLine "expose">>
+						<<He>> laughs hard enough to force <<him>> to catch <<his>> breath upon seeing your newly-exposed <<penis>>. "Cute clit you've got there, slut!"<<set $whitneySeen.pushUnique("penisSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">>
+					<</addSpeechLine>>
+				<<else>>
+					<<addSpeechLine "expose">>
+						<<He>> grins hard enough to hurt <<his>> face upon seeing your newly-exposed <<penis>>. "Embarrassed to be seen having such a pathetic cock? You should be!"<<set $whitneySeen.pushUnique("penisSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">>
+					<</addSpeechLine>>
+				<</if>>
+			<</if>>
+		<<else>>
+			<<if $speechExposeGenitals>>
+				<<addSpeechLine "expose">>
+					<<He>> grins upon seeing your newly-exposed <<penis>>. "Would you look at that?"
+				<</addSpeechLine>>
+			<</if>>
+			<<if $speechExposeGenitals>>
+				<<if $enemyanger lte 100>>
+					<<addSpeechLine "expose">>
+						<<He>> laughs upon seeing your newly-exposed <<penis>>. "Oh, look. It's the town's favourite ride!"
+					<</addSpeechLine>>
+				<<else>>
+					<<addSpeechLine "expose">>
+						<<He>> spits upon seeing your newly-exposed <<penis>>. "Sluts like you should stay naked!"
+					<</addSpeechLine>>
+				<</if>>
+			<</if>>
+		<</if>>
+	<<elseif $player.vaginaExist>>
+		<<if $speechExposeGenitals>>
+			<<addSpeechLine "expose">>
+				<<He>> smirks as <<he>> stares at your newly-exposed <<pussy>>. "Don't be shy, slut. Nothing wrong with showing off!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechExposeGenitals>>
+			<<if $enemyanger lte 100>>
+				<<addSpeechLine "expose">>
+					<<He>> laughs as <<he>> stares at your newly-exposed <<pussy>>. "Soon enough, this gaping hole's gonna be full of me."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "expose">>
+					<<He>> clicks <<his>> tongue as <<he>> stares at your newly-exposed <<pussy>>. "I almost want to stop giving you what you want and leave you high and dry right about now. Almost."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if !$whitneySeen.includes("crossdress")>>
+		<<if $speechCrossdressAroused is 1>>
+			<<if $audiencepresent gte 1 and $consensual is 0>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("crossdress")>>
+					<<He>> grins at the sight of your <<genitals>>, then turns to the crowd. "Looks like this <<if $player.penisExist>>dickhead<<else>>cunt<</if>>'s been keeping some nasty secrets. Who's down to teach <<phim>> a lesson?!"
+				<</addSpeechLine>>
+			<<elseif $audiencepresent gte 1>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("crossdress")>>
+					<<He>> grins at the sight of your <<genitals>>, then turns to the crowd. "Looks like my <<girl>>'s been keeping some secrets!"
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("crossdress")>>
+					<<His>> breath quickens at the sight of your <<genitals>>, eyes dark with nefarious intent. "You were lying to me, slut?! Oh, <i>ouch.</i> How will you ever make this up to me now..."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if !$whitneySeen.includes("herm")>>
+		<<if $speechHermAroused is 1>>
+			<<if _whitney.gender is "h">>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("herm")>>
+					<<He>> smirks at the sight of your <<genitals>>. "You too, huh? No fucking way."
+				<</addSpeechLine>>
+			<<elseif $audiencepresent gte 1 and $consensual is 0>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("herm")>>
+					<<He>> grins at the sight of your <<genitals>>, eyes darkening with nefarious intent. "Oh, fuck... Anyone got any new ideas on how to break this freak?"
+				<</addSpeechLine>>
+			<<elseif $audiencepresent gte 1>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("herm")>>
+					<<He>> grins at the sight of your <<genitals>>, eyes darkening with mischievous intent. "Oh, fuck... Now we've got even more to mess with."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "reveal">>
+					<<set $whitneySeen.pushUnique("herm")>>
+					<<He>> smirks at the sight of your <<genitals>>. "Both? You're twice the slut I thought!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechPregnant>>
+		<<if $consensual is 0 and $audiencepresent gte 1 and C.npc.Whitney.love lte 10 and !isLoveInterest("Whitney")>>
+			<<addSpeechLine "pregnant">>
+				"Well, shit! Looks like the slut finally got knocked up."
+			<</addSpeechLine>>
+		<<elseif $consensual is 0>>
+			<<addSpeechLine "pregnant">>
+				"Fuck, you're pregnant? I knew you were a dirty slut."
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.love gte 20 and !($audiencepresent gte 1)>>
+			<<addSpeechLine "pregnant">>
+				<<He>> mumbles under <<his>> breath. "Don't hurt yourself or whatever."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "pregnant">>
+			<<speechLine>>
+				<<He>> gives your belly testy glances.
+			<<speechLine>>
+				"Do you even know whose is it? Fucking whore."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechExposeBreasts>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "expose">>
+			<<speechLine>>
+				<<He>> moves your body to face the crowd. "Enjoy the show, perverts!"
+			<<speechLine>>
+				<<He>> moves your body to face the crowd. "Who's up to see more?!"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "expose">>
+				<<He>> leers at your <<breasts>>.
+				<<if $player.breastsize lte 0>>
+					"Don't cry. Flat or not, you're still a slut."
+				<<elseif $player.breastsize lte 1>>
+					"I bet you'll be big enough to give all of the gang some helpings soon enough."
+				<<elseif $player.breastsize lte 2>>
+					"Don't be shy. Mid or not, you're still a slut."
+				<<elseif $player.breastsize lte 4>>
+					"If I could, I'd make sure these never stay out of sight."
+				<<else>>
+					<<print either(
+						`"Almost can't believe all of this is mine."`,
+						`"Fuck, there's clearly more than enough to go around."`
+					)>>
+				<</if>>
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechPenisBig>>
+		<<addSpeechLine "penisSize">>
+		<<speechLine>>
+			<<He>> gapes at your <<penis>>. "Shit. Not bad, slut."
+		<<speechLine>>
+			"Don't break me in half now, you hear?"
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.penissize gte 4>>
+			<<addSpeechLine "penisSize">>
+				<<He>> chuckles. "I've seen better."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "penisSize">>
+			<<speechLine>>
+				<<He>> laughs at your <<penis>>. "What the hell is that?!"
+				<<if !$whitneyUniqueComments.includes("insecurityPenisBig")>><<set $whitneyUniqueComments.pushUnique("insecurityPenisBig")>><<insecurity "penis_big" 1>><<ginsecurity "penis_big">><</if>>
+			<<speechLine>>
+				<<He>> turns to the crowd. "Who else wants a go with this monster?"
+				<<if !$whitneyUniqueComments.includes("insecurityPenisBig")>><<set $whitneyUniqueComments.pushUnique("insecurityPenisBig")>><<insecurity "penis_big" 1>><<ginsecurity "penis_big">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNoticeSexToy>>
+		<<addSpeechLine "sexToy">>
+			<<set $speechNoticeSexToy to 0>><<set $_sexToy to ($rightarm is "heldSexToy" and $leftarm is "heldSexToy" ? "sex toys" : "sex toy")>>
+		<<speechLine>>
+			<<He>> looks at your $_sexToy and grins. "Good slut."
+		<<speechLine>>
+			<<He>> looks at your $_sexToy and grins. "I knew you were a dirty slut."
+		<<speechLine>>
+			<<He>> looks at your $_sexToy and grins. "Don't get any bright ideas."
+		<<speechLine>>
+			<<He>> looks at your $_sexToy and grins. "What's wrong, is your slutty mouth getting tired?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechScreamForHelp>>
+		<<addSpeechLine "screamForHelp">>
+		<<speechLine>>
+			<<He>> sneers. "Shut up, will you?"
+		<<speechLine>>
+			<<He>> laughs. "Wah wah wah!"
+		<</addSpeechLine>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "screamForHelp">>
+				"Shut the fuck up, <<bitch>>. No one's coming to save you."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "screamForHelp" 4>>
+			<<speechLine>>
+				"Noisy little fucker, ain't <<pshe>>?"
+			<<speechLine>>
+				"The lot of you better get closer, before some party crasher comes running."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechChokedWheeze>>
+		<<if $consensual is 0 and $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "choked" 4>>
+				<<He>> mimics the sound of your choking, laughing to <<himself>> as you choke.
+			<</addSpeechLine>>
+		<<elseif $consensual is 0 and $audiencepresent gte 1>>
+			<<addSpeechLine "choked" 4>>
+				<<He>> mimics the sound of your choking, eliciting a laugh out of the crowd.
+			<</addSpeechLine>>
+		<<elseif $choketrait gte 1>>
+			<<addSpeechLine "choked">>
+				<<He>> leers at you. "We both know you like being choked, whore. No need to mince words."
+			<</addSpeechLine>>
+		<<elseif $consensual is 0>>
+			<<addSpeechLine "choked">>
+				<<He>> laughs. "That's right, squeal for me."
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "choked">>
+				"What was that?" <<He>> asks mockingly, giving your neck a small squeeze. "Pathetic slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechLINameDrop>>
+		<<if _loveInterest is "Black Wolf">>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+			<<speechLine>>
+				<<He>> laughs. "Did you just admit to fucking a dog? You're making this too easy."
+			<<speechLine>>
+				<<He>> laughs. "I think I need to remind you whose <<bitch>> you actually are."
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Great Hawk">>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+			<<speechLine>>
+				<<He>> laughs. "Did you just admit to fucking a bird? You're making this too easy."
+			<<speechLine>>
+				<<He>> laughs. "You can't fly away. Not from me."
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Kylar" and $whitneySeen.includes("halloweenWhitneyWon")>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> pauses, then laughs hard enough to bring <<himself>> to tears. "Seriously?! What the hell is <<nnpc_he "Kylar">> gonna do?!"
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Kylar" and $whitneySeen.includes("halloweenKylarWon")>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> glares at you. "Don't make me laugh, slut. I know all <<nnpc_his "Kylar">> tricks by now."
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Avery" and $averySeen.includes("whitney_crash")>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> laughs. "Does <<nnpc_he "Avery">> even give enough of a shit about you?"
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Avery" and $averySeen.includes("schoolDropOff")>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> laughs. "Your sugar<<nnpc_mummy "Avery">> isn't going to do shit!"
+			<</addSpeechLine>>
+		<<elseif _loveInterest is "Gwylan" and $whitney_familiar_seen gte 2>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> laughs. "Oh no! Some spindly weirdo's gonna get me! Whatever will I do?"
+			<</addSpeechLine>>
+		<<elseif ["Robin", "Kylar", "Sydney"].includes(_loveInterest)>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<switch _loveInterest>>
+					<<case "Robin">>
+						<<He>> laughs. "You've fallen for that weak little shit? I guess I know who to visit next."
+					<<case "Kylar">>
+						<<He>> scowls. "I should've known you'd fall for that freak."
+					<<case "Sydney">>
+						<<He>> laughs. "Two book criminals, sitting in a tree. Adorable."
+				<</switch>>
+			<</addSpeechLine>>
+		<<elseif $cow gte 6>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+				<<He>> sneers. "You only moo for me, you dumb heifer."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "namedrop">>
+				<<set $speechLINameDrop to 0>>
+			<<speechLine>>
+				<<He>> scowls. "Let me remind you why you don't have a choice."
+			<<speechLine>>
+				<<He>> laughs. "I don't care about your little crush. You belong to me."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechApologise>>
+		<<if C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "apologise">>
+			<<speechLine>>
+				<<His>> eyes soften, before <<he>> rolls them. "Fine, jeez."
+			<<speechLine>>
+				<<His>> eyes soften, before <<he>> rolls them. "How much softer can you get? Fine."
+			<<speechLine>>
+				<<He>> clicks <<his>> tongue. "Fine. You're lucky I'm in a good mood."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "apologise">>
+			<<speechLine>>
+				<<He>> scowls. "Ugh, fine. If it'll get you to shut up."
+			<<speechLine>>
+				<<He>> clicks <<his>> tongue. "Sure, whatever."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechApologiseRejected>>
+		<<addSpeechLine "apologise">>
+		<<speechLine>>
+			<<He>> scowls. "Don't make me repeat myself."
+		<<speechLine>>
+			<<He>> scowls. "I already wanna take it back."
+		<<speechLine>>
+			<<He>> scoffs. "Yeah, I get it. You can shut up now."
+		<<speechLine>>
+			"Are you deaf? I said fine."
+		<<speechLine>>
+			<<He>> scoffs. "Ugh. Can't hear you!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechApologiseUnforgiving>>
+		<<if C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "apologise">>
+			<<speechLine>>
+				<<He>> sneers. "You have a lot more to apologise for, <<bitch>>."
+			<<speechLine>>
+				<<He>> spits. "Shut up! Just shut the fuck up for once! Fuck!"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "apologise">>
+			<<speechLine>>
+				"Too late for that now, slut."
+			<<speechLine>>
+				"You better shut the fuck up, or I'll shut you up myself."
+			<<speechLine>>
+				<<He>> mockingly repeats your apology. "You're bloody pathetic."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechGrowl>>
+		<<if $audiencepresent gte 1 and C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "growl" 4>>
+				<<He>> growls back at you, causing people in the crowd to laugh and bark mockingly.
+			<</addSpeechLine>>
+		<<elseif $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "growl" 4>>
+				<<He>> growls back at you before laughing loudly. No one laughs with <<him>>.
+			<</addSpeechLine>>
+		<<elseif $audiencepresent gte 1>>
+			<<addSpeechLine "growl" 4>>
+				<<He>> snorts. "The slut thinks <<pshes>> a dog now."
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "growl">>
+				<<He>> snorts. "What? Was that supposed to be scary? Fuck, you're so pathetic."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "growl">>
+				"Bite me and you'll fucking regret it."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechGrowlHeat or $speechGrowlRut>>
+		<<addSpeechLine "growl">>
+		<<speechLine>>
+			"Fuck, what a horny little <<bitch>>."
+		<<speechLine>>
+			"You need it bad, don't you <<bitch>>?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $consensual is 0 and $audiencepresent gte 1 and ($speechGrowlHeat or $speechGrowlRut)>>
+		<<addSpeechLine "growl" 4>>
+		<<speechLine>>
+			<<He>> snorts. "Looks like we caught us a bitch in heat."
+		<<speechLine>>
+			<<He>> laughs with the crowd. "What the hell? I think <<pshe>>'s losing it."
+		<</addSpeechLine>>
+	<</if>>
+	<<if C.npc.Whitney.dom gte 15 and ($speechGrowlHeat or $speechGrowlRut)>>
+		<<addSpeechLine "growl">>
+			<<He>> laughs. "Did you just fucking growl? Don't make yourself look any more desperate, slut."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechMoan>>
+		<<addSpeechLine "moan">>
+		<<speechLine>>
+			"Of course you're enjoying this. What a good little slut."
+		<<speechLine>>
+			<<He>> grins. "What? What was that?"
+		<<speechLine>>
+			<<He>> grins. "Say that again?"
+		<<speechLine>>
+			"Really now?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if ($wolfgirl gte 6 or $fox gte 6) and $speechMoan>>
+		<<addSpeechLine "moan">>
+			"That's it, bark for me, <<bitch>>."
+		<</addSpeechLine>>
+	<</if>>
+	<<if isLoveInterest("Whitney") and C.npc.Whitney.love gte 20>>
+		<<if $speechAskRough>>
+			<<addSpeechLine "askRough">>
+			<<speechLine>>
+				<<He>> grins. "Yeah? You want me to be rougher? How could I say no to you, slut?"
+			<<speechLine>>
+				<<He>> laughs. "Just because you asked so nicely."
+			<</addSpeechLine>>
+		<</if>>
+	<<else>>
+		<<if $speechAskRough>>
+			<<addSpeechLine "askRough">>
+			<<speechLine>>
+				<<He>> grins. "Oh, you asked for it now."
+			<<speechLine>>
+				<<He>> laughs. "You're mental, you know that?"
+			<<speechLine>>
+				"Don't cry if I break something, alright?"
+			<<speechLine>>
+				"Just know I won't kiss it all better after."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1 and $speechAskRough>>
+			<<addSpeechLine "askRough" 4>>
+				"Aww. <<pShe>> thinks <<pshe>> can handle me."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechPepperSpray>>
+		<<addSpeechLine "pepperSpray">>
+			<<He>> recoils in pain and snarls.
+		<<speechLine>>
+			"You demented fucking whore!"
+		<<speechLine>>
+			"You could have blinded me!"
+		<<speechLine>>
+			"What the fuck?!"
+		<<speechLine>>
+			"You are so fucking dead!"
+		<<speechLine>>
+			"Shit, shit, shit, shit!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechPlayerOrgasm>>
+		<<addSpeechLine "playerOrgasm">>
+		<<speechLine>>
+			<<His>> eyes darken. "Enjoy yourself, slut. That'll be far from the last."
+		<<speechLine>>
+			<<He>> snickers. "Yeah, I know I'm good."
+		<</addSpeechLine>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "playerOrgasm" 4>>
+			<<speechLine>>
+				<<He>> laughs, then turns to the crowd. "Am I just good at this, or this slut just real easy to please?"
+			<<speechLine>>
+				<<He>> turns to the crowd. "Bet you guys a tenner the slut's got more in the tank!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "playerOrgasm">>
+			<<speechLine>>
+				<<He>> nearly doubles over in laughter. "See? You do like this!"
+			<<speechLine>>
+				<<He>> stares down at you. "Is this even rape at this point?"
+			<</addSpeechLine>>
+			<<if $audiencepresent gte 1>>
+				<<addSpeechLine "playerOrgasm" 4>>
+				<<speechLine>>
+					<<He>> nearly doubles over in laughter, then turns to the crowd. "The bitch really wanted this after all!"
+				<<speechLine>>
+					<<He>> sneers. "Good. Let everyone know what a nasty fucking freak you are."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechLactate>>
+		<<addSpeechLine "lactate">>
+			"Ugh, fuck! You're getting it all over me!"
+		<</addSpeechLine>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "lactate" 4>>
+				<<He>> turns to the crowd. "Anyone want a taste?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if playerBellyVisible()>>
+			<<addSpeechLine "lactate">>
+				<<He>> grimaces. "Not sure why I'm surprised you're just raining milk."
+			<</addSpeechLine>>
+		<<elseif !playerIsPregnant()>>
+			<<addSpeechLine "lactate">>
+				<<He>> stares at your leaking breasts. "The hell?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $player.breastsize gte 8>>
+			<<addSpeechLine "lactate">>
+				<<He>> gapes at your leaking breasts. "Fuck, I'm not even kidding anymore. You really are a cow."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechVaginaEscape>>
+		<<addSpeechLine "escape">>
+		<<speechLine>>
+			<<He>> grunts. "Get back here, whore."
+		<<speechLine>>
+			<<He>> grunts. "You're not getting away from me, slut."
+		<<speechLine>>
+			<<He>> sneers. "I don't see your hole gaping yet. Looks like we're not done."
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "escape">>
+				<<He>> laughs. "Come off it! You're only depriving yourself here, slut."
+			<</addSpeechLine>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "escape">>
+				<<He>> scoffs. "You sure you're gonna cum fine without me?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCVaginaEscape or $speechNPCAnusEscape>>
+		<<addSpeechLine "escape">>
+		<<speechLine>>
+			"Where do you think you're going?" <<He>> sneers. "Get your cock back inside me, slut."
+		<<speechLine>>
+			<<He>> sneers. "Did I say you could do that?"
+		<<speechLine>>
+			<<He>> sneers. "Fine. Don't say I never let you do what you want."
+		<<speechLine>>
+			<<He>> clicks <<his>> tongue. "Starting to get lonely here, slut."
+		<</addSpeechLine>>
+		<<if $speechNPCVaginaEscape>>
+			<<addSpeechLine "escape">>
+				<<He>> laughs. "Oi! Don't leave me dry here."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechNPCAnusEscape>>
+			<<addSpeechLine "escape">>
+				<<He>> sneers. "You wanted my ass so bad, but look at you now."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechAnusEscape>>
+		<<addSpeechLine "escape">>
+		<<speechLine>>
+			<<He>> grunts. "Get back here, whore."
+		<<speechLine>>
+			<<He>> grunts. "You're not getting away from me, slut."
+		<<speechLine>>
+			<<He>> sneers. "I don't see your hole gaping yet. Looks like we're not done."
+		<<speechLine>>
+			<<He>> laughs. "Come on, you can take more!"
+		<<speechLine>>
+			<<He>> laughs. "Don't whine when I don't get back in, you hear?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechSteal>>
+		<<addSpeechLine "steal">>
+		<<speechLine>>
+			"Oi. Keep your hands to yourself, slut."
+		<<speechLine>>
+			"God, you're bad at this."
+		<<speechLine>>
+			"Are you fucking kidding me?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechPlayerBeaten>>
+		<<if $masochism_level gte 1>>
+			<<addSpeechLine "playerBeaten">>
+			<<speechLine>>
+				<<He>> laughs. "That's it, bitch. Knew you liked this!"
+			<<speechLine>>
+				<<He>> laughs. "Oh, this is fun."
+			<<speechLine>>
+				"You like that?!"
+			<<speechLine>>
+				"No more going easy on you. You clearly like this."
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.lust gte 60>>
+				<<addSpeechLine "playerBeaten">>
+					<<He>> groans. "Fuck, you're such a dirty little <<= either("slut","whore","bitch")>>."
+				<</addSpeechLine>>
+			<</if>>
+		<<else>>
+			<<addSpeechLine "playerBeaten">>
+			<<speechLine>>
+				<<He>> laughs. "Squeal, bitch!"
+			<<speechLine>>
+				<<He>> sneers. "Fucking pussy!"
+			<<speechLine>>
+				<<He>> laughs. "Fuck, this is fun!"
+			<<speechLine>>
+				"Get up! I'm not done with you yet!"
+			<<speechLine>>
+				"Hurts, huh?!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechPlayerHits>>
+		<<if $sadism_level gte 1>>
+			<<addSpeechLine "playerHits">>
+			<<speechLine>>
+				<<He>> hisses. "You're fucking crazy!"
+			<<speechLine>>
+				<<He>> hisses. "Don't—stop! Stop! Fuck!"
+			<<speechLine>>
+				"You demented <<bitch>>! Stop!"
+			<<speechLine>>
+				"You sick freak!"
+			<<speechLine>>
+				"What the fuck is wrong with you?!"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "playerHits">>
+			<<speechLine>>
+				<<He>> hisses. "Oh, you've done it now."
+			<<speechLine>>
+				"It's like you want me to get even worse!"
+			<<speechLine>>
+				"Oh yeah?!"
+			<<speechLine>>
+				"Want a fight, bitch?!"
+			<</addSpeechLine>>
+			<<if $physique lt ($physiquesize / 7) * 3>>
+				<<addSpeechLine "playerHits">>
+					<<He>> laughs. "What the fuck? Was that supposed to hurt me?"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechStripStruggle>>
+		<<addSpeechLine "struggle">>
+		<<speechLine>>
+			<<He>> sneers. "Fucking prude."
+		<<speechLine>>
+			"Stupid bitch! You're just making things worse for yourself!"
+		<<speechLine>>
+			"Quit it before I tear everything off you!"
+		<</addSpeechLine>>
+		<<if $fame.exhibitionism gte 600>>
+			<<addSpeechLine "struggle">>
+				"What, trying to turn your rep around? Try harder, <<= either("bitch","whore","slut")>>!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "struggle" 4>>
+			<<speechLine>>
+				"Don't leave us hanging, slut!"
+			<<speechLine>>
+				"One way or another, everyone's gonna get an eyeful!"
+			<<speechLine>>
+				<<He>> spits. "You're not leaving until everyone's gotten a show!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechStruggle>>
+		<<addSpeechLine "struggle">>
+		<<speechLine>>
+			"Stupid bitch! You're just making things worse for yourself!"
+		<<speechLine>>
+			<<He>> laughs. "I could do this all day!"
+		<</addSpeechLine>>
+		<<if $physique lt ($physiquesize / 7) * 3>>
+			<<addSpeechLine "struggle">>
+				<<He>> grins. "Yeah, keep trying. You look real funny right about now."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "struggle" 4>>
+				<<He>> smirks at the crowd. "Man, this bitch is making me real sad right now."
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.dom lte 10>>
+				<<addSpeechLine "struggle" 4>>
+					<<He>> turns to the crowd. "Still think this bitch is hot shit?"
+				<</addSpeechLine>>
+			<<elseif C.npc.Whitney.dom gte 15>>
+				<<addSpeechLine "struggle" 4>>
+					<<He>> turns to the crowd. "Right where <<pshe>> belongs. Right, guys?"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechSpank>>
+		<<if $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "spank" 4>>
+				"Guess I better teach <<phim>> a lesson. Right, guys?" <<He>> looks around at the crowd, but no one answers <<him>>.
+			<</addSpeechLine>>
+		<<elseif $audiencepresent gte 1 and C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "spank" 4>>
+				"Guess I better teach <<phim>> a lesson. Right, guys?" The crowd cheers and hollers in response.
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "spank">>
+			<<speechLine>>
+				"Dumb slut. You better fucking behave!"
+			<<speechLine>>
+				"Fucking <<= either("slut","whore")>>. This is what you wanted, isn't it?!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "spank">>
+				"Take it! Take it like the bitch you actually are!"
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "spank">>
+				"Of course I'm going to be the one to keep my slut in line!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechChastity>>
 		<<if $worn.genitals.name is "chastity parasite">>
-			<<print [`<<He>> laughs. "You always get a slutty look on your face when I squeeze this."`, `<<He>> raises an eyebrow. "That good?"`, `<<He>> raises an eyebrow. "Horny slut."`][random(0, 2)]>>
+			<<addSpeechLine "chastity">>
+			<<speechLine>>
+				<<He>> laughs. "You always get a slutty look on your face when I squeeze this."
+			<<speechLine>>
+				<<He>> raises an eyebrow. "That good?"
+			<<speechLine>>
+				<<He>> raises an eyebrow. "Horny slut."
+			<</addSpeechLine>>
 		<<elseif $worn.genitals.origin is "Whitney">>
 			<<if $rng gte 86 and $player.gender_appearance is "f" and $player.penissize lt 0>>
-				<<print `<<He>> smirks. "You look so cute with your tiny${$player.virginity.penile is true ? " virgin" : " useless"} penis all locked up." <<insecurity "penis_small" 4>><<ginsecurity "penis_small">>`>>
+				<<addSpeechLine "chastity">>
+					<<He>> smirks. "You look so cute with your tiny <<= $player.virginity.penile is true ? "virgin" : "useless">> penis all locked up."
+					<<if !$whitneyUniqueComments.includes("insecurityChastityTiny")>><<set $whitneyUniqueComments.pushUnique("insecurityChastityTiny")>><<insecurity "penis_small" 4>><<ginsecurity "penis_small">><</if>>
+				<</addSpeechLine>>
 			<<elseif $rng gte 61>>
 				<<if playerBellyVisible() and random(0, 100) gte 50>>
-					"Good slut." <<He>> smirks. "You clearly don't need to be unlocked when you've obviously been having a lot of fun without it."
+					<<addSpeechLine "chastity">>
+						"Good slut." <<He>> smirks. "You clearly don't need to be unlocked when you've obviously been having a lot of fun without it."
+					<</addSpeechLine>>
 				<<elseif ((!playerBellyVisible() and knowsAboutAnyPregnancy("pc", "Whitney")) or !$settings.pregnancySpeechEnabled) and random(0, 100) gte 50>>
-					<<print `"Good slut." <<He>> smirks. "Don't worry, you'll still be my slut even when you get ${$settings.pregnancySpeechEnabled ? "knocked" : "fucked"} up."`>>
+					<<addSpeechLine "chastity">>
+						"Good slut." <<He>> smirks. "Don't worry, you'll still be my slut even when you get <<= $settings.pregnancySpeechEnabled ? "knocked" : "fucked">> up."
+					<</addSpeechLine>>
 				<<elseif C.npc.Whitney.vagina isnot "none" and $whitneyromance and $settings.pregnancySpeechEnabled and !npcIsPregnant("Whitney")>>
-					"Good slut." <<He>> smirks. "Maybe I'll unlock you in the future, whenever I'm ready to have my own."
+					<<addSpeechLine "chastity">>
+						"Good slut." <<He>> smirks. "No more bad ideas about pumping brats into anyone without my say, got it?"
+					<</addSpeechLine>>
 				<<else>>
-					"Good slut." <<He>> smirks. "Not like you need that thing to have fun."
+					<<addSpeechLine "chastity">>
+						"Good slut." <<He>> smirks. "Not like you need that thing to have fun."
+					<</addSpeechLine>>
 				<</if>>
 			<<else>>
-				<<print `"Good slut." <<He>> smirks. "${["Can't trust a slut like you to run around without being locked up.", "I hope it's getting you all hot and bothered.", "If only these things were indestructible."][random(0,2)]}"`>>
+				<<addSpeechLine "chastity">>
+				<<speechLine>>
+					"Good slut." <<He>> smirks. "Can't trust a slut like you to run around without being locked up."
+				<<speechLine>>
+					"Good slut." <<He>> smirks. "I hope it's getting you all hot and bothered."
+				<<speechLine>>
+					"Good slut." <<He>> smirks. "If only these things were indestructible."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechVaginaFlaunt>>
+		<<addSpeechLine "vaginaFlaunt">>
+		<<speechLine>>
+			<<He>> smirks. "Like what you see, slut?"
+		<<speechLine>>
+			<<He>> grins. "Well?"
+		<<speechLine>>
+			<<He>> grins. "You look real hungry for this right about now. Good."
+		<</addSpeechLine>>
+		<<if $player.penisExist>>
+			<<addSpeechLine "vaginaFlaunt">>
+			<<speechLine>>
+				<<He>> grins. "I've got your cock's next destination right here!"
+			<<speechLine>>
+				<<He>> smirks. "Come on, slut. Put it in. I know you wanna."
+			<<speechLine>>
+				<<He>> grins. "Look all you want. See where your cock's gonna go."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechVagina>>
+		<<addSpeechLine "fondle">>
+		<<speechLine>>
+			<<He>> whispers. "Wonder how I have to curl to make you squeal."
+		<<speechLine>>
+			<<He>> laughs. "You like that, slut?"
+		<<speechLine>>
+			"Mess my fingers up. You know you wanna."
+		<<speechLine>>
+			"Bet you love having my fingers in your <<= either("slutty","whore")>> hole."
+		<</addSpeechLine>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "fondle">>
+				"Wonder what kind of face you'll make when I get even worse with you."
+			<</addSpeechLine>>
+			<<if $audiencepresent gte 1>>
+				<<addSpeechLine "fondle" 4>>
+				<<speechLine>>
+					<<He>> snorts. "<<pHer>> <<= either("pussy","cunt","hole")>> is already dripping! Proof that <<pshe>> loves being taken advantage of."
+				<<speechLine>>
+					<<He>> laughs. "You see this? There's no way this slut didn't want this!"
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.dom lte 10>>
+				<<addSpeechLine "fondle">>
+					"Stupid slut," <<he>> sneers, "why can't you see that you're just a toy for me to play with?"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechPenis>>
+		<<addSpeechLine "fondle">>
+		<<speechLine>>
+			<<He>> whispers. "Wonder how I have to grip to make you squeal."
+		<<speechLine>>
+			<<He>> laughs. "You like that, slut?"
+		<</addSpeechLine>>
+		<<if !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "fondle">>
+				<<He>> snorts. "I don't even need to use my whole hand to jerk you off. You're so fucking tiny."
+				<<set $whitneySeen.pushUnique("penisSmall")>><<if !$whitneyUniqueComments.includes("insecurityHandjobSmall")>><<set $whitneyUniqueComments.pushUnique("insecurityHandjobSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<<elseif !playerHasStrapon() and $player.penissize gte 5 and $audiencepresent gte 1>>
+			<<addSpeechLine "fondle" 4>>
+				<<He>> snorts. "You need both hands or something? Should I get the whole gang working?"
+				<<if !$whitneyUniqueComments.includes("insecurityHandjobBig")>><<set $whitneyUniqueComments.pushUnique("insecurityHandjobBig")>><<insecurity "penis_big" 1>><<ginsecurity "penis_big">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 0>>
+			<<if $audiencepresent gte 1>>
+				<<addSpeechLine "fondle" 4>>
+					<<He>> snorts. "<<pHer>> <<= either("dick","cock")>> is already hard! Proof that <<pshe>> loves being taken advantage of."
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.dom lte 10 and $enemyanger gt 100>>
+				<<addSpeechLine "fondle">>
+					"Stupid slut," <<he>> sneers, "why can't you see that you're just a toy for me to play with?"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechAnus>>
+		<<addSpeechLine "fondle">>
+		<<speechLine>>
+			"Bet you love having my fingers in your <<= either("slutty","whore")>> hole."
+		<<speechLine>>
+			"Feel that? Bet you're losing your mind right about now."
+		<</addSpeechLine>>
+		<<if $analskill gte 400>>
+			<<addSpeechLine "fondle">>
+				"How many perverts have you let ruin you down here already? Bet you can't even keep count anymore!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $analskill gte 800>>
+			<<addSpeechLine "fondle">>
+				"Knew you'd be loose down here, <<= either("slut","whore")>>."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $player.virginity.anal is true>>
+			<<addSpeechLine "fondle">>
+				"Haven't popped this yet? I'm surprised your slutty ass got this far with that."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 0 and C.npc.Whitney.dom lte 10 and $enemyanger gt 100>>
+			<<addSpeechLine "fondle">>
+				"Stupid slut," <<he>> sneers, "why can't you see that you're just a toy for me to play with?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechChoke>>
+		<<if $choketrait gte 1>>
+			<<addSpeechLine "choke">>
+			<<speechLine>>
+				<<He>> pants. "That's right, bitch. Gag!"
+			<<speechLine>>
+				<<He>> laughs. "What's that? You want me to keep going?"
+			<<speechLine>>
+				"Yeah? You like that, huh? You're such a needy little slut."
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.dom lte 10>>
+				<<addSpeechLine "choke">>
+					"Fuck, if only you were always this easy."
+				<</addSpeechLine>>
+			<<elseif C.npc.Whitney.dom gte 15>>
+				<<addSpeechLine "choke">>
+					"You're so fucking easy, I love it!"
+				<</addSpeechLine>>
+			<</if>>
+		<<else>>
+			<<addSpeechLine "choke">>
+			<<speechLine>>
+				"You better not pass out. I'm having too much fun."
+			<<speechLine>>
+				"What's wrong? Can't take it?"
+			<<speechLine>>
+				"Did you say something, bitch?"
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.dom lte 10>>
+				<<addSpeechLine "choke">>
+					"You're lucky I'm not doing something worse."
+				<</addSpeechLine>>
+			<<elseif C.npc.Whitney.dom gte 15>>
+				<<addSpeechLine "choke">>
+					"Oh, slut. You know you can't do anything to me by now, right?!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechVaginaFoot>>
+		<<addSpeechLine "footjob">>
+		<<speechLine>>
+			"Don't fuck up my shoes, slut."
+		<<speechLine>>
+			"Cum on my shoes, and you'll lick them clean."
+		<<speechLine>>
+			<<He>> sneers. "Gross."
+		<<speechLine>>
+			<<He>> glares at you. "You like this, don't you?"
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "footjob">>
+				<<He>> sneers. "Fuck, my shoe's ruined! You're not getting off easy for this, slut."
+			<</addSpeechLine>>
+			<<if $consensual is 0>>
+				<<addSpeechLine "footjob">>
+					<<He>> snorts. "You're all slimy. Fucking dirty <<= either("slut","whore")>>, of course you like this."
+				<</addSpeechLine>>
+			<</if>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "footjob">>
+				<<He>> scoffs. "Hey, come on. Cum already."
+			<</addSpeechLine>>
+		<</if>>
+		<<if ($consensual is 0 and (C.npc.Whitney.dom lte 10 or C.npc.Whitney.love lte 10) and $enemyanger gt 100)>>
+			<<addSpeechLine "footjob">>
+				<<He>> snarls. "Dumb fucking <<= either("slut","whore","bitch")>>. This is where you belong, beneath my foot."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechPenisFoot>>
+		<<addSpeechLine "footjob">>
+		<<speechLine>>
+			"Don't fuck up my shoes, slut."
+		<<speechLine>>
+			"Cum on my shoes, and you'll lick them clean."
+		<<speechLine>>
+			<<He>> sneers. "Gross."
+		<</addSpeechLine>>
+		<<if !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "footjob">>
+				<<He>> laughs. "Maybe I should press harder, before I lose where to step."
+				<<set $whitneySeen.pushUnique("penisSmall")>><<if !$whitneyUniqueComments.includes("insecurityFootSmall")>><<set $whitneyUniqueComments.pushUnique("insecurityFootSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<<elseif !playerHasStrapon() and $player.penissize gte 5>>
+			<<addSpeechLine "footjob">>
+				<<He>> laughs. "Fuck, is my foot even enough? Maybe the whole town should get in on this!"
+				<<if !$whitneyUniqueComments.includes("insecurityFootBig")>><<set $whitneyUniqueComments.pushUnique("insecurityFootBig")>><<insecurity "penis_big" 1>><<ginsecurity "penis_big">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "footjob">>
+				<<He>> sneers. "Fuck, my shoe's ruined! You're not getting off easy for this, slut."
+			<</addSpeechLine>>
+			<<if $consensual is 0>>
+				<<addSpeechLine "footjob">>
+					<<He>> snorts. "You're rock hard. Fucking dirty <<= either("slut","whore")>>, of course you like this."
+				<</addSpeechLine>>
+			<</if>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "footjob">>
+				<<He>> scoffs. "Hey, come on. Cum already."
+			<</addSpeechLine>>
+		<</if>>
+		<<if ($consensual is 0 and (C.npc.Whitney.dom lte 10 or C.npc.Whitney.love lte 10) and $enemyanger gt 100)>>
+			<<addSpeechLine "footjob">>
+				<<He>> snarls. "Dumb fucking <<= either("slut","whore","bitch")>>. This is where you belong, beneath my foot."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechArms>>
+		<<if $consensual is 0 and $audiencepresent gte 1 and C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "arms" 4>>
+				<<He>> turns to the audience. "Ha! You guys seeing this?!"
+			<</addSpeechLine>>
+		<<elseif $consensual is 0 and $audiencepresent gte 1>>
+			<<addSpeechLine "arms" 4>>
+				<<He>> laughs. "Now everyone knows you're not so tough!"
+			<</addSpeechLine>>
+		<<elseif $consensual is 0>>
+			<<addSpeechLine "arms">>
+			<<speechLine>>
+				"Come on, bitch, squeal!"
+			<<speechLine>>
+				"What's wrong? Can't break free?"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "arms">>
+				<<He>> laughs. "Stay. Stay!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechClit>>
+		<<addSpeechLine "fondle">>
+		<<speechLine>>
+			<<He>> whispers. "Bet I don't even have to go hard to make you squeal."
+		<<speechLine>>
+			<<He>> whispers. "Don't be difficult. Only good sluts'll get to cum."
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "fondle" 3>>
+				<<He>> laughs. "See? Knew you'd be easy to please."
+			<</addSpeechLine>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "fondle" 3>>
+				<<He>> smirks. "Give me a bit. I'll have you begging for me in no time."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechFutaPenis>>
+		<<addSpeechLine "fondle">>
+		<<speechLine>>
+			<<He>> leers at your exposure. "Now there's two ways for me to make you squeal. Be careful, slut."
+		<<speechLine>>
+			<<He>> smirks. "You might just be the best toy I've ever had."
+		<<speechLine>>
+			<<He>> snickers. "With parts like these, who'll ever get bored with you?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechGlans>>
+		<<if !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "fondle">>
+				<<He>> snorts. "Bet you love having me tease your tiny <<= either("dick","cock")>> like this."
+				<<set $whitneySeen.pushUnique("penisSmall")>><<if !$whitneyUniqueComments.includes("insecurityGlansSmall")>><<set $whitneyUniqueComments.pushUnique("insecurityGlansSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "fondle">>
+				<<He>> laughs. "Aww, look, your cock's drooling for me."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if ($speechVagina or $speechPenis or $speechAnus or $speechClit or $speechFutaPenis or $speechGlans) and C.npc.Whitney.love gte 20 and $consensual is 1 and $audiencepresent gte 1>>
+		<<addSpeechLine "fondle" 4>>
+			"What a good slut, letting me play with you in front of all of these people."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechMasturbate>>
+		<<addSpeechLine "masturbate">>
+			"Aww, look at that. The slut's begging for me."
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "masturbate">>
+			<<speechLine>>
+				<<He>> laughs. "Alright, I get it. You need it bad, huh?"
+			<<speechLine>>
+				<<He>> sneers. "Hey. Don't be too eager, slut."
+			<</addSpeechLine>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "masturbate">>
+			<<speechLine>>
+				<<He>> grins. "What, am I not doing it for you?"
+			<<speechLine>>
+				<<He>> grins. "Sure. Get yourself ready."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechHandjobPenis>>
+		<<addSpeechLine "touch">>
+		<<speechLine>>
+			<<He>> grunts. "Just let me fuck that whore mouth of yours already."
+		<<speechLine>>
+			"Tell me when your hand's getting tired. I'm always down to dick you down after!"
+		<</addSpeechLine>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "touch">>
+				<<He>> laughs. "Oh, you've really lost it. Go on, then."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $handskill lt 200>>
+			<<addSpeechLine "touch">>
+				<<He>> laughs. "Can't even touch someone right? Looks like I need to give you some lessons."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "touch">>
+				<<He>> whistles in appreciation. "Not bad, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "touch">>
+			<<speechLine>>
+				<<He>> groans. "Fuck... Come on, come on, come on!"
+			<<speechLine>>
+				<<He>> pants. "Faster, whore. Faster!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechHandjobVagina>>
+		<<addSpeechLine "touch">>
+		<<speechLine>>
+			<<He>> laughs. "Come on, bitch. Try a little harder."
+		<<speechLine>>
+			"Tell me when your hand's getting tired. Gotta know if you'll even handle what I'll do next."
+		<</addSpeechLine>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "touch">>
+				<<He>> laughs. "Oh, you've really lost it. Go on, then."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $handskill lt 200>>
+			<<addSpeechLine "touch">>
+				<<He>> laughs. "Can't even touch someone right? Looks like I need to give you some lessons."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "touch">>
+				<<He>> whistles in appreciation. "Not bad, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "touch">>
+			<<speechLine>>
+				<<He>> groans. "Fuck... Come on, come on, come on!"
+			<<speechLine>>
+				<<He>> pants. "Faster, whore. Faster!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechDildoVagina or $speechDildoAnus>>
+		<<addSpeechLine "toy">>
+		<<speechLine>>
+			<<He>> laughs. "This'll do."
+		<<speechLine>>
+			<<He>> smirks. "Yeah, go on now."
+		<</addSpeechLine>>
+		<<if $speechDildoVagina>>
+			<<addSpeechLine "toy">>
+				"That's it. Hit all the good parts."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechDildoAnus>>
+			<<addSpeechLine "toy">>
+				"Watch where you're ramming, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $player.penisExist>>
+			<<addSpeechLine "toy">>
+				"Good idea, I guess. Who knows how overused your cock is at this point?"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "toy">>
+				"Don't worry, slut. You'd get me off plenty even without a cock."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechStroker>>
+		<<addSpeechLine "toy">>
+		<<speechLine>>
+			<<He>> hisses. "Fuck, this toy's not beating the real thing."
+		<<speechLine>>
+			"Best do better, slut, before I get rid of this toy."
+		<</addSpeechLine>>
+		<<if $player.vaginaExist>>
+			<<addSpeechLine "toy">>
+			<<speechLine>>
+				<<He>> grunts. "Keep this up, and it's your cunt that's getting me next."
+			<<speechLine>>
+				"Sure. Keep me busy with another cunt. Why not?"
+			<<speechLine>>
+				"Rather it'd be you on me right now. At least you're able to scream."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechHeadSuckle>>
+		<<addSpeechLine "chest">>
+		<<speechLine>>
+			<<He>> laughs. "Bet you're not used to this, are you?"
+		<<speechLine>>
+			"Don't stop now, slut. Keep sucking."
+		<<speechLine>>
+			<<He>> laughs. "Good <<girl>>."
+		<</addSpeechLine>>
+		<<if $oralskill lt 200>>
+			<<addSpeechLine "chest">>
+				<<He>> snorts. "Come on, use that little tongue of yours like a good <<girl>>. It's not that hard."
+			<</addSpeechLine>>
+		<<elseif $oralskill gte 800>>
+			<<addSpeechLine "chest">>
+				<<He>> laughs. "Only a nasty <<= either("bitch","slut","whore")>> like you could be good at this."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if (C.npc.Whitney.love lte 10 or C.npc.Whitney.dom lte 10) and $speechHeadSuckle>>
+		<<addSpeechLine "chest">>
+		<<speechLine>>
+			"What, miss your <<mummy>> or something?" <<He>> laughs. "Oh, wait."
+		<<speechLine>>
+			<<He>> coos. "Aww, look at you! You're so sad."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechHeadNipple>>
+		<<if $transformationParts.traits.fangs isnot "disabled">>
+			<<addSpeechLine "chest">>
+				"Better fucking watch those teeth of yours. Bite me and there'll be hell to pay."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $oralskill lt 200>>
+			<<addSpeechLine "chest">>
+				<<He>> snorts. "Come on, use that little tongue of yours like a good <<girl>>. It's not that hard."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechHeadNippleClosed>>
+		<<addSpeechLine "chest">>
+			<<He>> scoffs. "How the fuck are you gonna pleasure me with that shit on your face?"
+		<</addSpeechLine>>
+		<<if $enemyanger gt 100>>
+			<<addSpeechLine "chest">>
+				<<He>> scoffs. "Well? What the fuck are you waiting for?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechHeadBreasts>>
+		<<if $enemyanger gt 100>>
+			<<addSpeechLine "chest">>
+				"Well? What the fuck are you waiting for?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "chest">>
+				<<He>> snorts. "Look at you! Such an adorable slut with your face all smothered."
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.breastsize gte 9>>
+			<<addSpeechLine "chest">>
+				"Bet you get off to having your face all up in my tits. Pathetic slut."
+			<</addSpeechLine>>
+			<<if $player.breastsize lte 3>>
+				<<addSpeechLine "chest">>
+					"Take a good look. These are what real tits are supposed to look like, not the pea-sized shit you have."
+					<<if !$whitneyUniqueComments.includes("insecurityBreastsSmall")>><<set $whitneyUniqueComments.pushUnique("insecurityBreastsSmall")>><<insecurity "breasts_small" 1>><<ginsecurity "breasts_small">><</if>>
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechHeadChest>>
+		<<addSpeechLine "chest">>
+			"Well? What the fuck are you waiting for?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechLegLock>>
+		<<if playerHeatMinArousal() and $consensual is 1>>
+			<<addSpeechLine "legLock">>
+				<<He>> snorts. "Fuck. Looks like someone's eager to be bred."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "legLock">>
+			<<speechLine>>
+				<<He>> grunts. "Would you ease up?!"
+			<<speechLine>>
+				<<He>> grunts. "Relax, slut. I'm not going anywhere."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if ($speechCheeks or $speechThigh or $speechFeet) and C.npc.Whitney.penis isnot "none">>
+		<<addSpeechLine "touch">>
+			<<He>> grunts. "When I'm done, you'll be dripping with cum."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechBottom>>
+		<<if $consensual is 0 and $audiencepresent gte 1>>
+			<<addSpeechLine "fondle" 4>>
+				<<He>> grunts in pleasure, a wicked grin on <<his>> lips. "You best behave, slut. Wouldn't want to have to spank you for being a bad <<girl>> in front of everyone."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $player.bottomsize lte 1>>
+			<<addSpeechLine "fondle">>
+				"For a slut, you don't have much to grab down here."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "fondle">>
+				"Nice ass, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechCheeks>>
+		<<if $player.bottomsize lte 1>>
+			<<addSpeechLine "touch">>
+			<<speechLine>>
+				<<He>> snickers. "Cute <<bottomsimple>>. Not much to use, is there?"
+			<<speechLine>>
+				"You got a small <<bottomsimple>>. Don't worry, I'll find a use for it."
+			<</addSpeechLine>>
+		<<elseif $player.bottomsize lte 5>>
+			<<addSpeechLine "touch">>
+				"Nice <<bottomsimple>>, slut. Use it often?"
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "touch">>
+				"You got a fat <<bottomsimple>>, slut. Bet you get lots of use out of it."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $thighskill gte 800 and $speechThigh>>
+		<<addSpeechLine "touch">>
+			"Fuck," <<he>> grunts. "You're good with your thighs, huh? What a slut."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $feetskill gte 800 and $speechFeet>>
+		<<addSpeechLine "touch">>
+			"Fuck," <<he>> grunts. "How are you this good with your feet? Knew you got around, slut."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechMouthNPCVagina>>
+		<<addSpeechLine "oral">>
+		<<speechLine>>
+			"Hurry up, slut. It won't lick itself."
+		<<speechLine>>
+			<<He>> hisses. "Come on already!"
+		<<speechLine>>
+			<<He>> grunts. "Do I need to tell you what to do or what?!"
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.dom gte 15 and C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "oral">>
+				"Now be a good <<girl>> and make me feel good."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "oral">>
+				"Don't make this difficult, bitch."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "oral" 4>>
+				<<He>> turns to the crowd. "I have this bitch right where <<pshe>> wants. Watch!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechTribEntrance>>
+		<<addSpeechLine "trib">>
+			<<He>> grins. "This'll be good. If you can keep up, anyway."
+		<</addSpeechLine>>
+		<<if $consensual is 0 and $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "trib">>
+				"Don't act like you don't want this. Bet a pathetic slut like you is just gagging to feel my <<= either("pussy","cunt")>> on yours."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechTrib>>
+		<<if $vaginalskill gte 800>>
+			<<addSpeechLine "trib">>
+				<<He>> lets out a shaky laugh. "Fuck, how are you so good at this? Knew I was keeping you around for a reason, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4 and C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "trib">>
+				<<He>> grunts, hips stuttering. "Fuck, keep going. Feels real good rubbing on you like this. Good job, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "trib">>
+				<<He>> laughs. "You horny <<= either("slut","bitch")>>. I can feel just how wet your <<= either("pussy","cunt")>> is."
+			<</addSpeechLine>>
+			<<if $audiencepresent gte 1>>
+				<<addSpeechLine "trib" 4>>
+					<<He>> laughs loudly. "Look how wet <<pshe>> is! Filthy <<= either("slut","bitch")>> is making a mess all over the place."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechFencingEntrance>>
+		<<addSpeechLine "imminent">>
+			<<He>> grins. "This'll be good. If you can keep up, anyway."
+		<</addSpeechLine>>
+		<<if !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "imminent">>
+				"You're so tiny that I forgot you had something to rub up against." <<He>> snorts. "Oh well, might as well give it a try anyway."
+				<<set $whitneySeen.pushUnique("penisSmall")>><<if !$whitneyUniqueComments.includes("insecurityFencingTiny")>><<set $whitneyUniqueComments.pushUnique("insecurityFencingTiny")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+		<<if !playerHasStrapon() and C.npc.Whitney.penissize gte 4 and $player.penissize lte 4>>
+			<<addSpeechLine "imminent">>
+				<<He>> looks down between your legs, angling <<his>> length beside yours. <<He>> snorts. "Your <<= either("cock","dick")>> is so fucking pathetic in comparison."
+				<<if !$whitneyUniqueComments.includes("insecurityFencingCompare")>><<set $whitneyUniqueComments.pushUnique("insecurityFencingCompare")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<</if>>
+		<<if $consensual is 0 and $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "imminent">>
+				"Don't act like you don't want this. Bet a pathetic slut like you is just gagging to feel my <<= either("cock","dick")>> on yours."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechFencing>>
+		<<if $penileskill gte 800>>
+			<<addSpeechLine "fencing">>
+				<<He>> lets out a shaky laugh. "Fuck, how are you so good at this? Knew I was keeping you around for a reason, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4 and C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "fencing">>
+				<<He>> grunts, hips stuttering. "Fuck, keep going. Feels real good rubbing on you like this. Good job, slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "fencing">>
+				<<He>> laughs. "You horny <<= either("slut","bitch")>>. I can feel just how hard your <<= either("cock","dick")>> is."
+			<</addSpeechLine>>
+			<<if $audiencepresent gte 1>>
+				<<addSpeechLine "fencing" 4>>
+					<<He>> laughs loudly. "Look how hard <<pshe>> is! Bet the filthy <<= either("slut","bitch")>> is gonna cum real soon."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechChestRub>>
+		<<addSpeechLine "touch">>
+		<<speechLine>>
+			"Like fucking a bloody washboard. Nothing but ribs."
+		<<speechLine>>
+			<<He>> rolls <<his>> eyes. "Hope this is doing something for you, at least."
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.penis isnot "none">>
+			<<addSpeechLine "touch">>
+				<<He>> snorts. "Maybe if I cover your chest in enough cum your tits will grow."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechBreastRub>>
+		<<addSpeechLine "touch">>
+			<<if $player.breastsize gte 8 and $player.breastsize lte 11>>
+				<<He>> squeezes your <<breasts>> around <<his>> <<= npcHasStrapon($chesttarget) ? "strap-on" : "penis">>. "Fuck! Tits like these were meant to be used."
+			<<else>>
+				<<He>> squeezes your <<breasts>> around <<his>> <<= npcHasStrapon($chesttarget) ? "strap-on" : "penis">>. "Look at me, putting your bitch-tits to good work."
+			<</if>>
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechFaceSit>>
+		<<addSpeechLine "oral">>
+		<<speechLine>>
+			<<He>> grinds against your face. "This is where you belong, slut."
+		<<speechLine>>
+			<<He>> smothers you. "There we go."
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.dom gte 15 and C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "oral">>
+				"Now be a good <<girl>> and make me feel good."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechAnalLick>>
+		<<addSpeechLine "oral">>
+		<<speechLine>>
+			"What a dirty ass-licker. Make sure to get your tongue in nice and deep."
+		<<speechLine>>
+			<<He>> leers. "Filthy whore."
+		<<speechLine>>
+			"Try not to squeal too loud!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechAnalKiss>>
+		<<addSpeechLine "oral">>
+			<<He>> whistles in appreciation. "Finally, someone who knows what I deserve."
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.dom gte 15 and $audiencepresent gte 1>>
+			<<addSpeechLine "oral" 4>>
+				<<He>> laughs loudly. "Fuck yeah, that's what I'm talking about! Clearly <<pshe>> knows where <<pshe>> belongs."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechMouthNPCAnus>>
+		<<addSpeechLine "oral">>
+			"Come on, slut. Give it a smooch."
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.dom gte 15 and $audiencepresent gte 1>>
+			<<addSpeechLine "oral" 4>>
+				"Who's ready to see this dirty whore eat some ass?!" The crowd cheers and hollers in response.
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.dom gte 15 and C.npc.Whitney.love gte 20>>
+			<<addSpeechLine "oral">>
+				"Now be a good <<girl>> and make me feel good."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCVaginaPenetrated>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> groans. "Fuck, that's the spot...!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> laughs. "You're really throbbing in me! Needy slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $penileskill gte 800>>
+			<<addSpeechLine "penetrated">>
+				<<He>> lets out a stretched out groan. "Oh, fuck. Of course you've practiced."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCAnusPenetrated>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> groans. "Come on, don't fuck this up...!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> laughs. "You're really throbbing in me! Needy slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $penileskill gte 800>>
+			<<addSpeechLine "penetrated">>
+				<<He>> lets out a stretched out groan. "Oh, fuck. Of course you've practiced."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechVaginaPenetrated>>
+		<<addSpeechLine "penetrated">>
+			<<He>> whistles. "Look at you treating that cock right."
+		<</addSpeechLine>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> groans. "Fuck, you feel good, <<= either("slut","whore")>>."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> laughs. "Your cunt's making a mess. You close? That's my slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $vaginalskill lt 200>>
+			<<addSpeechLine "penetrated">>
+				<<He>> clicks <<his>> tongue. "Looks like I should be doing this more often. Way more often."
+			<</addSpeechLine>>
+		<<elseif $vaginalskill gte 800>>
+			<<addSpeechLine "penetrated">>
+				<<He>> grunts. "Huh. My bitch's well-trained!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechAnusPenetrated>>
+		<<addSpeechLine "penetrated">>
+			<<He>> whistles. "Look at you treating that cock right."
+		<</addSpeechLine>>
+		<<if $enemyarousal gte ($enemyarousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> groans. "Fuck, you feel good, <<= either("slut","whore")>>."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> laughs. "I can feel you gripping me. You close? That's my slut."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $analskill lt 200>>
+			<<addSpeechLine "penetrated">>
+				<<He>> sighs. "Give me some time, slut. Soon, you'll be used to taking me up every hole!"
+			<</addSpeechLine>>
+		<<elseif $analskill gte 800>>
+			<<addSpeechLine "penetrated">>
+				<<He>> grunts. "Huh. My bitch's well-trained!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechMouthPenetrated>>
+		<<addSpeechLine "penetrated">>
+			<<He>> whistles. "Look at you treating that cock right."
+		<</addSpeechLine>>
+		<<if $oralskill lt 200>>
+			<<addSpeechLine "penetrated">>
+				<<He>> lets out an unimpressed sigh. "You fucking suck at this."
+			<</addSpeechLine>>
+		<<elseif $oralskill gte 800>>
+			<<addSpeechLine "penetrated">>
+				<<He>> groans loudly. "Fuck! I knew a <<= either("whore","slut")>> like you would be good at this!"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.penissize gte 4>>
+			<<addSpeechLine "penetrated">>
+				<<He>> rocks <<his>> hips, pushing <<his>> length in deeper. <<He>> grins wickedly when you sputter. "Careful, I've heard that I'm a choking hazard."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechVaginaImminent>>
+		<<addSpeechLine "imminent">>
+			<<He>> smirks. "I hope you're ready for me."
+		<</addSpeechLine>>
+		<<if $player.virginity.vaginal is true>>
+			<<addSpeechLine "imminent">>
+				"Let's find out how tight this virgin <<= either("pussy","hole","cunt")>> really is."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "imminent">>
+				<<He>> leers at your <<genitals>>. "You're so wet, I bet I could slide in with ease."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if (!playerHasStrapon() and ($player.penissize gte 5 or $player.penissize lte 2)) and $speechNPCVaginaImminent>>
+		<<addSpeechLine "imminent">>
+			<<if $player.penissize gte 5>>
+				<<He>> takes a quick glance at your <<penis>>, and gives you a smug expression. "Go on."
+			<<else>>
+				<<set $whitneySeen.pushUnique("penisSmall")>>
+				<<He>> takes a quick glance at your <<penis>>, and grins. "Don't disappoint, slut."
+			<</if>>
+		<</addSpeechLine>>
+	<</if>>
+	<<if !playerHasStrapon() and ($player.penissize gte 5 or $player.penissize lte 2)>>
+		<<if $player.penissize gte 5>>
+			<<if $speechNPCAnusImminent>>
+				<<addSpeechLine "imminent">>
+					<<He>> takes a quick glance at your <<penis>>, and gives you a smug expression. "Go on."
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.virginity.anal is true and $speechNPCAnusImminent>>
+				<<addSpeechLine "imminent">>
+					"You better not tear something, or there'll be hell to pay."
+				<</addSpeechLine>>
+			<</if>>
+		<<else>>
+			<<if $speechNPCAnusImminent>>
+				<<addSpeechLine "imminent">>
+					<<set $whitneySeen.pushUnique("penisSmall")>><<He>> takes a quick glance at your <<penis>>, and grins. "Don't disappoint, slut."
+				<</addSpeechLine>>
+			<</if>>
+			<<if C.npc.Whitney.virginity.anal is true and $speechNPCAnusImminent>>
+				<<addSpeechLine "imminent">>
+					<<He>> takes a quick glance at your <<penis>>, and snickers. "Hah! Shouldn't have to be too worried."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechAnusImminent>>
+		<<addSpeechLine "imminent">>
+			<<He>> smirks. "I hope you're ready for me."
+		<</addSpeechLine>>
+		<<if $player.virginity.anal is true>>
+			<<addSpeechLine "imminent">>
+				"Let's find out how tight this virgin <<= either("ass","hole")>> really is."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechMouthImminent>>
+		<<addSpeechLine "imminent">>
+		<<speechLine>>
+			<<He>> pants. "Can't bloody wait."
+		<<speechLine>>
+			<<He>> laughs. "This is the best part."
+		<<speechLine>>
+			"Open up, slut!"
+		<</addSpeechLine>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Wider, whore. I better not feel any teeth."
+			<<speechLine>>
+				"I'm gonna make sure you get every fucking inch in, you understand?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $consensual is 0>>
+		<<if $speechVaginaEntrance>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Can't wait to use your <<= either("slutty","whore")>> <<= either("pussy","hole","cunt")>>."
+			<<speechLine>>
+				"Let's see. Are you gonna squeal, or scream?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.penissize gte 3 and $speechVaginaEntrance>>
+			<<addSpeechLine "imminent">>
+				"Can you even handle me? Let's find out."
+			<</addSpeechLine>>
+		<</if>>
+	<<else>>
+		<<if C.npc.Whitney.love gte 20 and $speechVaginaEntrance>>
+			<<addSpeechLine "imminent">>
+				"Don't stay too silent. Gotta make sure I don't end the fun early."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $arousal gte ($arousalmax / 5) * 4 and $speechVaginaEntrance>>
+			<<addSpeechLine "imminent">>
+				"Oh, look at that. You're already wet."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $consensual is 0>>
+		<<if $speechAnusEntrance>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Can't wait to use your <<= either("slutty","whore")>> <<= either("ass","hole")>>."
+			<<speechLine>>
+				"Let's see. Are you gonna squeal, or scream?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if C.npc.Whitney.penissize gte 3 and $speechAnusEntrance>>
+			<<addSpeechLine "imminent">>
+				"Can you even handle me? Let's find out."
+			<</addSpeechLine>>
+		<</if>>
+	<<else>>
+		<<if $speechAnusEntrance>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Don't stay too silent. Gotta make sure I don't end the fun early."
+			<<speechLine>>
+				"Hope you prepped for this, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechMouthEntrance>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Don't fucking test me, whore. Open!"
+			<<speechLine>>
+				"I can't wait to shut you up."
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				<<He>> smirks as <<he>> rubs <<his>> tip against your lips. "Open wide, slut."
+			<<speechLine>>
+				"Come on, slut. Say 'ahh' for me."
+			<<speechLine>>
+				"Oh, you're gonna love this."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCVaginaEntrance>>
+		<<addSpeechLine "imminent">>
+		<<speechLine>>
+			"Time to have some fun!"
+		<<speechLine>>
+			"Don't worry, slut. I'll be great."
+		<</addSpeechLine>>
+		<<if $player.virginity.penile is true>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				<<He>> grins. "Scared, slut?"
+			<<speechLine>>
+				<<He>> laughs. "About time I take you for good."
+			<</addSpeechLine>>
+			<<if $consensual is 0>>
+				<<addSpeechLine "imminent">>
+				<<speechLine>>
+					<<He>> glares. "I could fuck you up real easy right about now."
+				<<speechLine>>
+					<<He>> laughs. "Scared, slut? You should be."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "imminent">>
+				<<He>> laughs. "Don't struggle too hard, yeah?"
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.dom lte 10>>
+				<<addSpeechLine "imminent">>
+					<<He>> glares. "Think you're hot shit now? I'll fucking show you."
+				<</addSpeechLine>>
+			<</if>>
+		<<else>>
+			<<addSpeechLine "imminent">>
+				<<He>> leers. "Fuck, I can't wait."
+			<</addSpeechLine>>
+			<<if C.npc.Whitney.dom gte 15>>
+				<<addSpeechLine "imminent">>
+					<<He>> leers. "Gotta give my bitch what <<pshe>> deserves."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if C.npc.Whitney.lust gte 60>>
+		<<if $speechNPCAnusEntrance>>
+			<<addSpeechLine "imminent">>
+				"You're doing things how I want, you hear?"
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechNPCAnusEntrance>>
+			<<if C.npc.Whitney.virginity.anal is true>>
+				<<addSpeechLine "imminent">>
+					<<He>> pants. "Come on, slut. Just take it already."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "imminent">>
+					<<He>> pants. "Yeah, that's it. Fucking give it to me!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<<elseif C.npc.Whitney.lust lte 30>>
+		<<if $speechNPCAnusEntrance>>
+			<<addSpeechLine "imminent">>
+				"Fuck..."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechNPCAnusEntrance>>
+			<<if C.npc.Whitney.virginity.anal is true>>
+				<<addSpeechLine "imminent">>
+					<<He>> blushes. "You tear something, I'll break you in half."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "imminent">>
+					<<He>> blushes. "This doesn't mean anything, you hear?"
+				<</addSpeechLine>>
 			<</if>>
 		<</if>>
 	<<else>>
-		<<set _noNameComment to true>>
+		<<if $speechNPCAnusEntrance>>
+			<<addSpeechLine "imminent">>
+			<<speechLine>>
+				"Don't back out now."
+			<<speechLine>>
+				"What's wrong? Think I can't take it?"
+			<</addSpeechLine>>
+		<</if>>
 	<</if>>
+	<<if $speechVaginaWithhold or $speechAnusWithhold>>
+		<<addSpeechLine "withhold">>
+			"Don't bitch and whine now."
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "withhold">>
+			<<speechLine>>
+				<<He>> laughs. "Fucking look at yourself!"
+			<<speechLine>>
+				<<He>> grins. "Sorry."
+			<</addSpeechLine>>
+			<<if $consensual is 0>>
+				<<addSpeechLine "withhold">>
+					"Try telling me you don't want this again. Your face tells me otherwise."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+		<<if $consensual is 0>>
+			<<addSpeechLine "withhold">>
+				<<He>> laughs. "You're not off the hook yet, bitch."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechNPCVaginaWithhold or $speechNPCAnusWithhold>>
+		<<addSpeechLine "withhold">>
+		<<speechLine>>
+			<<He>> grunts. "Enough of that."
+		<<speechLine>>
+			<<He>> hisses. "Give me a fucking break."
+		<</addSpeechLine>>
+		<<if $speechNPCVaginaWithhold>>
+			<<addSpeechLine "withhold">>
+				<<He>> laughs. "Bet you miss me already."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechNPCAnusWithhold>>
+			<<addSpeechLine "withhold">>
+				<<He>> laughs. "Fun's over, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $hairlength lt 300>>
+		<<if $speechHair>>
+			<<addSpeechLine "hair">>
+				<<He>> holds you by your hair. "Wonder how hard I'll need to pull to yank all this off."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechHair>>
+			<<if $enemyanger lte 100>>
+				<<addSpeechLine "hair">>
+					"Oops. Didn't mean to make you even more bald."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "hair">>
+					"Want me to rip out what's left on your head, whore?"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<<elseif $hairlength gte 700>>
+		<<if $speechHair>>
+			<<addSpeechLine "hair">>
+				<<He>> holds you by your hair. "Careful. I could make you a lot less pretty if I wanted to."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechHair>>
+			<<if $enemyanger lte 100>>
+				<<addSpeechLine "hair">>
+					"Best be good, slut. Wouldn't want me to pull you down the easy way, right?"
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "hair">>
+					"You're being too much of a bitch for someone so yankable."
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<<else>>
+		<<if $speechHair>>
+			<<addSpeechLine "hair">>
+				<<He>> holds you by your hair. "The things I could do with your hair right about now..."
+			<</addSpeechLine>>
+		<</if>>
+		<<if $speechHair>>
+			<<if $enemyanger lte 100>>
+				<<addSpeechLine "hair">>
+					"What to do with this mop on your head... Decisions, decisions."
+				<</addSpeechLine>>
+			<<else>>
+				<<addSpeechLine "hair">>
+					"Don't fucking test me. I'm this close to being real creative with your hair, slut!"
+				<</addSpeechLine>>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if $speechCoverFace>>
+		<<addSpeechLine "cover">>
+		<<speechLine>>
+			<<He>> leers. "Aww, what's wrong? Can't handle the attention?"
+		<<speechLine>>
+			<<He>> laughs. "Keep hiding. I'll tell everyone you're my bitch anyway."
+		<<speechLine>>
+			"Imagine having the nerve to be shy when you're as big of a slut as you are."
+		<</addSpeechLine>>
+		<<if $audiencepresent gte 1>>
+			<<addSpeechLine "cover" 4>>
+				"Give us a big smile, slut!"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if ($fame.sex gte 600 or $fame.exhibitionism gte 600) and $speechCoverFace>>
+		<<addSpeechLine "cover">>
+			<<He>> laughs. "Like that'll help."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $speechCoverPenis>>
+		<<addSpeechLine "cover">>
+		<<speechLine>>
+			<<He>> leers. "Come off it!"
+		<<speechLine>>
+			"Don't be such a prude."
+		<</addSpeechLine>>
+		<<if !playerHasStrapon() and $player.penissize lte 2>>
+			<<addSpeechLine "cover">>
+				<<He>> laughs. "What's there to cover?"
+				<<set $whitneySeen.pushUnique("penisSmall")>><<if !$whitneyUniqueComments.includes("insecurityCoverSmall")>><<set $whitneyUniqueComments.pushUnique("insecurityCoverSmall")>><<insecurity "penis_small" 1>><<ginsecurity "penis_small">><</if>>
+			<</addSpeechLine>>
+		<<elseif !playerHasStrapon() and $player.penissize gte 5>>
+			<<addSpeechLine "cover">>
+				<<He>> laughs. "Think you're gonna need more hands than that."
+				<<if !$whitneyUniqueComments.includes("insecurityCoverBig")>><<set $whitneyUniqueComments.pushUnique("insecurityCoverBig")>><<insecurity "penis_big" 1>><<ginsecurity "penis_big">><</if>>
+			<</addSpeechLine>>
+		<<else>>
+			<<addSpeechLine "cover">>
+				<<He>> laughs. "What's there to be shy about, slut?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $speechCoverVagina>>
+		<<addSpeechLine "cover">>
+		<<speechLine>>
+			<<He>> leers. "Come off it!"
+		<<speechLine>>
+			<<He>> laughs. "What? Don't want anyone to see how loose you are?"
+		<<speechLine>>
+			"Don't be such a prude."
+		<</addSpeechLine>>
+		<<if $arousal gte ($arousalmax / 5) * 4>>
+			<<addSpeechLine "cover">>
+				<<He>> laughs. "There's no hiding how wet you are, slut!"
+			<</addSpeechLine>>
+		<<elseif $arousal lt ($arousalmax / 5) * 2>>
+			<<addSpeechLine "cover">>
+				<<He>> laughs. "Now how the hell am I gonna get you wet if you keep covering up?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	
+	/* Idle lines */
+	<<if $worn.neck.collared is 1 and C.npc.Whitney.dom gte 15>>
+		<<addSpeechLine "idle">>
+			<<His>> eyes glance down at your collar. "What a good <<girl>>," <<he>> grins. "Letting everyone know who you belong to?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $audiencepresent gte 1>>
+		<<addSpeechLine "idle">>
+		<<speechLine>>
+			<<He>> grins at the crowd. "Let's see what my slut's got for us today." The crowd chatters excitedly around you.
+		<<speechLine>>
+			<<He>> turns to the crowd. "Isn't <<pshe>> a riot?" The crowd jeers around you.
+		<</addSpeechLine>>
+		<<if C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "idle">>
+			<<speechLine>>
+				<<He>> grins at the crowd. "<<= either("Paws off","Keep your hands to yourselves")>>, perverts. My slut, my rules." The crowd boos playfully.
+			<<speechLine>>
+				<<He>> smirks at the crowd. "Someone get a picture. I want to remember this." Phones go up all around you.
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $arousal gte ($arousalmax / 5) * 4>>
+		<<addSpeechLine "idle">>
+			<<He>> snickers. "You're practically begging for it."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $dissociation gte 1>>
+		<<addSpeechLine "idle">>
+			<<He>> frowns at your blank expression.
+		<<speechLine>>
+			"Don't just lie there like a fucking corpse."
+		<<speechLine>>
+			"Hello? Anyone home? Say something."
+		<</addSpeechLine>>
+	<</if>>
+	<<if $pain gte 100 and $willpowerpain is 0>>
+		<<addSpeechLine "idle">>
+		<<speechLine>>
+			<<He>> snarls. "Hurts, doesn't it?"
+		<<speechLine>>
+			<<He>> snickers. "What, too rough?"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $enemyanger lte 20>>
+		<<if C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "idle">>
+				"Why can't you be this easy all the time, slut?"
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "idle">>
+				"See? Way easier when you just do what I tell you, slut."
+			<</addSpeechLine>>
+		<</if>>
+	<<elseif $enemyanger gt 100>>
+		<<if C.npc.Whitney.dom lte 10>>
+			<<addSpeechLine "idle">>
+				<<He>> spits. "What's your fucking problem?"
+			<</addSpeechLine>>
+		<<elseif C.npc.Whitney.dom gte 15>>
+			<<addSpeechLine "idle">>
+				<<He>> spits. "Why can't you just do as you're told, <<= $player.penisExist ? "cock" : "cunt">>-for-brains?"
+			<</addSpeechLine>>
+		<</if>>
+	<</if>>
+	<<if $location is "park" and $enemyanger gt 100>>
+		<<addSpeechLine "idle">>
+			<<He>> snarls. "Keep that up and I'll toss your ass into the fountain!"
+		<</addSpeechLine>>
+	<</if>>
+	<<set $_tf to checkTFparts()>>
+	<<if $cow gte 6 and ($_tf.cowHorns or $_tf.cowTail)>>
+		<<addSpeechLine "idle">>
+			"Come on, then. Moo for me!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $cat gte 6 and ($_tf.catEars or $_tf.catTail)>>
+		<<addSpeechLine "idle">>
+			"Come on, then. Purr for me!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $harpy gte 6 and ($_tf.birdWings or $_tf.birdTail or $_tf.birdPlumage)>>
+		<<addSpeechLine "idle">>
+			"Come on, then. Sing for me!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $wolfgirl gte 6 and ($_tf.wolfEars or $_tf.wolfTail)>>
+		<<addSpeechLine "idle">>
+			"Come on, then. Bark for me!"
+		<</addSpeechLine>>
+	<</if>>
+	<<if $fox gte 6 and ($_tf.foxEars or $_tf.foxTail)>>
+		<<addSpeechLine "idle">>
+			"Come on, then. Scream for me!"
+		<</addSpeechLine>>
+	<</if>>
+	<<speechSay>>
 <</widget>>

@@ -134,15 +134,150 @@ declare module "twine-sugarcube" {
 		tentacleAnus: string | 0;
 		tentaclePenis: string | 0;
 		swarm: Swarm;
+		speechAdmired?: number;
+		speechAnalKiss?: number;
+		speechAnalLick?: number;
+		speechAnus?: number;
+		speechAnusEntrance?: number;
+		speechAnusEscape?: number;
+		speechAnusImminent?: number;
+		speechAnusPenetrated?: number;
+		speechAnusVirgin?: number;
+		speechAnusWithhold?: number;
+		speechApologise?: number;
+		speechApologiseRejected?: number;
+		speechApologiseUnforgiving?: number;
+		speechArms?: number;
+		speechAskRough?: number;
+		speechBanish?: number;
+		speechBottom?: number;
+		speechBreastRub?: number;
+		speechCameraPose?: number;
+		speechChastity?: number;
+		speechCheeks?: number;
+		speechChestRub?: number;
+		speechChoke?: number;
+		speechChokedAction?: "apologise" | "askChoke" | "askRough" | "demand" | "moan" | "mock" | "plead" | "scream";
+		speechChokedAlready?: number;
+		speechChokedMoan?: number;
+		speechChokedWheeze?: number;
+		speechClit?: number;
+		speechCoverFace?: number;
+		speechCoverPenis?: number;
+		speechCoverVagina?: number;
+		speechCrossdressAngry?: number;
+		speechCrossdressAroused?: number;
+		speechCrossdressDisappointed?: number;
+		speechCrossdressShock?: number;
+		speechDemand?: number;
+		speechDildoAnus?: number;
+		speechDildoVagina?: number;
+		speechDisable?: number;
+		speechExposeBreasts?: number;
+		speechExposeGenitals?: number;
+		speechFaceSit?: number;
+		speechFallenTransform?: number;
+		speechFeet?: number;
+		speechFencing?: number;
+		speechFencingEntrance?: number;
+		speechForgive?: number;
+		speechFutaPenis?: number;
+		speechGlans?: number;
+		speechGrowl?: number;
+		speechGrowlHeat?: number;
+		speechGrowlRut?: number;
+		speechHair?: number;
+		speechHandjobPenis?: number;
+		speechHandjobVagina?: number;
+		speechHeadBreasts?: number;
+		speechHeadChest?: number;
+		speechHeadNipple?: number;
+		speechHeadNippleClosed?: number;
+		speechHeadSuckle?: number;
+		speechHeadSuckleClosed?: number;
+		speechHermAngry?: number;
+		speechHermAroused?: number;
+		speechHermDisappointed?: number;
+		speechHermShock?: number;
+		speechKissVirgin?: number;
+		speechLactate?: number;
+		speechLegLock?: number;
+		speechLINameDrop?: number;
+		speechMasturbate?: number;
+		speechMoan?: number;
+		speechMouthEntrance?: number;
+		speechMouthImminent?: number;
+		speechMouthNPCAnus?: number;
+		speechMouthNPCVagina?: number;
+		speechMouthPenetrated?: number;
+		speechNoticeSexToy?: number;
+		speechNPCAnusEntrance?: number;
+		speechNPCAnusEscape?: number;
+		speechNPCAnusImminent?: number;
+		speechNPCAnusPenetrated?: number;
+		speechNPCAnusVirgin?: number;
+		speechNPCAnusWithhold?: number;
+		speechNPCChastity?: number;
+		speechNPCHandholdingVirgin?: number;
+		speechNPCKissVirgin?: number;
+		speechNPCOralVirgin?: number;
+		speechNPCPenisVirgin?: number;
+		speechNPCVaginaEntrance?: number;
+		speechNPCVaginaEscape?: number;
+		speechNPCVaginaImminent?: number;
+		speechNPCVaginaPenetrated?: number;
+		speechNPCVaginaVirgin?: number;
+		speechNPCVaginaWithhold?: number;
+		speechOralVirgin?: number;
+		speechPay?: number;
+		speechPenis?: number;
+		speechPenisBig?: number;
+		speechPenisFoot?: number;
+		speechPenisSmall?: number;
+		speechPenisVirgin?: number;
+		speechPepperSpray?: number;
+		speechPlayerBeaten?: number;
+		speechPlayerHits?: number;
+		speechPlayerOrgasm?: number;
+		speechPlead?: number;
+		speechPregnant?: number;
+		speechSaidLines?: Partial<Record<SpeechSpeaker, SpeechHistoryEntry[]>>;
+		speechScreamForHelp?: number;
+		speechSexToyState?: "aroused" | "neutral" | "disappointed" | "shocked" | "angry";
+		speechSpank?: number;
+		speechSprayCycle?: number;
+		speechSprayCyclePlant?: number;
+		speechSteal?: number;
+		speechStripStruggle?: number;
+		speechStroker?: number;
+		speechStruggle?: number;
+		speechTempleVirgin?: number;
+		speechThigh?: number;
+		speechTrib?: number;
+		speechTribEntrance?: number;
+		speechVagina?: number;
+		speechVaginaEntrance?: number;
+		speechVaginaEscape?: number;
+		speechVaginaFlaunt?: number;
+		speechVaginaFoot?: number;
+		speechVaginaImminent?: number;
+		speechVaginaPenetrated?: number;
+		speechVaginaVirgin?: number;
+		speechVaginaWithhold?: number;
+		whitneyUniqueComments?: string[];
 	}
 
 	export interface SugarCubeTemporaryVariables {
 		crOverrides?: CombatRendererOverrides;
+		noNameComment?: boolean;
+		speechPool?: Partial<Record<SpeechSpeaker, SpeechPool>>;
+		speechPoolSpeaker?: SpeechSpeaker;
 	}
 
 	export interface SugarCubeSetupObject {
 		positions: Positions[];
 		legPositions: LegPositions[];
+		speechCategories: Record<string, { priority: number; cooldown?: number }>;
 	}
 }
 
@@ -224,6 +359,31 @@ declare global {
 			genital: number[];
 			butt: number[];
 		};
+	}
+
+	export type SpeechSpeaker = NpcNames | "pc";
+
+	export interface SpeechPool {
+		lines: SpeechLine[];
+		canPass: boolean;
+	}
+
+	export interface SpeechLine {
+		content: string;
+		category: string;
+		weight: number;
+		id: string;
+		reply?: SpeechReply;
+	}
+
+	export interface SpeechHistoryEntry {
+		id: string | null;
+		category: string | null;
+	}
+
+	export interface SpeechReply {
+		speaker: NpcNames;
+		content: string;
 	}
 }
 
