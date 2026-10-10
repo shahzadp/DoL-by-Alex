@@ -2587,15 +2587,6 @@ function attractedToBothChance(gender, rng) {
 }
 window.attractedToBothChance = attractedToBothChance;
 
-function beastMaleChance(override) {
-	if (V.settings.beastMaleChanceSplit === false) return V.settings.beastMaleChance;
-	const appearance = override || V.player.gender_appearance;
-	if (appearance === "m") return V.settings.beastMaleChanceMale;
-	if (appearance === "f") return V.settings.beastMaleChanceFemale;
-	return 50;
-}
-window.beastMaleChance = beastMaleChance;
-
 function penisNames(override) {
 	const names = ["penis"];
 
@@ -3123,11 +3114,6 @@ function insecurityExists(type) {
 	return possible && returnedType === type && V["insecurity_" + type] > 0;
 }
 window.insecurityExists = insecurityExists;
-
-function isBeastSceneAllowed() {
-	return V.settings.bestialityEnabled || ((!V.settings.monsterHallucinationsOnly || V.hallucinations > 0) && V.settings.monsterChance >= random(1, 100));
-}
-window.isBeastSceneAllowed = isBeastSceneAllowed;
 
 /**
  * Check if an event is going to be dangerous based on rng and the player's Allure. Another target's Allure can

@@ -17,14 +17,14 @@
 
 <<widget "fox_gen">>
 	<!-- Modified for monster people -->
-	<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+	<<if monsterCanAppearForType("fox")>>
 		<<if maleChance() lt random(1, 100)>>
 			<<set $foxGen to "female">>
 		<<else>>
 			<<set $foxGen to "male">>
 		<</if>>
 	<<else>>
-		<<if beastMaleChance() lt random(1, 100)>>
+		<<if beastMaleChanceForType("fox") lt random(1, 100)>>
 			<<set $foxGen to "vixen">>
 		<<else>>
 			<<set $foxGen to "reynard">>
@@ -127,12 +127,10 @@
 		<<set $farm_work.pig.monster_roll to false>>
 		<<set $farm_work.dog.monster_roll to false>>
 		<<set $farm_work.cattle.monster_roll to false>>
-		<<if $hallucinations gte 1 or !$settings.monsterHallucinationsOnly>>
-			<<set $farm_work.horse.monster_roll to $settings.monsterChance gte random(1, 100)>>
-			<<set $farm_work.pig.monster_roll to $settings.monsterChance gte random(1, 100)>>
-			<<set $farm_work.dog.monster_roll to $settings.monsterChance gte random(1, 100)>>
-			<<set $farm_work.cattle.monster_roll to $settings.monsterChance gte random(1, 100)>>
-		<</if>>
+		<<set $farm_work.horse.monster_roll to (($hallucinations gte 1 or !monsterHallucinationsOnlyForType("horse")) and monsterChanceForType("horse") gte random(1, 100))>>
+		<<set $farm_work.pig.monster_roll to (($hallucinations gte 1 or !monsterHallucinationsOnlyForType("pig")) and monsterChanceForType("pig") gte random(1, 100))>>
+		<<set $farm_work.dog.monster_roll to (($hallucinations gte 1 or !monsterHallucinationsOnlyForType("dog")) and monsterChanceForType("dog") gte random(1, 100))>>
+		<<set $farm_work.cattle.monster_roll to (($hallucinations gte 1 or !monsterHallucinationsOnlyForType("cow")) and monsterChanceForType("cow") gte random(1, 100))>>
 		<<unset $farm_kennel>>
 		<<farm_gen_all>>
 	<</if>>
@@ -514,10 +512,10 @@
 				<br>
 			<</if>>
 		<<elseif hasSexStat("deviancy", 3) and $farm_work.horses_satisfied lt 6 and $farm_work.horses_out lt 2>>
-			<<if $farm_work.horse.monster is true and $settings.horsesEnabled>>
+			<<if $farm_work.horse.monster and monsterSexEnabledForType("horse")>>
 				The centaurs seem agitated. They need "special" attention.
 				<br>
-			<<elseif $settings.bestialityEnabled and $settings.horsesEnabled>>
+			<<elseif animalSexEnabledForType("horse")>>
 				The horses seem agitated. They need "special" attention.
 				<br>
 			<</if>>
@@ -668,10 +666,10 @@
 				<</if>>
 				<br>
 
-			<<elseif hasSexStat("deviancy", 3) and $farm_work.horses_satisfied lt 6 and $farm_work.horses_out lt 2 and $settings.horsesEnabled>>
+			<<elseif hasSexStat("deviancy", 3) and $farm_work.horses_satisfied lt 6 and $farm_work.horses_out lt 2 and beastSexEnabledForType("horse", $farm_work.horse.monster)>>
 				<<if $farm_work.horse.monster is true>>
 					<<animalicon "horse">><<link [[Approach a centaur|Farm Horses Lewd]]>><</link>><<run _actions++>>
-				<<elseif $settings.bestialityEnabled>>
+				<<elseif animalSexEnabledForType("horse")>>
 					<<animalicon "horse">><<link [[Approach a horse|Farm Horses Lewd]]>><</link>><<run _actions++>>
 				<</if>>
 				<br>
@@ -890,16 +888,17 @@
 <</widget>>
 
 <<widget "farm_gen">>
-	<<if $farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+	<<set _beastType to _args[0] is "cattle" ? "cow" : _args[0]>>
+	<<if $farm_work[_args[0]].monster_roll and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType(_beastType))>>
 		<<set $farm_work[_args[0]].monster to true>>
-		<<if beastMaleChance() gte 100>>
+		<<if beastMaleChanceForType(_beastType) gte 100>>
 			<<set $farm_work[_args[0]].gender_plural to "m">>
-		<<elseif beastMaleChance() gte 1>>
+		<<elseif beastMaleChanceForType(_beastType) gte 1>>
 			<<set $farm_work[_args[0]].gender_plural to "b">>
 		<<else>>
 			<<set $farm_work[_args[0]].gender_plural to "f">>
 		<</if>>
-		<<if beastMaleChance() gte random(1, 100)>>
+		<<if beastMaleChanceForType(_beastType) gte random(1, 100)>>
 			<<set $farm_work[_args[0]].gender to "m">>
 			<<if $settings.maleNPCVaginaChance gte random(1, 100)>>
 				<<set $farm_work[_args[0]].genitals to "vagina">>
@@ -916,14 +915,14 @@
 		<</if>>
 	<<else>>
 		<<set $farm_work[_args[0]].monster to false>>
-		<<if beastMaleChance() gte 100>>
+		<<if beastMaleChanceForType(_beastType) gte 100>>
 			<<set $farm_work[_args[0]].gender_plural to "m">>
-		<<elseif beastMaleChance() gte 1>>
+		<<elseif beastMaleChanceForType(_beastType) gte 1>>
 			<<set $farm_work[_args[0]].gender_plural to "b">>
 		<<else>>
 			<<set $farm_work[_args[0]].gender_plural to "f">>
 		<</if>>
-		<<if beastMaleChance() gte random(1, 100)>>
+		<<if beastMaleChanceForType(_beastType) gte random(1, 100)>>
 			<<set $farm_work[_args[0]].gender to "m">>
 			<<set $farm_work[_args[0]].genitals to "penis">>
 		<<else>>
@@ -956,7 +955,7 @@
 
 	<<if dangerEvent()>>
 	<!-- Modified for monster people -->
-		<<if $settings.horsesEnabled and ($settings.bestialityEnabled or $farm_work.horse.monster is true)>>
+		<<if beastSexEnabledForType("horse", $farm_work.horse.monster)>>
 			You finish up, and walk toward the gate while cleaning the brush of hair. You hear hooves approach behind you. The <<farm_text horse>> gives chase.
 			<br><br>
 
@@ -1042,7 +1041,7 @@
 		<</if>>
 		<<farmicon "bucket">><<link [["Milk by hand (0:" + String(_cattleMilkHand).padStart(2, '0') + ")"|Farm Cattle Milk Hand]]>><<farm_yield 1>><<set $cattle_milked += 1>><<set $farm_work.cattle_milked += 1>><<tending 1>><<farm_cattle 1>><<set $phase to _cattleMilkHand>><<pass _cattleMilkHand>><</link>><<deviant1>><<gfarm>><<gtending>><<grespect>>
 		<br>
-		<<if hasSexStat("deviancy", 4) and ($settings.bestialityEnabled or $monster is 1)>>
+		<<if hasSexStat("deviancy", 4) and beastSexEnabledForType("cow", $monster is 1)>>
 			<<brothelicon>><<link [[Milk with your mouth (0:03)|Farm Cattle Milk Mouth]]>><<set $cattle_milked += 1>><<set $farm_work.cattle_milked += 1>><<tending 1>><<farm_count 3>><</link>><<deviant4>><<gtending>>
 			<<if $NPCList[0].penis isnot "none" and $player.virginity.oral is true>>
 				<<oralvirginitywarning>>
@@ -1817,7 +1816,7 @@
 <<widget "farm_tending_events">>
 	<<rng 3>>
 	<<if $rng is 3>>
-		<<if $settings.bestialityEnabled and $settings.lurkersEnabled and random(1, 2) is 2>>
+		<<if $settings.lurkersEnabled and random(1, 2) is 2>>
 			You're digging in the earth when you see something dark move in your peripheral, low to the ground. It's gone by the time you look over.
 			<br><br>
 
@@ -2710,7 +2709,7 @@
 			<<destination_farm_ride>>
 		<</if>>
 	<<elseif $rng is 3>>
-		<<if $farm.beasts.horses lt -20 and $settings.horsesEnabled and ($monster is 1 or $settings.bestialityEnabled)>>
+		<<if $farm.beasts.horses lt -20 and beastSexEnabledForType("horse", $monster is 1)>>
 			The <<beasttype>> jerks in another direction, and breaks into a sprint, running across an open field. <<bHe>> stops beside a haybale, and leans forward, dropping you from the saddle.
 			<br><br>
 			You land on the hay, but the <<beasttype>> forces you down with <<bhis>> weight before you can escape.
@@ -2724,7 +2723,7 @@
 
 			<<link [[Next|Farm Ride Rape]]>><<set $molestationstart to 1>><</link>>
 			<br>
-		<<elseif $farm.beasts.horses lt 0 and $settings.horsesEnabled and ($monster is 1 or $settings.bestialityEnabled)>>
+		<<elseif $farm.beasts.horses lt 0 and beastSexEnabledForType("horse", $monster is 1)>>
 			The <<beasttype>> pulls to a stop, and refuses to take a step further.
 			<<if $monster is 1>>
 				"I'm frustrated," <<bhe>> says. "It's your job to fix it."
@@ -3525,7 +3524,7 @@
 	<<set _silent to _args[0] ? _args[0] : false>>
 	<<set _newlineCount to _args[1] ? _args[1] : 2>>
 
-	<<if not _silent and ($settings.bestialityEnabled or $farm_work.pig.monster is true)>>
+	<<if not _silent and beastSexEnabledForType("pig", $farm_work.pig.monster)>>
 		<<if _fullyNaked or $allure gte 6000 * $settings.allureModifier>>
 			<span class="red">The <<farm_text_many pig>> watch you with open desire.</span>
 		<<elseif $allure gte 4000 * $settings.allureModifier>>

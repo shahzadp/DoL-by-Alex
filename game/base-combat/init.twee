@@ -193,8 +193,9 @@
 
 <<widget "beastNEWinit">>
 	<!-- NEW beast intitiation widget v2.6. Replaces beast(1-6)init widgets -->
-	<!-- Args are number of beasts(1-6), Type, Gender, Genitals and Monster status-->
-	<!-- Last three args are optional and override generation based on settings. Use with care -->
+	<!-- Args are number of beasts(1-6), Type, Gender, Genitals, Monster status and Victim status-->
+	<!-- Gender, Genitals and Monster status are optional and override generation based on settings. Use with care -->
+	<!-- Victim status is optional. When true, the beasts use the "victims always generate as monster people" setting. Use <<generateBeastVictim>> rather than passing it directly -->
 	<!-- Example: <<beastNEWinit 1 dog m>> would generate 1 male dog -->
 	<!-- Example: <<beastNEWinit 2 wolf f>> would generate 2 female wolves -->
 	<!-- Example: <<beastNEWinit 1 horse f penis monster>> would generate 1 female centaur with a penis -->
@@ -204,6 +205,7 @@
 	<<set _gnn to _args[2]>> <!-- Gender -->
 	<<set _beast_genitals to _args[3]>>
 	<<set _beast_monster to _args[4]>>
+	<<set _beast_victim to _args[5]>>
 	<<set $active_enemy to 0>>
 	<!-- Error Checking -->
 	<<if !$BeastList.includes(_tpe)>>
@@ -211,7 +213,7 @@
 	<</if>>
 
 	<<for _xx = 1; _xx < _nn+1; _xx++>>
-		<<generateBEAST _xx _tpe _gnn _beast_genitals _beast_monster>>
+		<<generateBEAST _xx _tpe _gnn _beast_genitals _beast_monster _beast_victim>>
 	<</for>>
 
 	<<set $enemyno to _nn>>
@@ -222,18 +224,21 @@
 	<<set $monster to ($NPCList[0].monster is "monster" ? 1 : 0)>>
 <</widget>>
 
+<<widget "generateBeastVictim">>
+	<<beastNEWinit _args[0] _args[1] _args[2] _args[3] _args[4] true>>
+<</widget>>
+
 <<widget "beastPARTNERinit">>
 	<!-- Widget to force a beast to generate as a partner for an NPC, whether it be a human or beast. -->
 	<!-- This will probably brick any combat it's called into. -->
-	<!-- Args are number of beasts(1-6), Type, Gender, Genitals and Monster status-->
-	<!-- Last three args are optional and override generation based on settings. Use with care -->
-	<!-- Example: <<beastNEWinit 1 dog m>> would generate 1 male dog -->
-	<!-- Example: <<beastNEWinit 2 wolf f>> would generate 2 female wolves -->
-	<!-- Example: <<beastNEWinit 1 horse f penis monster>> would generate 1 female centaur with a penis -->
+	<!-- Args are NPC slot of beast, Type, NPC slot of partner and Victim status-->
+	<!-- Victim status is optional. When true, the beast uses the "victims always generate as monster people" setting. Use <<generateBeastPartnerVictim>> rather than passing it directly -->
+	<!-- Example: <<beastNEWinit 1 horse>><<beastPARTNERinit 1 horse 0>> would generate a horse in slot 2 as a partner for the horse in slot 1 -->
 
 	<<set _nn to _args[0]>> <!-- NPC Slot of beast -->
 	<<set _tpe to _args[1]>> <!-- Type -->
 	<<set _partner to _args[2]>> <!-- NPC slot of partner -->
+	<<set _beast_victim to _args[3]>> <!-- If the NPC is a victim -->
 	<<set $active_enemy to 0>>
 	<<set _generate_partner to _partner || _nn -1>>
 	<!-- Error Checking -->
@@ -242,10 +247,15 @@
 	<</if>>
 
 	<<set _xx to _nn +1>>
-	<<generateBEAST _xx _tpe>>
+	<<generateBEAST _xx _tpe undefined undefined undefined _beast_victim>>
 	<<set $enemyno++>>
 
 	<<set $monster to ($NPCList[_partner].monster is "monster" ? 1 : 0)>>
+<</widget>>
+
+<<widget "generateBeastPartnerVictim">>
+	<!-- Generates a beast partner that is a victim. Same args as beastPARTNERinit, minus Victim status -->
+	<<beastPARTNERinit _args[0] _args[1] _args[2] true>>
 <</widget>>
 
 <<widget "beastNOGENinit">>

@@ -341,12 +341,9 @@ window.offspringSpecies = offspringSpecies;
 function namedNpcPregnancy(carrier, donor, donorInputSpecies, donorKnown = false, awareOf = false) {
 	if (V.settings.nnpcPregnancyEnabled === false) return false; // Named NPC pregnancy disabled
 	const namedNpc = C.npc[carrier];
-	// The carrier conceives in their monster form on the monster-chance roll, or always when locked into it.
-	const monsterForm = lockedFlag =>
-		(V.settings.monsterChance >= random(1, 100) && (V.hallucinations >= 1 || !V.settings.monsterHallucinationsOnly)) || lockedFlag === 2;
 	let namedNpcType = namedNpc.type;
-	if (carrier === "Black Wolf" && monsterForm(V.blackwolfmonster)) namedNpcType = "wolfgirl";
-	else if (carrier === "Great Hawk" && monsterForm(V.greathawkmonster)) namedNpcType = "harpy";
+	if (carrier === "Black Wolf" && resolveIfNamedBeastIsMonster("blackwolf")) namedNpcType = "wolfgirl";
+	else if (carrier === "Great Hawk" && resolveIfNamedBeastIsMonster("greathawk")) namedNpcType = "harpy";
 	const donorSpecies = offspringSpecies(donorInputSpecies, namedNpcType);
 	if (!donorSpecies) return false;
 

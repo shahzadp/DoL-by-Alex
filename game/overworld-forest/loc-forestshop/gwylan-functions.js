@@ -720,7 +720,7 @@ function gwylanRequestIngredients() {
 	}
 
 	// Remove honeycomb unless bees are enabled.
-	if (V.tending < 800 || !(V.settings.bestialityEnabled && V.settings.beesEnabled)) {
+	if (V.tending < 800 || !V.settings.beesEnabled) {
 		removeIngredient("wild_honeycomb");
 	}
 
@@ -835,7 +835,8 @@ function gwylanRequestSample(override) {
 	if (V.gwylan.requestCount >= 8) complexity += 1;
 	if (V.gwylan.requestCount >= 15) complexity += 1;
 	if (V.gwylan.requestCount >= 30) complexity += 1;
-	if (!V.settings.bestialityEnabled && V.settings.monsterHallucinationsOnly) complexity += 3;
+	const enabledBeastCount = ["wolf", "fox", "cat", "lizard", "dog", "dolphin", "boar", "bear"].filter(type => beastSexEnabledForType(type)).length;
+	if (enabledBeastCount === 0) complexity += 3;
 	if (!V.settings.plantsEnabled) complexity += 3;
 	V.gwylan.request.timer = new DateTime(Time.date).addDays(complexity).timeStamp;
 	V.gwylan.request.details.difficulty = complexity;
@@ -843,11 +844,15 @@ function gwylanRequestSample(override) {
 
 	for (let samples = 0; samples < sampleCount; samples++) {
 		const availableSpecies = [["human", 2]];
-		if (V.settings.bestialityEnabled && complexity > 3) {
-			availableSpecies.push(["wolf", 2], ["fox", 2], ["cat", 1], ["lizard", 1], ["dog", 1]);
-			if (complexity > 4) availableSpecies.push(["dolphin", 1]);
-			if (complexity > 5) availableSpecies.push(["boar", 1]);
-			if (complexity > 6) availableSpecies.push(["bear", 1]);
+		if (complexity > 3) {
+			if (beastSexEnabledForType("wolf")) availableSpecies.push(["wolf", 2]);
+			if (beastSexEnabledForType("fox")) availableSpecies.push(["fox", 2]);
+			if (beastSexEnabledForType("cat")) availableSpecies.push(["cat", 1]);
+			if (beastSexEnabledForType("lizard")) availableSpecies.push(["lizard", 1]);
+			if (beastSexEnabledForType("dog")) availableSpecies.push(["dog", 1]);
+			if (complexity > 4 && beastSexEnabledForType("dolphin")) availableSpecies.push(["dolphin", 1]);
+			if (complexity > 5 && beastSexEnabledForType("boar")) availableSpecies.push(["boar", 1]);
+			if (complexity > 6 && beastSexEnabledForType("bear")) availableSpecies.push(["bear", 1]);
 		}
 		if (V.settings.plantsEnabled && complexity > 6) availableSpecies.push(["plant", 3]);
 
@@ -1002,7 +1007,11 @@ window.gwylanRequestMet = gwylanRequestMet;
  * @param {"beast" | "sex" | "any"} ritual which event to check requirements for
  */
 function gwylanCanForceRitual(ritual = "any") {
-	if (ritual === "beast") return !Time.isBloodMoon() && Time.hour > 8 && (V.settings.bestialityEnabled || V.settings.monsterChance >= 100);
+	if (ritual === "beast") {
+		const wolfOrFoxAvailable = ["wolf", "fox"].some(type => beastSexEnabledForType(type));
+		const dryadsAvailable = V.settings.plantsEnabled && V.settings.tentaclesEnabled;
+		return !Time.isBloodMoon() && Time.hour > 8 && (wolfOrFoxAvailable || dryadsAvailable);
+	}
 	return false;
 }
 window.gwylanCanForceRitual = gwylanCanForceRitual;

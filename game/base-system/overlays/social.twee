@@ -373,18 +373,33 @@
 		<<if $farm_stage gte 2>>
 			<<silently>>
 				/* Farm Animals */
-				/*Horses*/
-				<<switch $settings.beastMaleChance>>
-					<<case 100>>
-						<<set _people to "boys">>
-						<<set _cowpeople to "bullboys">>
-					<<case 0>>
-						<<set _people to "girls">>
-						<<set _cowpeople to "cowgirls">>
-					<<default>>
-						<<set _people to "people">>
-						<<set _cowpeople to "cowgirls and bullboys">>
-				<</switch>>
+				/* Farm animal gender words reflect each species' own beast male chance. */
+				<<set _pigMaleChance to beastMaleChanceForType("pig")>>
+				<<set _dogMaleChance to beastMaleChanceForType("dog")>>
+				<<set _cowMaleChance to beastMaleChanceForType("cow")>>
+				<<if _pigMaleChance is 100>>
+					<<set _pigPeople to "boys">>
+				<<elseif _pigMaleChance is 0>>
+					<<set _pigPeople to "girls">>
+				<<else>>
+					<<set _pigPeople to "people">>
+				<</if>>
+
+				<<if _dogMaleChance is 100>>
+					<<set _dogPeople to "boys">>
+				<<elseif _dogMaleChance is 0>>
+					<<set _dogPeople to "girls">>
+				<<else>>
+					<<set _dogPeople to "people">>
+				<</if>>
+
+				<<if _cowMaleChance is 100>>
+					<<set _cowpeople to "bullboys">>
+				<<elseif _cowMaleChance is 0>>
+					<<set _cowpeople to "cowgirls">>
+				<<else>>
+					<<set _cowpeople to "cowgirls and bullboys">>
+				<</if>>
 				<!-- These values apply if the current value is "Greater than or equal to" the specified value. So:
 					-30 to -21 	: Fucktoy
 					-20 to -6 	: Little respect
@@ -392,7 +407,7 @@
 					5 to 19		: Trust
 					20 to 30	: Respect
 					 -->
-				<<set _farmHorseRepConfig = { currentValue: $farm.beasts.horses, preText: `The ${$settings.monsterChance is 100 ? 'centaurs ' : 'steeds '}`, postText: ' you.', states: [
+				<<set _farmHorseRepConfig = { currentValue: $farm.beasts.horses, preText: `The ${monsterChanceForType("horse") === 100 && (V.hallucinations >= 1 || !monsterHallucinationsOnlyForType("horse")) ? 'centaurs ' : 'steeds '}`, postText: ' you.', states: [
 					{ requiredValue: -100,	color: 'pink',		description: 'see you as a fucktoy.', postText: ' '},
 					{ requiredValue: -20,	color: 'purple',	description: 'have little respect', postText: ' for you.'},
 					{ requiredValue: -5,	color: '',			description: 'are wary of'},
@@ -400,7 +415,7 @@
 					{ requiredValue: 20,	color: 'green',		description: 'respect'}
 				]}>>
 				/*Pigs*/
-				<<set _farmPigRepConfig = { currentValue: $farm.beasts.pigs, preText: `The ${$settings.monsterChance is 100 ? 'pig' + _people : 'pigs '}`, postText: ' you.', states: [
+				<<set _farmPigRepConfig = { currentValue: $farm.beasts.pigs, preText: `The ${monsterChanceForType("pig") === 100 && (V.hallucinations >= 1 || !monsterHallucinationsOnlyForType("pig")) ? 'pig' + _pigPeople : 'pigs '}`, postText: ' you.', states: [
 					{ requiredValue: -100,	color: 'pink',		description: 'see you as a fucktoy.', postText: ' '},
 					{ requiredValue: -20,	color: 'purple',	description: 'have little respect', postText: ' for you.'},
 					{ requiredValue: -5,	color: '',			description: 'are wary of'},
@@ -408,7 +423,7 @@
 					{ requiredValue: 20,	color: 'green',		description: 'respect'}
 				]}>>
 				/*Cattle*/
-				<<set _farmCattleRepConfig = { currentValue: $farm.beasts.cattle, preText: `The ${$settings.monsterChance is 100 ? _cowpeople : 'cattle '}`, postText: ' you.', states: [
+				<<set _farmCattleRepConfig = { currentValue: $farm.beasts.cattle, preText: `The ${monsterChanceForType("cow") === 100 && (V.hallucinations >= 1 || !monsterHallucinationsOnlyForType("cow")) ? _cowpeople : 'cattle '}`, postText: ' you.', states: [
 					{ requiredValue: -100,	color: 'pink',		description: 'see you as an annoyance.', postText: ' '},
 					{ requiredValue: -20,	color: 'purple',	description: 'have little respect', postText: ' for you.'},
 					{ requiredValue: -5,	color: '',			description: 'are wary of'},
@@ -416,7 +431,7 @@
 					{ requiredValue: 20,	color: 'green',		description: 'respect'}
 				]}>>
 				/*Dogs*/
-				<<set _farmDogRepConfig = { currentValue: $farm.beasts.dogs, preText: `The ${$settings.monsterChance is 100 ? 'dog' + _people : 'dogs '}`, postText: ' you.', states: [
+				<<set _farmDogRepConfig = { currentValue: $farm.beasts.dogs, preText: `The ${monsterChanceForType("dog") === 100 && (V.hallucinations >= 1 || !monsterHallucinationsOnlyForType("dog")) ? 'dog' + _dogPeople : 'dogs '}`, postText: ' you.', states: [
 					{ requiredValue: -100,	color: 'pink',		description: 'see you as a fucktoy.', postText: ' '},
 					{ requiredValue: -20,	color: 'purple',	description: 'have little respect', postText: ' for you.'},
 					{ requiredValue: -5,	color: '',			description: 'are wary of'},
@@ -482,7 +497,7 @@
 				<<set _sexFameConfig =				{ currentValue: $fame.sex,				preText: 'Sex:',			flavorText: 'slut',				states: _fameStates }>>
 				<<set _prostitutionFameConfig =		{ currentValue: $fame.prostitution,		preText: 'Prostitution:',	flavorText: 'whore',			states: _fameStates }>>
 				<<set _rapeFameConfig =				{ currentValue: $fame.rape,				preText: 'Rape:',			flavorText: 'fucktoy',			states: _fameStates }>>
-				<<if $settings.bestialityEnabled>>
+				<<if isBestialityOnForAnyCreature()>>
 					<<set $_pre to "Bestiality:">>
 					<<set $_flavor to "bitch">>
 				<<else>>

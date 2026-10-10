@@ -131,63 +131,7 @@ function zoom(value) {
 
 	if (slider.length && slider.val() != value) slider.val(value).trigger("change");
 }
-
 window.zoom = zoom;
-
-function beastTogglesCheck() {
-	T.beastVars = [
-		"bestialityEnabled",
-		"swarmsEnabled",
-		"parasitesEnabled",
-		"parasitePregnancyEnabled",
-		"tentaclesEnabled",
-		"slimesEnabled",
-		"voreEnabled",
-		"spidersEnabled",
-		"slugsEnabled",
-		"waspsEnabled",
-		"beesEnabled",
-		"lurkersEnabled",
-		"horsesEnabled",
-		"plantsEnabled",
-	];
-	T.anyBeastOn = T.beastVars.some(x => V.settings[x] === true);
-}
-window.beastTogglesCheck = beastTogglesCheck;
-
-// Checks current settings page for data attributes
-// Run only when settings tab is changed (probably in "displaySettings" widget)
-// data-target is the target element that needs to be clicked for the value to be updated
-// data-disabledif is the conditional statement (e.g. data-disabledif="V.per_npc[T.pNPCId].gender==='f'")
-
-function settingsDisableElement() {
-	$(() => {
-		$("[data-disabledif]").each(function () {
-			const updateButtonsActive = () => {
-				$(() => {
-					try {
-						const evalStr = "'use strict'; return " + disabledif;
-						// eslint-disable-next-line no-new-func
-						const cond = Function(evalStr)();
-						const style = cond ? "var(--500)" : "";
-						orig.css("color", style).children().css("color", style);
-						orig.find("input").prop("disabled", cond);
-						$(document).trigger("rangeslider::update");
-					} catch (e) {
-						console.log(e);
-					}
-				});
-			};
-			const orig = $(this);
-			const disabledif = orig.data("disabledif");
-			[orig.data("target")].flat().forEach(e => $("[name$='" + Util.slugify(e) + "']").on("click", updateButtonsActive));
-			if (disabledif) {
-				updateButtonsActive();
-			}
-		});
-	});
-}
-window.settingsDisableElement = settingsDisableElement;
 
 // Adds event listeners to input on current page
 // mainly used for options overlay

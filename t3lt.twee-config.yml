@@ -1669,7 +1669,10 @@ sugarcube-2:
       name: beastMaleChanceSplitControls
     beastNEWinit:
       description: |-
-       Generates a new beast and sets $monster to 1 as appropriate. This widget must occur outside of checks for `<<if $settings.bestialityEnabled or $monster is 1>>`.
+       Generates a new beast and sets $monster to 1 as appropriate. This widget must occur outside of checks for `<<if beastSexEnabledForType(type) or $monster is 1>>`.
+
+        `<<beastNEWinit count type gender genitals monster victim>>`
+        - **victim** _optional_: `boolean` - generates the beasts as victims. Use `<<generateBeastVictim>>` instead of passing this directly
     beastNNPCinit:
       name: beastNNPCinit
       tags: ["unused"]
@@ -1682,10 +1685,11 @@ sugarcube-2:
         Example:
         `<<beastNEWinit 1 fox>><<beastPARTNERinit 1 fox 0>>`
 
-        `<<beastPARTNERinit npcSlot type partnerSlot>>`
+        `<<beastPARTNERinit npcSlot type partnerSlot victim>>`
         - **npcSlot**: `number` - slot number of selected npc
         - **type**: `string` - type of partner to generate
         - **partnerSlot**: `number` - slot number for partner npc
+        - **victim** _optional_: `boolean` - generates the beast as a victim. Use `<<generateBeastPartnerVictim>>` instead of passing this directly
     beastSettings:
       name: beastSettings
     beastSimple:
@@ -1717,6 +1721,10 @@ sugarcube-2:
       tags: ["text"]
     beastTrainGenerate:
       name: beastTrainGenerate
+    beastTypeGenders:
+      name: beastTypeGenders
+    beastTypeSettingRow:
+      name: beastTypeSettingRow
     beasttype:
       description: |-
         Prints beast type of NPC
@@ -6832,6 +6840,20 @@ sugarcube-2:
       tags: ["unused"]
     generateBEAST:
       name: generateBEAST
+    generateBeastPartnerVictim:
+      description: |-
+        Same as `<<beastPARTNERinit>>`, but generates the beast as a victim.
+
+        Example:
+        `<<beastNEWinit 1 fox>><<generateBeastPartnerVictim 1 fox 0>>`
+
+        `<<generateBeastPartnerVictim npcSlot type partnerSlot>>`
+        - **npcSlot**: `number` - slot number of selected npc
+        - **type**: `string` - type of partner to generate
+        - **partnerSlot**: `number` - slot number for partner npc
+    generateBeastVictim:
+      description: |-
+        Same as `<<beastNEWinit>>`, but generates the beasts as victims.
     generateboar1:
       name: generateboar1
       tags: ["unused"]
@@ -9588,10 +9610,10 @@ sugarcube-2:
       name: importConfirmDetails
     importDetailsDisplay:
       description: |-
-        Validate and imports preset object into state
+        Shows the values for the imported settings
 
         `<<importDetailsDisplay presetObject>>`
-        - **presetObject**: `object` - object to be imported
+        - **presetObject**: `object` - parsed settings object to show
       parameters:
         - bareword|var
     impregnateParasite:
@@ -11928,12 +11950,6 @@ sugarcube-2:
 
         See `<<monks_and_nuns>>` and `<<brothers_and_sisters>>`
       tags: ["text"]
-    monster_passage:
-      description: |-
-        Sets `_monster_passage` to random gender chance
-
-        Doesn't do anything. Consider refactoring
-      tags: ["unused", "temp", "refactor"]
     monsterSettings:
       name: monsterSettings
     monstrance_accost:
@@ -12029,6 +12045,8 @@ sugarcube-2:
       name: museumPaintingText
     museumtalk:
       name: museumtalk
+    namedBeastSettingRow:
+      name: namedBeastSettingRow
     namedNpcComments:
       description: |-
         Plays the named NPC's speech lines for this turn. NPCs without a speech widget or that skip speaking this turn (passes) set `_noNameComment`, so generic comments or mouth actions play instead.
@@ -14639,33 +14657,6 @@ sugarcube-2:
       name: preMirror
     prenancyObjectRepair:
       name: prenancyObjectRepair
-    presetConfirm:
-      description: |-
-        Validates and applies Preset object into state variables
-
-        Relies on `_validatorObject` already being set
-
-        `<<presetConfirm presetObject useAltLabel?>>`
-        - **presetObject**: `object` - object to be imported
-        - **useAltLabel** _optional_: `boolean` - use sub-labels (truthy)
-      parameters:
-        - var|bareword
-        - '"pronoun"|"gender"|"penissize"|"breastsize"|"bottomsize"|"gender_body"|"ballsExist"|"freckles" |+ bool|text|string|number'
-      tags: ["temp"]
-    presetConfirmDetails:
-      name: presetConfirmDetails
-    presets:
-      description: |-
-        Applies a preset to game and refreshes settings display to provided page
-
-        `<<presets presetName page? randomizeResult?>>`
-        - **presetName**: `string` - name of preset to apply
-        - **page** _optional_: `string` - page to display after preset is applied
-          - Defaults to "characterSettings". See <<displaySettings>> for additional values
-        - **randomizeResult** _optional_: `string` - JSON object containing preset results. Generally the return of randomizeSettings()
-      parameters:
-        - string |+ string
-        - '"randomize" &+ text|string &+ bareword|var'
     priceSettings:
       name: priceSettings
     priest:
@@ -14995,8 +14986,6 @@ sugarcube-2:
       name: quicksand_pull
     quickStart:
       name: quickStart
-    quickStartOptions:
-      name: quickStartOptions
     radio_addnews:
       name: radio_addnews
       tags: ["unused"]
@@ -15038,6 +15027,8 @@ sugarcube-2:
       name: random_semen
     random_semen_head:
       name: random_semen_head
+    randomiseSettings:
+      name: randomiseSettings
     randomPlay:
       name: randomPlay
     randomWear:
@@ -15949,6 +15940,10 @@ sugarcube-2:
       name: settingsExitFunction
     settingsOptions:
       name: settingsOptions
+    settingsPreviewGroup:
+      name: settingsPreviewGroup
+    beastSettingsPreview:
+      name: beastSettingsPreview
     settingsStart:
       name: settingsStart
     settingsTabButton:

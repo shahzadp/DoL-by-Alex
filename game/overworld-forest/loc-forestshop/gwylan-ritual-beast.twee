@@ -61,12 +61,12 @@
 	<br><br>
 
 	<<gwylanOptions>>
-<<elseif !isBeastSceneAllowed() and !$settings.plantsEnabled>>
+<<elseif !beastSexEnabledForType("wolf") and !beastSexEnabledForType("fox") and !($settings.plantsEnabled and $settings.tentaclesEnabled)>>
 	<<set _ritualFailSafe to true>><<unset $ritualForced>>
 	<<He>> frowns. "You look nervous. We'll be dealing with the <span class="blue">natural denizens of the forest</span>, and you don't look prepared to come to terms with that. Try <span class="blue">opening your mind,</span> then come back.
 	<br><br>
 
-	<i><span class="blue">Beasts, monsterpeople or plantpeople must be enabled to continue.</span></i>
+	<i><span class="blue">Wolves, foxes, plantpeople, or monsterpeople must be enabled to continue.</span></i>
 	<br><br>
 
 	<<gwylanOptions>>
@@ -470,17 +470,25 @@ pulls <<if $settings.plantsEnabled and $settings.tentaclesEnabled>>three<<else>>
 "Pick one." The tinctures are filled with a dark fluid, and have small pieces of paper attached to their stoppers.
 <br><br>
 
-One has a sketch of a wolf's head.<br>
-Another has a sketch of a fox jumping.<br>
+<<if beastSexEnabledForType("wolf")>>
+	One has a sketch of a wolf's head.<br>
+<</if>>
+<<if beastSexEnabledForType("fox")>>
+	Another has a sketch of a fox jumping.<br>
+<</if>>
 <<if $settings.plantsEnabled and $settings.tentaclesEnabled>>
 	The final one has sketches of leaves. "This one will be the most dangerous, but also presents the largest opportunity for us to cleanse the poison."<br>
 <</if>>
 <br>
 
-<<link [[Wolf|Gwylan Forest Journey 3]]>><<set $beastRitual.lure to "wolf">><</link>>
-<br>
-<<link [[Fox|Gwylan Forest Journey 3]]>><<set $beastRitual.lure to "fox">><</link>><<if _gwylanTF.known>><<glust>><</if>>
-<br>
+<<if beastSexEnabledForType("wolf")>>
+	<<link [[Wolf|Gwylan Forest Journey 3]]>><<set $beastRitual.lure to "wolf">><</link>>
+	<br>
+<</if>>
+<<if beastSexEnabledForType("fox")>>
+	<<link [[Fox|Gwylan Forest Journey 3]]>><<set $beastRitual.lure to "fox">><</link>><<if _gwylanTF.known>><<glust>><</if>>
+	<br>
+<</if>>
 <<if $settings.plantsEnabled and $settings.tentaclesEnabled>>
 	<<link [[Leaves|Gwylan Forest Journey 3]]>><<set $beastRitual.lure to "dryad">><</link>>
 	<br>
@@ -506,14 +514,27 @@ Another has a sketch of a fox jumping.<br>
 		<<if $settings.plantsEnabled and $settings.tentaclesEnabled and $rng gte 51>>
 			<<set $beastRitual.lure to "dryad">>
 			Gwylan giggles. "Bark, like on trees? I'll take it you mean this one, then." <<He>> holds up the tincture with leaf sketches.
-		<<else>>
+		<<elseif beastSexEnabledForType("wolf")>>
 			<<set $beastRitual.lure to "wolf">>
 			Gwylan giggles. "Wolves it is."
+		<<elseif beastSexEnabledForType("fox")>>
+			<<set $beastRitual.lure to "fox">>
+			Gwylan giggles. "Foxes it is."
+		<<else>>
+			<<set $beastRitual.lure to "dryad">>
+			Gwylan giggles. "Bark, like on trees? I'll take it you mean this one, then." <<He>> holds up the tincture with leaf sketches.
 		<</if>>
 	<<case "yip">>
 		<<set $beastRitual.petplay++>><<set $beastRitual.lure to "fox">>
 		You yip. Gwylan giggles. "Foxes it is."
-	<<default>>You point at Gwylan. <<He>> blinks at you, and picks the wolf tincture. <span class="red">This is a bug, please report.</span> <<set $beastRitual.lure to "wolf">>
+	<<default>>You point at Gwylan. <<He>> blinks at you, and picks a tincture. <span class="red">This is a bug, please report.</span>
+		<<if beastSexEnabledForType("wolf")>>
+			<<set $beastRitual.lure to "wolf">>
+		<<elseif beastSexEnabledForType("fox")>>
+			<<set $beastRitual.lure to "fox">>
+		<<else>>
+			<<set $beastRitual.lure to "dryad">>
+		<</if>>
 <</switch>>
 <<He>> uncorks it with a loud pop, putting the other tinctures back in <<his>> belt.
 <<switch $beastRitual.lure>>
@@ -1265,7 +1286,7 @@ but <<he>> holds the tincture away from you. "It's also a potent hallucinogen. I
 						A <<beasttype>> lunges at you from the bushes!
 						<br><br>
 
-						<<if $monster is 1 or $settings.bestialityEnabled>>
+						<<if beastSexEnabledForType("wolf", $monster is 1)>>
 							<<set _noOptions to true>>
 							<<link [[Next|Gwylan Forest Run Attacked]]>><<set $molestationstart to 1>><</link>>
 							<br>
@@ -1383,7 +1404,7 @@ You're evenly matched with <<him>> for the moment. You quickly get separated aga
 		<span class="green">You spin and duck under the <<beasttype>>'s pounce.</span> <<bHe>> looks back at you, <<bhis>> ear twitching. <<bHe>> doesn't seem to think you're worth chasing, despite your scent.
 	<<else>>
 		You try to dodge the <<beasttype>>'s pounce, <span class="red">but you're too slow</span>.
-		<<if $monster is 1 or $settings.bestialityEnabled>>
+		<<if beastSexEnabledForType("fox", $monster is 1)>>
 			<<bHe>> tackles you to the ground.
 			<br><br>
 
@@ -1401,7 +1422,7 @@ You're evenly matched with <<him>> for the moment. You quickly get separated aga
 		<span class="green">You catch the <<beasttype>> mid-pounce and push <<bhim>> aside.</span> <<bHe>> tumbles to the ground and looks back at you, <<bhis>> ear twitching. <<bHe>> doesn't seem to think you're worth chasing, despite your scent.
 	<<else>>
 		You try to redirect the <<beasttype>>'s pounce, <span class="red">but you're not strong enough</span>.
-		<<if $monster is 1 or $settings.bestialityEnabled>>
+		<<if beastSexEnabledForType("fox", $monster is 1)>>
 			<<bHe>> tackles you to the ground.
 			<br><br>
 
