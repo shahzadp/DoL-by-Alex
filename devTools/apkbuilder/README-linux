@@ -1,15 +1,66 @@
-cordova apk builder for primarily DoL
+android apk builder for primarily DoL
 
-dependencies: (in parentheses are versions at the moment of writing)
-- nodejs stable (20.10.0), with npm and npx installed
-- gradle latest (8.5)
-- openjdk 17 (Temurin-17.0.8.1+1)
-- commandlinetools latest (10406996_latest) https://developer.android.com/studio#cmdline-tools scroll to the bottom of the page
+Two build paths live here. Capacitor is the current one; Cordova is the
+previous one and still builds, so it is kept as a fallback while the Capacitor
+build is being validated.
 
-to create a building environment, install nodejs, gradle and openjdk with your favorite package manager, then unzip and place `bin/`, `lib/`, and `source.properties` from commandlinetools archive into `androidsdk/cmdline-tools/latest`, then run ./setup_deps.sh. this only needs to be done once per repository.
+# Capacitor (current)
 
-debug builds are set up so they can be installed in parallel with release builds. to run debug build, run `./build_app_debug.sh`. compiled apk will be sent to the `../../dist/` directory.
+## dependencies
+- nodejs 22 or newer (the Capacitor CLI requires it)
+- Temurin JDK **21** (Capacitor 8 compiles against Java 21; 17 fails with
+  "invalid source release: 21")
+- android commandline-tools, with `bin/` , `lib/` and `source.properties`
+  placed into `androidsdk/cmdline-tools/latest`
+- gradle is NOT needed: Capacitor ships a wrapper in `android/`
 
-release builds require official dol.keystore to sign the resulting apk. using any other keystore will make the app incompatible with official release.
-in vast majority of cases, you'll be better off with a debug build, but if you're a mod dev and you really want your apk signed, then you can use the release build. first, you need to change `android-packageName` in `config.xml`, so it won't conflict with official app. second, generate a new keystore by running `keytool -genkey -v -keystore dol.keystore -alias dol -keyalg RSA -keysize 2048 -deststoretype pkcs12 -validity 9999` command, included with jdk. once done, place generated `dol.keystore` into `../../keys`.
-after that, you can run `./build_app_release.sh`. it will ask for password to keystore. once the build is successful, you can uncomment the line in `./build_app_release.sh` to stop it from further asking for passwords. like with debug builds, compiled apks are sent to `../../dist`.
+## one-time setup
+    npm install
+    npm run cap:sync
+
+## building
+    npm run apk:debug
+    npm run apk:release
+
+The finished apk lands in the repository's `dist/` directory. Debug builds get a
+`_debug` suffix on the application id so they install alongside the official
+app rather than replacing it.
+
+Release builds need your own keystore, configured via `android.buildOptions` in
+`capacitor.config.json`. Vrelnir's `dol.keystore` is deliberately unpublished,
+so an unofficial key produces an app that cannot upgrade over an installed
+official one.
+
+## do not change the storage origin
+Saves live in `localStorage`, which is partitioned by origin. That origin is
+`server.hostname` + `server.androidScheme` in `capacitor.config.json`, so
+changing either silently gives every existing player an empty save.
+
+Those values are pinned in `storage-origin.json`, and
+`scripts/verify_storage_origin.js` fails the build if they drift. To invalidate
+existing saves deliberately, re-run with `DOL_ALLOW_ORIGIN_CHANGE=1` and update
+the lock file in the same commit.
+
+    npm run verify:origin
+
+# Cordova (legacy)
+
+Kept working while the Capacitor build is being validated.
+
+## dependencies
+- nodejs (recent LTS)
+- Temurin JDK **17**
+- gradle 7.4.2, unpacked into `androidsdk/gradle`
+- commandline-tools, same location as above
+
+## one-time setup
+    ./setup_deps.sh
+
+## building
+    ./build_app_debug.sh
+    ./build_app_release.sh
+
+Both paths require `game/01-config/sugarcubeConfig.js` to be configured for a
+mobile build (`enableLinkNumberify: false`). See "Changing the build version and
+type" in the top-level README, and do not commit that change: it is a per-build
+toggle, not a permanent setting.
