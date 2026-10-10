@@ -26,14 +26,18 @@ _Failure to do so can lead to your work being denied._
 
 ### Build Android version (.apk)
 
-See [README in devTools/apkbuilder](devTools/apkbuilder/README-windows.txt)
+1. Set `enableLinkNumberify` to `false` in `game/01-config/sugarcubeConfig.js` (step 2 above). Leave this uncommitted: it is a per-build toggle, not a permanent setting.
+2. Compile the game.
+3. See [README in devTools/apkbuilder](devTools/apkbuilder/README-windows.txt) (or `README-linux`).
+
+**Never change `server.hostname` or `server.androidScheme` in `capacitor.config.json`.** Those two form the WebView origin, which is what partitions `localStorage`, where saves live. Changing either silently gives every existing player an empty save. The values are pinned in `storage-origin.json` and the build fails if they drift.
 
 ## Development
 
 ### Prerequisites
 
 -   Read [Coder's-Guide](https://gitgud.io/Vrelnir/degrees-of-lewdity/-/wikis/Programming/Coder's-Guide)
--   [Node.js 16 or later](https://nodejs.org/en/).
+-   [Node.js 22 or later](https://nodejs.org/en/) for Android builds. The game itself builds on 16+, but the Capacitor CLI requires 22+.
 
 ### Optional Prerequisites
 
