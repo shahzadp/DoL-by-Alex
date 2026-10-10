@@ -259,31 +259,38 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Make all beasts male`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 100>>`, `<<set $settings.beastMaleChanceFemale to 100>>`],
-		},
-		{
-			link: [`Make all beasts female`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 0>>`, `<<set $settings.beastMaleChanceFemale to 0>>`],
-		},
-		{
-			link: [`Make all beasts male with vaginas`, stayOnPassageFn],
 			widgets: [
-				`<<set $settings.beastMaleChanceMale to 100>>`,
-				`<<set $settings.beastMaleChanceFemale to 100>>`,
-				`<<set $settings.maleNPCVaginaChance to 100>>`,
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].maleChance = 100;
+						V.settings.beastSettings[type].maleChanceMale = 100;
+						V.settings.beastSettings[type].maleChanceFemale = 100;
+					});
+				},
 			],
 		},
 		{
-			link: [`Make all beasts female with penises`, stayOnPassageFn],
+			link: [`Make all beasts female`, stayOnPassageFn],
 			widgets: [
-				`<<set $settings.beastMaleChanceMale to 0>>`,
-				`<<set $settings.beastMaleChanceFemale to 0>>`,
-				`<<set $settings.femaleNPCPenisChance to 100>>`,
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].maleChance = 0;
+						V.settings.beastSettings[type].maleChanceMale = 0;
+						V.settings.beastSettings[type].maleChanceFemale = 0;
+					});
+				},
 			],
 		},
 		{
 			link: [`Make all beasts monster people`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 100>>`, `<<set $settings.monsterHallucinationsOnly to false>>`],
+			widgets: [
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].monsterChance = 100;
+						V.settings.beastSettings[type].hallucinationsOnly = false;
+					});
+				},
+			],
 		},
 		{
 			text_only: `\n`,

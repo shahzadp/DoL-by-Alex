@@ -426,7 +426,7 @@ You are on Alex's farm. A rustic farmhouse overlooks a yard and chicken coop. Ot
 	<<run $farm.build_finished.delete("stable 1")>>
 	<span class="gold">You approach the expanded stable.</span> Soft classical music plays within.
 	<br><br>
-	<<if $farm_work.horse.monster_roll is true and (($hallucinations gte 1 or !$settings.monsterHallucinationsOnly) or !$settings.bestialityEnabled)>>
+	<<if $farm_work.horse.monster>>
 		"This is more suitable," a <<farm_text horse>> says as you pass. "Thank you."
 		<br><br>
 	<<else>>
@@ -1082,7 +1082,7 @@ A great hedge shields most of the fields from the forest beyond, though some are
 <br><br>
 
 <<if dangerEvent()>>
-	<<if $settings.bestialityEnabled and $settings.lurkersEnabled>>
+	<<if $settings.lurkersEnabled>>
 		You're just finishing up, when something leaps from the pile of <<if Weather.isSnow>>snow<<else>>leaves<</if>>!<<gstress>><<stress 6>>
 		<br><br>
 		<<if hasSexStat("deviancy", 4)>>
@@ -1121,7 +1121,7 @@ You release the chickens from their coop, then enter to clean up. It's large eno
 
 <<if dangerEvent()>>
 	<<farm_gen dog>>
-	<<if $monster is 1 or $settings.bestialityEnabled>>
+	<<if beastSexEnabledForType("dog", $farm_work.dog.monster)>>
 		<<if $farm_work.dog.monster is true>>
 			<<beastNEWinit 1 dog $farm_work.dog.gender $farm_work.dog.genitals monster>>
 		<<else>>
@@ -1257,7 +1257,7 @@ You enter the sty, and release the <<farm_text_many pig>>. They walk down the ai
 -->
 <<if _fullyNaked or dangerEvent(1.25)>>
 <!-- Modified for monster people -->
-	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true)>>
+	<<if beastSexEnabledForType("pig", $farm_work.pig.monster)>>
 		<<if $farm_work.pig.monster is true>>
 			The last one grasps your <<hairDetails>>, and tries to force you to the ground.
 		<<else>>
@@ -1347,7 +1347,7 @@ You help Alex carry feed across the yard, spilling it over the fence and into th
 			currentSkillValue("skulduggery") gte random(100, 300)
 		]>>
 		<<set _attemptOne to random(0, 2)>>
-		<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and _checkResults[_attemptOne]>>
+		<<if beastSexEnabledForType("pig", $farm_work.pig.monster) and _checkResults[_attemptOne]>>
 			Something catches your
 			<<if _attemptOne is 0>> <<hairDetails>>
 			<<elseif _attemptOne is 1>> _top.name
@@ -1533,7 +1533,7 @@ You empty the buckets in the troughs.
 	<<set _attemptTwo to random(0, 2)>>
 	<<set _grabbed to ((_checkResults[_attemptOne]) or (not _checkResults[3] and _checkResults[_attemptTwo]))>>
 
-	<<if ($settings.bestialityEnabled or $farm_work.pig.monster is true) and !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(pregnancyProgress(getPlayerPregnancy()), 0.1, 0.3)>>
+	<<if beastSexEnabledForType("pig", $farm_work.pig.monster) and !$weekly.farmNauseaEvent and $rng gte 86 and playerIsPregnant() and playerAwareTheyArePregnant() and between(pregnancyProgress(getPlayerPregnancy()), 0.1, 0.3)>>
 		As you lift the bucket, you catch a strong whiff of the slop within. Immediately, your stomach churns, and you all but drop the bucket in your haste to get away from the smell. You stumble back a few steps, trying to will your stomach to settle.
 		<br><br>
 
@@ -1606,7 +1606,7 @@ You empty the buckets in the troughs.
 				<<link [[Next|Farm Work]]>><</link>>
 			<</if>>
 		<</if>>
-	<<elseif ($settings.bestialityEnabled or $farm_work.pig.monster is true) and _grabbed>>
+	<<elseif beastSexEnabledForType("pig", $farm_work.pig.monster) and _grabbed>>
 		<<if _checkResults[_attemptOne]>>
 			<<set _firstSuccess to _attemptOne>>
 		<<else>>
@@ -1748,7 +1748,7 @@ You spend a few minutes resting in the kitchen and drinking your tea. Feeling re
 You herd the <<farm_text_many pig>> back into the sty. Some of them remain lying down, reluctant to move, and need cajoling.
 
 <<if _fullyNaked or dangerEvent(1.25)>>
-	<<if $settings.bestialityEnabled or $farm_work.pig.monster is true>>
+	<<if beastSexEnabledForType("pig", $farm_work.pig.monster)>>
 		You manage to get the last to stand. You're leading <<farm_him pig>> inside when <<farm_he pig>>
 		<<= $farm_work.pig.monster is true ? "grasps your arms" : "rears on its hind legs">> and tries to force you to the ground.
 		<br><br>
@@ -1786,9 +1786,9 @@ You open each stall, releasing the <<farm_text_many horse>> within. They know wh
 <br><br>
 
 
-<<if dangerEvent() and $settings.horsesEnabled>>
+<<if dangerEvent() and beastSexEnabledForType("horse")>>
 <!-- Modified for Monster People -->
-	<<if $settings.bestialityEnabled or $farm_work.pig.monster is true>>
+	<<if beastSexEnabledForType("horse", $farm_work.horse.monster)>>
 		Most run by, eager to stretch their legs, but a couple hang back.
 		<<if $farm_work.horse.monster is true>>
 			One of them steps in front of you, and pushes you away from the gate. "We don't appreciate being penned up," <<farm_he horse>> says as a pair of powerful hands grasp your shoulders from behind. "How's about you give us a little something by way of apology?"
@@ -1857,7 +1857,7 @@ You open each stall, releasing the <<farm_text_many horse>> within. They know wh
 	<<link [[Chase|Farm Horses Chase]]>><<tiredness 2>><</link>><<athleticsdifficulty 1 1000>><<gtiredness>>
 	<br>
 	<!-- Modified for Monster People -->
-	<<if hasSexStat("deviancy", 2) and $settings.horsesEnabled and ($settings.bestialityEnabled or $farm_work.horse.monster is true)>>
+	<<if hasSexStat("deviancy", 2) and beastSexEnabledForType("horse", $farm_work.horse.monster)>>
 		<<link [[Seduce|Farm Horses Seduce]]>><</link>><<deviant2>>
 		<br>
 	<</if>>
@@ -2130,7 +2130,7 @@ You call the <<farm_text_many horse>>, and lead them from the field. They seem h
 	<<link [[Call Alex|Farm Horses In Alex]]>><<npcincr Alex dom 1>><<farm_horses -1>><</link>><<lrespect>><<gdom "Alex">>
 	<br>
 	<!-- Modified for Monster People -->
-	<<if hasSexStat("deviancy", 2) and $settings.horsesEnabled and ($settings.bestialityEnabled or $farm_work.horse.monster is true)>>
+	<<if hasSexStat("deviancy", 2) and beastSexEnabledForType("horse", $farm_work.horse.monster)>>
 		<<link [[Seduce|Farm Horses In Seduce]]>><</link>><<deviant2>>
 	<</if>>
 	<br>
@@ -2194,9 +2194,9 @@ The <<farm_text_many cattle>> prefer to be milked by hand, but the machine can m
 
 You lead the <<farm_text_many cattle>> into the barn, and strap them into the machine.
 
-<<if $settings.bestialityEnabled or $farm_work.cattle.monster is true>>
+<<if beastSexEnabledForType("cow", $farm_work.cattle.monster)>>
 	<<if $cattle_milked lte 6>>
-		<<if $farm_work.cattle.monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+		<<if $farm_work.cattle.monster>>
 			<<if $farm_work.cattle.gender_plural is "m">>
 				<<if $settings.maleNPCVaginaChance gte 100>>
 					Alex gave you simple instructions, but you hesitate when it comes time to attach the suction tubes to their nipples.
@@ -2224,7 +2224,7 @@ You lead the <<farm_text_many cattle>> into the barn, and strap them into the ma
 			<</if>>
 		<</if>>
 	<<elseif $cattle_milked lte 1200>>
-		<<if $farm_work.cattle.monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+		<<if $farm_work.cattle.monster>>
 			<<if $farm_work.cattle.gender_plural is "m">>
 				<<if $settings.maleNPCVaginaChance gte 100>>
 					You think you're getting the hang of things, but you still look away when it comes time to attach the suction tubes to their nipples.
@@ -2252,7 +2252,7 @@ You lead the <<farm_text_many cattle>> into the barn, and strap them into the ma
 			<</if>>
 		<</if>>
 	<<else>>
-		<<if $farm_work.cattle.monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+		<<if $farm_work.cattle.monster>>
 			<<if $farm_work.cattle.gender_plural is "m">>
 				<<if $settings.maleNPCVaginaChance gte 100>>
 					You daydream as you attach the suction tubes to their nipples, your practised hands moving automatically.
@@ -3032,7 +3032,7 @@ You carry the feed to the field. Some of the younger <<farm_text_many dog>> beg 
 <br><br>
 
 <!-- Modified for Monster People -->
-<<if dangerEvent() and $farm.beasts.dogs lte -20 and ($settings.bestialityEnabled or $farm_work.dog.monster is true)>>
+<<if dangerEvent() and $farm.beasts.dogs lte -20 and beastSexEnabledForType("dog", $farm_work.dog.monster)>>
 	You leave the <<farm_text_many dog>> to feed, but hear footsteps approach as you walk from the field.
 	<<if $farm_work.dog.monster is true>>
 		Before you can turn, a pair of hands land on your shoulders. A weight forces you to the ground.
@@ -3044,7 +3044,7 @@ You carry the feed to the field. Some of the younger <<farm_text_many dog>> beg 
 	<<link [[Next|Farm Dogs Rape]]>><<set $molestationstart to 1>><</link>>
 	<br>
 <!-- Modified for Monster People -->
-<<elseif (dangerEvent() or $farm.beasts.dogs lte -5) and ($settings.bestialityEnabled or $farm_work.dog.monster is true)>>
+<<elseif (dangerEvent() or $farm.beasts.dogs lte -5) and beastSexEnabledForType("dog", $farm_work.dog.monster)>>
 	You leave the <<farm_text_many dog>> to feed, but hear footsteps approach as you walk from the field.
 	<<if $farm_work.dog.monster is true>>
 		A <<farm_text dog>> wraps <<farm_his dog>> arms around your neck, and humps <<farm_his dog>> pelvis against you.
@@ -3056,7 +3056,7 @@ You carry the feed to the field. Some of the younger <<farm_text_many dog>> beg 
 	<br>
 	<<link [[Endure|Farm Dogs Endure]]>><<sub 1>><<farm_dogs -1>><<trauma 6>><<stress 6>><</link>><<lrespect>><<gtrauma>><<gstress>>
 	<br>
-	<<if $settings.bestialityEnabled or $farm_work.dog.monster is true>>
+	<<if beastSexEnabledForType("dog", $farm_work.dog.monster)>>
 		<<if hasSexStat("deviancy", 2)>>
 			<<link [[Drop to your knees|Farm Dogs Drop]]>><</link>><<deviant2>>
 			<br>

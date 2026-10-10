@@ -137,7 +137,7 @@ You are in the winter barn. There are <<livestock_cows>> lying by the heaters. H
 <<elseif $arousal gte $arousalmax>> <!-- modified field version for the barn -->
 	<<orgasm>> Your knees buckle, and you fall to the ground.
 	<!-- Modified for Monster People -->
-	<<if ($settings.monsterChance gte 1 and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<if victimsAlwaysMonsterForType("cow") or monsterCanAppearForType("cow")>>
 		<<if maleChance() lt random(1, 100)>>
 			Cowgirls around the barn look over in confusion.
 
@@ -248,7 +248,7 @@ The warm air feels nice.<<if $cow gte 6>> You feel lucky that the farmers take s
 <br><br>
 
 <<if $rng gte 81>>
-	<<beastNEWinit 1 cow>>
+	<<generateBeastVictim 1 cow>>
 	A <<person1>><<beasttype>> moos at you. You snuggle closer.
 	<br><br>
 <<elseif $rng gte 51>>
@@ -406,7 +406,7 @@ You wash your body in the trough. The water is clean, at least. It takes a while
 
 You approach Remy's steeds.
 
-<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+<<if victimsAlwaysMonsterForType("horse") or monsterCanAppearForType("horse")>>
 	They have the heads and torsos of
 	<<if _horse_gender is "f">>
 		women.
@@ -431,19 +431,19 @@ You approach Remy's steeds.
 <br><br>
 
 <<if $livestock.horse.reputation gte 2>>
-	<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+	<<if victimsAlwaysMonsterForType("horse") or monsterCanAppearForType("horse")>>
 		<span class="green">A few nod in greeting as you approach.</span>
 	<<else>>
 		<span class="green">They clop closer as you approach.</span>
 	<</if>>
 <<elseif $livestock.horse.reputation gte 1>>
-	<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+	<<if victimsAlwaysMonsterForType("horse") or monsterCanAppearForType("horse")>>
 		They watch as you approach. Some look amused.
 	<<else>>
 		They watch as you approach. They seem calm.
 	<</if>>
 <<else>>
-	<<beastNEWinit 1 horse>>
+	<<generateBeastVictim 1 horse>>
 	<<if $monster is 1>>
 		One of them, a particularly large, dark-haired specimen, faces you as you draw close. "Walk away, cattle," <<bhe>> says, holding <<bhis>> head higher. "This is our heater." The others watch you as well.
 	<<else>>
@@ -467,10 +467,10 @@ You approach Remy's steeds.
 <<else>>
 	<<rng>> /* I'm not sure this is nessesary, but I think there's a way to loop through these scenes without alterting RNG, so lets stop that */
 	<<if $daily.livestock and $daily.livestock.horses_satisfied is undefined>><<set $daily.livestock.horses_satisfied to 0>><</if>>
-	<<clearnpc>><<beastNEWinit 1 horse>>
+	<<clearnpc>><<generateBeastVictim 1 horse>>
 
 	<!-- Modified for Monster People -->
-	<<if random(1,2) is 1 and $daily.livestock.horses_satisfied lt 6 and $settings.horsesEnabled and ($settings.bestialityEnabled or $monster is 1)>>
+	<<if random(1,2) is 1 and $daily.livestock.horses_satisfied lt 6 and beastSexEnabledForType("horse", $monster is 1)>>
 		You notice that one <<beasttype>> is standing apart from the rest. <<bHe>> paces back and forth. The <<livestock_cows>> hasten to get out of <<bhis>> way.
 		<<set _agitated to 1>>
 		<br><br>
@@ -551,7 +551,7 @@ You approach Remy's steeds.
 	<<set _horse_gender to "b">>
 <</if>>
 
-<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+<<if victimsAlwaysMonsterForType("horse") or monsterCanAppearForType("horse")>>
 	<<if $livestock.horse.reputation gte 2>>
 		You brush the centaurs' hair with your fingers. They jostle for their turn. They try to make you scratch their backs, despite having little hair there.
 	<<else>>
@@ -574,7 +574,7 @@ You approach Remy's steeds.
 		<<if $rng gte 51>>
 			<<if $livestock.horse.rescued is undefined>>
 				<<if !$per_npc.grumpyHorse>>
-					<<beastNEWinit 1 horse>>
+					<<generateBeastVictim 1 horse>>
 					<<saveNPC 0 "grumpyHorse">>
 
 					An older <<beasttype>> limps by. Unlike the others, <<bhe>> ignores you. You look at <<bhis>> leg. A large, painful-looking splinter is lodged in the skin above <<bhis>> foot.
@@ -605,7 +605,7 @@ You approach Remy's steeds.
 				<br>
 			<<else>>
 				<<if !$per_npc.grumpyHorse>>
-					<<beastNEWinit 1 horse>>
+					<<generateBeastVictim 1 horse>>
 					<<saveNPC 0 "grumpyHorse">>
 				<<else>>
 					<<loadNPC 0 "grumpyHorse">>
@@ -625,7 +625,7 @@ You approach Remy's steeds.
 				<br>
 			<</if>>
 		<<else>>
-			<<beastNEWinit 1 horse>><<generate2>><<person2>>
+			<<generateBeastVictim 1 horse>><<generate2>><<person2>>
 			"How cute," says a voice from the opposing wall. It's a <<person2>><<person>>. <<Hes>> dressed as a farmhand. "Cows and horses being best friends. I should film this. Might go viral."
 
 			The <<person1>><<beastsplural>> bristle at <<person2>><<his>> mocking tone<<if $monster is 1>>, but don't say anything<</if>>.
@@ -638,7 +638,7 @@ You approach Remy's steeds.
 		<</if>>
 	<<else>>
 		<!-- Modified for Monster People -->
-		<<if random(1,2) is 1 and $daily.livestock.horses_satisfied lt 6 and $settings.horsesEnabled and ($settings.bestialityEnabled or $monster is 1)>>
+		<<if random(1,2) is 1 and $daily.livestock.horses_satisfied lt 6 and beastSexEnabledForType("horse", $monster is 1)>>
 			You notice that one <<beasttype>> is standing apart from the rest. <<bHe>> paces back and forth. The <<livestock_cows>> hasten to get out of <<bhis>> way.
 			<br><br>
 
@@ -1082,10 +1082,10 @@ You decide not to get too close. The <<livestock_horse>> is eventually led off b
 
 :: Livestock Barn Horse Apple Seduction
 <<effects>>
-<<beastNEWinit 3 horse>>
+<<generateBeastVictim 3 horse>>
 You approach the <<beastsplural>>. One spots the basket of apples in your hand and <<if $monster is 1>>whispers<<else>>whinnies<</if>> to the others. Some of them <<if $monster is 1>>lick their lips, almost in a trance<<else>>whine, likely hoping to convince you to share<</if>>.
 <br><br>
-<<if $settings.horsesEnabled and ($settings.bestialityEnabled or $monster is 1) and hasSexStat("deviancy", 5)>>
+<<if beastSexEnabledForType("horse", $monster is 1) and hasSexStat("deviancy", 5)>>
 	<span class="lewd">A lewd idea strikes you.</span> There's something else they could eat.
 	<br><br>
 	<<link [[Tease them|Livestock Barn Horse Apple Seduction Tease]]>><</link>><<deviant5>>
@@ -1260,7 +1260,7 @@ They surround you. You lie down on the hay and spread your legs. <<deviancy5>>
 <<effects>>
 <<if $enemyhealth lte 0>>
 	The <<person>> stumbles and falls onto <<his>> ass. The <<livestock_cows>>
-	<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
+	<<if victimsAlwaysMonsterForType("cow") or monsterCanAppearForType("cow")>>
 		snicker
 	<<else>>
 		moo

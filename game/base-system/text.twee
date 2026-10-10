@@ -4847,7 +4847,7 @@
 
 <<widget "harpy">>
 	<<if !$settings.blindStatsEnabled>> |
-		<<if $hallucinations gte 2 or !$settings.bestialityEnabled>>
+		<<if resolveIfNamedBeastIsMonster("greathawk")>>
 			<span class="gold">Harpy</span>
 		<<else>>
 			<span class="gold">Bird</span>
@@ -5054,6 +5054,7 @@
 				<<case "cowgirl" "bullboy">><<set _text_output to "cowgirls and bullboys">>
 				<<case "foxgirl" "foxboy">><<set _text_output to "foxgirls and foxboys">>
 				<<case "spidergirl" "spiderboy">><<set _text_output to "spidergirls and spiderboys">>
+				<<case "snakegirl" "snakeboy">><<set _text_output to "snakegirls and snakeboys">>
 				<<default>><<set _text_output to "creatures">>
 			<</switch>>
 		<</if>>
@@ -5496,26 +5497,9 @@
 	<<print _text_output>>
 <</widget>>
 
-<<widget "monster_passage">>
-	<!-- Unused widget -->
-	<<if _monster_passage is undefined>>
-		<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
-			<<if maleChance() gte 100>>
-				<<set _monster_passage to "m">>
-			<<elseif maleChance() lte 0>>
-				<<set _monster_passage to "f">>
-			<<else>>
-				<<set _monster_passage to "b">>
-			<</if>>
-		<<else>>
-			<<set _monster_passage to "n">>
-		<</if>>
-	<</if>>
-<</widget>>
-
 <<widget "farm_text_many">>
 	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender_plural>>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaurs">>
@@ -5570,7 +5554,7 @@
 
 <!-- No change for horses and cattle. Pigs, dogs, and cows get called "pigperson", "dogperson", and "cowperson". -->
 <<widget "farm_text_neutral">>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaur">>
@@ -5602,7 +5586,7 @@
 
 <<widget "farm_text">>
 	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaur">>
@@ -6500,7 +6484,7 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 
 <<widget "nightMonsterText">>
 	<<silently>>
-	<<if ($settings.monsterChance gte $rng and $hallucinations gte 1) or ($settings.monsterChance gte $rng and !$settings.monsterHallucinationsOnly) or ($nightmonstermonster is 2) or (!$settings.bestialityEnabled)>>
+	<<if resolveIfNamedBeastIsMonster("nightmonster")>>
 		<<set _text_output to "horned " + ($NPCName[31].pronoun is "m" ? "man" : "woman")>>
 	<<else>>
 		<<set _text_output to either("creature", "monster", "beast")>>

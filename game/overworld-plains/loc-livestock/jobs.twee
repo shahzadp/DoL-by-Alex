@@ -1,7 +1,7 @@
 :: Livestock Job
 <<effects>>
 
-<<if $rng gte 51 or !$settings.bestialityEnabled>>
+<<if $rng gte 51 or !animalSexEnabledForType("pig")>>
 	<<if !playerChastity("hidden")>>
 		<<set $genderknown.pushUnique("Harper")>>
 	<</if>>
@@ -184,7 +184,7 @@
 		<br>
 	<<elseif $livestock.jobs.pig is 1>>
 		<<set $livestock.jobs.pig to 2>>
-		<<endevent>><<beastNEWinit 1 pig>>
+		<<endevent>><<generateBeastVictim 1 pig>>
 		Remy leads you down the small lane towards the barn. You arrive in front of it, but then are turned toward the second, smaller barn opposite.
 		<br><br>
 
@@ -203,7 +203,7 @@
 
 	<<elseif $livestock.jobs.pig is 2>>
 		<<set $livestock.jobs.pig to 1>>
-		<<endevent>><<beastNEWinit 3 pig>>
+		<<endevent>><<generateBeastVictim 3 pig>>
 		Remy leads you down the small lane towards the barn. You arrive in front of it, but then are turned toward the second, smaller barn opposite.
 		<br><br>
 
@@ -1238,7 +1238,7 @@ You feel the audience stares at your <<bottom>> as you're led outside. Some of t
 :: Livestock Job Niki
 <<effects>>
 <<endevent>>
-<<beastNEWinit 1 pig>>
+<<generateBeastVictim 1 pig>>
 The barn doors open, and a farmhand enters, holding a leash. The leash tightens. Whatever it's attached to refuses to enter.
 <br><br>
 With some tugging, and help from a couple of other farmhands, the beast is coerced into the building. It's a <<beasttype>>.
@@ -1886,7 +1886,7 @@ You're led back to the barn. Remy pauses outside. <<He>> reaches into a basket n
 	<</addinlineevent>>
 
 	<<addinlineevent "tie_stall_punishment_other_cow">>
-		<<beastNEWinit 1 cow>><<generate2>><<generate3>><<person1>>
+		<<generateBeastVictim 1 cow>><<generate2>><<generate3>><<person1>>
 		The doors to the barn open. You hear two voices arguing. As they get closer, you can see that two farmhands are herding a <<beasttype>> in between them. <<bHe>> digs <<bhis>> <<if $monster is 1>>heels<<else>>hooves<</if>> into the ground as the farmhands drag <<bhim>> to the stall next to you.
 		<br><br>
 		"Stupid <<beasttype>>," the <<person2>><<person>> says. <<He>> aims a kick at the <<person1>><<beasttype>>. "You brought this on yourself."
@@ -1918,7 +1918,7 @@ You're led back to the barn. Remy pauses outside. <<He>> reaches into a basket n
 	<</addinlineevent>>
 
 	<<addinlineevent "tie_stall_punishment_screech">>
-		<<beastNEWinit 1 cow>><<generate2>><<generate3>><<person1>>
+		<<generateBeastVictim 1 cow>><<generate2>><<generate3>><<person1>>
 		A loud screech rips through the air. <<if $syndromebird>>You recognise the call of your spouse.<<stress -6>><<lstress>><<else>>You feel the hairs on the back of your neck stand on end.<<stress 6>><<gstress>><</if>>
 		<br><br>
 		Shouts ring outside. You can hear footsteps pounding the cold ground. You strain your neck and manage to see a stampede of panicked animals and harried farmhands. One <<beasttype>> barrels over a <<person2>><<person>>. <<He>> staggers to <<his>> feet in a daze.
@@ -1957,13 +1957,14 @@ You're led back to the barn. Remy pauses outside. <<He>> reaches into a basket n
 	<</addinlineevent>>
 
 	<<addinlineevent "tie_stall_punishment_rape_reward" 1000>>
-		<<if $rng gte 51 and (($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly) or $settings.bestialityEnabled))>>
-			<<if $rng gte 51 and $settings.horsesEnabled>>
-				<<beastNEWinit 1 horse>>
+		<<if $rng gte 51 and (beastSexEnabledForType("horse") or beastSexEnabledForType("dog"))>>
+			<<set _beastType to beastSexEnabledForType("horse") ? "horse" : "dog">>
+			<<generateBeastVictim 1 _beastType>>
+			<<if beastSexEnabledForType(_beastType, $monster is 1)>>
+				<<set _attacker to $NPCList[0].type>>
 			<<else>>
-				<<beastNEWinit 1 dog>>
+				<<clearnpc>><<generate1>><<set _attacker to "farmhand">>
 			<</if>>
-			<<set _attacker to $NPCList[0].type>>
 		<<else>>
 			<<generate1>><<set _attacker to "farmhand">>
 		<</if>>
@@ -1987,7 +1988,7 @@ You're led back to the barn. Remy pauses outside. <<He>> reaches into a basket n
 		A <<beasttype>> comes to a stop in front of you. <<bHe>> looks up at you with large, curious eyes. <<bHe>> purrs deep in <<bhis>> chest as <<bhe>> rubs against you.
 		<br><br>
 		<<if $rng lte 15>>
-			<<if $monster is 1 or $settings.bestialityEnabled>>
+			<<if beastSexEnabledForType("cat", $monster is 1)>>
 				There is a gleam in <<bhis>> eyes. <<bHe>> saunters around to your ass. You feel <<bhis>> hot breath on your <<genitals>>.
 				<br><br>
 				<<if $cat gte 6>>
@@ -2368,7 +2369,7 @@ You strain your ears to listen.
 <br><br>
 <<if $phase is 0>>
 	<<if $skulduggerysuccess>>
-		<<if $rng gte 51 or !$settings.bestialityEnabled>>
+		<<if $rng gte 51 or !animalSexEnabledForType("pig")>>
 			"This experiment is very sensitive," a voice says. <<if $harperSeen>>It's Harper<<else>>You don't recognise it<</if>>. "If I don't administer the serum within the right time frame, it could throw off the results."
 		<<else>>
 			"The equipment's expensive," a voice says. <<if $nikiSeen>>It's Niki<<else>>You don't recognise it<</if>>. "Renting it costs me a fortune."
@@ -2787,7 +2788,7 @@ The two leave, Remy in front. You watch them go before turning your attention ba
 	You remain quiet.<<if !$willpowersuccess>> You can feel your heart racing, despite your best efforts to stay calm. You struggle against your bindings. The ropes chafe your skin.<<pain 6>><<gpain>><</if>>
 <</if>>
 <br><br>
-<<if ($phase is 0 and $rng gte 75) or !$settings.bestialityEnabled or !$settings.lurkersEnabled>>
+<<if ($phase is 0 and $rng gte 75) or !$settings.lurkersEnabled>>
 	The chittering stops. You hear something skitter to the back of the barn. Whatever it is, it seems it doesn't want to risk attacking you.<<stress -4>><<lstress>>
 	<br><br>
 	<<link [[Next|Livestock Tie Stall Punishment End]]>><<endevent>><</link>>

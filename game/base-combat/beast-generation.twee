@@ -1,6 +1,6 @@
 :: Widgets Beast Generation [widget]
 <<widget "generateBEAST">>
-	<!-- NEW Args are NPC#(1-6), Type, Gender-->
+	<!-- NEW Args are NPC#(1-6), Type, Gender, Genitals, Monster status, Victim status-->
 	<!-- Example: <<generateBEAST 1 dog m>> would generate NPC 1 as male dog -->
 	<!-- Example: <<generateBEAST 2 wolf f>> would generate NPC 2 as female wolf -->
 
@@ -8,9 +8,12 @@
 	<!-- Checks if endevent was properly used after the last event -->
 	<<checkEventNPC _n>>
 	<<set _type to _args[1]>>
+	<!-- There isn't a generic "creature" beast type in the beast settings, so "creature" uses the wolf settings -->
+	<<set _settingsType to _type is "creature" ? "wolf" : _type>>
 	<<set _gen to _args[2]>>
 	<<set _beast_genitals to _args[3]>>
 	<<set _beast_monster to _args[4]>>
+	<<set _beast_victim to _args[5]>>
 
 	<!-- Check that Type is known -->
 	<<if !$BeastList.includes(_type)>>
@@ -22,11 +25,11 @@
 		<<set $NPCList[_n].gender to _gen>><<set $NPCList[_n].pronoun to _gen>>
 	<<elseif !isNaN(_generate_partner) and $NPCList[_generate_partner].gender isnot undefined>>
 		<!-- This determines if the couple is homo or not. The generated NPC's partner is, by default, the NPC directly before them in NPCList. The partner can be selected manually with an argument. -->
-		<<set $NPCList[_n].gender to beastMaleChance($NPCList[_generate_partner].pronoun) gte random(1, 100) ? "m" : "f">>
+		<<set $NPCList[_n].gender to beastMaleChanceForType(_settingsType, $NPCList[_generate_partner].pronoun) gte random(1, 100) ? "m" : "f">>
 		<<set $NPCList[_n].pronoun to $NPCList[_n].gender>>
 		<<unset _generate_partner>>
 	<<else>>
-		<<if random(1, 100) lte beastMaleChance()>>
+		<<if random(1, 100) lte beastMaleChanceForType(_settingsType)>>
 			<<set $NPCList[_n].gender to "m">><<set $NPCList[_n].pronoun to "m">>
 		<<else>>
 			<<set $NPCList[_n].gender to "f">><<set $NPCList[_n].pronoun to "f">>
@@ -156,15 +159,15 @@
 	<<elseif _beast_monster is "beast">>
 		<!-- got explicit request to generate a beast, not a monster -->
 		<<set $NPCList[_n].monster to 0>>
-	<<elseif !$settings.bestialityEnabled and $NPCList[0].monster is "monster">>
+	<<elseif _beast_monster is "monster">>
+		<<set $NPCList[_n].monster to "monster">>
+	<<elseif _beast_victim and victimsAlwaysMonsterForType(_settingsType)>>
+		<<set $NPCList[_n].monster to "monster">>
+	<<elseif !animalSexEnabledForType(_settingsType) and $NPCList[0].monster is "monster">>
 		<!-- if bestiality is disabled, some scenes check if the first beast is generated as a monster to see if the encounter can proceed to be lewd. if so - all subsequent beasts must also be converted to monsters unless explicitly told not to -->
 		<!-- TODO: rewrite such encounters with a clearer distinction between lewd and non-lewd generated beasts -->
 		<<set $NPCList[_n].monster to "monster">>
-	<<elseif $settings.monsterChance gte $rng and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly) or _beast_monster is "monster">>
-		<<set $NPCList[_n].monster to "monster">>
-	<</if>>
-
-	<<if $NPCList[_n].monster is 0 and !$settings.bestialityEnabled and $settings.monsterChance gt 0>>
+	<<elseif monsterChanceForType(_settingsType) gte $rng and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType(_settingsType))>>
 		<<set $NPCList[_n].monster to "monster">>
 	<</if>>
 

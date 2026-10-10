@@ -249,15 +249,6 @@
 		<</for>>
 	<</if>>
 
-	<<if $blackwolfmonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $blackwolfmonster to 1>>
-		<<else>>
-			<<set $blackwolfmonster to 0>>
-		<</if>>
-	<</if>>
-
 	<<if $genderknown is undefined>>
 		<<set $genderknown to ["Robin", "Bailey"]>>
 	<</if>>
@@ -1957,15 +1948,6 @@
 		<<set $sleepStat to 0>>
 	<</if>>
 
-	<<if $greathawkmonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $greathawkmonster to 1>>
-		<<else>>
-			<<set $greathawkmonster to 0>>
-		<</if>>
-		<<set $bird to {}>>
-	<</if>>
 
 	<<if $harpy is undefined>>
 		<<set $harpy to 0>>
@@ -6886,15 +6868,6 @@
 		<<run ["tower_creature_intro", "tower_sleep", "tower_sheet", "tower_view"].forEach(v => delete V[v]);>>
 	<</if>>
 
-	<<if $nightmonstermonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $nightmonstermonster to 1>>
-		<<else>>
-			<<set $nightmonstermonster to 0>>
-		<</if>>
-	<</if>>
-
 	/* Timer to pace events related to Whitney's home unlock */
 	<<if $whitney_home_timer is undefined>>
 		<<set $whitney_home_timer to $whitneyromance ? 21 : 0>>
@@ -7551,6 +7524,53 @@
 
 	<<if $foodstuff.cod?.supermarket>>
 		<<unset $foodstuff.cod.supermarket>>
+	<</if>>
+
+	<<if $settings.bestialityEnabled isnot undefined>>
+		<<set $settings.granularBeastPreferences to false>>
+		<<run migrateNamedBeastSettings()>>
+		<<unset $blackwolfmonster>>
+		<<unset $nightmonstermonster>>
+		<<unset $greathawkmonster>>
+		<<run migrateBeastSettings()>>
+		<<unset $settings.bestialityEnabled>>
+		<<unset $settings.beastMaleChance>>
+		<<unset $settings.beastMaleChanceMale>>
+		<<unset $settings.beastMaleChanceFemale>>
+		<<unset $settings.beastMaleChanceSplit>>
+		<<unset $settings.monsterHallucinationsOnly>>
+		<<unset $settings.monsterChance>>
+	<</if>>
+
+	<<if $genericBeastSettings is undefined>>
+		<<set $genericBeastSettings to {
+			beastMaleChance: 80,
+			beastMaleChanceMale: 80,
+			beastMaleChanceFemale: 80,
+			beastMaleChanceSplit: false,
+			monsterHallucinationsOnly: true,
+			monsterChance: 50,
+			bestiality: "on",
+		}>>
+	<</if>>
+
+	<<if $settings.horsesEnabled isnot undefined>>
+		<<if !$settings.horsesEnabled and $settings.beastSettings.horse.bestiality isnot "off">>
+			<<set $settings.beastSettings.horse.bestiality to "off">>
+			<<set $settings.granularBeastPreferences to true>>
+		<</if>>
+		<<unset $settings.horsesEnabled>>
+	<</if>>
+
+	<<set $genericBeastSettings.victimsAlwaysMonster ??= false>>
+	<<for _beastType range C.beastSettingTypes>>
+		<<set $settings.beastSettings[_beastType].victimsAlwaysMonster ??= false>>
+	<</for>>
+
+	<<if $options.tipdisable is "f">>
+		<<set $options.tipdisable to false>>
+	<<elseif $options.tipdisable is "t">>
+		<<set $options.tipdisable to true>>
 	<</if>>
 
 	<!-- The dark skin percentage became a lightest/most common/darkest skin tone range

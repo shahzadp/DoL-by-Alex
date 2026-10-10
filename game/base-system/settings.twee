@@ -30,11 +30,9 @@
 	<<set $settings.waspsEnabled to true>>
 	<<set $settings.beesEnabled to true>>
 	<<set $settings.lurkersEnabled to true>>
-	<<set $settings.horsesEnabled to true>>
 	<<set $settings.bodyWritingLevel to 3>>
 	<<set $settings.parasitesEnabled to true>>
 	<<set $settings.ruinedOrgasmEnabled to true>>
-	<<set $settings.bestialityEnabled to true>>
 	<<set $settings.slimesEnabled to true>>
 	<<set $settings.voreEnabled to true>>
 	<<set $settings.tentaclesEnabled to true>>
@@ -68,9 +66,11 @@
 	<<set $settings.forcedCrossdressingEnabled to true>>
 	<<set $saveName to "">>
 	<<set $settings.skillCheckStyle to "words">>
-	<<set $blackwolfmonster to 1>>
-	<<set $greathawkmonster to 1>>
-	<<set $nightmonstermonster to 1>>
+	<<set $settings.namedBeasts to {
+		blackwolf: {monsterChance: 50, hallucinationsOnly: true},
+		greathawk: {monsterChance: 50, hallucinationsOnly: true},
+		nightmonster: {monsterChance: 50, hallucinationsOnly: true}
+	}>>
 	<<set $reducedLineHeight to false>>
 	<<set $settings.clothingCostModifier to 1>>
 	<<set $settings.underwearCostModifier to 1>>
@@ -117,7 +117,6 @@
 	<</if>>
 	<<switch $currentSettings>>
 		<<case "quickStart" "tweak">><<replace #settingsDiv>><<quickStart>><</replace>>
-		<<case "presetConfirmDetails">><<replace #settingsDiv>><<presetConfirmDetails>><</replace>>
 		<<case "characterSettings" "character">>
 			<<replace #settingsDiv>><<characterSettings>><</replace>>
 			<<if StartConfig.enableImages and $passage is "Start">><<startingPlayerImageUpdate>><<removeclass #startingPlayerImage "hidden">><</if>>
@@ -320,6 +319,8 @@
 			<<case "default">>
 				<div class="my-1"><span class="gold bold">Current Settings:</span> <i>Adjustable</i></div>
 				<<button "Start Game!">>
+					<<run applyKinkPreset(_kinkPreset)>>
+					<<run applyMonstersPreset(_monstersPreset)>>
 					<<if _pregnancytype is "disabled">>
 						<<set $settings.playerPregnancyHumanEnabled to false>>
 						<<set $settings.playerPregnancyBeastEnabled to false>>
@@ -351,7 +352,7 @@
 				<div class="my-1"><span class="gold bold">Current Settings:</span> <i>Randomised</i></div>
 				<<button "Start Game!">>
 						/*Rerolls all settings*/
-					<<presets "randomize" "characterSettings" `randomizeSettings()`>>
+					<<randomiseSettings "all" "characterSettings">>
 					<<if ($feats.locked or ($settings.cheatsEnabledToggle is false and $settings.rentCostModifier gte 1 and $settings.tendingYieldModifier lte 5)) and ($feats.soft or ($gamemode isnot "soft" and $settings.allureModifier gte 1)) and ($feats.pregnancyLocked or ($settings.humanPregnancyMonths gte 3 and $settings.wolfPregnancyWeeks gte 4))>>
 						<<settingsExitFunction>>
 					<<else>><!-- confirm cheats -->
@@ -546,53 +547,9 @@
 	<</if>>
 <</widget>>
 
-/*complete:{"Vrelnir (Default)":"vrelDefault","Lollipop Scythe":"lollipopScythe","PurityGuy":"purityGuy","Fangi":"fangi"},*/
-<<widget "quickStartOptions">>
-	<<if _quickStartOptions is undefined>>
-		<<set _quickStartOptions to {
-			player:{"Female Waif":"femaleWaif","Male Waif":"maleWaif", "Hermaphrodite Waif":"hermaphroditeWaif", "Vrelnir PC":"vrel", "Crossdresser":"crossdresser","Tough Guy":"toughGuy"},
-			genericNpc:{
-				"Default Genders":"genericNpcDefaultGender",
-				"All Male":"genericNpcAllMaleGender",
-				"75% Male":"genericNpc75MaleGender",
-				"All Female":"genericNpcAllFemaleGender",
-				"75% Female":"genericNpc75FemaleGender",
-				"All Opposite Gender":"genericNpcAllOppositeGenders",
-				"90% Opposite Gender":"genericNpc90OppositeGenders",
-				"75% Opposite Gender":"genericNpc75OppositeGenders",
-				"All Same Gender":"genericNpcAllSameGenders",
-				"90% Same Gender":"genericNpc90SameGenders",
-				"75% Same Gender":"genericNpc75SameGenders",
-			},
-			namedNpc:{"Default Genders":"namedNpcDefaultGender", "All Male":"namedNpcAllMaleGender", "All Female":"namedNpcAllFemaleGender"},
-			beasts:{
-				"Default Genders":"beastDefaultGenders",
-				"All Male":"beastMaleGenders",
-				"75% Male":"beast75MaleGenders",
-				"All Female":"beastFemaleGenders",
-				"75% Female":"beast75FemaleGenders",
-				"All Opposite Gender":"beastOppositeGenders",
-				"90% Opposite Gender":"beast90OppositeGenders",
-				"75% Opposite Gender":"beast75OppositeGenders",
-				"All Same Gender":"beastSameGenders",
-				"90% Same Gender":"beast90SameGenders",
-				"75% Same Gender":"beast75SameGenders",
-			},
-			monsters:{"When Hallucinating":"monstersDefault", "No Monsters":"monstersNone", "All Monsters":"monstersAll"},
-			kink:{"Reasonably Debauched":"kinkDefault", "Vanilla":"kinkVanilla", "No Beasts":"kinkNoBeasts", "Everything Goes":"kinkEverything"},
-			game:{
-				"Normal ":"gameNormal","Soft (No Feats)":"gameSoft","Hard":"gameHard","Hard (Ironman)":"gameHardIronman","Masochist":"gameMasochist","Soft with Cheats (No Feats)":"gameSoftCheats","Normal with Cheats (No Feats)":"gameNormalCheats","Hard with Cheats (No Feats)":"gameHardCheats","Masochist with Cheats (No Feats)":"gameMasochistCheats"
-			},
-			images:{"Default":"imagesdefault","High Quality":"imagesHigh","Low Quality":"imagesLow","Performance Mode":"imagesPerformance","Disable images":"imagesDisable"},
-			settings:{"PC, Tips":"settingPCTip","PC, no Tips":"settingPCNoTip","Mobile, Tips":"settingMobileTips","Mobile, no Tips":"settingMobileNoTips"}
-		}>>
-	<</if>>
-<</widget>>
-
 <<widget "quickStart">>
 	<div @class="$passage is 'Start' ? '' : 'solidBorderContainer settings-container'">
 		<div class="settingsGrid">
-			<<quickStartOptions>>
 			<<if $passage is "Start">>
 				<div class="settingsHeader">
 					Basic Settings
@@ -721,24 +678,31 @@
 
 				<div class="settingsToggleItem">
 					<<if $passage is "Start">>
-						<span class="gold"><<= $settings.monsterChance is 100 ? "Monster People" : "Beast">> Genders:</span>
-						<<numberslider "$settings.beastMaleChance" $settings.beastMaleChance 0 100 25 {
+						<span class="gold"><<= $genericBeastSettings.monsterChance is 100 ? "Monster People" : "Beast">> Genders:</span>
+						<<numberslider "$genericBeastSettings.beastMaleChance" $genericBeastSettings.beastMaleChance 0 100 25 {
 							onInputChange: v => {
-								if (V.settings.beastMaleChanceSplit === true && v === 50) {
-									V.settings.beastMaleChanceMale = random (1, 99);
-									V.settings.beastMaleChanceFemale = random (1, 99);
+								if (V.genericBeastSettings.beastMaleChanceSplit && v === 50) {
+									V.genericBeastSettings.beastMaleChanceMale = random (1, 99);
+									V.genericBeastSettings.beastMaleChanceFemale = random (1, 99);
+									setAllBeastsMaleChanceSplit(true);
+									setAllBeastsMaleChanceMale(V.genericBeastSettings.beastMaleChanceMale);
+									setAllBeastsMaleChanceFemale(V.genericBeastSettings.beastMaleChanceFemale);
 									return;
 								}
-								if (V.settings.beastMaleChanceSplit === true) {
-									V.settings.beastMaleChanceMale = 100 - v;
-									V.settings.beastMaleChanceFemale = v;
+								if (V.genericBeastSettings.beastMaleChanceSplit) {
+									V.genericBeastSettings.beastMaleChanceMale = 100 - v;
+									V.genericBeastSettings.beastMaleChanceFemale = v;
+									setAllBeastsMaleChanceSplit(true);
+									setAllBeastsMaleChanceMale(100 - v);
+									setAllBeastsMaleChanceFemale(v);
 									return;
 								}
+								setAllBeastsMaleChance(v);
 							},
 							value: v => {
-								const beasts = V.settings.monsterChance === 100 ? "monster people" : "beasts";
+								const beasts = V.genericBeastSettings.monsterChance === 100 ? "monster people" : "beasts";
 								const Beasts = beasts.charAt(0).toUpperCase() + beasts.slice(1);
-								if (V.settings.beastMaleChanceSplit === true) {
+								if (V.genericBeastSettings.beastMaleChanceSplit) {
 									switch (v) {
 										case 100:
 											return `<span class="small-description"><span class='gold inline-colour'>All</span> ${beasts} will prefer the <span class='gold inline-colour'>opposite sex</span>.</span>`;
@@ -766,7 +730,7 @@
 										case 0:
 											return `<span class="small-description"><span class='gold inline-colour'>All</span> ${beasts} will be <span class='pink inline-colour'>female</span>.</span>`;
 										default:
-											return `<span class="small-description"><span class='gold inline-colour'>" + ${v} + "%</span> of ${beasts} will be <span class='blue inline-colour'>male</span>.</span>`;
+											return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of ${beasts} will be <span class='blue inline-colour'>male</span>.</span>`;
 									}
 								}
 							},
@@ -782,9 +746,11 @@
 						<<if _monstersPreset is undefined>><<set _monstersPreset to "monstersDefault">><</if>>
 						<span class="gold">Replace Beasts with Monster People:</span>
 						<br>
-						<label>All the time <<radiovar "_monstersPreset" "monstersAll">><<presets _monstersPreset "save">><</radiovar>></label> |
-						<label>Only when hallucinating <<radiovar "_monstersPreset" "monstersDefault">><<presets _monstersPreset "save">><</radiovar>></label> |
-						<label>Never <<radiovar "_monstersPreset" "monstersNone">><<presets _monstersPreset "save">><</radiovar>></label>
+						<div onchange="applyMonstersPreset(T.monstersPreset)">
+							<label>All the time <<radiobutton "_monstersPreset" "monstersAll" autocheck>></label> |
+							<label>Only when hallucinating <<radiobutton "_monstersPreset" "monstersDefault" autocheck>></label> |
+							<label>Never <<radiobutton "_monstersPreset" "monstersNone" autocheck>></label>
+						</div>
 					<<else>>
 						<<monsterSettings>>
 					<</if>>
@@ -794,14 +760,16 @@
 						<span class="gold">Fetish Settings:</span>
 						<br>
 						<<if _kinkPreset is undefined>><<set _kinkPreset to "kinkDefault">><</if>>
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Vanilla<span>All beast-related toggles are disabled, as well as plant people, tentacles, slimes, lactation, facesitting, double penetration, and hypnosis.</span></mouse>
-						<<radiovar "_kinkPreset" "kinkVanilla">><<presets _kinkPreset "save">><</radiovar>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Reasonably Debauched<span>Default settings. All kinks are enabled, except for watersports.</span></mouse>
-						<<radiovar "_kinkPreset" "kinkDefault">><<presets _kinkPreset "save">><</radiovar>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">No Beasts<span>All beast-related settings are disabled, including bestiality, swarms, vore, parasites, spiders, slugs, wasps, lurkers, bees, and horses.</span></mouse>
-						<<radiovar "_kinkPreset" "kinkNoBeasts">><<presets _kinkPreset "save">><</radiovar>></label> |
-						<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Anything Goes<span>All kinks are enabled, including watersports.</span></mouse>
-						<<radiovar "_kinkPreset" "kinkEverything">><<presets _kinkPreset "save">><</radiovar>></label>
+						<div onchange="applyKinkPreset(T.kinkPreset)">
+							<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Vanilla<span>All beast-related toggles are disabled, as well as plant people, tentacles, slimes, lactation, facesitting, double penetration, and hypnosis.</span></mouse>
+							<<radiobutton "_kinkPreset" "kinkVanilla" autocheck>></label> |
+							<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Reasonably Debauched<span>Default settings. All kinks are enabled, except for watersports.</span></mouse>
+							<<radiobutton "_kinkPreset" "kinkDefault" autocheck>></label> |
+							<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">No Beasts<span>All beast-related settings are disabled, including bestiality, swarms, vore, parasites, spiders, slugs, wasps, lurkers, and bees.</span></mouse>
+							<<radiobutton "_kinkPreset" "kinkNoBeasts" autocheck>></label> |
+							<label><mouse class="tooltip" style="border-bottom: 2px dotted var(--link)">Anything Goes<span>All kinks are enabled, including watersports.</span></mouse>
+							<<radiobutton "_kinkPreset" "kinkEverything" autocheck>></label>
+						</div>
 					</div>
 					<div class="settingsToggleItem">
 						<i><<= _selectedStart is "custom" ? "To change" : "For more control over">> fetish and gameplay settings, visit the <span class="teal"><<= _selectedStart is "default" ? "Custom Start" : "Game Settings">></span> tab. Gameplay settings can still be changed after you start the game.</i>
@@ -823,8 +791,9 @@
 <</widget>>
 
 <<widget "beastSplitByFull">>
-	<<link `$settings.beastMaleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
-		<<set $settings.beastMaleChanceSplit to $settings.beastMaleChanceSplit is true ? false : true>>
+	<<link `$genericBeastSettings.beastMaleChanceSplit ? "Ignore sexual orientation" : "Set sexual orientation"`>>
+		<<set $genericBeastSettings.beastMaleChanceSplit to !$genericBeastSettings.beastMaleChanceSplit>>
+		<<run setAllBeastsMaleChanceSplit($genericBeastSettings.beastMaleChanceSplit)>>
 		<<toggleclass "#simpleBeastGenders" "hidden">>
 		<<replace "#splitBeastGenders">><<beastMaleChanceSplitControls>><</replace>>
 		<<toggleclass "#splitBeastGenders" "hidden">>
@@ -841,10 +810,11 @@
 <</widget>>
 
 <<widget "beastSplitBy">>
-	<<link `$settings.beastMaleChanceSplit is true ? "Ignore sexual orientation" : "Set sexual orientation"`>>
-		<<set $settings.beastMaleChanceSplit to $settings.beastMaleChanceSplit is true ? false : true>>
+	<<link `$genericBeastSettings.beastMaleChanceSplit ? "Ignore sexual orientation" : "Set sexual orientation"`>>
+		<<set $genericBeastSettings.beastMaleChanceSplit to !$genericBeastSettings.beastMaleChanceSplit>>
+		<<run setAllBeastsMaleChanceSplit($genericBeastSettings.beastMaleChanceSplit)>>
 		<<replace "#beastSplitBy">><<beastSplitBy>><</replace>>
-		<<run $("#numberslider-input-settingsbeastmalechance").trigger("input");>>
+		<<run $("#numberslider-input-genericbeastsettingsbeastmalechance").trigger("input");>>
 	<</link>>
 <</widget>>
 
@@ -853,7 +823,7 @@
 		<div class="settingsGrid">
 			<div class="settingsToggleItem">
 			<span class="gold">Randomise:</span><br>
-				<<link "Character appearance">><<presets "randomize" "characterSettings" `randomizeSettings('characterAppearance')`>><</link>>
+				<<link "Character appearance">><<randomiseSettings "characterAppearance" "characterSettings">><</link>>
 				<mouse class="tooltip linkBlue">(?)<span>Randomises the player character's appearance, including hair, eyes, skin colour, gender, and body part sizes. Body size, gender appearance, genitalia, and base skin colour cannot be changed after starting the game.</span></mouse>
 			<br>
 			</div>
@@ -1141,7 +1111,7 @@
 			<div class="settingsToggleItemWide">
 				<span class="gold">Randomise:</span>
 				<br>
-				<<link "Character traits">><<presets "randomize" "characterSettings" `randomizeSettings('characterTrait')`>><</link>>
+				<<link "Character traits">><<randomiseSettings "characterTrait" "characterSettings">><</link>>
 				<mouse class="tooltip linkBlue">(?)<span>Randomises the player character's traits, including background, awareness, and general sensitivity. <i class="red">These traits cannot be changed after starting the game.</i></span></mouse>
 				<br>
 			</div>
@@ -1318,9 +1288,9 @@
 			<div class="settingsToggleItem">
 				<span class="gold">Randomise:</span><br>
 
-				<<link "Gameplay">><<presets "randomize" "gameSettings" `randomizeSettings('gameplay')`>><</link>>
+				<<link "Gameplay">><<randomiseSettings "gameplay" "gameSettings">><</link>>
 				<mouse class="tooltip linkBlue">(?)<span>Randomises all settings related to general gameplay, including encounter rate, clothing prices, crop yield, and Bailey's rent.</span></mouse> |
-				<<link "Encounters">><<presets "randomize" "gameSettings" `randomizeSettings('encounter')`>><</link>>
+				<<link "Encounters">><<randomiseSettings "encounter" "gameSettings">><</link>>
 				<mouse class="tooltip linkBlue">(?)<span>Randomises all settings related to generic NPCs.</span></mouse>
 				<br>
 			</div>
@@ -1445,11 +1415,16 @@
 <</widget>>
 
 <<widget "beastGenders">>
-	<<set _beasts to $settings.monsterChance is 100 ? "monster people" : "beasts">>
+	<<set _beasts to $genericBeastSettings.monsterChance is 100 ? "monster people" : "beasts">>
 	<div class="numberslider-inline beastmalechance">
-		<<numberslider "$settings.beastMaleChance" $settings.beastMaleChance 0 100 1 {
-				value: v => {
-				const beasts = V.settings.monsterChance === 100 ? "monster people" : "beasts";
+		<span class="gold"><<= $genericBeastSettings.monsterChance is 100 ? "Monster People" : "Beast">> Genders:</span>
+		<<numberslider "$genericBeastSettings.beastMaleChance" $genericBeastSettings.beastMaleChance 0 100 1 {
+			onInputChange: v => {
+				setAllBeastsMaleChanceSplit(false);
+				setAllBeastsMaleChance(v);
+			},
+			value: v => {
+				const beasts = V.genericBeastSettings.monsterChance === 100 ? "monster people" : "beasts";
 				const Beasts = beasts.charAt(0).toUpperCase() + beasts.slice(1);
 				switch (v) {
 					case 0:
@@ -1469,26 +1444,34 @@
 <</widget>>
 
 <<widget "monsterSettings">>
-	<div class="numberslider-inline">
-		<span class="gold">Monster People Chance:</span>
-		<<numberslider "$settings.monsterChance" $settings.monsterChance 0 100 1 {
-			value: v => {
-				switch (v) {
-					case 0:
-						return `<span class="small-description">Beasts will <span class='gold inline-colour'>never</span> appear as monster people, unless allowed while hallucinating.</span>`;
-					case 50:
-						return `<span class="small-description"><span class='gold inline-colour'>Half</span> of all beasts will be replaced by monster people.</span>`;
-					case 100:
-						return `<span class="small-description">Beasts will <span class='gold inline-colour'>always</span> be monster people.</span>`;
-					default:
-						return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of beasts will be replaced by monster people.</span>`
-				}
-			},
-		}>>
+	<div class="beastSettingColumn">
+		<div class="numberslider-inline">
+			<span class="gold">Monster People Chance:</span>
+			<<numberslider "$genericBeastSettings.monsterChance" $genericBeastSettings.monsterChance 0 100 1 {
+				onInputChange: v => {
+					setAllBeastsMonsterChance(v);
+				},
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description">Beasts will <span class='gold inline-colour'>never</span> appear as monster people.</span>`;
+						case 50:
+							return `<span class="small-description"><span class='gold inline-colour'>Half</span> of all beasts will be replaced by monster people.</span>`;
+						case 100:
+							return `<span class="small-description">Beasts will <span class='gold inline-colour'>always</span> be monster people.</span>`;
+						default:
+							return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of beasts will be replaced by monster people.</span>`
+					}
+				},
+			}>>
+		</div>
+		<label onchange="setAllBeastsMonsterHallucinationsOnly(V.genericBeastSettings.monsterHallucinationsOnly)">
+			<<checkbox "$genericBeastSettings.monsterHallucinationsOnly" false true autocheck>> Monster people can only appear during hallucinations
+		</label>
+		<label onchange="setAllBeastsVictimsAlwaysMonster(V.genericBeastSettings.victimsAlwaysMonster)">
+			<<checkbox "$genericBeastSettings.victimsAlwaysMonster" false true autocheck>> Beasts that are victims always appear as monster people
+		</label>
 	</div>
-	<label>
-		<<checkbox "$settings.monsterHallucinationsOnly" false true autocheck>> Monster people can only appear during hallucinations
-	</label>
 <</widget>>
 
 <<widget "npcAttractionSettings">>
@@ -1503,14 +1486,21 @@
 <</widget>>
 
 <<widget "beastAttractionSettings">>
-	<div id="simpleBeastGenders" @class="(V.settings.beastMaleChanceSplit === true ? ' hidden' : '')">
-		<span class="gold"><<= $settings.monsterChance is 100 ? "Monster People" : "Beast">> Genders:</span>
-		<<beastGenders>>
+	<div class="beastSettingColumn">
+		<div id="simpleBeastGenders" @class="(V.genericBeastSettings.beastMaleChanceSplit ? ' hidden' : '')">
+			<<beastGenders>>
+		</div>
+		<div id="splitBeastGenders" @class="(!V.genericBeastSettings.beastMaleChanceSplit ? ' hidden' : '')">
+			<<beastMaleChanceSplitControls>>
+		</div>
+		<span id="beastSplitByFull"><<beastSplitByFull>></span>
+		<div class="beastSettingBestiality" role="group" aria-label="Bestiality" onchange="setAllBeastsBestialityMode(V.genericBeastSettings.bestiality)">
+			<span>Bestiality:</span>
+			<label><<radiobutton "$genericBeastSettings.bestiality" "on" autocheck>> Enabled</label> |
+			<label><<radiobutton "$genericBeastSettings.bestiality" "monsterOnly" autocheck>> Only as monster people</label> |
+			<label><<radiobutton "$genericBeastSettings.bestiality" "off" autocheck>> Disabled</label>
+		</div>
 	</div>
-	<div id="splitBeastGenders" @class="(V.settings.beastMaleChanceSplit === false ? ' hidden' : '')">
-		<<beastMaleChanceSplitControls>>
-	</div>
-	<span id="beastSplitByFull"><<beastSplitByFull>></span>
 <</widget>>
 
 <<widget "humanSettings">>
@@ -1645,19 +1635,37 @@
 	<div class="solidBorderContainer settings-container">
 		<div class="settingsGrid">
 			<div class="settingsHeader">
-				<<= $settings.monsterChance is 100 ? "Monster People" : "Beast">> Preferences
+				Beast Preferences
+				<label class="settingsGranularToggle" onchange="wikifier('displaySubsection')">
+					<<checkbox "$settings.granularBeastControl" false true autocheck>> Granular Beast Preferences
+					<mouse class="tooltip linkBlue">(?)<span>Changing a generic beast settings will override that setting for all granular beast settings, while leaving other granular settings untouched.</span></mouse>
+				</label>
 			</div>
-			<div class="settingsToggleItem">
-				<<beastAttractionSettings>>
-			</div>
-			<div class="settingsToggleItem">
-				<<monsterSettings>>
-			</div>
+			<<if $settings.granularBeastControl>>
+				<<beastTypeSettingRow "dog" "Dogs">>
+				<<beastTypeSettingRow "cat" "Cats">>
+				<<beastTypeSettingRow "pig" "Pigs">>
+				<<beastTypeSettingRow "boar" "Boars">>
+				<<beastTypeSettingRow "wolf" "Wolves">>
+				<<beastTypeSettingRow "bear" "Bears">>
+				<<beastTypeSettingRow "dolphin" "Dolphins">>
+				<<beastTypeSettingRow "lizard" "Lizards">>
+				<<beastTypeSettingRow "cow" "Cattle">>
+				<<beastTypeSettingRow "horse" "Horses">>
+				<<beastTypeSettingRow "fox" "Foxes">>
+				<<beastTypeSettingRow "hawk" "Hawks">>
+				<<beastTypeSettingRow "spider" "Spiders">>
+				<<beastTypeSettingRow "snake" "Snakes">>
+			<<else>>
+				<div class="settingsToggleItem">
+					<<beastAttractionSettings>>
+				</div>
+				<div class="settingsToggleItem">
+					<<monsterSettings>>
+				</div>
+			<</if>>
 		</div>
 		<hr>
-		<div class="settingsToggleIndent">
-			<span class="red">Disabling bestiality will still allow lewd events with monster girls and boys.</span>
-		</div>
 		<div class="settingsGrid">
 			<div class="settingsHeader">
 				Beast Toggles
@@ -1668,14 +1676,11 @@
 					<<script>>
 						let val = T.anyBeastOn ? false : true;
 						T.beastVars.forEach(x => V.settings[x] = val);
+						V.genericBeastSettings.bestiality = val ? "on" : "off";
+						setAllBeastsBestialityMode(V.genericBeastSettings.bestiality);
 					<</script>>
 					<<displaySubsection "beastSettings">>
 				<</button>>
-			</div>
-			<div class="settingsToggleItem">
-				<label>
-					<<checkbox "$settings.bestialityEnabled" false true autocheck>> Enable bestiality
-				</label>
 			</div>
 			<div class="settingsToggleItem">
 				<label>
@@ -1729,11 +1734,6 @@
 			</div>
 			<div class="settingsToggleItem">
 				<label>
-					<<checkbox "$settings.horsesEnabled" false true autocheck>> Enable <<= $settings.monsterChance is 100 ? "centaurs" : $settings.monsterChance is 0 ? "horses" : "horses and centaurs">>
-				</label>
-			</div>
-			<div class="settingsToggleItem">
-				<label>
 					<<checkbox "$settings.plantsEnabled" false true autocheck>> Enable plantpeople
 				</label>
 			</div>
@@ -1745,7 +1745,11 @@
 	<div class="numberslider-inline beastMaleChanceMale">
 		<span class="gold">Beasts Attracted to Men <mouse class="tooltip linkBlue">(?)<span>Affects the number of male/male beast pairings seen. <i class="blue none">If you appear to be male, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<<numberslider "$settings.beastMaleChanceMale" $settings.beastMaleChanceMale 0 100 1 {
+			<<numberslider "$genericBeastSettings.beastMaleChanceMale" $genericBeastSettings.beastMaleChanceMale 0 100 1 {
+			onInputChange: v => {
+				setAllBeastsMaleChanceSplit(true);
+				setAllBeastsMaleChanceMale(v);
+			},
 				value: v => {
 					switch (v) {
 						case 0:
@@ -1762,7 +1766,11 @@
 	<div class="numberslider-inline beastMaleChanceFemale">
 		<span class="gold">Beasts Attracted to Women <mouse class="tooltip linkBlue">(?)<span>Affects the number of female/female beast pairings seen. <i class="pink none">If you appear to be female, the NPCs who are attracted to you will follow this pattern.</i></span></mouse></span>
 		<div class="numberSliderCompare">
-			<<numberslider "$settings.beastMaleChanceFemale" $settings.beastMaleChanceFemale 0 100 1 {
+			<<numberslider "$genericBeastSettings.beastMaleChanceFemale" $genericBeastSettings.beastMaleChanceFemale 0 100 1 {
+			onInputChange: v => {
+				setAllBeastsMaleChanceSplit(true);
+				setAllBeastsMaleChanceFemale(v);
+			},
 				value: v => {
 					switch (v) {
 						case 0:
@@ -1775,6 +1783,143 @@
 				},
 			}>>
 		</div>
+	</div>
+<</widget>>
+
+<<widget "beastTypeGenders">>
+	<<set _beastType to _args[0]>>
+	<<capture _beastType>>
+		<<if $settings.beastSettings[_beastType].maleChanceSplit>>
+			<div class="numberslider-inline">
+				<span>Attracted to men <mouse class="tooltip linkBlue">(?)<span>The share of this creature that is <span class="blue none">male</span> when its target appears male. Affects how many male/male pairings you see.</span></mouse>:</span>
+				<<numberslider `"$settings.beastSettings." + _beastType + ".maleChanceMale"` $settings.beastSettings[_beastType].maleChanceMale 0 100 1 {
+					value: v => {
+						switch (v) {
+							case 0:
+								return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>male</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+							case 100:
+								return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>male</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+							default:
+								return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>male</span> will be <span class='blue inline-colour'>attracted to men</span>.</span>`;
+						}
+					},
+				}>>
+			</div>
+			<div class="numberslider-inline">
+				<span>Attracted to women <mouse class="tooltip linkBlue">(?)<span>The share of this creature that is <span class="blue none">male</span> when its target appears female. Affects how many female/female pairings you see.</span></mouse>:</span>
+				<<numberslider `"$settings.beastSettings." + _beastType + ".maleChanceFemale"` $settings.beastSettings[_beastType].maleChanceFemale 0 100 1 {
+					value: v => {
+						switch (v) {
+							case 0:
+								return `<span class="small-description"><span class='gold inline-colour'>All</span> <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>no</span> <span class='blue inline-colour'>male</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+							case 100:
+								return `<span class="small-description"><span class='gold inline-colour'>No</span> <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>all</span> <span class='blue inline-colour'>male</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+							default:
+								return `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> of <span class='pink inline-colour'>female</span> and <span class='gold inline-colour'>${v}%</span> of <span class='blue inline-colour'>male</span> will be <span class='pink inline-colour'>attracted to women</span>.</span>`;
+						}
+					},
+				}>>
+			</div>
+		<<else>>
+			<div class="numberslider-inline">
+				<span>Genders:</span>
+				<<numberslider `"$settings.beastSettings." + _beastType + ".maleChance"` $settings.beastSettings[_beastType].maleChance 0 100 1 {
+					value: v => {
+						switch (v) {
+							case 0:
+								return `<span class="small-description"><span class='gold inline-colour'>All</span> will be <span class='pink inline-colour'>female</span>.</span>`;
+							case 50:
+								return `<span class="small-description">Evenly <span class='gold inline-colour'>split</span> between <span class='blue inline-colour'>male</span> and <span class='pink inline-colour'>female</span>.</span>`;
+							case 100:
+								return `<span class="small-description"><span class='gold inline-colour'>All</span> will be <span class='blue inline-colour'>male</span>.</span>`;
+							default:
+								return v > 50
+									? `<span class="small-description"><span class='gold inline-colour'>${v}%</span> will be <span class='blue inline-colour'>male</span>.</span>`
+									: `<span class="small-description"><span class='gold inline-colour'>${100 - v}%</span> will be <span class='pink inline-colour'>female</span>.</span>`;
+						}
+					},
+				}>>
+			</div>
+		<</if>>
+		<<link `$settings.beastSettings[_beastType].maleChanceSplit ? "Ignore sexual orientation" : "Set sexual orientation"`>>
+			<<set $settings.beastSettings[_beastType].maleChanceSplit to !$settings.beastSettings[_beastType].maleChanceSplit>>
+			<<displaySubsection>>
+		<</link>>
+	<</capture>>
+<</widget>>
+
+<<widget "beastTypeSettingRow">>
+	<<set _beastType to _args[0]>>
+	<<set _beastLabel to _args[1]>>
+	<div class="settingsToggleItemWide">
+		<div class="gold beastTypeSettingLabel"><<print _beastLabel>></div>
+		<div class="beastTypeSettingSplit">
+			<div class="beastSettingColumn">
+				<<beastTypeGenders _beastType>>
+				<div class="beastSettingBestiality" role="group" aria-label="Bestiality">
+					<span>Bestiality:</span>
+					<label><<radiobutton `"$settings.beastSettings." + _beastType + ".bestiality"` "on" autocheck>> Enabled</label> |
+					<label><<radiobutton `"$settings.beastSettings." + _beastType + ".bestiality"` "monsterOnly" autocheck>> Only as monster people</label> |
+					<label><<radiobutton `"$settings.beastSettings." + _beastType + ".bestiality"` "off" autocheck>> Disabled</label>
+				</div>
+			</div>
+			<div class="beastSettingColumn">
+				<div class="numberslider-inline">
+					<span>Monster people chance:</span>
+					<<numberslider `"$settings.beastSettings." + _beastType + ".monsterChance"` $settings.beastSettings[_beastType].monsterChance 0 100 1 {
+						value: v => {
+							switch (v) {
+								case 0:
+									return `<span class="small-description">These creatures will <span class='gold inline-colour'>never</span> appear as monster people.</span>`;
+								case 50:
+									return `<span class="small-description"><span class='gold inline-colour'>Half</span> of these creatures will be replaced by monster people.</span>`;
+								case 100:
+									return `<span class="small-description">These creatures will <span class='gold inline-colour'>always</span> be monster people.</span>`;
+								default:
+									return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> of these creatures will be replaced by monster people.</span>`;
+							}
+						},
+					}>>
+				</div>
+				<label>
+					<<checkbox `"$settings.beastSettings." + _beastType + ".hallucinationsOnly"` false true autocheck>> Monster people of this type can only appear during hallucinations
+				</label>
+				<label>
+					<<checkbox `"$settings.beastSettings." + _beastType + ".victimsAlwaysMonster"` false true autocheck>> Victims of this type always appear as monster people
+				</label>
+			</div>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "namedBeastSettingRow">>
+	<<set _namedBeastKey to _args[0]>>
+	<div class="settingsToggleItem">
+		<div class="numberslider-inline">
+			<span class="gold">Monster person chance:</span>
+			<<numberslider `"$settings.namedBeasts." + _namedBeastKey + ".monsterChance"` $settings.namedBeasts[_namedBeastKey].monsterChance 0 100 1 {
+				onInputChange: v => {
+					if (v === 0) {
+						$("#npcSkinToneSetting").addClass("hidden");
+					} else {
+						$("#npcSkinToneSetting").removeClass("hidden");
+					}
+				},
+				value: v => {
+					switch (v) {
+						case 0:
+							return `<span class="small-description"><span class='gold inline-colour'>Always</span> a real beast.</span>`;
+						case 100:
+							return `<span class="small-description"><span class='gold inline-colour'>Always</span> a monster girl or boy.</span>`;
+						default:
+							return `<span class="small-description"><span class='gold inline-colour'>${v}%</span> chance to appear as a monster girl or boy.</span>`;
+					}
+				},
+			}>>
+		</div>
+		<label>
+			<<checkbox `"$settings.namedBeasts." + _namedBeastKey + ".hallucinationsOnly"` false true autocheck>> Monster person only during hallucinations
+		</label>
 	</div>
 <</widget>>
 
@@ -2568,7 +2713,7 @@
 <<widget "namedNpcGenderApply">>
 	<<if $passage is "Start" or _args[0] is "namedNpcDefaultGender">>
 		<<unset _namedNpcPendingGender>>
-		<<presets _args[0] "save">>
+		<<run applyNpcGenderPreset(_args[0])>>
 		<<initnpcgender>>
 		<<updatePersistentNPCs>>
 	<<else>>
@@ -2583,7 +2728,7 @@
 		<span class="red">This will turn every Named NPC <<= _namedNpcPendingGender is "namedNpcAllMaleGender" ? "male and give them all penises" : "female and give them all vaginas">>. Individual choices will be lost.</span>
 		<br>
 		<<button "Yes">>
-			<<presets _namedNpcPendingGender "save">>
+			<<run applyNpcGenderPreset(_namedNpcPendingGender)>>
 			<<initnpcgender>>
 			<<updatePersistentNPCs>>
 			<<unset _namedNpcPendingGender>>
@@ -2628,48 +2773,50 @@
 
 <<widget "exportsettings">>
 	<div class="solidBorderContainer settings-container">
-	<div class="settings-intro">
-	<span class="yellow">Will also import/export settings found in the "SAVE/OPTIONS" overlay.</span>
-	<hr>
-	<h4 class="gold">Settings File Import/Export</h4>
+		<div class="settings-intro">
+			<span class="yellow">Will also import/export settings found in the "SAVE/OPTIONS" overlay.</span>
+			<hr>
+			<h4 class="gold">Settings File Import/Export</h4>
 
-	<<if SugarCube.Browser.isMobile.any() is true>>
-		Note that saving and loading from file does not work on Android currently.
-	<<else>>
-		Load from file: <input id="saveImport" type="file" value="Load from file" onchange="importSettings(this.files, 'file')">
-		<br><br>
-		<<if $ironmanmode is true>>
-			<input type="button" value="Save to file" disabled>
-		<<else>>
-			<input type="button" value="Save to file" onclick="exportSettings(null,'file')">
-		<</if>>
-	<</if>>
-	<hr>
-	<h4 class="gold">Settings Text Import/Export</h4>
+			<<if SugarCube.Browser.isMobile.any() is true>>
+				Note that saving and loading from file does not work on Android currently.
+			<<else>>
+				Load from file: <input id="saveImport" type="file" value="Load from file" onchange="importSettings(this.files, 'file')">
+				<br><br>
+				<<if $ironmanmode is true>>
+					<input type="button" value="Save to file" disabled>
+				<<else>>
+					<input type="button" value="Save to file" onclick="exportSettings('file')">
+				<</if>>
+			<</if>>
+			<hr>
+			<h4 class="gold">Settings Text Import/Export</h4>
 
-	<ul>
-	<li>To save your current settings, click on "Get Settings Data", then copy and paste the save data where required.</li>
-	<li>To load your current settings, paste in the settings data then click "Load Settings Data".</li>
-	<li>To transfer to and from Android, it is recommended to use email or a service such as pastebin. Please ensure that the start and the end of the save is exact to prevent issues.</li>
-	<li>Click on "Copy Text Area" to copy the current contents for you. The button name will change to "Copying Error" if your device or browser does not support it.</li>
-	</ul>
-	<textarea id="settingsDataInput" rows="4" cols="40" onClick="if(V.disableAutoSelect == false)this.select();" onfocus="V.tempDisable = true;" onblur="V.tempDisable = false;"></textarea>
-	<br>
-	<input type="button" value="Clear Text Box" onclick="clearTextBox('settingsDataInput')"/>
-	<input type="button" value="Top of Text Box" onclick="topTextArea('settingsDataInput')"/>
-	<input type="button" value="Bottom of Text Box" onclick="bottomTextArea('settingsDataInput')"/>
-	<input type="button" value="Get Settings Data" onclick="exportSettings(null,'text')"/>
-	<input type="button" value="Load Settings Data" onclick="importSettings(null,'text')"/>
-	<input id="CopyTextArea" type="button" value="Copy Text Area" onclick="copySavedata('settingsDataInput')">
-	<input id="LoadExternalExportFile" type="button" value="Load External Export File" onclick="loadExternalExportFile()">
+			<ul>
+			<li>To save your current settings, click on "Get Settings Data", then copy and paste the save data where required.</li>
+			<li>To load your current settings, paste in the settings data then click "Load Settings Data".</li>
+			<li>To transfer to and from Android, it is recommended to use email or a service such as pastebin. Please ensure that the start and the end of the save is exact to prevent issues.</li>
+			<li>Click on "Copy Text Area" to copy the current contents for you. The button name will change to "Copying Error" if your device or browser does not support it.</li>
+			</ul>
+			<textarea id="settingsDataInput" rows="4" cols="40" onClick="if(V.disableAutoSelect == false)this.select();" onfocus="V.tempDisable = true;" onblur="V.tempDisable = false;"></textarea>
+			<br>
+			<input type="button" value="Clear Text Box" onclick="clearTextBox('settingsDataInput')"/>
+			<input type="button" value="Top of Text Box" onclick="topTextArea('settingsDataInput')"/>
+			<input type="button" value="Bottom of Text Box" onclick="bottomTextArea('settingsDataInput')"/>
+			<input type="button" value="Get Settings Data" onclick="exportSettings('text')"/>
+			<input type="button" value="Load Settings Data" onclick="importSettings(null,'text')"/>
+			<input id="CopyTextArea" type="button" value="Copy Text Area" onclick="copySavedata('settingsDataInput')">
+			<input id="LoadExternalExportFile" type="button" value="Load External Export File" onclick="loadExternalExportFile()">
 
-	<br><br>
+			<br><br>
 
-	<label>
-		<<checkbox "$disableAutoSelect" false true autocheck>>
-		Disables auto select.
-	</label>
-	</div>
+			<label>
+				<<checkbox "$disableAutoSelect" false true autocheck>>
+				Disables auto select.
+			</label>
+			<br>
+			<span style="font-size: 80%">Settings exports made prior to version 0.5.13 are no longer supported.</span>
+		</div>
 	</div>
 <</widget>>
 
@@ -2785,53 +2932,28 @@
 		</div>
 
 
-		<div class="settingsToggleItem">
+		<<if $NPCName[_npcId].nam is "Black Wolf">>
+			<<namedBeastSettingRow "blackwolf">>
+		<<elseif $NPCName[_npcId].nam is "Great Hawk">>
+			<<namedBeastSettingRow "greathawk">>
+		<<elseif $NPCName[_npcId].nam is "Night Monster">>
+			<<namedBeastSettingRow "nightmonster">>
+		<</if>>
+
+		<<set _skinToneHidden to ($NPCName[_npcId].nam is "Black Wolf" and $settings.namedBeasts.blackwolf.monsterChance is 0)
+			or ($NPCName[_npcId].nam is "Great Hawk" and $settings.namedBeasts.greathawk.monsterChance is 0)
+			or ($NPCName[_npcId].nam is "Night Monster" and $settings.namedBeasts.nightmonster.monsterChance is 0)>>
+		<div id="npcSkinToneSetting" @class="'settingsToggleItem' + (_skinToneHidden ? ' hidden' : '')">
 			<span class="gold">Skin Tone:</span>
 			<br>
-			<<if $NPCName[_npcId].nam is "Black Wolf">>/*disable skin colour toggle when player has BW set to 'always a beast'*/
-				<span data-target="blackwolfmonster" data-disabledif="V.blackwolfmonster===0">
+			<<if ["Black Wolf", "Great Hawk", "Night Monster"].includes($NPCName[_npcId].nam)>>
 				<<npcSkinTone>>
-				</span>
-			<<elseif $NPCName[_npcId].nam is "Great Hawk">>/*disable skin colour toggle when player has GH set to 'always a beast'*/
-				<span data-target="greathawkmonster" data-disabledif="V.greathawkmonster===0">
-				<<npcSkinTone>>
-				</span>
-			<<elseif $NPCName[_npcId].nam is "Night Monster">>/*disable skin colour toggle when player has NM set to 'always a beast'*/
-				<span data-target="nightmonstermonster" data-disabledif="V.nightmonstermonster===0">
-				<<npcSkinTone>>
-				</span>
 			<<else>>
 				<span data-target="npcname-npcidskincolour" data-disabledif="V.NPCName[T.npcId].skinType==='ghost'">
 				<<npcSkinTone>>
 				</span>
 			<</if>>
 		</div>
-
-		<<if $NPCName[_npcId].nam is "Black Wolf">>
-			<div class="settingsToggleItemWide">
-				<span class="gold">Beast Type:</span>
-				<br>
-				<label><<radiobutton "$blackwolfmonster" 0 autocheck>> Always a beast</label> |
-				<label><<radiobutton "$blackwolfmonster" 1 autocheck>> Monster girl or boy when requirements met</label> |
-				<label><<radiobutton "$blackwolfmonster" 2 autocheck>> Always a monster girl or boy</label>
-			</div>
-		<<elseif $NPCName[_npcId].nam is "Great Hawk">>
-			<div class="settingsToggleItemWide">
-				<span class="gold">Beast Type:</span>
-				<br>
-				<label><<radiobutton "$greathawkmonster" 0 autocheck>> Always a beast</label> |
-				<label><<radiobutton "$greathawkmonster" 1 autocheck>> Monster girl or boy when requirements met</label> |
-				<label><<radiobutton "$greathawkmonster" 2 autocheck>> Always a monster girl or boy</label>
-			</div>
-		<<elseif $NPCName[_npcId].nam is "Night Monster">>
-			<div class="settingsToggleItemWide">
-				<span class="gold">Beast Type:</span>
-				<br>
-				<label><<radiobutton "$nightmonstermonster" 0 autocheck>> Always a beast</label> |
-				<label><<radiobutton "$nightmonstermonster" 1 autocheck>> Monster girl or boy when requirements met</label> |
-				<label><<radiobutton "$nightmonstermonster" 2 autocheck>> Always a monster girl or boy</label>
-			</div>
-		<</if>>
 	</div>
 	<div style="clear:both;"></div>
 
