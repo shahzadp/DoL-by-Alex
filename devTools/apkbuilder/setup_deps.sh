@@ -3,8 +3,8 @@ set -e
 
 SDK="$PWD/androidsdk"
 
-# make sure sdkmanager is installed first
-if [ ! -e "$SDK/cmdline-tools/latest/bin/sdkmanager" ]; then
+# make sure the android CLI is installed first
+if [ ! -e "$SDK/cmdline-tools/latest/bin/android" ] && [ ! -e "$SDK/cmdline-tools/latest/bin/android.exe" ]; then
 	echo "cmdline tools not found, follow the steps from README-linux first!"
 	exit 1
 fi
@@ -23,9 +23,14 @@ npm i
 npx cordova telemetry off
 npx cordova prepare
 
-# install sdk tools
-yes | sdkmanager --licenses
-sdkmanager "build-tools;32.0.0"
-sdkmanager "platforms;android-32"
+# install sdk tools.
+# cmdline-tools 23 deprecates sdkmanager in favour of the "android" CLI, which
+# also writes licenses/ itself, so there is no separate license step.
+# The CLI returns a bogus exit code even on success, so we verify the result on
+# disk instead of trusting the exit status (which would trip "set -e").
+android sdk install "platforms;android-32"
+[ -d "$SDK/platforms/android-32" ] || { echo "failed to install platforms;android-32"; exit 1; }
+android sdk install "build-tools;32.0.0"
+[ -d "$SDK/build-tools/32.0.0" ] || { echo "failed to install build-tools;32.0.0"; exit 1; }
 
 echo "All Done!"
