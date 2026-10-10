@@ -1,40 +1,45 @@
 android apk builder for primarily DoL
 
-Two build paths live here. Capacitor is the current one; Cordova is the
-previous one and still builds, so it is kept as a fallback while the Capacitor
-build is being validated.
+# dependencies
 
-# Capacitor (current)
+-   **nodejs 22 or newer** (the Capacitor CLI requires it)
+-   **Temurin JDK 21** (Capacitor 8 compiles against Java 21)
+-   **Android commandline-tools**, with `bin/`, `lib/` and `source.properties`
+    placed into `androidsdk/cmdline-tools/latest`
 
-## dependencies
-- nodejs 22 or newer (the Capacitor CLI requires it)
-- Temurin JDK **21** (Capacitor 8 compiles against Java 21; 17 fails with
-  "invalid source release: 21")
-- android commandline-tools, with `bin/` , `lib/` and `source.properties`
-  placed into `androidsdk/cmdline-tools/latest`
-- gradle is NOT needed: Capacitor ships a wrapper in `android/`
+Gradle is not needed: Capacitor ships a wrapper in `android/`.
 
-## one-time setup
-    npm install
-    npm run cap:sync
+# one-time setup
 
-## building
+    ./setup_deps.sh
+
+This installs the node packages, assembles `capwww/` from the compiled game,
+syncs it into the native project, and installs the Android platform and build
+tools for SDK 36.
+
+# building
+
     npm run apk:debug
     npm run apk:release
 
-The finished apk lands in the repository's `dist/` directory. Debug builds get a
-`_debug` suffix on the application id so they install alongside the official
-app rather than replacing it.
+The apk lands in the repository's `dist/` directory. Debug builds get a
+`_debug` suffix on the application id so they install alongside the official app
+instead of replacing it.
 
-Release builds need your own keystore, configured via `android.buildOptions` in
-`capacitor.config.json`. Vrelnir's `dol.keystore` is deliberately unpublished,
-so an unofficial key produces an app that cannot upgrade over an installed
-official one.
+Release builds need your own keystore. Vrelnir's `dol.keystore` is deliberately
+unpublished, so an unofficial key produces an app that cannot be upgraded over
+an already-installed official one.
 
-## do not change the storage origin
+Before building, make sure `game/01-config/sugarcubeConfig.js` is configured for
+a mobile build (`enableLinkNumberify: false`). See "Changing the build version
+and type" in the top-level README. That toggle is per-build and should not be
+committed.
+
+# do not change the storage origin
+
 Saves live in `localStorage`, which is partitioned by origin. That origin is
 `server.hostname` + `server.androidScheme` in `capacitor.config.json`, so
-changing either silently gives every existing player an empty save.
+changing either one silently gives every existing player an empty save.
 
 Those values are pinned in `storage-origin.json`, and
 `scripts/verify_storage_origin.js` fails the build if they drift. To invalidate
@@ -43,24 +48,9 @@ the lock file in the same commit.
 
     npm run verify:origin
 
-# Cordova (legacy)
+# exporting saves
 
-Kept working while the Capacitor build is being validated.
-
-## dependencies
-- nodejs (recent LTS)
-- Temurin JDK **17**
-- gradle 7.4.2, unpacked into `androidsdk/gradle`
-- commandline-tools, same location as above
-
-## one-time setup
-    ./setup_deps.sh
-
-## building
-    ./build_app_debug.sh
-    ./build_app_release.sh
-
-Both paths require `game/01-config/sugarcubeConfig.js` to be configured for a
-mobile build (`enableLinkNumberify: false`). See "Changing the build version and
-type" in the top-level README, and do not commit that change: it is a per-build
-toggle, not a permanent setting.
+`www/capacitor_additions.js` defines the `saveAs()` global that the game's
+export code calls, backed by the local `SaveDialog` plugin at
+`android/app/src/main/java/io/github/amphiluke/SaveDialog.java`, which opens the
+system save dialog.

@@ -41,16 +41,15 @@
 	/*
 	 * Export a Blob to the user.
 	 *
-	 * NOTE: this is the interim implementation. cordova-plugin-save-dialog opened
-	 * a real Storage Access Framework picker (ACTION_CREATE_DOCUMENT); no
-	 * official Capacitor plugin exposes one. Until the native wrapper lands, we
-	 * write into the app's Documents directory and tell the user where it went,
-	 * rather than failing silently.
+	 * SaveDialog is our local Capacitor plugin (android/.../io/github/amphiluke/
+	 * SaveDialog.java). It opens the real system save-as dialog, the same
+	 * ACTION_CREATE_DOCUMENT picker cordova-plugin-save-dialog used, so export
+	 * behaviour is unchanged from the Cordova build.
 	 */
 	function saveAs(blob, name) {
 		name = name || "save.txt";
 
-		const fallback = function () {
+		const browserFallback = function () {
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement("a");
 			a.href = url;
@@ -61,29 +60,52 @@
 			setTimeout(() => URL.revokeObjectURL(url), 10000);
 		};
 
-		if (!Filesystem || !Filesystem.writeFile) {
-			fallback();
+		const SaveDialog = plugin("SaveDialog");
+
+		if (!SaveDialog || !SaveDialog.saveFile) {
+			// no native picker: fall back to the sandbox, then to a plain download
+			if (Filesystem && Filesystem.writeFile) {
+				return blobToDataUri(blob)
+					.then((dataUri) => Filesystem.writeFile({
+						path: name,
+						data: dataUri,
+						directory: "DOCUMENTS",
+						recursive: true
+					}))
+					.then((res) => {
+						toast("Saved to " + (res && res.uri ? res.uri : name), "LONG");
+						return res;
+					})
+					.catch((err) => { reportSaveError(err); throw err; });
+			}
+			browserFallback();
 			return Promise.resolve();
 		}
 
 		return blobToDataUri(blob)
-			.then((dataUri) => Filesystem.writeFile({
-				path: name,
-				data: dataUri,
-				directory: "DOCUMENTS",
-				recursive: true
+			.then((dataUri) => SaveDialog.saveFile({
+				name: name,
+				type: blob.type || "application/octet-stream",
+				data: dataUri
 			}))
 			.then((res) => {
-				toast("Saved to " + (res && res.uri ? res.uri : name), "LONG");
+				toast("Saved " + name, "SHORT");
 				return res;
 			})
 			.catch((err) => {
-				// never let an export fail silently -- the player would think the
-				// save was written when it was not
-				console.error("[saveAs]", err);
-				toast("Could not save: " + (err && err.message ? err.message : err), "LONG");
+				const msg = err && err.message ? err.message : String(err);
+				// the player closing the picker is a normal outcome, not a failure
+				if (/cancel/i.test(msg)) return null;
+				reportSaveError(err);
 				throw err;
 			});
+	}
+
+	// never let an export fail silently -- the player would think the save was
+	// written when it was not
+	function reportSaveError(err) {
+		console.error("[saveAs]", err);
+		toast("Could not save: " + (err && err.message ? err.message : err), "LONG");
 	}
 
 	function blobToDataUri(blob) {
