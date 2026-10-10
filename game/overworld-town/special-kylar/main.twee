@@ -1241,7 +1241,11 @@ Kylar watches as you are led away. <<person1>><<He>> weeps harder.
 :: Kylar Bedroom 1
 <<set $outside to 0>><<set $location to "home">><<effects>>
 
-Your bedroom door is ajar. You peek through the gap. Nothing seems to be amiss, until you look in your wardrobe.
+<<if $kylar.timer.letter is 30>>
+	You check your wardrobe.
+<<else>> 
+	Your bedroom door is ajar. You peek through the gap. Nothing seems to be amiss, until you look in your wardrobe.
+<</if>>
 
 <<set _stolen to $wardrobe.under_lower.filter(n => n.one_piece != 1 && !n.type.includes("swim")).pluck()>>
 
@@ -1256,6 +1260,7 @@ Your bedroom door is ajar. You peek through the gap. Nothing seems to be amiss, 
 <<gstress>><<stress 3>>
 <br><br>
 
+<<endevent>>
 <<link [[Bedroom|Bedroom]]>><</link>>
 <br>
 
@@ -5740,3 +5745,102 @@ Keeping <<his>> face concealed by the hoodie, Kylar dashes past you. You watch a
 <<tearful>> you emerge from your hiding place. You continue your journey.
 <br><br>
 <<destinationeventend>>
+
+:: Kylar Bedroom Letter
+<<set $outside to 0>><<set $location to "home">><<effects>><<wearProp "note">>
+<<npc Kylar>><<person1>>
+
+A letter lies on your bed. Someone must have broken into your room. <<stress 6>><<gstress>>
+<br><br>
+
+Cautiously, you open it. All stiff and crinkled, the letter is written in blood, reeking of metal<<= $settings.watersportsEnabled ? ", piss": "">> and cum.<<= playerIsPregnant() ? " You retch at the smell.": "">> Your breath quickens. <<stress 6>><<gstress>>
+<br><br>
+
+/* Picking a school LI for the letter. Will prioritize LIs set in the attitudes menu, then LIs that have been unlocked as LIs, then just any one of them as a last resort*/
+<<set _setLI to []>>
+<<set _unlockedLI to []>>
+<<set _schoolLI to []>>
+<<silently>><<for _li range ["Robin", "Sydney", "Whitney"]>>
+	<<= isLoveInterest(_li) ? _setLI.push(_li) : isPossibleLoveInterest(_li) ? _unlockedLI.push(_li) : _schoolLI.push(_li)>>
+<</for>><</silently>>
+
+<blockquote>
+	<em>
+		"Dear <<kylar_pet_name>>,
+		<br><br>
+
+		I love you.
+		<br><br>
+
+		I'm not really good at expressing myself verbally, so I wrote you a love letter. Does it please you, <<kylar_pet_name>>? I hope it does. I know it does. You love me, after all, don't you? I love you, too.
+		<br><br>
+
+		/* the grammar here is intentional */
+		You like to visit me in my dreams, don't you, since my dreams are made of only you.<<= !_kylarStatus.includes("Love") ? " In my dreams, you love me back.": "">> Do you dream of me, too? I hope you do.
+		<br><br>
+
+		I want you, all of you. I worship at the altar of you. We belong together. You're mine and I'm yours. It's written in the stars, <<kylar_pet_name>>!
+		<br><br>
+
+		I can't even imagine my life without you. You gave it meaning for I am nothing without you.
+		<<if C.npc.Kylar.rage gte 60>>
+			So, why do you keep looking the other way? At <<= _setLI.length gte 1 ? _setLI.pluck() : _unlockedLI.length gte 1 ? _unlockedLI.pluck() : _schoolLI.pluck()>>? Not at me? Can't you see my heart? Is my love not enough? Am I... not enough?
+		<</if>>
+		<br><br>
+
+		You should lick the paper. I've infused my bodily fluids on it. It tastes like me, I hope. I want it to permeate into your body, letting my undying love reach your heart. Thinking about it makes me...
+		<br><br>
+
+		Forever yours,
+		<br>
+		Kylar
+		<br><br>
+
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>loveyoui<</for>></div>
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>youilove<</for>></div>
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>I love you. <</for>></div>
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>you. I love <</for>></div>
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>ILOVEYOU<</for>></div>
+		<div class="text-clip"><<for _i to 0; _i lt 15; _i++>>YOUILOVE<</for>></div>
+		"
+	</em>
+</blockquote>
+
+Hearing a rustling sound outside, you <<= $speech_attitude is "meek" ? "fearfully" : $speech_attitude is "bratty" ? "quickly" : "tentatively">> look up.
+<br><br>
+
+<<if $rng lte (C.npc.Kylar.love - 50)/2>>
+	Kylar stares back at you with a crazed smile, panting, his palms pressed against the window. "I love you," <<he>> mouths
+	<<if C.npc.Kylar.lust gte 60>> 
+		and <<= ["kisses", "licks", "draws a heart on"].pluck()>> the glass
+	<</if>>
+	before disappearing into the dark.
+<<else>>
+	No one's there.
+<</if>>
+<<stress 6>><<gstress>>
+<br><br>
+
+<<link [[Keep the letter|Kylar Bedroom Letter 2]]>><<set $phase to 1>><<npcincr Kylar love 1>><</link>><<glove>>
+<br>
+<<link [[Lick the letter|Kylar Bedroom Letter 2]]>><<set $phase to 2>><<npcincr Kylar love 3>><<npcincr Kylar lust 3>><</link>><<gglove>><<gglust>>
+<br>
+<<link [[Trash the letter|Kylar Bedroom Letter 2]]>><<set $phase to 0>><<npcincr Kylar love -1>><<npcincr Kylar rage 1>><</link>><<llove>><<gksuspicion>>
+<br>
+
+:: Kylar Bedroom Letter 2
+<<set $outside to 0>><<set $location to "home">><<effects>>
+
+<<if $phase is 1>>
+	<<wearProp "note">>
+	You press the letter to your chest, smiling happily.
+<<elseif $phase is 2>>
+	<<wearProp "note">>
+	You lick the letter. It tastes metallic and bitter. Just like Kylar. <<arousal 600>><<garousal>>
+<<else>>
+	You look at it with disgust and toss it in the trash.
+<</if>>
+<br><br>
+
+<<link [[Next|Kylar Bedroom 1]]>><</link>>
+<br>
