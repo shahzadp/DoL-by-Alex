@@ -48,12 +48,19 @@ sourceDirs.forEach(dir => syncCopy(path.resolve(sourcePath, dir), path.resolve(t
 console.log(`copied ${counter} files, skipped ${skipCounter} files that don't need updating, and removed ${delCounter} files not present in sourceDirs`);
 
 // copy html and update it to include and make use of selected scripts
-fs.readFile(path.resolve(sourcePath, sourceName), (err, data) => {
-    if (err) return console.log("Error reading source html", err);
-    let updatedData = data.toString()
-        .replace('<script ', '<script src="cordova.js" type="text/javascript"></script>\n<script src="custom_cordova_additions.js" type="text/javascript"></script>\n<script ')
-        .replace(/saveAs\(/g, 'cordova.plugins.saveDialog.saveFile(');
-    return fs.writeFile(path.resolve(targetPath, targetName), updatedData, (err) => {
-        if (err) console.log('Error writing html', err);
-    })
-});
+const sourceHtml = path.resolve(sourcePath, sourceName);
+const targetHtml = path.resolve(targetPath, targetName);
+if (!fs.existsSync(sourceHtml)) throw new Error(`game is not compiled: ${sourceHtml} not found`);
+
+const injection = '<script src="cordova.js" type="text/javascript"></script>\n<script src="custom_cordova_additions.js" type="text/javascript"></script>\n<script ';
+const raw = fs.readFileSync(sourceHtml, "utf-8");
+if (!raw.includes('<script ')) {
+    // if the compiled html ever changes shape, fail the build loudly rather than
+    // shipping an apk whose game never loads cordova.js
+    throw new Error(`could not find a <script> tag to inject the cordova scripts into ${sourceHtml}`);
+}
+const updatedData = raw
+    .replace('<script ', injection)
+    .replace(/saveAs\(/g, 'cordova.plugins.saveDialog.saveFile(');
+fs.writeFileSync(targetHtml, updatedData, "utf-8");
+console.log(`wrote ${targetHtml}`);

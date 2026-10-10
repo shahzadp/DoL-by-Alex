@@ -1,7 +1,8 @@
 @echo off
-SET "PATH=%CD%\androidsdk\commandline-tools\latest\bin;%CD%\androidsdk\gradle\bin;%PATH%"
+SET "PATH=%CD%\androidsdk\cmdline-tools\latest\bin;%CD%\androidsdk\gradle\bin;%PATH%"
 SET "ANDROID_HOME=%CD%\androidsdk"
 SET "ANDROID_SDK_ROOT=%ANDROID_HOME%"
+SET "ANDROID_SDK_PATH=%ANDROID_HOME%"
 
 IF NOT EXIST "..\..\Degrees of Lewdity.html" (
 	IF EXIST "..\..\Degrees of Lewdity VERSION.html" (
