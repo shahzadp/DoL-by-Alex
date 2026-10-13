@@ -1,53 +1,270 @@
 :: Widgets Mines [widget]
-<<widget "mines_init">>
-<<set $mines_crystals to 10>>
-<<if $prof.pickaxe is undefined>>
-	<<set $prof.pickaxe to 0>>
-<</if>>
-<<set $mines_suspicion to 61>>
-<<set $mines_guards_dig to 0>>
-<</widget>>
-
-<<widget "mines_end">>
-<<unset $mines_crystals>>
-<<unset $mines_suspicion>>
-<</widget>>
-
-<<widget "mines_crystals">>
-<<number $mines_crystals "silent">>
-<<set $_color to ["red","pink","purple","purple","blue","blue","lblue","lblue","teal","teal","green"][Math.clamp($mines_crystals,0,10)]>>
-<<set $_count to $mines_crystals gte 1 ? _text_output : "no">>
-<<set $_crystals to $mines_crystals is 1 ? "crystal" : "crystals">>
-You have <span @class="$_color">$_count</span> $_crystals.
-<</widget>>
-
-<<widget "passout_mines">>
-<<passout>>
-<<link [[Next|Mines Passout]]>><</link>>
-<br>
-<</widget>>
-
-<<widget "mines_suspicion_text">>
-<<if $mines_suspicion gte 100>>
-	<span class="red">The guards don't take their eyes off you.</span>
-<<elseif $mines_suspicion gte 80>>
-	<span class="pink">The guards throw searching glances in your direction.</span>
-<<elseif $mines_suspicion gte 60>>
-	<span class="purple">The guards eye you warily.</span>
-<<elseif $mines_suspicion gte 40>>
-	<span class="blue">The guards are keeping an eye on you.</span>
-<<elseif $mines_suspicion gte 20>>
-	<span class="lblue">The guards pay you little attention.</span>
-<<elseif $mines_suspicion gte 1>>
-	<span class="teal">The guards don't pay you any attention.</span>
-<<else>>
-	<span class="green">You might as well be invisible for all the guards pay attention to you.</span>
-<</if>>
-<</widget>>
-
-<<widget "mines_suspicion">>
-	<<if _args[0] and $statFreeze isnot true>>
-		<<set $mines_suspicion += (_args[0])>>
-		<<set $mines_suspicion to Math.clamp($mines_suspicion, 0, 100)>>
+<<widget "mine_init">>
+	<<if $prof.pickaxe is undefined>>
+		<<set $prof.pickaxe to 0>>
 	<</if>>
+	<<if !$mine>>
+		<<set $mine to { hope: 0 }>>
+		<<set $mine.bomb to { parts: 0 }>>
+		<<set $mine.job to { list: [] }>>
+		<<set $mine.job.mining to { shackle: 8 }>>
+		<<set $mine.job.cleaning to {}>>
+		<<set $mine.favor to {}>>
+		<<set $mine.favor.job to {}>>
+		<<set $mine.distraction to {}>>
+		<<set $mine.setup to {}>>
+		<<set $mine.tunnel to {}>>
+		<<set $mine.gemPool to []>>
+	<</if>>
+<</widget>>
+
+<<widget "mine_job">>
+	<<if $mine.job.list.length is 0>>
+		<<set $mine.job.list to ["mining", "minecarts", "cleaning"]>>
+	<</if>>
+	<<set $mine.job.current to $mine.job.list.pluck()>>
+
+	<<switch $mine.job.current>>
+		<<case "mining">>
+			<<He>> leads you through the caves to a large group of slaves, all swinging pickaxes into the rock wall.
+			<br><br>
+			<<link [[Next|Mine Job Mining Intro]]>><</link>>
+		<<case "minecarts">>
+			<<He>> leads you through the caves to a minecart track. You look up to see a rail on the rock ceiling that goes along the tunnel.
+			<br><br>
+			<<link [[Next|Mine Job Minecarts Intro]]>><</link>>
+		<<case "cleaning">>
+			<<He>> leads you through the caves and into a large cave filled with guards. One side of the cave is filled with bunkbeds, a handful of them have people sleeping in them. The other side is filled with tables.
+			<br><br>
+			<<link [[Next|Mine Job Cleaning Intro]]>><</link>>
+		<<default>>
+			Please Report this Error in the #bug-reports channel of the Degrees of Lewdity Discord Server 
+	<</switch>>
+<</widget>>
+
+<<widget "mine_job_link">>
+	<<set _job_link to `Mine Job ${$mine.job.current.toLocaleUpperFirst()} Intro`>>
+
+	<<if $mine.job.current is "mining">>
+		<<set _job_link to `Mine Job Mining Return`>>
+	<</if>>
+
+	<<link [[Next|_job_link]]>><</link>>
+<</widget>>
+
+<<widget "mine_distract_links">>
+	<<if Time.hour lt 6>>
+		<<set _today to true>>
+	<</if>>
+
+	<<link [[<<print _today ? "Today" : "Tomorrow">>|_args[0]]]>><<set $phase to _today ? 0 : 1>><</link>>
+	<br>
+	<<link [[<<print _today ? "Tomorrow" : "In Two Days">>|_args[0]]]>><<set $phase to _today ? 1 : 2>><</link>>
+	<br>
+	<<link [[<<print _today ? "In Two Days" : "In Three Days">>|_args[0]]]>><<set $phase to _today ? 2 : 3>><</link>>
+	<br>
+	<<link [[<<print _today ? "In Three Days" : "In Four Days">>|_args[0]]]>><<set $phase to _today ? 3 : 4>><</link>>
+<</widget>>
+
+<<widget "mine_distract_time">>
+	<<if Time.hour lt 6>>
+		<<set _today to true>>
+	<</if>>
+
+	<<switch $phase>>
+		<<case 0>>
+			<<set _time to "today">>
+		<<case 1>>
+			<<set _time to "tomorrow">>
+		<<case 2>>
+			<<set _time to "in two days">>
+		<<case 3>>
+			<<set _time to "in three days">>
+		<<case 4>>
+			<<set _time to "in four days">>
+	<</switch>>
+
+	<<print _time>>
+<</widget>>
+
+<<widget "mine_distract_check">>
+	<<set _distraction_count to 0>>
+	<<if $mine.distraction.minecarts is 0>><<set _distraction_count += 1>><</if>>
+	<<if $mine.distraction.mining is 0>><<set _distraction_count += 1>><</if>>
+	<<if $mine.distraction.night is 0>><<set _distraction_count += 1>><</if>>
+<</widget>>
+
+<<widget "mine_night_task">>
+	<<set $mine.distraction.night to "inprogress">>
+	<<switch random(1,3)>>
+		<<case 1>>
+			<<set $mine.favor.job.night to "gem">>
+			"I need a gem or a crystal, doesn't matter which."
+		<<case 2>>
+			<<set $mine.favor.job.night to "note">>
+			<<He>> hands you a piece of paper. "I need you to give this to a person wearing a boiler suit with a diamond painted on it."
+		<<case 3>>
+			<<set $mine.favor.job.night to "firework">>
+			<<He>> hands you some fireworks. "I need you to set these fireworks off next to a guard. I wish I could see their face when it goes off. Don't ask where I got these."
+		<<default>>
+			"I need you to make a report in the bug reports channel in the Degrees of Lewdity discord server," <<he>> says. "Make sure to include a screenshot and a save file,"
+			<<he>> starts to walk away before remembering something. "Just one more thing, make sure you're on the most recent version. Send James my regards."
+	<</switch>>
+<</widget>>
+
+<<widget "mine_hope">>
+	<<if !isNaN(T.args[0])>>
+		<<set $mine.hope to Math.clamp(V.mine.hope + _args[0], 0, 50)>>
+	<</if>>
+<</widget>>
+
+<<widget "mine_pregnancy">>
+	You stumble towards the exit and barely reach the street before collapsing, your consciousness fading away.
+	<br><br>
+	<<link [[Next|Pregnancy Birth Hospital]]>><<set $stress -= 5000>><<endevent>><<set $phase to 1>><</link>>
+<</widget>>
+
+<<widget "mine_passout">>
+	You've pushed yourself too much.
+	<br><br>
+
+	<<passout>>
+	<<link [[Everything fades to black...|Mine Passout]]>><<endevent>><</link>>
+<</widget>>
+
+<<widget "mine_gem">>
+	<<if $mine.gemPool.length is 0>>
+		<<run
+			for (let i = 0; i < 10; i++) V.mine.gemPool.push(1);
+
+			let gem_count = 5;
+			if (V.prof.pickaxe < 300) gem_count = 8;
+			for (let i = 0; i < gem_count; i++) V.mine.gemPool.push(2);
+
+			gem_count = 2;
+			if (V.prof.pickaxe < 650) gem_count = 5;
+			for (let i = 0; i < gem_count; i++) V.mine.gemPool.push(3);
+		>>
+	<</if>>
+
+	<<set _gem to $mine.gemPool.pluck()>>
+	<<set _gem_diff_min to _gem is 1 ? 0 : _gem is 2 ? 300 : 650>>
+	<<set _gem_diff_max to _gem is 1 ? 299 : _gem is 2 ? 649 : 1000>>
+<</widget>>
+
+<<widget "mine_gem_collect">>
+	<<mine_gem_check _args[0]>>
+	<<set _gemType to either("gem", "crystal")>>
+	<<set $mine.heldGem to `${_gemSize} ${_gemType}`>>
+	a $mine.heldGem. It might be worth something on the black market.
+	<<mine_gem_value>>
+	<<set $blackmoney += _gem_value>>
+<</widget>>
+
+<<widget "mine_gem_value">>
+	<<set _gem_value to 0>>
+	<<if $mine.heldGem.includes("small")>>
+		<<set _gem_value to 50>>
+	<<elseif $mine.heldGem.includes("medium")>>
+		<<set _gem_value to 100>>
+	<<elseif $mine.heldGem.includes("large")>>
+		<<set _gem_value to 200>>
+	<</if>>
+<</widget>>
+
+<<widget "mine_gem_check">>
+	<<switch _args[0]>>
+		<<case 1>>
+			<<set _gemSize to "small">>
+		<<case 2>>
+			<<set _gemSize to "medium">>
+		<<case 3>>
+			<<set _gemSize to "large">>
+	<</switch>>
+<</widget>>
+
+<<widget "mine_pit">>
+	<<set _pits to ["Nothing"]>>
+	<<set _coveredPits to 0>>
+	<<if $settings.slimesEnabled and $hallucinations gte 1>>
+		<<set _pits.push("Slimes")>>
+	<<else>>
+		<<set _coveredPits++>>
+	<</if>>
+	<<if $settings.tentaclesEnabled and $hallucinations gte 2>>
+		<<set _pits.push("Tentacles")>>
+	<<else>>
+		<<set _coveredPits++>>
+	<</if>>
+	<<if $settings.swarmsEnabled and $settings.spidersEnabled>>
+		<<set _pits.push("Spiders")>>
+	<<else>>
+		<<set _coveredPits++>>
+	<</if>>
+<</widget>>
+
+<<widget "mine_punishment_end">>
+	<<if isPregnancyEnding()>>
+		"I hope you learned your lesson down–" <<He>> realizes you're in labour. <<He>> grabs you and picks you up as you slip from consciousness.
+		<br><br>
+		<<link [[Next|Mine Birth]]>><</link>>
+	<<else>>
+		"I hope you learned your lesson down there," <<he>> chuckles before dragging you away.
+		<br><br>
+		<<if Time.hour lte 5 or Time.hour gte 21>>
+			<<He>> pulls you to the sleeping area. The guard in front of it opens it up. The <<person>> pushes you through. The gate slams and locks behind you.
+			<br><br>
+			<<link [[Next|Mine Night]]>><<endevent>><</link>>
+		<<else>>
+			<<He>> pulls you in front of another guard. "Deal with this trash," <<he>> says.
+			<br><br>
+			<<mine_job_link>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+<<widget "mine_maze_map">>
+	<<for _i to 0; _i lt MineMaze.MAZE_SIZE; _i++>>
+		<<for _j to 0; _j lt MineMaze.MAZE_SIZE; _j++>>
+			<<if $mine.maze.PC.x is _j and $mine.maze.PC.y is _i>>
+				<<print "P ">>
+			<<elseif $mine.maze.Exit.x is _j and $mine.maze.Exit.y is _i>>
+				<<print "E ">>
+			<<else>>
+				<<set _guard_count to 0>>
+				<<for _k to 0; _k lt $mine.maze.Guards.length; _k++>>
+					<<if $mine.maze.Guards[_k].Location.x is _j and $mine.maze.Guards[_k].Location.y is _i>>
+						<<set _guard_count++>>
+					<</if>>
+				<</for>>
+				<<if _guard_count isnot 0>>
+					<<print `${_guard_count} `>>
+				<<else>>
+					<<print "_ ">>
+				<</if>>
+			<</if>>
+		<</for>>
+		<br>
+	<</for>>
+<</widget>>
+
+<<widget "mine_unshackle">>
+	<<set $mine.job.mining.shackle to 8>>
+	<<unbind>>
+<</widget>>
+
+<<widget "mine_shackle_text">>
+	<<if $mine.job.mining.shackle gte 6>>
+		<span class="red">Your shackles are very sturdy.</span>
+	<<elseif $mine.job.mining.shackle gte 3>>
+		<span class="blue">Your shackles are dented.</span>
+	<<else>>
+		<span class="blue">Your shackles are cracked.</span>
+	<</if>>
+<</widget>>
+
+<<widget "mine_orgasm">>
+	<br><br>
+	<<orgasm>>
+	Your moans echo through the tunnels.
 <</widget>>

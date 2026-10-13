@@ -16,7 +16,7 @@
 <div id="scenesViewerControls">
 	<<scenesViewerControls>>
 </div>
-<<if $debug is 1>>
+<<if $debug>>
 	<!--<br>
 	<<saveCompareTool>>-->
 	<br>
@@ -291,6 +291,9 @@ End of '<<print $replayScene.name>>' scene.
 		<</if>>
 		<<if $nightmaresSeen.includes("office")>>
 			<<set $scenePassages.pushUnique("NightmareOffice")>>
+		<</if>>
+		<<if $nightmaresSeen.includes("mine")>>
+			<<set $scenePassages.pushUnique("NightmareMine")>>
 		<</if>>
 	<</if>>
 	<<if $harper_appointments.hypnosis gte 1>>
@@ -1009,6 +1012,13 @@ End of '<<print $replayScene.name>>' scene.
 				manualVariableChanges:"<<set $sleephour to 1>><<set $nightmareExit to 'Bed'>>",
 				unlocked: $scenePassages.includes("NightmareGwylan")
 			},
+			"NightmareMine":{
+				name:"Nightmare Mine",
+				startPassage:"Nightmare Mine",
+				passages:["Nightmare Mine", "Nightmare Mine 2", "Nightmare Mine 3", "Nightmare Mine Wake", "Nightmare Mine End"],
+				manualVariableChanges:"<<set $sleephour to 1>><<set $nightmareExit to 'Bed'>>",
+				unlocked: $scenePassages.includes("NightmareMine")
+			},
 			"HarperHypnosisIntro":{
 				name:"Harper Hypnosis Intro",
 				startPassage:"SV Doctor Harper's Office",
@@ -1251,7 +1261,7 @@ End of '<<print $replayScene.name>>' scene.
 		<<if $scenesSearch.hideLocked and !_value.unlocked>><<continue>><</if>>
 		<<set _lowerName to clone(_value.name).toLowerCase()>>
 		<<set _lowerPassages to "".concat(_value.startPassage).toLowerCase()>>
-		<<if $scenesSearch.text.length is 0 or ((_value.unlocked or $debug is 1) and (_value.name.toLowerCase().includes($scenesSearch.text.toLowerCase()) or "".concat(_value.startPassage).toLowerCase().includes($scenesSearch.text.toLowerCase())))>>
+		<<if $scenesSearch.text.length is 0 or ((_value.unlocked or $debug) and (_value.name.toLowerCase().includes($scenesSearch.text.toLowerCase()) or "".concat(_value.startPassage).toLowerCase().includes($scenesSearch.text.toLowerCase())))>>
 			<<run _scenes[_label] to clone(_value)>>
 		<</if>>
 	<</for>>
@@ -1274,7 +1284,7 @@ End of '<<print $replayScene.name>>' scene.
 	<</if>>
 	<<for _i to _indexStart; _i lt _indexEnd; _i++>>
 		<<set _item to _scenes[_keys[_i]]>>
-		<<if _item.unlocked is false and $debug is 0>>
+		<<if _item.unlocked is false and !$debug>>
 			<span class="no-numberify red">
 				<<print _item.lockedMessage || "Locked">>
 			</span>

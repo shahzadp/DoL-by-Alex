@@ -349,7 +349,7 @@ function effects() {
 	if (isPregnancyEnding()) {
 		sWikifier(
 			`<span class="red">Your waters have broken.</span> ${
-				["asylum", "prison", "hospital"].includes(V.location) ? "You need to find help, fast!" : "You need to head to the hospital, fast!"
+				["asylum", "prison", "hospital", "mines"].includes(V.location) ? "You need to find help, fast!" : "You need to head to the hospital, fast!"
 			} <<ggstress>>`
 		);
 		br();

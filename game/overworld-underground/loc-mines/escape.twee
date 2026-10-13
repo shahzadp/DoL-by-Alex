@@ -1,0 +1,172 @@
+:: Mine Escape
+<<effects>>
+<<generate1>><<generate2>><<generate3>><<generate4>><<generate5>><<generate6>>
+Not wanting to take the risk, you rush off into the tunnels. You run through the winding tunnels, trying to find an exit. 
+As you emerge into a small cave, <span class="red">you realize you've already been here. You're lost!</span>
+<br><br>
+<<link [[Next|Mine Escape Maze]]>><</link>>
+
+
+
+:: Mine Escape Maze
+<<effects>>
+<<if !$mine.maze>>
+	<<run V.mine.maze = new MineMaze(Object.values(V.NPCList));>>
+	<<set _start_turn to 1>>
+<<else>>
+	<<run resetMazeMethods()>>
+<</if>>
+
+<<if $debug>>
+	<<mine_maze_map>>
+	<br><br>
+<</if>>
+
+<<clearnpc>>
+You are in a small cave. Various tunnels branch off.
+<<if $mine.setup.dust gt 0 and $mine.maze.proximityCheck()>>
+	You hear a <<= either("wheeze", "cough")>> from one of the tunnels.
+<</if>>
+
+<<if _start_turn and $mine.setup.lantern>>
+	<br><br>
+	You pull out the lantern, its flame flickers
+	<<switch $mine.maze.lantern()>>
+		<<case "up">>
+			southwards
+		<<case "down">>
+			northwards
+		<<case "left">>
+			eastwards
+		<<case "right">>
+			westwards
+	<</switch>>
+	before going out.
+<</if>>
+
+<br><br>
+<<run V.mine.maze.guardsWithPC()>>
+
+<<if $mine.maze.ActiveGuards.length gte 1>>
+	<<run V.mine.maze.setNPCSlots()>>
+
+	<<person1>>
+
+	You look around the cave and notice
+	<<if $mine.maze.ActiveGuards.length gte 2>>
+		some <<people>> standing by an entrance, but before you can slip away, they notice you standing there and rush at you.
+	<<else>>
+		a <<person>> standing by an entrance, but before you can slip away, <<he>> notices you standing there and rushes at you.
+	<</if>>
+	<br><br>
+	<<link [[Next|Mine Escape Maze Fight]]>><<set $fightstart to 1>><</link>>
+
+	<<exit>>
+<</if>>
+
+<<if $mine.maze.PC.equals($mine.maze.Exit)>>
+	<span class="blue">There's a ladder in the center of the cave, leading to the hole in the ceiling.</span>
+	<br><br>
+	<<link [[Climb the ladder|Mine Escape Victory]]>><<unset $mine.maze>><</link>>
+	<br>
+<</if>>
+
+<<if !_start_turn>>
+	<<run V.mine.maze.moveGuards()>>
+	<<run V.mine.maze.stun()>>
+<</if>>
+
+<<set _player_dir to $mine.maze.PC.possibleDirections(MineMaze.MAZE_SIZE)>>
+<<if _player_dir.includes("up")>>
+	<<link [[Move North|Mine Escape Maze]]>><<run V.mine.maze.PC.up()>><</link>>
+	<br>
+<</if>>
+<<if _player_dir.includes("down")>>
+	<<link [[Move South|Mine Escape Maze]]>><<run V.mine.maze.PC.down()>><</link>>
+	<br>
+<</if>>
+<<if _player_dir.includes("left")>>
+	<<link [[Move West|Mine Escape Maze]]>><<run V.mine.maze.PC.left()>><</link>>
+	<br>
+<</if>>
+<<if _player_dir.includes("right")>>
+	<<link [[Move East|Mine Escape Maze]]>><<run V.mine.maze.PC.right()>><</link>>
+	<br>
+<</if>>
+<<link [[Stay where you are|Mine Escape Maze]]>><</link>>
+
+
+
+:: Mine Escape Maze Fight
+<<if $fightstart is 1>>
+	<<set $fightstart to 0>>
+	<<set $enemyno to $mine.maze.ActiveGuards.length>>
+	<<neutral 1>>
+	<<maninit>>
+	<<set $enemytrust -= 100>>
+	<<set $enemyanger += 200>>
+	<<npcidlegenitals>>
+	<<person1>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend or ($pain gte 100 and $willpowerpain is 0) or $orgasmdown gte 1 or $worn.feet.type.includes("shackle")>>
+	<span id="next"><<link [[Next|Mine Escape Maze Fight Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Mine Escape Maze Fight]]>><</link>></span><<nexttext>>
+<</if>>
+
+
+
+:: Mine Escape Maze Fight Finish
+<<effects>><<person1>>
+
+<<if $orgasmdown gte 1>>
+	<<shackle_feet>>
+	Your spasms make it easy for <<him>> to restrain you. 
+<<elseif $worn.feet.type.includes("shackle")>>
+	Your shackles make it impossible for you to escape.
+<<elseif $pain gte 100 and $willpowerpain is 0>>
+	<<shackle_feet>>
+	Your body goes limp as you succumb to the pain. 
+<<else>>
+	<<if $mine.maze.ActiveGuards.length gte 2>>
+		They fall
+	<<else>>
+		<<He>> falls
+	<</if>>
+	to the ground <<= $enemyarousal gte $enemyarousalmax ? "in bliss" : "in pain">>. You waste no time as you rush into the tunnels.
+	<br><br>
+	<<endcombat>>
+	<<link [[Next|Mine Escape Maze]]>><<run
+		V.mine.maze.combatEnd = MineMaze.prototype.combatEnd; 
+		V.mine.maze.combatEnd();
+	>><</link>>
+	<<exit>>
+<</if>>
+<<He>> clamps shackles around your ankles. <<He>> chuckles and stands up, pulling you from the ground with <<him>> as <<he>> starts walking through the tunnels. 
+<br><br>
+You reach a more populated area as <<he>><<endcombat>><<generate1>> wordlessly passes you off to a <<person1>><<person>>. <<He>> starts dragging you down a different tunnel.
+<br><br>
+<<link [[Next|Mine Punishment]]>><<unset $mine.maze>><</link>>
+
+
+
+:: Mine Escape Victory
+<<effects>><<earnFeat "Down Below">>
+<<badEndTrackingEnd "Mines" { reason: "minesEscapedMaze" }>>
+
+You hear shouting behind you. You turn around to see three guards running towards you. You quickly grab onto the wooden ladder, just barely making it up before it breaks under you.
+<br><br>
+Shouts emanate from below as you rush down the tunnel. Before too long, you reach a fork. 
+As you're about to go down one of the tunnels, you catch a whiff of a foul stench from one of the tunnels. It makes you queasy. You fight the urge to vomit as you stumble down the other tunnel.
+<br><br>
+You reach a steep incline. As you climb the pitch black slope. The rock walls give way to cement, and you emerge in the storm drains. <<mine_hope 3>><<ggghope>>
+<br><br>
+<<link [[Next|Residential Drain]]>><<endevent>><<set $eventskip to 1>><</link>>

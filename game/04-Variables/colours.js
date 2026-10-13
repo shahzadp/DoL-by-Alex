@@ -1499,6 +1499,13 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#ff3300" },
 	},
 	{
+		variable: "dusty orange",
+		name: "dusty orange",
+		name_cap: "Dusty orange",
+		csstext: "tangerine",
+		canvasfilter: { blend: "#a04500" },
+	},
+	{
 		variable: "teal",
 		name: "teal",
 		name_cap: "Teal",
