@@ -12,7 +12,7 @@ function mapMove(moveTo) {
 	const available = V.map.available;
 
 	// if(V.debug == 1 || available[currentPassage].includes(moveTo))
-	if (V.debug === 1 || (available[currentPassage].includes(moveTo) && destinationTable.includes(moveTo))) {
+	if (V.debug || (available[currentPassage].includes(moveTo) && destinationTable.includes(moveTo))) {
 		window.ironmanFlag = true;
 		Wikifier.wikifyEval("<<pass 5>>");
 		delete window.ironmanFlag;

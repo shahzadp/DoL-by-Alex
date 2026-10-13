@@ -683,7 +683,7 @@ window.resolveValue = resolveValue;
  */
 Macro.add("rng", {
 	handler() {
-		if (typeof V.rngOverride === "number" && V.debug === 1) {
+		if (typeof V.rngOverride === "number" && V.debug) {
 			console.log(`rng override: ${V.rngOverride}`);
 			V.rng = V.rngOverride;
 		} else {

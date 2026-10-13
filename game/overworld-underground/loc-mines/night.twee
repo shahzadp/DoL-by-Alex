@@ -1,0 +1,296 @@
+:: Mine Night
+<<effects>>
+
+You are in a small cave. The walls are bare. With all the other people in here, it's quite cramped.
+<<if $exposed gte 1>>
+	People ignore your <<lewdness>>.
+<</if>>
+<br><br>
+<<if $arousal gte $arousalmax>>
+	<<orgasm>>
+	You shake and moan. Some slaves look at you, others are unfazed.
+	<br><br>
+<</if>>
+
+<<if isPregnancyEnding()>>
+	<<generate1>>
+	You clutch your stomach and go to your knees. A <<person1>><<person>> looks through the gate and notices you. <<He>> quickly opens the gate and rushes to your side. You slip out of consciousness as <<he>> lifts you.
+	<br><br>
+	<<link [[Next|Mine Birth]]>><</link>>
+<<elseif $stress gte $stressmax>>
+	You've pushed yourself too much.
+	<br><br>
+
+	<<link [[Everything fades to black...|Mine Night Passout]]>><<passout>><<endevent>><</link>>
+<<elseif Time.hour gte 6 and Time.hour lte 20>>
+	<<generate1>><<person1>>
+	A guard opens up the metal gate. "Alright everyone, get to work!" the <<person>> yells. You leave with everyone else.
+	<br><br>
+	<<link [[Next|Mine Job Intro]]>><<endevent>><</link>>
+<<else>>
+	<<icon "clothes/boiler-suit.png">><<link [[Grab a boiler suit|Mine Night Suit]]>><</link>>
+	<br>
+
+	<<if $mine.bomb.progress gte 10>>
+		<span class="blue">You have a bomb ready.</span>
+		<br>
+	<<elseif $mine.bomb.progress isnot undefined>>
+		<<if $mine.bomb.parts gt 0>>
+			<<icon "wrench.png">><<link [[Work on the bomb|Mine Bomb Work]]>><<set $mine.bomb.parts-->><</link>>
+		<<else>>
+			<span class="blue">You need parts to continue working on the bomb.</span>
+		<</if>>
+		<br>
+	<</if>>
+	<<icon "socialise.png">><<link [[Converse with other slaves (0:20)|Mine Night Talk]]>><<pass 20>><</link>>
+	<br>
+	<<if $mine.distraction.night is "complete" or $mine.favor.night is 1>>
+		<<icon "socialise.png">><<link [[Ask for a distraction|Mine Night Distraction]]>><</link>>
+		<br>
+	<</if>> 
+
+	<<bedicon "zzz">><<link [[Sleep|Mine Rest]]>><<set $phase to 0>><</link>>
+	<br>
+<</if>>
+
+
+
+:: Mine Bomb Work
+<<effects>>
+
+<<if $mine.bomb.progress is 0>>
+	You grab a bomb part and try to work it into a usable base.
+<<else>>
+	You grab a bomb part and try to add on to your base.
+<</if>>
+<br><br>
+<<if random(100, 200) lte (currentSkillValue('science'))>>
+	<<if $mine.bomb.progress is 0>>
+		<span class="green">You succeed in adjusting the part to act as a base.</span>
+		<<set $mine.bomb.progress++>>
+	<<else>>
+		<span class="green">You succeed in adjusting the part to fit with your base.</span>
+		<<set $mine.bomb.progress++>>
+	<</if>>
+<<else>>
+	While trying to fit in a part, <span class="red">it snaps in your hand.</span>
+	<<scienceskill>>
+<</if>>
+
+<<if $mine.bomb.progress gte 10>>
+	The last part clicks into place, <span class="green">your bomb is finally ready to be used.</span>
+<</if>>
+<br><br>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Night Distraction
+<<effects>>
+<<loadNPC 0 "mine_night">>
+You walk up to the <<person1>><<person>>. "Ready to cash in your favor?" <<he>> asks.
+<<unset $mine.favor.night>>
+<br><br>
+<<if $speech_attitude is "meek">>
+	You nod. "Can you distract the guards for me?"
+<<elseif $speech_attitude is "bratty">>
+	"Sure am," you reply. "I need you to distract the guards."
+<<else>>
+	"Yes," you answer. "I want you to distract the guards."
+<</if>>
+<<He>> chuckles and leads you behind a large group of people.
+<br><br>
+"When do you want it done?" <<he>> asks.
+<br><br>
+<<mine_distract_links "Mine Night Distraction Set">>
+
+
+
+:: Mine Night Distraction Set
+<<effects>><<set $mine.distraction.night to $phase>><<unset $mine.favor.night>>
+
+You tell <<him>> you want the distraction to happen <<mine_distract_time>>. <<He>> nods, "It'll happen sometime <<mine_distract_time>>. Good luck with whatever you've got planned."
+<br><br>
+<<He>> looks at the gate and quickly shuffles into the crowd.
+<<endevent>>
+<br><br>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Job Intro
+<<effects>><<generate1>>
+
+A <<person1>><<person>> walks up to you.
+<br><br>
+<<mine_job>>
+
+
+
+:: Mine Night Talk
+<<effects>>
+You attempt to talk with the other slaves, though most are unwilling.
+<br><br>
+<<cleareventpool>>
+
+<<addinlineevent "out_of_towner">>
+	<<generate1>>
+	You talk to a <<person1>><<person>>. "Do you know what country we're in?" <<he>> asks. "I've asked multiple people, but I've gotten many different answers."
+	<br><br>
+	<<endevent>>
+	<<link [[Next|Mine Night]]>><</link>>
+<</addinlineevent>>
+
+<<if !["complete","inprogress"].includes($mine.favor.night) and $mine.distraction.night is undefined>>
+	<<addinlineevent "request">>
+		<<if $mine.favor.night is undefined>>
+			<<generate1>>
+			<<saveNPC 0 "mine_night">>
+			You walk up to a <<person1>><<person>>, but before you can open your mouth to speak, <<he>> speaks first. "You look like someone who can handle <<print $player.gender_appearance is "m" ? "himself" : "herself">>," <<he>> says. "I need a favor, can you get it done?"
+			<br><br>
+			You open your mouth again, but <<he>> interrupts once more. "Good. Of course, I'll owe you one afterwards."
+			<br><br>
+			<<mine_night_task>>
+			<br><br>
+			<<He>> walks away before you can get a word in.
+		<<else>>
+			<<loadNPC 0 "mine_night">>
+			The <<person1>><<person>> walks up to you. "Need another favor, huh?" <<he>> asks. "Good, 'cause so do I."
+			<br><br>
+			<<mine_night_task>>
+			<br><br>
+			<<He>> walks away before you can get a word in.
+		<</if>>
+		<br><br>
+		<<endevent>>
+		<<link [[Next|Mine Night]]>><</link>>
+	<</addinlineevent>>
+<</if>>
+
+<<addinlineevent "nothing">>
+	Nobody seems to want to talk to you.
+	<br><br>
+	<<endevent>>
+	<<link [[Next|Mine Night]]>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "cheer">>
+	<<generatey1>>
+	You see a <<person1>><<person>> sitting in the corner. <<He>> looks dejected.
+	<br><br>
+	<<link [[Flirt|Mine Night Flirt]]>><</link>><<promiscuous1>>
+	<br>
+	<<link [[Ignore|Mine Night]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "escape_plan">>
+	<<generate1>><<generatey2>>
+	You overhear two <<people>> talking about an escape plan. "So when we both have mining duty, we break our chains and overpower a guard and hold them hostage," 
+	the <<person1>><<person>> says. "So they'll have to let us go! That's genius!" the <<person2>><<person>> says a little too loudly. 
+	The <<person1>><<person>> shushes <<person2>><<him>>. <<mine_hope 2>><<gghope>>
+	<br><br>
+	<<endevent>>
+	<<link [[Next|Mine Night]]>><</link>>
+<</addinlineevent>>
+
+<<if !$weekly.mine_eavesdrop>>
+	<<addinlineevent "eavesdrop">>
+		<<set $weekly.mine_eavesdrop to true>>
+		Nobody seems to want to talk to you. As you're ready to give up, you hear a faint conversation outside the cave.
+		<br><br>
+		<<link [[Listen in|Mine Night Eavesdrop]]>><</link>>
+		<br>
+		<<link [[Ignore|Mine Night]]>><<endevent>><</link>>
+	<</addinlineevent>>
+<</if>>
+
+<<addinlineevent "gems">>
+	<<generate1>><<generate2>><<generatey3>>
+	You listen in on a conversation between three <<people>>. "I've worked with gems and crystals for years, and I've never seen ones like there are here," the <<person1>><<person>> says.
+	<br><br>
+	"Must be very valuable. Probably how they can afford this operation," the <<person2>><<person>> posits.
+	<br><br>
+	"I think there's a conspiracy. A secret group is acquiring them for insidious reasons," the <<person3>><<person>> says. The other two give <<him>> strange looks.
+	<br><br>
+	<<endevent>>
+	<<link [[Next|Mine Night]]>><</link>>
+<</addinlineevent>>
+
+<<runeventpool>>
+
+
+
+:: Mine Night Flirt
+<<effects>>
+
+You walk up and sit next to <<him>>. You wrap your arm around <<his>> waist and pull yourself into <<him>>. <<He>> looks at you, <<his>> face beet red. You whisper in <<his>> ear, "Don't be sad, I'll make everything okay."
+<<promiscuity1>>
+<<He>> stammers, trying to say something, but the words don't come out. You separate yourself from <<him>>, satisfied that <<his>> focus has changed. <<mine_hope 2>><<gghope>>
+
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Night Eavesdrop
+<<effects>>
+
+You get as close to the gate as you can where the guards outside can't see you. You can only hear snippets of the conversation.
+<br><br> 
+"–in <<nnpc_his "Quinn">> cut…shipment is ready…elk…request for…parts…out of town…used up a lot of them–"
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Night Suit
+<<effects>><<upperruined true>><<lowerruined true>><<upperwear "boiler suit">>
+
+You grab a boiler suit out of a bin in the corner and slip it on.
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Rest
+<<effects>>
+
+You lie down on the rock. It's hard, but you need the rest. You close your eyes to sleep.
+<br><br>
+<<link [[Next|Mine Sleep]]>><</link>>
+
+
+
+:: Mine Sleep
+<<effects>>
+
+<<set _autosavehere to true>>
+<<if Time.hour is 21>>
+	<<set _mine_sleep to 9>>
+<<elseif Time.hour is 22>>
+	<<set _mine_sleep to 8>>
+<<elseif Time.hour is 23>>
+	<<set _mine_sleep to 7>>
+<<else>>
+	<<set _mine_sleep to (6 - Time.hour)>>
+<</if>>
+<<for _l to 0; _l lt _mine_sleep; _l++>>
+	<<pass 60>>
+	<<set $sleepStat++>>
+	<<set $tiredness -= 200>>
+	<<if !($sleeptrouble is 1 and $controlled is 0 and !$hypnosis_traits.slumber)>>
+		<<set $tiredness -= 50>>
+	<</if>>
+	<<if $hypnosis_traits.slumber>>
+		<<set _traumaToSleep to Math.floor($trauma / 100)>>
+		<<set $tiredness -= _traumaToSleep>>
+	<</if>>
+<</for>>
+
+You open your eyes to see the other slaves getting themselves together. Your back aches. <<pain 3>><<gpain>>
+
+<br><br>
+<<link [[Get up|Mine Night]]>><</link>>

@@ -451,7 +451,8 @@ function initNpcClothes() {
 			"ritual robes":				{ name: "ritual robes",				integrity_max: 100, word: "a", action:"lift"},
 			"vintage pantsuit":			{ name: "vintage pantsuit",			integrity_max: 100, word: "a", action:"pull"},
 			"vintage skirtsuit":		{ name: "vintage skirtsuit",		integrity_max: 100, word: "a", action:"lift"},
-			"winter jacket":			{ name: "winter jacket",			integrity_max: 100, word: "a", action:"pull"}
+			"winter jacket":			{ name: "winter jacket",			integrity_max: 100, word: "a", action:"pull"},
+			"boiler suit":				{ name: "boiler suit",				integrity_max: 100, word: "a", action: "unzip" }
 		},
 		"lower": {
 			"naked":					{ name: "naked",					integrity_max: 100, word: "n", action: "none" },
@@ -541,6 +542,7 @@ function initNpcClothes() {
 			"vintage pants":			{ name: "vintage pants",			integrity_max: 100, word: "a", action: "pull"},
 			"vintage skirt":			{ name: "vintage skirt",			integrity_max: 100, word: "a", action: "lift"},
 			"black trousers":			{ name: "black trousers",			integrity_max: 100, word: "a", action: "pull"},
+			"boiler suit trousers":		{ name: "boiler suit trousers",		integrity_max: 100, word: "a", action: "unzip" },
 		},
 	};
 
@@ -691,5 +693,7 @@ function initNpcClothes() {
 		/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
 		{ name: "maleDefault",			type: "default", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("shirt", "trousers"), desc: "shirt and trousers" },
 		{ name: "femaleDefault",		type: "default", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("shirt", "skirt"), desc: "shirt and skirt" },
+		/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
+		{ name: "mines",				type: "mines", gender: "n", outfit: 1, clothes: npcAssignClothesToSet("boiler suit", "boiler suit trousers"), desc: "boiler suit" },
 	];
 }

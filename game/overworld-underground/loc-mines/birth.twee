@@ -1,0 +1,162 @@
+:: Mine Birth
+<<effects>><<set $first_birth to !$pregnancyStats.humanToysUnlocked>>
+<<if $mine.birth isnot 1>>
+	<<generate2>>
+	<<set $mine.birth to 1>>
+	<<saveNPC 1 "mine_doctor">><<person2>>
+	You regain consciousness with two voices filling the darkness. "I'm not a doctor. I've never done anything beyond helping small injuries and giving pain meds," a <<male>> voice says. "Don't care. You're the best we got," replies a <<person1>><<male>> voice.
+<<else>>
+	<<loadNPC 1 "mine_doctor">><<person1>>
+	You regain consciousness with two voices filling the darkness. "Tend to your patient, doctor", says a <<male>> voice. "I keep telling you, I'm not a doctor," a <<person2>><<male>> voice replies. You hear a scoff.
+<</if>>
+<br><br>
+You open your eyes to see two guards standing over you. The <<person2>><<person>> jabs a needle in your arm. "I need you to relax. It'll be over soon. Just drift away. When you awaken, everything will be fine," <<he>> says softly as your consciousness drifts away again.
+
+<br><br>
+<<wash>><<undress "mine_birth">>
+<<link [[Next|Mine Birth 2]]>><</link>>
+
+
+
+
+:: Mine Birth 2
+<<effects>>
+
+<<set _timeCalc to birthLaborTime()>>
+
+<<switch playerNormalPregnancyType()>>
+	<<case "human">>
+		<<set $phase to 0>>
+		A voice echoes in your head. "The head is coming out. That's good."
+	<<case "wolf">>
+		<<set $phase to 1>>
+		A voice echoes in your head, "I don't think that's normal, but its head is coming out just fine."
+<</switch>>
+
+<br><br>
+You hear the voice tell you to push over and over again. You don't know if you can, but you try anyway.
+<br><br>
+<<link [[Next (<<print getTimeString(_timeCalc)>>)|Mine Birth 3]]>><<run setPlayerLitterBorn()>><<pass _timeCalc>><</link>>
+
+
+
+:: Mine Birth 3
+<<effects>><<set $litter_size to getLabouringLitter("pc").length>><<person1>>
+
+You awaken in a dark cave.
+
+<<if $litter_size is 1>>
+	The <<person>> notices you awaken. "Don't be alarmed. Your child is safe.
+	<<if $phase is 0>>
+		It has been sent to the orphanage."
+	<<elseif $phase is 1>>
+		It'll be sent to the forest when it can fend for itself."
+	<</if>>
+<<else>>
+	The <<person>> notices you awaken. "Don't be alarmed, your children are safe.
+	<<if $phase is 0>>
+		They've been sent to the orphanage."
+	<<elseif $phase is 1>>
+		They'll be sent to the forest when they can fend for themselves."
+	<</if>>
+<</if>>
+<br><br>
+
+<<set $bornChildrenIds to []>>
+<<run getLabouringLitter("pc").forEach(child => $bornChildrenIds.push(child.childId))>>
+
+<<setBabyIntro "pc" "Bailey">>
+<<birthUi "pc" "mine" "home" "Mine Birth 4" 120>>
+
+
+
+:: Mine Birth 4
+<<effects>>
+
+The <<person>> helps you stand. You put your clothing back on. <<storeon "mine_birth">>
+
+<<if $first_birth or playerNormalPregnancyTotal() is 0>>
+	You feel your insides drop as you stand, but <<he>> assures you that's normal.
+	<br><br>
+
+Despite the pain, you feel a lot more comfortable walking than you did before the birth. You'd forgotten how easy it is to move without 
+	<<if $phase is 0>>
+		people
+	<<elseif $phase is 1>>
+		a litter
+	<</if>>
+	inside you.
+	<br><br>
+
+	The midwife helps you to dress.
+<<elseif between(playerNormalPregnancyTotal(), 1, 2)>>
+	You feel your insides drop as you stand. You remember this feeling from your last birth and know it's normal.
+	<br><br>
+
+	Despite the pain, you feel a lot more comfortable walking than you did before the birth. You'd forgotten how easy it is to move without 
+	<<if $phase is 0>>
+		people
+	<<elseif $phase is 1>>
+		a litter
+	<</if>>
+	inside you.
+	<br><br>
+
+	The midwife helps you to dress.
+<<elseif between(playerNormalPregnancyTotal(), 3, 7)>>
+	You feel your insides drop as you stand. You're still not used to the feeling.
+	<br><br>
+
+	You get walking again quite easily. It's a little awkward, but the transition isn't as bad as it used to be. It's still easier to move around when there isn't
+	<<if $phase is 0>>
+		people
+	<<elseif $phase is 1>>
+		a litter
+	<</if>>
+	inside you.
+	<br><br>
+
+	The midwife still insists on helping you dress.
+<<elseif between(playerNormalPregnancyTotal(), 8, 19)>>
+	You stand up without a hitch. There's hardly any difference in feeling anymore, although you do feel much more nimble.
+	<br><br>
+
+	<<He>> looks impressed at your mobility, only keeping an arm around you for stability. "I don't see many people get back up that quickly. You must be hardy!"
+	<br><br>
+
+	The midwife still insists on helping you dress.
+<<elseif playerNormalPregnancyTotal() gte 20>>
+	You stand up without assistance, feeling empty inside. You already miss the feeling of being pregnant.
+	<br><br>
+
+	<<He>> stares at you, mouth agape, as you walk without any assistance. You throw your clothes back on quickly.
+	<br><br>
+
+	"Y-you should be good to go," <<he>> says.
+<</if>>
+<br><br>
+A <<person2>><<person>> walks into the cave. "Follow me," <<he>> says. You reluctantly walk with <<him>><<if playerNormalPregnancyTotal() lte 7>>, the <<person1>><<person>> helps you walk until you can manage yourself<<person2>><</if>>.
+
+<<if Time.hour lte 5 or Time.hour gte 21>>
+	The <<person>> brings you to a cave full of people. The guard at the gate opens it and closes it behind you.
+	<br><br>
+	<<link [[Next|Mine Night]]>><<endevent>><</link>>
+	<<exit>>
+<</if>>
+
+<<switch $mine.job.current>>
+	<<case "mining">>
+		The <<person>> brings you to a group of slaves. <<He>> chains you to the rest of them and walks off.
+		<br><br>
+		<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+	<<case "minecarts">>
+		The <<person>> brings you to a minecart track and attaches a chain hanging off a rail on the ceiling to your shackles and walks off.
+		<br><br>
+		<<link [[Next|Mine Job Minecarts]]>><<endevent>><</link>>
+	<<case "cleaning">>
+		The <<person>> brings you to the guard room. "Get to work," <<he>> says as <<he>> sits in a chair.
+		<br><br>
+		<<link [[Next|Mine Job Cleaning]]>><<endevent>><</link>>
+	<<default>>
+		Please Report this Error in the #bug-reports channel of the Degrees of Lewdity Discord Server 
+<</switch>>

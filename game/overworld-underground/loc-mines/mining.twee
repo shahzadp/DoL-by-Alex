@@ -1,0 +1,272 @@
+:: Mine Job Mining Intro
+<<effects>><<wearProp "pickaxe">>
+
+The <<person>> attaches your shackles to those of two other slaves and shoves a pickaxe into your arms.
+<br><br>
+"All right, listen up all of you," <<he>> yells. "You are here to mine. If you slack off, you will be punished. You must give any crystals, gems, or anything shiny to me. If you try to sneak one of them past me, you'll get punished."
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Job Mining]]>><</link>>
+
+
+
+:: Mine Job Mining
+<<effects>><<wearProp "pickaxe">>
+
+You're in a tunnel. The sounds of pickaxes hitting rocks surround you.
+<<if $exposed gte 1>>
+	The guards openly stare at your <<lewdness>>.
+<</if>>
+<<if isPregnancyEnding()>>
+	<<generate1>>
+	You clutch your stomach and go to your knees. A <<person1>><<person>> notices you. <<He>> rushes to your side, removing your chains. You slip out of consciousness as <<he>> lifts you.
+	<br><br>
+	<<link [[Next|Mine Birth]]>><</link>>
+<<elseif $stress gte $stressmax>>
+	You've pushed yourself too much.
+	<br><br>
+
+	<<passout>>
+	<<link [[Everything fades to black...|Mine Job Mining Passout]]>><<endevent>><</link>>
+<<elseif Time.hour lte 5 or Time.hour gte 21>>
+	<br><br>
+	<<link [[Next|Mine Job Mining End]]>><</link>>
+<<elseif $mine.hope gte 30 and $mine.song isnot 1>>
+	<<generate1>><<person1>>
+	<<set $mine.song to 1>>
+	You hear a soft humming. The other slaves start looking around for the source as the humming develops into singing. <<stress -5>><<lstress>>
+	<br><br>
+	The guards notice as well. "Who's singing?!" a <<person>> yells. Everyone remains silent as the singing continues. A second voice emerges from the silence, joining in with the first. "Anyone who's singing will be severely punished!" the <<person>> shouts.
+	<br><br>
+	The threat only serves to spark more voices joining in. As the guard shouts louder, more and more voices join in, until everyone is singing together. <<stress -5>><<lstress>><<trauma -5>><<ltrauma>>
+	<br><br>
+	<<link [[Join in|Mine Job Mining Song]]>><<set $phase to 0>><</link>>
+	<br>
+	<<link [[Stay silent|Mine Job Mining Song]]>><<set $phase to 1>><</link>>
+<<else>>
+	<br><br>
+	<<link [[Focus on mining (1:00)|Mine Job Mining Event]]>><<pass 1 hours>><<set $phase to 0>><<tiredness 5>><</link>><<ggtiredness>>
+	<br>
+	<<link [[Pretend to mine (1:00)|Mine Job Mining Event]]>><<pass 1 hours>><<set $phase to 1>><<stress 3>><</link>><<gstress>>
+	<br><br>
+	<<mine_shackle_text>>
+	<br>
+	<<link [[Damage your shackles (1:00)|Mine Job Mining Event]]>><<pass 1 hours>><<set $phase to 2>><<set $mine.job.mining.shackle -= 1>><<stress 15>><</link>><<ggstress>>
+	<<if $mine.favor.mining is 1>>
+		<br>
+		<<link [[Ask for a distraction|Mine Job Mining Distraction]]>><</link>>
+	<</if>>
+<</if>>
+
+
+
+:: Mine Job Mining Event
+<<effects>><<wearProp "pickaxe">>
+<<if $phase is 0>>
+	You focus on actually mining.
+	<<print either(
+		"You find a gem and give it to the guard.",
+		"A rock falls onto your head. <<pain 10>><<ggpain>> ",
+		"You lift chunks of rock into a minecart. <<tiredness 10>><<ggtiredness>>",
+		"You find a crystal and give it to the guard.",
+		"You find a gem and give it to the guard.",
+		"You break a large rock off the tunnel wall."
+	)>>
+<<elseif $phase is 1>>
+	You make it look like you're mining. You hope the guards don't notice.
+<<else>>
+	You start to bash your shackles with the pickaxe, but you pretend to mine when guards are looking.
+<</if>>
+<<if $mine.job.mining.shackle is 0>>
+	<<mine_unshackle>>
+	With a heavy strike, <span class="green">your shackles break from your feet.</span>
+	<br><br>
+	You look around and see none of the guards are looking at you. You notice a ring of keys on the belt of one of the guards.
+	<br><br>
+	<<link [[Run off into the tunnels|Mine Escape]]>><<endevent>><</link>>
+	<br>
+	<<link [[Attack the guard|Mine Revolt]]>><<generate1>><</link>>
+<<else>>
+
+<br><br>
+<<cleareventpool>>
+
+<<addinlineevent "nothing" 1.5>>
+	You go on without interruption.
+	<br><br>
+	<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "scream" 1.5>>
+	You hear a scream echo through the tunnels. One of the guards chuckles. <<stress 10>><<trauma 5>><<ggstress>><<gtrauma>>
+	<br><br>
+	<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "explosion" 1.5>>
+	The rumbling of a distant explosion threatens to send you to the ground, but you manage to keep your footing. <<stress 10>><<ggstress>>
+	<br><br>
+	<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<addinlineevent "collapse" 0.5>>
+	<<generatey1>><<generate2>>
+	A nearby <<person1>><<person>> collapses onto the rock. A guard notices almost immediately and walks over. "This isn't break time. Get up," <<person2>><<he>> says as <<he>> kicks <<person1>><<him>>. <span class="red"><<He>> doesn't react.</span>
+	<br><br>
+	The guard shouts and two guards come, they unlock the <<person>>'s shackles and drag <<him>> away. <<stress 5>><<gstress>><<trauma 5>><<gtrauma>><<mine_hope -1>><<lhope>>
+	<br><br>
+	<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<if $mine.favor.mining isnot 1 and $mine.distraction.mining is undefined>>
+	<<addinlineevent "favor">>
+		<<generatey1>><<generate2>>
+		You and a <<person1>><<person>> start moving rocks into a minecart. <<He>> has a tough time with a particularly large rock. You grab one end and <<he>> grabs the other. As you lift it into the cart, a gem falls out of <<his>> pocket.
+		<br><br>
+		You look each other in the eye. <<His>> face is full of fear. "Hey!" a guard yells from across the tunnel. "I saw that!" <<person2>><<He>> rushes over and looks at the two of you. "Which one of you thought you could sneak this past me?" <<he>> asks, slipping the gem into a satchel at <<his>> waist.<<person1>>
+		<br><br>
+		<<link [[Take the blame|Mine Job Mining Favor]]>><<set $phase to 0>><<set $mine.favor.mining to 1>><</link>>
+		<br>
+		<<link [[Tell on <<him>>|Mine Job Mining Favor]]>><<set $phase to 1>><<stress 10>><<trauma 10>><</link>><<ggstress>><<ggtrauma>>
+	<</addinlineevent>>
+<</if>>
+
+<<addinlineevent "mouth">>
+	<<generate1>><<generatey2>>
+	"Spit that out!" a <<person1>><<person>> shouts. <<He>> rushes over to a <<person2>><<person>>, <<person1>><<he>> sticks <<his>> hand out. "Give it. Now." 
+	<br><br>
+	The <<person2>><<person>>'s face is full of fear. The <<person1>><<person>> forces <<his>> hand into the <<person2>><<person>>'s mouth and digs around before pulling out a gem. <<person1>><<He>> slips it into <<his>> satchel before whipping out <<his>> baton and bashing the <<person2>><<person>> on the head with it.
+	<br><br>
+	<<He>> falls to the floor before being dragged away by the <<person1>><<person>>. <<stress 10>><<ggstress>><<tiredness 10>><<ggtiredness>><<mine_hope -1>><<lhope>>
+	<br><br>
+	<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+<</addinlineevent>>
+
+<<if $mine.favor.job.night is "gem" and $mine.favor.night isnot 1 and $mine.distraction.night is "inprogress">>
+	<<addinlineevent "favor_gem">>
+		<<set $mine.favor.night to 1>>
+		<<set $mine.distraction.night to "complete">>
+		You find a <span class="blue"><<print either("gem","crystal")>>.</span> You look around to see if any guards are watching before grabbing it.
+		<br><br>
+		<<link [[Next|Mine Job Mining]]>><<endevent>><</link>>
+	<</addinlineevent>>
+<</if>>
+
+<<runeventpool>>
+<</if>>
+
+
+
+:: Mine Job Mining End
+<<effects>><<generate1>><<person1>>
+
+A guard looks at <<his>> watch. "Day's over!" <<he>> yells. The guards go through the line and separate all the slaves from each other. "Alright, move it!"
+<br><br>
+You walk with them until you reach a metal gate leading to a small cave. The group filters through the gate, and when everyone is inside, the guard slams the gate shut.
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Night]]>><</link>>
+
+
+
+:: Mine Job Mining Distraction
+<<effects>>
+<<loadNPC 0 "mine_mining">>
+
+You get closer to the <<person1>><<person>>.
+<br><br>
+<<if $speech_attitude is "meek">>
+	"Can you distract the guards for me?" you ask.
+<<elseif $speech_attitude is "bratty">>
+	"I need you to distract the guards,"" you say.
+<<else>>
+	"I want you to distract the guards," you say.
+<</if>>
+<<He>> looks around in worry. "When do you want it done?" <<he>> asks.
+<br><br>
+<<mine_distract_links "Mine Job Mining Distraction Set">>
+
+
+
+:: Mine Job Mining Distraction Set
+<<effects>><<set $mine.distraction.mining to $phase>><<unset $mine.favor.mining>>
+
+You tell <<him>> you want the distraction to happen <<mine_distract_time>>. <<He>> nods.
+<br><br>
+<<He>> looks at the guards and quickly looks away, acting like you weren't talking to <<him>>.
+<<clearNPC "mine_mining">>
+<<endevent>>
+<br><br>
+<<link [[Next|Mine Job Mining]]>><</link>>
+
+
+
+:: Mine Job Mining Song
+<<effects>><<wearProp "pickaxe">>
+
+<<if $phase is 0>>
+	You start singing along with the rest of them.
+<<else>>
+	You decide to stay silent to avoid potential punishment.
+<</if>>
+The singing swells as music echoes through the tunnels, each voice providing its own element to the growing song. <<stress -10>><<llstress>><<trauma -10>><<lltrauma>>
+<br><br>
+The guards attempt to quell the song, but they fail. Every attempt makes the song louder.
+<<if $phase is 0>>
+	<span class="green">They can't stop us all.</span>
+<<else>>
+	They can't stop everyone.
+<</if>>
+<<mine_hope 3>><<ggghope>><<stress -20>><<lllstress>><<trauma -20>><<llltrauma>>
+<br><br>
+The song continues until it reaches its end. "Get back to work!" the <<person>> shouts. Everyone complies, but there's a renewed sense of life about.
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Job Mining]]>><</link>>
+
+
+
+:: Mine Job Mining Favor
+<<effects>>
+
+<<if $phase is 0>>
+	<<saveNPC 0 "mine_mining">>
+	<<set $mine.favor.mining to 1>>
+	<<if $speech_attitude is "meek">>
+		"It was me," you say quietly.
+	<<elseif $speech_attitude is "bratty">>
+		"I stole your stupid gem," you say proudly.
+	<<else>>
+		"I did it," you say.
+	<</if>>
+	<<person2>>
+	The <<person>> pulls out <<his>> baton and bashes you on the head with it. While you're dazed, <<he>> disconnects your shackles from the other slaves' and forcefully pulls you with <<him>>. <<mine_hope 3>><<ggghope>><<pain 10>><<ggpain>>
+	<br><br>
+	<<link [[Next|Mine Punishment]]>><</link>>
+<<else>>
+	<<person1>>
+	<<if $speech_attitude is "meek">>
+		"It was <<him>>," you say quietly.
+	<<elseif $speech_attitude is "bratty">>
+		"<<He>> stole your stupid gem," you state.
+	<<else>>
+		"<<He>> did it," you say.
+	<</if>>
+	<<person2>>
+	The <<person>> pulls out <<his>> baton and bashes <<person1>><<person>> on the head with it.<<stress 10>><<trauma 10>><<ggstress>><<ggtrauma>>
+	<br><br>
+	<<person2>><<He>> disconnects the <<person1>><<person>>'s shackles from the other slaves' and forcefully pulls <<him>> with <<person2>><<him>>.<<mine_hope -3>><<lllhope>>
+	<br><br>
+	<<endevent>>
+	<<link [[Next|Mine Job Mining]]>><</link>>
+<</if>>
+
+:: Mine Job Mining Return
+<<effects>><<wearProp "pickaxe">>
+
+The <<person>> attaches your shackles to those of two other slaves and shoves a pickaxe into your arms.
+<br><br>
+"Remember, you're here to mine," <<he>> yells. "You don't want to get punished again."
+<br><br>
+<<endevent>>
+<<link [[Next|Mine Job Mining]]>><</link>>

@@ -428,7 +428,7 @@ window.canCookFish = canCookFish;
  * @returns {boolean}
  */
 function canStartFishing() {
-	return V.debug === 1 || (!pcAreArmsBound("any") && V.worn.handheld.type.includes("fishing_rod"));
+	return V.debug || (!pcAreArmsBound("any") && V.worn.handheld.type.includes("fishing_rod"));
 }
 window.canStartFishing = canStartFishing;
 

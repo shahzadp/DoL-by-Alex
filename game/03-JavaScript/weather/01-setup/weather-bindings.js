@@ -123,4 +123,8 @@ setup.WeatherBindings = {
 			"locationSmoke", // Each location has different smoke emitter locations
 		],
 	},
+	sidebarSky: {
+		variable: () => Weather.sidebar.sidebarSkyDisabled,
+		layers: ["all"],
+	},
 };

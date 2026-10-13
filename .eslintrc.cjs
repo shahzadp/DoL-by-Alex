@@ -407,6 +407,7 @@ module.exports = {
 		ObservableValue: "readonly",
 		CanvasModel: "readonly",
 		PRNG: "readonly",
+		MineMaze: "readonly",
 		// Third-party
 		define: "readonly",
 		iro: "readonly",

@@ -13,7 +13,7 @@ function statusCheck(name) {
 	 * When debugging, this temp var not being set will cause an error in scenes that use legacy temporary variables.
 	 * These should be replaced with C.npc.Robin instead of _robin, for example.
 	 */
-	if (V.debug === 0) {
+	if (!V.debug) {
 		T[name.toLowerCase()] = nnpc;
 	}
 	/* /To remove later */

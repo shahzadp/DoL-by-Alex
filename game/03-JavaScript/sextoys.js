@@ -11,14 +11,13 @@ window.playerPenisSize = playerPenisSize;
 
 function npcHasStrapon(index = V.index) {
 	if (typeof index !== "number") {
-		if (V.options.debugdisable === "f" || V.debug === 1)
+		if (V.options.debugdisable === "f" || V.debug)
 			Errors.report(`[npcHasStrapon]: index must be a number, was ${typeof index}.`, {
 				index,
 			});
 		return false;
 	} else if (index < 0 || index > 5) {
-		if (V.options.debugdisable === "f" || V.debug === 1)
-			Errors.report(`[npcHasStrapon]: index must be between 0 and 5 inclusive, was ${index}.`, { index });
+		if (V.options.debugdisable === "f" || V.debug) Errors.report(`[npcHasStrapon]: index must be between 0 and 5 inclusive, was ${index}.`, { index });
 		return false;
 	}
 	// index is 0 to 5

@@ -765,6 +765,46 @@ Config.navigation.override = function (dest) {
 			case "Street Dog Growl 2":
 				return "Street Dog TF React Growl 2";
 
+			case "Mines Intro":
+			case "Mines Intro 2":
+			case "Mines Intro Kiss":
+			case "Mines Intro Kiss Refuse":
+			case "Mines Guards":
+			case "Mines Guards Kiss":
+			case "Mines Guards Beer":
+			case "Mines Guards Climb":
+			case "Mines Guards Skirt":
+			case "Mines Guards Skirt Endure":
+			case "Mines Guards Skirt Endure 2":
+			case "Mines Guards Bondage":
+			case "Mines Guards Bondage Endure":
+			case "Mines Guards Bondage Overpower":
+			case "Mines Guards Room":
+			case "Mines Guards Rape":
+			case "Mines Guards Rape Finish":
+			case "Mines Guards Refuse":
+			case "Mines Guards Gangrape":
+			case "Mines Guards Gangrape Finish":
+			case "Mines Guards Clean":
+			case "Mines Guards Dig":
+			case "Mines Guards Escape":
+			case "Mines":
+			case "Mines Sleeping Quarters":
+			case "Mines Canteen":
+			case "Mines Passout":
+			case "Mines Passout Rape":
+			case "Mines Passout Rape Finish":
+			case "Mines Passout Rape Finish 2":
+			case "Mines Passout Tentacles":
+			case "Mines Passout Tentacles Finish":
+			case "Mines Passout Warn":
+			case "Mines Passout Warn 2":
+			case "Mines Passout Warn 3":
+			case "Mines Passout Run":
+			case "Mines Passout Run 2":
+			case "Mines Escape":
+				return "Flats Auction";
+
 			default:
 				return false;
 		}

@@ -69,6 +69,7 @@ function initSpecialClothes() {
 		{ name: "prison trousers", 				sets: ["bad_end", "prison"] },
 		{ name: "prison jumpsuit", 				sets: ["bad_end", "prison"] },
 		{ name: "unbound straightjacket", 		sets: ["bad_end", "asylum"] },
+		{ name: "mining helmet", 				sets: ["bad_end", "mine"] },
 
 		{ name: "initiate's robe", 				sets: ["temple", "temple_initiate"] },
 		{ name: "monk's habit", 				sets: ["temple", "temple_monk_and_nun"] },
@@ -396,6 +397,19 @@ function initSpecialClothes() {
 			feat: true,
 			featCost: 5,
 			icon: "clothes/straightjacket.png",
+		},
+		mine: {
+			text: "mining helmet",
+			requirements: () => V.mine?.freed,
+			hint: "break the chains that bind",
+			shop: ["forest"],
+			subsetOf: ["bad_end"],
+			feat: true,
+			featCost: 5,
+			icon: "clothes",
+			iconSlot: "head",
+			iconIndex: 126,
+			iconColor: "black",
 		},
 
 		// Temple
@@ -816,6 +830,7 @@ function specialClothesUpdate() {
 	if (!V.specialClothes.some(item => item.name === "familiar collar")) V.specialClothes.push({ name: "familiar collar", unlocked: 0 });
 	if (!V.specialClothes.some(item => item.name === "butterfly eyepatch")) V.specialClothes.push({ name: "butterfly eyepatch", unlocked: 0 });
 	if (!V.specialClothes.some(item => item.name === "rose eyepatch")) V.specialClothes.push({ name: "rose eyepatch", unlocked: 0 });
+	if (!V.specialClothes.some(item => item.name === "mining helmet")) V.specialClothes.push({ name: "mining helmet", unlocked: 0 });
 
 	// Delete any entries that do not have a matching setup object.
 	V.specialClothes.forEach((clothing, index) => {

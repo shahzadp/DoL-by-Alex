@@ -7,7 +7,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "lightningPulse",
 			drawCondition() {
-				return true;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				duration: 1, // seconds
@@ -51,7 +51,10 @@ Weather.Renderer.Layers.add({
 	effects: [
 		{
 			effect: "lightning",
-			drawCondition: () => Weather.enableLightning,
+			// eslint-disable-next-line object-shorthand
+			drawCondition: function () {
+				return Weather.enableLightning && !this?.renderInstance.sidebarSkyDisabled;
+			},
 			params: {},
 			bindings: {
 				lightningFrequency() {
@@ -70,7 +73,10 @@ Weather.Renderer.Layers.add({
 	effects: [
 		{
 			effect: "lightning",
-			drawCondition: () => Weather.enableLightning,
+			// eslint-disable-next-line object-shorthand
+			drawCondition: function () {
+				return Weather.enableLightning && !this?.renderInstance.sidebarSkyDisabled;
+			},
 			params: {},
 			bindings: {
 				lightningFrequency() {
@@ -89,7 +95,10 @@ Weather.Renderer.Layers.add({
 	effects: [
 		{
 			effect: "lightning",
-			drawCondition: () => Weather.enableLightning,
+			// eslint-disable-next-line object-shorthand
+			drawCondition: function () {
+				return Weather.enableLightning && !this?.renderInstance.sidebarSkyDisabled;
+			},
 			params: {},
 			bindings: {
 				lightningFrequency() {
