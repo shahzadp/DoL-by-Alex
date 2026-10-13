@@ -66,17 +66,20 @@ not be committed.
 
 # apk size
 
-A release build is **arm64-v8a only**: `scripts/build_app_flutter.js` passes
-`--target-platform=android-arm64`, because Flutter's default of arm64-v8a plus
-armeabi-v7a plus x86_64 ships the engine's native libraries and a Dart snapshot
-per ABI, which is most of the difference from the 26.4 MB Capacitor apk. The
-game payload itself — 50.5 MB of HTML plus 13.3 MB of images — is byte-identical
-to what the Capacitor build shipped.
+A release build is **arm64-v8a only** and about **34 MB**.
+`scripts/build_app_flutter.js` passes `--target-platform=android-arm64`, because
+Flutter's default of arm64-v8a plus armeabi-v7a plus x86_64 ships the engine's
+native libraries and a Dart snapshot per ABI. Google Play requires 64-bit, so
+publishing is unaffected; what is given up is 32-bit-only phones and the x86
+emulator. To get the emulator back, add `android-x64` next to `android-arm64` in
+that script rather than dropping the flag - armeabi-v7a is the one with no
+remaining use.
 
-The trade is deliberate: no 32-bit-only phones, and no x86 emulator. Google Play
-requires 64-bit support, so publishing is unaffected. To test on an x86
-emulator, add `android-x64` next to `android-arm64` in that script rather than
-dropping the flag — armeabi-v7a is the one with no remaining use.
+The 18,593 pngs are re-encoded as **lossless WebP** on every asset prepare,
+taking the artwork from 12.32 MB to 4.82 MB. See
+`scripts/convert_images_to_webp.py` for why lossless rather than lossy, and why
+the files keep their `.png` names. Set `DOL_WEBP=off` to ship the original pngs,
+which is the first thing to try if the artwork ever looks wrong.
 
 # do not change the storage origin
 

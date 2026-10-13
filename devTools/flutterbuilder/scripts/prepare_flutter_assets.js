@@ -39,6 +39,13 @@ fs.copyFileSync(path.resolve('www/flutter_additions.js'), path.resolve(webDir, '
  */
 const sourceImg = path.resolve(gameRoot, 'img');
 const targetImg = path.resolve(webDir, 'img');
+
+/*
+ * WebP re-encoding. See scripts/convert_images_to_webp.py for why the files keep
+ * their .png names and why lossless rather than lossy.
+ */
+const webpEnabled = (process.env.DOL_WEBP || 'on') !== 'off';
+
 let copied = 0,
 	skipped = 0,
 	removed = 0;
@@ -66,6 +73,20 @@ function syncDir(src, dest) {
 			syncDir(s, d);
 			continue;
 		}
+		/*
+		 * PNGs are re-encoded as lossless WebP in place, and that step owns them.
+		 *
+		 * They must not be copied here. The skip test below compares source and
+		 * destination mtime, but a converted file's mtime is the conversion time,
+		 * not the source's, so it would never match: every build would copy the
+		 * pristine PNG back over the WebP bytes and then re-convert, making the
+		 * conversion cost ~2 minutes on every single build instead of once. The
+		 * converter keeps its own manifest for exactly this reason.
+		 */
+		if (webpEnabled && file.toLowerCase().endsWith('.png')) {
+			skipped++;
+			continue;
+		}
 		// .mtimeMs can have sub-ms precision that copy does not round-trip
 		const same = fs.existsSync(d) && Math.round(fs.statSync(s).mtimeMs) === Math.round(fs.statSync(d).mtimeMs);
 		if (same) {
@@ -78,6 +99,35 @@ function syncDir(src, dest) {
 }
 syncDir(sourceImg, targetImg);
 console.log(`img: copied ${copied}, skipped ${skipped}, removed ${removed}`);
+
+/*
+ * Re-encode the pngs as lossless WebP, in place.
+ *
+ * Set DOL_WEBP=off to ship the original pngs; the sync above then owns them like
+ * any other file. Worth keeping as a switch, because "the artwork looks wrong
+ * and I need to bisect" is a situation where a one-line revert is worth more
+ * than a clean design.
+ */
+if (webpEnabled) {
+	const converter = path.resolve('scripts/convert_images_to_webp.py');
+	if (!fs.existsSync(converter)) {
+		throw new Error(`missing ${converter}`);
+	}
+	const python = process.env.PYTHON || 'python';
+	try {
+		// stdio inherited: 18,593 files take a while and silence would look like
+		// a hang.
+		require('child_process').execFileSync(python, [converter, sourceImg, targetImg], {
+			cwd: __dirname,
+			stdio: 'inherit',
+		});
+	} catch (e) {
+		throw new Error(
+			`webp conversion failed (${e.message}). Install Pillow -- pip install Pillow -- ` +
+				'or set DOL_WEBP=off to ship the original pngs.'
+		);
+	}
+}
 
 // inject our glue ahead of the game's first script
 const anchor = '<script ';

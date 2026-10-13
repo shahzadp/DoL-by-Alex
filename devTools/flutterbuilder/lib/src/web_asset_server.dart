@@ -106,10 +106,11 @@ class WebAssetServer {
     missCount++;
     try {
       final data = await _bundle.load('$assetRoot/$encodedPath');
-      final asset = WebAsset(
-        _contentTypeFor(encodedPath),
-        data.buffer.asUint8List(),
+      final bytes = data.buffer.asUint8List(
+        data.offsetInBytes,
+        data.lengthInBytes,
       );
+      final asset = WebAsset(_contentTypeFor(encodedPath, bytes), bytes);
       _remember(encodedPath, asset);
       return asset;
     } on FlutterError {
@@ -143,11 +144,35 @@ class WebAssetServer {
   /// Defaults to `application/octet-stream` for anything unrecognised rather
   /// than guessing: a wrong-but-valid type (image/png for a .txt) is worse than
   /// an honest generic one, because a strict consumer can reject the bytes.
-  static String _contentTypeFor(String path) {
+  ///
+  /// The extension is a hint, not the truth. The png artwork is re-encoded as
+  /// lossless WebP by scripts/convert_images_to_webp.py *while keeping its .png
+  /// name* -- the story builds most of its image paths at runtime, so renaming
+  /// the files would mean rewriting a 50 MB document by regex and risking an
+  /// image that silently fails to load. Browsers pick a decoder by sniffing the
+  /// bytes rather than the extension, so this renders correctly either way, but
+  /// serving the type that matches the bytes is still the honest thing to do and
+  /// costs one comparison on a 12-byte header.
+  static String _contentTypeFor(String path, Uint8List bytes) {
+    if (_isWebp(bytes)) return 'image/webp';
     final dot = path.lastIndexOf('.');
     if (dot < 0) return 'application/octet-stream';
     return _contentTypes[path.substring(dot + 1).toLowerCase()] ??
         'application/octet-stream';
+  }
+
+  /// RIFF container with a WEBP form type.
+  static bool _isWebp(Uint8List bytes) {
+    if (bytes.length < 12) return false;
+    // 'RIFF' .... 'WEBP'
+    return bytes[0] == 0x52 &&
+        bytes[1] == 0x49 &&
+        bytes[2] == 0x46 &&
+        bytes[3] == 0x46 &&
+        bytes[8] == 0x57 &&
+        bytes[9] == 0x45 &&
+        bytes[10] == 0x42 &&
+        bytes[11] == 0x50;
   }
 
   static const Map<String, String> _contentTypes = <String, String>{
