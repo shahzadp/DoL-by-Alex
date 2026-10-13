@@ -673,7 +673,8 @@ function applyStartingSettings(starting) {
 	V.player.bodyshape = player.bodyshape ?? V.player.bodyshape;
 	V.player.skin.color = player.skinColour ?? V.player.skin.color;
 	V.player.ballsExist = player.ballsExist ?? V.player.ballsExist;
-	V.player.freckles = player.freckles ?? V.player.freckles;
+	V.player.skin.faceFreckles = player.faceFreckles ?? V.player.skin.faceFreckles;
+	V.player.skin.bodyFreckles = player.bodyFreckles ?? V.player.skin.bodyFreckles;
 	V.player.breastsize = player.breastsize ?? V.player.breastsize;
 	V.player.penissize = player.penissize ?? V.player.penissize;
 	V.player.bottomsize = player.bottomsize ?? V.player.bottomsize;
@@ -881,7 +882,8 @@ function settingsToExportObject() {
 				bodyshape: V.player.bodyshape,
 				skinColour: V.player.skin.color,
 				ballsExist: V.player.ballsExist,
-				freckles: V.player.freckles,
+				faceFreckles: V.player.skin.faceFreckles,
+				bodyFreckles: V.player.skin.bodyFreckles,
 				breastsize: V.player.breastsize,
 				penissize: V.player.penissize,
 				bottomsize: V.player.bottomsize,
@@ -1181,8 +1183,10 @@ window.settingNameFromVarName = function (varName) {
 			return "Natural Skintone";
 		case "ballsExist":
 			return "Balls";
-		case "freckles":
-			return "Freckles";
+		case "faceFreckles":
+			return "Face freckles";
+		case "bodyFreckles":
+			return "Body freckles";
 		case "breastsize":
 			return "Breast size";
 		case "penissize":
@@ -1835,12 +1839,24 @@ function settingValueNameFromValue(varName, value) {
 					return "Nonexistent";
 			}
 			break;
-		case "freckles":
+		case "faceFreckles":
 			switch (value) {
 				case true:
 					return "Existent";
 				case false:
 					return "Nonexistent";
+				case "random":
+					return "Random";
+			}
+			break;
+		case "bodyFreckles":
+			switch (value) {
+				case "none":
+					return "None";
+				case "upper":
+					return "Upper body";
+				case "full":
+					return "Full body";
 				case "random":
 					return "Random";
 			}
@@ -2468,7 +2484,8 @@ function randomiseCharacterAppearance() {
 		"bgyaru"
 	);
 	V.player.ballsExist = either(true, false);
-	V.player.freckles = either(true, false);
+	V.player.skin.faceFreckles = either(true, false);
+	V.player.skin.bodyFreckles = either("none", "upper", "full");
 	V.player.breastsize = random(0, 4);
 	V.player.penissize = random(0, 2);
 	V.player.bottomsize = random(0, 3);

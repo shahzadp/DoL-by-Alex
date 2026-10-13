@@ -37,6 +37,19 @@ const combatCloseMouth = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
+		freckles: {
+			srcfn(options) {
+				return `${options.src}mouth/${options.mouth.state}-base-freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showMouth && !!options.faceFreckles;
+			},
+			animationfn(options) {
+				return options.animKeyMouth;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase + 0.1,
+		},
 
 		tongue: {
 			srcfn(options) {

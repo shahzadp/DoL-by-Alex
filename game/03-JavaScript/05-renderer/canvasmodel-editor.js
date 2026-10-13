@@ -864,6 +864,7 @@ Macro.add("canvasModelEditor", {
 						selectOption("facestyle", ["default"]),
 						selectOption("ears_position", ["front", "back"]),
 						booleanOption("freckles"),
+						selectOption("bodyFreckles", ["none", "upper", "full"]),
 						booleanOption("toast"),
 						booleanOption("trauma"),
 						booleanOption("blink"),

@@ -50,6 +50,19 @@ const combatCloseVagina = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
+		freckles: {
+			srcfn(options) {
+				return `${options.src}vagina/${options.position}/freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showVagina && options.bodyFreckles === "full";
+			},
+			animationfn(options) {
+				return options.animKeyVagina;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase + 0.1,
+		},
 		penis: {
 			srcfn(options) {
 				if (V.position === "missionary" && options.vagina.state === "penetrated") {

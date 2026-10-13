@@ -230,6 +230,15 @@ DefineMacro("modelprepare-player-body", function () {
 	}
 
 	/*
+			███████ ██████  ███████  ██████ ██   ██ ██      ███████ ███████ 
+			██      ██   ██ ██      ██      ██  ██  ██      ██      ██      
+			█████   ██████  █████   ██      █████   ██      █████   ███████ 
+			██      ██   ██ ██      ██      ██  ██  ██      ██           ██ 
+			██      ██   ██ ███████  ██████ ██   ██ ███████ ███████ ███████
+		*/
+	T.modeloptions.bodyFreckles = V.player.skin.bodyFreckles;
+
+	/*
 			███████  █████   ██████ ███████
 			██      ██   ██ ██      ██
 			█████   ███████ ██      █████
@@ -239,7 +248,7 @@ DefineMacro("modelprepare-player-body", function () {
 
 	T.modeloptions.facestyle = V.facestyle || "default";
 	T.modeloptions.facevariant = V.facevariant || "default";
-	T.modeloptions.freckles = V.player.freckles === true && V.makeup.concealer !== 1;
+	T.modeloptions.freckles = V.player.skin.faceFreckles === true && V.makeup.concealer !== 1;
 	T.modeloptions.ears_position = V.earsposition;
 	T.modeloptions.toast = T.toast === true;
 	T.modeloptions.scars = false;

@@ -22,7 +22,8 @@ DolSettingsExport = {
 			"bodyshape": "classic",
 			"skinColour": "light",
 			"ballsExist": false,
-			"freckles": false,
+			"faceFreckles": false,
+			"bodyFreckles": "none",
 			"breastsize": 0,
 			"penissize": 3,
 			"bottomsize": 0
