@@ -162,6 +162,18 @@ try {
 		`--build-name=${version}`,
 		// --build-number (not --build-code) is versionCode.
 		`--build-number=${versionCode}`,
+		// arm64-v8a only. Flutter's default is arm64-v8a, armeabi-v7a and x86_64,
+		// and every one of those ABIs carries its own copy of the engine and its
+		// own Dart snapshot -- which is most of why the release apk is 68 MB
+		// against Capacitor's 26 MB. Dropping to one ABI is worth roughly half the
+		// download and a visibly faster build.
+		//
+		// The trade is explicit: no 32-bit-only phones, and no x86 emulator. Play
+		// requires 64-bit support anyway, so this does not affect publishing, and
+		// the device this is tested on is arm64-v8a. If an x86 emulator is ever
+		// needed, add 'android-x64' back here rather than reverting wholesale --
+		// armeabi-v7a is the one genuinely dead weight.
+		'--target-platform=android-arm64',
 	];
 	// The debug build gets a ".debug" applicationId suffix from the gradle
 	// build type, so it installs alongside the official app instead of
@@ -169,7 +181,8 @@ try {
 
 	// shell:true is required on Windows to reach flutter.bat. Args are simple
 	// --key=value pairs with no spaces, so cmd's re-splitting (MEMORY.md trap
-	// 9) cannot mangle them.
+	// 9) cannot mangle them. --target-platform is added above for the same
+	// reason: keep it as one token.
 	execFileSync('flutter', args, { cwd: __dirname, stdio: 'inherit', shell: process.platform === 'win32' });
 
 	const src = path.resolve('build/app/outputs/flutter-apk', `app-${variant}.apk`);

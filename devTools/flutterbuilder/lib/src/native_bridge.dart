@@ -25,30 +25,39 @@ class NativeBridge {
 
   final MethodChannel _channel;
 
-  /// Hand the player the system "save as" dialog and write [data] wherever they
-  /// choose. Returns the chosen uri, or null if the player cancelled -- a
+  /// Hand the player the system "save as" dialog and write [base64] wherever
+  /// they choose. Returns the chosen uri, or null if the player cancelled -- a
   /// cancel is a normal outcome, not an error.
+  ///
+  /// [base64] is passed through as the base64 *string* it is, not decoded to
+  /// bytes first. It has to be, and getting this wrong is silent rather than
+  /// loud: the platform channel encodes a [Uint8List] as a byte array, while the
+  /// Android side reads this argument with `call.argument<String>()`, which
+  /// returns null for bytes. Every export then failed with "no data provided",
+  /// and because that error was also being swallowed (see [_invoke]) the player
+  /// saw nothing at all. MainActivity decodes the string itself, which is also
+  /// what lets it skip the work entirely when the player cancels.
   Future<String?> saveFile({
     required String name,
     required String mimeType,
-    required Uint8List data,
+    required String base64,
   }) {
     return _invoke<String>('saveFile', <String, dynamic>{
       'name': name,
       'mimeType': mimeType,
-      'data': data,
+      'data': base64,
     });
   }
 
   /// Show a transient Android toast.
   Future<void> toast(String message, {ToastLength length = ToastLength.short}) =>
-      _invoke<void>('toast', <String, dynamic>{
+      _invokeQuietly('toast', <String, dynamic>{
         'message': message,
         'long': length == ToastLength.long,
       });
 
   /// Close the app the way the user swiping it away would.
-  Future<void> exitApp() => _invoke<void>('exitApp', null);
+  Future<void> exitApp() => _invokeQuietly('exitApp', null);
 
   Future<T?> _invoke<T>(String method, dynamic arguments) async {
     try {
@@ -56,6 +65,22 @@ class NativeBridge {
     } on MissingPluginException {
       // Not running on the Android host, or the activity has not attached yet.
       return null;
+    }
+    // PlatformException is deliberately NOT caught here. The native side uses it
+    // to report a real failure ("no data provided", "file is too large", "write
+    // failed"), and it is the only way the caller learns that. Swallowing it
+    // returned null, which the JS side reads as "the player cancelled the
+    // picker" -- so a total failure of export looked identical to a deliberate
+    // cancellation, and neither produced a message.
+  }
+
+  /// For calls whose own failure is not worth reporting.
+  ///
+  /// Showing a toast that cannot be shown must not throw, and closing the app
+  /// must not throw on the way out.
+  Future<T?> _invokeQuietly<T>(String method, dynamic arguments) async {
+    try {
+      return await _invoke<T>(method, arguments);
     } on PlatformException {
       return null;
     }

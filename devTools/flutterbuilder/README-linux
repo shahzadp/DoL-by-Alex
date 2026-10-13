@@ -53,15 +53,17 @@ committed.
 
 # apk size
 
-A release build is about **68.8 MB**, against 26.4 MB for the Capacitor one.
-That is ABIs, not the game: Flutter ships its engine's native libraries for
-arm64-v8a, armeabi-v7a and x86_64, while the Capacitor shell had no per-ABI
-engine payload. The game itself (50.5 MB of HTML plus 13.3 MB of images) is
-byte-identical to what the Capacitor build shipped.
+A release build is **arm64-v8a only**: `scripts/build_app_flutter.js` passes
+`--target-platform=android-arm64`, because Flutter's default of arm64-v8a plus
+armeabi-v7a plus x86_64 ships the engine's native libraries and a Dart snapshot
+per ABI, which is most of the difference from the 26.4 MB Capacitor apk. The
+game payload itself — 50.5 MB of HTML plus 13.3 MB of images — is byte-identical
+to what the Capacitor build shipped.
 
-If size matters more than device coverage, add `--target-platform android-arm64`
-to the `flutter build apk` invocation in `scripts/build_app_flutter.js`. That
-roughly halves the apk and costs 32-bit ARM and emulator support.
+The trade is deliberate: no 32-bit-only phones, and no x86 emulator. Google Play
+requires 64-bit support, so publishing is unaffected. To test on an x86
+emulator, add `android-x64` next to `android-arm64` in that script rather than
+dropping the flag — armeabi-v7a is the one with no remaining use.
 
 # do not change the storage origin
 

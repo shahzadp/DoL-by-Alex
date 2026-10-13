@@ -237,11 +237,16 @@ class _GameWebViewState extends State<GameWebView> {
     }
 
     try {
+      // The base64 string goes over the bridge untouched. See NativeBridge
+      // .saveFile: decoding it here is what silently broke export, because the
+      // Android side reads this argument as a String.
       final uri = await _bridge.saveFile(
         name: name,
         mimeType: mimeType ?? 'application/octet-stream',
-        data: base64Decode(base64),
+        base64: base64,
       );
+      // null here means the player dismissed the picker, which is a normal
+      // outcome and deliberately says nothing.
       if (uri != null) {
         await _bridge.toast('Saved $name');
       }
