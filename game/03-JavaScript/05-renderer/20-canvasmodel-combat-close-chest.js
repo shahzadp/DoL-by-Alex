@@ -37,6 +37,19 @@ const combatCloseChest = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
+		freckles: {
+			srcfn(options) {
+				return `${options.src}chest/${options.chest.base}-freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showChest && options.bodyFreckles !== "none";
+			},
+			animationfn(options) {
+				return options.animKeyChest;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase + 0.1,
+		},
 		breasts_front: {
 			srcfn(options) {
 				return `${options.src}chest/${options.chest.breasts}-front-job.png`;
@@ -49,6 +62,19 @@ const combatCloseChest = {
 			},
 			filters: ["body"],
 			z: CombatRenderer.indices.closeNpc + 2,
+		},
+		breasts_front_freckles: {
+			srcfn(options) {
+				return `${options.src}chest/${options.chest.breasts}-front-job-freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showChest && options.chest.base === "base-job" && V.player.breastsize > 0 && options.bodyFreckles !== "none";
+			},
+			animationfn(options) {
+				return options.animKeyChest;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeNpc + 2.1,
 		},
 		breasts_back: {
 			srcfn(options) {
