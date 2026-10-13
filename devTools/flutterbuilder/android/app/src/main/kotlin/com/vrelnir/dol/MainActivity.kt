@@ -112,14 +112,37 @@ class MainActivity : FlutterFragmentActivity() {
             return
         }
 
-        pendingSave = PendingSave(result, decodeBase64(data) ?: return)
+        pendingSave = PendingSave(result, decodeBase64(data) ?: run {
+            // decodeBase64 only returns null on something that is not base64 at
+            // all, which is worth distinguishing from a cancel.
+            result.error("badEncoding", "saveFile: payload was not valid base64", null)
+            return
+        })
 
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            setType(type)
+            setType(mimeType(type))
             putExtra(Intent.EXTRA_TITLE, name)
         }
         documentPicker.launch(intent)
+    }
+
+    /**
+     * Reduce a MIME type to something Intent.setType will accept.
+     *
+     * The game builds its export blob as `text/plain;charset=UTF-8`, so the
+     * charset rides along in the type. That is not a MIME type, and it is not
+     * merely sloppy: ACTION_CREATE_DOCUMENT matches its intent filters against
+     * this string, and a parameterised type matches no document provider. The
+     * picker either fails to resolve or opens with nothing selectable.
+     *
+     * Parameters are dropped rather than rejected, which is the correct reading
+     * of intent -- a charset says how to interpret the bytes, and the file is
+     * written as bytes either way.
+     */
+    private fun mimeType(type: String): String {
+        val bare = type.substringBefore(';').trim().lowercase()
+        return bare.ifEmpty { "application/octet-stream" }
     }
 
     private fun completeSave(result: ActivityResult) {

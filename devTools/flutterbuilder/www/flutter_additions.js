@@ -23,9 +23,23 @@
 	 * button.
 	 */
 	function bridgeReady() {
+		/*
+		 * Test for callHandler and nothing else. It is the only capability this
+		 * page ever uses -- it registers no handlers of its own.
+		 *
+		 * This used to also require addJavaScriptHandler to be a function, which
+		 * is an unrelated capability the page never touches and which
+		 * flutter_inappwebview 6.2.0-beta.3 does not necessarily expose. When it
+		 * was absent the gate was permanently false, and that failed silently
+		 * and totally: saveAs waited, gave up, and then reported the failure
+		 * through toast() -- which consults this same gate, so it logged to the
+		 * console instead of the screen. Export did nothing whatsoever, with no
+		 * error visible anywhere. Import, the back button and the loading screen
+		 * are all unaffected, which is exactly the shape of the bug.
+		 */
 		return !!(
 			window.flutter_inappwebview &&
-			typeof window.flutter_inappwebview.addJavaScriptHandler === "function"
+			typeof window.flutter_inappwebview.callHandler === "function"
 		);
 	}
 
@@ -35,6 +49,49 @@
 		return new Promise((resolve) => {
 			setTimeout(() => resolve(whenBridgeReady(attemptsLeft - 1)), 50);
 		});
+	}
+
+	/*
+	 * Show a message on the page itself.
+	 *
+	 * Exists because the toast route runs over the same bridge whose failure we
+	 * are usually trying to report: an export that failed because the bridge was
+	 * unreachable could not report itself, and the failure vanished. Anything
+	 * reported through here is visible with no bridge involved at all.
+	 */
+	function reportOnPage(message, isError) {
+		let el = document.getElementById("dol-export-status");
+		if (!el) {
+			el = document.createElement("div");
+			el.id = "dol-export-status";
+			el.style.cssText = [
+				"position:fixed",
+				"left:0",
+				"right:0",
+				"bottom:0",
+				"z-index:2147483647",
+				"background:#000",
+				"color:#eee",
+				"font:12px/1.4 monospace",
+				"padding:10px 12px",
+				"white-space:pre-wrap",
+				"word-break:break-word",
+			].join(";");
+			(document.body || document.documentElement).appendChild(el);
+		}
+		el.style.color = isError ? "#ff8a80" : "#b0bec5";
+		el.textContent = message;
+	}
+
+	function bridgeDescription() {
+		const w = window.flutter_inappwebview;
+		if (!w) return "flutter_inappwebview: absent";
+		return (
+			"flutter_inappwebview: present; callHandler=" +
+			typeof w.callHandler +
+			", addJavaScriptHandler=" +
+			typeof w.addJavaScriptHandler
+		);
 	}
 
 	function toast(message, duration) {
@@ -92,19 +149,46 @@
 	function saveAs(blob, name) {
 		name = name || "save.txt";
 
-		if (!bridgeReady()) {
+		/*
+		 * The browser fallback below cannot work here, so do not treat a missing
+		 * bridge as a reason to take it.
+		 *
+		 * This used to be a bare `if (!bridgeReady()) { browserDownload(); }`.
+		 * That is a silent no-op on Android: a WebView has no download manager,
+		 * so a synthetic <a download> click is discarded. Export appeared to do
+		 * nothing at all -- no file, no picker, no message -- which is exactly
+		 * how the real bug (a payload the native side could not read) hid for so
+		 * long.
+		 *
+		 * So the two cases are separated. No flutter_inappwebview at all means a
+		 * desktop browser, where the download path genuinely works and is worth
+		 * keeping for development. A bridge that exists but has not installed its
+		 * handler yet means the app, and there we wait rather than guess.
+		 */
+		if (typeof window.flutter_inappwebview === "undefined") {
 			browserDownload(blob, name);
 			return Promise.resolve(null);
 		}
 
-		return blobToBase64(blob)
-			.then((base64) =>
-				window.flutter_inappwebview.callHandler("DoLNative.saveFile", {
-					name: name,
-					mimeType: blob.type || "application/octet-stream",
-					data: base64,
-				})
-			)
+		return whenBridgeReady(40)
+			.then((ready) => {
+				if (!ready) {
+					throw new Error("no app bridge (" + bridgeDescription() + ")");
+				}
+
+				return blobToBase64(blob).then((base64) =>
+					window.flutter_inappwebview.callHandler("DoLNative.saveFile", {
+						name: name,
+						// Strip parameters: the game builds its blob as
+						// text/plain;charset=UTF-8, and a parameterised type is not
+						// a MIME type. MainActivity strips them too, but a value
+						// this far from its destination is worth normalising at
+						// both ends.
+						mimeType: (blob.type || "application/octet-stream").split(";")[0],
+						data: base64,
+					})
+				);
+			})
 			.then((uri) => {
 				// null means the player dismissed the picker, which is a normal
 				// outcome and must not be reported as a failure.
@@ -117,6 +201,9 @@
 				const msg = err && err.message ? err.message : String(err);
 				if (/cancel/i.test(msg)) return null;
 				console.error("[saveAs]", err);
+				// Both routes. The page is the one that cannot itself be broken by
+				// a missing bridge, which is the failure most likely to occur here.
+				reportOnPage("Export failed: " + msg, true);
 				toast("Could not save: " + msg, 1);
 				throw err;
 			});
