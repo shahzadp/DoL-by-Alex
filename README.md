@@ -28,16 +28,21 @@ _Failure to do so can lead to your work being denied._
 
 1. Set `enableLinkNumberify` to `false` in `game/01-config/sugarcubeConfig.js` (step 2 above). Leave this uncommitted: it is a per-build toggle, not a permanent setting.
 2. Compile the game.
-3. See [README in devTools/apkbuilder](devTools/apkbuilder/README-windows.txt) (or `README-linux`).
+3. See [README in devTools/flutterbuilder](devTools/flutterbuilder/README-windows.txt) (or `README-linux`).
 
-**Never change `server.hostname` or `server.androidScheme` in `capacitor.config.json`.** Those two form the WebView origin, which is what partitions `localStorage`, where saves live. Changing either silently gives every existing player an empty save. The values are pinned in `storage-origin.json` and the build fails if they drift.
+The Android shell is one builder: **`devTools/flutterbuilder`**, a Flutter app. Start with its [README](devTools/flutterbuilder/README-windows.txt) (or `README-linux`). It replaced an earlier Capacitor build, which has been removed.
+
+**Never change `kStorageOrigin` in `devTools/flutterbuilder/lib/src/storage_origin.dart`** (or the `applicationId` in its `android/app/build.gradle.kts`). Together they form the on-disk identity of every save: `localStorage` is partitioned by origin, and WebView data lives in an app-private directory keyed by package. Changing either silently gives every existing player an empty save, with no error anywhere. The values are pinned in `storage-origin.json` and the build fails if they drift.
+
+The origin is `https://localhost`, which is not a real host — the app serves the bundled game by intercepting WebView requests for that origin. An origin is scheme + host + *port*, so the obvious substitutes (`http://localhost`, `https://localhost:8080`, `https://appassets.androidplatform.net`) are all different origins and would all wipe the saves. See the builder's README for why.
 
 ## Development
 
 ### Prerequisites
 
 -   Read [Coder's-Guide](https://gitgud.io/Vrelnir/degrees-of-lewdity/-/wikis/Programming/Coder's-Guide)
--   [Node.js 22 or later](https://nodejs.org/en/) for Android builds. The game itself builds on 16+, but the Capacitor CLI requires 22+.
+-   [Node.js 22 or later](https://nodejs.org/en/) for the Android build's asset preparation. The game itself builds on 16+.
+-   [Flutter](https://docs.flutter.dev/get-started/install) 3.47.7 stable, plus JDK 21, for the Android build itself.
 
 ### Optional Prerequisites
 

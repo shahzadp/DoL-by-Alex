@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Launch theme.
+
+      This is the splash, and the only one. The app mark on the dark backdrop,
+      drawn by the Android SplashScreen API on Android 12+ and by the window
+      background below it on older releases.
+
+      There was previously a second splash here: this theme used an EMPTY icon
+      and lib/src/splash.dart drew the mark in Flutter instead, held for the
+      whole of the story load. That was wrong twice over. Android 12+ always
+      draws its own icon, so pointing it at an empty vector did not remove the
+      system splash, it just left the player looking at a bare dark screen while
+      a separate Flutter splash appeared on top. Worse, that one waited for the
+      game to load, so a splash the player had already sat through went on
+      sitting there. Letting the system splash do its job, at its own natural
+      duration, is both simpler and shorter.
+
+      #111111 is also the story's own body background (body{background-color:#111}),
+      so there is no colour flash when the game paints.
+    -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowSplashScreenBackground">@color/dol_splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_dol_mark</item>
+    </style>
+
+    <!-- Theme applied once the process has started, behind the Flutter UI.
+         Flat rather than the marked drawable: this shows for the moment between
+         the system splash handing over and Flutter's first frame, and keeping a
+         second mark alive there would be the two-splash problem all over again.
+         Same #111, so it is not visible as a change. -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@color/dol_splash_background</item>
+    </style>
+</resources>

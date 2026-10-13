@@ -1,0 +1,32 @@
+{
+  "_comment": [
+    "The WebView origin for the Android app is kStorageOrigin in",
+    "lib/src/storage_origin.dart. That origin is what partitions localStorage,",
+    "which is where the game's saves live.",
+    "",
+    "Changing either value silently gives every existing player a brand new, empty",
+    "save -- the old data is still on disk but nothing will ever read it again.",
+    "That is unrecoverable for users, so the values below are locked.",
+    "",
+    "An origin is scheme + host + port, so https://localhost, http://localhost and",
+    "https://localhost:8443 are three different origins. That rules out the usual",
+    "ways of serving a local web app (a local HTTP server, WebViewAssetLoader's",
+    "appassets.androidplatform.net) -- they all change the origin and orphan every",
+    "save. The app serves the bundled game by intercepting requests instead, which",
+    "is how Capacitor's WebViewLocalServer worked too.",
+    "",
+    "scripts/verify_storage_origin.js fails the build if these drift, if the",
+    "applicationId in android/app/build.gradle.kts drifts, or if anything calls",
+    "WebView.setDataDirectorySuffix (which moves localStorage just as effectively).",
+    "Only change them if you are prepared to invalidate existing saves, in which",
+    "case set DOL_ALLOW_ORIGIN_CHANGE=1 for that build to acknowledge it."
+  ],
+
+  "hostname": "localhost",
+  "androidScheme": "https",
+  "port": 443,
+  "appId": "com.vrelnir.dol",
+
+  "_lockedOn": "2026-10-10",
+  "_lockedReason": "initial Capacitor migration; the Flutter app must keep serving the game from exactly that origin or the migration silently wipes every player's saves"
+}
