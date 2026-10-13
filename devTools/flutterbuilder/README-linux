@@ -1,0 +1,138 @@
+android apk builder for primarily DoL, built with Flutter
+
+This is the only Android shell in the repo. It replaced a Capacitor build that
+lived at devTools/apkbuilder; that tree has been removed, and the top-level
+MEMORY.md records what state each piece of it ended in.
+
+# dependencies
+
+-   **Flutter 3.47.7 stable** (Dart 3.13), with `flutter` on PATH.
+-   **JDK 21.**
+-   **Android SDK** with platform 36, build-tools 36.0.0 and NDK 28.2.13676358.
+    This repo already has one at `../androidsdk`.
+
+Gradle is not needed: Flutter ships a wrapper in `android/`.
+
+The NDK looks unnecessary -- nothing here compiles native code, and
+`android/app/build.gradle.kts` deliberately does not set `ndkVersion`. It is
+still required: AGP reports a default `ndkVersion` whether or not you set one,
+and the Flutter Gradle plugin then insists on installing it during
+configuration.
+
+# one-time setup
+
+    ./setup_deps.sh
+
+This runs `flutter pub get` and assembles `assets/web/` from the compiled game.
+
+# building
+
+    npm run apk:debug
+    npm run apk:release
+
+The apk lands in the repository's `dist/` folder. Debug builds get a `_debug`
+suffix on the application id so they install alongside the official app instead
+of replacing it. That also gives them a separate WebView data directory, so the
+two installs do not share saves despite reporting the same origin.
+
+Release builds need your own keystore:
+
+    npm run keystore:adopt     copy the key the Capacitor build already uses
+    npm run keystore:new       generate a brand new one
+
+**Use `keystore:adopt` if you have ever shipped a Capacitor build.** Android
+refuses an update signed by a different key, so a fresh key would leave every
+existing install stuck on the old app. `key.properties` and the `.jks` are
+gitignored: back both up somewhere that is NOT this repo, because losing the key
+means you can never publish an update to an app already on a device.
+
+Before building, make sure `game/01-config/sugarcubeConfig.js` is configured for
+a mobile build (`enableLinkNumberify: false`). See "Changing the build version
+and type" in the top-level README. That toggle is per-build and should not be
+committed.
+
+# apk size
+
+A release build is about **68.8 MB**, against 26.4 MB for the Capacitor one.
+That is ABIs, not the game: Flutter ships its engine's native libraries for
+arm64-v8a, armeabi-v7a and x86_64, while the Capacitor shell had no per-ABI
+engine payload. The game itself (50.5 MB of HTML plus 13.3 MB of images) is
+byte-identical to what the Capacitor build shipped.
+
+If size matters more than device coverage, add `--target-platform android-arm64`
+to the `flutter build apk` invocation in `scripts/build_app_flutter.js`. That
+roughly halves the apk and costs 32-bit ARM and emulator support.
+
+# do not change the storage origin
+
+Saves live in `localStorage`, which is partitioned by origin. That origin is
+`kStorageOrigin` in `lib/src/storage_origin.dart` -- `https://localhost` -- and
+it is also half of the on-disk identity together with the `applicationId` in
+`android/app/build.gradle.kts`. Changing either silently gives every existing
+player an empty save.
+
+An origin is scheme + host + **port**, so `http://localhost`,
+`https://localhost:8080` and `https://appassets.androidplatform.net` are all
+*different* origins from `https://localhost`, and every one of them would wipe
+the saves. That rules out the usual ways of serving a local web app. Instead
+`GameWebView.shouldInterceptRequest` answers `https://localhost/*` straight out
+of the asset bundle, the same trick Capacitor's `WebViewLocalServer` used.
+
+Those values are pinned in `storage-origin.json`, and
+`scripts/verify_storage_origin.js` fails the build if they drift, if the
+applicationId drifts, or if anything calls `WebView.setDataDirectorySuffix`. To
+invalidate existing saves deliberately, re-run with `DOL_ALLOW_ORIGIN_CHANGE=1`
+and update the lock file in the same commit.
+
+    npm run verify:origin
+
+# exporting saves
+
+`www/flutter_additions.js` defines the `saveAs()` global that the game's export
+code calls. It rides over a JavaScript handler into `MainActivity.kt`, which
+opens the system save dialog (the Storage Access Framework) -- the same
+`ACTION_CREATE_DOCUMENT` picker the Cordova and Capacitor builds used. There is
+no first-party Flutter plugin that opens the *system* picker, which is why the
+Kotlin is still here.
+
+# the splash
+
+One splash, and it is the system's: `LaunchTheme` points
+`windowSplashScreenAnimatedIcon` at the app mark and nothing in Flutter draws
+over it. The Flutter overlay that used to be held over the story load is gone,
+along with the MutationObserver and the CSS rule hiding SugarCube's loading
+screen. Android 12+ always draws its own splash icon, so having one in Flutter as
+well meant the mark appeared twice, at two different sizes, and holding the second
+one meant seconds of dead time before the player saw anything.
+
+SugarCube's own loading screen now covers the story load rather than a blank dark
+screen. Stock it is a bare grey circle: a 100px ring with a 24px `#7f7f7f` border,
+two seconds per rotation, not even centred, with the "Loading…" text hidden by
+`text-indent:9999em`. `www/flutter_additions.js` restyles it into a thin line
+that sweeps left to right, echoing the `#ui-bar` that slides in from the left,
+with the label restored. It is monochrome on purpose: the game's UI is greyscale
+(`#111` page, `#222` surfaces, `#444` borders, `#eee` text).
+
+Two traps when editing that CSS: do not target `#init-screen>div`, because
+SugarCube hides `#init-no-js` and `#init-lacking` that way and unhiding them puts
+"JavaScript must be enabled" beside the loader; and the line and label cannot use
+flex `gap`, because the line is made from absolutely positioned pseudo-elements
+which are out of flow and ignore it.
+
+`NormalTheme`'s window background is flat `#111111` rather than the marked
+drawable so no second mark flashes between the system splash and Flutter's first
+frame. `transparentBackground: true` on the WebView keeps that handover from
+flashing white.
+
+To see the loading screen without building an APK, run `.preview/build-preview.js`.
+
+# notches and system bars
+
+The app is edge to edge (`SystemUiMode.edgeToEdge` plus
+`android:windowLayoutInDisplayCutoutMode="shortEdges"`), which is what gives the
+story the whole screen instead of a box inset by the system bars. Content is
+pushed back out of the cutouts by `SafeArea` in `lib/src/app.dart`.
+
+Do not use `env(safe-area-inset-*)` in the page for this: Chromium derives those
+insets from the display cutout, so on a three-button-navigation device they
+resolve to 0 and the story ends up under the navigation buttons.

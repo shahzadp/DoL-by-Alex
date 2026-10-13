@@ -1,0 +1,76 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Permissions match the Cordova and Capacitor builds exactly.
+
+      The game is a local document and does not need the network, but the
+      Capacitor app shipped with INTERNET and dropping it here would change how
+      the WebView behaves for the blog feature and any external link the player
+      follows, so it stays.
+
+      Note there is deliberately NO android:usesCleartextTraffic and no network
+      security config: the game is served from https://localhost and never from
+      the network.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:label="DoL by Alex"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|navigation"
+            android:hardwareAccelerated="true"
+            android:windowLayoutInDisplayCutoutMode="shortEdges"
+            android:windowSoftInputMode="adjustResize">
+            <!--
+             windowLayoutInDisplayCutoutMode="shortEdges" lets the window extend
+             into the display cutout on the short edges, which in portrait is the
+             top edge where a notch or punch-hole sits.
+
+             Without it the window is letterboxed around the cutout and the game
+             is laid out in a slightly smaller box than the screen, which is what
+             made the story's proportions look wrong.
+
+             shortEdges rather than always: it cuts out only where the cutout
+             actually is, so landscape on a non-notched phone keeps its normal
+             layout instead of pushing content under a system bar for no reason.
+
+             The cutout inset itself is consumed by the game's CSS via
+             env(safe-area-inset-*); see www/flutter_additions.js.
+        -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>

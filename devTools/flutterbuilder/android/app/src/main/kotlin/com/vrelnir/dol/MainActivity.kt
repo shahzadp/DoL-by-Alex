@@ -1,0 +1,195 @@
+package com.vrelnir.dol
+
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.util.Base64
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import java.io.FileOutputStream
+
+/**
+ * Flutter host for Degrees of Lewdity.
+ *
+ * The game itself is the bundled web app running in a WebView; this class only
+ * supplies the handful of things a web app genuinely cannot do for itself. The
+ * save dialog is the important one: it opens the real system save-as picker
+ * (Storage Access Framework), the same ACTION_CREATE_DOCUMENT dialog the Cordova
+ * and Capacitor builds used, so export behaviour is unchanged.
+ *
+ * Extends FlutterFragmentActivity rather than FlutterActivity purely for the
+ * AndroidX Activity APIs: FlutterActivity extends plain android.app.Activity
+ * and so has no registerForActivityResult, which is how the save dialog result
+ * comes back. The Fragment wrapper costs a few milliseconds of startup, which
+ * is noise against a ~3 s load of a 50 MB story.
+ */
+class MainActivity : FlutterFragmentActivity() {
+
+    private var channel: MethodChannel? = null
+
+    /**
+     * The export waiting on the system picker, if any.
+     *
+     * One at a time, deliberately. The previous builds also held a single
+     * in-flight call, and the game only ever exports from a single button, so a
+     * queue would be machinery for a case that cannot happen.
+     */
+    private var pendingSave: PendingSave? = null
+
+    private data class PendingSave(val result: MethodChannel.Result, val payload: ByteArray)
+
+    /**
+     * ACTION_CREATE_DOCUMENT via the generic launcher rather than
+     * ActivityResultContracts.CreateDocument: the contract binds the mime type
+     * at construction time, and we do not know it until the game asks.
+     */
+    private val documentPicker: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            completeSave(result)
+        }
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).also { ch ->
+            ch.setMethodCallHandler { call, result -> onMethodCall(call, result) }
+        }
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        channel?.setMethodCallHandler(null)
+        channel = null
+        super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "saveFile" -> saveFile(call, result)
+            "toast" -> toast(call, result)
+            "exitApp" -> {
+                result.success(null)
+                finish()
+            }
+            else -> result.notImplemented()
+        }
+    }
+
+    /**
+     * Open the system save-as dialog for the payload the game exported.
+     *
+     * The bytes arrive as base64 and are decoded only once the player has
+     * actually chosen a destination, so a cancelled export costs no allocation.
+     */
+    private fun saveFile(call: MethodCall, result: MethodChannel.Result) {
+        if (pendingSave != null) {
+            result.error("busy", "A save dialog is already open", null)
+            return
+        }
+
+        val name = call.argument<String>("name") ?: "save.txt"
+        val type = call.argument<String>("mimeType") ?: "application/octet-stream"
+        val data = call.argument<String>("data")
+
+        if (data == null) {
+            result.error("noData", "saveFile: no data provided", null)
+            return
+        }
+
+        // The same safety net the Capacitor SaveDialog plugin used. Compressed
+        // game saves are text and land orders of magnitude below this.
+        if (data.length > MAX_BASE64_CHARS) {
+            result.error(
+                "tooLarge",
+                "saveFile: file is too large to export (${data.length} bytes of base64)",
+                null
+            )
+            return
+        }
+
+        pendingSave = PendingSave(result, decodeBase64(data) ?: return)
+
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            setType(type)
+            putExtra(Intent.EXTRA_TITLE, name)
+        }
+        documentPicker.launch(intent)
+    }
+
+    private fun completeSave(result: ActivityResult) {
+        val pending = pendingSave
+        pendingSave = null
+        if (pending == null) return
+
+        if (result.resultCode != Activity.RESULT_OK) {
+            pending.result.success(null)
+            return
+        }
+
+        val uri: Uri? = result.data?.data
+        if (uri == null) {
+            pending.result.error("noLocation", "no location was chosen", null)
+            return
+        }
+
+        var out: FileOutputStream? = null
+        try {
+            out = FileOutputStream(contentResolver.openFileDescriptor(uri, "w")!!.fileDescriptor)
+            out.write(pending.payload)
+            out.flush()
+            pending.result.success(uri.toString())
+        } catch (e: Exception) {
+            pending.result.error("writeFailed", "saveFile: ${e.message}", null)
+        } finally {
+            try {
+                out?.close()
+            } catch (ignored: Exception) {
+                // nothing useful to do while closing
+            }
+        }
+    }
+
+    private fun toast(call: MethodCall, result: MethodChannel.Result) {
+        val message = call.argument<String>("message") ?: ""
+        val long = call.argument<Boolean>("long") ?: false
+        if (message.isNotEmpty()) {
+            Toast.makeText(this, message, if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        }
+        result.success(null)
+    }
+
+    /**
+     * Accepts either a bare base64 string or a full data: URI, so the JS side
+     * does not have to strip the prefix itself.
+     */
+    private fun decodeBase64(data: String): ByteArray? {
+        var payload = data
+        if (payload.startsWith("data:")) {
+            val comma = payload.indexOf(',')
+            if (comma < 0) return null
+            payload = payload.substring(comma + 1)
+        }
+        return try {
+            Base64.decode(payload, Base64.DEFAULT)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
+
+    companion object {
+        private const val CHANNEL = "com.vrelnir.dol/native"
+
+        /**
+         * Guard against a payload large enough to blow up the bridge. 24M base64
+         * characters is roughly 18M decoded; game saves are text and land far
+         * below this, so it is a safety net rather than a real constraint.
+         */
+        private const val MAX_BASE64_CHARS = 24 * 1024 * 1024
+    }
+}
