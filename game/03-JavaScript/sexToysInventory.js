@@ -193,7 +193,7 @@ function sexToysInventoryOnWearClick(index, category) {
 		if (V.worn.genitals.cursed === 1 && V.worn.genitals.anal_shield === 1) {
 			// if player tries to wear a butt plug but there is a cursed chastity belt fitted with an anal shield
 			document.getElementById("stiCursedText").outerHTML =
-				`<div id="stiCursedText" class="ssm_fade_in">You can't push the ` + toy.name + ` past the ` + V.worn.genitals.name + `'s anal shield</div>`;
+				`<div id="stiCursedText" class="ssm_fade_in">You can't get the ` + toy.name + ` past the ` + V.worn.genitals.name + `'s anal shield</div>`;
 			return;
 		}
 	}
