@@ -1439,6 +1439,7 @@ function dailyNPCEffects() {
 		V.kylar.timer.halls += 10 + C.npc.Kylar.lust / 4;
 		V.kylar.timer.home += 10 + C.npc.Kylar.lust / 4;
 		V.kylar.timer.street += 10 + C.npc.Kylar.lust / 4;
+		if (V.kylar.timer.letter >= 1) V.kylar.timer.letter--;
 		if (V.kylar.riddle === 1) V.kylar.riddle = 2;
 		else V.kylar.riddle = 0;
 		if (V.kylarSeen.includes("fountainIntro") && random(1, 10) >= 2) V.kylar.fountain = 1;
