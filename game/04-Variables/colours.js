@@ -295,17 +295,17 @@ setup.colours = {
 		let mean = Number(handle.mean.value);
 		let max = Number(handle.max.value);
 		if (el.dataset.skin === "min") {
-			min = Math.min(min, 100 - gap * 2);
-			mean = Math.max(mean, min + gap);
-			max = Math.max(max, mean + gap);
+			min = Math.clamp(min, 0, 100 - gap * 2);
+			mean = Math.clamp(mean, min + gap, 100 - gap);
+			max = Math.clamp(max, mean + gap, 100);
 		} else if (el.dataset.skin === "mean") {
 			mean = Math.clamp(mean, gap, 100 - gap);
-			min = Math.min(min, mean - gap);
-			max = Math.max(max, mean + gap);
+			min = Math.clamp(min, 0, mean - gap);
+			max = Math.clamp(max, mean + gap, 100);
 		} else {
-			max = Math.max(max, gap * 2);
-			mean = Math.min(mean, max - gap);
-			min = Math.min(min, mean - gap);
+			max = Math.clamp(max, gap * 2, 100);
+			mean = Math.clamp(mean, gap, max - gap);
+			min = Math.clamp(min, 0, mean - gap);
 		}
 		handle.min.value = min;
 		handle.mean.value = mean;

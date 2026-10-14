@@ -561,19 +561,17 @@ window.importSettings = function (data, type) {
 
 /**
  * Convert the retired binary dark skin percentage into skin tone scale settings.
+ * 0% and 100% keep the exact tone the old light and dark NPCs were drawn with.
+ * Anything in between becomes the most common tone across the full range.
  *
  * @param {number} darkChance the retired $settings.darkSkinChance, 0-100
  * @returns {{skinToneMin: number, skinToneMode: number, skinToneMax: number}}
  */
 function skinToneSettingsFromDarkChance(darkChance) {
-	const dark = Math.clamp(darkChance, 0, 100);
+	const dark = Math.clamp(Math.round(darkChance), 0, 100);
 	if (dark <= 0) return { skinToneMin: 0, skinToneMode: 0, skinToneMax: 0 };
 	if (dark >= 100) return { skinToneMin: 70, skinToneMode: 70, skinToneMax: 70 };
-	if (dark <= 51) {
-		const mode = dark <= 30 ? 100 - 900 / dark : 4900 / (100 - dark);
-		return { skinToneMin: 0, skinToneMode: Math.clamp(Math.round(mode), 0, 100), skinToneMax: 100 };
-	}
-	return { skinToneMin: Math.round((70 * (dark - 51)) / 49), skinToneMode: 100, skinToneMax: 100 };
+	return { skinToneMin: 0, skinToneMode: dark, skinToneMax: 100 };
 }
 window.skinToneSettingsFromDarkChance = skinToneSettingsFromDarkChance;
 
