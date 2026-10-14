@@ -2913,7 +2913,7 @@ function possessedMasturbation(span, br) {
 
 	if (resist === 0) {
 		fragment.append(span("You let it take you.", "pink"));
-		sWikifier("<<pain -2>><<stress -12>><<sub 2>><<lpain>><<llstress>><<set V.wraith.will += 30>>");
+		sWikifier("<<pain -2>><<stress -12>><<sub 2>><<lpain>><<llstress>><<set V.wraith.will += 30>><br>");
 	} else {
 		wikifier("willpowerdifficulty", 1, Math.floor(1 + V.wraith.will), true);
 		if (V.willpowerSuccess) {

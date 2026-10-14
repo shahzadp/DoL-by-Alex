@@ -1913,7 +1913,7 @@ function initLegs() {
 			accessory_colour_options: [],
 			cursed: 0,
 			location: 0,
-			iconFile: "elegantkneehigh.png",
+			iconFile: "elegantsocks.png",
 			accIcon: 0,
 		}),
 		new ClothesItem({

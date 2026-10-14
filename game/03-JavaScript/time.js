@@ -1898,7 +1898,11 @@ function dailyPlayerEffects() {
 			}
 			if (key !== "devotion" && V.hypnosisTimers[key].time <= 0) {
 				V.hypnosis_timer_messages ||= [];
-				V.hypnosis_timer_messages.pushUnique(key);
+				if (key === "insight" && V.awareness >= 300) {
+					V.hypnosis_timer_messages.pushUnique("ignorance");
+				} else {
+					V.hypnosis_timer_messages.pushUnique(key);
+				}
 				V.effectsmessage = 1;
 			} else if (key === "devotion" && V.hypnosisTimers.devotion.time <= gwylanHypnoMax("value", V.hypnosis_traits.devotion - 1)) {
 				V.hypnosis_timer_messages ||= [];
