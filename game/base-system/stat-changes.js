@@ -376,7 +376,7 @@ const statChange = (() => {
 
 	function control(amount, combat) {
 		if (isNaN(amount)) paramError("control", "amount", amount, "Expected a number.");
-		if (V.gamemode === "soft") {
+		if (V.gamemode === "soft" && !V.possessed) {
 			// everything is a consensual consensual roleplay
 			V.control = V.controlmax;
 			V.controlled = 1;
