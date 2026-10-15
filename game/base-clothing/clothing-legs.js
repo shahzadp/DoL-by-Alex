@@ -1495,6 +1495,7 @@ function initLegs() {
 			pattern: 0,
 			pattern_options: ["long", "short"],
 			pattern_layer: "primary",
+			pattern_name: "lengths",
 			type: ["cool"],
 			gender: "m",
 			femininity: -100,

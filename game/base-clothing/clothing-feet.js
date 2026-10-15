@@ -656,6 +656,7 @@ function initFeet() {
 			accessory_colour_options: [],
 			pattern: 0,
 			pattern_options: ["bunny", "ducky", "foxy", "kitty", "moomoo", "puppy", "teddy bear"],
+			pattern_name: "species",
 			cursed: 0,
 			notuck: 1,
 			location: 0,
