@@ -138,6 +138,7 @@ function sydneySchedule() {
 	}
 	if (T.sydney_location === "temple") {
 		switch (Time.hour) {
+			case 0:
 			case 1:
 			case 2:
 			case 3:
@@ -175,7 +176,6 @@ function sydneySchedule() {
 				V.sydney_templeWork = Time.weekDay === 1 && V.sydney && V.sydney.rank === "initiate" ? "anguish" : "pray";
 				break;
 			case 23:
-			case 0:
 				V.sydney_templeWork = Time.weekDay === 7 ? "sleep" : "pray";
 				break;
 			default:

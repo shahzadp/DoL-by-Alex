@@ -11553,8 +11553,8 @@ function initUpper() {
 		new ClothesItem({
 			index: 205,
 			slot: "upper",
-			name: "lolita maid",
-			name_cap: "Lolita maid",
+			name: "lolita maid dress",
+			name_cap: "Lolita maid dress",
 			variable: "lolita maid",
 			description: "For looking cute while cleaning.",
 			cost: 2500,
