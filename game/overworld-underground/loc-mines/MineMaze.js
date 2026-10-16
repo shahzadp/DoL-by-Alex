@@ -239,7 +239,7 @@ class MineMaze {
 	Exit;
 
 	/**
-	 * Indicies of active guards in combat
+	 * Indices of active guards in combat
 	 *
 	 * @type {number[]}
 	 */
