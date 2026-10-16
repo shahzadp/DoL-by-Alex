@@ -277,7 +277,7 @@ declare module "twine-sugarcube" {
 	export interface SugarCubeSetupObject {
 		positions: Positions[];
 		legPositions: LegPositions[];
-		speechCategories: Record<string, { priority: number; cooldown?: number }>;
+		speechCategories: Record<string, { priority: number; cooldown?: number; clears?: string }>;
 	}
 }
 

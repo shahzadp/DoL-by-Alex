@@ -23,11 +23,13 @@ setup.speechCategories = {
 	expose: { priority: 75 },
 	penisSize: { priority: 75 },
 	pregnant: { priority: 75 },
-	sexToy: { priority: 75 },
+	/* Saying a sexToy line clears $speechNoticeSexToy. */
+	sexToy: { priority: 75, clears: "speechNoticeSexToy" },
 
 	/* NNPC reacting to the PC's actions. */
 	steal: { priority: 72 },
-	namedrop: { priority: 71 },
+	/* Saying a namedrop line clears $speechLINameDrop. */
+	namedrop: { priority: 71, clears: "speechLINameDrop" },
 
 	apologise: { priority: 70 },
 	askRough: { priority: 70 },
@@ -273,6 +275,8 @@ Macro.add("speechSay", {
 			return;
 		}
 		const line = pickSpeechLine(lines);
+		const { clears } = setup.speechCategories[line.category];
+		if (clears && T.speechPoolSpeaker !== "pc") V[clears] = 0;
 		addSpeechHistoryEntry(T.speechPoolSpeaker, { id: line.id, category: line.category });
 		if (line.reply) getOrCreateSpeechPool(line.reply.speaker).lines.push(createSpeechLine(line.reply.content, "pairedReply", 1));
 		$(this.output).wiki(line.content);
