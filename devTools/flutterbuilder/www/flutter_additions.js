@@ -1,15 +1,21 @@
 /*
  * Flutter native glue for Degrees of Lewdity.
  *
- * Loaded before the game. The game calls a bare `saveAs(blob, name)` global,
- * which Cordova satisfied by rewriting the compiled HTML at build time and
- * Capacitor satisfied with a plugin bridge. We define that global here instead,
- * so there is no source rewriting and no risk of a regex silently mangling the
- * game.
+ * This file used to be the app's whole UI layer. It injected a loading screen
+ * into the story, wrote status messages onto the page, and implemented the back
+ * button. All of that is Dart now (lib/src/), and what is left here is only the
+ * part that cannot be: turning a Blob into bytes and reading state the game
+ * already owns.
  *
- * Everything degrades gracefully: if the Flutter bridge is missing we fall back
- * to the browser behaviour rather than throwing during startup. That also makes
- * this file safe to serve in a desktop browser during development.
+ * Loaded before the game, and deliberately tiny. The reason it exists at all is
+ * `saveAs(blob, name)`, a bare global the game calls. Cordova satisfied it by
+ * rewriting the compiled HTML at build time, Capacitor with a plugin bridge, and
+ * this defines it directly -- so there is no source rewriting and no risk of a
+ * regex silently mangling the game.
+ *
+ * Everything degrades gracefully: with no Flutter bridge this file falls back to
+ * browser behaviour rather than throwing during startup, which is also what
+ * makes it safe to serve in a desktop browser during development.
  */
 (function () {
 	"use strict";
@@ -21,22 +27,19 @@
 	 * before this script runs; the poll exists so a future change in injection
 	 * order degrades into a working browser fallback instead of a dead export
 	 * button.
+	 *
+	 * Test for callHandler and nothing else. It is the only capability this page
+	 * ever uses -- it registers no handlers of its own. This used to also require
+	 * addJavaScriptHandler to be a function, which is an unrelated capability the
+	 * page never touches and which flutter_inappwebview 6.2.0-beta.3 does not
+	 * necessarily expose. When it was absent the gate was permanently false, and
+	 * that failed silently and totally: saveAs waited, gave up, and then reported
+	 * the failure through toast() -- which consults this same gate, so it logged
+	 * to the console instead of the screen. Export did nothing whatsoever, with
+	 * no error visible anywhere. Import, the back button and the loading screen
+	 * were all unaffected, which is exactly the shape of the bug.
 	 */
 	function bridgeReady() {
-		/*
-		 * Test for callHandler and nothing else. It is the only capability this
-		 * page ever uses -- it registers no handlers of its own.
-		 *
-		 * This used to also require addJavaScriptHandler to be a function, which
-		 * is an unrelated capability the page never touches and which
-		 * flutter_inappwebview 6.2.0-beta.3 does not necessarily expose. When it
-		 * was absent the gate was permanently false, and that failed silently
-		 * and totally: saveAs waited, gave up, and then reported the failure
-		 * through toast() -- which consults this same gate, so it logged to the
-		 * console instead of the screen. Export did nothing whatsoever, with no
-		 * error visible anywhere. Import, the back button and the loading screen
-		 * are all unaffected, which is exactly the shape of the bug.
-		 */
 		return !!(
 			window.flutter_inappwebview &&
 			typeof window.flutter_inappwebview.callHandler === "function"
@@ -51,38 +54,6 @@
 		});
 	}
 
-	/*
-	 * Show a message on the page itself.
-	 *
-	 * Exists because the toast route runs over the same bridge whose failure we
-	 * are usually trying to report: an export that failed because the bridge was
-	 * unreachable could not report itself, and the failure vanished. Anything
-	 * reported through here is visible with no bridge involved at all.
-	 */
-	function reportOnPage(message, isError) {
-		let el = document.getElementById("dol-export-status");
-		if (!el) {
-			el = document.createElement("div");
-			el.id = "dol-export-status";
-			el.style.cssText = [
-				"position:fixed",
-				"left:0",
-				"right:0",
-				"bottom:0",
-				"z-index:2147483647",
-				"background:#000",
-				"color:#eee",
-				"font:12px/1.4 monospace",
-				"padding:10px 12px",
-				"white-space:pre-wrap",
-				"word-break:break-word",
-			].join(";");
-			(document.body || document.documentElement).appendChild(el);
-		}
-		el.style.color = isError ? "#ff8a80" : "#b0bec5";
-		el.textContent = message;
-	}
-
 	function bridgeDescription() {
 		const w = window.flutter_inappwebview;
 		if (!w) return "flutter_inappwebview: absent";
@@ -94,36 +65,37 @@
 		);
 	}
 
-	function toast(message, duration) {
-		if (!bridgeReady()) {
-			console.log("[toast]", message);
-			return Promise.resolve();
-		}
-		return window.flutter_inappwebview
-			.callHandler("DoLNative.toast", {
-				message: message,
-				long: duration === 1,
-			})
-			.catch((e) => console.warn("[toast]", e));
+	/*
+	 * Every call into the app.
+	 *
+	 * Failures are logged and swallowed rather than propagated. The native side
+	 * is responsible for telling the player what happened -- it has a status
+	 * banner and a toast, neither of which needs this file -- and a rejection
+	 * surfacing as an unhandled promise inside the game's own console would be
+	 * noise rather than information.
+	 */
+	function call(name, args) {
+		if (!bridgeReady()) return Promise.resolve(null);
+		return window.flutter_inappwebview.callHandler(name, args).catch((e) => {
+			console.warn("[dol]", name, e);
+			return null;
+		});
 	}
 
+	// ---------------------------------------------------------------------
+	// Export
+	// ---------------------------------------------------------------------
+
 	/*
-	 * Export a Blob to the user.
+	 * A Blob as bare base64.
 	 *
-	 * Android side is MainActivity.kt: it opens the real system save-as dialog
-	 * (Storage Access Framework), the same ACTION_CREATE_DOCUMENT picker
-	 * cordova-plugin-save-dialog used, so export behaviour is unchanged from the
-	 * Cordova and Capacitor builds.
-	 *
-	 * The payload rides over as base64, exactly as it did for the Capacitor
-	 * SaveDialog plugin, which was itself adapted from the Cordova original.
+	 * readAsDataURL gives "data:<type>;base64,<payload>"; only the payload is
+	 * wanted, though the Kotlin side accepts either form.
 	 */
 	function blobToBase64(blob) {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 			reader.onload = () => {
-				// readAsDataURL gives "data:<type>;base64,<payload>"; the Kotlin
-				// side accepts either form but the payload is all it wants.
 				const result = String(reader.result || "");
 				const comma = result.indexOf(",");
 				resolve(comma >= 0 ? result.slice(comma + 1) : result);
@@ -146,24 +118,31 @@
 		setTimeout(() => URL.revokeObjectURL(url), 10000);
 	}
 
+	/*
+	 * The game calls this. Everything after the bytes -- the system dialog, the
+	 * wait, the cancellation, the success message, the failure message -- is
+	 * Dart's job (lib/src/export_service.dart), and is reported from there.
+	 *
+	 * The payload rides over as base64, exactly as it did for the Capacitor
+	 * SaveDialog plugin, which was itself adapted from the Cordova original.
+	 */
 	function saveAs(blob, name) {
 		name = name || "save.txt";
 
 		/*
-		 * The browser fallback below cannot work here, so do not treat a missing
-		 * bridge as a reason to take it.
+		 * The browser fallback below cannot work on Android, so a missing bridge
+		 * is not by itself a reason to take it.
 		 *
 		 * This used to be a bare `if (!bridgeReady()) { browserDownload(); }`.
-		 * That is a silent no-op on Android: a WebView has no download manager,
-		 * so a synthetic <a download> click is discarded. Export appeared to do
-		 * nothing at all -- no file, no picker, no message -- which is exactly
-		 * how the real bug (a payload the native side could not read) hid for so
-		 * long.
+		 * That is a silent no-op in a WebView: there is no download manager, so a
+		 * synthetic <a download> click is discarded. Export appeared to do nothing
+		 * at all -- no file, no picker, no message -- which is exactly how the real
+		 * bug, a payload the native side could not read, hid for so long.
 		 *
 		 * So the two cases are separated. No flutter_inappwebview at all means a
 		 * desktop browser, where the download path genuinely works and is worth
 		 * keeping for development. A bridge that exists but has not installed its
-		 * handler yet means the app, and there we wait rather than guess.
+		 * handlers yet means the app, and there we wait rather than guess.
 		 */
 		if (typeof window.flutter_inappwebview === "undefined") {
 			browserDownload(blob, name);
@@ -172,311 +151,330 @@
 
 		return whenBridgeReady(40)
 			.then((ready) => {
-				if (!ready) {
-					throw new Error("no app bridge (" + bridgeDescription() + ")");
-				}
-
-				return blobToBase64(blob).then((base64) =>
-					window.flutter_inappwebview.callHandler("DoLNative.saveFile", {
-						name: name,
-						// Strip parameters: the game builds its blob as
-						// text/plain;charset=UTF-8, and a parameterised type is not
-						// a MIME type. MainActivity strips them too, but a value
-						// this far from its destination is worth normalising at
-						// both ends.
-						mimeType: (blob.type || "application/octet-stream").split(";")[0],
-						data: base64,
-					})
-				);
+				if (!ready) throw new Error("no app bridge (" + bridgeDescription() + ")");
+				return blobToBase64(blob);
 			})
-			.then((uri) => {
-				// null means the player dismissed the picker, which is a normal
-				// outcome and must not be reported as a failure.
-				if (uri) toast("Saved " + name, 0);
-				return uri;
-			})
+			.then((base64) =>
+				window.flutter_inappwebview.callHandler("DoLNative.saveFile", {
+					name: name,
+					// Strip parameters: the game builds its blob as
+					// text/plain;charset=UTF-8, and a parameterised type is not a
+					// MIME type, so ACTION_CREATE_DOCUMENT matches no document
+					// provider with it. The Dart side normalises again -- a value
+					// this far from its destination is worth normalising at both
+					// ends, so a regression at either one is not enough to break
+					// the picker.
+					mimeType: (blob.type || "application/octet-stream").split(";")[0],
+					data: base64,
+				})
+			)
 			.catch((err) => {
-				// never let an export fail silently -- the player would think the
-				// save was written when it was not
-				const msg = err && err.message ? err.message : String(err);
-				if (/cancel/i.test(msg)) return null;
+				// Reported natively, deliberately. The toast used to be raised from
+				// here too, which meant a failure of the bridge reported itself
+				// through the bridge: the message went to the console and the
+				// player saw nothing.
 				console.error("[saveAs]", err);
-				// Both routes. The page is the one that cannot itself be broken by
-				// a missing bridge, which is the failure most likely to occur here.
-				reportOnPage("Export failed: " + msg, true);
-				toast("Could not save: " + msg, 1);
 				throw err;
 			});
 	}
 
-	/*
-	 * The loading screen.
-	 *
-	 * With the Flutter splash gone, this is what the player looks at for the few
-	 * seconds it takes to deliver and parse a 50 MB story, so it is worth making
-	 * decent. Left alone, SugarCube 2.36 draws a 100px ring with a chunky 24px
-	 * grey border (#7f7f7f), spins it once every two seconds, offsets it to
-	 * top:25% so it is not even centred, and hides the "Loading…" text entirely
-	 * with text-indent:9999em. What you get is a bare grey circle on black.
-	 *
-	 * Replaced with the app's own mark, which is the same four tiles as the
-	 * launcher icon, breathing rather than spinning, plus a visible label. It
-	 * ties the loading screen to the app the player just tapped.
-	 *
-	 */
-	/*
-	 * The loading screen.
-	 *
-	 * With the Flutter splash gone, this is what the player looks at for the few
-	 * seconds it takes to deliver and parse a 50 MB story, so it is worth making
-	 * decent.
-	 *
-	 * SugarCube's own loader is a 100px ring with a 24px #7f7f7f border, one
-	 * rotation per two seconds, offset to top:25% so it is not even centred, with
-	 * the "Loading…" text hidden behind text-indent:9999em.
-	 *
-	 * Two earlier attempts to restyle it by overriding its CSS both failed, and
-	 * the second one failed *on the device after it had been verified in a
-	 * browser harness*, so this no longer fights it. We delete the element and
-	 * draw our own.
-	 *
-	 * Why overriding could never be trusted: this script is injected at the very
-	 * top of the story, before any of its 55 stylesheets are parsed, so a <style>
-	 * appended to <head> lands *before* all of them. SugarCube's rule is
-	 * `html[data-init=loading] #init-loading`. A naive version of ours has
-	 * identical specificity, and on a tie the later rule wins, which is
-	 * SugarCube's. Adding an id to beat it works, but it depends on us noticing
-	 * every rule we touch. Owning the element removes the question: #dol-loading
-	 * has no competing rules anywhere in the story, so there is nothing to lose.
-	 *
-	 * #init-screen is deliberately left alone. It is the full-screen #111
-	 * backdrop, it carries the z-index, and its `html[data-init=loading]` rules
-	 * hide #passages and #ui-bar while loading. Only the spinner child goes.
-	 *
-	 * Keyed off html[data-init], so it covers *every* load, not just startup:
-	 * SugarCube sets that attribute again on every passage transition via
-	 * LoadScreen.lock().
-	 *
-	 * To look at it without building an APK, see .preview/build-preview.js.
-	 */
-
-	/*
-	 * The <style> can go in immediately: <head> exists by the time this script
-	 * runs. The DOM work below cannot.
-	 */
-	const loadingStyle = document.createElement("style");
-	loadingStyle.id = "dol-loading-screen";
-	loadingStyle.textContent = [
-		"@keyframes dol-loading-sweep{0%{transform:translateX(0)}100%{transform:translateX(74px)}}",
-
-		/*
-	 * Kill the stock spinner before it can ever paint.
-	 *
-	 * Doing this with display:none !important rather than by removing the element
-	 * is not a stylistic choice, it is the only thing that can work in time.
-	 * This <style> is parsed during <head>, at roughly character 1600 of a 50 MB
-	 * document. The story sets data-init="loading" at character 1772, inside its
-	 * own script-libraries block, and the <div id="init-loading"> is not created
-	 * until character 754783 -- so the ring becomes visible somewhere in that
-	 * window. DOMContentLoaded does not fire until the entire document has been
-	 * parsed, which is a second or two later on a device. Removing the element
-	 * there was always going to be too late, and it showed: the circle flashed
-	 * for one to two seconds and then handed over to ours.
-	 *
-	 * CSS, by contrast, applies to each element the instant the parser creates it.
-	 * So this rule is in force before the spinner exists, and it holds for the
-	 * whole window. !important is required: SugarCube's own display:block is
-	 * written as html[data-init=loading] #init-loading, and it lands later in the
-	 * cascade, so a plain rule of ours would lose to it on both counts.
-	 *
-	 * The element is still removed outright further down, once the body exists,
-	 * so the rule is a guarantee rather than the mechanism.
-	 */
-	"#init-loading{display:none !important}",
-
-		// Own element, so these ids collide with nothing. Shown only while the
-		// story says it is loading.
-		"#dol-loading{display:none;position:fixed;inset:0;z-index:500001;",
-		"background:none;pointer-events:none}",
-		'html[data-init="loading"] #dol-loading{display:flex;flex-direction:column;',
-		"align-items:center;justify-content:center;gap:24px}",
-
-		// A thin line sweeping left to right, echoing the #ui-bar that slides in
-		// from the left when the menu opens. Monochrome on purpose: the game's UI
-		// is greyscale (#111 page, #222 surfaces, #444 borders, #eee text), so
-		// colour here would look like a sticker.
-		// Geometry: track 132px, sweep 58px, so it travels 132 - 58 = 74px.
-		"#dol-loading .dol-loading-track{position:relative;width:132px;height:2px;",
-		"border-radius:1px;background:rgba(238,238,238,.16);overflow:hidden}",
-		"#dol-loading .dol-loading-sweep{position:absolute;top:0;bottom:0;left:0;",
-		"width:58px;border-radius:1px;background:rgba(238,238,238,.8);",
-		"animation:dol-loading-sweep 1.5s cubic-bezier(.65,.05,.36,1) infinite}",
-
-		"#dol-loading .dol-loading-label{font:500 13px/1 system-ui,-apple-system,'Segoe UI',",
-		"Roboto,sans-serif;letter-spacing:.18em;text-transform:uppercase;",
-		"color:rgba(238,238,238,.55)}",
-
-		// Respect the platform setting: a moving line is exactly the sort of thing
-		// someone has turned animation off to avoid. Park it mid-track rather than
-		// removing it, so the screen does not just look broken.
-		"@media (prefers-reduced-motion:reduce){",
-		"#dol-loading .dol-loading-sweep{animation:none;transform:translateX(37px)}",
-		"}",
-
-		// The two failure states are centred and legible now that their stock
-		// 28px bold type in the top quarter of the screen is gone.
-		'html[data-init="lacking"] #init-screen #init-lacking,',
-		'html[data-init="no-js"] #init-screen #init-no-js{',
-		"position:absolute;inset:0;margin:0;top:0;height:100%;max-width:none;",
-		"display:flex;flex-direction:column;align-items:center;justify-content:center;",
-		"text-align:center;gap:.4em;padding:2em;",
-		"font:400 16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;",
-		"color:rgba(238,238,238,.75)}",
-	].join("");
-	if (document.head) document.head.appendChild(loadingStyle);
-
-	/*
-	 * This script is injected into <head>, ahead of the story's own scripts, so
-	 * it runs BEFORE <body> has been parsed.
-	 *
-	 * That bit us twice. First, document.getElementById("init-loading") returned
-	 * null and document.body was null, so both the removal of the stock spinner
-	 * and the insertion of ours were silently skipped, and the app shipped with
-	 * the stock circle and no loader of our own. Then, once both were deferred to
-	 * DOMContentLoaded, the circle still flashed for a second or two first --
-	 * because DOMContentLoaded cannot fire until all 50 MB have been parsed, and
-	 * the spinner is on screen long before that. The CSS rule above fixes the
-	 * second problem; the loader itself still has to be built now.
-	 *
-	 * So: create the element immediately and attach it to
-	 * document.documentElement, which is the one element guaranteed to exist at
-	 * this point. It renders identically from there, because it is
-	 * position:fixed -- which is what inset:0 is doing anyway, and why the
-	 * unusual parent does not matter. Move it into <body> once that exists, in
-	 * the same frame, so nothing shifts.
-	 *
-	 * Attaching outside <body> is unusual, and worth being honest about why it is
-	 * safe: this is DOM insertion, not markup, so the parser never sees it and
-	 * never relocates it. The only thing governing how it renders is our own
-	 * position:fixed.
-	 */
-	const loader = document.createElement("div");
-	loader.id = "dol-loading";
-	loader.setAttribute("aria-hidden", "true");
-	// Real elements rather than pseudo-elements, deliberately. The previous
-	// version used ::before/::after for the track and the sweep, which cannot
-	// nest, so both had to be absolutely positioned -- and absolutely positioned
-	// elements are out of flow and ignore flex `gap`, which put the line on top
-	// of the label. As children of a position:relative track, neither problem
-	// exists.
-	loader.innerHTML =
-		'<div class="dol-loading-track"><span class="dol-loading-sweep"></span></div>' +
-		'<div class="dol-loading-label">Loading&hellip;</div>';
-
-	function attachLoader() {
-		if (document.body) document.body.appendChild(loader);
-		else if (loader.parentNode !== document.documentElement) {
-			document.documentElement.appendChild(loader);
-		}
+	function toast(message, duration) {
+		return call("DoLNative.toast", { message: String(message), long: duration === 1 });
 	}
 
-	function removeStockSpinner() {
-		const stockSpinner = document.getElementById("init-loading");
-		if (stockSpinner) stockSpinner.remove();
+	// ---------------------------------------------------------------------
+	// Load state
+	// ---------------------------------------------------------------------
+
+	/*
+	 * Hide SugarCube's own spinner, and nothing else.
+	 *
+	 * The loading screen is a Flutter widget now. What remains is one rule whose
+	 * whole job is to stop a 100px grey ring appearing for a second before the
+	 * native screen has been told the load started, and which has to be CSS to
+	 * do it: this script is injected at character ~1600 of a 50 MB document, the
+	 * story flips data-init to "loading" at ~1772, the <div id="init-loading"> is
+	 * not created until ~754783, and DOMContentLoaded cannot fire until the whole
+	 * thing has been parsed. A CSS rule applies the instant the parser creates
+	 * the element, so this is in force for that entire window.
+	 *
+	 * !important is required: SugarCube's own display:block is written as
+	 * html[data-init=loading] #init-loading and lands later in the cascade, so a
+	 * plain rule here would lose to it on both counts.
+	 *
+	 * scripts/prepare_flutter_assets.js checks for this rule on every build. Do
+	 * not remove it without moving the guard with it.
+	 */
+	if (document.head) {
+		const hideStockSpinner = document.createElement("style");
+		hideStockSpinner.id = "dol-hide-stock-spinner";
+		hideStockSpinner.textContent = "#init-loading{display:none !important}";
+		document.head.appendChild(hideStockSpinner);
 	}
 
-		attachLoader();
+	/*
+	 * Report when the story is busy.
+	 *
+	 * `data-init` on <html> is SugarCube's own state: absent when the story is
+	 * playable, "loading" while it works, "lacking" when the story data cannot be
+	 * read. It is the same signal the in-page loader used, and it is the only
+	 * signal that covers *every* load and not just startup -- passage transitions
+	 * re-arm it through LoadScreen.lock(). No WebView callback fires for those,
+	 * and no amount of polling on the Dart side would be cheaper than being told.
+	 *
+	 * document.readyState rides along purely as a diagnostic. It is the one thing
+	 * on the device that separates a slow parse from a document that has stopped
+	 * making progress, and the two used to look identical (MEMORY.md trap 32).
+	 */
+	function publishLoadState() {
+		const root = document.documentElement;
+		if (!root) return;
 
-	if (document.body) removeStockSpinner();
-	else {
-		document.addEventListener("DOMContentLoaded", function () {
-			removeStockSpinner();
-			attachLoader();
+		const value = root.getAttribute("data-init");
+
+		let state;
+		if (value === null) state = "ready";
+		else if (value === "lacking") state = "failed";
+		else if (value === "no-js") return; // the static value; the story flips it in a moment
+		else state = "loading";
+
+		call("DoLNative.loadState", { state: state, document: document.readyState });
+	}
+
+	/*
+	 * Guarded, because nothing else in this file is wrapped and an uncaught
+	 * throw here would abort the whole IIFE -- which would take `saveAs` with it
+	 * and turn a cosmetic problem into a dead export button. The observation is
+	 * the one piece of this that can legitimately find the document not ready
+	 * yet; everything after it can run unconditionally.
+	 */
+	try {
+		new MutationObserver(publishLoadState).observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["data-init"],
 		});
+	} catch (e) {
+		console.warn("[dol] cannot observe data-init", e);
 	}
 
 	/*
-	 * Two kinds of load that never ends used to look identical: a healthy slow
-	 * one and a dead one. Both meant an indefinite sweep with nothing to read.
-	 *
-	 * - After a few seconds, start counting. Elapsed time plus readyState tells
-	 *   a slow parse apart from a document that has stopped making progress.
-	 * - If the native side reports the load failed, replace the sweep with the
-	 *   reason. See _reportLoadFailure in lib/src/game_web_view.dart.
-	 *
-	 * The countdown is not decoration. It is the only signal available on the
-	 * device that separates "still working" from "never going to finish", which
-	 * is precisely what was missing when a stuck Restart looked the same as a
-	 * slow first run.
+	 * Backstops, in case the attribute was already in its final state when the
+	 * observer was attached. Cheap, and they turn a silent stuck loader into a
+	 * working one.
 	 */
-	const loadStartedAt = Date.now();
-	const SLOW_LOAD_MS = 8000;
-	let watchdog = null;
+	document.addEventListener("DOMContentLoaded", publishLoadState);
+	window.addEventListener("load", publishLoadState);
 
-	function setLabel(text) {
-		const label = loader.querySelector(".dol-loading-label");
-		if (label) label.textContent = text;
+	interceptFileInputs();
+
+	// ---------------------------------------------------------------------
+	// Import
+	// ---------------------------------------------------------------------
+
+	/*
+	 * "Load from file", without the WebView's file chooser.
+	 *
+	 * The story has two `<input type="file">` elements and no picker. The
+	 * supported route is the plugin's `onShowFileChooser`, which is gated behind
+	 * its own `useOnShowFileChooser` setting (InAppWebViewChromeClient.java:866)
+	 * and never fired: the input did nothing, with no error anywhere. The
+	 * plugin's own fallback picker was no better -- it guards on
+	 * `intent.resolveActivity(...)`, which returns null on Android 11+ for the
+	 * system chooser under package visibility.
+	 *
+	 * So this cancels the input's click in the capture phase, before the WebView
+	 * tries to open anything, asks the app for the file, and puts a real File on
+	 * the input. The game's own `onchange="importSave(this.files)"` then runs
+	 * exactly as it would have, with a real FileList.
+	 *
+	 * Capture phase matters: a bubble-phase listener is too late, because the
+	 * WebView starts the chooser as its own default action for the event.
+	 */
+	function interceptFileInputs() {
+		document.addEventListener("click", onFileInputClick, true);
 	}
 
-	function stopWatchdog() {
-		if (watchdog === null) return;
-		clearInterval(watchdog);
-		watchdog = null;
+	/*
+	 * Find the file input an event was aimed at, however indirect the aim.
+	 *
+	 * `event.target` alone is not enough: a tap can land on a label, on a
+	 * wrapper, or on the overlay SugarCube built the markup into, and only the
+	 * first of those is the input. `composedPath` gets the whole chain, and
+	 * `closest` catches an ancestor that wraps or points at it.
+	 */
+	function fileInputFor(event) {
+		const path =
+			typeof event.composedPath === "function" ? event.composedPath() : null;
+		if (path) {
+			for (const node of path) {
+				if (node && node.tagName === "INPUT" && node.type === "file") return node;
+			}
+		}
+		const target = event.target;
+		if (target && target.closest) {
+			const found = target.closest('input[type="file"]');
+			if (found) return found;
+		}
+		return null;
 	}
 
-	watchdog = setInterval(function () {
-		if (document.documentElement.getAttribute("data-init") !== "loading") {
-			stopWatchdog();
+	function onFileInputClick(event) {
+		const input = fileInputFor(event);
+		if (!input) return;
+
+		// Desktop browser: leave the browser's own picker alone.
+		if (typeof window.flutter_inappwebview === "undefined") return;
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		const accept = typeof input.accept === "string" ? input.accept : "";
+		askForFile(input, accept);
+	}
+
+	/*
+	 * Ask the app for the file, and never leave the player waiting on nothing.
+	 *
+	 * Every failure of this path used to be silent, which is why it failed twice
+	 * with nothing to go on. There are four ways it can go wrong that the page
+	 * can see -- no handler, a rejection, a throw while building the File, and a
+	 * native side that never answers -- and all four now end with the player
+	 * being told. The timer is the fourth: a picker that never returns used to
+	 * look exactly like a picker that was never opened.
+	 */
+	function askForFile(input, accept) {
+		console.log("[dol] asking for a file for", input.id || "an unnamed input");
+
+		const giveUp = (why) => {
+			console.error("[dol] import failed:", why);
+			reportImportFailure(why);
+		};
+
+		let settled = false;
+		const timer = setTimeout(() => {
+			if (settled) return;
+			settled = true;
+			giveUp("the app did not answer within 30s");
+		}, 30000);
+
+		if (typeof window.flutter_inappwebview === "undefined") {
+			settled = true;
+			clearTimeout(timer);
+			giveUp("no app bridge");
 			return;
 		}
 
-		const elapsed = Date.now() - loadStartedAt;
-		if (elapsed < SLOW_LOAD_MS) return;
-
-		setLabel(
-			"still loading \u00b7 " +
-				Math.round(elapsed / 1000) +
-				"s \u00b7 " +
-				document.readyState
-		);
-	}, 1000);
-
-	// Called from Dart when the main document fails to load.
-	window.__dolLoadFailed = function (detail) {
-		stopWatchdog();
-		// The sweep would read as "still trying", which is the one thing we now
-		// know to be false. Keep the loader up so there is something to read.
-		const track = loader.querySelector(".dol-loading-track");
-		if (track) track.style.display = "none";
-		setLabel("could not load the game \u00b7 " + detail);
-	};
+		window.flutter_inappwebview
+			.callHandler("DoLNative.pickFile", {
+				accept: accept
+					? accept.split(",").map((a) => a.trim()).filter((a) => a.length > 0)
+					: [],
+			})
+			.then((picked) => {
+				clearTimeout(timer);
+				if (settled) return;
+				settled = true;
+				if (!picked) return; // the player cancelled; nothing to say
+				deliver(input, picked, giveUp);
+			})
+			.catch((err) => {
+				clearTimeout(timer);
+				if (settled) return;
+				settled = true;
+				giveUp(String((err && err.message) || err));
+			});
+	}
 
 	/*
-	 * Notches and system bars are handled in Dart, not here.
+	 * Put the failure on the screen by whatever route is left.
 	 *
-	 * The obvious approach is env(safe-area-inset-*) plus viewport-fit=cover on
-	 * the viewport meta tag. It does not work for this app: Chromium derives
-	 * those insets from the display cutout, so on a three-button-navigation
-	 * device with no cutout they resolve to 0 and the story ends up underneath
-	 * the navigation buttons. See the SafeArea in lib/src/app.dart, which has
-	 * the real inset for both cases.
+	 * The page first, because it works with no bridge at all, and then the app,
+	 * which can raise a native toast. Two routes on purpose: this path has been
+	 * dead silent twice and the only defence is never having one route.
 	 */
+	function reportImportFailure(why) {
+		try {
+			const el = document.getElementById("dol-error");
+			if (!el) {
+				el = document.createElement("div");
+				el.id = "dol-error";
+				el.style.cssText = [
+					"position:fixed",
+					"left:0",
+					"right:0",
+					"bottom:0",
+					"z-index:2147483647",
+					"background:#000",
+					"color:#ff8a80",
+					"font:12px/1.4 monospace",
+					"padding:10px 12px",
+				].join(";");
+				(document.body || document.documentElement).appendChild(el);
+			}
+			el.textContent = "Import failed: " + why;
+		} catch (ignored) {
+			// the page is in no state to be written to; the toast below still runs
+		}
+
+		try {
+			call("DoLNative.importFailed", { why: why }).catch(() => {});
+		} catch (ignored) {
+			// and if there is no bridge either, the page message above is all there is
+		}
+	}
 
 	/*
-	 * Back button.
+	 * Put the picked file on the input and fire `change`, so the game's own
+	 * handler sees a normal FileList.
+	 *
+	 * Decoded to a Uint8Array rather than a binary string: `importSave` reads it
+	 * with readAsText and the settings importer with readAsBinaryString, and
+	 * routing the bytes through a JS string mangles anything that is not valid
+	 * latin-1. The File is built from the bytes, so what the reader sees is
+	 * byte-identical to what the player chose.
+	 */
+	function deliver(input, picked, giveUp) {
+		try {
+			const binary = atob(picked.data);
+			const bytes = new Uint8Array(binary.length);
+			for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+			const file = new File([bytes], picked.name || "save.txt", {
+				type: picked.mimeType || "text/plain",
+			});
+
+			const transfer = new DataTransfer();
+			transfer.items.add(file);
+			input.files = transfer.files;
+
+			// The game's handlers are inline `onchange` attributes, so `change` is
+			// all that is needed; bubbles is only so a delegated listener would see
+			// it too.
+			input.dispatchEvent(new Event("change", { bubbles: true }));
+			console.log("[dol] delivered", picked.name, "to", input.id || "an unnamed input");
+		} catch (err) {
+			giveUp("could not read the file into the page: " + err);
+		}
+	}
+
+	// ---------------------------------------------------------------------
+	// Back button
+	// ---------------------------------------------------------------------
+
+	/*
+	 * Let the game close whatever it has open. Returns true if it did.
 	 *
 	 * Android never delivers the DOM 'backbutton' event, so the gesture is
-	 * intercepted natively and routed back in here. The decision logic stays in
-	 * the web layer because it is the only place that knows whether a dialog or
-	 * overlay is open.
+	 * intercepted natively (PopScope in lib/src/game_shell.dart) and routed in
+	 * here. This half has to stay in the page because it is the only place that
+	 * knows whether a SugarCube dialog or an overlay is open. Everything else --
+	 * the press-again-to-exit window, the message, the exit itself -- is Dart's.
 	 *
-	 * Returns true when the event was consumed; false tells Flutter to exit.
-	 * Deliberately synchronous: the answer is needed immediately, and returning
-	 * a Promise here would make every caller deal with whether evaluateJavascript
-	 * unwraps promises on this platform.
+	 * Deliberately synchronous: the answer is needed before the app can decide
+	 * anything, and returning a Promise would make every caller deal with whether
+	 * evaluateJavascript unwraps promises on this platform.
 	 */
-	let lastBackEvent = 0;
-	window.__dolHandleBack = function () {
+	window.__dolCloseGameUi = function () {
 		try {
 			if (window.SugarCube && SugarCube.Dialog && SugarCube.Dialog.isOpen()) {
 				SugarCube.Dialog.close();
@@ -489,29 +487,17 @@
 		} catch (e) {
 			console.warn("[back]", e);
 		}
-
-		const now = Date.now();
-		if (now > lastBackEvent + 3500) {
-			lastBackEvent = now;
-			toast("Press BACK again to exit", 1);
-			return true;
-		}
 		return false;
 	};
 
 	/*
-	 * No splash handling here.
+	 * Notches and system bars are handled in Dart, not here.
 	 *
-	 * There used to be: a MutationObserver on data-init, a CSS rule hiding
-	 * SugarCube's #init-screen, and a gameReady call to the native side to bring
-	 * a Flutter-drawn splash down. That whole arrangement is gone. The Android
-	 * system splash draws the mark and hands over as soon as the engine is up,
-	 * and holding a second splash over the story load meant the player sat
-	 * through several seconds of dead time before seeing anything.
-	 *
-	 * SugarCube's own loading screen is what covers the story load now. It is
-	 * restyled above rather than hidden, so the player gets the app's own mark
-	 * and a label instead of a bare grey ring.
+	 * The obvious approach is env(safe-area-inset-*) plus viewport-fit=cover on
+	 * the viewport meta tag. It does not work for this app: Chromium derives
+	 * those insets from the display cutout, so on a three-button-navigation
+	 * device with no cutout they resolve to 0 and the story ends up underneath
+	 * the buttons. See the SafeArea in lib/src/game_shell.dart, which knows both.
 	 */
 
 	/*
