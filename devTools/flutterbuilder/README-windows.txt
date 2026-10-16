@@ -4,6 +4,39 @@ This is the only Android shell in the repo. It replaced a Capacitor build that
 lived at devTools/apkbuilder; that tree has been removed, and the top-level
 MEMORY.md records what state each piece of it ended in.
 
+# how it is put together
+
+The game is a 50 MB single-file SugarCube story and always will be. Rewriting
+16,000 passages of Twine in Dart is not a plan, so there is still a WebView --
+but everything around the game is native Dart, and the line between the two
+sides is drawn in one place.
+
+See "the loading screen" below for why the loader is a widget and not injected
+CSS, which is the clearest example of the rule this follows: the page owns the
+game, Dart owns the app.
+
+    lib/src/storage_origin.dart   the one thing that is easy to break
+    lib/src/web_asset_server.dart serves https://localhost out of the bundle
+    lib/src/game_web_view.dart    the WebView: settings, and nothing else
+    lib/src/game_host.dart        the seam. all the logic, no widgets
+    lib/src/game_shell.dart       the window: web view, loader, status banner
+    lib/src/load_model.dart       when a loader is up, and when it is honest
+    lib/src/load_overlay.dart     the loading screen
+    lib/src/export_service.dart   export: validate, hand over, report
+    lib/src/status.dart           the status message and its banner
+    lib/src/back_navigator.dart   press BACK again to exit
+    lib/src/window.dart           edge to edge, at startup and again on resume
+    lib/src/palette.dart          every grey the app draws, in one file
+    www/flutter_additions.js      the rest: Blob to base64, and reading the
+                                  game's own state
+
+The page keeps only what it cannot hand over -- turning a Blob into bytes, and
+answering questions about SugarCube's internals that Dart has no way to know.
+Everything the app decides -- what to draw, what to say, when to close -- is in
+Dart, where it can be unit tested. `test/` pins those decisions, and the glue's
+static invariants are checked on every build by
+`scripts/prepare_flutter_assets.js`.
+
 # dependencies
 
 -   **Flutter 3.47.7 stable** (Dart 3.13). The version the app is pinned to;
@@ -64,9 +97,17 @@ for a mobile build (`enableLinkNumberify: false`). See "Changing the build
 version and type" in the top-level README. That toggle is per-build and should
 not be committed.
 
+**Do not interrupt a build.** A build killed mid-`assembleRelease` leaves a
+partial copy of the 50 MB document in the asset staging directory under a hash
+name, and that directory is not cleaned between builds -- so the *next* build
+packages the wreckage and produces an APK a megabyte fatter than it should be,
+with a completely normal log. `build_app_flutter.js` now cleans that directory
+before building and asserts it afterwards, so this cannot ship, but a clean
+build is still faster than a guard being right.
+
 # apk size
 
-A release build is **arm64-v8a only** and about **34 MB**.
+A release build is **arm64-v8a only** and about **37 MB**.
 `scripts/build_app_flutter.js` passes `--target-platform=android-arm64`, because
 Flutter's default of arm64-v8a plus armeabi-v7a plus x86_64 ships the engine's
 native libraries and a Dart snapshot per ABI. Google Play requires 64-bit, so
@@ -80,6 +121,22 @@ taking the artwork from 12.32 MB to 4.82 MB. See
 `scripts/convert_images_to_webp.py` for why lossless rather than lossy, and why
 the files keep their `.png` names. Set `DOL_WEBP=off` to ship the original pngs,
 which is the first thing to try if the artwork ever looks wrong.
+
+# logs from a release build
+
+`debugPrint` is compiled out of a release build. Every diagnostic written as
+`debugPrint` is therefore exactly the one that never prints on the build where the
+bug actually reproduces, which is the only build worth reproducing on.
+
+`lib/src/app_log.dart` wraps `dart:developer`'s `log`, which survives release, for
+anything that must be visible there:
+
+    adb logcat -s DoLNative
+
+It traces the whole load path (`load started`, `document delivered`, `main
+document failed`) and the whole import path (`pickFile requested`,
+`pickFile answered`, `pickFile threw`, `import failed in the page`). Use it
+rather than `debugPrint` for any diagnostic aimed at a device.
 
 # do not change the storage origin
 
@@ -113,16 +170,32 @@ the lock file in the same commit.
 
     npm run verify:origin
 
-# exporting saves
+# exporting and importing saves
 
 `www/flutter_additions.js` defines the `saveAs()` global that the game's export
-code calls. It rides over a JavaScript handler into `MainActivity.kt`, which
-opens the system save dialog (the Storage Access Framework) -- the same
-`ACTION_CREATE_DOCUMENT` picker that cordova-plugin-save-dialog and the
-Capacitor `SaveDialog` plugin used, so export behaviour is unchanged.
+code calls, and does only two things: turns the `Blob` into base64 and hands it
+to a JavaScript handler. Everything else -- validating it, opening the system
+save dialog (the Storage Access Framework, the same `ACTION_CREATE_DOCUMENT`
+picker cordova-plugin-save-dialog and the Capacitor `SaveDialog` plugin used, so
+export behaviour is unchanged), telling the player what happened, and telling
+them when it did not -- is `lib/src/export_service.dart`.
+
+That split is not tidiness. The export path failed four separate times, each
+failure hiding the next, and the two worst of them were *reporting* problems:
+the failure was announced through the same bridge that was most likely to be
+what broke, so it went to the console and the player saw nothing at all (see
+MEMORY.md trap 33). All of that reporting now happens in Dart, where it cannot
+depend on the thing it is reporting about.
+
+Import is the mirror image, and it was missing entirely. The story has two
+`<input type="file">` elements -- "Load from file" in the saves overlay and in
+the settings -- and a WebView has no file picker of its own, so with no host
+callback the chooser was simply dropped. `MainActivity.kt` now opens
+`ACTION_OPEN_DOCUMENT` and hands the chosen content uri back through
+`onShowFileChooser`.
 
 There is no first-party Flutter plugin that opens the *system* picker, which is
-why the ~60 lines of Kotlin are still here.
+why the Kotlin is still here.
 
 # the splash
 
@@ -149,9 +222,9 @@ drawable, deliberately: it shows for the instant between the system splash
 handing over and Flutter's first frame, and keeping a second mark alive there
 would reintroduce the same problem. Same colour, so it is not visible.
 
-**SugarCube's own loading screen is no longer suppressed.** With the overlay
-gone, the few seconds while the 50 MB story is delivered and parsed now show
-the game's own loading indicator, restyled (see below) rather than hidden.
+**SugarCube's own loading screen is replaced, not hidden.** With the overlay
+gone, the few seconds while the 50 MB story is delivered and parsed are covered
+by a Flutter-drawn loader (see below).
 
 `transparentBackground: true` on the WebView matters for this handover: a WebView
 is opaque white before it has content, so without it there is a white flash on an
@@ -160,65 +233,89 @@ otherwise dark screen while the story is still arriving.
 ## the loading screen
 
 Once the system splash hands over, the few seconds while a 50 MB story is
-delivered and parsed show a loader. It is **ours**, not a restyle of SugarCube's.
+delivered and parsed show a loader. It is a **Flutter widget**,
+`lib/src/load_overlay.dart`, and it is drawn over the WebView rather than into
+the page.
 
-SugarCube's is a 100px ring with a 24px `#7f7f7f` border, one rotation per two
-seconds, offset to `top:25%` so it is not even centred, with the "Loading…" text
-hidden behind `text-indent:9999em`. `www/flutter_additions.js` therefore does
-not restyle it — it **removes it** and appends its own `#dol-loading`: a thin
-line sweeping left to right, echoing the `#ui-bar` that slides in from the left
-when the menu opens, with the label restored. Monochrome on purpose, because the
-game's UI is greyscale (`#111` page, `#222` surfaces, `#444` borders, `#eee`
-text). An earlier version used the four-colour app icon and was rejected as not
-belonging to the design language.
+It used to be a `<div>` injected into the story and animated with CSS, which was
+never a small thing to be a web view. It had to be injected at character ~1600 of
+a 50 MB document to land ahead of all 55 story stylesheets, it had to create its
+element before `<body>` existed, and it took three attempts plus a parse-time CSS
+race to stop SugarCube's own spinner flashing through the gap (MEMORY.md traps
+26-30). Drawing it in Flutter removes that entire class of problem: there is no
+DOM to create, no specificity to win and no parse race, because the widget
+exists from the very first frame.
 
-Deleting the element rather than overriding it is deliberate. Two attempts at
-overriding shipped broken: CSS injected from a script in `<head>` lands *before*
-the story's 55 stylesheets, so a selector of equal specificity loses to the later
-SugarCube rule, and the ring survived. Owning the element removes the question —
-`#dol-loading` has no competing rules anywhere in the story.
+The visuals are unchanged on purpose -- same geometry, same greys, same label --
+so it is the screen that was already approved, only native. SugarCube's own is a
+100px ring with a 24px `#7f7f7f` border, one rotation per two seconds, offset to
+`top:25%` so it is not even centred, with the "Loading..." text hidden behind
+`text-indent:9999em`. Monochrome on purpose, because the game's UI is greyscale.
+An earlier version used the four-colour app icon and was rejected as not
+belonging to the design language; `lib/src/palette.dart` holds every grey.
 
 Things to know before editing it:
 
-- **`#init-loading` is hidden by CSS, not only deleted.** `#init-loading{display:none !important}`
-  has to be in force *before* the element exists. Character offsets in the story:
-  our script at ~1600, `data-init="loading"` set at 1772, `<body>` at 754537,
-  `<div id="init-loading">` at 754783. So the ring is on screen long before
-  `DOMContentLoaded`, which cannot fire until all 50 MB have been parsed — that
-  was a 1–2s flash of the circle before handover. CSS applies the instant the
-  parser creates the element, so this rule covers the whole gap. `!important` is
-  required: SugarCube's own `display:block` is written later in the cascade. The
-  element is still removed once the body exists; the rule is the guarantee, the
-  removal is the mechanism.
-- **The loader is attached to `document.documentElement` first**, because `<body>`
-  does not exist yet and that element is the only one guaranteed to. It renders
-  identically — `position:fixed` with `inset:0`, which is why the odd parent does
-  not matter — and it is moved into `<body>` at `DOMContentLoaded`, in the same
-  frame, so nothing shifts. Safe because it is DOM insertion rather than markup,
-  so the parser never sees or relocates it.
-- **`#init-loading` is referenced by CSS only.** `LoadScreen.init()` removes just
-  `#init-no-js` and `#init-lacking`, and the loading state lives entirely on the
-  `html[data-init]` attribute. So deleting the element is safe, and with it gone
-  the ring cannot be drawn at any size, in any rotation, under any cascade.
-- **Leave `#init-screen` alone.** It is the full-screen `#111` backdrop, it
-  carries the z-index, and its `html[data-init=loading]` rules hide `#passages`
-  and `#ui-bar` while loading. Only the spinner child goes.
-- Keyed off `html[data-init="loading"]`, so it shows for **every** load, not just
-  startup: SugarCube re-arms the attribute on each passage transition via
-  `LoadScreen.lock()`.
-- The track and sweep are real elements, not pseudo-elements. `::after` cannot
-  nest inside `::before`, and absolutely positioned pseudo-elements are out of
-  flow and ignore flex `gap`, which put the line on top of the label. As
-  children of a `position:relative` track, neither problem exists.
-- `pointer-events: none`, so it can never swallow a tap meant for the game.
+- **The page tells Dart when it is busy, and Dart draws the pixels.** A
+  `MutationObserver` on `html[data-init]` reports through the `DoLNative.loadState`
+  handler. That is the same attribute the in-page loader keyed on, and it is the
+  only signal that covers *every* load: SugarCube re-arms `data-init` on each
+  passage transition via `LoadScreen.lock()`, and no WebView callback fires for
+  any of those. `onLoadStop` is a backstop for the startup case, not the mechanism.
+- **`#init-loading` is still hidden by one line of CSS.**
+  `#init-loading{display:none !important}` has to be in force *before* the
+  element exists, and CSS is the only thing that can be. Character offsets in the
+  story: our script at ~1600, `data-init="loading"` set at 1772, `<body>` at
+  754537, `<div id="init-loading">` at 754783. So the ring would otherwise be on
+  screen long before `DOMContentLoaded`, which cannot fire until all 50 MB have
+  been parsed. `!important` is required: SugarCube's own `display:block` is
+  written later in the cascade. This is now the *only* rule the glue carries, and
+  `scripts/prepare_flutter_assets.js` fails the build if it goes missing.
+- **Do not put the loader back into the page.** `prepare_flutter_assets.js`
+  fails the build if the glue mentions `dol-loading`, for the reason above.
+- **A short load is torn down instantly.** A passage transition is tens of
+  milliseconds, and the page already goes full-bleed `#111` for it, so a
+  260ms fade would be 260ms of added latency on every link the player taps. Only
+  a load the player actually watched gets the animation.
+- **A failure is a screen with a Retry button**, not an indefinite sweep. The
+  reason is shown, and Retry re-delivers the document.
+- **A load that runs for 90 seconds is declared stuck.** `LoadModel.stuckThreshold`
+  fires from `tick()`, which only runs while the loader is on screen, so the
+  screen itself is the watchdog. A healthy first run is about three seconds; 90 is
+  not a performance budget, it is the point past which an indefinite sweep is
+  worse than a stop. This exists because a stalled load was reported from a
+  device as "still loading, five minutes" and the original cause was never pinned
+  — which is exactly why the screen must never be able to run forever.
+- **The screen says how far the load got, not just that it failed.**
+  `LoadModel.trail` records every step — web view created, load started, asked
+  for the document, the document arrived, the page says X — and the failure
+  screen lists them. Four different bugs look identical without it: never
+  navigated, navigated and never answered, everything arrived and the glue is
+  silent, or genuinely still parsing. The slow-load headline carries the current
+  step too, so the 90 seconds are at least informative rather than a counter.
+  It is on screen, not just in `adb logcat`, because a diagnostic only the
+  developer can read is not a diagnostic.
+- **The overlay is outside the `SafeArea`.** It has to be full bleed, or the
+  system bars sit on two shades of the same grey for the few seconds it is up.
+  The status banner is inside one, because it must not hide under the navigation
+  bar -- which is exactly where the in-page `<div>` it replaces used to live.
+- `IgnorePointer`, so a loader can never swallow a tap meant for the game. The
+  failure screen is the exception and has to be spelled out in the code: its
+  Retry button is the only way out of it, and the blanket version makes that a
+  dead button on the one screen the player cannot leave any other way.
 - `prefers-reduced-motion: reduce` parks the sweep mid-track rather than
-  removing it, so the screen does not just look broken.
+  removing it, so the screen does not just look broken. Read through
+  `MediaQuery.disableAnimationsOf`.
 
-To look at any of this without building and installing an APK, run
-`.preview/build-preview.js`. It reproduces the real injection order *and* the real
-timing — including setting `data-init="loading"` before `<body>` exists — and it
-runs the actual script. It fails the build if the parse-time hide or the
-`#dol-loading` styling is missing.
+There is no browser preview harness any more, and that is deliberate: the thing
+`.preview/build-preview.js` existed to preview was a DOM, and there is no DOM.
+The static properties of the injected glue are checked on every build by
+`scripts/prepare_flutter_assets.js` instead, and the loader's behaviour is
+pinned by `test/load_model_test.dart` and, for what the player actually reads,
+  by `test/load_overlay_test.dart`. That second one earns its keep: it caught two
+  bugs that would have shipped -- the loader's own `build` deciding visibility
+  outside the `AnimatedBuilder` that listens for it (so it appeared at startup
+  and then never again), and `IgnorePointer` making the Retry button dead.
 
 # notches and system bars
 
@@ -228,15 +325,35 @@ story's proportions: laying the window out *inside* the system bars, which was
 the default, gives the WebView a box smaller than the screen.
 
 Being edge to edge then means content has to be pushed back out of the cutouts,
-which `SafeArea` in `lib/src/app.dart` does. The strip left over is the same
-`#111` as the story's background, so it reads as more game rather than a black
-bar.
+which `SafeArea` in `lib/src/game_shell.dart` does. The strip left over is the
+same `#111` as the story's background, so it reads as more game rather than a
+black bar.
+
+The WebView itself never learns about any of this: `WindowChrome` applies it, and
+re-applies it on resume, because on Android 15 the system draws edge to edge
+whatever it is told but an activity returning from the background can come back
+with a navigation bar scrim it did not have before.
 
 **Do not "fix" this with `env(safe-area-inset-*)` in the page.** It is the
 obvious approach and it does not work here: Chromium derives those insets from
 the display cutout, so on a three-button-navigation device with no cutout they
 resolve to 0 and the story ends up underneath the navigation buttons. Flutter
 has the real inset for both cases.
+
+# the load path cannot stall
+
+Two rules, both learned the hard way from a device that reported "still loading,
+five minutes":
+
+1. **`shouldInterceptRequest` must always have an answer.** `GameHost.intercept`
+   serves `https://localhost/<path>` out of the Flutter asset bundle. If its
+   Future completes with an *error*, the plugin has nothing to send: the request
+   goes unanswered, Chromium waits forever, `onLoadStop` never fires and the
+   loading bar means nothing. `WebAssetServer.load` is therefore **total** —
+   catch-all plus a 20s `loadTimeout` — and `intercept` wraps it again and
+   answers a 404 whatever happens. `lastError` is logged at `onLoadStop`.
+2. **The loading screen has a stopping state.** `LoadModel.stuckThreshold` is
+   90s. See the loading-screen section above.
 
 # missing assets
 
@@ -245,3 +362,11 @@ The story references a few paths that were never in the repo (for example
 than returning null, because null means "not intercepted" and would send the
 WebView off to a host that does not exist. Broken image icons are expected and
 match what the Capacitor build did.
+
+**Where the glue actually is.** `prepare_flutter_assets.js` injects a
+`<script src="flutter_additions.js">` tag at the first `<script>` in the 50 MB
+document; it does not inline the code. So `assets/web/` holds `index.html` (with
+the tag), `flutter_additions.js` (~19 KB, all of our code) and `img/`. Searching
+the packaged `index.html` for a function name finds nothing and means nothing --
+look in `flutter_additions.js`. The build-time guards read the source glue in
+`www/`, which is the thing to check when one of them fires.

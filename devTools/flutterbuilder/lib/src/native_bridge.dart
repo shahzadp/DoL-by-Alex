@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import 'picked_document.dart';
+
 /// Dart side of the Android bridge.
 ///
 /// The game is a web app, so everything it can ask the platform for has to be
@@ -11,6 +13,8 @@ import 'package:flutter/services.dart';
 ///    cross-platform Dart equivalent that opens the *system* picker, and the
 ///    Cordova and Capacitor builds both did this natively, so export behaviour
 ///    stays identical.
+///  * [openDocument] -- the same picker, the other direction, for the story's
+///    import inputs.
 ///  * [toast] -- a real Android toast, matching what the previous builds showed.
 ///  * [exitApp] -- let Android unwind the activity stack normally.
 ///
@@ -55,6 +59,25 @@ class NativeBridge {
         'message': message,
         'long': length == ToastLength.long,
       });
+
+  /// Open the system document picker and return the chosen file's *contents*.
+  ///
+  /// The counterpart to [saveFile], and the one the game's import path needs.
+  /// `saveAs` was satisfied for three builds by a native plugin, and its mirror
+  /// image was satisfied by nothing: the story's "Load from file" inputs
+  /// (`base-system/overlays/saves-export-import.twee`, `base-system/settings.twee`)
+  /// activate a `<input type="file">`, and a WebView has no picker of its own.
+  ///
+  /// Contents rather than a uri, deliberately. A `content://` uri would have to
+  /// be read by the WebView, which is the one part of that path that cannot be
+  /// assumed to work -- see import_service.dart for why the plugin's own
+  /// callback stopped being used at all.
+  Future<PickedDocument?> pickDocument({List<String> acceptTypes = const <String>[]}) async {
+    final raw = await _invoke<Map<Object?, Object?>>('openDocument', <String, dynamic>{
+      'acceptTypes': acceptTypes,
+    });
+    return raw == null ? null : PickedDocument.fromMap(raw);
+  }
 
   /// Close the app the way the user swiping it away would.
   Future<void> exitApp() => _invokeQuietly('exitApp', null);

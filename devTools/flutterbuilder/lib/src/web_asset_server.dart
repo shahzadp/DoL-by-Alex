@@ -24,13 +24,18 @@ class WebAsset {
 /// tested with a plain `AssetBundle` stub. See game_web_view.dart for the
 /// adapter.
 class WebAssetServer {
-  WebAssetServer({AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
+  WebAssetServer({AssetBundle? bundle, Duration? timeout})
+      : _bundle = bundle ?? rootBundle,
+        _timeout = timeout ?? loadTimeout;
 
   /// Where the prepared game is staged inside the Flutter asset bundle.
   /// Kept in sync with scripts/prepare_flutter_assets.js.
   static const String assetRoot = 'assets/web';
 
   final AssetBundle _bundle;
+
+  /// See [loadTimeout]. Injectable only so a test does not have to sit for it.
+  final Duration _timeout;
 
   /// Decoded assets, keyed by asset path. The game's images average ~750
   /// bytes and the whole `img/` tree is 13.3 MB, so caching the lot is cheap and
@@ -99,13 +104,29 @@ class WebAssetServer {
   /// Returns null if it is not a bundled asset. That means "not ours": the
   /// caller should answer with a 404 rather than letting the WebView go looking
   /// for a host that does not exist.
+  ///
+  /// **Never throws.** The caller is a `shouldInterceptRequest` handler, and a
+  /// handler that completes with an error has no defined outcome on the native
+  /// side -- in practice the request is simply never answered, Chromium waits
+  /// for it forever, `onLoadStop` never fires and the player watches a loading
+  /// bar that means nothing until the battery dies. That is not a hypothetical:
+  /// it is the failure mode reported from a device as "still loading, five
+  /// minutes", and the one thing that would have identified it is a diagnostic
+  /// that never ran.
+  ///
+  /// So every failure mode is caught and turned into a 404, which at least lets
+  /// the document finish and the page render, and [lastError] is set so a
+  /// release build can say what went wrong.
   Future<WebAsset?> load(String encodedPath) async {
     final cached = _cache[encodedPath];
     if (cached != null) return cached;
 
     missCount++;
     try {
-      final data = await _bundle.load('$assetRoot/$encodedPath');
+      // Bounded. An asset read that never completes is the same stall by
+      // another route, and a 404 at least gets the document to the point where
+      // it can render and report.
+      final data = await _bundle.load('$assetRoot/$encodedPath').timeout(_timeout);
       final bytes = data.buffer.asUint8List(
         data.offsetInBytes,
         data.lengthInBytes,
@@ -119,8 +140,28 @@ class WebAssetServer {
       // that were never part of the repo (e.g. /fonts/Roschild.ttf) and the
       // Capacitor build 404'd on those too.
       return null;
+    } catch (error) {
+      // Everything else: an out-of-memory on the 50 MB document, a bundle that
+      // is closed underneath us, a platform channel that is gone during a hot
+      // restart. None of those should be able to hang the page.
+      lastError = '$encodedPath: $error';
+      return null;
     }
   }
+
+  /// The most recent resolution failure, for diagnostics.
+  ///
+  /// Null unless something other than a plain missing key went wrong. Read by
+  /// `adb logcat -s DoLNative` after a release build misbehaves, because there
+  /// is no other way to see it on the build where the bug reproduces.
+  String? lastError;
+
+  /// How long a single bundle read may take before it is called a failure.
+  ///
+  /// Generous, because `index.html` is ~50 MB and a cold, compressed asset
+  /// bundle on a slow phone is allowed to be slow. It exists so that "never
+  /// finishes" cannot be another name for this stall.
+  static const Duration loadTimeout = Duration(seconds: 20);
 
   void _remember(String path, WebAsset asset) {
     if (asset.bytes.lengthInBytes > maxCacheBytes) return;

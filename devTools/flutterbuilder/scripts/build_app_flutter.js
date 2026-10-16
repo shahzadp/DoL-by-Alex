@@ -149,10 +149,203 @@ const parts = version.split('.').map((n) => parseInt(n, 10) || 0);
 const [major = 0, minor = 0, patch = 0, build = 0] = parts;
 const versionCode = Math.min(major * 1000000 + minor * 10000 + patch * 100 + build, 2100000000);
 
+/**
+ * Prove the apk is newer than the Kotlin it is supposed to contain.
+ *
+ * `android/build.gradle.kts` disables `minifyReleaseWithR8` for every module,
+ * `:app` included, because with this plugin's own R8 pass disabled the app's
+ * pass cannot resolve `InAppWebViewFlutterPlugin` and fails. While R8 *was*
+ * running for `:app` that produced three weeks of release builds that compiled
+ * cleanly, signed cleanly, and shipped a DEX from 13 October: every Dart change
+ * was in them, because Dart is AOT, and no Kotlin change was -- which is why
+ * nothing looked wrong.
+ *
+ * Now that R8 is off on purpose there is no stale-R8-output failure mode left,
+ * but the *symptom* is worth guarding against anyway, because it is the one
+ * thing here that looks completely healthy from the outside.
+ *
+ * A guard rather than a comment: "Load from file does nothing in the release
+ * build but works in debug" is not something a reader would ever connect back
+ * to a gradle rule.
+ */
+function verifyKotlinIsFresh(apk) {
+	const sources = findKotlinSources();
+	if (sources.length === 0) return;
+
+	const apkTime = fs.statSync(apk).mtimeMs;
+	let newest = 0;
+	let newestFile = null;
+	for (const file of sources) {
+		const mtime = fs.statSync(file).mtimeMs;
+		if (mtime > newest) {
+			newest = mtime;
+			newestFile = file;
+		}
+	}
+
+	if (newest > apkTime) {
+		throw new Error(
+			`this apk is stale and was NOT rebuilt from the current sources:\n` +
+				`  apk      ${apk}  (${new Date(apkTime).toISOString()})\n` +
+				`  newest   ${newestFile}  (${new Date(newest).toISOString()})\n` +
+				'The Kotlin in it is older than the Kotlin on disk, so it cannot contain ' +
+				'the current native code.'
+		);
+	}
+}
+
+/**
+ * Every hand-written Kotlin source.
+ *
+ * Recursive, so a new file in a new package cannot slip past the freshness
+ * check in verifyKotlinIsFresh.
+ */
+function findKotlinSources() {
+	const out = [];
+	const walk = (dir) => {
+		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+			const full = path.resolve(dir, entry.name);
+			if (entry.isDirectory()) {
+				// Gradle's generated sources are not input to the app's R8 pass.
+				if (entry.name === 'build' || entry.name === '.gradle') continue;
+				walk(full);
+			} else if (entry.name.endsWith('.kt')) {
+				out.push(full);
+			}
+		}
+	};
+	walk(path.resolve(androidRoot, 'app', 'src'));
+	return out;
+}
+
+/**
+ * The staged game assets must be the game, the glue and the artwork. Nothing else.
+ *
+ * Found in the wild: a build killed mid-`assembleRelease` left a partial copy of
+ * the 50 MB document in the asset staging directory under a hash name
+ * (`6ecb6186`). The directory is *not* cleaned between builds, so the next build
+ * globbed the wreckage straight into the apk -- 1.3 MB of compressed nothing,
+ * with a completely normal build log.
+ *
+ * That is the same family as the stale-R8 bug in verifyKotlinIsFresh: a
+ * generated directory that is trusted to be current, and is not. Nothing about
+ * the apk looks wrong, nothing in the log says a word, and the only symptom is
+ * a number that is a megabyte fatter than it should be.
+ *
+ * [clean] removes the strays, which is safe because this path is Gradle
+ * intermediates: regenerable, and never source. Called before the build so a
+ * killed build cannot poison the next one, then asserted after it.
+ */
+/**
+ * A plugin's release AAR must actually contain its classes.
+ *
+ * Found the hard way, and it is the most expensive bug this project has had.
+ * Disabling `minifyReleaseWithR8` in a subprojects{} block looks like "turn off
+ * R8" and is actually "make every plugin AAR empty": for a library module that
+ * task is what produces classes.jar. The measured result was a 22-byte
+ * classes.jar against 637,132 for debug.
+ *
+ * An empty plugin AAR produces no error anywhere. Gradle succeeds, the APK
+ * signs, the size looks plausible, and on the device:
+ *
+ *   GeneratedPluginsRegister: could not find or invoke the GeneratedPluginRegistrant
+ *     Caused by: NoClassDefFoundError: InAppWebViewFlutterPlugin
+ *   PlatformException: Trying to create a platform view of unregistered type
+ *
+ * The WebView is simply never created, so no callback ever fires and the
+ * loading screen sweeps forever. Debug was fine (no minification there) and Dart
+ * was fine (AOT), so both halves of the app under test were healthy while the
+ * one broken thing was the only thing nobody thought to look at.
+ *
+ * So: refuse to ship. Threshold is deliberately far below any real plugin --
+ * the smallest Flutter plugin AAR in the wild is tens of kilobytes.
+ */
+function verifyPluginAarsAreNotEmpty() {
+	const outputsDir = path.resolve('build');
+	if (!fs.existsSync(outputsDir)) return;
+
+	const empty = [];
+	const walk = (dir) => {
+		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+			const full = path.resolve(dir, entry.name);
+			if (entry.isDirectory()) walk(full);
+			else if (entry.name.endsWith('-release.aar')) {
+				const bytes = fs.statSync(full).size;
+				if (bytes < MIN_PLUGIN_AAR_BYTES) {
+					empty.push(`${full}  (${bytes} bytes)`);
+				}
+			}
+		}
+	};
+	walk(outputsDir);
+
+	if (empty.length === 0) return;
+	throw new Error(
+		`plugin release AARs are empty, which would ship an APK with no plugin in it:\n` +
+			empty.map((line) => `  ${line}`).join('\n') +
+			'\nAn empty AAR means minifyReleaseWithR8 was disabled for a library ' +
+			'module. For a library that task is what produces classes.jar -- see the ' +
+			'comment on the com.android.library block in android/build.gradle.kts.'
+	);
+}
+
+const MIN_PLUGIN_AAR_BYTES = 16 * 1024;
+
+function stagedGameAssetStrays(variant) {
+	const webDir = path.resolve(
+		'build/app/intermediates/flutter',
+		variant,
+		'flutter_assets/assets/web',
+	);
+	if (!fs.existsSync(webDir)) return { webDir, strays: [] };
+
+	const expected = new Set(['index.html', 'flutter_additions.js', 'img']);
+	const strays = fs
+		.readdirSync(webDir, { withFileTypes: true })
+		.map((entry) => entry.name)
+		.filter((name) => !expected.has(name))
+		.map((name) => path.resolve(webDir, name));
+	return { webDir, strays };
+}
+
+function cleanStagedGameAssets(variant) {
+	const { strays } = stagedGameAssetStrays(variant);
+	for (const stray of strays) {
+		const bytes = fs.statSync(stray).size;
+		fs.rmSync(stray, { recursive: true, force: true });
+		console.log(
+			`staging: removed stray ${path.basename(stray)} (${bytes} bytes) from a previous build`
+		);
+	}
+}
+
+function verifyStagedGameAssets(variant) {
+	const { webDir, strays } = stagedGameAssetStrays(variant);
+	if (strays.length === 0) return;
+
+	throw new Error(
+		`unexpected files in the staged game assets:\n` +
+			strays.map((s) => `  ${s}`).join('\n') +
+			`\n${webDir}\n` +
+			'These will be packaged into the apk. This is usually a partial write ' +
+			'left by a build that was interrupted. Delete the directory and rebuild.'
+	);
+}
+
 try {
 	console.log(`building ${version} (versionCode ${versionCode})${release ? ' [release]' : ' [debug]'}`);
 
 	const variant = release ? 'release' : 'debug';
+
+	// Before, not after: an interrupted build leaves its wreckage in a directory
+	// that the next build globs, so the only build that can be trusted is one
+	// that started from a staging directory it has just checked.
+	cleanStagedGameAssets(variant);
+
+	// Also before: the broken state is a 13 October AAR with an empty
+	// classes.jar, and Gradle is quite happy to treat that as up to date.
+	verifyPluginAarsAreNotEmpty();
+
 	const args = [
 		'build',
 		'apk',
@@ -193,7 +386,11 @@ try {
 	// Gradle will happily emit an unsigned release apk; prove otherwise rather
 	// than trusting the signing block, since v1 is off and there is no
 	// META-INF/*.SF to look for.
-	if (release) verifySignature(src);
+	if (release) {
+		verifySignature(src);
+		verifyKotlinIsFresh(src);
+	}
+	verifyStagedGameAssets(variant);
 
 	const distDir = path.resolve(gameRoot, 'dist');
 	fs.mkdirSync(distDir, { recursive: true });

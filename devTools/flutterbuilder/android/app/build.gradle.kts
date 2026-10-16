@@ -92,10 +92,29 @@ android {
             applicationIdSuffix = "debug"
         }
         release {
-            // R8, same as the Capacitor release build. Flutter AOT-compiles the
-            // Dart side regardless; this shrinks the Java/Kotlin and resources.
-            isMinifyEnabled = true
-            isShrinkResources = true
+            // Minification is off, and `isShrinkResources` has to go with it.
+            //
+            // `android/build.gradle.kts` disables `:app:minifyReleaseWithR8`
+            // (see the long comment there for why, and for what it cost when it
+            // was on while this flag was not). Resource shrinking is *driven by*
+            // that R8 pass -- it consumes the pass's shrunk-resources output -- so
+            // leaving it on fails the build at
+            // `:app:convertShrunkResourcesToBinaryRelease` with
+            // "failed opening zip".
+            //
+            // What it costs is very little here. `shrinkResources` trims unused
+            // resources, and this app has almost none of its own: the apk is
+            // ~34 MB of the Dart AOT snapshot and the game's bundled story and
+            // artwork. R8 itself would save a megabyte or so against ~300 lines
+            // of Kotlin.
+            //
+            // The real reason this is worth stating: for three weeks these flags
+            // were the other way round for the R8 half, and the result was
+            // release apks that compiled, signed, and shipped perfectly while
+            // containing three-week-old Kotlin. `verifyKotlinIsFresh` in
+            // scripts/build_app_flutter.js is the guard for that.
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

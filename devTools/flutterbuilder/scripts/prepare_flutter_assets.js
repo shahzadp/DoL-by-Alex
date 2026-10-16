@@ -34,6 +34,111 @@ fs.mkdirSync(webDir, { recursive: true });
 fs.copyFileSync(path.resolve('www/flutter_additions.js'), path.resolve(webDir, 'flutter_additions.js'));
 
 /*
+ * Guards on the injected glue.
+ *
+ * This is where a check belongs, rather than in the browser harness that used to
+ * live at .preview/build-preview.js. The harness needed the loading screen, and
+ * the loading screen is a Flutter widget now (lib/src/load_overlay.dart), so the
+ * thing it existed to preview is gone. What it also did -- prove a few
+ * properties of the glue on every run, loudly -- is still worth having, and this
+ * script already runs on every build and already fails loudly for a dozen other
+ * reasons.
+ *
+ * Every rule below corresponds to a bug that shipped.
+ */
+const glue = fs.readFileSync(path.resolve('www/flutter_additions.js'), 'utf-8');
+
+function requireGlue(needle, why) {
+	if (!glue.includes(needle)) {
+		throw new Error(`www/flutter_additions.js no longer contains:\n  ${needle}\n${why}`);
+	}
+}
+
+function forbidGlue(needle, why) {
+	if (glue.includes(needle)) {
+		throw new Error(`www/flutter_additions.js contains ${needle}, which it should not:\n${why}`);
+	}
+}
+
+requireGlue(
+	'#init-loading{display:none !important}',
+	'This is the only thing stopping the stock 100px ring from appearing for a\n' +
+		'second before the native loader is up. It has to be CSS, because the story\n' +
+		'creates #init-loading at character ~754783 of a 50 MB document and\n' +
+		'DOMContentLoaded cannot fire until all of it is parsed. MEMORY.md traps 27, 30.'
+);
+
+requireGlue(
+	'typeof window.flutter_inappwebview.callHandler === "function"',
+	'This is the bridge readiness gate, and it must test only the capability the\n' +
+		'page actually uses. It once also required addJavaScriptHandler to be a\n' +
+		'function, which the page never calls and which 6.2.0-beta.3 does not\n' +
+		'necessarily expose -- so the gate was permanently false and export did\n' +
+		'nothing at all, with no error visible anywhere. MEMORY.md trap 33.'
+);
+
+requireGlue(
+	'window.saveAs = saveAs;',
+	'The game calls a bare saveAs(blob, name) global. Without this the export button\n' +
+		'is a no-op.'
+);
+
+requireGlue(
+	'window.__dolCloseGameUi',
+	'The back button is intercepted natively and routed here, because only the page\n' +
+		'knows whether a SugarCube dialog or overlay is open. Without it, back cannot\n' +
+		'close a menu.'
+);
+
+requireGlue(
+	'function interceptFileInputs()',
+	'"Load from file" is handled here, not through the WebView file chooser. The\n' +
+		'plugin\'s onShowFileChooser is gated behind a useOnShowFileChooser setting and\n' +
+		'never fired, so the input did nothing at all. See MEMORY.md trap 50.'
+);
+
+requireGlue(
+	'DoLNative.pickFile',
+	'The handler that actually opens the system picker. Without it the capture-phase\n' +
+		'click listener cancels the input\'s own click and then nothing happens, which\n' +
+		'is a worse failure than doing nothing at all.'
+);
+
+requireGlue(
+	'input.dispatchEvent(new Event("change"',
+	'The picked file has to be put back on the input AND the change event fired, or\n' +
+		'the game\'s own onchange="importSave(this.files)" never runs and the file the\n' +
+		'player chose is silently discarded.'
+);
+
+requireGlue(
+	'function reportImportFailure(',
+	'Import failed twice with nothing on screen. Every way this path can fail now\n' +
+		'ends in the player being told, so it cannot fail silently a third time.'
+);
+
+requireGlue(
+	'DoLNative.importFailed',
+	'The native half of that alarm. Without it a failure only reaches the page, and\n' +
+		'the page is exactly what was not working.'
+);
+
+forbidGlue(
+	'dol-loading',
+	'The loading screen is a Flutter widget now. A page-drawn loader is not just\n' +
+		'redundant, it is the thing that took three attempts and a parse-time race to\n' +
+		'get right. MEMORY.md traps 26-30. Do not put it back.'
+);
+
+forbidGlue(
+	'dol-export-status',
+	'Status messages are a Flutter widget now (lib/src/status.dart). The in-page one\n' +
+		'sat at position:fixed;bottom:0, which is underneath the navigation bar.'
+);
+
+console.log(`glue: ${glue.length} bytes, all guards passed`);
+
+/*
  * Sync img/ without recopying 18k unchanged files every build.
  * Preserve timestamps so the check below can skip them.
  */
@@ -215,8 +320,17 @@ if (begin < 0 || end < 0 || end < begin) {
 	throw new Error(`could not find the ${BEGIN_MARK} / ${END_MARK} markers in ${pubspecFile}`);
 }
 
-const updated =
-	pubspec.slice(0, begin) + generated + pubspec.slice(end + END_MARK.length);
+/*
+ * Rebuild the block in place.
+ *
+ * `head` has its trailing whitespace stripped on purpose. The slice ends just
+ * before the marker, so whatever indents the marker line -- a tab, here -- is
+ * part of it, and `generated` starts with another one. Without the strip every
+ * build indents the marker a little further and pubspec.yaml shows up as a
+ * one-line diff that has nothing to do with any change.
+ */
+const head = pubspec.slice(0, begin).replace(/[ \t]+$/, '');
+const updated = head + generated + pubspec.slice(end + END_MARK.length);
 
 if (updated !== pubspec) {
 	fs.writeFileSync(pubspecFile, updated, 'utf-8');

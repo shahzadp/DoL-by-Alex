@@ -3,7 +3,9 @@ package com.vrelnir.dol
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.Base64
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -21,7 +23,10 @@ import java.io.FileOutputStream
  * supplies the handful of things a web app genuinely cannot do for itself. The
  * save dialog is the important one: it opens the real system save-as picker
  * (Storage Access Framework), the same ACTION_CREATE_DOCUMENT dialog the Cordova
- * and Capacitor builds used, so export behaviour is unchanged.
+ * and Capacitor builds used, so export behaviour is unchanged. Its mirror image
+ * -- ACTION_OPEN_DOCUMENT, for the story's two "Load from file" inputs -- was
+ * missing entirely until now: a WebView has no file picker of its own, and
+ * without a host callback the input does nothing at all.
  *
  * Extends FlutterFragmentActivity rather than FlutterActivity purely for the
  * AndroidX Activity APIs: FlutterActivity extends plain android.app.Activity
@@ -54,6 +59,138 @@ class MainActivity : FlutterFragmentActivity() {
             completeSave(result)
         }
 
+    /**
+     * The import waiting on the system picker, if any.
+     *
+     * Kept apart from [pendingSave] and launched from its own launcher, so a late
+     * result cannot be delivered to the wrong pending call.
+     */
+    private var pendingOpen: MethodChannel.Result? = null
+
+    private val documentOpener: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val pending = pendingOpen
+            pendingOpen = null
+            if (pending == null) return@registerForActivityResult
+
+            val uri = result.data?.data
+            if (result.resultCode != Activity.RESULT_OK || uri == null) {
+                // A cancellation. null is what the page reads as "player said no",
+                // and it must say nothing: nagging about a cancel makes players
+                // stop trusting the button.
+                Log.i(LOG_TAG, "openDocument: cancelled")
+                pending.success(null)
+                return@registerForActivityResult
+            }
+
+            // A plain read grant, not a persistable one: the bytes are read
+            // immediately and nothing holds a permission on the player's save
+            // afterwards.
+            Log.i(LOG_TAG, "openDocument: reading $uri")
+            readDocument(uri, pending)
+        }
+
+    /**
+     * Open the system "open document" picker and return the file's *contents*.
+     *
+     * The story has two `<input type="file">` elements -- "Load from file" in the
+     * saves overlay and in the settings -- and a WebView has no file picker of
+     * its own.
+     *
+     * This deliberately does not go through the plugin's `onShowFileChooser`.
+     * That callback is gated behind its own `useOnShowFileChooser` setting
+     * (`InAppWebViewChromeClient.java:866`) and never fired, silently, which is
+     * what "Load from file does nothing at all" turned out to be. The page now
+     * cancels the input's own click and asks for the file through this channel,
+     * so nothing here depends on a gate the app does not control.
+     *
+     * Returns the bytes rather than a uri. A `content://` uri would have to be
+     * read by the WebView, which is exactly the part that cannot be assumed;
+     * base64 crosses a method channel reliably and the page builds the File from
+     * it. Keys: `name`, `mimeType`, `data`.
+     */
+    private fun openDocument(call: MethodCall, result: MethodChannel.Result) {
+        if (pendingOpen != null) {
+            result.error("busy", "A document picker is already open", null)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            setType("*/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        // Only set a MIME list when the input asked for one. Both of the game's
+        // inputs leave `accept` empty, and an *empty* EXTRA_MIME_TYPES is not
+        // the same as no array: the picker builds its filter from it, and a
+        // filter with nothing in it selects nothing.
+        val acceptTypes = call.argument<List<String>>("acceptTypes").orEmpty()
+            .filter { it.isNotBlank() && it.contains('/') }
+        if (acceptTypes.isNotEmpty()) {
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, acceptTypes.toTypedArray())
+        }
+
+        pendingOpen = result
+        Log.i(LOG_TAG, "openDocument: acceptTypes=$acceptTypes")
+
+        try {
+            documentOpener.launch(intent)
+        } catch (e: Exception) {
+            // No device can resolve the intent. Leaving pendingOpen set would make
+            // every later attempt fail as "busy" for the rest of the session, so
+            // it is cleared and the failure is reported the same way as any other.
+            pendingOpen = null
+            result.error("noPicker", "no document picker is available on this device", null)
+        }
+    }
+
+    /**
+     * Read the chosen uri and answer with its name, type and bytes.
+     *
+     * Runs on the platform thread, which is why the read is capped. Saves are
+     * LZString text and land orders of magnitude below the limit.
+     */
+    private fun readDocument(uri: Uri, result: MethodChannel.Result) {
+        var name = "save.txt"
+        var bytes: ByteArray? = null
+
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameColumn = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (nameColumn >= 0 && cursor.moveToFirst()) {
+                name = cursor.getString(nameColumn) ?: name
+            }
+        }
+        val type = contentResolver.getType(uri)
+
+        try {
+            bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "openDocument: could not read $uri", e)
+        }
+
+        if (bytes == null) {
+            result.error("unreadable", "the chosen file could not be read", null)
+            return
+        }
+        if (bytes.size > MAX_IMPORT_BYTES) {
+            result.error(
+                "tooLarge",
+                "that file is too large to import (${bytes.size} bytes)",
+                null
+            )
+            return
+        }
+
+        result.success(
+            mapOf(
+                "name" to name,
+                "mimeType" to (type ?: "application/octet-stream"),
+                "data" to Base64.encodeToString(bytes, Base64.NO_WRAP)
+            )
+        )
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -71,6 +208,7 @@ class MainActivity : FlutterFragmentActivity() {
     private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "saveFile" -> saveFile(call, result)
+            "openDocument" -> openDocument(call, result)
             "toast" -> toast(call, result)
             "exitApp" -> {
                 result.success(null)
@@ -209,10 +347,24 @@ class MainActivity : FlutterFragmentActivity() {
         private const val CHANNEL = "com.vrelnir.dol/native"
 
         /**
+         * So the import path is traceable in logcat. "Load from file" does
+         * nothing visible at all when any one of four separate things is wrong,
+         * and the only way to tell them apart is to watch which step is reached.
+         */
+        private const val LOG_TAG = "DoLNative"
+
+        /**
          * Guard against a payload large enough to blow up the bridge. 24M base64
          * characters is roughly 18M decoded; game saves are text and land far
          * below this, so it is a safety net rather than a real constraint.
          */
         private const val MAX_BASE64_CHARS = 24 * 1024 * 1024
+
+        /**
+         * Guard on an imported file. Same reasoning as [MAX_BASE64_CHARS]: saves
+         * are text and land orders of magnitude below this, so this is a safety
+         * net against someone picking their entire downloads folder.
+         */
+        private const val MAX_IMPORT_BYTES = 32 * 1024 * 1024
     }
 }

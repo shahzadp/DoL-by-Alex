@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -133,5 +134,47 @@ void main() {
       await server.load('img/a.png');
       expect(server.missCount, 1);
     });
+
+    test('does not let anything but a missing key escape', () async {
+      // THE one. load() runs inside shouldInterceptRequest, and a handler that
+      // completes with an error has no defined outcome natively: the request
+      // goes unanswered, Chromium waits for it forever, onLoadStop never fires
+      // and the player watches a loading bar for five minutes with nothing in
+      // any log. Only FlutterError (a missing key) was caught before.
+      final hostile = WebAssetServer(bundle: _HostileBundle());
+      expect(await hostile.load('index.html'), isNull);
+      expect(hostile.lastError, contains('index.html'));
+    });
+
+    test('gives up on a bundle read that never finishes', () async {
+      // Same stall by another route, and the one that needs no bug at all.
+      final stalled = WebAssetServer(
+        bundle: _StalledBundle(),
+        timeout: const Duration(milliseconds: 50),
+      );
+      final started = DateTime.now();
+      expect(
+        await stalled.load('index.html').timeout(const Duration(seconds: 5)),
+        isNull,
+      );
+      expect(DateTime.now().difference(started), lessThan(const Duration(seconds: 5)));
+      expect(stalled.lastError, contains('index.html'));
+    }, timeout: const Timeout(Duration(seconds: 30)));
   });
+}
+
+/// Throws something that is *not* a missing key, which is the case that used to
+/// escape [WebAssetServer.load] entirely.
+class _HostileBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async {
+    throw StateError('bundle is closed');
+  }
+}
+
+/// Never completes. The 50 MB document on a bundle that has wedged looks
+/// exactly like this.
+class _StalledBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) => Completer<ByteData>().future;
 }
