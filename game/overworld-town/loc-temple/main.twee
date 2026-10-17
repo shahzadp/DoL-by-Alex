@@ -234,6 +234,10 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 		<<templeicon "pray">><<link [[Pray|Temple Pray]]>><<set $eventskip to 1>><<set $phase to 1>><</link>>
 		<br>
 	<</if>>
+	<<if $kylar_altar_research and $kylar_altar_research.includes("library") and !$kylar_altar_research.includes("temple") and !$temple_scriptorium_known>>
+		<<socialiseicon "ask">><<link [[Ask around about the pages missing from the school library (0:20)|Temple Altar Research Ask]]>><<pass 20>><</link>>
+		<br>
+	<</if>>
 	<<if $exposed lte 0>>
 		<<if Time.weekDay is 1 and Time.hour gte 11 and Time.hour lte 12>>
 			<<templeicon "confession">><span class="purple">The confessional is locked during mass.</span>
@@ -315,8 +319,6 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 		<</if>>
 	<</if>>
 
-
-
 	<<if $temple_rank isnot undefined and $temple_rank isnot "prospective">>
 		<br>
 		<<if $prayer_room_init is 1>>
@@ -334,7 +336,12 @@ You are in the main hall of the temple. Stone walls and pillars tower into darkn
 			<<templeicon "cloister">><<link [[Cloister|Temple Cloister]]>><</link>>
 			<br>
 		<</if>>
-
+	<</if>>
+	<<if $temple_scriptorium_known is 1>>
+		<<templeicon "scriptorium">><<link [[Search for the scriptorium (0:20)|Temple Scriptorium Search]]>><<pass 20>><</link>>
+		<br>
+	<<elseif $temple_scriptorium_known gte 2>>
+		<<templeicon "scriptorium">><<link [[Sneak into the scriptorium (0:01)|Temple Scriptorium Lock]]>><<pass 1>><</link>>
 	<</if>>
 	<br>
 	<<wolficon>><<link [[Leave (0:01)|Wolf Street]]>><<pass 1>><</link>>
@@ -993,8 +1000,23 @@ You look away from the <<monk>>, and <<he>> continues down the aisle.
 		<<ind>><<link [[Inform Jordan that the spear was taken by pirates|Temple Spear Zephyr]]>><</link>>
 		<br>
 	<</if>>
+	<<if $kylar_altar_research and $kylar_altar_research.includes("library") and !$kylar_altar_research.includes("temple") and !$temple_scriptorium_known>>
+		<<socialiseicon "ask">><<link [[Ask about the pages missing from the school library|Temple Altar Research Jordan]]>><</link>>
+		<br>
+	<</if>>
 	<<getouticon>><<link [[Step away|Temple]]>><<endevent>><</link>>
 <</if>>
+
+:: Temple Altar Research Jordan
+<<effects>>
+
+Jordan listens to your description of the book. "I'm sorry to hear it," <<he>> says. "I'm unfamiliar with that title, but it sounds interesting. I hope you're able to find a new copy."
+<br><br>
+
+<<endevent>>
+
+<<link [[Next|Temple]]>><</link>>
+<br>
 
 :: Temple Spear
 <<effects>>
@@ -3697,4 +3719,33 @@ Sydney hugs you again before leaving.
 <</if>>
 
 <<link [[Leave|Temple]]>><<endevent>><<set $temple_spear_mission to 1>><<unset $spearQuestion>><<unset $spearQuestions>><</link>>
+<br>
+
+:: Temple Altar Research Ask
+<<effects>>
+
+<<generate1>><<person1>>
+
+
+<<if $temple_rank is "monk" or $temple_rank is "priest">>
+	You ask passing <<monks_and_nuns>> about the missing pages. The first few don't know what you're talking about, but then an old <<monk>> beckons you into an alcove.
+	<br><br>
+	"I'm not familiar with that subject," <<he>> says. "But if they're here, they'll be in the scriptorium, through the cloister."
+	<br><br>
+	<<He>> walks away. You hear the clink of hidden chains.
+	<br><br>
+<<else>>
+	You ask passing <<monks_and_nuns>> about the missing pages. Some listen with sympathy. Others give you the cold shoulder. None seem to know what you're talking about.
+	<br><br>
+	One <<monk>> takes offence. "You think we're common thieves?" <<he>> says. "In the old days thay'd have whipped and branded you for such insolence. As if we don't have our store of knowledge in the scriptorium." <<He>> departs in a huff.
+	<br><br>
+<</if>>
+
+<<if !$temple_scriptorium_known>>
+	<<set $temple_scriptorium_known to 1>>
+	<span class="gold">You've learned of a scriptorium, somewhere in the temple.</span>
+	<br><br>
+<</if>>
+
+<<link [[Next|Temple]]>><<endevent>><</link>>
 <br>

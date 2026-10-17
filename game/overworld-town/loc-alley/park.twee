@@ -28,6 +28,10 @@ You are in the park.
 
 Tulips grow in great patches near the riverbank.
 
+<<if $halloween>>
+	Halloween decorations and orange lights hang from the trees.
+<</if>>
+
 <<streeteffects>>
 <br><br>
 <<if $exposed gte 1>>
@@ -161,7 +165,7 @@ Tulips grow in great patches near the riverbank.
 		<<npc "Sam">><<person1>>
 		A duck waddles in front of you. It looks up at you, as if expecting something. Before you can react, a hand appears, holding a handful of corn.
 		<br><br>
-		"Give it some of this."
+		"Give it some of this."	
 		<br><br>
 		<i>It's Sam.</i>
 		<br><br>
@@ -228,6 +232,33 @@ Tulips grow in great patches near the riverbank.
 				<br>
 				<<parkicon "bridge">><<link [[Walk over to <<nnpc_him "Sam">>|Sam Park]]>><</link>>
 				<br><br>
+			<</if>>
+		<</if>>
+		<<if $halloween is 1 and Time.monthDay is 30 and Time.hour gte 6 and !$halloween_pumpkin_competition>>
+			Tables have been set up, and a crowd gathers for the pumpkin carving competition.
+			<br>
+			<<icon "pumpkin-carving.png">><<link [[Compete (1:00)|Park Pumpkin Competition]]>><<pass 60>><</link>>
+			<br>
+		<<elseif $halloween is 1 and Time.monthDay is 31 or $halloween_pumpkin_competition>>
+			Bits of pumpkin litter the grass, and jack-o'-lanterns hang from branches.
+			<<if $halloween_pumpkin_competition is "won">>
+				A spooky shrine has been set up to display the winning pumpkin. <span class="green">Yours.</span>
+			<<elseif $halloween_pumpkin_competition is "kylar">>
+				A spooky shrine has been set up to display the winning pumpkin. <span class="green">Kylar's.</span>
+			<</if>>
+			<br>
+		<<elseif $halloween is 1 and Time.monthDay is 30>>
+			Tables are being set up ready for the pumpkin carving competition.
+			<br>
+		<<elseif $halloween and Time.dayState isnot "night">>
+			Tables have been set up, where people practise pumpkin carving. A sign advertises a competition on the 30th of the month.
+			<br>
+			<<if $exposed lte 0>>
+				<<icon "pumpkin-carving.png">><<link [[Pumpkin carving|Park Pumpkin]]>><</link>>
+				<br>
+			<<else>>
+				<span class="blue">You'll need to dress decently before taking part in pumpkin carving.</span>
+				<br>
 			<</if>>
 		<</if>>
 		<<icon "men-toilet.png">><<link [[Men's toilets (0:01)|Men's Toilets]]>><<pass 1>><<endevent>><</link>>
@@ -352,3 +383,966 @@ You search the riverbank for the prettiest <<foodstufficon "tulip">> tulips, the
 
 <<link [[Next|Park]]>><</link>>
 <br>
+
+:: Park Pumpkin
+<<effects>><<set _kylarLocation to getKylarLocation()>>
+
+You approach the pumpkin carving tables. Most seats are occupied, with <<people>> hard at work, covering the grass with orange vegetable bits.
+<br><br>
+
+<<if !$halloween_pumpkin>>
+	<<set $halloween_pumpkin to 1>>
+	<<set $halloween_pumpkins_bought to 0>>
+	<<set $pumpkin_carving to 0>>
+	<<set $pumpkin_carving_knowledge to []>>
+	<<generate1>><<person1>>
+	"Come to practise for the competition?" asks a smiling <<person>>. "All are welcome, but I'm afraid you'll have to bring your own pumpkins. There's a bit of a shortage. We'll provide a pumpkin for the competition itself, as well as <span class="gold">£1000</span> for the winner. <span class="gold">It's on the 30th.</span> That way we can display the jack-o'-lanterns for Halloween proper."
+	<br><br>
+	<<He>> turns away, distracted by a mishap.
+	<br><br>
+	<<endevent>>
+	<<generate1>><<person1>>
+	"If it's a pumpkin you need," says another voice. "I've got one here you can have for <span class="gold">£100</span>." <<He>> throws a pumpkin straight up, catches it, then explores your body with lascivious eyes. "Or if that's too rich for you, we could put your mouth to work." <<He>> makes a crude gesture with <<his>> tongue.
+	<br><br>
+	<<if $money gte 10000>>
+		<<link [[Buy pumpkin|Park Pumpkin Buy]]>><<money -10000>><<set $halloween_pumpkins_bought += 1>><<tending_give "pumpkin" 1>><</link>>
+		<br>
+	<</if>>
+	<<if hasSexStat("promiscuity", 4)>>
+		<<link [[Give oral in return for a pumpkin|Park Pumpkin Oral]]>><<set $sexstart to 1>><</link>><<promiscuous4>>
+		<br>
+	<<else>>
+		<<insufficientStat "promiscuity" "to take up such an alternative!">>
+		<br>
+	<</if>>
+	<<link [[Grab the pumpkin and run|Park Pumpkin Athletics]]>><<crimeUp 3 "petty">><</link>><<athleticsdifficulty 1 1000>><<gcrime "petty">>
+	<br>
+	<<set $skulduggerydifficulty to 600>>
+	<<link [[Steal a pumpkin (0:05)|Park Pumpkin Skulduggery]]>><<crimeUp 3 "petty">><</link>><<skulduggerydifficulty>><<gcrime "petty">>
+	<br>
+	<<link [[Walk away|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+
+	<<if _kylarLocation.area is "park" and !$halloween_pumpkin_kylar>>
+		You see Kylar watching from behind a tree.
+		<br><br>
+	<</if>>
+
+	<<if $foodstuff.pumpkin.amount gte 1 and $pumpkin_carving lt 10>>
+		<<link [[Practice pumpkin carving (1:00)|Park Pumpkin Practise]]>><<pass 60>><<tending_give "pumpkin" -1>><<set $pumpkin_carving += 1>><</link>> | Pumpkins: <<print $foodstuff.pumpkin.amount>>
+	<<elseif $pumpkin_carving gte 10>>
+		<span class="lblue">You've had all the pumpkin carving practise you need.</span>
+	<<else>>
+		<span class="blue">You have no pumpkins in which to carve.</span>
+	<</if>>
+	<br>
+	<<link [[Ask how to get better at pumpkin carving|Park Pumpkin Ask]]>><</link>>
+	<br>
+	<<link [[Find a pumpkin seller (0:10)|Park Pumpkin Seller]]>><<pass 10>><</link>>
+	<br>
+	<<if _kylarLocation.area is "park" and !$halloween_pumpkin_kylar>>
+		<<link [[Call Kylar over|Park Pumpkin Kylar]]>><</link>>
+		<br>
+	<</if>>
+	<<link [[Leave|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+
+:: Park Pumpkin Ask
+<<effects>>
+
+<<generate1>><<person1>>
+You approach a seasoned-looking carver, and ask if <<he>> has any tips. <<He>> thrusts <<his>> knife into the table, drawing an irritated look from an organiser, and strokes <<his>> chin.
+<br><br>
+
+"You won't get my secrets," <<he>> says with a wry smile. "But I can give general advice. There are probably books in the library that will teach you a thing or two. At the end of the day though, there's no substituting practice. So get practising."
+<br><br>
+
+<<He>> picks up <<his>> knife, and carves away.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Park Pumpkin Seller
+<<effects>>
+<<if $halloween_pumpkins_bought is undefined>><<set $halloween_pumpkins_bought to 0>><</if>>
+<<set _pumpkin_price to 10000 + ($halloween_pumpkins_bought * 10000)>>
+
+<<generate1>><<person1>>
+You find a <<person>>, throwing and catching a pumpkin like a ball, while trying to sell it to passersby.
+<br><br>
+
+"Need a pumpkin, <<girl>>?" <<he>> asks. "The going rate is <<printmoney _pumpkin_price>>.</span>" <<He>> leers at your body. "Though if that's too rich for you, you could put your mouth to work instead." <<He>> makes a crude gesture with <<his>> mouth.
+<br><br>
+
+<<if $money gte _pumpkin_price>>
+	<<link [[Buy a pumpkin (<<printmoney _pumpkin_price>>)|Park Pumpkin Buy]]>><<money `-_pumpkin_price`>><<tending_give "pumpkin" 1>><<set $halloween_pumpkins_bought += 1>><</link>>
+	<br>
+<<else>>
+	<span class="blue">You can't afford a pumpkin.</span>
+	<br>
+<</if>>
+<<if hasSexStat("promiscuity", 4)>>
+	<<link [[Give oral in return for a pumpkin|Park Pumpkin Oral]]>><<set $sexstart to 1>><</link>><<promiscuous4>>
+	<br>
+<<else>>
+	<<insufficientStat "promiscuity" "to take up such an alternative!">>
+	<br>
+<</if>>
+<<link [[Grab the pumpkin and run|Park Pumpkin Athletics]]>><<crimeUp 3 "petty">><</link>><<athleticsdifficulty 1 1000>><<gcrime "petty">>
+<br>
+<<set $skulduggerydifficulty to 600>>
+<<link [[Steal a pumpkin (0:05)|Park Pumpkin Skulduggery]]>><<pass 5>><<crimeUp 3 "petty">><</link>><<skulduggerydifficulty>><<gcrime "petty">>
+<br>
+<<link [[Walk away|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Park Pumpkin Buy
+<<effects>>
+
+"Pleasure doing business with you," says the <<person>>, handing you a pumpkin. <<He>> looks disappointed for a moment, then walks away.<<wearProp "pumpkin">>
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Park Pumpkin Oral
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<maninit>>
+	Branches grope you as the <<person>> leads you through a thin gap between bushes, into a grassy clearing, shielded from prying eyes.
+	<br><br>
+	<<He>> grasps your head, and pulls you towards <<his>> crotch.
+	<<npcoral>>
+	<<set $enemytrust += 100>><<promiscuity4>>
+	<<enable_rescue>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+<<if _combatend>>
+	<span id="next"><<link [[Next|Park Pumpkin Oral Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Park Pumpkin Oral]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Park Pumpkin Oral Finish
+<<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	<<He>> throws the pumpkin into the air, letting it thump beside you. "Enjoy."
+	<br><br>
+	<<tearful>> you rise to your feet. The pumpkin is still firm.<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	Furious, the <<person>> raises the pumpkin above <<his>> head, intending to bring it down on you. You kick <<him>> in the groin. <<He>> drops the pumpkin to clutch <<himself>> in pain, letting the vegetable drop onto <<his>> head. <<He>> collapses.
+	<br><br>
+	<<tearful>> you rise to your feet. The pumpkin is undamaged. You take it and leave before the <<person>> stirs.<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $rescue is 1 and $alarm is 1>>
+	<<set $rescued += 1>>
+	<<generate2>><<generate3>><<person2>>
+	A <<person>> and <<person3>><<person>> enter the clearing, and stop in shock at the sight before them.
+	<br><br>
+	The <<person1>><<person>> starts to stammer an explanation, but then elects to just leave, taking the pumpkin with <<him>>.
+	<br><br>
+	<<clotheson>>
+	<<if $exposed gte 1>>
+		"You look like you could use a cup of tea," the <<person2>><<person>> says while handing you some towels.
+		<<towelup>>
+		<br><br>
+	<<else>>
+		"You look like you could use a cup of tea," the <<person2>><<person>> says, while the <<person3>><<person>> shakes <<his>> head in disbelief in the direction of the <<person1>><<person>>.
+		<br><br>
+	<</if>>
+	<<link [[Drink tea (0:10)|Park Pumpkin Oral Tea]]>><<pass 10>><<trauma -6>><<stress -6>><</link>><<ltrauma>><<lstress>>
+	<br>
+	<<link [[Decline|Park Pumpkin Oral Tea Decline]]>><</link>>
+	<br>
+<<else>>
+	"No fun, no pumpkin," the <<person>> says. <<He>> walks away.
+	<br><br>
+	<<tearful>> you rise to your feet.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<</if>>
+
+
+:: Park Pumpkin Rape
+<<effects>>
+
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>>
+	Branches grope you as the <<person>> pushes you through a thin gap between bushes, into a grassy clearing.
+	<br><br>
+	"You want that pumpkin? Work for it."
+	<br><br>
+	<<set $enemyanger += 50>>
+	<<enable_rescue>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<alarmstate>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Park Pumpkin Rape Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Park Pumpkin Rape]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Park Pumpkin Rape Finish
+<<effects>>
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	<<He>> throws the pumpkin into the air, letting it thump beside you. "Enjoy."
+	<br><br>
+	<<tearful>> you rise to your feet. The pumpkin is still firm.<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	Furious, the <<person>> raises the pumpkin above <<his>> head, intending to bring it down on you. You kick <<him>> in the groin. <<He>> drops the pumpkin to clutch <<himself>> in pain, letting the vegetable drop onto <<his>> head. <<He>> collapses.
+	<br><br>
+	<<tearful>> you rise to your feet. The pumpkin is undamaged. You take it and leave before the <<person>> stirs.<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+	<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	<<set $rescued += 1>>
+	<<generate2>><<generate3>><<person2>>
+	A <<person>> and <<person3>><<person>> enter the clearing, and stop in shock at the sight before them.
+	<br><br>
+	The <<person1>><<person>> starts to stammer an explanation, but then elects to just leave, taking the pumpkin with <<him>>.
+	<br><br>
+	<<clotheson>>
+	<<if $exposed gte 1>>
+		"You look like you could use a cup of tea," the <<person2>><<person>> says while handing you some towels.
+		<<towelup>>
+		<br><br>
+	<<else>>
+		"You look like you could use a cup of tea," the <<person2>><<person>> says, while the <<person3>><<person>> shakes <<his>> head in disbelief in the direction of the <<person1>><<person>>.
+		<br><br>
+	<</if>>
+	<<link [[Drink tea (0:10)|Park Pumpkin Oral Tea]]>><<pass 10>><<trauma -6>><<stress -6>><</link>><<ltrauma>><<lstress>>
+	<br>
+	<<link [[Decline|Park Pumpkin Oral Tea Decline]]>><</link>>
+	<br>
+<</if>>
+
+:: Park Pumpkin Oral Tea
+<<effects>>
+
+The <<person2>><<person>> pours you a cup of tea from a flask, and the three of you chat for a short while.
+<br><br>
+"The town used to be different," the <<person3>><<person>> says at one point, gesturing after the <<person1>><<person>>. "It crept up on us."
+<br><br>
+
+They give you sympathetic smiles, then depart.
+<br><br>
+
+<<endcombat>>
+
+<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Park Pumpkin Oral Tea Decline
+<<effects>>
+
+You decline the invitation. The <<person2>><<person>> and <<person3>><<person>> give you sympathetic smiles, then depart.
+<br><br>
+
+<<endcombat>>
+
+<<link [[Next|Park]]>><<set $eventskip to 1>><</link>>
+<br>
+
+:: Park Pumpkin Athletics
+<<effects>>
+
+Without skipping a beat, you snatch the pumpkin from the <<persons>> hands, and run away.
+<br><br>
+"Fucking slut," <<he>> shouts, tearing after you.
+<<if $athleticsSuccess>>
+	You lead <<him>> on a chase through bushes, between trees, and finally across a river. You clear it in a leap. <span class="green"><<He>> does not.</span>
+	<br><br>
+	You leave the sodden <<person>> behind, pumpkin in hand.
+	<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<br><br>
+	<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	<<He>> chases you through bushes, between trees, then <span class="red">tackles you beside a river.</span>
+	<br><br>
+	"You want the pumpkin that badly?" <<he>> asks. "Fine. You'll pay another way."
+	<br><br>
+	<<link [[Next|Park Pumpkin Rape]]>><<set $molestationstart to 1>><</link>>
+	<br>
+<</if>>
+
+:: Park Pumpkin Skulduggery
+<<effects>>
+
+<<skulduggerycheck>>
+<<if $skulduggerysuccess is 1>>
+	You walk away, but keep watch on the <<person>> from nearby. <<He>> tries to sell the pumpkin to others, still throwing and catching it from time to time.
+	<br><br>
+
+	A few minutes later <<he>> stops under a low hanging tree. Time to strike. You approach while <<his>> back is turned, clamber up the tree, and wait in the branches above.
+	<br><br>
+
+	<<He>> throws the pumpkin in the air again. <span class="green">You snatch it, and slip down the tree, out of sight.</span> You glimpse <<him>> staring at the sky in confusion as you vanish behind some low bushes.
+	<br><br>
+	<<tending_give "pumpkin" 1>><<wearProp "pumpkin">>
+	<<skulduggeryuse>>
+
+	<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+	<br>
+<<else>>
+	You walk away, but keep watch on the <<person>> from nearby. <<He>> tries to sell the pumpkin to others, until <<he>> puts it aside for a cigarette.
+	<br><br>
+	You sneak behind <<him>> and lift the pumpkin, <span class="red">but then <<he>> whirls and grabs your wrist.</span>
+	<br><br>
+	"Want the pumpkin that badly?" <<he>> asks. "Fine. You'll pay another way."
+	<br><br>
+	<<skulduggeryuse>>
+	<<link [[Next|Park Pumpkin Rape]]>><<set $molestationstart to 1>><</link>>
+	<br>
+<</if>>
+
+:: Park Pumpkin Practise
+<<effects>><<set _kylarLocation to getKylarLocation()>>
+
+You take a seat at the pumpkin carving table, and get to work, carving away while watching the approach of other people up and down the table.
+<br><br>
+
+<<if _kylarLocation.area is "park" and $halloween_pumpkin_kylar is "win">>
+	You feel Kylar's eyes on you the whole time, watching you across the park.
+	<br><br>
+<<elseif _kylarLocation.area is "park" and $halloween_pumpkin_kylar is "kylar">>
+	Kylar sits beside you, outputting jack-o'-lantern after jack-o'-lantern at tremendous speed. Most are bad, but the sheer volume astounds onlookers.
+	<br><br>
+<</if>>
+
+Practice Progress: <<print ($pumpkin_carving * 10)>>%
+<br><br>
+
+<<if $pumpkin_carving gte 10>>
+	<span class="gold">You feel like you've learned a lot about pumpkin carving, all you can from practice here.</span>
+<<else>>
+	<span class="green">Your skill at pumpkin carving has improved.</span>
+<</if>>
+
+<<if ($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) gte 15 and ($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) lte 19>>
+	<span class="gold">You've gained the Knowledge: Pumpkin Carving trait.</span>
+<</if>>
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><</link>>
+<br>
+
+
+:: Park Pumpkin Competition
+<<effects>><<set _kylarLocation to getKylarLocation()>>
+
+
+<<if !$halloween_pumpkin>>
+	You approach the pumpkin carving tables, all set up for the annual competition.
+	<br><br>
+	<<set $halloween_pumpkin to 1>>
+	<<set $halloween_pumpkins_bought to 0>>
+	<<set $pumpkin_carving to 0>>
+	<<set $pumpkin_carving_knowledge to []>>
+<</if>>
+
+<<generate1>><<person1>><<generate2>>
+<<if C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar>>
+	<<npc Kylar 3>>
+	You take your seat among the other competitors. Kylar appears beside you.
+<<else>>
+	You take your seat alongside the other competitors. 
+<</if>>
+A crowd gathers to watch, and a <<person>> dressed in a smart outfit steps onto a raised platform. <<He>> taps the microphone.
+<br><br>
+
+"Welcome to the annual Halloween pumpkin carving competition," <<he>> says. You hear <<his>> voice repeated through speakers in other parts of the park. <<He>> glances at <<his>> watch. "Without further ado, on the count of three. One. Two."
+<br>
+<<He>> raises <<his>> arms to encourage the crowd to join in.
+<br>
+"Three!"
+<br><br>
+
+<<link [[Begin|Park Pumpkin Competition 2]]>><</link>>
+<br>
+
+:: Park Pumpkin Competition 2
+<<effects>><<set _kylarLocation to getKylarLocation()>>
+
+A knife has been provided, a long, thin blade, as well as a selection of stencils. You get to work, carving to the best of your ability.
+<br><br>
+
+<<if C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "win">>
+	Beside you, Kylar flicks bits of pumpkin at the other competitors, distracting them.
+<<elseif C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "kylar">>
+	<<person3>>Kylar carves beside you. In contrast with <<his>> previous energy, <<hes>> now slow, methodical, sparing no unnecessary movements. <<He>> leans over the pumpkin, concealing it from view.
+<</if>>
+<br><br>
+
+Victory Chance:
+<br>
+Practical skill:
+<<if $pumpkin_carving gte 10>>
+	<span class="green">S</span>
+<<elseif $pumpkin_carving gte 8>>
+	<span class="lblue">A</span>
+<<elseif $pumpkin_carving gte 6>>
+	<span class="blue">B</span>
+<<elseif $pumpkin_carving gte 4>>
+	<span class="purple">C</span>
+<<elseif $pumpkin_carving gte 1>>
+	<span class="pink">D</span>
+<<else>>
+	<span class="red">F</span>
+<</if>>
+<br>
+Knowledge: 
+<<if $pumpkin_carving_knowledge?.length gte 2>>
+	<span class="green">S</span>
+<<elseif $pumpkin_carving_knowledge?.length gte 1>>
+	<span class="blue">B</span>
+<<else>>
+	<span class="red">F</span> 
+<</if>>
+<<set $pumpkin_win_chance to (($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) / 15 * 100)>>
+<<if C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "win">>
+	<br>
+	Kylar's assistance: <span class="green">+10%</span>
+	<<set $pumpkin_win_chance += 10>>
+<<elseif C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "kylar">>
+	<br>
+	Kylar wants to impress you: <span class="red">-1000%</span>
+	<<set $pumpkin_win_chance -= 1000>>
+<</if>>
+<br>
+Overall: <<print Math.trunc($pumpkin_win_chance)>>%
+<br><br>
+
+<<link [[Next|Park Pumpkin Competition 3]]>><</link>>
+<br>
+
+:: Park Pumpkin Competition 3
+<<effects>>
+<<person3>>
+"Time's up!" You lean back to examine your handiwork, and that of others.
+
+<<if C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "kylar">>
+	<<if $pumpkin_win_chance gte 100>>
+		<<if $pumpkin_carving_knowledge.includes("scriptorium")>>
+			At a glance, yours is one of the better jack-o'-lanterns, and your research at the scriptorium has given it a particular, unique spookiness.
+		<<else>>
+			At a glance, yours is one of the better jack-o'-lanterns. 
+		<</if>>
+	<<else>>
+		There are better jack-o'-lanterns on display. Maybe the judge will think yours has character.
+	<</if>>
+	<br><br>
+
+	Kylar remains hunched over <<his>> pumpkin, so still <<he>> could be asleep.
+	<br><br>
+
+	The <<person1>><<person>> walks the length of the tables, pausing a moment in front of each jack-o'-lantern. <<He>> strokes <<his>> chin when <<he>> comes to yours, but is distracted by Kylar.
+	<br><br>
+	
+	<<link [[Next|Park Pumpkin Competition Kylar]]>><</link>>
+	<br>
+<<elseif $pumpkin_win_chance gte random(1, 100)>>
+	<<if $pumpkin_win_chance gte 100>>
+		<<if $pumpkin_carving_knowledge.includes("scriptorium")>>
+			At a glance, yours is one of the better jack-o'-lanterns, and your research at the scriptorium has given it a particular, unique spookiness.
+		<<else>>
+			At a glance, yours is one of the better jack-o'-lanterns.
+		<</if>>
+	<<elseif $pumpkin_win_chance gte 50>>
+		Yours looks pretty good. It measures up to the best of the other jack-o'-lanterns you observe.
+	<<else>>
+		You're surprised to find yours looks pretty good. A bit rough around the edges, but it has character. There are better jack-o'-lanterns, but they resemble each other too closely.
+	<</if>>
+
+	<<if C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "win">>
+		"That's the most beautiful pumpkin I've ever seen," Kylar says, eyes full of awe. "You're sure to win."
+	<</if>>
+	<br><br>
+	The <<person1>><<person>> walks the length of the tables, pausing a moment in front of each jack-o'-lantern. <<He>> strokes <<his>> chin when <<he>> comes to yours.
+	<<if $pumpkin_carving_knowledge.includes("scriptorium")>>
+		"Why am I reminded of turnips?" <<he>> says with a wry smile.
+	<<elseif $pumpkin_carving_knowledge.includes("library")>>
+		"It's good to see someone's read their theory," <<he>> says before moving on.
+	<<else>>
+		"Not bad, not bad," <<he>> says before moving on.
+	<</if>>
+	<br><br>
+	<<link [[Next|Park Pumpkin Competition Won]]>><</link>>
+	<br>
+<<elseif C.npc.Kylar.state isnot "prison" and $halloween_pumpkin_kylar is "win">>
+	There are better jack-o'-lanterns on display. Maybe people will think yours has character. Kylar's is similar, except the features are a little more crooked.
+	<br><br>
+	The judge walks the length of the tables, pausing a moment in front of each jack-o'-lantern. <<person1>><<He>> observes yours, then moves on without fanfare.
+	<br><br>
+
+	<<link [[Next|Park Pumpkin Competition Loss Kylar]]>><</link>>
+	<br>
+<<else>>
+	There are better jack-o'-lanterns on display. Maybe people will think yours has character.
+	<br><br>
+	The judge walks the length of the tables, pausing a moment in front of each jack-o'-lantern. <<person1>><<He>> observes yours, then continues on without fanfare.
+	<br><br>
+
+	<<link [[Next|Park Pumpkin Competition Loss]]>><</link>>
+	<br>
+<</if>>
+
+
+:: Park Pumpkin Competition Won
+<<effects>>
+<<person1>>
+<<earnFeat "Pumpkin Master">>
+<<set $halloween_pumpkin_competition to "won">>
+The judge reaches the end of the tables, then turns and walks the way <<he>> came. <<He>> scoops up your jack-o'-lantern, and lifts it above <<his>> head. <span class="green">"We have our winner!"</span><<ggcontrol>><<lltrauma>><<llstress>><<control 25>><<trauma -12>><<stress -12>><<famebusiness 30>>
+<br><br>
+
+A great cheer rises, followed by applause, though you notice a few of the other contestants casting jealous glances your way. The <<person>> ushers you up front to pose for a photograph, and makes a show of handing you your prize.
+<br><br>
+
+<span class="gold">You've made <<moneyGain 1000>>.</span>
+<br><br>
+
+A crowd gathers around you.
+<br><br>
+"Your pumpkin is wonderful."
+<br>
+"What's your secret?"
+<br>
+"Is there a trick to it? Mine looks like a mauled potato."
+<br><br>
+What do you tell them?
+<br><br>
+
+<<link [[Be coy, and keep your secrets close|Park Pumpkin Competition Coy]]>><</link>>
+<br>
+<<link [[Say it's all about practice|Park Pumpkin Competition Practise]]>><</link>>
+<br>
+<<if $pumpkin_carving_knowledge.includes("library")>>
+	<<link [[Say reading about the subject is important|Park Pumpkin Competition Library]]>><</link>>
+	<br>
+<</if>>
+<<if $pumpkin_carving_knowledge.includes("scriptorium")>>
+	<<link [[Say knowing history is important|Park Pumpkin Competition Scriptorium]]>><</link>>
+	<br>
+<</if>>
+
+
+
+:: Park Pumpkin Competition Coy
+<<effects>>
+
+You give nothing away. People badger you for a while, but respect your silence in the end. The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Practise
+<<effects>>
+
+You tell people it's about practice. They nod along with your words, but some seem disappointed there's no trick to it. The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Library
+<<effects>>
+
+You tell people to seek wisdom about the subject in books, and say you got pumpkin carving tips from the school library. Some are satisfied, though others don't seem keen on reading at all. The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Scriptorium
+<<effects>>
+
+You tell people knowing the origins of things, how they developed, can be helpful. Some are satisfied, but some seem confused about what you mean. The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Kylar
+<<effects>>
+<<set $halloween_pumpkin_competition to "kylar">>
+"Come on," the <<person1>><<person>> says, amused. "It can't be that bad. If you're shy, just let me have a peek. No one else needs to see. You can't win if I can't see it."
+<br><br>
+
+Reluctant, Kylar shifts just enough for the <<person1>><<person>> to get a glimpse. <<He>> nods, then moves on.
+<br><br>
+
+<<link [[Next|Park Pumpkin Competition Kylar 2]]>><</link>>
+<br>
+
+
+:: Park Pumpkin Competition Kylar 2
+<<effects>>
+
+The judge reaches the end of the tables, then turns and walks the way <<he>> came. <span class="blue"><<He>> stops before reaching you.</span> Both arms reach out, and <<he>> scoops a wild-eyed Kylar up and away from <<person3>><<his>> jack-o'-lantern.
+<br><br>
+
+The crowd hushes as everyone beholds Kylar's work. It's unmistakable. The pumpkin is carved in your likeness. Your face flushes.<<gstress>><<stress 6>>
+<br><br>
+
+"Our winner," the <<person1>><<person>> announces. <<He>> seems to consider holding Kylar in the air, but decides against it, placing <<person3>><<him>> down beside <<his>> work.
+<br><br>
+
+<<link [[Next|Park Pumpkin Competition Kylar 3]]>><</link>>
+<br>
+
+
+:: Park Pumpkin Competition Kylar 3
+<<effects>><<run statusCheck("Kylar")>>
+<<earnFeat "Pumpkin Master">>
+
+"And what have we here?" the <<person1>><<person>> continues, stepping next to you. "Why, it looks like the winner's muse." A murmur from the crowd.
+<<if _kylarStatus.includes("Love")>>
+	Kylar climbs over the table, and snatches the microphone. "Yes!" <<person3>><<he>> says, climbing back over the table to grasp your arm. "That's my <<girlfriend>>."
+	<br><br>
+	Most of the audience seem to find it sweet, but those your age whisper and smirk.<<llcool>><<ggstress>><<status -3>><<stress 12>>
+	<br><br>
+	The <<person1>><<person>> snatches the microphone back, and recovers <<person1>><<his>> composure, gesturing for photographers to approach. <<He>> makes a show of handing Kylar the prize money, who makes a show of handing it to you.
+	<br><br>
+
+	<span class="gold">You've made <<moneyGain 1000>>.</span>
+	<br><br>
+
+	<<link [[Next|Park Pumpkin Competition Kylar High]]>><</link>>
+	<br>
+<<else>>
+	Kylar buries <<person3>><<his>> face in <<his>> arms once more, but you glimpse a smile.
+	<br><br>
+
+	The <<person1>><<person>> gestures for the photographers to approach. <<He>> considers Kylar a moment, then elects to hand the prize money to you. <<He>>'s keen to be photographed doing so.
+	<br><br>
+
+	<span class="gold">You've made <<moneyGain 1000>>.</span>
+	<br><br>
+
+	<<link [[Next|Park Pumpkin Competition Kylar Low]]>><</link>>
+	<br>
+<</if>>
+
+
+
+:: Park Pumpkin Competition Kylar High
+<<effects>>
+
+People crowd around you and Kylar, wanting to know what <<person3>><<his>> trick is. <<He>>'s eager to credit <<his>> love for you. As the crowd clears and people arrive to clean up the mess, and make sure all the knives are accounted for, <<he>> turns to you.
+<br><br>
+
+"Did I impress you?"
+<br><br>
+
+<<link [[Say yes|Park Pumpkin Competition Yes]]>><<npcincr Kylar love 1>><</link>><<glove>>
+<br>
+<<link [[Say no|Park Pumpkin Competition No]]>><<npcincr Kylar love -1>><<npcincr Kylar rage 1>><</link>><<llove>><<gksuspicion>>
+<br>
+<<link [[Say nothing|Park Pumpkin Competition Nothing]]>><<npcincr Kylar rage 1>><</link>><<gksuspicion>>
+<br>
+
+
+:: Park Pumpkin Competition Yes
+<<effects>>
+
+The words are barely out of your mouth when excitement energises Kylar's limbs. <<He>> rushes through the park, telling everyone <<he>> meets how much <<his>> <<girlfriend>> loves <<him>>.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition No
+<<effects>>
+
+<<He>> laughs, so loud that even people uninvolved in the competition look over. "You're so good at telling jokes." <<He>> walks away, trembling all over.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Nothing
+<<effects>>
+
+You say nothing. "Of course you are," Kylar says once <<he>> realises an answer isn't forthcoming. <<His>> voice shakes, and <<he>> fails to continue. <<He>> walks away, trembling all over.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Kylar Low
+<<effects>>
+
+People crowd around Kylar, wanting to know what <<person3>><<his>> trick is. <<He>> shrinks from the attention, and slinks away at the first opportunity.
+<br><br>
+
+The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Competition Loss Kylar
+<<effects>><<run statusCheck("Kylar")>>
+<<person1>>
+<<set $halloween_pumpkin_competition to "loss">>
+The judge reaches the end of the tables, then turns and walks the way <<he>> came. <span class="red"><<He>> strides right on by your jack-o'-lantern,</span> and lifts the one belonging to a <<person2>><<person>>.
+<br><br>
+
+Kylar watches as the <<person2>><<person>> steps up to receive the prize money. Looks like the <<person1>><<person>> wants to make a show of handing it out.
+<<person3>>
+<<if _kylarStatus.includes("Love")>>
+	"It's rigged," <<he>> says. "They rigged it against you." Then in one swift movement,
+<<else>>
+	Then in one swift movement,
+<</if>>
+<<he>> rises, lifts a handful of pulp removed from <<his>> jack-o'-lantern, and hurls it at the <<person2>><<person>>.
+<br><br>
+
+The photographers are excited. The winner less so. <<He>> and the <<person1>><<person>> whirl to see the culprit, but Kylar is already vanishing into the bushes.
+<br><br>
+
+The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+
+
+:: Park Pumpkin Competition Loss
+<<effects>>
+<<person1>>
+<<set $halloween_pumpkin_competition to "loss">>
+The judge reaches the end of the tables, then turns and walks the way <<he>> came. <span class="red"><<He>> strides right on by your jack-o'-lantern,</span> and lifts the one belonging to a <<person2>><<person>>.
+<br><br>
+
+A cheer goes up, though other competitors look dissappointed, even jealous. The <<person1>><<person>> seems eager to be photographed with the winner, and makes a show of handing <<person2>><<him>> the prize money.
+<br><br>
+
+The crowd clears as people arrive to clean up the mess, and make sure all the knives are accounted for.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><<unset $pumpkin_win_chance>><</link>>
+<br>
+
+:: Park Pumpkin Kylar
+<<effects>><<run statusCheck("Kylar")>>
+
+You beckon Kylar over.
+<<npc Kylar>><<person1>>
+<<if _kylarStatus.includes("Love")>>
+	<<He>> rushes over at once, any concerns <<he>> had about the crowds forgotten, or ignored. "What is it, my love?"
+<<else>>
+	<<He>> creeps closer, casting fearful glances at the other people around, until <<he>> arrives in front of you. <<He>> waits for you to speak.
+<</if>>
+<br><br>
+
+<<link [[Say you want to win the pumpkin carving competition|Park Pumpkin Kylar Win]]>><<set $halloween_pumpkin_kylar to "win">><</link>>
+<br>
+<<link [[Say you'd be impressed if Kylar won|Park Pumpkin Kylar Kylar Win]]>><<set $halloween_pumpkin_kylar to "kylar">><</link>>
+<br>
+<<link [[Just say hi|Park Pumpkin Kylar Hi]]>><</link>>
+<br>
+
+:: Park Pumpkin Kylar Hi
+<<effects>><<run statusCheck("Kylar")>>
+
+You say hi to Kylar.
+<<if _kylarStatus.includes("Love")>>
+	<<He>> grabs your wrist, pulls your hand to <<his>> mouth, and smothers it in kisses. "Hi," <<he>> says, then runs away.
+<<else>>
+	<<He>> blushes at <<his>> feet, then runs away.
+<</if>>
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+:: Park Pumpkin Kylar Win
+<<effects>><<run statusCheck("Kylar")>>
+
+<<if _kylarStatus.includes("Love")>>
+	Kylar nods at you. "You'll win. I know it." <<His>> face lights up with an idea. "Do you need pumpkins? I can get you some."
+	<br><br>
+	<<link [[Ask for pumpkins (0:03)|Park Pumpkin Kylar Need]]>><<pass 3>><<tending_give "pumpkin" 5>><</link>>
+	<br>
+	<<link [[Say no|Park Pumpkin Kylar No]]>><</link>>
+	<br>
+<<else>>
+	Kylar nods at you. <<He>> seems to want to say something, but remains silent.
+	<br><br>
+
+	<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+	<br>
+<</if>>
+
+
+:: Park Pumpkin Kylar Need
+<<effects>>
+<<wearProp "pumpkin basket">>
+At your word, Kylar vanishes into the bushes, taking several branches with <<him>>. <<He>> isn't gone long. <<He>> arrives with armfuls of pumpkins, and places them at your feet.
+<br><br>
+
+<<link [[Thank <<him>>|Park Pumpkin Kylar Thank]]>><<npcincr Kylar love 1>><</link>><<glove>>
+<br>
+<<link [[Praise <<him>>|Park Pumpkin Kylar Praise]]>><<npcincr Kylar love 1>><</link>><<glove>>
+<br>
+<<link [[Ask <<him>> how <<he>> got them|Park Pumpkin Kylar Got]]>><</link>>
+<br>
+<<link [[Take them and walk away without a word|Park Pumpkin Kylar Silent]]>><<npcincr Kylar rage 1>><</link>><<gksuspicion>>
+<br>
+
+
+:: Park Pumpkin Kylar Got
+<<effects>>
+
+Kylar throws a glance back the way <<he>> came, and takes a moment to respond.
+
+<<if $famescrap gte 400>>
+	"I beat someone up and took them," <<he>> says, searching your eyes. "A bad person." <<He>> takes off before you can question <<him>> further.
+<<else>>
+	"I found them," <<he>> says, avoiding eye contact. <<He>> takes off before you can question <<him>> further.
+<</if>>
+<br><br>
+
+You've gained five pumpkins.<<wearProp "pumpkin">>
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+:: Park Pumpkin Kylar Thank
+<<effects>>
+
+You thank Kylar. <<He>> nods with vigour. "Anything for you."
+<br><br>
+
+As if overwhelmed with excited energy, <<he>> takes off in a rush, leaving you with the pumpkins.
+<br><br>
+
+You've gained five pumpkins.<<wearProp "pumpkin">>
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+:: Park Pumpkin Kylar Praise
+<<effects>>
+
+You praise Kylar, and stroke <<his>> head. <<He>> trembles in excitement, then takes off in a rush.
+<br><br>
+
+You've gained five pumpkins.<<wearProp "pumpkin">>
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+:: Park Pumpkin Kylar Silent
+<<effects>>
+
+You take the pumpkins, and walk away, leaving Kylar to wonder.
+<br><br>
+
+You've gained five pumpkins.<<wearProp "pumpkin">>
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+:: Park Pumpkin Kylar No
+<<effects>>
+
+Kylar nods, then slinks into the bushes.
+<br><br>
+
+<<link [[Next|Park Pumpkin]]>><<endevent>><</link>>
+<br>
+
+
+
+:: Park Pumpkin Kylar Kylar Win
+<<effects>>
+
+Kylar looks at you, a steely resolve enflamed in <<his>> eyes. Then <<he>> darts for the nearest chair, and looks around for a pumpkin.
+<br><br>
+<<generate2>><<person2>>
+"You need to bring your own pumpkins," says a <<person>>.
+<br><br>
+Kylar glares at <<him>>, looks around with wild eyes , then vanishes into a bush.
+<br><br>
+
+<<person1>><<He>> returns a moment later, a bundle of pumpkins in <<his>> arms. <<He>> takes a seat, and starts working them with <<his>> knife.
+<br><br>
+
+<<link [[Ask <<him>> to share|Park Pumpkin Kylar Ask]]>><</link>>
+<br>
+<<link [[Leave <<him>> be|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+
+:: Park Pumpkin Kylar Ask
+<<effects>>
+
+Kylar nods with enthusiasm, gives you all the pumpkins, then disappears to find more.
+<br><br>
+<<wearProp "pumpkin basket">>
+You've gained five pumpkins.<<tending_give "pumpkin" 5>>
+<br><br>
+<<He>> returns with yet more vegetables, takes a seat, and starts working them with <<his>> knife.
+<br><br>
+
+<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
+<br>
+
+
+

@@ -2095,6 +2095,10 @@ function yearlyEventChecks() {
 		delete V.halloween_kylar_whitney;
 		delete V.halloween_lake;
 		delete V.halloweenWolves;
+		delete V.halloween_pumpkins_bought;
+		delete V.halloween_pumpkin_competition;
+		delete V.halloween_pumpkin_kylar;
+		delete V.halloween_domus_pumpkin;
 	}
 
 	// Christmas
