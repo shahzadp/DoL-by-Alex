@@ -48,7 +48,7 @@ setup.speechCategories = {
 	playerOrgasm: { priority: 70 },
 	plead: { priority: 70 },
 	screamForHelp: { priority: 70 },
-	struggle: { priority: 70 },
+	struggle: { priority: 70, cooldown: 3 },
 
 	/* An NNPC's follow up line to something they said earlier. */
 	followUp: { priority: 65 },
