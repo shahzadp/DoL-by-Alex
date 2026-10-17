@@ -1,10 +1,10 @@
 :: Widgets Rent [widget]
 <<widget "rentdue">>
 	<<npc Bailey>><<person1>>
-	<<set $_robinWasInRoom to _args[0]>>
+	<<set $_robinWasInRoom to _args[0]>><<set $baileyRefusedToPay to 0>>
 
 	"Time to pay up," <<he>> says.
-	<<if $baileydefeatedchain gte 3 or ($robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and $renttime lte -14)>>
+	<<if $baileydefeatedchain gte 3 or ($robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and ($rentTime lte -14 or $rentThug?.anger gte 4))>>
 		<<generateRole 1 0 "thug">><<generateRole 2 0 "thug">>
 		A rough-looking <<person2>><<person>> and <<person3>><<person>> stand next to <<person1>><<him>>.
 		The <<person2>><<person>> cracks <<his>> knuckles, and the <<person3>><<person>> grins darkly.
@@ -25,6 +25,7 @@
 		<br><br>
 	<</if>>
 
+	<<person1>>
 	<<if $baileyOfficeSeduced is 1>>
 		<<unset $baileyOfficeSeduced>>
 		<<set $_rentSeduce to true>>
@@ -35,12 +36,12 @@
 		<<homeBabyIntro>>
 	<</if>>
 	<<babyRent>>
-	<<if $money gte $rentmoney + ($babyRent or 0)>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
 		<<link [[Pay|Rent Pay]]>><<set $phase to $_robinWasInRoom>><</link>>
 		<br>
 		<<link [[Refuse|Rent Refuse]]>><<def 1>><</link>>
 		<br>
-		<<if $baileyseduced isnot 1>>
+		<<if $baileyseduced isnot 1 and !isPregnancyEnding()>>
 			<<if hasSexStat("promiscuity", 2)>>
 				<<link [[Seduce|Rent Seduce]]>><<set $phase to ($_rentSeduce ? 1 : 0)>><<trauma 3>><</link>><<promiscuous2>><<gtrauma>>
 				<br>
@@ -50,8 +51,12 @@
 				<br>
 			<</if>>
 		<</if>>
+		<<if isPregnancyEnding()>>
+			<<link [[Tell <<him>> your waters have broken|Rent Pregnant]]>><<set $rentPregInterruption to "told">><</link>>
+			<br>
+		<</if>>
 	<<else>>
-		<<person1>>
+		<<if isPregnancyEnding()>><<set $rentPregInterruption to "broke">><</if>><<person1>>
 		<<if $speech_attitude is "bratty">>
 			You stare at <<him>> in defiance. "I don't have your money. And wouldn't give it to you if I did."
 		<<elseif $speech_attitude is "meek">>
@@ -63,14 +68,82 @@
 
 		<<rentnopay true>>
 	<</if>>
-	<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+	<<if !isPregnancyEnding()>><<set $rentTime to 7>><<set $rentDay to Time.weekDay>><</if>>
+<</widget>>
+
+<<widget "thugrentdue">>
+	<<set $phase2 to "thug">><<set $baileyRefusedToPay to 0>>
+	<<npc Bailey>><<loadNPC 1 "rent_thug">><<person1>>
+	"I see you've finally found your way back. Though it seems you needed some assistance," <<he>> sneers. 
+	<<if $baileydefeatedchain gte 3 or $rentTime lte -7 or $rentThug.anger gte 4>>
+		<<generate3>><<generate4>>
+		<<He>> is flanked on both sides by a <<person3>><<person>> and <<person4>><<person>>.
+	<<elseif $baileydefeatedchain gte 1 or $rentTime lte -3 or $rentThug.anger gte 2>>
+		<<generate3>>
+		With <<him>> is a <<person3>><<person>>.
+	<</if>>
+	<br><br>
+	<<if $worn.face.type.includes("gag")>>
+		"Looks like you had some difficulties returning," Bailey says while looking at your gag. "A good tool to keep a brat in check," <<person1>><<he>> snidely remarks, "but it's not needed anymore." <<He>> snaps <<his>> fingers, and the <<person2>><<person>> removes it from your mouth.<<person1>>
+		<<set $worn.face.type.push("broken")>><<faceruined>>
+	<<else>>
+		<<person1>><<He>> looks at you coldly. "You better not keep me waiting next time, unless you want another rough escort back.
+	<</if>>
+	<br><br>
+
+	"Now then, you've had more than enough time to scrounge up what you owe," Bailey says. "So pay up."
+	<br><br>
+
+	<<if $babyIntros and $babyIntros.Bailey and $babyIntros.Bailey.length gt 0>>
+		<<set _homeBabyRent to true>>
+		<<homeBabyIntro>>
+	<</if>>
+	<<babyRent>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
+		<<link [[Pay|Rent Pay]]>><</link>>
+		<br>
+		<<link [[Refuse|Rent Refuse]]>><<def 1>><</link>>
+		<br>
+		<<if $baileyseduced isnot 1 and !isPregnancyEnding()>>
+			<<if hasSexStat("promiscuity", 2)>>
+				<<link [[Seduce|Rent Seduce]]>><<set $phase2 to "thug">><<set $phase to ($_rentSeduce ? 1 : 0)>><<trauma 3>><</link>><<promiscuous2>><<gtrauma>>
+				<br>
+			<<elseif $uncomfortable.prostituting is false>>
+				<<set _desperateaction to 1>>
+				<<link [[Seduce|Rent Seduce]]>><<set $phase2 to "thug">><<set $phase to ($_rentSeduce ? 1 : 0)>><<trauma 12>><<set $desperateaction to _desperateaction>><</link>><<promiscuous2>><<ggtrauma>>
+				<br>
+			<</if>>
+		<</if>>
+		<<if isPregnancyEnding()>>
+			<<link [[Tell <<him>> your waters have broken|Rent Pregnant]]>><<set $rentPregInterruption to "told">><</link>>
+			<br>
+		<</if>>
+	<<else>>
+		<<if isPregnancyEnding()>><<set $rentPregInterruption to "broke">><</if>>
+		<<if $speech_attitude is "bratty">>
+			You stare <<him>> down defiantly. "Well, guess what? I still don't have enough money for you. Deal with it," you scoff.
+		<<elseif $speech_attitude is "meek">>
+			You know you don't have enough money, but admitting that in this situation is too much for you. You look down at your feet shamefully.
+		<<else>>
+			"I... couldn't make enough money," you cautiously admit, afraid of how <<he>> will react.
+		<</if>>
+		<br><br>
+
+		For a moment, Bailey stares at you with cold indifference before speaking again.
+		<<if $phase is "willing">>
+			<<rentnopay true>>
+		<<else>>
+			<<rentnopay>>
+		<</if>>
+	<</if>>
+	<<if !isPregnancyEnding()>><<set $rentTime to 7>><<set $rentDay to Time.weekDay>><</if>>
 <</widget>>
 
 <<widget "rentduerobin">>
-	<<set $_robinInRoom to _args[0]>>
+	<<set $_robinInRoom to _args[0]>><<set $baileyRefusedToPay to 0>>
 	<<npc Bailey>><<person1>>
-	<<set $baileyRefusedToPayTotal += $rentmoney + ($babyRent || 0)>>
-	<<set $baileyRefusedToPayTotalStat += $rentmoney + ($babyRent || 0)>>
+	/*<<set $baileyRefusedToPayTotal += $rentMoney + ($babyRent || 0)>>
+	<<set $baileyRefusedToPayTotalStat += $rentMoney + ($babyRent || 0)>>*/
 
 	"Time to pay up," <<he>> says.
 	<<if $baileydefeatedchain gte 3>>
@@ -101,8 +174,9 @@
 			The <<person2>><<person>> brings Robin in with <<him>>. Robin has restraints on <<nnpc_his "Robin">> hands.
 		<</if>>
 	<</if>>
-
 	<br><br>
+
+	<<person1>>
 	<<if $baileyOfficeSeduced is 1>>
 		<<unset $baileyOfficeSeduced>>
 	<</if>>
@@ -111,7 +185,7 @@
 		<<homeBabyIntro>>
 	<</if>>
 	<<babyRent>>
-	<<if $money gte $rentmoney + ($babyRent or 0)>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
 		<<if $inRobinsRoom>>
 			<<link [[Pay|Rent Pay Robin]]>><<set $inRobinsRoom to true>><</link>>
 		<<else>>
@@ -120,6 +194,10 @@
 		<br>
 		<<link [[Refuse|Rent Refuse Robin]]>><<def 1>><</link>>
 		<br>
+		<<if isPregnancyEnding()>>
+			<<link [[Tell <<him>> your waters have broken|Rent Pregnant]]>><<set $rentPregInterruption to "told">><</link>>
+			<br>
+		<</if>>
 	<<else>>
 		<<set $baileypaychain to 0>>
 		<<if $speech_attitude is "bratty">>
@@ -141,59 +219,177 @@
 		<<He>> produces a hood and length of rope. "Hold still."
 		<br><br>
 
-		<<link [[Submit|Rent Intro]]>><<endevent>><<set $phase to 1>><</link>>
-		<br>
-		<<if $bus is "hospital">>
-			<<link [[Fight|Rent Hospital Fight Robin]]>><<set $fightstart to 1>><</link>>
-			<br>
+		<<if isPregnancyEnding()>>
+			<<set $phase to 1>><<set $rentPregInterruption to "broke">><<include "Rent Pregnant">>
 		<<else>>
-			<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><</link>>
+			<<link [[Submit|Rent Intro]]>><<endevent>><<set $phase to 1>><</link>>
+			<br>
+			<<if $bus is "hospital">>
+				<<link [[Fight|Rent Hospital Fight Robin]]>><<set $fightstart to 1>><</link>>
+				<br>
+			<<else>>
+				<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><</link>>
+				<br>
+			<</if>>
+		<</if>>
+	<</if>>
+	<<if !isPregnancyEnding()>><<set $rentTime to 7>><<set $rentDay to Time.weekDay>><</if>>
+<</widget>>
+
+<<widget "thugrentduerobin">>
+	<<set $_robinInRoom to _args[0]>><<set $baileyRefusedToPay to 0>>
+	/*<<set $baileyRefusedToPayTotal += $rentMoney + ($babyRent || 0)>>
+	<<set $baileyRefusedToPayTotalStat += $rentMoney + ($babyRent || 0)>>*/
+
+	<<set $phase2 to "thug">>
+	<<npc Bailey>><<loadNPC 1 "rent_thug">><<person1>>
+	"I see you've finally found your way back. Though it seems you needed some assistance," <<he>> sneers. 
+	<<if $baileydefeatedchain gte 3 or $rentThug.anger gte 4>>
+		<<generateRole 2 0 "thug">><<generateRole 3 0 "thug">><<generateRole 4 0 "thug">>
+		A rough-looking <<person3>><<person>> and <<person4>><<person>> stand next to <<person1>><<him>>.
+		<<if $_robinInRoom>>
+			Behind them, a third <<person5>><<person>> walks in with a length of rope and rushes Robin. Robin tries to resist, but it's no use.
+		<<else>>
+			Behind them, a third <<person5>><<person>> stands, bringing Robin in with <<him>>. Robin has restraints on <<nnpc_his "Robin">> hands.
+		<</if>>
+		The <<person3>><<person>> cracks <<his>> knuckles, and the <<person4>><<person>> grins darkly.
+	<<elseif $baileydefeatedchain gte 1 or $rentThug.anger gte 2>>
+		<<generateRole 2 0 "thug">><<generateRole 3 0 "thug">>
+		A rough-looking <<person3>><<person>> and <<person4>><<person>> stand next to <<person1>><<him>>.
+		<<if $_robinInRoom>>
+			The <<person4>><<person>> walks in with a length of rope and rushes Robin. Robin tries to resist, but it's no use.
+			The <<person3>><<person>> cracks <<his>> knuckles.
+		<<else>>
+			The <<person3>><<person>> cracks <<his>> knuckles, and the <<person4>><<person>> grins darkly, bringing Robin in with <<him>>.
+			Robin has restraints on <<nnpc_his "Robin">> hands.
+		<</if>>
+	<<else>>
+		<<generateRole 2 0 "thug">>
+		A rough-looking <<person3>><<person>> stands next to <<person1>><<him>>.
+		<<if $_robinInRoom>>
+			The <<person3>><<person>> walks in with a length of rope and rushes Robin. Robin tries to resist, but it's no use.
+		<<else>>
+			The <<person3>><<person>> brings Robin in with <<him>>. Robin has restraints on <<nnpc_his "Robin">> hands.
+		<</if>>
+	<</if>>
+	<br><br>
+	<<person1>>
+	<<if $worn.face.type.includes("gag")>>
+		"Looks like you had some difficulties returning," Bailey says while looking at your gag. "A good tool to keep a brat in check," <<he>> snidely remarks, "but it's not needed anymore."
+		<<He>> snaps <<his>> fingers, and the <<person2>><<person>> removes it from your mouth.
+		<<set $worn.face.type.push("broken")>><<faceruined>><<person1>>
+	<<else>>
+		<<He>> looks at you coldly. "You better not keep me waiting next time, unless you want another rough escort back.
+	<</if>>
+	<br><br>
+
+	"Now then, you've had more than enough time to scrounge up what you owe," Bailey says. "So pay up."
+	<br><br>
+
+	<<if $baileyOfficeSeduced is 1>>
+		<<unset $baileyOfficeSeduced>>
+	<</if>>
+	<<if $babyIntros and $babyIntros.Bailey and $babyIntros.Bailey.length gt 0>>
+		<<set _homeBabyRent to true>>
+		<<homeBabyIntro>>
+	<</if>>
+	<<babyRent>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
+		<<link [[Pay|Rent Pay Robin]]>><</link>>
+		<br>
+		<<link [[Refuse|Rent Refuse Robin]]>><<def 1>><</link>>
+		<br>
+		<<if isPregnancyEnding()>>
+			<<link [[Tell <<him>> your waters have broken|Rent Pregnant]]>><<set $rentPregInterruption to "told">><</link>>
+			<br>
+		<</if>>
+	<<else>>
+		<<set $baileypaychain to 0>>
+		<<if $speech_attitude is "bratty">>
+			You stare <<him>> down defiantly. "Well, guess what? I still don't have enough money for you. Do what you want with me, but leave Robin out of this."
+		<<elseif $speech_attitude is "meek">>
+			You know you don't have enough money, but admitting that in this situation is too much for you. You look at Robin and shake your head apologetically.
+		<<else>>
+			"I... couldn't make enough money," you shamefully admit. "Punish me however you want, just don't hurt Robin."
+		<</if>>
+		<br><br>
+
+		For a moment, Bailey stares at you with cold indifference before speaking again.
+		<br><br>
+
+		"Oh well," <<he>> says, now smiling. "I've already made arrangements. I don't know what they intend for you two, and frankly I don't care."
+		<<He>> produces a hood and length of rope. "Hold still."
+		<br><br>
+
+		<<if isPregnancyEnding()>>
+			<<set $phase to 1>><<set $rentPregInterruption to "broke">><<include "Rent Pregnant">>
+		<<else>>
+			<<link [[Submit|Rent Intro]]>><<endevent>><<set $phase to 1>><</link>>
+			<br>
+			<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><<set $phase to 0>><</link>>
 			<br>
 		<</if>>
 	<</if>>
-	<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+	<<if !isPregnancyEnding()>><<set $rentTime to 7>><<set $rentDay to Time.weekDay>><</if>>
 <</widget>>
 
 <<widget "rentnopay">>
-	<<set $baileypaychain to 0>>
-	<<set $_seduceAllowed to _args[0]>>
-	<<set $baileyRefusedToPayTotal += $rentmoney + ($babyRent || 0)>>
-	<<set $baileyRefusedToPayTotalStat += $rentmoney + ($babyRent || 0)>>
-	<<if $robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and ($baileydefeatedchain gte 3 or $renttime lte -14)>>
+	<<if !isPregnancyEnding()>>
+		<<set $baileypaychain to 0>>
+		<<set $_seduceAllowed to _args[0]>>
+		<<set $baileyRefusedToPayTotal += $rentMoney + ($babyRent || 0)>>
+		<<set $baileyRefusedToPayTotalStat += $rentMoney + ($babyRent || 0)>>
+	<</if>>
+	<<if $robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and !isPregnancyEnding() and ($baileydefeatedchain gte 3 or $rentTime lte -14 or $rentThug?.anger gte 4)>>
 		<<set $robinfirstrentfight to 1>>
 		Bailey is silent for a few seconds, before shrugging. "That's okay," <<person1>><<he>> says.
 		"I've learned my lesson. Trying to get value out of you directly is fruitless."
 		<br><br>
 
-		On an unseen signal, the thugs advance on you.
-		The <<person3>><<person>> reaches for you. You duck under <<his>> arm, but the <<person2>><<person>> grabs yours.
-		The <<person3>><<person>> grabs your other arm, and they hold you there.
+		<<if $phase2 is "thug">>
+			On an unseen signal, the thugs advance on you.
+			You prepare to avoid them, but the <<person2>><<person>> behind you quickly grabs hold of you. You try to shake <<him>> off, but by then the <<person3>><<person>> and <<person4>><<person>> have already reached you.
+			They easily take hold of your arms and pin you in place.
+		<<else>>
+			On an unseen signal, the thugs advance on you.
+			The <<person3>><<person>> reaches for you. You duck under <<his>> arm, but the <<person2>><<person>> grabs yours.
+			The <<person3>><<person>> grabs your other arm, and they hold you there.
+		<</if>>
 		<br><br>
 
 		<<link [[Next|Rent First Robin Fight]]>><<set $fightstart to 1>><<set $combatPhase to "talk">><<set $robinRentEvent to 1>><<set $timer to 5>><</link>>
 	<<else>>
 		<<person1>>
-		"That's okay," <<he>> says, smiling. "I've already made arrangements. I don't know what they intend for you, and frankly I don't care."
+		<<if $phase2 is "thug">>
+			"Oh well," <<he>> says, now smiling.
+		<<else>>
+			"That's okay," <<he>> says, smiling.
+		<</if>>
+		"I've already made arrangements. I don't know what they intend for you, and frankly I don't care."
 		<<He>> produces a hood and length of rope. "Hold still."
 		<br><br>
 
-		<<link [[Submit|Rent Intro]]>><<endevent>><</link>>
-		<br>
-		<<if $bus is "hospital">>
-			<<link [[Fight|Rent Hospital Fight]]>><<set $fightstart to 1>><</link>>
-			<br>
+		<<if isPregnancyEnding()>>
+			<<set $phase to 1>><<include "Rent Pregnant">>
 		<<else>>
-			<<link [[Fight|Rent Fight]]>><<set $fightstart to 1>><</link>>
+			<<link [[Submit|Rent Intro]]>><<endevent>><</link>>
 			<br>
-		<</if>>
-		<<if $baileyseduced isnot 1 and $_seduceAllowed>>
-			<<if hasSexStat("promiscuity", 2)>>
-				<<link [[Seduce|Rent Seduce]]>><<trauma 3>><</link>><<promiscuous2>><<gtrauma>>
+			<<if $bus is "hospital">>
+				<<link [[Fight|Rent Hospital Fight]]>><<set $fightstart to 1>><</link>>
 				<br>
-			<<elseif $uncomfortable.prostituting is false>>
-				<<set _desperateaction to 1>>
-				<<link [[Seduce|Rent Seduce]]>><<trauma 12>><<set $desperateaction to _desperateaction>><</link>><<promiscuous2>><<ggtrauma>>
+			<<else>>
+				<<link [[Fight|Rent Fight]]>><<set $fightstart to 1>><</link>>
 				<br>
+			<</if>>
+			<<if $baileyseduced isnot 1 and $_seduceAllowed>>
+				<<if hasSexStat("promiscuity", 2)>>
+					<<link [[Seduce|Rent Seduce]]>><<set $phase2 to "thug">><<trauma 3>><</link>><<promiscuous2>><<gtrauma>>
+					<br>
+				<<elseif $uncomfortable.prostituting is false>>
+					<<set _desperateaction to 1>>
+					<<link [[Seduce|Rent Seduce]]>><<set $phase2 to "thug">><<trauma 12>><<set $desperateaction to _desperateaction>><</link>><<promiscuous2>><<ggtrauma>>
+					<br>
+				<</if>>
 			<</if>>
 		<</if>>
 	<</if>>
@@ -224,22 +420,22 @@
 <</silently>><</widget>>
 
 <<widget "rentmod">>
-	<<set $rentmoney to Math.floor($rentmoney * $settings.rentCostModifier)>>
+	<<set $rentMoney to Math.floor($rentMoney * $settings.rentCostModifier)>>
 	<<if $robinpaid is 1>>
-		<<set $rentmoney *= 2>>
+		<<set $rentMoney *= 2>>
 	<</if>>
 <</widget>>
 
 <<widget "rentpay">>
-	<<money `-($rentmoney + ($babyRent or 0))` "baileyRent">>
-	<<set $rentmoney to [10000,30000,50000,70000,100000,150000,200000][Math.clamp($rentstage,1,6)]>> <!-- note: clamping to 1 is intentional -->
+	<<money `-($rentMoney + ($babyRent or 0))` "baileyRent">>
+	<<set $rentMoney to [10000,30000,50000,70000,100000,150000,200000][Math.clamp($rentStage,1,6)]>> <!-- note: clamping to 1 is intentional -->
 	<<rentmod>>
 
-	Bailey snatches the money from your hand and starts counting. "Good," <<nnpc_he "Bailey">> says, satisfied. "You came through.
-	<<if $rentstage is 1>>
-		Next week I want <<printmoney $rentmoney "pink">><<babyRentDisplay " plus " " if you don't look after your children" "pink">>. You didn't think it would get any easier, did you?"
-	<<else>>
-		Next week I want <<printmoney $rentmoney "pink">><<babyRentDisplay " plus " " if you don't look after your children" "pink">>."
+	Bailey snatches the money from your hand and starts counting. "Good," <<nnpc_he "Bailey">> says, satisfied.
+	"You came through. Next week I want <<printmoney $rentMoney "pink">><<babyRentDisplay " plus " " if you don't look after your children" "pink">>.<<if $rentStage is 1>> You didn't think it would get any easier, did you?"<<else>>"<</if>>
+	<<if _args[0] is "thug">>
+		<br><br>
+		By the time <<hes>> done counting the money, the <<print $event.buffer.length gte 3 ? "thugs that were with <<him>> have" : "thug that was with <<him>> has">> already vanished.<<thuganger -5>><<lllthuganger>>
 	<</if>>
 	<br><br>
 
@@ -247,7 +443,7 @@
 	<<set $baileyRefusedToPay to 0>>
 	<<set $baileypaychain to ($baileypaychain || 0) + 1>>
 	<<unset $bailey_encroach>>
-	<<set $rentstage += 1>>
+	<<set $rentStage += 1>>
 	<<if $robinpaid>>
 		<<npcincr Robin trauma -7>>
 	<</if>>
@@ -398,7 +594,7 @@
 				T.playerFatheredChildren.push(child.childId);
 			}
 			child.development.interactionsTotal = 0;
-			child.development.interactions = 7 - Math.clamp(V.renttime, 0, 7);
+			child.development.interactions = 7 - Math.clamp(V.rentTime, 0, 7);
 		}
 	})>>
 	<<person1>>
@@ -509,112 +705,162 @@
 :: Rent Pay
 <<effects>>
 
-<<rentpay>>
+<<rentpay $phase2>>
 
-<<if $bus is "hospital">>
-	<<if crimeSumCurrent() gte 1000>>
-		<<link [[Next|Hospital Arrest]]>><<pass 10>><<endevent>><</link>>
-		<br>
-	<<else>>
-		<<link [[Next|Hospital front]]>><<pass 10>><<endevent>><</link>>
-		<br>
-	<</if>>
+<<if $phase2 is "thug">>
+	You're left alone in the main hall.
+	<br><br>
+
+	<<link [[Next|Orphanage]]>><<endevent>><</link>>
 <<else>>
-	<<if $phase is 1>>
-		<<endevent>>
-		<<npc Robin>><<person1>>
-		You see Robin run up to you from around a corner as you exit <<his>> room. "You're okay!" <<He>> tackles you into a hug.
-		"Bailey took me away last night and I thought something awful was going to happen," <<he>> says before calming down.
-		<br><br>
+	<<if $bus is "hospital">>
+		<<if crimeSumCurrent() gte 1000>>
+			<<link [[Next|Hospital Arrest]]>><<pass 10>><<endevent>><</link>>
+		<<else>>
+			<<link [[Next|Hospital front]]>><<pass 10>><<endevent>><</link>>
+		<</if>>
+	<<else>>
+		<<if $phase is 1>>
+			<<endevent>>
+			<<npc Robin>><<person1>>
+			You see Robin run up to you from around a corner as you exit <<his>> room. "You're okay!" <<He>> tackles you into a hug.
+			"Bailey took me away last night and I thought something awful was going to happen," <<he>> says before calming down.
+			<br><br>
 
-		You return the embrace before returning to your room.
-		<br><br>
+			You return the embrace before returning to your room.
+			<br><br>
 
+		<</if>>
+		<<link [[Next|Bedroom]]>><<endevent>><</link>>
 	<</if>>
-	<<link [[Next|Bedroom]]>><<endevent>><</link>>
-	<br>
 <</if>>
+<br>
 
 :: Rent Pay Robin
 <<effects>>
 
-<<rentpay>>
+<<rentpay $phase2>>
 
-<<endevent>>
+<<endevent "phaseless">>
 <<npc "Robin">><<person1>>
-Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
-
-<<if $bus is "hospital">>
+<<if $phase2 is "thug">>
+	You're left in the hall with Robin. <<He>> hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
 	<br><br>
 
-	<<set $companion to "Robinrent">>
-	<<if crimeSumCurrent() gte 1000>>
-		<<link [[Next|Hospital Arrest]]>><<pass 10>><<endevent>><</link>>
-		<br>
-	<<else>>
-		<<link [[Next|Hospital front]]>><<pass 10>><<endevent>><</link>>
-		<br>
-	<</if>>
+	After a brief hug, <<he>> walks back to <<his>> room. "If you need anything, just let me know."
+	<br><br>
+
+	<<link [[Next|Orphanage]]>><<endevent>><</link>>
 <<else>>
-	<<if $inRobinsRoom>>
-		<<He>> sits down on <<his>> bed. "That was scary."
+	Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
+
+	<<if $bus is "hospital">>
 		<br><br>
 
-		After a moment to make sure Robin is okay, you leave the room and go back to the main hall.
-		<br><br>
-
-		<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<<set $companion to "Robinrent">>
+		<<if crimeSumCurrent() gte 1000>>
+			<<link [[Next|Hospital Arrest]]>><<pass 10>><<endevent>><</link>>
+		<<else>>
+			<<link [[Next|Hospital front]]>><<pass 10>><<endevent>><</link>>
+		<</if>>
 	<<else>>
-		<<He>> eventually leaves your bedroom. "If you need anything, just let me know."
-		<br><br>
+		<<if $inRobinsRoom>>
+			<<He>> sits down on <<his>> bed. "That was scary."
+			<br><br>
 
-		<<link [[Next|Bedroom]]>><<endevent>><</link>>
+			After a moment to make sure Robin is okay, you leave the room and go back to the main hall.
+			<br><br>
+
+			<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<<else>>
+			<<He>> eventually leaves your bedroom. "If you need anything, just let me know."
+			<br><br>
+
+			<<link [[Next|Bedroom]]>><<endevent>><</link>>
+		<</if>>
 	<</if>>
-	<br>
+	<<unset $inRobinsRoom>>
 <</if>>
-<<unset $inRobinsRoom>>
+<br>
 
 :: Rent Refuse
 <<effects>>
 
-<<person1>>
-<<if $speech_attitude is "bratty">>
-	You stare at <<him>> in defiance. "I'm not paying you. I don't care what you do to me."
-<<elseif $speech_attitude is "meek">>
-	"N-no," you stutter, surprised by your bravery. "I-I won't."
+<<if isPregnancyEnding()>><<set $rentPregInterruption to "refused">><</if>><<person1>>
+<<if $phase2 is "thug">>
+	<<if $speech_attitude is "bratty">>
+		"I'm not giving you a penny," you declare defiantly. "You don't deserve my hard earned money!"
+	<<elseif $speech_attitude is "meek">>
+		"I-I..." you stutter. "I won't!" you manage to yell, surprising yourself.
+	<<else>>
+		You shake your head. "It's my money, and I plan to keep it," you say.
+	<</if>>
+	<br><br>
+
+	"You came all this way just to act like a brat?" Bailey scoffs.
 <<else>>
-	"The money isn't yours," you say, "I'm keeping it."
+	<<if $speech_attitude is "bratty">>
+		You stare at <<him>> in defiance. "I'm not paying you. I don't care what you do to me."
+	<<elseif $speech_attitude is "meek">>
+		"N-no," you stutter, surprised by your bravery. "I-I won't."
+	<<else>>
+		"The money isn't yours," you say, "I'm keeping it."
+	<</if>>
+	<br><br>
 <</if>>
-<br><br>
 
 <<rentnopay>>
 
 :: Rent Refuse Robin
-<<effects>><<set $baileypaychain to 0>>
-<<set $baileyRefusedToPayTotal += $rentmoney + ($babyRent || 0)>>
-<<set $baileyRefusedToPayTotalStat += $rentmoney + ($babyRent || 0)>>
-<<person1>>
-<<if $speech_attitude is "bratty">>
-	You stare at <<him>> in defiance. "I'm not paying you. I don't care what you do to me, but leave Robin out of this."
-<<elseif $speech_attitude is "meek">>
-	"N-no," you stutter, surprised by your bravery. "I-I won't let you hurt either of us..."
-<<else>>
-	"The money isn't yours," you say. "Punish me however you want but leave <<nnpc_him "Robin">> out of this."
+<<effects>>
+<<if !isPregnancyEnding()>>
+	<<set $baileypaychain to 0>>
+	<<set $baileyRefusedToPayTotal += $rentMoney + ($babyRent || 0)>>
+	<<set $baileyRefusedToPayTotalStat += $rentMoney + ($babyRent || 0)>>
 <</if>>
-<br><br>
+<<person1>>
+<<if $phase2 is "thug">>
+	<<if $speech_attitude is "bratty">>
+		"I'm not giving you a penny," you declare defiantly. "You can do what you want with me, just leave Robin out of this!"
+	<<elseif $speech_attitude is "meek">>
+		"N-no, I- I won't," you stutter out. "I'm sorry," you almost whisper while looking at Robin.
+	<<else>>
+		You shake your head. "It's my money, and I plan to keep it," you say. "Punish me however you want but leave <<nnpc_him "Robin">> out of this."
+	<</if>>
+	<br><br>
 
-"That's okay," <<he>> says, smiling. "I've already made arrangements. I don't know what they intend for you two, and frankly I don't care."
+	"You came all this way just to act like a selfish brat?" Bailey scoffs. <<He>> stares at you with cold indifference before speaking again.
+	<br><br>
+
+	"Oh well," <<he>> says, now smiling.
+<<else>>
+	<<if $speech_attitude is "bratty">>
+		You stare at <<him>> in defiance. "I'm not paying you. I don't care what you do to me, but leave Robin out of this."
+	<<elseif $speech_attitude is "meek">>
+		"N-no," you stutter, surprised by your bravery. "I-I won't let you hurt either of us..."
+	<<else>>
+		"The money isn't yours," you say. "Punish me however you want but leave <<nnpc_him "Robin">> out of this."
+	<</if>>
+	<br><br>
+
+	"That's okay," <<he>> says, smiling.
+<</if>>
+"I've already made arrangements. I don't know what they intend for you two, and frankly I don't care."
 <<He>> produces a hood and length of rope. "Hold still."
 <br><br>
 
-<<link [[Submit|Rent Intro]]>><<set $phase to 1>><<endevent "phaseless">><</link>>
-<br>
-<<if $bus is "hospital">>
-	<<link [[Fight|Rent Hospital Fight Robin]]>><<set $fightstart to 1>><</link>>
-	<br>
+<<if isPregnancyEnding()>>
+	<<set $phase to 1>><<set $rentPregInterruption to "refused">><<include "Rent Pregnant">>
 <<else>>
-	<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><</link>>
+	<<link [[Submit|Rent Intro]]>><<set $phase to 1>><<endevent "phaseless">><</link>>
 	<br>
+	<<if $bus is "hospital">>
+		<<link [[Fight|Rent Hospital Fight Robin]]>><<set $fightstart to 1>><</link>>
+		<br>
+	<<else>>
+		<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><</link>>
+		<br>
+	<</if>>
 <</if>>
 
 :: Rent Seduce
@@ -639,7 +885,7 @@ Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
 	<br><br>
 
 	<<He>> releases you and presses <<his>> hand on your chest, shoving you. You stumble backwards as Bailey takes a menacing step towards you
-	<<if $money gte $rentmoney + ($babyRent or 0)>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
 		with <<his>> palm open expectantly. "Your payment. Now."
 		<br><br>
 
@@ -662,10 +908,10 @@ Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
 		<</if>>
 	<</if>>
 <<else>>
-	"You can pay me," <<person1>><<he>> sneers. "With money. <span class="pink">£<<print ($rentmoney + ($babyRent or 0)) / 100>>.</span> <span class="red">That's what your body's worth.</span>"
+	"You can pay me," <<person1>><<he>> sneers. "With money. <span class="pink">£<<print ($rentMoney + ($babyRent or 0)) / 100>>.</span> <span class="red">That's what your body's worth.</span>"
 	<br><br>
 
-	<<if $baileydefeatedchain gte 1>>
+	<<if $baileydefeatedchain gte 1 and $phase2 isnot "thug">>
 		<<person2>>"I'll take that as payment," the <<person>> beside <<nnpc_him Bailey>> says.
 		<br><br>
 
@@ -675,7 +921,7 @@ Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
 	<</if>>
 	It's too late to negotiate with Bailey. <<He>> wants <<his>> payment.
 
-	<<if $money gte $rentmoney + ($babyRent or 0)>>
+	<<if $money gte $rentMoney + ($babyRent or 0)>>
 		<<He>> holds out <<his>> hand.
 		<br><br>
 
@@ -701,11 +947,126 @@ Robin hugs you softly after Bailey leaves. "I'm so sorry," <<he>> says.
 	<</if>>
 <</if>>
 
+:: Rent Pregnant
+<<if $phase is 1>><<silently>><<effects>><</silently>><<else>><<effects>><</if>>
+<<endevent "phaseless">><<npc Bailey>><<generateyv2>><<person1>>
+<<set $rentPregCount to ($rentPregCount or 0) + 1>>
+<<switch $speech_attitude>>
+	<<case "meek">>"Wai..." You clutch your <<bellyDescription>>, sweating and heaving between words. "Wait! Please... <<if playerAwareTheyArePregnant()>>My baby!<<else>>It hurts!<</if>> Please..."
+	<<case "bratty">>"Are you bloody daft?" you yell through gritted teeth, feeling lightheaded. "Can't you see <<if playerAwareTheyArePregnant()>>I'm in labour<<else>>something's wrong with me<</if>>?!"
+	<<default>>"Stop! Wait..." You wince as a jolt of pain shoots through you. "<<if playerAwareTheyArePregnant()>>My baby<<else>>It hurts<</if>>... I need to get to the hospital!"
+<</switch>>
+<br><br>
+
+Bailey steps forward with a cold expression.
+<<if $rentPregCount gte 3>>
+	"Is this a joke?" <<he>> sneers. "You've gotten way too comfortable doing this."
+	<br><br>
+	<<He>> looks you over just to be sure. Just like before, the realisation that you're telling the truth finally hits <<him>>.
+<<else>>
+	"<<if playerAwareTheyArePregnant()>>Right, figures you'd pull something like that<<else>>I don't have time for your excuses<</if>>," <<he>> sneers.
+	<<if $phase is 1>>
+		"You're not getting out of this that easily. Now I won't ask again. Hold. Still."
+	<<else>>
+		"Am I to assume then that you're not paying? That's fine too." <<He>> produces a hood and length of rope. "Hold still."
+	<</if>>
+	<br><br>
+	<<He>> continues to approach you with the rope,
+	<<if $rentPregCount gte 2>>
+		then <<he>> looks you over and shakes <<his>> head.
+	<<else>>
+		but hesitates for a moment as <<his>> gaze meets yours. <<His>> eyes squint as <<he>> looks you over one more time, before they suddenly go wide.
+	<</if>>
+<</if>>
+<br><br>
+<<switch $rentPregCount>>
+	<<case 1>>"Shit."
+	<<case 2>>"Fuck, again?"
+	<<case 3 4>>"For fuck's sake."
+	<<case 5 6>>"For <i>fuck's</i> sake."
+	<<case 7 8 9>>"You just don't know when to quit..."
+	<<default>>But <<he>> says nothing, having already resigned <<himself>> to this depraved routine of yours.
+<</switch>>
+<br><br>
+The next thing you know, you're being grabbed by your shoulders and rushed through the main hall. You spot orphans left and right, all turning to look at the commotion. "Move," you hear as a <<person2>><<personsimple>> who stood a bit too close gets shoved to the floor.
+<br><br>
+You're led outside to Bailey's car. <<He>> yanks open the door and pushes you into the front seat before throwing the seatbelt over you. With heavy eyes, you stare out the window as <<he>> circles around to the driver's side.
+<br><br>
+Then, there are only the fading sounds of an engine to lull you into darkness.
+<br><br>
+<<link [[Everything fades to black...|Pregnancy Birth Hospital]]>><<endevent>><<pass 15>><<set $phase to 1>><</link>>
+<br>
+
+:: Rent Pregnant Return
+<<effects>>
+<<npc Bailey>><<person1>>
+
+Bailey finally drags <<his>> gaze from the nursery back to you.
+<<if !$rentPregInterruption>>
+	"Now, time to pay up."
+<<else>>
+	"Now that this little 'incident' of yours has been taken care of,
+	<<if $rentPregInterruption is "told">>
+		it's time to pay up."
+	<<elseif $rentPregInterruption is "refused">>
+		I'm going to give you one last chance to pay up."
+	<<elseif $rentPregInterruption is "broke">>
+		it's about time we resume where we'd left off."
+	<</if>>
+<</if>>
+<<if $baileydefeatedchain gte 3 or ($robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and ($rentTime lte -14 or $rentThug?.anger gte 4))>>
+	<<generateRole 1 0 "thug">><<generateRole 2 0 "thug">>
+	Two thugs flank <<him>> on either side.
+<<elseif $baileydefeatedchain gte 1>>
+	<<generateRole 1 0 "thug">>
+	A thug silently approaches you both.
+<</if>>
+<br><br>
+<<if $rentPregInterruption is "broke">>
+	<<if $robinfirstrentfight is 1>>
+		<<He>> smiles as <<he>> produces a hood and length of rope. "Hold still."
+		<br><br>
+
+		<<link [[Submit|Rent Intro]]>><<set $phase to 1>><<endevent "phaseless">><</link>>
+		<br>
+		<<link [[Fight|Rent Robin Fight]]>><<set $fightstart to 1>><</link>>
+		<br>
+	<<else>>
+		<<if $robinpaid is 1 and $bus is "home" and $robinfirstrentfight isnot 1 and ($baileydefeatedchain gte 3 or $rentTime lte -14 or $rentThug?.anger gte 4)>>
+			<<set $robinfirstrentfight to 1>>
+			"I've learned my lesson. Trying to get value out of you directly is fruitless."
+			<br><br>
+
+			On an unseen signal, the thugs advance on you.
+			The <<person3>><<person>> reaches for you. You duck under <<his>> arm, but the <<person2>><<person>> grabs yours.
+			The <<person3>><<person>> grabs your other arm, and they hold you there.
+			<br><br>
+
+			<<link [[Next|Rent First Robin Fight]]>><<set $fightstart to 1>><<set $combatPhase to "talk">><<set $robinRentEvent to 1>><<set $timer to 5>><</link>>
+		<<else>>
+			<<He>> smiles as <<he>> produces a hood and length of rope. "Hold still."
+			<br><br>
+
+			<<link [[Submit|Rent Intro]]>><<endevent>><</link>>
+			<br>
+			<<link [[Fight|Rent Fight]]>><<set $fightstart to 1>><</link>>
+			<br>
+		<</if>>
+	<</if>>
+<<else>>
+	You look back at Bailey, confused and still somewhat dazed from the whole experience.
+	<br><br>
+	"What? You didn't think popping out some <<pluralise $litter_size "brat">> was going to get you out of your obligations, did you? You still owe me, and I intend to collect."
+	<br><br>
+	You had almost forgotten all about that. A silent moment passes between you before <<he>> rolls <<his>> eyes and drops <<his>> voice.
+	<<endevent>><<rentdue>>
+<</if>>
+<<unset $litter_size>><<unset $rentPregInterruption>>
+
 :: Rent Intro
 <<effects>>
 <<set $baileydefeatedchain to 0>><<set $soldCount += 1>>
-<<set $baileyRefusedToPay to 0>>
-<<set $baileyRefusedToPayTotal to $baileyRefusedToPayTotal lt $rentmoney + ($babyRent || 0) ? 0 : $baileyRefusedToPayTotal - ($rentmoney + ($babyRent || 0))>>
+<<set $baileyRefusedToPayTotal to $baileyRefusedToPayTotal lt $rentMoney + ($babyRent || 0) ? 0 : $baileyRefusedToPayTotal - ($rentMoney + ($babyRent || 0))>>
 <<set _robin to statusCheck("Robin")>>
 <<unset $bailey_encroach>>
 <<npc Bailey 1>>
@@ -740,8 +1101,8 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<br><br>
 	<<link [[Next|Tutorial]]>><<set $molestationstart to 1>><<set $tutorialExit to "Tutorial Bailey">><</link>>
 
-<<elseif $rentsale is 3>>
-	<<set $rentsale to 0>><<generate2>><<person2>>
+<<elseif $rentSale is 3>>
+	<<set $rentSale to 0>><<generate2>><<person2>>
 	After journeying for some time you hear another set of footsteps.
 	<<if _robinIsPresent>>
 		"Hand them over," says a <<personssimple>> voice.
@@ -774,8 +1135,8 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 		<<link [[Next|Underground Intro]]>><<set $baileySold to true>><</link>>
 	<</if>>
 	<br>
-<<elseif $rentsale is 2>>
-	<<set $rentsale += 1>>
+<<elseif $rentSale is 2>>
+	<<set $rentSale += 1>>
 	<<if _robinIsPresent>>
 		You journey for some time until you feel solid concrete beneath your feet. Another set of footsteps approach.
 		You think you hear the rustle of an officer's belt.
@@ -828,8 +1189,8 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 		<<link [[Next|Street Van Bailey]]>><<set $baileySold to true>><</link>>
 		<br>
 	<</if>>
-<<elseif $rentsale is 1>>
-	<<set $rentsale += 1>>
+<<elseif $rentSale is 1>>
+	<<set $rentSale += 1>>
 	<<if _robinIsPresent>>
 		<<rentRobinPunishment>>
 		<<endevent>>
@@ -857,7 +1218,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 		<<rentEdenTrade>>
 	<</if>>
 <<else>>
-	<<set $rentsale to 1>>
+	<<set $rentSale to 1>>
 	<<generate2>><<person2>>
 	After journeying for some time you hear another set of footsteps. "This is the merchandise?" says a <<personssimple>> voice.
 	<br><br>
@@ -876,7 +1237,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 		<<if _robin.dom lte 50>>
 			"Please, let us go! We didn't do anything—"
 		<<else>>
-			"Wait! Let <<phim>> go! Please don't hurt my <<if $robinromance is 1>><<girlfriend>><<else>>friend<</if>>—"
+			"Wait! Let <<phim>> go! Please don't hurt my <<friend>>—"
 		<</if>>
 		Robin's voice suddenly becomes muffled, and to your alarm, you hear <<nnpc_him "Robin">> fall to the ground soon after.
 		<br><br>
@@ -895,8 +1256,18 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<maninit>>
 	<<set $enemyanger += 200>>
 	<<npcidlegenitals>>
-	"You think I won't beat it out of you?" Bailey says.
-	<br><br>
+	<<if $phase2 is "thug">>
+		"Not a smart move," you hear the <<person2>><<person>> say behind you. <<He>> lunges at
+		<<if (currentSkillValue('danceskill') + random(0,750)) gte 1100>>
+			you, but <span class="green">you manage to dodge, causing <<him>> to stumble headfirst into the ground</span>. Bailey looks at <<him>> scornfully for a moment, then pulls <<him>> up.
+			<<set $enemyhealth -= $enemyhealth / 5>>
+		<<else>>
+			you and <span class="red">grabs your arms, restraining them</span>. "Let's see how long you keep resisting," Bailey says.
+			<<set $leftarm to "grappled">><<set $rightarm to "grappled">><<set $NPCList[1].lefthand to "arms">><<set $NPCList[1].righthand to "arms">>
+		<</if>>
+	<<else>>
+		"You think I won't beat it out of you?" Bailey says.
+	<</if>>
 	<<set $phase to 1>>
 <</if>>
 
@@ -923,16 +1294,8 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 :: Rent Robin Fight
 <<set _robin to statusCheck("Robin")>>
 <<if $fightstart is 1>>
-	<<if $baileydefeatedchain gte 3>>
-		<<set $enemyno to 3>>
-		<<set $enemynomax to 3>>
-	<<elseif $baileydefeatedchain gte 1>>
-		<<set $enemyno to 2>>
-		<<set $enemynomax to 2>>
-	<<else>>
-		<<set $enemyno to 1>>
-		<<set $enemynomax to 1>>
-	<</if>>
+	<<set $enemyno -= 1>>
+	<<set $enemynomax -= 1>>
 	<<set $fightstart to 0>>
 
 	<<neutral 1>>
@@ -940,6 +1303,17 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<maninit>>
 	<<set $enemyanger += 200>>
 	<<npcidlegenitals>>
+	<<if $phase2 is "thug">>
+		"Not a smart move," you hear the <<person2>><<person>> say behind you. <<He>> lunges at
+		<<if (currentSkillValue('danceskill') + random(0,750)) gte 1100>>
+			you, but <span class="green">you manage to dodge, causing <<him>> to stumble headfirst into the ground</span>. Bailey looks at <<him>> scornfully for a moment, then pulls <<him>> up.
+			<<set $enemyhealth -= $enemyhealth / 5>>
+		<<else>>
+			you and <span class="red">grabs your arms, restraining them</span>. "Let's see how long you keep resisting," Bailey says.
+			<<set $leftarm to "grappled">><<set $rightarm to "grappled">><<set $NPCList[1].lefthand to "arms">><<set $NPCList[1].righthand to "arms">>
+		<</if>>
+		<br><br>
+	<</if>>
 	"Keep the other one under control, one of you," Bailey says. The <<personselect $enemynomax>><<person>> nods and grabs at Robin,
 	while Bailey returns <<person1>><<his>> gaze to you.
 	<<set $phase to 1>>
@@ -1020,7 +1394,10 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	Soon the whole room is filled with laughter. <<He>> looks back at you. "You'll pay for this," <<he>> says, before storming from the room.
 	<br><br>
 
-	<<if $baileydefeatedchain gte 2>>
+	<<if $phase2 is "thug">>
+		The thugs slink away after <<him>>.
+		<br><br>
+	<<elseif $baileydefeatedchain gte 2>>
 		The <<person2>><<person>> slinks out after <<person1>><<him>>.
 		<br><br>
 	<</if>>
@@ -1028,7 +1405,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<br><br>
 
 	The orphans cheer your defeat of the tyrant. <<He>> will be back, but for now you're in the clear.
-	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>><<llthuganger>><<thuganger -2>>
 	<br><br>
 
 	<<clotheson>>
@@ -1042,7 +1419,10 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<He>> notices the crowd formed around the hall. "You'll pay for this. Mark my words." <<He>> storms out.
 	<br><br>
 
-	<<if $baileydefeatedchain gte 2>>
+	<<if $phase2 is "thug">>
+		The thugs slink away after <<him>>.
+		<br><br>
+	<<elseif $baileydefeatedchain gte 2>>
 		The <<person2>><<person>> slinks out after <<person1>><<him>>.
 		<br><br>
 	<</if>>
@@ -1057,7 +1437,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<br><br>
 
 	Bailey's departure lifts a weight from the watching orphans, who cheer your defeat of the tyrant. <<He>> will be back, but for now you're in the clear.
-	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>><<llthuganger>><<thuganger -2>>
 	<br><br>
 
 	<<clotheson>>
@@ -1067,7 +1447,6 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 
 <<else>>
 	<<set $baileydefeatedchain to 0>>
-	<<set $baileyRefusedToPay to 0>>
 	<<unset $bailey_encroach>>
 
 
@@ -1095,13 +1474,16 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	Soon the whole room is filled with laughter. <<He>> looks back at you. "You'll pay for this," <<he>> says, before storming from the room.
 	<br><br>
 
-	<<if $baileydefeatedchain gte 2>>
+	<<if $phase2 is "thug">>
+		The thugs slink away after <<him>>.
+		<br><br>
+	<<elseif $baileydefeatedchain gte 2>>
 		The <<person2>><<person>> slinks out after <<person1>><<him>>.
 		<br><br>
 	<</if>>
 
 	The orphans cheer your defeat of the tyrant. <<He>> will be back, but for now you're in the clear.
-	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>><<llthuganger>><<thuganger -2>>
 	<br><br>
 
 	<<clotheson>>
@@ -1115,13 +1497,16 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<He>> notices the crowd formed around the hall. "You'll pay for this. Mark my words." <<He>> storms out.
 	<br><br>
 
-	<<if $baileydefeatedchain gte 2>>
+	<<if $phase2 is "thug">>
+		The thugs slink away after <<him>>.
+		<br><br>
+	<<elseif $baileydefeatedchain gte 2>>
 		The <<person2>><<person>> slinks out after <<person1>><<him>>.
 		<br><br>
 	<</if>>
 
 	<<His>> departure lifts a weight from the watching orphans, who cheer your defeat of the tyrant. <<He>> will be back, but for now you're in the clear.
-	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>>
+	<<greb>><<ghope>><<reb 1>><<hope 1>><<ltrauma>><<lstress>><<trauma -6>><<stress -12>><<llthuganger>><<thuganger -2>>
 	<br><br>
 
 	<<clotheson>>
@@ -1131,7 +1516,6 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 
 <<else>>
 	<<set $baileydefeatedchain to 0>>
-	<<set $baileyRefusedToPay to 0>>
 	<<unset $bailey_encroach>>
 
 
@@ -1153,7 +1537,7 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<set $fightstart to 0>>
 	<<set $enemyno to 1>>
 	<<set $head to "grappled">>
-	<<set $leftarm to "grappled">><<set $rightarm to "grappled">><<set $NPCList[0].lefthand to "arms">><<set $NPCList[0].righthand to "arms">>
+	<<set $leftarm to "grappled">><<set $rightarm to "grappled">><<set $NPCList[1].lefthand to "arms">><<set $NPCList[2].righthand to "arms">>
 	<<neutral 1>>
 
 	<<maninit>>
@@ -1338,6 +1722,52 @@ You trip a couple of times, prompting Bailey to drag you back to your feet and s
 	<<link [[Next|Orphanage]]>><</link>>
 <</if>>
 
+:: Thug Rent
+<<set $location to "home">><<effects>>
+
+<<if $phase is "unwilling">>
+	After some time, the car comes to a stop in front of the orphanage. "We're here. Don't even think about running, it's way too late for that," the <<person1>><<person>> says. 
+	<<if $exposed gte 1>>
+		<<He>> eyes over your exposed body. "Cover yourself, we don't want any onlookers getting the wrong idea," <<he>> says, tossing you a towel. You wrap it around yourself.
+		<<towelup>>
+	<</if>>
+	<<switch $event.buffer.length>>
+		<<case 1>><<He>> roughly pulls you out of the car and leads you into the orphanage.
+		<<case 2>><<He>> roughly pulls you out of the car while the <<person2>><<person>> keeps a close eye on you. <<He>> watches the <<person1>><<person>> lead you all the way to the front door before getting back into the car.
+		<<case 3>><<He>> roughly pulls you out of the car while the <<person2>><<person>> and <<person3>><<person>> keep a close eye on you. They watch the <<person1>><<person>> lead you all the way to the front door before getting back into the car.
+	<</switch>>
+	<br><br>
+	You see Bailey waiting for you in the main hall<<if $robinfirstrentfight is 1>> along with a tied-up Robin<</if>>.
+<<elseif $phase is "willing">>
+	After some time, the car comes to a stop in front of the orphanage. "We're here. Get going, you've kept <<nnpc_him "Bailey">> waiting long enough," the <<person1>><<person>> says.
+	<<if $exposed gte 1>>
+		<<He>> eyes over your exposed body. "Can't have you looking like that in front of the boss," <<he>> says, tossing you a towel. You wrap it around yourself.
+		<<towelup>>
+	<</if>>
+	<<switch $event.buffer.length>>
+		<<case 1>>You step out of the car and are led into the orphanage.
+		<<case 2>>You step out of the car and are led into the orphanage under the watchful eye of the <<person2>><<person>>. Once you make it to the front door, <<he>> gets back into the car.
+		<<case 3>>You step out of the car and are led into the orphanage under the watchful eye of the <<person2>><<person>> and <<person3>><<person>>. Once you make it to the front door, they get back into the car.
+	<</switch>>
+	<br><br>
+	You see Bailey is already waiting for you in the main hall<<if $robinfirstrentfight is 1>> with a tied-up Robin<</if>>.
+<<elseif $phase is "unwilling van">>
+	After some time, the van comes to a stop. "Looks like we've arrived," the <<person1>><<person>> says, putting away <<his>> phone. "Get up. And don't even think about running, it's way too late for that."
+	<<if $exposed gte 1>>
+		<<He>> eyes over your exposed body. "Cover yourself, we don't want any onlookers getting the wrong idea," <<he>> says, tossing you a towel. You wrap it around yourself.
+		<<towelup>>
+	<</if>>
+	<br><br>
+	All of them walk you to the orphanage door, but only you and the <<person>> enter. You see Bailey is already waiting for you in the main hall<<if $robinfirstrentfight is 1>> with a tied-up Robin<</if>>.
+<</if>>
+<<saveNPC 0 "rent_thug">><<endevent>>
+
+<<if $robinfirstrentfight is 1>>
+	<<thugrentduerobin>>
+<<else>>
+	<<thugrentdue>> 
+<</if>>
+
 :: Tutorial Bailey
 <<set $outside to 1>><<set $location to "town">><<effects>>
 <<npc Bailey 1>>
@@ -1364,11 +1794,11 @@ You're escorted by Bailey back to your bedroom and left alone.
 
 <<widget "baileyRentConfiscation">>
 	<<babyRent true>>
-	<<set _weekRent to $rentmoney + ($babyRent || 0)>>
+	<<set _weekRent to $rentMoney + ($babyRent || 0)>>
 	<<set _bundle to baileyConfiscationBundle(_weekRent)>>
 	<<if _bundle.items.length is 0>>
 		A hand rests on your shoulder from behind. <span class="red">It's Bailey.</span>
-		<<if $robinfirstrentfight and ($baileypaychain lt 2 or $renttime lte -1) and _robinAtOrphanage>>
+		<<if $robinfirstrentfight and ($baileypaychain lt 2 or $rentTime lte -1) and _robinAtOrphanage>>
 			<<rentduerobin 0>>
 		<<else>>
 			<<rentdue 0>>
@@ -1392,8 +1822,8 @@ You're escorted by Bailey back to your bedroom and left alone.
 		"You have one week to pay up properly in my office before I pawn off your junk." <<He>> turns away from you, tossing a hand over <<his>> shoulder dismissively. "Don't make me come looking again."
 		<br><br>
 
-		<<set $renttime to 7>><<set $rentday to Time.weekDay>>
-		<<link [[Next|Orphanage]]>><<endevent>><</link>>
+		<<set $rentTime to 7>><<set $rentDay to Time.weekDay>><<set $baileyRefusedToPay to 0>>
+		<<link [[Don't fight|Orphanage]]>><<endevent>><</link>>
 		<br>
 		<<link [[Fight|Bailey Confiscation Fight]]>><<set $fightstart to 1>><<generateRole 1 0 "thug">><<generateRole 2 0 "thug">><<generateRole 3 0 "thug">><</link>><<dangerousText>>
 		<br>
@@ -1403,7 +1833,7 @@ You're escorted by Bailey back to your bedroom and left alone.
 <<widget "baileyRentReclaimOption">>
 	<<if $bailey_confiscation>>
 		<<babyRent true>>
-		<<set _owed to $rentmoney + ($babyRent or 0)>>
+		<<set _owed to $rentMoney + ($babyRent or 0)>>
 		<<if $money gte _owed>>
 			<<highicon>><<link [[Reclaim your confiscated things|Bailey Rent Reclaim]]>><</link>> (<<printmoney _owed>>)
 			<br>
@@ -1425,7 +1855,7 @@ You're escorted by Bailey back to your bedroom and left alone.
 :: Bailey Rent Reclaim
 <<effects>>
 <<npc Bailey>><<person1>>
-<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+<<set $rentTime to 7>><<set $rentDay to Time.weekDay>>
 <<babyRent>>
 
 <<rentpay>>
@@ -1509,7 +1939,6 @@ You're escorted by Bailey back to your bedroom and left alone.
 	<<link [[Next|Bedroom]]>><</link>>
 <<else>>
 	<<set $baileydefeatedchain to 0>>
-	<<set $baileyRefusedToPay to 0>>
 	<<unset $bailey_encroach>>
 
 	You fall to the ground, too hurt to move.

@@ -405,7 +405,7 @@ function gwylanRequestClothes(override) {
 	}
 
 	// Normal
-	const availableShops = ["clothing"];
+	const availableShops = ["clothing", "baitShop"];
 	if (V.adultshopunlocked) availableShops.push("adult");
 
 	const availableSlots = ["upper", "lower"];

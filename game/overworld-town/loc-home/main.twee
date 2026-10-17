@@ -760,7 +760,7 @@ You stare right at the lens. "I wonder who I'll invite over," you say. You stick
 <<wardrobeSelection true>>
 <<radiooutfits>>
 <br><br>
-<<if $renttime lte 0>>
+<<if $rentTime lte 0>>
 	<<set $bus to "home">>
 	<<getouticon>><<link [[Get out of bed|Bedroom Bailey]]>><<endevent>><</link>>
 	<br><br>
@@ -1350,7 +1350,7 @@ You are in the bathroom.
 		<<wardrobeSelection true>>
 		<<radiooutfits>>
 		<br><br>
-		<<if $renttime lte 0>>
+		<<if $rentTime lte 0>>
 			<<set $bus to "home">>
 			<<getouticon>><<link [[Get out of bed|Bedroom Bailey]]>><</link>>
 			<br><br>
@@ -1466,7 +1466,7 @@ You are in the bathroom.
 	<</if>>
 	<<unset $robinbed>>
 	<<npc Robin>><<person1>>
-	<<if $renttime gte 1>> <!-- If Rent is not due -->
+	<<if $rentTime gte 1>> <!-- If Rent is not due -->
 		<<if _robin_location is "orphanage" or _robin_location is "sleep">>
 			<<if Time.hour lte 21>>
 				<<set _robinSleepyChance to ((Time.hour * 60) - 360) * 4/3>> <!-- 0% at 6, 80% at 7, and 100% starting at 7:15 -->
@@ -1517,7 +1517,7 @@ You are in the bathroom.
 	<</if>>
 	<<if Time.hour is 6>><<run setRobinLocationOverride("orphanage", 6)>><</if>>
 	<<endevent "phaseless">>
-	<<if $renttime lte 0>>
+	<<if $rentTime lte 0>>
 		<<set $bus to "home">>
 		<<set $inRobinsRoom to true>>
 		<<link [[Next|Bedroom Bailey]]>><<set $wardrobe_location to "wardrobe">><</link>>
@@ -2420,10 +2420,10 @@ You are in the main hall of the orphanage.
 		<<He>> pushes <<himself>> off the wall and prowls towards you.
 	<</if>>
 	<br><br>
-	<<if $renttime lte 0>>
+	<<if isRentDue() or isBaileyLookingForPlayer()>>
 		"Pay your dues next time so we won't have to go through this again. Speaking of which..." <<He>> holds out <<his>> hand.
 		<<endevent>>
-		<<if $robinfirstrentfight and ($baileypaychain lt 2 or $renttime lte -1) and _robinAtOrphanage>>
+		<<if $robinfirstrentfight and ($baileypaychain lt 2 or $rentTime lte -1) and _robinAtOrphanage>>
 			<<rentduerobin 0>>
 		<<else>>
 			<<rentdue 0>>
@@ -2459,13 +2459,13 @@ You are in the main hall of the orphanage.
 		<<link [[Next|Bedroom]]>><<endevent>><</link>>
 		<br>
 	<</if>>
-<<elseif $renttime lte -21 and !$bailey_confiscation>> /* Bailey Confiscation System */
+<<elseif isBaileyLookingForPlayer() and $rentTime lte -21 and !$bailey_confiscation>> /* Bailey Confiscation System */
 	<<set $bus to "home">>
 	<<baileyRentConfiscation>>
-<<elseif $renttime lte 0>>
+<<elseif isRentDue() or isBaileyLookingForPlayer()>>
 	<<set $bus to "home">>
 	A hand rests on your shoulder from behind. <span class="red">It's Bailey.</span>
-	<<if $robinfirstrentfight and ($baileypaychain lt 2 or $renttime lte -1) and _robinAtOrphanage>>
+	<<if $robinfirstrentfight and ($baileypaychain lt 2 or $rentTime lte -1) and _robinAtOrphanage>>
 		<<rentduerobin 0>>
 	<<else>>
 		<<rentdue 0>>
@@ -2610,6 +2610,7 @@ You are in the main hall of the orphanage.
 	<br>
 <<elseif $christmas is 1 and Time.monthDay is 25 and $robinmissing is 0 and _robin.init is 1 and $christmas_robin_gift_received is undefined and Time.hour gte 7>>
 	<<set $christmas_robin_gift_received to true>>
+	<<wearProp "choc chip cookie gift">><<canvas-model-override "mouth" "chew">>
 	You spot a present laid under the tree with your name on it. It's from Robin.
 	<br><br>
 	You unwrap it. It's a box of cookies. You're glad Bailey isn't around.<<ltrauma>><<lstress>><<trauma -6>><<stress -6>>
@@ -3283,14 +3284,14 @@ The last of the water drains from the bath, taking the slime with it. <<tearful>
 
 :: Orphanage Intro
 <<set $outside to 0>><<set $location to "home">><<effects>>
-<<set $rentmoney to 10000>><<rentmod>>
-<<set $renttime to 7>><<set $rentday to Time.weekDay>>
-<<set $rentstage to 1>>
+<<set $rentMoney to 10000>><<rentmod>>
+<<set $rentTime to 7>><<set $rentDay to Time.weekDay>>
+<<set $rentStage to 1>>
 
 <<npc Bailey>><<person1>>
 You enter Bailey's office. "I know why you're here," <<he>> says, running a hand through <<his>> dark hair. "You want me to release you from my protection, so you'll be an independent citizen. I could do that. But there's a problem. You've been living under my roof without giving anything in return. You owe me. Until you pay me back, I'm not letting you go."
 <br><br>
-<<He>> lifts an envelope from <<his>> desk and thumbs through the contents. You glimpse your name. <<He>> smiles as <<he>> hides your identification documents in <<his>> jacket. "<<printmoney $rentmoney "pink">> should do. To start with. I don't care how you get it. Knock on doors and ask for work. Rent yourself as a footstool. Steal it even. Just have it a week from now. Or I'll find a way to <span class="red">extract value</span> from you."
+<<He>> lifts an envelope from <<his>> desk and thumbs through the contents. You glimpse your name. <<He>> smiles as <<he>> hides your identification documents in <<his>> jacket. "<<printmoney $rentMoney "pink">> should do. To start with. I don't care how you get it. Knock on doors and ask for work. Rent yourself as a footstool. Steal it even. Just have it a week from now. Or I'll find a way to <span class="red">extract value</span> from you."
 <br><br>
 
 You return to your tiny bedroom and wonder what to do.
@@ -4494,7 +4495,7 @@ You shake your head and <<if $transformationParts.bird.plumage isnot "hidden">>p
 <<endevent>>
 <br><br>
 
-<<if $renttime lte 0>>
+<<if $rentTime lte 0>>
 	<<set $bus to "home">>
 	<<getouticon>><<link [[Next|Bedroom Bailey]]>><</link>>
 <<else>>
@@ -5203,7 +5204,7 @@ With that, a brisk wind whisks you away, to the photo studio on Nightingale Stre
 	<<if $speech_attitude is "meek">>
 		"Can you please stop going through my things?!" you then cry out.
 	<<elseif $speech_attitude is "bratty">>
-		"Hey! Get out of here, damnit!" you then shout.
+		"Hey! Get out of here, dammit!" you then shout.
 	<<else>>
 		"Hey! Don't go through my things!" you then scold.
 	<</if>>

@@ -2896,6 +2896,8 @@
 				<<set $feetaction to 0>><<set $feetactiondefault to "hide">>
 				<<set _difficulty to $NPCList[0].skills.security>>
 				<<set _difficulty += $liquidcount * 20>>
+				<<set _stalked to ($NPCList[0].fullDescription isnot "Ivory Wraith" and ($NPCList[0].legs is "run" or $NPCList[0].bold gte random(1, 1000))
+				or $NPCList[0].fullDescription is "Ivory Wraith" and C.npc["Ivory Wraith"].lust gte random(5, 15))>>
 				<<if currentSkillValue('skulduggery') gte random(1, _difficulty)>>
 					<<set _hide_success to true>>
 				<</if>>
@@ -2925,8 +2927,7 @@
 							You dive down a small alley and take cover behind a dumpster.
 					<</switch>>
 					<<set $stalk_end to "hide">>
-				<<elseif !_hide_success and ($NPCList[0].fullDescription isnot "Ivory Wraith" and ($NPCList[0].legs is "run" or $NPCList[0].bold gte random(1, 1000))
-				or $NPCList[0].fullDescription is "Ivory Wraith" and C.npc["Ivory Wraith"].lust gte random(5,15))>>
+				<<elseif !_hide_success and _stalked>>
 					<<switch $location>>
 						<<case alley>>
 							You dive down a thin alley and take cover behind a dumpster. You peek around the corner. You don't see anyone.
@@ -2964,26 +2965,26 @@
 						<<case alley>>
 							You dive down a thin alley and take cover behind a dumpster.
 							<<if $NPCList[0].fullDescription isnot "Ivory Wraith">>
-								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> without looking your way.</span>
+								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> by <<if _stalked>>after looking around for a moment<<else>>without looking your way<</if>>.</span>
 							<</if>>
 						<<case forest lake>>
 							You run into a dense copse and take cover behind a thick trunk. You peek around the edge.
 							<<if $NPCList[0].fullDescription isnot "Ivory Wraith">>
-								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> by without looking your way.</span>
+								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> by <<if _stalked>>after looking around for a moment<<else>>without looking your way<</if>>.</span>
 							<</if>>
 						<<case moor>>
 							You crest a small ridge and dive into a ditch.
 							<<if $NPCList[0].fullDescription isnot "Ivory Wraith">>
 								<<if $enemyno gt 1>>
-									They pause at the top, <span class="green">then move on without looking your way.</span>
+									They pause at the top, <span class="green">then move on <<if _stalked>>after looking around for a moment<<else>>without looking your way<</if>>.</span>
 								<<else>>
-									<<stalk_nnpc_name>> pauses at the top, <span class="green">then moves on without looking your way.</span>
+									<<stalk_nnpc_name>> pauses at the top, <span class="green">then moves on <<if _stalked>>after looking around for a moment<<else>>without looking your way<</if>>.</span>
 								<</if>>
 							<</if>>
 						<<default>>
 							You dive down a thin alley and take cover behind a dumpster. You peek around the side.
 							<<if $NPCList[0].fullDescription isnot "Ivory Wraith">>
-								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> without looking your way.</span>
+								<span class="green"><<if $enemyno gt 1>>They pass<<else>><<stalk_nnpc_name>> passes<</if>> by <<if _stalked>>after looking around for a moment<<else>>without looking your way<</if>>.</span>
 							<</if>>
 					<</switch>>
 					<<if $NPCList[0].fullDescription is "Ivory Wraith">>
@@ -4987,7 +4988,7 @@
 
 		<<if $mouthaction is "pay">>
 			<<set $mouthaction to 0>><<set $mouthactiondefault to "rest">>
-			<<if $money gte $rentmoney + ($babyRent or 0)>>
+			<<if $money gte $rentMoney + ($babyRent or 0)>>
 				<<set $speechPay to 1>>
 				<<if $speech_attitude is "meek">>
 					"S-stop!" you shout. "I'll pay you, so... j-just let Robin go."
@@ -5113,9 +5114,13 @@
 							<<else>>
 								The pale figure continues to drift along.
 							<</if>>
+						<<elseif $NPCList[0].type isnot "human">>
+							The <<print $NPCList[0].fullDescription>> is still following you.
 						<<else>>
 							<<print $NPCList[0].fullDescription>> is still following you.
 						<</if>>
+					<<elseif $NPCList[0].type isnot "human">>
+						The <<person1>><<beasttype>> is still following you.
 					<<else>>
 						The <<person1>><<person>> is still following you.
 					<</if>>
@@ -5128,9 +5133,13 @@
 								A<<if $wraith.seen gte 3>> familiar<</if>> pale figure drifts behind you, seeming unaware of your presence.
 							<</if>>
 							Its feet don't touch the ground, but you still hear footsteps.
+						<<elseif $NPCList[0].type isnot "human">>
+							You see a <<person1>><<beasttype>> following you. <span class="pink">It's the <<print $NPCList[0].fullDescription>>.</span>
 						<<else>>
 							You see a <<person1>><<personsimple>> following you. <span class="pink">It's <<print $NPCList[0].fullDescription>>.</span>
 						<</if>>
+					<<elseif $NPCList[0].type isnot "human">>
+						You see a <<person1>><<beasttype>> following you.
 					<<else>>
 						You see a <<person1>><<person>> following you.
 					<</if>>
@@ -5138,9 +5147,13 @@
 				<<if $npcrow.includes(0)>>
 					<<if $NPCList[0].fullDescription is "Ivory Wraith">>
 						It
+					<<elseif $NPCList[0].type isnot "human">>
+						<<bHe>>
 					<<else>>
 						<<nnpc_He $NPCList[0].fullDescription>>
 					<</if>>
+				<<elseif $NPCList[0].type isnot "human">>
+					<<bHe>>
 				<<else>>
 					<<He>>
 				<</if>>
@@ -5160,9 +5173,17 @@
 				<</if>>
 				and
 				<<if $NPCList[0].skills.security gte 1000>>
-					<span class="red"><<his>> gaze is piercing.</span>
+					<<if $NPCList[0].type isnot "human">>
+						<span class="red"><<bhis>> gaze is piercing.</span>
+					<<else>>
+						<span class="red"><<his>> gaze is piercing.</span>
+					<</if>>
 				<<elseif $NPCList[0].skills.security gte 800>>
-					<span class="pink">has a devious glint in <<his>> eyes.</span>
+					<<if $NPCList[0].type isnot "human">>
+						<span class="pink">has a devious glint in <<bhis>> eyes.</span>
+					<<else>>
+						<span class="pink">has a devious glint in <<his>> eyes.</span>
+					<</if>>
 				<<elseif $NPCList[0].skills.security gte 600>>
 					<span class="purple">looks focused.</span>
 				<<elseif $NPCList[0].skills.security gte 400>>
@@ -5173,15 +5194,18 @@
 					<span class="teal">appears to be daydreaming.</span>
 				<</if>>
 				<<if $enemyno is 2>>
-					A <<person2>><<person>> follows <<person1>><<him>>.
+					<<if $NPCList[0].type isnot "human">>
+						A <<person2>><<beasttype>> follows <<person1>><<bhim>>.
+					<<else>>
+						A <<person2>><<person>> follows <<person1>><<him>>.
+					<</if>>
 				<<elseif $enemyno gte 3>>
-					<<switch $enemyno>>
-						<<case 6>>Five
-						<<case 5>>Four
-						<<case 4>>Three
-						<<case 3>>Two
-					<</switch>>
-					others follow <<him>>.
+					<<Number `$enemyno - 1`>>
+					<<if $NPCList[0].type isnot "human">>
+						others follow <<bhim>>.
+					<<else>>
+						others follow <<him>>.
+					<</if>>
 				<</if>>
 				<<set $stalk_assess to true>>
 			<</if>>

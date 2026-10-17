@@ -5,8 +5,10 @@
 	softLockable: true, //Will disable the unlocking of the feat if softmode is enabled
 	pregnancyLockable: true, //Will disable the unlocking of the feat if certain pregnancy settings are too low
 	hidden: true, //Will hide the feat at all times unless unlocked, best for feats for unreleased content
-	alt: "altTitle", //Alternate title to display if the feat is unlocked and altCond is met
-	altCond: "conditional" //Conditional evaluated to decide whether or not to display the altTitle (the feat must be owned in the current save for this to happen, regardless of the conditional)
+	altTitle: "altTitleText", //Alternate title to display if the feat is unlocked and altTitleCond is met
+	altTitleCond: "conditional" //Conditional evaluated to decide whether or not to display the altTitleText (the feat must be owned in the current save for this to happen, regardless of the conditional)
+	altDesc: "altDescText", //Alternate description to display if the feat is unlocked and altDescCond is met
+	altDescCond: "conditional" //Conditional evaluated to decide whether or not to display the altDescText (the feat must be owned in the current save for this to happen, regardless of the conditional)
 */
 setup.feats = {
 	"Pocket Change": {
@@ -334,8 +336,8 @@ setup.feats = {
 		difficulty: 3,
 		series: "",
 		filter: ["All", "Stats"],
-		alt: "Degree in Lewdity",
-		altCond: "random(100) is 100",
+		altTitle: "Degree in Lewdity",
+		altTitleCond: "random(100) is 100",
 	},
 	"Perfect Record": {
 		title: "Perfect Record",
@@ -441,6 +443,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Robin'>>.",
+		altDescCond: "true",
 	},
 	"Hungry Orphan": {
 		title: "Hungry Orphan",
@@ -462,6 +466,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Whitney'>>.",
+		altDescCond: "true",
 	},
 	"The Bully's Tithe": {
 		title: "The Bully's Tithe",
@@ -497,6 +503,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Kylar'>>.",
+		altDescCond: "true",
 	},
 	"Not for Rats": {
 		title: "Not for Rats",
@@ -511,6 +519,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Eden'>>.",
+		altDescCond: "true",
 	},
 	"Sweet and Tender": {
 		title: "Sweet and Tender",
@@ -525,6 +535,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Avery'>>.",
+		altDescCond: "true",
 	},
 	Kept: {
 		title: "Kept",
@@ -541,6 +553,8 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Social"],
 		hint: "Hint: Turn the tables on a wealthy patron.",
+		altDesc: "Bound Avery in <<nnpc_his 'Avery'>> dungeon.",
+		altDescCond: "true",
 	},
 	"Most Exclusive": {
 		title: "Most Exclusive",
@@ -571,6 +585,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Leighton'>>.",
+		altDescCond: "true",
 	},
 	"Alex the Robust": {
 		title: "Alex the Robust",
@@ -578,6 +594,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Alex'>>.",
+		altDescCond: "true",
 	},
 	"Home Cooking": {
 		title: "Home Cooking",
@@ -613,6 +631,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Wren'>>.",
+		altDescCond: "true",
 	},
 	"Great Wolf the Alpha": {
 		title: "Black Wolf the Alpha",
@@ -620,6 +640,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<if $blackwolfmonster>><<nnpc_him 'Black Wolf'>><<else>>it<</if>>.",
+		altDescCond: "true",
 	},
 	"Encroaching Civilisation": {
 		title: "Encroaching Civilisation",
@@ -634,6 +656,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "<<nnpc_He 'Sydney'>> gave <<nnpc_his 'Sydney'>> virginity to you.",
+		altDescCond: "true",
 	},
 	Communion: {
 		title: "Communion",
@@ -648,6 +672,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Harper'>>.",
+		altDescCond: "true",
 	},
 	"Morgan the Lost": {
 		title: "Morgan the Lost",
@@ -655,6 +681,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Morgan'>>.",
+		altDescCond: "true",
 	},
 	"Gwylan the Bewitching": {
 		title: "Gwylan the Bewitching",
@@ -663,6 +691,8 @@ setup.feats = {
 		series: "gwylanVirginity",
 		hint: "Hint: Curiosity killed the virgin.",
 		filter: ["All", "Social"],
+		altDesc: "You gave your virginity to <<nnpc_him 'Gwylan'>>.",
+		altDescCond: "true",
 	},
 	"Coven Comforts": {
 		title: "Coven Comforts",
@@ -720,6 +750,8 @@ setup.feats = {
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Social"],
+		altDesc: "Convince Mason to share something <<nnpc_he 'Mason'>>'d rather not.",
+		altDescCond: "true",
 	},
 	"Mason's Shame": {
 		title: "Mason's Shame",
@@ -951,7 +983,7 @@ setup.feats = {
 		pregnancyLockable: true,
 	},
 	"Life begins when you least expect": {
-		title: "Life begins when you least expect",
+		title: "Life Begins When You Least Expect",
 		desc: "Gave birth to children as a male.",
 		difficulty: 2,
 		series: "",
@@ -1030,6 +1062,8 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Special"],
 		hint: "Hint: Trouble at home.",
+		altDesc: "Made <<nnpc_him 'Bailey'>> cum.",
+		altDescCond: "true",
 	},
 	"Leighton's Nightmare": {
 		title: "Leighton's Nightmare",
@@ -1038,6 +1072,8 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Special"],
 		hint: "Hint: Trouble at school.",
+		altDesc: "Made <<nnpc_him 'Leighton'>> cum.",
+		altDescCond: "true",
 	},
 	"Alex's Partner": {
 		title: "Alex's Partner",
@@ -1046,6 +1082,8 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Special"],
 		hint: "Hint: A field of fun.",
+		altDesc: "Made <<nnpc_him 'Alex'>> cum.",
+		altDescCond: "true",
 	},
 	"Harper's Bane": {
 		title: "Harper's Bane",
@@ -1054,6 +1092,8 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Special"],
 		hint: "Hint: A taste of their own medicine.",
+		altDesc: "Made Harper drink <<nnpc_his 'Harper'>> serum.",
+		altDescCond: "true",
 	},
 	Laughingstock: {
 		title: "Laughingstock",

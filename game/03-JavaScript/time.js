@@ -772,21 +772,9 @@ function dayPassed() {
 	if (V.valentines && Time.monthDay === 14) V.timeMessages.pushUnique("valentinesToday");
 
 	// Avery takes on the PC's debt, but stops if unsatisfied
-	const rentPaused = inRentPausedBadEnd();
-	const hasMansion = V.avery_mansion && V.avery_fate !== "fallen" && V.avery_fate !== "kicked";
-	if (!rentPaused) {
-		if (hasMansion) {
-			if (Time.weekDay !== 1) {
-				V.avery_mansion.days_absent++;
-			}
-			if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) {
-				passRentTick();
-			}
-		} else {
-			passRentTick();
-		}
-	}
-	if (hasMansion) V.avery_mansion.study_unlocked = 0;
+	if (isAveryPayingBailey() && Time.weekDay !== 1) V.avery_mansion.days_absent++;
+	if (isAveryPayingBailey() !== 2 && !inRentPausedBadEnd()) passRentTick();
+	if (isAveryPayingBailey()) V.avery_mansion.study_unlocked = 0;
 
 	if (V.avery_helicopter?.timer > 0) V.avery_helicopter.timer--;
 
@@ -1219,6 +1207,11 @@ function minutePassed(minutes) {
 		// To prevent new events from occurring, allowing players to more easily go to the hospital or similar locations
 		V.eventskip = 1;
 		V.stress += Math.floor(minutes * 40);
+	}
+
+	// Thug traps
+	for (let i = 0; i < V.rentThug?.traps.length; i++) {
+		if (Time.date.timeStamp >= V.rentThug.traps[i].endTime) V.rentThug.traps.deleteAt([i]);
 	}
 
 	// Tanning
@@ -2740,6 +2733,23 @@ function supermarketWeekly() {
 }
 DefineMacro("supermarketWeekly", supermarketWeekly);
 
+function isRentDue() {
+	return V.rentTime <= 0 && isAveryPayingBailey() !== 2 && !inRentPausedBadEnd();
+}
+window.isRentDue = isRentDue;
+
+function isBaileyLookingForPlayer() {
+	return isRentDue() && V.rentTime < 0 || V.baileyRefusedToPay && isAveryPayingBailey() !== 2;
+}
+window.isBaileyLookingForPlayer = isBaileyLookingForPlayer;
+
+function isAveryPayingBailey() {
+	if (!V.avery_mansion || C.npc.Avery.state === "dismissed") return 0; // Not adopted
+	else if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) return 1; // Adopted, refusing to pay
+	else return 2; // Adopted, paying
+}
+window.isAveryPayingBailey = isAveryPayingBailey;
+
 function inRentPausedBadEnd() {
 	const badEnd = V.badEndStats?.last();
 	if (!Number.isFinite(badEnd?.trackedStart) || badEnd.trackedEnd !== undefined) return false;
@@ -2748,9 +2758,10 @@ function inRentPausedBadEnd() {
 
 /* Not seen bailey for more than 2 weeks, tracks missed rent */
 function passRentTick() {
-	V.renttime--;
-	if (V.renttime < 0 && V.renttime % 7 === 0) {
-		V.baileyRefusedToPayTotal += V.rentmoney + (V.babyRent || 0);
-		V.baileyRefusedToPayTotalStat += V.rentmoney + (V.babyRent || 0);
+	V.rentTime--;
+	wikifier("thuganger", "passive");
+	if (V.rentTime < 0 && V.rentTime % 7 === 0) {
+		V.baileyRefusedToPayTotal += V.rentMoney + (V.babyRent || 0);
+		V.baileyRefusedToPayTotalStat += V.rentMoney + (V.babyRent || 0);
 	}
 }

@@ -86,29 +86,37 @@
 		<<exit>>
 	<</if>>
 
-	<<if $rentday isnot undefined || $rentmoney isnot undefined>>
+	<<if $rentDay isnot undefined || $rentMoney isnot undefined>>
 		<hr>
 		<h1 class="header gold bold">Time-Sensitive</h1>
 		<ul class="journal">
-			<<if $avery_mansion>>/* Is Avery paying for the PC? */
-				<<if $avery_mansion.rage.assess gte 9 or C.npc.Avery.state is "dismissed" or $avery_mansion.days_absent gte 2>>
-					<<set _avery_pay to false>>
-				<<else>>
-					<<set _avery_pay to true>>
-				<</if>>
-			<<else>>
-				<<set _avery_pay to false>>
-			<</if>>
-			<<if !_avery_pay>>
-				<<if $rentday isnot undefined>>
-					<<if $renttime lte 0>>
-						<li>Bailey is looking for you and wants <<printmoney $rentmoney>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.</li>
+			<<if $rentDay isnot undefined>>
+				<<if isRentDue() or isBaileyLookingForPlayer()>>
+					<li>
+					<<if $baileyRefusedToPay>>
+						Bailey will try to visit you again on <<rentday>> and wants <<printmoney $rentMoney>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.
 					<<else>>
-						<li>Bailey wants <<printmoney $rentmoney>> on <<rentday>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.</li>
+						Bailey is looking for you and wants <<printmoney $rentMoney>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.
 					<</if>>
-				<<elseif $rentmoney isnot undefined>>
-					<li>Bailey wants <<printmoney $rentmoney>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.</li>
+					<<if $rentThug>>
+						<<if $rentTime is 0>>
+							<span class="green"><<nnpc_His "Bailey">> thugs aren't after you yet.</span>
+						<<else>>
+							<<switch $rentThug?.anger>>
+								<<case 0>><span class="teal"><<nnpc_His "Bailey">> thugs are looking for you.</span>
+								<<case 1>><span class="lblue"><<nnpc_His "Bailey">> thugs are focused on finding you.</span>
+								<<case 2>><span class="blue"><<nnpc_His "Bailey">> thugs are frustrated by you.</span>
+								<<case 3>><span class="purple"><<nnpc_His "Bailey">> thugs are making your capture a priority.</span>
+								<<case 4>><span class="pink"><<nnpc_His "Bailey">> thugs are developing a vendetta against you.</span>
+								<<default>><span class="red"><<nnpc_His "Bailey">> thugs view catching you as their number one priority.</span>
+							<</switch>>
+						<</if>>
+					<</if>></li>
+				<<elseif isAveryPayingBailey() isnot 2>>
+					<li>Bailey wants <<printmoney $rentMoney>> on <<rentday>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.</li>
 				<</if>>
+			<<elseif $rentMoney isnot undefined>>
+				<li>Bailey wants <<printmoney $rentMoney>><<babyRentDisplay " plus " " for not looking after your children" "gold">>.</li>
 			<</if>>
 
 			<<if $bailey_confiscation?.items?.length gt 0>> /* Bailey Confiscation System */
@@ -355,7 +363,36 @@
 		</ul>
 	<</if>>
 
-	<<if !$statFreeze and (($location is "asylum" and ($eden_asylum_window is 1 or ($daily.eden.distract gte 1 and Time.hour lt 21))) || $temple_spear_mission gte 1 || $docks.hired || ($brothelshowdata.intro and $brothelshowdata.type is "none") || $exhibitionismrun || $robindebtevent gte 1 and $robinmissing isnot 0 || $pubtask2 is 1 || $pubtask || $police_hack is 1 || $pub_hack_job gte 1 || $pubfame ||( $earSlime.event and !_tempEventHide) || $earSlime.forcedCommando isnot undefined || $earSlime.forcedDressing isnot undefined || $temple_rank is "prospective" || $chef_state gte 4 || $mason_pond gte 1 || ($brothel_machine_repair gte 1 and $brothel_machine_repair lte 3) || ($harpy gte 6 and $birdFly isnot 1) || getChildrenAt("inventory").filter(child => child.species === "hawk").length gt 0 || $adultshopgrandopening || ($adultshopintro is 1 and $adultshopunlocked is undefined) || $gwylan?.request.event)>>
+	<<if $museumintro is 1>>
+		<<museumAntiqueText>><<museumPaintingText>><<set _museumItemsFound to []>><<set _museumItemsTalk to []>>
+		<<set _museumKeys to Object.keys($museumAntiques.antiques)>>
+		<<for _i to 0; _i lt _museumKeys.length; _i++>>
+			<<if ["found", "talk"].includes($museumAntiques.antiques[_museumKeys[_i]])>>
+				<<if _museumAntiqueText[_museumKeys[_i]]>>
+					<<if ["found"].includes($museumAntiques.antiques[_museumKeys[_i]])>>
+						<<set _museumItemsFound.push(_museumAntiqueText[_museumKeys[_i]].name.toLowerCase())>>
+					<<else>>
+						<<set _museumItemsTalk.push(_museumAntiqueText[_museumKeys[_i]].name.toLowerCase())>>
+					<</if>>
+				<<else>>
+					<li><span class="red">Warning: Antique "_museumKeys[_i]" doesn't have a hint. Did you export this save from a modded version?</span></li>
+					<<set $museumAntiqueJournalHints.delete(_museumKeys[_i])>>
+				<</if>>
+			<</if>>
+		<</for>>
+		<<set _museumKeys to Object.keys($museumAntiques.paintings)>>
+		<<for _i to 0; _i lt _museumKeys.length; _i++>>
+			<<if ["found", "talk"].includes($museumAntiques.paintings[_museumKeys[_i]])>>
+				<<if ["found"].includes($museumAntiques.antiques[_museumKeys[_i]])>>
+					<<set _museumItemsFound.push(_museumPaintingText[_museumKeys[_i]].journalName.toLowerCase())>>
+				<<else>>
+					<<set _museumItemsTalk.push(_museumPaintingText[_museumKeys[_i]].journalName.toLowerCase())>>
+				<</if>>
+			<</if>>
+		<</for>>
+	<</if>>
+
+	<<if !$statFreeze and (($location is "asylum" and ($eden_asylum_window is 1 or ($daily.eden.distract gte 1 and Time.hour lt 21))) || $temple_spear_mission gte 1 || $docks.hired || ($brothelshowdata.intro and $brothelshowdata.type is "none") || $exhibitionismrun || $robindebtevent gte 1 and $robinmissing isnot 0 || $pubtask2 is 1 || $pubtask || $police_hack is 1 || $pub_hack_job gte 1 || $pubfame ||( $earSlime.event and !_tempEventHide) || $earSlime.forcedCommando isnot undefined || $earSlime.forcedDressing isnot undefined || $temple_rank is "prospective" || $chef_state gte 4 || $mason_pond gte 1 || ($brothel_machine_repair gte 1 and $brothel_machine_repair lte 3) || ($harpy gte 6 and $birdFly isnot 1) || getChildrenAt("inventory").filter(child => child.species === "hawk").length gt 0 || $adultshopgrandopening || ($adultshopintro is 1 and $adultshopunlocked is undefined) || $gwylan?.request.event || _museumItemsFound?.length gte 1 || _museumItemsTalk?.length gte 1)>>
 		/*TODO: streamline during eventual Journal UI Overhaul bc lol. lmao, even. */
 		<hr>
 		<h1 class="header gold bold">Reminders</h1>
@@ -745,6 +782,12 @@
 					<<default>>
 						<li><span class="red">Gwylan has asked you to do something, but the task has no journal description! Please report this bug.</span></li>
 				<</switch>>
+			<</if>>
+
+			<<if _museumItemsFound?.length gte 1>>
+				<li><<museumicon>>You should show the <<= formatList(_museumItemsFound, "and")>> to Winter<<if _museumItemsTalk.length gte 1>>, and ask <<nnpc_him "Winter">> about the <<= formatList(_museumItemsTalk, "and")>><</if>>.</li>
+			<<elseif _museumItemsTalk?.length gte 1>>
+				<li><<museumicon>>You should ask Winter about the <<= formatList(_museumItemsTalk, "and")>>.</li>
 			<</if>>
 		</ul>
 	<</if>>
@@ -1355,30 +1398,10 @@
 		<<if $museumintro is 1>>
 			<<museumAntiqueText>><<museumPaintingText>>
 			<<if $museumAntiqueJournalHints.length gte 1 || Object.values(V.museumAntiques.paintings).includes("found")>>
-				<<set _hintslist to clone($museumAntiqueJournalHints).reverse()>>
 				<<if $museumAntiqueJournalHints.length gte 1>>
-					Winter has mentioned some items that are missing from the museum.
+					Winter has mentioned some items that are missing from the museum. You can view available hints by <<if SugarCube.Browser.isMobile.any()>>tapping on<<else>>hovering over<</if>> each pedestal in the list below.
 				<</if>>
-				<ul class="journal">
-					<<for _hint range _hintslist>>
-						<<if _museumAntiqueText[_hint]>>
-							<<if ["found", "talk"].includes($museumAntiques.antiques[_hint])>>
-								<li>You should show the <<= _museumAntiqueText[_hint].name.toLowerCase()>> to Winter.</li>
-							<<else>>
-								<li><<print _museumAntiqueText[_hint].journal>></li>
-							<</if>>
-						<<else>>
-							<li><span class="red">Warning: Antique "_hint" doesn't have a hint. Did you export this save from a modded version?</span></li>
-							<<set $museumAntiqueJournalHints.delete(_hint)>>
-						<</if>>
-					<</for>>
-					<<for $_labelP, $_valueP range $museumAntiques.paintings>>
-						<<if $_valueP is "found">>
-							<li>You should show the <<= _museumPaintingText[$_labelP].journalName.toLowerCase()>> to Winter.</li>
-						<</if>>
-					<</for>>
-				</ul>
-				<br>
+				<br><br>
 			<</if>>
 			<<set $_antiquesFound to Object.values($museumAntiques.antiques).filter(status => status !== "notFound").length>>
 			<<set $_paintingsFound to Object.values($museumAntiques.paintings).filter(status => status !== "notFound").length>>
@@ -1417,7 +1440,7 @@
 				<</if>>
 				<div class="itemCollectible">
 					<<for _labelM, _valueM range $museumAntiques.antiques>>
-						<<set _antique to $museumAntiqueJournalHints.includes(_labelM) ? _museumAntiqueText[_labelM]?.journalName || _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst() : _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst()>>
+						<<set _antique to $museumAntiqueJournalHints.includes(_labelM) ? _museumAntiqueText[_labelM].journal || _museumAntiqueText[_labelM]?.journalName || _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst() : _museumAntiqueText[_labelM].name.toLowerCase().toUpperFirst()>>
 						<<if $museumAntiqueJournalHints.includes(_labelM)>>
 							<<switch _valueM>>
 								<<case "notFound">>
@@ -1432,7 +1455,7 @@
 						<<else>>
 							<<switch _valueM>>
 								<<case "notFound">>
-									<div class="item unknown" tooltip="Unknown antique.">
+									<div class="item unknown" tooltip="Unknown antique">
 										<<mysteryicon>>
 									</div>
 								<<default>>
@@ -1505,7 +1528,7 @@
 										<img class="icon" @src="'img/misc/prop/' + _museumPaintingText[_labelP].inlineFull" width="120" height="120">
 									</div>
 								<<case "notFound">>
-									<div class="item" tooltip="Unknown Painting.">
+									<div class="item" tooltip="Unknown painting">
 										<img class="icon" src="img/misc/prop/curtain.png" width="120" height="120">
 									</div>
 								<<default>>
@@ -1520,12 +1543,12 @@
 			<br>
 		<</if>>
 
+		<<set _foodstuffKeys to Object.keys(setup.foodstuff)>>
 		<<if $plants_known.length gte 0>>
-			<<set _foodstuffKeys to Object.keys(setup.foodstuff)>>
-			<<set _collection to 0>>
+			<<set _plantCollection to 0>>
 			<<for _i to 0; _i lt $plants_known.length; _i++>>
 				<<if Object.keys(setup.foodstuff).includes($plants_known[_i])>>
-					<<set _collection += 1>>
+					<<set _plantCollection += 1>>
 				<</if>>
 			<</for>>
 			<<set _total to 0>>
@@ -1534,14 +1557,14 @@
 					<<set _total += 1>>
 				<</if>>
 			<</for>>
-			<<if _collection is 0>>
+			<<if _plantCollection is 0>>
 				You can't grow any plants. Explore the world more to discover seeds.
 			<<else>>
-				You can grow <span class="gold"><<= _collection>></span> <<pluralise _collection "kind of plant" "kinds of plants">>.
-				<<if _collection is _total>>
+				You can grow <span class="gold"><<= _plantCollection>></span> <<pluralise _plantCollection "kind of plant" "kinds of plants">>.
+				<<if _plantCollection is _total>>
 					You've found <span class="green">every</span> seed.
 				<<else>>
-					<<set _seedsMissing to _total - _collection>>
+					<<set _seedsMissing to _total - _plantCollection>>
 					You're missing <span class="gold"><<= _seedsMissing>></span> <<pluralise _seedsMissing "seed">>.
 				<</if>>
 			<</if>>
@@ -1561,7 +1584,7 @@
 									<<icon `"tending/" + _icon`>>
 								</div>
 							<<else>>
-								<div class="item unknown" tooltip="Unknown seed.">
+								<div class="item unknown" tooltip="Unknown seed">
 									<<mysteryicon>>
 								</div>
 							<</if>>
@@ -1569,9 +1592,57 @@
 					<</for>>
 				</div>
 			</details>
-		<</if>>
-		<<if $fishing.locationsFound.length>>
 			<br>
+		<</if>>
+
+		<<set _recipeCollection to 0>>
+		<<set _total to 0>>
+		<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
+			<<if $foodstuff[_foodstuffKeys[_i]].knows_recipe>>
+				<<set _recipeCollection += 1>>
+			<</if>>
+			<<if setup.foodstuff[_foodstuffKeys[_i]].recipe and setup.foodstuff[_foodstuffKeys[_i]].recipe.difficulty lt 5>> /* Excludes unobtainable ghostbrew and wolfbrew */
+				<<set _total += 1>>
+			<</if>>
+		<</for>>
+		<<if _recipeCollection gte 0>>
+			<<if _recipeCollection is 0>>
+				You haven't learnt any recipes. Explore the world more to discover recipes.
+			<<else>>
+				You have learnt <span class="gold"><<= _recipeCollection>></span> <<pluralise _recipeCollection "recipe">>.
+				<<if _recipeCollection is _total>>
+					You've discovered <span class="green">every</span> recipe.
+				<<else>>
+					<<set _recipesMissing to _total - _recipeCollection>>
+					You're missing <span class="gold"><<= _recipesMissing>></span> <<pluralise _recipesMissing "recipe">>.
+				<</if>>
+			<</if>>
+			<br><br>
+			<details class="journal">
+				<summary class="journal">Recipes</summary>
+				<div class="itemCollectible">
+					<<for _i to 0; _i lt _foodstuffKeys.length; _i++>>
+						<<set _recipeItem to setup.foodstuff[_foodstuffKeys[_i]]>>
+						<<set _tooltip to _recipeItem.name.toUpperFirst()>>
+						<<set _icon to _recipeItem?.icon>>
+						<<if _recipeItem.recipe and _recipeItem.recipe.difficulty lt 5>> /* Excludes unobtainable ghostbrew and wolfbrew */
+							<<if $foodstuff[_foodstuffKeys[_i]].knows_recipe>>
+								<div class="item" @tooltip="_tooltip">
+									<<icon `"tending/" + _icon`>>
+								</div>
+							<<else>>
+								<div class="item unknown" tooltip="Unknown recipe">
+									<<mysteryicon>>
+								</div>
+							<</if>>
+						<</if>>
+					<</for>>
+				</div>
+			</details>
+			<br>
+		<</if>>
+
+		<<if $fishing.locationsFound.length>>
 			<<set _fishingLocations to ["fishingPier", "fishingBeach", "fishingCoastPath", "fishingForestLake", "fishingMoor"]>>
 			<<set _fishKeys to Object.keys(setup.fishing.lootTables.fish)>>
 			<<set _fishDiscovered to _fishKeys.filter(k => $fishing.record[k]).length>>
