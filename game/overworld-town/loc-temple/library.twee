@@ -1,3 +1,966 @@
-:: Temple Library
-
+:: Temple Scriptorium
 <<set $outside to 0>><<set $location to "temple">><<temple_effects>><<effects>>
+<<if $temple_scriptorium_known is undefined or $temple_scriptorium_known lt 2>>
+	<<set $temple_scriptorium_known to 2>>
+<</if>>
+<<generate1>>
+You are in the temple scriptorium. Tall shelves disappear into the dark above, laden with scrolls. A <<person1>><<person>> pushes a wooden ladder in eerie silence.
+<br><br>
+<<endevent>>
+<<temple_scriptorium_options>>
+
+<<temple_scriptorium_leave_options>>
+
+:: Temple Scriptorium Sneak
+<<effects>>
+
+<<generate1>>
+You sneak through the temple scriptorium, remaining unseen thanks to the dim light. The eerie silence of the <<person1>><<monks_and_nuns>>' movements helps less. Tall shelves disappear into the dark above.
+<br><br>
+<<endevent>>
+<<temple_scriptorium_options>>
+
+<<temple_scriptorium_leave_options>>
+
+:: Temple Scriptorium Search
+<<temple_effects>><<effects>>
+
+<<if $temple_scriptorium_known is undefined or $temple_scriptorium_known lt 2>>
+	<<set $temple_scriptorium_known to 2>>
+<</if>>
+
+<<generate1>><<person1>>
+You walk through darkened corridors, peeking into rooms, searching for the scriptorium. You round a corner, and almost bump into a <<monk>>.
+
+<<if $temple_rank is "initiate">>
+	<<He>> frowns a moment, then smiles at you. "Are you lost, lamb?" <<he>> asks. "There's nothing down this corridor but the back entrance to the scriptorium." <<He>> gestures at the wooden door at the end of the corridor, set into the wall. A thick padlock seals it shut.
+	<br><br>
+	<<He>> ushers you back to the main hall.
+	<br><br>
+<<elseif $temple_rank is "monk" or $temple_rank is "priest">>
+	<<He>> frowns a moment, then nods. "The scriptorium has a front door, you know," <<he>> says, then gestures at a wooden door behind <<him>>, set into the wall. It's sealed with a thick padlock. "That's the back entrance. We don't really need to use it nowadays."
+	<br><br>
+	<<He>> nods again, then passes by.
+	<br><br>
+<<else>>
+	<<He>> frowns at you. "Are you lost?" <<he>> asks. "These parts of the temple are off-limits to those not initiated." <<His>> expression softens. "Ah, are you curious about the inner workings of the temple?"
+	<br><br>
+	<<He>> gestures at a wooden door behind <<him>>, set into the wall. It's sealed by a thick padlock. "That's the scriptorium," <<he>> says. "Even the best preserved documents are ravaged by time, but through painstaking work we can preserve their spirit." <<He>> gestures the way you came. "Come. I'll show you back to the temple proper."
+	<br><br>
+	<<He>> ushers you back to the main hall.
+	<br><br>
+<</if>>
+
+<<link [[Next|Temple]]>><<endevent>><</link>>
+<br>
+
+:: Temple Scriptorium Lock
+<<temple_effects>><<effects>>
+
+<<set $lock to 600>>
+
+You approach the back door to the scriptorium. It's locked tight.
+<br><br>
+
+<<if $temple_rank is "monk" or $temple_rank is "priest">>
+	<span class="teal">Your rank is sufficient to enter the scriptorium legitimately through the cloister, should you wish to.</span>
+	<br><br>
+<</if>>
+
+<<if currentSkillValue('skulduggery') gte $lock>>
+	<<if pcAreArmsBound("both")>>
+		You think you'd be able to pick the lock, <span class="blue">if your arms weren't bound.</span>
+		<br><br>
+	<<else>>
+		<<wearProp "lockpick">>
+		<span class="green">The lock looks easy to pick.</span>
+		<br><br>
+		<<lockicon "pick">><<link [[Break in (0:05)|Temple Scriptorium Sneak]]>><<handheldon>><<pass 5>><<crimeUp 10 "trespassing">><</link>><<crime "trespassing">>
+		<br>
+	<</if>>
+<<else>>
+	<span class="red">The lock looks beyond your ability to pick.</span><<skulduggeryrequired>>
+	<br><br>
+<</if>>
+
+<<ind>><<link [[Leave|Temple]]>><</link>>
+	<br>
+
+:: Temple Scriptorium Altar
+<<temple_effects>><<effects>>
+<<generate1>><<person1>>
+You light a candle, and tiptoe by <<monks_and_nuns>> hunched over tables, scribbling away, oblivious to all around them. Scrolls, and the occasional tome, stack the shelves. Some are bound and chained.
+<br><br>
+
+You come to shelves holding wooden drawyers. You lift a lit candle from a nearby table, and take care as you open the first drawyer. Old pages, bound into different collections. This is the sort of thing you're looking for.
+<br><br>
+
+The ordering system takes some figuring out. You manage it well enough, and narrow your search down to a section of drawers at the far end, each containing pages from more modern works.
+<br><br>
+
+<<link [[Next|Temple Scriptorium Altar 2]]>><</link>>
+<br>
+
+:: Temple Scriptorium Altar 2
+<<temple_effects>><<effects>>
+
+You search the final drawers, until you find a video tape tucked between pages. You examine it. 'Dark One 3' is scrawled on the label. The bound pages beside it fall askew. In the candlelight, you can only make out the numbers at the top, but it's enough. <span class="gold">The missing pages.</span>
+<br><br>
+
+They feel about to come apart as you place them on the table. They detail an old and savage ritual. A diagram shows a figure cradling another, knife in hand. The last page is simply a depiction of a burning figure, beneath a prominent sun.
+<br><br>
+
+<<link [[Next|Temple Scriptorium Altar Letters]]>><</link>>
+<br>
+
+:: Temple Scriptorium Altar Letters
+<<effects>>
+
+You turn the last of the missing pages, and find smaller, more robust sheets. The script is modern, though the pages have yellowed a little. They're formatted like letters. They look like correspondence between the clergy and the faithful. 
+<br><br>
+
+The topmost letter is addressed from a priest. It gives the recipient advice and supportive words, but a name sticks out in the penultimate paragraph. <span class="red">Kylar.</span>
+<br>
+<i>"I regret to confirm what you've heard. Kylar will receive all the help <<nnpc_he "Kylar">> needs, but for the time being it would be best if you dissuaded your children from interacting with <<nnpc_him "Kylar">>, for <<nnpc_his "Kylar">> own safety."</i>
+<br><br>
+
+You check the other letters. Each implies that Kylar is dangerous, and advises the recipient to keep their children away from <<nnpc_him "Kylar">>.
+<br><br>
+
+You take the pages, the letters, and the tape. <span class="gold">Kylar has a device that could play it.</span>
+<br><br>
+
+<<link [[Next|Temple Scriptorium Altar 3]]>><<endevent>><</link>>
+<br>
+
+:: Temple Scriptorium Altar 3
+<<effects>>
+
+You make your way through the shadowy hall. An arch passes overhead as you enter a corridor formed between two long, tall sets of shelves. The flame of your candle dances as if in a breeze, but you feel no such thing. The phantom wind picks up, and the flame dies, plunging you into darkness.
+<br><br>
+
+A whip cracks, your ankles are bound, and you fall to the floor. Pages flutter around you.<<gpain>><<gstress>><<pain 4>><<stress 6>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium Altar 5]]>><</link>>
+<br>
+
+:: Temple Scriptorium Altar 5
+<<effects>>
+
+<<if $per_npc.bishop>>
+	<<loadNPC 0 "bishop">>
+<<else>>
+	<<generateConfessor 1>>
+	<<saveNPC 0 "bishop">>
+<</if>>
+<<person1>>
+<<if $per_npc.bishop_right_hand>>
+	<<loadNPC 1 "bishop_right_hand">><<loadNPC 2 "bishop_left_hand">>
+<<else>>
+	<<generateConfessor 2>><<set _generate_partner to 1>><<generateConfessor 3>>
+	<<saveNPC 1 "bishop_right_hand">><<saveNPC 2 "bishop_left_hand">>
+<</if>>
+
+You twist onto your back to look at your assailant. Three figures stand in front of you, all three cowled.
+<br><br>
+
+"Well well," says the one in the middle.
+<<if $temple_confessor_intro>>
+	It's the bishop, and <<his>> hands.
+<</if>>
+<<He>> crouches, and brushes one of the pages with <<his>> fingers.
+<<if $temple_rank is "priest" or $temple_rank is "monk">>
+	"Absconding with that which belongs to the temple? I am disappointed, <<sister>>."
+<<else>>
+	"A rat sneaks into a place most holy, and tries to abscond with that which isn't <<phers>>."	
+<</if>>
+<br>
+"Dangerous."
+<br>
+"Naughty."
+<br>
+The other figure tuts.
+<br><br>
+
+<<link [[Flirt|Temple Scriptorium Altar Flirt]]>><</link>><<promiscuous1>>
+<br>
+<<link [[Remain Silent|Temple Scriptorium Altar Silent]]>><</link>>
+<br>
+
+
+:: Temple Scriptorium Altar Flirt
+<<effects>>
+
+<<set $seductiondifficulty to 10000>>
+<<seductioncheck>>
+<<seductionskilluptext>>
+<<seductionskilluse>>
+
+You writhe on the ground. "Looks like you have me right where you want me," you purr.
+<<promiscuity1>>
+
+<<if $seductionrating gte $seductionrequired>>
+	<span class="green">The figures on the left and right watch you with naked lust,</span> until the <<bishop>> snaps both hands at once. The force echoes through the hall, and brings both to their senses. "I expect better of both of you," <<he>> says. "Contrition, later."
+	<br><br>
+	The pair look abashed, and a little afraid.
+	<br><br>
+
+	<<link [[Next|Temple Scriptorium Altar Silent]]>><</link>>
+	<br>
+<<else>>
+	If any are moved by your performance, <span class="red">they hide it well.</span>
+	<br><br>
+	"Careful, <<girl>>," the <<bishop>> says. "Or you'll draw worse than us."
+	<br><br>
+	<<link [[Next|Temple Scriptorium Altar Silent]]>><</link>>
+	<br>
+<</if>>
+
+:: Temple Scriptorium Altar Silent
+<<effects>>
+
+The <<bishop>> sighs. "I had hoped my warning would dissuade you," <<he>> says. "I see now I was too gentle. I merely fanned your flames. No matter. It ends here."
+<br><br>
+<<His>> companions retrieve the fallen pages, and letters. Their movements are swift, and efficient. It only takes a moment.
+<br><br>
+"Find a better place for them," the <<bishop>> directs. "As for you,
+<<if $temple_rank is "monk" or $temple_rank is "priest">>
+	<<sister>>, thank you for highlighting this weakness in our security."
+<<else>>
+	<<girl>>, you won't be punished for this lapse on our part."
+<</if>>
+<br><br>
+
+All three smile as they turn and walk away. At that moment, you become aware of something pressed into your back. <span class="teal">The video tape, concealed by your body.</span>
+<br><br>
+
+<<link [[Flip the bird|Temple Scriptorium Altar Flip]]>><<def 1>><</link>>
+<br>
+<<link [[Stay still|Temple Scriptorium Altar Still]]>><</link>>
+<br>
+
+:: Temple Scriptorium Altar Flip
+<<effects>>
+
+You flip the bird at their backs. The <<bishop>> and <<his>> rightmost companion disappear for a moment, but the leftmost companion pauses a moment, as if sensing your gesture. Then <<person2>><<he>> too disappears.
+<br><br>
+
+You climb to your feet. The video tape looks undamaged.
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+:: Temple Scriptorium Altar Still
+<<effects>>
+
+You remain still. The <<bishop>> and <<his>> companions disappear into the dark.
+<br><br>
+
+Once alone, you climb to your feet and examine the video tape. It looks undamaged.
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+
+:: Temple Calligraphy Intro
+<<temple_effects>><<effects>>
+<<set $temple_calligraphy_difficulty to 100>>
+<<generate1>><<person1>>
+You sit at an empty desk. There's an inkwell here, and a blank parchment.
+<br><br>
+
+A heavy tome thumps in front of you. "Last week's notes," says a <<person>> dressed as a <<monk>>. "Make a copy. Or as much as you can."
+<br><br>
+<<if $temple_rank isnot "priest" and $temple_rank isnot "monk">>
+	<<He>> pierces you with a suspicious squint before walking away.
+	<br><br>
+<<else>>
+	<<He>> walks away.
+	<br><br>
+<</if>>
+
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+<<link [[Make a copy (1:00)|Temple Calligraphy 2]]>><<pass 60>><<set $daily.temple_calligraphy to 1>><<endevent>><</link>><<skill_difficulty `currentSkillValue("handskill")` "Hand Skill" _temple_calligraphy_difficulty_min $temple_calligraphy_difficulty>>
+<br>
+<<link [[Just leave|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy
+<<temple_effects>><<effects>>
+
+<<generate1>><<person1>>
+You sit at one of the desks.
+<<if $temple_calligraphy gte 10>>
+	A voiceless <<monk>> climbs a ladder and unchains a scroll from the top shelf. <<He>> carries it down, places it in front of you, and peels off <<his>> gloves as <<he>> walks away.
+<<else>>
+	A voiceless <<monk>> unfurls a scroll for you to copy, marked where the last calligrapher left off.
+<</if>>
+<<endevent>>
+
+<<if $temple_calligraphy gte 10>>
+	<span class="red">It looks difficult,</span> the text seeming to change when you look away.
+	<<set $temple_calligraphy_difficulty to 1000>>
+<<elseif $temple_calligraphy gte 9>>
+	<span class="pink">It looks difficult,</span> with arcane language that wrestles with your intuition.
+	<<set $temple_calligraphy_difficulty to 900>>
+<<elseif $temple_calligraphy gte 8>>
+	<span class="pink">It looks complicated.</span> Beautiful art illustrates, but also convolutes your task.
+	<<set $temple_calligraphy_difficulty to 800>>
+<<elseif $temple_calligraphy gte 7>>
+	<span class="purple">It looks complicated,</span> the language dense and unapproachable.
+	<<set $temple_calligraphy_difficulty to 700>>
+<<elseif $temple_calligraphy gte 6>>
+	<span class="purple">It looks challenging,</span> being written in a rare dialect.
+	<<set $temple_calligraphy_difficulty to 600>>
+<<elseif $temple_calligraphy gte 5>>
+	<span class="blue">It looks challenging.</span> The author spent a lot of time meandering about issues of such little consequence. It'll be a struggle to stay focused.
+	<<set $temple_calligraphy_difficulty to 500>>
+<<elseif $temple_calligraphy gte 4>>
+	<span class="blue">It looks straightforward,</span> though it would be easier if the author had better handwriting.
+	<<set $temple_calligraphy_difficulty to 400>>
+<<elseif $temple_calligraphy gte 3>>
+	<span class="lblue">It looks straightforward,</span> the language modern and familiar.
+	<<set $temple_calligraphy_difficulty to 300>>
+<<elseif $temple_calligraphy gte 2>>
+	<span class="teal">It looks simple,</span> just a backup that needs yet another backup.
+	<<set $temple_calligraphy_difficulty to 200>>
+<<else>>
+	<span class="green">It looks simple,</span> just some recent notes in need of a backup.
+	<<set $temple_calligraphy_difficulty to 100>>
+<</if>>
+<br><br>
+
+<<link [[Lick the tip of your quill|Temple Calligraphy Lick]]>><<oralskill 5>><</link>><<skill_difficulty `currentSkillValue("oralskill")` "Oral Skill" 1 1000>><<goralskill>>
+<br>
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+<<link [[Begin|Temple Calligraphy 2]]>><</link>><<skill_difficulty `currentSkillValue("handskill")` "Hand Skill" _temple_calligraphy_difficulty_min $temple_calligraphy_difficulty>>
+<br>
+
+
+:: Temple Calligraphy Lick
+<<effects>>
+
+You lick the tip of your quill.
+
+<<if currentSkillValue("oralskill") gte random(1, 1000)>>
+	<<set $temple_calligraphy_difficulty -= 300>>
+	<<set $temple_calligraphy_difficulty to Math.clamp($temple_calligraphy_difficulty, 0, 1000)>>
+	<span class="green">The ink flows.</span> <span class="green"> This should make scratching away less arduous.| - Difficulty</span>
+	<br><br>
+<<else>>
+	<<if random(1, 3) is 3>>
+		The ink flows free. <span class="red">Too free.</span> The bitterness runs over your tongue, though you manage to avoid spilling any onto the parchment.<<gstress>><<stress 6>>
+		<br><br>
+	<<else>>
+		<span class="red">You're unable to loosen the ink.</span> You'll have to hold the quill just right.
+		<br><br>
+	<</if>>
+<</if>>
+
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+
+<<if $temple_calligraphy gte 11>>
+	<<link [[Begin|Temple Scribe 2]]>><</link>>
+<<else>>
+	<<link [[Begin|Temple Calligraphy 2]]>><</link>>
+<</if>>
+<<skill_difficulty `currentSkillValue("handskill")` "Hand Skill" _temple_calligraphy_difficulty_min $temple_calligraphy_difficulty>>
+<br>
+
+:: Temple Calligraphy 2
+<<temple_effects>><<effects>>
+
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+
+<<if $temple_calligraphy gte 10>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		The text looks straightforward enough, if a bit archaic. However, the text seems to shift, or outright change when you look away.
+		<br><br>
+		You try to figure out patterns, but can't pin any down, as if the text were toying with you. You blink, and the word in direct focus hops from one sentence to another, changing the meaning of both.
+		<br><br>
+		You pause in thought.
+		<br><br>
+
+		<<link [[Ask the text to stay put|Temple Calligraphy Ask]]>><</link>>
+		<br>
+		<<if $angel gte 6>>
+			<<link [[Smite|Temple Calligraphy Smite]]>><</link>><<angel>>
+			<br>
+		<</if>>
+		<<if $demon gte 6>>
+			<<link [[Defile|Temple Calligraphy Defile]]>><</link>><<demon>>
+			<br>
+		<</if>>
+		<<if $fallenangel gte 2>>
+			<<link [[Punish|Temple Calligraphy Punish]]>><<pain 4>><<stress 6>><</link>><<fallenangel>><<gpain>><<gstress>>
+			<br>
+		<</if>>
+		<<if $submissiveness lte 500>>
+			<<link [[Threaten|Temple Calligraphy Threaten]]>><<def 1>><</link>><<defianttext>>
+			<br>
+		<</if>>
+		<<link [[Give up|Temple Calligraphy Give]]>><</link>>
+		<br>
+	<<else>>
+		The text looks straightforward enough, if a bit archaic. However, the text seems to shift, or outright change when you look away. It feels like it's toying with you, even. You blink, and the word in direct focus hops from one sentence to the one beneath, changing the meaning of both.
+		<br><br>
+		You finish, and compare your text to the original. <span class="red">They're nothing alike.</span> You've no idea how to copy a text that won't stay put.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 9>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		The writing in front of you is dense and arcane, perhaps meaning a lot to someone. Not to you.
+		<br><br>
+		Still, you get to work parsing the text, <span class="green">and it goes well.</span> The meaning doesn't matter. Yet you feel an odd, alluring pull all the same.
+		<br><br>
+
+		<<link [[Resist|Temple Calligraphy Resist]]>><</link>><<willpowerdifficulty 1 600>>
+		<br>
+		<<link [[Read|Temple Calligraphy Read]]>><<endevent>><<awareness 1>><<stress 6>><</link>><<gawareness>><<gstress>>
+		<br>
+	<<else>>
+		The writing in front of you is dense and arcane. You struggle to even parse it. You follow the contours of the letters with your quill, trying to just jot the right shapes down. Writing helps you understand what reading failed to. You feel uneasy.<<gstress>><<stress 6>>
+		<br><br>
+		You sit back to examine your work. <span class="red">It looks nothing like the original text.</span> It's not even grammatically correct.
+		<br><br>
+		No one arrives to disparage you. They trust you to disparage yourself.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 8>>
+	<<generate1>><<person1>>
+	The page is illustrated, with colourful designs surrounding the page, blending with the text at places. "Someone else will handle the imagery," says a <<monk>>. "Your focus is the text itself."
+	<br><br>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You get to work, and copy the text. You manage to discern the illustrations from the writing, and focus on the latter.
+		<br><br>
+		You lean back to admire your handiwork. <span class="green">You think you did a good job.</span> Then adrenaline rushes through you <span class="pink">as a grinning face winks at you from the page.</span> You blink, and it vanishes.<<gcalligraphy>>
+		<br><br>
+		That's enough for today.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 9>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You get to work, and try to copy the text. It's unclear just where the text ends and illustrations begin, however, and you find yourself drawing more than writing. You don't even have the right colours.
+		<br><br>
+		<span class="red">The ink smears itself across the parchment,</span> as if in protest. You can try again tomorrow.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 7>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You squint at the text. It tries to draw you in, implanting something in your imagination, but you stick to your task <span class="green">and make a faithful copy.</span>
+		<br><br>
+		A passing <<monk>> snatches it up as <<he>> passes, slowing <<his>> walk as <<he>> reads. <<He>> turns back to you, seeming surprised. "This is adequate," <<he>> manages before moving on.<<gcalligraphy>>
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 8>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You squint at the text, and try to copy it. It takes hold of your thoughts, carrying you down strange roads once belonging to someone else. After a time you realise you're supposed to be copying, <span class="red">but there's only an indecipherable scrawl in front of you.</span>
+		<br><br>
+		A passing <<monk>> snatches your attempt as <<he>> passes, tearing it up without fanfare.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 6>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You copy the text. The handwriting is fine, but the wording is strange. It carries the tone of a historian, but describes events that should not be. Regardless, <span class="green">you're able to make an accurate copy.</span>
+		<br><br>
+		"I'm surprised they'd use such material for training," says a <<monk>>.
+		<<if $temple_rank is "priest">>
+			"Even for one as illustrious as yourself, some more practise wouldn't hurt."
+		<<elseif $temple_rank is "monk">>
+			"Not to be rude, <<sister>>, I just think we ramp things up too fast."
+		<<elseif $temple_rank is "initiate">>
+			"You've come far for an initiate, and some more time to practise wouldn't have done ill."
+		<<else>>
+			<<He>> squints at you. "I don't recognise you. New initiate? If so you've come a long way fast. More time to practise wouldn't have hurt."
+		<</if>>
+		<br><br>
+		<<link [[Agree|Temple Calligraphy Agree]]>><<set $temple_calligraphy to 7>><<unset $temple_calligraphy_difficulty>><</link>>
+		<br>
+		<<link [[Disagree|Temple Calligraphy Disagree]]>><<set $temple_calligraphy to 7>><<unset $temple_calligraphy_difficulty>><</link>>
+		<br>
+		<<link [[Remain silent|Temple Calligraphy Silent]]>><<set $temple_calligraphy to 7>><<unset $temple_calligraphy_difficulty>><</link>>
+		<br>
+	<<else>>
+		You try to copy the text. The handwriting isn't terrible, and you would normally be able to piece things together, <span class="red">but the wording confounds you.</span> It carries the tone of a historian, but describes events that should not be.<<gawareness>><<gstress>><<awareness 1>><<stress 6>>
+		<br><br>
+		A <<monk>> rests <<his>> hand on your shoulder. "Enough for today. Go stand in the sun."
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 5>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You copy the text. The author attempts to lose you in a maze, but you copy each word down, one by one, <span class="green">and manage to make a faithful copy.</span>
+		<br><br>
+		A passing <<monk>> looks surprised and impressed.<<gcalligraphy>>
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 6>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You try to copy the text, despite the author's attempts to lose you in a maze.
+		<br><br>
+		<span class="red">"You've missed some,"</span> a <<monk>> says from behind you. "There, there, and there." <<He>>'s right. You didn't notice at the time. "Don't worry. That author gets the best of us." <<He>> walks away.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 4>>
+	<<generate1>><<generate2>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You copy the text, using more legible words to decipher the more mysterious ones.
+		<br><br>
+		A passing <<monk>> smiles at your work, as if amused by a private joke. <<person2>>"<<His>> handwriting's even worse nowadays," <<he>> says. "If you can believe it. <span class="green">Good work."</span><<gcalligraphy>>
+		<br><br>
+		<<person1>><<He>> opens <<his>> mouth to speak further, but another <<monk>> shushes <<him>>.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 5>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You try to copy the text, turning it around to see if you can read it better from another angle. You find yourself making a lot of guesses. A passing <<monk>> glances at your work, <span class="red">and does not seem impressed.</span>
+		<br><br>
+		You could try again tomorrow.
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 3>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You copy the text. It's straightforward enough, if mundane. A <<monk>> reaches over your shoulder, and holds your work close, peering at it.
+		<br><br>
+		<span class="green">"I see no fault,"</span> <<he>> says, frowning in disappointment.<<gcalligraphy>>
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 4>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You try to copy the text, but it's so mundane you feel your mind wandering. A <<monk>> snaps you out of your thoughts by seizing your parchment, <span class="red">and tearing it up.</span>
+		<br><br>
+		"Again," <<he>> says. "Tomorrow."
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<elseif $temple_calligraphy gte 2>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		You back up the backup. Someone's scrawled on their own additions, <span class="green">but you're able to discern the difference.</span> 
+		<br><br>
+
+		A <<person>> looks over your shoulder, and nods in approval.<<gcalligraphy>>
+		<br><br>
+
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 3>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You try to copy the backup, but someone has complicated the task by adding annotations in the same ink.
+		<br><br>
+		"No no," says a <<monk>>, almost making you jump. <span class="red">"All wrong."</span> <<He>> snatches the paper, and crunches it in <<his>> fist. "Try again tomorrow."
+		<br><br>
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<<else>>
+	<<generate1>><<person1>>
+	<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+		<span class="green">You copy the notes without issue,</span> making sure to make your handwriting legible.
+		<br><br>
+		A <<monk>> gives it a distracted glance, followed by an approving nod.<<gcalligraphy>>
+		<br><br>
+		"Return tomorrow," <<he>> says. "It's not safe to do this too often. Not without dedicated years." <<He>> walks away.
+		<br><br>
+		
+		<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 2>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<<else>>
+		You try to copy the notes, but the dense scrawl proves difficult to read, <span class="red">and you make little progress.</span>
+		<br><br>
+		A <<monk>> observes your work, and shakes <<his>> head. "Disappointing. You can try again tomorrow," <<he>> says. "It's not safe to do this too often. Not without dedicated years." <<He>> walks away.
+		<br><br>
+		
+		<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+		<br>
+	<</if>>
+<</if>>
+
+:: Temple Calligraphy Agree
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"It is awful taxing," you say.	
+<<elseif $speech_attitude is "bratty">>
+	"I bet others struggle," you say.
+<<else>>
+	"They do seem to be in a hurry," you say.
+<</if>>
+<br><br>
+
+The <<monk>> nods. "Don't think they'll listen to the likes of us though. Set in their ways doesn't describe it." <<He>> gives you a polite nod, then goes on <<his>> way.<<gcalligraphy>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Disagree
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I'm sure they know what's best," you say.
+<<elseif $speech_attitude is "bratty">>
+	"It's going fine for me," you say.
+<<else>>
+	"It's going fine so far," you say.
+<</if>>
+<br><br>
+
+The <<monk>> smiles. "If you say so," <<he>> says. "Though the next task they set might change your tune." <<He>> leaves without elaborating.<<gcalligraphy>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Silent
+<<effects>>
+
+You remain silent. "Am I talking too loud?" <<he>> asks. Another <<monk>> gives <<him>> a level look. "Oops." <<He>> walks away.<<gcalligraphy>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+
+:: Temple Calligraphy Resist
+<<effects>>
+
+<<if $willpowerSuccess>>
+	You resist contemplating the text, or even individual sentences, as a whole, <span class="green">and manage to finish copying without issue.</span>
+	<br><br>
+
+<<else>>
+	You try to resist the text, but doing so frightens you, as if you were ignoring a raging fire. <span class="red">You satisfy your anxious curiosity.</span>
+	<br><br>
+	
+	You read about the destruction of a temple, you assume not this one. The language is poetic. Fire and water wrestled over its fate, until something arrived that frightened them both. It scared the fire away, and coerced the water into subservience. You feel dread build, as if something lurked beneath the words.<<gawareness>><<gstress>><<awareness 1>><<stress 6>>
+	<br><br>
+	You finish reading without issue, but the dread remains.
+<</if>>
+
+No one arrives to assess your work.
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 10>><<unset $temple_calligraphy_difficulty>><</link>>
+<br>
+
+:: Temple Calligraphy Read
+<<effects>>
+
+You try to pull away, but the text draws you in, compelling you to read. It's about the destruction of a temple, you assume not this one. The language is poetic. Fire and water wrestled over its fate, until something arrived that frightened them both. It scared the fire away, and coerced the water into subservience. You feel dread build, as if something lurked beneath the words.
+<br><br>
+You finish reading without issue, but the dread remains. No one arrives to assess your work. 
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 10>><<unset $temple_calligraphy_difficulty>><</link>>
+<br>
+
+:: Temple Calligraphy Ask
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Please stay put," you write. "I need to copy you."
+<<elseif $speech_attitude is "bratty">>
+	"Stay put," you write. "Or you'll be sorry."
+<<else>>
+	"Stop changing," you write. "I'm trying to copy you."
+<</if>>
+Nothing happens. You pull the scroll itself in front of you, dip the quill in the inkwell, and hover it over the changing text.
+<br><br>
+
+A <<monk>> looms from the gloom, plucks the quill from your hand, and furls the scroll. "Enough," <<he>> says. "You cannot make a copy. Something is always gained. Something lost. This is the last thing we can teach you. The rest you must learn from experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><</link>>
+<br>
+
+:: Temple Calligraphy Smite
+<<effects>>
+
+Your angelic power flows through you, down your arm, and into the quill. The light blazes, and when you write, the ink is gold.
+<br><br>
+"No more."
+<br><br>
+For a moment, it seems to work. Then the text changes even more than before. Each time you blink, the whole page changes, conjuring disturbing imagery in an angry tone.
+<br><br>
+
+You pull the scroll in front of you, and hold the quill above it. The black ink on the page seems to shrink from the golden light.
+<br><br>
+
+<<link [[Next|Temple Calligraphy Smite 2]]>><</link>>
+<br>
+
+:: Temple Calligraphy Smite 2
+<<effects>>
+
+A <<monk>> looms from the gloom, plucks the quill from your hand, and furls the scroll. <<He>> faces you, clutching the scroll as if afraid it would take flight.
+<br><br>
+"How did you do that?" <<he>> asks, piercing you with <<his>> gaze. Then <<he>> shakes <<his>> head. "It doesn't matter. You cannot make a copy. Something is always gained. Something lost. This is the last thing we can teach you. The rest you must learn from experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Defile
+<<effects>>
+
+You throw the quill aside, and lift the whole inkwell.
+<br><br>
+
+<<if $speech_attitude is "meek">>
+	"This isn't my first choice," you say. "But I have a task to do."
+<<elseif $speech_attitude is "bratty">>
+	"This is justifed," you say.
+<<else>>
+	"I feel this is justified," you say.
+<</if>>
+You tip the inkwell, ready to ruin the page. The text shifts as if in response, adopting an apologetic tone.
+<br><br>
+
+Before you can read much, a <<monk>> looms from the glooms, plucks the inkwell from your hand, and furls the scroll.
+<br><br>
+
+"What's gotten into you?" <<he>> asks. "This scroll is priceless. Irreplicable. That was supposed to be the lesson here, that nothing can ever be truly copied, and you almost went and destroyed it."
+<br><br>
+
+<<His>> voice is so loud other <<monks_and_nuns>> look over. <<He>> catches <<himself>> with a blush.
+<br><br>
+
+<<link [[Apologise|Temple Calligraphy Defile Apologise]]>><</link>>
+<br>
+<<link [[Ask how the page does that|Temple Calligraphy Defile Ask]]>><</link>>
+<br>
+<<link [[Remain Silent|Temple Calligraphy Defile Silent]]>><</link>>
+<br>
+
+:: Temple Calligraphy Defile Apologise
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I'm so sorry," you say with a bow of your head. "I don't know what came over me."
+<<elseif $speech_attitude is "bratty">>
+	"Sorry," you say. "I didn't mean to threaten a priceless artefact."
+<<else>>
+	"I'm sorry," you say. "I almost did a lot of damage."
+<</if>>
+<br><br>
+
+The <<monk>> calms a little. "No harm done," <<he>> says. "Fortunately. There's more for you to learn, but that's the last we can teach you. You'll need your own experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Defile Ask
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"I'm a little frightened," you say. "How is the text able to change?"
+<<elseif $speech_attitude is "bratty">>
+	"You gonna let me in on the secret?" you ask. "How does the text change?"
+<<else>>
+	"How does the text change?" you ask.
+<</if>>
+<br><br>
+
+"I don't know what you're talking about," <<he>> says. "We've taught you all we can. You'll have to learn the rest through experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Defile Silent
+<<effects>>
+
+You remain silent. The <<monk>> shakes <<his>> head. "Regardless," <<he>> continues in a lower voice. "We've taught you all we can. You'll learn the rest through experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+:: Temple Calligraphy Punish
+<<effects>>
+
+<<if $speech_attitude is "meek">>
+	"Even scrolls are making fun of me," you write. "I deserve it. But, you deserve this too."
+<<elseif $speech_attitude is "bratty">>
+	"You're being difficult," you write. "I can be difficult too."
+<<else>>
+	"I don't think you're being fair," you write. "That's an imbalance I can fix."
+<</if>>
+You pull the scroll in front of you, hold the page between both thumbs and forefingers, and move as if to tear. You don't put quite enough pressure on however, holding it in a torturous balance.
+<br><br>
+
+You hold the nearer part of the page at an angle, obscuring it somewhat. The text seems to change, and from what you make out, it now carries a pleading tone.
+<br><br>
+
+A <<monk>> looms from the gloom, and furls the scroll.
+<br><br>
+
+"What's gotten into you?" <<he>> asks. "This scroll is priceless. Irreplicable. That was supposed to be the lesson here, that nothing can ever be truly copied, and you almost went and destroyed it."
+<br><br>
+
+<<His>> voice is so loud other <<monks_and_nuns>> look over. <<He>> catches <<himself>> with a blush.
+<br><br>
+
+<<link [[Apologise|Temple Calligraphy Defile Apologise]]>><</link>>
+<br>
+<<link [[Ask how the page does that|Temple Calligraphy Defile Ask]]>><</link>>
+<br>
+<<link [[Remain Silent|Temple Calligraphy Defile Silent]]>><</link>>
+<br>
+
+:: Temple Calligraphy Threaten
+<<effects>>
+
+"Stop changing," you write. "Or I'll throw you in a sacred pyre." For a moment, it seems to work. Then the text changes even more than before. Each time you blink, the whole page changes, conjuring disturbing imagery in an angry tone. You pull the scroll itself in front of you, dip the quill in the inkwell, and hover it over the changing text.
+<br><br>
+A <<monk>> looms from the gloom, plucks the quill from your hand, and furls the scroll. "Enough," <<he>> says. "You cannot make a copy. Something is always gained. Something lost. This is the last thing we can teach you. The rest you must learn from experience."
+<br><br>
+
+<<He>> climbs the ladder, puts the scroll in its place, and chains it tight.
+<br><br>
+<<earnFeat "Nothing Copied">>
+<span class="gold">You've gained the Temple Calligrapher trait.</span><<ggawareness>><<awareness 5>><<ghandskill>><<handskill 30>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<set $temple_calligraphy to 11>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+
+:: Temple Calligraphy Give
+<<effects>>
+
+You give up, and put the quill down. A <<monk>> arrives to furl the scroll, put it back in its place, and chain it firm.
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+<br>
+
+
+:: Temple Scriptorium Pumpkin
+<<effects>>
+<<generate1>><<person1>>
+You unfurl scroll after scroll, searching for information about pumpkin carving. You find nothing. A <<monk>> keeps glancing at you, and occasionally shakes <<his>> head.
+<br><br>
+
+At last, the <<monk>> rises, commandeers a ladder, and climbs to the very top. <<He>> unchains one of the tomes, climbs down, and dumps it in front of you. "Page 181."
+<br><br>
+
+The paper feels wispy between your fingers. It's an account of turnip carving. The writer seems bemused and fascinated by the practice. It's not quite what you're looking for, but you feel like you've learned something all the same.
+<br><br>
+
+<<if ($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) gte 15 and ($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) lte 19>>
+	<span class="gold">You've gained the Knowledge: Pumpkin Carving trait.</span>
+<<else>>
+	<span class="gold">You feel like you understand pumpkin carving a lot more.</span>
+<</if>>
+<br><br>
+
+<<link [[Next|Temple Scriptorium]]>><<endevent>><</link>>
+<br>
+
+
+:: Temple Scribe
+<<temple_effects>><<effects>>
+<<generate1>><<person1>>
+You sit at one of the desks.
+<<if $temple_calligraphy gte 10>>
+	A voiceless <<monk>> climbs a ladder and unchains a scroll from the top shelf. <<He>> carries it down, places it in front of you, and peels off <<his>> gloves as <<he>> walks away.
+<<else>>
+	A voiceless <<monk>> unfurls a scroll for you to copy, marked where the last calligrapher left off.
+<</if>>
+<<endevent>>
+
+<<rng 3>>
+<<if $rng gte 3>>
+	The text mocks you in particular.
+<<elseif $rng gte 2>>
+	The text tries to hide in the margins.
+<<else>>
+	The text distracts from itself.
+<</if>>
+<br><br>
+
+<<set $temple_calligraphy_difficulty to 1000>>
+
+<<link [[Lick the tip of your quill|Temple Calligraphy Lick]]>><<oralskill 5>><</link>><<skill_difficulty `currentSkillValue("oralskill")` "Oral Skill" 1 1000>><<goralskill>>
+<br>
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+<<link [[Begin|Temple Scribe 2]]>><</link>><<skill_difficulty `currentSkillValue("handskill")` "Hand Skill" _temple_calligraphy_difficulty_min $temple_calligraphy_difficulty>>
+<br>
+
+
+:: Temple Scribe 2
+<<effects>>
+<<set _temple_calligraphy_difficulty_min to Math.clamp(($temple_calligraphy_difficulty - 300), 0, 700)>>
+
+<<generate1>><<person1>>
+You copy the text as best you can, despite its tricks.
+<<if currentSkillValue("handskill") gte random(_temple_calligraphy_difficulty_min, $temple_calligraphy_difficulty)>>
+	You nail it down, word by word, letter by letter, <span class="green">until it stops squirming.</span><<gawareness>><<awareness 1>>
+	<br><br>
+	A <<monk>> arrives to retrieve the scroll.
+	<br><br>
+	<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+	<br>
+<<else>>
+	An hour passes in a blur. You blink, <span class="red">and realise you haven't copied the text at all.</span> You feel a mocking lash against your mind. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
+	<br><br>
+	A <<monk>> arrives to retrieve the scroll.
+	<br><br>
+	<<link [[Next|Temple Scriptorium]]>><<unset $temple_calligraphy_difficulty>><<endevent>><</link>>
+	<br>
+<</if>>

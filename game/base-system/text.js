@@ -437,6 +437,20 @@ statDisplay.create("gtanned", () => statDisplay.statChange("Tanned", 1, "green")
 statDisplay.create("ggtanned", () => statDisplay.statChange("Tanned", 2, "green"));
 statDisplay.create("gggtanned", () => statDisplay.statChange("Tanned", 3, "green"));
 
+statDisplay.create("lresearch", () => statDisplay.statChange("Research", -1, "red"));
+statDisplay.create("llresearch", () => statDisplay.statChange("Research", -2, "red"));
+statDisplay.create("lllresearch", () => statDisplay.statChange("Research", -3, "red"));
+statDisplay.create("gresearch", () => statDisplay.statChange("Research", 1, "green"));
+statDisplay.create("ggresearch", () => statDisplay.statChange("Research", 2, "green"));
+statDisplay.create("gggresearch", () => statDisplay.statChange("Research", 3, "green"));
+
+statDisplay.create("lcalligraphy", () => statDisplay.statChange("Calligraphy", -1, "red"));
+statDisplay.create("llcalligraphy", () => statDisplay.statChange("Calligraphy", -2, "red"));
+statDisplay.create("lllcalligraphy", () => statDisplay.statChange("Calligraphy", -3, "red"));
+statDisplay.create("gcalligraphy", () => statDisplay.statChange("Calligraphy", 1, "green"));
+statDisplay.create("ggcalligraphy", () => statDisplay.statChange("Calligraphy", 2, "green"));
+statDisplay.create("gggcalligraphy", () => statDisplay.statChange("Calligraphy", 3, "green"));
+
 // Conditions that modify variables like this should preferably not be in the same widget as text output
 statDisplay.create("lcorruption", threat => {
 	if (V.earSlime.startedThreats && !threat) V.earSlime.startedThreats = true;
