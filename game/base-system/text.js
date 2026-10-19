@@ -363,6 +363,8 @@ statDisplay.create("gggbaton", () => statDisplay.statChange("Baton proficiency",
 statDisplay.create("gwhip", () => statDisplay.statChange("Whip proficiency", 1, "green"));
 statDisplay.create("ggwhip", () => statDisplay.statChange("Whip proficiency", 2, "green"));
 statDisplay.create("gggwhip", () => statDisplay.statChange("Whip proficiency", 3, "green"));
+statDisplay.create("gpickaxe", () => statDisplay.statChange("Pickaxe proficiency", 1, "green"));
+statDisplay.create("ggpickaxe", () => statDisplay.statChange("Pickaxe proficiency", 2, "green"));
 
 statDisplay.create("lsecurity", () => statDisplay.statChange("Security", -1, "green"));
 statDisplay.create("llsecurity", () => statDisplay.statChange("Security", -2, "green"));

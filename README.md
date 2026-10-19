@@ -56,7 +56,7 @@ See [README in devTools/apkbuilder](devTools/apkbuilder/README-windows.txt)
     4. Install and optionally configure [Code Spell Checker extension](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker):
         1. Use "English - United Kingdom" and "English - United States" dictionaries
         2. Enable spellchecking for `html`, `css`, `javascript` and other relevant programming languages and dictionaries
-           The extension should automatically use these settings for the project via `.cspell.json`, including the custom dictionary in `.cspell-project-words.txt`, so manual configuration should not be necessary. If running `npx cspell .` yields an absurd amount of results (including words that are in the custom dictionary), then the settings may not be automatically set or recognized, so you should set them yourself. Make sure the custom dictionary is recognized, or the extension won't be very useful!
+           The extension should automatically use these settings for the project via `.cspell.json`, including the custom dictionary in `.cspell-project-words.txt`, so manual configuration should not be necessary. If running `npx cspell .` yields an absurd amount of results (including words that are in the custom dictionary), then the settings may not be automatically set or recognised, so you should set them yourself. Make sure the custom dictionary is recognised, or the extension won't be very useful!
     5. Optionally enable fixing js/css on save. In `settings.json` set:
 
         ```json

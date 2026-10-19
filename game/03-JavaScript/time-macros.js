@@ -128,8 +128,8 @@ function printTime(minutes, numbersOnly) {
 	const hours = Math.floor(minutes / 60);
 	const leftoverMinutes = minutes % 60;
 	if (numbersOnly) {
-		// ex: "(00:10)"
-		return "(" + (hours < 10 ? "0" : "") + hours + ":" + (leftoverMinutes < 10 ? "0" : "") + leftoverMinutes + ")";
+		// ex: "(0:10)"
+		return "(" + hours + ":" + (leftoverMinutes < 10 ? "0" : "") + leftoverMinutes + ")";
 	} else {
 		// ex: "5 hours and 29 minutes"
 		const array = [];
