@@ -5120,19 +5120,26 @@
 		<<set $daily.school[$_rep] to 1>>
 		<<set $daily.crossdressingFameReduction to true>>
 
-		<!-- cap max rep at 5 -->
-		<<set $schoolrep[$_rep] to Math.min($schoolrep[$_rep] + $_val, 5)>>
-
 		<!-- for herm pcs, some students can still assume you're crossdressing if they don't know any better. ensure they know better -->
 		<<set $schoolrep.crossdress to Math.min(5 - $schoolrep.herm, $schoolrep.crossdress)>>
+
+		<!-- messages shouldn't be sent for a rep increase if rep is already 5 -->
+		<<if $schoolrep[$_rep] lt 5>>
+			<!-- cap max rep at 5 -->
+			<<set $schoolrep[$_rep] to Math.min($schoolrep[$_rep] + $_val, 5)>>
+			
+			<!-- cue the appropriate rep increase message -->
+			<<if $_rep is "herm">>
+				<<set $school_herm_message to $schoolrep.herm>>
+			<<elseif $rep is "crossdress">>
+				<<set $school_crossdress_message to $schoolrep.crossdress>>
+			<</if>>
+		<</if>>
 
 		<<if $schoolrep[$_rep] is 5>>
 			<!-- now all of china knows you're $_rep -->
 			<<run ["Kylar", "Whitney", "Sydney", "Sirris", "River", "Doren", "Winter", "Mason", "Leighton"].forEach(n => $genderknown.pushUnique(n))>>
 		<</if>>
-
-		<!-- finally, send the message. expands to $school_crossdress_message or $school_herm_message -->
-		<<set V["school_" + $_rep + "_message"] to $schoolrep[$_rep]>>
 	<</if>>
 <</widget>>
 
