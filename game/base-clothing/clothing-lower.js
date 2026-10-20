@@ -12469,6 +12469,12 @@ function initLower() {
 	];
 	setup.clothes.lower = clothing;
 
+	/*
+		Clothes that modders add go into this array. This should be empty in the base game at all times.
+		These items should have a `modder` variable with the modder's name in a short string.
+	*/
+	setup.moddedClothes.lower = [];
+
 	setup.moddedClothes.lower.forEach((x, i) => (x.index = setup.clothes.lower.length + i));
 	setup.clothes.lower.push(...setup.moddedClothes.lower);
 }
