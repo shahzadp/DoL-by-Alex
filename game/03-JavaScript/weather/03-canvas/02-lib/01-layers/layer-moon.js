@@ -152,7 +152,7 @@ Weather.Renderer.Layers.add({
 		{
 			effect: "outerRadialGlow",
 			drawCondition() {
-				return Weather.bloodMoon;
+				return Weather.bloodMoon && !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				outerRadius: 16, // The radius of the outer glow

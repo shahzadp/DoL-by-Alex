@@ -379,6 +379,8 @@ declare global {
 		rightImage?: 0 | 1;
 		mask_img_ponytail?: 0 | 1;
 		head_type?: "veil" | "hat";
+		// Modded clothing only
+		modder?: string;
 		// TODO list and document other options
 	}
 
