@@ -1739,7 +1739,7 @@ function dailyNPCEffects() {
 		if (V.gwylan.timer.petBed && Time.date.dayDifference(new DateTime(V.gwylan.timer.petBed)) <= 0) delete V.gwylan.timer.petBed;
 	}
 
-	wikifier("relationshipclamp");
+	wikifier("relationshipClamp");
 }
 
 function dailyPlayerEffects() {
@@ -2743,7 +2743,7 @@ function isRentDue() {
 window.isRentDue = isRentDue;
 
 function isBaileyLookingForPlayer() {
-	return isRentDue() && V.rentTime < 0 || V.baileyRefusedToPay && isAveryPayingBailey() !== 2;
+	return (isRentDue() && V.rentTime < 0) || (V.baileyRefusedToPay && isAveryPayingBailey() !== 2);
 }
 window.isBaileyLookingForPlayer = isBaileyLookingForPlayer;
 
