@@ -3427,7 +3427,7 @@ function initFoodstuff() {
 			name: "stuffed pumpkin",
 			singular: "stuffed pumpkin",
 			plural: "stuffed pumpkins",
-			icon: "pumpkin-stuffed.png",
+			icon: "stuffed-pumpkin.png",
 			category: "dish",
 			kitchen_item_type_icon: "recipe-food.png",
 			prop_folder: "tending",
@@ -3490,7 +3490,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			food: {
-				tags: ["vegetarian", "halloween", "sweet", "drink"],
+				tags: ["vegetarian", "halloween", "drink", "sweet"],
 			},
 		},
 	};
