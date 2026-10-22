@@ -3430,7 +3430,7 @@ function initFoodstuff() {
 			icon: "stuffed-pumpkin.png",
 			category: "dish",
 			kitchen_item_type_icon: "recipe-food.png",
-			prop_folder: "tending",
+			prop_folder: "food",
 			shop: {
 				sell_price: 1800,
 			},
