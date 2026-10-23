@@ -3490,7 +3490,7 @@ function initFoodstuff() {
 				tags: [],
 			},
 			food: {
-				tags: ["vegetarian", "halloween", "drink", "sweet"],
+				tags: ["vegetarian", "halloween", "drink"],
 			},
 		},
 	};
