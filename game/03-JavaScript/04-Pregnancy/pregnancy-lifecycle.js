@@ -9,12 +9,13 @@
  * @param {"vagina"|"anus"} [orifice="vagina"] which orifice conceives
  * @param {TrackedNpc[]} [trackedNPCs] multiple donors when paternity is uncertain
  * @param {boolean} [awareOf=false] whether the player knows they are pregnant
+ * @param {number} [litterSize] how many children the pregnancy has, rolled randomly when left out
  * @returns {boolean} true if a pregnancy was created
  */
-function playerPregnancy(npc, npcType, donorKnown = false, orifice = "vagina", trackedNPCs, awareOf = false) {
+function playerPregnancy(npc, npcType, donorKnown = false, orifice = "vagina", trackedNPCs, awareOf = false, litterSize) {
 	if (!playerSpeciesPregnancyEnabled(npcType)) return false; // species disabled in settings, or a species that can't conceive
 	const donors = trackedNPCs ? trackedNPCs.map(t => ({ name: t.source, species: t.type })) : [{ name: npc, species: npcType }];
-	const pregnancyId = createPregnancy("pc", "human", npc, npcType, donors, Time.date.timeStamp, orifice, V.location);
+	const pregnancyId = createPregnancy("pc", "human", npc, npcType, donors, Time.date.timeStamp, orifice, V.location, litterSize);
 	if (awareOf) setKnowsPregnancy(pregnancyId, "pc"); // this pregnancy only, not every active one
 	if (donorKnown) setKnowsDonor(pregnancyId, "pc");
 	return true;

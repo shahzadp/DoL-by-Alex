@@ -214,7 +214,8 @@ declare global {
 		possibleDonors: PossibleDonor[],
 		conceivedDate: number,
 		orifice: "vagina" | "anus",
-		conceivedLocation: string
+		conceivedLocation: string,
+		litterSize?: number
 	): number;
 	function createChild(pregnancyId: number, species: string, features: Features, gender: "m" | "f" | "h", identical: number | null): number;
 	function gestationSeconds(species: string): number;
@@ -320,7 +321,7 @@ declare global {
 		donorParent: { hairColour: string | null },
 		wolfFur: string[]
 	): string;
-	function generateChildren(pregnancyId: number): void;
+	function generateChildren(pregnancyId: number, fixedLitterSize?: number): void;
 	function playerKnowsLitterSpecies(pregnancy: Pregnancy): boolean;
 	function playerConceivedWith(name: string): boolean;
 

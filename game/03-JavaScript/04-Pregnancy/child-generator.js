@@ -229,8 +229,9 @@ window.eyeColourCalc = eyeColourCalc;
  * Create the child/children for a new pregnancy record. Called once per pregnancy from createPregnancy.
  *
  * @param {number} pregnancyId
+ * @param {number} [fixedLitterSize] how many children the pregnancy has, rolled randomly when left out
  */
-function generateChildren(pregnancyId) {
+function generateChildren(pregnancyId, fixedLitterSize) {
 	const pregnancy = V.pregnancies[pregnancyId];
 	const base = childBaseSpecies(pregnancy.donorSpecies);
 	const isMonster = isMonsterPerson(pregnancy.donorSpecies);
@@ -240,6 +241,7 @@ function generateChildren(pregnancyId) {
 	if (base === "hawk" && pregnancy.carrier === "pc" && V.harpyEggs) {
 		litterSize = V.harpyEggs.count;
 	}
+	if (fixedLitterSize) litterSize = fixedLitterSize;
 	const carrierParent = resolveChildParent(pregnancy.carrier);
 	const donorParent = resolveChildParent(pregnancy.donor);
 	const sameParent = pregnancy.carrier === pregnancy.donor;

@@ -79,9 +79,10 @@ window.pushChildRecord = pushChildRecord;
  * @param {number} conceivedDate timestamp of the conception
  * @param {"vagina"|"anus"} orifice which orifice the pregnancy is in
  * @param {string} conceivedLocation where the conception happened
+ * @param {number} [litterSize] how many children the pregnancy has, rolled randomly when left out
  * @returns {number} the new pregnancyId
  */
-function createPregnancy(carrier, carrierSpecies, donor, donorSpecies, possibleDonors, conceivedDate, orifice, conceivedLocation) {
+function createPregnancy(carrier, carrierSpecies, donor, donorSpecies, possibleDonors, conceivedDate, orifice, conceivedLocation, litterSize) {
 	// layCare brings laying time down and hatchDelay brings hatching time down.
 	// addEggCare feeds whichever stage the clutch is currently in.
 	const isEggClutch = donorSpecies === "hawk" || donorSpecies === "harpy";
@@ -100,7 +101,7 @@ function createPregnancy(carrier, carrierSpecies, donor, donorSpecies, possibleD
 		layCare,
 		gestationVariance: 1 + random(-PregnancyConstants.gestation.variancePercent, PregnancyConstants.gestation.variancePercent) / 100,
 	});
-	generateChildren(pregnancyId);
+	generateChildren(pregnancyId, litterSize);
 	// A PC pregnancy pauses the menstrual cycle and voids any pending conception in the other orifice,
 	// so a body only ever carries one real pregnancy at a time.
 	if (carrier === "pc") {
