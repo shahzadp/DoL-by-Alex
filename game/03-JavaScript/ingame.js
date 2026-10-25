@@ -1642,7 +1642,7 @@ function npcMakeNaked(npc, slot) {
 window.npcMakeNaked = npcMakeNaked;
 
 function npcEquipSet(npc, set) {
-	npc.clothes = { set: set.name };
+	npc.clothes = { set: set.name, equippedDay: Time.days, equippedLocation: V.location };
 	Object.entries(set.clothes).forEach(item => {
 		if (item[1].name === "naked") {
 			npcMakeNaked(npc, item[0]);
@@ -1685,14 +1685,18 @@ function npcClothes(npc, type) {
 	if (crossdressing < 2) gender.push(npc.pronoun);
 	if (crossdressing > 0) gender.push(npc.pronoun === "m" ? "f" : "m");
 	let clothingOptions = setup.npcClothesSets.filter(set => (set.type === type || !type) && gender.includes(set.gender));
-	// Outfits made for a specific named NPC are only worn by those NNPCs and not by random townsfolk
-	clothingOptions = clothingOptions.filter(set => !set.namedNpcOnly || npc.outfits?.includes(set.name));
 
 	if (npc.outfits) {
 		const namedNpcClothing = clothingOptions.filter(set => npc.outfits.includes(set.name));
 		if (namedNpcClothing.length > 0) {
 			clothingOptions = namedNpcClothing;
 		}
+	}
+	// Outfits made for a specific named NPC are only worn by that NNPC and not by random NPCs in town
+	clothingOptions = clothingOptions.filter(set => !set.namedNpcOnly || npc.outfits?.includes(set.name));
+	// NNPC keeps the same outfit on
+	if (isNNPCOutfitEquippedHereToday(npc) && clothingOptions.some(set => set.name === npc.clothes.set)) {
+		return npc.clothes.set;
 	}
 	if (clothingOptions.length > 0) {
 		const clothesSet = clothingOptions.pluck();
@@ -3301,3 +3305,15 @@ function whitneyHasFriendsOver() {
 	return Time.dayState === "day" && Weather.precipitation === "none" && !Time.schoolDay && [3, 6, 7].includes(Time.weekDay);
 }
 window.whitneyHasFriendsOver = whitneyHasFriendsOver;
+
+/**
+ * Whether a NNPC put their current outfit on today, at this location.
+ * They change when they go somewhere else or a new day starts.
+ *
+ * @param {object} npc
+ * @returns {boolean}
+ */
+function isNNPCOutfitEquippedHereToday(npc) {
+	return !!npc.nam && npc.clothes?.equippedDay === Time.days && npc.clothes.equippedLocation === V.location;
+}
+window.isNNPCOutfitEquippedHereToday = isNNPCOutfitEquippedHereToday;
