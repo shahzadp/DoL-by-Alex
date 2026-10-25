@@ -197,9 +197,9 @@ function endPlayerPregnancy(birthLocation, location) {
 
 	birthRecordedLitter(pregnancy.pregnancyId, birthLocation, location);
 
-	// Record the birth on the player's per-orifice body stats. These drive the hymen and
-	// vaginal-looseness lines, recovery, and the anal pregnancy gate. Kept off records on purpose bc
-	// Virginity-restoration events (schism, scarlet) reset them to 0
+	// Record the birth on the player's per-orifice body stats, affects hymen and
+	// vaginal-looseness lines, recovery, and the anal pregnancy gate. They need to live here and not on the records
+	// because virginity-restoration events (Schism, Scarlet) reset them to 0.
 	const bodyStats = V.sexStats[pregnancy.orifice].pregnancy;
 	bodyStats.totalBirthEvents += 1;
 	bodyStats.givenBirth += getChildrenOf(pregnancy.pregnancyId).length;
@@ -426,9 +426,7 @@ window.endNpcPregnancyTest = endNpcPregnancyTest;
 
 /**
  * Copies a generated NPC out of their $NPCList slot into $storedNPCs, keyed by the given name and the
- * lowest free number after it ("pregnancy_#"). Twee callers read the key back from _lastStoredName.
- *
- * `<<storeNPC $penistarget "pregnancy">>`
+ * lowest free number after it ("pregnancy_#").
  *
  * @param {number} slot the $NPCList index to store
  * @param {string} name what to store them under
@@ -467,11 +465,9 @@ function storeNPC(slot, name) {
 			vagina: npc.vagina,
 		},
 	};
-	T.lastStoredName = key;
 	return key;
 }
 window.storeNPC = storeNPC;
-DefineMacro("storeNPC", storeNPC);
 
 /**
  * Ages every stored NPC's records pregnancy.

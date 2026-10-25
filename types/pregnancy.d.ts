@@ -325,7 +325,7 @@ declare global {
 	function playerKnowsLitterSpecies(pregnancy: Pregnancy): boolean;
 	function playerConceivedWith(name: string): boolean;
 
-	function combatInseminate(slot: number, beast?: boolean): Load | null;
+	function combatInseminate(slot: number, beast?: boolean, knotBoost?: number): Load | null;
 	function sceneInseminate(
 		orifice: "vagina" | "anus",
 		donor: string,
@@ -344,7 +344,8 @@ declare global {
 		depth?: "outside" | "imminent" | "deep",
 		location?: string,
 		donorFertility?: number,
-		slot?: number | null
+		slot?: number | null,
+		forced?: boolean
 	): number | null;
 
 	function canPlayerConceive(orifice: "vagina" | "anus", donor: string, donorSpecies: string): boolean;
