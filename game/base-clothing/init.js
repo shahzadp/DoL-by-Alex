@@ -458,7 +458,8 @@ function initNpcClothes() {
 			"oversized cardigan":		{ name: "oversized cardigan",		integrity_max: 100, word: "a", action: "open" },
 			"embroidered vest":			{ name: "embroidered vest",			integrity_max: 100, word: "a", action: "lift" },
 			"longline coat":			{ name: "longline coat",			integrity_max: 100, word: "a", action: "open" },
-			"fur coat":					{ name: "fur coat",					integrity_max: 100, word: "a", action: "open" }
+			"fur coat":					{ name: "fur coat",					integrity_max: 100, word: "a", action: "open" },
+			"cowled robe":				{ name: "cowled robe",				integrity_max: 100, word: "a", action: "open" },
 		},
 		"lower": {
 			"naked":					{ name: "naked",					integrity_max: 100, word: "n", action: "none" },
@@ -555,6 +556,7 @@ function initNpcClothes() {
 			"dark skirt":				{ name: "dark skirt",				integrity_max: 100, word: "a", action: "lift" },
 			"high-waisted trousers":	{ name: "high-waisted trousers",	integrity_max: 100, word: "n", action: "unzip" },
 			"pencil skirt":				{ name: "pencil skirt",				integrity_max: 100, word: "a", action: "lift" },
+			"habit skirt":				{ name: "habit skirt",				integrity_max: 100, word: "a", action: "lift" },
 		},
 	};
 
@@ -718,5 +720,6 @@ function initNpcClothes() {
 		{ name: "quinnSkirtSuit",		type: "town", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("business suit top", "pencil skirt"), desc: "skirt suit", namedNpcOnly: true },
 		{ name: "quinnCoat",			type: "cold", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("coat", "business trousers"), desc: "coat", namedNpcOnly: true },
 		{ name: "quinnFurCoat",			type: "cold", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("fur coat", "pencil skirt"), desc: "fur coat", namedNpcOnly: true },
+		{ name: "jordanHabit",			type: "temple", gender: "n", outfit: 1, clothes: npcAssignClothesToSet("cowled robe", "habit skirt"), desc: "habit", namedNpcOnly: true },
 	];
 }
