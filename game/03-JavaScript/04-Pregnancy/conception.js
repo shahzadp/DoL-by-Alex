@@ -135,7 +135,7 @@ window.fertilityRamp = fertilityRamp;
 /**
  * Whether the body can take on a new pregnancy at all.
  * Already carrying a pregnancy or recovering from one means no.
- * Covers both orifices, and holds whatever the mode or the cycle setting.
+ * Covers both orifices, in every pregnancy mode, with or without the cycle setting.
  *
  * @returns {boolean}
  */

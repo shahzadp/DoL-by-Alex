@@ -332,10 +332,8 @@ window.pregnancyNameCorrection = pregnancyNameCorrection;
 /**
  * The day of the cycle the PC reaches in a number of real days.
  *
- * The cycle keeps one pace: cycleDaysPerTick a tick, cycleTicksPerDay ticks a day. Pills change how
- * fertile the body is, never how fast the cycle runs, so a cycle day and a real day are the same
- * unit and this is addition rather than a simulation. The next cycle is walked with this one's
- * shape, since its own length and stages are not rolled until it begins.
+ * Days past the end of this cycle
+ * wrap around using this cycle's length, because the next cycle's length isn't rolled until it starts.
  *
  * @param {number} days real days ahead
  * @returns {number} a day of the cycle
@@ -383,11 +381,9 @@ window.menstrualExposure = menstrualExposure;
  * @returns {number} 0 for no chance at all, up to 1
  */
 function menstrualOutlook() {
-	// The things that stop rollAndRecordConception rolling at all, except a pending conception: the
-	// player can't know about that one, and reading "very safe" the hour it lands would tell them.
 	if (!readyToCarry()) return 0;
 	if (V.settings.basePlayerPregnancyChance <= 0) return 0; // the slider's floor turns pregnancy off
-	// A parasited orifice never rolls. Only a body with no clear orifice left is safe by it.
+	// An orifice with parasites in it can't conceive, so the meter only reads 0 when every orifice has them.
 	const orifices = [V.player.vaginaExist && "vagina", playerCanCarryAnally() && "anus"].filter(Boolean);
 	if (orifices.length && orifices.every(orifice => orificeHasParasites(orifice))) return 0;
 	return menstrualExposure(0);
@@ -503,9 +499,7 @@ function playerHeatMinArousal() {
 	if (!V.player.vaginaExist && !playerCanCarryAnally()) return 0;
 	if (playerIsPregnant() && !V.pregnancyStats.heatStillEnabled) return 0;
 
-	// Heat used to run off playerPregnancyRisk, which returns 0 when player pregnancy is switched
-	// off entirely. Reading fertility directly dropped that gate, so a player with both pregnancy
-	// settings off still went into heat.
+	// No heat when player pregnancy is switched off entirely.
 	if (V.settings.playerPregnancyHumanEnabled === false && V.settings.playerPregnancyBeastEnabled === false) return 0;
 
 	const pills = V.sexStats.pills.pills;
@@ -616,7 +610,7 @@ function pregnancyDaysEta(pregnancy) {
 window.pregnancyDaysEta = pregnancyDaysEta;
 
 /**
- * The records a (carrier, existingId) pair selects: just that one prengancy record when existingId is given,
+ * The records a (carrier, existingId) pair selects: just that one pregnancy record when existingId is given,
  * otherwise every pregnancy the carrier actively carries.
  *
  * @param {string} carrier "pc", or an NPC's name

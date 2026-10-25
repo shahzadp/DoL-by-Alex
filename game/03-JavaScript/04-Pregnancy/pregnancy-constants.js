@@ -41,17 +41,14 @@ const PregnancyConstants = ConstantsLoader.init({
 		fertileLeadDaysMin: 5, // fertile from this many days before ovulation...
 		fertileLeadDaysMax: 7, // ...up to this many, rolled per cycle.
 		lutealTailDays: 2, // fertility fades away over this many days after the window closes
-		// The cycle advances by this much each <<menstruationCycle>>, which dayPassed and noonCheck
-		// spend once each. Two ticks a day means one cycle day per real day, always: pills change how
-		// fertile the body is, never how fast time runs, so a cycle day and a calendar day are the
-		// same unit and a projected date is subtraction rather than a simulation.
+		// How far the cycle moves each <<menstruationCycle>>. dayPassed and noonCheck each call it
+		// once, so the cycle moves one day per real day.
 		cycleDaysPerTick: 0.5,
-		// The day a freshly restarted cycle begins on, so a projection of the next cycle and
-		// restartMenstruationCycle itself agree on where it starts.
+		// The day a new cycle starts on. menstrualNextWindowIn reads it too, to project the next cycle.
 		cycleRestartDay: 0.5,
 		// How many <<menstruationCycle>> ticks a real day holds: dayPassed and noonCheck, one each.
 		cycleTicksPerDay: 2,
-		baselineFertility: 0.01, // baseline fertillity so pregnancy chance is never 0
+		baselineFertility: 0.01, // baseline fertility so pregnancy chance is never 0
 		// How much each fertility booster dose raises the lowest fertility any day can have, up to
 		// fertilityMaxDoses. This is what lets a dose work on the least fertile days, while
 		// conceptionModifiers.fertilityMultiplierPerDose strengthens the fertile ones.
@@ -59,10 +56,10 @@ const PregnancyConstants = ConstantsLoader.init({
 		// one dose on the least fertile day reads "safe" and an overdose reads "risky", so a single
 		// dose visibly does something.
 		fertilityFloorPerDose: 0.3,
-		riskyFertility: 0.375, // what fertillity counts as "risky"
+		riskyFertility: 0.375, // what fertility counts as "risky"
 		postOvulationDays: 1, // NPC fertile window stays this many days past cycleDangerousDay
-		// playerHeatMinArousal's two tiers, read against the day's fertility rather than the meter's
-		// label, so retuning what the player is told never retunes what their body does.
+		// playerHeatMinArousal's two tiers. They read the day's fertility, not the meter label, so
+		// changing the meter's bands doesn't change heat.
 		heatFertility: { partial: 0.625, full: 0.875 },
 	},
 
