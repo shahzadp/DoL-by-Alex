@@ -1685,6 +1685,8 @@ function npcClothes(npc, type) {
 	if (crossdressing < 2) gender.push(npc.pronoun);
 	if (crossdressing > 0) gender.push(npc.pronoun === "m" ? "f" : "m");
 	let clothingOptions = setup.npcClothesSets.filter(set => (set.type === type || !type) && gender.includes(set.gender));
+	// Outfits made for a specific named NPC are only worn by those NNPCs and not by random townsfolk
+	clothingOptions = clothingOptions.filter(set => !set.namedNpcOnly || npc.outfits?.includes(set.name));
 
 	if (npc.outfits) {
 		const namedNpcClothing = clothingOptions.filter(set => npc.outfits.includes(set.name));

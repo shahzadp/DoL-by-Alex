@@ -452,7 +452,13 @@ function initNpcClothes() {
 			"vintage pantsuit":			{ name: "vintage pantsuit",			integrity_max: 100, word: "a", action:"pull"},
 			"vintage skirtsuit":		{ name: "vintage skirtsuit",		integrity_max: 100, word: "a", action:"lift"},
 			"winter jacket":			{ name: "winter jacket",			integrity_max: 100, word: "a", action:"pull"},
-			"boiler suit":				{ name: "boiler suit",				integrity_max: 100, word: "a", action: "unzip" }
+			"boiler suit":				{ name: "boiler suit",				integrity_max: 100, word: "a", action: "unzip" },
+			"tailored jacket":			{ name: "tailored jacket",			integrity_max: 100, word: "a", action: "unbutton" },
+			"captain's jacket":			{ name: "captain's jacket",			integrity_max: 100, word: "a", action: "unbutton" },
+			"oversized cardigan":		{ name: "oversized cardigan",		integrity_max: 100, word: "a", action: "open" },
+			"embroidered vest":			{ name: "embroidered vest",			integrity_max: 100, word: "a", action: "lift" },
+			"longline coat":			{ name: "longline coat",			integrity_max: 100, word: "a", action: "open" },
+			"fur coat":					{ name: "fur coat",					integrity_max: 100, word: "a", action: "open" }
 		},
 		"lower": {
 			"naked":					{ name: "naked",					integrity_max: 100, word: "n", action: "none" },
@@ -543,6 +549,12 @@ function initNpcClothes() {
 			"vintage skirt":			{ name: "vintage skirt",			integrity_max: 100, word: "a", action: "lift"},
 			"black trousers":			{ name: "black trousers",			integrity_max: 100, word: "a", action: "pull"},
 			"boiler suit trousers":		{ name: "boiler suit trousers",		integrity_max: 100, word: "a", action: "unzip" },
+			"pressed trousers":			{ name: "pressed trousers",			integrity_max: 100, word: "n", action: "unzip" },
+			"sailcloth trousers":		{ name: "sailcloth trousers",		integrity_max: 100, word: "n", action: "pull" },
+			"corduroy trousers":		{ name: "corduroy trousers",		integrity_max: 100, word: "n", action: "unzip" },
+			"dark skirt":				{ name: "dark skirt",				integrity_max: 100, word: "a", action: "lift" },
+			"high-waisted trousers":	{ name: "high-waisted trousers",	integrity_max: 100, word: "n", action: "unzip" },
+			"pencil skirt":				{ name: "pencil skirt",				integrity_max: 100, word: "a", action: "lift" },
 		},
 	};
 
@@ -655,9 +667,9 @@ function initNpcClothes() {
 		{ name: "Morgan",				type: "Morgan", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("ruined suit", "ruined trousers"), desc: "ruined outfit" },
 		{ name: "maleLandry",			type: "Landry", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("grey sweater", "dark trousers"), desc: "grey sweater" },
 		{ name: "femaleLandry",			type: "Landry", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("grey cardigan", "dark trousers"), desc: "grey cardigan" },
-		{ name: "Whitney",				type: "Whitney", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("leather jacket", "torn jeans"), desc: "leather jacket" },
-		{ name: "AlexJorts",			type: "Alex", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("flannel", "jorts"), desc: "flannel and jorts" },
-		{ name: "AlexSkirt",			type: "Alex", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("flannel", "skirt"), desc: "flannel and skirt" },
+		{ name: "Whitney",				type: "town", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("leather jacket", "torn jeans"), desc: "leather jacket", namedNpcOnly: true },
+		{ name: "AlexJorts",			type: "wilds", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("flannel", "jorts"), desc: "flannel and jorts", namedNpcOnly: true },
+		{ name: "AlexSkirt",			type: "wilds", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("flannel", "skirt"), desc: "flannel and skirt", namedNpcOnly: true },
 		{ name: "maleAlexSleep",		type: "Alex", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("t-shirt", "boxers"), desc: "t-shirt and boxers" },
 		{ name: "femaleAlexSleep",		type: "Alex", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("t-shirt", "boyshorts"), desc: "t-shirt and boyshorts" },
 		/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -695,5 +707,16 @@ function initNpcClothes() {
 		{ name: "femaleDefault",		type: "default", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("shirt", "skirt"), desc: "shirt and skirt" },
 		/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
 		{ name: "mines",				type: "mines", gender: "n", outfit: 1, clothes: npcAssignClothesToSet("boiler suit", "boiler suit trousers"), desc: "boiler suit" },
+		/* -------------------------------------------------------------------------------------------------------------------------------------------------- */
+		{ name: "baileyJacket",			type: "town", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("tailored jacket", "pressed trousers"), desc: "tailored jacket", namedNpcOnly: true },
+		{ name: "Zephyr",				type: "Zephyr", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("captain's jacket", "sailcloth trousers"), desc: "captain's jacket", namedNpcOnly: true },
+		{ name: "samCardigan",			type: "town", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("oversized cardigan", "corduroy trousers"), desc: "oversized cardigan", namedNpcOnly: true },
+		{ name: "maleWren",				type: "town", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("embroidered vest", "dark trousers"), desc: "embroidered vest", namedNpcOnly: true },
+		{ name: "femaleWren",			type: "town", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("embroidered vest", "dark skirt"), desc: "embroidered vest", namedNpcOnly: true },
+		{ name: "nikiCoat",				type: "town", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("longline coat", "high-waisted trousers"), desc: "longline coat", namedNpcOnly: true },
+		{ name: "quinnSuit",			type: "town", gender: "n", outfit: 0, clothes: npcAssignClothesToSet("business suit top", "business trousers"), desc: "business suit", namedNpcOnly: true },
+		{ name: "quinnSkirtSuit",		type: "town", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("business suit top", "pencil skirt"), desc: "skirt suit", namedNpcOnly: true },
+		{ name: "quinnCoat",			type: "cold", gender: "m", outfit: 0, clothes: npcAssignClothesToSet("coat", "business trousers"), desc: "coat", namedNpcOnly: true },
+		{ name: "quinnFurCoat",			type: "cold", gender: "f", outfit: 0, clothes: npcAssignClothesToSet("fur coat", "pencil skirt"), desc: "fur coat", namedNpcOnly: true },
 	];
 }
