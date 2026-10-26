@@ -53,7 +53,7 @@ window.canPlayerConceive = canPlayerConceive;
 function canNpcConceive(orifice, carrier, infertile) {
 	if (orifice !== "vagina" && orifice !== "anus") throw new Error(`unknown orifice "${orifice}"`);
 	if (!(C.npc[carrier] ? V.settings.nnpcPregnancyEnabled : V.settings.npcPregnancyEnabled)) return false;
-	// A named NPC the player toggled off stays off — the compatibility check enforces this, the roll must too.
+	// A named NPC the player toggled off stays off. The compatibility check enforces this, so the roll must too.
 	if (C.npc[carrier] && C.npc[carrier].pregnancy && !C.npc[carrier].pregnancy.enabled) return false;
 	if (orifice === "anus") {
 		if (!V.settings.npcAnalPregnancyEnabled) return false;
@@ -110,8 +110,8 @@ function hasExceptionalAnalPregnancy() {
 }
 
 /**
- * Whether the PC wears the magic pregnancy tattoo, which raises conception. It no longer touches the
- * cycle's pace -- the cycle runs at one day per day whatever is worn.
+ * Whether the PC wears the magic pregnancy tattoo, which raises the chance of conceiving. It doesn't
+ * change how fast the cycle runs.
  *
  * @returns {boolean}
  */
@@ -137,10 +137,10 @@ window.playerCanCarryAnally = playerCanCarryAnally;
 /**
  * Whether the player can breed with the given NPC. For NPC breeding lines only.
  *
- * Accepts either a named NPC's name or an NPC object (from $NPCList or $NPCName), e.g.
- * playerCanBreedWith("Kylar"), playerCanBreedWith($NPCList[0]), or playerCanBreedWith(C.npc.Kylar).
+ * Accepts either a named NPC's name or a $NPCList entry, e.g.
+ * playerCanBreedWith("Kylar") or playerCanBreedWith($NPCList[0]).
  *
- * @param {string|object} NPC the NPC's name, or an NPC object from $NPCList / $NPCName
+ * @param {string|object} NPC the NPC's name, or a $NPCList entry
  * @returns {boolean}
  */
 function playerCanBreedWith(NPC) {
@@ -157,7 +157,7 @@ window.playerCanBreedWith = playerCanBreedWith;
 /**
  * Whether the player or NPC can conceive.
  *
- * @param {string|object} NPC a named NPC's name, or an NPC object
+ * @param {string|object} NPC a named NPC's name, or a $NPCList entry
  * @returns {boolean}
  */
 function pregnancyCompatible(NPC) {
@@ -170,29 +170,24 @@ window.pregnancyCompatible = pregnancyCompatible;
  * `name` is its key. `named` is true for a persistent named NPC, false for a generated scene one. The
  * `*PossibleWith` consumers read `named` to apply the named-only rules (infertility, unfinished content).
  *
- * @param {string|object} NPC a named NPC's name, or an NPC object
+ * @param {string|object} NPC a named NPC's name, or a $NPCList entry
  * @returns {{npc: object|null, name: string, named: boolean}}
  */
 function resolvePregnancyNpc(NPC) {
-	// A string is its own name; an NPC object's name is its fullDescription.
-	const name = typeof NPC === "string" ? NPC : NPC?.fullDescription;
+	// A $NPCList entry carries its name as fullDescription. Named NPCs in combat do too.
+	const name = typeof NPC === "string" ? NPC : NPC.fullDescription;
 	// A named NPC is one listed in NPCNameList, with its entry in NPCName at the same index.
 	const index = V.NPCNameList.indexOf(name);
-	if (index !== -1) {
-		const npc = V.NPCName[index];
-		if (npc) return { npc, name: npc.fullDescription || npc.description, named: true };
-		return { npc: null, name: "", named: false };
-	}
-	// A generated scene NPC isn't in the list; it's passed as the object itself.
-	if (typeof NPC === "object" && NPC !== null && !Array.isArray(NPC)) return { npc: NPC, name: NPC.fullDescription, named: false };
-	return { npc: null, name: "", named: false };
+	if (index !== -1) return { npc: V.NPCName[index], name, named: true };
+	if (typeof NPC === "string") return { npc: null, name: "", named: false };
+	return { npc: NPC, name, named: false };
 }
 window.resolvePregnancyNpc = resolvePregnancyNpc;
 
 /**
  * Whether the player could get pregnant by this NPC.
  *
- * @param {string|object} NPC a named NPC's name, or an NPC object (a scene $NPCList entry or a V.NPCName entry)
+ * @param {string|object} NPC a named NPC's name, or a $NPCList entry
  * @returns {boolean}
  */
 function playerPregnancyPossibleWith(NPC) {
@@ -210,7 +205,7 @@ window.playerPregnancyPossibleWith = playerPregnancyPossibleWith;
 /**
  * Whether this NPC could get pregnant by the player.
  *
- * @param {string|object} NPC a named NPC's name, or an NPC object (a scene $NPCList entry or a V.NPCName entry)
+ * @param {string|object} NPC a named NPC's name, or a $NPCList entry
  * @returns {boolean}
  */
 function NPCPregnancyPossibleWithPlayer(NPC) {

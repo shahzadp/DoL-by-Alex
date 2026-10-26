@@ -1304,7 +1304,7 @@ window.settingNameFromVarName = function (varName) {
 		case "npcPregnancyEnabled":
 			return "Generic NPC pregnancy";
 		case "nnpcPregnancyEnabled":
-			return "NNPC/LI pregnancy";
+			return "NNPC pregnancy";
 		case "analPregnancy":
 			return "PC anal pregnancy";
 		case "npcAnalPregnancyEnabled":

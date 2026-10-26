@@ -108,12 +108,12 @@ window.doseTakenIn = doseTakenIn;
  * @returns {number} a multiplier on the base pregnancy chance
  */
 function playerConceptionModifier(daysAhead = 0) {
-	const c = PregnancyConstants.conceptionModifiers;
+	const modifiers = PregnancyConstants.conceptionModifiers;
 	let modifier = contraceptiveGuard(daysAhead);
 	if (modifier === 0) return 0;
-	modifier *= 1 + c.fertilityMultiplierPerDose * Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
-	if (hasPregnancyTattoo()) modifier *= c.pregnancyTattooMultiplier;
-	if (V.earSlime.growth >= 100) modifier *= c.earSlimeMultiplier[V.earSlime.focus] ?? 1;
+	modifier *= fertilityBoost(daysAhead);
+	if (hasPregnancyTattoo()) modifier *= modifiers.pregnancyTattooMultiplier;
+	if (V.earSlime.growth >= 100) modifier *= modifiers.earSlimeMultiplier[V.earSlime.focus] ?? 1;
 	return modifier;
 }
 window.playerConceptionModifier = playerConceptionModifier;
@@ -135,7 +135,7 @@ window.fertilityRamp = fertilityRamp;
 /**
  * Whether the body can take on a new pregnancy at all.
  * Already carrying a pregnancy or recovering from one means no.
- * Covers both orifices, and holds whatever the mode or the cycle setting.
+ * Covers both orifices, in every pregnancy mode, with or without the cycle setting.
  *
  * @returns {boolean}
  */
@@ -151,8 +151,8 @@ window.readyToCarry = readyToCarry;
  * @returns {number} 1 with no boosters, rising with the dose
  */
 function fertilityBoost(daysAhead = 0) {
-	const c = PregnancyConstants.conceptionModifiers;
-	return 1 + c.fertilityMultiplierPerDose * Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
+	const doses = Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
+	return 1 + PregnancyConstants.conceptionModifiers.fertilityMultiplierPerDose * doses;
 }
 window.fertilityBoost = fertilityBoost;
 
@@ -164,10 +164,10 @@ window.fertilityBoost = fertilityBoost;
  * @returns {number} 0 to 1
  */
 function contraceptiveGuard(daysAhead = 0) {
-	const c = PregnancyConstants.conceptionModifiers;
+	const modifiers = PregnancyConstants.conceptionModifiers;
 	const doses = doseTakenIn("contraceptive", daysAhead);
-	if (doses >= c.contraceptiveDosesToBlock) return 0;
-	return doses >= 1 ? c.contraceptiveMultiplier : 1;
+	if (doses >= modifiers.contraceptiveDosesToBlock) return 0;
+	return doses >= 1 ? modifiers.contraceptiveMultiplier : 1;
 }
 window.contraceptiveGuard = contraceptiveGuard;
 
@@ -179,9 +179,9 @@ window.contraceptiveGuard = contraceptiveGuard;
  * @returns {number} 0 to 1
  */
 function fertilityFloor(daysAhead = 0) {
-	const c = PregnancyConstants.menstrualCycle;
+	const cycle = PregnancyConstants.menstrualCycle;
 	const doses = Math.clamp(doseTakenIn("fertility booster", daysAhead), 0, PregnancyConstants.fertilityMaxDoses);
-	return Math.clamp(Math.max(c.baselineFertility, doses * c.fertilityFloorPerDose), 0, 1);
+	return Math.clamp(Math.max(cycle.baselineFertility, doses * cycle.fertilityFloorPerDose), 0, 1);
 }
 window.fertilityFloor = fertilityFloor;
 
@@ -208,10 +208,10 @@ window.fertilityOnCycleDay = fertilityOnCycleDay;
  * @returns {number} 0 well away from ovulation, up to 1 at it
  */
 function cycleFertilityRamp(day) {
-	const c = PregnancyConstants.menstrualCycle;
-	const m = V.sexStats.vagina.menstruation;
-	const [, , ovulationStart, ovulationEnd] = m.stages; // [cycleStart, menstrualEnd, ovulationStart, ovulationEnd]
-	return day > ovulationEnd ? fertilityRamp(day - ovulationEnd, c.lutealTailDays) : fertilityRamp(ovulationStart - day, m.fertileLeadDays);
+	const cycle = PregnancyConstants.menstrualCycle;
+	const menstruation = V.sexStats.vagina.menstruation;
+	const [, , ovulationStart, ovulationEnd] = menstruation.stages; // [cycleStart, menstrualEnd, ovulationStart, ovulationEnd]
+	return day > ovulationEnd ? fertilityRamp(day - ovulationEnd, cycle.lutealTailDays) : fertilityRamp(ovulationStart - day, menstruation.fertileLeadDays);
 }
 window.cycleFertilityRamp = cycleFertilityRamp;
 
@@ -273,14 +273,14 @@ window.loadAgeDay = loadAgeDay;
  * @returns {number} 0 for no chance up to 1 at peak fertility
  */
 function npcMenstrualFertility(carrier) {
-	const p = C.npc[carrier] && C.npc[carrier].pregnancy;
-	if (!p || !p.enabled) return 1;
+	const npcPregnancy = C.npc[carrier] && C.npc[carrier].pregnancy;
+	if (!npcPregnancy || !npcPregnancy.enabled) return 1;
 	if (V.settings.fertilityCycleEnabled === false) return 1;
-	if (carrier === "Great Hawk") return p.cycleDay >= p.cycleDangerousDay ? 1 : 0;
-	if (p.cycleDay > p.cycleDangerousDay + PregnancyConstants.menstrualCycle.postOvulationDays) return 0;
-	const c = PregnancyConstants.menstrualCycle;
-	const fertileLeadDays = p.fertileLeadDays ?? Math.round((c.fertileLeadDaysMin + c.fertileLeadDaysMax) / 2);
-	return fertilityRamp(p.cycleDangerousDay - p.cycleDay, fertileLeadDays);
+	if (carrier === "Great Hawk") return npcPregnancy.cycleDay >= npcPregnancy.cycleDangerousDay ? 1 : 0;
+	const cycle = PregnancyConstants.menstrualCycle;
+	if (npcPregnancy.cycleDay > npcPregnancy.cycleDangerousDay + cycle.postOvulationDays) return 0;
+	const fertileLeadDays = npcPregnancy.fertileLeadDays ?? Math.round((cycle.fertileLeadDaysMin + cycle.fertileLeadDaysMax) / 2);
+	return fertilityRamp(npcPregnancy.cycleDangerousDay - npcPregnancy.cycleDay, fertileLeadDays);
 }
 window.npcMenstrualFertility = npcMenstrualFertility;
 
@@ -292,11 +292,11 @@ window.npcMenstrualFertility = npcMenstrualFertility;
  * @returns {number} a multiplier on the base NPC pregnancy chance
  */
 function npcConceptionModifier(carrier) {
-	const c = PregnancyConstants.conceptionModifiers;
+	const modifiers = PregnancyConstants.conceptionModifiers;
 	const npc = C.npc[carrier];
 	if (!npc || !npc.pregnancy) return 1;
-	if (npc.pregnancy.pills === "contraceptive") return c.npcContraceptiveMultiplier;
-	if (npc.pregnancy.pills === "fertility") return c.npcFertilityMultiplier;
+	if (npc.pregnancy.pills === "contraceptive") return modifiers.npcContraceptiveMultiplier;
+	if (npc.pregnancy.pills === "fertility") return modifiers.npcFertilityMultiplier;
 	return 1;
 }
 window.npcConceptionModifier = npcConceptionModifier;

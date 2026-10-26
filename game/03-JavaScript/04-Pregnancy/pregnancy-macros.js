@@ -29,14 +29,14 @@ const randomCarrierTypes = ["human", "wolf", "wolfboy", "wolfgirl"];
  * Called by the ejaculation widgets when an NPC climaxes in combat.
  * The fight fills in every detail of the load.
  *
- * `<<combatInseminate _nn>>` or `<<combatInseminate _jj true>>` (beast)
+ * `<<combatInseminate _nn>>` or `<<combatInseminate _jj true _pregnancyBoost>>` (beast)
  *
  * @param {0|1|2|3|4|5} slot which $NPCList slot climaxed
- * @param {boolean} [beast=false] pass true from the beast widget to keep the beast's species and
- *   let _pregnancyBoost raise potency
+ * @param {boolean} [beast=false] pass true from the beast widget to keep the beast's species
+ * @param {number} [knotBoost=0] percent added to the load's potency, from the beast widget's knot
  * @returns {Load|null} the stored load. null = nothing was stored
  */
-function combatInseminate(slot, beast = false) {
+function combatInseminate(slot, beast = false, knotBoost = 0) {
 	const npc = V.NPCList[slot];
 	const landing = depthFromPenisState[npc.penis];
 	if (!landing) return null;
@@ -49,10 +49,9 @@ function combatInseminate(slot, beast = false) {
 	// canPlayerConceive treats an unlisted species as a bug and throws
 	if (!setup.pregnancy.typesEnabled.includes(donorSpecies)) return null;
 
-	// Beast widget makes knots more potent (_pregnancyBoost)
-	// A size 1 penis dribbles at half potency
+	// A knot makes the load more potent. A size 1 penis dribbles at half potency.
 	let potency = 1;
-	if (beast && T.pregnancyBoost) potency = 1 + T.pregnancyBoost / 100;
+	if (knotBoost) potency = 1 + knotBoost / 100;
 	else if (npc.penissize === 1) potency = 0.5;
 
 	const load = inseminate(orifice, npc.fullDescription, donorSpecies, depth, V.location, potency, null);
@@ -177,9 +176,21 @@ function rememberRandomCarrier(slot, location) {
  * @param {string} [location] where it happened. Left out reads the player's location, pass one when the scene runs off-screen
  * @param {number} [donorFertility=1] extra multiplier on the conception chance from the donor's side (e.g. the pc's low-semen or earSlime state)
  * @param {number|null} [slot=null] the carrier's $NPCList slot. A generated NPC in a slot is filed in $storedNPCs
+ * @param {boolean} [forced=false] the PC's Force Impregnation action, which skips the chance roll and the normal-impregnation toggle
  * @returns {number|null} the new pregnancyId. null = no conception, or a generated carrier the game does not follow
  */
-function npcPregnancyRoll(carrier, carrierSpecies, donor, donorSpecies, orifice, depth = "deep", location = V.location, donorFertility = 1, slot = null) {
+function npcPregnancyRoll(
+	carrier,
+	carrierSpecies,
+	donor,
+	donorSpecies,
+	orifice,
+	depth = "deep",
+	location = V.location,
+	donorFertility = 1,
+	slot = null,
+	forced = false
+) {
 	const depthWeight = PregnancyConstants.depthWeight[depth];
 	if (depthWeight === undefined) throw new Error(`unknown depth "${depth}"`);
 	if (!donorSpecies) throw new Error(`no donor species given for "${donor}"`);
@@ -190,7 +201,7 @@ function npcPregnancyRoll(carrier, carrierSpecies, donor, donorSpecies, orifice,
 	// Unfinished pregnancy content toggle
 	if (!V.settings.incompletePregnancyEnabled && C.npc[carrier] && !setup.pregnancy.canBePregnant.includes(carrier)) return null;
 	// Dream sex leaves nothing behind, so a nightmare counts as a disabled scene.
-	if (V.activeNightmare || impregnationDisabled(T.npcForceImpregnation)) return null;
+	if (V.activeNightmare || impregnationDisabled(forced)) return null;
 	const infertile = setup.pregnancy.infertile.includes(carrier) || setup.pregnancy.infertile.includes(donor);
 	if (!canNpcConceive(orifice, carrier, infertile)) return null;
 	// GH bears eggs, BW bears pups
@@ -198,7 +209,7 @@ function npcPregnancyRoll(carrier, carrierSpecies, donor, donorSpecies, orifice,
 	if (!offspring) return null;
 	// A forced impregnation skips the chance roll entirely.
 	if (
-		!T.npcForceImpregnation &&
+		!forced &&
 		State.random() >=
 			(V.settings.baseNpcPregnancyChance / 100) * depthWeight * npcMenstrualFertility(carrier) * npcConceptionModifier(carrier) * donorFertility
 	)
