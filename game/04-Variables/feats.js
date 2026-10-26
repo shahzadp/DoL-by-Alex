@@ -992,7 +992,7 @@ setup.feats = {
 	},
 	"Life begins when you least expect": {
 		title: "Life Begins When You Least Expect",
-		desc: "Gave birth to children as a male.",
+		desc: "Gave birth to children despite not having a vagina.",
 		difficulty: 2,
 		series: "",
 		filter: ["All", "Pregnancy"],
@@ -1005,6 +1005,15 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Pregnancy"],
 		hint: "Hint: Many forms of existence.",
+		pregnancyLockable: true,
+	},
+	"Pregnant Pause": {
+		title: "Pregnant Pause",
+		desc: "Interrupted Bailey's rent confrontation by going into labour.",
+		difficulty: 2,
+		series: "",
+		filter: ["All", "Pregnancy"],
+		hint: "Hint: Give your caretaker a 'happy' little surprise.",
 		pregnancyLockable: true,
 	},
 	/* "Broken Dam":{ //Not in the code right now
@@ -1654,6 +1663,15 @@ setup.feats = {
 		series: "",
 		filter: ["All", "Discoveries-Town"],
 		hint: "Hint: Wiped clean and got away with it.",
+	},
+	"Thugged It Out": {
+		title: "Thugged It Out",
+		desc: "Utterly humiliated Bailey's thugs.",
+		difficulty: 2,
+		series: "",
+		filter: ["All", "Discoveries-Town"],
+		hint: "Hint: A waste of planning and resources.",
+		softLockable: true,
 	},
 	"Life of the Party": {
 		title: "Life of the Party",

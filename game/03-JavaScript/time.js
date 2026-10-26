@@ -2737,20 +2737,32 @@ function supermarketWeekly() {
 }
 DefineMacro("supermarketWeekly", supermarketWeekly);
 
+/**
+ * Returns true on and after the day rent is due until the player is confronted by Bailey, unless Avery is paying for them.
+ * @returns {boolean} Rent due, yes or no?
+ */
 function isRentDue() {
 	return V.rentTime <= 0 && isAveryPayingBailey() !== 2 && !inRentPausedBadEnd();
 }
 window.isRentDue = isRentDue;
 
+/**
+ * Returns true whenever rent is late and unpaid until the player pays Bailey, unless Avery is paying for them.
+ * @returns {boolean} Bailey looking for player, yes or no?
+ */
 function isBaileyLookingForPlayer() {
 	return (isRentDue() && V.rentTime < 0) || (V.baileyRefusedToPay && isAveryPayingBailey() !== 2);
 }
 window.isBaileyLookingForPlayer = isBaileyLookingForPlayer;
 
+/**
+ * Returns true if player is adopted by Avery. Can also check specifically for if Avery is currently paying Bailey or not.
+ * @returns {0|1|2} 0 = Not adopted | 1 = Adopted, Avery refusing to pay Bailey | 2 = Adopted, Avery paying Bailey
+ */
 function isAveryPayingBailey() {
-	if (!V.avery_mansion || C.npc.Avery.state === "dismissed") return 0; // Not adopted
-	else if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) return 1; // Adopted, refusing to pay
-	else return 2; // Adopted, paying
+	if (!V.avery_mansion || C.npc.Avery.state === "dismissed") return 0;
+	else if (V.avery_mansion.rage.assess >= 9 || V.avery_mansion.days_absent >= 2) return 1;
+	else return 2;
 }
 window.isAveryPayingBailey = isAveryPayingBailey;
 
