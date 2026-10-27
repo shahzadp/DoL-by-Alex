@@ -170,6 +170,26 @@ the lock file in the same commit.
 
     npm run verify:origin
 
+# the checkout has to stay where it is
+
+Gradle records every task's output directories as absolute paths, in
+`android/.gradle/<version>/executionHistory/executionHistory.bin`. Move or
+rename the repo and the next build recreates the directory it used to be in --
+empty, silently, next to the new one. It happened here: the checkout moved from
+`D:\GitHub Projects\DoL-by-Alex` to `D:\GitHub-Projects\DoL-by-Alex` and the
+0.5.13.6 build rebuilt 2,300 empty directories under the old path, finished
+cleanly, and produced a correct apk.
+
+Nothing in the source tree mentions the old path, so there is nothing to grep
+for. `scripts/verify_project_path.js` reads that cache instead, and throws it
+away when it names a different checkout. `scripts/build_app_flutter.js` runs it
+before every build; on its own it is
+
+    npm run verify:path
+
+If a stray tree does appear, delete it: gradle will not touch anything inside it
+once the cache has been reset.
+
 # exporting and importing saves
 
 `www/flutter_additions.js` defines the `saveAs()` global that the game's export
