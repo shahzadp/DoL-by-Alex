@@ -1467,17 +1467,22 @@
 	<</if>>
 <</silently>>_text_output<</widget>>
 
-<<widget "breasts">><<silently>>
-	<<if Number.isInteger($player.breastsize)>>
-		<<if $player.breastsize lte 0>>
-			<<set _text_output to "nipples">>
-		<<else>>
-			<<set _text_output to setup.breastsizes[$player.breastsize] + " breasts">>
+<<widget "breasts">>
+	<<silently>>
+		<<if Number.isInteger($player.breastsize)>>
+			<<if $player.breastsize lte 0>>
+				<<set _text_output to "nipples">>
+			<<else>>
+				<<set _text_output to `${setup.breastsizes[$player.breastsize]} `>>
+				<<if !_breastSensitivityDescribed or _args[0]>><<silently>><<breastsensitivity>><</silently>><<set _text_output += _text_output2>><</if>>
+				<<set _text_output += "breasts">>
+			<</if>>
+		<<elseif $options.debugdisable is "f">>
+			<<set _text_output to "ERROR - $$player.breastsize is not a number: $player.breastsize">>
 		<</if>>
-	<<elseif $options.debugdisable is "f">>
-		<<set _text_output to "ERROR - $$player.breastsize is not a number: $player.breastsize">>
-	<</if>>
-<</silently>><<if !_breastSensitivityDescribed or _args[0]>><<breastsensitivity>><</if>><<print _text_output>><</widget>>
+	<</silently>>
+	<<print _text_output>>
+<</widget>>
 
 <<widget "breastssimple">><<silently>>
 	<<if Number.isInteger($player.breastsize)>>
@@ -1536,7 +1541,7 @@
 	<<undertop>>
 	<!-- _text_output now has top (either worn under_upper name, or breasts desc) -->
 
-	<<if !_underOutfit>> <!-- Two separate items, not an outfit -->
+	<<if !_underOutfit and $worn.under_lower.name isnot "naked">> <!-- Two separate items, not an outfit -->
 		<<set _text_output += " and " + $_secondhalf>>
 	<</if>>
 <</silently>><<print _text_output>><</widget>>
@@ -1835,7 +1840,7 @@
 		<<else>>
 			<<set _text_output to "the " + $description>>
 		<</if>>
-	<<elseif $NPCList[$index].name_known is 1>>
+	<<elseif $NPCList[$index].name_known is 1 and $NPCList[$index].name>>
 		<<set _text_output to $NPCList[$index].name>>
 	<<elseif $enemytype is "beast">>
 		<<set _text_output to "the " + $NPCList[$index].type>>
@@ -2111,7 +2116,7 @@
 
 <<widget "friend">><<silently>>
 	<<if $robinromance is 1>>
-		<<girl>><<set _text_output to _text_output + "friend">>
+		<<girlfriend>>
 	<<elseif _args[0] is "bff">>
 		<<set _text_output to "best friend">>
 	<<else>>
@@ -2229,7 +2234,7 @@
 	<<switch $player.sex>>
 	<<case "f">><<set _text_output to "girl">>
 	<<case "m">><<set _text_output to "boy">>
-	<<case "h">><<set _text_output to "hermaphrodite">>
+	<<case "h">><<set _text_output to "hermaphrodite">><<error { message: "pcSex got a bad case: scenes should have unique exceptions for case h!" } >>
 	<</switch>>
 <</silently>><<print _text_output>><</widget>>
 
@@ -3981,6 +3986,10 @@
 	<</if>>
 <</silently>>_text_output<</widget>>
 
+<<widget "Bitch">><<silently>>
+	<<bitch>><<capitalise>>
+<</silently>>_text_output<</widget>>
+
 <<widget "bitch_pirate">><<silently>>
 	<<if $player.gender_appearance is "m">>
 		<<set _text_output to "dog">>
@@ -4434,7 +4443,7 @@
 <</widget>>
 
 <<widget "wallet">><<silently>>
-	<<if !isNaN(_args[0]) and $NPCList[_args[0]] and $NPCList[_args[0]].clothes and $NPCList[_args[0]].clothes.set>>
+	<<if !isNaN(_args[0]) and $NPCList[_args[0]]?.clothes?.set>>
 		<<set $_clothesSet to $NPCList[_args[0]].clothes.set>>
 	<</if>>
 	<<if $location is "island">>
@@ -4845,7 +4854,7 @@
 
 <<widget "harpy">>
 	<<if !$settings.blindStatsEnabled>> |
-		<<if $hallucinations gte 2 or !$settings.bestialityEnabled>>
+		<<if resolveIfNamedBeastIsMonster("greathawk")>>
 			<span class="gold">Harpy</span>
 		<<else>>
 			<span class="gold">Bird</span>
@@ -5003,7 +5012,11 @@
 	<<else>>
 		<<set _na to 0>>
 	<</if>>
-	<<set _text_output to $NPCList[_na].type>>
+	<<if $NPCList[_na].name_known is 1 and $NPCList[_na].fullDescription is "Black Wolf">>
+		<<set _text_output to $NPCList[_na].fullDescription>>
+	<<else>>
+		<<set _text_output to $NPCList[_na].type>>
+	<</if>>
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "beasttypes">> <<beasttype>>'s<</widget>>
@@ -5048,6 +5061,7 @@
 				<<case "cowgirl" "bullboy">><<set _text_output to "cowgirls and bullboys">>
 				<<case "foxgirl" "foxboy">><<set _text_output to "foxgirls and foxboys">>
 				<<case "spidergirl" "spiderboy">><<set _text_output to "spidergirls and spiderboys">>
+				<<case "snakegirl" "snakeboy">><<set _text_output to "snakegirls and snakeboys">>
 				<<default>><<set _text_output to "creatures">>
 			<</switch>>
 		<</if>>
@@ -5490,26 +5504,9 @@
 	<<print _text_output>>
 <</widget>>
 
-<<widget "monster_passage">>
-	<!-- Unused widget -->
-	<<if _monster_passage is undefined>>
-		<<if ($settings.monsterChance gte 1 and $hallucinations gte 1) or ($settings.monsterChance gte 1 and !$settings.monsterHallucinationsOnly)>>
-			<<if maleChance() gte 100>>
-				<<set _monster_passage to "m">>
-			<<elseif maleChance() lte 0>>
-				<<set _monster_passage to "f">>
-			<<else>>
-				<<set _monster_passage to "b">>
-			<</if>>
-		<<else>>
-			<<set _monster_passage to "n">>
-		<</if>>
-	<</if>>
-<</widget>>
-
 <<widget "farm_text_many">>
 	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender_plural>>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaurs">>
@@ -5564,7 +5561,7 @@
 
 <!-- No change for horses and cattle. Pigs, dogs, and cows get called "pigperson", "dogperson", and "cowperson". -->
 <<widget "farm_text_neutral">>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaur">>
@@ -5596,7 +5593,7 @@
 
 <<widget "farm_text">>
 	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
-	<<set $_bperson to ($farm_work[_args[0]].monster_roll is true and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<set $_bperson to $farm_work[_args[0]].monster>>
 	<<if _args[0] is "horse">>
 		<<if $_bperson>>
 			<<set _text_output to "centaur">>
@@ -5692,6 +5689,20 @@
 		<</if>>
 	<<else>>
 		<<set _text_output to "Its">>
+	<</if>>
+	<<print _text_output>>
+<</widget>>
+
+<<widget "farm_himself">>
+	<<set $_bgender to _args[1] ? _args[1] : $farm_work[_args[0]].gender>>
+	<<if $farm_work[_args[0]].monster>>
+		<<if $_bgender is "m">>
+			<<set _text_output to "himself">>
+		<<else>>
+			<<set _text_output to "herself">>
+		<</if>>
+	<<else>>
+		<<set _text_output to "itself">>
 	<</if>>
 	<<print _text_output>>
 <</widget>>
@@ -6494,7 +6505,7 @@ Argument 2, where appropriate, determines whether it's the player undressing the
 
 <<widget "nightMonsterText">>
 	<<silently>>
-	<<if ($settings.monsterChance gte $rng and $hallucinations gte 1) or ($settings.monsterChance gte $rng and !$settings.monsterHallucinationsOnly) or ($nightmonstermonster is 2) or (!$settings.bestialityEnabled)>>
+	<<if resolveIfNamedBeastIsMonster("nightmonster")>>
 		<<set _text_output to "horned " + ($NPCName[31].pronoun is "m" ? "man" : "woman")>>
 	<<else>>
 		<<set _text_output to either("creature", "monster", "beast")>>

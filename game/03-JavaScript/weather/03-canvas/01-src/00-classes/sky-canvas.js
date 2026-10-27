@@ -189,7 +189,7 @@ Weather.Renderer.Sky = class {
 	}
 
 	get sidebarSkyDisabled() {
-		return V.location === "tentworld"; // todo move to Weather
+		return V.location === "tentworld" || V.location === "mines"; // todo move to Weather
 	}
 
 	setMoonPhase() {

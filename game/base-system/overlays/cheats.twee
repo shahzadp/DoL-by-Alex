@@ -159,7 +159,7 @@
 			<</link>>
 			<br>
 
-			<<if $debug is 1>>
+			<<if $debug>>
 				Pheromones (DEBUG): <span id="statsalluretest"><<= $alluretest ? "On" : "Off">></span> |
 				<<link "Change">>
 					<<if $alluretest is 1>>
@@ -529,7 +529,7 @@
 			<br>
 			<<undobindingsicon>> <<link "Unbind all">><<unbind>><<if $worn.face.type.includes("gag") or $worn.face.type.includes("blindfold")>><<set $worn.face.type.push("broken")>><<faceruined>><</if>><<updatesidebarimg>><</link>>
 
-			<<if $debug is 1>>
+			<<if $debug>>
 				<br><br>
 				<span class="gold">Add to Wardrobe:</span>
 				<br>
@@ -1058,8 +1058,12 @@
 		<div class="settingsToggleItem">
 			<span class="gold">Freckles</span>
 			<br>
-			<label>Enabled <<radiobutton "$player.freckles" true autocheck>></label>
-			| <label>Disabled <<radiobutton "$player.freckles" false `!$player.freckles ? "checked" : ""`>></label>
+			Face: <label>Disabled <<radiobutton "$player.skin.faceFreckles" false autocheck>></label>
+			| <label>Enabled <<radiobutton "$player.skin.faceFreckles" true autocheck>></label>
+			<br>
+			Body: <label>Disabled <<radiobutton "$player.skin.bodyFreckles" "none" autocheck>></label>
+			| <label>Upper body <<radiobutton "$player.skin.bodyFreckles" "upper" autocheck>></label>
+			| <label>Full body <<radiobutton "$player.skin.bodyFreckles" "full" autocheck>></label>
 		</div>
 		<div class="settingsToggleItem">
 			<span class="gold">Breast Size</span>
@@ -1097,7 +1101,7 @@
 					return T.penisText[v];
 				}
 			}>>
-				<<if $debug is 1>>
+				<<if $debug>>
 					<br>
 					<span class="description">Ball Size (DEBUG):
 					<<link "<">><<set $ballssize -= 1>><<clamp>><<replace "#statsballssize">><<= Math.trunc($ballssize)>><</replace>> <<updatesidebarimg>><</link>> |
@@ -1382,7 +1386,7 @@
 			<<numberStepper "Delinquency" $delinquency "delinquency" {max: 1000, reverse: true}>>
 			<hr>
 			<<if $player.penisExist and $player.vaginaExist>>
-				<<numberStepper "Hermaphrodite Fame" $schoolrep.herm { callback: value => {V.schoolrep.herm = value; Wikifier.wikifyEval("<<replace '#repherm'>><<cheatsRep herm>><</replace>>")}, max: 5, step: 1, percentage: false, reverse: true, activeButtons: ["single", "minMax"] }>>
+				<<numberStepper "Genitalia Fame" $schoolrep.herm { callback: value => {V.schoolrep.herm = value; Wikifier.wikifyEval("<<replace '#repherm'>><<cheatsRep herm>><</replace>>")}, max: 5, step: 1, percentage: false, reverse: true, activeButtons: ["single", "minMax"] }>>
 				<span id="repherm"><<cheatsRep "herm">></span>
 			<<else>>
 				<<numberStepper "Crossdresser Fame" $schoolrep.crossdress { callback: value => {V.schoolrep.crossdress = value; Wikifier.wikifyEval("<<replace '#repcrossdress'>><<cheatsRep crossdress>><</replace>>")}, max: 5, step: 1, percentage: false, reverse: true, activeButtons: ["single", "minMax"] }>>
@@ -1633,7 +1637,7 @@
 				<br>
 				<<foresticon>><<link [[Forest]]>><<cheats-teleport-function>><</link>>
 				<br>
-				<<lakeicon>><<link [[Lake|Lake Shore]]>><<cheats-teleport-function>><</link>>
+				<<lakeicon>><<link [[Lake: Shore|Lake Shore]]>><<cheats-teleport-function>><</link>>
 				<br>
 				<<roadicon>><<link [[Farm Road 1]]>><<cheats-teleport-function>><</link>>
 				<br>
@@ -1774,14 +1778,7 @@
 			<span id="cheatsWeather"><<cheatsWeather>></span>
 			<br>
 			<br>
-			<<numberStepper "Fog" `Weather.FogGeneration.getFog()` {
-				callback: value => {
-					Weather.FogGeneration.setFog(value);
-				},
-				min: 0, max: 1, step: 0.1, colorArr: ["--blue"], percentage: false,
-				valueFormat: value => round(value, 1),
-				activeButtons: ["single", "double"]
-			}>>
+			<<cheatsFog>>
 			<span class="description">Changing this setting will change the weather for at least 6 hours, before returning to the original weather simulation.</span>
 		</div>
 		<div class="settingsToggleItemWide">
@@ -1964,7 +1961,7 @@
 	<<set _impregnatorNPC to []>>
 	<<set _pregnantNPC to {}>>
 	<<for _pregEnabled range $NPCName.filter(npc => npc.pregnancy and npc.pregnancy.enabled isnot undefined)>>
-		<<if playerPregnancyPossibleWith(_pregEnabled)>>
+		<<if playerPregnancyPossibleWith(_pregEnabled.nam)>>
 			<<set _impregnatorNPC.push($NPCName.indexOf(_pregEnabled))>>
 		<</if>>
 		<<if NPCPregnancyPossibleWithPlayer(_pregEnabled.nam)>>
@@ -2043,7 +2040,7 @@
 						|
 					<</if>>
 					<<link [[A wolf|$passage]]>>
-					<<if $settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+					<<if monsterChanceForType("wolf") gte random(1, 100) and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("wolf"))>>
 						<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 							<<set _impregnator to either("cheater wolfboy", "cheater wolfgirl")>>
 						<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
@@ -2055,7 +2052,7 @@
 						<</if>>
 						<<if _impregnator is "cheater wolfgirl">><<set _spermType to "wolfgirl">><<else>><<set _spermType to "wolfboy">><</if>>
 					<<else>>
-						<<if beastMaleChance() gt 0>> /* checks if there are male wolves, if not a foreigner wolf impregnates PC */
+						<<if beastMaleChanceForType("wolf") gt 0>> /* checks if there are male wolves, if not a foreigner wolf impregnates PC */
 							<<set _impregnator to "cheater wolf">>
 						<<else>>
 							<<set _impregnator to "cheater foreign wolf">>
@@ -2072,13 +2069,13 @@
 					<</if>>
 					<<switch _actor.nam>>
 						<<case "Black Wolf">>
-							<<if $blackwolfmonster>>
+							<<if resolveIfNamedBeastIsMonster("blackwolf")>>
 								<<set _spermType to (C.npc["Black Wolf"].pronoun is "f" ? "wolfgirl" : "wolfboy")>>
 							<<else>>
 								<<set _spermType to "wolf">>
 							<</if>>
 						<<case "Great Hawk">>
-							<<if $greathawkmonster>>
+							<<if resolveIfNamedBeastIsMonster("greathawk")>>
 								<<set _spermType to "harpy">>
 							<<else>>
 								<<set _spermType to "hawk">>
@@ -2125,7 +2122,7 @@
 							|
 						<</if>>
 						<<link "A wolf">>
-							<<if $settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)>>
+							<<if monsterChanceForType("wolf") gte random(1, 100) and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("wolf"))>>
 								<<if $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance lt 100>>
 									<<set _impregnator to either("cheater wolfboy", "cheater wolfgirl")>>
 								<<elseif $settings.femaleNPCPenisChance gt 0 and $settings.maleNPCVaginaChance gt 99>>
@@ -2137,7 +2134,7 @@
 								<</if>>
 								<<if _impregnator is "cheater wolfgirl">><<set _spermType to "wolfgirl">><<else>><<set _spermType to "wolfboy">><</if>>
 							<<else>>
-								<<if beastMaleChance() gt 0>> /* checks if there are male wolves, if not a foreigner wolf inseminates PC */
+								<<if beastMaleChanceForType("wolf") gt 0>> /* checks if there are male wolves, if not a foreigner wolf inseminates PC */
 									<<set _impregnator to "cheater wolf">>
 								<<else>>
 									<<set _impregnator to "foreign cheater wolf">>
@@ -2155,13 +2152,13 @@
 						<</if>>
 						<<switch _actor.nam>>
 							<<case "Black Wolf">>
-								<<if $blackwolfmonster>>
+								<<if resolveIfNamedBeastIsMonster("blackwolf")>>
 									<<set _spermType to (C.npc["Black Wolf"].pronoun is "f" ? "wolfgirl" : "wolfboy")>>
 								<<else>>
 									<<set _spermType to "wolf">>
 								<</if>>
 							<<case "Great Hawk">>
-								<<if $greathawkmonster>>
+								<<if resolveIfNamedBeastIsMonster("greathawk")>>
 									<<set _spermType to "harpy">>
 								<<else>>
 									<<set _spermType to "hawk">>
@@ -2432,13 +2429,24 @@
 	<</capture>>
 <</widget>>
 
+<<widget "cheatsFog">>
+	<<numberStepper "Fog" `Weather.FogGeneration.getFog()` {
+		callback: value => {
+			Weather.FogGeneration.setFog(value);
+		},
+		min: 0, max: 1, step: 0.1, colorArr: ["--blue"], percentage: false,
+		valueFormat: value => round(value, 1),
+		activeButtons: ["single", "double"]
+	}>>
+<</widget>>
+
 <<widget "cheatsSex">>
 	<<set _reasons to []>>
 	<<if $sexStats.vagina.menstruation.currentState isnot "normal">><<set _reasons.push($sexStats.vagina.menstruation.currentState is "recovering" ? "you still being in recovery from your last pregnancy" : "your pregnancy")>><</if>>
 	<<if $earSlime.growth gt 50>><<set _reasons.push("your ear slime's current growth")>><</if>>
 	<<if _inWardrobe>>
 		<<if _reasons.length gte 1>>
-			<span class="gold"><<= $player.sex is "m" ? "Penis" : $player.sex is "f" ? "Vagina" : "Hermaphrodite">></span>
+			<span class="gold"><<= $player.sex is "m" ? "Penis" : $player.sex is "f" ? "Vagina" : "Both">></span>
 			| This setting cannot be changed due to <<= _reasons.join(" and ")>>.
 		<<else>>
 			<<if $player.sex is "m">>
@@ -2503,7 +2511,7 @@
 		<</if>>
 		<<if $player.sex is "h">>
 			<br>
-			Hermaphrodite Balls: <span id="statsBallsExist"><<= $player.ballsExist ? "Present" : "Disabled">></span> |
+			Testicles: <span id="statsBallsExist"><<= $player.ballsExist ? "Present" : "Disabled">></span> |
 			<<link "Change">>
 				<<set $player.ballsExist to clone(!$player.ballsExist)>>
 				<<updatesidebarimg>>
@@ -2511,7 +2519,7 @@
 			<</link>>
 		<</if>>
 	<<else>>
-		<span class="gold"><<= $player.sex is "m" ? "Penis" : $player.sex is "f" ? "Vagina" : "Hermaphrodite">></span> | <<if _reasons.length gte 1>>You cannot change your genitals due to <<= _reasons.join(" and ")>>. Normally, this<<else>>This<</if>> setting can only be changed when accessing your wardrobe.
+		<span class="gold"><<= $player.sex is "m" ? "Penis" : $player.sex is "f" ? "Vagina" : "Both">></span> | <<if _reasons.length gte 1>>You cannot change your genitals due to <<= _reasons.join(" and ")>>. Normally, this<<else>>This<</if>> setting can only be changed when accessing your wardrobe.
 	<</if>>
 <</widget>>
 

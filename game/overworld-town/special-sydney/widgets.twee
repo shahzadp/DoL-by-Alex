@@ -244,7 +244,20 @@
 
 <<widget "sydneyOptions">>
 	<<sydneySchedule>><<run statusCheck("Sydney")>>
-	<<if $bus is "schoollibrary" or $location is "school">>
+	<<if $worn.neck.name is "love locket" and C.npc.Sydney.love gte 10 and $rng gte 91 and !$daily.sydney.lovelocket and ((_sydney_location is "library" and $location is "school") or (_sydney_location is "temple" and $location is "temple"))>>
+		<<set $daily.sydney.lovelocket to 1>>
+		<<person1>>
+		Sydney's eyes fall on your love locket.
+		<br><br>
+		"Cute necklace you got there<<if $sydneyromance is 1>>." <<He>> fiddles with it.<<else>>," <<he>> comments.<</if>>
+		<br><br>
+		<<neckstrip>><<wearProp "love locket" $carried.neck.colour>>
+		<<link [[Thank <<him>>|Sydney Locket]]>><<set $phase to 1>><</link>>
+		<br>
+		<<link [[Show <<him>> your love locket|Sydney Locket]]>><<set $phase to 2>><</link>>
+		<br>
+		<<link [[Change the subject|Sydney Locket]]>><<set $phase to 3>><</link>>
+	<<elseif $bus is "schoollibrary" or $location is "school">>
 		<<switch _sydney_location>>
 			<<case "library">>
 				<<if ($sydneyScience isnot 1 and $schoolstate is "first") or ["fourth", "fifth"].includes($schoolstate)>>
@@ -276,6 +289,13 @@
 						<br><br>
 					<</if>>
 					<<sydneyOptionsTalk>>
+					<<if $kylar_altar_sydney_accost>>
+						<<socialiseicon "ask">><<link [[Ask to be taken to the forbidden room|Library Altar Forbidden (0:05)]]>><<pass 5>><<unset $kylar_altar_sydney_accost>><</link>>
+						<br>
+					<<elseif $kylar_altar_library gte 100>>
+						<<socialiseicon "ask">><<link [[Ask about the forest altar|Library Altar Counter]]>><</link>>
+						<br>
+					<</if>>
 					<br>
 					<<bookRentalOptions>>
 					<br>

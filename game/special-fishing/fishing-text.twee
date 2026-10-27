@@ -283,10 +283,34 @@
 		<</addinlineevent>>
 	<</if>>
 
-	<<addinlineevent 6>>
-		<<set _fishingSurfacer to weightedRandom(... fishingSurfacingFish(_fishingLocation))>>
-		You see <<a _fishingSurfacer>> break the surface for a moment.<<lstress>><<stress -1>>
-	<</addinlineevent>>
+
+	<<if preferredSeasonFishList(_fishingLocation).length>>
+		<<set _fishingSeasonFish to weightedRandom(... preferredSeasonFishList(_fishingLocation))>>
+		<<set _fishingSeasonFishBoth to preferredLocationFishList(_fishingLocation).map(([f]) => f).includes(_fishingSeasonFish)>>
+		<<addinlineevent 2>>
+			A <span class="purple"><<if _fishingSeasonFishBoth>>huge<<else>>large<</if>></span> _fishingSeasonFish swims around your line.
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			You watch a pair of <span class="purple"><<if _fishingSeasonFishBoth>>huge<<else>>large<</if>></span> _fishingSeasonFish swim around each other.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if preferredLocationFishList(_fishingLocation).length>>
+		<<set _fishingLocationFish to weightedRandom(... preferredLocationFishList(_fishingLocation))>>
+		<<set _fishingLocationFishBoth to preferredSeasonFishList(_fishingLocation).map(([f]) => f).includes(_fishingLocationFish)>>
+		<<addinlineevent 2>>
+			You see <span class="purple"><<if _fishingLocationFishBoth>>a huge<<else>>a large<</if>></span> _fishingLocationFish break the surface for a moment.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+		<<addinlineevent 2>>
+			A <span class="purple"><<if _fishingLocationFishBoth>>huge<<else>>large<</if>></span> _fishingLocationFish surfaces nearby.<<lstress>><<stress -1>>
+		<</addinlineevent>>
+	<</if>>
+
+	<<if Time.isBloodMoon()>>
+		<<addinlineevent 4>>
+			You watch <span class="purple">large</span> fish chase and eat smaller fish in the red moonlight.
+		<</addinlineevent>>
+	<</if>>
 
 	<<addinlineevent 3>>
 		Your hook hasn't attracted anything yet.
@@ -470,7 +494,7 @@
 				You almost lose your footing against the harsh wind.
 			<</addinlineevent>>
 			<<addinlineevent 1>>
-				The <<= fishingLocationWaterBodyName(_fishingLocation)>> churns as the 
+				The <<= fishingLocationWaterBodyName(_fishingLocation)>> churns as the
 				<<if Weather.name is "heavyPrecipitation">>
 					heavy precipitation
 				<<else>>
@@ -1001,7 +1025,7 @@
 
 			<<if fameTotal() gte 2000 and $docks.status gte 50>>
 				<<addinlineevent 1>>
-					You wonder if any of the dock workers recognize you from outside work.
+					You wonder if any of the dock workers recognise you from outside work.
 				<</addinlineevent>>
 			<</if>>
 		<</if>>
@@ -1244,7 +1268,7 @@
 
 	<<if fameTotal() gte 2000 and Weather.dayState isnot "night" and !Time.isBloodMoon() and ["fishingPier", "fishingBeach"].includes(_fishingLocation)>>
 		<<addinlineevent 1>>
-			You wonder if anyone would recognize you here.
+			You wonder if anyone would recognise you here.
 		<</addinlineevent>>
 	<</if>>
 	<<if $community_service gte 1>>
@@ -1360,7 +1384,7 @@
 	<</if>>
 
 	/* Ear Slime */
-	<<if  numberOfEarSlime()>>
+	<<if numberOfEarSlime()>>
 		<<addinlineevent 1>>
 			You try not to dwell on the influence your ear <<if numberOfEarSlime() gt 1>>slimes<<else>>slime<</if>> may be having over you.
 		<</addinlineevent>>
@@ -1377,7 +1401,7 @@
 	<</if>>
 
 	/* Rent */
-	<<if $renttime lte 0 and $money lt $rentmoney + ($babyRent ?? 0)>>
+	<<if $rentTime lte 0 and $money lt $rentMoney + ($babyRent ?? 0)>>
 		<<addinlineevent 1>>
 			You wonder how you'll make rent this week.<<stress 1>><<gstress>>
 		<</addinlineevent>>
@@ -1584,7 +1608,7 @@
 	<</if>>
 
 	/* Avery */
-	<<if !["fallen", "kicked"].includes($avery_fate)>> 
+	<<if !["fallen", "kicked"].includes($avery_fate)>>
 		<<if isLoveInterest("Avery")>>
 			<<addinlineevent 1>>
 				You wonder what Avery is doing right now.
@@ -1674,7 +1698,7 @@
 	<</if>>
 
 	/* Kylar Bad End */
-	<<if $trauma gte ($traumamax / 5) * 3 and  $badEndStats.find(function (stat) { return stat.source is "Kylar Abduction"; }) and !isLoveInterest("Kylar")>>
+	<<if $trauma gte ($traumamax / 5) * 3 and $badEndStats.find(function (stat) { return stat.source is "Kylar Abduction"; }) and !isLoveInterest("Kylar")>>
 		<<set _fishingBadEndWeight to _fishingRecentBadEndSource is "Kylar Abduction" ? 2 : 0.5>>
 		<<addinlineevent _fishingBadEndWeight>>
 			You remember the walls of Kylar's manor closing in around you.<<trauma 1>><<gtrauma>>
@@ -1748,7 +1772,7 @@
 		<</if>>
 		<<if $gwylanTalked and $gwylanSeen>>
 			<<run statusCheck("Gwylan")>>
-			<<if _gwylanLovePercent gte 50 and _gwylanLovePercent lt 100>>
+			<<if _gwylanLovePercent gte 40 and _gwylanLovePercent lt 100>>
 				<<addinlineevent 1>>
 					Your thoughts turn to Gwylan. You spend some time thinking about what stories to tell <<nnpc_him "Gwylan">> next.
 				<</addinlineevent>>
@@ -1781,7 +1805,7 @@
 			You wonder if Winter is dealing with another crowd at the museum.
 		<</addinlineevent>>
 	<</if>>
-	/* 
+	/*
 	* =========== TRANSFORMATIONS ===========
 	*/
 
@@ -1856,7 +1880,7 @@
 	<<if !["disabled", "hidden"].includes($transformationParts.fallenAngel.wings)>>
 
 	<</if>>
-	/* 
+	/*
 	* =========== STATS ===========
 	*/
 
@@ -1939,7 +1963,7 @@
 	/* Tiredness */
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 3>>
-			You fight a yawn and keep your line taut. 
+			You fight a yawn and keep your line taut.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
@@ -1947,19 +1971,19 @@
 			You rub your eyes and refocus on the <<fishingBob>>.
 		<</addinlineevent>>
 	<</if>>
-		<<if $tiredness gte (C.tiredness.max / 5) * 3>>
+	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 1>>
-			You feel your eyelids drooping, but are able to remain awake. 
+			You feel your eyelids drooping, but are able to remain awake.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 1>>
-			You shift your stance and try to stay awake. 
+			You shift your stance and try to stay awake.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 1>>
-			You blink slowly and force yourself to keep watch. 
+			You blink slowly and force yourself to keep watch.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
@@ -1969,7 +1993,7 @@
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 3>>
 		<<addinlineevent 3>>
-			You think about going to bed, but keep fishing anyway. 
+			You think about going to bed, but keep fishing anyway.
 		<</addinlineevent>>
 	<</if>>
 	<<if $tiredness gte (C.tiredness.max / 5) * 4>>

@@ -32,6 +32,8 @@
  * @property {string} animKeyMouth
  * @property {boolean} breastjobDemo Options -> Performance toggle for changing breastjob sprites to topdown view
  * @property {boolean} topdownDemo Options -> Performance toggle for changing breastjob sprites to topdown view
+ * @property {boolean} faceFreckles Player has face freckles, used in mouth closeup.
+ * @property {"none"|"upper"|"full"} bodyFreckles Player body freckles. Upper shows on chest closeup, full shows on all body closeups.
  */
 
 class CloseCombatMapper {
@@ -94,6 +96,10 @@ class CloseCombatMapper {
 		options.showChest = combat.isChestActive() || ((V.worn.under_upper.exposed ?? 0) >= 1 && (V.worn.upper.exposed ?? 0) >= 2);
 		options.showArse = V.worn.under_lower.anus_exposed === 1 && V.worn.lower.anus_exposed === 1;
 		options.showMouth = combat.isMouthActive() && !V.worn.face.type.includes("gag");
+
+		// Freckles
+		options.faceFreckles = V.player.skin.faceFreckles === true;
+		options.bodyFreckles = V.player.skin.bodyFreckles || "none";
 
 		// Genitals
 		const penisType = V.player.sex === "f" ? "parasite" : V.player.ballsExist ? "penis" : "herm";
@@ -332,9 +338,7 @@ class CloseCombatMapper {
 		}
 		if (V.NPCList[V.penistarget]) {
 			/* skin colour of npc targeting penis */
-			options.penis.npcTone =
-				V.NPCList[V.penistarget].skincolour === "ghost" ? "ghost" : V.NPCList[V.penistarget].skincolour === "black" ? "dark" : "light";
-			options.filters.penisNpc = setup.colours.getSkinFilter(options.penis.npcTone, 0);
+			options.filters.penisNpc = NpcCombatMapper.getNpcSkinFilter(V.NPCList[V.penistarget]);
 		}
 
 		return options.penis;

@@ -30,7 +30,7 @@
 <<elseif _justEntered and _shopEvent and _gwylanLovePercent gte 10 and !$gwylanSeen.includes("intruder")>>
 	<<set $daily.gwylan.eventShop to true>>
 	<<include "Forest Shop Intruder">>
-<<elseif _justEntered and _shopEvent and _gwylanLovePercent gte 85 and C.npc.Gwylan.dom gte 120 and $hypnosis_traits.devotion gte 3 and $gwylanSeen.includesAll("partners", "hypnosis_deepest", "petplay") and !$gwylanSeen.includes("familiar_collar")>>
+<<elseif _justEntered and _shopEvent and _gwylanLovePercent gte 75 and C.npc.Gwylan.dom gte 120 and $hypnosis_traits.devotion gte 3 and $gwylanSeen.includesAll("partners", "hypnosis_deepest", "petplay") and !$gwylanSeen.includes("familiar_collar")>>
 	<<set $daily.gwylan.eventShop to true>>
 	<<include "Forest Shop Familiar Collar">>
 <<elseif _justEntered and $whitney_familiar_seen is 1 and !["dungeon", "pillory"].includes(C.npc.Whitney.state) and C.npc.Whitney.init is 1 and $worn.neck.name is "familiar collar" and $worn.neck.cursed is 1>>
@@ -54,7 +54,7 @@
 		<<pregnancyPassout "forestShop">>
 	<<else>>
 
-		<<if _gwylanLovePercent gte 35 and !$gwylan.punishment and !$gwylan.taken and !$gwylan.timer.wrap and (pcAreArmsBound("any") or $feetuse is "bound")>>
+		<<if _gwylanLovePercent gte 40 and !$gwylan.punishment and !$gwylan.taken and !$gwylan.timer.wrap and (pcAreArmsBound("any") or $feetuse is "bound")>>
 			Your bindings catch on <<print either("a loose shelf", "a clothes hanger", "a low-hanging branch", "some unpleasantly sticky vines")>>. You try to pull away, and <span class="green">your bindings fall to tatters at your feet.</span>
 			<<unbind>>
 			<br><br>
@@ -99,12 +99,12 @@
 				The shop is silent, and you see no sign of Gwylan anywhere. <span class="purple">It's a little darker than usual, too.</span>
 				<br>
 				<<investigateicon>><<link [[Try to find Gwylan|Forest Shop Hat]]>><</link>>
-			<<elseif _snoopEvent and _gwylanLovePercent gte 35 and $gwylanSeen.includes("hat_found") and !$gwylanSeen.includes("lights") and $gwylan.progress gte 3 and $gwylan.requestCount gte 2>>
+			<<elseif _snoopEvent and _gwylanLovePercent gte 30 and $gwylanSeen.includes("hat_found") and !$gwylanSeen.includes("lights") and $gwylan.progress gte 3 and $gwylan.requestCount gte 2>>
 				<<set $gwylan.timer.eventShopEnd to new DateTime(Time.date).addHours(2).timeStamp>>
 				The shop is silent, and you see no sign of Gwylan. <span class="purple">It's darker than usual.</span>
 				<br>
 				<<investigateicon>><<link [[Try to find Gwylan again|Forest Shop Lights]]>><</link>>
-			<<elseif _snoopEvent and _gwylanLovePercent gte 50 and $gwylanSeen.includes("lights") and !$gwylanSeen.includesAny("caught", "caught_no_lewd") and $gwylanTalked.length gte 10 and $gwylan.progress gte 6 and !(["clothing"].includes($gwylan.request.event) && gwylanRequestMet())>>
+			<<elseif _snoopEvent and _gwylanLovePercent gte 40 and $gwylanSeen.includes("lights") and !$gwylanSeen.includesAny("caught", "caught_no_lewd") and $gwylanTalked.length gte 10 and $gwylan.progress gte 6 and !(["clothing"].includes($gwylan.request.event) && gwylanRequestMet())>>
 				<<set $gwylan.timer.eventShopEnd to new DateTime(Time.date).addHours(2).timeStamp>>
 				The shop is silent, and you see no sign of Gwylan. <span class="purple">It's darker than usual.</span>
 				<br>
@@ -224,7 +224,7 @@
 	<br>
 <<elseif Time.isBloodMoon() and C.npc.Gwylan.love gte 10 and !$gwylanSteal>>
 	You knock on the door.
-	<<if $wraith and $wraith.hunt>>
+	<<if $wraith?.hunt>>
 		<<set $gwylan.timer.bloodKnock to new DateTime(Time.date).addDays(1).timeStamp>>
 		Something in the building shudders, and you hear multiple additional locks clicking into place. <span class="red">You feel whatever's hunting you draw closer.</span> <<set $wraith.hunt++>><<set $foresthunt++>>
 		You hope Gwylan heard you, <span class="blue"><<nnpc_he "Gwylan">> might at least come looking for you if you get caught</span>.
@@ -844,7 +844,7 @@ Your head is in <<his>> lap.
 	After about five minutes, you get up. <<stress -6>><<lstress>>
 	<br><br>
 
-	<<if $hypnosis_traits.devotion and (!$hypnosis_traits.slumber or $hypnosisTimers.slumber and $hypnosisTimers.slumber.time lt Math.floor($hypnosisTimers.slumber.max / 2))>>
+	<<if $hypnosis_traits.devotion and (!$hypnosis_traits.slumber or $hypnosisTimers.slumber?.time lt Math.floor($hypnosisTimers.slumber.max / 2))>>
 		<span class="witchbloom">You immediately yearn to return to <<his>> lap and sink back into the blissful slumber.</span>
 		<br>
 		<<gwylanHypnosis "slumber" 10>>
@@ -1122,7 +1122,7 @@ This must lead back outside.
 You slowly approach the frame, and peek around the corner.
 <br><br>
 
-<<if $world_corruption_soft gte 25 and (($settings.monsterChance gte 1 and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or $settings.bestialityEnabled)>>
+<<if $world_corruption_soft gte 25 and beastSexEnabledForType("wolf")>>
 	<<link [[Next|Forest Shop Caught 2]]>><<handheldon>><</link>>
 <<else>>
 	<<link [[Next|Forest Shop Caught No Lewd]]>><<handheldon>><</link>>
@@ -1986,7 +1986,7 @@ Gwylan just lays there for a few minutes, breathing heavily and covering <<his>>
 <br>
 <<link [[Tease Gwylan|Forest Shop Caught 9]]>><<npcincr Gwylan lust 2>><<set $phase2 to 2>><</link>><<glust>>
 <br>
-<<link [[Remain Silent|Forest Shop Caught 9]]>><<set $phase2 to 4>><</link>>
+<<link [[Remain silent|Forest Shop Caught 9]]>><<set $phase2 to 4>><</link>>
 <br>
 <<if hasSexStat("deviancy", 2)>>
 	<<link [[Tell Gwylan you like doing things with wolves too|Forest Shop Caught 9]]>><<npcincr Gwylan lust 4>><<set $phase2 to 3>><</link>><<deviant2>><<gglust>>
@@ -3825,7 +3825,7 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 			<<wakingEffects $sleepHoursTotal>>
 		<</if>>
 		<<if ["dryheaving","nausea"].includes(_wakingEffect)>>
-			<br><br>
+			<br>
 			You slept soundly, but now feel a little rough.
 			<<if $gwylanbed>>
 				Gwylan rubs your back for comfort.
@@ -3847,7 +3847,7 @@ Gwylan sits you down at a table, before disappearing through a dark doorway.
 			<</if>>
 			<br><br>
 		<<else>>
-			<br><br>
+			<br>
 		<</if>>
 	<</if>>
 	<<getouticon>><<link [[Get out of bed|Forest Shop Entrance]]>><<endevent>><</link>>

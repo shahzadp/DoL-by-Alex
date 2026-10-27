@@ -64,6 +64,32 @@ function gatherToySets() {
 	return toySets;
 }
 
+/**
+ * Daytime activities for human children.
+ *
+ * @param {string[]} toySets the toy sets stored at this location
+ * @param {string} donor the child's other parent
+ * @returns {string[]}
+ */
+function humanChildDaytimeExtras(toySets, donor) {
+	const activity = [];
+	if (toySets.includes("baby rattles")) activity.push("babyRattle");
+	if (toySets.includes("teddy bears")) activity.push("teddyBear");
+	if (toySets.includes("toy cars")) activity.push("toyCar");
+	if (toySets.includes("dummies")) {
+		activity.push("dummy");
+	} else {
+		activity.push("crying");
+	}
+	if (toySets.includes("clown")) activity.push("clown");
+	if (T.robin_location === "orphanage") activity.push("Robin");
+	if (donor === "Ivory Wraith") {
+		wikifier("rngWraith", 1);
+		if (T.wraithEvent) activity.push("Wraith");
+	}
+	return activity;
+}
+
 function humanChildActivity(childId) {
 	const child = V.childRecords[childId];
 	const childDays = getChildDays(childId);
@@ -73,76 +99,41 @@ function humanChildActivity(childId) {
 	statusCheck("Robin");
 	let activity = [];
 
-	if (between(childDays, 0, 100)) {
-		if (Time.dayState === "night") {
-			activity = activity.concat(["sleeping", "sleeping", "sleeping", "sleeping", "sleeping", "restlessSleep", "restlessSleep", "crying", "nappyChange"]);
-		} else {
-			activity = activity.concat([
-				"sleeping",
-				"sleeping",
-				"sleeping",
-				"crying",
-				"crying",
-				"crying",
-				"lonely",
-				"nappyChange",
-				"thumbSucking",
-				"grumpyChild",
-				"bathe",
-			]);
-
-			if (childDays >= 50) activity.push("happy");
-			if (toySets.includes("baby rattles")) activity.push("babyRattle");
-			if (toySets.includes("teddy bears")) activity.push("teddyBear");
-			if (toySets.includes("toy cars")) activity.push("toyCar");
-			if (toySets.includes("dummies")) {
-				activity.push("dummy");
-			} else {
-				activity.push("crying");
-			}
-			if (toySets.includes("clown")) activity.push("clown");
-			if (T.robin_location === "orphanage") activity.push("Robin");
-			if (donor === "Ivory Wraith") {
-				wikifier("rngWraith", 1);
-				if (T.wraithEvent) activity.push("Wraith");
-			}
-		}
+	if (Time.dayState === "night") {
+		activity = activity.concat(["sleeping", "sleeping", "sleeping", "sleeping", "sleeping", "restlessSleep", "restlessSleep", "crying", "nappyChange"]);
+	} else if (between(childDays, 0, 100)) {
+		activity = activity.concat([
+			"sleeping",
+			"sleeping",
+			"sleeping",
+			"crying",
+			"crying",
+			"crying",
+			"lonely",
+			"nappyChange",
+			"thumbSucking",
+			"grumpyChild",
+			"bathe",
+		]);
+		if (childDays >= 50) activity.push("happy");
+		activity = activity.concat(humanChildDaytimeExtras(toySets, donor));
 	} else if (between(childDays, 100, 200)) {
-		if (Time.dayState === "night") {
-			activity = activity.concat(["sleeping", "sleeping", "sleeping", "sleeping", "sleeping", "restlessSleep", "restlessSleep", "crying", "nappyChange"]);
-		} else {
-			activity = activity.concat([
-				"sleeping",
-				"sleeping",
-				"sleeping",
-				"crying",
-				"lonely",
-				"happy",
-				"nappyChange",
-				"thumbSucking",
-				"talking",
-				"grumpyChild",
-				"bathe",
-			]);
-
-			if (childDays >= 180) activity.push("readingAttempt");
-
-			if (toySets.includes("baby rattles")) activity.push("babyRattle");
-			if (toySets.includes("teddy bears")) activity.push("teddyBear");
-			if (toySets.includes("toy cars")) activity.push("toyCar");
-			if (toySets.includes("dummies")) {
-				activity.push("dummy");
-			} else {
-				activity.push("crying");
-			}
-			if (toySets.includes("clown")) activity.push("clown");
-			if (child.development.talking >= 10 && childDays >= 150) activity.push("talking2");
-			if (T.robin_location === "orphanage") activity.push("Robin");
-			if (donor === "Ivory Wraith") {
-				wikifier("rngWraith", 1);
-				if (T.wraithEvent) activity.push("Wraith");
-			}
-		}
+		activity = activity.concat([
+			"sleeping",
+			"sleeping",
+			"sleeping",
+			"crying",
+			"lonely",
+			"happy",
+			"nappyChange",
+			"thumbSucking",
+			"talking",
+			"grumpyChild",
+			"bathe",
+		]);
+		if (childDays >= 180) activity.push("readingAttempt");
+		if (child.development.talking >= 10 && childDays >= 150) activity.push("talking2");
+		activity = activity.concat(humanChildDaytimeExtras(toySets, donor));
 	}
 
 	/* ToDo: Pregnancy - To be added at a later date

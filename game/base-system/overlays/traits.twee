@@ -1,6 +1,6 @@
 :: Traits [widget]
 <<widget "traits">>
-	<<if $sexStats and $sexStats.pills>>
+	<<if $sexStats?.pills>>
 		<<set _pills to $sexStats.pills.pills>>
 	<</if>>
 	<<set _traitLists to [
@@ -82,12 +82,6 @@
 					text: "Arousal increases over time and needs to be managed.",
 				},
 				{
-					name: "Green Thumb",
-					colour: "green",
-					has: $backgroundTraits.includes("greenthumb"),
-					text: "More bountiful crops and no decay when using fertiliser.",
-				},
-				{
 					name: () => V.submissive <= 850 ? "Dendrophile" : "Plant Lover",
 					colour: "lewd",
 					has: $backgroundTraits.includes("plantlover"),
@@ -119,14 +113,14 @@
 								break;
 						}
 						let parasites = [];
-						if ($parasite.breasts and $parasite.breasts.name is "parasite") {
+						if ($parasite.breasts?.name is "parasite") {
 							if ($player.breastsize gte 1) {
 								parasites.push("breasts");
 							} else {
 								parasites.push("chest");
 							}
 						}
-						if (($parasite.clit and $parasite.clit.name is "parasite") or ($parasite.penis and $parasite.penis.name is "parasite")) parasites.push("genitals");
+						if ($parasite.clit?.name is "parasite" or $parasite.penis?.name is "parasite") parasites.push("genitals");
 						if (parasites.length) result += ` Its parasites cover your ${formatList(parasites, "and", true)} like clothing.`;
 						return result;
 					}
@@ -234,7 +228,7 @@
 					text: "You yearn to be milked. Milk and semen volume is increased. Certain body parts might grow. Your horns, ears and tail make you more conspicuous.",
 				},
 				{
-					name: () => V.hallucinations gte 2 || !V.settings.bestialityEnabled ? "Harpy" : V.player.gender is "n" ? "Bird" : "Bird <<pcGender>>",
+					name: () => resolveIfNamedBeastIsMonster("greathawk") ? "Harpy" : V.player.gender is "n" ? "Bird" : "Bird <<pcGender>>",
 					colour: "grey",
 					has: $harpy gte 6,
 					text: "The skies call.",
@@ -449,30 +443,6 @@
 					colour: "red",
 					has: $sadism_level is 4,
 					text: "Your defiant acts are far more dangerous. Inflicting pain increases arousal.",
-				},
-				{
-					name: "Farmer",
-					colour: "green",
-					has: $farm_stage gte 6,
-					text: "You know your way around a barn. Your physique is easier to maintain.",
-				},
-				{
-					name: "Knowledge: Islander language",
-					colour: "",
-					has: $islander_language gte 100,
-					text: "You can understand and speak the tongue of the islanders.",
-				},
-				{
-					name: "Knowledge: Quicksand",
-					colour: "",
-					has: $quicksand gte 5,
-					text: "You know how to react when stuck in the stuff.",
-				},
-				{
-					name: "Ancient Arts",
-					colour: "wraith",
-					has: $hc?.wraith,
-					text: "You've learned techniques lost to the past. An extension of your body, your arm and whip move as one.",
 				},
 				{
 					name: "Mirror Madness",
@@ -843,6 +813,53 @@
 			],
 		},
 		{
+			title: "Knowledge Traits",
+			traits: [
+				{
+					name: "Ancient Arts",
+					colour: "wraith",
+					has: $hc?.wraith,
+					text: "You've learned techniques lost to the past. An extension of your body, your arm and whip move as one.",
+				},
+				{
+					name: "Islander language",
+					colour: "",
+					has: $islander_language gte 100,
+					text: "You can understand and speak the tongue of the islanders.",
+				},
+				{
+					name: "Temple Calligraphy",
+					colour: "green",
+					has: $temple_calligraphy gte 11,
+					text: "Cheating on exams is twice as effective.",
+				},
+				{
+					name: "Farming",
+					colour: "green",
+					has: $farm_stage gte 6,
+					text: "You know your way around a barn. Your physique is easier to maintain.",
+				},
+				{
+					name: "Green Thumb",
+					colour: "green",
+					has: $backgroundTraits.includes("greenthumb"),
+					text: "More bountiful crops and no decay when using fertiliser.",
+				},
+				{
+					name: "Quicksand",
+					colour: "",
+					has: $quicksand gte 5,
+					text: "You know how to react when stuck in the stuff.",
+				},
+				{
+					name: "Pumpkin Carving",
+					colour: "tangerine",
+					has: ($pumpkin_carving + ($pumpkin_carving_knowledge?.length * 5)) gte 15,
+					text: "You carve pumpkins like a pro.",
+				},
+			],
+		},
+		{
 			title: "Trauma Traits",
 			traits: [
 				{
@@ -948,17 +965,17 @@
 					textColour: "red",
 				},
 				{
-					name: () => V.settings.bestialityEnabled ? "Stockholm Syndrome: Wolves" : "Stockholm Syndrome: Wolf People",
+					name: () => animalSexEnabledForType("wolf") ? "Stockholm Syndrome: Wolves" : "Stockholm Syndrome: Wolf People",
 					colour: "white",
 					has: $syndromewolves gte 1,
-					text: () => V.settings.bestialityEnabled ? "They're just cute animals." : "They're just cute monsters.",
+					text: () => animalSexEnabledForType("wolf") ? "They're just cute animals." : "They're just cute monsters.",
 					textColour: "red",
 				},
 				{
 					name: "Stockholm Syndrome: Great Hawk",
 					colour: "white",
 					has: $syndromebird gte 1,
-					text: () => V.greathawkmonster === 2 || !V.settings.bestialityEnabled ? "<<nnpc_He 'Great Hawk'>> only wants a mate." : "It only wants a mate.",
+					text: () => resolveIfNamedBeastIsMonster("greathawk") ? "<<nnpc_He 'Great Hawk'>> only wants a mate." : "It only wants a mate.",
 					textColour: "red",
 				},
 				{

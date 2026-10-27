@@ -48,10 +48,12 @@
 			<</if>>
 		<<elseif $whitney_toilet is 1 and C.npc.Whitney.state is "active" and $rng gte 51 and $daily.whitney.toiletCheck isnot 1>>
 			<<set $daily.whitney.toiletCheck to 1>>
-			<<if $player.penisExist and $player.vaginaExist>>
+			<<if ($player.penisExist and $player.vaginaExist) or $settings.nudeGenderPerception is 0>>
 				<<set _correctBathroom to (C.npc.Whitney.pronoun is "m" ? "boys" : "girls")>>
+			<<else>>
+				<<set _correctBathroom to (V.player.sex is "f" ? "boys" : "girls")>>
 			<</if>>
-			<<if $changingRoomGender is "boys" and $player.sex is "m" or $changingRoomGender is "girls" and $player.sex is "f" or ($player.penisExist and $player.vaginaExist) and $changingRoomGender isnot _correctBathroom>>
+			<<if $changingRoomGender isnot _correctBathroom>>
 				<<if $player.sex is C.npc.Whitney.pronoun>>
 					<<npc Whitney>><<person1>>
 					You bump into Whitney. <<His>> expression darkens. "What did I say about showing your face in here?" <<he>> says. "I guess I'll have to beat it into you."
@@ -79,7 +81,7 @@
 					<br>
 				<</if>>
 			<<else>>
-				<<if $player.sex is C.npc.Whitney.pronoun>>
+				<<if $player.sex is C.npc.Whitney.pronoun and $settings.nudeGenderPerception !== 0>>
 					A couple of Whitney's friends enter the bathroom. They laugh and nudge each other. They make no aggressive moves, but they refuse to leave you alone.
 					<br><br>
 					"We're just here to make sure you <<if $player.sex is "m">>sit down to pee<<else>>know how to use the urinal<</if>>. Whitney's orders."
@@ -184,7 +186,7 @@
 	<<else>>
 
 		<<beastNEWinit 1 cat>>
-		<<if $monster is 1 or $settings.bestialityEnabled>>
+		<<if beastSexEnabledForType("cat", $monster is 1)>>
 			The quiet is broken by a low growl behind you. A large <<beasttype>> pounces on you from the shadows, forcing you to your knees.
 			<br><br>
 			<<if $cat gte 6>>
@@ -338,7 +340,7 @@
 			<</addinlineevent>>
 		<</if>>
 
-		<<if getRobinLocation("school") and !$daily.robin.bump>>
+		<<if C.npc.Robin.init is 1 and getRobinLocation() is "school" and $robinmissing is 0 and !$daily.robin.bump>>
 			<<addinlineevent "robin_bump">>
 				<<effects>>
 				<<set $daily.robin.bump to true>>
@@ -636,7 +638,7 @@
 
 		<<set _fameRumour to []>>
 		<<run ["sex", "prostitution", "rape", "exhibitionism"].forEach(name => {if (V.fame[name] >= 400) T.fameRumour.push(name)})>>
-		<<if ($settings.monsterChance gte 1 or $settings.bestialityEnabled) and $fame.bestiality gte 400>>
+		<<if isBestialityOnForAnyCreature() and $fame.bestiality gte 400>>
 			<<set _fameRumour.push("bestiality")>>
 		<</if>>
 
@@ -677,7 +679,7 @@
 							"Maybe we could have a turn sometime?"
 						<</if>>
 					<<case "bestiality">>
-						<<if $settings.bestialityEnabled>>
+						<<if animalSexEnabledForType("dog")>>
 							<<if $cool gte 120>>
 								"I swear!" you overhear the <<person1>><<person>> saying. "I heard moans coming from the alley, then some dogs walked out from there!"<br>
 								"But you didn't look into the alley?"<br>
@@ -753,7 +755,7 @@
 					<br>
 				<<elseif $cool gte 120>>
 					<<if $schoolrep.herm gte 5 and !$worn.face.type.includes("mask")>>
-						You pass by a group of students who break into whispers as you pass by. You hear something about a hermaphrodite.
+						You pass by a group of students who break into whispers as you pass by. You make out the word 'both', whispered louder than the rest.
 					<<elseif $schoolrep.crossdress gte 5 and !$worn.face.type.includes("mask")>>
 						You pass by a group of students who break into whispers as you pass by. You hear something about a crossdresser.
 					<<else>>
@@ -1046,8 +1048,8 @@
 			<br>
 			<<link [[Find a teacher to help them (0:03)|Hallways Locker Victim]]>><<pass 3>><<set $phase to 1>><</link>>
 			<br>
-			<<if $sadism gte 300 or $delinquency gte 600 or ($soldCount gte 1 and $money lt $rentmoney + ($babyRent or 0))>>
-				<<link [[Demand money to help (0:10)|Hallways Locker Victim]]>><<pass 10>><<set $phase to 2>><</link>><<if $soldCount gte 1 and $money lt $rentmoney + ($babyRent or 0)>><<note "You need money for Bailey!" "red">><<else>><<note "Cash?" "gold">><</if>>
+			<<if $sadism gte 300 or $delinquency gte 600 or ($soldCount gte 1 and $money lt $rentMoney + ($babyRent or 0))>>
+				<<link [[Demand money to help (0:10)|Hallways Locker Victim]]>><<pass 10>><<set $phase to 2>><</link>><<if $soldCount gte 1 and $money lt $rentMoney + ($babyRent or 0)>><<note "You need money for Bailey!" "red">><<else>><<note "Cash?" "gold">><</if>>
 				<br>
 			<</if>>
 			<<link [[Ignore them|Hallways Locker Victim]]>><<set $phase to 3>><</link>>
@@ -1321,7 +1323,7 @@
 
 					<<if hasSexStat("promiscuity", 3) and $prostitutionstat gte 1>>
 						You look <<him>> up and down. After a moment, you start quoting your prices,
-					<<elseif $uncomfortable.prostituting is false or ($soldCount gte 1 and $money lt $rentmoney + ($babyRent or 0))>>
+					<<elseif $uncomfortable.prostituting is false or ($soldCount gte 1 and $money lt $rentMoney + ($babyRent or 0))>>
 						You hesitate, but thoughts of Bailey flash through your mind, and you know you need the money. You take a deep breath and start quoting a price,
 					<<else>>
 						<<if $speech_attitude is "meek">>
@@ -1687,7 +1689,7 @@
 					<</addinlineevent>>
 				<</if>>
 
-				<<if $photo and $photo.nude_footage is 1>>
+				<<if $photo?.nude_footage is 1>>
 					<<addinlineevent "courtyard_crush_photo_nude">>
 						<<set $photo.nude_footage to 0>>
 						<<generatey1>><<generatey2>><<generatey3>>
@@ -1703,7 +1705,7 @@
 					<</addinlineevent>>
 				<</if>>
 
-				<<if $photo and $photo.assault_footage is 1>>
+				<<if $photo?.assault_footage is 1>>
 					<<addinlineevent "courtyard_crush_photo_assault">>
 						<<set $photo.assault_footage to 0>>
 						<<generatey1>><<generatey2>><<generatey3>>
@@ -2307,7 +2309,7 @@
 			<<cleareventpool>>
 
 			<<addinlineevent "courtyard_dog_molest">>
-				<<if $monster is 1 or $settings.bestialityEnabled>>
+				<<if beastSexEnabledForType("dog", $monster is 1)>>
 					You see a <<beasttype>> rummaging in litter behind the kitchen. <<bHis>> ears prick, <span class="red">and <<bhe>> bounds towards you</span>.
 					<br><br>
 
@@ -2594,8 +2596,8 @@
 		<<set $bullyevent += 1>>
 		<<if $whitney_toilet is undefined and $genderknown.includes("Whitney") and _whitney.dom gte 14>>
 			Whitney and <<his>> friends surround you. Whitney smirks and grasps your shoulders.
-			<!-- dev note: Keep in mind that this scene uses player.gender directly and not player.gender_appearance. That's why we have to do complicated things. -->
-			<<if $player.sex is _whitney.pronoun>>
+			<!-- dev note: Keep in mind that this scene uses player.sex directly and not player.gender_appearance. That's why we have to do complicated things. -->
+			<<if $player.sex is _whitney.pronoun and $settings.nudeGenderPerception !== 0>>
 				<<He>> tries to push you into the <<print ($player.sex is "m" ? "girl" : "boy")>>s' toilets.
 				<br><br>
 				"A new rule, slut," <<he>> says. "You're a failure of a <<print ($player.sex is "m" ? "boy" : "girl")>>. You don't deserve to use the same toilets as me."
@@ -2606,7 +2608,14 @@
 				<br><br>
 				<!-- dev note: This scene is weird for herm PCs that normally choose the same toilets as Whitney. They aren't hiding from Whitney. How should Whitney's rule apply to herms? -->
 				<!-- dev note: This is ALSO weird for crossdresser PCs, because gender_appearance is what dictates getting thrown out of bathrooms, not gender, so they're ALSO already using the bathroom Whitney wants. -->
-				"A new rule, slut," <<he>> says. "No more hiding from me in the bathroom. You may be a <<if $player.sex is "m">>boy<<elseif $player.penisExist and $player.vaginaExist>>freak<<else>>girl<</if>>, but you're also mine. I want you nearby in case I feel like using you. That means you're using the <<nnpc_gendery "Whitney">>s' toilets from now on."
+				"A new rule, slut," <<he>> says. "No more hiding from me in the bathroom. You may be a 
+				<<if ($player.penisExist and $player.vaginaExist) or $settings.nudeGenderPerception is 0>>
+					freak, <!-- if genitals are ignored for gender perception, this is just regular bullying/name-calling, since the line might not make sense otherwise -->
+				<<elseif $player.sex is "m">>
+					boy,
+				<<else>>
+					girl,
+				<</if>> but you're also mine. I want you nearby in case I feel like using you. That means you're only using the <<nnpc_gendery "Whitney">>s' toilets from now on."
 				<br><br>
 				<<He>> pushes you closer.
 			<</if>>
@@ -2957,7 +2966,7 @@
 			<br>
 		<</if>>
 
-	<<elseif $bullyevent is 18 and C.npc.Robin.init gte 1 and getRobinLocation() is "school" and $robinmissing is 0>>/* Robin Pantsed*/
+	<<elseif $bullyevent is 18 and C.npc.Robin.init is 1 and getRobinLocation() is "school" and $robinmissing is 0>>/* Robin Pantsed*/
 		<<set $bullyevent += 1>>
 		<<endevent>><<npc "Robin">><<person1>>
 		<<set _lower to C.npc.Robin.clothes.lower.name>>
@@ -3902,6 +3911,15 @@
 <</widget>>
 
 <<widget "courtyardrevealresponse">>
+	<<if !$player.penisExist or !$player.vaginaExist>>
+		<<print either(
+			"The rumours are just a bunch of lies.",
+			"<<pShe>> doesn't even have both!"
+		)>>
+		<<schoolrep herm -1>>
+		<<exit>>
+	<</if>>
+
 	"<<print either(
 		"It's really true!",
 		"It's actually true?",
@@ -4036,5 +4054,68 @@
 		<br><br>
 		<<whitneyRulePunishment true>>
 		<<exitAll>>
+	<</if>>
+<</widget>>
+
+<<widget "events_school_library_study">>
+	<<rng 100>>
+	<<if $scienceprojectwon is 1 and $rng gte 91>>
+		<<generates1>><<person1>>A <<person>> stops at your table. "Hey, you're that <<girl>> who won the science fair, right?"
+		<br><br>
+
+		<<if $speech_attitude is "meek">>
+			"Ah, it wasn't that impressive..." You nod shyly, eyes drifting away.
+		<<elseif $speech_attitude is "bratty">>
+			You shove a thumbs up proudly into the air. "The one and only!"
+		<<else>>
+			"I sure did." You nod. "What's up?"
+		<</if>>
+		<br><br>
+
+		The <<personsimple>> nods back at you with a smile. "That's amazing! Your project was so well-researched, you really knew what you were doing! I wish I could be like you! I entered the science fair too, but the teachers didn't even bother coming to my table."
+		<br><br>
+
+		<<He>> sighs. "Not even the <<nnpc_title "Leighton">>. Maybe it's because I don't have the grades to show for it, but sometimes it's too hard to concentrate in class! Especially when some of the students keep touching and pulling pranks on me, or when my school supplies keep disappearing, and just because I was a little late too many times that I had to go to detention and—"
+		<br><br>
+
+		<<He>> stiffens, then shakes <<his>> head. "...Sorry, I'm rambling."
+		<br><br>
+
+		<<link [[Continue studying|Library Study Science Fair]]>><<set $phase to 0>><<stress -4>><</link>><<lstress>>
+		<br>
+		<<link [[Help out (0:10)|Library Study Science Fair]]>><<set $phase to 1>><<pass 10>><<status 6>><</link>><<gcool>>
+		<br>
+	<<elseif $rng gte 51>>
+		<<generatey1>><<generatey2>>While you are minding your own business, a <<fullGroup>> start harassing you.
+		<br><br>
+
+		<<link [[Ignore them|School Library Harass]]>><<set $phase to 0>><<trauma 2>><<stress 2>><</link>><<gtrauma>><<gstress>>
+		<br>
+		<<link [[Ask the librarian for help|School Library Harass]]>><<set $phase to 1>><<status -10>><</link>><<llcool>>
+		<br>
+		<<if C.npc.Sydney.init is 1 and $sydneySeen.includes("library") and _sydney_location is "library">>
+			<<link [[Ask Sydney for help|School Library Harass]]>><<set $phase to 2>><</link>>
+			<br>
+		<</if>>
+	<<elseif _wraithEvent>>
+		After some time, you begin to feel anxious. You move to replace your textbook in the bookshelf.
+		<br><br>
+		You catch a brief glimpse of a pale face through the gaps on the other side. <<stress 12>><<ggstress>><<trauma 4>><<gtrauma>>
+		<br><br>
+		<<link [[Next|School Library]]>><<endevent>><</link>>
+		<br>
+	<<else>>
+		<<outfitChecks>>
+		<<set _bottom.integrity -= 10>>
+		<<if _bottom.integrity lte 0>>
+			As you rise from the chair, you hear a tear. Your <<bottoms>> <<is _bottom>> caught on the desk. You try to free <<= _bottom.plural ? "them" : "it">>, but <<= _bottom.plural ? "they are" : "it is">> torn clean off your body, exposing your <<= _bottomUnder?.name || "<<undies>>">>.
+			<<integritycheck no_text>>
+			<br><br>
+		<<else>>
+			As you rise from the seat, you hear a tear. Your <<bottoms>> <<is _bottom>> caught on the desk.
+			<br><br>
+		<</if>>
+		<<link [[Next|School Library]]>><<endevent>><</link>>
+		<br>
 	<</if>>
 <</widget>>

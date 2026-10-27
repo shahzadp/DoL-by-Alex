@@ -135,11 +135,11 @@
 
 <<widget "leftstealnew">>
 	<<if $lefttarget isnot "self" and !($stealtarget.includes($lefttarget)) and $NPCList[$lefttarget].clothes?.set isnot "naked">>
-		<<if (currentSkillValue('skulduggery') gte 200 or $easySteal is 1) and $enemytype is "man" and $abomination isnot 1 and !($npcrow.includes($lefttarget)) and $water isnot 1 and $punishmentposition isnot "gloryhole">>
+		<<if (currentSkillValue('skulduggery') gte 200 or $easySteal is 1) and $enemytype is "man" and $abomination isnot 1 and !($npcrow.includes($lefttarget)) and $water isnot 1 and $punishmentposition isnot "gloryhole" and $role isnot "creature">>
 			<<set $skulduggerydifficulty to (1000 - ($enemyarousal / $enemyarousalmax * 400) - $skulduggery - $enemytrust + $enemyanger) * $stealdifficulty>>
 			<<if $easySteal is 1>><<set $skulduggerydifficulty to 0>><</if>>
 			/*Missing <<skulduggerydifficulty>><<combatcrime>>*/
-			<<if !isNaN($lefttarget) and $NPCList[$lefttarget] and $NPCList[$lefttarget].clothes and $NPCList[$lefttarget].clothes.set is "naked">>
+			<<if !isNaN($lefttarget) and $NPCList[$lefttarget]?.clothes?.set is "naked">>
 			<<elseif $stealstateleft is undefined>>
 				<<set _leftaction["Steal"] to "steal">>
 			<<elseif $stealstateleft is 2>>
@@ -523,11 +523,11 @@
 
 <<widget "rightstealnew">>
 	<<if $righttarget isnot "self" and !($stealtarget.includes($righttarget)) and $NPCList[$righttarget].clothes?.set isnot "naked">>
-		<<if (currentSkillValue('skulduggery') gte 200 or $easySteal is 1) and $enemytype is "man" and $abomination isnot 1 and !($npcrow.includes($righttarget)) and $water isnot 1 and $punishmentposition isnot "gloryhole">>
+		<<if (currentSkillValue('skulduggery') gte 200 or $easySteal is 1) and $enemytype is "man" and $abomination isnot 1 and !($npcrow.includes($righttarget)) and $water isnot 1 and $punishmentposition isnot "gloryhole" and $role isnot "creature">>
 			<<set $skulduggerydifficulty to (1000 - ($enemyarousal / $enemyarousalmax * 400) - $skulduggery - $enemytrust + $enemyanger) * $stealdifficulty>>
 			<<if $easySteal is 1>><<set $skulduggerydifficulty to 0>><</if>>
 			/*Missing <<skulduggerydifficulty>><<combatcrime>>*/
-			<<if !isNaN($righttarget) and $NPCList[$righttarget] and $NPCList[$righttarget].clothes and $NPCList[$righttarget].clothes.set is "naked">>
+			<<if !isNaN($righttarget) and $NPCList[$righttarget]?.clothes?.set is "naked">>
 			<<elseif $stealstateright is undefined>>
 				<<set _rightaction["Steal"] to "steal">>
 			<<elseif $stealstateright is 2>>
@@ -929,7 +929,7 @@
 	<<if _args[0] is "right" and ($righttarget is "self" or $options.targetYourself is false or _targetnumber is 1)>>
 
 		<<set _items to window.listUniqueCarriedSextoys()>>
-		<<for _i; _i < _items.length; _i++>>
+		<<for _i = 0; _i < _items.length; _i++>>
 			<<if _items[_i].type.includes("lube")>>
 				<<set _hasLube to true>>
 				<<break>>
@@ -1288,7 +1288,7 @@
 		<<set $leftactiondefault to "lefthit">><<set $rightactiondefault to "righthit">><<set $leftaction to 0>><<set $rightaction to 0>>
 		<<if $spray gte 2>>
 			<<set _baseDamage to 400>>
-			<<set $spraystat += 2>><<spray -2>><<set $speechspray to 1>>
+			<<set $spraystat += 2>><<spray -2>><<set $speechPepperSpray to 1>>
 			<<if $enemytype is "beast">>
 				You hold the spray in both hands and unload a full blast in the <<beasttypes>> face. It whimpers.
 			<<elseif $NPCList[0].fullDescription is "Ivory Wraith">>
@@ -1305,14 +1305,14 @@
 				<<else>>
 					<<He>> clutches <<his>> face.
 				<</if>>
-				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location)>>
+				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location) and $NPCList[0].role isnot "creature">>
 					<<ggcrime "assault">><<crimeUp 500 "assault">>
 				<</if>>
 			<</if>>
 			<<effectssprayFree>>
 		<<elseif $spray gte 1>>
 			<<set _baseDamage to 200>>
-			<<set $spraystat += 1>><<spray -1>><<set $speechspray to 1>>
+			<<set $spraystat += 1>><<spray -1>><<set $speechPepperSpray to 1>>
 			<<if $enemytype is "beast">>
 				You spray the <<beasttype>> in the face. It whimpers.
 			<<elseif $NPCList[0].fullDescription is "Ivory Wraith">>
@@ -1329,7 +1329,7 @@
 				<<else>>
 					<<He>> clutches <<his>> face.
 				<</if>>
-				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location)>>
+				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location) and $NPCList[0].role isnot "creature">>
 					<<ggcrime "assault">><<crimeUp 500 "assault">>
 				<</if>>
 			<</if>>
@@ -1347,7 +1347,7 @@
 		<<set $leftactiondefault to "lefthit">><<set $leftaction to 0>>
 		<<if $spray gte 1>>
 			<<set _baseDamage to 200>>
-			<<set $spraystat += 1>><<spray -1>><<set $speechspray to 1>>
+			<<set $spraystat += 1>><<spray -1>><<set $speechPepperSpray to 1>>
 			<<if $enemytype is "beast">>
 				You spray the <<beasttype>> in the face. It whimpers.
 			<<elseif $NPCList[0].fullDescription is "Ivory Wraith">>
@@ -1364,7 +1364,7 @@
 				<<else>>
 					<<He>> clutches <<his>> face.
 				<</if>>
-				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location)>>
+				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location) and $NPCList[0].role isnot "creature">>
 					<<ggcrime "assault">><<crimeUp 500 "assault">>
 				<</if>>
 			<</if>>
@@ -1382,7 +1382,7 @@
 		<<set $rightactiondefault to "righthit">><<set $rightaction to 0>>
 		<<if $spray gte 1>>
 			<<set _baseDamage to 200>>
-			<<set $spraystat += 1>><<spray -1>><<set $speechspray to 1>>
+			<<set $spraystat += 1>><<spray -1>><<set $speechPepperSpray to 1>>
 			<<if $enemytype is "beast">>
 				You spray the <<beasttype>> in the face. It whimpers.
 			<<elseif $NPCList[0].fullDescription is "Ivory Wraith">>
@@ -1399,7 +1399,7 @@
 				<<else>>
 					<<He>> clutches <<his>> face.
 				<</if>>
-				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location)>>
+				<<if !$npc.includesAny("Eden", "Morgan", "Kylar", "Gwylan") and !$abomination and !["island"].includes($location) and $NPCList[0].role isnot "creature">>
 					<<ggcrime "assault">><<crimeUp 500 "assault">>
 				<</if>>
 			<</if>>
@@ -1463,7 +1463,7 @@
 			You rummage through the <<persons>> <<wallet $lefttarget>>. <<encountersteal>>
 			<<set $leftactiondefault to "rest">><<set $rightactiondefault to "rest">>
 		<<else>>
-			<<brat 30 $lefttarget>><<set $speechsteal to 1>>
+			<<brat 30 $lefttarget>><<set $speechSteal to 1>>
 			You rummage inside the <<persons>> <<wallet $lefttarget>>. <<He>> notices and shifts <<his>> valuables away from your hands.
 		<</if>>
 	<</if>>
@@ -1486,7 +1486,7 @@
 				You sneak your hand into the <<persons>> <<wallet $lefttarget>>. <<encountersteal>><<set $leftactiondefault to "rest">>
 			<</if>>
 		<<else>>
-			<<brat 30 $lefttarget>><<set $speechsteal to 1>>
+			<<brat 30 $lefttarget>><<set $speechSteal to 1>>
 			<<if $stealstateleft is undefined>>
 				You run your hand over the <<persons>> skin, until it rests on <<his>> <<wallet $lefttarget>>. <<He>> isn't fooled. <<He>> shifts <<his>> valuables away from you.
 			<<elseif $stealstateleft is 0>>
@@ -1518,7 +1518,7 @@
 				You sneak your hand into the <<persons>> <<wallet $righttarget>>. <<encountersteal>><<set $rightactiondefault to "rest">>
 			<</if>>
 		<<else>>
-			<<brat 30 $righttarget>><<set $speechsteal to 1>>
+			<<brat 30 $righttarget>><<set $speechSteal to 1>>
 			<<if $stealstateright is undefined>>
 				You run your hand over the <<persons>> skin, until it rests on <<his>> <<wallet $righttarget>>. <<He>> isn't fooled. <<He>> shifts <<his>> valuables away from you.
 			<<elseif $stealstateright is 0>>
@@ -2339,7 +2339,7 @@
 				<<set $leftactiondefault to "leftcovervaginalewd">>
 				<<set $rightactiondefault to "rightcovervaginalewd">>
 			<<else>>
-				<<brat 2>><<set $leftarm to "vagina">><<set $rightarm to "vagina">><<set $vaginause to "cover">><<set $speechcovervagina to 1>>
+				<<brat 2>><<set $leftarm to "vagina">><<set $rightarm to "vagina">><<set $vaginause to "cover">><<set $speechCoverVagina to 1>>
 			<</if>>
 		<<case "left">>
 			<<set $_hands to _args[0] + " hand">>
@@ -2352,7 +2352,7 @@
 				<<set $leftarm to "vagina">><<set $vaginause to "cover">>
 				<<set $leftactiondefault to "leftcovervaginalewd">>
 			<<else>>
-				<<brat 1>><<set $leftarm to "vagina">><<set $vaginause to "cover">><<set $speechcovervagina to 1>>
+				<<brat 1>><<set $leftarm to "vagina">><<set $vaginause to "cover">><<set $speechCoverVagina to 1>>
 			<</if>>
 		<<case "right">>
 			<<set $_hands to _args[0] + " hand">>
@@ -2365,7 +2365,7 @@
 				<<set $rightarm to "vagina">><<set $vaginause to "cover">>
 				<<set $rightactiondefault to "rightcovervaginalewd">>
 			<<else>>
-				<<brat 1>><<set $rightarm to "vagina">><<set $vaginause to "cover">><<set $speechcovervagina to 1>>
+				<<brat 1>><<set $rightarm to "vagina">><<set $vaginause to "cover">><<set $speechCoverVagina to 1>>
 			<</if>>
 	<</switch>>
 	<<if playerChastity("vagina")>>
@@ -2391,7 +2391,7 @@
 		<<else>>
 			You tease your pussy with your <<print $_hands>>, pointing at it.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>>
+		<<submission 1>><<set $speechCameraPose to 1>>
 	<<elseif $_hypnosis>>
 		You intend to cover your vagina,
 		<<if $_hypnosis is "accepted">>
@@ -2416,7 +2416,7 @@
 		<<else>>
 			You gently tease your pussy with your <<print $_hands>>, pointing at it.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>><<hypnotised 1>>
+		<<submission 1>><<set $speechCameraPose to 1>><<hypnotised 1>>
 		<<if $_hypnosis is "forced" and $daily.stalkWillpower lt 20>>
 			<<gwillpower>><<willpower 1>>
 			<<set $daily.stalkWillpower to ($daily.stalkWillpower or 0) + 1>>
@@ -2457,7 +2457,7 @@
 				<<set $leftactiondefault to "leftcoverpenislewd">>
 				<<set $rightactiondefault to "rightcoverpenislewd">>
 			<<else>>
-				<<brat 2>><<set $leftarm to "coverpenis">><<set $rightarm to "coverpenis">><<set $penisuse to "cover">><<set $speechcoverpenis to 1>>
+				<<brat 2>><<set $leftarm to "coverpenis">><<set $rightarm to "coverpenis">><<set $penisuse to "cover">><<set $speechCoverPenis to 1>>
 			<</if>>
 		<<case "left">>
 			<<set $_hands to _args[0] + " hand">>
@@ -2472,7 +2472,7 @@
 				<<set $leftactiondefault to "leftcoverpenislewd">>
 				<<set $rightactiondefault to "rightcoverpenislewd">>
 			<<else>>
-				<<brat 1>><<set $leftarm to "coverpenis">><<set $penisuse to "cover">><<set $speechcoverpenis to 1>>
+				<<brat 1>><<set $leftarm to "coverpenis">><<set $penisuse to "cover">><<set $speechCoverPenis to 1>>
 			<</if>>
 		<<case "right">>
 			<<set $_hands to _args[0] + " hand">>
@@ -2485,7 +2485,7 @@
 				<<set $rightarm to "coverpenis">><<set $penisuse to "cover">>
 				<<set $rightactiondefault to "rightcoverpenislewd">>
 			<<else>>
-				<<brat 1>><<set $rightarm to "coverpenis">><<set $penisuse to "cover">><<set $speechcoverpenis to 1>>
+				<<brat 1>><<set $rightarm to "coverpenis">><<set $penisuse to "cover">><<set $speechCoverPenis to 1>>
 			<</if>>
 	<</switch>>
 	<<if playerChastity("penis")>>
@@ -2511,7 +2511,7 @@
 		<<else>>
 			You tease your penis with your left hand, tracing a finger down the length.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>>
+		<<submission 1>><<set $speechCameraPose to 1>>
 	<<elseif $_hypnosis>>
 		You intend to cover your penis,
 		<<if $_hypnosis is "accepted">>
@@ -2536,7 +2536,7 @@
 		<<else>>
 			You gently tease your penis with your left hand, tracing a finger down the length.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>><<hypnotised 1>>
+		<<submission 1>><<set $speechCameraPose to 1>><<hypnotised 1>>
 		<<if $_hypnosis is "forced" and $daily.stalkWillpower lt 20>>
 			<<gwillpower>><<willpower 1>>
 			<<set $daily.stalkWillpower to ($daily.stalkWillpower or 0) + 1>>
@@ -2612,7 +2612,7 @@
 		<<else>>
 			You grope your <<bottom>> with your <<print $_hands>>, giving it small slaps.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>>
+		<<submission 1>><<set $speechCameraPose to 1>>
 	<<elseif $_hypnosis>>
 		You intend to cover your ass
 		<<if $_hypnosis is "accepted">>
@@ -2625,7 +2625,7 @@
 		<<else>>
 			You grope your <<bottom>> with your <<print $_hands>>, giving it a small slap.
 		<</if>>
-		<<submission 1>><<set $speechcamerapose to 1>><<hypnotised 1>>
+		<<submission 1>><<set $speechCameraPose to 1>><<hypnotised 1>>
 		<<if $_hypnosis is "forced" and $daily.stalkWillpower lt 20>>
 			<<gwillpower>><<willpower 1>>
 			<<set $daily.stalkWillpower to ($daily.stalkWillpower or 0) + 1>>

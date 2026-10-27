@@ -24,6 +24,7 @@ window.isGenitalMismatch = isGenitalMismatch;
  */
 function isCrossdressing() {
 	if (
+		["f", "m"].includes(V.player.sex) &&
 		getVisibleClothesList().some(item => ["f", "m"].includes(item.gender) && item.gender !== V.player.sex && item.gender === V.player.gender_appearance) &&
 		!isGenitalMismatch()
 	) {

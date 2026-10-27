@@ -230,7 +230,7 @@ Wolfshrooms are aphrodisiacs and suppress fear responses. Consuming them certain
 
 				<<link [[Next|Gwylan Request Clothes Waiter Tea]]>><</link>>
 				<br>
-			<<elseif _gwylanLovePercent gte 50 and C.npc.Gwylan.lust gte 25>>
+			<<elseif _gwylanLovePercent gte 40 and C.npc.Gwylan.lust gte 25>>
 				<<He>> looks up at you with a thoughtful expression on <<his>> face.
 				<<if $worn.neck.collared is 1>>
 					"You even brought a collar. You'd be ready to serve me," <<he>> says with a wink.
@@ -1071,7 +1071,7 @@ You hand the vials over to Gwylan.
 
 <<if !$gwylanSeen.includes("request_preen")>>
 	"I never thought I would see feathers like this again.
-	The <<if ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or $greathawkmonster is 2>>harpies<<else>>hawks<</if>> were thought to be extinct."
+	The <<if resolveIfNamedBeastIsMonster("greathawk")>>harpies<<else>>hawks<</if>> were thought to be extinct."
 	<<His>> voice grows fainter as <<he>> moves deeper into the shop. "To think that you have gotten so close to one as to inherit its wings."
 	<br><br>
 
@@ -1090,7 +1090,7 @@ You hand the vials over to Gwylan.
 
 	<<He>> giggles, clamping <<his>> hand over <<his>> mouth. "Sorry," <<he>> says. "I'm more quiet than I mean to be."
 <<else>>
-	"I still can't believe it. If the <<if ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or $greathawkmonster is 2>>harpies<<else>>hawks<</if>> are returning, what else could be out there?"
+	"I still can't believe it. If the <<if resolveIfNamedBeastIsMonster("greathawk")>>harpies<<else>>hawks<</if>> are returning, what else could be out there?"
 	<<His>> voice grows fainter as <<he>> moves deeper into the shop. "What should I make this time? A restorative? Lurker repellent? Oh, maybe..."
 	<br><br>
 
@@ -1111,7 +1111,7 @@ You hand the vials over to Gwylan.
 <<effects>><<run statusCheck("Gwylan")>><<set _tf to checkTFparts()>>
 <<set _selfFeatherNum to 1>>
 Gwylan holds up a few instruments. A screw-top jar. A thin brush.
-A preserved beak<<if !($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or $greathawkmonster is 0>> that looks eerily close to the Great Hawk's<</if>>.
+A preserved beak<<if !resolveIfNamedBeastIsMonster("greathawk")>> that looks eerily close to the Great Hawk's<</if>>.
 <<if !$gwylanSeen.includes("request_preen")>>
 	They're covered with dust. "I admit they need a bit of a clean," <<he>> says, wiping them down with <<his>> sleeve.
 <<else>>
@@ -2874,6 +2874,9 @@ Gwylan leads you back to the shop. "I'm looking forward to what we can do with t
 				<<set $_shops to $_request.details.shops>>
 				<<set $_shopPrimary to $_shops.includes("clothing") ? "clothing" : $_shops[0]>>
 				<<set $_shopText to $_shops.filter(shop => shop !== $_shopPrimary)>>
+				<<for _i to 0; _i lt $_shopText.length; _i++>>
+					<<set $_shopText[_i] to ($_shopText[_i] is "baitShop" ? "bait" : $_shopText[_i])>>
+				<</for>>
 				"There's <<if $_outfit>>an outfit<<else>>a piece of clothing<</if>> that caught my eye
 				over at the <<= $_shopPrimary>> shop<<if $_shopText.length gte 1>>, although I believe it's also stocked at the <<= formatList($_shopText, "and")>> shop<<if $_shopText.length gte 2>>s<</if>><</if>>.
 				<<set $_shoppingList to $_request.items.filter(piece => !piece.skip && !piece.alt)>>

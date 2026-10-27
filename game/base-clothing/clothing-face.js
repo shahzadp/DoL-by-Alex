@@ -1632,6 +1632,7 @@ function initFace() {
 			pattern: 0,
 			pattern_options: ["blank", "aloof", "anime", "cat", "disapproving", "frilled", "quilted", "sleeping"],
 			pattern_layer: "primary",
+			pattern_name: "designs",
 			gender: "n",
 			warmth: 1,
 			set: "face",

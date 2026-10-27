@@ -713,7 +713,7 @@ function fishingMinigameStart(fishKey) {
 		armFatigueDifficulty: minigame.armFatigueDifficulty,
 	};
 
-	if (V.debug === 1) {
+	if (V.debug) {
 		fishingMinigameValidateBehavior(minigame.behavior, setup.fishingMinigame.behaviors[minigame.behavior], minigame.maxStamina);
 	}
 

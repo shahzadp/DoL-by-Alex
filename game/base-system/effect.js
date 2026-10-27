@@ -349,7 +349,7 @@ function effects() {
 	if (isPregnancyEnding()) {
 		sWikifier(
 			`<span class="red">Your waters have broken.</span> ${
-				["asylum", "prison", "hospital"].includes(V.location) ? "You need to find help, fast!" : "You need to head to the hospital, fast!"
+				["asylum", "prison", "hospital", "mines"].includes(V.location) ? "You need to find help, fast!" : "You need to head to the hospital, fast!"
 			} <<ggstress>>`
 		);
 		br();
@@ -950,7 +950,7 @@ function effects() {
 					break;
 				case "withdrawals":
 					sWikifier(
-						'<span class="red">Your body craves nectar and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique_loss 4>><<lphysique>>'
+						'<span class="red">Your body craves nectar and has begun to suffer from withdrawals.</span> <<stress 12>><<ggstress>><<trauma 12>><<ggtrauma>><<physique -4>><<lphysique>>'
 					);
 					br();
 					break;
@@ -1137,12 +1137,12 @@ function effects() {
 			}
 			if (!T.hasVaginaParasiteForEvent) {
 				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function (event) {
-					return !event.includes("vagina");
+					return !event?.includes("vagina");
 				});
 			}
 			if (!T.hasAnusParasiteForEvent) {
 				V.daily.parasiteEvent = V.daily.parasiteEvent.filter(function (event) {
-					return !event.includes("anus");
+					return !event?.includes("anus");
 				});
 			}
 		}
@@ -1214,8 +1214,10 @@ function effects() {
 						break;
 				}
 			});
-			if (arousalGain) sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
-			br();
+			if (arousalGain) {
+				sWikifier(`<<arousal ${Math.clamp(arousalGain, 0, 10000)}>>`);
+				br();
+			}
 			delete V.daily.parasiteEvent;
 		}
 	}

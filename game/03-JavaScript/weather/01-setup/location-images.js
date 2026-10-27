@@ -2977,6 +2977,40 @@ setup.LocationImages = {
 			},
 		},
 	},
+	mines: {
+		folder: "mines",
+		base: {
+			default: {
+				image: "base.png",
+			},
+		},
+		emissive: {
+			lights: {
+				image: "emissive.png",
+				color: "#deae66",
+				size: 4,
+				animation: {
+					frameDelay: 200,
+				},
+			},
+		},
+		weather: {
+			fogDistributionCurve: 0,
+			rainSplashEnabled: false,
+			fogEnabled: false,
+
+			groundBounds: {
+				splashes: {
+					top: 0,
+					bottom: 0,
+				},
+				fog: {
+					top: 0,
+					bottom: 0,
+				},
+			},
+		},
+	},
 	moor: {
 		folder: "moor",
 		base: {

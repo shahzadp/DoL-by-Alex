@@ -126,7 +126,7 @@ You are downstairs in Alex's cottage. It's tight, and cosy. There's a kitchen wi
 <<elseif npcIsPregnant("Alex") and !talkedAboutPregnancy("Alex","pc") and npcBellySize("Alex") gte 1>>
 	<<alex_cottage_pregnancy_reveal>>
 
-<<elseif ($farm_countdown lte 0 or $farm_countdown is undefined) and ($renttime lte -2 or ($renttime lte 0 and Time.hour gte 4 and Time.hour lte 21))>>
+<<elseif ($farm_countdown lte 0 or $farm_countdown is undefined) and ($rentTime lte -2 or ($rentTime lte 0 and Time.hour gte 4 and Time.hour lte 21))>>
 	<<unset $farm_countdown>><<unset $baileyReunionScene>>
 	<span class="red">You hear a knock at the door.</span>
 	<br><br>
@@ -432,9 +432,9 @@ You snuggle under the covers.
 			<<wetDream>>
 		<<elseif !_wakingEffect>>
 			You sleep soundly.
-			<br><br>
 		<</if>>
 		<<if !_sleepinterrupt and (Time.hour gt 21 or Time.hour lt 6) and $bus is "farm_alex_room" or $alex_bed is "player" and !_alexWakeNursery>>
+			<br><br>
 			<<switch random(1, 6)>>
 				<<case 1>>
 					<<if Time.hour is 5>>
@@ -463,6 +463,7 @@ You snuggle under the covers.
 	<</if>>
 	<<sleepeffects>>
 	<<if $remywake is 1>>
+		<br><br>
 		<<npc Alex>><<person1>>
 		"Wake up!" Someone shakes your shoulders. It's Alex. <span class="red">"<<nnpc_Hes Remy>> here,"</span> <<he>> says. "Remy. We can do this. Get ready, I'll
 		<<if $farm.tower_guard>>
@@ -485,6 +486,7 @@ You snuggle under the covers.
 		<<link [[Prepare|Farm Assault Wardrobe]]>><<endevent>><<set $phase to 1>><<unset $remywake>><</link>>
 		<br>
 	<<elseif _sleepinterrupt>>
+		<br><br>
 		<<npc Alex>><<person1>>
 		<<if _alexWakeNursery is 1>>
 			You awake to the sound of the staircase to the loft creaking.
@@ -694,7 +696,7 @@ Alex holds your body tighter and begins humping your rear faster.
 	<<else>>
 		Without warning, Alex bucks <<his>> hips against your mouth. <<His>> orgasm covers your face in lewd fluids. You lick your lips. It tastes oddly nice. <<bodyliquid "face" "goo">>
 	<</if>>
-	<<arousal 1500>><<garousal>>
+	<<arousal 1500>><<garousal>><<oralejacstat>><<ejacstat>><<cumswallow "human" null npcSemenMod(C.npc.Alex.penissize)>>
 <<else>> /* Give Alex a hand job */
 	<<if $NPCList[0].penis isnot "none">>
 		<<His>> body convulses in orgasmic bliss, covering your hands in cum. <<arousal 1500 "mouth">><<garousal>><<if random(0,1) is 1>><<bodyliquid "rightarm" "semen">><<else>><<bodyliquid "leftarm" "semen">><</if>>
@@ -710,7 +712,7 @@ Alex holds your body tighter and begins humping your rear faster.
 	<<link [[Next |Farm Alex Somno Orgasm]]>><</link>>
 <<else>>
 	<<if $phase is 0>>
-		The tension leaves <<his>> body, and <<he>> sighs, apparently having climaxed. <<He>> clings to you, and you smile. <<stress -6>><<lstress>>
+		The tension leaves <<his>> body, and <<he>> sighs, apparently having climaxed. <<He>> clings to you, and you smile. <<stress -6>><<lstress>><<npcincr Alex lust -1>><<llust>>
 	<<else>>
 		<<if $NPCList[0].penis isnot "none">>
 			You tuck <<his>> dick back into <<his>> boxers.
@@ -964,7 +966,7 @@ Alex groans and then yawns. <<He>> hugs onto you tighter, resting <<his>> head o
 	<<He>> glances between you and <<his>> groin. "How about a night ride?" <<he>> asks, smirking.
 	<br><br>
 
-	<<link [[Accept|Farm Alex Somno Wake Sex]]>><<set $sexstart to 1>><</link>>
+	<<link [[Accept|Farm Alex Somno Wake Sex]]>><<set $sexstart to 1>><</link>><<promiscuous1>>
 	<br>
 	<<link [[Reject|Farm Alex Somno Wake Reject]]>><</link>>
 <<else>>
@@ -983,6 +985,8 @@ Alex groans and then yawns. <<He>> hugs onto you tighter, resting <<his>> head o
 	<<maninit>>
 
 	You wrap your arms around Alex. <<He>> returns the gesture before ravaging your neck with kisses and love bites. <<arousal 600>><<garousal>>
+	<br><br>
+	<<promiscuity1>>
 	<<set $enemytrust += 100>>
 <</if>>
 
@@ -3227,7 +3231,7 @@ Alex talks on the phone, trying to keep <<his>> voice steady.
 
 
 
-<<set $renttime to 7>><<set $rentday to Time.weekDay>>
+<<set $rentTime to 7>>
 
 
 :: Farm Cottage Bailey Confront
@@ -3323,8 +3327,8 @@ property."
 <<effects>>
 <<set $baileypaychain to 0>>
 <<set $baileyRefusedToPay += 1>>
-<<set $baileyRefusedToPayTotal += $rentmoney + ($babyRent || 0)>>
-<<set $baileyRefusedToPayTotalStat += $rentmoney + ($babyRent || 0)>>
+<<set $baileyRefusedToPayTotal += $rentMoney + ($babyRent || 0)>>
+<<set $baileyRefusedToPayTotalStat += $rentMoney + ($babyRent || 0)>>
 
 Alex slams the door.
 <<if $bailey_encroach is undefined>>
@@ -4515,7 +4519,7 @@ You start to push with all the strength you have. The pain overwhelms you. <<ggp
 The pain becomes too much for you to endure as you continue pushing. Everything fades away.
 <br><br>
 
-<<link [[Next (2:00)|Farm PC Birth 5]]>><<run beginPlayerBirth()>><<pass 120>><</link>>
+<<link [[Next (2:00)|Farm PC Birth 5]]>><<run setPlayerLitterBorn()>><<pass 120>><</link>>
 
 :: Farm PC Birth 5
 <<effects>>
@@ -4964,7 +4968,7 @@ You keep listening to Alex, not daring to interrupt <<him>>. <<He>> constantly a
 <<effects>>
 <<loadNPC 1 "alexs_parent1">>
 <<loadNPC 2 "alexs_parent2">>
-"<<person2>><<Ma>> is kind of busy right now, but he said <<person3>><<father>>'s at the city and that <<he>> agreed to help us, it shouldn't take long," <<person1>><<he>> says looking more excited than before.
+<<person2>>"<<Ma>> is kind of busy right now, but he said <<person3>><<father>>'s at the city and that <<he>> agreed to help us, it shouldn't take long," <<person1>><<he>> says looking more excited than before.
 <br><br>
 
 You don't have to wait much until a vehicle approaches and honks.
@@ -4996,7 +5000,7 @@ Alex blushes and turns <<person1>><<his>> face away.
 :: Farm Alex Orphanage Trip 2
 <<effects>>
 
-You soon arrive at the orphanage, where your <<if childrenCountBetweenParents("pc","Alex") gte 2>>children are<<else>>child is<</if>>, Alex looks horrified when <<he>> see the state the orphanage is in.
+You soon arrive at the orphanage, where your <<if childrenCountBetweenParents("pc","Alex") gte 2>>children are<<else>>child is<</if>>, Alex looks horrified when <<person1>><<he>> see the state the orphanage is in.
 <br><br>
 
 "Could you please go and get <<if childrenCountBetweenParents("pc","Alex") gte 2>>them<<else>>it<</if>>?" Alex asks. "I'm not sure if I can go in there."

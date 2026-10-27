@@ -1,0 +1,105 @@
+:: Sky Testing
+<<if $debugSkyTestingTemperature isnot undefined>>
+	<<set Weather.Temperature.override.outside to $debugSkyTestingTemperature>>
+<</if>>
+
+<span class="gold">Date:</span> <<= Time.monthName>> <<= Time.monthDay>>, <<= Time.year>> <<ampm>>
+<br>
+<span class="gold">Weather:</span> <<= Weather.name>> (<<= Weather.precipitation>>), <<= Weather.toSelectedString(Weather.temperature, 1)>>, fog <<= round(Weather.fog, 1)>>
+<br>
+<span class="gold">Blood moon:</span> <<= Weather.bloodMoon ? "yes" : "no">> | <span class="gold">Location image:</span> <<= setup.Locations.get()>>
+<br><br>
+
+<span class="gold">Time</span>
+<br>
+<<set _dateMonth to Time.month>>
+<<set _dateDay to Time.monthDay>>
+<<set _dateHour to Time.hour>>
+<<set _monthOptions to {}>>
+<<for _monthIndex, _monthName range Time.monthNames>>
+	<<set _monthOptions[_monthName] to _monthIndex + 1>>
+<</for>>
+<<set _hourOptions to {}>>
+<<for _hour to 0; _hour lt 24; _hour++>>
+	<<set _hourOptions[ampm(_hour, 0)] to _hour>>
+<</for>>
+Set date:
+<<listbox "_dateMonth" autoselect>>
+	<<optionsfrom _monthOptions>>
+<</listbox>>
+<<listbox "_dateDay" autoselect>>
+	<<optionsfrom Array.from({ length: 31 }, (value, index) => index + 1)>>
+<</listbox>>
+<<listbox "_dateHour" autoselect>>
+	<<optionsfrom _hourOptions>>
+<</listbox>>
+<<link [[Set date|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, _dateMonth, Math.min(_dateDay, new DateTime(Time.year, _dateMonth).lastDayOfMonth), _dateHour)`>><</link>>
+<br>
+<<link [[-1 hour|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.date).addHours(-1)`>><</link>> |
+<<link [[+1 hour|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.date).addHours(1)`>><</link>> |
+<<link [[Dawn|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.monthDay, 6)`>><</link>> |
+<<link [[Noon|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.monthDay, 12)`>><</link>> |
+<<link [[Dusk|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.monthDay, 19)`>><</link>> |
+<<link [[Night|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.monthDay, 21)`>><</link>> |
+<<link [[Midnight|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.monthDay, 0)`>><</link>>
+<br>
+<<link [[-1 day|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.date).addDays(-1)`>><</link>> |
+<<link [[+1 day|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.date).addDays(1)`>><</link>> |
+<<link [[Spring|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, 3, 1, Time.hour)`>><</link>> |
+<<link [[Summer|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, 6, 1, Time.hour)`>><</link>> |
+<<link [[Autumn|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, 9, 1, Time.hour)`>><</link>> |
+<<link [[Winter|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, 12, 1, Time.hour)`>><</link>> |
+<<link [[Blood moon|Sky Testing]]>><<debugSkyTestingSetDate `new DateTime(Time.year, Time.month, Time.lastDayOfMonth).addDays(1)`>><</link>>
+<br><br>
+
+<span class="gold">Weather</span>
+<br>
+<span id="cheatsWeather"><<cheatsWeather>></span>
+<br>
+<<link [[Rain|Sky Testing]]>><<set $debugSkyTestingTemperature to 10>><</link>> |
+<<link [[Snow|Sky Testing]]>><<set $debugSkyTestingTemperature to -5>><</link>>
+<br>
+<span class="description">Rain (10°C) and Snow (-5°C) only show when the weather has precipitation</span>
+<br>
+<<link [[Snow on the ground|Sky Testing]]>><<set $weatherObj.snow to setup.WeatherTemperature.snow.maxAccumulation>><</link>> |
+<<link [[No snow on the ground|Sky Testing]]>><<set $weatherObj.snow to 0>><</link>>
+<br>
+<<cheatsFog>>
+<br>
+
+<span class="gold">Effects</span>
+<br>
+<<link [[Toggle fireworks|Sky Testing]]>><<set $debugFireworks to !$debugFireworks>><</link>> (<<= $debugFireworks ? "on" : "off">>)
+<br>
+<<link [[Toggle weather band bounds|Sky Testing]]>><<set $debugWeatherBandBounds to !$debugWeatherBandBounds>><</link>> (<<= $debugWeatherBandBounds ? "on" : "off">>)
+<br><br>
+
+<span class="gold">Location</span>
+<br>
+<<listbox "$location" autoselect>>
+	<<optionsfrom Object.keys(setup.LocationImages).filter(name => name !== "banner")>>
+<</listbox>>
+<<run $(() => {
+	$("#listbox-location").on("change", () => {
+		V.bus = V.location;
+		Engine.play("Sky Testing");
+	});
+})>>
+<br><br>
+
+<<link [[Leave|$lastPassage]]>>
+	<<unfreezePlayerStats>>
+	<<run Weather.sidebar.initSun()>>
+	<<unset $lastPassage>>
+<</link>>
+
+:: Widgets Sky Testing [widget]
+<<widget "debugSkyTestingSetDate">>
+	<<set _weatherBeforeTimeChange to Weather.name>>
+	<<set _fogBeforeTimeChange to Weather.fog>>
+	<<run Time.timeTravel(_args[0])>>
+	<<run Weather.sidebar.initSun()>>
+	<<run Weather.Temperature.updateTemperature()>>
+	<<run Weather.set(_weatherBeforeTimeChange, true, 6 * 60)>>
+	<<run Weather.FogGeneration.setFog(_fogBeforeTimeChange)>>
+<</widget>>

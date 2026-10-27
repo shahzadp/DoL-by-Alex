@@ -26,7 +26,7 @@ IMPORTANT:
 	<<if !_globalThemeDefaults>>
 		<<set _globalThemeDefaults to {}>>
 	<</if>>
-	<<if $debug is 1>>
+	<<if $debug>>
 		/*<label><<checkbox "$notifyUpdate" false true autocheck>> Notify when there's a new game update available</label>
 		<br>*/
 		/*<<link "Check for updates">>
@@ -129,7 +129,7 @@ IMPORTANT:
 			<label><<radiovar "$options.pepperSprayDisplay" "none">><<updatesidebarimg>><</radiovar>> Hidden</label>
 		</div>
 		<div class="settingsToggleItem">
-			<label><<checkbox "$options.tipdisable" "t" "f" autocheck>> Enable sidebar hints and tips</label>
+			<label><<checkbox "$options.tipdisable" true false autocheck>> Enable sidebar hints and tips</label>
 		</div>
 		<div class="settingsToggleItem">
 			<label><<checkbox "$options.debugdisable" "t" "f" autocheck>> Enable additional error messages</label>
@@ -429,20 +429,26 @@ IMPORTANT:
 				Uncheck to disable all text animations
 			</label>
 			<br>
+			<label>
 			<<checkbox "$options.textAnimsDrunk" false true autocheck { onToggle: t => {
 				$("#prevDrunk").replaceWith(Wikifier.wikifyEval('<span id="prevDrunk" @class="basicDrunkCss(3)">Drunk sway</span>'));
 			}}>>
 			<span id="prevDrunk" @class="basicDrunkCss(3)">Drunk sway</span>
+			</label>
 			<br>
+			<label>
 			<<checkbox "$options.textAnimsHeat" false true autocheck { onToggle: t => {
 				$("#prevHeat").replaceWith(Wikifier.wikifyEval('<span id="prevHeat" @class="basicJitterCss()">Heat/rut jitter</span>'));
 			}}>>
 			<span id="prevHeat" @class="basicJitterCss()">Heat/rut jitter</span>
+			</label>
 			<br>
+			<label>
 			<<checkbox "$options.textAnimsHypno" false true autocheck { onToggle: t => {
 				$("#prevHypno").replaceWith(Wikifier.wikifyEval('<span id="prevHypno"><<hypnosisText "Hypnosis spiral">></span>'));
 			}}>>
 			<span id="prevHypno"><<hypnosisText "Hypnosis spiral">></span>
+			</label>
 		</div>
 	</div>
 <</widget>>
@@ -635,22 +641,6 @@ IMPORTANT:
 		<br>
 		Images disabled
 	<</if>>
-	<hr>
-	<div class="settingsGrid">
-		<div class="settingsHeader options">History Depth</div>
-		<div class="settingsToggleItem">
-			Enables going back in history up to N-1 passages. Useful for reporting bugs or undoing decisions.
-			<hr>
-			<label>
-				<<checkbox "$options.historyControls" false true autocheck>> Display history controls in the sidebar
-			</label>
-		</div>
-		<div class="settingsToggleItem">
-			<span class="gold">States saved to memory:</span>
-			<<numberslider "$options.maxStates" `$options.maxStates gt 20 ? 20 : $options.maxStates` 1 20 1 $ironmanmode>>
-			<br><br>
-		</div>
-	</div>
 <</widget>>
 
 <<widget "setupCombatLightingDemo">>
@@ -708,7 +698,7 @@ IMPORTANT:
 		<div class="settingsToggleItem">
 			<label><<checkbox "$options.showDebugRenderer" false true autocheck>> Enable renderer debugger</label>
 		</div>
-		<<if $debug is 1 or $options.showCombatTools>>
+		<<if $debug or $options.showCombatTools>>
 			<div class="settingsToggleItem">
 				<label><<checkbox "$options.showCombatTools" false true autocheck>> Enable combat tooling</label>
 			</div>
@@ -736,6 +726,27 @@ IMPORTANT:
 			<br><br>
 			<input type="button" value="Set" onclick='zoom()'/>
 			<input type="button" value="Reset" onclick='zoom(100)'/>
+		</div>
+	</div>
+	<hr>
+	<div class="settingsGrid">
+		<div class="settingsHeader options">History Depth</div>
+		<<if not $ironmanmode>>
+			<div class="settingsToggleItem">
+				Enables going back in history up to N-1 passages. Useful for reporting bugs or undoing decisions.
+				<hr>
+				<label>
+					<<checkbox "$options.historyControls" false true autocheck>> Display history controls in the sidebar
+				</label>
+				<<if $debug is 1>>
+					<span class="tooltip-anchor linkBlue" tooltip="<span class='linkBlue'>/ and - on the numpad can be used for moving through passage history. * reloads the passage with new rng.</span>">(?)</span>
+				<</if>>
+			</div>
+		<</if>>
+		<div class="settingsToggleItem">
+			<span class="gold">States saved to memory:</span>
+			<<numberslider "$options.maxStates" `$options.maxStates gt 100 ? 100 : $options.maxStates` 1 100 1>>
+			<br><br>
 		</div>
 	</div>
 <</widget>>

@@ -114,6 +114,14 @@ setup.debugMenu.eventList = {
 			widgets: [``],
 		},
 		{
+			link: [`Make Rent Due`, stayOnPassageFn],
+			widgets: [`<<set $rentTime to -1>>`],
+		},
+		{
+			link: [`Max Thug Anger`, stayOnPassageFn],
+			widgets: [`<<set $rentThug to { anger: 5, angerCountdown: 0, traps: [] }>>`],
+		},
+		{
 			link: [`Enemy Trust +++`, stayOnPassageFn],
 			widgets: [`<<set $enemytrust += 2000>>`, `<<set $enemyanger -= 1000>>`],
 		},
@@ -259,31 +267,38 @@ setup.debugMenu.eventList = {
 		},
 		{
 			link: [`Make all beasts male`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 100>>`, `<<set $settings.beastMaleChanceFemale to 100>>`],
-		},
-		{
-			link: [`Make all beasts female`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 0>>`, `<<set $settings.beastMaleChanceMale to 0>>`, `<<set $settings.beastMaleChanceFemale to 0>>`],
-		},
-		{
-			link: [`Make all beasts cuntboys`, stayOnPassageFn],
 			widgets: [
-				`<<set $settings.beastMaleChanceMale to 100>>`,
-				`<<set $settings.beastMaleChanceFemale to 100>>`,
-				`<<set $settings.maleNPCVaginaChance to 100>>`,
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].maleChance = 100;
+						V.settings.beastSettings[type].maleChanceMale = 100;
+						V.settings.beastSettings[type].maleChanceFemale = 100;
+					});
+				},
 			],
 		},
 		{
-			link: [`Make all beasts dickgirls`, stayOnPassageFn],
+			link: [`Make all beasts female`, stayOnPassageFn],
 			widgets: [
-				`<<set $settings.beastMaleChanceMale to 0>>`,
-				`<<set $settings.beastMaleChanceFemale to 0>>`,
-				`<<set $settings.femaleNPCPenisChance to 100>>`,
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].maleChance = 0;
+						V.settings.beastSettings[type].maleChanceMale = 0;
+						V.settings.beastSettings[type].maleChanceFemale = 0;
+					});
+				},
 			],
 		},
 		{
 			link: [`Make all beasts monster people`, stayOnPassageFn],
-			widgets: [`<<set $settings.monsterChance to 100>>`, `<<set $settings.monsterHallucinationsOnly to false>>`],
+			widgets: [
+				() => {
+					C.beastSettingTypes.forEach(type => {
+						V.settings.beastSettings[type].monsterChance = 100;
+						V.settings.beastSettings[type].hallucinationsOnly = false;
+					});
+				},
+			],
 		},
 		{
 			text_only: `\n`,
@@ -303,6 +318,14 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Winter`, stayOnPassageFn],
 			widgets: [`<<run Time.timeTravel(new DateTime(Time.year, 12))>>`],
+		},
+		{
+			link: [`Toggle Weather Band Bounds`, stayOnPassageFn],
+			widgets: [`<<set $debugWeatherBandBounds to !$debugWeatherBandBounds>>`],
+		},
+		{
+			link: [`Sky Testing`, `Sky Testing`],
+			widgets: [`<<if $passage isnot "Sky Testing">><<set $lastPassage to $passage>><<freezePlayerStats>><</if>>`],
 		},
 		{
 			text_only: `\n`,
@@ -494,10 +517,6 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Disable Debug Lines`, stayOnPassageFn],
 			widgets: [`<<set $debugLines to false>>`],
-		},
-		{
-			link: [`Toggle Weather Band Bounds`, stayOnPassageFn],
-			widgets: [`<<set $debugWeatherBandBounds to !$debugWeatherBandBounds>>`],
 		},
 		{
 			text_only: `\n`,
@@ -953,7 +972,7 @@ setup.debugMenu.eventList = {
 		{
 			link: [`Bailey selling Robin`, `Orphanage`],
 			widgets: [
-				`<<set $renttime to 0>>`,
+				`<<set $rentTime to 0>>`,
 				`<<set $baileydefeatedchain to 3>>`,
 				`<<set $robinpaid to 1>>`,
 				`<<set $robinromance to 1>>`,

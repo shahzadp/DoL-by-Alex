@@ -342,7 +342,7 @@ get into position and attempt to deliver <<if $pregnancyStats.namesParasitesChil
 		<</if>>
 	<</for>>
 
-	<<if $debug is 1>>
+	<<if $debug>>
 		Debug - Keep selected babies result (ID - Checkbox - Result)
 		<br>
 		<<for _i to 0; _i lt $pregResult.length;_i++>>
@@ -492,9 +492,7 @@ You collapse on the spot. The last thing you hear is a rush of footsteps.
 	<<case "town">><<set _time to 15>>
 	<<default>><<set _time to 30>>
 <</switch>>
-<<set _hours to Math.floor(_time / 60)>>
-<<set _minutes to _time % 60>>
-<<link [["Next ("+_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")"| Pregnancy Birth Hospital]]>><<pass _time>><<set $phase to 1>><</link>>
+<<link [["Next " + printTime(_time, true)| Pregnancy Birth Hospital]]>><<pass _time>><<set $phase to 1>><</link>>
 
 /*Rescued by someone*/
 :: Pregnancy Birth Hospital Rescue
@@ -509,9 +507,7 @@ You feel yourself being lifted. You hear a voice, but the words don't make sense
 	<<case "town">><<set _time to 15>>
 	<<default>><<set _time to 30>>
 <</switch>>
-<<set _hours to Math.floor(_time / 60)>>
-<<set _minutes to _time % 60>>
-<<link [["Next ("+_hours+":"+(_minutes lt 10 ? "0": "")+_minutes+")"| Pregnancy Birth Hospital]]>><<pass _time>><<set $phase to 1>><</link>>
+<<link [["Next " + printTime(_time, true)| Pregnancy Birth Hospital]]>><<pass _time>><<set $phase to 1>><</link>>
 
 :: Pregnancy Birth Hospital
 /* Hospital birth (human). 2-4 = the birth, 6-8 = Bailey drives you home; if Alex
@@ -607,7 +603,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 			<<birthDissociationVision>>
 		<</if>>
 
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Hospital 3]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)| Pregnancy Birth Hospital 3]]>><<endevent>><<run setPlayerLitterBorn()>><<pass _timeCalc>><</link>>
 	<<case "wolf">>
 		Harper's voice floats through the fog. "Not human. This will be an abnormal delivery. Follow my instructions to the letter..."
 		<br><br>
@@ -686,7 +682,7 @@ The midwife places a mask over your face. You feel your consciousness fade. Seve
 	<br><br>
 <</if>>
 
-<<link [[Next|Pregnancy Birth Hospital 5]]>><<storeon "hospital_birth">><<pass 24 hour>><<stress -40>><</link>>
+<<link [[Next|Pregnancy Birth Hospital 5]]>><<storeon "hospital_birth">><<pass 24 hour>><<stress -40>><<set $tiredness to 0>><</link>>
 <br><br>
 
 
@@ -872,7 +868,11 @@ You arrive at Domus Street. Bailey holds open the car door for you.
 	<br><br>
 <</if>>
 
-<<link [[Next|Orphanage]]>><<unset $litter_size>><<unset $first_birth>><<endevent>><<set $ward_unlocked to true>><<unset $bornChildrenIds>><</link>>
+<<if isRentDue() or isBaileyLookingForPlayer() or $rentPregInterruption>>
+	<<link [[Next|Rent Pregnant Return]]>><<unset $first_birth>><<endevent>><<set $ward_unlocked to true>><<unset $bornChildrenIds>><</link>>
+<<else>>
+	<<link [[Next|Orphanage]]>><<unset $litter_size>><<unset $first_birth>><<endevent>><<set $ward_unlocked to true>><<unset $bornChildrenIds>><</link>>
+<</if>>
 
 :: Pregnancy Birth Hospital Wolf
 <<set $outside to 0>><<set $location to "hospital">><<effects>>
@@ -1073,9 +1073,9 @@ You hear a deep breath. You think it's yours. "Good. Breathe." Gwylan's voice is
 
 <<switch playerNormalPregnancyType()>>
 	<<case "human">>
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop 4]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop 4]]>><<endevent>><<run setPlayerLitterBorn()>><<pass _timeCalc>><</link>>
 	<<case "wolf">>
-		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop Wolf]]>><<endevent>><<run beginPlayerBirth()>><<pass _timeCalc>><</link>>
+		<<link [[Next (<<print getTimeString(_timeCalc)>>)|Pregnancy Birth Forest Shop Wolf]]>><<endevent>><<run setPlayerLitterBorn()>><<pass _timeCalc>><</link>>
 <</switch>>
 
 :: Pregnancy Birth Forest Shop 4
@@ -1390,7 +1390,7 @@ Player re-equips clothes.
 <<clotheson>>
 <br><br>
 <<if $syndromewolves isnot 1>>
-	<<if $settings.bestialityEnabled>>
+	<<if animalSexEnabledForType("wolf")>>
 		<span class="red"><i>After giving birth to pups of your own, you see they're just cute animals.</i> You've gained the "Stockholm Syndrome: Wolves" trait.</span>
 		<br><br>
 	<<else>>
@@ -1553,29 +1553,6 @@ You strip and lie down.
 		<<set _multiple to true>>
 	<<else>>
 		<<set _multiple to false>>
-		<<switch _litter[0].gender>>
-			<<case "m">>
-				<<set _he to "he">>
-				<<set _He to "He">>
-				<<set _his to "his">>
-				<<set _His to "His">>
-				<<set _him to "him">>
-				<<set _gender to "male">>
-			<<case "f">>
-				<<set _he to "she">>
-				<<set _He to "She">>
-				<<set _his to "her">>
-				<<set _His to "Her">>
-				<<set _him to "her">>
-				<<set _gender to "female">>
-			<<case "h">>
-				<<set _he to "she">>
-				<<set _He to "She">>
-				<<set _his to "her">>
-				<<set _His to "Her">>
-				<<set _him to "her">>
-				<<set _gender to "hermaphrodite">>
-		<</switch>>
 	<</if>>
 	<<if childBaseSpecies(_pregnancy.donorSpecies) isnot "human" and _litter[0].features.monster>>
 		<<if childBaseSpecies(_pregnancy.donorSpecies) is "hawk">>
@@ -1612,7 +1589,7 @@ You strip and lie down.
 					<<pregnancyGendersText>>
 					<br><br>
 				<<else>>
-					"Are you excited for the gender reveal?" <<he>> asks.
+					"I hope you're excited to know your child's sex," <<he>> says.
 					<br><br>
 
 					<<He>> glides the wand over your rounded abdomen. The pressure is uncomfortable.
@@ -1644,16 +1621,14 @@ You strip and lie down.
 			<<elseif pregnancyProgress(_pregnancy) gte 0.7>>
 			/*28-32 weeks */
 				<<if !_multiple>>
-					"Look, <<print _he>> is moving around," the doctor says. "Can you see the fingers?" It almost appears <<print _his>> hand is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
+					"Look, there's movement," the doctor says. "Can you see the fingers?" You look at the screen, and see a hand. It almost looks like it is waving at you. You can feel what you see on the screen as well, happening inside your body. <<llstress>><<stress -7>>
 					<br><br>
 
-					"Your child looks healthy," Harper continues. "<<print _He>> just needs to keep growing, putting on weight and maturing <<print _his>> lungs.
-					It's very important that you make healthy choices right now, as your children depend on your body for everything."
+					"Your child is growing well," Harper continues. "Make sure to take healthy choices right now. The baby's growth depends entirely on your body, and taking care of it will assure a healthy development."
 				<<else>>
-					"Look, they're moving around," the doctor says. "Can you see the fingers?" It almost appears one of their hands is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
+					"Look, there's movement," the doctor says. "Can you see the fingers?" You look at the screen, and see a pair of hands. It almost looks like one of them is waving at you. You can feel what you see on the screen as well, happening inside your body.<<llstress>><<stress -7>>
 					<br><br>
-					Harper continues. "Your children look healthy. They just need to keep growing, putting on weight and maturing their lungs.
-					It's very important that you make healthy choices right now, as your children depend on your body for everything."
+					"Your children are growing well," Harper continues. "Make sure to take healthy choices right now. The babies' growth depends entirely on your body, and taking care of it will assure a healthy development."
 				<</if>>
 				<br><br>
 			<<elseif pregnancyProgress(_pregnancy) gte 0.6>>
@@ -1672,28 +1647,28 @@ You strip and lie down.
 			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
-					"Your babies are doing fine," the doctor says. "They're a little smaller than if you just had the one, but they are responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy."
+					"Your babies are doing fine," the doctor says. "They're a little smaller than if you just had the one, but there's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy."
 					<<llstress>> <<stress -8>>
 					<br><br>
-					On the screen you can see them moving around, legs and arms switching places. One jerks. "Hiccups," Harper assures you.
+					On the screen you can see them moving around, arms and legs switching positions. There's a sudden jerk from one of them. "Hiccups," Harper assures you.
 					<br><br>
 				<<else>>
-					"Your baby is doing great. <<print _He>> is responsive and moving well," the doctor says. "There's ample fluid as well, so it should be a normal pregnancy."
+					"Your baby is doing fine," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy."
 					<<llstress>> <<stress -8>>
 					<br><br>
-					On the screen you can see <<print _him>> moving around, legs and arms switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
+					On the screen you can see your child moving around, arms and legs shifting positions. There's a sudden jerk. "Hiccups," Harper assures you.
 					<br><br>
 				<</if>>
 			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 			/* 12-16 weeks */
 				<<if _multiple>>
-					"Your babies are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy."<<llstress>><<stress -8>>
+					"Your babies are healthy," the doctor says. "There's responsiveness, with plenty of activity from all of them. There's ample fluid as well, so it should be a normal pregnancy."<<llstress>><<stress -8>>
 					<br><br>
-					You can see them moving around on the screen, legs and arms switching places. One jerks. "Hiccups," Harper assures you.
+					You can see them moving around on the screen, arms and legs switching positions. There's a sudden jerk coming from one of them. "Hiccups," Harper assures you.
 				<<else>>
-					"Your baby is healthy," the doctor says. "<<print _He>> is responsive and moving well. There's ample fluid, so it should be a normal pregnancy."<<llstress>><<stress -8>>
+					"Your baby is healthy," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy."<<llstress>><<stress -8>>
 					<br><br>
-					You can see <<print _him>> moving around on the screen, legs and arms switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
+					On the screen you can see your child moving around, arms and legs switching positions. There's a sudden jerk. "Hiccups," Harper assures you.
 				<</if>>
 				<br><br>
 			<<else>>
@@ -1734,7 +1709,7 @@ You strip and lie down.
 					<<pregnancyGendersText>>
 					<br><br>
 				<<else>>
-					"Are you excited for the gender reveal?" <<he>> asks.
+					"I hope you're excited to know your child's sex," <<he>> says.
 					<br><br>
 
 					<<He>> glides the wand over your rounded abdomen. The pressure is uncomfortable.
@@ -1766,16 +1741,14 @@ You strip and lie down.
 			<<elseif pregnancyProgress(_pregnancy) gte 0.7>>
 			/*28-32 weeks */
 				<<if !_multiple>>
-					"Look, <<print _he>> is moving around," the doctor says. "Can you see the toes?" It almost appears <<print _his>> paw is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
+					"Look, there's movement," the doctor says. "Can you see the toes?" You look at the screen, and see a paw. It almost looks like it is waving at you. You can feel what you see on the screen as well, happening inside your body. <<llstress>><<stress -7>>
 					<br><br>
 
-					"Your pup looks healthy," Harper continues. "<<print _He>> just need to keep growing, putting on weight and maturing <<print _his>> lungs.
-					It's very important that you make healthy choices right now, as your children depend on your body for everything."
+					"Your child is growing well," Harper continues. "Make sure to take healthy choices right now. The baby's growth depends entirely on your body, and taking care of it will assure a healthy development. It's especially important that you take care with such an unusual pregnancy."
 				<<else>>
-					"Look, they're moving around," the doctor says. "Can you see the toes?" It almost appears one of their paws is waving at the screen. You feel movements inside at the same time.<<llstress>><<stress -7>>
+					"Look, there's movement," the doctor says. "Can you see the toes?" You look at the screen, and see a pair of paws. It almost looks like one of them is waving at you. You can feel what you see on the screen as well, happening inside your body.<<llstress>><<stress -7>>
 					<br><br>
-					Harper continues. "Your children look healthy. They just need to keep growing, putting on weight and maturing their lungs.
-					It's very important that you make healthy choices right now, as your children depend on your body for everything. It's especially important that you take care with such an unusual pregnancy."
+					"Your children are growing well," Harper continues. "Make sure to take healthy choices right now. The babies' growth depends entirely on your body, and taking care of it will assure a healthy development. It's especially important that you take care with such an unusual pregnancy."
 				<</if>>
 				<br><br>
 			<<elseif pregnancyProgress(_pregnancy) gte 0.6>>
@@ -1794,28 +1767,28 @@ You strip and lie down.
 			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
-					"Your ba... litter, is doing fine," the doctor says. "They're a little smaller than if you just had the one, but they are responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
+					"Your ba... litter, is doing fine," the doctor says. "They're a little smaller than if you just had the one, but there's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
 					<<llstress>> <<stress -8>>
 					<br><br>
-					On the screen you can see them moving around, legs switching places. One jerks. "Hiccups," Harper assures you.
+					On the screen you can see them moving around, legs switching positions. There's a sudden jerk from one of them. "Hiccups," Harper assures you.
 					<br><br>
 				<<else>>
-					"Your pup is doing great. <<print _He>> is responsive and moving well," the doctor says. "There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
+					"Your pup is doing fine," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
 					<<llstress>> <<stress -8>>
 					<br><br>
-					On the screen you can see <<print _him>> moving around, legs switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
+					On the screen you can see your child moving around, legs shifting positions. There's a sudden jerk. "Hiccups," Harper assures you.
 					<br><br>
 				<</if>>
 			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 			/* 12-16 weeks */
 				<<if _multiple>>
-					"Your pups are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
+					"Your pups are healthy," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
 					<br><br>
-					You can see them moving around on the screen, legs switching places. One jerks. "Hiccups," Harper assures you.
+					On the screen you can see them moving around, legs switching positions. There's a sudden jerk from one of them. "Hiccups," Harper assures you.
 				<<else>>
-					"Your pup is healthy," the doctor says. "<<print _He>> is responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
+					"Your pup is healthy," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
 					<br><br>
-					You can see <<print _him>> moving around on the screen, legs switching places. <<print _He>> jerks. "Hiccups," Harper assures you.
+					On the screen you can see your child moving around, legs switching positions. There's a sudden jerk. "Hiccups," Harper assures you.
 				<</if>>
 				<br><br>
 			<<else>>
@@ -1847,7 +1820,7 @@ You strip and lie down.
 			<br><br>
 
 			<<if !knowsGender(_litter[0].childId, "pc")>>
-				"Unfortunately, the hardening shell is making it nearly impossible to tell the gender. I suspect you won't have to wait too long to find out for yourself, though." <<He>> continues moving the wand, trying to get a better angle, but the picture is too small and distorted.
+				"Unfortunately, the hardening shell is making it nearly impossible to tell the sex. I suspect you won't have to wait too long to find out for yourself, though." <<He>> continues moving the wand, trying to get a better angle, but the picture is too small and distorted.
 				<br><br>
 			<</if>>
 			<<if pregnancyProgress(_pregnancy) gte 0.8>>
@@ -1864,20 +1837,20 @@ You strip and lie down.
 			<<elseif pregnancyProgress(_pregnancy) gte 0.4>>
 			/* 16-24 weeks */
 				<<if _multiple>>
-					"Your ba... eggs, are doing fine," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
+					"Your ba... eggs, are doing fine," the doctor says. "They are responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
 					<<llstress>> <<stress -8>>
 					<br><br>
 				<<else>>
-					"Your egg is doing great. The baby inside is responsive and moving well," the doctor says. "There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
+					"Your egg is doing great. The baby inside is responsive and moving well," the doctor says. "There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."
 					<<llstress>> <<stress -8>>
 					<br><br>
 				<</if>>
 			<<elseif pregnancyProgress(_pregnancy) gte 0.3>>
 				<<if _multiple>>
-					"Your eggs are healthy," the doctor says. "They are responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
+					"Your eggs are healthy," the doctor says. "There's responsiveness, with plenty of activity. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
 					<br><br>
 				<<else>>
-					"Your egg is healthy," the doctor says. "It is responsive and moving well. There's ample fluid, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
+					"Your egg is healthy," the doctor says. "It is responsive and moving well. There's ample fluid as well, so it should be a normal pregnancy. As normal as a pregnancy like this can be."<<llstress>><<stress -8>>
 					<br><br>
 				<</if>>
 				<br><br>
@@ -1903,8 +1876,7 @@ You thank Doctor Harper for the scan as <<he>> hands you a warm towel. You wipe 
 
 :: Pregnancy Birth Hospital Alex
 /* Alex drive-home. Branches in from Hospital 5 when Alex is the father; reuses the
-   hospital birth passages, only the drive home differs. Not merged with Bailey's
-   drive-home (it's a separate scene, not duplicated prose). */
+   hospital birth passages, only the drive home differs. */
 <<effects>>
 <<npc "Alex">>
 <<childSelect `getChildrenOf($recentBirthId).last().childId`>>

@@ -249,15 +249,6 @@
 		<</for>>
 	<</if>>
 
-	<<if $blackwolfmonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $blackwolfmonster to 1>>
-		<<else>>
-			<<set $blackwolfmonster to 0>>
-		<</if>>
-	<</if>>
-
 	<<if $genderknown is undefined>>
 		<<set $genderknown to ["Robin", "Bailey"]>>
 	<</if>>
@@ -1957,15 +1948,6 @@
 		<<set $sleepStat to 0>>
 	<</if>>
 
-	<<if $greathawkmonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $greathawkmonster to 1>>
-		<<else>>
-			<<set $greathawkmonster to 0>>
-		<</if>>
-		<<set $bird to {}>>
-	<</if>>
 
 	<<if $harpy is undefined>>
 		<<set $harpy to 0>>
@@ -3024,7 +3006,7 @@
 	<</if>>
 
 	<!-- v0.3.9.3: Robin pillory bug -->
-	<<if $robinPillory and $robinPillory.danger gt 15>>
+	<<if $robinPillory?.danger gt 15>>
 		<<unset $robinPillory>>
 	<</if>>
 
@@ -3107,7 +3089,7 @@
 	<</if>>
 
 	<!-- v0.3.10.0 farm wage fix -->
-	<<if $farm and $farm.wage gte 1500>>
+	<<if $farm?.wage gte 1500>>
 		<<set $farm.wage to $farm.wage / 100>>
 	<</if>>
 
@@ -3566,7 +3548,7 @@
 		}>>
 	<</if>>
 
-	<<if $objectVersion.specialClothes lt 21 or $objectVersion.specialClothes is undefined>>
+	<<if $objectVersion.specialClothes lt 22 or $objectVersion.specialClothes is undefined>>
 
 		<!-- Old special clothing system conversion code, DO NOT INCREMENT -->
 		<<if $objectVersion.specialClothes lt 20 and !Array.isArray($specialClothes)>>
@@ -3603,7 +3585,7 @@
 		<<specialClothesRefresh>>
 
 		<!-- DO increment this, and don't forget to do it in variables-start.twee, too -->
-		<<set $objectVersion.specialClothes to 21>>
+		<<set $objectVersion.specialClothes to 22>>
 	<</if>>
 	<<if $objectVersion.feats lt 2>>
 		<<updateFeats>>
@@ -3618,10 +3600,10 @@
 	<<if $objectVersion.museumAntiques lte 14 and $museumAntiques.antiques.antiquewhitescrystal isnot undefined>>
 		<<run delete $museumAntiques.antiques.antiquewhitescrystal>>
 	<</if>>
-	<<if $objectVersion.museumAntiques lt 20 or $objectVersion.museumAntiques is undefined>>
+	<<if $objectVersion.museumAntiques lt 21 or $objectVersion.museumAntiques is undefined>>
 		/*Moved undefined checks for new antiques to the widget below*/
 		<<updateMuseumAntiques>>
-		<<set $objectVersion.museumAntiques to 20>>
+		<<set $objectVersion.museumAntiques to 21>>
 	<</if>>
 
 	<<if $objectVersion.sexToys lt 2 or $objectVersion.sexToys is undefined>>
@@ -3726,7 +3708,7 @@
 	<</if>>
 
 	<!-- Fix for hair style renames -->
-	<<if !$objectVersion.hairFix lt 1 or $objectVersion.hairFix is undefined>>
+	<<if !$objectVersion.hairFix gte 1 or $objectVersion.hairFix is undefined>>
 		<<set _hairUpdate to {
 			"left fishtail braid": "left fishtail",
 			"right fishtail braid": "right fishtail",
@@ -3928,7 +3910,21 @@
 	<</script>>
 	<!-- version 0.5.6.0 END Gameplay Options Variable Refactor END -->
 
-	 <!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
+	<!-- Must precede <<updateNewNamedNpcs>> -->
+	<<if $settings.skinToneMode is undefined>>
+		<<run Object.assign($settings, skinToneSettingsFromDarkChance($settings.darkSkinChance))>>
+		<<unset $settings.darkSkinChance>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (npc && npc.skincolour === 0) delete npc.skincolour;
+		})>>
+	<</if>>
+
+	<!-- DO NOT MOVE ABOVE "Gameplay Options Variable Refactor" -->
 	<<updateNewNamedNpcs>>
 	<<npcPregnancyUpdater>>
 
@@ -4212,7 +4208,7 @@
 			<</if>>
 		<</for>>
 		<<if C.npc["Ivory Wraith"].init is 1>>
-			<<set C.npc["Ivory Wraith"].skincolour to "ghost">>
+			<<set C.npc["Ivory Wraith"].skinType to "ghost">>
 		<</if>>
 		<<for $_s to 0; $_s lt $NPCList.length; $_s++>>
 			<<if $NPCList[$_s].health and !$NPCList[$_s].skincolour>>
@@ -4544,7 +4540,7 @@
 	<</if>>
 
 	<!-- V0.4 tower guard state saved -->
-	<<if $per_npc.farm_tower_guard and $per_npc.farm_tower_guard.active isnot undefined>>
+	<<if $per_npc.farm_tower_guard?.active isnot undefined>>
 		<<run delete $per_npc.farm_tower_guard.active>>
 		<<set $per_npc.farm_tower_guard.bold to 0>>
 		<<set $per_npc.farm_tower_guard.lefthand to 0>>
@@ -4703,7 +4699,7 @@
 	<<unset $playerPenisSizeBackup>>
 
 	<!-- V0.4.0.6 Separating tentacle forest lurker from daily object to prevent midnight errors in tentacle forest -->
-	<<if $daily and $daily.tentacle_forest_lurker>>
+	<<if $daily?.tentacle_forest_lurker>>
 		<<set $tentacle_forest_lurker to $daily.tentacle_forest_lurker>>
 	<</if>>
 
@@ -5018,10 +5014,10 @@
 		<</for>>
 	<</if>>
 
-	<<if $brothelVending and $brothelVending.status is "sold" and $brothelVending.weeksEmpty lt 4 and ($brothelVending.condomsSold >= 1 or $brothelVending.lubeSold >= 1)>> /* condomsSold or lubeSold checks added later to prevent bugs. This won't fix old save vending machine disappearances as cleanly, but it fixes importing a save in the first 4 weeks after the machine has been sold giving a free machine */
+	<<if $brothelVending?.status is "sold" and $brothelVending.weeksEmpty lt 4 and ($brothelVending.condomsSold >= 1 or $brothelVending.lubeSold >= 1)>> /* condomsSold or lubeSold checks added later to prevent bugs. This won't fix old save vending machine disappearances as cleanly, but it fixes importing a save in the first 4 weeks after the machine has been sold giving a free machine */
 		<<set $brothelVending.status to "set">>/*return vending machine to players whose machines were incorrectly eaten*/
 	<</if>>
-	<<if $brothelVending and $brothelVending.products is 0 and $brothelVending.weeksEmpty gt 0>>
+	<<if $brothelVending?.products is 0 and $brothelVending.weeksEmpty gt 0>>
 		<<set $brothelVending.weeksEmpty to 0>>
 		<<set $brothelVending.weeksRent to 0>>
 		<<if $brothelVending.status is "sold">><<set $brothelVending.status to "idea">><</if>>
@@ -5248,7 +5244,7 @@
 	<!-- V0.4.6.0 Removed a legacy variable that was never needed -->
 	<<unset $robin_naked_room_clothes>>
 
-	<!-- v <= 0.4.5.3: Consolidated these into $speechSextoyState -->
+	<!-- v <= 0.4.5.3: Consolidated these into $speechSexToyState -->
 	<<unset $speechsextoyangry>>
 	<<unset $speechsextoyshocked>>
 	<<unset $speechsextoyaroused>>
@@ -5333,7 +5329,7 @@
 	<<if $playerPregnancyEggLayingDisable is undefined>>
 		<<set $playerPregnancyEggLayingDisable to $playerPregnancyBeastDisable>>
 	<</if>>
-	<<if $bird and $bird.state and !$bird.hunts>>
+	<<if $bird?.state and !$bird.hunts>>
 		<<set $bird.injured to 0>>
 		<<set $bird.clean to 0>>
 		<<set $bird.lurkersEaten to 0>>
@@ -6291,7 +6287,7 @@
 	<</if>>
 
 	<!-- 0.5.5.2, proper skyscraper init -->
-	<<if $avery_tower and $avery_tower.effects?.includes("bailey")>>
+	<<if $avery_tower?.effects?.includes("bailey")>>
 		<<set $avery_tower.effects.delete("bailey")>>
 		<<set $avery_tower.effects.pushUnique("Bailey")>>
 		<<set $avery_tower.intro to 1>>
@@ -6351,7 +6347,7 @@
 	<</if>>
 
 	<!-- 0.5.5.5, housekeeping events only once a day -->
-	<<if $avery_mansion and $avery_mansion.version is 1>>
+	<<if $avery_mansion?.version is 1>>
 		<<set $avery_mansion.version to 2>>
 		<<set $daily.avery.housekeeping_events to {}>>
 	<</if>>
@@ -6627,7 +6623,7 @@
 	<</if>>
 
 	<!-- 0.5.7.0, Avery talk -->
-	<<if $avery_mansion and $avery_mansion.version is 2>>
+	<<if $avery_mansion?.version is 2>>
 		<<set $avery_mansion.version to 3>>
 
 		<<if $avery_mansion.injury_timer gte 1>>
@@ -6638,7 +6634,7 @@
 	<</if>>
 
 	<!-- 0.5.7.1, Avery talk for real -->
-	<<if $avery_mansion and $avery_mansion.version is 3>>
+	<<if $avery_mansion?.version is 3>>
 		<<set $avery_mansion.version to 4>>
 		<<set $daily.avery.talk to {}>>
 		<<set $daily.avery.talk.ignore to false>>
@@ -6672,7 +6668,7 @@
 			hired: $dockwork and $dockwork is 2 ? true : false,
 			wage: $dockwage ? ($dockwage + 500) : 1500,
 			status: $dockstatus || 30,
-			firstDay: $timeStats.docks and $timeStats.docks.total ? false : true,
+			firstDay: $timeStats.docks?.total ? false : true,
 			dayType: "normal",
 			suspicion: 0,
 			fakeID: ["not considered", "idea", "shown"][$idDocksReveal || 0],
@@ -6800,7 +6796,7 @@
 	<<if !$objectVersion.penisFix>>
 		<<if $player.penisExist>>
 			<<set $player.penissize += 2>>
-			<<if $frozenValues and $frozenValues.player>>
+			<<if $frozenValues?.player>>
 				<<set $frozenValues.player.penissize += 2>>
 			<</if>>
 			<<if $sexRitual?.penissize>>
@@ -6852,7 +6848,7 @@
 		<<if $hospitalintro is "livestock" or $livestock_harper gte 1>>
 			<<set $harperSeen.pushUnique("livestock")>>
 		<</if>>
-		<<if $hospitalintro is "party" or ($avery_tower and $avery_tower.effects.includes("Harper"))>>
+		<<if $hospitalintro is "party" or ($avery_tower?.effects.includes("Harper"))>>
 			<<set $harperSeen.pushUnique("party")>>
 		<</if>>
 		<<if $hospitalintro is 1>>
@@ -6870,15 +6866,6 @@
 		<<set $nightMonsterNNPCUpdate to 1>> /* set to 1 here, set to 2 in variablesStart2 or Config.navigation.override */
 		<<clearNPC "tower_creature">>
 		<<run ["tower_creature_intro", "tower_sleep", "tower_sheet", "tower_view"].forEach(v => delete V[v]);>>
-	<</if>>
-
-	<<if $nightmonstermonster is undefined>>
-		<<rng>>
-		<<if $monsterchance gte $rng>>
-			<<set $nightmonstermonster to 1>>
-		<<else>>
-			<<set $nightmonstermonster to 0>>
-		<</if>>
 	<</if>>
 
 	/* Timer to pace events related to Whitney's home unlock */
@@ -6948,9 +6935,9 @@
 	<</if>>
 
 	<!-- Increment in variables-start.twee as well whenever new foodstuff objects are added -->
-	<<if !$objectVersion.foodstuff or $objectVersion.foodstuff lt 7>>
-		<<updatePlants>>
-		<<set $objectVersion.foodstuff to 7>>
+	<<if !$objectVersion.foodstuff or $objectVersion.foodstuff lt 8>>
+		<<updateFoodstuff>>
+		<<set $objectVersion.foodstuff to 8>>
 	<</if>>
 	<!-- UFarm variable refactor -->
 	<<if $livestock is undefined>>
@@ -7103,7 +7090,7 @@
 	<</if>>
 
 	/* 0.5.9.6 giving Avery's mansion antiques to PCs prevented by bug */
-	<<if $avery_antiques and $avery_antiques.noticed.includes("dagger")>>
+	<<if $avery_antiques?.noticed.includes("dagger")>>
 		<<if !$avery_antiques.exposed.includes("amulet") and $museumAntiques.antiques.antiquegoldamulet is "notFound">>
 			<<set $antiquemoney += 4000>><<museumAntiqueStatus "antiquegoldamulet" "found">>
 		<</if>>
@@ -7432,6 +7419,13 @@
 		<<set $objectVersion.randomCarrierWardIntro to 1>>
 	<</if>>
 
+	<!-- Fix for the player not knowing the parents of children they fathered. -->
+	<<if !$objectVersion.playerDonorBirths>>
+		<<run nameDeliveredRandomCarriers()>>
+		<<run $pregnancies.filter(pregnancy => pregnancy.deliveredDate isnot null).forEach(pregnancy => learnPlayerFatheredBirth(pregnancy.pregnancyId))>>
+		<<set $objectVersion.playerDonorBirths to 1>>
+	<</if>>
+
 	<!-- Silly is not a supported pregnancy type; fold silly saves into fetish and drop its feat lock. -->
 	<<if $settings and $settings.pregnancyType is "silly">>
 		<<set $settings.pregnancyType to "fetish">>
@@ -7442,7 +7436,7 @@
 
 	<!-- Old saves have no fertileLeadDays. Seed the midpoint for the PC and cycle-bearing NPCs
 	so their current cycle has a value. Fresh cycles roll their own. -->
-	<<if $sexStats and $sexStats.vagina.menstruation and $sexStats.vagina.menstruation.fertileLeadDays is undefined>>
+	<<if $sexStats?.vagina.menstruation and $sexStats.vagina.menstruation.fertileLeadDays is undefined>>
 		<<set $sexStats.vagina.menstruation.fertileLeadDays to Math.round((PregnancyConstants.menstrualCycle.fertileLeadDaysMin + PregnancyConstants.menstrualCycle.fertileLeadDaysMax) / 2)>>
 	<</if>>
 	<<run Object.getOwnPropertyNames(C.npc).forEach(name => {
@@ -7505,7 +7499,7 @@
 		<<set $per_npc.bait_shop_owner to $per_npc.fishing_shack_owner>>
 		<<unset $per_npc.fishing_shack_owner>>
 	<</if>>
-	
+
 	<<if V.whitney is undefined>>
 		<<set V.whitney to {}>>
 		<<set V.whitney.daysSinceCapture to 0>>
@@ -7532,11 +7526,77 @@
 		<<unset $foodstuff.cod.supermarket>>
 	<</if>>
 
-	<<if C.npc.Kylar.init and C.npc.Kylar.state is 0>>
-		<<set C.npc.Kylar.init to 0>>
+	<<if $settings.bestialityEnabled isnot undefined>>
+		<<set $settings.granularBeastControl to false>>
+		<<run migrateNamedBeastSettings()>>
+		<<unset $blackwolfmonster>>
+		<<unset $nightmonstermonster>>
+		<<unset $greathawkmonster>>
+		<<run migrateBeastSettings()>>
+		<<unset $settings.bestialityEnabled>>
+		<<unset $settings.beastMaleChance>>
+		<<unset $settings.beastMaleChanceMale>>
+		<<unset $settings.beastMaleChanceFemale>>
+		<<unset $settings.beastMaleChanceSplit>>
+		<<unset $settings.monsterHallucinationsOnly>>
+		<<unset $settings.monsterChance>>
 	<</if>>
 
-	<<if $avery_mansion and $avery_mansion.version is 4>>
+	<<if $genericBeastSettings is undefined>>
+		<<set $genericBeastSettings to {
+			beastMaleChance: 80,
+			beastMaleChanceMale: 80,
+			beastMaleChanceFemale: 80,
+			beastMaleChanceSplit: false,
+			monsterHallucinationsOnly: true,
+			monsterChance: 50,
+			bestiality: "on",
+		}>>
+	<</if>>
+
+	<<if $settings.horsesEnabled isnot undefined>>
+		<<if !$settings.horsesEnabled and $settings.beastSettings.horse.bestiality isnot "off">>
+			<<set $settings.beastSettings.horse.bestiality to "off">>
+			<<set $settings.granularBeastControl to true>>
+		<</if>>
+		<<unset $settings.horsesEnabled>>
+	<</if>>
+
+	<<set $genericBeastSettings.victimsAlwaysMonster ??= false>>
+	<<for _beastType range C.beastSettingTypes>>
+		<<set $settings.beastSettings[_beastType].victimsAlwaysMonster ??= false>>
+	<</for>>
+
+	<<if $options.tipdisable is "f">>
+		<<set $options.tipdisable to false>>
+	<<elseif $options.tipdisable is "t">>
+		<<set $options.tipdisable to true>>
+	<</if>>
+
+	<!-- The dark skin percentage became a lightest/most common/darkest skin tone range
+	that goes from 0-100 from lightest to darkest tone.  Ivory Wraith's "ghost" is a skin type rather than a tone now. -->
+	<<if $objectVersion.skinTone is undefined>>
+		<<run [
+			V.NPCName,
+			V.NPCList,
+			Object.values(V.per_npc),
+			Object.values(V.storedNPCs).map(stored => stored.npc),
+			[V.dock_dog, V.pillory.tenant.person, V.model_host, V.model_dom, V.parentNPC, V.shyNPC, V.currentNPC],
+		].flat().forEach(npc => {
+			if (!npc) return;
+			if (npc.skincolour === "ghost") { npc.skinType = "ghost"; delete npc.skincolour; }
+			else if (npc.skincolour === "white") npc.skincolour = 0;
+			else if (npc.skincolour === "black") npc.skincolour = 70;
+		})>>
+		<<set $objectVersion.skinTone to 1>>
+	<</if>>
+
+	<<if !$objectVersion.KylarFix and C.npc.Kylar.init and C.npc.Kylar.state is 0>>
+		<<set C.npc.Kylar.init to 0>>
+	<</if>>
+	<<set $objectVersion.KylarFix to 1>>
+
+	<<if $avery_mansion?.version is 4>>
 		<<set $avery_mansion.version to 5>>
 		<<switch $avery_mansion.injury_stage>>
 		<<case "fresh">>
@@ -7565,4 +7625,117 @@
 	<<if $wrenHeist is false and $wrenHeistMonthly is undefined>>
 		<<unset $wrenHeist>>
 	<</if>>
+
+	<<if $tfFIX is undefined or $tfFIX lte 9>>
+		<<if $transformationParts.fallenAngel.wings is "classicfallenplus">><<set $transformationParts.fallenAngel.wings to "classic-fallenplus">><</if>>
+	<</if>>
+	<<set $tfFIX to 10>>
+
+	<<if $travelSpeed is undefined>>
+		<<set $travelSpeed to "normally">>
+	<</if>>
+
+	<<if $plots is undefined>>
+		<<set $plots to {}>>
+	<</if>>
+	<<for _plotLocation range ["garden", "farm", "wolf", "eden", "asylum"]>>
+		<<set $plots[_plotLocation] ??= []>>
+	<</for>>
+
+	/* Adding $avery_helicopter for Avery's helicopter event */
+	<<if C.npc.Avery.init is 1 and !$avery_helicopter>>
+		<<set $avery_helicopter to []>>
+		<<set $avery_helicopter.timer to 0>>
+	<</if>>
+	
+	/* Mine Rework */
+	<<unset $mines_guards_dig>>
+	<<unset $mines_entrance_drains>>
+	<<unset $mines_crystals>>
+	<<unset $mines_suspicion>>
+
+	<<if $ironmanmode and $options.maxStates is 1>>
+		<<set $options.maxStates to 5>>
+	<</if>>
+
+	<<if $collapsedRelationBoxes is undefined>>
+		<<set $collapsedRelationBoxes to []>>
+	<</if>>
+
+	<<if $defaultSidebarMouth is undefined>>
+		<<set $defaultSidebarMouth to "smile">>
+	<</if>>
+
+	/* 0.5.13.0 */
+	<<if $settings.nudeGenderPerception === 0 and $nudeGenderPerceptionBackComp is undefined>>
+		<<set $schoolrep.crossdress to 0>>
+		<<set $schoolrep.herm to 0>>
+	<</if>>
+	<<set $nudeGenderPerceptionBackComp to 1>>
+
+	<!-- Renamed to $speechDisable -->
+	<<unset $speechdisable>>
+
+	<!-- Replaced by $NPCList[n].speechotheranusescape -->
+	<<unset $speechotheranusescape1 $speechotheranusescape2 $speechotheranusescape3 $speechotheranusescape4 $speechotheranusescape5 $speechotheranusescape6>>
+
+	<<if def $sciencechance>>
+		<<unset $sciencechance>>
+	<</if>>
+
+	<<if $player.skin.faceFreckles is undefined>>
+		<<set $player.skin.faceFreckles to $player.freckles is true>>
+		<<run delete $player.freckles>>
+	<</if>>
+	<<if $player.skin.bodyFreckles is undefined>>
+		<<set $player.skin.bodyFreckles to "none">>
+	<</if>>
+	
+	/* fixed $specialTransform being 1 with no divine tfs */
+	<<if $demon gte 1 or $angel gte 1 or $fallenangel gte 2>>
+		<<set $specialTransform to 1>>
+	<<else>>
+		<<set $specialTransform to 0>>
+	<</if>>
+
+	<<set $rentDay ??= $rentday>><<unset $rentday>>
+	<<set $rentTime ??= $renttime>><<unset $renttime>>
+	<<set $rentMoney ??= $rentmoney>><<unset $rentmoney>>
+	<<set $rentStage ??= $rentstage>><<unset $rentstage>>
+	<<set $rentSale ??= $rentsale>><<unset $rentsale>>
+
+	<<if $kylar_manor_secret gte 3 and !$kylar_altar_research>>
+		<<set $kylar_altar_research to []>>
+		<<set $kylar_altar_library to 0>>
+	<</if>>
+
+	<<if def $cumballoon>>
+		<<unset $cumballoon>>
+	<</if>>
+	<<if !$objectVersion.nnpcOutfits>>
+		<<if C.npc.Bailey.outfits>>
+			<<initNNPCClothes "Bailey" "update">>
+		<</if>>
+		<<if C.npc.Niki.outfits>>
+			<<initNNPCClothes "Niki" "update">>
+		<</if>>
+		<<if C.npc.Quinn.outfits>>
+			<<initNNPCClothes "Quinn" "update">>
+		<</if>>
+		<<if C.npc.Sam.outfits>>
+			<<initNNPCClothes "Sam" "update">>
+		<</if>>
+		<<if C.npc.Wren.outfits>>
+			<<initNNPCClothes "Wren" "update">>
+		<</if>>
+		<<if C.npc.Zephyr.outfits>>
+			<<initNNPCClothes "Zephyr" "update">>
+		<</if>>
+		<<if C.npc.Jordan.outfits>>
+			<<initNNPCClothes "Jordan" "reset">>
+		<</if>>
+		<<set $objectVersion.nnpcOutfits to 1>>
+	<</if>>
+
+	<<unset $rentDay>>
 <</widget>>

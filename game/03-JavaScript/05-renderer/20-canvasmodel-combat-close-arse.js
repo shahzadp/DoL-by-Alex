@@ -37,6 +37,19 @@ const combatCloseArse = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
+		freckles: {
+			srcfn(options) {
+				return `${options.src}arse/${options.anus.state}-base-freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showArse && options.bodyFreckles === "full";
+			},
+			animationfn(options) {
+				return options.animKeyArse;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase + 0.1,
+		},
 		npcSilhouette: {
 			srcfn(options) {
 				return `${options.src}arse/npc/shadow-${options.anus.silhouette}.png`;

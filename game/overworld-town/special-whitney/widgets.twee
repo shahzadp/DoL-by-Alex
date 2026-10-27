@@ -1,16 +1,15 @@
 :: Widgets Whitney [widget]
-<<widget "whitneyoptions">>
+<<widget "whitneyOptions">>
 	/*add to added links, so cigarettes are removed from the scene after the player smokes with Whitney*/
 
 	<<if $location is "park" and Time.dayState isnot "day">>
-		<br><br>
 		<<if C.npc.Whitney.love gte 15>>
 			"I'm leaving," <<he>> says suddenly. "Don't stay out in this weather." <<He>> leaves the park without another word.
 		<<else>>
 			<<He>> walks away, leaving the park without a word.
 		<</if>>
 		<br><br>
-		<<whitneyexit>>
+		<<whitneyExit>>
 	<<elseif $location is "flats" and Time.dayState is "dusk">>
 		You hear a knock at the door. "Fun's over," Whitney says. "I've places to be. You go careful though."
 		<br><br>
@@ -51,7 +50,7 @@
 		<br>
 		<<link [[Just leave (0:02)|Whitney Home Park Leave]]>><<pass 2>><</link>>
 		<br>
-	<<elseif $location is "flats" and Time.hour gte 9 and [3,6,7].includes(Time.weekDay)>>
+	<<elseif $location is "flats" and whitneyHasFriendsOver()>>
 		Whitney glances out the window, and waves at someone. "We got company," <<he>> says.
 		<br><br>
 
@@ -87,7 +86,6 @@
 		<<link [[Leave (0:02)|Whitney Home Dawn Leave]]>><<pass 2>><</link>>
 		<br>
 	<<elseif $location is "flats" and Time.dayState is "dusk">>
-		<br><br>
 		<<if [6,7].includes(Time.weekDay)>>
 			Whitney looks at a clock on the wall, which draws everyone's attention. "Time to head out," <<he>> says. <<His>> friends rise to their feet as Whitney turns to you. "That includes you, slut."
 			<br><br>
@@ -314,19 +312,19 @@
 				<<skinicon "give">><<link [[Give Whitney food|Whitney Gifts List]]>><<handheldon>><</link>>
 				<br>
 			<</if>>
-			<<if StartConfig.sneaky and $location is "park" and ($whitney_home_stage lt 3 or !$whitney_home_stage)>>
+			<<if (StartConfig.sneaky or $debug) and $location is "park" and ($whitney_home_stage lt 3 or !$whitney_home_stage)>>
 				<<ind>><<link [[Progress home events|Whitney Park]]>><<set $whitney_home_timer to 21>><</link>> SNEAKY OPTION
 				<br>
-			<<elseif StartConfig.sneaky and $location is "flats" and $whitney_home_stage is 3>>
+			<<elseif (StartConfig.sneaky or $debug) and $location is "flats" and $whitney_home_stage is 3>>
 				<<ind>><<link [[Progress home events|Whitney Home Hang]]>><<set $whitney_home_timer to 21>><</link>> SNEAKY OPTION
 				<br>
 			<</if>>
-			<<whitneyoptionsleave>>
+			<<whitneyOptionsLeave>>
 		<</if>>
 	<</if>>
 <</widget>>
 
-<<widget "whitneyoptionsleave">>
+<<widget "whitneyOptionsLeave">>
 	<<if $bus is "park" or $location is "park">>
 		<<getouticon>><<link [[Leave|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
 		<br>
@@ -336,7 +334,7 @@
 	<</if>>
 <</widget>>
 
-<<widget "whitneyexit">>
+<<widget "whitneyExit">>
 	<<if $bus is "park" or $location is "park">>
 		<<set $daily.whitney.park to 0>><<run delete $daily.whitney.text>><<run delete $daily.whitney.textTrigger>>
 		<<link [[Next|Park]]>><<endevent>><<set $eventskip to 1>><</link>>
@@ -454,7 +452,7 @@
 	<<else>>
 		"Don't think I wouldn't return the favour, slut."
 	<</if>>
-	<<if !$genderknown.includes("Whitney") and (($player.penisExist and $player.vaginaExist) or ($player.gender_appearance is "m" and $player.sex isnot "m") or ($player.gender_appearance is "f" and $player.sex isnot "f"))>>
+	<<if !$genderknown.includes("Whitney") and (($player.penisExist and $player.vaginaExist) or ($player.gender_appearance is "m" and $player.sex isnot "m") or ($player.gender_appearance is "f" and $player.sex isnot "f")) and $settings.nudeGenderPerception !== 0>>
 		<<set $genderknown.pushUnique("Whitney")>>
 		<<His>> hand trails down, until it makes contact with your <<genitals>>. For a moment, <<he>> seems surprised by what <<he>> feels, but <<he>> smiles anyway.
 		<br><br>
@@ -596,7 +594,7 @@
 			<br>
 		<<else>>
 			<br><br>
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -617,7 +615,7 @@
 		<<else>>
 			It's a cooperative game, but that doesn't stop Whitney from sabotaging your efforts, then bragging that <<he>> contributed more when you both lose.
 			<br><br>
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -640,7 +638,7 @@
 				<span class="red">winning most matches.</span>
 			<</if>>
 			<br><br>
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -658,7 +656,7 @@
 			<br>
 		<<else>>
 			<br><br>
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -679,7 +677,7 @@
 			"It's an easy way to get the neighbours to complain," <<he>> says putting it away. "But I'm not in the mood right now."
 			<br><br>
 
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -713,7 +711,7 @@
 			<br>
 		<<else>>
 			<br><br>
-			<<whitneyoptions>>
+			<<whitneyOptions>>
 			<br>
 		<</if>>
 	<</addinlineevent>>
@@ -765,7 +763,7 @@
 		<</switch>>
 		<br><br>
 
-		<<whitneyoptions>>
+		<<whitneyOptions>>
 	<</addinlineevent>>
 
 	<<if C.npc.Whitney.lust gte 10>>

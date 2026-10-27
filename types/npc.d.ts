@@ -105,7 +105,8 @@ declare global {
 		teen: 0 | 1;
 
 		insecurity: string;
-		skincolour: string;
+		skincolour?: number;
+		skinType?: "skin" | "ghost";
 		eyeColour: string;
 		hairColour: string;
 
@@ -180,6 +181,21 @@ declare global {
 		mouth?: string | 0;
 		lefthand?: string | 0;
 		righthand?: string | 0;
+
+		clothes?: NpcClothes;
+	}
+
+	export interface NpcClothingItem {
+		name: string;
+		integrity: number;
+	}
+
+	export interface NpcClothes {
+		set: string;
+		upper: NpcClothingItem;
+		lower: NpcClothingItem;
+		equippedDay: number;
+		equippedLocation: string;
 	}
 }
 

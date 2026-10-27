@@ -279,6 +279,75 @@ setup.colours = {
 
 		return `${hueCss} ${saturationCss} ${brightnessCss}`;
 	},
+	/*
+	 * CSS filter for an NPC's skin tone, used by icons rather than the canvas.
+	 */
+	getSkinToneCSSFilter(npc) {
+		if (npc.skinType === "ghost") return setup.colours.getSkinCSSFilter("wraith", 0);
+		return setup.colours.getSkinCSSFilter("gyaru", npc.skincolour ?? 70);
+	},
+	onSkinToneRangeInput(el) {
+		const box = el.closest(".skinToneRange");
+		const handle = {};
+		box.querySelectorAll("[data-skin]").forEach(i => (handle[i.dataset.skin] = i));
+		const gap = 3;
+		let min = Number(handle.min.value);
+		let mean = Number(handle.mean.value);
+		let max = Number(handle.max.value);
+		if (el.dataset.skin === "min") {
+			min = Math.clamp(min, 0, 100 - gap * 2);
+			mean = Math.clamp(mean, min + gap, 100 - gap);
+			max = Math.clamp(max, mean + gap, 100);
+		} else if (el.dataset.skin === "mean") {
+			mean = Math.clamp(mean, gap, 100 - gap);
+			min = Math.clamp(min, 0, mean - gap);
+			max = Math.clamp(max, mean + gap, 100);
+		} else {
+			max = Math.clamp(max, gap * 2, 100);
+			mean = Math.clamp(mean, gap, max - gap);
+			min = Math.clamp(min, 0, mean - gap);
+		}
+		handle.min.value = min;
+		handle.mean.value = mean;
+		handle.max.value = max;
+		V.settings.skinToneMin = min;
+		V.settings.skinToneMode = mean;
+		V.settings.skinToneMax = max;
+		setup.colours.tintSkinToneHandles(box);
+		setup.colours.showSkinToneTip(el);
+	},
+	showSkinToneTip(el) {
+		const box = el.closest(".skinToneRange");
+		const tip = box.querySelector(".skinToneTip");
+		if (!tip) return;
+		const thumb = parseFloat(getComputedStyle(el).fontSize) * 1.15;
+		tip.textContent = `${el.dataset.tip} — ${el.value}`;
+		tip.style.setProperty("--tip-left", `${(box.clientWidth - thumb) * (Number(el.value) / 100) + thumb / 2}px`);
+		tip.classList.add("shown");
+	},
+	hideSkinToneTip(el) {
+		const tip = el.closest(".skinToneRange")?.querySelector(".skinToneTip");
+		if (tip) tip.classList.remove("shown");
+	},
+	settleSkinToneTip(el) {
+		if (!el.matches(":hover")) setup.colours.hideSkinToneTip(el);
+	},
+	tintSkinToneHandles(box) {
+		box.querySelectorAll("[data-skin]").forEach(i =>
+			i.style.setProperty("--skin-thumb", setup.colours.getSkinRgb(setup.colours.skin_options.gyaru, Number(i.value) / 100))
+		);
+	},
+	getSkinToneSwatch(tone) {
+		const colour = setup.colours.getSkinRgb(setup.colours.skin_options.gyaru, tone / 100);
+		return `<span class="skinToneSwatch" style="background:${colour}"></span>`;
+	},
+	getSkinToneLabel(tone) {
+		if (tone === "ghost") return "Ghostly Pale";
+		if (!Number.isFinite(tone)) return "N/A";
+		if (tone < 30) return "Light";
+		if (tone < 70) return "Medium";
+		return "Dark";
+	},
 };
 
 /**
@@ -1430,11 +1499,25 @@ setup.colours.clothes = [
 		canvasfilter: { blend: "#ff3300" },
 	},
 	{
+		variable: "dusty orange",
+		name: "dusty orange",
+		name_cap: "Dusty orange",
+		csstext: "tangerine",
+		canvasfilter: { blend: "#a04500" },
+	},
+	{
 		variable: "teal",
 		name: "teal",
 		name_cap: "Teal",
 		csstext: "teal",
 		canvasfilter: { blend: "#2bcece" },
+	},
+	{
+		variable: "cyan",
+		name: "cyan",
+		name_cap: "Cyan",
+		csstext: "cyan",
+		canvasfilter: { blend: "#00FFFF" },
 	},
 	{
 		variable: "yellow",
@@ -2242,3 +2325,16 @@ setup.colourName = function (colour) {
 	}
 	return colour;
 };
+
+$(document).on("input", ".skinToneRange input[data-skin]", function () {
+	setup.colours.onSkinToneRangeInput(this);
+});
+$(document).on("mouseover", ".skinToneRange input[data-skin]", function () {
+	setup.colours.showSkinToneTip(this);
+});
+$(document).on("mouseout", ".skinToneRange input[data-skin]", function () {
+	setup.colours.hideSkinToneTip(this);
+});
+$(document).on("change", ".skinToneRange input[data-skin]", function () {
+	setup.colours.settleSkinToneTip(this);
+});

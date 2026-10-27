@@ -13,7 +13,7 @@
 
 	<<if $feats.locked>>
 		<span class="red">You can't earn feats as you have enabled cheats at some point.</span>
-	<<elseif $debug is 1>>
+	<<elseif $debug>>
 		<span class="red">Feats are disabled during debug mode.</span>
 	<<elseif $replayScene isnot undefined>>
 		<span class="red">Feats are disabled during replay mode.</span>
@@ -55,11 +55,11 @@
 	</select>
 	<br>
 	<<set $feats.shownew to true>>
-	<input type="checkbox" checked name="showNew" onchange="V.feats.shownew = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show New |
+	<label><input type="checkbox" checked name="showNew" onchange="V.feats.shownew = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show New</label> |
 	<<set $feats.showold to true>>
-	<input type="checkbox" checked name="showOld" onchange="V.feats.showold = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Old |
+	<label><input type="checkbox" checked name="showOld" onchange="V.feats.showold = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Old</label> |
 	<<set $feats.showmissing to true>>
-	<input type="checkbox" checked name="showMissing" onchange="V.feats.showmissing = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Missing
+	<label><input type="checkbox" checked name="showMissing" onchange="V.feats.showmissing = this.checked; Wikifier.wikifyEval('<<replace #featsList>><<featsList>><</replace>>')" /> Show Missing</label>
 	<br><br>
 	<div id="featsList">
 		<<featsList>>
@@ -117,8 +117,8 @@
 					<<set _titleColor to "">>
 				<</if>>
 				<<if _feat.owned gt 0 or _setup.hint is undefined>>
-					<span @class="'title' + _titleColor"><<print (Scripting.evalTwineScript(_setup.altCond ?? "false") && _feat.owned is 2) ? _setup.alt : _setup.title>></span>
-					<span class="text"><<print _setup.desc>></span>
+					<span @class="'title' + _titleColor"><<print (Scripting.evalTwineScript(_setup.altTitleCond ?? "false") && _feat.owned is 2) ? _setup.altTitle : _setup.title>></span>
+					<span class="text"><<print (Scripting.evalTwineScript(_setup.altDescCond ?? "false") && _feat.owned is 2) ? _setup.altDesc : _setup.desc>></span>
 				<<else>>
 					<span @class="'title' + _titleColor">?????</span>
 					<span class="text"><<print _setup.hint>></span>
@@ -935,7 +935,7 @@
 
 /* Fake feats, for when you want to gaslight the player. Used for the Wraith, primarily */
 <<widget "displayFeatFake">>
-	<<if _args[0] and $feats.locked is false and $cheatsEnabled is false and $debug is 0 and $gamemode isnot "soft" and $settings.allureModifier gte 1>>
+	<<if _args[0] and $feats.locked is false and $cheatsEnabled is false and !$debug and $gamemode isnot "soft" and $settings.allureModifier gte 1>>
 		<<silently>>
 			<<if _featsCount is undefined>>
 				<<set _featsCount to 0>>

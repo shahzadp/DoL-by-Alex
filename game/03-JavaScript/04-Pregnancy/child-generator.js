@@ -50,16 +50,29 @@ function rollLitterSize(base) {
 window.rollLitterSize = rollLitterSize;
 
 /**
- * The child gene pool's name for a parent's skin colour.
+ * What a parent contributes to the child's skin gene.
  *
- * @param {string} skincolour a parent's skincolour
- * @returns {string}
+ * @param {object} npc a named or stored NPC
+ * @returns {string|undefined} undefined for beasts, which have no skin tone to pass on
  */
-function parentSkinColour(skincolour) {
-	if (skincolour === "black") return "dark";
-	if (skincolour === "white") return "light";
-	return skincolour;
+function parentSkinGene(npc) {
+	if (npc.skinType === "ghost") return "ghost";
+	return Number.isFinite(npc.skincolour) ? parentSkinColour(npc.skincolour) : undefined;
 }
+window.parentSkinGene = parentSkinGene;
+
+/**
+ * The child gene pool's name for a skin tone.
+ *
+ * @param {number} tone 0-100
+ * @returns {string} "light", "medium" or "dark"
+ */
+function parentSkinColour(tone) {
+	if (tone < 30) return "light";
+	if (tone < 70) return "medium";
+	return "dark";
+}
+window.parentSkinColour = parentSkinColour;
 
 /**
  * A parent's gender and colours, read live from their name.
@@ -82,11 +95,11 @@ function resolveChildParent(name) {
 		else if (hasVagina) gender = "f";
 		else if (hasPenis) gender = "m";
 		else throw new Error(`parent "${name}" has no genitals`);
-		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour: parentSkinColour(npc.skincolour) };
+		return { gender, hairColour: npc.hairColour, eyeColour: npc.eyeColour, skinColour: parentSkinGene(npc) };
 	}
 	const stored = V.storedNPCs[name];
 	if (stored) {
-		return { gender: stored.npc.gender, hairColour: null, eyeColour: null, skinColour: parentSkinColour(stored.npc.skincolour) };
+		return { gender: stored.npc.gender, hairColour: null, eyeColour: null, skinColour: parentSkinGene(stored.npc) };
 	}
 	return { gender: null, hairColour: null, eyeColour: null, skinColour: null };
 }
@@ -172,14 +185,14 @@ function rollChildEyeColour(carrierParent, donorParent) {
 window.rollChildEyeColour = rollChildEyeColour;
 
 /**
- * A child's skin colour: inherit from a parent, or fall back to the darkSkinChance roll.
+ * A child's skin colour: inherit from a parent, or fall back to a freshly rolled skin tone.
  *
  * @param {ChildParent} carrierParent
  * @param {ChildParent} donorParent
  * @returns {string}
  */
 function rollChildSkinColour(carrierParent, donorParent) {
-	return inheritTrait(carrierParent.skinColour, donorParent.skinColour, () => (random(1, 100) <= V.settings.darkSkinChance ? "dark" : "light"));
+	return inheritTrait(carrierParent.skinColour, donorParent.skinColour, () => parentSkinColour(randomSkinTone()));
 }
 window.rollChildSkinColour = rollChildSkinColour;
 
@@ -216,8 +229,9 @@ window.eyeColourCalc = eyeColourCalc;
  * Create the child/children for a new pregnancy record. Called once per pregnancy from createPregnancy.
  *
  * @param {number} pregnancyId
+ * @param {number} [fixedLitterSize] how many children the pregnancy has, rolled randomly when left out
  */
-function generateChildren(pregnancyId) {
+function generateChildren(pregnancyId, fixedLitterSize) {
 	const pregnancy = V.pregnancies[pregnancyId];
 	const base = childBaseSpecies(pregnancy.donorSpecies);
 	const isMonster = isMonsterPerson(pregnancy.donorSpecies);
@@ -227,10 +241,11 @@ function generateChildren(pregnancyId) {
 	if (base === "hawk" && pregnancy.carrier === "pc" && V.harpyEggs) {
 		litterSize = V.harpyEggs.count;
 	}
+	if (fixedLitterSize) litterSize = fixedLitterSize;
 	const carrierParent = resolveChildParent(pregnancy.carrier);
 	const donorParent = resolveChildParent(pregnancy.donor);
 	const sameParent = pregnancy.carrier === pregnancy.donor;
-	// The player's beast/divine transformations only pass down when the player is actually a parent.
+	// The player's beast/divine transformations only pass down when the player is a parent.
 	const heritage = pregnancy.carrier === "pc" || pregnancy.donor === "pc" ? pcHeritage() : { beast: null, divine: null };
 	const bodySize = pregnancy.carrier === "pc" ? V.bodysize : undefined;
 	// The Black Wolf's pups are always black. Every other wolf rolls the fur pool.

@@ -2,14 +2,16 @@ declare module "twine-sugarcube" {
 	export interface SugarCubeStoryVariables {
 		options: DolSettingsOptions;
 
+		genericBeastSettings: GenericBeastSettings;
+
 		settings: {
 			analEnabled: true | false;
 			analingusGivingEnabled: true | false;
 			analingusReceivingEnabled: true | false;
 			transformAnimalEnabled: true | false;
-			beastMaleChanceSplit: true | false;
+			beastSettings: Record<BeastSettingType, BeastTypeSettings>;
+			namedBeasts: Record<NamedBeastType, NamedBeastSettings>;
 			beesEnabled: true | false;
-			bestialityEnabled: true | false;
 			blindStatsEnabled: true | false;
 			breastFeedingEnabled: true | false;
 			cheatsEnabledToggle: true | false;
@@ -20,10 +22,10 @@ declare module "twine-sugarcube" {
 			analDoubleEnabled: true | false;
 			vaginalDoubleEnabled: true | false;
 			facesitEnabled: true | false;
+			granularBeastPreferences: true | false;
 			pregnancySpeechEnabled: true | false;
 			footFetishEnabled: true | false;
 			forcedCrossdressingEnabled: true | false;
-			horsesEnabled: true | false;
 			hypnosisEnabled: true | false;
 			lurkersEnabled: true | false;
 			fertilityCycleEnabled: true | false;
@@ -34,10 +36,8 @@ declare module "twine-sugarcube" {
 			npcAnalPregnancyEnabled: true | false;
 			nnpcPregnancyEnabled: true | false;
 			npcPregnancyEnabled: true | false;
-			monsterHallucinationsOnly: true | false;
 			parasitePregnancyEnabled: true | false;
 			parasitesEnabled: true | false;
-			beastMaleChance: true | false;
 			plantsEnabled: true | false;
 			playerPregnancyEggLayingEnabled: true | false;
 			playerPregnancyBeastEnabled: true | false;
@@ -84,6 +84,39 @@ declare module "twine-sugarcube" {
 }
 
 declare global {
+	type BeastSettingType = "dog" | "cat" | "pig" | "wolf" | "dolphin" | "lizard" | "bear" | "boar" | "horse" | "fox" | "hawk" | "cow" | "spider" | "snake";
+
+	type NamedBeastType = "blackwolf" | "greathawk" | "nightmonster";
+
+	type BeastSexMode = "on" | "off" | "monsterOnly";
+
+	interface BeastTypeSettings {
+		monsterChance: number;
+		hallucinationsOnly: boolean;
+		maleChance: number;
+		maleChanceMale: number;
+		maleChanceFemale: number;
+		maleChanceSplit: boolean;
+		bestiality: BeastSexMode;
+		victimsAlwaysMonster: boolean;
+	}
+
+	interface GenericBeastSettings {
+		beastMaleChance: number;
+		beastMaleChanceMale: number;
+		beastMaleChanceFemale: number;
+		beastMaleChanceSplit: boolean;
+		monsterHallucinationsOnly: boolean;
+		monsterChance: number;
+		bestiality: BeastSexMode;
+		victimsAlwaysMonster: boolean;
+	}
+
+	interface NamedBeastSettings {
+		monsterChance: number;
+		hallucinationsOnly: boolean;
+	}
+
 	export interface DolSettingsOptions {
 		debugdisable: "f" | "t";
 		silhouetteEnabled: boolean;

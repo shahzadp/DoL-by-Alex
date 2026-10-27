@@ -91,27 +91,28 @@
 	<<wardrobeSelection true>>
 	<<if !$earSlime.alwaysSleepNaked or $hypnosis_traits.silence>>
 		<<for _index, $_outfit range $outfit>>
-			<<if $_outfit.type.includes("sleep")>>
-				<<if _passage is "Bed">>
-					<<furnitureicon _bed.iconFile>>
-				<<elseif _passage is "Prison Bed">>
-					<<prisonicon "bed">>
-				<<elseif _passage is "Asylum Bed">>
-					<<bedicon "hospital">>
-				<<elseif $location is "alex_cottage">>
-					<<set _farmbed to (isLoveInterest("Alex")) ? "alex" : "farm">>
-					<<bedicon _farmbed>>
-				<<elseif $location is "avery_mansion">>
-					<<icon "avery-bedroom.png">>
-				<<else>>
-					<<bedicon>>
-				<</if>>
-				<<capture _index>>
-					<<set _outfitname to $_outfit.name + ($_outfit.colors is false ? "" : " [C]")>>
-					<<link [["Wear "+_outfitname+" and climb in bed"|_passage]]>><<if _args[0] is "Robin Bed">><<storeon "Robin's Room">><</if>><<set $wear_outfit to _index>><<saveTempHairStyle>><</link>>
-				<</capture>>
-				<br>
+			<<if ($_outfit.location and $_outfit.location isnot $wardrobe_location) or !$_outfit.type.includes("sleep")>>
+				<<continue>>
 			<</if>>
+			<<if _passage is "Bed">>
+				<<furnitureicon _bed.iconFile>>
+			<<elseif _passage is "Prison Bed">>
+				<<prisonicon "bed">>
+			<<elseif _passage is "Asylum Bed">>
+				<<bedicon "hospital">>
+			<<elseif $location is "alex_cottage">>
+				<<set _farmbed to (isLoveInterest("Alex")) ? "alex" : "farm">>
+				<<bedicon _farmbed>>
+			<<elseif $location is "avery_mansion">>
+				<<icon "avery-bedroom.png">>
+			<<else>>
+				<<bedicon>>
+			<</if>>
+			<<capture _index>>
+				<<set _outfitname to $_outfit.name + ($_outfit.colors is false ? "" : " [C]")>>
+				<<link [["Wear "+_outfitname+" and climb in bed"|_passage]]>><<if _args[0] is "Robin Bed">><<storeon "Robin's Room">><</if>><<set $wear_outfit to _index>><<saveTempHairStyle>><</link>>
+			<</capture>>
+			<br>
 		<</for>>
 	<<elseif $outfit.find(outfitSet => outfitSet.type.includes("sleep"))>>
 		<<icon "cross.png" "infront">>
@@ -512,7 +513,7 @@
 						<</if>>
 						/*Check for slime corruption*/
 						<<if _corruptionEquipSkip.includes($_slot) and $earSlime.corruption gte 10 and $hypnosis_traits?.silence isnot 1>>
-							<<if $earSlime.forcedCommando isnot undefined and ($_slot is "under_lower" or ($_wardrobeItem.outfitPrimary and $_wardrobeItem.outfitPrimary.under_lower and !["broken","split"].includes($_wardrobeItem.outfitPrimary.under_lower)))>>
+							<<if $earSlime.forcedCommando isnot undefined and ($_slot is "under_lower" or ($_wardrobeItem.outfitPrimary?.under_lower and !["broken","split"].includes($_wardrobeItem.outfitPrimary.under_lower)))>>
 								<<if $_wardrobeItem.type.includes("naked") or (_earSlimeEnableSwimwear and $_wardrobeItem.type.includes("swim")) or (_earSlimeEnableDancewear and $_wardrobeItem.type.includes("dance"))>>
 								<<elseif $earSlime.forcedCommando gte 0>>
 									<<set _notEquipped[$_slot] to {"name": $_incomingItemName, "reason": "corruption_slime_deny_commando"}>>
@@ -575,7 +576,7 @@
 
 						/*Find all the outfit pieces now the main least damaged piece has been found if the clothing is part of an outfit*/
 						<<set $_foundPrimary to _selectedWardrobe[$_slot][_foundEquip[$_slot]]>>
-						<<if $_foundPrimary and $_foundPrimary.outfitPrimary isnot undefined>>
+						<<if $_foundPrimary?.outfitPrimary isnot undefined>>
 
 							/*Check these values once, outside of the loop, so we don't continuously check them on every loop iteration*/
 							<<set $_primaryColourIsCustom to ($_foundPrimary.colour is "custom")>>
@@ -679,6 +680,12 @@
 			<<set $hairtype to $_outfitHair.hairtype>>
 			<<set $fringetype to $_outfitHair.fringetype>>
 			<<set $hairposition to $_outfitHair.hairposition>>
+		<</if>>
+		<<if $outfit[$wear_outfit].facevariant>>
+			<<set $facevariant to $outfit[$wear_outfit].facevariant>>
+		<</if>>
+		<<if $outfit[$wear_outfit].defaultSidebarMouth>>
+			<<set $defaultSidebarMouth to $outfit[$wear_outfit].defaultSidebarMouth>>
 		<</if>>
 	<</if>>
 
@@ -1175,6 +1182,23 @@
 				Hair Style: No sets saved (Check mirror)
 			</div>
 		<</if>>
+		<div>
+			Demeanour:
+			<<set $_facevariant to "$outfit["+_args[0]+"].facevariant">>
+			<<listbox $_facevariant autoselect>>
+				<<option "Not set" undefined>>
+				<<optionsfrom setup.faceVariantOptions[$facestyle]>>
+			<</listbox>>
+		</div>
+		<div>
+			Default expression:
+			<<set $_defaultSidebarMouth to "$outfit["+_args[0]+"].defaultSidebarMouth">>
+			<<listbox $_defaultSidebarMouth autoselect>>
+				<<option "Not set" undefined>>
+				<<option "Smile" "smile">>
+				<<option "Neutral" "neutral">>
+			<</listbox>>
+		</div>
 
 		<span @id="'outfitItemExport-' + _args[0]"><<link "Export">>
 			<<run exportOutfit(_args[0])>>

@@ -11,7 +11,7 @@
 			<br><br>
 			<<link [[Play (0:20)|Wolf Cave Play Fight]]>><<pass 20>><<stress -4>><</link>><<lstress>>
 			<br>
-			<<if hasSexStat("deviancy", 2) and ($settings.bestialityEnabled or $monster is 1)>>
+			<<if hasSexStat("deviancy", 2) and beastSexEnabledForType("wolf", $monster is 1)>>
 				<<link [[Lewd play|Wolf Cave Lewd Play]]>><<set $sexstart to 1>><</link>><<deviant2>>
 				<br>
 			<</if>>
@@ -81,8 +81,8 @@
 				<br>
 			<</addinlineevent>>
 			<<addinlineevent "wolf cave blackwolf agitated" 2>>
-				<<endevent>><<npc "Black Wolf">>/*<<beastNNPCinit>>*/
 				<<if $wolfpackleader is 1>>
+					<<endevent>><<npc "Black Wolf">>
 					The Black Wolf is agitated. <<bHe>> bites and growls at the others, agitating them in turn.
 					<br><br>
 					<<link [[Calm <<bhim>> down|Wolf Cave Calm]]>><<set $phase to 0>><</link>>
@@ -90,7 +90,9 @@
 					<<link [[Ignore <<bhim>>|Wolf Cave Calm]]>><<set $phase to 1>><</link>>
 					<br>
 				<<else>>
-					One of the larger <<beastsplural>> challenges the Black Wolf. The Black Wolf wins after a brief tussle, but <<bhis>> anger is not assuaged. <<bHe>> growls and bites at the other <<beastsplural>>, as if daring any to challenge <<bhim>>.
+					<<npc "Black Wolf" 2>><<person1>>
+					One of the larger <<beastsplural>> challenges the Black Wolf. The Black Wolf wins after a brief tussle, but <<person2>><<bhis>> anger is not assuaged. <<bHe>> growls and bites at the other <<beastsplural>>, as if daring any to challenge <<bhim>>.
+					<<endevent>><<npc "Black Wolf">><<person1>>
 					<br><br>
 					<<if $wolfpackpoisoned is 1>>
 						<span class="lblue"><<bHe>> staggers slightly. The poisonous mushrooms are having an effect. <<bHe>> will be weaker than usual.</span>
@@ -119,7 +121,7 @@
 				<br><br>
 				<<saveNPC 0 wolf_rank_1>>
 				<<saveNPC 1 wolf_rank_2>>
-				<<if $settings.bestialityEnabled or $monster is 1>>
+				<<if beastSexEnabledForType("wolf", $monster is 1)>>
 					<<link [[Favour the low ranking <<beasttype 0>>|Wolf Cave Rank]]>><<set $phase to 0>><</link>><<deviant1>>
 					<br>
 					<<link [[Favour the high ranking <<beasttype 1>>|Wolf Cave Rank]]>><<set $phase to 1>><</link>><<deviant1>>
@@ -141,8 +143,8 @@
 				<br>
 			<</addinlineevent>>
 			<<addinlineevent "wolf cave howl chorus">>
-				<<endevent>><<npc "Black Wolf">>
-				Amidst the group, you notice the Black Wolf standing atop a large rock, surrounded by a larger group of <<wolf_cave_plural>>. <<bHe>> suddenly raises <<bhis>> head and begins howling loudly, yet beautifully. A second <<beasttype>> takes notice and joins <<bhis>> pack sibling in hearty bonding.
+				<<npc "Black Wolf" 2>><<person2>>
+				Amidst the group, you notice the Black Wolf standing atop a large rock, surrounded by a larger group of <<wolf_cave_plural>>. <<bHe>> suddenly raises <<bhis>> head and begins howling loudly, yet beautifully. A second <<person1>><<beasttype>> takes notice and joins <<bhis>> pack sibling in hearty bonding.
 				<br><br>
 				Moments later, a modest group follows the lead and begins to howl loudly in harmonic unison.
 				<br><br>
@@ -151,7 +153,7 @@
 				<<link [[Join in|Wolf Cave Howl]]>><<set $phase to 1>><</link>>
 				<br>
 			<</addinlineevent>>
-			<<if $pound and $pound.progress is 6>>
+			<<if $pound?.progress is 6>>
 				<<addinlineevent "wolf cave black dog" 0.5>>
 					<<endevent>><<npc "Black Wolf">><<person1>>
 					The Black Wolf sits atop a large rock, watching the surrounding forest. You see a pair of eyes staring back. It's the black dog.
@@ -606,7 +608,7 @@
 <</silently>><<print _text_output>><</widget>>
 
 <<widget "wolf_cave_update">>
-	<<if ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or (!$settings.bestialityEnabled)>>
+	<<if monsterChanceForType("wolf") gte random(1, 100) and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("wolf"))>>
 		<<set $wolfcave_monster_roll to true>>
 	<<else>>
 		<<set $wolfcave_monster_roll to false>>
@@ -614,14 +616,14 @@
 <</widget>>
 
 <<widget "wolf_cave_plural">><<silently>>
-	<<if beastMaleChance() gte 100>>
+	<<if beastMaleChanceForType("wolf") gte 100>>
 		<<set _wolves_plural to "m">>
-	<<elseif beastMaleChance() gte 1>>
+	<<elseif beastMaleChanceForType("wolf") gte 1>>
 		<<set _wolves_plural to "b">>
 	<<else>>
 		<<set _wolves_plural to "f">>
 	<</if>>
-	<<if !$settings.bestialityEnabled or $wolfcave_monster_roll is true or ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<if $wolfcave_monster_roll or (monsterChanceForType("wolf") gte random(1, 100) and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("wolf")))>>
 		<<if _wolves_plural is "m">>
 			<<set _text_output to "wolfboys">>
 		<<elseif _wolves_plural is "f">>
@@ -637,12 +639,12 @@
 <<widget "wolf_cave_singular">><<silently>>
 	<<if _args[0]>>
 		<<set _wolves_singular to _args[0]>>
-	<<elseif beastMaleChance() gte 100 or (beastMaleChance() gte 1 and beastMaleChance() gte random(0,100))>>
+	<<elseif beastMaleChanceForType("wolf") gte 100 or (beastMaleChanceForType("wolf") gte 1 and beastMaleChanceForType("wolf") gte random(0,100))>>
 		<<set _wolves_singular to "m">>
 	<<else>>
 		<<set _wolves_singular to "f">>
 	<</if>>
-	<<if !$settings.bestialityEnabled or $wolfcave_monster_roll is true or ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly))>>
+	<<if $wolfcave_monster_roll or (monsterChanceForType("wolf") gte random(1, 100) and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("wolf")))>>
 		<<if _wolves_singular is "m">>
 			<<set _text_output to "wolfboy">>
 		<<else>>

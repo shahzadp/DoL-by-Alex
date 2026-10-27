@@ -37,6 +37,19 @@ const combatClosePenis = {
 			filters: ["body"],
 			z: CombatRenderer.indices.closeBase,
 		},
+		freckles: {
+			srcfn(options) {
+				return `${options.src}penis/${options.position}/freckles.png`;
+			},
+			showfn(options) {
+				return !!options.showPenis && options.bodyFreckles === "full";
+			},
+			animationfn(options) {
+				return options.animKeyPenis;
+			},
+			filters: ["body"],
+			z: CombatRenderer.indices.closeBase + 0.1,
+		},
 		panties: {
 			srcfn(options) {
 				return `${options.src}penis/${options.position}/panties.png`;

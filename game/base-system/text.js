@@ -363,6 +363,9 @@ statDisplay.create("gggbaton", () => statDisplay.statChange("Baton proficiency",
 statDisplay.create("gwhip", () => statDisplay.statChange("Whip proficiency", 1, "green"));
 statDisplay.create("ggwhip", () => statDisplay.statChange("Whip proficiency", 2, "green"));
 statDisplay.create("gggwhip", () => statDisplay.statChange("Whip proficiency", 3, "green"));
+statDisplay.create("gpickaxe", () => statDisplay.statChange("Pickaxe proficiency", 1, "green"));
+statDisplay.create("ggpickaxe", () => statDisplay.statChange("Pickaxe proficiency", 2, "green"));
+statDisplay.create("gggpickaxe", () => statDisplay.statChange("Pickaxe proficiency", 3, "green"));
 
 statDisplay.create("lsecurity", () => statDisplay.statChange("Security", -1, "green"));
 statDisplay.create("llsecurity", () => statDisplay.statChange("Security", -2, "green"));
@@ -436,6 +439,20 @@ statDisplay.create("gggphysique", () => statDisplay.statChange("Physique", 3, "g
 statDisplay.create("gtanned", () => statDisplay.statChange("Tanned", 1, "green"));
 statDisplay.create("ggtanned", () => statDisplay.statChange("Tanned", 2, "green"));
 statDisplay.create("gggtanned", () => statDisplay.statChange("Tanned", 3, "green"));
+
+statDisplay.create("lresearch", () => statDisplay.statChange("Research", -1, "red"));
+statDisplay.create("llresearch", () => statDisplay.statChange("Research", -2, "red"));
+statDisplay.create("lllresearch", () => statDisplay.statChange("Research", -3, "red"));
+statDisplay.create("gresearch", () => statDisplay.statChange("Research", 1, "green"));
+statDisplay.create("ggresearch", () => statDisplay.statChange("Research", 2, "green"));
+statDisplay.create("gggresearch", () => statDisplay.statChange("Research", 3, "green"));
+
+statDisplay.create("lcalligraphy", () => statDisplay.statChange("Calligraphy", -1, "red"));
+statDisplay.create("llcalligraphy", () => statDisplay.statChange("Calligraphy", -2, "red"));
+statDisplay.create("lllcalligraphy", () => statDisplay.statChange("Calligraphy", -3, "red"));
+statDisplay.create("gcalligraphy", () => statDisplay.statChange("Calligraphy", 1, "green"));
+statDisplay.create("ggcalligraphy", () => statDisplay.statChange("Calligraphy", 2, "green"));
+statDisplay.create("gggcalligraphy", () => statDisplay.statChange("Calligraphy", 3, "green"));
 
 // Conditions that modify variables like this should preferably not be in the same widget as text output
 statDisplay.create("lcorruption", threat => {
@@ -881,3 +898,7 @@ statDisplay.create("gggwarmth", () => statDisplay.statChange("Warmth", 3, "orang
 statDisplay.create("lwarmth", () => statDisplay.statChange("Warmth", -1, "teal"));
 statDisplay.create("llwarmth", () => statDisplay.statChange("Warmth", -2, "teal"));
 statDisplay.create("lllwarmth", () => statDisplay.statChange("Warmth", -3, "teal"));
+statDisplay.create("gthuganger", () => statDisplay.statChange("Thug Anger", 1, "red", () => V.rentThug));
+statDisplay.create("lthuganger", () => statDisplay.statChange("Thug Anger", -1, "green", () => V.rentThug));
+statDisplay.create("llthuganger", () => statDisplay.statChange("Thug Anger", -2, "green", () => V.rentThug));
+statDisplay.create("lllthuganger", () => statDisplay.statChange("Thug Anger", -3, "green", () => V.rentThug));

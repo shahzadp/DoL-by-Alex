@@ -33,11 +33,17 @@ declare module "twine-sugarcube" {
 		physiquechange: 1;
 		home_event_timer: number;
 
-		renttime: number;
+		rentTime: number;
 		babyRent: number;
-		rentmoney: number;
+		rentMoney: number;
 		baileyRefusedToPayTotal: number;
 		baileyRefusedToPayTotalStat: number;
+
+		rentThug: {
+			anger: number;
+			angerCountdown: number;
+			traps: [];
+		} | null;
 
 		bailey_confiscation: {
 			items: Array<
@@ -51,6 +57,7 @@ declare module "twine-sugarcube" {
 		loveInterest: {
 			primary: string;
 			secondary: string;
+			tertiary: string;
 		};
 
 		robin: {

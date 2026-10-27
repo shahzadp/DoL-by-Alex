@@ -9,12 +9,13 @@
  * @param {"vagina"|"anus"} [orifice="vagina"] which orifice conceives
  * @param {TrackedNpc[]} [trackedNPCs] multiple donors when paternity is uncertain
  * @param {boolean} [awareOf=false] whether the player knows they are pregnant
+ * @param {number} [litterSize] how many children the pregnancy has, rolled randomly when left out
  * @returns {boolean} true if a pregnancy was created
  */
-function playerPregnancy(npc, npcType, donorKnown = false, orifice = "vagina", trackedNPCs, awareOf = false) {
+function playerPregnancy(npc, npcType, donorKnown = false, orifice = "vagina", trackedNPCs, awareOf = false, litterSize) {
 	if (!playerSpeciesPregnancyEnabled(npcType)) return false; // species disabled in settings, or a species that can't conceive
 	const donors = trackedNPCs ? trackedNPCs.map(t => ({ name: t.source, species: t.type })) : [{ name: npc, species: npcType }];
-	const pregnancyId = createPregnancy("pc", "human", npc, npcType, donors, Time.date.timeStamp, orifice, V.location);
+	const pregnancyId = createPregnancy("pc", "human", npc, npcType, donors, Time.date.timeStamp, orifice, V.location, litterSize);
 	if (awareOf) setKnowsPregnancy(pregnancyId, "pc"); // this pregnancy only, not every active one
 	if (donorKnown) setKnowsDonor(pregnancyId, "pc");
 	return true;
@@ -117,6 +118,7 @@ function birthRecordedLitter(pregnancyId, birthLocation, location) {
 	}
 
 	recordDelivery(pregnancyId, location);
+	learnPlayerFatheredBirth(pregnancyId);
 
 	for (const child of litter) {
 		beginRearing(child, location, birthLocation);
@@ -195,9 +197,9 @@ function endPlayerPregnancy(birthLocation, location) {
 
 	birthRecordedLitter(pregnancy.pregnancyId, birthLocation, location);
 
-	// Record the birth on the player's per-orifice body stats. These drive the hymen and
-	// vaginal-looseness lines, recovery, and the anal pregnancy gate. Kept off records on purpose bc
-	// Virginity-restoration events (schism, scarlet) reset them to 0
+	// Record the birth on the player's per-orifice body stats, affects hymen and
+	// vaginal-looseness lines, recovery, and the anal pregnancy gate. They need to live here and not on the records
+	// because virginity-restoration events (Schism, Scarlet) reset them to 0.
 	const bodyStats = V.sexStats[pregnancy.orifice].pregnancy;
 	bodyStats.totalBirthEvents += 1;
 	bodyStats.givenBirth += getChildrenOf(pregnancy.pregnancyId).length;
@@ -340,12 +342,9 @@ window.offspringSpecies = offspringSpecies;
 function namedNpcPregnancy(carrier, donor, donorInputSpecies, donorKnown = false, awareOf = false) {
 	if (V.settings.nnpcPregnancyEnabled === false) return false; // Named NPC pregnancy disabled
 	const namedNpc = C.npc[carrier];
-	// The carrier conceives in their monster form on the monster-chance roll, or always when locked into it.
-	const monsterForm = lockedFlag =>
-		(V.settings.monsterChance >= random(1, 100) && (V.hallucinations >= 1 || !V.settings.monsterHallucinationsOnly)) || lockedFlag === 2;
 	let namedNpcType = namedNpc.type;
-	if (carrier === "Black Wolf" && monsterForm(V.blackwolfmonster)) namedNpcType = "wolfgirl";
-	else if (carrier === "Great Hawk" && monsterForm(V.greathawkmonster)) namedNpcType = "harpy";
+	if (carrier === "Black Wolf" && resolveIfNamedBeastIsMonster("blackwolf")) namedNpcType = "wolfgirl";
+	else if (carrier === "Great Hawk" && resolveIfNamedBeastIsMonster("greathawk")) namedNpcType = "harpy";
 	const donorSpecies = offspringSpecies(donorInputSpecies, namedNpcType);
 	if (!donorSpecies) return false;
 
@@ -427,9 +426,7 @@ window.endNpcPregnancyTest = endNpcPregnancyTest;
 
 /**
  * Copies a generated NPC out of their $NPCList slot into $storedNPCs, keyed by the given name and the
- * lowest free number after it ("pregnancy_#"). Twee callers read the key back from _lastStoredName.
- *
- * `<<storeNPC $penistarget "pregnancy">>`
+ * lowest free number after it ("pregnancy_#").
  *
  * @param {number} slot the $NPCList index to store
  * @param {string} name what to store them under
@@ -468,11 +465,9 @@ function storeNPC(slot, name) {
 			vagina: npc.vagina,
 		},
 	};
-	T.lastStoredName = key;
 	return key;
 }
 window.storeNPC = storeNPC;
-DefineMacro("storeNPC", storeNPC);
 
 /**
  * Ages every stored NPC's records pregnancy.
@@ -489,8 +484,9 @@ function randomPregnancyProgress() {
 		if (record && Time.date.timeStamp >= getDueDate(record)) {
 			const [birthLocation, location] = defaultBirthLocations(record.donorSpecies);
 			birthRecordedLitter(record.pregnancyId, birthLocation, location);
+			record.carrier = V.storedNPCs[npcKey].npc.fullDescription;
 			if (location === "home") {
-				addBabyIntro("Bailey", npcKey, record.pregnancyId, getChildrenOf(record.pregnancyId).length, V.storedNPCs[npcKey].npc?.fullDescription);
+				addBabyIntro("Bailey", record.carrier, record.pregnancyId, getChildrenOf(record.pregnancyId).length);
 				setKnowsPregnancy(record.pregnancyId, "Bailey");
 			} else if (location === "wolf_cave") {
 				setKnowsPregnancy(record.pregnancyId, "Black Wolf");

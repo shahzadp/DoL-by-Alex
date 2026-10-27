@@ -377,7 +377,7 @@ You join the scrap, shoving <<pound_text>> aside to get to the food.
 	<<link [[Next|Pound Food Event]]>><</link>>
 	<br>
 <<else>>
-	<<beastNEWinit 1 dog>>One <<beasttype>> takes offence, and nips at you as you try to eat.
+	<<generateBeastVictim 1 dog>>One <<beasttype>> takes offence, and nips at you as you try to eat.
 	<br><br>
 
 
@@ -456,8 +456,8 @@ The <<pound_text>> are eager to feed, but you won't suffer the indignance. They 
 
 Sated, the more dominant <<pound_text>> laze around the yard, while others hunt for scraps.
 <br><br>
-<<beastNEWinit 1 dog>>
-<<if $rng gte 67 and ($settings.bestialityEnabled or $monster is 1)>>
+<<generateBeastVictim 1 dog>>
+<<if $rng gte 67 and beastSexEnabledForType("dog", $monster is 1)>>
 	<<if numberOfEarSlime() and ($earSlime.growth gte 80 - ($earSlime.deviancy * 10))>>
 		A <<beasttype>> watches you from afar with lust in <<bhis>> eyes.
 		<span class="lewd">You feel the slime in your head command you to give yourself to <<bhim>>.</span> It promises rewards if you comply and threatens consequences if you do not.
@@ -869,8 +869,8 @@ The <<pound_text>> watch as you are strapped into a pillory.
 The <<person>> whistles, and slaps your exposed <<bottom>>. "Come on," <<he>> says. "Take your frustrations out on this disobedient <<bitch>>."
 <br><br>
 <<endcombat>>
-<<beastNEWinit 6 dog>>
-<<if $monster is 1 or $settings.bestialityEnabled>>
+<<generateBeastVictim 6 dog>>
+<<if beastSexEnabledForType("dog", $monster is 1)>>
 	You feel a nose prod you from behind.
 	<br><br>
 
@@ -896,6 +896,7 @@ The <<person>> whistles, and slaps your exposed <<bottom>>. "Come on," <<he>> sa
 	<<neutral 1>>
 	<<molested>>
 	<<maninit>>
+	<<bindtemp>>
 	<<set $position to "wall">>
 	<<set $walltype to "pillory">>
 	<<set $head to "grappled">>
@@ -950,10 +951,12 @@ Footsteps approach. "Serves you right," a <<person>> says, freeing you. "Get wit
 	<<molested>>
 	<<beastCombatInit>>
 	<<beastTrainGenerate>>
-	<<set $position to "wall">>
-	<<set $walltype to "pillory">>
-	<<set $head to "grappled">>
+	<<bindtemp>>
 <</if>>
+
+<<set $position to "wall">>
+<<set $walltype to "pillory">>
+<<set $head to "grappled">>
 
 <<effects>>
 <<effectsman>>
@@ -1343,7 +1346,7 @@ You lie on the hard floor.
 <<effects>>
 <<wakingEffects $sleepHoursTotal>>
 <<if ["dryheaving","nausea"].includes(_wakingEffect)>>
-	<br><br>
+	<br>
 	You slept soundly, but now feel a little rough.
 	<br><br>
 <<elseif $nightmares gte 1 and $controlled is 0>>
@@ -1355,7 +1358,7 @@ You lie on the hard floor.
 		You sleep soundly.
 		<br><br>
 	<<else>>
-		<br><br>
+		<br>
 	<</if>>
 <</if>>
 
@@ -1450,7 +1453,7 @@ The <<person>> takes your leash and pulls you back inside, towards your cage. <<
 :: Pound Show Compete
 <<effects>>
 <<endevent>>
-<<beastNEWinit 4 dog>>
+<<generateBeastVictim 4 dog>>
 You crawl towards the obstacle course as fast as your posture will allow. The first up is the slalom. The <<pound_text>> weave between them without difficulty.
 <br><br>
 
@@ -1877,12 +1880,12 @@ The <<person1>><<person>> holds you still as the guests continue to talk about y
 	<</if>>
 	<br><br>
 <<else>>
-	<<if $player.penisExist and $player.vaginaExist and playerChastity("cage")>>
+	<<if $player.penisExist and $player.vaginaExist and playerChastity("cage") and $settings.nudeGenderPerception !== 0>>
 		and the <<person>> takes your caged <<penis>> between <<his>> fingers. "Aha, there's a pussy here as well. How unique!"
 		<br><br>
 		<<He>> strokes your <<pussy>> with <<his>> with a forefinger. The audience looks on, transfixed by the spectacle.
 		<br><br>
-	<<elseif $player.penisExist and $player.vaginaExist>>
+	<<elseif $player.penisExist and $player.vaginaExist and $settings.nudeGenderPerception !== 0>>
 		and the <<person>> takes your <<penis>> between <<his>> fingers. "Aha, there's a pussy here as well. How unique!"
 		<br><br>
 		<<He>> runs <<his>> fingers up and down your length, while stroking your <<pussy>> with <<his>> other hand. The audience looks on, transfixed by the spectacle.
@@ -1902,7 +1905,7 @@ The <<person1>><<person>> holds you still as the guests continue to talk about y
 <br>
 "Yup, <<pshes>> a healthy one."
 <br>
-<<if ($settings.bestialityEnabled or $settings.monsterChance gte 1) and $settings.pregnancySpeechEnabled>>
+<<if beastSexEnabledForType("dog") and $settings.pregnancySpeechEnabled>>
 	<<if $player.penisExist>>
 		"You should have <<phim>> sire some pups."
 	<<else>>
@@ -2122,7 +2125,7 @@ Gwylan giggles. "Oops."
 <br>
 <<link [[Make them run outside naked|Pound Abduction Gwylan Rescue 5]]>><<set $phase2 to 2>><</link>>
 <br>
-<<if $settings.monsterChance gte 100 or $settings.bestialityEnabled>>
+<<if beastSexEnabledForType("dog", victimsAlwaysMonsterForType("dog") or (monsterChanceForType("dog") gte 100 and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("dog"))))>>
 	<<link [[Leash them and open all the cages|Pound Abduction Gwylan Rescue 5]]>><<set $phase2 to 3>><</link>>
 	<br>
 <</if>>
@@ -2161,7 +2164,7 @@ Gwylan digs through a satchel on <<his>> side, and pulls out a folded oversized 
 <<He>> raises <<his>> hand, and your leash appears in it. "Let's go home, dear." The two of you walk down the corridor.
 <<if $phase2 is 1>>
 	Gwylan flicks open the lock on each cage as you pass.
-	Many of the <<pound_text>> follow you out, but some curiously sniff the half-unconscious staff members. <<if $settings.monsterChance gte 100 or $settings.bestialityEnabled>><span class="lewd">Some begin to mount them.</span><</if>>
+	Many of the <<pound_text>> follow you out, but some curiously sniff the half-unconscious staff members. <<if beastSexEnabledForType("dog", monsterChanceForType("dog") gte 100 and ($hallucinations gte 1 or !monsterHallucinationsOnlyForType("dog")))>><span class="lewd">Some begin to mount them.</span><</if>>
 <<elseif $phase2 is 2>>
 	Gwylan flicks open the lock on each cage as you pass.
 	The <<pound_text>> follow you out, some running ahead to join the naked staff members in their streak across the town.

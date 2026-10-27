@@ -71,7 +71,7 @@
 			<</listbox>>
 			</label>
 	</span>
-	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gte 0) or ($earSlime.forcedDressing and $earSlime.forcedDressing.days) or playerBellySize() gte 12 or $location is "forest_shop">>
+	<<set _unavailableItems to !!earSlimeCorruptionClothes() or ($earSlime.forcedCommando and $earSlime.forcedCommando gte 0) or ($earSlime.forcedDressing?.days) or playerBellySize() gte 12 or $location is "forest_shop">>
 	<<if _unavailableItems>>
 		<label><<checkbox "$shopClothingFilter.availableOnly" false true autocheck>> Hide unavailable items</label>
 		<<if $location is "forest_shop">>
@@ -529,9 +529,9 @@
 
 	<<elseif $clothes_choice>>
 		<<set _temp_choice to clone(setup.clothes[$clothingShopSlot][$clothes_choice])>>
-		<<set _realSlot to ($clothingShopSlot is "all" ? _item.slot : $clothingShopSlot)>>
+		<<set _realSlot to ($clothingShopSlot is "all" ? _temp_choice.slot : $clothingShopSlot)>>
 		<<set _realIndex to _temp_choice.index>>
-		<<set $_special to $specialClothes.find(item => item.name === _item.name)>>
+		<<set $_special to $specialClothes.find(item => item.name === _temp_choice.name)>>
 
 		<!-- Unlocked text -->
 		<<if $_special?.unlocked gte 1>>
@@ -571,7 +571,7 @@
 		<<elseif _slimeSlots.includes($clothingShopSlot) and _temp_choice.reveal lt earSlimeCorruptionClothes() and !_temp_choice.type.includesAny("school","event") and V.hypnosis_traits?.silence isnot 1>>
 			<span class="red">The slime in your ear refuses to allow you to try on or buy the _temp_choice.name.</span>
 			<br>
-		<<elseif $earSlime.forcedDressing and $earSlime.forcedDressing.days and _item.gender isnot $earSlime.forcedDressing.type and _item.gender isnot "n" and !_item.type.includesAny("event") and V.hypnosis_traits?.silence isnot 1>>
+		<<elseif $earSlime.forcedDressing?.days and _item.gender isnot $earSlime.forcedDressing.type and _item.gender isnot "n" and !_item.type.includesAny("event") and V.hypnosis_traits?.silence isnot 1>>
 			<span class="red">The slime in your ear refuses to allow you to try on or buy the _temp_choice.name as it is only permitting more <<print $earSlime.forcedDressing.type is "f" ? "feminine" : "masculine">> clothing.</span>
 		<<else>>
 			<<if $earSlime.forcedCommando and $earSlime.forcedCommando gte 0 and !_temp_choice.type.includesAny("naked") and ($clothingShopSlot is "under_lower" or (_temp_choice.outfitPrimary and _temp_choice.outfitPrimary.under_lower)) and V.hypnosis_traits?.silence isnot 1>>
@@ -611,7 +611,7 @@
 					<<if _temp_choice.pattern_options and _temp_choice.pattern_options.length gt 1>>
 						<br>
 						<<if _temp_choice.pattern_options.length gte 15>>
-							Patterns:
+							<<if _temp_choice.pattern_name>><<= _temp_choice.pattern_name.toUpperFirst()>><<else>>Patterns<</if>>:
 							<br>
 							<<set _highContrast = $shopDefaults.highContrast ? "colour-name-span-highcontrast" : "colour-name-span">>
 							<div class="colour-options-div no-numberify pattern">
@@ -641,7 +641,7 @@
 							})>>
 						<<else>>
 							<<run _temp_choice.pattern_options.pushUnique("random")>>
-							Patterns:
+							<<if _temp_choice.pattern_name>><<= _temp_choice.pattern_name.toUpperFirst()>><<else>>Patterns<</if>>:
 							<<printShopColourOptions "pattern">>
 						<</if>>
 						<br>

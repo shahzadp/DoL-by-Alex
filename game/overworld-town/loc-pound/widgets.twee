@@ -8,17 +8,13 @@
 <</widget>>
 
 <<widget "pound_text">>
-	<<if ($settings.monsterChance gte $rng and $hallucinations gte 1) or ($settings.monsterChance gte $rng and !$settings.monsterHallucinationsOnly)>>
-		<<if $settings.monsterChance gte 100 or $settings.bestialityEnabled>>
-			<<if beastMaleChance() is 100>>
-				<<set _text_output to "dogboys">>
-			<<elseif beastMaleChance() is 0>>
-				<<set _text_output to "doggirls">>
-			<<else>>
-				<<set _text_output to "dogpeople">>
-			<</if>>
+	<<if victimsAlwaysMonsterForType("dog") or (monsterChanceForType("dog") gte $rng and $hallucinations gte 1) or (monsterChanceForType("dog") gte $rng and !monsterHallucinationsOnlyForType("dog"))>>
+		<<if beastMaleChanceForType("dog") is 100>>
+			<<set _text_output to "dogboys">>
+		<<elseif beastMaleChanceForType("dog") is 0>>
+			<<set _text_output to "doggirls">>
 		<<else>>
-			<<set _text_output to "hounds">>
+			<<set _text_output to "dogpeople">>
 		<</if>>
 	<<else>>
 		<<set _text_output to "dogs">>
@@ -184,7 +180,15 @@
 	<br><br>
 	<<exposure>>
 	<<if $exposed gte 1>>
-		You close the last cage, and look down at your body. <span class="pink">Your clothes are soaking wet and transparent!</span>
+		You close the last cage, and look down at your body.
+		<<if (!$worn.upper.type.includes("naked") and $upperwetstage gte 3)
+			or (!$worn.lower.type.includes("naked") and $lowerwetstage gte 3)
+			or (!$worn.under_upper.type.includes("naked") and $underupperwetstage gte 3)
+			or (!$worn.under_lower.type.includes("naked") and $underlowerwetstage gte 3)>>
+			<span class="pink">Your clothes are soaking wet and transparent!</span>
+		<<else>>
+			<<covered>> <span class="pink">You'll be in danger if you're caught like this.</span>
+		<</if>>
 		<br><br>
 		<<link [[Next|Pound Exposed]]>><<endevent>><</link>>
 		<br>

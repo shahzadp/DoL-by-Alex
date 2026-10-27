@@ -67,7 +67,7 @@
 		<</if>>
 	<</if>>
 	<!-- hopeless cycle "poor beds" challenge modifier -->
-	<<if $hc and $hcChallenge and $hcChallenge.timeSleep>>
+	<<if $hc and $hcChallenge?.timeSleep>>
 		<<set $_bonusFatigueLoss -= 40>>
 	<</if>>
 	<!-- note: every hour of sleep gives a standard 250 fatigue reduction, so this bonus may not be all that much. -->
@@ -95,6 +95,11 @@
 					<<set $weekly.kylarCreep to 1>>
 					<<set _sleepinterrupt to 1>>
 					<<set _kylarWake to 2>>
+
+				<<elseif $kylarSeen.includes("locket") and $wardrobe.neck.some(item => item.name is "love locket") and Time.dayState is "night" and $kylarbed is undefined and $robinbed is undefined and !($christmas is 1 and Time.monthDay is 25) and $weekly.kylarLocketBreakIn isnot 1 and $rng gte 91 and C.npc.Kylar.state is "active">>
+					<<set $weekly.kylarLocketBreakIn to 1>>
+					<<set _sleepinterrupt to 1>>
+					<<set _kylarWake to 3>>
 
 				<<elseif (($robinromance is 1 and _robin.lust gte 20) or (_robin.trauma gte 50 and $rng gte 51)) and !$robinbed and $robinwakeday isnot 1 and $kylarbed isnot 1 and $robinmissing is 0 and $robin.timer.hurt is 0 /*and !$robin_kicked_out*/>>
 					<!-- Robin climbs into bed with you -->
@@ -210,7 +215,7 @@
 					<<break>>
 				<</if>>
 			<<case "tower">>
-				<<if wraithSleepEventCheck() and $bird and $bird.upgrades and $bird.upgrades.mirror is 1>>
+				<<if wraithSleepEventCheck() and $bird?.upgrades?.mirror is 1>>
 					<<wraithEvent>>
 				<<elseif $bird.state is "hunting" and $bird.timer lte 0>>
 					<<set _sleepinterrupt to 1>>
@@ -517,7 +522,7 @@
 			<</if>>
 		<</if>>
 		<<if ["pregnancy", "mixed"].includes($earSlime.focus) and ($player.vaginaExist or $settings.analEnabled) and !playerIsPregnant()>>
-			<<if maleChance() gt 0 or beastMaleChance() gt 0 or $settings.femaleNPCPenisChance gt 0>>
+			<<if maleChance() gt 0 or C.beastSettingTypes.some(type => beastMaleChanceForType(type) > 0) or $settings.femaleNPCPenisChance gt 0>>
 				<<set _task to `get sperm into your ${$player.vaginaExist ? "vagina" : "anus"}`>>
 				<<run _eventsList.push(_task)>>
 				<<run _eventsList.push(_task)>>
@@ -539,7 +544,7 @@
 			<</if>>
 		<</if>>
 		<<if $player.penisExist and ["impregnation", "mixed"].includes($earSlime.focus)>>
-			<<if maleChance() lt 100 or beastMaleChance() lt 100 or $settings.maleNPCVaginaChance gt 0>>
+			<<if maleChance() lt 100 or C.beastSettingTypes.some(type => beastMaleChanceForType(type) < 100) or $settings.maleNPCVaginaChance gt 0>>
 				<<run _eventsList.push("ejaculate into someone's vagina")>>
 				<<run _eventsList.push("ejaculate into someone's vagina")>>
 				<<if random(0,100) gte 50>>

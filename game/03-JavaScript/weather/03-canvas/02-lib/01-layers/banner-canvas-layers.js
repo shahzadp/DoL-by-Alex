@@ -389,7 +389,7 @@ Weather.Renderer.Layers.add({
 			effect: "lightningPulse",
 			compositeOperation: "source-atop",
 			drawCondition() {
-				return true;
+				return !this.renderInstance.sidebarSkyDisabled;
 			},
 			params: {
 				duration: 1, // seconds
@@ -886,7 +886,7 @@ Weather.Renderer.Layers.add({
 	effects: [
 		{
 			effect: "lightning",
-			drawCondition: () => Weather.enableLightning,
+			drawCondition: () => Weather.enableLightning && !this.renderInstance.sidebarSkyDisabled,
 			params: {},
 			bindings: {
 				lightningFrequency() {

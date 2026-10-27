@@ -91,7 +91,7 @@
 	<</if>>
 
 	/* Story progress */
-	<<if !$gwylanSeen.includes("struggles") and $gwylan.progress gte 15 and _gwylanLovePercent gte 65 and $gwylanSeen.includes("ritual_beast") and $dateCount.GwylanBeast gte 2 and $gwylan.request.event isnot "meetAtCafe" and !gwylanRequestMet() and C.npc.Gwylan.dom gte 10 and C.npc.Gwylan.lust gte 25>>
+	<<if !$gwylanSeen.includes("struggles") and $gwylan.progress gte 9 and _gwylanLovePercent gte 55 and $gwylanSeen.includes("ritual_beast") and $dateCount.GwylanBeast gte 2 and $gwylan.request.event isnot "meetAtCafe" and !gwylanRequestMet() and C.npc.Gwylan.dom gte 10 and C.npc.Gwylan.lust gte 25>>
 		<<set $_noLeave to true>>
 		<<if $location is "forest_shop">>
 			<<He>> looks unsure of <<himself>> for a moment. "I need to ask you something," <<he>> blurts out.
@@ -114,7 +114,7 @@
 		<</if>>
 		<<exit>>
 	<</if>>
-	<<if $location is "forest_shop" and _gwylanLovePercent gte 80 and C.npc.Gwylan.dom gte 75 and $dateCount.GwylanSex gte 5 and $gwylan.sea gte 5 and !$gwylanSeen.includes("partners") and _gwylanStatus.includes("lust") and !$weekly.gwylanLIChance and $exposed is 0 and !Time.isBloodMoon()>>
+	<<if $location is "forest_shop" and _gwylanLovePercent gte 70 and C.npc.Gwylan.dom gte 75 and $dateCount.GwylanSex gte 5 and $gwylan.sea gte 5 and !$gwylanSeen.includes("partners") and _gwylanStatus.includes("lust") and !$weekly.gwylanLIChance and $exposed is 0 and !Time.isBloodMoon()>>
 		<<set $weekly.gwylanLIChance to true>>
 		You feel Gwylan's hand on yours.
 		<br><br>
@@ -448,7 +448,7 @@
 			<<lockicon "unlock">><<link [[Tell <<him>> you got your chastity device removed|Gwylan Chastity Removed]]>><</link>>
 			<br>
 		<</if>>
-		<<if !gwylanRequestMet() and !$gwylan.request.command and $debug is 1>>
+		<<if !gwylanRequestMet() and !$gwylan.request.command and $debug>>
 			/* ToDo: Gwylan - rerolling requests */
 			<span class="red">DEV NOTE: Request rerolling not yet implemented. Clears current request. May entirely break story progression if used carelessly.</span>
 			<br>
@@ -1973,6 +1973,7 @@
 <</widget>>
 
 <<widget "gwylanReunion">>
+	<<set $gwylan.timer.lastSeen to Time.date.timeStamp>>
 	You tell <<him>> about your time <<badEndProse $badEndStats.last()?.source "at">>. <<He>> listens without speaking, stroking your hair as <<he>> does. When you finish, <<he>> kisses your forehead.
 	<<switch $badEndStats.last()?.source>>
 		<<case "Underground Farm">>
@@ -1991,7 +1992,7 @@
 				<<set _badEndFollowup to true>>
 			<</if>>
 		<<case "Wolf Cave">>
-			"The wolves are usually so docile, but the black one has been growing more and more bold," <<he>> says. "I'm so sorry that <<if ($settings.monsterChance gte random(1, 100) and ($hallucinations gte 1 or !$settings.monsterHallucinationsOnly)) or $blackwolfmonster is 2>><<nnpc_he "Black Wolf">><<else>>it<</if>> put you through that."
+			"The wolves are usually so docile, but the black one has been growing more and more bold," <<he>> says. "I'm so sorry that <<if resolveIfNamedBeastIsMonster("blackwolf")>><<nnpc_he "Black Wolf">><<else>>it<</if>> put you through that."
 			<<if !$gwylanTalked.includes("loincloth")>>
 				<<set _badEndFollowup to true>>
 			<</if>>
@@ -2148,6 +2149,8 @@
 						You spend a few minutes drying off before moving on.
 					<</if>>
 					<<fame 1 "exhibitionism">>
+					<<dry_full>>
+					<br><br>
 				<<elseif $exposed gte 1>>
 					You instinctively <<if ["naked", "bellyShow"].includes($worn.upper.type)>>pull your $worn.upper.name down to <</if>>try to conceal your <<exposedlower>>.
 					<br><br>
@@ -2156,9 +2159,9 @@
 					<br><br>
 
 					You spend a few minutes drying off before moving on.
+					<<dry_full>>
+					<br><br>
 				<</if>>
-				<br><br>
-				<<dry_full>>
 			<</addinlineevent>>
 		<</if>>
 

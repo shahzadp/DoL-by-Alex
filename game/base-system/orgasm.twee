@@ -3,7 +3,7 @@
 <<widget "orgasm">>
 	<<orgasmstat>><<orgasmcount 1>><<set $orgasmdown to 3>>
 	<<if $combat is 1>>
-		<<set $speechcum to 1>><<set $speechorgasmcount += 1>>
+		<<set $speechPlayerOrgasm to 1>><<set $speechorgasmcount += 1>>
 	<</if>>
 	<<tinyPenisDryOrgasmChance>>
 	<<if $hypnosis_traits.silence>>
@@ -80,7 +80,7 @@
 					<<if $abomination is 1>>
 						/*ToDo: Pregnancy, figure out how the Wraith, plantpeople, etc will handle pregnancy.*/
 					<<else>>
-						<<npcPregnancyRoll $NPCList[$penistarget].fullDescription `($enemytype is "man" ? "human" : $NPCList[$penistarget].type)` "pc" "human" "vagina" "deep" $location `_orgasmSpermRng / 100` $penistarget>>
+						<<npcPregnancyRoll $NPCList[$penistarget].fullDescription `($enemytype is "man" ? "human" : $NPCList[$penistarget].type)` "pc" "human" "vagina" "deep" $location `_orgasmSpermRng / 100` $penistarget _npcForceImpregnation>>
 					<</if>>
 				<<elseif $NPCList[$penistarget].vagina is "penisimminent" or $NPCList[$penistarget].vagina is "penisentrance">>
 					<<personselect $penistarget>>
@@ -104,7 +104,7 @@
 							<<if $semen_amount lte ($semen_volume * (6 / 24))>>
 								<<set _orgasmSpermRng to Math.floor(_orgasmSpermRng / 2)>>
 							<</if>>
-							<<npcPregnancyRoll $NPCList[$_i].fullDescription `($enemytype is "man" ? "human" : $NPCList[$_i].type)` "pc" "human" "anus" "deep" $location `_orgasmSpermRng / 100` $_i>>
+							<<npcPregnancyRoll $NPCList[$_i].fullDescription `($enemytype is "man" ? "human" : $NPCList[$_i].type)` "pc" "human" "anus" "deep" $location `_orgasmSpermRng / 100` $_i _npcForceImpregnation>>
 						<</if>>
 					<<elseif $NPCList[$_i].penis is "otheranusimminent" or $NPCList[$_i].penis is "otheranusentrance" or $NPCList[$_i].vagina is "otheranusimminent" or $NPCList[$_i].vagina is "otheranusentrance">>
 						<<personselect $_i>>
@@ -254,7 +254,7 @@
 				<<set $_milkedName to $worn.over_upper.name>>
 			<</if>>
 			<span class="pink">Milk $_milkText from your <<breasts>> into your $_milkedName.</span>
-			<<if $combat is 1>><<set $speechmilk to 1>><</if>>
+			<<if $combat is 1>><<set $speechLactate to 1>><</if>>
 		<<elseif $combat is 1 and ($cheststate is "chest" or $cheststate is "chestimminent") and $settings.breastFeedingEnabled>>
 			<<for $_i = 0; $_i lt $enemynomax; $_i++>>
 				<<if $NPCList[$_i].mouth is "chest">>
@@ -265,27 +265,27 @@
 							<<breastfeed 10>>
 							<<set $cheststate to "chestimminent">><<set $NPCList[$_i].mouth to "chestimminent">>
 							<<milkvolume 1>><<set $enemyanger += 10>>
-							<<set $speechmilk to 3>>
+							<<set $speechLactate to 3>>
 						<<else>>
 							<span class="pink">Your orgasm makes your <<breasts>> start spraying milk. <<He>> struggles to drink it all down.</span>
 							<<breastfeed 8>><<milkvolume 1>><<sex 2 "breast" $_i>>
-							<<set $speechmilk to 1>>
+							<<set $speechLactate to 1>>
 						<</if>>
 					<<else>>
 						<span class="pink">Your orgasm makes your <<breasts>> leak even more milk into <<his>> eager mouth.</span>
 						<<breastfeed 4>><<milkvolume 1>><<sex 2 "breast" $_i>>
-						<<set $speechmilk to 1>>
+						<<set $speechLactate to 1>>
 					<</if>>
 				<<elseif $NPCList[$_i].mouth is "chestimminent" or $NPCList[$_i].mouth is "chestentrance">>
 					<<personselect $_i>>
 					<<if $milk_amount gte (($milk_volume / 3) * 2) and $milk_amount gte 2500>>
 						<span class="pink">Your orgasm makes your <<breasts>> start spraying milk all over <<his>> face.</span>
 						<<breastfeed 8>>
-						<<set $speechmilk to 2>>
+						<<set $speechLactate to 2>>
 					<<else>>
 						<span class="pink">Your orgasm makes your <<breasts>> leak milk.</span>
 						<<breastfeed 3>>
-						<<set $speechmilk to 1>>
+						<<set $speechLactate to 1>>
 					<</if>>
 				<</if>>
 			<</for>>
@@ -312,7 +312,7 @@
 				<span class="pink">Milk leaks from your <<breasts>>.</span>
 				<<breastfeed 2>>
 			<</if>>
-			<<if $combat is 1>><<set $speechmilk to 1>><</if>>
+			<<if $combat is 1>><<set $speechLactate to 1>><</if>>
 		<</if>>
 	<</if>>
 
@@ -890,7 +890,7 @@
 <<widget "orgasmFishingPier">>
 	<<orgasm>>
 	<<set _orgasmText to either("You grab the pier railing with your free hand", "You press yourself hard against the railing")>>
-	
+
 	<<if ["bet", "idle"].contains($daily.fishing.fishingPier.whitney.phase)>>
 		<<npcincr Whitney lust 2>>
 		<<= _orgasmText>> as your body convulses in climax. Whitney's friends whoop while Whitney watches you, grinning. "Hell of a show." <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>
@@ -913,7 +913,7 @@
 <<widget "orgasmFishingBeach">>
 	<<orgasm>>
 	<<set _orgasmText to either("You dig the end of your rod into the sand to keep upright", "Your knees nearly buckle, your rod dragging furrows in the wet sand")>>
-	
+
 	<<if $daily.fishing.fishingBeach.fisher.phase is "fishing">>
 		<<loadNPC 0 "fishing_beach_npc_fisher">><<person1>>
 		<<= _orgasmText>> as your body convulses. As you steady yourself, you find the <<person>> watching you. "Hell of a catch," <<he>> calls over, laughing as <<he>> reels in an empty hook. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>
@@ -921,7 +921,7 @@
 	<<elseif beachCampfirePartyPresent()>>
 		<<= _orgasmText>> as your body convulses in climax. The students around the campfire notice, cheering and whistling at the show. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>
 	<<elseif Time.dayState isnot "night">>
-		<<= _orgasmText>> as your spasms peak. As you regain control, you find yourself stared at from all across the beach. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>	
+		<<= _orgasmText>> as your spasms peak. As you regain control, you find yourself stared at from all across the beach. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>
 	<<else>>
 		<<= _orgasmText>>, then steady your breathing as your spasms subside. The shoreline is empty, and there's no one around right now to see you in such a state.
 	<</if>>
@@ -932,7 +932,7 @@
 <<widget "orgasmFishingForestLake">>
 	<<orgasm>>
 	<<set _orgasmText to either("You brace against the rock beneath you", "You clutch at the mossy ground to keep yourself steady")>>
-	
+
 	<<if teensPresentCheck("lake")>>
 		<<= _orgasmText>> when the climax hits, and as you regain control you see people looking at you from accross the lake. <<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<fameexhibitionism 10>>
 	<<else>>
@@ -945,7 +945,7 @@
 <<widget "orgasmFishingMoor">>
 	<<orgasm>>
 	<<set _orgasmText to either("You stagger on the uneven boggy ground", "You drive the end of your rod into the earth to keep from falling")>>
-	
+
 	<<if $daily.fishing.fishingMoor.fox.phase is "watching">>
 		<<= _orgasmText>>, struggling to keep upright as your orgasm hits. When you recover, you notice the <<beasttype>> has crept several paces closer while you were distracted.
 		<<set $daily.fishing.fishingMoor.fox.closeness to Math.min($daily.fishing.fishingMoor.fox.closeness + random(2, 5), 9)>>
@@ -956,7 +956,7 @@
 	<<else>>
 		<<= _orgasmText>>, and manage to steady yourself as your orgasm subsides. The open moor offers nowhere to hide, but there's no one out here to see it.
 	<</if>>
-	
+
 	<<set $orgasmcurrent to 0>>
 <</widget>>
 

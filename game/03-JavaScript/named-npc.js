@@ -13,7 +13,7 @@ function statusCheck(name) {
 	 * When debugging, this temp var not being set will cause an error in scenes that use legacy temporary variables.
 	 * These should be replaced with C.npc.Robin instead of _robin, for example.
 	 */
-	if (V.debug === 0) {
+	if (!V.debug) {
 		T[name.toLowerCase()] = nnpc;
 	}
 	/* /To remove later */
@@ -50,7 +50,7 @@ function sydneyStatusCheck() {
 	else T.sydneyStatus = "neutral";
 
 	if (sydney.chastity.penis.includes("chastity") || sydney.chastity.vagina.includes("chastity")) T.sydneyChastity = 1;
-	if (sydney.virginity.vaginal && sydney.virginity.penile) T.sydneyVirgin = 1;
+	if (sydney.virginity.vaginal === true && sydney.virginity.penile === true) T.sydneyVirgin = 1;
 }
 
 function sydneySchedule() {
@@ -138,6 +138,7 @@ function sydneySchedule() {
 	}
 	if (T.sydney_location === "temple") {
 		switch (Time.hour) {
+			case 0:
 			case 1:
 			case 2:
 			case 3:
@@ -175,7 +176,6 @@ function sydneySchedule() {
 				V.sydney_templeWork = Time.weekDay === 1 && V.sydney && V.sydney.rank === "initiate" ? "anguish" : "pray";
 				break;
 			case 23:
-			case 0:
 				V.sydney_templeWork = Time.weekDay === 7 ? "sleep" : "pray";
 				break;
 			default:
@@ -432,7 +432,7 @@ function gwylanStatusCheck() {
 	T.gwylanLovePercent = Math.ceil((C.npc.Gwylan.love / (totalSets.length * 2)) * 100);
 
 	if (
-		T.gwylanLovePercent >= 65 &&
+		T.gwylanLovePercent >= 55 &&
 		V.gwylanSeen.includes("ritual_sex") &&
 		C.npc.Gwylan.dom >= 20 &&
 		C.npc.Gwylan.lust >= 40 &&
@@ -445,7 +445,7 @@ function gwylanStatusCheck() {
 	}
 
 	if (
-		T.gwylanLovePercent >= 75 &&
+		T.gwylanLovePercent >= 65 &&
 		V.gwylanSeen.includes("yearning") &&
 		C.npc.Gwylan.dom >= 50 &&
 		C.npc.Gwylan.lust >= 30 &&
@@ -460,7 +460,7 @@ function gwylanStatusCheck() {
 				gwylanStatus.push("heat");
 			}
 		if (
-			T.gwylanLovePercent >= 90 &&
+			T.gwylanLovePercent >= 80 &&
 			C.npc.Gwylan.dom >= 140 &&
 			gwylanStatus.includes("heat") &&
 			// eslint-disable-next-line no-undef

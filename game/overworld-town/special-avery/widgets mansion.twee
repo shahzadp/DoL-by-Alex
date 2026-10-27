@@ -1,7 +1,7 @@
 :: Widgets Avery Mansion [widget]
 
 <<widget "avery_mansion_variables_debug">>
-	Rent time: $renttime<br>
+	Rent time: $rentTime<br>
 	/*Avery card gift: <<print $avery_card_gift>><br>*/
 	<<if $avery_mansion>>
 	Mansion days absent: <<print $avery_mansion.days_absent>><br>
@@ -800,7 +800,7 @@
 <<widget "avery_rage_assess">>
 	<<avery_mansion_seen>>
 
-	<<if $debug is 1>>
+	<<if $debug>>
 		<br>
 		<i>Pool disorder:</i> <<print $avery_mansion.pool>>
 		<br>
@@ -825,50 +825,50 @@
 	<</if>>
 	<<if $avery_mansion.kneel is "refuse" and $avery_mansion.jobs.includes("knees")>>
 		<<set $avery_mansion.rage.assess += 1>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>No kneeling</i><br>
 		<</if>>
 	<<elseif !$avery_mansion.bow and $avery_mansion.jobs.includes("bow")>>
 		<<set $avery_mansion.rage.assess += 1>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>No bow</i><br>
 		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("meek") and !$speech_attitude_avery and $speech_attitude isnot "meek">>
 		<<set $avery_mansion.rage.assess += 1>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>Wrong demeanour</i><br>
 		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("maid") and !$worn.upper.type.includes("maid") and !$worn.lower.type.includes("maid") and !$worn.head.type.includes("maid")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set _avery_mansion_maid_failed to true>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>No maid clothes</i><br>
 		<</if>>
 	<</if>>
 	<<if !$avery_mansion.jobs.includes("maid") and $avery_mansion.jobs.includes("formal") and !$worn.upper.type.includes("formal") and !$worn.lower.type.includes("formal")>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set _avery_mansion_formal_failed to true>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>No formal clothes</i><br>
 		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("hairstyle") and $hairtype isnot "neat">>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairstyle_failed to true>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>Hair wrong style</i><br>
 		<</if>>
 	<</if>>
 	<<if $avery_mansion.jobs.includes("hairlength") and $hairlength gte 400>>
 		<<set $avery_mansion.rage.assess += 1>>
 		<<set $avery_mansion_hairlength_failed to true>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<i>Hair too long</i><br>
 		<</if>>
 	<</if>>
-	<<if $debug is 1>>
+	<<if $debug>>
 		<i>Total rage assess:</i> <<print $avery_mansion.rage.assess>>
 		<br>
 	<</if>>
@@ -993,11 +993,14 @@
 			<br>
 			<<link [[Run|Mansion Chase Run]]>><</link>>
 			<br>
-		<<else>>
+		<<elseif Time.weekDay isnot 1 and Time.weekDay isnot 7 and Time.hour gt 9>>
 			"Long day," <<he>> says, managing a weak smile.
 
 			<<avery_mansion_rage_party "normal">>
 			<<avery_mansion_dom_events>>
+		<<else>>
+			<<avery_mansion_rage_party "normal">>
+			<<avery_mansion_end_links>>
 		<</if>>
 	<</if>>
 	<br><br>
@@ -1624,7 +1627,7 @@
 				<br>
 			<</if>>
 		<</if>>
-		<<if $debug is 1>>
+		<<if $debug>>
 			<br><br>
 			''DEBUG ONLY''
 			<br><br>
@@ -2545,6 +2548,12 @@
 
 	<span class="green">You're safe, for now.</span>
 	<br><br>
+
+	<<if $transformationParts.traits.chase isnot "disabled">>
+		Your heart races. <span class="green">The thrill of the chase invigorates you.</span> <<lstress>><<garousal>><<stress -8>><<arousal 200>><<transform fox 1>>
+	<</if>>
+	<br><br>
+	
 	<<set $avery_mansion.away_timer to 7>>
 	<<set $avery_mansion.schedule to "away">>
 	<<endevent>>
@@ -3125,7 +3134,7 @@
 			<<avery_housework_assess>>
 		<<elseif _avery_interrupt is "work">>
 			You hear the front gates rattle open, followed by a car driving through. It enters the garage, and a car door slams.
-			<<if Time.weekDay isnot 1>>
+			<<if Time.weekDay isnot 1 and Time.weekDay isnot 7>>
 				Avery is home from work.
 			<<else>>
 				Avery is home.
@@ -3508,7 +3517,7 @@
 			<<if $bus is "avery_bathroom">>
 				<<if $avery_mansion.schedule is "bath">>
 					<<if !$daily.avery.morning_bath>>
-						<<if !$daily.avery.bathroom_peek and !["Mansion Bathroom", "Mansion Bathe", "Mansion Brush", "Mansion Talk Chat 2", "Mansion Talk Leave"].includes($passagePrev) and random(1, 4) is 4>>
+						<<if !$daily.avery.bathroom_peek and !["Mansion Bathroom", "Mansion Bathe", "Mansion Brush", "Mansion Talk Chat 2", "Mansion Talk Leave", "Mansion Talk Flirt"].includes($passagePrev) and random(1, 4) is 4>>
 							<<set _hide_links to 1>>
 							<<npc "Avery">><<person1>>
 							<<set $daily.avery.bathroom_peek to true>>
@@ -3692,7 +3701,7 @@
 			<</if>>
 
 			<<if $bus is "avery_garage">>
-				<<if $avery_valentines and $avery_valentines.ready and !$avery_valentines.done and Time.monthDay is 14>>
+				<<if $avery_valentines?.ready and !$avery_valentines.done and Time.monthDay is 14>>
 					<<icon "avery-car.png">><<link [[Valentine's Date|Avery Valentines]]>><<endevent>><</link>>
 					<br><br>
 				<<elseif $avery_mansion.date_ready is true and Time.hour lte 21 and $averydatedone isnot 1>>
@@ -3818,7 +3827,7 @@
 					<<link [[Attitudes]]>><<set $attitudesExitPassage to $passage>><</link>>
 				<</if>>
 				<br><br>
-				<<if $debug is 1>>
+				<<if $debug>>
 					''DEBUG ONLY''
 					<br><br>
 
@@ -3970,11 +3979,11 @@
 
 	<<if $possessed>>
 		<<set _avery_interrupt to false>>
-	<<elseif $_avery_present is true and $avery_valentines and $avery_valentines.invite and !$avery_valentines.ready and Time.monthName is "February" and Time.monthDay is 14 and Time.hour gte 21>>
+	<<elseif $_avery_present is true and $avery_valentines?.invite and !$avery_valentines.ready and Time.monthName is "February" and Time.monthDay is 14 and Time.hour gte 21>>
 		<<set _avery_interrupt to "valentines_ready">>
 	<<elseif $_avery_present is true and $avery_injury>>
 		<<set _avery_interrupt to "injury">>
-	<<elseif $_avery_present is true and $avery_mansion.schedule is "return" and !($avery_valentines and $avery_valentines.invite and Time.monthName is "February" and Time.monthDay is 14 and Time.hour gte 21)>>
+	<<elseif $_avery_present is true and $avery_mansion.schedule is "return" and !($avery_valentines?.invite and Time.monthName is "February" and Time.monthDay is 14 and Time.hour gte 21)>>
 		<<set _avery_interrupt to "work">>
 	<<elseif $_avery_present is true and $avery_valentines_missed>>
 		<<set _avery_interrupt to "valentines_missed">>
@@ -4870,7 +4879,7 @@
 	<<unset $avery_valentines_virginity>>
 	<<unset $avery_valentines_steal_virginity>>
 	<<unset $avery_valentines_vow>>
-	<<unset $speechfallentransform>>
+	<<unset $speechFallenTransform>>
 
 	<<if $avery_mansion and Time.monthName is "February" and Time.monthDay is 14>>
 		<<set $avery_mansion.rage.dinner_done to 1>>

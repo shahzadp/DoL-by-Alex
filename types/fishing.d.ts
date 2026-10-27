@@ -1,25 +1,4 @@
-type FishingLocationKey = "fishingBeach" | "fishingPier" | "fishingCoastPath" | "fishingForestLake" | "fishingMoor";
-
-type FishingFishKey =
-	| "haddock"
-	| "salmon"
-	| "trout"
-	| "cod"
-	| "herring"
-	| "whiting"
-	| "mackerel"
-	| "flounder"
-	| "sole"
-	| "bass"
-	| "roach"
-	| "perch"
-	| "chub"
-	| "pike"
-	| "eel"
-	| "grayling"
-	| "minnow"
-	| "sprat";
-type FishingFishPreferredTime = "dawn" | "day" | "dusk" | "night" | "bloodMoon";
+import { ClothedSlots, ClothesItem } from "twine-sugarcube";
 
 declare module "twine-sugarcube" {
 	export interface SugarCubeSetupObject {
@@ -28,15 +7,36 @@ declare module "twine-sugarcube" {
 }
 
 declare global {
+	type FishingLocationKey = "fishingBeach" | "fishingPier" | "fishingCoastPath" | "fishingForestLake" | "fishingMoor";
+
+	type FishingFishKey =
+		| "haddock"
+		| "salmon"
+		| "trout"
+		| "herring"
+		| "whiting"
+		| "mackerel"
+		| "flounder"
+		| "bass"
+		| "roach"
+		| "perch"
+		| "chub"
+		| "grayling"
+		| "cod"
+		| "pike"
+		| "eel"
+		| "baitfish";
+
+	type FishingMinigameBehaviorKey = "runner" | "darter" | "panicked" | "anchor" | "thrasher" | "slipper";
+
 	interface FishingSetup {
 		lootTables: FishingLootTables;
-		reelFightMinSize: number;
 	}
 
 	interface FishingLootTables {
 		fish: Record<FishingFishKey, FishConfig>;
-		fishingTrash: Record<string, TrashConfig>;
-		fishingClothing: Record<string, ClothingConfig>;
+		fishingTrash: Record<string, FishingTrashConfig>;
+		fishingClothing: Record<string, FishingClothingConfig>;
 	}
 
 	interface FishConfig {
@@ -44,25 +44,42 @@ declare global {
 		maxSize: number;
 		// Preferred params are where/how to catch the largest size of the fish, and does not affect catch frequency.
 		preferredSeason: Season[];
-		preferredTime: FishingFishPreferredTime[];
 		preferredLocation: FishingLocationKey[];
 		locations: Partial<Record<FishingLocationKey, number>>;
 		requiresBaitFish?: true;
 		isBaitFish?: true;
 		cookable: boolean;
+		minigame?: FishMinigameConfig; // Fish without a minigame config are always reeled in without the minigame.
 		icon: string;
 		preferredBait?: string; // Fish that aren't batfish and don't require batfish to catch have a preferred bait, which increases the odds of the fish being rolled if you're using it.
 	}
 
-	interface TrashConfig {
+	interface FishMinigameConfig {
+		behavior: FishingMinigameBehaviorKey;
+		maxStamina: number;
+		armFatigueDifficulty: number;
+	}
+
+	interface FishingTrashConfig {
 		weight: number;
 		isLitter?: boolean;
 		locations?: FishingLocationKey[];
 	}
 
-	interface ClothingConfig {
+	interface FishingClothingConfig {
 		weight: number;
 		locations?: FishingLocationKey[];
+	}
+
+	interface FishingHookedFish {
+		type: FishingFishKey;
+		size: number;
+	}
+
+	interface FishingCaughtClothing {
+		slot: ClothedSlots;
+		item: ClothesItem;
+		colour: string;
 	}
 }
 

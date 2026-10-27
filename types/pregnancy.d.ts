@@ -41,6 +41,7 @@ declare global {
 		deliveredLocation: string | null;
 		waterBreaking?: boolean;
 		birthInProgress?: boolean;
+		litterBorn?: boolean;
 		termEffectsDone?: boolean;
 		ultrasoundDone?: boolean;
 		awareOfPregnancy: string[];
@@ -213,7 +214,8 @@ declare global {
 		possibleDonors: PossibleDonor[],
 		conceivedDate: number,
 		orifice: "vagina" | "anus",
-		conceivedLocation: string
+		conceivedLocation: string,
+		litterSize?: number
 	): number;
 	function createChild(pregnancyId: number, species: string, features: Features, gender: "m" | "f" | "h", identical: number | null): number;
 	function gestationSeconds(species: string): number;
@@ -308,22 +310,22 @@ declare global {
 	function childBaseSpecies(donorSpecies: string): "human" | "wolf" | "hawk";
 	function isMonsterPerson(donorSpecies: string): boolean;
 	function rollLitterSize(base: string): number;
-	function resolveChildParent(name: string): { gender: string | null; hairColour: string | null; eyeColour: string | null; skinColour: string | null };
+	function resolveChildParent(name: string): { gender: string | null; hairColour: string | null; eyeColour: string | null; skinColour?: string | null };
 	function rollChildGender(carrierParent: { gender: string | null }, donorParent: { gender: string | null }, sameParent: boolean): "m" | "f" | "h";
 	function pcHeritage(): { beast: string | null; divine: string | null };
 	function rollChildEyeColour(carrierParent: { eyeColour: string | null }, donorParent: { eyeColour: string | null }): string;
-	function rollChildSkinColour(carrierParent: { skinColour: string | null }, donorParent: { skinColour: string | null }): string;
+	function rollChildSkinColour(carrierParent: { skinColour?: string | null }, donorParent: { skinColour?: string | null }): string;
 	function rollChildHairColour(
 		base: "human" | "wolf" | "hawk",
 		carrierParent: { hairColour: string | null },
 		donorParent: { hairColour: string | null },
 		wolfFur: string[]
 	): string;
-	function generateChildren(pregnancyId: number): void;
+	function generateChildren(pregnancyId: number, fixedLitterSize?: number): void;
 	function playerKnowsLitterSpecies(pregnancy: Pregnancy): boolean;
 	function playerConceivedWith(name: string): boolean;
 
-	function combatInseminate(slot: number, beast?: boolean): Load | null;
+	function combatInseminate(slot: number, beast?: boolean, knotBoost?: number): Load | null;
 	function sceneInseminate(
 		orifice: "vagina" | "anus",
 		donor: string,
@@ -342,7 +344,8 @@ declare global {
 		depth?: "outside" | "imminent" | "deep",
 		location?: string,
 		donorFertility?: number,
-		slot?: number | null
+		slot?: number | null,
+		forced?: boolean
 	): number | null;
 
 	function canPlayerConceive(orifice: "vagina" | "anus", donor: string, donorSpecies: string): boolean;

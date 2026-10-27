@@ -128,7 +128,7 @@
 		<br>
 		Aphrodisiacs sold: $stat_aphrodisiacs_sold
 		<br>
-		<<if $brothelVending and $brothelVending.total>>
+		<<if $brothelVending?.total>>
 			Products sold at the brothel: $brothelVending.total
 			<br>
 		<</if>>
@@ -208,7 +208,7 @@
 			<br>
 		<</if>>
 		Semen swallowed: <<print Math.floor($semenswallowedstat)>> mL
-		<<if $settings.bestialityEnabled>>
+		<<if isBestialityOnForAnyCreature()>>
 			<br>
 			Animal semen swallowed: <<print Math.floor($animalsemenswallowedstat)>> mL
 		<</if>>
@@ -317,7 +317,7 @@
 			<br>
 			Last raped: <<statisticsTimeCompare $rapeTimeStat>>
 			<br>
-			<<if $settings.bestialityEnabled>>
+			<<if isBestialityOnForAnyCreature()>>
 				Raped by animals: $beastrapestat
 				<br>
 			<<else>>
@@ -588,7 +588,7 @@
 			Cigarettes smoked: $whitney_smoke
 			<br>
 		<</if>>
-		<<if $bird and $bird.lurkersEaten>>
+		<<if $bird?.lurkersEaten>>
 			Lurkers eaten: $bird.lurkersEaten
 			<br>
 		<</if>>
@@ -737,9 +737,16 @@
 			<br>
 			Crossdresser progression:
 			<<if $crossdressingTrait isnot undefined>>
-				<<print Math.trunc($crossdressingTrait)>> %
+				<<print Math.trunc($crossdressingTrait)>>%
 			<<else>>
-				0
+				0%
+			<</if>>
+			<br>
+			Nectar addiction
+			<<if $backgroundTraits.includes("plantlover")>>
+				timer: <<print Math.trunc($nectar_timer)>> <<pluralise $nectar_timer "day">>
+			<<else>>
+				progression: <<print Math.trunc(($nectar_addiction / 150) * 100)>>%
 			<</if>>
 			<br><br>
 			Sensitivities:
@@ -883,7 +890,7 @@
 				Docks status: <<print Math.trunc($docks.status)>>
 				<br>
 			<</if>>
-			<<if $pound and $pound.progress gte 1>>
+			<<if $pound?.progress gte 1>>
 				Stray dog contentment: <<print Math.trunc($stray_happiness)>>
 				<br>
 			<</if>>
@@ -907,7 +914,7 @@
 			<br>
 			Business fame: <<print Math.trunc($fame.business)>>
 			<br>
-			<<if $debug is 1>>
+			<<if $debug>>
 				Pimp fame: <<print Math.trunc($fame.pimp)>>
 				<br>
 			<</if>>
@@ -917,7 +924,9 @@
 			<br>
 			Islander language: <<if $islander_language is undefined>>0<<else>><<print Math.trunc($islander_language)>><</if>>
 			<br>
-			Gwylan Progress: <<if $gwylan?.progress is undefined>>0<<else>><<print $gwylan.progress>><</if>>
+			Gwylan progress: <<if $gwylan?.progress is undefined>>0<<else>><<print $gwylan.progress>><</if>>
+			<br>
+			Mine hope: <<if $mine?.hope is undefined>>0<<else>><<print $mine.hope>><</if>>
 			<br><br>
 		<</foldout>>
 
@@ -972,9 +981,9 @@
 			<br>
 			Cow manifestation: <<print Math.trunc($cow)>>
 			<br>
-			<<if $hallucinations gte 2 or !$settings.bestialityEnabled>>Harpyness<<else>>Birdieness<</if>>: <<print Math.trunc($birdbuild)>> (30+ for full transformation)
+			<<if resolveIfNamedBeastIsMonster("greathawk")>>Harpyness<<else>>Birdieness<</if>>: <<print Math.trunc($birdbuild)>> (30+ for full transformation)
 			<br>
-			<<if $hallucinations gte 2 or !$settings.bestialityEnabled>>Harpy<<else>>Bird<</if>> manifestation: <<print Math.trunc($harpy)>>
+			<<if resolveIfNamedBeastIsMonster("greathawk")>>Harpy<<else>>Bird<</if>> manifestation: <<print Math.trunc($harpy)>>
 			<br>
 			Foxiness: <<print Math.trunc($foxbuild)>> (30+ for full transformation)
 			<br>
@@ -1059,7 +1068,7 @@
 		<<if $NPCName.find(npc => npc.pregnancy and npc.pregnancy.enabled isnot undefined)>>
 			<<foldout false "_npcPregnancyFoldout">>
 				<span class="gold">NPC Pregnancy</span>
-				<<for $_npc range $NPCName.filter(npc => npc.pregnancy and npc.pregnancy.enabled isnot undefined)>>
+				<<for $_npc range $NPCName.filter(npc => npc.pregnancy and npc.pregnancy.enabled isnot undefined).sort((a,b) => a.nam.localeCompare(b.nam))>>
 					<div>
 						<<print $_npc.nam>>:
 						<<set _active to getActivePregnancies($_npc.nam)[0]>>
@@ -1250,7 +1259,7 @@
 			<div id="moneyStatsDiv">
 				<<moneyStats>>
 			</div>
-			<<if $debug is 1>>
+			<<if $debug>>
 				<<link "Reset Stats (Debug)">>
 					<<set $moneyStats to {}>>
 					<<set $timeStats to {}>>
