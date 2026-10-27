@@ -342,6 +342,11 @@ try {
 	// that started from a staging directory it has just checked.
 	cleanStagedGameAssets(variant);
 
+	// Also before: gradle's project cache records absolute output paths, so a
+	// checkout that has moved keeps rebuilding the directory it used to be in.
+	// See verify_project_path.js.
+	require('./verify_project_path')();
+
 	// Also before: the broken state is a 13 October AAR with an empty
 	// classes.jar, and Gradle is quite happy to treat that as up to date.
 	verifyPluginAarsAreNotEmpty();
