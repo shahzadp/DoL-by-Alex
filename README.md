@@ -1,3 +1,15 @@
+> **About this repository**
+> An Android-focused fork of **Degrees of Lewdity** — an 18+ game built with
+> SugarCube 2 / Twine by Vrelnir and contributors.
+> Upstream: <https://gitgud.io/Vrelnir/degrees-of-lewdity>
+> Not affiliated with or endorsed by the upstream project. The game is
+> distributed under **CC BY-NC-SA 4.0** (attribution, non-commercial,
+> share-alike): it stays free, attribution is required, and adaptations must
+> use the same licence. The bundled Android shell and build tooling are the
+> author's own work, licensed the same for consistency with the fork.
+> `MEMORY.md` (the original author's private dev diary) was removed from this
+> repository and its history.
+
 # Degrees of Lewdity
 
 ## Lexicon of Lewdity
