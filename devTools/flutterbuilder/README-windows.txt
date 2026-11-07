@@ -1,8 +1,8 @@
 android apk builder for primarily DoL, built with Flutter
 
 This is the only Android shell in the repo. It replaced a Capacitor build that
-lived at devTools/apkbuilder; that tree has been removed, and the top-level
-MEMORY.md records what state each piece of it ended in.
+lived at devTools/apkbuilder; that tree has been removed, and its state is
+recorded in the surrounding project history for anyone who needs it.
 
 # how it is put together
 
@@ -44,11 +44,11 @@ static invariants are checked on every build by
     gradle expects.
 -   **Temurin JDK 21.** `C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot`.
 -   **Android SDK** with platform 36, build-tools 36.0.0 and NDK 28.2.13676358.
-    This repo already has one at `../androidsdk`; point Flutter at it rather than
-    downloading a second copy. It was originally installed for the Capacitor
-    builder at `../apkbuilder/androidsdk` and was moved rather than deleted with
-    it, because `sdkmanager` crashes on this machine and re-installing all of
-    that is a miserable way to discover the SDK had gone with the app code.
+    The machine's SDK lives at `D:\Dev\SDKs\android-sdk`; point Flutter at it
+    rather than downloading a second copy. It was originally installed for the
+    Capacitor builder at `../apkbuilder/androidsdk`, and again at
+    `../androidsdk` -- on 2026-11-07 it was merged into
+    D:\Dev\SDKs\android-sdk.
 
 The NDK looks unnecessary -- nothing here compiles native code, and
 `android/app/build.gradle.kts` deliberately does not set `ndkVersion`. It is
