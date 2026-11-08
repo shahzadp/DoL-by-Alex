@@ -231,11 +231,20 @@ once large from Flutter: the "two splash screens" problem. And holding the secon
 one for the whole story load meant several seconds of dead time before the player
 saw anything.
 
-The mark is defined once, in `drawable/ic_dol_mark.xml`, with
-`ic_launcher_foreground.xml` for the launcher icon. `launch_background.xml`
-composes the same mark into the window background for Android 11 and below.
-`assets/icon-only.svg` remains the source of truth; it was carried over from the
-Capacitor tree when that was removed.
+The splash mark is defined once, in `drawable/ic_dol_mark.xml`.
+`launch_background.xml` composes the same mark into the window background for
+Android 11 and below. `assets/icon-only.svg` remains the source of truth for
+the splash mark; it was carried over from the Capacitor tree when that was
+removed.
+
+The launcher icon is a different surface. It is the full-bleed artwork in
+`assets/app-icon.png`, baked into density-specific
+`drawable-<density>/ic_launcher_foreground.png` and
+`ic_launcher_monochrome.png` (the monochrome layer feeds Android 13+ themed
+icons) plus the legacy `mipmap-*/ic_launcher*.png` files. Do not hand-edit
+those PNGs; regenerate them from `assets/app-icon.png`. The adaptive icon's
+background layer is `@color/ic_launcher_background` (#476069, sampled from the
+artwork's edges); the splash stays #111111.
 
 `NormalTheme`'s window background is flat `#111111` rather than the marked
 drawable, deliberately: it shows for the instant between the system splash
